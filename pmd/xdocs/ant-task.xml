@@ -9,7 +9,7 @@
   <body>
     <section name="PMD">
       <subsection name="Description">
-        <p>Runs a set of static code analysis rules on a some Java source code files and generates a list of problems found.</p>
+        <p>Runs a set of static code analysis rules on some Java source code files and generates a list of problems found.</p>
       </subsection>
       <subsection name="Parameters">
 <table border="1" cellpadding="2" cellspacing="0">
@@ -27,8 +27,7 @@
   </tr>
   <tr>
     <td valign="top">verbose</td>
- 	<td valign="top">Verbose output - just the name of each file processed
-					 Defaults to the current directory.</td>
+ 	<td valign="top">Verbose output - just the name of each file processed.</td>
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>
