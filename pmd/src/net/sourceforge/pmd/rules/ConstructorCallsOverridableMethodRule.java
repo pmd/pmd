@@ -361,7 +361,6 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
         }
 
         public void show() {
-            //StringBuffer sb = new StringBuffer();
             System.out.println("<MethodInvocation>");
             List pkg = getQualifierNames();
             System.out.println("  <Qualifiers>");
