@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <id>pmd</id>
+  <name>P. M. D.</name>
+  <currentVersion>0.4</currentVersion>
+  <organization>
+    <name>InfoEther</name>
+    <url>http://www.infoether.com/</url>
+  </organization>
+
+  <inceptionYear>2002</inceptionYear>
+  <package>com.infoether.pmd</package>
+
+  <description>
+  <![CDATA[
+PMD runs through Java source code, and looks for potential problems
+in the code.  Currently, PMD supports:
+<ul>
+  <li>Unused Local Variables</li>
+  <li>Unecessary Object Creation</li>
+</ul>
+More tests to come.
+</ul>
+  ]]>
+  </description>
+  <shortDescription>PMD Source Checker</shortDescription>
+
+  <url>http://pmd.sourceforge.net/</url>
+  <issueTrackingUrl>http://www.sourceforge.net/tracker/?group_id=56262</issueTrackingUrl>
+  <siteAddress>pmd.sourceforge.net</siteAddress>
+  <siteDirectory>/www/pmd.sourceforge.net/www/</siteDirectory>
+  <distributionDirectory>/www/pmd.sourceforge.net/builds/pmd</distributionDirectory>
+
+  <repository>
+    <connection>scm:cvs:pserver:anonymous@cvs.pmd.sourceforge.net:/cvsroot/pmd:pmd</connection>
+    <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/</url>
+  </repository>
+
+  <versions>
+    <version>
+      <id>0.1</id>
+      <name>0.1</name>
+      <tag>HEAD</tag>
+    </version>
+  </versions>
+
+  <branches>
+  </branches>
+
+  <mailingLists>
+  </mailingLists>
+
+  <developers>
+    <developer>
+      <name>Tom Copeland</name>
+      <id>tomcopeland</id>
+      <email>tom@infoether.com</email>
+      <roles>
+        <role>Admin</role>
+      </roles>
+    </developer>
+
+    <developer>
+      <name>David Dixon-Peugh</name>
+      <id>dpeugh</id>
+      <email>ddp@apache.org</email>
+      <organization>Lockheed Martin Corporation</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <contributors>
+  </contributors>
+
+  <!-- Need to mark these as compile-time/run-time -->
+
+  <dependencies>
+  </dependencies>
+
+  <build>
+    <nagEmailAddress>tom@infoether.com</nagEmailAddress>
+
+    <sourceDirectory>src</sourceDirectory>
+ 
+    <unitTestSourceDirectory>regress</unitTestSourceDirectory>
+
+    <integrationUnitTestSourceDirectory />
+ 
+    <aspectSourceDirectory></aspectSourceDirectory>
+
+    <unitTestPatterns>
+      <unitTestPattern>include=**/Test*.java</unitTestPattern>
+    </unitTestPatterns>
+
+    <integrationUnitTestPatterns />
+
+    <!-- J A R  R E S O U R C E S -->
+    <!-- Resources that are packaged up inside the JAR file -->
+
+    <jarResources>
+    </jarResources>
+
+    <checkstyle>
+    </checkstyle>
+    <jars>
+    </jars>
+  </build>
+</project>
