@@ -41,4 +41,14 @@ public class RuleTst
         p.processFile(getClass().getClassLoader().getResourceAsStream(fileName), rules, ctx);
         return ctx.getReport();
     }
+
+    public void process(String fileName, Rule rule, Report report) {
+        PMD p = new PMD();
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(report);
+        ctx.setSourceCodeFilename(fileName);
+        RuleSet rules = new RuleSet();
+        rules.addRule(rule);
+        p.processFile(getClass().getClassLoader().getResourceAsStream(fileName), rules, ctx);
+    }
 }

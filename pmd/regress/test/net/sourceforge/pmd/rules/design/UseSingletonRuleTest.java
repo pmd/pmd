@@ -15,13 +15,13 @@ import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.rules.design.*;
 
 public class UseSingletonRuleTest
-    extends RuleTst
+    extends RuleTst implements ReportListener
 {
     public UseSingletonRuleTest( String name ) {
 	super( name );
     }
 
-    public void testUseSingleton1() 
+    public void testUseSingleton1()
 	throws Throwable 
     {
 	Report report = process("UseSingleton1.java",
@@ -45,11 +45,27 @@ public class UseSingletonRuleTest
 	assertEquals( 1, report.size() );
     }
 
-    public void testUseSingleton4() 
+
+    public void testUseSingleton4()
 	throws Throwable 
     {
 	Report report = process("UseSingleton4.java",
 				new UseSingletonRule());
 	assertEquals( 0, report.size() );
+    }
+
+    public void testResetState() throws Throwable{
+        callbacks = 0;
+        Rule rule = new UseSingletonRule();
+        Report report = new Report();
+        report.addListener(this);
+        process("UseSingleton3.java", rule, report);
+        process("UseSingleton4.java", rule, report);
+        assertEquals( 1, callbacks );
+    }
+
+    private int callbacks;
+    public void ruleViolationAdded(RuleViolation ruleViolation) {
+        callbacks++;
     }
 }

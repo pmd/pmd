@@ -25,6 +25,8 @@ public class UseSingletonRule
     }
 
     public Object visit( ASTCompilationUnit cu, Object data ) {
+    methodCount = 0;
+    isOK=false;
 	Object RC = cu.childrenAccept( this, data );
 
 	if ((!isOK) && (methodCount > 0)) {
