@@ -99,7 +99,9 @@ sub getHomePage() {
  my $self = shift;
  if ($self->getLocation() =~ "Sourceforge") {
   return "<a href=\"http://@{[$self->getUnixName()]}.sf.net/\">http://@{[$self->getUnixName()]}.sf.net/</a>";
- } else  {
+ } elsif ($self->getLocation() =~ "Jakarta xml") {
+  return "<a href=\"http://xml.apache.org/\">http://xml.apache.org/</a>";
+ } else {
   return "<a href=\"http://jakarta.apache.org/\">http://jakarta.apache.org/</a>";
  }
 }

@@ -5,6 +5,18 @@
 
 module PMD
 
+# add timeout thingy to the Thread class, thx to Rich Kilmer for the code
+class MyThread < Thread
+ def MyThread.ttl=(timeout)
+  Thread.new(Thread.current) do |thread|
+   sleep timeout
+   if thread.alive?
+    thread.exit
+   end
+  end
+ end
+end
+
 class Job
 
   attr_reader :unixName
@@ -23,7 +35,15 @@ class Job
   end
   
   def checkout_code
-  `cvs -Q -d#{@cvsroot} co "#{@moduleDirectory}"`
+   # note that we just check out the source directory - we don't need all the other stuff
+   # this saves time/bandwidth/processing load.  All good.
+   #
+   # use the Thread.ttl gizmo to end it after 2 minutes
+   t = MyThread.new {
+    MyThread.ttl = 120 
+    `cvs -Q -d#{@cvsroot} export -D tomorrow "#{@sourceDirectory}"`
+   }
+   t.join  
   end
   
   def run_pmd

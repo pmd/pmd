@@ -14,13 +14,14 @@ sub nopage() {
 }
 
 sub default() {
- print start_html("Run PMD on your Sourceforge/Jakarta project");
+ print start_html("Run PMD on your Sourceforge project");
  
  print "<center><a href=\"http://pmd.sourceforge.net/\"><img src=\"http://sourceforge.net/sflogo.php?group_id=56262&type=5\" alt=\"Project Ultra*Log @ DARPA\" border=\"0\" /></a></center>";
 
  print h3("<center>PMD-WEB</center>");
- print "PMD is a Java source code analysis tool - it checks your code for unused fields, empty try/catch/finally/if/while blocks, unused method parameters, and stuff like that.  There's much more info <a href=\"http://pmd.sf.net/\">here</a>.<p>This table contains the results of running PMD's <a href=\"http://pmd.sourceforge.net/rules/unusedcode.html\">unused code ruleset</a> against a bunch of Sourceforge and Jakarta projects."; 
- print "<p><b>1/21/03: This page has been down for a few days due to Sourceforge CVS migrations, but it's back on the three hour cycle now</b>";
+ print "PMD is a Java source code analysis tool - it checks your code for unused fields, empty try/catch/finally/if/while blocks, unused method parameters, and stuff like that.  There's much more info <a href=\"http://pmd.sf.net/\">here</a>.<p>This table contains the results of running PMD's <a href=\"http://pmd.sourceforge.net/rules/unusedcode.html\">unused code ruleset</a> against a bunch of Sourceforge projects."; 
+ print "<p>Comments?  Questions?  Please post them <a href=\"http://sourceforge.net/forum/forum.php?forum_id=188192\">here</a>";
+ print "<p><b>1/29/03: Note that all the Apache projects are no longer here.  It just took too long to check them out; the CVS client was blocking for hours at a time.  If anyone's interested in this, I'll try to get this up and running on my cvs.apache.org account.</b>";
  print hr();
 
  if (param("location")) {
@@ -34,10 +35,10 @@ sub default() {
  printStats();
 
  print hr(); 
- print "Want to run PMD on your Java Sourceforge/Jakarta project?  Fill in the blanks and hit go:";
+ print "Want to run PMD on your Java Sourceforge project?  Fill in the blanks and hit go:";
  print start_form();
  print "Project title (i.e., PMD): ", textfield(-name=>'title',-default=>'',-override=>1);
- print br(), "Project location: ", radio_group(-name=>'location',-values=>['Sourceforge','Jakarta'],-default=>'Sourceforge',-override=>1);
+ print br(), "Project location: ", radio_group(-name=>'location',-values=>['Sourceforge'],-default=>'Sourceforge',-override=>1);
  print br(), "Project's Unix name (i.e., pmd): ", textfield(-name=>'unixname',-default=>'',-override=>1);
  print br(), "Module directory (i.e., pmd-dcpd): ", textfield(-name=>'moduledirectory',-default=>'',-override=>1);
  print br(), "Source directory (including module directory, i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
@@ -47,7 +48,6 @@ sub default() {
  print end_form();
  
  print hr(); 
- print "Comments?  Questions?  Please post them <a href=\"http://sourceforge.net/forum/forum.php?forum_id=188192\">here</a>";
 }
 
 sub printStats() {
@@ -59,7 +59,7 @@ sub printStats() {
   close(FILE);
   print br(), "Currently processing $currentjob";
  }
- print br(), "There are ", getTimeUntil(), " minutes until the next scheduled run";
+ #print br(), "There are ", getTimeUntil(), " minutes until the next scheduled run";
  open(FILE,"lastruntime.txt");
  my $lastruntime=<FILE>;
  close(FILE);

@@ -16,6 +16,7 @@ jobsDir.each { |candidate|
    job = PMD::Job.new(location,title,unixname,moduleDir,srcDir)
    #puts "Processing #{job}"
    File.open("/home/groups/p/pm/pmd/cgi-bin/currentjob.txt", "w") { |file| file.syswrite(job.unixName) }
+   job.clear
    job.checkout_code
    job.run_pmd
    job.clear
