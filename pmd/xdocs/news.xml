@@ -10,6 +10,8 @@
     <section name="Articles">
     <ul>
         <br/>
+        <li>6/15/2003 - An <a href="http://www.sdtimes.com/news/080/story15.htm">article in Software Development Times</a> on PMD being embedded in QStudio.</li>
+        <br/>
         <li>4/13/2003 - An <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">article on PMD custom rules</a> on the O'Reilly OnJava.com site</li>
         <br/>
         <li>3/13/2003 - An <a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">overview of CPD</a> on the O'Reilly OnJava.com site</li>
