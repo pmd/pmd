@@ -186,4 +186,17 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     public boolean usesDFA() {
         return this.usesDFA;
     }
+
+    /**
+     * Adds a violation to the report.
+     * It is an utility method that simply does:
+     * <code>context.getReport().addRuleViolation(createRuleViolation(context, beginLine));</code>
+     * 
+     * @param context the RuleContext
+     * @param beginLine begin line of the violation
+     */
+    protected final void addViolation(RuleContext context, int beginLine) {
+        context.getReport().addRuleViolation(createRuleViolation(context, beginLine));
+    }
+
 }
