@@ -6,17 +6,16 @@
 package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.junit.JUnitSpellingRule;
+import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class JUnitSpellingRuleTest extends RuleTst {
 
     private Rule rule;
 
-
     public void setUp() {
-        rule = new JUnitSpellingRule();
-        rule.setMessage("when you mean ''{0}'', don't do ''{1}''");
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//MethodDeclarator[(not(@Image = 'setUp') and translate(@Image, 'SETuP', 'setUp') = 'setUp') or (not(@Image = 'tearDown') and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')][FormalParameters[count(*) = 0]]");
     }
 
 

@@ -103,21 +103,28 @@ most people really dislike :-)
         <priority>3</priority>
      <example>
  <![CDATA[
-public interface Foo {
- public abstract void bar(); // both abstract and public are ignored by the compiler
-}
+    public interface Foo {
+     public abstract void bar(); // both abstract and public are ignored by the compiler
+    }
  ]]>
      </example>
      </rule>
 
     <rule name="AssignmentInOperandRule"
       message="Avoid assigments in operands"
-      class="net.sourceforge.pmd.rules.AssignmentInOperandRule">
+      class="net.sourceforge.pmd.rules.XPathRule">
   <description>
   Avoid assigments in operands; this can make code more complicated and harder to read.
   </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+    //*[name()='WhileStatement' or name()='IfStatement'][Expression//AssignmentOperator]
+                    ]]>
+                </value>
+            </property>
     <priority>3</priority>
-
   <example>
   <![CDATA[
   public class Foo {

@@ -14,7 +14,8 @@ These rules deal with different problems that can occur with JUnit tests.
         <property name="xpath">
             <value>
                 <![CDATA[
-  //MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite']              ]]>
+  //MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite']
+                ]]>
             </value>
         </property>
         <priority>3</priority>
@@ -32,11 +33,18 @@ These rules deal with different problems that can occur with JUnit tests.
 
 
   <rule name="JUnitSpelling"
-        message="You may have misspelled the JUnit framework ''{0}'' method as ''{1}''"
-        class="net.sourceforge.pmd.rules.junit.JUnitSpellingRule">
+        message="You may have misspelled a JUnit framework method (setUp or tearDown)"
+        class="net.sourceforge.pmd.rules.XPathRule">
     <description>
     Some JUnit framework methods are easy to misspell.
     </description>
+      <property name="xpath">
+          <value>
+              <![CDATA[
+//MethodDeclarator[(not(@Image = 'setUp') and translate(@Image, 'SETuP', 'setUp') = 'setUp') or (not(@Image = 'tearDown') and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')][FormalParameters[count(*) = 0]]
+              ]]>
+          </value>
+      </property>
       <priority>3</priority>
 
     <example>
