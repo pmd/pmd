@@ -28,6 +28,7 @@ package pmd.config.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractListModel;
 
@@ -152,5 +153,6 @@ public class AvailableListModel extends AbstractListModel {
 	/** Resets the list */
 	public void refresh() {
 		list = ConfigUtils.getAllAvailableRules();
+		Collections.sort( list, new RuleComparator() );
 	}
 }

@@ -1,3 +1,6 @@
+Version 0.6.1
+- Updated pmd to version 1.02
+
 Version 0.6
 - Fixed feature request 638427
   - New properties dialog. Makes it possible to select individual rules. D

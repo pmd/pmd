@@ -8,7 +8,7 @@
 				<!-- of openide module. The jar will be at <netbeans_home/lib/openide.jar                 -->
 				<!-- todo: Check out the license file, if the jar can be distributed with this module     -->
 				<pathelement path="lib/openide.jar"/>
-				<pathelement path="lib/pmd-1.01.jar"/>
+				<pathelement path="lib/pmd-1.02.jar"/>
 			</classpath>
 		</javac>
 		<copy todir="build/classes">
@@ -35,7 +35,7 @@
 		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib\nbantext.jar" name="makenbm"/>
 		<mkdir dir="build/temp_distribution/netbeans/modules/ext"/>
 		<copy file="build/pmd.jar" tofile="build/temp_distribution/netbeans/modules/pmd.jar"/>
-		<copy file="lib/pmd-1.01.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.01.jar"/>
+		<copy file="lib/pmd-1.02.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.02.jar"/>
 		<makenbm file="build/pmd.nbm" homepage="http://pmd.sourceforge.net" module="build/pmd.jar" topdir="build/temp_distribution">
 			<license file="LICENSE.txt"/>
 		</makenbm>

@@ -42,6 +42,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.PMDException;
 
 import org.openide.TopManager;
 import org.openide.cookies.EditorCookie;
@@ -133,7 +134,7 @@ public class RunPMDAction extends CookieAction {
 	 *      can't write to the output window
 	 */
 	private void checkCookie( DataObject dataobject, PMDOutputListener listener, OutputWriter writer )
-		 throws IOException {
+		 throws IOException, PMDException {
 		SourceCookie cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
 
 		//The file is not a java file
@@ -216,6 +217,9 @@ public class RunPMDAction extends CookieAction {
 		catch( IOException e ) {
 			TopManager.getDefault().getErrorManager().notify( e );
 		}
+		catch( PMDException e ) {
+			TopManager.getDefault().getErrorManager().notify( e );
+		}
 
 	}
 
@@ -228,7 +232,7 @@ public class RunPMDAction extends CookieAction {
 	 */
 	private static RuleSet constructRuleSets() {
 		RuleSet rules = new RuleSet();
-		List list = ConfigUtils.createRuleList( 
+		List list = ConfigUtils.createRuleList(
 			PMDOptionsSettings.getDefault().getRules() );
 		Iterator iterator = list.iterator();
 		while( iterator.hasNext() ) {
