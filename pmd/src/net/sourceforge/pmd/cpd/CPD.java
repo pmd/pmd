@@ -35,6 +35,10 @@ public class CPD {
         matchAlgorithm.findMatches(minimumTileSize);
     }
 
+    public Iterator getMatches() {
+        return matchAlgorithm.matches();
+    }
+
     public String getReport() {
         // yikes.  there's a dire need for refactoring here.
         StringBuffer rpt = new StringBuffer();
