@@ -27,7 +27,7 @@ sub default() {
  my $lastruntime=<FILE>;
  close(FILE);
  print br();
- print "This report is run 10 minutes past the hour at midnight, 3, 6, 9, 12, 15, 18, and 21 hours. The last run finished at ", $lastruntime;
+ print "This report is run 10 minutes past the hour at midnight, 3, 6, 9, 12, 15, 18, and 21 hours U.S. Pacific Standard Time. The last run finished at ", $lastruntime;
  print hr();
 
  if (param("unixname")) {
@@ -37,8 +37,6 @@ sub default() {
  } 
 
  print loadProjectList();
-
- printStats();
 
  print hr(); 
  print "Want to run PMD on your Java Sourceforge project?  Fill in the blanks and hit go:";
@@ -53,32 +51,6 @@ sub default() {
  print end_form();
  
  print hr(); 
-}
-
-sub printStats() {
- print hr(); 
- print b("Stats"); 
- if (-e "currentjob.txt") {
-  open(FILE, "currentjob.txt");
-  my $currentjob = <FILE>;
-  close(FILE);
-  print br(), "Currently processing $currentjob";
- }
- #print br(), "There are ", getTimeUntil(), " minutes until the next scheduled run";
- print br();
- print "This report is regenerated every three hours at 10 minutes past the hour";
- print br();
-}
-
-sub getTimeUntil() {
- # we're starting each build at 10 past the hour, so...
- my $offset = 10;
- my $everyXHours = 3;
- my $minutes = ((60 + $offset) - localtime()->min) % 60;
- if (localtime()->hour % $everyXHours != 0) {
-  $minutes += 60;
- }
- return $minutes;
 }
 
 sub loadProjectList() {
