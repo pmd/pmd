@@ -15,12 +15,10 @@ jobsDir.each { |candidate|
    end
    job = PMD::Job.new(location,title,unixname,moduleDir,srcDir)
    #puts "Processing #{job}"
-   File.open("/home/groups/p/pm/pmd/cgi-bin/currentjob.txt", "w") { |file| file.syswrite(job.unixName) }
    job.clear
    job.checkout_code
    job.run_pmd
    job.clear
-   File.delete("/home/groups/p/pm/pmd/cgi-bin/currentjob.txt");
   end
  rescue
   puts "Exiting with error: #{$!}"
@@ -28,5 +26,5 @@ jobsDir.each { |candidate|
 }
 stop=Time.now
 
-`echo #{stop-start} > /home/groups/p/pm/pmd/cgi-bin/lastruntime.txt`
+`echo #{stop} > /home/groups/p/pm/pmd/cgi-bin/lastruntime.txt`
 

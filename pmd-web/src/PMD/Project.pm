@@ -39,7 +39,7 @@ sub getLines() {
  foreach (@x) {
   $lines = $lines + 1 if $_ =~ "<td ";
  }
- return sprintf("%0.f", $lines/3);
+ return sprintf("%0.f", $lines/4);
 }
 sub getLocation() {
  my $self = shift;
