@@ -48,6 +48,12 @@ More tests to come.
   </branches>
 
   <mailingLists>
+    <mailingList>
+        <name>PMD development</name>
+        <subscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
+        <unsubscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
+        <archive>http://www.geocrawler.com/lists/3/SourceForge/23403/0/</archive>
+    </mailingList>
   </mailingLists>
 
   <developers>
@@ -83,11 +89,11 @@ More tests to come.
     <nagEmailAddress>tom@infoether.com</nagEmailAddress>
 
     <sourceDirectory>src</sourceDirectory>
- 
+
     <unitTestSourceDirectory>regress</unitTestSourceDirectory>
 
     <integrationUnitTestSourceDirectory />
- 
+
     <aspectSourceDirectory></aspectSourceDirectory>
 
     <unitTestPatterns>
