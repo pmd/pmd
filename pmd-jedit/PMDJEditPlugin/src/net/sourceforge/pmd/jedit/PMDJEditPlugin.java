@@ -133,16 +133,18 @@ public class PMDJEditPlugin extends EBPlugin {
 		// I'm putting the files in a Set to work around some
 		// odd behavior in jEdit - the buffer.getNext()
 		// seems to iterate over the files twice.
-		Set fileSet = new HashSet();
-		for (int i=0; i<jEdit.getBufferCount(); i++ ) {
-			Buffer buffer = jEdit.getFirstBuffer();
-			while (buffer != null) {
-				//System.out.println("file = " + buffer.getFile());
-				if (buffer.getName().endsWith(".java")) {
-					//fileSet.add(buffer.getFile());
-					instanceCheck(buffer,view);
-				}
-				buffer = buffer.getNext();
+		Buffer buffers[] = jEdit.getBuffers();
+
+		if(buffers != null)
+		{
+			for (int i=0; i<buffers.length; i++ )
+			{
+					if (buffers[i].getName().endsWith(".java"))
+					{
+						//fileSet.add(buffer.getFile());
+						System.out.println("checking = " + buffers[i].getPath());
+						instanceCheck(buffers[i],view, false);
+					}
 			}
 		}
 
@@ -204,19 +206,25 @@ public class PMDJEditPlugin extends EBPlugin {
 
 	// check current buffer
 	public static void check(Buffer buffer, View view) {
-		instance.instanceCheck(buffer, view);
+		instance.instanceCheck(buffer, view, true);
 	}
 
-	public void instanceCheck(Buffer buffer, View view) {
+	public void instanceCheck(Buffer buffer, View view, boolean clearErrorList) {
 		try {
-			errorSource.clear();
+			if(clearErrorList)
+			{
+				errorSource.clear();
+			}
 
 			PMD pmd = new PMD();
 			SelectedRules selectedRuleSets = new SelectedRules();
 			RuleContext ctx = new RuleContext();
 			ctx.setReport(new Report());
 			ctx.setSourceCodeFilename(buffer.getPath());
-			pmd.processFile(new StringReader(view.getTextArea().getText()), selectedRuleSets.getSelectedRules(), ctx);
+
+			VFS vfs = buffer.getVFS();
+
+			pmd.processFile(vfs._createInputStream(vfs.createVFSSession(buffer.getPath(),view),buffer.getPath(),false,view), selectedRuleSets.getSelectedRules(), ctx);
 			if (ctx.getReport().isEmpty()) {
 				JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
 				errorSource.clear();
@@ -232,6 +240,10 @@ public class PMDJEditPlugin extends EBPlugin {
 		} catch (PMDException pmde) {
 			pmde.printStackTrace();
 			JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + buffer.getPath());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
 		}
 	}// check current buffer
 

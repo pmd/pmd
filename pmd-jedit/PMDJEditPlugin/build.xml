@@ -1,4 +1,4 @@
-<project name="PMDJEditPlugin" default="jar" basedir=".">
+<project name="PMDPlugin" default="jar" basedir=".">
 
 	<property file="build.properties"></property>
 	<property name="config" value="."/>
