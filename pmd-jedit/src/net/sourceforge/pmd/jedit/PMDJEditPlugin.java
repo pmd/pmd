@@ -16,6 +16,8 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaLanguage;
+import net.sourceforge.pmd.cpd.PHPLanguage;
+import net.sourceforge.pmd.cpd.CPPLanguage;
 import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import org.gjt.sp.jedit.Buffer;
@@ -113,8 +115,8 @@ public class PMDJEditPlugin extends EditPlugin {
         for (int i=0; i<jEdit.getBufferCount(); i++ ) {
             Buffer buffer = jEdit.getFirstBuffer();
             while (buffer != null) {
-                System.out.println("file = " + buffer.getFile());
-                if (buffer.getFile().getName().endsWith(".java")) {
+                //System.out.println("file = " + buffer.getFile());
+                if (buffer.getName().endsWith(".java")) {
                     fileSet.add(buffer.getFile());
                 }
                 buffer = buffer.getNext();
@@ -256,13 +258,36 @@ public class PMDJEditPlugin extends EditPlugin {
 
 	public static void CPDCurrentFile(View view) throws IOException
 	{
-		if(!view.getBuffer().getMode().getName().equals("java"))
+		/* if(!view.getBuffer().getMode().getName().equals("java"))
 		{
 			JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
 			return;
-		}
+		} */
 		instance.errorSource.clear();
-		CPD cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new JavaLanguage());
+		CPD cpd = null;
+		//Log.log(Log.DEBUG, PMDJEditPlugin.class , "See mode " + view.getBuffer().getMode().getName());
+
+		if (view.getBuffer().getMode().getName().equals("java"))
+		{
+			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing java");
+			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new JavaLanguage());
+		}
+		else if (view.getBuffer().getMode().getName().equals("php"))
+		{
+			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing PHP");
+			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new PHPLanguage());
+		}
+		else if (view.getBuffer().getMode().getName().equals("c") || view.getBuffer().getMode().getName().equals("c++"))
+		{
+			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing C/C++");
+			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new CPPLanguage());
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java,C/C++,PHP code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
 		cpd.add(new File(view.getBuffer().getPath()));
 		cpd.go();
 		instance.processDuplicates(cpd, view);
