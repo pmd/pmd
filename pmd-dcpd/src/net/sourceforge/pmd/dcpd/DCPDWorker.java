@@ -21,7 +21,7 @@ public class DCPDWorker {
     public DCPDWorker() {
         try {
             space = Util.findSpace("mordor");
-            space.notify(new Job("test"), null, new JobAddedListener(), Lease.FOREVER, null);
+            space.notify(new Job("test"), null, new JobAddedListener(space), Lease.FOREVER, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
