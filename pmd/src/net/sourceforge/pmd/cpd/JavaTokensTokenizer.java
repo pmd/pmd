@@ -30,6 +30,12 @@ public class JavaTokensTokenizer implements Tokenizer {
         tokens.setCode(lines);
 
         // now tokenize it
+        /*
+        I'm doing a sort of State pattern thing here where
+        this goes into "discarding" mode when it hits an import or package
+        keyword and goes back into "accumulate mode when it hits a semicolon.
+        This could probably be turned into some objects and such.
+        */
         JavaCharStream javaStream = new JavaCharStream(new StringReader(sb.toString()));
         JavaParserTokenManager tokenMgr = new JavaParserTokenManager(javaStream);
         Token currToken = tokenMgr.getNextToken();

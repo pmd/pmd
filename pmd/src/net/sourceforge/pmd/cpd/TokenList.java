@@ -11,15 +11,6 @@ public class TokenList implements Serializable {
     private List tokens = new ArrayList();
     private List code;
 
-    /**
-     * The end of line string for this machine.
-     */
-    protected String EOL = System.getProperty("line.separator", "\n");
-
-    // don't use this, just for Serialization
-    protected TokenList() {
-    }
-
     public TokenList(String id) {
         this.id = id;
     }
@@ -39,7 +30,7 @@ public class TokenList implements Serializable {
         // TODO this check for i<code.size() should not be necessary
         for (int i = startLine; i <= endLine && i < code.size(); i++) {
             if (sb.length() != 0) {
-                sb.append(EOL);
+                sb.append(CPD.EOL);
             }
             sb.append((String) code.get(i));
         }

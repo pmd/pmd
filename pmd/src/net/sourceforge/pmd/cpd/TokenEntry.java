@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.cpd;
 
-/** tokens are opaque strings of chars. they are immutable, apart from their sort codes*/
 public class TokenEntry implements Comparable {
 
     public static final TokenEntry EOF = new TokenEntry();
@@ -23,11 +22,6 @@ public class TokenEntry implements Comparable {
         this.chars = image.toCharArray();
     }
 
-    // TE
-    public String getImage() {
-        return image;
-    }
-
     public int getIndex() {
         return index;
     }
@@ -40,22 +34,8 @@ public class TokenEntry implements Comparable {
         return beginLine;
     }
 
-    // TE
-
-    public int length() {
-        return image.length();
-    }
-
     public void setSortCode(int code) {
         this.sortCode = code;
-    }
-
-    public String toString() {
-        return new String(chars);
-    }
-
-    public int getSortCode(int code) {
-        return this.sortCode;
     }
 
     public boolean equals(Object o) {
@@ -64,10 +44,10 @@ public class TokenEntry implements Comparable {
             if (this == EOF) {
                 return token == EOF;
             }
-            if (token.length() != length()) {
+            if (token.image.length() != image.length()) {
                 return false;
             }
-            for (int i = 0; i < length(); i++) {
+            for (int i = 0; i < image.length(); i++) {
                 if (this.chars[i] != token.chars[i]) {
                     return false;
                 }
@@ -83,7 +63,7 @@ public class TokenEntry implements Comparable {
             if ( this == EOF ) {
                 h = -1;
             } else {
-                for (int i = 0 ; i < length(); i++) {
+                for (int i = 0 ; i < image.length(); i++) {
                     h = (37 * h + this.chars[i]);
                 }
             }
@@ -104,8 +84,8 @@ public class TokenEntry implements Comparable {
             return this.sortCode - token.sortCode;
         }
         // otherwise sort lexicographically
-        if (length() == token.length()) {
-            for (int i = 0; i < length() && i < token.length(); i++) {
+        if (image.length() == token.image.length()) {
+            for (int i = 0; i < image.length() && i < token.image.length(); i++) {
                 char c1 = this.chars[i];
                 char c2 = token.chars[i];
                 if (c1 != c2) {
@@ -114,13 +94,13 @@ public class TokenEntry implements Comparable {
             }
             return 0;
         }
-        for (int i = 0; i < length() && i < token.length(); i++) {
+        for (int i = 0; i < image.length() && i < token.image.length(); i++) {
             char c1 = this.chars[i];
             char c2 = token.chars[i];
             if (c1 != c2) {
                 return c1 - c2;
             }
         }
-        return length()  - token.length();
+        return image.length()  - token.image.length();
     }
 }
