@@ -56,7 +56,6 @@ JGraph:jgraph:jgraphpad3:jgraphpad3/src
 JHotDraw:jhotdraw:JHotDraw:JHotDraw/src
 Jmol:jmol:Jmol:Jmol/src
 jmx4ant:jmx4ant:jmx4ant:jmx4ant/src
-JOELib:joelib:joelib:joelib/src
 joeq:joeq:joeq_core:joeq_core/joeq
 JPublish:jpublish:jpublish:jpublish/src
 jRevProxy:jrevproxy:jRevProxy:jRevProxy/src
@@ -93,7 +92,6 @@ Roller Weblogger:roller:roller:roller/src
 Scope:scope:scopemvc2:scopemvc2/src
 Sorched Earth 2000:scorch:src:src
 Secure Data Manager:sdm:sdm:sdm/src
-The Singularity System:singularity-sys:framework:framework/src
 SkinLF:skinlf:skinlf2:skinlf2/src
 Semionic Network Toolkit:sntool:sntool-dev:sntool-dev/src
 Spring Framework:springframework:spring:spring/src
