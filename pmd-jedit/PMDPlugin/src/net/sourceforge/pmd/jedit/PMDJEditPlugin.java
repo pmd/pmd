@@ -375,10 +375,11 @@ public class PMDJEditPlugin extends EBPlugin {
 	public static void cpdCurrentFile(View view) throws IOException
 	{
 		/* if(!view.getBuffer().getMode().getName().equals("java"))
-	{
-			JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
-			return;
-	} */
+			{
+					JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
+					return;
+			}
+		*/
 		CPD cpd = null;
 		//Log.log(Log.DEBUG, PMDJEditPlugin.class , "See mode " + view.getBuffer().getMode().getName());
 
@@ -485,7 +486,7 @@ public class PMDJEditPlugin extends EBPlugin {
 			{
 				TokenEntry mark = (TokenEntry)occurrences.next();
 
-				System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount());
+				//System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount());
 				int lastLine = mark.getBeginLine()+match.getLineCount();
 
 				CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getTokenSrcID(),mark.getBeginLine(),lastLine);
