@@ -14,6 +14,9 @@ import net.sourceforge.pmd.cpd.Tokenizer;
 import java.io.StringReader;
 
 public class JavaTokensTokenizerTest extends TestCase {
+
+    private static final String SEP = System.getProperty("line.separator");
+
     public JavaTokensTokenizerTest(String name) {
         super(name);
     }
@@ -30,15 +33,20 @@ public class JavaTokensTokenizerTest extends TestCase {
     public void test2() throws Throwable {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList tl = new TokenList("1");
-        String data = "public class Foo {}"
-                + System.getProperty("line.separator")
-                + "public void bar() {}"
-                + System.getProperty("line.separator")
-                + "public void buz() {}"
-                + System.getProperty("line.separator")
-                + "}";
+        String data = "public class Foo {" + SEP +
+                      "public void bar() {}" + SEP +
+                      "public void buz() {}" + SEP +
+                      "}";
         t.tokenize(tl, new StringReader(data));
-        assertEquals("public class Foo {}"+ System.getProperty("line.separator") + "public void bar() {}", tl.getSlice(0,1));
+        assertEquals("public class Foo {"+ SEP + "public void bar() {}", tl.getSlice(0,1));
+    }
+
+    public void testDiscardSemicolons() throws Throwable  {
+        Tokenizer t = new JavaTokensTokenizer();
+        TokenList tl = new TokenList("1");
+        String data = "public class Foo {private int x;}";
+        t.tokenize(tl, new StringReader(data));
+        assertEquals(8, tl.size());
     }
 
  }
