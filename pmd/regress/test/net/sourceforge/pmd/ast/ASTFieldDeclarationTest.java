@@ -4,6 +4,9 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Dimensionable;
 import net.sourceforge.pmd.ast.JavaParser;
 import test.net.sourceforge.pmd.testframework.ParserTst;
@@ -37,4 +40,19 @@ public class ASTFieldDeclarationTest extends ParserTst{
     "class Foo {" + PMD.EOL +
     " String[][][] foo;" + PMD.EOL +
     "}";
+    
+    public void testGetVariableName() {
+    	int id = 0;
+    	ASTFieldDeclaration n = new ASTFieldDeclaration(id++);
+    	ASTType t = new ASTType(id++);
+    	ASTVariableDeclarator decl = new ASTVariableDeclarator(id++);
+    	ASTVariableDeclaratorId declid = new ASTVariableDeclaratorId(id++);
+    	n.jjtAddChild(t, 0);
+    	t.jjtAddChild(decl, 0);
+    	decl.jjtAddChild(declid, 0);
+    	declid.setImage("foo");
+    	
+    	assertEquals("foo", n.getVariableName());
+    	
+    }
 }
