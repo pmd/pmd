@@ -54,6 +54,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.18  2003/12/01 22:27:49  phherlin
+ * The default rulesets list is all pmd rulesets
+ *
  * Revision 1.17  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -99,8 +102,6 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     // Public constants
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse";
-    public static final String[] RULESET_DEFAULTLIST =
-        { "rulesets/basic.xml", "rulesets/design.xml", "rulesets/imports.xml", "rulesets/unusedcode.xml" };
     public static final String[] RULESET_ALLPMD =
         {
             "rulesets/basic.xml",
@@ -117,6 +118,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             "rulesets/strictexception.xml",
             "rulesets/strings.xml",
             "rulesets/unusedcode.xml" };
+    public static final String[] RULESET_DEFAULTLIST = RULESET_ALLPMD;
 
     public static final String RULESET_PREFERENCE = PLUGIN_ID + ".ruleset";
     public static final String RULESET_DEFAULT = "";
