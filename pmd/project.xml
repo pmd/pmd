@@ -17,10 +17,11 @@
 PMD runs through Java source code, and looks for potential problems
 in the code.  Currently, PMD supports:
 <ul>
-  <li>Unused Local Variables</li>
-  <li>Unecessary Object Creation</li>
+  <li>Unused local variables</li>
+  <li>Unnecessary object creation</li>
+  <li>Unecessary object creation</li>
 </ul>
-More tests to come.
+For example, here are the problems PMD found in the <a href="jdk14.xml">JDK 1.4 source code</a>
   ]]>
   </description>
   <shortDescription>PMD Source Checker</shortDescription>
