@@ -6,6 +6,18 @@ IMPORTANT : SINCE v2.0 THE INSTALLATION PROCEDURE HAS BEEN CHANGED.
             FOR INSTRUCTIONS.
             
 
+v2.2 (alias v2.2.0) - 23/01/2004
+-----------------------------------
+
+This relase is considered as stable (no more a release candidate).
+The only bug it corrects is the management of the new "symboltable" and "dfa" rule
+attributes.
+
+It also includes PMD 2.1 and basically manages "// NOPMD" comments.
+
+
+
+----------------------------------------------------------------------------------------
 v2.1RC1 (alias v2.1.0) - 22/11/2004
 -----------------------------------
 

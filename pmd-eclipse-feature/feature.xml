@@ -2,7 +2,7 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="2.1.1.v3"
+      version="2.2.0.v3"
       provider-name="%feature.provider_name"
       image="pmd_logo_small.jpg">
 
@@ -35,13 +35,13 @@
          id="net.sourceforge.pmd.core"
          download-size="0"
          install-size="0"
-         version="2.0.1.v3"/>
+         version="2.1.0.v3"/>
 
    <plugin
          id="net.sourceforge.pmd.eclipse"
          download-size="0"
          install-size="0"
-         version="2.1.1.v3"/>
+         version="2.2.0.v3"/>
 
    <plugin
          id="org.apache.xerces"
