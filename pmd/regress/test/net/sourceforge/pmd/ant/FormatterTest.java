@@ -2,9 +2,9 @@ package test.net.sourceforge.pmd.ant;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ant.Formatter;
-import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 import org.apache.tools.ant.BuildException;
 
 public class FormatterTest extends TestCase {

@@ -1,12 +1,12 @@
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.ArrayList;
 import java.util.List;

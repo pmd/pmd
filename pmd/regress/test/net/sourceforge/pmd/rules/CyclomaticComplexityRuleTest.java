@@ -1,8 +1,8 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.CyclomaticComplexityRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.rules.CyclomaticComplexityRule;
 
 import java.util.Iterator;
 

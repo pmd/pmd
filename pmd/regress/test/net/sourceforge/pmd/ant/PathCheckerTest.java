@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.ant;
 
-import net.sourceforge.pmd.ant.PathChecker;
 import junit.framework.TestCase;
+import net.sourceforge.pmd.ant.PathChecker;
 
 public class PathCheckerTest extends TestCase {
 
