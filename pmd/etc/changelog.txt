@@ -1,4 +1,4 @@
-????, 2003 - 1.4:
+January 7, 2004 - 1.4:
 New rules: AbstractNamingRule, ProperCloneImplementationRule
 Fixed bug 840926 - AvoidReassigningParametersRule no longer reports a false positive when assigning a value to an array slot when the array is passed as a parameter to a method
 Fixed bug 760520 - RuleSetFactory is less strict about whitespace in ruleset.xml files.

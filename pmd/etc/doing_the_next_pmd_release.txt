@@ -1,5 +1,5 @@
-update run.*, astviewer.*, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml, CommandLineOptions.java to point to pmd-1.3.jar
-update xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-1.3
+update run.*, astviewer.*, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml, CommandLineOptions.java to point to pmd-1.4.jar
+update xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-1.4
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
 update release number and tag name in project.xml
@@ -20,46 +20,46 @@ cd ..
 cd etc
 
 Prepare binary release:
-rm -rf ~/tmp/pmd-1.3
-mkdir -p ~/tmp/pmd-1.3/etc
-mkdir ~/tmp/pmd-1.3/lib
-cp ../LICENSE.txt run.* cygwin-run.sh build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.3/etc
-cp ../lib/pmd-1.3.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.3/lib/
-cp -R xslt/ ~/tmp/pmd-1.3/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd-1.3
+rm -rf ~/tmp/pmd-1.4
+mkdir -p ~/tmp/pmd-1.4/etc
+mkdir ~/tmp/pmd-1.4/lib
+cp ../LICENSE.txt run.* cygwin-run.sh build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.4/etc
+cp ../lib/pmd-1.4.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.4/lib/
+cp -R xslt/ ~/tmp/pmd-1.4/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd-1.4
 cd ~/tmp
-zip -q -r pmd-bin-1.3.zip pmd-1.3/
+zip -q -r pmd-bin-1.4.zip pmd-1.4/
 cd -
 
 Time to tag:
 
 cd ../../
-cvs -q rtag -D tomorrow "pmd_release_1_3" pmd
+cvs -q rtag -D tomorrow "pmd_release_1_4" pmd
 
 Prepare source release:
-rm -rf ~/tmp/pmd-1.3
+rm -rf ~/tmp/pmd-1.4
 mkdir tmp
-cvs -q export -d tmp/ -r pmd_release_1_3 pmd
+cvs -q export -d tmp/ -r pmd_release_1_4 pmd
 cd pmd/etc
 ant jarsrc
 cd ../../
-cp pmd/lib/pmd-src-1.3.jar tmp/lib/
-mv tmp ~/tmp/pmd-1.3
-cp pmd/lib/pmd-1.3.jar ~/tmp/pmd-1.3/lib
-cp -R pmd/target/docs ~/tmp/pmd-1.3/
+cp pmd/lib/pmd-src-1.4.jar tmp/lib/
+mv tmp ~/tmp/pmd-1.4
+cp pmd/lib/pmd-1.4.jar ~/tmp/pmd-1.4/lib
+cp -R pmd/target/docs ~/tmp/pmd-1.4/
 cd ~/tmp/
-zip -q -r pmd-src-1.3.zip pmd-1.3/
+zip -q -r pmd-src-1.4.zip pmd-1.4/
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_1_3 pmd
+cvs rtag -d pmd_release_1_4 pmd
 and then retag everything
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-1.3.zip pmd-bin-1.3.zip
+ncftpput upload.sourceforge.net incoming/ pmd-src-1.4.zip pmd-bin-1.4.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-1.3.zip file
-Add the pmd-src-1.3.zip file
+Add the pmd-bin-1.4.zip file
+Add the pmd-src-1.4.zip file
 Classify the file
 
 Redo the web site

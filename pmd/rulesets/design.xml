@@ -416,4 +416,40 @@ public class Foo {
     </example>
   </rule>
 
+    <rule name="ProperCloneImplementationRule"
+         message="Object clone() should be implemented with super.clone()"
+         class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+     Object clone() should be implemented with super.clone()
+     </description>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+//ClassDeclaration//MethodDeclarator
+[@Image = 'clone']
+[count(FormalParameters/*) = 0]
+[count(../Block//*[
+	(self::AllocationExpression) and
+	(./Name/@Image = ancestor::
+UnmodifiedClassDeclaration[position()=last()]/@Image)
+  ])> 0
+]
+                ]]>
+             </value>
+         </property>
+     </properties>
+        <priority>2</priority>
+
+     <example>
+ <![CDATA[
+class Foo{
+	public Object clone(){
+		return new Foo(); // This is bad
+	}
+}
+]]>
+     </example>
+     </rule>
+
   </ruleset>

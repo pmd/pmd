@@ -154,6 +154,31 @@ public class Foo {}
       </example>
     </rule>
 
+    <rule name="AbstractNamingRule"
+          message="Abstract classes should be named 'AbstractXXX'"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+  Abstract classes should be named 'AbstractXXX'.
+       </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassDeclaration[@Abstract='true']
+ /UnmodifiedClassDeclaration[starts-with(@Image,'Abstract') = 0]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+       <example>
+<![CDATA[
+public abstract class Foo { // should be AbstractFoo
+}
+]]>
+       </example>
+    </rule>
+
 
 </ruleset>
 

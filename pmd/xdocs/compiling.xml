@@ -18,15 +18,15 @@ Now you'll need to either check out the source code or download the latest sourc
     <pre>
         [tom@hal building]$ ls -l
         total 5716
-        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-1.3.zip
-        [tom@hal building]$ unzip -q pmd-src-1.3.zip
+        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-1.4.zip
+        [tom@hal building]$ unzip -q pmd-src-1.4.zip
         [tom@hal building]$
     </pre>
 </p>
 <p>
     Now cd down into the pmd/etc directory:
     <pre>
-        [tom@hal building]$ cd pmd-1.3/etc/
+        [tom@hal building]$ cd pmd-1.4/etc/
         [tom@hal etc]$ ls -l | grep build.xml
         -rw-rw-r--    1 tom      tom          5736 Jun 19 15:36 build.xml
         [tom@hal etc]$
@@ -39,9 +39,9 @@ Now you'll need to either check out the source code or download the latest sourc
         Buildfile: build.xml
 
         compile:
-            [mkdir] Created dir: /home/tom/tmp/building/pmd-1.3/build
-            [javac] Compiling 417 source files to /home/tom/tmp/building/pmd-1.3/build
-            [javac] Note: /home/tom/tmp/building/pmd-1.3/regress/test/net/sourceforge/pmd/
+            [mkdir] Created dir: /home/tom/tmp/building/pmd-1.4/build
+            [javac] Compiling 417 source files to /home/tom/tmp/building/pmd-1.4/build
+            [javac] Note: /home/tom/tmp/building/pmd-1.4/regress/test/net/sourceforge/pmd/
              RuleSetReadWriteTest.java uses or overrides a deprecated API.
             [javac] Note: Recompile with -deprecation for details.
 
