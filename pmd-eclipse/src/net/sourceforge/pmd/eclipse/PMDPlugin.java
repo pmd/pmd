@@ -54,6 +54,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.21  2004/05/26 15:55:23  phherlin
+ * Upgrading to PMD 1.8: adding finalizers ruleset to the default rulesets list
+ *
  * Revision 1.20  2003/12/18 23:58:37  phherlin
  * Fixing malformed UTF-8 characters in generated xml files
  *
@@ -116,6 +119,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             "rulesets/controversial.xml",
             "rulesets/coupling.xml",
             "rulesets/design.xml",
+			"rulesets/finalizers.xml",
             "rulesets/imports.xml",
             "rulesets/javabeans.xml",
             "rulesets/junit.xml",
