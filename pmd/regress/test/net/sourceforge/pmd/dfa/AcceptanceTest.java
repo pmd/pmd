@@ -16,14 +16,9 @@ public class AcceptanceTest extends ParserTst {
         for (int i=0; i<methodNodes.size(); i++) {
             ASTMethodDeclarator decl = (ASTMethodDeclarator)methodNodes.get(i);
             IDataFlowNode inode = decl.getDataFlowNode();
-/*
-            if (inode == null || inode.getFlow() == null) {
-                continue;
-            }
-*/
             for (int j = 0; j < inode.getChildren().size(); j++) {
                 IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(j);
-                if (array[i][j] != child.getIndex()) {
+                if (array[i][j] != child.getIndex()-1) {
                     return false;
                 }
             }
@@ -32,9 +27,8 @@ public class AcceptanceTest extends ParserTst {
     }
 
     public void test_1() throws Throwable {
-        //assertTrue(check(TEST1_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST1)));
+        assertTrue(check(TEST1_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST1)));
     }
-/*
     public void test_2() throws Throwable {
         assertTrue(check(TEST2_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST2)));
     }
@@ -119,7 +113,6 @@ public class AcceptanceTest extends ParserTst {
     public void test_30() throws Throwable {
         assertTrue(check(TEST30_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST30)));
     }
-*/
 
     /**
      *  first dimension: the index of a node
