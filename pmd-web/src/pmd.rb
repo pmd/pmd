@@ -51,7 +51,7 @@ class Job
    `#{cmd}`
   end
   def run_pmd
-   cmd="java -jar pmd-1.2.2.jar \"#{ROOT}/#{@sourceDirectory}\" html rulesets/unusedcode.xml -shortnames > \"#{reportFile}\""
+   cmd="java -Xmx512m -jar pmd-1.2.2.jar \"#{ROOT}/#{@sourceDirectory}\" html rulesets/unusedcode.xml -shortnames > \"#{reportFile}\""
    `#{cmd}`
    arr = IO.readlines(reportFile())
    newFile=File.open(reportFile(), "w")
@@ -63,12 +63,14 @@ class Job
    newFile.close
   end
   def run_cpd
-   cmd="java -cp pmd-1.2.2.jar net.sourceforge.pmd.cpd.CPD 100 \"#{@sourceDirectory}\"  > \"#{cpdReportFile}\""
+   cmd="java -Xmx512m -cp pmd-1.2.2.jar net.sourceforge.pmd.cpd.CPD 100 \"#{@sourceDirectory}\"  > \"#{cpdReportFile}\""
    `#{cmd}`
   end
 	def copy_up
 		`scp #{reportFile} #{cpdReportFile} #{ncssReportFile} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
-		`scp lastruntime.txt tomcopeland@pmd.sf.net:#{REMOTE_CGI_DIR}`
+		if File.exists?("lastruntime.txt")
+			`scp lastruntime.txt tomcopeland@pmd.sf.net:#{REMOTE_CGI_DIR}`
+		end
 	end
 	def reportFile 
 		return "#{@unixName}_#{@moduleDirectory.sub(/ /, '')}.html"
@@ -80,7 +82,10 @@ class Job
 		return "#{@unixName}_#{@moduleDirectory.sub(/ /, '')}_ncss.txt"
 	end
 	def clear
-		`rm -rf "#{@moduleDirectory}" #{reportFile} #{cpdReportFile} #{ncssReportFile} lastruntime.txt`
+		`rm -rf "#{@moduleDirectory}" #{reportFile} #{cpdReportFile} #{ncssReportFile}`
+		if File.exists?("lastruntime.txt")
+			`rm -rf lastruntime.txt`
+		end
 	end
 	def to_s
 		return @location + ":" + @title + ":" + @unixName +":"+@moduleDirectory+":"+@sourceDirectory
