@@ -14,6 +14,8 @@ This ruleset also serves as an example of how to reference one ruleset from anot
   <rule ref="rulesets/design.xml/SimplifyBooleanReturnsRule"/>
   <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
   <rule ref="rulesets/design.xml/AvoidDeeplyNestedIfStmts"/>
+  <rule ref="rulesets/strings.xml/StringToString"/>
+  <rule ref="rulesets/strings.xml/StringInstantiation"/>
 
 </ruleset>
 
