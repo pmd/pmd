@@ -20,4 +20,8 @@ public class StringInstantiationRuleTest extends RuleTst {
     public void test3() throws Throwable {
         runTest("StringInstantiation3.java", 0, new StringInstantiationRule());
     }
+
+    public void test4() throws Throwable {
+        runTest("StringInstantiation4.java", 0, new StringInstantiationRule());
+    }
 }

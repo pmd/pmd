@@ -19,7 +19,6 @@ public class StringInstantiationRule extends AbstractRule {
                 RuleContext ctx = (RuleContext)data;
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
             }
-
         }
         return data;
     }
