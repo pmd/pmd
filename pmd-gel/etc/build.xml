@@ -46,7 +46,7 @@
  <copy file="${lib}/pmd-gel-${version}.jar" toDir="tmp/"/>
  <copy file="${lib}/jaxen-core-1.0-fcs.jar" toDir="tmp/"/>
  <copy file="${lib}/saxpath-1.0-fcs.jar" toDir="tmp/"/>
- <copy file="${lib}/pmd-1.2.1.jar" toDir="tmp/"/>
+ <copy file="${lib}/pmd-1.2.2.jar" toDir="tmp/"/>
  <copy file="${lib}/xercesImpl-2.0.2.jar" toDir="tmp/"/>
  <copy file="${lib}/xmlParserAPIs-2.0.2.jar" toDir="tmp/"/>
  <zip basedir="tmp/" zipfile="pmd-gel-${version}.zip"/>

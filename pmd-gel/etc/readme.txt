@@ -1,12 +1,9 @@
 Files Tested
-When you invoke PMD, you can choose whether you want to run it on the
-current file or all the files in your project.
+When you invoke PMD, it is run on the current file.
 
 Rules
-You can select which rulesets you want to use when you run the PMD plugin.
-Currently the "imports", "unusedcode", and "basic" rulesets are selected
-automatically.  These rulesets catch things like unused local variables, empty try blocks,
-unused imports, and so forth.
+The "unused code" and "basic" rulesets are run on the code you select - these rulesets catch things like unused local variables, empty try blocks,
+unused imports, empty catch blocks, and so forth.
 
 You can view all the PMD rules with examples and details at
 http://pmd.sf.net/.

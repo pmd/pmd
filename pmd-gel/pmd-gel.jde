@@ -8,7 +8,7 @@
     <PROPERTY Name="SmartFolder">0</PROPERTY>
     <PROPERTY Name="OpenFiles">
         <CLASS Type="TFiles">
-            <PROPERTY Name="CurrentIndex">3</PROPERTY>
+            <PROPERTY Name="CurrentIndex">2</PROPERTY>
                 <CLASS Type="TFile">
                     <PROPERTY Name="CaretLeft">33</PROPERTY>
                     <PROPERTY Name="CaretTop">3</PROPERTY>
@@ -24,19 +24,26 @@
                     <PROPERTY Name="WindowTop">1</PROPERTY>
                 </CLASS>
                 <CLASS Type="TFile">
-                    <PROPERTY Name="CaretLeft">38</PROPERTY>
-                    <PROPERTY Name="CaretTop">5</PROPERTY>
+                    <PROPERTY Name="CaretLeft">13</PROPERTY>
+                    <PROPERTY Name="CaretTop">3</PROPERTY>
                     <PROPERTY Name="FileName">$(PROJECT)\src\net\sourceforge\pmd\gel\Test.java</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
                     <PROPERTY Name="WindowTop">1</PROPERTY>
                 </CLASS>
                 <CLASS Type="TFile">
                     <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
-                    <PROPERTY Name="CaretLeft">7</PROPERTY>
-                    <PROPERTY Name="CaretTop">142</PROPERTY>
+                    <PROPERTY Name="CaretLeft">75</PROPERTY>
+                    <PROPERTY Name="CaretTop">161</PROPERTY>
                     <PROPERTY Name="FileName">$(PROJECT)\src\net\sourceforge\pmd\gel\PMDPlugin.java</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">142</PROPERTY>
+                    <PROPERTY Name="WindowTop">124</PROPERTY>
+                </CLASS>
+                <CLASS Type="TFile">
+                    <PROPERTY Name="CaretLeft">49</PROPERTY>
+                    <PROPERTY Name="CaretTop">53</PROPERTY>
+                    <PROPERTY Name="FileName">$(PROJECT)\etc\build.xml</PROPERTY>
+                    <PROPERTY Name="WindowLeft">1</PROPERTY>
+                    <PROPERTY Name="WindowTop">23</PROPERTY>
                 </CLASS>
         </CLASS>
     </PROPERTY>
@@ -54,7 +61,7 @@
                 </CLASS>
         </CLASS>
     </PROPERTY>
-    <PROPERTY Name="JDKID">{39092503-5AAE-4A31-9847-014A46DADA1E}</PROPERTY>
+    <PROPERTY Name="JDKID">{714E29CF-11C4-4BB0-9D7D-58F72AF09CA3}</PROPERTY>
     <PROPERTY Name="DocPath">$(PROJECT)\docs</PROPERTY>
     <PROPERTY Name="OutputPath">$(PROJECT)\classes</PROPERTY>
     <PROPERTY Name="SourcePath">$(PROJECT)\src</PROPERTY>
