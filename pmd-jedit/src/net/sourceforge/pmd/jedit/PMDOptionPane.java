@@ -11,24 +11,57 @@ import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.View;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.Rule;
 
 public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
-    private SelectedRuleSetsMap selectedRuleSets;
+    public static class CheckboxList extends JList {
+        public class CheckboxListCellRenderer implements ListCellRenderer {
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JCheckBox box = (JCheckBox)value;
+                box.setEnabled(isEnabled());
+                box.setFont(getFont());
+                box.setFocusPainted(false);
+                box.setBorderPainted(true);
+                box.setBorder(isSelected ? UIManager.getBorder("List.focusCellHighlightBorder") : new EmptyBorder(1,1,1,1));
+                return box;
+            }
+        }
+
+        public CheckboxList(Object[] args) {
+            super(args);
+            setCellRenderer(new CheckboxListCellRenderer());
+            addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    int index = locationToIndex(e.getPoint());
+                    if (index != -1) {
+                        JCheckBox box = (JCheckBox)getModel().getElementAt(index);
+                        box.setSelected(!box.isSelected());
+                        repaint();
+                    }
+                }
+            });
+        }
+    }
+
+    private SelectedRules rules;
 
     public PMDOptionPane() {
         super(PMDJEditPlugin.NAME);
         try {
-            selectedRuleSets = new SelectedRuleSetsMap();
+            rules = new SelectedRules();
         } catch (RuleSetNotFoundException rsne) {
             rsne.printStackTrace();
         }
@@ -36,17 +69,13 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     public void init() {
         removeAll();
-        addComponent(new JLabel("Please see http://pmd.sourceforge.net/ for more information on what's in each rule set."));
-        for (Iterator i = selectedRuleSets.keys(); i.hasNext();) {
-            RuleSet rs = (RuleSet)i.next();
-            JPanel oneBoxPanel = new JPanel();
-            oneBoxPanel.add((JCheckBox)selectedRuleSets.get(rs));
-            oneBoxPanel.add(new JLabel(rs.getDescription()));
-            addComponent(oneBoxPanel);
-        }
+        addComponent(new JLabel("Please see http://pmd.sf.net/ for more information"));
+        JList list = new CheckboxList(rules.getAllBoxes());
+        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        addComponent(new JScrollPane(list));
     }
 
     public void save() {
-        selectedRuleSets.save();
+        rules.save();
     }
 }

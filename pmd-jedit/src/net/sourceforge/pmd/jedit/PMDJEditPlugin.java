@@ -25,8 +25,8 @@ public class PMDJEditPlugin extends EditPlugin {
 
     public static final String NAME = "PMD";
     public static final String PROPERTY_PREFIX = "plugin.net.sourceforge.pmd.jedit.";
-    public static final String OPTION_RULESETS_PREFIX = "options.pmd.rulesets.";
-		
+    public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
+
     public static class JavaFileOrDirectoryFilter implements FilenameFilter {
       public boolean accept(File dir, String filename) {
           return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
@@ -41,13 +41,13 @@ public class PMDJEditPlugin extends EditPlugin {
     }
 
     private DefaultErrorSource errorSource;
-    
+
     // boilerplate JEdit code
     public void start() {
 	    errorSource = new DefaultErrorSource(NAME);
 	    ErrorSource.registerErrorSource(errorSource);
     }
-    
+
     public void createMenuItems(Vector menuItems) {
         menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
     }
@@ -68,7 +68,7 @@ public class PMDJEditPlugin extends EditPlugin {
             JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
             return;
         }
-        processFiles(findFilesInDirectory(browser.getDirectory()), browser);
+        processFiles(findFilesInDirectory(browser.getDirectory()));
     }
 
     public static void checkDirectoryRecursively(View view) {
@@ -82,7 +82,7 @@ public class PMDJEditPlugin extends EditPlugin {
             JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
             return;
         }
-        processFiles(findFilesRecursively(browser.getDirectory()), browser);
+        processFiles(findFilesRecursively(browser.getDirectory()));
     }
 
     public static void check(Buffer buffer, View view) {
@@ -94,11 +94,11 @@ public class PMDJEditPlugin extends EditPlugin {
             errorSource.clear();
 
             PMD pmd = new PMD();
-            SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
+            SelectedRules selectedRuleSets = new SelectedRules();
             RuleContext ctx = new RuleContext();
             ctx.setReport(new Report());
             ctx.setSourceCodeFilename(buffer.getPath());
-            pmd.processFile(new StringReader(view.getTextArea().getText()), selectedRuleSets.getSelectedRuleSets(), ctx);
+            pmd.processFile(new StringReader(view.getTextArea().getText()), selectedRuleSets.getSelectedRules(), ctx);
             if (ctx.getReport().isEmpty()) {
                 JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
                 errorSource.clear();
@@ -113,13 +113,13 @@ public class PMDJEditPlugin extends EditPlugin {
             rsne.printStackTrace();
         }
     }
-		
-    private void processFiles(List files, VFSBrowser browser) {
+
+    private void processFiles(List files) {
         errorSource.clear();
         PMD pmd = new PMD();
-        SelectedRuleSetsMap selectedRuleSets = null;
+        SelectedRules selectedRuleSets = null;
         try {
-            selectedRuleSets = new SelectedRuleSetsMap();
+            selectedRuleSets = new SelectedRules();
         } catch (RuleSetNotFoundException rsne) {
             // should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
             System.out.println("PMD ERROR: Couldn't find a ruleset");
@@ -136,7 +136,7 @@ public class PMDJEditPlugin extends EditPlugin {
             ctx.setReport(new Report());
             ctx.setSourceCodeFilename(file.getAbsolutePath());
             try {
-                pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRuleSets(), ctx);
+                pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRules(), ctx);
             } catch (FileNotFoundException fnfe) {
                 // should never happen, but if it does, carry on to the next file
                 System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
