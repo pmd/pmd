@@ -46,9 +46,8 @@ public class MatchAlgorithmTest extends TestCase {
         Map codeMap = new HashMap();
         codeMap.put("Foo.java", sourceCode);
 
-        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens);
-        matchAlgorithm.findMatches(5);
-
+        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
+        matchAlgorithm.findMatches();
         Iterator matches = matchAlgorithm.matches();
         Match match = (Match)matches.next();
         assertFalse(matches.hasNext());

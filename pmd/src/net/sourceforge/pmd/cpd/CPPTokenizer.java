@@ -44,7 +44,7 @@ public class CPPTokenizer implements Tokenizer {
             int count = 0;
             while (currToken.image != "") {
                 count++;
-                tokenEntries.add(new TokenEntry(currToken.image, count, sourceCode.getFileName(), currToken.beginLine));
+                tokenEntries.add(new TokenEntry(currToken.image, sourceCode.getFileName(), count, currToken.beginLine));
                 currToken = CPPParserTokenManager.getNextToken();
             }
             tokenEntries.add(TokenEntry.EOF);

@@ -8,6 +8,7 @@ public class Mark implements Comparable {
     private int indexIntoTokenArray;
     private String tokenSrcID;
     private int beginLine;
+    private int hashCode;
 
     public Mark(int offset, String tokenSrcID, int beginLine) {
         this.indexIntoTokenArray = offset;
@@ -36,4 +37,16 @@ public class Mark implements Comparable {
         return getIndexIntoTokenArray() - other.getIndexIntoTokenArray();
     }
 
+    public int hashCode() {
+        return hashCode;
+    }
+
+    public void setHashCode(int hashCode) {
+        this.hashCode = hashCode;
+    }
+    
+    public boolean equals(Object o) {
+        Mark other = (Mark)o;
+        return other.hashCode == hashCode;
+    }
 }

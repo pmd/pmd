@@ -7,12 +7,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 
-/**
- * tests for the net.sourceforge.pmd.cpd package
- *
- * @author Boris Gruschko ( boris at gruschko.org )
- * @version $Id$
- */
 public class CPDTests
 {
   /**
@@ -28,7 +22,6 @@ public class CPDTests
     suite.addTestSuite( FileReporterTest.class );
     suite.addTestSuite( JavaTokensTokenizerTest.class );
     suite.addTestSuite( LanguageFactoryTest.class );
-    suite.addTestSuite( MarkComparatorTest.class );
     suite.addTestSuite( MarkTest.class );
     suite.addTestSuite( MatchAlgorithmTest.class );
     suite.addTestSuite( MatchTest.class );
@@ -39,14 +32,3 @@ public class CPDTests
     return suite;
   }
 }
-
-
-/*
- * $Log$
- * Revision 1.2  2003/11/20 16:01:02  tomcopeland
- * Changing over license headers in the source code
- *
- * Revision 1.1  2003/09/29 14:32:31  tomcopeland
- * Committed regression test suites, thanks to Boris Gruschko
- *
- */

@@ -8,26 +8,21 @@ public class TokenEntry implements Comparable {
     public static final TokenEntry EOF = new TokenEntry();
     private int hash;
     private String image;
-    private int index;
     private String tokenSrcID;
     private int beginLine;
-
-    private int sortCode;
+    private int index;
+    private int identifier;
 
     private TokenEntry() {
         this.image = "EOF";
         this.tokenSrcID = "EOFMarker";
     }
 
-    public TokenEntry(String image, int index, String tokenSrcID, int beginLine) {
+    public TokenEntry(String image, String tokenSrcID, int index, int beginLine) {
         this.image = image;
-        this.index = index;
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
-    }
-
-    public int getIndex() {
-        return index;
+        this.index = index;
     }
 
     public String getTokenSrcID() {
@@ -38,8 +33,16 @@ public class TokenEntry implements Comparable {
         return beginLine;
     }
 
-    public void setSortCode(int code) {
-        this.sortCode = code;
+    public void setIdentifier(int code) {
+        this.identifier = code;
+    }
+
+    public int getIdentifier() {
+        return this.identifier;
+    }
+
+    public int getIndex() {
+        return this.index;
     }
 
     public boolean equals(Object o) {
@@ -61,20 +64,15 @@ public class TokenEntry implements Comparable {
         }
         return h;
     }
-    
+
     public int compareTo(Object o) {
         TokenEntry token = (TokenEntry)o;
-        // try to use sort codes if available.
         if (this == EOF) {
             if (token == EOF) {
                 return 0;
             }
             return -1;
         }
-        if (this.sortCode > 0 && token.sortCode > 0) {
-            return this.sortCode - token.sortCode;
-        }
-        // otherwise sort lexicographically
         return image.compareTo(token.image);
     }
 }

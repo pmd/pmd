@@ -60,7 +60,7 @@ public class JavaTokenizer implements Tokenizer {
 
             if (!currToken.image.equals(";")) {
                 count++;
-                tokenEntries.add(new TokenEntry(currToken.image, count, tokens.getFileName(), currToken.beginLine));
+                tokenEntries.add(new TokenEntry(currToken.image, tokens.getFileName(), count, currToken.beginLine));
             }
 
             currToken = tokenMgr.getNextToken();

@@ -6,7 +6,7 @@ Applied Steve Hawkins' improvements to CPD:
 - fixed "single match per file" bug
 - tweaked source code slicing
 - CSV renderer
-Moved to Ant 1.6 and JavaCC 3.2 for development.
+Moved development environment to Ant 1.6 and JavaCC 3.2.
 
 February 2, 2004 - 1.5:
 New rules: DontImportSunRule, EmptyFinalizer, EmptyStaticInitializer, AvoidDollarSigns, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeDoesNotCallSuperFinalize, MethodWithSameNameAsEnclosingClass, ExplicitCallToFinalize, NonStaticInitializer, DefaultLabelNotLastInSwitchStmt, NonCaseLabelInSwitchStatement, SuspiciousHashcodeMethodName, EmptyStatementNotInLoop, SuspiciousOctalEscapeRule

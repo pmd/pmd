@@ -14,55 +14,45 @@ import java.util.Set;
 
 public class MatchCollector {
 
-    private List marks;
-    private MarkComparator markComparator;
+    private MatchAlgorithm ma;
     private Map startMap = new HashMap(101);
     private Map fileMap = new HashMap(101);
 
-    public MatchCollector(List marks, MarkComparator mc) {
-        this.marks = marks;
-        this.markComparator = mc;
+    public MatchCollector(MatchAlgorithm ma) {
+        this.ma = ma;
     }
 
-    public List collect(int minimumLength) {
+    public void collect(int minimumLength, List marks) {
         //first get a pairwise collection of all maximal matches
-        Match.MatchCode matchCode = new Match.MatchCode();
         for (int i = 0; i < marks.size() - 1; i++) {
             Mark mark1 = (Mark) marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
                 Mark mark2 = (Mark) marks.get(j);
                 int diff = mark1.getIndexIntoTokenArray() - mark2.getIndexIntoTokenArray();
-                if (diff > 0) {
-                    break;
-                }
                 if (-diff < minimumLength) {
                     continue;
                 }
                 if (hasPreviousDupe(mark1, mark2)) {
                     continue;
                 }
-                matchCode.setFirst(mark1.getIndexIntoTokenArray());
-                matchCode.setSecond(mark2.getIndexIntoTokenArray());
-                if (startMap.get(matchCode) != null) {
+                int dupes = countDuplicateTokens(mark1, mark2);
+                //false positive check
+                if (dupes < minimumLength) {
                     continue;
                 }
-                int dupes = countDuplicateTokens(mark1, mark2);
-                if (dupes < minimumLength) {
-                    break;
-                }
+                //is it still too close together
                 if (diff + dupes >= 1) {
                     continue;
                 }
                 determineMatch(mark1, mark2, dupes);
             }
         }
-
-        //then collect the same matches together
-        ArrayList matchList = new ArrayList(startMap.values());
-        startMap.clear();
-        fileMap.clear();
-        groupMatches(matchList);
-        return matchList;
+    }
+    
+    public List getMatches() {
+		ArrayList matchList = new ArrayList(startMap.values());
+		groupMatches(matchList);
+		return matchList;
     }
 
     //a match is not valid if it overlaps with a previous match in the same regions
@@ -156,18 +146,18 @@ public class MatchCollector {
         if (mark1.getIndexIntoTokenArray() == 0) {
             return false;
         }
-        return matchEnded(markComparator.tokenAt(-1, mark1), markComparator.tokenAt(-1, mark2));
+        return !matchEnded(ma.tokenAt(-1, mark1), ma.tokenAt(-1, mark2));
     }
 
     private int countDuplicateTokens(Mark mark1, Mark mark2) {
         int index = 0;
-        while (!matchEnded(markComparator.tokenAt(index, mark1), markComparator.tokenAt(index, mark2))) {
+        while (!matchEnded(ma.tokenAt(index, mark1), ma.tokenAt(index, mark2))) {
             index++;
         } 
         return index;
     }
 
     private boolean matchEnded(TokenEntry token1, TokenEntry token2) {
-        return !token1.equals(token2) || token1 == TokenEntry.EOF || token2 == TokenEntry.EOF;
+        return token1.getIdentifier() != token2.getIdentifier() || token1 == TokenEntry.EOF || token2 == TokenEntry.EOF;
     }
 }

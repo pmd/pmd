@@ -30,9 +30,8 @@ public class CPD {
     }
 
     public void go() {
-        matchAlgorithm = new MatchAlgorithm(source, tokens);
-        matchAlgorithm.setListener(listener);
-        matchAlgorithm.findMatches(minimumTileSize);
+        matchAlgorithm = new MatchAlgorithm(source, tokens, minimumTileSize, listener);
+        matchAlgorithm.findMatches();
     }
 
     public Iterator getMatches() {

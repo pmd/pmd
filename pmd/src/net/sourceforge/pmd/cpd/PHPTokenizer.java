@@ -31,7 +31,7 @@ public class PHPTokenizer implements Tokenizer {
                         tok != '}' &&
                         tok != ';') {
                     count++;
-                    tokenEntries.add(new TokenEntry(String.valueOf(tok), count, tokens.getFileName(), lineCount));
+                    tokenEntries.add(new TokenEntry(String.valueOf(tok), tokens.getFileName(), count, lineCount));
                 }
             }
             lineCount++;

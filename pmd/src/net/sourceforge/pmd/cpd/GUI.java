@@ -9,6 +9,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -46,7 +47,7 @@ public class GUI implements CPDListener {
                     tokenizingFilesBar.setValue(0);
                     tokenizingFilesBar.setString("");
                     resultsTextArea.setText("");
-                    comparisonsField.setText("");
+                    phaseLabel.setText("");
                     timeField.setText("");
                     go();
                 }
@@ -105,12 +106,12 @@ public class GUI implements CPDListener {
     private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     private JTextField minimumLengthField = new JTextField("75");
     private JTextField timeField = new JTextField(6);
-    private JTextField comparisonsField = new JTextField(8);
+    private JLabel phaseLabel = new JLabel();
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JTextArea resultsTextArea = new JTextArea();
     private JCheckBox recurseCheckbox = new JCheckBox("", true);
     private JComboBox languageBox = new JComboBox();
-	private JFileChooser fcSave = new JFileChooser();
+    private JFileChooser fcSave = new JFileChooser();
 
     private JFrame frame;
 
@@ -120,7 +121,6 @@ public class GUI implements CPDListener {
         frame = new JFrame("PMD Cut and Paste Detector");
 
         timeField.setEditable(false);
-        comparisonsField.setEditable(false);
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
@@ -203,8 +203,8 @@ public class GUI implements CPDListener {
         helper.addLabel("Tokenizing files:");
         helper.add(tokenizingFilesBar, 3);
         helper.nextRow();
-        helper.addLabel("Comparisons so far:");
-        helper.add(comparisonsField);
+        helper.addLabel("Phase:");
+        helper.add(phaseLabel);
         helper.addLabel("Time elapsed:");
         helper.add(timeField);
         helper.nextRow();
@@ -247,7 +247,7 @@ public class GUI implements CPDListener {
             CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()), language);
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
-            comparisonsField.setText("");
+            phaseLabel.setText("");
             if (rootDirectoryField.getText().endsWith(".class")
                 || rootDirectoryField.getText().endsWith(".php")
                 || rootDirectoryField.getText().endsWith(".java")
@@ -310,8 +310,25 @@ public class GUI implements CPDListener {
     }
 
     // CPDListener
-    public void comparisonCountUpdate(long comparisons) {
-        comparisonsField.setText(String.valueOf(comparisons));
+    public void phaseUpdate(int phase) {
+        phaseLabel.setText(getPhaseText(phase));
+    }
+
+    public String getPhaseText(int phase) {
+        switch (phase) {
+            case CPDListener.INIT :
+                return "Initializing";
+            case CPDListener.HASH :
+                return "Hashing";
+            case CPDListener.MATCH :
+                return "Matching";
+            case CPDListener.GROUPING :
+                return "Grouping";
+            case CPDListener.DONE :
+                return "Done";
+            default :
+                return "Unknown";
+        }
     }
 
     public void addedFile(int fileCount, File file) {
