@@ -8,14 +8,14 @@ combine this ruleset with the unusedcode.xml, basic.xml, and import.xml rulesets
 This ruleset also serves as an example of do a custom ruleset.
   </description>
 
-  <rule ref="rulesets/braces.xml/WhileLoopsMustUseBracesRule"/>
-  <rule ref="rulesets/braces.xml/ForLoopsMustUseBracesRule"/>
-  <rule ref="rulesets/coupling.xml/LooseCouplingRule"/>
-  <rule ref="rulesets/design.xml/SimplifyBooleanReturnsRule"/>
+  <rule ref="rulesets/braces.xml/WhileLoopsMustUseBraces"/>
+  <rule ref="rulesets/braces.xml/ForLoopsMustUseBraces"/>
+  <rule ref="rulesets/coupling.xml/LooseCoupling"/>
+  <rule ref="rulesets/design.xml/SimplifyBooleanReturns"/>
   <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
   <rule ref="rulesets/strings.xml/StringToString"/>
   <rule ref="rulesets/strings.xml/StringInstantiation"/>
-  <rule ref="rulesets/controversial.xml/UnnecessaryConstructorRule"/>
+  <rule ref="rulesets/controversial.xml/UnnecessaryConstructor"/>
   <rule ref="rulesets/controversial.xml/NullAssignment"/>
   <rule ref="rulesets/controversial.xml/UnusedModifier"/>
 

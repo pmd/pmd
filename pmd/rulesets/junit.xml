@@ -69,9 +69,9 @@ public class Foo extends TestCase {
     </example>
     </rule>
 
-    <rule name="JUnitAssertionsShouldIncludeMessageRule"
+    <rule name="JUnitAssertionsShouldIncludeMessage"
           message="JUnit assertions should include a message"
-          class="net.sourceforge.pmd.rules.junit.JUnitAssertionsShouldIncludeMessageRule">
+          class="net.sourceforge.pmd.rules.junit.JUnitAssertionsShouldIncludeMessage">
       <description>
       JUnit assertions should include a message - i.e., use the three argument version of
           assertEquals(), not the two argument version.
@@ -92,9 +92,9 @@ public class Foo extends TestCase {
       </example>
     </rule>
 
-    <rule name="JUnitTestsShouldIncludeAssertRule"
+    <rule name="JUnitTestsShouldIncludeAssert"
           message="JUnit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAssertsRule">
+          class="net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAsserts">
         <description>
         JUnit assertions should include an assertion - This makes the tests more robust
             and assert() with messages provide the developer a clearer idea of what

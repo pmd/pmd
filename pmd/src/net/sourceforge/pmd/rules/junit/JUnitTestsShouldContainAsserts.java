@@ -16,7 +16,7 @@ import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
 
-public class JUnitTestsShouldContainAssertsRule extends AbstractRule implements Rule {
+public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule {
 
     public Object visit(ASTMethodDeclaration declaration, Object data) {
         if (declaration.jjtGetNumChildren()==3) { // TODO can it not be 3???

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class JUnitAssertionsShouldIncludeMessageRule extends AbstractRule implements Rule {
+public class JUnitAssertionsShouldIncludeMessage extends AbstractRule implements Rule {
 
     private static class AssertionCall {
         public int args;
@@ -29,7 +29,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractRule implem
 
     private List checks = new ArrayList();
 
-    public JUnitAssertionsShouldIncludeMessageRule() {
+    public JUnitAssertionsShouldIncludeMessage() {
         checks.add(new AssertionCall(2, "assertEquals"));
         checks.add(new AssertionCall(1, "assertTrue"));
         checks.add(new AssertionCall(1, "assertNull"));
