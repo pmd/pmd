@@ -17,7 +17,7 @@ TESTS: Can you
 ant pmd
 
 cd ..
-./docs all
+./docs.sh all
 cd etc
 
 Prepare binary release:

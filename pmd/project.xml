@@ -40,7 +40,7 @@ Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?g
   <distributionDirectory>/home/groups/p/pm/pmd/</distributionDirectory>
 
   <repository>
-    <connection>scm:cvs:pserver:anonymous@cvs.pmd.sourceforge.net:/cvsroot/pmd:pmd</connection>
+    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/pmd:pmd</connection>
     <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/</url>
   </repository>
 
