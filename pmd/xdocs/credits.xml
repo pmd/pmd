@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Adam Nemeth - bug fixes for UnnecessaryConstructorRule</li>
             <li>Jiger Patel - CPD bug report, jEdit plugin suggestions</li>
             <li>Mike Thome - rule suggestions</li>
             <li>Brian Ewins - a complete rewrite of CPD based on the Burrows-Wheeler transform</li>

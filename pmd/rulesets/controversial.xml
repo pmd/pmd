@@ -19,8 +19,9 @@ most people really dislike :-)
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ConstructorDeclaration[1][position() = last()][@Public='true']
-  [not(FormalParameters/*)][not(BlockStatement)][not(NameList)]
+//ConstructorDeclaration[1][count(//ConstructorDeclaration)=1]
+  [@Public='true'][not(FormalParameters/*)]
+  [not(BlockStatement)][not(NameList)]
                     ]]>
                 </value>
             </property>
