@@ -10,7 +10,6 @@
     <logo>http://sourceforge.net/sflogo.php?group_id=56262&amp;type=5</logo>
   </organization>
 
-  <inceptionYear>2002</inceptionYear>
   <package>net.sourceforge.pmd</package>
 
   <description>
