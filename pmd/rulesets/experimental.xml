@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<ruleset name="experimental">
+  <description>
+This is the sandbox.
+  </description>
+
+
+  <rule name="PositionalIterator"
+        message="Avoid positional iterators"
+        class="net.sourceforge.pmd.rules.design.PositionalIteratorRule">
+    <description>
+    Avoid positional iterators.   This doesn't work yet,
+    it breaks on stuff like this:
+    public class Foo {
+     private int baz = true;
+     public void bar(Iterator i) {
+      Object x = null;
+      while (i.hasNext()) {
+       if (baz) {
+        x = i.next();
+       } else {
+        x = new Runnable() {public void run() {Object bif = i.next();}}
+       }
+      }
+     }
+    }
+    See javax.security.auth.Subject.java, inner class SecureSet, method removeAll(), around line 1092 for a good example.
+    </description>
+
+    <example>
+<![CDATA[
+public class PositionalIterators {
+ public void foo(Iterator i) {
+  while(i.hasNext()) {
+   Object one = i.next();
+   // 2 calls to next() inside the loop == bad!
+   Object two = i.next();
+  }
+ }
+}
+]]>
+    </example>
+    </rule>
+
+
+</ruleset>
+
+
+

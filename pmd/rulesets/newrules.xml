@@ -17,7 +17,6 @@ These are new ones for the next release
 // this is bad
 import java.io.File;
 public class Foo {}
-
 ]]>
     </example>
     </rule>
