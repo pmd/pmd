@@ -9,6 +9,7 @@ Added "Save" item to CPD GUI; thanks to mcclain looney for the patch.
 Fixed bug 732592 - Ant task now accepts a nested classpath element.
 Fixed bug 744915 - UseSingletonRule no longer fires on abstract classes, thanks to Pablo Casado for the bug report.
 Fixed bugs 735396 and 735399 - false positives from ConstructorCallsOverridableMethodRule
+Fixed bug 752809 - UnusedPrivateMethodRule now catches unused private static methods, thanks to Conrad Roche for the bug report.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 April 17 - 1.05:

@@ -20,6 +20,7 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "two private methods with same name but different parameters", 1, rule),
            new TestDescriptor(TEST5, "calling private method after instantiating new copy of myself", 0, rule),
            new TestDescriptor(TEST6, "calling private method using 'this' modifier", 0, rule),
+           new TestDescriptor(TEST7, "simple unused private static method", 1, rule)
        });
     }
     private static final String TEST1 =
@@ -72,6 +73,11 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
     "  this.foo();" + CPD.EOL +
     " }" + CPD.EOL +
     " private void foo() {}" + CPD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + CPD.EOL +
+    " private static void foo() {}" + CPD.EOL +
     "}";
 
 }

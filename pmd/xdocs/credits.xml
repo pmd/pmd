@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Conrad Roche - bug report</li>
             <li>mcclain looney - patch for CPD GUI, bug reports</li>
             <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Vladimir Bossicard - VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>

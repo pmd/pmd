@@ -77,7 +77,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         }
 
         AccessNode parent = (AccessNode) node.jjtGetParent();
-        if (!parent.isPrivate() || parent.isStatic()) {
+        if (!parent.isPrivate()) {
             return super.visit(node, data);
         }
         // exclude these serializable things
