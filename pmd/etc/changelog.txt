@@ -1,11 +1,12 @@
 ?????, 2004 - 2.0:
 Moved development environment to Maven 1.0.
 Moved development environment to Ant 1.6.2.  This is nice because using the new JUnit task attribute "forkmode='perBatch'" cuts test runtime from 90 seconds to 7 seconds.  Sweet.
+MethodWithSameNameAsEnclosingClass now reports a more helpful line number.
 Applied patch in RFE 992576 - Enhancements to VariableNamingConventionsRule
 Fixed bug in SimplifyBooleanExpressions - now it catches more cases.
 Fixed bugs in AvoidDuplicateLiterals - now it ignores small duplicate literals, its message is more helpful, and it catches more cases.
-Fixed bug 997893 - false positive in UnusedPrivateField
-MethodWithSameNameAsEnclosingClass now reports a more helpful line number.
+Fixed bug 997893 - UnusedPrivateField now detects assignments to members of private fields as a usage.
+Partially fixed bug 998122 - CloseConnectionRule now checks for imports of java.sql before reporting a rule violation.
 
 July 14, 2004 - 1.9:
 New rules: CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException, EqualsNull, ConfusingTernary

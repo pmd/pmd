@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -13,6 +13,8 @@ import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,69 +35,89 @@ import java.util.Vector;
  * </pre>
  */
 public class CloseConnectionRule extends AbstractRule {
-  public Object visit(ASTMethodDeclaration node, Object data) {
-      List vars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
-      List ids = new Vector();
 
-      // find all variable references to Connection objects
-      for (Iterator it = vars.iterator(); it.hasNext();) {
-        ASTLocalVariableDeclaration var = (ASTLocalVariableDeclaration) it.next();
-        ASTType type = (ASTType) var.jjtGetChild(0);
+    private boolean importJavaSQLPackageFound;
 
-        if (type.jjtGetChild(0) instanceof ASTName && ((ASTName) type.jjtGetChild(0)).getImage().equals("Connection")) {
-            ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.jjtGetChild(1).jjtGetChild(0);
-            ids.add(id);
+    public Object visit(ASTCompilationUnit node, Object data) {
+        importJavaSQLPackageFound = false;
+        return super.visit(node, data);
+    }
+
+    public Object visit(ASTImportDeclaration node, Object data) {
+        if (node.getImportedNameNode().getImage().startsWith("java.sql")) {
+            importJavaSQLPackageFound = true;
         }
-      }
+        return data;
+    }
 
-      // if there are connections, ensure each is closed.
-      for (int i = 0; i < ids.size(); i++) {
-        ASTVariableDeclaratorId x = (ASTVariableDeclaratorId) ids.get(i);
-        ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent()
-                                                    .jjtGetParent(), x, data);
-      }
-      return data;
-  }
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        // Quick exit if there's not an import java.sql.whatever;
+       if (!importJavaSQLPackageFound) {
+            return data;
+        }
 
-  private void ensureClosed(ASTLocalVariableDeclaration var,
-    ASTVariableDeclaratorId id, Object data) {
-    // What are the chances of a Connection being instantiated in a
-    // for-loop init block? Anyway, I'm lazy!    
-      String target = id.getImage() + ".close";
-      Node n = var;
+        List vars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
+        List ids = new Vector();
 
-      while (!((n = n.jjtGetParent()) instanceof ASTBlock))
-        ;
+        // find all variable references to Connection objects
+        for (Iterator it = vars.iterator(); it.hasNext();) {
+            ASTLocalVariableDeclaration var = (ASTLocalVariableDeclaration) it.next();
+            ASTType type = (ASTType) var.jjtGetChild(0);
 
-      ASTBlock top = (ASTBlock) n;
-
-      List tryblocks = new Vector();
-      top.findChildrenOfType(ASTTryStatement.class, tryblocks, true);
-
-      boolean closed = false;
-
-      // look for try blocks below the line the variable was
-      // introduced and make sure there is a .close call in a finally
-      // block.
-      for (Iterator it = tryblocks.iterator(); it.hasNext();) {
-        ASTTryStatement t = (ASTTryStatement) it.next();
-
-        if ((t.getBeginLine() > id.getBeginLine()) && (t.hasFinally())) {
-          ASTBlock f = t.getFinallyBlock();
-          List names = new ArrayList();
-          f.findChildrenOfType(ASTName.class, names, true);
-          for (Iterator it2 = names.iterator(); it2.hasNext();) {
-              if (((ASTName) it2.next()).getImage().equals(target)) {
-              closed = true;
+            if (type.jjtGetChild(0) instanceof ASTName && ((ASTName) type.jjtGetChild(0)).getImage().equals("Connection")) {
+                ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.jjtGetChild(1).jjtGetChild(0);
+                ids.add(id);
             }
-          }
         }
-      }
 
-      // if all is not well, complain
-      if (!closed) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, id.getBeginLine(), getMessage()));
-      }
-  }
+        // if there are connections, ensure each is closed.
+        for (int i = 0; i < ids.size(); i++) {
+            ASTVariableDeclaratorId x = (ASTVariableDeclaratorId) ids.get(i);
+            ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent()
+                    .jjtGetParent(), x, data);
+        }
+        return data;
+    }
+
+    private void ensureClosed(ASTLocalVariableDeclaration var,
+                              ASTVariableDeclaratorId id, Object data) {
+        // What are the chances of a Connection being instantiated in a
+        // for-loop init block? Anyway, I'm lazy!
+        String target = id.getImage() + ".close";
+        Node n = var;
+
+        while (!((n = n.jjtGetParent()) instanceof ASTBlock))
+            ;
+
+        ASTBlock top = (ASTBlock) n;
+
+        List tryblocks = new Vector();
+        top.findChildrenOfType(ASTTryStatement.class, tryblocks, true);
+
+        boolean closed = false;
+
+        // look for try blocks below the line the variable was
+        // introduced and make sure there is a .close call in a finally
+        // block.
+        for (Iterator it = tryblocks.iterator(); it.hasNext();) {
+            ASTTryStatement t = (ASTTryStatement) it.next();
+
+            if ((t.getBeginLine() > id.getBeginLine()) && (t.hasFinally())) {
+                ASTBlock f = t.getFinallyBlock();
+                List names = new ArrayList();
+                f.findChildrenOfType(ASTName.class, names, true);
+                for (Iterator it2 = names.iterator(); it2.hasNext();) {
+                    if (((ASTName) it2.next()).getImage().equals(target)) {
+                        closed = true;
+                    }
+                }
+            }
+        }
+
+        // if all is not well, complain
+        if (!closed) {
+            RuleContext ctx = (RuleContext) data;
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, id.getBeginLine(), getMessage()));
+        }
+    }
 }

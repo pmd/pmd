@@ -14,6 +14,7 @@ public class CloseConnectionRuleTest extends SimpleAggregatorTst  {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "connection is closed, ok", 0, new CloseConnectionRule()),
            new TestDescriptor(TEST2, "connection not closed, should have failed", 1, new CloseConnectionRule()),
+           new TestDescriptor(TEST3, "java.sql.* not imported, ignore", 0, new CloseConnectionRule()),
        });
     }
 
@@ -30,12 +31,22 @@ public class CloseConnectionRuleTest extends SimpleAggregatorTst  {
     "}";
 
     private static final String TEST2 =
+    "import java.sql.*;" + PMD.EOL +
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  Connection c = pool.getConnection();" + PMD.EOL +
     "  try {" + PMD.EOL +
     "  } catch (Exception e) {" + PMD.EOL +
     "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "import some.pckg.Connection;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  Connection c = pool.getConnection();" + PMD.EOL +
+    "  try {} catch (Exception e) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
