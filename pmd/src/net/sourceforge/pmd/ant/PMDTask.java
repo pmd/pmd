@@ -28,10 +28,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Hashtable;
+import java.util.Enumeration;
 
 public class PMDTask extends Task {
 
@@ -160,6 +164,12 @@ public class PMDTask extends Task {
                     }
                 } catch (PMDException pmde) {
                     log(pmde.toString(), Project.MSG_VERBOSE);
+                    if (pmde.getReason() != null) {
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter printWriter = new PrintWriter(strWriter);
+                        pmde.getReason().printStackTrace(printWriter);
+                        log(strWriter.toString(), Project.MSG_VERBOSE);
+                    }
                     if (pmde.getReason() != null && pmde.getReason().getMessage() != null) {
                         log(pmde.getReason().getMessage(), Project.MSG_VERBOSE);
                     }
