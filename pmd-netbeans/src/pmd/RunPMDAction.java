@@ -34,13 +34,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
 
 import org.openide.TopManager;
@@ -57,6 +57,7 @@ import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
 import pmd.config.PMDOptionsSettings;
+import pmd.config.ui.SelectedListModel;
 
 /**
  * Action that can always be invoked and work procedurally.
@@ -222,15 +223,17 @@ public class RunPMDAction extends CookieAction {
 	 * @see pmd.config.PMDOptionsSettings#getRulesets()
 	 */
 	private static RuleSet constructRuleSets() {
-		RuleSet rules = null;
-		try {
-			RuleSetFactory ruleSetFactory = new RuleSetFactory();
-			rules = ruleSetFactory.createRuleSet(
-				PMDOptionsSettings.getDefault().getRulesets() );
-		}
-		catch( RuleSetNotFoundException rsnfe ) {
-			TopManager.getDefault().getErrorManager().notify( rsnfe );
-		}
+		RuleSet rules = new RuleSet();
+			
+			
+			
+			SelectedListModel.getSelectedListModelInstance().setData( PMDOptionsSettings.getDefault().getRules() );
+			List list = SelectedListModel.getSelectedListModelInstance().getData();
+			Iterator iterator = list.iterator();
+			while( iterator.hasNext() ) {
+				rules.addRule( (Rule)iterator.next() );
+			}
+		
 		return rules;
 	}
 

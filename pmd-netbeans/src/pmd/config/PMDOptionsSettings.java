@@ -38,18 +38,19 @@ import org.openide.util.NbBundle;
  */
 public class PMDOptionsSettings extends SystemOption {
 
-	// private static final long serialVersionUID = ...;
+	 private static final long serialVersionUID = 8418202279282091070L;
 
 	/** The constant for the rulesets property  */
 	public final static String PROP_RULESETS = "rulesets";
-
+	/** The constant for the rulesets property  */
+	public final static String PROP_RULES = "rules";
 
 	// No constructor please!
 
 	/** Sets the default rulesets and initializes the option  */
 	protected void initialize() {
 		super.initialize();
-		setRulesets( "rulesets/basic.xml,rulesets/imports.xml,rulesets/unusedcode.xml,rulesets/braces.xml,rulesets/design.xml,rulesets/strings.xml" );
+		setRulesets("");
 	}
 
 
@@ -91,6 +92,7 @@ public class PMDOptionsSettings extends SystemOption {
 	 */
 	public String getRulesets() {
 		return ( String )getProperty( PROP_RULESETS );
+
 	}
 
 
@@ -102,4 +104,25 @@ public class PMDOptionsSettings extends SystemOption {
 	public void setRulesets( String rulesets ) {
 		putProperty( PROP_RULESETS, rulesets, true );
 	}
+	
+		/**
+	 * Returns the rulesets property
+	 *
+	 * @return the rulesets property
+	 */
+	public String getRules() {
+		return ( String )getProperty( PROP_RULES );
+
+	}
+
+
+	/**
+	 * Sets the rulesets property
+	 *
+	 * @param rulesets the rulesets value to set
+	 */
+	public void setRules( String rules) {
+		putProperty( PROP_RULES, rules, true );
+	}
+	
 }

@@ -30,11 +30,14 @@ import java.awt.Image;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditorManager;
 import java.beans.SimpleBeanInfo;
 
 import org.openide.TopManager;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
+import pmd.config.ui.RuleEditor;
+import pmd.config.ui.RuleEnabler;
 
 /**
  * Description of {@link PMDOptionsSettings}.
@@ -50,11 +53,13 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 	 * @return the description of the rulesets property
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors() {
+		PropertyEditorManager.registerEditor( PMDOptionsSettingsBeanInfo.class, RuleEditor.class );
 		try {
-			PropertyDescriptor rulesets = new PropertyDescriptor( "rulesets", PMDOptionsSettings.class );
-			rulesets.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_rulesets" ) );
-			rulesets.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_rulesets" ) );
-			return new PropertyDescriptor[]{rulesets};
+			PropertyDescriptor rules = new PropertyDescriptor( "rules", PMDOptionsSettings.class, "getRules", "setRules" );
+			rules.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_rules" ) );
+			rules.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_rules" ) );
+			rules.setPropertyEditorClass( RuleEditor.class );
+			return new PropertyDescriptor[]{rules};
 		}
 		catch( IntrospectionException ie ) {
 			TopManager.getDefault().getErrorManager().notify( ie );
