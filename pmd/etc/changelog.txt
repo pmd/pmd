@@ -1,5 +1,5 @@
 ???? 2002 - 1.0rc2:
-Added new rules: JUnitSpellingRule, JUnitStaticSuiteRule
+Added new rules: JUnitSpellingRule, JUnitStaticSuiteRule, StringInstantiationRule
 Added new ruleset - junit.
 Added a printToConsole attribute to the Ant task so that you can see the report right there in the Ant output.
 Fixed bug in PMD GUI - rules are now saved correctly.

@@ -28,7 +28,7 @@ public class Foo extends TestCase {
         message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
         class="net.sourceforge.pmd.rules.JUnitStaticSuiteRule">
     <description>
-    The suite() method needs to be both public and static.
+    The suite() method in a JUnit test needs to be both public and static.
     </description>
 
     <example>
@@ -37,6 +37,22 @@ import junit.framework.*;
 public class Foo extends TestCase {
  public void suite() {} // oops, should be static
  private static void suite() {} // oops, should be public
+}
+]]>
+    </example>
+    </rule>
+
+      <rule name="StringInstantiation"
+        message="Avoid instantiating String objects; this is usually unnecessary."
+        class="net.sourceforge.pmd.rules.StringInstantiationRule">
+    <description>
+    Avoid instantiating String objects; this is usually unnecessary.
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo {
+ private String bar = new String("bar"); // just do a String bar = "bar";
 }
 ]]>
     </example>
