@@ -38,7 +38,7 @@
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd reportFile="c:\jdk.html" rulesetfiles="rulesets/new_for_0_7.xml" format="html">
             <!--<fileset dir="c:\data\pmd\pmd\src">-->
-            <fileset dir="c:\j2sdk1.4.0\src\">
+            <fileset dir="c:\j2sdk1.4.0\src\java">
             <!--<fileset dir="c:\j2sdk1.4.0\src\">-->
                 <include name="**/*.java"/>
             </fileset>

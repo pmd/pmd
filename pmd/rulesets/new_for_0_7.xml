@@ -54,6 +54,31 @@ public class Something {
     </example>
   </rule>
 
+  <rule name="LooseCouplingRule"
+        message="Avoid using implementation types like ''{0}''; use the interface instead"
+        class="net.sourceforge.pmd.rules.design.LooseCouplingRule">
+    <description>
+    Avoid using implementation types like HashSet; return the interface Set instead
+    </description>
+
+    <example>
+<![CDATA[
+import java.util.*;
+public class Bar {
+
+ // should be private List....
+ private ArrayList list = new ArrayList();
+
+ // should be public Set getFoo()
+ public HashSet getFoo() {
+  return new HashSet();
+ }
+}
+
+]]>
+    </example>
+  </rule>
+
 </ruleset>
 
 
