@@ -39,12 +39,10 @@ public class DaaRule extends AbstractRule implements Executable {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-
         this.rc = (RuleContext) data;
         counter = 0;
 
-        List gesamtListe = node.getDataFlowNode().getFlow();
-        IDataFlowNode n = (IDataFlowNode) gesamtListe.get(0);
+        IDataFlowNode n = (IDataFlowNode) node.getDataFlowNode().getFlow().get(0);
 
         DAAPathFinder a = new DAAPathFinder(n, this, MAX_PATHS);
         a.run();
@@ -63,14 +61,10 @@ public class DaaRule extends AbstractRule implements Executable {
         for (int d = 0; d < path.size(); d++) {
             IDataFlowNode inode = (IDataFlowNode) path.get(d);
             if (inode.getVariableAccess() != null) {
-
-
                 for (int g = 0; g < inode.getVariableAccess().size(); g++) {
-                    VariableAccess va =
-                            (VariableAccess) inode.getVariableAccess().get(g);
+                    VariableAccess va = (VariableAccess) inode.getVariableAccess().get(g);
 
                     Object o = hash.get(va.getVariableName());
-
                     if (o != null) {
                         List array = (List) o;
                         int last = ((Integer) array.get(0)).intValue();
@@ -87,13 +81,11 @@ public class DaaRule extends AbstractRule implements Executable {
                         // UR
                         else if (last == VariableAccess.UNDEFINITION &&
                                 current == VariableAccess.REFERENCING) {
-
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getLine(), line2, va.getVariableName(), "UR"));
                         }
                         // DU
                         else if (last == VariableAccess.DEFINITION &&
                                 current == VariableAccess.UNDEFINITION) {
-
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getLine(), line2, va.getVariableName(), "DU"));
                         }
                     }
