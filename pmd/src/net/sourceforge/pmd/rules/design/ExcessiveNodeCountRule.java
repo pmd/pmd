@@ -40,9 +40,6 @@ public class ExcessiveNodeCountRule
 	}
 	
 	if (nodeClass.isInstance( node )) {
-	    System.err.println("NODE: " + node + " # subs: " + 
-			       Integer.toString( numNodes ));
-
 	    DataPoint point = new DataPoint();
 	    point.setLineNumber( node.getBeginLine() );
 	    point.setScore( 1.0 * numNodes );
