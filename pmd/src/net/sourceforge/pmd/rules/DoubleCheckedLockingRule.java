@@ -5,18 +5,34 @@
  */
 
 package net.sourceforge.pmd.rules;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.*;
-import java.util.*;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTNullLiteral;
+import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.ast.ASTResultType;
+import net.sourceforge.pmd.ast.ASTReturnStatement;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
+import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.Node;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Very very specific check for double checked locking.
  *
  * @author  CL Gilbert (dnoyeb@users.sourceforge.net)
  */
-public class DoubleCheckedLockingRule extends net.sourceforge.pmd.AbstractRule implements Rule {
+public class DoubleCheckedLockingRule extends AbstractRule implements Rule {
 
     public Object visit(ASTInterfaceDeclaration node, Object data){
         return data; // skip interfaces
