@@ -13,7 +13,7 @@ public class StringToStringRuleTest extends RuleTst {
         runTest("StringToString1.java", 1, new StringToStringRule());
     }
 
-/*    public void testParam() throws Throwable {
+    public void testParam() throws Throwable {
         runTest("StringToString2.java", 1, new StringToStringRule());
     }
 
@@ -25,7 +25,7 @@ public class StringToStringRuleTest extends RuleTst {
     }
     public void testMultipleSimilarParams() throws Throwable {
         runTest("StringToString5.java", 0, new StringToStringRule());
-    }*/
+    }
 /*
 TODO
     public void testStringArray() throws Throwable {
