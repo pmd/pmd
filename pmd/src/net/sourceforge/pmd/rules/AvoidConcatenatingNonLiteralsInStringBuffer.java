@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTStatement;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 
 /*
  * How this rule works:
@@ -61,7 +62,7 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
         if (ao == null) {
             return false;
         }
-        final ASTName an = (ASTName) ao.getFirstChildOfType(ASTName.class);
+        final ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
         return an.getImage().endsWith("StringBuffer");
     }
 }
