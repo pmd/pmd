@@ -37,6 +37,10 @@ public class Formatter {
         return renderer;
     }
 
+    public boolean isToFileNull() {
+        return this.toFile == null;
+    }
+
     public Writer getToFileWriter(String baseDir) throws IOException {
         String outFile = toFile;
         PathChecker pc = new PathChecker(System.getProperty("os.name"));

@@ -25,4 +25,11 @@ public class FormatterTest extends TestCase {
         }
     }
 
+    public void testNull() {
+        Formatter f = new Formatter();
+        assertTrue("Formatter toFile should start off null!", f.isToFileNull());
+        f.setToFile("foo");
+        assertFalse("Formatter toFile should not be null!", f.isToFileNull());
+    }
+
 }

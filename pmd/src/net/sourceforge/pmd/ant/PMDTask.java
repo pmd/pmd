@@ -72,8 +72,15 @@ public class PMDTask extends Task {
     }
 
     public void execute() throws BuildException {
-        if (formatters.isEmpty()) {
-            throw new BuildException("No formatter specified");
+        if (formatters.isEmpty() && !printToConsole) {
+            throw new BuildException("No formatter specified; and printToConsole was false");
+        }
+
+        for (Iterator i = formatters.iterator(); i.hasNext();) {
+            Formatter f = (Formatter)i.next();
+            if (f.isToFileNull()) {
+                throw new BuildException("Formatter toFile attribute is required");
+            }
         }
 
         RuleSet rules = null;
@@ -129,15 +136,15 @@ public class PMDTask extends Task {
                     throw new BuildException(ioe.getMessage());
                 }
             }
-        }
 
-        if (!ctx.getReport().isEmpty() && printToConsole) {
-            Renderer r = new TextRenderer();
-            System.out.println(r.render(report));
-        }
+            if (printToConsole) {
+                Renderer r = new TextRenderer();
+                System.out.println(r.render(report));
+            }
 
-        if (failOnRuleViolation && !ctx.getReport().isEmpty()) {
-            throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
+            if (failOnRuleViolation) {
+                throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
+            }
         }
     }
 
