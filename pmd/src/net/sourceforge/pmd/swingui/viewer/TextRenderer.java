@@ -4,6 +4,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.renderers.Renderer;
 
 /**
  *
@@ -30,7 +31,7 @@ class TextRenderer
 
         outputText.append("Source File: ");
         outputText.append(fileName);
-        outputText.append('\n');
+        outputText.append(System.getProperty("line.separator"));
 
         if (violations.hasNext() == false)
         {
@@ -45,17 +46,17 @@ class TextRenderer
             //
             // Line Number
             //
-            outputText.append('\n');
+            outputText.append(System.getProperty("line.separator"));
             outputText.append("Line: ");
             outputText.append(ruleViolation.getLine());
-            outputText.append('\n');
+            outputText.append(System.getProperty("line.separator"));
 
             //
             // Rule Name
             //
             outputText.append("Rule Name: ");
             outputText.append(rule.getName());
-            outputText.append('\n');
+            outputText.append(System.getProperty("line.separator"));
 
             //
             // Rule Message
@@ -73,7 +74,7 @@ class TextRenderer
 
             outputText.append("Rule: ");
             outputText.append(ruleMessage);
-            outputText.append('\n');
+            outputText.append(System.getProperty("line.separator"));
 
             //
             // Rule Description
@@ -91,7 +92,7 @@ class TextRenderer
 
             outputText.append("Description: ");
             outputText.append(description);
-            outputText.append('\n');
+            outputText.append(System.getProperty("line.separator"));
 
             //
             // Rule Example
@@ -102,7 +103,7 @@ class TextRenderer
             {
                 outputText.append("Example: ");
                 outputText.append(example);
-                outputText.append('\n');
+                outputText.append(System.getProperty("line.separator"));
             }
         }
 
