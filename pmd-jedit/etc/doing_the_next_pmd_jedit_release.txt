@@ -1,45 +1,41 @@
 update the release date in the changelog
 change config/pmd.props to reflect actual pmd.jar file version
+change config/pmd.props to reflect pmd-jedit version
+change build.xml to reflect pmd-jedit version
 
 Create the binary release:
 ant release
 move the zip file into c:\tmp
-
-Create the src release:
-cd lib
-cvs add -kb PMDJEditPlugin-0.3.jar
-cvs rm PMDJEditPlugin-0.2.jar
-cvs ci -m "adding new jar, removing old one"
-cd c:\data\pmd
-rmdir /q /s pmd-jedit\build
-cvs rtag -D tomorrow "pmd_jedit_release_0_3" pmd-jedit
-rmdir /q /s c:\tmp\pmd-jedit
-mkdir c:\tmp\pmd-jedit
-cvs export -d c:\tmp\pmd-jedit -r pmd_jedit_release_0_3 pmd-jedit
-zip it up, rename it to pmd-jedit-src-0.3.zip
-
-unzip binary release into c:\jedit
 TESTS:
 1) Can you run jedit ok?
-3) Can you run it it on a file and find some unused code?
-3) Are options persistant?
+4) Can you run it it on a file and find some unused code?
+4) Are options persistant?
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_jedit_release_0_3 pmd
+cvs rtag -d pmd_jedit_release_0_4 pmd
 and then retag everything
+
+Create the src release:
+Ensure there's a PMDJEditPlugin.jar file in lib\
+cd c:\data\pmd
+cvs rtag -D tomorrow "pmd_jedit_release_0_4" pmd-jedit
+rmdir /q /s c:\tmp\pmd-jedit
+mkdir c:\tmp\pmd-jedit
+cvs export -d c:\tmp\pmd-jedit -r pmd_jedit_release_0_4 pmd-jedit
+zip it up, rename it to pmd-jedit-src-0.4.zip
 
 FTP the zip file to SF
 ftp upload.sourceforge.net
 generic userid/password: anonymous/tom@infoether.com
 cd incoming
 bin
-put pmd-jedit-src-0.3.zip
-put pmd-jedit-bin-0.3.zip
+put pmd-jedit-src-0.4.zip
+put pmd-jedit-bin-0.4.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jedit-src-0.3.zip file
-Add the pmd-jedit-bin-0.3.zip file
+Add the pmd-jedit-src-0.4.zip file
+Add the pmd-jedit-bin-0.4.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the JEdit plugin!"
