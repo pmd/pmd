@@ -1,5 +1,6 @@
 ??? - 2.6
-- Updated to PMD 2.1
+- Updated to PMD 2.3
+- Updated to jEdit 4.3pre versions.
 - Added "Ignore Literals & identifiers" option for CPD.
 
 16th August 2004 - 2.5

@@ -396,7 +396,7 @@ public class PMDJEditPlugin extends EBPlugin
 
 	public static void cpdCurrentFile(View view, VFSBrowser browser) throws IOException
 	{
-		VFS.DirectoryEntry selectedFile[] = browser.getSelectedFiles();
+		VFSFile selectedFile[] = browser.getSelectedFiles();
 
 		if(selectedFile == null || selectedFile.length == 0)
 		{
@@ -404,7 +404,7 @@ public class PMDJEditPlugin extends EBPlugin
 			return;
 		}
 
-		if(selectedFile[0].type == VFS.DirectoryEntry.DIRECTORY)
+		if(selectedFile[0].type == VFSFile.DIRECTORY)
 		{
 			JOptionPane.showMessageDialog(view, "Selected file cannot be a Directory.", NAME, JOptionPane.ERROR_MESSAGE);
 			return;
@@ -517,14 +517,14 @@ public class PMDJEditPlugin extends EBPlugin
 	{
 		if(view != null && browser != null)
 		{
-			VFS.DirectoryEntry selectedDir[] = browser.getSelectedFiles();
+			VFSFile selectedDir[] = browser.getSelectedFiles();
 			if(selectedDir == null || selectedDir.length == 0)
 			{
 				JOptionPane.showMessageDialog(view, "One Directory has to be selected in which to detect duplicate code.", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-			if(selectedDir[0].type != VFS.DirectoryEntry.DIRECTORY)
+			if(selectedDir[0].type != VFSFile.DIRECTORY)
 			{
 				JOptionPane.showMessageDialog(view, "Selected file must be a Directory.", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
@@ -619,7 +619,7 @@ public class PMDJEditPlugin extends EBPlugin
 		instance.checkFile(view, browser.getSelectedFiles());
 	}
 
-	public void checkFile(View view,  VFS.DirectoryEntry de[])
+	public void checkFile(View view,  VFSFile de[])
 	{
 		if(view != null && de != null)
 		{
@@ -627,7 +627,7 @@ public class PMDJEditPlugin extends EBPlugin
 
 			for(int i=0;i<de.length;i++)
 			{
-				if(de[i].type == VFS.DirectoryEntry.FILE)
+				if(de[i].type == VFSFile.FILE)
 				{
 					files.add(new File(de[i].path));
 				}
@@ -639,9 +639,9 @@ public class PMDJEditPlugin extends EBPlugin
 
 	public static void checkDirectory(View view, VFSBrowser browser, boolean recursive)
 	{
-		VFS.DirectoryEntry de[] = browser.getSelectedFiles();
+		VFSFile de[] = browser.getSelectedFiles();
 
-		if(de == null || de.length == 0 || de[0].type != VFS.DirectoryEntry.DIRECTORY)
+		if(de == null || de.length == 0 || de[0].type != VFSFile.DIRECTORY)
 		{
 			JOptionPane.showMessageDialog(view, "Selection must be a directory",NAME, JOptionPane.ERROR_MESSAGE);
 			return;

@@ -83,10 +83,10 @@ public class CPDDuplicateCodeViewer  extends JPanel
 					view.setBuffer(buffer);
 
 					int start = buffer.getLineStartOffset(duplicate.getBeginLine()-1);
-					int end = buffer.getLineEndOffset(duplicate.getEndLine()-2);
+					int end = buffer.getLineEndOffset(duplicate.getEndLine());
 					//Log.log(Log.DEBUG, this.getClass(), "Start Line "+ duplicate.getBeginLine() + " End Line "+ duplicate.getEndLine() + " Start " + start + " End "+ end);
 					//Since an AIOOB Exception is thrown if the end is the end of file. we do a -1 from end to fix it.
-					view.getTextArea().setSelection(new Selection.Range(start,end -1));
+					view.getTextArea().setSelection(new Selection.Range(start,end-1));
 					view.getTextArea().moveCaretPosition(start);
 				}
 			});
