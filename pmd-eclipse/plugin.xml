@@ -1,170 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
    id="net.sourceforge.pmd.eclipse"
-   name="pmd-eclipse Plug-in"
-   version="0.3.0"
-   provider-name="PMD"
+   name="%plugin.name"
+   version="0.5.0"
+   provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
    <runtime>
       <library name="pmd-eclipse.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-1.02.jar"/>
+      <library name="lib/pmd-1.03.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jdt.core"/>
    </requires>
 
 
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Run PMD"
-            visible="true"
-            id="net.sourceforge.pmd.eclipse.actionSet">
-         <menu
-               label="&amp;PMD"
-               id="sampleMenu">
-            <separator
-                  name="sampleGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;PMD"
-               icon="icons/pmd-icon-16.gif"
-               tooltip="Run PMD"
-               class="net.sourceforge.pmd.eclipse.actions.PMDAction"
-               menubarPath="sampleMenu/sampleGroup"
-               toolbarPath="sampleGroup"
-               id="net.sourceforge.pmd.eclipse.actions.PMDAction">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.ui.resourcePerspective">
-         <actionSet
-               id="net.sourceforge.pmd.eclipse.actionSet">
-         </actionSet>
-      </perspectiveExtension>
-   </extension>
-   <extension
+         id="pmdPreferencePages"
+         name="PMDPreferencePages"
          point="org.eclipse.ui.preferencePages">
       <page
-            name="PMD"
+            name="%preferences.pmd"
             class="net.sourceforge.pmd.eclipse.preferences.GeneralPreferencesPage"
-            id="net.sourceforge.pmd.eclipse.preferences.GeneralPreferencesPage">
+            id="net.sourceforge.pmd.eclipse.preferences.generalPreferencesPage">
       </page>
       <page
-            name="RuleSet Preferences"
-            category="net.sourceforge.pmd.eclipse.preferences.GeneralPreferencesPage"
+            name="%preferences.rulesets"
+            category="net.sourceforge.pmd.eclipse.preferences.generalPreferencesPage"
             class="net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage"
-            id="net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage">
+            id="net.sourceforge.pmd.eclipse.preferences.pmdPreferencePage">
       </page>
       <page
-            name="CPD Preferences"
-            category="net.sourceforge.pmd.eclipse.preferences.GeneralPreferencesPage"
+            name="%preferences.cpd"
+            category="net.sourceforge.pmd.eclipse.preferences.generalPreferencesPage"
             class="net.sourceforge.pmd.eclipse.preferences.CPDPreferencePage"
-            id="net.sourceforge.pmd.eclipse.CPDPreferencePage">
+            id="net.sourceforge.pmd.eclipse.preferences.cpdPreferencePage">
       </page>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
-            nameFilter="*.java"
-            id="net.sourceforge.pmd.eclipse.PMDCheckFileContribution">
-         <menu
-               label="&amp;PMD"
-               path="additions"
-               id="net.sourceforge.pmd.eclipse.PMDCheckFileMenu">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-         <action
-               label="PMD Check File"
-               state="false"
-               class="net.sourceforge.pmd.eclipse.actions.PMDCheckFileAction"
-               menubarPath="net.sourceforge.pmd.eclipse.PMDCheckFileMenu/group1"
-               enablesFor="*"
-               id="net.sourceforge.pmd.eclipse.PMDCheckFileActionItem">
-         </action>
-      </objectContribution>
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IProject"
-            nameFilter="*"
-            id="net.sourceforge.pmd.eclipse.CPDCheckProject">
-         <menu
-               label="&amp;CPD"
-               path="cpdadditions"
-               id="net.sourceforge.pmd.eclipse.CPDCheckProjectMenu">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-         <action
-               label="Check Project"
-               state="false"
-               class="net.sourceforge.pmd.eclipse.actions.CPDCheckProjectAction"
-               menubarPath="net.sourceforge.pmd.eclipse.CPDCheckProjectMenu/group1"
-               enablesFor="1"
-               id="net.sourceforge.pmd.eclipse.CPDCheckProjectActionItem">
-         </action>
-      </objectContribution>
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IProject"
-            nameFilter="*.java"
-            id="net.sourceforge.pmd.eclipse.PMDCheckProjectContribution">
-         <menu
-               label="&amp;PMD"
-               path="pmdadditions"
-               id="net.sourceforge.pmd.eclipse.PMDCheckProjectMenu">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-         <action
-               label="PMD Check Project"
-               class="net.sourceforge.pmd.eclipse.actions.PMDCheckProjectAction"
-               menubarPath="net.sourceforge.pmd.eclipse.PMDCheckProjectMenu/group1"
-               enablesFor="1"
-               id="net.sourceforge.pmd.eclipse.PMDActionItem">
-         </action>
-      </objectContribution>
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
-            nameFilter="*.java"
-            id="net.sourceforge.pmd.eclipse.PMDCheckProjectContribution">
-         <menu
-               label="New Submenu"
-               path="additions"
-               id="net.sourceforge.pmd.eclipse.menu1">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-         <action
-               label="New Action"
-               class="net.sourceforge.pmd.eclipse.actions.NewAction"
-               menubarPath="net.sourceforge.pmd.eclipse.menu1/group1"
-               enablesFor="multiple"
-               id="net.sourceforge.pmd.eclipse.newAction">
-         </action>
-      </objectContribution>
+         id="pmdMarker"
+         name="%marker.pmd"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="description">
+      </attribute>
+      <attribute
+            name="example">
+      </attribute>
    </extension>
    <extension
-         id="mymarker"
+         id="pmdTaskMarker"
+         name="%marker.task"
          point="org.eclipse.core.resources.markers">
-   </extension>
-   <extension
-         id="PMDMarker"
-         point="org.eclipse.core.resources.markers">
+      <super
+            type="net.sourceforge.pmd.eclipse.pmdMarker">
+      </super>
       <super
             type="org.eclipse.core.resources.taskmarker">
       </super>
@@ -173,20 +75,119 @@
       </persistent>
    </extension>
    <extension
-         id="CPDMarker"
-         point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.core.resources.taskmarker">
-         <super
-               type="net.sourceforge,pmd.eclipse.mymarker">
-         </super>
-      </super>
-      <super
-            type="net.sourceforge,pmd.eclipse.mymarker">
-      </super>
-      <persistent
-            value="false">
-      </persistent>
+         id="pmdBuilder"
+         name="%builder.name"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="net.sourceforge.pmd.eclipse.builder.PMDBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="pmdPropertyPage"
+         name="PMD Property Page"
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            name="%properties.pmd"
+            nameFilter="*"
+            class="net.sourceforge.pmd.eclipse.properties.PMDPropertyPage"
+            id="net.sourceforge.pmd.eclipse.properties.pmdPropertyPage">
+      </page>
+   </extension>
+   <extension
+         id="pmdNature"
+         name="%nature.name"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="net.sourceforge.pmd.eclipse.builder.PMDNature">
+         </run>
+      </runtime>
+      <builder
+            id="net.sourceforge.pmd.eclipse.pmdBuilder">
+      </builder>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+   <extension
+         id="pmdPopupMenus"
+         name="PMD Popup Menus"
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            nameFilter="*"
+            id="net.sourceforge.pmd.eclipse.cpdProjectContribution">
+         <action
+               label="%action.checkcpd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.CPDCheckProjectAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.cpdCheckProjectAction">
+         </action>
+         <action
+               label="%action.checkpmd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDCheckAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.pmdCheckProjectAction">
+         </action>
+         <action
+               label="%action.clearpmd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            nameFilter="*.java"
+            id="net.sourceforge.pmd.eclipse.pmdFileContribution">
+         <action
+               label="%action.ast"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDGenerateASTAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.pmdGenerateAstAction">
+         </action>
+         <action
+               label="%action.checkpmd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDCheckAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.pmdCheckFileAction">
+         </action>
+         <action
+               label="%action.clearpmd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction">
+         </action>
+      </objectContribution>
+      <viewerContribution
+            targetID="org.eclipse.ui.views.TaskList"
+            id="net.sourceforge.pmd.eclipse.pmdTaskListContribution">
+         <action
+               label="%action.clearall"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
+               menubarPath="additions"
+               id="net.sourceforge.pmd.eclipse.pmdRemoveAllMarkersAction">
+         </action>
+      </viewerContribution>
    </extension>
 
 </plugin>
