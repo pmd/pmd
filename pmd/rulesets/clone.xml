@@ -16,13 +16,13 @@ The Clone Implementation ruleset contains a collection of rules that find questi
          <property name="xpath">
              <value>
                  <![CDATA[
-//ClassDeclaration//MethodDeclarator
+//ClassOrInterfaceDeclaration//MethodDeclarator
 [@Image = 'clone']
 [count(FormalParameters/*) = 0]
 [count(../Block//*[
     (self::AllocationExpression) and
-    (./Name/@Image = ancestor::
-UnmodifiedClassDeclaration[position()=last()]/@Image)
+    (./ClassOrInterfaceType/@Image = ancestor::
+ClassOrInterfaceDeclaration[position()=last()]/@Image)
   ])> 0
 ]
                 ]]>
