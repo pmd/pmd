@@ -18,7 +18,7 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
         for (Iterator i = node.getScope().getUnusedDeclarations();i.hasNext();) {
             NameDeclaration decl = (NameDeclaration)i.next();
             AccessNode parent = (AccessNode)decl.getNode().jjtGetParent().jjtGetParent();
-            if (parent.isPrivate() && !decl.getImage().equals("serialVersionUID")) {
+            if (parent.isPrivate() && !decl.getImage().equals("serialVersionUID") && !decl.getImage().equals("serialPersistentFields")) {
                 RuleContext ctx = (RuleContext)data;
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[] {decl.getImage()})));
             }

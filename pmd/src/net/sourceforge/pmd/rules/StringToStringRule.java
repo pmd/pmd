@@ -29,11 +29,10 @@ public class StringToStringRule extends AbstractRule {
             if (!decl.getImage().equals(node.getImage())) {
                 continue;
             }
-
             List usages = (List)decls.get(decl);
             for (Iterator j = usages.iterator(); j.hasNext();) {
                 NameOccurrence occ = (NameOccurrence)j.next();
-                if (occ.getImage().indexOf("toString") != -1) {
+                if (occ.getNameForWhichThisIsAQualifier() != null && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("toString") != -1) {
                     RuleContext ctx = (RuleContext)data;
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, occ.getBeginLine()));
                 }

@@ -40,7 +40,7 @@ public class PMD {
         } catch (ParseException pe) {
             System.out.println("Error while parsing " + ctx.getSourceCodeFilename() + " at line " + pe.currentToken.beginLine + "; continuing...");
         } catch (Throwable t) {
-            System.out.println("Error while parsing " +  ctx.getSourceCodeFilename() + "; "+ t.getMessage() + "; continuing...");
+            System.out.println("Error while processing " +  ctx.getSourceCodeFilename() + "; "+ t.getClass() + ":" +  t.getMessage() + "; continuing...");
             t.printStackTrace();
         }
     }
