@@ -75,6 +75,7 @@
       <name>Tom Copeland</name>
       <id>tomcopeland</id>
       <email>tom@infoether.com</email>
+      <organization>InfoEther</organization>
       <roles><role>Developer</role></roles>
     </developer>
 
@@ -90,6 +91,7 @@
       <name>David Craine</name>
       <id>dcraine</id>
       <email>dave@infoether.com</email>
+      <organization>InfoEther</organization>
       <roles><role>Developer</role></roles>
     </developer>
 
@@ -113,7 +115,14 @@
       <email>wdsgoe@users.sourceforge.net</email>
       <roles><role>Developer</role></roles>
     </developer>
-  </developers>
+
+    <developer>
+      <name>Ole-Martin Mork</name>
+      <id>olemartin</id>
+      <email>olemartin@users.sourceforge.net</email>
+      <roles><role>Developer</role></roles>
+    </developer>
+   </developers>
 
   <contributors>
     </contributors>
