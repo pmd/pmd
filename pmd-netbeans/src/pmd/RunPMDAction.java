@@ -176,7 +176,17 @@ public class RunPMDAction extends CookieAction {
 			if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
 				continue;
 			}
-			Reader reader = getSourceReader( dataobject );
+			Reader reader;
+			try {
+				reader = getSourceReader( dataobject );
+			}
+			catch( IOException ioe) {
+				Fault fault = new Fault( 1, name, "IOException reading file for class " + name + ": " + ioe.toString());
+				ErrorManager.getDefault().notify( ioe );
+				list.add( fault );
+				FaultRegistry.getInstance().registerFault( fault, dataobject );
+				continue;
+			}
 			
 			RuleContext ctx = new RuleContext();
 			Report report = new Report();
@@ -220,11 +230,13 @@ public class RunPMDAction extends CookieAction {
 		PMDOutputListener listener = PMDOutputListener.getInstance();
 		listener.detach();
 		FaultRegistry.getInstance().clearRegistry();
+		ProgressDialog progressDlg = null;
 		try {
 			StatusDisplayer.getDefault().setStatusText( "PMD checking for rule violations" );
 			List list = getDataObjects( node );
-			ProgressDialog progressDlg = new ProgressDialog(WindowManager.getDefault().getMainWindow());
+			progressDlg = new ProgressDialog(WindowManager.getDefault().getMainWindow());
 			List violations = checkCookies( list, progressDlg );
+			progressDlg = null;
 			IOProvider ioProvider = (IOProvider)Lookup.getDefault().lookup( IOProvider.class );
 			InputOutput io = ioProvider.getIO( "PMD output", false );
 			if( violations.isEmpty() ) {
@@ -249,6 +261,9 @@ public class RunPMDAction extends CookieAction {
 		}
 		catch( IOException e ) {
 			ErrorManager.getDefault().notify( e );
+			if(progressDlg != null) {
+				progressDlg.pmdEnd();
+			}
 		}
 	}
 
