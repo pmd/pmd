@@ -36,13 +36,13 @@ public class UnusedPrivateMethodRuleTest  extends RuleTst {
         assertEquals(1, report.size());
     }
 
-    public void test5() throws Throwable {
-        Report report = process("UnusedPrivateMethod5.java", rule);
+
+   public void test5() throws Throwable {
+       Report report = process("UnusedPrivateMethod5.java", rule);
         assertTrue(report.isEmpty());
     }
     public void test6() throws Throwable {
         Report report = process("UnusedPrivateMethod6.java", rule);
         assertTrue(report.isEmpty());
     }
-
 }
