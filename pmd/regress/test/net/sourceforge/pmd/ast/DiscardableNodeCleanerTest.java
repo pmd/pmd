@@ -6,8 +6,19 @@ import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.ast.DiscardableNodeCleaner;
+import net.sourceforge.pmd.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.ast.ASTModifiers;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.TargetJDK1_4;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
-public class DiscardableNodeCleanerTest extends TestCase {
+import java.util.List;
+import java.util.Set;
+import java.io.StringReader;
+
+public class DiscardableNodeCleanerTest extends ParserTst {
 
     public void testRemoveDiscardNodes() {
         ASTCompilationUnit cu = new ASTCompilationUnit(1);
@@ -26,5 +37,24 @@ public class DiscardableNodeCleanerTest extends TestCase {
         DiscardableNodeCleaner c = new DiscardableNodeCleaner();
         c.clean(cu);
         assertEquals(cu.findChildrenOfType(ASTInstanceOfExpression.class).size(), 0);
+    }
+
+    public void testRemoveModifierNodes() throws Throwable {
+        ASTCompilationUnit cu = new ASTCompilationUnit(1);
+        ASTTypeDeclaration td = new ASTTypeDeclaration(2);
+        td.jjtSetParent(cu);
+        cu.jjtAddChild(td, 0);
+
+        ASTModifiers m = new ASTModifiers(3);
+        m.jjtSetParent(td);
+        td.jjtAddChild(m, 0);
+        ASTClassDeclaration cd = new ASTClassDeclaration(4);
+        cd.jjtSetParent(td);
+        td.jjtAddChild(cd, 1);
+
+        assertEquals(cu.findChildrenOfType(ASTModifiers.class).size(), 1);
+        DiscardableNodeCleaner c = new DiscardableNodeCleaner();
+        c.clean(cu);
+        assertTrue(cu.findChildrenOfType(ASTModifiers.class).isEmpty());
     }
 }

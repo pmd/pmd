@@ -150,7 +150,7 @@
     <replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException"/>
 </target>
 
-<target name="clean" depends="delete,compile"/>
+<target name="clean" depends="delete,compile,copy"/>
 
 <target name="dist" depends="clean,jar"/>
 

@@ -438,18 +438,55 @@ void ImportDeclaration() :
   "import" [ "static" {checkForBadStaticImportUsage();jjtThis.setStatic();} ] Name() [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
-void TypeDeclaration() :
-{}
+/*
+ * Modifiers. We match all modifiers in a single rule to reduce the chances of
+ * syntax errors for simple modifier mistakes. It will also enable us to give
+ * better error messages.
+ */
+int Modifiers():
 {
-  LOOKAHEAD( ( "abstract" | "final" | "public" | "strictfp" )* "class" )
-  ClassDeclaration()
+   int modifiers = 0;
+}
+{
+ (
+  LOOKAHEAD(2)
+  (
+   "public" { modifiers |= AccessNode.PUBLIC; }
+  | "static" { modifiers |= AccessNode.STATIC; }
+  | "protected" { modifiers |= AccessNode.PROTECTED; }
+  | "private" { modifiers |= AccessNode.PRIVATE; }
+  | "final" { modifiers |= AccessNode.FINAL; }
+  | "abstract" { modifiers |= AccessNode.ABSTRACT; }
+  | "synchronized" { modifiers |= AccessNode.SYNCHRONIZED; }
+  | "native" { modifiers |= AccessNode.NATIVE; }
+  | "transient" { modifiers |= AccessNode.TRANSIENT; }
+  | "volatile" { modifiers |= AccessNode.VOLATILE; }
+  | "strictfp" { modifiers |= AccessNode.STRICTFP; }
+  )
+ )*
+ {
+    return modifiers;
+ }
+}
+
+
+void TypeDeclaration() :
+{
+ int modifiers;
+}
+{
+ ";"
 |
-  LOOKAHEAD( { enumLookahead() } )
-  EnumDeclaration()
-|
-  InterfaceDeclaration()
-|
-  ";"
+ modifiers = Modifiers()
+ (
+   LOOKAHEAD( "class" )
+   ClassDeclaration(modifiers)
+  |
+   LOOKAHEAD( { enumLookahead() } )
+   EnumDeclaration(modifiers)
+  |
+   InterfaceDeclaration(modifiers)
+ )
 }
 
 
@@ -457,14 +494,9 @@ void TypeDeclaration() :
  * Declaration syntax follows.
  */
 
-void ClassDeclaration() :
-{}
+void ClassDeclaration(int modifiers) :
+{jjtThis.setModifiers(modifiers);}
 {
-  ( "abstract"  { jjtThis.setAbstract(); }
-  | "final"     { jjtThis.setFinal(); }
-  | "public"    { jjtThis.setPublic(); }
-  | "strictfp"  { jjtThis.setStrict(); }
-  )*
   UnmodifiedClassDeclaration()
 }
 
@@ -484,55 +516,49 @@ void ClassBody() :
   "{" ( ClassBodyDeclaration() )* "}"
 }
 
-void NestedClassDeclaration() :
-{}
+void NestedClassDeclaration(int modifiers) :
+{jjtThis.setModifiers(modifiers);}
 {
-  ( "static"      { jjtThis.setStatic(); }
-  | "abstract"    { jjtThis.setAbstract(); }
-  | "final"       { jjtThis.setFinal(); }
-  | "public"      { jjtThis.setPublic(); }
-  | "protected"   { jjtThis.setProtected(); }
-  | "private"     { jjtThis.setPrivate(); }
-  | "strictfp"    { jjtThis.setStrict(); }
-  )*
   UnmodifiedClassDeclaration()
 }
 
 void ClassBodyDeclaration() :
-{}
+{
+int modifiers;
+}
 {
   LOOKAHEAD(2)
   Initializer()
 |
-  LOOKAHEAD( ( "static" | "abstract" | "final" | "public" | "protected" | "private" | "strictfp")* "class" )
-  NestedClassDeclaration()
-|
-  LOOKAHEAD( ( "static" | "abstract" | "final" | "public" | "protected" | "private" | "strictfp")* "interface" )
-  NestedInterfaceDeclaration()
-|
-  LOOKAHEAD( [ "public" | "protected" | "private" ] Name() "(" )
-  ConstructorDeclaration()
-|
-  LOOKAHEAD( MethodDeclarationLookahead() )
-  MethodDeclaration()
-|
-  LOOKAHEAD( { enumLookahead() } )
-  EnumDeclaration()
-|
-  FieldDeclaration()
+  modifiers = Modifiers()
+  (
+        LOOKAHEAD( "class" )
+        NestedClassDeclaration(modifiers)
+    |
+        LOOKAHEAD( "interface" )
+        NestedInterfaceDeclaration(modifiers)
+    |
+        LOOKAHEAD(  Name() "(" )
+        ConstructorDeclaration(modifiers)
+    |
+        LOOKAHEAD( MethodDeclarationLookahead() )
+        MethodDeclaration(modifiers)
+    |
+        LOOKAHEAD( { enumLookahead() } )
+        EnumDeclaration(modifiers)
+    |
+      FieldDeclaration(modifiers)
+  )
 |
   ";"
 }
 
-void EnumDeclaration() :
-{Token t;}
+void EnumDeclaration(int modifiers) :
 {
-  ( "public"            { jjtThis.setPublic(); }
-  | "protected"         { jjtThis.setProtected(); }
-  | "private"           { jjtThis.setPrivate(); }
-  | "static"            { jjtThis.setStatic(); }
-  | "final"             { jjtThis.setFinal(); }
-  )*
+Token t;
+jjtThis.setModifiers(modifiers);
+}
+{
   t = <IDENTIFIER> {
     if (!t.image.equals("enum")) {
       throw new ParseException("ERROR: expecting enum");
@@ -563,31 +589,18 @@ void EnumElement() :
 void MethodDeclarationLookahead() :
 {}
 {
-  ( "public" | "protected" | "private" | "static" | "abstract" | "final" | "native" | "synchronized" | "strictfp")*
   ResultType() <IDENTIFIER> "("
 }
 
-void InterfaceDeclaration() :
-{}
+void InterfaceDeclaration(int modifiers) :
+{jjtThis.setModifiers(modifiers);}
 {
-  ( "abstract"  { jjtThis.setAbstract(); }
-  | "public"    { jjtThis.setPublic(); }
-  | "strictfp"  { jjtThis.setStrict(); }
-  )*
   UnmodifiedInterfaceDeclaration()
 }
 
-void NestedInterfaceDeclaration() :
-{}
+void NestedInterfaceDeclaration(int modifiers) :
+{jjtThis.setModifiers(modifiers);}
 {
-  ( "static"       { jjtThis.setStatic(); }
-  | "abstract"    { jjtThis.setAbstract(); }
-  | "final"       { jjtThis.setFinal(); }
-  | "public"      { jjtThis.setPublic(); }
-  | "protected"   { jjtThis.setProtected(); }
-  | "private"     { jjtThis.setPrivate(); }
-  | "strictfp"    { jjtThis.setStrict(); }
-  )*
   UnmodifiedInterfaceDeclaration()
 }
 
@@ -603,33 +616,28 @@ void UnmodifiedInterfaceDeclaration() :
 }
 
 void InterfaceMemberDeclaration() :
-{}
+{int modifiers;}
 {
-  LOOKAHEAD( ( "static" | "abstract" | "final" | "public" | "protected" | "private" | "strictfp")* "class" )
-  NestedClassDeclaration()
+ ";"
+ |
+ modifiers = Modifiers()
+ (
+  LOOKAHEAD( "class" )
+  NestedClassDeclaration(modifiers)
 |
-  LOOKAHEAD( ( "static" | "abstract" | "final" | "public" | "protected" | "private" | "strictfp")* "interface" )
-  NestedInterfaceDeclaration()
+  LOOKAHEAD( "interface" )
+  NestedInterfaceDeclaration(modifiers)
 |
   LOOKAHEAD( MethodDeclarationLookahead() )
-  MethodDeclaration()
+  MethodDeclaration(modifiers)
 |
-  FieldDeclaration()
-|
-  ";"
+  FieldDeclaration(modifiers)
+)
 }
 
-void FieldDeclaration() :
-{}
+void FieldDeclaration(int modifiers) :
+{jjtThis.setModifiers(modifiers);}
 {
-  ( "public"            { jjtThis.setPublic(); }
-  | "protected"         { jjtThis.setProtected(); }
-  | "private"           { jjtThis.setPrivate(); }
-  | "static"            { jjtThis.setStatic(); }
-  | "final"             { jjtThis.setFinal(); }
-  | "transient"         { jjtThis.setTransient(); }
-  | "volatile"          { jjtThis.setVolatile(); } )*
-
   Type() VariableDeclarator() ( "," VariableDeclarator() )* ";"
 }
 
@@ -664,19 +672,9 @@ void ArrayInitializer() :
   "{" [ VariableInitializer() ( LOOKAHEAD(2) "," VariableInitializer() )* ] [ "," ] "}"
 }
 
-void MethodDeclaration() :
-{}
+void MethodDeclaration(int modifiers) :
+{jjtThis.setModifiers(modifiers);}
 {
-  ( "public"            { jjtThis.setPublic(); }
-  | "protected"         { jjtThis.setProtected(); }
-  | "private"           { jjtThis.setPrivate(); }
-  | "static"            { jjtThis.setStatic(); }
-  | "abstract"          { jjtThis.setAbstract(); }
-  | "final"             { jjtThis.setFinal(); }
-  | "native"            { jjtThis.setNative(); }
-  | "synchronized"      { jjtThis.setSynchronized(); }
-  | "strictfp"          { jjtThis.setStrict(); }
-  )*
   ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }
@@ -701,19 +699,18 @@ void FormalParameters() :
 }
 
 void FormalParameter() :
-{}
 {
-  [ "final" {jjtThis.setFinal();} ] Type() [ "..." {checkForBadVariableArgumentsUsage();} ] VariableDeclaratorId()
+}
+{
+   [ "final" {jjtThis.setFinal();} ]
+   Type()
+   [ "..." {checkForBadVariableArgumentsUsage();} ]
+   VariableDeclaratorId()
 }
 
-void ConstructorDeclaration() :
-{}
+void ConstructorDeclaration(int modifiers) :
+{jjtThis.setModifiers(modifiers);}
 {
-  [
-  "public" { jjtThis.setPublic(); }
-  | "protected" { jjtThis.setProtected(); }
-  | "private"  { jjtThis.setPrivate(); }
-  ]
   <IDENTIFIER> FormalParameters() [ "throws" NameList() ]
   "{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]

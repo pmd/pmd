@@ -6,6 +6,18 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return null;
     }
 
+    public Object visit(ASTModifiers node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTRUNSIGNEDSHIFT node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTRSIGNEDSHIFT node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
     public Object visit(ASTCompilationUnit node, Object data) {
         return visit((SimpleNode) node, data);
     }

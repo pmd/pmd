@@ -21,7 +21,8 @@ public class DiscardableNodeCleaner {
         ASTPostfixExpression.class,
         ASTMultiplicativeExpression.class,
         ASTAdditiveExpression.class,
-        ASTConditionalAndExpression.class
+        ASTConditionalAndExpression.class,
+        ASTModifiers.class
     };
 
     public void clean(ASTCompilationUnit root) {
@@ -35,11 +36,16 @@ public class DiscardableNodeCleaner {
         for (Iterator i = nodes.iterator(); i.hasNext();) {
             SimpleNode node = (SimpleNode) i.next();
             if (node.isDiscardable()) {
-                SimpleNode parent = (SimpleNode) node.jjtGetParent();
-                SimpleNode kid = (SimpleNode) node.jjtGetChild(0);
-                kid.jjtSetParent(parent);
-                parent.jjtReplaceChild(node, kid);
+                if (node instanceof ASTModifiers) {
+                    ((SimpleNode)node.jjtGetParent()).removeASTModifiersChild();
+                } else {
+                    SimpleNode parent = (SimpleNode) node.jjtGetParent();
+                    SimpleNode kid = (SimpleNode) node.jjtGetChild(0);
+                    kid.jjtSetParent(parent);
+                    parent.jjtReplaceChild(node, kid);
+                }
             }
+
         }
     }
 }

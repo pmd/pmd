@@ -76,9 +76,7 @@ public class Token {
         }
     }
 
-/*
   public static class GTToken extends Token {
-     int realKind = JavaCCParserConstants.GT;
+     int realKind = JavaParserConstants.GT;
   }
-*/
 }

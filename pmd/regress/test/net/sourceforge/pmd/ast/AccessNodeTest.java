@@ -5,8 +5,24 @@ package test.net.sourceforge.pmd.ast;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.PMD;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
-public class AccessNodeTest extends TestCase {
+import java.util.Set;
+
+public class AccessNodeTest extends ParserTst {
+
+    public void testModifiersOnClassDecl() throws Throwable {
+        Set ops = getNodes(ASTClassDeclaration.class, TEST1);
+        assertTrue(((ASTClassDeclaration)(ops.iterator().next())).isPublic());
+    }
+
+    private static final String TEST1 =
+    "public class Foo {}";
+
+
     public void testStatic() {
         AccessNode node = new AccessNode(1);
         assertTrue("Node should default to not static.", !node.isStatic());
@@ -70,13 +86,6 @@ public class AccessNodeTest extends TestCase {
         assertTrue("Node set to native, not native.", node.isNative());
     }
 
-    public void testInterface() {
-        AccessNode node = new AccessNode(1);
-        assertTrue("Node should default to not interface.", !node.isInterface());
-        node.setInterface();
-        assertTrue("Node set to interface, not interface.", node.isInterface());
-    }
-
     public void testAbstract() {
         AccessNode node = new AccessNode(1);
         assertTrue("Node should default to not abstract.", !node.isAbstract());
@@ -86,17 +95,11 @@ public class AccessNodeTest extends TestCase {
 
     public void testStrict() {
         AccessNode node = new AccessNode(1);
-        assertTrue("Node should default to not strict.", !node.isStrict());
-        node.setStrict();
-        assertTrue("Node set to strict, not strict.", node.isStrict());
+        assertTrue("Node should default to not strict.", !node.isStrictfp());
+        node.setStrictfp();
+        assertTrue("Node set to strict, not strict.", node.isStrictfp());
     }
 
-    public void testSuper() {
-        AccessNode node = new AccessNode(1);
-        assertTrue("Node should default to not super.", !node.isSuper());
-        node.setSuper();
-        assertTrue("Node set to super, not super.", node.isSuper());
-    }
     public void testPackagePrivate() {
         AccessNode node = new AccessNode(1);
         assertTrue("Node should default to package private.", node.isPackagePrivate());

@@ -59,7 +59,7 @@ public class MethodDeclTest extends ParserTst {
     public void testStrict() throws Throwable {
         String access[] = {"public", "strictfp"};
         ASTMethodDeclaration amd = getMethodDecl(access);
-        assertTrue("Expecting method to be strict.", amd.isStrict());
+        assertTrue("Expecting method to be strict.", amd.isStrictfp());
         assertTrue("Expecting method to be public.", amd.isPublic());
     }
 

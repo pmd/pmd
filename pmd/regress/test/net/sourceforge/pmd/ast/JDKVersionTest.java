@@ -114,6 +114,13 @@ public class JDKVersionTest extends TestCase  {
         }
     }
 
+/*
+    public void testJDK15GenericsSyntaxShouldPassWith15() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_GENERICS));
+        p.CompilationUnit();
+    }
+*/
+
 
     private static final String ASSERT_TEST1 =
     "public class Foo {" + PMD.EOL +
@@ -180,5 +187,10 @@ public class JDKVersionTest extends TestCase  {
     " void foo(List list) {" + PMD.EOL +
     "  for (Integer i : list) {}" + PMD.EOL +
     " }" + PMD.EOL +
+    "}";
+
+    private static final String JDK15_GENERICS =
+    "public class Test {" + PMD.EOL +
+    "  ArrayList<Integer> list =  new ArrayList<Integer>();" + PMD.EOL +
     "}";
 }

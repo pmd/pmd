@@ -28,12 +28,12 @@ public class SimpleNodeTest extends ParserTst {
     public void testMethodDiffLines() throws Throwable {
         Set methods = getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
         Iterator iter = methods.iterator();
-        verifyNode((SimpleNode) iter.next(), 2, 2, 4, 2);
+        verifyNode((SimpleNode) iter.next(), 2, 9, 4, 2);
     }
 
     public void testMethodSameLine() throws Throwable {
         Set methods = getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
-        verifyNode((SimpleNode) methods.iterator().next(), 2, 2, 2, 21);
+        verifyNode((SimpleNode) methods.iterator().next(), 2, 9, 2, 21);
     }
 
     public void testNoLookahead() throws Throwable {
@@ -150,13 +150,11 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(ee.jjtGetChild(1), io2);
     }
 
-
-
     private void verifyNode(SimpleNode node, int beginLine, int beginCol, int endLine, int endCol) {
-        assertEquals("Wrong beginning line: ", beginLine, node.getBeginLine());
-        assertEquals("Wrong beginning column: ", beginCol, node.getBeginColumn());
-        assertEquals("Wrong ending line:", endLine, node.getEndLine());
-        assertEquals("Wrong ending column:", endCol, node.getEndColumn());
+        assertEquals("Unexpected beginning line: ", beginLine, node.getBeginLine());
+        assertEquals("Unexpected beginning column: ", beginCol, node.getBeginColumn());
+        assertEquals("Unexpected ending line:", endLine, node.getEndLine());
+        assertEquals("Unexpected ending column:", endCol, node.getEndColumn());
     }
 
     private static final String HAS_EXPLICIT_EXTENDS =
@@ -170,13 +168,6 @@ public class SimpleNodeTest extends ParserTst {
 
     private static final String NO_EXPLICIT_IMPLEMENTS =
     "public class Test {}";
-
-    private static final String METHOD_DIFF_LINES =
-    "public class Test {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
-    "  int x;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
 
     private static final String METHOD_SAME_LINE =
     "public class Test {" + PMD.EOL +
@@ -204,4 +195,13 @@ public class SimpleNodeTest extends ParserTst {
     "}";
 
     private static final String NO_LOOKAHEAD = "public class Foo { }";
+
+    private static final String METHOD_DIFF_LINES =
+    "public class Test {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  int x;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+
 }

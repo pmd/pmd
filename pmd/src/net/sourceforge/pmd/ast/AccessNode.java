@@ -1,6 +1,19 @@
 package net.sourceforge.pmd.ast;
 
-public class AccessNode extends SimpleNode implements AccessFlags {
+public class AccessNode extends SimpleNode {
+
+    public static final int PUBLIC = 0x0001;
+    public static final int PROTECTED = 0x0002;
+    public static final int PRIVATE = 0x0004;
+    public static final int ABSTRACT = 0x0008;
+    public static final int STATIC = 0x0010;
+    public static final int FINAL = 0x0020;
+    public static final int SYNCHRONIZED = 0x0040;
+    public static final int NATIVE = 0x0080;
+    public static final int TRANSIENT = 0x0100;
+    public static final int VOLATILE = 0x0200;
+    public static final int STRICTFP = 0x1000;
+
     public AccessNode(int i) {
         super(i);
     }
@@ -9,114 +22,95 @@ public class AccessNode extends SimpleNode implements AccessFlags {
         super(parser, i);
     }
 
-    protected short accessFlags = 0x0000;
+    private int modifiers;
 
-    public void setPublic() {
-        accessFlags |= ACC_PUBLIC;
+    public void setModifiers(int m) {
+        this.modifiers = m;
     }
 
     public boolean isPublic() {
-        return (accessFlags & ACC_PUBLIC) > 0;
-    }
-
-    public void setPrivate() {
-        accessFlags |= ACC_PRIVATE;
-    }
-
-    public boolean isPrivate() {
-        return (accessFlags & ACC_PRIVATE) > 0;
-    }
-
-    public void setProtected() {
-        accessFlags |= ACC_PROTECTED;
+      return (modifiers & PUBLIC) != 0;
     }
 
     public boolean isProtected() {
-        return (accessFlags & ACC_PROTECTED) > 0;
+      return (modifiers & PROTECTED) != 0;
     }
 
-    public void setStatic() {
-        accessFlags |= ACC_STATIC;
+    public boolean isPrivate() {
+      return (modifiers & PRIVATE) != 0;
     }
 
     public boolean isStatic() {
-        return (accessFlags & ACC_STATIC) > 0;
-    }
-
-    public void setFinal() {
-        accessFlags |= ACC_FINAL;
-    }
-
-    public boolean isFinal() {
-        return (accessFlags & ACC_FINAL) > 0;
-    }
-
-    public void setSynchronized() {
-        accessFlags |= ACC_SYNCHRONIZED;
-    }
-
-    public boolean isSynchronized() {
-        return (accessFlags & ACC_SYNCHRONIZED) > 0;
-    }
-
-    public void setVolatile() {
-        accessFlags |= ACC_VOLATILE;
-    }
-
-    public boolean isVolatile() {
-        return (accessFlags & ACC_VOLATILE) > 0;
-    }
-
-    public void setTransient() {
-        accessFlags |= ACC_TRANSIENT;
-    }
-
-    public boolean isTransient() {
-        return (accessFlags & ACC_TRANSIENT) > 0;
-    }
-
-    public void setNative() {
-        accessFlags |= ACC_NATIVE;
-    }
-
-    public boolean isNative() {
-        return (accessFlags & ACC_NATIVE) > 0;
-    }
-
-
-    public void setInterface() {
-        accessFlags |= ACC_INTERFACE;
-    }
-
-    public boolean isInterface() {
-        return (accessFlags & ACC_INTERFACE) > 0;
-    }
-
-
-    public void setAbstract() {
-        accessFlags |= ACC_ABSTRACT;
+      return (modifiers & STATIC) != 0;
     }
 
     public boolean isAbstract() {
-        return (accessFlags & ACC_ABSTRACT) > 0;
+      return (modifiers & ABSTRACT) != 0;
     }
 
-
-    public void setStrict() {
-        accessFlags |= ACC_STRICT;
+    public boolean isFinal() {
+      return (modifiers & FINAL) != 0;
     }
 
-    public boolean isStrict() {
-        return (accessFlags & ACC_STRICT) > 0;
+    public boolean isNative() {
+      return (modifiers & NATIVE) != 0;
     }
 
-
-    public void setSuper() {
-        accessFlags |= ACC_SUPER;
+    public boolean isStrictfp() {
+      return (modifiers & STRICTFP) != 0;
     }
 
-    public boolean isSuper() {
-        return (accessFlags & ACC_SUPER) > 0;
+    public boolean isSynchronized() {
+      return (modifiers & SYNCHRONIZED) != 0;
+    }
+
+    public boolean isTransient() {
+      return (modifiers & TRANSIENT) != 0;
+    }
+
+    public boolean isVolatile() {
+      return (modifiers & VOLATILE) != 0;
+    }
+
+    public void setPublic() {
+        modifiers |= PUBLIC;
+    }
+    public void setPrivate() {
+        modifiers |= PRIVATE;
+    }
+    public void setProtected() {
+        modifiers |= PROTECTED;
+    }
+    public void setSynchronized() {
+        modifiers |= SYNCHRONIZED;
+    }
+    public void setVolatile() {
+        modifiers |= VOLATILE;
+    }
+    public void setAbstract() {
+        modifiers |= ABSTRACT;
+    }
+    public void setStatic() {
+        modifiers |= STATIC;
+    }
+    public void setTransient() {
+        modifiers |= TRANSIENT;
+    }
+    public void setFinal() {
+        modifiers |= FINAL;
+    }
+    public void setNative() {
+        modifiers |= NATIVE;
+    }
+    public void setStrictfp() {
+        modifiers |= STRICTFP;
+    }
+
+    /**
+     * Removes the given modifier.
+     */
+    static int removeModifier(int modifiers, int mod) {
+       return modifiers & ~mod;
     }
 
     public boolean isPackagePrivate() {
@@ -152,7 +146,7 @@ public class AccessNode extends SimpleNode implements AccessFlags {
         if (isNative()) {
             out += "(native)";
         }
-        if (isStrict()) {
+        if (isStrictfp()) {
             out += "(strict)";
         }
         if (isTransient()) {

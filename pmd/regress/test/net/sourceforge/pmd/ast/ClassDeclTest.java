@@ -45,7 +45,7 @@ public class ClassDeclTest extends ParserTst {
         assertEquals("Public: ", bPublic, acd.isPublic());
         assertEquals("Abstract: ", bAbstract, acd.isAbstract());
         assertEquals("Final: ", bFinal, acd.isFinal());
-        assertEquals("Strict: ", bStrict, acd.isStrict());
+        assertEquals("Strict: ", bStrict, acd.isStrictfp());
     }
 
     public ASTClassDeclaration getClassDecl(String access[]) throws Throwable {
