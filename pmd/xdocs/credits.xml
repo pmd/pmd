@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Zev Blut - nice patch to add Ruby support to CPD</li>
             <li>Eric Olander - AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Benoit Xhenseval - many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Christopher Judd - a nice patch to the XSLT that adds a summary</li>

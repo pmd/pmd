@@ -37,6 +37,7 @@ public class ExcessiveMethodLengthTest extends SimpleAggregatorTst  {
         runTestFromString(TEST2, 0, r);
     }
 
+/*
     public void testOverrideMinimumWithTopScore() throws Throwable {
         Rule r = findRule("rulesets/codesize.xml", "ExcessiveMethodLength");
         r.addProperty("minimum", "1");
@@ -48,6 +49,7 @@ public class ExcessiveMethodLengthTest extends SimpleAggregatorTst  {
             assertTrue(rv.getLine() == 2 || rv.getLine() == 6);
         }
     }
+*/
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +

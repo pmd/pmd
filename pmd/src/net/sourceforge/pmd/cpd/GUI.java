@@ -169,13 +169,14 @@ public class GUI implements CPDListener {
         helper.add(rootDirectoryField);
         helper.add(browseButton, 2);
         helper.nextRow();
-        helper.addLabel("Minimum tile size:");
+        helper.addLabel("Report duplicate chunks larger than:");
         minimumLengthField.setColumns(4);
         helper.add(minimumLengthField);
         helper.addLabel("Language:");
         languageBox.addItem("Java");
         languageBox.addItem("C++");
         languageBox.addItem("PHP");
+        languageBox.addItem("Ruby");
         languageBox.addItem("by extension...");
         languageBox.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
@@ -248,6 +249,8 @@ public class GUI implements CPDListener {
                 language = lf.createLanguage(LanguageFactory.JAVA_KEY, p);
             } else if (languageBox.getSelectedItem().equals("C++")) {
                 language = lf.createLanguage(LanguageFactory.CPP_KEY);
+            } else if (languageBox.getSelectedItem().equals("Ruby")) {
+                language = lf.createLanguage(LanguageFactory.RUBY_KEY);
             } else if (languageBox.getSelectedItem().equals("by extension...")) {
                 language = lf.createLanguage(LanguageFactory.BY_EXTENSION, p);
             } else if (languageBox.getSelectedItem().equals("PHP")) {
@@ -259,6 +262,7 @@ public class GUI implements CPDListener {
             phaseLabel.setText("");
             if (rootDirectoryField.getText().endsWith(".class")
                     || rootDirectoryField.getText().endsWith(".php")
+                    || rootDirectoryField.getText().endsWith(".rb")
                     || rootDirectoryField.getText().endsWith(".java")
                     || rootDirectoryField.getText().endsWith(".cpp")
                     || rootDirectoryField.getText().endsWith(".c")) {

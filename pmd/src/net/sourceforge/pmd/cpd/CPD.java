@@ -68,16 +68,33 @@ public class CPD {
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
+    public static Renderer getRendererFromString(String rendererName) {
+        Renderer renderer = new SimpleRenderer();
+        Class rClass; 
+        try {
+            rClass = Class.forName(rendererName);
+            renderer = (Renderer) rClass.newInstance();
+        } catch (Exception e) {
+            System.err.println("Cannot create renderer from string: " + rendererName);
+            System.err.println("using SimpleRenderer for now.");
+        }
+        return renderer;
+    }
+
     public static void main(String[] args) {
-        if (args.length > 3 || args.length < 2) {
+        if (args.length > 4 || args.length < 2) {
             usage();
             System.exit(1);
         }
 
         try {
             String lang = LanguageFactory.JAVA_KEY;
-            if (args.length == 3) {
+            Renderer renderer = new SimpleRenderer();
+            if (args.length > 2) {
                 lang = args[2];
+            }
+            if (args.length > 3) {
+                renderer = CPD.getRendererFromString(args[3]);
             }
             LanguageFactory f = new LanguageFactory();
             Language language = f.createLanguage(lang);
@@ -86,8 +103,9 @@ public class CPD {
             long start = System.currentTimeMillis();
             cpd.go();
             long total = System.currentTimeMillis() - start;
-            System.out.println(new SimpleRenderer().render(cpd.getMatches()));
-            System.out.println("That took " + total + " milliseconds");
+            System.out.println(renderer.render(cpd.getMatches()));
+            // System out conflicts with the renderer output, how about System.err instead?
+	    System.err.println("That took " + total + " milliseconds");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,11 +113,15 @@ public class CPD {
 
     private static void usage() {
         System.out.println("Usage:");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD <tile size> <directory> [<language>]");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD <tile size> <directory> [<language>] [<output renderer>]");
         System.out.println("i.e: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java ");
         System.out.println("or: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\apache\\src\\ cpp");
+        System.out.println("Renders:");
+        System.out.println("Simple");
+        System.out.println("net.sourceforge.pmd.cpd.CSVRenderer");
+        System.out.println("net.sourceforge.pmd.cpd.XMLRenderer");
     }
 
 }
