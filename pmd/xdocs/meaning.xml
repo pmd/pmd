@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-  <section>What does it mean?
+  <section name="What does it mean?">
 <p>
 Here on the PMD project, we've been trying to find the
 meaning of the letters PMD.  Because frankly, we don't
