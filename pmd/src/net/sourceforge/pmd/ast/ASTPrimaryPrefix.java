@@ -30,6 +30,17 @@ public class ASTPrimaryPrefix extends SimpleNode {
         return this.usesSuperModifier;
     }
 
+    public void dump(String prefix) {
+        String out = getImage();
+        if (usesSuperModifier) {
+            out = "super." + getImage();
+        } else if (usesThisModifier) {
+            out = "this." + getImage();
+        }
+        System.out.println(toString(prefix) + ":" + out);
+        dumpChildren(prefix);
+    }
+
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Lokesh Gupta - improvements to the AST viewer</li>
             <li>Jesse Glick - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
             <li>Philippe Couton - OverrideBothEqualsAndHashcodeRule bug report, UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
