@@ -270,6 +270,30 @@ public class SimpleNode implements Node {
         return prefix + toString();
     }
 
+    /**
+     * 
+     * @return a String with an XML representation of this node and its children
+     */
+    public String asXml() {
+        final String cn = getClass().getName();
+        final StringBuffer sb = new StringBuffer();
+        
+        sb.append('<');
+        sb.append(cn);
+        sb.append(" id=\"");
+        sb.append(id);
+        sb.append("\">");
+        if (children!=null) {            
+            for (int i=0;i<children.length;i++) {
+                sb.append(((SimpleNode) children[i]).asXml());
+            }
+        }
+        sb.append("</");
+        sb.append(cn);
+        sb.append('>');
+        return sb.toString();
+    }
+    
     /* Override this method if you want to customize how the node dumps
        out its children. */
     public void dump(String prefix) {
