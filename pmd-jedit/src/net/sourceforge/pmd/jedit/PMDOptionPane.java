@@ -28,12 +28,13 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     private class CloseAL implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(null, "hi");
+            dialog.dispose();
         }
     }
 
     private static final String NAME = "PMD Options";
     private SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
+    private JDialog dialog;
 
     public PMDOptionPane() {
         super(NAME);
@@ -43,6 +44,8 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
     public String getName() {
         return NAME;
     }
+
+
 
     public void _init() {
         super._init();
@@ -67,7 +70,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         closeButton.addActionListener(new CloseAL());
         buttonPanel.add(closeButton);
 
-        JDialog dialog = new JDialog(jEdit.getFirstView(), "PMD", true);
+        dialog = new JDialog(jEdit.getFirstView(), "PMD", true);
         dialog.setTitle("PMD");
         dialog.getContentPane().setLayout(new BorderLayout());
         dialog.getContentPane().add(checkBoxPanel, BorderLayout.CENTER);
