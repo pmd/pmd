@@ -72,39 +72,17 @@ public class RuleSetPropertyPage extends PropertyPage {
      */
     private void initRuleSplitPanes () {
         //loop through the sets of rules and place them in the appropriate pane based upon their setting
-        for (int i = 0; i < RuleSetPropertyGroup.RULESET_NAMES.length; i++) {
-            ListEntry le = new ListEntry(RuleSetPropertyGroup.RULESET_NAMES[i], RuleSetPropertyGroup.PROPKEYS[i]);
-            if (Boolean.valueOf(RuleSetPropertyGroup.PROPKEYS[i].getValue()).booleanValue()) {
+        Iterator iter = RuleSetPropertyGroup.ruleSets.values().iterator();
+        while (iter.hasNext()) {
+            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+            ListEntry le = new ListEntry(rsp.getRuleSet().getName(), rsp.getGlobalProperty());
+            if (Boolean.valueOf(rsp.getGlobalProperty().getValue()).booleanValue()) {
                 dlmSelectedRuleSets.addElement(le);
             }
             else {
                 dlmAvailableRuleSets.addElement(le);
             }
         }
-        /*try {
-                RuleSetFactory rsf = new RuleSetFactory();
-                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, "rsf: " + rsf.toString());
-                Iterator iter = rsf.getRegisteredRuleSets();
-                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, "Iter: " + iter.toString());
-
-                while (iter.hasNext()) {
-                    RuleSet rs = (RuleSet)iter.next();
-                    Browser.getActiveBrowser().getMessageView().addMessage(msgCat, rs.getName());
-                    GlobalProperty gp = new GlobalProperty("RuleSets", rs.getName(), "true");
-                    ListEntry le = new ListEntry(rs.getName(), gp);
-                    if (Boolean.valueOf(gp.getValue()).booleanValue()) {
-                        dlmSelectedRuleSets.addElement(le);
-                    }
-                    else {
-                        dlmAvailableRuleSets.addElement(le);
-                    }
-
-                }
-        }
-        catch (Exception e){
-            Browser.getActiveBrowser().getMessageView().addMessage(msgCat, e.toString());
-
-        }*/
     }
 
     /**
@@ -250,13 +228,13 @@ public class RuleSetPropertyPage extends PropertyPage {
     void jlistSelectedRuleSets_mouseClicked(MouseEvent e) {
         if (e.getClickCount() >= 2)
             deselectRules();
-   }
+    }
 
-   /**
-    * Called when the user double-clicks an item in the jlistAvailableRuleSets list
-    * move the item to the selected list
-    * @param e mouse event
-    */
+    /**
+     * Called when the user double-clicks an item in the jlistAvailableRuleSets list
+     * move the item to the selected list
+     * @param e mouse event
+     */
     void jlistAvailableRuleSets_mouseClicked(MouseEvent e) {
         if (e.getClickCount() >= 2)
             selectRules();
@@ -306,6 +284,4 @@ class ListEntry {
         return  displayName;
     }
 }
-
-
 
