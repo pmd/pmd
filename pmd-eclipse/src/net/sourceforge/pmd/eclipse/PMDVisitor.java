@@ -39,6 +39,9 @@ public class PMDVisitor implements IResourceVisitor {
 	private PMD pmd = null;
 	private RuleSet ruleSet = null;
 
+	public static final String PMD_VIOLATION =
+		"net.sourceforge.pmd.eclipse.violation";
+		
 	/**
 	 * No Argument Constructor
 	 */
@@ -77,7 +80,8 @@ public class PMDVisitor implements IResourceVisitor {
 		pmd.processFile( input, ruleSet, context);
 
 		Iterator iter = context.getReport().iterator();
-		file.deleteMarkers(null,false, IResource.DEPTH_ONE);
+		file.deleteMarkers(PMD_VIOLATION, true, 
+							IResource.DEPTH_INFINITE);
 		while (iter.hasNext()) {
 			RuleViolation violation = (RuleViolation) iter.next();
 			
