@@ -1,0 +1,2 @@
+public class AtLeastOneConstructorRule2 {
+}

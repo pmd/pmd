@@ -41,6 +41,25 @@ These are new rules for the next release
       </example>
     </rule>
 
+        <rule name="AtLeastOneConstructor"
+          message="Each class should declare at least one constructor"
+          class="net.sourceforge.pmd.rules.AtLeastOneConstructorRule">
+      <description>
+      Each class should declare at least one constructor.  Note that this rule is the
+          opposite of UnnecessaryConstructorRule, so running them at the same time will
+          result on a rule violation on every class.
+      </description>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+  public class Foo {
+   // no constructor!  not good!
+  }
+  ]]>
+      </example>
+    </rule>
+
     <rule name="SymbolTableTestRule"
           message="test"
           class="net.sourceforge.pmd.rules.SymbolTableTestRule">
