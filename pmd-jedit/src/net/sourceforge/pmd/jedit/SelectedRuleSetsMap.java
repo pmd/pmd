@@ -17,7 +17,13 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 
 public class SelectedRuleSetsMap {
 
-    private Map ruleSets = new HashMap();
+    private Map ruleSets = new TreeMap(new Comparator() {
+        public int compare(Object o1, Object o2) {
+            RuleSet r1 = (RuleSet)o1;
+            RuleSet r2 = (RuleSet)o2;
+            return r1.getName().compareTo(r2.getName());
+        }
+    });
 
     public SelectedRuleSetsMap() throws RuleSetNotFoundException {
         RuleSetFactory rsf = new RuleSetFactory();

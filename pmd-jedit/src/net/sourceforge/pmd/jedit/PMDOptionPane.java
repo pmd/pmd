@@ -27,17 +27,16 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     public PMDOptionPane() {
         super(PMDJEditPlugin.NAME);
+    }
 
-        if (selectedRuleSets == null) {
-            try {
-                selectedRuleSets = new SelectedRuleSetsMap();
-            } catch (RuleSetNotFoundException rsne) {
-                rsne.printStackTrace();
-            }
+    public void init() {
+        try {
+            selectedRuleSets = new SelectedRuleSetsMap();
+        } catch (RuleSetNotFoundException rsne) {
+            rsne.printStackTrace();
         }
-
+        removeAll();
         addComponent(new JLabel("Please see http://pmd.sourceforge.net/ for more information on what's in each rule set."));
-
         for (Iterator i = selectedRuleSets.keys(); i.hasNext();) {
             RuleSet rs = (RuleSet)i.next();
             addComponent((JCheckBox)selectedRuleSets.get(rs));

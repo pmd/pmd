@@ -22,7 +22,6 @@ public class PMDJEditPlugin extends EditPlugin {
 
     public static final String NAME = "PMD";
     public static final String PROPERTY_PREFIX = "plugin.net.sourceforge.pmd.jedit.";
-    public static final String OPTION_PREFIX = "options.pmd.";
     public static final String OPTION_RULESETS_PREFIX = "options.pmd.rulesets.";
 
     private static PMDJEditPlugin instance;
