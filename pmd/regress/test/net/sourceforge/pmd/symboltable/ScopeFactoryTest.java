@@ -34,4 +34,14 @@ public class ScopeFactoryTest extends TestCase {
         assertTrue(sf.createScope(new ASTForStatement(1)) instanceof LocalScope);
         assertTrue(sf.createScope(new ASTIfStatement(1)) instanceof LocalScope);
     }
+
+    public void testUnknownScope_ThisShouldNeverHappen() throws Throwable {
+        ScopeFactory sf = new ScopeFactory();
+        try {
+            sf.createScope(new ASTClassBody(1));
+            throw new Throwable("Should have failed!");
+        } catch (RuntimeException re) {
+            // cool
+        }
+    }
 }
