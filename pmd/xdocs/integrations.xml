@@ -29,14 +29,14 @@
       <td>0.9</td>
       <td>Dave Craine</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
-  <tr><td>Netbeans</td>
+  <tr><td>Netbeans/Forte/Sun ONE</td>
       <td>pmd-netbeans</td>
-      <td>0.4</td>
+      <td>0.5</td>
       <td>Ole Martin Mork</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>JEdit</td>
       <td>pmd-jedit</td>
-      <td>1.0</td>
+      <td>1.1</td>
       <td>Tom Copeland</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Maven</td>
@@ -123,8 +123,10 @@ violation message within this view, you will be taken to the line in the source 
 <li>Open the File Browser if it isn't already open</li>
 <li>Double-click on a source directory</li>
 <li>Select Plugins->PMD->Check directory recursively</li>
-<li>Note that you can select individual rules by going to Utilities->Global Options->Plugin Options->PMD</li>
 </ul>
+<p>Note that you can select individual rules by going to Utilities->Global Options->Plugin Options->PMD.  Also,
+you can change the plugin to prompt you for a directory to check by going to that same menu and
+selecting the "Ask for Directory" checkbox.</p>
 
       </subsection>
       <subsection name="IDEA">

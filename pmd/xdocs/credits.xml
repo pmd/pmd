@@ -17,12 +17,15 @@
             <li>Rich Kilmer - logo design</li>
             <li>Liam Holohan - bug reports</li>
             <li>Peter Donald - design suggestions</li>
-            <li>Vincent Massol - bug reports, design suggestions</li>
+            <li>Vincent Massol - bug reports, design suggestions, feature suggestions, Maven guidance</li>
             <li>Alina Copeland - pmd-web formulas, pmd-dcpd optimizations</li>
             <li>Dale Vissar - rule suggestions</li>
             <li>Sean Sullivan - rule suggestions</li>
             <li>Gael Marziou - bug reports</li>
             <li>Paul Kendall - enhanced EmptyCatchBlock rule</li>
+            <li>Jiger Patell - PMD-JEdit suggestions</li>
+            <li>Stefan Bodewig - bug report</li>
+            <li>Radim Kubacki - bug reports</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
