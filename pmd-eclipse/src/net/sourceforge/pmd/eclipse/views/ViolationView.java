@@ -52,8 +52,14 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.5  2003/10/30 16:29:42  phherlin
- * Adapting to Eclipse v3 M4
+ * Revision 1.6  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.4.2.2  2003/11/05 13:11:47  phherlin
+ * Add the Quick fix menu item to the violations view
+ *
+ * Revision 1.4.2.1  2003/11/03 14:40:14  phherlin
+ * Refactoring to remove usage of Eclipse internal APIs
  *
  * Revision 1.4  2003/08/14 16:10:41  phherlin
  * Implementing Review feature (RFE#787086)
@@ -88,6 +94,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     protected IAction showRuleAction;
     protected IAction removeViolationAction;
     protected IAction reviewAction;
+    protected QuickFixAction quickFixAction;
 
     /**
      * @see org.eclipse.ui.IWorkbenchPart#createPartControl(Composite)
@@ -198,7 +205,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
             }
         }
     }
-    
+
     /**
      * Test the file filter
      */
@@ -212,7 +219,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     public void setFileSelection(boolean flChecked) {
         fileSelectAction.setChecked(flChecked);
     }
-    
+
     /**
      * Test the project filter
      */
@@ -226,35 +233,35 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     public void setProjectSelection(boolean flChecked) {
         projectSelectAction.setChecked(flChecked);
     }
-    
+
     /**
      * Test the error high filter
      */
     public boolean isErrorHighFilterChecked() {
         return errorHighFilterAction.isChecked();
     }
-    
+
     /**
      * Test the error filter
      */
     public boolean isErrorFilterChecked() {
         return errorFilterAction.isChecked();
     }
-    
+
     /**
      * Test the warning high filter
      */
     public boolean isWarningHighFilterChecked() {
         return warningHighFilterAction.isChecked();
     }
-    
+
     /**
      * Test the warning filter
      */
     public boolean isWarningFilterChecked() {
         return warningFilterAction.isChecked();
     }
-    
+
     /**
      * Test the information filter
      */
@@ -278,7 +285,9 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
         try {
             IMarker[] markers = getSelectedViolations();
             if (markers != null) {
-                rule = PMDPlugin.getDefault().getRuleSet().getRuleByName(markers[0].getAttribute(PMDPlugin.KEY_MARKERATT_RULENAME, ""));
+                rule =
+                    PMDPlugin.getDefault().getRuleSet().getRuleByName(
+                        markers[0].getAttribute(PMDPlugin.KEY_MARKERATT_RULENAME, ""));
             }
         } catch (RuntimeException e) {
             PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_RUNTIME_EXCEPTION, e);
@@ -293,7 +302,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     public IMarker[] getSelectedViolations() {
         IMarker[] markers = null;
         ISelection selection = violationTableViewer.getSelection();
-        if ( (selection != null) && (selection instanceof IStructuredSelection)) {
+        if ((selection != null) && (selection instanceof IStructuredSelection)) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             markers = new IMarker[structuredSelection.size()];
             Iterator i = structuredSelection.iterator();
@@ -305,7 +314,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
 
         return markers;
     }
-    
+
     /**
      * Remove the selected violation
      */
@@ -316,9 +325,9 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
                 IWorkspace workspace = ResourcesPlugin.getWorkspace();
                 workspace.run(new IWorkspaceRunnable() {
                     public void run(IProgressMonitor monitor) throws CoreException {
-						for (int i = 0; i < markers.length; i++) {
-							markers[i].delete();
-						}
+                        for (int i = 0; i < markers.length; i++) {
+                            markers[i].delete();
+                        }
                     }
                 }, null);
             } catch (CoreException e) {
@@ -462,6 +471,9 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
                 manager.add(showRuleAction);
                 manager.add(removeViolationAction);
                 manager.add(reviewAction);
+                
+                quickFixAction.setEnabled(quickFixAction.hasQuickFix());
+                manager.add(quickFixAction);
 
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
@@ -482,7 +494,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
         IToolBarManager toolBarMgr = actionBars.getToolBarManager();
 
         toolBarMgr.add(removeViolationAction);
-        
+
         toolBarMgr.add(new Separator());
 
         toolBarMgr.add(errorHighFilterAction);
@@ -542,7 +554,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
         showRuleAction = new ShowRuleAction(this);
         showRuleAction.setText(getMessage(PMDConstants.MSGKEY_VIEW_ACTION_SHOW_RULE));
         showRuleAction.setToolTipText(getMessage(PMDConstants.MSGKEY_VIEW_TOOLTIP_SHOW_RULE));
-        
+
         removeViolationAction = new RemoveViolationAction(this);
         removeViolationAction.setText(getMessage(PMDConstants.MSGKEY_VIEW_ACTION_REMOVE_VIOLATION));
         removeViolationAction.setToolTipText(getMessage(PMDConstants.MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION));
@@ -551,6 +563,10 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
         reviewAction = new ReviewAction(this);
         reviewAction.setText(getMessage(PMDConstants.MSGKEY_VIEW_ACTION_REVIEW));
         reviewAction.setToolTipText(getMessage(PMDConstants.MSGKEY_VIEW_TOOLTIP_REVIEW));
+
+        quickFixAction = new QuickFixAction(this);
+        quickFixAction.setText(getMessage(PMDConstants.MSGKEY_VIEW_ACTION_QUICKFIX));
+        quickFixAction.setToolTipText(getMessage(PMDConstants.MSGKEY_VIEW_TOOLTIP_QUICKFIX));
     }
 
 }

@@ -4,15 +4,13 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -28,6 +26,12 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2003/11/30 22:57:37  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.4.2.1  2003/11/04 16:27:19  phherlin
+ * Refactor to use the adaptable framework instead of downcasting
+ *
  * Revision 1.4  2003/05/19 22:27:33  phherlin
  * Refactoring to improve performance
  *
@@ -92,22 +96,18 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                 Object element = i.next();
 
                 try {
-                    if (element instanceof IResource) {
-                        ((IResource) element).deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    } else if (element instanceof ICompilationUnit) {
-                        IResource resource = ((ICompilationUnit) element).getResource();
-                        resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    } else if (element instanceof IJavaProject) {
-                        IResource resource = ((IJavaProject) element).getResource();
-                        resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    } else if (element instanceof IPackageFragment) {
-                        IResource resource = ((IPackageFragment) element).getResource();
-                        resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    } else if (element instanceof IPackageFragmentRoot) {
-                        IResource resource = ((IPackageFragmentRoot) element).getResource();
-                        resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    } else {// else no processing for other types
-                        log.info(element.getClass().getName() + " : Removing markers on this resource's type is not supported");
+                    if (element instanceof IAdaptable) {
+                        IAdaptable adaptable = (IAdaptable) element;
+                        IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+                        if (resource != null) {
+                            resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                        } else {
+                            log.warn("The selected object cannot adapt to a resource");
+                            log.debug("   -> selected object : " + element);
+                        }
+                    } else {
+                        log.warn("The selected object is not adaptable");
+                        log.debug("   -> selected object : " + element);
                     }
                 } catch (CoreException e) {
                     PMDPlugin.getDefault().showError(

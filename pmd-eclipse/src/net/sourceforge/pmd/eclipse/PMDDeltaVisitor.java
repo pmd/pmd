@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.eclipse;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
@@ -17,6 +15,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Philippe Herlin
  * @version $Revision$
  * $Log$
+ * Revision 1.6  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.5.2.1  2003/11/04 13:26:38  phherlin
+ * Implement the working set feature (working set filtering)
+ *
  * Revision 1.5  2003/06/19 20:56:59  phherlin
  * Improve progress indicator accuracy
  *
@@ -27,11 +31,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * Adding logging
  *
  */
-public class PMDDeltaVisitor implements IResourceDeltaVisitor {
+public class PMDDeltaVisitor extends PMDAbstractVisitor implements IResourceDeltaVisitor {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDDeltaVisitor");
-    private IProgressMonitor monitor;
-    private boolean useTaskMarker = false;
-    private Map accumulator;
 
     /**
      * Default construtor
@@ -43,7 +44,7 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
      * Constructor with monitor
      */
     public PMDDeltaVisitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
+        setMonitor(monitor);
     }
 
     /**
@@ -51,6 +52,7 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
      */
     public boolean visit(IResourceDelta delta) throws CoreException {
         boolean fProcessChildren = true;
+        IProgressMonitor monitor = getMonitor();
 
         if ((monitor == null) || ((monitor != null) && (!monitor.isCanceled()))) {
             if (delta.getKind() == IResourceDelta.ADDED) {
@@ -95,64 +97,21 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
      * @param resource the resource to process
      */
     private void processResource(IResource resource) {
-        if ((resource instanceof IFile)
-            && (((IFile) resource).getFileExtension() != null)
-            && ((IFile) resource).getFileExtension().equals("java")) {
+        IFile file = (IFile) resource.getAdapter(IFile.class);
+        if ((file != null)
+            && (file.getFileExtension() != null)
+            && (file.getFileExtension().equals("java"))) {
                 
-            if (monitor != null) {
-                monitor.subTask(((IFile) resource).getName());
+            if (getMonitor() != null) {
+                getMonitor().subTask(((IFile) resource).getName());
+            }            
+                
+            if (isFileInWorkingSet(file)) {
+                PMDProcessor.getInstance().run(file, isUseTaskMarker(), getAccumulator());
+            } else {
+                log.debug("The file " + file.getName() + " is not in the working set");
             }
-            
-            PMDProcessor.getInstance().run((IFile) resource, useTaskMarker, getAccumulator());
         }
-    }
-
-    /**
-     * Returns the monitor.
-     * @return IProgressMonitor
-     */
-    public IProgressMonitor getMonitor() {
-        return monitor;
-    }
-
-    /**
-     * Sets the monitor.
-     * @param monitor The monitor to set
-     */
-    public void setMonitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
-    }
-
-    /**
-     * Returns the useTaskMarker.
-     * @return boolean
-     */
-    public boolean isUseTaskMarker() {
-        return useTaskMarker;
-    }
-
-    /**
-     * Sets the useTaskMarker.
-     * @param useTaskMarker The useTaskMarker to set
-     */
-    public void setUseTaskMarker(boolean useTaskMarker) {
-        this.useTaskMarker = useTaskMarker;
-    }
-
-    /**
-     * Returns the accumulator.
-     * @return Map
-     */
-    public Map getAccumulator() {
-        return accumulator;
-    }
-
-    /**
-     * Sets the accumulator.
-     * @param accumulator The accumulator to set
-     */
-    public void setAccumulator(Map accumulator) {
-        this.accumulator = accumulator;
     }
 
 }

@@ -23,6 +23,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -40,6 +41,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.IWorkingSetManager;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
@@ -50,8 +54,20 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.16  2003/10/30 16:59:42  phherlin
- * Merging v1.2.1 features : refactoring JDK 1.3 compatibility feature
+ * Revision 1.17  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.15.2.4  2003/11/07 14:33:57  phherlin
+ * Implementing the "project ruleset" feature
+ *
+ * Revision 1.15.2.3  2003/11/04 13:26:38  phherlin
+ * Implement the working set feature (working set filtering)
+ *
+ * Revision 1.15.2.2  2003/10/29 14:26:05  phherlin
+ * Refactoring JDK 1.3 compatibility feature. Now use the compiler compliance option.
+ *
+ * Revision 1.15.2.1  2003/10/29 13:22:34  phherlin
+ * Fix JDK1.3 runtime problem (Thanks to Eduard Naum)
  *
  * Revision 1.15  2003/10/16 22:26:37  phherlin
  * Fix bug #810858.
@@ -116,6 +132,19 @@ public class PMDPlugin extends AbstractUIPlugin {
         new QualifiedName(PLUGIN_ID + ".sessprops", "active_rulset");
     public static final QualifiedName PERSISTENT_PROPERTY_ACTIVE_RULESET =
         new QualifiedName(PLUGIN_ID + ".persprops", "active_rulset");
+
+    public static final QualifiedName SESSION_PROPERTY_WORKINGSET =
+        new QualifiedName(PLUGIN_ID + ".sessprops", "workingset");
+    public static final QualifiedName PERSISTENT_PROPERTY_WORKINGSET =
+        new QualifiedName(PLUGIN_ID + ".persprops", "workingset");
+
+    public static final QualifiedName SESSION_PROPERTY_STORE_RULESET_PROJECT =
+        new QualifiedName(PLUGIN_ID + ".sessprops", "store_ruleset_project");
+    public static final QualifiedName PERSISTENT_PROPERTY_STORE_RULESET_PROJECT =
+        new QualifiedName(PLUGIN_ID + ".persprops", "store_ruleset_project");
+
+    public static final QualifiedName SESSION_PROPERTY_RULESET_MODIFICATION_STAMP =
+        new QualifiedName(PLUGIN_ID + ".sessprops", "ruleset_modification_stamp");
 
     public static final String LIST_DELIMITER = ";";
 
@@ -265,12 +294,31 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         return subRuleSet;
     }
-
+    
     /**
      * Get the rulset configured for the resouce.
      * Currently, it is the one configured for the resource's project
      */
     public RuleSet getRuleSetForResource(IResource resource, boolean flCreateProperty) {
+        log.debug("Asking a ruleset for resource " + resource.getName());
+        IProject project = resource.getProject();
+        RuleSet projectRuleSet = null;
+
+        if (isRuleSetStoredInProject(project)) {
+            projectRuleSet = getRuleSetForResourceFromProject(project);
+        } else {
+            projectRuleSet = getRuleSetForResourceFromProperties(resource, flCreateProperty);
+        }
+        
+        return projectRuleSet;
+    }
+    
+    /**
+     * Get the rulset configured for the resouce.
+     * Currently, it is the one configured for the resource's project
+     */
+    public RuleSet getRuleSetForResourceFromProperties(IResource resource, boolean flCreateProperty) {
+        log.debug("Searching a ruleset for resource " + resource.getName() + " in properties");
         boolean flNeedSave = false;
         RuleSet projectRuleSet = null;
         RuleSet configuredRuleSet = getRuleSet();
@@ -311,8 +359,46 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
         } catch (CoreException e) {
             logError("Error when searching for project ruleset. Using the full ruleset.", e);
+            projectRuleSet = getRuleSet();
         }
 
+        return projectRuleSet;
+    }
+    
+    /**
+     * Retrieve a project ruleset from a ruleset file in the project
+     * instead of the plugin properties/preferences
+     * @param project
+     * @return
+     */
+    public RuleSet getRuleSetForResourceFromProject(IProject project) {
+        log.debug("Searching a ruleset for project " + project.getName() + " in the project file");
+        RuleSet projectRuleSet = null;
+        IFile ruleSetFile = project.getFile(".ruleset");
+        if (ruleSetFile.exists()) {
+            try {
+                projectRuleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
+                Long oldModificationStamp = (Long) project.getSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP);
+                long newModificationStamp = ruleSetFile.getModificationStamp();
+                if ((oldModificationStamp == null) || (oldModificationStamp.longValue() != newModificationStamp)) {
+                    RuleSetFactory ruleSetFactory = new RuleSetFactory();
+                    projectRuleSet = ruleSetFactory.createRuleSet(ruleSetFile.getContents());
+                    project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, projectRuleSet);
+                    project.setSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP, new Long(newModificationStamp));
+                }
+            } catch (Exception e) {
+                PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_LOADING_RULESET), e);
+                log.debug("", e);
+                projectRuleSet = null;
+            }
+        }
+
+        // If ruleset cannot be loaded from project, try from properties. 
+        if (projectRuleSet == null) {
+            log.debug("The project does not have a correct ruleset. Return a ruleset from the plugin properties");
+            projectRuleSet = getRuleSetForResourceFromProperties(project, false);
+        }
+        
         return projectRuleSet;
     }
 
@@ -327,8 +413,9 @@ public class PMDPlugin extends AbstractUIPlugin {
                 Rule rule = (Rule) i.next();
                 ruleSelectionList.append(rule.getName()).append(LIST_DELIMITER);
             }
-
+            log.debug("Storing ruleset for resource " + resource.getName());
             resource.setPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET, ruleSelectionList.toString());
+            log.debug("   list : " + ruleSelectionList.toString());
             resource.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, ruleSet);
 
         } catch (CoreException e) {
@@ -345,6 +432,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         
         // First find the ruleset file in the state location
         IPath ruleSetLocation = getStateLocation().append(RULESET_FILE);
+        log.debug("ruleset state location : " + ruleSetLocation.toOSString());
         File ruleSetFile = new File(ruleSetLocation.toOSString());
         if (ruleSetFile.exists()) {
             try {
@@ -368,7 +456,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
         }
         
-        // Finally, build a default ruleser
+        // Finally, build a default ruleset
         if (preferedRuleSet == null) {
             preferedRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(RULESET_DEFAULTLIST[0]));
             for (int i = 1; i < RULESET_DEFAULTLIST.length; i++) {
@@ -574,6 +662,95 @@ public class PMDPlugin extends AbstractUIPlugin {
     public void setReviewAdditionalComment(String string) {
         reviewAdditionalComment = string;
         getPreferenceStore().setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, reviewAdditionalComment);
+    }
+
+    /**
+     * Get the current working set selected of a project
+     * Only one working set is allowed.
+     */
+    public IWorkingSet getProjectWorkingSet(IProject project) {
+        IWorkingSet workingSet = null;
+        boolean flNeedSave = false;
+
+        try {
+            workingSet = (IWorkingSet) project.getSessionProperty(SESSION_PROPERTY_WORKINGSET);
+            if (workingSet == null) {
+                String workingSetName = project.getPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET);
+                if (workingSetName != null) {
+                    IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
+                    workingSet = workingSetManager.getWorkingSet(workingSetName);
+                    if (workingSet != null) {
+                        flNeedSave = true;
+                    }
+                }
+            }
+
+            // If needed store modified ruleset
+            if (flNeedSave) {
+                setProjectWorkingSet(project, workingSet);
+            }
+        } catch (CoreException e) {
+            logError("Error when searching for project workingset. No workingset returned", e);
+        }
+
+        return workingSet;
+    }
+
+    /**
+     * Store a workingset for a project
+     */
+    public void setProjectWorkingSet(IProject project, IWorkingSet workingSet) {
+        try {
+            project.setPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET, workingSet == null ? null : workingSet.getName());
+            project.setSessionProperty(SESSION_PROPERTY_WORKINGSET, workingSet);
+
+        } catch (CoreException e) {
+            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
+        }
+    }
+    
+    /**
+     * Search the store_ruleset_project property
+     * @param project
+     */
+    public boolean isRuleSetStoredInProject(IProject project) {
+        Boolean ruleSetStoredInProject = Boolean.FALSE;
+        boolean flNeedSave = false;
+
+        try {
+            ruleSetStoredInProject = (Boolean) project.getSessionProperty(SESSION_PROPERTY_STORE_RULESET_PROJECT);
+            if (ruleSetStoredInProject == null) {
+                String property = project.getPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT);
+                if (property != null) {
+                    ruleSetStoredInProject = new Boolean(property);
+                    flNeedSave = true;
+                }
+            }
+
+            // If needed store modified ruleset
+            if (flNeedSave) {
+                setRuleSetStoredInProject(project, ruleSetStoredInProject);
+            }
+        } catch (CoreException e) {
+            logError("Error when searching for the store_ruleset_project property. Assuming the project doesn't store it's own ruleset", e);
+        }
+
+        return ruleSetStoredInProject == null ? false : ruleSetStoredInProject.booleanValue();
+    }
+
+    /**
+     * Set the store_ruleset_project property
+     * @param project
+     * @param ruleSetStoredInProject
+     */    
+    public void setRuleSetStoredInProject(IProject project, Boolean ruleSetStoredInProject) {
+        try {
+            project.setPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject == null ? null : ruleSetStoredInProject.toString());
+            project.setSessionProperty(SESSION_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject);
+
+        } catch (CoreException e) {
+            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
+        }
     }
 
 }

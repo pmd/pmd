@@ -7,17 +7,15 @@ import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDVisitor;
 import net.sourceforge.pmd.eclipse.PMDVisitorRunner;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.internal.core.PackageFragmentRoot;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -34,9 +32,15 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.9  2003/10/30 23:27:59  phherlin
- * Merging from eclipse-v2 branch
+ * Revision 1.10  2003/11/30 22:57:37  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.8.2.2  2003/11/04 16:27:19  phherlin
+ * Refactor to use the adaptable framework instead of downcasting
+ *
+ * Revision 1.8.2.1  2003/10/30 22:09:51  phherlin
  * Simplify the code : moving the deep nested CountVisitor class as a first level nested inner class.
+ * This also correct a rule violation from PMD.
  *
  * Revision 1.8  2003/08/13 20:08:40  phherlin
  * Refactoring private->protected to remove warning about non accessible member access in enclosing types
@@ -135,23 +139,19 @@ public class PMDCheckAction implements IObjectActionDelegate {
                     Object element = i.next();
 
                     try {
-                        if (element instanceof IResource) {
-                            new PMDVisitorRunner().run((IResource) element, visitor);
-                        } else if (element instanceof ICompilationUnit) {
-                            IResource resource = ((ICompilationUnit) element).getResource();
-                            new PMDVisitorRunner().run(resource, visitor);
-                        } else if (element instanceof IJavaProject) {
-                            IResource resource = ((IJavaProject) element).getResource();
-                            new PMDVisitorRunner().run(resource, visitor);
-                        } else if (element instanceof IPackageFragment) {
-                            IResource resource = ((IPackageFragment) element).getResource();
-                            new PMDVisitorRunner().run(resource, visitor);
-                        } else if (element instanceof PackageFragmentRoot) {
-                            IResource resource = ((PackageFragmentRoot) element).getResource();
-                            new PMDVisitorRunner().run(resource, visitor);
-                        } else { // else no processing for other types
-                            log.info(element.getClass().getName() + " : PMD check on this resource's type is not supported");
-                        }
+                        if (element instanceof IAdaptable) {
+                            IAdaptable adaptable = (IAdaptable) element;
+                            IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+                            if (resource != null) {
+                                new PMDVisitorRunner().run(resource, visitor);
+                            } else {
+                                log.warn("The selected object cannot adapt to a resource");
+                                log.debug("   -> selected object : " + element);
+                            }
+                        } else {
+                            log.warn("The selected object is not adaptable");
+                            log.debug("   -> selected object : " + element);
+                        }                        
                     } catch (CoreException e) {
                         PMDPlugin.getDefault().showError(
                             PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION),
@@ -177,20 +177,18 @@ public class PMDCheckAction implements IObjectActionDelegate {
                 Object element = i.next();
 
                 try {
-                    if (element instanceof IResource) {
-                        ((IResource) element).accept(visitor);
-                    } else if (element instanceof ICompilationUnit) {
-                        IResource resource = ((ICompilationUnit) element).getResource();
-                        resource.accept(visitor);
-                    } else if (element instanceof IJavaProject) {
-                        IResource resource = ((IJavaProject) element).getResource();
-                        resource.accept(visitor);
-                    } else if (element instanceof IPackageFragment) {
-                        IResource resource = ((IPackageFragment) element).getResource();
-                        resource.accept(visitor);
-                    } else if (element instanceof PackageFragmentRoot) {
-                        IResource resource = ((PackageFragmentRoot) element).getResource();
-                        resource.accept(visitor);
+                    if (element instanceof IAdaptable) {
+                        IAdaptable adaptable = (IAdaptable) element;
+                        IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+                        if (resource != null) {
+                            resource.accept(visitor);
+                        } else {
+                            log.warn("The selected object cannot adapt to a resource");
+                            log.debug("   -> selected object : " + element);
+                        }
+                    } else {
+                        log.warn("The selected object is not adaptable");
+                        log.debug("   -> selected object : " + element);
                     }
                 } catch (CoreException e) {
                     // Ignore any exception

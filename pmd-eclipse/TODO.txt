@@ -1,16 +1,3 @@
 Plans
 -----
-done - implementing Review feature (RFE#787086)
-done - writing doc for Review feature
-done - fixing bug #810858 : Ruleset incorrectly written to XML: wrong encoding
-done - fixing bug #819520 : AST syntax tree does not use &quot; in attributes
-- fixing bug #819518 : AST writes out method return types incorrectly
-- fixing bug #820241 : VariableDeclaration doesn't show variable modifiers
-- implementing lazy check feature (do not run PMD when enabling for a project ; wait still next change)
-- writing doc for lazy check feature
-- implementing working set feature
-- writing doc for working set feature
-- refactoring the JDK1.3 compatibility feature to use the project preferences
-- updating doc about JDK1.3 feature
 - improving CPD support (develop a cpd view for cpd reports)
-- updating doc for CPD support

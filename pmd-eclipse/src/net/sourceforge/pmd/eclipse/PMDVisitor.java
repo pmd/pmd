@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.eclipse;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
@@ -22,8 +20,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.15  2003/10/30 16:29:16  phherlin
- * Adapting to Eclipse v3 M4
+ * Revision 1.16  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.14.2.2  2003/11/04 13:26:38  phherlin
+ * Implement the working set feature (working set filtering)
+ *
+ * Revision 1.14.2.1  2003/11/03 14:40:16  phherlin
+ * Refactoring to remove usage of Eclipse internal APIs
  *
  * Revision 1.14  2003/06/30 22:00:53  phherlin
  * Adding clearer monitor message when visiting files
@@ -41,19 +45,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * refactoring
  *
  */
-public class PMDVisitor implements IResourceVisitor {
+public class PMDVisitor extends PMDAbstractVisitor implements IResourceVisitor {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDVisitor");
-    private IProgressMonitor monitor;
-    private boolean useTaskMarker = false;
-    private Map accumulator;
-
+    
     /**
      * Construct with a progress monitor
      * @param monitor a progress indicator
      */
     public PMDVisitor(IProgressMonitor monitor) {
         log.debug("Instanciating a new visitor");
-        this.monitor = monitor;
+        setMonitor(monitor);
     }
 
     /**
@@ -62,20 +63,26 @@ public class PMDVisitor implements IResourceVisitor {
     public boolean visit(IResource resource) {
         log.debug("Visiting resource " + resource.getName());
         boolean fVisitChildren = true;
+        IProgressMonitor monitor = getMonitor();
 
         if ((monitor == null) || ((monitor != null) && (!monitor.isCanceled()))) {
-            if ((resource instanceof IFile)
-                && (((IFile) resource).getFileExtension() != null)
-                && ((IFile) resource).getFileExtension().equals("java")) {
+            IFile file = (IFile) resource.getAdapter(IFile.class);
+            if ((file != null)
+                && (file.getFileExtension() != null)
+                && (file.getFileExtension().equals("java"))) {
 
                 if (monitor != null) {
                     monitor.subTask(
                         PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_CHECKING_FILE)
                             + " "
-                            + ((IFile) resource).getName());
+                            + file.getName());
                 }
-
-                PMDProcessor.getInstance().run((IFile) resource, useTaskMarker, getAccumulator());
+                
+                if (isFileInWorkingSet(file)) {
+                    PMDProcessor.getInstance().run(file, isUseTaskMarker(), getAccumulator());
+                } else {
+                    log.debug("The file " + file.getName() + " is not in the working set");
+                }
 
                 fVisitChildren = false;
             }
@@ -90,53 +97,6 @@ public class PMDVisitor implements IResourceVisitor {
         }
 
         return fVisitChildren;
-    }
-    /**
-     * Returns the useTaskMarker.
-     * @return boolean
-     */
-    public boolean isUseTaskMarker() {
-        return useTaskMarker;
-    }
-
-    /**
-     * Sets the useTaskMarker.
-     * @param useTaskMarker The useTaskMarker to set
-     */
-    public void setUseTaskMarker(boolean useTaskMarker) {
-        this.useTaskMarker = useTaskMarker;
-    }
-
-    /**
-     * Returns the accumulator.
-     * @return Map
-     */
-    public Map getAccumulator() {
-        log.debug("Returning the accumulator " + accumulator);
-        return accumulator;
-    }
-
-    /**
-     * Sets the accumulator.
-     * @param accumulator The accumulator to set
-     */
-    public void setAccumulator(Map accumulator) {
-        this.accumulator = accumulator;
-        log.debug("Setting accumulator " + accumulator);
-    }
-
-    /**
-     * @return Returns the monitor.
-     */
-    public IProgressMonitor getMonitor() {
-        return monitor;
-    }
-
-    /**
-     * @param monitor The monitor to set.
-     */
-    public void setMonitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
     }
 
 }

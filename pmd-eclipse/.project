@@ -3,6 +3,7 @@
 	<name>pmd-eclipse</name>
 	<comment></comment>
 	<projects>
+		<project>pmd-eclipse-pmd</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -2,7 +2,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="1.2.0"
+   version="2.0.0"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
@@ -12,9 +12,6 @@
       </library>
       <library name="lib/log4j-1.2.8.jar"/>
       <library name="lib/commons-logging.jar"/>
-      <library name="lib/pmd-1.3.jar"/>
-      <library name="lib/jaxen-core-1.0-fcs.jar"/>
-      <library name="lib/saxpath-1.0-fcs.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
@@ -22,6 +19,7 @@
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="net.sourceforge.pmd.core"/>
    </requires>
 
 
@@ -60,6 +58,13 @@
       <attribute
             name="rulename">
       </attribute>
+   </extension>
+   <extension
+         point="org.eclipse.ui.markerResolution">
+      <markerResolutionGenerator
+            markerType="net.sourceforge.pmd.eclipse.pmdMarker"
+            class="net.sourceforge.pmd.eclipse.PMDResolutionGenerator">
+      </markerResolutionGenerator>
    </extension>
    <extension
          id="pmdTaskMarker"
@@ -275,7 +280,7 @@
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
-            primary="true">
+            primary="false">
       </toc>
    </extension>
    <extension

@@ -21,7 +21,6 @@ import net.sourceforge.pmd.TargetJDK1_3;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.internal.resources.MarkerInfo;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -36,8 +35,20 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.13  2003/10/30 16:59:42  phherlin
- * Merging v1.2.1 features : refactoring JDK 1.3 compatibility feature
+ * Revision 1.14  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.12.2.4  2003/11/27 22:18:26  phherlin
+ * Fixing bug #850242 : PMD working from time to time
+ *
+ * Revision 1.12.2.3  2003/11/04 13:27:35  phherlin
+ * Minor corrections in log messages
+ *
+ * Revision 1.12.2.2  2003/11/03 14:40:16  phherlin
+ * Refactoring to remove usage of Eclipse internal APIs
+ *
+ * Revision 1.12.2.1  2003/10/29 14:26:05  phherlin
+ * Refactoring JDK 1.3 compatibility feature. Now use the compiler compliance option.
  *
  * Revision 1.12  2003/10/14 21:25:04  phherlin
  * Adding and implementing "JDK13 compatibility" property.
@@ -147,7 +158,7 @@ public class PMDProcessor {
 
             if (!reviewsList.contains(review)) {
                 markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
-                log.debug("Adding a violation " + violation);
+                log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getLine());
             } else {
                 log.debug(
                     "Ignoring violation of rule "
@@ -159,7 +170,7 @@ public class PMDProcessor {
         }
 
         if (accumulator != null) {
-            log.debug("Adding markerSet to accumulator for file " + file);
+            log.debug("Adding markerSet to accumulator for file " + file.getName());
             accumulator.put(file, markerSet);
         }
     }
@@ -191,7 +202,6 @@ public class PMDProcessor {
         MarkerInfo markerInfo = new MarkerInfo();
 
         markerInfo.setType(type);
-        // markerInfo.setCreationTime(System.currentTimeMillis());
 
         List attributeNames = new ArrayList();
         List values = new ArrayList();
@@ -228,7 +238,9 @@ public class PMDProcessor {
                 values.add(new Integer(IMarker.SEVERITY_WARNING));
                 break;
         }
-        markerInfo.setAttributes((String[]) attributeNames.toArray(new String[attributeNames.size()]), values.toArray());
+
+        markerInfo.setAttributeNames((String[]) attributeNames.toArray(new String[attributeNames.size()]));
+        markerInfo.setAttributeValues(values.toArray());
 
         return markerInfo;
     }
@@ -246,28 +258,31 @@ public class PMDProcessor {
             Stack pendingReviews = new Stack();
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
             while (reader.ready()) {
-                String line = reader.readLine().trim();
-                lineNumber++;
-                if (line.startsWith("/*")) {
-                    if (line.indexOf("*/") == -1) {
-                        comment = true;
-                    }
-                } else if (comment && (line.indexOf("*/") != -1)) {
-                    comment = false;
-                } else if (!comment && line.startsWith(PMDPlugin.REVIEW_MARKER)) {
-                    String tail = line.substring(17);
-                    int index = tail.indexOf(':');
-                    String ruleName = tail.substring(0, index);
-                    pendingReviews.push(ruleName);
-                    findLine = true;
-                } else if (!comment && findLine) {
-                    if (!line.equals("") && !line.startsWith("//")) {
-                        findLine = false;
-                        while (!pendingReviews.empty()) {
-                            Review review = new Review();
-                            review.ruleName = (String) pendingReviews.pop();
-                            review.lineNumber = lineNumber;
-                            reviewsList.add(review);
+                String line = reader.readLine();
+                if (line != null) {
+                    line = line.trim();
+                    lineNumber++;
+                    if (line.startsWith("/*")) {
+                        if (line.indexOf("*/") == -1) {
+                            comment = true;
+                        }
+                    } else if (comment && (line.indexOf("*/") != -1)) {
+                        comment = false;
+                    } else if (!comment && line.startsWith(PMDPlugin.REVIEW_MARKER)) {
+                        String tail = line.substring(17);
+                        int index = tail.indexOf(':');
+                        String ruleName = tail.substring(0, index);
+                        pendingReviews.push(ruleName);
+                        findLine = true;
+                    } else if (!comment && findLine) {
+                        if (!line.equals("") && !line.startsWith("//")) {
+                            findLine = false;
+                            while (!pendingReviews.empty()) {
+                                Review review = new Review();
+                                review.ruleName = (String) pendingReviews.pop();
+                                review.lineNumber = lineNumber;
+                                reviewsList.add(review);
+                            }
                         }
                     }
                 }

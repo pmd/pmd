@@ -6,8 +6,23 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.10  2003/10/30 16:59:42  phherlin
- * Merging v1.2.1 features : refactoring JDK 1.3 compatibility feature
+ * Revision 1.11  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.9.2.5  2003/11/07 14:33:57  phherlin
+ * Implementing the "project ruleset" feature
+ *
+ * Revision 1.9.2.4  2003/11/05 13:11:47  phherlin
+ * Add the Quick fix menu item to the violations view
+ *
+ * Revision 1.9.2.3  2003/11/04 13:26:38  phherlin
+ * Implement the working set feature (working set filtering)
+ *
+ * Revision 1.9.2.2  2003/10/31 16:53:54  phherlin
+ * Implementing lazy check feature
+ *
+ * Revision 1.9.2.1  2003/10/29 14:26:05  phherlin
+ * Refactoring JDK 1.3 compatibility feature. Now use the compiler compliance option.
  *
  * Revision 1.9  2003/09/29 22:38:09  phherlin
  * Adding and implementing "JDK13 compatibility" property.
@@ -35,7 +50,12 @@ public interface PMDConstants {
     // Message keys
     public static final String MSGKEY_PROPERTY_BUTTON_ENABLE = "property.button.enable";
     public static final String MSGKEY_PROPERTY_LABEL_SELECT_RULE = "property.label.select_rule";
-    
+    public static final String MSGKEY_PROPERTY_BUTTON_SELECT_WORKINGSET = "property.button.select_workingset";
+    public static final String MSGKEY_PROPERTY_BUTTON_DESELECT_WORKINGSET = "property.button.deselect_workingset";
+    public static final String MSGKEY_PROPERTY_LABEL_NO_WORKINGSET = "property.label.no_workingset";
+    public static final String MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET = "property.label.selected_workingset";
+    public static final String MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT = "property.button.store_ruleset_project";
+        
     public static final String MSGKEY_PREF_GENERAL_TITLE = "preference.pmd.title";
     public static final String MSGKEY_PREF_GENERAL_LABEL_ADDCOMMENT = "preference.pmd.label.addcomment";
     public static final String MSGKEY_PREF_GENERAL_LABEL_SAMPLE = "preference.pmd.label.sample";
@@ -94,6 +114,7 @@ public interface PMDConstants {
     public static final String MSGKEY_VIEW_TOOLTIP_SHOW_RULE = "view.tooltip.show_rule";
     public static final String MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION = "view.tooltip.remove_violation";
     public static final String MSGKEY_VIEW_TOOLTIP_REVIEW = "view.tooltip.review";
+    public static final String MSGKEY_VIEW_TOOLTIP_QUICKFIX = "view.tooltip.quickfix";
     public static final String MSGKEY_VIEW_ACTION_PROJECT = "view.action.project";
     public static final String MSGKEY_VIEW_ACTION_FILE = "view.action.file";
     public static final String MSGKEY_VIEW_ACTION_ERRORHIGH = "view.action.errorhigh";
@@ -104,6 +125,7 @@ public interface PMDConstants {
     public static final String MSGKEY_VIEW_ACTION_SHOW_RULE = "view.action.show_rule";
     public static final String MSGKEY_VIEW_ACTION_REMOVE_VIOLATION = "view.action.remove_violation";
     public static final String MSGKEY_VIEW_ACTION_REVIEW = "view.action.review";
+    public static final String MSGKEY_VIEW_ACTION_QUICKFIX = "view.action.quickfix";
     public static final String MSGKEY_VIEW_MENU_RESOURCE_FILTER = "view.menu.resource_filter";
     public static final String MSGKEY_VIEW_MENU_PRIORITY_FILTER = "view.menu.priority_filter";
     public static final String MSGKEY_VIEW_DEFAULT_PACKAGE = "view.default_package";
@@ -123,9 +145,12 @@ public interface PMDConstants {
     public static final String MSGKEY_ERROR_WRITING_PREFERENCE = "message.error.writing_preference";
     public static final String MSGKEY_ERROR_STORING_PROPERTY = "message.error.storing_property";
     public static final String MSGKEY_ERROR_FIND_MARKER = "message.error.find_marker";
+    public static final String MSGKEY_ERROR_LOADING_RULESET = "message.error.loading_ruleset";
     
     public static final String MSGKEY_QUESTION_TITLE = "message.question.title";
     public static final String MSGKEY_QUESTION_RULES_CHANGED = "message.question.rules_changed";
+    public static final String MSGKEY_QUESTION_REBUILD_PROJECT = "message.question.rebuild_project";
+    public static final String MSGKEY_QUESTION_CREATE_RULESET_FILE = "message.question.create_ruleset_file";
     
     public static final String MSGKEY_CONFIRM_TITLE = "message.confirm.title";
     public static final String MSGKEY_CONFIRM_RULESET_EXISTS = "message.confirm.ruleset_exists";

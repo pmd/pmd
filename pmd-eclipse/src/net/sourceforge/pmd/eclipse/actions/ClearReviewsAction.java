@@ -34,16 +34,16 @@ import java.util.Iterator;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -60,11 +60,18 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/11/30 22:57:37  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.1.2.1  2003/11/04 16:27:19  phherlin
+ * Refactor to use the adaptable framework instead of downcasting
+ *
  * Revision 1.1  2003/08/14 16:10:41  phherlin
  * Implementing Review feature (RFE#787086)
  *
  */
 public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisitor {
+    private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.ClearReviewsAction");
     private IWorkbenchPart activePart;
     private IProgressMonitor monitor;
 
@@ -152,16 +159,19 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
                 try {
                     while (i.hasNext()) {
                         Object object = (Object) i.next();
-                        if (object instanceof IFile) {
-                            clearReviews((IFile) object);
-                        } else if (object instanceof ICompilationUnit) {
-                            clearReviews((IFile) ((ICompilationUnit) object).getResource());
-                        } else if (object instanceof IResource) {
-                            ((IResource) object).accept(this);
-                        } else if (object instanceof IJavaProject) {
-                            ((IJavaProject) object).getProject().accept(this);
-                        } else if (object instanceof IPackageFragment) {
-                            ((IPackageFragment) object).getResource().accept(this);
+                        
+                        if (object instanceof IAdaptable) {
+                            IAdaptable adaptable = (IAdaptable) object;
+                            IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+                            if (resource != null) {
+                                resource.accept(this);
+                            } else {
+                                log.warn("The selected object cannot adapt to a resource.");
+                                log.debug("   -> selected object" + object);
+                            }
+                        } else {
+                            log.warn("The selected object is not adaptable");
+                            log.debug("   -> selected object = " + object);
                         }
                     }
                 } catch (CoreException e) {

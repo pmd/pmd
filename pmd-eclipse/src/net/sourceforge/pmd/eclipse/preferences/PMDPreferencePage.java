@@ -62,6 +62,12 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2003/11/30 22:57:44  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.11.2.1  2003/11/07 14:30:08  phherlin
+ * Fixing : ruleset description may be null
+ *
  * Revision 1.11  2003/10/16 22:26:37  phherlin
  * Fix bug #810858.
  * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
@@ -489,7 +495,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                                     getShell(),
                                     getMessage(PMDConstants.MSGKEY_PREF_RULESET_DIALOG_TITLE),
                                     getMessage(PMDConstants.MSGKEY_PREF_RULESET_DIALOG_RULESET_DESCRIPTION),
-                                    ruleSet.getDescription().trim(),
+                                    ruleSet.getDescription() == null ? "" : ruleSet.getDescription().trim(),
                                     null);
                             flContinue = input.open() == InputDialog.OK;
                         }

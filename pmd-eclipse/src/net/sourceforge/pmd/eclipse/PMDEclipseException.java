@@ -22,6 +22,9 @@
  */ 
 package net.sourceforge.pmd.eclipse;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+
 /**
  * An exception to encapsulate exceptions thrown by various plug-in components
  * 
@@ -29,11 +32,18 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.1.2.1  2003/10/29 13:22:33  phherlin
+ * Fix JDK1.3 runtime problem (Thanks to Eduard Naum)
+ *
  * Revision 1.1  2003/10/14 21:56:47  phherlin
  * Creation
  *
  */
 public class PMDEclipseException extends Exception {
+    private Throwable cause;   // Waiting for JDK 1.4 !
 
     /**
      * Default Constructor
@@ -56,7 +66,8 @@ public class PMDEclipseException extends Exception {
      * @param cause root exception
      */
     public PMDEclipseException(String message, Throwable cause) {
-        super(message, cause);
+        super(message);
+        setCause(cause);
     }
 
     /**
@@ -64,7 +75,54 @@ public class PMDEclipseException extends Exception {
      * @param cause a root exception
      */
     public PMDEclipseException(Throwable cause) {
-        super(cause);
+        setCause(cause);
+    }
+
+    /**
+     * @return
+     */
+    public Throwable getCause() {
+        return cause;
+    }
+
+    /**
+     * @param throwable
+     */
+    public void setCause(Throwable throwable) {
+        cause = throwable;
+    }
+
+    /**
+     * @see java.lang.Throwable#printStackTrace()
+     */
+    public void printStackTrace() {
+        super.printStackTrace();
+        if (getCause() != null) {
+            System.err.println("Caused by:");
+            getCause().printStackTrace();
+        }
+    }
+
+    /**
+     * @see java.lang.Throwable#printStackTrace(java.io.PrintStream)
+     */
+    public void printStackTrace(PrintStream s) {
+        super.printStackTrace(s);
+        if (getCause() != null) {
+            s.println("Caused by:");
+            getCause().printStackTrace(s);
+        }
+    }
+
+    /**
+     * @see java.lang.Throwable#printStackTrace(java.io.PrintWriter)
+     */
+    public void printStackTrace(PrintWriter s) {
+        super.printStackTrace(s);
+        if (getCause() != null) {
+            s.println("Caused by:");
+            getCause().printStackTrace(s);
+        }
     }
 
 }

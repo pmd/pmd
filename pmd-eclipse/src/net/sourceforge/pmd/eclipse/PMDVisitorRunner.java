@@ -7,10 +7,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.internal.resources.MarkerInfo;
-import org.eclipse.core.internal.resources.MarkerManager;
-import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -28,8 +26,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/10/30 16:29:16  phherlin
- * Adapting to Eclipse v3 M4
+ * Revision 1.3  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.1.2.1  2003/11/03 14:40:17  phherlin
+ * Refactoring to remove usage of Eclipse internal APIs
  *
  * Revision 1.1  2003/05/19 22:27:33  phherlin
  * Refactoring to improve performance
@@ -50,7 +51,7 @@ public class PMDVisitorRunner {
         setMonitor(visitor.getMonitor());
         visitor.setAccumulator(markerDirectives);
         resource.accept(visitor);
-        runApplyDirectives(markerDirectives);
+        doApplyDirectives(markerDirectives);
         markerDirectives.clear();
     }
 
@@ -63,10 +64,10 @@ public class PMDVisitorRunner {
      */
     public void run(IProject project, PMDVisitor visitor) throws CoreException {
         Map markerDirectives = new HashMap();
-		setMonitor(visitor.getMonitor());
+        setMonitor(visitor.getMonitor());
         visitor.setAccumulator(markerDirectives);
         project.accept(visitor);
-        runApplyDirectives(markerDirectives);
+        doApplyDirectives(markerDirectives);
         markerDirectives.clear();
     }
 
@@ -80,15 +81,16 @@ public class PMDVisitorRunner {
         setMonitor(visitor.getMonitor());
         visitor.setAccumulator(markerDirectives);
         resourceDelta.accept(visitor);
-        runApplyDirectives(markerDirectives);
+        doApplyDirectives(markerDirectives);
         markerDirectives.clear();
     }
-    
+
     /**
-     * Apply the marker changes in a bacth workspace job
+     * Apply the markers on a workspace batch job
      * @param markerDirectives map of new marker informations
+     * @throws CoreException
      */
-    private void runApplyDirectives(final Map markerDirectives) throws CoreException {
+    private void doApplyDirectives(final Map markerDirectives) throws CoreException {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(new IWorkspaceRunnable() {
             public void run(IProgressMonitor monitor) throws CoreException {
@@ -106,17 +108,23 @@ public class PMDVisitorRunner {
             log.info("Processing marker directives");
             Set filesSet = markerDirectives.keySet();
             Iterator i = filesSet.iterator();
-            Workspace workspace = (Workspace) ResourcesPlugin.getWorkspace();
-			MarkerManager markerManager = workspace.getMarkerManager();
 
             while (i.hasNext()) {
-				IFile file = (IFile) i.next();
+                IFile file = (IFile) i.next();
+
                 try {
+
                     Set markerInfoSet = (Set) markerDirectives.get(file);
                     file.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    markerManager.add(file, (MarkerInfo[]) markerInfoSet.toArray(new MarkerInfo[markerInfoSet.size()]));
-				} catch (CoreException e) {
-					log.warn("CoreException when setting marker info for file " + file.getName() + " : " + e.getMessage());
+                    Iterator j = markerInfoSet.iterator();
+                    while (j.hasNext()) {
+                        MarkerInfo markerInfo = (MarkerInfo) j.next();
+                        IMarker marker = file.createMarker(markerInfo.getType());
+                        marker.setAttributes(markerInfo.getAttributeNames(), markerInfo.getAttributeValues());
+                    }
+
+                } catch (CoreException e) {
+                    log.warn("CoreException when setting marker info for file " + file.getName() + " : " + e.getMessage());
                 }
             }
 
@@ -126,14 +134,14 @@ public class PMDVisitorRunner {
     }
 
     /**
-     * @return Returns the monitor.
+     * @return
      */
     public IProgressMonitor getMonitor() {
         return monitor;
     }
 
     /**
-     * @param monitor The monitor to set.
+     * @param monitor
      */
     public void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;

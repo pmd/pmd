@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -21,12 +22,16 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Process PMDGenerateAST action menu.
@@ -36,6 +41,12 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2003/11/30 22:57:37  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.6.2.1  2003/11/04 16:27:19  phherlin
+ * Refactor to use the adaptable framework instead of downcasting
+ *
  * Revision 1.6  2003/10/27 20:14:13  phherlin
  * Refactoring AST generation. Using a ASTWriter.
  *
@@ -50,9 +61,10 @@ import org.eclipse.ui.IWorkbenchPart;
  * Displaying error dialog in a thread safe way
  *
  */
-public class PMDGenerateASTAction implements IObjectActionDelegate {
+public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWithProgress {
     private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDGenerateASTAction");
     private IWorkbenchPart targetPart;
+    private IStructuredSelection structuredSelection;
 
     /**
      * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
@@ -68,15 +80,14 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
         log.info("Generation AST action requested");
         ISelection sel = targetPart.getSite().getSelectionProvider().getSelection();
         if (sel instanceof IStructuredSelection) {
-            IStructuredSelection structuredSel = (IStructuredSelection) sel;
-            for (Iterator i = structuredSel.iterator(); i.hasNext();) {
-                Object element = i.next();
-                if (element instanceof IFile) {
-                    generateAST((IFile) element);
-                } else if (element instanceof ICompilationUnit) {
-                    IResource resource = ((ICompilationUnit) element).getResource();
-                    generateAST((IFile) resource);
-                } // else no processing for other types
+            this.structuredSelection = (IStructuredSelection) sel;
+            ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+            try {
+                dialog.run(false, false, this);
+            } catch (InvocationTargetException e) {
+                PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+            } catch (InterruptedException e) {
+                PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
             }
         }
     }
@@ -127,6 +138,31 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
             PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
         } catch (PMDEclipseException e) {
             PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
+        }
+    }
+
+    /**
+     * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+     */
+    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+        monitor.beginTask("", this.structuredSelection.size());
+        for (Iterator i = this.structuredSelection.iterator(); i.hasNext();) {
+            Object element = i.next();
+            if (element instanceof IAdaptable) {
+                IAdaptable adaptable = (IAdaptable) element;
+                IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+                if (resource != null) {
+                    monitor.subTask(resource.getName());
+                    generateAST((IFile) resource);
+                    monitor.worked(1);
+                } else {
+                    log.warn("The selected object cannot adapt to a resource");
+                    log.debug("   -> selected object : " + element);
+                }
+            } else {
+                log.warn("The selected object is not adaptable");
+                log.debug("   -> selected object : " + element);
+            }
         }
     }
 

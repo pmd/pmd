@@ -14,6 +14,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -32,6 +34,12 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/11/30 22:57:43  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.1.2.1  2003/11/07 14:31:48  phherlin
+ * Reverse to identation usage, remove dummy text nodes
+ *
  * Revision 1.1  2003/10/16 22:26:37  phherlin
  * Fix bug #810858.
  * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
@@ -48,6 +56,7 @@ import org.w3c.dom.Text;
  *
  */
 public class RuleSetWriterImpl implements RuleSetWriter {
+    private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.RuleSetWriterImpl");
 
     /**
      * Write a ruleset as an XML stream
@@ -65,8 +74,7 @@ public class RuleSetWriterImpl implements RuleSetWriter {
 
             OutputFormat outputFormat = new OutputFormat(doc);
             outputFormat.setEncoding("UTF-8");
-            outputFormat.setPreserveSpace(true);
-            outputFormat.setPreserveEmptyAttributes(true);
+            outputFormat.setIndenting(true);
             DOMSerializer serializer = new XMLSerializer(writer, outputFormat);
             serializer.serialize(doc);
 
@@ -97,7 +105,9 @@ public class RuleSetWriterImpl implements RuleSetWriter {
 
         Iterator rules = ruleSet.getRules().iterator();
         while (rules.hasNext()) {
-            Element ruleElement = getRuleElement(doc, (Rule) rules.next());
+            Rule rule = (Rule) rules.next();
+            log.debug("Serializing rule " + rule.getName());
+            Element ruleElement = getRuleElement(doc, rule);
             ruleSetElement.appendChild(ruleElement);
         }
 
@@ -153,8 +163,6 @@ public class RuleSetWriterImpl implements RuleSetWriter {
      */
     private Element getExampleElement(Document doc, String example) {
         Element exampleElement = doc.createElement("example");
-        Text dummy = doc.createTextNode("\n");
-        exampleElement.appendChild(dummy);
         CDATASection cdataSection = doc.createCDATASection(example);
         exampleElement.appendChild(cdataSection);
         return exampleElement;
@@ -181,14 +189,11 @@ public class RuleSetWriterImpl implements RuleSetWriter {
      */
     private Element getPropertiesElement(Document doc, Properties properties) {
         Element propertiesElement = doc.createElement("properties");
-        Text dummy = doc.createTextNode("\n");
-        propertiesElement.appendChild(dummy);
         Enumeration keys = properties.keys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             Element propertyElement = getPropertyElement(doc, (String) key, (String) properties.get(key));
             propertiesElement.appendChild(propertyElement);        
-            propertiesElement.appendChild(dummy);
         }
         return propertiesElement;
     }
@@ -205,8 +210,6 @@ public class RuleSetWriterImpl implements RuleSetWriter {
         propertyElement.setAttribute("name", key);
         if (key.equals("xpath")) {
             Element valueElement = doc.createElement("value");
-            Text dummy = doc.createTextNode("\n");
-            valueElement.appendChild(dummy);
             CDATASection cdataSection = doc.createCDATASection(value);
             valueElement.appendChild(cdataSection);
             propertyElement.appendChild(valueElement);

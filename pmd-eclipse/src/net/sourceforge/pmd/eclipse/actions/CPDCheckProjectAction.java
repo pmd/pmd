@@ -10,12 +10,12 @@ import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.eclipse.CPDReportWindow;
 import net.sourceforge.pmd.eclipse.CPDVisitor;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -34,6 +34,12 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2003/11/30 22:57:37  phherlin
+ * Merging from eclipse-v2 development branch
+ *
+ * Revision 1.6.2.1  2003/11/04 16:27:19  phherlin
+ * Refactor to use the adaptable framework instead of downcasting
+ *
  * Revision 1.6  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -71,11 +77,18 @@ public class CPDCheckProjectAction implements IObjectActionDelegate, IRunnableWi
                 StructuredSelection ss = (StructuredSelection) sel;
                 for (Iterator iter = ss.iterator(); iter.hasNext();) {
                     Object obj = iter.next();
-                    if (obj instanceof IProject) {
-                        ((IProject) obj).accept(visitor);
-                    } else if (obj instanceof IJavaProject) {
-                        IResource resource = ((IJavaProject) obj).getResource();
-                        resource.accept(visitor);
+                    if (obj instanceof IAdaptable) {
+                        IAdaptable adaptable = (IAdaptable) obj;
+                        IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+                        if (resource != null) {
+                            resource.accept(visitor);
+                        } else {
+                            log.warn("The selected object cannot adapt to a resource");
+                            log.debug("   -> selected object : " + obj);
+                        }
+                    } else {
+                        log.warn("The selected object is not adaptable");
+                        log.warn("   -> selected object : " + obj);
                     }
                 }
 
