@@ -7,6 +7,39 @@ These are new rules for the next release
   </description>
 
 
-        
+    <rule name="SimplifyStartsWith"
+          message="This call to String.startsWith can be rewritten using String.charAt(0)"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+//PrimaryExpression
+ [PrimaryPrefix/Name
+  [ends-with(@Image, '.startsWith')]]
+ [PrimarySuffix/Arguments/ArgumentList
+  /Expression/PrimaryExpression/PrimaryPrefix
+  /Literal
+   [string-length(@Image)=3]
+   [starts-with(@Image, '"')]
+   [ends-with(@Image, '"')]
+ ]
+ ]]>
+            </value>
+        </property>
+    </properties>
+        <priority>3</priority>
+      <example>
+  <![CDATA[public class Foo {
+      boolean checkIt(String x) {
+          return x.startsWith("a");
+      }
+  }]]>
+      </example>
+    </rule>
+
 </ruleset>
 
