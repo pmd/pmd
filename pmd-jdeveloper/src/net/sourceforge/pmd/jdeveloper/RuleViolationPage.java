@@ -17,7 +17,7 @@ public class RuleViolationPage extends AbstractLogPage {
     private JList list;
 
     public RuleViolationPage() {
-        super(new ViewId("PMDPage", "PMD"), null, false);
+        super(new ViewId("PMDPage", Plugin.TITLE), null, false);
         list = new JList(model);
         list.setSelectionModel(new JumpingSelectionModel(model));
         scrollPane = new JScrollPane(list);
@@ -33,7 +33,6 @@ public class RuleViolationPage extends AbstractLogPage {
     }
 
     public void clearAll() {
-        super.clearAll();
         model.clear();
     }
 }

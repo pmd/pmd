@@ -3,17 +3,18 @@ package net.sourceforge.pmd.jdeveloper;
 import net.sourceforge.pmd.RuleViolation;
 
 public class RuleViolationWrapper {
-    private RuleViolation rv;
 
-    public RuleViolationWrapper(RuleViolation rv) {
-        this.rv = rv;
+    private RuleViolation ruleViolation;
+
+    public RuleViolationWrapper(RuleViolation ruleViolation) {
+        this.ruleViolation = ruleViolation;
     }
 
-    public RuleViolation getRV() {
-        return this.rv;
+    public RuleViolation getRuleViolation() {
+        return this.ruleViolation;
     }
 
     public String toString() {
-        return rv.getFilename() + ":" + rv.getLine() +":"+ rv.getDescription();
+        return ruleViolation.getFilename() + " : " + ruleViolation.getLine() +" : "+ ruleViolation.getDescription();
     }
 }

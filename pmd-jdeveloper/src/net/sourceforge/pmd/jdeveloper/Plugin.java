@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.jdeveloper;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMDException;
 import oracle.ide.AddinManager;
 import oracle.ide.ContextMenu;
 import oracle.ide.Ide;
@@ -14,40 +14,28 @@ import oracle.ide.addin.Context;
 import oracle.ide.addin.ContextMenuListener;
 import oracle.ide.addin.Controller;
 import oracle.ide.config.IdeSettings;
-import oracle.ide.model.DirectoryFolder;
-import oracle.ide.model.Element;
-import oracle.ide.model.PackageFolder;
-import oracle.ide.model.Workspace;
-import oracle.ide.model.Workspaces;
-import oracle.ide.model.Project;
 import oracle.ide.model.Document;
+import oracle.ide.model.Element;
+import oracle.ide.model.Project;
 import oracle.ide.panels.Navigable;
-import oracle.jdeveloper.model.BusinessComponents;
-import oracle.jdeveloper.model.EnterpriseJavaBeans;
 import oracle.jdeveloper.model.JProject;
 import oracle.jdeveloper.model.JavaSourceNode;
-import oracle.jdeveloper.model.JavaSources;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Iterator;
-import java.util.List;
 
 public class Plugin implements Addin, Controller, ContextMenuListener {
 
     public static final String CHECK_CMD = "net.sourceforge.pmd.jdeveloper.Check";
     public static final int CHECK_CMD_ID = Ide.newCmd("PMDJDeveloperPlugin.CHECK_CMD_ID");
+    public static final String TITLE = "PMD";
 
-    private static final int INVALID = -1;
+    private static final int UNUSED = -1;
     private static final int SOURCE = 0;
-    private static final int SOURCES = 1;
-    private static final int WORKSPACE = 2;
-    private static final int WORKSPACES = 3;
-    private static final int PACKAGE = 4;
-    private static final int DIRECTORY = 5;
     private static final int PROJECT = 6;
-    private static final int EJB = 7;
-    private static final int BUSINESS = 8;
 
     private JMenuItem checkItem;
     private RuleViolationPage rvPage;
@@ -58,19 +46,15 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
 
     // Addin
     public void initialize() {
-        AddinManager addinManager = Ide.getAddinManager();
-        String command = addinManager.getCommand(CHECK_CMD_ID, CHECK_CMD);
-        String category = "PMD";
-        IdeAction action = IdeAction.get(CHECK_CMD_ID, command, "PMD", category, null, null, null, true);
+        IdeAction action = IdeAction.get(CHECK_CMD_ID, Ide.getAddinManager().getCommand(CHECK_CMD_ID, CHECK_CMD), TITLE, TITLE, null, null, null, true);
         action.setController(this);
         checkItem = Ide.getMenubar().createMenuItem(action);
-        checkItem.setText("PMD");
+        checkItem.setText(TITLE);
         checkItem.setMnemonic('P');
         Ide.getNavigatorManager().addContextMenuListener(this, null);
         Ide.getEditorManager().getContextMenu().addContextMenuListener(this, null);
-        System.out.println("PMD JDeveloper Extension " + getVersion());
-        IdeSettings.registerUI(new Navigable("PMD", SettingsPanel.class, new Navigable[] {}));
-        Ide.getVersionInfo().addComponent("PMD", " JDeveloper Extension " + getVersion());
+        IdeSettings.registerUI(new Navigable(TITLE, SettingsPanel.class, new Navigable[] {}));
+        Ide.getVersionInfo().addComponent(TITLE, " JDeveloper Extension " + getVersion());
     }
 
     public void shutdown() {
@@ -99,130 +83,88 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     public boolean handleEvent(IdeAction ideAction, Context context) {
         if (ideAction.getCommandId() == CHECK_CMD_ID) {
             try {
+                PMD pmd = new PMD();
+                SelectedRules rs = new SelectedRules();
+                RuleContext ctx = new RuleContext();
+                ctx.setReport(new Report());
                 if (resolveType(context.getDocument()) == PROJECT) {
-                   Project proj = (Project)context.getDocument();
-                    List foo = proj.getListOfChildren();
-                    PMD pmd = new PMD();
-                    SelectedRules rs = new SelectedRules();
-                    RuleContext ctx = new RuleContext();
-                    ctx.setReport(new Report());
-                    for (Iterator i = foo.iterator(); i.hasNext();) {
-                        Document d = (Document)i.next();
-                        if (d.getLongLabel().endsWith(".java")) {
-                            ctx.setSourceCodeFilename(d.getLongLabel());
-                            System.out.println("processing " + d.getLongLabel());
-                            pmd.processFile(context.getDocument().getInputStream(), rs.getSelectedRules(), ctx);
+                    for (Iterator i = ((Project)context.getDocument()).getListOfChildren().iterator(); i.hasNext();) {
+                        Document candidate = (Document)i.next();
+                        if (candidate.getLongLabel().endsWith(".java")) {
+                            ctx.setSourceCodeFilename(candidate.getLongLabel());
+                            FileInputStream fis = new FileInputStream(new File(candidate.getLongLabel()));
+                            pmd.processFile(fis, rs.getSelectedRules(), ctx);
+                            fis.close();
                         }
                     }
-                    if (rvPage == null) {
-                        rvPage = new RuleViolationPage();
-                    }
-                    if (!rvPage.isVisible()) {
-                        rvPage.show();
-                    }
-                    rvPage.clearAll();
-                    if (ctx.getReport().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                            rvPage.add((RuleViolation)i.next());
-                        }
-                    }
-                } else {
-                    PMD pmd = new PMD();
-                    RuleContext ctx = new RuleContext();
-                    ctx.setReport(new Report());
+                    render(ctx);
+                } else if (resolveType(context.getDocument()) == SOURCE) {
                     ctx.setSourceCodeFilename(context.getDocument().getLongLabel());
-                    SelectedRules rs = new SelectedRules();
                     pmd.processFile(context.getDocument().getInputStream(), rs.getSelectedRules(), ctx);
-                    if (rvPage == null) {
-                        rvPage = new RuleViolationPage();
-                    }
-                    if (!rvPage.isVisible()) {
-                        rvPage.show();
-                    }
-                    rvPage.clearAll();
-                    if (ctx.getReport().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                            rvPage.add((RuleViolation)i.next());
-                        }
-                    }
+                    render(ctx);
                 }
                 return true;
             } catch (PMDException e) {
                 e.printStackTrace();
                 e.getOriginalException().printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error while running PMD: " + e.getMessage(), TITLE, JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error while running PMD: " + e.getMessage(), TITLE, JOptionPane.ERROR_MESSAGE);
             }
        }
         return true;
+    }
+
+    private void render(RuleContext ctx) {
+        if (rvPage == null) {
+            rvPage = new RuleViolationPage();
+        }
+        if (!rvPage.isVisible()) {
+            rvPage.show();
+        }
+        rvPage.clearAll();
+        if (ctx.getReport().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+                rvPage.add((RuleViolation)i.next());
+            }
+        }
     }
 
     public boolean update(IdeAction ideAction, Context context) {
         return false;
     }
 
-    public void checkCommands(Context context, Controller controller) {
-    }
+    public void checkCommands(Context context, Controller controller) {}
     // Controller
 
-    // Controller
+    // ContextMenuListener
     public void poppingUp(ContextMenu contextMenu) {
-        if (contextMenu != null) {
-            Context context = contextMenu.getContext();
-            if (context != null) {
-                Element doc = context.getDocument();
-                if (resolveType(doc) == PROJECT || resolveType(doc) == SOURCE) {
-                    contextMenu.add(checkItem);
-                }
-            }
+        Element doc = contextMenu.getContext().getDocument();
+        if (resolveType(doc) == PROJECT || resolveType(doc) == SOURCE) {
+            contextMenu.add(checkItem);
         }
     }
 
-    public void poppingDown(ContextMenu contextMenu) {
-    }
+    public void poppingDown(ContextMenu contextMenu) {}
 
     public boolean handleDefaultAction(Context context) {
         return false;
     }
-    // Controller
+    // ContextMenuListener
 
     public static String getVersion() {
         return Package.getPackage("net.sourceforge.pmd.jdeveloper").getImplementationVersion();
     }
 
-    private int resolveType(Element element)
-    {
+    private int resolveType(Element element) {
         if (element instanceof JavaSourceNode) {
             return SOURCE;
-        }
-        if (element instanceof JavaSources) {
-            return SOURCES;
-        }
-        if (element instanceof JProject) {
+        } else if (element instanceof JProject) {
             return PROJECT;
         }
-        if (element instanceof PackageFolder) {
-            return PACKAGE;
-        }
-        if (element instanceof DirectoryFolder) {
-            return DIRECTORY;
-        }
-        if (element instanceof BusinessComponents) {
-            return BUSINESS;
-        }
-        if (element instanceof EnterpriseJavaBeans) {
-            return EJB;
-        }
-        if (element instanceof Workspace) {
-            return WORKSPACE;
-        }
-        if (element instanceof Workspaces) {
-            return WORKSPACES;
-        }
-        return INVALID;
+        return UNUSED;
     }
 }

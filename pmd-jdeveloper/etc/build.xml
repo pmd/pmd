@@ -46,12 +46,10 @@
         <copy file="${lib}/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>
 	</target>
 
-    <target name="release">
-        <antcall target="clean"/>
-        <antcall target="jar"/>
-        <mkdir dir="tmp/jars"/>
-        <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="tmp/jars"/>
-        <copy file="${lib}/${pmdjar}" todir="tmp/jars"/>
+    <target name="release" depends="clean,jar">
+        <mkdir dir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+        <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
+        <copy file="${lib}/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
         <zip zipfile="pmd-jdeveloper-bin-${pluginversion}.zip" basedir="tmp"/>
         <move file="pmd-jdeveloper-bin-${pluginversion}.zip" todir="c:\tmp"/>
         <delete dir="tmp"/>

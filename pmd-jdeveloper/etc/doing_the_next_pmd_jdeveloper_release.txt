@@ -1,39 +1,35 @@
 update the release date in the changelog
-change config/pmd.props to reflect actual pmd.jar file version
-change config/pmd.props to reflect pmd-jedit release 1.4
-change config/jedit.html to reflect pmd-jedit release 1.4
-change the build.xml to reflect pmd-jedit release 1.4
+change the build.xml to reflect pmd-jdeveloper release 0.1
 
 Create the binary release:
 ant release
-move the zip file into c:\tmp
 TESTS:
-1) Can you run jedit ok?
+1) Does it unzip neatly on top of the jdev/ext/lib directory?
 2) Can you run it it on a file and find some unused code?
 3) Are options persistant?
 
 Create the src release:
-cvs -q rtag -D tomorrow "pmd_jedit_release_1_4" pmd-jedit
-rmdir /q /s c:\tmp\pmd-jedit
-mkdir c:\tmp\pmd-jedit
-cvs -q export -d c:\tmp\pmd-jedit -r pmd_jedit_release_1_4 pmd-jedit
-copy pmd-jedit\lib\PMDJEditPlugin-1.4.jar c:\tmp\pmd-jedit\lib
+cvs -q rtag -D tomorrow "pmd_jdeveloper_release_1_4" pmd-jdeveloper
+rmdir /q /s c:\tmp\pmd-jdeveloper
+mkdir c:\tmp\pmd-jdeveloper
+cvs -q export -d c:\tmp\pmd-jdeveloper -r pmd_jdeveloper_release_1_4 pmd-jdeveloper
+copy pmd-jdeveloper\lib\pmd-jdeveloper-0.1.jar c:\tmp\pmd-jdeveloper\lib
 cd c:\tmp
-"c:\program files\winzip\wzzip.exe" -r -p pmd-jedit-src-1.4.zip pmd-jedit
-rmdir /q /s pmd-jedit
+"c:\program files\winzip\wzzip.exe" -r -p pmd-jdeveloper-src-0.1.zip pmd-jdeveloper
+rmdir /q /s pmd-jdeveloper
 
 FTP the zip file to SF
 ftp upload.sourceforge.net
 generic userid/password: anonymous/tom@infoether.com
 cd incoming
 bin
-put pmd-jedit-src-1.4.zip
-put pmd-jedit-bin-1.4.zip
+put pmd-jdeveloper-src-0.1.zip
+put pmd-jdeveloper-bin-0.1.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jedit-src-1.4.zip file
-Add the pmd-jedit-bin-1.4.zip file
+Add the pmd-jdeveloper-src-0.1.zip file
+Add the pmd-jdeveloper-bin-0.1.zip file
 Classify the file
 
-Submit some news saying "hey, new release of the JEdit plugin!"
+Submit some news saying "hey, new release of the jdeveloper plugin!"
