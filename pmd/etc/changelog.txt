@@ -1,6 +1,9 @@
+???? 2003 - 1.3:
+Fixed bug 782246 - FinalFieldCouldBeStatic no longer flags fields in interfaces.
+TODO - fix it so tests and rules don't duplicate the xpath expressions
+
 August 1, 2003 - 1.2.1:
 Fixed bug 781077 - line number "-1" no longer appears for nodes with siblings.
-TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 July 30, 2003 - 1.2:
 Added new rules: VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule, AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking, BooleanInstantiation

@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Paul Roebuck - Bug report</li>
             <li>Maik Schreiber - Bug report</li>
             <li>Erik Lee - Bug report</li>
             <li>Brandon Franklin - pmd-web suggestions</li>
