@@ -5,14 +5,17 @@
 	<property name="lib" value="lib/"/>
 	<property name="build" value="build/"/>
 	<property name="pmdjar" value="pmd-1.04.jar"/>
-	<property name="pluginversion" value="1.5"/>
-	<property name="jedit.install.dir"  value="/home/tom/jedit/4.1/jars"/>
+	<property name="pluginversion" value="1.6"/>
+	<property name="jedit.home" value="c:\Program Files\jEdit 4.1pre9"/>
+	<property name="jedit.jars.dir" value="${jedit.home}\jars"/>
+	<property name="jedit.install.dir"  value="${jedit.jars.dir}"/>
 
 
 	<path id="project.class.path">
-		<pathelement location="${lib}/${pmdjar}"/>
-		<pathelement location="${lib}/jedit.jar"/>
-		<pathelement location="${lib}/ErrorList.jar"/>
+		<!-- I have changed pmdjar location from lib to jedit's jar since the pmd-jar in lib is not updated regularly. -->
+		<pathelement location="${jedit.jars.dir}/${pmdjar}"/>
+		<pathelement location="${jedit.home}/jedit.jar"/>
+		<pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
 		<pathelement location="${lib}/jaxen-core-1.0-fcs.jar"/>
 		<pathelement location="${lib}/saxpath-1.0-fcs.jar"/>
 		<pathelement location="${build}"/>
@@ -36,7 +39,7 @@
 		</javac>
 	</target>
 
-    <target name="jar">
+    <target name="jar" depends="compile">
 		<jar jarfile="${lib}/${ant.project.name}-${pluginversion}.jar">
 			<fileset dir="${build}"/>
 			<fileset dir="${config}">
