@@ -9,18 +9,22 @@ import net.sourceforge.pmd.ast.JavaParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.List;
 
 public class EncodingTest extends TestCase {
 
-    public void testDecodingOfUTF8() throws Throwable {
+    public void testDecodingOfPlatformEncoding() throws Throwable {
+        String platformEncoding = System.getProperty("file.encoding");
+        String iso = "ISO-8859-1";
+        String utf8 = "UTF-8";
+
         TargetJDK1_4 targetJDK1_4 = new TargetJDK1_4();
-        ByteArrayInputStream bis = new ByteArrayInputStream(TEST_UTF8.getBytes());
-        InputStreamReader isr = new InputStreamReader(bis, System.getProperty("file.encoding"));
-        JavaParser parser = targetJDK1_4.createParser(isr);
-        ASTCompilationUnit acu = parser.CompilationUnit();
-        List kids = acu.findChildrenOfType(ASTMethodDeclarator.class);
-        assertEquals("é", ((ASTMethodDeclarator)kids.get(0)).getImage());
+        String code = new String(TEST_UTF8.getBytes(), utf8);
+        InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(code.getBytes()));
+        ASTCompilationUnit acu = targetJDK1_4.createParser(isr).CompilationUnit();
+        String methodName = ((ASTMethodDeclarator)acu.findChildrenOfType(ASTMethodDeclarator.class).get(0)).getImage();
+        assertEquals(new String("é".getBytes(), utf8), methodName);
     }
 
     private static final String TEST_UTF8 =
