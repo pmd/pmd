@@ -73,8 +73,10 @@ public class CPD {
      String[] possibles = dir.list(filter);
      for (int i=0; i<possibles.length; i++) {
         File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
-        if (recurse && tmp.isDirectory()) {
-           scanDirectory(tmp, list, true);
+        if (tmp.isDirectory()) {
+            if (recurse) {
+                scanDirectory(tmp, list, true);
+            }
         } else {
            list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
         }

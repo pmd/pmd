@@ -156,6 +156,7 @@ public class GUI implements CPDListener {
             resultsTextArea.append(renderer.render(cpd));
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Halted due to " + ioe.getClass().getName() + "; " + ioe.getMessage());
         }
     }
 
