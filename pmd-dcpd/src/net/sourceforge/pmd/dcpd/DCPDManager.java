@@ -28,7 +28,7 @@ public class DCPDManager {
     private Job job;
     private TokenSetsWrapper tokenSetWrapper;
 
-    public DCPDManager(String javaSpaceURL) {
+    public DCPDManager(String javaSpaceURL, String codeDirectory, int minimumTileSize) {
         try {
             long start = System.currentTimeMillis();
             System.out.println("Connecting to JavaSpace");
@@ -36,7 +36,7 @@ public class DCPDManager {
 
             System.out.println("Tokenizing");
             job = new Job("java_lang", new Integer((int)System.currentTimeMillis()));
-            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\ref", true), job);
+            tokenSetWrapper = new TokenSetsWrapper(loadTokens(codeDirectory, true), job);
             System.out.println("Tokenizing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Writing the TokenSetsWrapper to the space");
@@ -44,7 +44,7 @@ public class DCPDManager {
             System.out.println("Writing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Crunching");
-            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 30);
+            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, minimumTileSize);
             Results results = dgst.crunch(new CPDListenerImpl());
             System.out.println("Crunching complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
@@ -111,6 +111,16 @@ public class DCPDManager {
     }
 
     public static void main(String[] args) {
-        new DCPDManager(Util.SPACE_SERVER);
+        if (args.length < 2) {
+            System.out.println();
+            System.out.println("Usage: java net.sourceforge.pmd.dcpd.DCPDManager <path> <size>");
+            System.out.println("<path> : your source code directory");
+            System.out.println("<size> : the minimum tile size.  70 is a good place to start, then try lower numbers to find smaller duplicate chunks");
+            System.out.println();
+            System.out.println("Example: java net.sourceforge.pmd.dcpd.DCPDManager /home/tom/myproject/src 75");
+            System.out.println("Example (using the go.bat script): go /home/tom/myproject/src 75");
+            return;
+        }
+        new DCPDManager(Util.SPACE_SERVER, args[0], Integer.parseInt(args[1]));
     }
 }
