@@ -654,6 +654,8 @@ void Name() :
 {
   t=<IDENTIFIER>
   {
+    jjtThis.testingOnly__setBeginLine( t.beginLine);
+    jjtThis.testingOnly__setBeginColumn( t.beginColumn);
     s.append(t.image);
   }
   ( LOOKAHEAD(2) "." t=<IDENTIFIER>

@@ -63,8 +63,7 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="rulesets/imports.xml">
-        <formatter type="net.sourceforge.pmd.renderers.VBHTMLRenderer" toFile="foo.html"/>
+    <pmd rulesetfiles="rulesets/imports.xml" printtoconsole="true">
         <fileset dir="/home/tom/tmp/">
             <include name="Test.java"/>
         </fileset>

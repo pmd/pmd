@@ -10,8 +10,13 @@ public class SimpleNode implements Node {
     protected Node parent;
     protected Node[] children;
     protected int id;
-
     protected JavaParser parser;
+    private String image;
+    private int beginLine = -1;
+    private int endLine;
+    private int beginColumn = -1;
+    private int endColumn;
+    private Scope scope;
 
     public SimpleNode(int i) {
         id = i;
@@ -23,19 +28,20 @@ public class SimpleNode implements Node {
     }
 
     public void jjtOpen() {
-        if (parser.token.next != null) {
+        if (beginLine == -1 && parser.token.next != null) {
             beginLine = parser.token.next.beginLine;
             beginColumn = parser.token.next.beginColumn;
         }
     }
 
-    // NEW STUFF
-    private String image;
-    private int beginLine = -1;
-    private int endLine;
-    private int beginColumn = -1;
-    private int endColumn;
-    private Scope scope;
+    public void jjtClose() {
+        if (beginLine == -1 && (children == null || children.length == 0)) {
+            beginLine = parser.token.beginLine;
+            beginColumn = parser.token.beginColumn;
+        }
+        endLine = parser.token.endLine;
+        endColumn = parser.token.endColumn;
+    }
 
     public void setScope(Scope scope) {
         this.scope = scope;
@@ -48,25 +54,8 @@ public class SimpleNode implements Node {
         return scope;
     }
 
-    public void jjtClose() {
-        if ((children == null) || (children.length == 0)) {
-            beginLine = parser.token.beginLine;
-            beginColumn = parser.token.beginColumn;
-        }
-        endLine = parser.token.endLine;
-        endColumn = parser.token.endColumn;
-    }
-
     public int getBeginLine() {
-        if (beginLine != -1) {
-            return beginLine;
-        } else {
-            if ((children != null) && (children.length > 0)) {
-                return ((SimpleNode) children[0]).getBeginLine();
-            } else {
-                throw new RuntimeException("Unable to determine begining line of Node.");
-            }
-        }
+        return beginLine;
     }
 
     public void testingOnly__setBeginLine(int i) {
@@ -137,8 +126,6 @@ public class SimpleNode implements Node {
             }
         }
     }
-
-    // NEW STUFF
 
     public void jjtSetParent(Node n) {
         parent = n;

@@ -48,17 +48,17 @@ public class SimpleNodeTest extends ParserTst {
         verifyNode((SimpleNode) iter.next(), 1, 8, 1, 20);
     }
 
-    public void testNames() throws Throwable {
-        String code = "import java.io.File; \n public class Foo{}";
-        Set name = getNodes(ASTName.class, code);
-        Iterator i = name.iterator();
-        assertTrue(i.hasNext());
+    private static final String QUALIFIED_NAME =
+    "import java.io.File;" + CPD.EOL +
+    "public class Foo{}";
 
+    public void testNames() throws Throwable {
+        Set name = getNodes(ASTName.class, QUALIFIED_NAME);
+        Iterator i = name.iterator();
         while (i.hasNext()) {
             SimpleNode node = (SimpleNode) i.next();
             if (node.getImage().equals("java.io.File")) {
-                // bug!  should begin at column 8
-                verifyNode(node, 1, 16, 1, 19);
+                verifyNode(node, 1, 8, 1, 19);
             }
         }
     }
@@ -72,8 +72,7 @@ public class SimpleNodeTest extends ParserTst {
         while (i.hasNext()) {
             SimpleNode node = (SimpleNode) i.next();
             if (node.getImage().equals("java.io.File")) {
-                verifyNode(node, 2, 1, 2, 4);
-                // This is a BUG!  Should start on line 1.
+                verifyNode(node, 1, 8, 2, 4);
             }
 
             if (node.getImage().equals("Foo")) {
@@ -84,11 +83,10 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     public void verifyNode(SimpleNode node, int beginLine, int beginCol, int endLine, int endCol) {
-        assertEquals("Wrong Line Number provided for Start: ", beginLine, node.getBeginLine());
-        assertEquals("Wrong Column provided for Begin: ", beginCol, node.getBeginColumn());
-        assertEquals("Wrong Line Number provided for End: ", endLine, node.getEndLine());
-        assertEquals("Wrong Column provide for End: ", endCol, node.getEndColumn());
-
+        assertEquals("Wrong beginning line: ", beginLine, node.getBeginLine());
+        assertEquals("Wrong beginning column: ", beginCol, node.getBeginColumn());
+        assertEquals("Wrong ending line:", endLine, node.getEndLine());
+        assertEquals("Wrong ending column:", endCol, node.getEndColumn());
     }
 
     public void testFindChildrenOfType() {
