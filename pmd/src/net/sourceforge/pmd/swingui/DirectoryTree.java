@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.border.EtchedBorder;
@@ -17,22 +18,20 @@ import javax.swing.tree.TreePath;
  */
 class DirectoryTree extends JTree
 {
-    private PMDViewer m_pmdViewer;
 
     /**
      *******************************************************************************
      *
      */
-    protected DirectoryTree(PMDViewer pmdViewer)
+    protected DirectoryTree()
     {
         super(new DirectoryTreeModel());
-
-        m_pmdViewer = pmdViewer;
 
         setRootVisible(true);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         setCellRenderer(new DirectoryTreeNodeRenderer());
         ((DirectoryTreeModel) getModel()).setDirectoryTree(this);
+        setBackground(PMDLookAndFeel.TREE_BACKGROUND_COLOR);
     }
 
     /**
@@ -44,7 +43,7 @@ class DirectoryTree extends JTree
         String message = "Locating file system root directories.  Please wait...";
         SetupFilesThread setupFilesThread = new SetupFilesThread(message);
 
-        MessageDialog.show(m_pmdViewer, message, setupFilesThread);
+        MessageDialog.show(message, setupFilesThread);
     }
 
     /**
@@ -69,7 +68,7 @@ class DirectoryTree extends JTree
          ***************************************************************************
          *
          */
-        public void run()
+        protected void process()
         {
             DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
 
@@ -79,10 +78,6 @@ class DirectoryTree extends JTree
             TreePath treePath = new TreePath(treeNode.getPath());
 
             expandPath(treePath);
-
-            // This is very important; otherwise, the message window would remain open
-            // with no way to close it because the "close icon" was made non-functional.
-            closeWindow();
         }
     }
 
@@ -109,6 +104,7 @@ class DirectoryTree extends JTree
             m_defaultClosedIcon = getDefaultClosedIcon();
             m_defaultLeafIcon = getDefaultLeafIcon();
             m_defaultOpenIcon = getDefaultOpenIcon();
+            setBackgroundNonSelectionColor(PMDLookAndFeel.TREE_BACKGROUND_COLOR);
         }
 
         /**
@@ -154,7 +150,7 @@ class DirectoryTree extends JTree
                 // A directory may or may not have children.  The following conditions are used:
                 //
                 //   For a file
-                //      always use the leaf icon
+                //      files are not viewed in the tree
                 //   For a directory
                 //      has no children --- use closed folder icon
                 //      has children

@@ -1,11 +1,19 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.Thread;
+import java.util.List;
+import java.util.ArrayList;
 
-class JobThread extends Thread
+abstract class JobThread extends Thread
 {
 
-    private MessageDialog m_messageDialog;
+    private List m_listeners;
 
+    //Constants
+    public static final String STARTED_JOB_THREAD = "Started Job Thread";
+    public static final String FINISHED_JOB_THREAD = "Finished Job Thread";
     /**
      *********************************************************************************
      *
@@ -19,29 +27,59 @@ class JobThread extends Thread
     /**
      *********************************************************************************
      *
-     * @return messageDialog
+     * @param listener
      */
-    protected MessageDialog getMessageDialog()
+    protected void addListener(ActionListener listener)
     {
-        return m_messageDialog;
-    }
+        if (m_listeners == null)
+        {
+            m_listeners = new ArrayList();
+        }
 
-    /**
-     *********************************************************************************
-     *
-     * @param messageDialog
-     */
-    protected void setMessageDialog(MessageDialog messageDialog)
-    {
-        m_messageDialog = messageDialog;
+        m_listeners.add(listener);
     }
 
     /**
      *********************************************************************************
      *
      */
-    protected void closeWindow()
+    private void notifyListeners(ActionEvent event)
     {
-        m_messageDialog.setVisible(false);
+        if (m_listeners != null)
+        {
+            for (int n = 0; n < m_listeners.size(); n++)
+            {
+                ActionListener listener = (ActionListener) m_listeners.get(n);
+
+                listener.actionPerformed(event);
+            }
+        }
     }
+
+    /**
+     *********************************************************************************
+     *
+     * @param listener
+     */
+    protected void removeListener(ActionListener listener)
+    {
+        m_listeners.remove(listener);
+    }
+
+    /**
+     ***************************************************************************
+     *
+     */
+    public void run()
+    {
+        notifyListeners(new ActionEvent(this, 1, STARTED_JOB_THREAD));
+        process();
+        notifyListeners(new ActionEvent(this, 2, FINISHED_JOB_THREAD));
+    }
+
+    /**
+     ***************************************************************************
+     *
+     */
+    protected abstract void process();
 }

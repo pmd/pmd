@@ -12,8 +12,7 @@ import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
-import net.sourceforge.pmd.swingui.PMDFrame;
-import net.sourceforge.pmd.swingui.viewer.PMDViewer;
+import net.sourceforge.pmd.swingui.PMDViewer;
 
 import javax.swing.*;
 import java.io.*;
@@ -43,7 +42,7 @@ public class PMD {
             System.out.println("Error while parsing " +  ctx.getSourceCodeFilename() + "; "+ t.getMessage() + "; continuing...");
             t.printStackTrace();
         }
-	}
+    }
 
     /**
      * @param fileContents - an InputStream to the Java code to analyse
@@ -52,15 +51,18 @@ public class PMD {
      */
     public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) {
         processFile(new InputStreamReader(fileContents), ruleSet, ctx);
-	}
+    }
 
     public static void main(String[] args) {
         if (args[0].equals("-g")) {
             try {
+                /*
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 PMDViewer pmdViewer = new PMDViewer();
                 pmdViewer.setVisible(true);
                 pmdViewer.setupFiles();
+                */
+                PMDViewer.run();
             } catch (Exception e) {
                 e.printStackTrace();
             }

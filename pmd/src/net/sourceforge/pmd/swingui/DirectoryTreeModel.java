@@ -14,9 +14,7 @@ import javax.swing.event.TreeWillExpandListener;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class DirectoryTreeModel
-    extends DefaultTreeModel
-    implements TreeWillExpandListener
+class DirectoryTreeModel extends DefaultTreeModel implements TreeWillExpandListener
 {
 
     private DirectoryTree m_directoryTree;
@@ -127,10 +125,18 @@ class DirectoryTreeModel
      */
     public void treeWillCollapse(TreeExpansionEvent event)
     {
-        TreePath treePath = event.getPath();
-        DirectoryTreeNode treeNode = (DirectoryTreeNode) treePath.getLastPathComponent();
-        for (Enumeration children = treeNode.children(); children.hasMoreElements();) {
+        TreePath treePath;
+        DirectoryTreeNode treeNode;
+        Enumeration children;
+
+        treePath = event.getPath();
+        treeNode = (DirectoryTreeNode) treePath.getLastPathComponent();
+        children = treeNode.children();
+
+        while (children.hasMoreElements())
+        {
             DirectoryTreeNode childTreeNode = (DirectoryTreeNode) children.nextElement();
+
             childTreeNode.removeAllChildren();
         }
     }

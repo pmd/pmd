@@ -1,11 +1,20 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTree;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.UIManager;
 
 /**
  *
@@ -17,14 +26,17 @@ public class PMDViewer extends JFrame
 {
 
     private DirectoryTree m_directoryTree;
+    private static PMDViewer m_pmdViewer;
 
     /**
      *******************************************************************************
      *
      */
-    public PMDViewer()
+    private PMDViewer()
     {
         super("PMD Viewer");
+
+        m_pmdViewer = this;
 
         int windowWidth = 900;
         int windowHeight = 900;
@@ -46,78 +58,74 @@ public class PMDViewer extends JFrame
         {
             selectSourceFileLabel.setFont(new Font("Dialog", Font.BOLD, 12));
             selectSourceFileLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-            selectSourceFileLabel.setText("Select a source file and its analysis results will appear below.");
+            selectSourceFileLabel.setText("Select a source file to view its analysis results below.");
         }
 
         //
-        // Create the directory tree that will go into the split pane's top panel on the left.
+        // Create the directory tree that will appear in the directory split pane's left panel.
         //
-        m_directoryTree = new DirectoryTree(this);
+        m_directoryTree = new DirectoryTree();
 
         //
-        // Create a scroll pane for the file list.
+        // Create a scroll pane for the directory tree.
         //
         JScrollPane directoryTreeScrollPane = new JScrollPane(m_directoryTree);
 
         {
+            Color background = PMDLookAndFeel.TREE_BACKGROUND_COLOR;
             directoryTreeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             directoryTreeScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            directoryTreeScrollPane.getViewport().setBackground(Color.white);
+            directoryTreeScrollPane.getViewport().setBackground(background);
             directoryTreeScrollPane.setAutoscrolls(true);
             directoryTreeScrollPane.setBorder(BorderFactory.createEtchedBorder());
         }
 
         //
-        // Create the file list that will go into the split pane's top panel on the right.
+        // Create the directory table that will go into the directory split pane's right panel.
         //
-        SourceFileList sourceFileList = new SourceFileList();
-        {
-            sourceFileList.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-            sourceFileList.setBackground(Color.white);
-            sourceFileList.setDirectoryTree(m_directoryTree);
-        }
+        DirectoryTable directoryTable = new DirectoryTable(m_directoryTree);
 
         //
-        // Create a scroll pane for the file list.
+        // Create a scroll pane for the directory table.
         //
-        JScrollPane fileListScrollPane = new JScrollPane(sourceFileList);
+        JScrollPane directoryTableScrollPane = new JScrollPane(directoryTable);
 
         {
-            fileListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            fileListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            fileListScrollPane.getViewport().setBackground(Color.white);
-            fileListScrollPane.setAutoscrolls(true);
-            fileListScrollPane.setBorder(BorderFactory.createEtchedBorder());
+            Color background = PMDLookAndFeel.TABLE_BACKGROUND_COLOR;
+            directoryTableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            directoryTableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            directoryTableScrollPane.getViewport().setBackground(background);
+            directoryTableScrollPane.setAutoscrolls(true);
+            directoryTableScrollPane.setBorder(BorderFactory.createEtchedBorder());
         }
 
         //
         // Create a split pane for the directory tree and file list.
         //
-        JSplitPane directoryAndFileSplitPane = new JSplitPane();
+        JSplitPane directorySplitPane = new JSplitPane();
 
         {
-            directoryAndFileSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-            directoryAndFileSplitPane.setDividerLocation(0.5);
-            directoryAndFileSplitPane.setDividerSize(5);
-            directoryAndFileSplitPane.setLeftComponent(directoryTreeScrollPane);
-            directoryAndFileSplitPane.setRightComponent(fileListScrollPane);
+            directorySplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+            directorySplitPane.setResizeWeight(0.5);
+            directorySplitPane.setDividerSize(5);
+            directorySplitPane.setLeftComponent(directoryTreeScrollPane);
+            directorySplitPane.setRightComponent(directoryTableScrollPane);
         }
 
         //
         // The editor pane where the results are stored.  An editor pane is used so that
         // the user can enter notes and copy the results.
         //
-        ResultsEditorPane resultsEditorPane = new ResultsEditorPane(this);
+        ResultsViewer resultsViewer = new ResultsViewer(directoryTable);
 
         {
-            resultsEditorPane.setSelectionColor(Color.blue);
-            resultsEditorPane.setSourceFileList(sourceFileList);
+            resultsViewer.setSelectionColor(Color.blue);
         }
 
         //
         // The scroll pane that contains the editor pane.
         //
-        JScrollPane resultsScrollPane = new JScrollPane(resultsEditorPane);
+        JScrollPane resultsScrollPane = new JScrollPane(resultsViewer);
 
         {
             resultsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -134,9 +142,9 @@ public class PMDViewer extends JFrame
 
         {
             mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-            mainSplitPane.setDividerLocation(0.75);
+            mainSplitPane.setResizeWeight(0.5);
             mainSplitPane.setDividerSize(5);
-            mainSplitPane.setTopComponent(directoryAndFileSplitPane);
+            mainSplitPane.setTopComponent(directorySplitPane);
             mainSplitPane.setBottomComponent(resultsScrollPane);
         }
 
@@ -164,11 +172,11 @@ public class PMDViewer extends JFrame
     /**
      *********************************************************************************
      *
-     * @param args
+     * @return
      */
-    public void setupFiles()
+    protected static final JFrame getWindow()
     {
-        m_directoryTree.setupFiles();
+        return m_pmdViewer;
     }
 
     /**
@@ -176,13 +184,23 @@ public class PMDViewer extends JFrame
      *
      * @param args
      */
-    public static void main(String[] args)
+    private void setupFiles()
+    {
+        m_directoryTree.setupFiles();
+    }
+
+    /**
+     *********************************************************************************
+     *
+     */
+    public static final void run()
     {
         try
         {
             // Setup the User Interface based on this computer's operating system.
             // This must be done before calling Java and Swing classes that call the GUI.
             String useLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+            //String useLookAndFeel = "net.sourceforge.pmd.swingui.PMDLookAndFeel";
 
             UIManager.setLookAndFeel(useLookAndFeel);
 
@@ -201,6 +219,15 @@ public class PMDViewer extends JFrame
         }
 
         return;
+    }
 
+    /**
+     *********************************************************************************
+     *
+     * @param args
+     */
+    public static void main(String[] args)
+    {
+        run();
     }
 }

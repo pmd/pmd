@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.swingui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.Rectangle;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -22,25 +24,26 @@ import javax.swing.SwingConstants;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class MessageDialog extends JDialog
+class MessageDialog extends JDialog implements ActionListener
 {
+
+    private JobThread m_jobThread;
 
     /**
      *******************************************************************************
      *
-     * @param parentWindow
      * @param title
      * @param job
      */
-    private MessageDialog(JFrame parentWindow, String title, String message)
+    private MessageDialog(String title, String message)
     {
-        super(parentWindow, title, true);
+        super(PMDViewer.getWindow(), title, true);
 
         int dialogWidth = 400;
         int dialogHeight = 100;
-        Rectangle parentWindowBounds = parentWindow.getBounds();
+        Rectangle parentWindowBounds = PMDViewer.getWindow().getBounds();
         int x = parentWindowBounds.x + (parentWindowBounds.width - dialogWidth) / 2;
-        int y = parentWindowBounds.y + (parentWindowBounds.height - dialogHeight) / 2;
+        int y = parentWindowBounds.y + (parentWindowBounds.height - dialogHeight) / 2;;
 
         setBounds(x, y, dialogWidth, dialogHeight);
 
@@ -87,31 +90,39 @@ class MessageDialog extends JDialog
      *******************************************************************************
      *
      */
-    protected void setJobFinished()
+    public void actionPerformed(ActionEvent event)
     {
-        setVisible(false);
+        if (event.getSource().equals(m_jobThread))
+        {
+            if (event.getActionCommand().equals(JobThread.FINISHED_JOB_THREAD))
+            {
+                setVisible(false);
+            }
+        }
     }
 
     /**
      *******************************************************************************
      *
-     * @param parentWindow
      * @param title
      * @param job
      */
-    protected static void show(JFrame parentWindow, String message, JobThread job)
+    protected static void show(String message, JobThread jobThread)
     {
-        if (job != null)
+        if (jobThread != null)
         {
             if (message == null)
             {
                 message = "No message.";
             }
 
-            MessageDialog dialog = new MessageDialog(parentWindow, "Message", message);
+            MessageDialog dialog;
 
-            job.setMessageDialog(dialog);
-            job.start();
+            dialog = new MessageDialog("Message", message);
+            dialog.m_jobThread = jobThread;
+
+            jobThread.addListener(dialog);
+            jobThread.start();
             dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
             dialog.setVisible(true);
         }
@@ -120,10 +131,9 @@ class MessageDialog extends JDialog
     /**
      *******************************************************************************
      *
-     * @param parentWindow
      * @param exception
      */
-    protected static void show(JFrame parentWindow, String message, Exception exception)
+    protected static void show(String message, Exception exception)
     {
         if (exception != null)
         {
@@ -132,14 +142,18 @@ class MessageDialog extends JDialog
 
             exception.printStackTrace(writer);
 
-            if (message == null) {
+            if (message == null)
+            {
                 message = stream.toString();
-            } else {
+            }
+            else
+            {
                 message = message + "\n" + stream.toString();
             }
 
             writer.close();
-            MessageDialog dialog = new MessageDialog(parentWindow, "Exception", message);
+
+            MessageDialog dialog = new MessageDialog("Exception", message);
 
             dialog.setVisible(true);
         }
@@ -148,16 +162,16 @@ class MessageDialog extends JDialog
     /**
      *******************************************************************************
      *
-     * @param parentWindow
      * @param exception
      */
-    protected static void show(JFrame parentWindow, String message)
+    protected static void show(String message)
     {
-        if (message == null)  {
+        if (message == null)
+        {
             message = "There is no message.";
         }
 
-        MessageDialog dialog = new MessageDialog(parentWindow, "message", message);
+        MessageDialog dialog = new MessageDialog("message", message);
 
         dialog.setVisible(true);
     }

@@ -10,9 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.JEditorPane;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -22,14 +22,13 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 /**
  *
  * @author Donald A. Leckie
- * @since August 17, 2002
+ * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-class ResultsEditorPane extends JEditorPane implements ListSelectionListener
+class ResultsViewer extends JEditorPane implements ListSelectionListener
 {
 
-    private PMDViewer m_pmdViewer;
-    private SourceFileList m_sourceFileList;
+    private DirectoryTable m_directoryTable;
     private PMD m_pmd;
     private RuleContext m_ruleContext;
     private RuleSet m_ruleSet;
@@ -37,17 +36,21 @@ class ResultsEditorPane extends JEditorPane implements ListSelectionListener
     /**
      ********************************************************************************
      */
-    protected ResultsEditorPane(PMDViewer pmdViewer)
+    protected ResultsViewer(DirectoryTable directoryTable)
     {
         super();
 
-        setFont(new Font("Monospaced", Font.PLAIN, 12));
+        setEditorKit(new HTMLEditorKit());
+        setEditable(false);
 
-        m_pmdViewer = pmdViewer;
+        RuleSetFactory ruleSetFactory;
+        Iterator ruleSets;
+
+        m_directoryTable = directoryTable;
         m_pmd = new PMD();
         m_ruleContext = new RuleContext();
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        Iterator ruleSets = null;
+        ruleSetFactory = new RuleSetFactory();
+        ruleSets = null;
         m_ruleSet = new RuleSet();
 
         try
@@ -58,34 +61,22 @@ class ResultsEditorPane extends JEditorPane implements ListSelectionListener
         {
             String message = "Could not get registered rule sets.";
 
-            MessageDialog.show(m_pmdViewer, message, exception);
-            m_pmdViewer.setVisible(false);
+            MessageDialog.show(message, exception);
         }
 
         if (ruleSets.hasNext() == false)
         {
             String message = "There are no rule sets.";
 
-            MessageDialog.show(m_pmdViewer, message);
-            m_pmdViewer.setVisible(false);
+            MessageDialog.show(message);
         }
 
         while (ruleSets.hasNext())
         {
             m_ruleSet.addRuleSet((RuleSet) ruleSets.next());
         }
-    }
 
-    /**
-     ********************************************************************************
-     *
-     * @param sourceFileList
-     */
-    protected void setSourceFileList(SourceFileList sourceFileList)
-    {
-        m_sourceFileList = sourceFileList;
-
-        m_sourceFileList.addListSelectionListener(this);
+        directoryTable.getSelectionModel().addListSelectionListener(this);
     }
 
     /**
@@ -95,39 +86,23 @@ class ResultsEditorPane extends JEditorPane implements ListSelectionListener
      */
     public void valueChanged(ListSelectionEvent event)
     {
-        int index = event.getFirstIndex();
-        File file = m_sourceFileList.getFile(index);
-
         // Swing may generate a changing event more than once.  All changing events, except
         // the last event, with have the "value is adjusting" flag set true.  We want only
         // the last event.
-        if (event.getValueIsAdjusting() == false) {
-            return;
-        }
-
-        if (file == null) {
-            return;
-        }
-
-        m_ruleContext.setSourceCodeFilename(file.getPath());
-        m_ruleContext.setReport(new Report());
-
-        AnalyzeThread analyzeThread = new AnalyzeThread("Analyze", file);
-
-        MessageDialog.show(m_pmdViewer, "Analyzing.  Please wait...", analyzeThread);
-/*
-        try
+        if (event.getValueIsAdjusting() == false)
         {
-            setText("Analyzing.  Please wait...");
-            paintImmediately(getBounds());
-            m_pmd.processFile(new FileInputStream(file), m_ruleSet, m_ruleContext);
-            setText((new TextRenderer()).render(fileName, m_ruleContext.getReport()));
+            File file = m_directoryTable.getSelectedSourceFile();
+
+            if (file != null)
+            {
+                m_ruleContext.setSourceCodeFilename(file.getPath());
+                m_ruleContext.setReport(new Report());
+
+                AnalyzeThread analyzeThread = new AnalyzeThread("Analyze", file);
+
+                MessageDialog.show("Analyzing.  Please wait...", analyzeThread);
+            }
         }
-        catch (FileNotFoundException exception)
-        {
-            MessageDialog.show(m_pmdViewer, null, exception);
-        }
-*/
     }
 
     /**
@@ -138,7 +113,7 @@ class ResultsEditorPane extends JEditorPane implements ListSelectionListener
     private class AnalyzeThread extends JobThread
     {
         private File m_file;
-        private ResultsEditorPane m_resultsEditorPane;
+        private ResultsViewer m_resultsViewer;
 
         /**
          ****************************************************************************
@@ -150,31 +125,33 @@ class ResultsEditorPane extends JEditorPane implements ListSelectionListener
             super(threadName);
 
             m_file = file;
-            m_resultsEditorPane = ResultsEditorPane.this;
+            m_resultsViewer = ResultsViewer.this;
         }
 
         /**
          ***************************************************************************
          *
          */
-        public void run()
+        protected void process()
         {
             try
             {
                 m_pmd.processFile(new FileInputStream(m_file),
-                                  m_resultsEditorPane.m_ruleSet,
-                                  m_resultsEditorPane.m_ruleContext);
-                setText((new TextRenderer()).render(m_file.getPath(),
-                        m_ruleContext.getReport()));
+                                  m_resultsViewer.m_ruleSet,
+                                  m_resultsViewer.m_ruleContext);
+
+                HTMLResultRenderer renderer;
+                String htmlText;
+
+                renderer = new HTMLResultRenderer();
+                htmlText = renderer.render(m_file.getPath(), m_ruleContext.getReport());
+
+                setText(htmlText);
             }
             catch (FileNotFoundException exception)
             {
-                MessageDialog.show(m_pmdViewer, null, exception);
+                MessageDialog.show(null, exception);
             }
-
-            // This is very important; otherwise, the message window would remain open
-            // with no way to close it because the "close icon" was made non-functional.
-            closeWindow();
         }
     }
 }
