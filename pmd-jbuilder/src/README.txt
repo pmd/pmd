@@ -9,3 +9,6 @@ and Ant be available in the JBuilder classpath as well.  This is not an issue fo
 since those libraries come preinstalled.  However, users of the Professional/Personal versions may have to
 put those libraries into their JBuilder lib directory manually.  I have not tested on anything other than
 JBuilder 7 Enterprise, but the tool should run fine on most of them given the aforementioned changes.
+
+JBuilder 4 Users - The PMD Check Project and CPD Check Project operations will only work if you have packages 
+defined in your project view.  This is because of some of the differences in JBuilder 7 (at least) and JBuilder 4 in handling packages within the project view.  I'm working on a way to remedy this.

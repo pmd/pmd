@@ -464,7 +464,7 @@ public class PMDOpenTool {
                     Tile t = (Tile)iter.next();
                     resultCount++;
                     int tileLineCount = cpd.getLineCountFor(t);
-                    int dupCount = results.getOccurrenceCountFor(t);
+                    int dupCount = ((TileOccurrences)results).getOccurrenceCountFor(t);
                     CPDMessage msg = CPDMessage.createMessage(String.valueOf(dupCount)+" duplicates in code set: " + resultCount, cpd.getImage(t));
                     for (Iterator iter2 = results.getOccurrences(t); iter2.hasNext(); ) {
                         TokenEntry te = (TokenEntry)iter2.next();
