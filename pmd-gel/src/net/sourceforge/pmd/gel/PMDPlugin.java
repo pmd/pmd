@@ -20,7 +20,6 @@ public class PMDPlugin implements GelAction {
 
     public void perform(Gel p0) {
         try {
-            int unusedLocalTest =2;
             PMD pmd = new PMD();
             RuleContext ctx = new RuleContext();
             RuleSetFactory rsf = new RuleSetFactory();
