@@ -35,7 +35,7 @@ The Braces Ruleset contains a collection of braces rules.
      </example>
      </rule>
 
-    <rule name="WhileLoopsMustUseBracesRule"
+    <rule name="WhileLoopsMustUseBraces"
           message="Avoid using 'while' statements without curly braces"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
@@ -62,7 +62,7 @@ The Braces Ruleset contains a collection of braces rules.
       </example>
     </rule>
 
-      <rule name="IfElseStmtsMustUseBracesRule"
+      <rule name="IfElseStmtsMustUseBraces"
            message="Avoid using 'if...else' statements without curly braces"
            class="net.sourceforge.pmd.rules.XPathRule">
        <description>
@@ -99,7 +99,7 @@ The Braces Ruleset contains a collection of braces rules.
        </example>
      </rule>
 
-     <rule name="ForLoopsMustUseBracesRule"
+     <rule name="ForLoopsMustUseBraces"
            message="Avoid using 'for' statements without curly braces"
            class="net.sourceforge.pmd.rules.XPathRule">
        <description>
