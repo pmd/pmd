@@ -21,7 +21,8 @@ mkdir -p ~/tmp/pmd-jedit
 cvs -q export -d tmp -r pmd_jedit_release_2_3 pmd-jedit
 mv tmp/* ~/tmp/pmd-jedit
 rmdir tmp/
-cp pmd-jedit/lib/PMDJEditPlugin-2.3.jar ~/tmp/pmd-jedit/lib
+cp pmd-jedit/PMDPlugin/lib/PMDPlugin.jar ~/tmp/pmd-jedit/PMDPlugin/lib
+copy other relevant libraries to ~/tmp/pmd-jedit/PMDPlugin/lib
 cd ~/tmp
 zip -q -r pmd-jedit-src-2.3.zip pmd-jedit
 rm -rf pmd-jedit
