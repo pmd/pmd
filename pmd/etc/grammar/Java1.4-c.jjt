@@ -895,13 +895,19 @@ void PrimarySuffix() :
 void Literal() :
 {}
 {
-  <INTEGER_LITERAL>
+{ String intValue = ""; Token t = null;}
+t=<INTEGER_LITERAL>
+{ intValue=t.image;} {jjtThis.setImage(intValue);}
 |
-  <FLOATING_POINT_LITERAL>
+{ String floatValue = "";}
+t=<FLOATING_POINT_LITERAL>
+{ floatValue=t.image;} {jjtThis.setImage(floatValue);}
 |
-  <CHARACTER_LITERAL>
+{ String charValue = "";}
+t=<CHARACTER_LITERAL>
+{ charValue=t.image;} {jjtThis.setImage(charValue);}
 |
-{ String stringValue = ""; Token t = null;}
+{ String stringValue = "";}
 t=<STRING_LITERAL>
 { stringValue=t.image;} {jjtThis.setImage(stringValue);}
 |

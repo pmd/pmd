@@ -37,7 +37,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     }
 
     public Object visit(ASTLiteral node, Object data) {
-        if (!hasSixParents(node)) {
+        if (!hasAtLeastSixParents(node)) {
             return data;
         }
 
@@ -62,7 +62,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         return data;
     }
 
-    private boolean hasSixParents(Node node) {
+    private boolean hasAtLeastSixParents(Node node) {
         Node currentNode = node;
         for (int i = 0; i < 6; i++) {
             if (currentNode instanceof ASTCompilationUnit) {
