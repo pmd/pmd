@@ -41,6 +41,39 @@ class Bar {
     </example>
     </rule>
 
+<rule   name="ConfusingTernaryExpression"
+        message="This ternary expression could be simplified"
+        class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+     Using != in ternary expressions can be confusing; try
+        rewriting this to use ==.
+    </description>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//ConditionalExpression
+  [EqualityExpression[@Image="!="]
+ or
+  PrimaryExpression/PrimaryPrefix/Expression/EqualityExpression[@Image="!="]]
+]]>
+            </value>
+        </property>
+     </properties>
+    <priority>1</priority>
+<example>
+   <![CDATA[
+class Foo {
+ void bar() {
+  x = a != b ? c : d; // confusing
+  x = a == b ? d : c; // ah, that's better
+ }
+}
+]]>
+    </example>
+    </rule>
+
+
 </ruleset>
 
 

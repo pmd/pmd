@@ -1,10 +1,10 @@
 ????, 2004 - 1.9:
-New rules: CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException, EqualsNull
+New rules: CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException, EqualsNull, ConfusingTernaryExpression
 Created new "clone" ruleset and moved ProperCloneImplementationRule over from the design ruleset.
 Some minor performance optimizations - removed some unnecessary casts from the grammar, simplified some XPath rules.
+Postfix expressions (i.e., x++) are now available in the grammar.  To access them, search for StatementExpressions with an image of "++" or "--" - i.e., in XPath, //StatementExpression[@Image="++"].  This is an odd hack and hopefully will get cleared up later.
 Implemented RFE 743460: The XML report now contains the ruleset name.
 Implemented RFE 958714: Private field and local variables that are assigned but not used are now flagged as unused.
-Postfix expressions (i.e., x++) are now available in the grammar.  To access them, search for StatementExpressions with an image of "++" or "--" - i.e., in XPath, //StatementExpression[@Image="++"].  This is an odd hack and hopefully will get cleared up later.
 Fixed bug 962782 - BeanMembersShouldSerializeRule no longer reports set/is as being a violation.
 Fixed bug 977022 - UnusedModifier no longer reports false positives for modifiers of nested classes in interfaces
 Fixed bug 976643 - IfElseStmtsMustUseBracesRule no longer reports false positives for certain if..else constructs.
