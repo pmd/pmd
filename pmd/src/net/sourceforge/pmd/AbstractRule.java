@@ -118,7 +118,7 @@ public abstract class AbstractRule
      *
      * @return An enumeration of property names
      */
-    public Map getProperties()
+    public Properties getProperties()
     {
         return properties;
     }

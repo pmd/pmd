@@ -21,6 +21,7 @@ public class MockRule implements Rule {
     private Properties properties = new Properties();
     private String description;
     private String example;
+    private boolean m_include;
 
     public String getExample() {
         return example;
@@ -38,10 +39,10 @@ public class MockRule implements Rule {
         this.description = description;
     }
 
-	public boolean hasProperty( String name ) {
-		return properties.containsKey( name );
-	}
-	
+    public boolean hasProperty( String name ) {
+        return properties.containsKey( name );
+    }
+
     public void addProperty(String name, String value) {
         properties.put(name, value);
     }
@@ -50,16 +51,31 @@ public class MockRule implements Rule {
         return Integer.parseInt(properties.getProperty(name));
     }
 
-	public double getDoubleProperty(String name) {
-		return Double.parseDouble(properties.getProperty(name));
-	}
-	
+    public double getDoubleProperty(String name) {
+        return Double.parseDouble(properties.getProperty(name));
+    }
+
     public boolean getBooleanProperty(String name) {
         return Boolean.valueOf(properties.getProperty(name)).booleanValue();
     }
 
     public String getStringProperty(String name) {
         return properties.getProperty(name);
+    }
+
+    public Properties getProperties()
+    {
+        return properties;
+    }
+
+    public boolean isInclude()
+    {
+        return true;
+    }
+
+    public void setInclude(boolean include)
+    {
+        m_include = include;
     }
 
 
@@ -76,16 +92,16 @@ public class MockRule implements Rule {
     public void setMessage(String description) {this.desc = description;}
 
     public void addViolation( RuleViolation violation ) {
-	violations.add( violation );
+    violations.add( violation );
     }
 
     public void apply(List astCompilationUnits, RuleContext ctx) {
-	Report report = ctx.getReport();
+    Report report = ctx.getReport();
 
-	Iterator vs = violations.iterator();
-	while (vs.hasNext()) {
-	    report.addRuleViolation( (RuleViolation) vs.next() );
-	}
+    Iterator vs = violations.iterator();
+    while (vs.hasNext()) {
+        report.addRuleViolation( (RuleViolation) vs.next() );
+    }
     }
 
 }
