@@ -98,19 +98,19 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 PMD pmd = new PMD();
                 RuleContext ctx = new RuleContext();
                 ctx.setReport(new Report());
-                ctx.setSourceCodeFilename(context.getElement().toString());
+                ctx.setSourceCodeFilename(context.getDocument().getLongLabel());
                 SelectedRules rs = new SelectedRules();
                 pmd.processFile(context.getDocument().getInputStream(), rs.getSelectedRules(), ctx);
+                if (rvPage == null) {
+                    rvPage = new RuleViolationPage();
+                }
+                if (!rvPage.isVisible()) {
+                    rvPage.show();
+                }
+                rvPage.clearAll();
                 if (ctx.getReport().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    if (rvPage == null) {
-                        rvPage = new RuleViolationPage();
-                    }
-                    if (!rvPage.isVisible()) {
-                        rvPage.show();
-                    }
-                    rvPage.clearAll();
                     for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                         rvPage.add((RuleViolation)i.next());
                     }
