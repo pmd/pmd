@@ -13,7 +13,7 @@ TESTS:
 2) Can you run it it on a file and find some unused code?
 3) Are options persistant?
 4) Does CPD work?
-
+5) Check if the PMD Help shows correct data like Release notes, help/new features.
 Create the src release:
 cvs -q rtag -D tomorrow "pmd_jedit_release_2_3" pmd-jedit
 rm -rf ~/tmp/pmd-jedit
