@@ -59,7 +59,7 @@
                 <include name="LICENSE.txt"/>
                 <include name="README.txt"/>
             </zipfileset>
-            <zipfileset file="build\pmd.nbm" fullpath="pmd.nbm"/>
+            <zipfileset dir="." includes="build\pmd.nbm" fullpath="pmd.nbm"/>
         </zip>
         <zip compress="true" destfile="build\pmd-netbeans-src.zip">
             <zipfileset dir=".">
@@ -73,7 +73,7 @@
                 <exclude name="openide.jar"/>
                 <exclude name="nbantext.jar"/>
             </zipfileset>
-             <zipfileset file="build\pmd.nbm" fullpath="pmd.nbm"/>
+             <zipfileset dir="." includes="build\pmd.nbm" fullpath="pmd.nbm"/>
         </zip>
     </target>
     
