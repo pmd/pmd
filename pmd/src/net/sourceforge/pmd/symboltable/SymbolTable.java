@@ -12,65 +12,33 @@ import java.util.*;
 
 public class SymbolTable {
 
-    private SymbolTable parent;
-    private int depth;
+    private ContextManager cm = new ContextManager();
 
-    // a Map of Symbols to the Nodes from which they are referenced
-    // symbol->List(Node,Node,...)
-    // TODO
-    // a single SymbolDeclaration can be referenced by several SymbolOccurrences - should these be objects?
-    // TODO
-    private Map symbols = new HashMap();
-
-    public SymbolTable() {}
-
-    public SymbolTable(SymbolTable parent, int depth) {
-        this.parent = parent;
-        this.depth = depth;
+    public SymbolTable() {
+        cm.openScope();
     }
 
-    public SymbolTable getParent() {
-        return parent;
+    public void openScope() {
+        cm.openScope();
     }
 
-    public void add(Symbol symbol) {
-        if (symbols.containsKey(symbol)) {
-            throw new RuntimeException(symbol + " is already in the symbol table");
-        }
-        symbols.put(symbol, new ArrayList());
+    public void leaveScope() {
+        cm.leaveScope();
     }
 
-    public void recordPossibleUsageOf(Symbol symbol, Node node) {
-        if (!symbols.containsKey(symbol) && parent != null) {
-            parent.recordPossibleUsageOf(symbol, node);
-            return;
-        }
-        if (!symbols.containsKey(symbol) ) {
-            return;
-        }
-        List symbolUsages = (List)symbols.get(symbol);
-        symbolUsages.add(node);
+    public void add(NameDeclaration nameDecl) {
+        cm.getCurrentScope().addDeclaration(nameDecl);
     }
 
-    public Iterator getUnusedSymbols() {
-        List unused = new ArrayList();
-        for (Iterator i = symbols.keySet().iterator(); i.hasNext();) {
-            Symbol symbol = (Symbol)i.next();
-            List usages = (List)symbols.get(symbol);
-            if (usages.isEmpty()) {
-                unused.add(symbol);
-            }
-        }
-        return unused.iterator();
+    public void recordOccurrence(NameOccurrence nameOccurrence) {
+        cm.recordOccurrence(nameOccurrence);
     }
 
-    public String toString() {
-        String x = "Symbol table:" +depth+":";
-        for (Iterator i = symbols.keySet().iterator(); i.hasNext();) {
-            Symbol symbol = (Symbol)i.next();
-            x += symbol.getImage() + ",";
-        }
-        return x;
+    public Iterator getUnusedNameDeclarations() {
+        return cm.getCurrentScope().getUnusedDeclarations();
     }
 
+    public Scope getCurrentScope() {
+        return cm.getCurrentScope();
+    }
 }

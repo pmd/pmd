@@ -40,9 +40,9 @@ public class Namespace {
 
     public void addTable() {
         if (tables.empty()) {
-            tables.push(new SymbolTable());
+            tables.push(new OldSymbolTable());
         } else {
-            tables.push(new SymbolTable((SymbolTable)tables.peek(), Integer.MAX_VALUE)); // TODO
+            tables.push(new OldSymbolTable((OldSymbolTable)tables.peek(), Integer.MAX_VALUE)); // TODO
         }
     }
 
@@ -50,8 +50,8 @@ public class Namespace {
         tables.pop();
     }
 
-    public SymbolTable peek() {
-        return (SymbolTable)tables.peek();
+    public OldSymbolTable peek() {
+        return (OldSymbolTable)tables.peek();
     }
 
     public int size() {

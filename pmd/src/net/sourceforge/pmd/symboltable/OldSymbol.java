@@ -1,18 +1,16 @@
 /*
  * User: tom
- * Date: Jun 19, 2002
- * Time: 11:48:50 AM
+ * Date: Oct 1, 2002
+ * Time: 1:50:18 PM
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.Node;
-
-public class Symbol {
+public class OldSymbol {
 
     private String image;
     private int line;
 
-    public Symbol(String image, int line) {
+    public OldSymbol(String image, int line) {
         this.image = image;
         this.line = line;
     }
@@ -26,7 +24,7 @@ public class Symbol {
     }
 
     public boolean equals(Object o) {
-        Symbol s = (Symbol)o;
+        OldSymbol s = (OldSymbol)o;
         return s.image.equals(this.image);
     }
 

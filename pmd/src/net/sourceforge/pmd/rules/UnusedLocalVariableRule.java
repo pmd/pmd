@@ -11,17 +11,18 @@ import java.text.MessageFormat;
 
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.symboltable.Symbol;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.Namespace;
 import net.sourceforge.pmd.symboltable.SymbolTable;
+import net.sourceforge.pmd.symboltable.Scope;
 
 public class UnusedLocalVariableRule extends AbstractRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
             RuleContext ctx = (RuleContext)data;
-            SymbolTable table = ((SimpleNode)node).getSymbolTable();
-            for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
-                Symbol symbol = (Symbol)i.next();
+            Scope scope = ((SimpleNode)node).getScope();
+            for (Iterator i = scope.getUnusedDeclarations(); i.hasNext();) {
+                NameDeclaration symbol = (NameDeclaration)i.next();
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
             }
         }

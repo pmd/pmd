@@ -13,9 +13,7 @@ import java.text.MessageFormat;
 
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.symboltable.Symbol;
-import net.sourceforge.pmd.symboltable.Namespace;
-import net.sourceforge.pmd.symboltable.SymbolTable;
+import net.sourceforge.pmd.symboltable.*;
 
 public class UnusedPrivateInstanceVariableRule extends AbstractRule {
 
@@ -35,9 +33,9 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
         super.visit(node, data);
         if (!nameSpaces.isEmpty()) {
             RuleContext ctx = (RuleContext)data;
-            SymbolTable table = ((Namespace)nameSpaces.peek()).peek();
-            for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
-                Symbol symbol = (Symbol)i.next();
+            OldSymbolTable scope = ((Namespace)nameSpaces.peek()).peek();
+            for (Iterator i = scope.getUnusedSymbols(); i.hasNext();) {
+                OldSymbol symbol = (OldSymbol)i.next();
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
             }
         }
@@ -63,7 +61,7 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
                         continue;
                     }
                     Namespace group = (Namespace)nameSpaces.peek();
-                    group.peek().add(new Symbol(target.getImage(), target.getBeginLine()));
+                    group.peek().add(new OldSymbol(target.getImage(), target.getBeginLine()));
                 }
             }
         }
@@ -118,8 +116,8 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
         String name1 = node.getImage();
         if ((!params.contains((name1.indexOf('.') == -1) ? name1 : name1.substring(0, name1.indexOf('.'))) && !params.contains(otherImg)) || force) {
             String name2 = node.getImage();
-            group.peek().recordPossibleUsageOf(new Symbol((name2.indexOf('.') == -1) ? name2 : name2.substring(0, name2.indexOf('.')), node.getBeginLine()), node);
-            group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()), node);
+            group.peek().recordPossibleUsageOf(new OldSymbol((name2.indexOf('.') == -1) ? name2 : name2.substring(0, name2.indexOf('.')), node.getBeginLine()), node);
+            group.peek().recordPossibleUsageOf(new OldSymbol(otherImg, node.getBeginLine()), node);
         }
     }
 }

@@ -10,10 +10,7 @@ import net.sourceforge.pmd.RuleContext;
 
 public class SymbolTableBuilder extends JavaParserVisitorAdapter {
 
-    private SymbolTable table;
-    private SymbolTable tablePtr;
-
-    private int depth;
+    private SymbolTable table = new SymbolTable();
 
     public void initializeWith(ASTCompilationUnit node) {
         node.jjtAccept(this, null);
@@ -23,7 +20,9 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
         return table;
     }
 
-    // these AST types trigger a new scope
+    /**
+     *  these AST types trigger a new LocalScope
+     */
     public Object visit(ASTBlock node, Object data){return openScope(node);}
     public Object visit(ASTConstructorDeclaration node, Object data){return openScope(node);}
     public Object visit(ASTMethodDeclaration node, Object data){return openScope(node);}
@@ -31,42 +30,37 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
     public Object visit(ASTTryStatement node, Object data){return openScope(node);}
     public Object visit(ASTForStatement node, Object data){return openScope(node);}
     public Object visit(ASTIfStatement node, Object data){return openScope(node);}
-    // these AST types trigger a new scope
 
     /**
-     * This collects the symbols for later reference
+     * Collect NameDeclarations
      */
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
-            Symbol symbol = new Symbol(node.getImage(), node.getBeginLine());
-            tablePtr.add(symbol);
-            SimpleNode simple = (SimpleNode)node;
-            simple.setSymbolTable(tablePtr);
+            node.setScope(table.getCurrentScope());
+            table.add(new NameDeclaration(node, Kind.LOCAL_VARIABLE));
         }
         return super.visit(node, data);
     }
 
     /**
-     * This records usage of a symbol
+     * Collect NameOccurrences
      */
     public Object visit(ASTName node, Object data) {
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
-            tablePtr.recordPossibleUsageOf(new Symbol(getEndName(node.getImage()), node.getBeginLine()), node);
+            table.recordOccurrence(new NameOccurrence(getEndName(node), node.getBeginLine()));
         }
         return super.visit(node, data);
     }
 
     private Object openScope(SimpleNode node) {
-        table = new SymbolTable(tablePtr, depth);
-        tablePtr = table;
-        depth++;
+        table.openScope();
         super.visit(node, null);
-        tablePtr = tablePtr.getParent();
-        depth--;
+        table.leaveScope();
         return null;
     }
 
-    private String getEndName(String name) {
-        return (name.indexOf('.') == -1) ? name : name.substring(0, name.indexOf('.'));
+    private String getEndName(SimpleNode node) {
+        return (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
     }
+
 }

@@ -8,6 +8,7 @@ package test.net.sourceforge.pmd.symboltable;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.symboltable.Namespace;
 import net.sourceforge.pmd.symboltable.SymbolTable;
+import net.sourceforge.pmd.symboltable.OldSymbolTable;
 
 public class NamespaceTest extends TestCase{
 
@@ -22,7 +23,7 @@ public class NamespaceTest extends TestCase{
     public void testParent() {
         Namespace nameSpace = new Namespace();
         nameSpace.addTable();
-        SymbolTable parent = nameSpace.peek();
+        OldSymbolTable parent = nameSpace.peek();
         nameSpace.addTable();
         assertEquals(parent, nameSpace.peek().getParent());
     }

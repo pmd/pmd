@@ -8,7 +8,9 @@ package test.net.sourceforge.pmd.symboltable;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.symboltable.SymbolTable;
-import net.sourceforge.pmd.symboltable.Symbol;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.Kind;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
@@ -18,7 +20,7 @@ import java.io.Reader;
 
 public class SymbolTableTest extends TestCase {
 
-    private static final Symbol FOO = new Symbol("foo", 10);
+    private static final NameDeclaration FOO = new NameDeclaration(NameDeclarationTest.createNode("foo", 10), Kind.UNKNOWN);
 
     public void testAdd() {
         SymbolTable s = new SymbolTable();
@@ -31,55 +33,50 @@ public class SymbolTableTest extends TestCase {
         throw new RuntimeException("Should have thrown RuntimeException");
     }
 
-    public void testParent() {
-        SymbolTable parent = new SymbolTable();
-        SymbolTable child = new SymbolTable(parent, 1);
-        assertEquals(child.getParent(), parent);
-    }
-
     public void testParentContains() {
-        SymbolTable parent = new SymbolTable();
-        SymbolTable child = new SymbolTable(parent, 1);
-        child.add(new Symbol("bar", 12));
-        child.add(new Symbol("baz", 12));
-        assertTrue(!parent.getUnusedSymbols().hasNext());
-        assertTrue(child.getUnusedSymbols().hasNext());
+        SymbolTable table = new SymbolTable();
+        table.openScope();
+        table.add(new NameDeclaration(NameDeclarationTest.createNode("bar", 12), Kind.UNKNOWN));
+        table.add(new NameDeclaration(NameDeclarationTest.createNode("baz", 12), Kind.UNKNOWN));
+        assertTrue(table.getUnusedNameDeclarations().hasNext());
+        table.leaveScope();
+        assertTrue(!table.getUnusedNameDeclarations().hasNext());
     }
 
     public void testRecordUsage() {
         SymbolTable s = new SymbolTable();
         s.add(FOO);
-        assertTrue(s.getUnusedSymbols().hasNext());
-        s.recordPossibleUsageOf(FOO, null);
-        assertTrue(!s.getUnusedSymbols().hasNext());
+        assertTrue(s.getUnusedNameDeclarations().hasNext());
+        s.recordOccurrence(new NameOccurrence(FOO.getImage(), FOO.getLine()));
+        assertTrue(!s.getUnusedNameDeclarations().hasNext());
     }
 
-    public void testRecordPossibleUsage() {
-        SymbolTable parent = new SymbolTable();
-        SymbolTable child = new SymbolTable(parent, 1);
-        child.recordPossibleUsageOf(new Symbol("bar", 10), null);
-        assertTrue(!parent.getUnusedSymbols().hasNext());
+    public void testRecordOccurrence() {
+        SymbolTable table = new SymbolTable();
+        table.openScope();
+        table.recordOccurrence(new NameOccurrence("bar", 10));
+        assertTrue(!table.getUnusedNameDeclarations().hasNext());
     }
 
-    public void testRecordPossibleUsage2() {
+    public void testRecordOccurrence2() {
         SymbolTable s = new SymbolTable();
-        s.recordPossibleUsageOf(new Symbol("bar", 10), null);
-        assertTrue(!s.getUnusedSymbols().hasNext());
+        s.recordOccurrence(new NameOccurrence("bar", 10));
+        assertTrue(!s.getUnusedNameDeclarations().hasNext());
     }
 
     public void testRecordUsageParent() {
         SymbolTable parent = new SymbolTable();
         parent.add(FOO);
-        SymbolTable child = new SymbolTable(parent, 1);
-        assertEquals(FOO, parent.getUnusedSymbols().next());
+        parent.openScope();
+        parent.leaveScope();
+        assertEquals(FOO, parent.getUnusedNameDeclarations().next());
     }
 
     public void testRecordUsageParent2() {
         SymbolTable parent = new SymbolTable();
         parent.add(FOO);
-        SymbolTable child = new SymbolTable(parent, 1);
-        child.recordPossibleUsageOf(FOO, null);
-        assertTrue(!parent.getUnusedSymbols().hasNext());
+        parent.openScope();
+        parent.recordOccurrence(new NameOccurrence(FOO.getImage(), FOO.getLine()));
+        assertTrue(!parent.getUnusedNameDeclarations().hasNext());
     }
-
 }
