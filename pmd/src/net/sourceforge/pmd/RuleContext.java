@@ -11,7 +11,6 @@ public class RuleContext {
 
     private Report report;
     private String sourceCodeFilename;
-    private SymbolFacade builder;
 
     public Report getReport() {
         return report;
