@@ -34,6 +34,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2003/07/01 20:21:37  phherlin
+ * Correcting some PMD violations ! (empty if stmt)
+ *
  * Revision 1.6  2003/06/19 20:58:13  phherlin
  * Improve progress indicator accuracy
  *
@@ -143,7 +146,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
          * @return the element count
          */
         private int countElement(IStructuredSelection selection) {
-           final class CountVisitor implements IResourceVisitor {
+            final class CountVisitor implements IResourceVisitor {
                 public int count = 0;
                 public boolean visit(IResource resource) {
                     boolean fVisitChildren = true;
@@ -159,9 +162,9 @@ public class PMDCheckAction implements IObjectActionDelegate {
                     return fVisitChildren;
                 }
             };
-            
+
             CountVisitor visitor = new CountVisitor();
-            
+
             for (Iterator i = selection.iterator(); i.hasNext();) {
                 Object element = i.next();
 
@@ -180,10 +183,12 @@ public class PMDCheckAction implements IObjectActionDelegate {
                     } else if (element instanceof PackageFragmentRoot) {
                         IResource resource = ((PackageFragmentRoot) element).getResource();
                         resource.accept(visitor);
-                    } else { // else no processing for other types
                     }
                 } catch (CoreException e) {
                     // Ignore any exception
+                    PMDPlugin.getDefault().logError(
+                        "Exception when counting the number of impacted elements when running PMD from menu",
+                        e);
                 }
             }
 
