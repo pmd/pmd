@@ -1,4 +1,4 @@
-????? 2002 - 0.6:
+July 18 2002 - 0.6:
 Added new rules: ExcessiveClassLength, ExcessiveMethodLength
 DuplicateImportsRule now reports the correct line number.
 Fixed bug 582639 - Rule violations are now reported on the proper line
