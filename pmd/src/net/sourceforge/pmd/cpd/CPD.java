@@ -18,25 +18,13 @@ public class CPD {
       }
     }
 		
-    public interface Listener {
-        public void update(String msg);
-    }
-
-    public static class ListenerImpl implements Listener {
-        public void update(String msg) {
-            System.out.println(msg);
-        }
-    }
-
-    public static class NullListener implements Listener {
-        public void update(String msg) {}
-    }
-
     private TokenSets tokenSets = new TokenSets();
+    private CPDListener listener = new CPDNullListener();
     private Results results;
-    private Listener listener = new NullListener();
+    private int minimumTileSize;
 
-    public void addListener(Listener listener) {
+
+    public void setListener(CPDListener listener) {
         this.listener = listener;
     }
 
@@ -48,6 +36,38 @@ public class CPD {
         t.tokenize(ts, fr);
         fr.close();
         tokenSets.add(ts);
+    }
+
+    public void addAllInDirectory(String dir) throws IOException {
+        addDirectory(dir, false);
+    }
+
+    public void addRecursively(String dir) throws IOException {
+        addDirectory(dir, true);
+    }
+
+    private void addDirectory(String dir, boolean recurse) throws IOException {
+        File root = new File(dir);
+        List list = new ArrayList();
+        scanDirectory(root, list, recurse);
+        add(list);
+    }
+
+    public void setMinimumTileSize(int tileSize) {
+        minimumTileSize = tileSize;
+    }
+
+    private void scanDirectory(File dir, List list, boolean recurse) {
+     FilenameFilter filter = new JavaFileOrDirectoryFilter();
+     String[] possibles = dir.list(filter);
+     for (int i=0; i<possibles.length; i++) {
+        File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
+        if (recurse && tmp.isDirectory()) {
+           scanDirectory(tmp, list, true);
+        } else {
+           list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
+        }
+     }
     }
 
     public void add(String id, String input) throws IOException {
@@ -63,7 +83,7 @@ public class CPD {
         }
     }
 
-    public void go(int minimumTileSize) {
+    public void go() {
 		listener.update("Starting to process " + tokenSets.size() + " files");
         GST gst = new GST(this.tokenSets, minimumTileSize);
         results = gst.crunch(listener);
@@ -90,7 +110,7 @@ public class CPD {
     public static void main(String[] args) {
         CPD cpd = new CPD();
         //cpd.addListener(new ListenerImpl());
-        cpd.addListener(new NullListener());
+        cpd.setListener(new CPDNullListener());
         try {
 /*
             cpd.add("1", "public class Foo {}");
@@ -107,14 +127,15 @@ public class CPD {
 */
             //cpd.add(findFilesRecursively("c:\\data\\pmd\\pmd-cpd\\src\\net\\sourceforge\\pmd\\cpd"));
             //cpd.add(new File("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\PlayHelper.java"));
-            cpd.add(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\"));
+            cpd.addRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\");
             //cpd.add(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\"));
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return;
         }
         long start = System.currentTimeMillis();
-        cpd.go(26);
+        cpd.setMinimumTileSize(26);
+        cpd.go();
         System.out.println((System.currentTimeMillis() - start));
         Results results = cpd.getResults();
         for (Iterator i = results.getTiles(); i.hasNext();) {
@@ -129,23 +150,4 @@ public class CPD {
         }
     }
 
-    private static List findFilesRecursively(String dir) {
-     File root = new File(dir);
-     List list = new ArrayList();
-     scanDirectory(root, list, true);
-     return list;
-   }
-
-   private static void scanDirectory(File dir, List list, boolean recurse) {
-     FilenameFilter filter = new JavaFileOrDirectoryFilter();
-     String[] possibles = dir.list(filter);
-     for (int i=0; i<possibles.length; i++) {
-        File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
-        if (recurse && tmp.isDirectory()) {
-           scanDirectory(tmp, list, true);
-        } else {
-           list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
-        }
-     }
-   }
 }

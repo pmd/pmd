@@ -15,10 +15,10 @@ public class Occurrences {
     private Map tileToOccurrenceMap = new HashMap();
 
     public Occurrences(TokenSets tss) {
-        this(tss, new CPD.NullListener());
+        this(tss, new CPDNullListener());
     }
 
-    public Occurrences(TokenSets tss, CPD.Listener listener) {
+    public Occurrences(TokenSets tss, CPDListener listener) {
         for (Iterator j = tss.iterator();j.hasNext();) {
             TokenList ts = (TokenList)j.next();
 			listener.update("Adding token set " + ts.getID() + " to the initial frequency table");

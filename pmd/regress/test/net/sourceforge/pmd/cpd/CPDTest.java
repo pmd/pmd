@@ -21,7 +21,8 @@ public class CPDTest extends TestCase{
         CPD cpd = new CPD();
         cpd.add("1", "public class Foo {}");
         cpd.add("2", "public class Bar {}");
-        cpd.go(2);
+        cpd.setMinimumTileSize(2);
+        cpd.go();
         Results results = cpd.getResults();
         Iterator i = results.getOccurrences(new Tile(getHelloTokens()));
         assertTrue(i.hasNext());
@@ -38,7 +39,8 @@ public class CPDTest extends TestCase{
         CPD cpd = new CPD();
         cpd.add("1", "public class Foo {}");
         cpd.add("2", "public class Bar {}");
-        cpd.go(2);
+        cpd.setMinimumTileSize(2);
+        cpd.go();
         Results results = cpd.getResults();
         Iterator i = results.getOccurrences(new Tile(getHelloTokens()));
         assertTrue(i.hasNext());

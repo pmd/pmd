@@ -20,7 +20,7 @@ public class GST {
         this.tokenSets = tokenSets;
     }
 		
-	public Results crunch(CPD.Listener listener) {
+	public Results crunch(CPDListener listener) {
         Results results = new Results();
         Occurrences occ =new Occurrences(tokenSets, listener);
 
@@ -52,10 +52,10 @@ public class GST {
     }
 
     public Results crunch() {
-			return crunch(new CPD.NullListener());
+			return crunch(new CPDNullListener());
     }
 
-    private void expandTile(Occurrences oldOcc, Occurrences newOcc, Tile tile, CPD.Listener listener) {
+    private void expandTile(Occurrences oldOcc, Occurrences newOcc, Tile tile, CPDListener listener) {
         Tile newTile = null;
         for (Iterator i = oldOcc.getOccurrences(tile); i.hasNext();) {
             TokenEntry tok = (TokenEntry)i.next();
