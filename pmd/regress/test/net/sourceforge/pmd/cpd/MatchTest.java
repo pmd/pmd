@@ -12,11 +12,16 @@ public class MatchTest extends TestCase  {
         Mark mark1 = new Mark(1, "/var/Foo.java", 1, 1);
         Mark mark2 = new Mark(2, "/var/Foo.java", 2, 1);
         Match match = new Match(1, mark1, mark2);
+        match.setSourceCodeSlice("public class Foo {}");
+        assertEquals("public class Foo {}", match.getSourceCodeSlice());
+        match.setLineCount(10);
+        assertEquals(10, match.getLineCount());
         assertEquals(1, match.getTokenCount());
         Iterator i = match.iterator();
         assertEquals(mark1, i.next());
         assertEquals(mark2, i.next());
         assertFalse(i.hasNext());
+
     }
     public void testCompareTo() {
         Match m1 = new Match(1, new Mark(1, "/var/Foo.java", 1, 1), new Mark(2, "/var/Foo.java", 2, 1));
