@@ -27,9 +27,9 @@ public class RuleSetFactory {
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from
-     * the "rulesets.properties" resource or from the "rulesets.filenames" property.
+     * the "rulesets.properties" resource.
      *
-     * @return an iterator on RuleSet objects
+     * @return an iterator of RuleSet objects
      */
     public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
         try {

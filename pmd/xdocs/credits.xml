@@ -42,6 +42,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Bruno Juillet - bug report on ruleset overrides</li>
+            <li>Jörn Stampehl - bug report on JUnitTestsShouldContainAsserts</li>
             <li>Benoit Xhenseval - suggestion for improving XML report, several bug reports</li>
             <li>Miguel Griffa - patch to add a status bar to Boris Gruschko's ASTViewer, documentation page for Maven, SystemPrintln rule, patch to improve JUnitTestsShouldContainAsserts, new Maven pmd:dist-bin goal, LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
             <li>Elliotte Rusty Harold - suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>

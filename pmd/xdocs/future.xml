@@ -14,6 +14,13 @@
      bugs and enable a lot more rules to be written.  However, it'll taken some doing,
      because it'll require parsing of class files.  Lots of work here.</p>
    </subsection>
+   <subsection name="Code cleanups">
+     <p>Some of the code is a bit sloppy:</p>
+       <ul>
+           <li>RuleSetFactory is a mess.  It needs to be refactored into something that has layers, or decorators, or something.</li>
+           <li>Cleanups would be welcome for ConstructorCallsOverridableMethod and DoubleCheckedLocking</li>
+       </ul>
+   </subsection>
       <subsection name="Data flow analysis (DFA)">
           <p>Raik Schroeder, a graduate student at
               <a href="http://www.fh-stralsund.de/fh_stralsund/powerslave,id,223,nodeid,.html">Fachhochschule Stralsund</a>,
@@ -24,10 +31,6 @@ The code is currently in CVS in the net.sourceforge.pmd.dfa packages, and we're 
           use it to simplify some current rules, as well. </p>
           <p>Raik's advisor, Dr. Gero Wedemann, has also mentioned that he may be able to find
           a student who is interested in working on a PMD GUI.  That'd be great!</p>
-      </subsection>
-      <subsection name="Control Flow Graph (CFG)">
-          <p>Access to a CFG would let us detect some algebraic simplications.  We could also
-          do better dead-code detection.  Again, lots of PhD possibilities here.</p>
       </subsection>
       </section>
   </body>
