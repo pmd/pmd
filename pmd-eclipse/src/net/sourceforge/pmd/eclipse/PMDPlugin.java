@@ -5,11 +5,16 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
@@ -22,7 +27,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * $Log :$
  */
 public class PMDPlugin extends AbstractUIPlugin {
-    
+
     // Public constants
     public static final String RULESETS_PREFERENCE = "net.sourceforge.pmd.eclipse.rulesets";
     public static final String DEFAULT_RULESETS =
@@ -31,15 +36,18 @@ public class PMDPlugin extends AbstractUIPlugin {
     public static int DEFAULT_MIN_TILE_SIZE = 25;
     public static String PMD_MARKER = "net.sourceforge.pmd.eclipse.pmdMarker";
     public static String PMD_TASKMARKER = "net.sourceforge.pmd.eclipse.pmdTaskMarker";
-    
+
     // Private constants
     private static final String PREFERENCE_DELIMITER = ";";
-    
+
     // The shared instance.
     private static PMDPlugin plugin;
 
     // Externalized messages
     private Properties messageTable;
+
+    // Log
+    private static Log log = null;
 
     /**
      * The constructor.
@@ -53,8 +61,15 @@ public class PMDPlugin extends AbstractUIPlugin {
                 messageTable = new Properties();
                 messageTable.load(messageTableUrl.openStream());
             }
+
+            if (log == null) {
+                DOMConfigurator.configure(find(new Path("log4j.xml")));
+                log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDPlugin");
+            }
+
+            log.info("PMD plugin loaded");
         } catch (IOException e) {
-            logError("Cant' load message table", e);
+            logError("Can't load message table", e);
         }
     }
 
@@ -73,11 +88,11 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     public String getMessage(String key, String defaultMessage) {
         String result = defaultMessage;
-        
+
         if (messageTable != null) {
             result = messageTable.getProperty(key);
         }
-        
+
         return result;
     }
 
@@ -146,12 +161,30 @@ public class PMDPlugin extends AbstractUIPlugin {
         }
         getPreferenceStore().setValue(RULESETS_PREFERENCE, buffer.toString());
     }
-    
+
     /**
      * Helper method to log error
      * @see IStatus
      */
     public void logError(String message, Throwable t) {
-        getLog().log(new Status(IStatus.ERROR, getDescriptor().getUniqueIdentifier(), 0, message, t));
+        getLog().log(new Status(IStatus.ERROR, getDescriptor().getUniqueIdentifier(), 0, message + t.getMessage(), t));
+        if (log != null) {
+            log.error(message, t);
+        }
+    }
+
+    /**
+     * Helper method to display error
+     */
+    public void showError(final String message, final Throwable t) {
+        logError(message, t);
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                MessageDialog.openError(
+                    Display.getCurrent().getActiveShell(),
+                    getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
+                    message + String.valueOf(t));
+            }
+        });
     }
 }
