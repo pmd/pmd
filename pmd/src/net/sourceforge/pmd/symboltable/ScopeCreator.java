@@ -16,6 +16,7 @@ import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTSwitchStatement;
 
 import java.util.Stack;
 
@@ -33,6 +34,7 @@ public class ScopeCreator extends JavaParserVisitorAdapter {
     public Object visit(ASTTryStatement node, Object data){openScope(node);return data;}
     public Object visit(ASTForStatement node, Object data){openScope(node);return data;}
     public Object visit(ASTIfStatement node, Object data){openScope(node);return data;}
+    public Object visit(ASTSwitchStatement node, Object data){openScope(node);return data;}
 
     private void push(Scope scope) {
         if (scopes.empty()) {

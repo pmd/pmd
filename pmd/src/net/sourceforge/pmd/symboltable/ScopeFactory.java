@@ -16,6 +16,7 @@ import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTSwitchStatement;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,6 +49,7 @@ public class ScopeFactory {
         localTriggers.add(ASTBlock.class);
         localTriggers.add(ASTTryStatement.class);
         localTriggers.add(ASTForStatement.class);
+        localTriggers.add(ASTSwitchStatement.class);
         localTriggers.add(ASTIfStatement.class);
         methodTriggers.add(ASTConstructorDeclaration.class);
         methodTriggers.add(ASTMethodDeclaration.class);
