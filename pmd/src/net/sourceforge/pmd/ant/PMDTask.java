@@ -23,12 +23,12 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
-import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

@@ -13,23 +13,15 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RuleTst extends TestCase {
-
-    private Map rulesets = new HashMap();
-    private RuleSetFactory rsf = new RuleSetFactory();
 
     public void runTestFromString(String code, int expectedResults, Rule rule) throws Throwable {
         assertEquals(expectedResults, processUsingStringReader(code, rule).size());
     }
 
     public Rule findRule(String rs, String r) throws RuleSetNotFoundException {
-        if (!rulesets.containsKey(rs)) {
-            rulesets.put(rs, rsf.createRuleSet(rs));
-        }
-        return ((RuleSet)rulesets.get(rs)).getRuleByName(r);
+        return new RuleSetFactory().createRuleSet(rs).getRuleByName(r);
     }
 
     public void runTestFromString(String code, Rule rule, Report report) throws Throwable {

@@ -5,7 +5,6 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.ast.ASTConditionalOrExpression;
@@ -15,6 +14,7 @@ import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTUnaryExpressionNotPlusMinus;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 /**
  * if (x != y) { diff(); } else { same(); } and<br>

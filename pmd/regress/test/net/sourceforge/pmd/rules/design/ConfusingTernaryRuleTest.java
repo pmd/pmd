@@ -1,9 +1,9 @@
 package test.net.sourceforge.pmd.rules.design;
 
-import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.design.ConfusingTernary;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class ConfusingTernaryRuleTest extends SimpleAggregatorTst {
 
@@ -92,7 +92,7 @@ public class BadTernaries {
   private static boolean c() { return true; }
   private static Object d() { return null; }
 }
-    
+
     */
 
 }
