@@ -27,7 +27,7 @@ import java.util.ArrayList;
 /**
  * @author raik
  */
-public class DFAGrapher extends JFrame {
+public class DFAGrapher {
 
     public static class SourceFile {
         private String name;
@@ -71,7 +71,7 @@ public class DFAGrapher extends JFrame {
         }
     }
 
-    private class MyPanel extends JPanel {
+    private class DFAPanel extends JPanel {
         private SimpleNode node;
         private int x = 150;
         private int y = 50;
@@ -80,7 +80,7 @@ public class DFAGrapher extends JFrame {
         private SourceFile sourceFile;
         private int height;
 
-        public MyPanel(SimpleNode node, SourceFile sourceFile) {
+        public DFAPanel(SimpleNode node, SourceFile sourceFile) {
             super();
             this.node = node;
             this.sourceFile = sourceFile;
@@ -184,17 +184,19 @@ public class DFAGrapher extends JFrame {
         }
     }
 
+    private JFrame myFrame;
+
     public DFAGrapher(SimpleNode node, SourceFile src) {
-        this.setSize(600, 800);
-        this.setTitle("DFA graph for " + src);
-        addWindowListener(new WindowAdapter() {
+        myFrame = new JFrame("DFA graph for " + src);
+        myFrame.setSize(600, 800);
+        myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
-        JScrollPane scrollPane = new JScrollPane(new MyPanel(node, src));
-        this.getContentPane().add(scrollPane);
-        this.setVisible(true);
+        JScrollPane scrollPane = new JScrollPane(new DFAPanel(node, src));
+        myFrame.getContentPane().add(scrollPane);
+        myFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
