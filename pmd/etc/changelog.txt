@@ -12,6 +12,7 @@ Fixed bug 656944 - PMD no longer prints errors to System.out, instead it just re
 Fixed bug 660069 - this was a symbol table bug; thanks to mcclain looney for the report.
 Fixed bug 668119 - OverrideBothEqualsAndHashcodeRule now checks the signature on equals(); thanks to mcclain looney for the report.
 Added rule priority settings.
+Added alternate row colorization to HTML renderer.
 
 November 07 2002 - 1.01:
 Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.

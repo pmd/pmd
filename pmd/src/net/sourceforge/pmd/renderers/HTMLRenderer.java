@@ -18,10 +18,19 @@ public class HTMLRenderer implements Renderer {
     protected String EOL = System.getProperty("line.separator", "\n");
 
     public String render(Report report) {
-        StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + EOL+ "<table align=center><tr>" + EOL+ "<th>File</th><th>Line</th><th>Problem</th></tr>" + EOL);
+        StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + EOL+ "<table align=\"center\"><tr>" + EOL+ "<th>File</th><th>Line</th><th>Problem</th></tr>" + EOL);
+        boolean colorize = true;
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
-            buf.append("<tr>" + EOL+ "<td width=\"*%\">" + rv.getFilename() + "</td>" + EOL);
+            buf.append("<tr ");
+            if (colorize) {
+                buf.append("bgcolor=\"#00FFFF\"");
+                colorize = false;
+            }   else {
+                colorize = true;
+            }
+            buf.append("> ");
+            buf.append(EOL+ "<td width=\"*%\">" + rv.getFilename() + "</td>" + EOL);
             buf.append("<td align=center width=\"5%\">" + Integer.toString(rv.getLine()) + "</td>" + EOL);
 
             String d = rv.getDescription();
