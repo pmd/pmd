@@ -17,8 +17,10 @@ jobsDir.each { |candidate|
    #puts "Processing #{job}"
    job.clear
    job.checkout_code
-   job.run_pmd
-   job.clear
+   if (job.checkOutOK)
+    job.run_pmd
+    job.clear
+   end
   end
  rescue
   puts "Exiting with error: #{$!}"

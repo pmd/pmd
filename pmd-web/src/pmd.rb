@@ -45,6 +45,10 @@ class Job
    }
    t.join  
   end
+
+ def checkOutOK
+  return File.exists?(@sourceDirectory)
+ end
   
   def run_pmd
    cmd="java -jar pmd-1.03.jar \"#{@sourceDirectory}\" html rulesets/unusedcode.xml > \"#{reportFile()}\""

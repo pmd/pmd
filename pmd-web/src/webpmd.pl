@@ -27,7 +27,7 @@ sub default() {
  my $lastruntime=<FILE>;
  close(FILE);
  print br();
- print "The last run finished at ", $lastruntime;
+ print "This report is run 10 minutes past the hour at midnight, 3, 6, 9, 12, 15, 18, and 21 hours. The last run finished at ", $lastruntime;
  print hr();
 
  if (param("unixname")) {
