@@ -13,6 +13,7 @@ import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.rules.design.*;
+import net.sourceforge.pmd.stat.Metric;
 
 public class UseSingletonRuleTest
     extends RuleTst implements ReportListener
@@ -68,4 +69,6 @@ public class UseSingletonRuleTest
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         callbacks++;
     }
+    
+    public void metricAdded(Metric metric) { }
 }

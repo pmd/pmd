@@ -8,6 +8,7 @@ package test.net.sourceforge.pmd;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.Report;
@@ -16,11 +17,13 @@ import net.sourceforge.pmd.ReportListener;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 
 public class ReportTest extends TestCase implements ReportListener {
 
-    private boolean semaphore;
-
+    private boolean violationSemaphore;
+	private boolean metricSemaphore;
+	
     public ReportTest(String name) {
         super(name);
     }
@@ -31,6 +34,33 @@ public class ReportTest extends TestCase implements ReportListener {
         assertTrue(!r.isEmpty());
     }
 
+	public void testMetric0() {
+		Report r = new Report();	
+		assertTrue( !r.hasMetrics() );
+	}
+	
+	public void testMetric1() {
+		Report r = new Report();
+		assertTrue( !r.hasMetrics() );
+		
+		r.addMetric( new Metric("m1", 1.0, 2.0, 3.0, 4.0));
+		assertTrue( r.hasMetrics() );
+		
+		Iterator ms = r.metrics();
+		assertTrue( ms.hasNext());
+		
+		Object o = ms.next();
+		assertTrue( o instanceof Metric );
+		
+		Metric m = (Metric) o;
+		assertEquals("m1", m.getMetricName());
+		assertEquals(1.0, m.getLowValue(), 0.05);
+		assertEquals(2.0, m.getHighValue(), 0.05);
+		assertEquals(3.0, m.getAverage(), 0.05);
+		assertEquals(4.0, m.getStandardDeviation(), 0.05);			
+	}
+	
+	
     // Files are grouped together now.
     public void testSortedReport_File() {
         Report r = new Report();
@@ -55,14 +85,22 @@ public class ReportTest extends TestCase implements ReportListener {
     public void testListener() {
         Report rpt  = new Report();
         rpt.addListener(this);
-        semaphore = false;
+        violationSemaphore = false;
         rpt.addRuleViolation(new RuleViolation(new MockRule(), 5, "file"));
-        assertTrue(semaphore);
-
+        assertTrue(violationSemaphore);
+        
+        metricSemaphore = false;
+        rpt.addMetric( new Metric("test", 0.0, 0.0, 0.0, 0.0 ));
+        
+        assertTrue(metricSemaphore);
     }
 
     public void ruleViolationAdded(RuleViolation ruleViolation) {
-        semaphore = true;
+        violationSemaphore = true;
+    }
+    
+    public void metricAdded( Metric metric ) {
+    	metricSemaphore = true;
     }
 
 }

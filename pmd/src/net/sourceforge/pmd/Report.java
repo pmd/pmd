@@ -6,12 +6,14 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.stat.Metric;
 
 import java.util.*;
 
 public class Report {
 
     private Set violations = new TreeSet(new RuleViolation.RuleViolationComparator());
+	private Set metrics = new HashSet();
     private List listeners = new ArrayList();
 
     public void addListener(ReportListener listener) {
@@ -26,6 +28,22 @@ public class Report {
         }
     }
 
+	public void addMetric( Metric metric ) {
+		metrics.add( metric );
+		for (Iterator i = listeners.iterator(); i.hasNext(); ) {
+			ReportListener listener = (ReportListener) i.next();
+			listener.metricAdded( metric );	
+		}	
+	}
+	
+	public boolean hasMetrics() {
+		return !metrics.isEmpty();
+	}
+	
+	public Iterator metrics() {
+		return metrics.iterator();
+	}
+	
     public boolean isEmpty() {
         return violations.isEmpty();
     }

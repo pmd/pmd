@@ -60,6 +60,12 @@ public abstract class StatisticalRule extends AbstractRule {
 		}
 		
 		makeViolations(ctx, newPoints);
+		
+		double low = ((DataPoint) newPoints.first()).getScore();
+		double high = ((DataPoint) newPoints.last()).getScore();
+	
+		ctx.getReport().addMetric( new Metric( this.getName(), low, high,
+		                                       getMean(), getStdDev()));
     }
 
     protected double getMean() {
