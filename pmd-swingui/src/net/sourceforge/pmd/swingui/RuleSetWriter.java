@@ -47,7 +47,7 @@ public class RuleSetWriter
         indent();
         setupNewLine();
         m_line.append("<ruleset name=\"");
-        m_line.append(ruleSet.getName());
+        m_line.append(convertChars(ruleSet.getName()));
         m_line.append('"');
 
         //
@@ -96,7 +96,7 @@ public class RuleSetWriter
         indent();
         setupNewLine();
         m_line.append("<rule name=\"");
-        m_line.append(rule.getName());
+        m_line.append(convertChars(rule.getName()));
         m_line.append('"');
         outputLine();
 
@@ -104,7 +104,7 @@ public class RuleSetWriter
         m_indent += 6;
         setupNewLine();
         m_line.append("message=\"");
-        m_line.append(rule.getMessage());
+        m_line.append(convertChars(rule.getMessage()));
         m_line.append('"');
         outputLine();
 
@@ -170,14 +170,12 @@ public class RuleSetWriter
         m_line.append("<description>");
         outputLine();
 
-        {
-            // xxxxxxxx
-            indent();
-            setupNewLine();
-            m_line.append(description);
-            outputLine();
-            outdent();
-        }
+        // xxxxxxxx
+        indent();
+        setupNewLine();
+        m_line.append(convertChars(description));
+        outputLine();
+        outdent();
 
         // </description>
         setupNewLine();
@@ -197,20 +195,18 @@ public class RuleSetWriter
         m_line.append("<example>");
         outputLine();
 
-        {
-            // xxxxxxxx
-            indent();
-            setupNewLineWithoutIndent();
-            m_line.append("<![CDATA[");
-            outputLine();
-            setupNewLineWithoutIndent();
-            m_line.append(example);
-            outputLine();
-            setupNewLineWithoutIndent();
-            m_line.append("]]>");
-            outputLine();
-            outdent();
-        }
+        // xxxxxxxx
+        indent();
+        setupNewLineWithoutIndent();
+        m_line.append("<![CDATA[");
+        outputLine();
+        setupNewLineWithoutIndent();
+        m_line.append(example);
+        outputLine();
+        setupNewLineWithoutIndent();
+        m_line.append("]]>");
+        outputLine();
+        outdent();
 
         // </description>
         setupNewLine();
@@ -230,14 +226,12 @@ public class RuleSetWriter
         m_line.append("<priority>");
         outputLine();
 
-        {
-            // xx
-            indent();
-            setupNewLine();
-            m_line.append(String.valueOf(priority));
-            outputLine();
-            outdent();
-        }
+        // xx
+        indent();
+        setupNewLine();
+        m_line.append(String.valueOf(priority));
+        outputLine();
+        outdent();
 
         // </priority>
         setupNewLine();
@@ -261,7 +255,8 @@ public class RuleSetWriter
         RuleProperties properties = rule.getProperties();
         Enumeration keys = properties.keys();
 
-        while (keys.hasMoreElements()) {
+        while (keys.hasMoreElements())
+        {
             String name = (String) keys.nextElement();
             String value = properties.getValue(name);
             String valueType = properties.getValueType(name);
@@ -269,11 +264,11 @@ public class RuleSetWriter
             // <property name="xxxxx" value="yyyyy" />
             setupNewLine();
             m_line.append("<property name=\"");
-            m_line.append(name);
+            m_line.append(convertChars(name));
             m_line.append("\" value=\"");
-            m_line.append(value);
+            m_line.append(convertChars(value));
             m_line.append("\" type=\"");
-            m_line.append(valueType);
+            m_line.append(convertChars(valueType));
             m_line.append("\"/>");
             outputLine();
         }
@@ -333,5 +328,49 @@ public class RuleSetWriter
     private void outputLine()
     {
         m_outputStream.println(m_line.toString());
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param text
+     * @return
+     */
+    private String convertChars(String text)
+    {
+        if (text == null)
+        {
+            text = "";
+        }
+
+        StringBuffer buffer = new StringBuffer(text);
+
+        for (int n = 0; n < buffer.length(); n++)
+        {
+            switch(buffer.charAt(n))
+            {
+                case '<':
+                    buffer.replace(n, n+1, "&lt;");
+                    n += 3;
+                    break;
+
+                case '>':
+                    buffer.replace(n, n+1, "&gt;");
+                    n += 3;
+                    break;
+
+                case '&':
+                    buffer.replace(n, n+1, "&amp;");
+                    n += 4;
+                    break;
+
+                case '"':
+                    buffer.replace(n, n+1, "&quot;");
+                    n += 4;
+                    break;
+            }
+        }
+
+        return buffer.toString();
     }
 }

@@ -7,6 +7,8 @@ import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -33,7 +35,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
     private JLabel m_nameLabel;
     private JTextField m_name;
     private JLabel m_valueLabel;
-    private JTextField m_value;
+    private JTextArea m_value;
     private JLabel m_valueTypeLabel;
     private JComboBox m_valueType;
     private boolean m_enabled;
@@ -60,7 +62,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
         GridBagLayout layout;
         GridBagConstraints constraints;
 
-        int[] columnWidths = {50, 100, 100};
+        int[] columnWidths = {50, 100, 50, 400};
         layout = new GridBagLayout();
         layout.columnWidths = columnWidths;
         panel = new JPanel(layout);
@@ -91,10 +93,10 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
         constraints = layout.getConstraints(m_name);
         constraints.gridx = 1;
         constraints.gridy = 0;
-        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.gridwidth = 1;
         constraints.gridheight = 1;
         constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.fill = GridBagConstraints.BOTH;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(4, 2, 4, 2);
         panel.add(m_name, constraints);
 
@@ -103,8 +105,8 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
         m_valueLabel.setFont(UIManager.getFont("labelFont"));
         m_valueLabel.setHorizontalAlignment(JLabel.RIGHT);
         constraints = layout.getConstraints(m_nameLabel);
-        constraints.gridx = 0;
-        constraints.gridy = 1;
+        constraints.gridx = 2;
+        constraints.gridy = 0;
         constraints.gridwidth = 1;
         constraints.gridheight = 1;
         constraints.anchor = GridBagConstraints.NORTHEAST;
@@ -113,25 +115,26 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
         panel.add(m_valueLabel, constraints);
 
         // Property Value Text
-        m_value = new JTextField();
-        m_value.setFont(UIManager.getFont("dataFont"));
-        m_value.setOpaque(true);
+        m_value = ComponentFactory.createTextArea("");
         constraints = layout.getConstraints(m_name);
-        constraints.gridx = 1;
-        constraints.gridy = 1;
+        constraints.gridx = 3;
+        constraints.gridy = 0;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
-        constraints.gridheight = 1;
+        constraints.gridheight = 2;
         constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(4, 2, 4, 2);
-        panel.add(m_value, constraints);
+        JScrollPane scrollPane = new JScrollPane(m_value,
+                                                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        panel.add(scrollPane, constraints);
 
         // Property Value Type Label
         m_valueTypeLabel = new JLabel("Type");
         m_valueTypeLabel.setFont(UIManager.getFont("labelFont"));
         m_valueTypeLabel.setHorizontalAlignment(JLabel.RIGHT);
         constraints.gridx = 0;
-        constraints.gridy = 2;
+        constraints.gridy = 1;
         constraints.gridwidth = 1;
         constraints.gridheight = 1;
         constraints.anchor = GridBagConstraints.NORTHEAST;
@@ -146,11 +149,11 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
         m_valueType.setOpaque(true);
         constraints = layout.getConstraints(m_name);
         constraints.gridx = 1;
-        constraints.gridy = 2;
+        constraints.gridy = 1;
         constraints.gridwidth = 1;
         constraints.gridheight = 1;
         constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.fill = GridBagConstraints.BOTH;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(4, 2, 4, 2);
         panel.add(m_valueType, constraints);
 

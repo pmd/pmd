@@ -180,17 +180,25 @@ class RuleSetReader implements IConstants
             if (localName.equalsIgnoreCase("ruleset"))
             {
                 String name;
-                String include;
+                String includeText;
+                boolean include;
 
                 m_doingRuleSet = true;
                 m_ruleSet = new RuleSet();
                 name = attributes.getValue("name");
                 name = (name == null) ? "Unknown" : name.trim();
-                include = attributes.getValue("include");
-                include = (include == null) ? "true" : include.trim();
+                includeText = attributes.getValue("include");
+                includeText = (includeText == null) ? "true" : includeText.trim();
+                include = includeText.equalsIgnoreCase("true");
+
+                if (m_onlyIfIncluded && (include == false))
+                {
+                    SAXException exception = new SAXException(REJECT_NOT_INCLUDED);
+                    throw exception;
+                }
 
                 m_ruleSet.setName(name);
-                m_ruleSet.setInclude(include.equalsIgnoreCase("true"));
+                m_ruleSet.setInclude(include);
             }
             else if (localName.equalsIgnoreCase("rule"))
             {
@@ -214,8 +222,8 @@ class RuleSetReader implements IConstants
 
                 if (m_onlyIfIncluded && (include == false))
                 {
-                    SAXException exception = new SAXException(REJECT_NOT_INCLUDED);
-                    throw exception;
+                    // Do not include this rule.
+                    return;
                 }
 
                 if (className.length() == 0)

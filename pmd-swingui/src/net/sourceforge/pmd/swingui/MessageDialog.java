@@ -102,8 +102,11 @@ public class MessageDialog extends JDialog
 
         m_messageArea.setFont(UIManager.getFont("messageFont"));
         m_messageArea.setEditable(false);
+        m_messageArea.setLineWrap(false);
 
-        JScrollPane scrollPane = new JScrollPane(m_messageArea);
+        JScrollPane scrollPane = new JScrollPane(m_messageArea,
+                                                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         basePanel.add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -115,10 +118,11 @@ public class MessageDialog extends JDialog
     {
         JButton closeButton = ComponentFactory.createButton("Close");
         JPanel buttonPanel = new JPanel(new FlowLayout());
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
         closeButton = ComponentFactory.createButton("Close");
-        closeButton.setForeground(Color.white);
-        closeButton.setBackground(Color.blue);
+        closeButton.setForeground(Color.black);
+        closeButton.setBackground(Color.gray);
         closeButton.addActionListener(new CloseButtonActionListener());
 
         buttonPanel.add(closeButton);

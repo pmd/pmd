@@ -1,5 +1,5 @@
 package net.sourceforge.pmd.swingui;
-
+//J_
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 import javax.swing.ImageIcon;
@@ -19,7 +19,8 @@ import java.util.Properties;
  * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-public class PMDLookAndFeel extends WindowsLookAndFeel {
+public class PMDLookAndFeel extends WindowsLookAndFeel
+{
 
     /**
      ****************************************************************************
@@ -82,12 +83,31 @@ public class PMDLookAndFeel extends WindowsLookAndFeel {
      *
      * @param table
      */
-    protected void initSystemColorDefaults(UIDefaults table) {
+    protected void initSystemColorDefaults(UIDefaults table)
+    {
         super.initSystemColorDefaults(table);
 
         Color darkBlue = Color.blue.darker();
 
-        String[] defaultSystemColors = {"pmdBlue", String.valueOf(darkBlue.getRGB()), "pmdRed", String.valueOf(Color.red.getRGB()), "pmdGreen", "#336666", "pmdGray", "#F0F0F0", "pmdTreeBackground", "#F0F0F0", "pmdTableBackground", "#F0F0F0", "pmdMessageAreaBackground", "#F0F0F0", "pmdStatusAreaBackground", "#F0F0F0", "mediumGray", "#686868", "mediumDarkGray", "#434343", "paleGray", "#AAAAAA", "standardButtonBackground", "#686868", "standardButtonForeground", "#FFFFFF", "pmdTableHeaderBackground", "#686868", "pmdTableHeaderForeground", "#FFFFFF", "pmdEditingPanelBackground", String.valueOf(Color.lightGray.getRGB()), "disabledTextBackground", "#AAAAAA", };
+        String[] defaultSystemColors = {
+                                        "pmdBlue", String.valueOf(darkBlue.getRGB()),
+                                        "pmdRed", String.valueOf(Color.red.getRGB()),
+                                        "pmdGreen", "#336666",
+                                        "pmdGray", "#F0F0F0",
+                                        "pmdTreeBackground", "#F0F0F0",
+                                        "pmdTableBackground", "#F0F0F0",
+                                        "pmdMessageAreaBackground", "#F0F0F0",
+                                        "pmdStatusAreaBackground", "#F0F0F0",
+                                        "mediumGray", "#686868",
+                                        "mediumDarkGray", "#434343",
+                                        "paleGray", "#AAAAAA",
+                                        "standardButtonBackground", "#686868",
+                                        "standardButtonForeground", "#FFFFFF",
+                                        "pmdTableHeaderBackground", "#686868",
+                                        "pmdTableHeaderForeground", "#FFFFFF",
+                                        "pmdEditingPanelBackground", String.valueOf(Color.lightGray.getRGB()),
+                                        "disabledTextBackground", "#AAAAAA",
+                                        };
 
         loadSystemColors(table, defaultSystemColors, isNativeLookAndFeel());
     }
