@@ -17,42 +17,42 @@
   <tr><td>Eclipse</td>
       <td>pmd-eclipse</td>
       <td>0.3</td>
-      <td>dpeugh, dcraine</td>
+      <td>DDP, Dave Craine</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Emacs</td>
       <td>pmd-emacs</td>
       <td>0.1</td>
-      <td>dpeugh</td>
+      <td>DDP</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>JBuilder</td>
       <td>pmd-jbuilder</td>
       <td>0.9</td>
-      <td>dcraine</td>
+      <td>Dave Craine</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Netbeans</td>
       <td>pmd-netbeans</td>
       <td>0.4</td>
-      <td>olemartin</td>
+      <td>Ole Martin Mork</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>JEdit</td>
       <td>pmd-jedit</td>
       <td>1.0</td>
-      <td>tomcopeland</td>
+      <td>Tom Copeland</td>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
+  <tr><td>Maven</td>
+      <td>pmd-maven</td>
+      <td>0.3</td>
+      <td>Siegfried Goeschl</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>IntelliJ IDEA</td>
       <td>N/A</td>
       <td>N/A</td>
-      <td>tomcopeland</td>
+      <td>Tom Copeland</td>
       <td>N/A</td></tr>
-  <tr><td>Maven</td>
-      <td>pmd-maven</td>
-      <td>0.3</td>
-      <td>wsdgoe</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Ant</td>
-      <td>(located in PMD)</td>
       <td>N/A</td>
-      <td>tomcopeland</td>
+      <td>N/A</td>
+      <td>Tom Copeland</td>
       <td>N/A</td></tr>
   </table>
       </subsection>

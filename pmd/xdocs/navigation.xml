@@ -16,7 +16,7 @@
     </links>
     <menu name="Overview">
       <item name="Running PMD" href="/running.html" />
-      <item name="Integration points" href="/integrations.html" />
+      <item name="Plugins" href="/integrations.html" />
       <item name="How to write a PMD rule" href="/howtowritearule.html" />
       <item name="How to make a rule set" href="/howtomakearuleset.html" />
       <item name="How PMD works" href="/howitworks.html" />
