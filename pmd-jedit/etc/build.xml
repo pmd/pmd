@@ -29,6 +29,7 @@
     </target>
 
 	<target name="compile">
+		<mkdir dir="${build}"/>
 		<javac
 			srcdir="${src}"
 			destdir="${build}"
