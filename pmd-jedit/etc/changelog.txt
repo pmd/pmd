@@ -1,3 +1,6 @@
+January 23 2003 - 1.3:
+Upgraded to work with PMD-1.02.
+
 November 20 2002 - 1.2:
 Added some more fixes from Jiger.
 

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
 import org.gjt.sp.jedit.Buffer;
@@ -146,6 +147,9 @@ public class PMDJEditPlugin extends EditPlugin {
             }
         } catch (RuleSetNotFoundException rsne) {
             rsne.printStackTrace();
+        } catch (PMDException pmde) {
+            pmde.printStackTrace();
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + buffer.getPath());
         }
     }
 
@@ -175,6 +179,9 @@ public class PMDJEditPlugin extends EditPlugin {
             } catch (FileNotFoundException fnfe) {
                 // should never happen, but if it does, carry on to the next file
                 System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
+            } catch (PMDException pmde) {
+                pmde.printStackTrace();
+                JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + file.getAbsolutePath());
             }
             for (Iterator j = ctx.getReport().iterator(); j.hasNext();) {
                 foundProblems = true;
