@@ -1,7 +1,4 @@
-update run.bat to point to pmd-1.1.jar
-update run.sh to point to pmd-1.1.jar
-update cpdgui.bat to point to pmd-1.1.jar
-update build.xml to reflect pmd-1.1
+update run.*, astviewer.*, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-1.1.jar
 update xdocs/running.xml to reflect pmd-1.1
 update xdocs/integrations.xml to reflect pmd-1.1
 update the release date in the changelog
@@ -47,7 +44,7 @@ cd ~/tmp/
 zip -q -r pmd-src-1.1.zip pmd-1.1/
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_1_05 pmd
+cvs rtag -d pmd_release_1_1 pmd
 and then retag everything
 
 ncftpput upload.sourceforge.net incoming/ pmd-src-1.1.zip pmd-bin-1.1.zip
