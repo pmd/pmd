@@ -14,6 +14,7 @@ public class ConstructorCallsOverridableMethodRuleTest extends SimpleAggregatorT
            new TestDescriptor(TEST5, "", 1, new ConstructorCallsOverridableMethodRule()),
            // FIXME
            //new TestDescriptor(TEST6, "calling method on literal bug", 0, new ConstructorCallsOverridableMethodRule()),
+           //new TestDescriptor(TEST7, "method in anonymous inner class is ok", 0, new ConstructorCallsOverridableMethodRule()),
        });
     }
 
@@ -66,6 +67,16 @@ public class ConstructorCallsOverridableMethodRuleTest extends SimpleAggregatorT
     "  \"foo\".equals(s);" + CPD.EOL +
     " }" + CPD.EOL +
     " public void equals(String bar) {}" + CPD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + CPD.EOL +
+    " public Foo(String s) {" + CPD.EOL +
+    "  addActionListener(new ActionListener() {" + CPD.EOL +
+    "   public void actionPerformed(ActionEvent e) {bar();}" + CPD.EOL +
+    "  });" + CPD.EOL +
+    " }" + CPD.EOL +
+    " public void bar() {}" + CPD.EOL +
     "}";
 
 
