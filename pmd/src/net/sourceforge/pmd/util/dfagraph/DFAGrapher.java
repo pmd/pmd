@@ -3,43 +3,45 @@
  */
 package net.sourceforge.pmd.util.dfagraph;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * @author raik
  */
 public class DFAGrapher {
 
+    private DFAGraphRule dfaGraphRule = new DFAGraphRule();
     private JFrame myFrame;
 
-    public DFAGrapher(SimpleNode node, SourceFile src) {
-        myFrame = new JFrame("DFA graph for " + src);
+    public void process(String filename) {
+        try {
+            RuleSet rs = new RuleSet();
+            rs.addRule(dfaGraphRule);
+            RuleContext ctx = new RuleContext();
+            ctx.setSourceCodeFilename(filename);
+            new PMD().processFile(new FileReader(filename), rs, ctx);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void show() {
+        myFrame = new JFrame("DFA graph for " + dfaGraphRule.getSrc().getName());
         myFrame.setSize(600, 800);
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
-        JScrollPane scrollPane = new JScrollPane(new DFAPanel(node, src));
+        JScrollPane scrollPane = new JScrollPane(new DFAPanel((ASTMethodDeclaration)dfaGraphRule.getMethods().iterator().next(), dfaGraphRule.getSrc()));
         myFrame.getContentPane().add(scrollPane);
         myFrame.setVisible(true);
     }
@@ -49,14 +51,8 @@ public class DFAGrapher {
             System.out.println("Usage: java net.sourceforge.pmd.util.dfagraph.DFAGrapher /home/tom/tmp/Foo.java");
             System.exit(1);
         }
-        try {
-            RuleSet rs = new RuleSet();
-            rs.addRule(new DFAGraphRule());
-            RuleContext ctx = new RuleContext();
-            ctx.setSourceCodeFilename(args[0]);
-            new PMD().processFile(new FileReader(args[0]), rs, ctx);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        DFAGrapher dfa = new DFAGrapher();
+        dfa.process(args[0]);
+        dfa.show();
     }
 }

@@ -6,8 +6,6 @@ import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.List;
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.

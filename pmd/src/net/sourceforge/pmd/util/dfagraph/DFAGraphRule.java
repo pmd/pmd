@@ -5,26 +5,33 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
-/**
- * Created by IntelliJ IDEA.
- * User: tom
- * Date: Sep 20, 2004
- * Time: 5:44:26 PM
- * To change this template use File | Settings | File Templates.
- */
+import java.util.List;
+
 public class DFAGraphRule extends AbstractRule {
+
+    private SourceFile src;
+    private List methods;
+    private List constructors;
+
     public DFAGraphRule() {
         super.setUsesDFA();
         super.setUsesSymbolTable();
     }
-    private SourceFile src;
+
+    public List getMethods() {
+        return this.methods;
+    }
+    public List getConstructors() {
+        return this.constructors;
+    }
+    public SourceFile getSrc() {
+        return this.src;
+    }
+
     public Object visit(ASTCompilationUnit acu, Object data) {
         this.src = new SourceFile(((RuleContext)data).getSourceCodeFilename());
-        return super.visit(acu, data);
-    }
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        super.visit(node, data);
-        new DFAGrapher(node, src);
+        methods = acu.findChildrenOfType(ASTMethodDeclaration.class);
+        constructors = acu.findChildrenOfType(ASTMethodDeclaration.class);
         return data;
     }
 }
