@@ -1,8 +1,8 @@
 update the release date in the changelog
 change config/pmd.props to reflect actual pmd.jar file version
-change config/pmd.props to reflect pmd-jedit release 2.2
-change config/jedit.html to reflect pmd-jedit release 2.2
-change the build.xml to reflect pmd-jedit release 2.2
+change config/pmd.props to reflect the new pmd-jedit release version.
+change config/jedit.html to reflect the new pmd-jedit release version.
+change the build.xml to reflect pmd-jedit release
 update doing_the_next_pmd_jedit_release.txt to the new release version
 comit the above changes FIRST!!
 
@@ -15,18 +15,18 @@ TESTS:
 4) Does CPD work?
 
 Create the src release:
-cvs -q rtag -D tomorrow "pmd_jedit_release_2_1" pmd-jedit
+cvs -q rtag -D tomorrow "pmd_jedit_release_2_3" pmd-jedit
 rm -rf ~/tmp/pmd-jedit
 mkdir -p ~/tmp/pmd-jedit
-cvs -q export -d tmp -r pmd_jedit_release_2_1 pmd-jedit
+cvs -q export -d tmp -r pmd_jedit_release_2_3 pmd-jedit
 mv tmp/* ~/tmp/pmd-jedit
 rmdir tmp/
-cp pmd-jedit/lib/PMDJEditPlugin-2.2.jar ~/tmp/pmd-jedit/lib
+cp pmd-jedit/lib/PMDJEditPlugin-2.3.jar ~/tmp/pmd-jedit/lib
 cd ~/tmp
-zip -q -r pmd-jedit-src-2.2.zip pmd-jedit
+zip -q -r pmd-jedit-src-2.3.zip pmd-jedit
 rm -rf pmd-jedit
 
-ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.2.zip pmd-jedit-bin-2.2.zip
+ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.3.zip pmd-jedit-bin-2.3.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
