@@ -1,0 +1,34 @@
+Release notes for the PMD Eclipse Plugin
+
+
+v0.5.0 - 19/03/2003
+
+NEW : Using PMD as a project incremental builder
+------------------------------------------------
+When PMD is used as an incremental builder, then violations are added as problem marker. Then,
+markers will be removed when violations are fixed.
+To enable PMD as a incremental, simply check "enable PMD" on your project PMD property
+page.
+
+UPDATED : 
+---------
+When PMD is used "one shot" from the popup menu, then violations are added as task. Then, markers
+should be removed manually via the popup menus, either from the project (all violations for this
+project will be removed), or from a file or group of files (all violations for these files will be
+removed) or from the task view (all violations for all projects will be removed).
+
+PMD markers (violations) can be filtered in the task view : either PMD task marker or PMD problem
+marker or both.
+
+PMD rule violations have a priority from 1 to 5. Markers have only 3 level of severity, so the mapping is as follow :
+PMD priority 1 -> severity error, priority high
+PMD priority 2 -> severity error, priority normal
+PMD priority 3 -> severity warning, priority high
+PMD priority 4 -> severity warning, priority normal
+PMD priority 5 -> severity information, priority normal
+
+MISC :
+------
+PMD engine is not shipped with the source archive. Download it from source forge and install it in
+a lib subdirectory.
+
