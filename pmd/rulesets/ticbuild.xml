@@ -2,7 +2,8 @@
 
 <ruleset name="ticbuild">
   <description>
-  These are rules which apply to the build at https://cvs.ultralog.net.  Actually, that build contains this ruleset as well as unusedcode.xml, design.xml, and cougaar.xml
+  These are rules which apply to the build at https://cvs.ultralog.net.
+  Actually, that build contains this ruleset as well as unusedcode.xml, design.xml, and cougaar.xml
   </description>
 
   <rule name="EmptyCatchBlock"
