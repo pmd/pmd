@@ -140,13 +140,13 @@ public class Designer implements ClipboardOwner {
     }
 
 
-    private CodeEditorTextPane codeEditorPane;
-    private JTextArea astArea = new JTextArea();
+    private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
+    private final JTextArea astArea = new JTextArea();
     private DefaultListModel xpathResults = new DefaultListModel();
-    private JList xpathResultList = new JList(xpathResults);
-    private JTextArea xpathQueryArea = new JTextArea(10, 30);
-    private JFrame frame = new JFrame("PMD Rule Designer");
-    private final DFAPanel dfaPanel = new DFAPanel();;
+    private final JList xpathResultList = new JList(xpathResults);
+    private final JTextArea xpathQueryArea = new JTextArea(10, 30);
+    private final JFrame frame = new JFrame("PMD Rule Designer");
+    private final DFAPanel dfaPanel = new DFAPanel();
     private JRadioButtonMenuItem jdk14MenuItem;
     private JRadioButtonMenuItem jdk15MenuItem;
 
@@ -164,17 +164,17 @@ public class Designer implements ClipboardOwner {
 
     public Designer() {
         JSplitPane controlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditPanel(), createXPathQueryPanel());
-        controlPanel.setContinuousLayout(true);
 
         JComponent astPanel = createASTPanel();
         JComponent xpathResultPanel = createXPathResultPanel();
 
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);        
-        resultsSplitPane.setContinuousLayout(true);
         
         JTabbedPane tabbed = new JTabbedPane();
+        
         tabbed.addTab("Abstract Syntax Tree / XPath", resultsSplitPane);
         tabbed.addTab("Data Flow Analysis", dfaPanel);
+        
         // TODO Remove when minimal runtime support is >= JDK 1.4
         try {
             if (JTabbedPane.class.getMethod("setMnemonicAt", new Class[]{Integer.TYPE, Integer.TYPE}) != null) {
@@ -202,10 +202,8 @@ public class Designer implements ClipboardOwner {
         frame.setVisible(true);
         frame.pack();
         frame.show();
-
-        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation() / 2));
+//        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
         resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 2));
-        
     }
 
     private JMenuBar createMenuBar() {
@@ -241,7 +239,6 @@ public class Designer implements ClipboardOwner {
     }
 
     private JComponent createCodeEditPanel() {
-        codeEditorPane = new CodeEditorTextPane();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
         codeEditorPane.addMouseListener(codeEditPanelMouseListener);
         return codeScrollPane;
