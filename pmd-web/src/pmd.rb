@@ -18,7 +18,6 @@ class Job
 	JAVANCSS_BINARY="/usr/local/javancss/bin/javancss"
 	ROOT="/home/tom/data/pmd/pmd-web/src"
 	REMOTE_REPORT_DIR="/home/groups/p/pm/pmd/htdocs/reports/"
-	REMOTE_CGI_DIR="/home/groups/p/pm/pmd/cgi-bin/"
 	attr_reader :unixName, :moduleDir
 	def initialize(location, title, unixName, moduleDirectory, sourceDirectory )
 		@location = location
@@ -64,9 +63,6 @@ class Job
   end
 	def copy_up
 		`scp #{reportFile} #{cpdReportFile} #{ncssReportFile} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
-		if File.exists?("lastruntime.txt")
-			`scp lastruntime.txt tomcopeland@pmd.sf.net:#{REMOTE_CGI_DIR}`
-		end
 	end
 	def reportFile 
 		return "#{@unixName}_#{@moduleDirectory.sub(/ /, '')}.html"
@@ -79,9 +75,6 @@ class Job
 	end
 	def clear
 		`rm -rf "#{@moduleDirectory}" #{ROOT}/#{reportFile} #{ROOT}/#{cpdReportFile} #{ROOT}/#{ncssReportFile}`
-		if File.exists?("#{ROOT}/lastruntime.txt")
-			`rm -rf lastruntime.txt`
-		end
 	end
 	def to_s
 		return @location + ":" + @title + ":" + @unixName +":"+@moduleDirectory+":"+@sourceDirectory
