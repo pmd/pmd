@@ -53,10 +53,22 @@ public class NameOccurrence {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
 
-        return primaryExpression.jjtGetNumChildren() > 1 &&
-                primaryExpression.jjtGetChild(1) instanceof ASTAssignmentOperator &&
-                !isPartOfQualifiedName() && 
-                !((ASTAssignmentOperator)(primaryExpression.jjtGetChild(1))).isCompound();
+        if (primaryExpression.jjtGetNumChildren() <= 1) {
+            return false;
+        }
+
+        if (!(primaryExpression.jjtGetChild(1) instanceof ASTAssignmentOperator)) {
+            return false;
+        }
+
+        if (isPartOfQualifiedName() /* or is an array type */) {
+            return false;
+        }
+
+        if (((ASTAssignmentOperator)(primaryExpression.jjtGetChild(1))).isCompound()) {
+            return false;
+        }
+        return true;
     }
 
     public Scope getScope() {
