@@ -197,6 +197,39 @@ public class Foo
    </example>
 </rule>
 
+    <rule name="ExcessivePublicCountRule"
+    message="A high number of public methods and attributes in an object can indicate the class may need to be broken up for exhaustive testing may prove difficult."
+    class="net.sourceforge.pmd.rules.ExcessivePublicCountRule">
+    <description>
+    A large amount of public methods and attributes declared in an object can indicate the class may need
+    to be broken up as increased effort will be required to thoroughly test such a class.
+    </description>
+    <priority>3</priority>
+    <properties>
+    <property name="minimum" value="45"/>
+    </properties>
+    <example>
+    <![CDATA[
+
+    public class Foo {
+    public String value;
+    public Bar something;
+    public Variable var;
+    //more public attributes
+    public void doWork() {}
+    public void doMoreWork() {}
+    public void doWorkAgain() {}
+    public void doWorking() {}
+    public void doWorkIt() {}
+    public void doWorkingAgain() {}
+    public void doWorkAgainAgain() {}
+    public void doWorked() {}
+
+    }
+    ]]>
+    </example>
+    </rule>
+
 
 </ruleset>
 

@@ -37,7 +37,7 @@ HOW TO RUN PMD FROM THE COMMAND LINE (UNIX)
 -download the binary release
 -unzip it
 
-[build@ul020-dmz tmp_pmd]$ unzip -q pmd-bin-1.03.zip
+[build@ul020-dmz tmp_pmd]$ unzip -q pmd-bin-1.04.zip
 
 -cd into the pmd/etc/ directory
 
@@ -60,7 +60,7 @@ HOW TO RUN PMD FROM THE COMMAND LINE (UNIX)
 -if you send in a directory as the first parameter, PMD will run recursively on all files and subdirectories
 -note that if you're using JDK 1.3, you'll need to use java -cp, not java -jar.  Like this:
 
-java -cp lib\pmd-1.03.jar;lib\xercesImpl-2.0.2.jar;lib\xmlParserAPIs-2.0.2.jar;lib\jaxen-core-1.0-fcs.jar;lib\saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD c:\j2sdk1.4.1_01\src\java\lang xml rulesets/imports.xml
+java -cp lib\pmd-1.04.jar;lib\xercesImpl-2.0.2.jar;lib\xmlParserAPIs-2.0.2.jar;lib\jaxen-core-1.0-fcs.jar;lib\saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD c:\j2sdk1.4.1_01\src\java\lang xml rulesets/imports.xml
 
 
 

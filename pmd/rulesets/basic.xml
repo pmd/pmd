@@ -323,6 +323,33 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       </example>
     </rule>
 
+    <rule name="DoubleCheckedLockingRule"
+          message="Double checked locking is not thread safe in Java."
+          class="net.sourceforge.pmd.rules.DoubleCheckedLockingRule">
+      <description>
+      Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
+      An optimizing JRE may assign a reference to the baz variable before it creates the object the
+          reference is intended to point to.  For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html.
+      </description>
+        <priority>1</priority>
+      <example>
+  <![CDATA[
+  public class Foo {
+      Object baz;
+      Object bar() {
+        if(baz == null) { //baz may be non-null yet not fully created
+          synchronized(this){
+            if(baz == null){
+              baz = new Object();
+            }
+          }
+        }
+        return baz;
+      }
+  }
+  ]]>
+      </example>
+    </rule>
 
 </ruleset>
 

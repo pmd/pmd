@@ -1,1 +1,1 @@
-java -cp ../lib/pmd-1.03.jar net.sourceforge.pmd.cpd.GUI
+java -cp ../lib/pmd-1.04.jar net.sourceforge.pmd.cpd.GUI

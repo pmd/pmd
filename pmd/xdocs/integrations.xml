@@ -132,7 +132,7 @@ works OK.  Here's how to set it up:</p>
 <li>Description: PMD doth help one clean the code</li>
 <li>Program: javaw</li>
 <li>For the next two parameters you'll need to plug in the location of your PMD installation, the rulesets you want to use, and your working directory</li>
-<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.03.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
+<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.04.jar;c:\pmd\lib\jaxen-core-1.0-fcs.jar;c:\pmd\lib\saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
 <li>Working directory: c:\</li>
 </ul>
 </ul>
