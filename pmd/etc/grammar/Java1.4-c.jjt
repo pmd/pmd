@@ -721,7 +721,18 @@ void Expression() :
 void AssignmentOperator() :
 {}
 {
-  "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
+      "="     {jjtThis.setImage("=");}
+    | "*="    {jjtThis.setImage("*=");}
+    | "/="    {jjtThis.setImage("/=");}
+    | "%="    {jjtThis.setImage("%=");}
+    | "+="    {jjtThis.setImage("+=");}
+    | "-="    {jjtThis.setImage("-=");}
+    | "<<="   {jjtThis.setImage("<<=");}
+    | ">>="   {jjtThis.setImage(">>=");}
+    | ">>>="  {jjtThis.setImage(">>>=");}
+    | "&="    {jjtThis.setImage("&=");}
+    | "^="    {jjtThis.setImage("^=");}
+    | "|="    {jjtThis.setImage("|=");}
 }
 
 void ConditionalExpression()  #void :
