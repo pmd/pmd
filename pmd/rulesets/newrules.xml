@@ -103,8 +103,8 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="UnnecessaryParameters"
-          message="Unnecessary parameters are a bit noisy"
+    <rule name="UnnecessaryParentheses"
+          message="Unnecessary parentheses are a bit noisy"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
       Unnecessary parameters are a bit noisy
