@@ -4,7 +4,6 @@ public class EmptyWhileStmtRule {
 	}
 	while (true == true) {
 		String x = "";
-		x = "hi";
 	}
     }
 }

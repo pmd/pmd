@@ -24,8 +24,7 @@ import java.util.Stack;
  * In this example, Outer.foo and the Runnable.foo are two different variables - even though
  * Runnable.foo looks like its inside Outer, they don't conflict.
  *
- * So, a couple of SymbolTables are grouped into a Namespace.  SymbolTables are grouped so that inner classes have their own
- * "group" of symbol tables.  So a class with an inner class would look like this:
+ * So, a couple of SymbolTables are grouped into a Namespace.  So a class with an inner class would look like this:
  *
  *        ST
  *        ST
