@@ -38,7 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Chad Loder - DefaultLabelNotLastInSwitchStmt, NonStaticInitializer, ExplicitCallToFinalize, MethodWithSameNameAsEnclosingClassRuleTest, FinalizeDoesNotCallSuperFinalize, FinalizeOverloaded, FinalizeOnlyCallsSuperFinalize, UnconditionalIfStatement, AvoidDollarSigns, EmptyStaticInitializer, EmptyFinalizerMethod rule, DontImportSun rule, improvements to ASTBooleanLiteral</li>
+            <li>Chad Loder - NonCaseLabelInSwitchStatement, DefaultLabelNotLastInSwitchStmt, NonStaticInitializer, ExplicitCallToFinalize, MethodWithSameNameAsEnclosingClassRuleTest, FinalizeDoesNotCallSuperFinalize, FinalizeOverloaded, FinalizeOnlyCallsSuperFinalize, UnconditionalIfStatement, AvoidDollarSigns, EmptyStaticInitializer, EmptyFinalizerMethod rule, DontImportSun rule, improvements to ASTBooleanLiteral</li>
             <li>Maik Schreiber - AccessNode bug report, other bug reports</li>
             <li>Lokesh Gupta - improvements to the AST viewer</li>
             <li>Jesse Glick - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
