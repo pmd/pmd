@@ -1,5 +1,5 @@
 import java.util.*;
-public class Unused5 {
+public class UnusedLocal5 {
 static {
 	String x;
 }

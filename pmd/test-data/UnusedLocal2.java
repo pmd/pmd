@@ -1,6 +1,6 @@
-public class Unused2 {
-    public void method() {
-	int x;
-    }
+public class UnusedLocal2 {
+ public void method() {
+  int x;
+ }
 }
 

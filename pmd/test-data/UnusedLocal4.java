@@ -1,6 +1,6 @@
 import java.util.*;
-public class Unused4 {
-    public Unused4() {
+public class UnusedLocal4 {
+    public UnusedLocal4() {
 	List a = new ArrayList();
 	if (true == true) {
 		a.size();

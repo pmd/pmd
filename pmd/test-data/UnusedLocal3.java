@@ -1,6 +1,6 @@
 import java.util.*;
-public class Unused3 {
-    public Unused3() {
+public class UnusedLocal3 {
+    public UnusedLocal3() {
 	List a = new ArrayList();
     }
 }

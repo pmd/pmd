@@ -1,3 +1,3 @@
-public class Unused6 {
-public int x;
+public class UnusedLocal6 {
+ public int x;
 }
