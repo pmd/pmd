@@ -5,7 +5,24 @@
 These are new rules for the next release
   </description>
 
+   <rule name="StringToString"
+        message="Avoid calling toString() on String objects; this is unnecessary"
+        class="net.sourceforge.pmd.rules.StringToStringRule">
+    <description>
+    Avoid calling toString() on String objects; this is unnecessary
+    </description>
 
+    <example>
+<![CDATA[
+public class Foo {
+ private String baz() {
+  String bar = "howdy";
+  return bar.toString();
+ }
+}
+]]>
+    </example>
+    </rule>
   </ruleset>
 
 

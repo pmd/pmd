@@ -11,12 +11,30 @@ public class ASTVariableDeclaratorId extends SimpleNode {
     super(p, id);
   }
 
-  public boolean isExceptionBlockParameter() {
-      return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
-  }
-
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
+
+    public boolean isExceptionBlockParameter() {
+        return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
+    }
+
+    public SimpleNode getTypeNameNode() {
+        if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
+            return findTypeNameNode(jjtGetParent().jjtGetParent());
+        } else if (jjtGetParent() instanceof ASTFormalParameter) {
+            return findTypeNameNode(jjtGetParent());
+        } else if (jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
+            return findTypeNameNode(jjtGetParent().jjtGetParent());
+        }
+        throw new RuntimeException("Don't know how to get the type for anything other than a ASTLocalVariableDeclaration/ASTFormalParameterASTFieldDeclaration");
+    }
+
+    private SimpleNode findTypeNameNode(Node node) {
+        ASTType typeNode = (ASTType)node.jjtGetChild(0);
+        return (SimpleNode)typeNode.jjtGetChild(0);
+    }
+
+
 }

@@ -31,6 +31,18 @@ public abstract class AbstractScope implements Scope {
         return findHere(occurrence) != null;
     }
 
+    public Map getUsedDeclarations() {
+        Map used = new HashMap();
+        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            List usages = (List)names.get(nameDeclaration);
+            if (!usages.isEmpty()) {
+                used.put(nameDeclaration, usages);
+            }
+        }
+        return used;
+    }
+
     public Iterator getUnusedDeclarations() {
         List unused = new ArrayList();
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {

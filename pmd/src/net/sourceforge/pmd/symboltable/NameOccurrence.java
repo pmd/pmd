@@ -33,6 +33,10 @@ public class NameOccurrence {
         return node.getImage();
     }
 
+    public int getBeginLine() {
+        return node.getBeginLine();
+    }
+
     public int hashCode() {
         return getObjectName().hashCode();
     }

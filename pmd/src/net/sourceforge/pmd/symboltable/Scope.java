@@ -6,12 +6,14 @@
 package net.sourceforge.pmd.symboltable;
 
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * See JLS 6.3 for a description of scopes
  */
 public interface Scope {
     public Iterator getUnusedDeclarations();
+    public Map getUsedDeclarations();
     public void addDeclaration(NameDeclaration decl);
     public boolean contains(NameOccurrence occ);
     public void addOccurrence(NameOccurrence occ);
