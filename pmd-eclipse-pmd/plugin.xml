@@ -3,12 +3,12 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="1.6"
+   version="1.7.0.v3"
    provider-name="%plugin.provider">
 
    <runtime>
       <library name="core.jar"/>
-      <library name="lib/pmd-1.6.jar">
+      <library name="lib/pmd-1.7.jar">
          <export name="*"/>
       </library>
       <library name="lib/jaxen-core-1.0-fcs.jar"/>
