@@ -28,6 +28,7 @@
       <item name="What does 'PMD' mean?" href="/meaning.html" />
     </menu>
     <menu name="Customizing PMD">
+        <item name="Compiling PMD" href="/compiling.html" />
         <item name="How to write a rule" href="/howtowritearule.html" />
         <item name="How to make a rule set" href="/howtomakearuleset.html" />
         <item name="How it works" href="/howitworks.html" />

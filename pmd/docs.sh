@@ -4,14 +4,14 @@ option="${1}"
 
 if [ -z $option ]; then
 	echo "Generating from pom and transforming xdocs"
-	maven -b xdoc:generate-from-pom xdoc:transform
+	maven -f maven-build.xml -b xdoc:generate-from-pom xdoc:transform
 elif [ $option = "all" ]; then
 	echo "Running maven pmd-site"
 	rm -rf target
-	maven pmd-site
+	maven -f maven-build.xml pmd-site
 elif [ $option = "upload" ]; then
 	echo "Generating xdocs and uploading"
-	maven -b xdoc:transform
+	maven -f maven-build.xml -b xdoc:transform
 	DOCS_FILE=docs.tar.gz
 	cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
 	cd target

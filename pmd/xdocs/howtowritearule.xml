@@ -10,18 +10,7 @@
 Writing PMD rules is cool because you don't have to wait for us to get around to implementing feature requests.
 </p>
     <subsection name="Get a development environment set up first">
-    <p>
-        <ul>
-            <li>In order to do rules, it'll help if you can modify the PMD source.
-    So download the latest PMD source release and unzip it somewhere on your computer.</li>
-            <li>You'll also need an <a href="http://ant.apache.org/bindownload.cgi">Ant</a> 1.5 jar file to compile against because PMD includes an
-        Ant task as part of the core distribution.</li>
-            <li>PMD has a slew of JUnit tests, so you'll need a <a href="http://www.junit.org/">JUnit 3.8.1 binary release</a>
-                if you want to run the tests.</li>
-            <li>The rules that have already been written are specified in the rulesets/ directory in the
-                source distribution.  They're also in the jar file that's included with both the
-                source and binary distributions.</li>
-        </ul>
+    <p><a href="compiling.html">Here's some initial information on compiling PMD</a>
     </p>
     </subsection>
 
