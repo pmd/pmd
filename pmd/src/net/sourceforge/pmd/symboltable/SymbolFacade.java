@@ -12,7 +12,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
 
     private class ScopeCreator extends JavaParserVisitorAdapter {
 
-        private ContextManager contextManager = new ContextManagerImpl(new SymbolTable());
+        private ContextManager contextManager = new ContextManager(new SymbolTable());
         private ScopeFactory sf = new ScopeFactory();
 
         public Object visit(ASTCompilationUnit node, Object data){openScope(node);return data;}

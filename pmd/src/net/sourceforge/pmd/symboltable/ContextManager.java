@@ -1,12 +1,28 @@
 /*
  * User: tom
- * Date: Oct 1, 2002
- * Time: 1:33:38 PM
+ * Date: Oct 2, 2002
+ * Time: 2:57:11 PM
  */
 package net.sourceforge.pmd.symboltable;
 
-public interface ContextManager {
-    public Scope getCurrentScope();
-    public void openScope(Scope scope);
-    public void leaveScope();
+public class ContextManager {
+
+    private SymbolTable scopes;
+
+    public ContextManager(SymbolTable scopes) {
+        this.scopes = scopes;
+    }
+
+    public Scope getCurrentScope() {
+        return scopes.peek();
+    }
+
+    public void openScope(Scope scope) {
+        scopes.push(scope);
+    }
+
+    public void leaveScope() {
+        scopes.pop();
+    }
+
 }
