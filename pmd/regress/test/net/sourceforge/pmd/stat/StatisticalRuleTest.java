@@ -10,6 +10,7 @@ import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.stat.StatisticalRule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -77,14 +78,41 @@ public class StatisticalRuleTest
 
     public void setUp() {
 		IUT = new MockStatisticalRule();
-		for (int i = 0; i < 1000; i++) {
-	    	points[i] = new DataPoint();
-	    	points[i].setScore( 1.0 * i );
-	    	points[i].setLineNumber( i );
-	    	points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
+		if (testName.endsWith("0")) {
+			for (int i = 0; i < 1000; i++) {
+		    	points[i] = new DataPoint();
+	    		points[i].setScore( 1.0 * i );
+	    		points[i].setLineNumber( i );
+		    	points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
 
-		    IUT.addDataPoint( points[i] );
+			    IUT.addDataPoint( points[i] );
+			}
+		} else if (testName.endsWith("1")) {
+			for (int i = 999; i >= 0; i--) {
+		    	points[i] = new DataPoint();
+	    		points[i].setScore( 1.0 * i );
+	    		points[i].setLineNumber( i );
+		    	points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
+
+			    IUT.addDataPoint( points[i] );				
+			}
+		} else {
+			List lPoints = new ArrayList();
+			for (int i = 0; i < 1000; i++) {
+				DataPoint point = new DataPoint();
+				point.setScore( 1.0 * i );
+				point.setLineNumber( i );
+				point.setMessage("DataPoint[" + Integer.toString( i ) + "]");
+				
+				lPoints.add( point );
+			}
+			
+			Collections.shuffle(lPoints);
+			for (int i = 0; i < 1000; i++) {
+				IUT.addDataPoint( (DataPoint) lPoints.get(i));
+			}
 		}
+		
     }
 
 	/**
@@ -241,6 +269,13 @@ public class StatisticalRuleTest
 			verifyResults( sigma, -1.0, -1, expectedSigma( sigma ), 2);
 		}
 	}
+	
+	public void testS1() throws Throwable { testS(); }
+	public void testS2() throws Throwable { testS(); }
+	public void testS3() throws Throwable { testS(); }
+	public void testS4() throws Throwable { testS(); }
+	public void testS5() throws Throwable { testS(); }
+	
 
 	public void testT() throws Throwable
 	{
@@ -252,6 +287,12 @@ public class StatisticalRuleTest
 		}
 	}
 
+	public void testT1() throws Throwable { testT(); }
+	public void testT2() throws Throwable { testT(); }
+	public void testT3() throws Throwable { testT(); }
+	public void testT4() throws Throwable { testT(); }
+	public void testT5() throws Throwable { testT(); }
+
 	public void testM() throws Throwable
 	{
 		verifyResults( NO_SIGMA, MAX_MINIMUM, NO_TOPSCORE, 0, 0 );
@@ -261,6 +302,12 @@ public class StatisticalRuleTest
 			verifyResults( -1.0, minimum, -1, expectedMinimum( minimum ), 0 );
 		}
 	}
+
+	public void testM1() throws Throwable { testM(); }
+	public void testM2() throws Throwable { testM(); }
+	public void testM3() throws Throwable { testM(); }
+	public void testM4() throws Throwable { testM(); }
+	public void testM5() throws Throwable { testM(); }
 
 	public void testST() throws Throwable
 	{
@@ -274,6 +321,12 @@ public class StatisticalRuleTest
 		}
 	}
 
+	public void testST1() throws Throwable { testST(); }
+	public void testST2() throws Throwable { testST(); }
+	public void testST3() throws Throwable { testST(); }
+	public void testST4() throws Throwable { testST(); }
+	public void testST5() throws Throwable { testST(); }
+
 	public void testTS() throws Throwable
 	{
 		verifyResults( MAX_SIGMA, NO_MINIMUM, randomTopScore(), 0, 0 );
@@ -285,6 +338,12 @@ public class StatisticalRuleTest
 			verifyResults( sigma, -1.0, topScore, expectedSigma( sigma ), 2);
 		}
 	}
+
+	public void testTS1() throws Throwable { testTS(); }
+	public void testTS2() throws Throwable { testTS(); }
+	public void testTS3() throws Throwable { testTS(); }
+	public void testTS4() throws Throwable { testTS(); }
+	public void testTS5() throws Throwable { testTS(); }
 
 	public void testSM() throws Throwable
 	{
@@ -298,6 +357,13 @@ public class StatisticalRuleTest
 
 	}
 
+	public void testSM1() throws Throwable { testSM(); }
+	public void testSM2() throws Throwable { testSM(); }
+	public void testSM3() throws Throwable { testSM(); }
+	public void testSM4() throws Throwable { testSM(); }
+	public void testSM5() throws Throwable { testSM(); }
+
+
 	public void testMS() throws Throwable
 	{
 		verifyResults(MAX_SIGMA, randomMinimum(), NO_TOPSCORE, 0, 0);
@@ -308,6 +374,13 @@ public class StatisticalRuleTest
 			verifyResults( sigma, minimum, -1, expectedSigma( sigma ), 2 );
 		}
 	}
+
+	public void testMS1() throws Throwable { testMS(); }
+	public void testMS2() throws Throwable { testMS(); }
+	public void testMS3() throws Throwable { testMS(); }
+	public void testMS4() throws Throwable { testMS(); }
+	public void testMS5() throws Throwable { testMS(); }
+
 
 	public void testTM() throws Throwable
 	{
@@ -320,6 +393,13 @@ public class StatisticalRuleTest
 		}
 	}
 
+	public void testTM1() throws Throwable { testTM(); }
+	public void testTM2() throws Throwable { testTM(); }
+	public void testTM3() throws Throwable { testTM(); }
+	public void testTM4() throws Throwable { testTM(); }
+	public void testTM5() throws Throwable { testTM(); }
+
+
 	public void testMT() throws Throwable
 	{
 		verifyResults(NO_SIGMA, randomMinimum(), MIN_TOPSCORE, 0, 0);
@@ -330,6 +410,13 @@ public class StatisticalRuleTest
 			verifyResults( NO_SIGMA, minimum, topScore, expectedTopScore(topScore), 0);
 		}
 	}
+
+	public void testMT1() throws Throwable { testMT(); }
+	public void testMT2() throws Throwable { testMT(); }
+	public void testMT3() throws Throwable { testMT(); }
+	public void testMT4() throws Throwable { testMT(); }
+	public void testMT5() throws Throwable { testMT(); }
+
 
 	public void testSTM() throws Throwable
 	{
@@ -345,6 +432,13 @@ public class StatisticalRuleTest
 			verifyResults( sigma, minimum, topScore, expectedMinimum( minimum ), 0 );
 		}
 	}
+
+	public void testSTM1() throws Throwable { testSTM(); }
+	public void testSTM2() throws Throwable { testSTM(); }
+	public void testSTM3() throws Throwable { testSTM(); }
+	public void testSTM4() throws Throwable { testSTM(); }
+	public void testSTM5() throws Throwable { testSTM(); }
+
 	public void testSMT() throws Throwable
 	{
 		double sigma = randomSigma();
@@ -360,6 +454,12 @@ public class StatisticalRuleTest
 						   expectedTopScore( topScore ), 0 );
 		}
 	}
+
+	public void testSMT1() throws Throwable { testSMT(); }
+	public void testSMT2() throws Throwable { testSMT(); }
+	public void testSMT3() throws Throwable { testSMT(); }
+	public void testSMT4() throws Throwable { testSMT(); }
+	public void testSMT5() throws Throwable { testSMT(); }
 
 	public void testTSM() throws Throwable
 	{
@@ -377,6 +477,12 @@ public class StatisticalRuleTest
 		}
 	}
 
+	public void testTSM1() throws Throwable { testTSM(); }
+	public void testTSM2() throws Throwable { testTSM(); }
+	public void testTSM3() throws Throwable { testTSM(); }
+	public void testTSM4() throws Throwable { testTSM(); }
+	public void testTSM5() throws Throwable { testTSM(); }
+
 	public void testTMS() throws Throwable
 	{
 		int topScore = randomTopScore();
@@ -392,6 +498,12 @@ public class StatisticalRuleTest
 							expectedSigma( sigma ), 2 );
 		}
 	}
+
+	public void testTMS1() throws Throwable { testTMS(); }
+	public void testTMS2() throws Throwable { testTMS(); }
+	public void testTMS3() throws Throwable { testTMS(); }
+	public void testTMS4() throws Throwable { testTMS(); }
+	public void testTMS5() throws Throwable { testTMS(); }
 
 	/**
  	 * Verifies what happens when you pass these parameters
