@@ -1,7 +1,11 @@
 ??? - 0.2:
-Added IfElseStmtsMustUseBracesRule
+Added new rules:
++IfElseStmtsMustUseBracesRule
++EmptyWhileStmtRule
 Modified command line interface to accept a rule set
 Fixed bug in EmptyCatchBlockRule
+Fixed type in UnnecessaryConversionTemporaryRule
+
 
 June 25 2002 - 0.1:
 Initial release

@@ -28,7 +28,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
     }
 
     public String getDescription() {
-        return "Avoid unnecessay temporaries when converting primitives to Strings";
+        return "Avoid unnecessary temporaries when converting primitives to Strings";
     }
 
     public Object visit(ASTPrimaryExpression node, Object data) {

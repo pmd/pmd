@@ -56,6 +56,7 @@ public class RuleFactory {
         List list = new ArrayList();
         list.add(new EmptyCatchBlockRule());
         list.add(new EmptyIfStmtRule());
+        list.add(new EmptyWhileStmtRule());
         list.add(new UnnecessaryConversionTemporaryRule());
         list.add(new UnusedLocalVariableRule());
         list.add(new UnusedPrivateInstanceVariableRule());

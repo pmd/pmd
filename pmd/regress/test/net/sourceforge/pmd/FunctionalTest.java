@@ -138,6 +138,12 @@ public class FunctionalTest extends TestCase{
         assertEquals(new EmptyIfStmtRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
     }
 
+    public void testEmptyWhileStmtRule() {
+        Report report = process("EmptyWhileStmtRule.java");
+        assertEquals(1, report.countViolationsInCurrentFile());
+        assertEquals(new EmptyWhileStmtRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
+    }
+
     public void testUnusedPrivateInstanceVar1() {
         Report report = process("UnusedPrivateInstanceVar1.java");
         assertEquals(1, report.countViolationsInCurrentFile());

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.*;
 
 public class EmptyIfStmtRule extends AbstractRule implements Rule {
-    public String getDescription() {return "Avoid empty IF statements";}
+    public String getDescription() {return "Avoid empty 'if' statements";}
 
    public Object visit(ASTBlock node, Object data){
        if ((node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement) && node.jjtGetNumChildren()==0) {
