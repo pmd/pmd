@@ -47,4 +47,18 @@ will update documents on the Build Site.
             outputdirectory="src/net/sourceforge/pmd/ast/"
             javacchome="${javacc.home}" />
   </target>  
+
+<!-- Documentation Chores -->
+  <target name="pre-docs" depends="rule-docs" />
+
+  <target name="rule-docs">
+    <mkdir dir="${maven.gen.docs}/rules" />
+    <dvsl basedir="rulesets"
+          destdir="${maven.gen.docs}/rules"
+          extension=".xml"
+          style="dvsl/rule-format.dvsl">
+      <include name="*.xml" />
+    </dvsl>
+  </target>
+
 </project>
