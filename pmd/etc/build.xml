@@ -71,7 +71,7 @@
 <target name="test" depends="compile">
     <junit printsummary="yes" haltonfailure="yes">
       <classpath>
-        <pathelement location="${build}" />
+        <path refid="classpath.path" />
         <pathelement location="${test-data}" />
         <pathelement location="${basedir}" />
       </classpath>
