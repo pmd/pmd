@@ -48,7 +48,6 @@
 
 <target name="buildworker" depends="clean,jar">
    <delete dir="${workerzipfile}"/>
-   <delete dir="staging"/>
    <mkdir dir="staging"/>
    <copy file="${lib}/dcpd.jar" toDir="staging"/>
    <copy file="${lib}/pmd-1.0rc2.jar" toDir="staging"/>
