@@ -1,4 +1,4 @@
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.ant;
 
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.types.*;
@@ -9,6 +9,9 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
 
 public class PMDTask extends Task {
 
