@@ -1,5 +1,6 @@
 <project name="pmd" default="compile" basedir="../">
 
+<property name="etc" value="etc\"/>
 <property name="lib" value="lib\"/>
 <property name="src" value="src\"/>
 <property name="build" value="build\"/>
@@ -9,10 +10,10 @@
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
 <path id="classpath.path">
-<pathelement location="${build}"/>
-<fileset dir="${lib}">
-<include name="*.jar"/>
-</fileset>
+    <pathelement location="${build}"/>
+    <fileset dir="${lib}">
+        <include name="jaxen*.jar,saxpath*.jar,xerces*.jar,xmlParserAPIs*.jar"/>
+    </fileset>
 </path>
 
 <target name="delete">
@@ -181,6 +182,13 @@
 		</classpath>
 	</javadoc>
 </target>
+
+<target name="standalone-jar" depends="copy,compile">
+    <jar jarfile="${etc}/pmd.jar" basedir="${build}" manifest="etc/MANIFEST.MF">
+        <zipgroupfileset dir="${lib}" includes="jaxen*.jar,saxpath*.jar,xerces*.jar,xmlParserAPIs*.jar"/>
+    </jar>
+</target>
+
 </project>
 
 
