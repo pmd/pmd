@@ -26,18 +26,16 @@
  */
 package pmd.config.ui;
 
-import javax.swing.JLabel;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import net.sourceforge.pmd.Rule;
 
 /** The cellrenderer used in the lists
  * @author ole martin mørk
  * @created 16. november 2002
  */
-public class ListCell implements ListCellRenderer {
+public class ListCell extends DefaultListCellRenderer {
 
 	/** Gets the listCellRendererComponent attribute of the ListCell object
 	 * @param list Not used
@@ -45,15 +43,12 @@ public class ListCell implements ListCellRenderer {
 	 * @param index Not used
 	 * @param isSelected Says if the element is selected or not
 	 * @param cellHasFocus not used
-	 * @return A JLabel rendering the rule
+	 * @return A label rendering the rule
 	 */
-	public java.awt.Component getListCellRendererComponent(
+	public Component getListCellRendererComponent(
 		JList list, Object value, int index, boolean isSelected, boolean cellHasFocus ) {
-		Rule rule = ( Rule )value;
-		JLabel box = new JLabel( rule.getName() );
-		box.setEnabled( true );
-		box.setBorder( isSelected ? UIManager.getBorder( "List.focusCellHighlightBorder" ) : new EmptyBorder( 1, 1, 1, 1 ) );
-		return box;
+            Rule rule = ( Rule )value;
+            return super.getListCellRendererComponent(list, rule.getName(), index, isSelected, cellHasFocus);
 	}
 
 }

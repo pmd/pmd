@@ -215,6 +215,9 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="information"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Information"/>
           </Properties>
           <Constraints>
@@ -239,11 +242,11 @@
         <Container class="javax.swing.JScrollPane" name="jScrollPane4">
           <Properties>
             <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[300, 200]"/>
-            </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 150]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[300, 200]"/>
             </Property>
           </Properties>
           <Constraints>
@@ -254,9 +257,14 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JEditorPane" name="information">
+            <Component class="javax.swing.JTextArea" name="information">
               <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="cc" green="cc" id="Label.background" palette="3" red="cc" type="palette"/>
+                </Property>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="lineWrap" type="boolean" value="true"/>
+                <Property name="wrapStyleWord" type="boolean" value="true"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -264,11 +272,11 @@
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">
           <Properties>
             <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[300, 200]"/>
-            </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 150]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[300, 200]"/>
             </Property>
           </Properties>
           <Constraints>
@@ -282,6 +290,7 @@
             <Component class="javax.swing.JEditorPane" name="example">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="contentType" type="java.lang.String" value="text/x-java"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -312,11 +321,11 @@
     <Container class="javax.swing.JScrollPane" name="jScrollPane5">
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="These are readonly properties, you have to edit the rulesets properties to change them. Consult http://pmd.sf.net for more information"/>
-        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[600, 50]"/>
-        </Property>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[300, 50]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[600, 50]"/>
         </Property>
       </Properties>
       <Constraints>

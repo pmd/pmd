@@ -48,7 +48,8 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 
 	private final PropertyEditorSupport editor;
 	private String currentRuleName = null;
-	private final String REGEX = "s/ +/ /g";
+	private final String REGEX_EXAMPLE = "s/^\\s+\\n|\\s+$//g";
+	private final String REGEX_INFORMATION = "s/\\s+/ /g";
 	private final static Perl5Util regex = new Perl5Util();
 	/** Creates a new editor
 	 * @param editor The object to be notified of changes in the property
@@ -86,7 +87,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         jLabel6 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        information = new javax.swing.JEditorPane();
+        information = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         example = new javax.swing.JEditorPane();
         bottomSeparator = new javax.swing.JSeparator();
@@ -133,10 +134,9 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         availableList.setCellRenderer(new ListCell());
         availableList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                availableListValueChanged();
+                availableListValueChanged(evt);
             }
         });
-
         availableList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 availableListMouseClicked(evt);
@@ -161,10 +161,9 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         chosenList.setCellRenderer(new ListCell());
         chosenList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                chosenListValueChanged();
+                chosenListValueChanged(evt);
             }
         });
-
         chosenList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 chosenListMouseClicked(evt);
@@ -210,7 +209,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         chooseOne.setText(">");
         chooseOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chooseOneActionPerformed();
+                chooseOneActionPerformed(evt);
             }
         });
 
@@ -225,7 +224,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         choseAll.setText(">>");
         choseAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                choseAllActionPerformed();
+                choseAllActionPerformed(evt);
             }
         });
 
@@ -239,7 +238,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         removeOne.setText("<");
         removeOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeOneActionPerformed();
+                removeOneActionPerformed(evt);
             }
         });
 
@@ -253,7 +252,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         removeAll.setText("<<");
         removeAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeAllActionPerformed();
+                removeAllActionPerformed(evt);
             }
         });
 
@@ -282,6 +281,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 
         jPanel6.setLayout(new java.awt.GridBagLayout());
 
+        jLabel6.setLabelFor(information);
         jLabel6.setText("Information");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -301,9 +301,12 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         jPanel6.add(jLabel5, gridBagConstraints);
 
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane4.setPreferredSize(new java.awt.Dimension(300, 200));
         jScrollPane4.setMinimumSize(new java.awt.Dimension(150, 150));
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(300, 200));
+        information.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.background"));
         information.setEditable(false);
+        information.setLineWrap(true);
+        information.setWrapStyleWord(true);
         jScrollPane4.setViewportView(information);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -318,9 +321,10 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         jPanel6.add(jScrollPane4, gridBagConstraints);
 
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(300, 200));
         jScrollPane2.setMinimumSize(new java.awt.Dimension(150, 150));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(300, 200));
         example.setEditable(false);
+        example.setContentType("text/x-java");
         jScrollPane2.setViewportView(example);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -363,8 +367,8 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         add(jLabel7, gridBagConstraints);
 
         jScrollPane5.setToolTipText("These are readonly properties, you have to edit the rulesets properties to change them. Consult http://pmd.sf.net for more information");
-        jScrollPane5.setPreferredSize(new java.awt.Dimension(600, 50));
         jScrollPane5.setMinimumSize(new java.awt.Dimension(300, 50));
+        jScrollPane5.setPreferredSize(new java.awt.Dimension(600, 50));
         properties.setModel(new PropertiesModel(null));
         jScrollPane5.setViewportView(properties);
 
@@ -385,7 +389,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	 */
 	private void chosenListMouseClicked(MouseEvent evt) {//GEN-FIRST:event_chosenListMouseClicked
 		if( evt.getClickCount() >= 2 ) {
-			removeOneActionPerformed();
+			removeOneActionPerformed(null);
 			
 		}
 	}//GEN-LAST:event_chosenListMouseClicked
@@ -395,38 +399,48 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	 */
 	private void availableListMouseClicked(MouseEvent evt) {//GEN-FIRST:event_availableListMouseClicked
 		if( evt.getClickCount() >= 2 ) {
-			chooseOneActionPerformed();
+			chooseOneActionPerformed(null);
 		}
 	}//GEN-LAST:event_availableListMouseClicked
 
+	/**
+	 * Update text of example and information fields, and rule properties.
+	 */
+       private void updateTexts(Rule rule) {
+		if( rule != null ) {
+			String exampleText = regex.substitute( REGEX_EXAMPLE, rule.getExample() );
+			if (exampleText.startsWith( "\n" )) {
+				// Probably REGEX_EXAMPLE should have taken care of this, but it did not?!
+				exampleText = exampleText.substring( 1 );
+			}
+			example.setText( exampleText );
+			example.setCaretPosition( 0 );
+			information.setText( regex.substitute( REGEX_INFORMATION, rule.getDescription().trim() ) );
+			information.setCaretPosition( 0 );
+			updatePropertiesModel( rule );
+		}
+	}
+	
 	/** Called when the user selects a value in the chosenList
 	 * @param evt the event fired
 	 */
-	private void chosenListValueChanged() {//GEN-FIRST:event_chosenListValueChanged
+	private void chosenListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_chosenListValueChanged
 		Rule rule =  (Rule)chosenList.getSelectedValue();
-		if( rule != null ) {
-			example.setText( regex.substitute( REGEX, rule.getExample().trim() ) );
-			information.setText( regex.substitute( REGEX, rule.getDescription().trim() ) );
-			updatePropertiesModel( rule );
-		}
+		updateTexts(rule);
 	}//GEN-LAST:event_chosenListValueChanged
 
 	/** Called when the user selects a value in the availableList
 	 * @param evt the event fired
 	 */
-	private void availableListValueChanged() {//GEN-FIRST:event_availableListValueChanged
+	private void availableListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_availableListValueChanged
 		Rule rule =  (Rule)availableList.getSelectedValue();
-		if( rule != null ) {
-			example.setText( regex.substitute( REGEX, rule.getExample().trim() ) );
-			information.setText( regex.substitute( REGEX, rule.getDescription().trim() ) );
-			updatePropertiesModel( rule );
-		}
+		updateTexts(rule);
 	}//GEN-LAST:event_availableListValueChanged
 
 	/** Called when the user clicks on the removeAll button
 	 * @param evt the event fired
 	 */
-	private void removeAllActionPerformed() {//GEN-FIRST:event_removeAllActionPerformed
+	private void removeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllActionPerformed
 		AvailableListModel.getInstance().addAll( SelectedListModel.getSelectedListModelInstance().getList() );
 		SelectedListModel.getSelectedListModelInstance().removeAll();
 		editor.firePropertyChange();
@@ -436,7 +450,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	/** Called when the user clicks the removeOne button
 	 * @param evt the event fired
 	 */
-	private void removeOneActionPerformed() {//GEN-FIRST:event_removeOneActionPerformed
+	private void removeOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeOneActionPerformed
 		int index = chosenList.getSelectedIndex();
 		Object object[] = chosenList.getSelectedValues();
 		if( object != null ) {
@@ -459,7 +473,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	/** Called when the user clicks on chooseAll button
 	 * @param evt the event fired
 	 */
-	private void choseAllActionPerformed() {//GEN-FIRST:event_choseAllActionPerformed
+	private void choseAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choseAllActionPerformed
 		SelectedListModel.getSelectedListModelInstance().addAll( AvailableListModel.getInstance().getList() );
 		AvailableListModel.getInstance().removeAll();
 		editor.firePropertyChange();
@@ -468,7 +482,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	/** Called when the user clicks on chooseOne button
 	 * @param evt the event fired
 	 */
-	private void chooseOneActionPerformed() {//GEN-FIRST:event_chooseOneActionPerformed
+	private void chooseOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseOneActionPerformed
 		int index = availableList.getSelectedIndex();
 		Object object[] = availableList.getSelectedValues();
 		if( object != null ) {
@@ -523,32 +537,32 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSeparator topSeparator;
-    private javax.swing.JButton removeAll;
     private javax.swing.JList availableList;
-    private javax.swing.JButton chooseOne;
-    private javax.swing.JTable properties;
-    private javax.swing.JButton choseAll;
-    private javax.swing.JEditorPane example;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JEditorPane information;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JSeparator middleSeparator;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator bottomSeparator;
-    private javax.swing.JButton removeOne;
+    private javax.swing.JButton chooseOne;
+    private javax.swing.JButton choseAll;
     private javax.swing.JList chosenList;
+    private javax.swing.JEditorPane example;
+    private javax.swing.JTextArea information;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JSeparator middleSeparator;
+    private javax.swing.JTable properties;
+    private javax.swing.JButton removeAll;
+    private javax.swing.JButton removeOne;
+    private javax.swing.JSeparator topSeparator;
     // End of variables declaration//GEN-END:variables
 
 }
