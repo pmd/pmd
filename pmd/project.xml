@@ -28,7 +28,7 @@
   <li>Classes which could be Singletons</li>
   <li>Short/long variable and method names</li>
 </ul>
-<p>You can get the current release, plugins for JEdit, JBuilder, Eclipse, and Emacs, and lots of other project information <a href="http://sf.net/projects/pmd/">here</a></p>
+<p>You can get the current release, plugins for JEdit, JBuilder, IntelliJ IDEA, Maven, Ant, Eclipse, and Emacs, and lots of other project information <a href="http://sf.net/projects/pmd/">here</a></p>
 <p>PMD is sponsored by the <a href="http://www.cougaar.org/">Cougaar</a> program.</p>
   ]]>
   </description>

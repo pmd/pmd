@@ -30,7 +30,7 @@ public class PMD {
         try {
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
-            //c.dump("");
+            c.dump("");
             SymbolFacade stb = new SymbolFacade();
             stb.initializeWith(c);
             ctx.setSymbolTableBuilder(stb);

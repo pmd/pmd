@@ -94,7 +94,7 @@ public class TokenMgrError extends Error
     *    curchar     : the offending character
     * Note: You can customize the lexical error message by modifying this method.
     */
-   private static final String LexicalError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar) {
+   private static final String LexicalError(boolean EOFSeen, int errorLine, int errorColumn, String errorAfter, char curChar) {
       return("Lexical error at line " +
            errorLine + ", column " +
            errorColumn + ".  Encountered: " +
@@ -128,6 +128,6 @@ public class TokenMgrError extends Error
    }
 
    public TokenMgrError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar, int reason) {
-      this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
+      this(LexicalError(EOFSeen, errorLine, errorColumn, errorAfter, curChar), reason);
    }
 }

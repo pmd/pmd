@@ -5,11 +5,8 @@
  */
 package test.net.sourceforge.pmd;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.*;
 
 import java.util.*;
 
@@ -18,7 +15,7 @@ public class MockRule implements Rule {
     private String name;
     private String desc;
     private Set violations = new HashSet();
-    private Properties properties = new Properties();
+    private RuleProperties properties = new RuleProperties();
     private String description;
     private String example;
     private boolean m_include;
@@ -44,7 +41,7 @@ public class MockRule implements Rule {
     }
 
     public void addProperty(String name, String value) {
-        properties.put(name, value);
+        properties.setProperty(name, value);
     }
 
     public int getIntProperty(String name) {
@@ -63,7 +60,7 @@ public class MockRule implements Rule {
         return properties.getProperty(name);
     }
 
-    public Properties getProperties()
+    public RuleProperties getProperties()
     {
         return properties;
     }

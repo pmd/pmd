@@ -11,11 +11,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetReader;
-import net.sourceforge.pmd.RuleSetWriter;
+import net.sourceforge.pmd.*;
 
 
 /**
@@ -120,8 +116,8 @@ public class RuleSetReadWriteTest extends TestCase
                 assertEquals("Rule descriptions are equal.", ruleIn.getDescription(), ruleOut.getDescription());
                 assertEquals("Rule examples are equal.", ruleIn.getExample(), ruleOut.getExample());
 
-                Properties propertiesIn = ruleIn.getProperties();
-                Properties propertiesOut = ruleOut.getProperties();
+                RuleProperties propertiesIn = ruleIn.getProperties();
+                RuleProperties propertiesOut = ruleOut.getProperties();
                 int propertiesInCount = propertiesIn.size();
                 int propertiesOutCount = propertiesOut.size();
 

@@ -330,9 +330,6 @@ class PreferencesEditor extends JDialog
             }
 
             JFileChooser fileChooser = new JFileChooser(file);
-            int windowWidth = fileChooser.getWidth();
-            int windowHeight = fileChooser.getHeight();
-            Dimension screenSize = getToolkit().getScreenSize();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileChooser.setApproveButtonText("Select");
             fileChooser.setMinimumSize(new Dimension(500, 500));
