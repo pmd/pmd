@@ -6,29 +6,27 @@
 These are new rules that are still in progress
   </description>
 
+    <rule name="AvoidConcatenatingNonLiteralsInStringBuffer"
+        message="Avoid concatenating non literals in a StringBuffer constructor or append()"
+        class="net.sourceforge.pmd.rules.AvoidConcatenatingNonLiteralsInStringBuffer">
+    <description>
+    Avoid concatenating non literals in a StringBuffer constructor or append().
+    </description>
+       <priority>2</priority>
 
-    <rule name="CloseConnection"
-          message="Ensures that Connection objects are always closed after use"
-          class="net.sourceforge.pmd.rules.CloseConnection">
-      <description>
-        Ensures that Connection objects are always closed after use
-      </description>
-      <priority>3</priority>
-      <example>
-        <![CDATA[
-             public void foo() {
-               Connection c = pool.getConnection();
-               try {
-                 // do stuff
-               } catch (SQLException ex) {
-                 // handle exception
-               } finally {
-                 // oops, should close the connection using 'close'!
-                 // c.close();
-               }
-             }
-    ]]>
-      </example>
+    <example>
+<![CDATA[
+
+// Avoid this
+StringBuffer sb=new
+StringBuffer("AAAAAAAAAA"+System.getProperty("java.io.tmpdir"));
+
+// use instead something like this
+StringBuffer sb = new StringBuffer("AAAAAAAAAA");
+sb.append(System.getProperty("java.io.tmpdir"));
+
+]]>
+    </example>
     </rule>
    
 
