@@ -1,30 +1,25 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.Component;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-import javax.swing.text.html.HTMLEditorKit;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
-import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
 import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEvent;
 import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEventListener;
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.StatusBarEvent;
 import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
 import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
+
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.text.html.HTMLEditorKit;
+import java.awt.Component;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  *

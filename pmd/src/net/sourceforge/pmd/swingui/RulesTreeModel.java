@@ -1,23 +1,22 @@
 package net.sourceforge.pmd.swingui;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
-
-import javax.swing.tree.DefaultTreeModel;
-
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleProperties;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
-import net.sourceforge.pmd.swingui.event.RulesTreeModelEventListener;
 import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
 import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
 import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
+import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
+import net.sourceforge.pmd.swingui.event.RulesTreeModelEventListener;
+
+import javax.swing.tree.DefaultTreeModel;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
 
 /**
  *

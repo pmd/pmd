@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import java.io.File;
-
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
@@ -9,6 +7,8 @@ import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.RulesInMemoryEvent;
 import net.sourceforge.pmd.swingui.event.RulesInMemoryEventListener;
+
+import java.io.File;
 
 /**
  *

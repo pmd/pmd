@@ -1,11 +1,11 @@
 package net.sourceforge.pmd.swingui;
 
+import net.sourceforge.pmd.RuleSet;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.sourceforge.pmd.RuleSet;
 
 /**
  *
@@ -15,9 +15,6 @@ import net.sourceforge.pmd.RuleSet;
  */
 class SearchResultsViewer extends ResultsViewer
 {
-
-    private RuleSet m_ruleSet;
-    private File[] m_files;
 
     /**
      ********************************************************************************

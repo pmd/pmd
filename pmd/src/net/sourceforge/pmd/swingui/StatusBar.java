@@ -1,28 +1,23 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.Rectangle;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
+import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
 
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.StatusBarEvent;
-import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Rectangle;
 
 /**
  *

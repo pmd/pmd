@@ -1,38 +1,30 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.Window;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.text.MessageFormat;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
+import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
-import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Window;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.text.MessageFormat;
 
 /**
  *
