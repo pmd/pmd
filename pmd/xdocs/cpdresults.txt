@@ -1,5 +1,3 @@
-That took 60526823
-=============================================================
 A 17 line (102 tokens) duplication:
 Starting at line 172 in c:\j2sdk1.4.1_01\src\java\awt\image\LookupOp.java
 Starting at line 380 in c:\j2sdk1.4.1_01\src\java\awt\image\RescaleOp.java
@@ -3171,5 +3169,3 @@ Starting at line 253 in c:\j2sdk1.4.1_01\src\java\text\CharacterBreakData.java
             baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
         //  o-slash   u-grave   u-acute   u-hat     u-umlaut  y-acute   thorn    y-umlaut
             baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm
-
-That took 60526823
