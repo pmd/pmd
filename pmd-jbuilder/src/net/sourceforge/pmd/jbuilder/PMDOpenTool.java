@@ -27,11 +27,18 @@ import com.borland.primetime.properties.*;
 import com.borland.primetime.viewer.*;
 import net.sourceforge.pmd.*;
 import java.awt.event.ActionEvent;
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.Results;
+import net.sourceforge.pmd.cpd.Tile;
+import net.sourceforge.pmd.cpd.CPDNullListener;
+import net.sourceforge.pmd.cpd.CPDListener;
+import javax.swing.ProgressMonitor;
 
 
 
 public class PMDOpenTool {
     static MessageCategory msgCat = new MessageCategory("PMD Results");
+    static MessageCategory cpdCat = new MessageCategory("CPD Results");
     public static ActionGroup GROUP_PMD = new ActionGroup("PMD", 'p', true);
     static Font fileNameMsgFont = new Font("Dialog", Font.BOLD, 12);
     static Font stdMsgFont = new Font("Dialog", Font.PLAIN, 12);
@@ -59,6 +66,7 @@ public class PMDOpenTool {
             JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
             JBuilderToolBar.GROUP_RunBar.add(B_ACTION_PMDCheck);
             JBuilderToolBar.GROUP_RunBar.add(B_ACTION_PMDProjectCheck);
+            JBuilderToolBar.GROUP_RunBar.add(B_ACTION_CPDProjectCheck);
             registerWithContentManager();
             registerWithProjectView();
 
@@ -218,6 +226,19 @@ public class PMDOpenTool {
         }
 
     };
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_CPDProjectCheck = new BrowserAction ("CPD Check Project", 'P', "Run CPD on all the java files in the project",
+            new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/cpd.gif"))) {
+        public void actionPerformed(Browser browser) {
+            Runnable r = new Runnable() {
+                public void run() {
+                    pmdCPD();
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
+        }
+    };
 
     static void checkCode(String srcCode, JavaFileNode node, RuleSet rules) {
         try {
@@ -302,6 +323,44 @@ public class PMDOpenTool {
                 }
             }
         }
+    }
+
+    private static void pmdCPD() {
+         try {
+             Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
+             CPD cpd = new CPD();
+             cpd.setMinimumTileSize(25);
+             Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+             CPDDialog cpdd = new CPDDialog(cpd);
+             for (int i=0; i<nodes.length; i++ ) {
+                 if (nodes[i] instanceof PackageNode) {
+                     PackageNode node = (PackageNode)nodes[i];
+                     Node[] fileNodes = node.getDisplayChildren();
+                     for (int j=0; j<fileNodes.length; j++) {
+                         if (fileNodes[j] instanceof JavaFileNode) {
+                             try {
+                                 cpd.add(new File(fileNodes[j].getLongDisplayName()));
+                             }
+                             catch (Exception e){
+                             }
+                         }
+                     }
+                 }
+             }
+             cpd.go();
+             Results results = cpd.getResults();
+             if (results != null) {
+                 for (Iterator iter = results.getTiles(); iter.hasNext(); ) {
+                     Tile t = (Tile)iter.next();
+                     Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, String.valueOf(t.getTokenCount()+": " + t.getImage()));
+                 }
+             }
+             cpdd.close();
+
+         }
+         catch (Exception e) {
+             Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, e.toString());
+         }
     }
 
     /**
