@@ -10,42 +10,30 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
 
 public class DFAPanel extends JPanel implements ListSelectionListener {
 
-    public static class DFARenderer {
+    public static class DFACanvas extends Canvas {
 
         private static final int NODE_RADIUS = 10;
         private static final int NODE_DIAMETER = 2 * NODE_RADIUS;
 
         private SimpleNode node;
 
-        private int x = 75;
-        private int y = 0;
+        private int x = 150;
+        private int y = 50;
         private HasLines lines;
 
-        public void setCode(HasLines h) {
-            this.lines = h;
-        }
-
-        public void setMethod(SimpleNode node) {
-            this.node = node;
-        }
-
-        public void renderTo(Graphics2D g) {
+        public void paint(Graphics g) {
+            super.paint(g);
             if (node == null) {
                 return;
             }
-            g.setPaint(Color.LIGHT_GRAY);
-            g.fillRect(0, 0, HEIGHT, WIDTH);
-            g.setPaint(Color.BLACK);
             List flow = node.getDataFlowNode().getFlow();
             for (int i = 0; i < flow.size(); i++) {
                 IDataFlowNode inode = (IDataFlowNode) flow.get(i);
@@ -87,6 +75,14 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
                     g.drawString(output, x - 3 * NODE_DIAMETER + (j * 20), y + NODE_RADIUS - 2);
                 }
             }
+        }
+
+        public void setCode(HasLines h) {
+            this.lines = h;
+        }
+
+        public void setMethod(SimpleNode node) {
+            this.node = node;
         }
 
         private int computeDrawPos(int index) {
@@ -150,16 +146,10 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         }
     }
 
-    private static final int HEIGHT = 400;
-    private static final int WIDTH = 300;
-
-    private Image offScreenImage = new BufferedImage(HEIGHT, WIDTH, BufferedImage.TYPE_INT_RGB);
-    private Graphics2D offScreenGraphics = (Graphics2D)offScreenImage.getGraphics();
-    private JPanel offScreenPanel = new JPanel();
-
-    private DFARenderer dfaRenderer;
+    private DFACanvas dfaCanvas;
     private JList nodeList;
     private DefaultListModel nodes = new DefaultListModel();
+    private JPanel wrapperPanel;
 
     public DFAPanel() {
         super();
@@ -168,15 +158,18 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         JPanel leftPanel = new JPanel();
         nodes.addElement("Hit 'Go'");
         nodeList = new JList(nodes);
-        nodeList.setFixedCellWidth(100);
         nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        nodeList.setFixedCellWidth(100);
         nodeList.setBorder(BorderFactory.createLineBorder(Color.black));
         nodeList.addListSelectionListener(this);
         leftPanel.add(nodeList);
         add(leftPanel, BorderLayout.WEST);
 
-        dfaRenderer = new DFARenderer();
-        add(offScreenPanel, BorderLayout.CENTER);
+        dfaCanvas = new DFACanvas();
+        JScrollPane scrollPane = new JScrollPane(dfaCanvas);
+        wrapperPanel = new JPanel();
+        wrapperPanel.add(scrollPane);
+        add(wrapperPanel, BorderLayout.EAST);
     }
 
     public void valueChanged(ListSelectionEvent event) {
@@ -190,25 +183,24 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         } else {
             wrapper = (ElementWrapper)nodeList.getSelectedValue();
         }
-        dfaRenderer.setMethod(wrapper.getNode());
-        render();
+        dfaCanvas.setMethod(wrapper.getNode());
+        repaint();
     }
 
     public void resetTo(List newNodes, HasLines lines) {
-        dfaRenderer.setCode(lines);
+        dfaCanvas.setCode(lines);
         nodes.clear();
         for (Iterator i = newNodes.iterator(); i.hasNext();) {
             nodes.addElement(new ElementWrapper((ASTMethodDeclaration)i.next()));
         }
         nodeList.setSelectedIndex(0);
-        dfaRenderer.setMethod((SimpleNode)newNodes.get(0));
-        render();
+        dfaCanvas.setMethod((SimpleNode)newNodes.get(0));
+        repaint();
     }
 
-    private void render() {
-        offScreenPanel.setSize(HEIGHT, WIDTH);
-        dfaRenderer.renderTo(offScreenGraphics);
-        offScreenPanel.getGraphics().drawImage(offScreenImage, 0, 0, offScreenPanel);
+    public void paint(Graphics g) {
+        super.paint(g);
+        dfaCanvas.paint(g);
     }
 }
 
