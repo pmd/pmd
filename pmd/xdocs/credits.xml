@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Elliotte Rusty Harold - mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Benoit Xhenseval - more bug reports (with good failure cases!), Ant task patch, XSLT patch, suggestion for improving XML report, several bug reports</li>
             <li>George Sexton - Suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>John Heintz - Added "any language" support to CPD.</li>
@@ -52,7 +53,6 @@
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>
             <li>Bruno Juillet - bug report on ruleset overrides</li>
             <li>Jörn Stampehl - bug report on JUnitTestsShouldContainAsserts</li>
-            <li>Elliotte Rusty Harold - suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
             <li>Olaf Heimburger - reported a possible NPE in ReportTree</li>
             <li>Ryan Gustafson - patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>

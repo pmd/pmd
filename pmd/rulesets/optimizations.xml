@@ -44,7 +44,7 @@ These rules deal with different optimizations that generally apply to performanc
 
 
   <rule name="AvoidInstantiatingObjectsInLoops"
-        message="Avoid instantianing new objects inside loops"
+        message="Avoid instantiating new objects inside loops"
         class="net.sourceforge.pmd.rules.optimization.AvoidInstantiatingObjectsInLoops">
     <description>
 Detects when a new object is created inside a loop
