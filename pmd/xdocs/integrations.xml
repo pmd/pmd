@@ -110,10 +110,16 @@ violation message within this view, you will be taken to the line in the source 
 
       <subsection name="JEdit">
 <p>
-This is more or less the standard JEdit plugin - doubleclick a directory, select Plugins->PMD->Check current directory and
-you get a popup list of problems.  It uses the ErrorList plugin which provides the "jump to the correct line"
-and syntax highlighting functionality.  Things to do:
-</p>
+The way I use the JEdit plugin is:</p>
+<ul>
+<li>Dock the ErrorList - Utilities->Global Options->Docking, then pick ErrorList and put it at the bottom of your screen</li>
+<li>Open the File Browser if it isn't already</li>
+<li>Double-click on my source directory</li>
+<li>Select Plugins->PMD->Check directory recursively
+</ul>
+
+<p>Things to do:</p>
+
 <ul>
 <li>Clean up the threading so the GUI doesn't freeze while PMD is working</li>
 <li>Modify PMD so that it can stream new RuleViolations to the plugin</li>
