@@ -4859,10 +4859,8 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     jjtree.openNodeScope(jjtn000);if (usingAssertAsIdentifier) {
      throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
     }
-    Token tok;
     try {
-      tok = jj_consume_token(IDENTIFIER);
-
+      jj_consume_token(IDENTIFIER);
       Expression();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COLON:
@@ -6211,6 +6209,12 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
+  final private boolean jj_3R_340() {
+    if (jj_scan_token(COLON)) return true;
+    if (jj_3R_65()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_74() {
     if (jj_3R_131()) return true;
     return false;
@@ -6223,12 +6227,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
 
   final private boolean jj_3R_72() {
     if (jj_3R_129()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_340() {
-    if (jj_scan_token(COLON)) return true;
-    if (jj_3R_65()) return true;
     return false;
   }
 

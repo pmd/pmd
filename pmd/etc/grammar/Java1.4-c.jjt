@@ -1229,9 +1229,7 @@ void AssertStatement() :
     if (usingAssertAsIdentifier) {
      throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
     }
-    Token tok;
 }
 {
-  tok = <IDENTIFIER> {}
-  Expression() [ ":" Expression() ] ";"
+  <IDENTIFIER> Expression() [ ":" Expression() ] ";" 
 }
