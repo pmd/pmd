@@ -10,9 +10,7 @@ import java.util.*;
 public class SymbolTable {
 
     private SymbolTable parent;
-    private Map usageCounts = new HashMap();
-	private static final Integer ZERO = new Integer(0);
-	private static final Integer ONE = new Integer(1);
+    private Map symbols = new HashMap();
 
     public SymbolTable() {}
 
@@ -25,28 +23,28 @@ public class SymbolTable {
     }
 
     public void add(Symbol symbol) {
-        if (usageCounts.containsKey(symbol)) {
+        if (symbols.containsKey(symbol)) {
             throw new RuntimeException(symbol + " is already in the symbol table");
         }
-        usageCounts.put(symbol, ZERO);
+        symbols.put(symbol, Boolean.FALSE);
     }
 
     public void recordPossibleUsageOf(Symbol symbol) {
-        if (!usageCounts.containsKey(symbol) && parent != null) {
+        if (!symbols.containsKey(symbol) && parent != null) {
             parent.recordPossibleUsageOf(symbol);
             return;
         }
-        if (!usageCounts.containsKey(symbol) ) {
+        if (!symbols.containsKey(symbol) ) {
             return;
         }
-        usageCounts.put(symbol, ONE);
+        symbols.put(symbol, Boolean.TRUE);
     }
 
     public Iterator getUnusedSymbols() {
         List list = new ArrayList();
-        for (Iterator i = usageCounts.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = symbols.keySet().iterator(); i.hasNext();) {
             Symbol symbol = (Symbol)i.next();
-            if (((Integer)usageCounts.get(symbol)).equals(ZERO)) {
+            if (((Boolean)symbols.get(symbol)).equals(Boolean.FALSE)) {
                 list.add(symbol);
             }
         }
@@ -55,22 +53,12 @@ public class SymbolTable {
 
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        for (Iterator i = usageCounts.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = symbols.keySet().iterator(); i.hasNext();) {
             Symbol symbol = (Symbol)i.next();
-            int usageCount = ((Integer)(usageCounts.get(symbol))).intValue();
+            int usageCount = ((Integer)(symbols.get(symbol))).intValue();
             buf.append(symbol + "," + usageCount +":");
         }
         return buf.toString();
-    }
-
-    protected boolean contains(Symbol symbol) {
-        if (usageCounts.containsKey(symbol)) {
-            return true;
-        }
-        if (parent == null) {
-            return false;
-        }
-        return parent.contains(symbol);
     }
 
 }
