@@ -14,6 +14,8 @@ public class SymbolTable {
 
     private SymbolTable parent;
     private HashMap usageCounts = new HashMap();
+	private static final Integer ZERO = new Integer(0);
+	private static final Integer ONE = new Integer(1);
 
     public SymbolTable() {}
 
@@ -32,7 +34,7 @@ public class SymbolTable {
         if (parent != null && parent.contains(symbol)) {
             throw new RuntimeException(symbol + " is already in the parent symbol table");
         }
-        usageCounts.put(symbol, new Integer(0));
+        usageCounts.put(symbol, ZERO);
     }
 
     public void recordPossibleUsageOf(Symbol symbol) {
@@ -43,17 +45,14 @@ public class SymbolTable {
         if (!usageCounts.containsKey(symbol) ) {
             return;
         }
-        Integer usageCount = (Integer)usageCounts.get(symbol);
-        usageCount = new Integer(usageCount.intValue() + 1);
-        usageCounts.put(symbol, usageCount);
+        usageCounts.put(symbol, ONE);
     }
 
     public Iterator getUnusedSymbols() {
         List list = new ArrayList();
         for (Iterator i = usageCounts.keySet().iterator(); i.hasNext();) {
             Symbol symbol = (Symbol)i.next();
-            int usageCount = ((Integer)(usageCounts.get(symbol))).intValue();
-            if (usageCount == 0) {
+            if (((Integer)usageCounts.get(symbol)).equals(ZERO)) {
                 list.add(symbol);
             }
         }

@@ -75,7 +75,7 @@ public class Report {
     }
 
     public boolean isEmpty() {
-        return this.fileToViolationsMap.isEmpty();
+        return fileToViolationsMap.isEmpty();
     }
 
     public boolean currentFileHasNoViolations() {
