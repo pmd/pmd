@@ -11,6 +11,7 @@ import net.sourceforge.pmd.renderers.XMLRenderer;
 public class CommandLineOptions {
 
     private boolean debugEnabled;
+    private boolean jdk13;
     private boolean shortNamesEnabled;
 
     private String inputFileName;
@@ -34,9 +35,10 @@ public class CommandLineOptions {
         for (int i=0; i<args.length; i++) {
             if (args[i].equals("-debug")) {
                 debugEnabled = true;
-            }
-            if (args[i].equals("-shortnames")) {
+            } else if (args[i].equals("-shortnames")) {
                 shortNamesEnabled = true;
+            } else if (args[i].equals("-jdk13")) {
+                jdk13 = true;
             }
         }
     }
@@ -91,16 +93,33 @@ public class CommandLineOptions {
         return debugEnabled;
     }
 
+    public boolean jdk13() {
+        return jdk13;
+    }
+
     public boolean shortNamesEnabled() {
         return shortNamesEnabled;
     }
 
     public String usage() {
         return PMD.EOL +
-            "Please pass in a java source code filename or directory, a report format, " + PMD.EOL +
-            "and a ruleset filename or a comma-delimited string of ruleset filenames." + PMD.EOL +
+            PMD.EOL +
+            "Mandatory arguments:" + PMD.EOL +
+            "1) A java source code filename or directory" + PMD.EOL +
+            "2) A report format " + PMD.EOL +
+            "3) A ruleset filename or a comma-delimited string of ruleset filenames" + PMD.EOL +
+            PMD.EOL +
             "For example: " + PMD.EOL +
-            "c:\\> java -jar pmd-1.2.1.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml" + PMD.EOL;
+            "c:\\> java -jar pmd-1.2.1.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml" + PMD.EOL +
+            PMD.EOL +
+            "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
+            "-debug: prints debugging information " + PMD.EOL +
+            "-jdk13: enables PMD to parse source code written using 'assert' as an identifier" + PMD.EOL +
+            "-shortnames: prints shortened filenames in the report" + PMD.EOL +
+            PMD.EOL +
+            "For example: " + PMD.EOL +
+            "c:\\> java -jar pmd-1.2.1.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk13 -debug" + PMD.EOL +
+            PMD.EOL;
     }
 }
 

@@ -75,7 +75,12 @@ public class PMD {
             files = collectFilesFromOneName(opts.getInputFileName());
         }
 
-        PMD pmd = new PMD();
+        PMD pmd;
+        if (opts.jdk13()) {
+            pmd = new PMD(new TargetJDK1_3());
+        } else {
+            pmd = new PMD();
+        }
 
         RuleContext ctx = new RuleContext();
         ctx.setReport(new Report());

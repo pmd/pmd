@@ -16,6 +16,13 @@ public class CommandLineOptionsTest extends TestCase {
         assertTrue(opt.debugEnabled());
     }
 
+    public void testTargetJDKVersion() {
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
+        assertFalse(opt.jdk13());
+        opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-jdk13"});
+        assertTrue(opt.jdk13());
+    }
+
     public void testShortNames() {
         CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-shortnames"});
         assertTrue(opt.shortNamesEnabled());
