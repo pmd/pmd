@@ -146,6 +146,37 @@ public class Foo {
   ]]>
       </example>
     </rule>
+
+    <rule name="FinalizeOnlyCallsSuperFinalize"
+          message="Finalize should do something besides just calling super.finalize()"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       If the finalize() is implemented, it should do something besides just calling
+       super.finalize().
+       </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                       //MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
+                           /Block[count(BlockStatement)=1]
+                             /BlockStatement[Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image="finalize"]
+                   ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+       <example>
+           <![CDATA[
+               public class Foo {
+                   public void finalize() {
+                     super.finalize();
+                   }
+               }
+           ]]>
+       </example>
+     </rule>
+
 </ruleset>
 
 
