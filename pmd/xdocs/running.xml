@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="tom@infoether.com">Tom Copeland</author>
+    <title>Running PMD</title>
+  </properties>
+
+  <body>
+   <section name="Running PMD via command line">
+   <ul>
+    <li>Build PMD by going to the etc directory and typing 'ant clean'
+    <li>Type run 'filename', i.e.:
+<pre>
+C:\data\pmd\pmd\etc>run c:\data\pmd\pmd\test-data\Unused1.java
+C:\data\pmd\pmd\etc>set CLASSPATH=../build/
+C:\data\pmd\pmd\etc>java net.sourceforge.pmd.PMD c:\data\pmd\pmd\test-data\Unuse
+d1.java
+<pmd><file>
+<name>c:\data\pmd\pmd\test-data\Unused1.java</name><ruleviolation><line>5</line>
+<description>Found unused local variable 'fr'</description></ruleviolation></fil
+e>
+</pmd>
+    </pre>
+   </ul>
+   </section>
+   <section name="Running PMD via Ant">
+   <ul>
+    <li>Build PMD by going to the etc directory and typing 'ant clean'
+    <li>Add a new Ant target to your build file - <a href="ant-task.html">here's an example</a>.
+    <li>Make sure the PMD class files are on your classpath.
+    <li>Run Ant like you normally do.
+   </ul>
+   </section>
+  </body>
+</document>
