@@ -105,6 +105,13 @@
       <roles><role>Developer</role></roles>
     </developer>
 
+    <developer>
+      <name>Alex Chaffee</name>
+      <id>purpletech</id>
+      <email>purpletech@users.sourceforge.net</email>
+      <roles><role>Developer</role></roles>
+    </developer>
+
   </developers>
 
   <contributors>
