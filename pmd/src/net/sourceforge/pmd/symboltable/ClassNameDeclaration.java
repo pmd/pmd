@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 
 public class ClassNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
 
-    public ClassNameDeclaration(ASTUnmodifiedClassDeclaration node) {
+    public ClassNameDeclaration(ASTClassOrInterfaceDeclaration node) {
         super(node);
     }
 

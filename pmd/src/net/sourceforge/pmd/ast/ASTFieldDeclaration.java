@@ -64,8 +64,9 @@ public class ASTFieldDeclaration extends AccessNode implements Dimensionable {
      */
     public String getVariableName() {
     	ASTVariableDeclaratorId decl = (ASTVariableDeclaratorId) getFirstChildOfType(ASTVariableDeclaratorId.class);
-    	if (decl!=null)
+    	if (decl!=null) {
     		return decl.getImage();
+        }
     	return null;
     }
 }

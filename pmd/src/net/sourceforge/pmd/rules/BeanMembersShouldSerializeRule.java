@@ -5,10 +5,10 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTResultType;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.text.MessageFormat;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class BeanMembersShouldSerializeRule extends AbstractRule {
 
-    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         List methList = new ArrayList();
         node.findChildrenOfType(ASTMethodDeclarator.class, methList);
 

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTPrimitiveType extends SimpleNode {
+public class ASTPrimitiveType extends SimpleNode  implements Dimensionable{
     public ASTPrimitiveType(int id) {
         super(id);
     }
@@ -26,4 +26,19 @@ public class ASTPrimitiveType extends SimpleNode {
         System.out.println(toString(prefix) + "(" + getImage() + ")");
         dumpChildren(prefix);
     }
+
+    private int arrayDepth;
+
+    public void bumpArrayDepth() {
+        arrayDepth++;
+    }
+
+    public int getArrayDepth() {
+        return arrayDepth;
+    }
+
+    public boolean isArray() {
+        return arrayDepth > 0;
+    }
+    
 }

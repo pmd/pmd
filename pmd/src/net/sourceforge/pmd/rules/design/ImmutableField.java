@@ -5,9 +5,9 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -29,7 +29,7 @@ public class ImmutableField extends AbstractRule {
     static private final int IMMUTABLE = 1;
     static private final int CHECKDECL = 2;
     
-    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map vars = node.getScope().getVariableDeclarations();
         Set constructors = findAllConstructors(node);
         for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
@@ -86,7 +86,7 @@ public class ImmutableField extends AbstractRule {
 
     /** construct a set containing all ASTConstructorDeclaration nodes for this class
      */
-    private Set findAllConstructors(ASTUnmodifiedClassDeclaration node) {
+    private Set findAllConstructors(ASTClassOrInterfaceDeclaration node) {
         Set set = new HashSet();
         set.addAll(node.findChildrenOfType(ASTConstructorDeclaration.class));
         return set;

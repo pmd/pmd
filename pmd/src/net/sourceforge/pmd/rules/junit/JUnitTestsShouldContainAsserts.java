@@ -7,11 +7,10 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNestedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTResultType;
@@ -20,15 +19,21 @@ import net.sourceforge.pmd.ast.Node;
 
 public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule {
 
-    public Object visit(ASTInterfaceDeclaration decl, Object data) {
-        return data; // just skip interfaces
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
+        return super.visit(node, data);
     }
 
+/*
+FIXME
 	public Object visit(ASTNestedInterfaceDeclaration node, Object data) {
 		// skip also internal interfaces, bug [ 1146116 ] JUnitTestsShouldIncludeAssert crashes on inner Interface
 		return data;
 	}
-	
+*/
+
     public Object visit(ASTMethodDeclaration declaration, Object data) {
         if (!declaration.isPublic() || declaration.isAbstract() || declaration.isNative()) {
             return data; // skip various inapplicable method variations

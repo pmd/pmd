@@ -68,7 +68,7 @@ public interface JavaParserConstants {
   int STRING_LITERAL = 70;
   int IDENTIFIER = 71;
   int LETTER = 72;
-  int DIGIT = 73;
+  int PART_LETTER = 73;
   int LPAREN = 74;
   int RPAREN = 75;
   int LBRACE = 76;
@@ -78,8 +78,8 @@ public interface JavaParserConstants {
   int SEMICOLON = 80;
   int COMMA = 81;
   int DOT = 82;
-  int ASSIGN = 83;
-  int GT = 84;
+  int AT = 83;
+  int ASSIGN = 84;
   int LT = 85;
   int BANG = 86;
   int TILDE = 87;
@@ -102,20 +102,21 @@ public interface JavaParserConstants {
   int XOR = 104;
   int REM = 105;
   int LSHIFT = 106;
-  int RSIGNEDSHIFT = 107;
-  int RUNSIGNEDSHIFT = 108;
-  int PLUSASSIGN = 109;
-  int MINUSASSIGN = 110;
-  int STARASSIGN = 111;
-  int SLASHASSIGN = 112;
-  int ANDASSIGN = 113;
-  int ORASSIGN = 114;
-  int XORASSIGN = 115;
-  int REMASSIGN = 116;
-  int LSHIFTASSIGN = 117;
-  int RSIGNEDSHIFTASSIGN = 118;
-  int RUNSIGNEDSHIFTASSIGN = 119;
-  int ELLIPSIS = 120;
+  int PLUSASSIGN = 107;
+  int MINUSASSIGN = 108;
+  int STARASSIGN = 109;
+  int SLASHASSIGN = 110;
+  int ANDASSIGN = 111;
+  int ORASSIGN = 112;
+  int XORASSIGN = 113;
+  int REMASSIGN = 114;
+  int LSHIFTASSIGN = 115;
+  int RSIGNEDSHIFTASSIGN = 116;
+  int RUNSIGNEDSHIFTASSIGN = 117;
+  int ELLIPSIS = 118;
+  int RUNSIGNEDSHIFT = 119;
+  int RSIGNEDSHIFT = 120;
+  int GT = 121;
 
   int DEFAULT = 0;
   int IN_FORMAL_COMMENT = 1;
@@ -195,7 +196,7 @@ public interface JavaParserConstants {
     "<STRING_LITERAL>",
     "<IDENTIFIER>",
     "<LETTER>",
-    "<DIGIT>",
+    "<PART_LETTER>",
     "\"(\"",
     "\")\"",
     "\"{\"",
@@ -205,8 +206,8 @@ public interface JavaParserConstants {
     "\";\"",
     "\",\"",
     "\".\"",
+    "\"@\"",
     "\"=\"",
-    "\">\"",
     "\"<\"",
     "\"!\"",
     "\"~\"",
@@ -229,8 +230,6 @@ public interface JavaParserConstants {
     "\"^\"",
     "\"%\"",
     "\"<<\"",
-    "\">>\"",
-    "\">>>\"",
     "\"+=\"",
     "\"-=\"",
     "\"*=\"",
@@ -243,6 +242,9 @@ public interface JavaParserConstants {
     "\">>=\"",
     "\">>>=\"",
     "\"...\"",
+    "\">>>\"",
+    "\">>\"",
+    "\">\"",
     "\"\\u001a\"",
     "\"~[]\"",
   };

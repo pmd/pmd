@@ -4,22 +4,16 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTArguments;
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTExplicitConstructorInvocation;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNestedClassDeclaration;
-import net.sourceforge.pmd.ast.ASTNestedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -538,8 +532,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
      * This check must be evaluated independelty for each class.  Inner classses
      * get their own EvalPackage in order to perform independent evaluation.
      */
-    private Object visitClassDec(AccessNode node, Object data) {
-        String className = ((ASTUnmodifiedClassDeclaration) node.jjtGetChild(0)).getImage();
+ /*   private Object visitClassDec(AccessNode node, Object data) {
+        String className = ((ASTClassOrInterfaceDeclaration) node.jjtGetChild(0)).getImage();
         //		System.out.println("Class is " + className);
         //evaluate each level independently
         if (!node.isFinal() && !node.isStatic()) {
@@ -599,7 +593,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         removeCurrentEvalPackage();
         return data;
     }
-
+*/
     /**
      * Check the methods called on this class by each of the methods on this
      * class.  If a method calls an unsafe method, mark the calling method as
@@ -742,6 +736,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
      * This check must be evaluated independelty for each class.  Inner classses
      * get their own EvalPackage in order to perform independent evaluation.
      */
+/*
     public Object visit(ASTClassDeclaration node, Object data) {
         return visitClassDec(node, data);
     }
@@ -763,6 +758,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         removeCurrentEvalPackage();
         return o;
     }
+    FIXME
+*/
 
 
     /**

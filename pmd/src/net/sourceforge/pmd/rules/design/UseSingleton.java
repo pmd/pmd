@@ -5,12 +5,10 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 
 public class UseSingleton extends AbstractRule {
 
@@ -43,12 +41,15 @@ public class UseSingleton extends AbstractRule {
         return data;
     }
 
-    public Object visit(ASTUnmodifiedClassDeclaration decl, Object data) {
+/*
+FIXME
+    public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
         if (decl.jjtGetParent() instanceof ASTClassDeclaration && ((ASTClassDeclaration) decl.jjtGetParent()).isAbstract()) {
             isOK = true;
         }
         return super.visit(decl, data);
     }
+*/
 
     public Object visit(ASTMethodDeclaration decl, Object data) {
         methodCount++;

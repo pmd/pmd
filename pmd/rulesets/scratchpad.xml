@@ -8,7 +8,27 @@ These are new rules that are still in progress
 
 
 
+    <rule name="FooRule"
+          message="foo?" symboltable="true"
+          class="net.sourceforge.pmd.rules.FooRule">
+      <description>
+      Foo
+      </description>
+        <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+                ]]>
+            </value>
+        </property>
+        </properties>
+        <priority>3</priority>
 
+      <example>
+  <![CDATA[
+  ]]>
+      </example>
+      </rule>
 
 
 <!--

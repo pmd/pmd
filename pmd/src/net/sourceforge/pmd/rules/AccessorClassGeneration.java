@@ -8,15 +8,10 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNestedClassDeclaration;
-import net.sourceforge.pmd.ast.ASTNestedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -245,6 +240,7 @@ public class AccessorClassGeneration extends AbstractRule {
     /**
      * Outer interface visitation
      */
+/*
     public Object visit(ASTInterfaceDeclaration node, Object data) {
         String className = node.getUnmodifedInterfaceDeclaration().getImage();
         //		System.out.println("interface = " + className);
@@ -260,11 +256,12 @@ public class AccessorClassGeneration extends AbstractRule {
         setClassID(-1);
         return o;
     }
+*/
 
     /**
      * Inner interface visitation
      */
-    public Object visit(ASTNestedInterfaceDeclaration node, Object data) {
+    /*public Object visit(ASTNestedInterfaceDeclaration node, Object data) {
         String className = node.getUnmodifedInterfaceDeclaration().getImage();
         //		System.out.println("interface = " + className);
         int formerID = getClassID();
@@ -278,10 +275,11 @@ public class AccessorClassGeneration extends AbstractRule {
         setClassID(formerID);
         return o;
     }
-
+*/
     /**
      * Outer class declaration
      */
+/*
     public Object visit(ASTClassDeclaration node, Object data) {
         String className = ((ASTUnmodifiedClassDeclaration) node.jjtGetChild(0)).getImage();
         //		System.out.println("classname = " + className);
@@ -298,6 +296,8 @@ public class AccessorClassGeneration extends AbstractRule {
         return o;
     }
 
+*/
+/*
     public Object visit(ASTNestedClassDeclaration node, Object data) {
         String className = ((ASTUnmodifiedClassDeclaration) node.jjtGetChild(0)).getImage();
         //		System.out.println("classname = " + className);
@@ -312,6 +312,7 @@ public class AccessorClassGeneration extends AbstractRule {
         setClassID(formerID);
         return o;
     }
+*/
 
     /**
      * Store all target constructors

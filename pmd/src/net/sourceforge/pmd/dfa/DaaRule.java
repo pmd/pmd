@@ -5,7 +5,7 @@ package net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
@@ -27,7 +27,7 @@ public class DaaRule extends AbstractRule implements Executable {
     private int counter;
     private static final int MAX_PATHS = 5000;
 
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         RuleContext ctx = (RuleContext) data;
         System.out.println(ctx.getSourceCodeFilename());
         return super.visit(node, data);

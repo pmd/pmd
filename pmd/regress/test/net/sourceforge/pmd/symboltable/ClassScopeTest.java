@@ -3,14 +3,15 @@
 */
 package test.net.sourceforge.pmd.symboltable;
 
-import junit.framework.TestCase;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-public class ClassScopeTest extends TestCase {
+public class ClassScopeTest extends STBBaseTst {
 
     public void testContains() {
         ClassScope s = new ClassScope("Foo");
@@ -39,8 +40,13 @@ public class ClassScopeTest extends TestCase {
     }
 
     public void testClassName() {
-        ClassScope s = new ClassScope("Foo");
-        assertEquals("Foo", s.getClassName());
+        parseCode(CLASS_NAME);
+        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        assertEquals("Foo", n.getScope().getEnclosingClassScope().getClassName());
+    }
+
+    public void testEnumsClassScope() {
+        parseCode15(ENUM_SCOPE);
     }
 
     // FIXME - these will break when this goes from Anonymous$1 to Foo$1
@@ -50,4 +56,17 @@ public class ClassScopeTest extends TestCase {
         s = new ClassScope();
         assertEquals("Anonymous$2", s.getClassName());
     }
+
+    private static final String CLASS_NAME =
+    "public class Foo {}";
+
+    private static final String ENUM_SCOPE =
+    "public enum Foo {" + PMD.EOL +
+    " HEAP(\"foo\");" + PMD.EOL +
+    " private final String fuz;" + PMD.EOL +
+    " public String getFuz() {" + PMD.EOL +
+    "  return fuz;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
 }

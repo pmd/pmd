@@ -3,14 +3,14 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 public class DeclarationFinder extends JavaParserVisitorAdapter {
 
-    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         node.getScope().addDeclaration(new ClassNameDeclaration(node));
         return super.visit(node, data);
     }

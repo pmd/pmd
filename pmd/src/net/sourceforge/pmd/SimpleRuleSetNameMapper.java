@@ -1,8 +1,8 @@
 package net.sourceforge.pmd;
 
-import java.util.StringTokenizer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class SimpleRuleSetNameMapper {
 

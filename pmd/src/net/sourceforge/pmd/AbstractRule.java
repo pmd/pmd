@@ -3,17 +3,17 @@
  */
 package net.sourceforge.pmd;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
@@ -180,7 +180,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         return super.visit(node, data);
     }
 
-    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         className = node.getImage();
         return super.visit(node, data);
     }
@@ -230,13 +230,13 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     /** 
-     * Gets the Image of the first parent node of type ASTUnmodifiedClassDeclaration or <code>null</code>
+     * Gets the Image of the first parent node of type ASTClassOrInterfaceDeclaration or <code>null</code>
      *  
      * @param node the node which will be searched
      * @return
      */
     protected final String getDeclaringType(SimpleNode  node) {
-		ASTUnmodifiedClassDeclaration c = (ASTUnmodifiedClassDeclaration) node.getFirstParentOfType(ASTUnmodifiedClassDeclaration.class);
+		ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 		if (c!=null)
 			return c.getImage();
 		return null;

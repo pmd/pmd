@@ -3,7 +3,7 @@
 */
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.Iterator;
@@ -13,42 +13,42 @@ public class ClassDeclTest extends ParserTst {
 
     public void testPublic() throws Throwable {
         String access[] = {"public"};
-        ASTClassDeclaration acd = getClassDecl(access);
+        ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, true, false, false, false);
     }
 
     public void testAbstract() throws Throwable {
         String access[] = {"abstract"};
-        ASTClassDeclaration acd = getClassDecl(access);
+        ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, false, true, false, false);
     }
 
     public void testFinal() throws Throwable {
         String access[] = {"final"};
-        ASTClassDeclaration acd = getClassDecl(access);
+        ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, false, false, true, false);
     }
 
     public void testStrict() throws Throwable {
         String access[] = {"strictfp"};
-        ASTClassDeclaration acd = getClassDecl(access);
+        ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, false, false, false, true);
     }
 
     public void testPublicFinal() throws Throwable {
         String access[] = {"public", "final"};
-        ASTClassDeclaration acd = getClassDecl(access);
+        ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, true, false, true, false);
     }
 
-    public void verifyFlags(ASTClassDeclaration acd, boolean bPublic, boolean bAbstract, boolean bFinal, boolean bStrict) {
+    public void verifyFlags(ASTClassOrInterfaceDeclaration acd, boolean bPublic, boolean bAbstract, boolean bFinal, boolean bStrict) {
         assertEquals("Public: ", bPublic, acd.isPublic());
         assertEquals("Abstract: ", bAbstract, acd.isAbstract());
         assertEquals("Final: ", bFinal, acd.isFinal());
         assertEquals("Strict: ", bStrict, acd.isStrictfp());
     }
 
-    public ASTClassDeclaration getClassDecl(String access[]) throws Throwable {
+    public ASTClassOrInterfaceDeclaration getClassDecl(String access[]) throws Throwable {
         String javaCode = "";
 
         for (int i = 0; i < access.length; i++) {
@@ -57,10 +57,10 @@ public class ClassDeclTest extends ParserTst {
 
         javaCode += " class Test { } ";
 
-        Set classes = getNodes(ASTClassDeclaration.class, javaCode);
+        Set classes = getNodes(ASTClassOrInterfaceDeclaration.class, javaCode);
 
         assertEquals("Wrong number of classes", 1, classes.size());
         Iterator i = classes.iterator();
-        return (ASTClassDeclaration) i.next();
+        return (ASTClassOrInterfaceDeclaration) i.next();
     }
 }

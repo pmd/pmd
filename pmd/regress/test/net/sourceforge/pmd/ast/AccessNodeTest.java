@@ -3,7 +3,7 @@
 */
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.AccessNode;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
@@ -12,8 +12,8 @@ import java.util.Set;
 public class AccessNodeTest extends ParserTst {
 
     public void testModifiersOnClassDecl() throws Throwable {
-        Set ops = getNodes(ASTClassDeclaration.class, TEST1);
-        assertTrue(((ASTClassDeclaration)(ops.iterator().next())).isPublic());
+        Set ops = getNodes(ASTClassOrInterfaceDeclaration.class, TEST1);
+        assertTrue(((ASTClassOrInterfaceDeclaration)(ops.iterator().next())).isPublic());
     }
 
     private static final String TEST1 =

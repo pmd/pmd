@@ -5,17 +5,21 @@ package net.sourceforge.pmd.rules.optimization;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTDoStatement;
 import net.sourceforge.pmd.ast.ASTForStatement;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.Node;
 
 public class AvoidInstantiatingObjectsInLoops extends AbstractOptimizationRule {
 
-    public Object visit(ASTInterfaceDeclaration decl, Object data) {
-        return data; // just skip interfaces
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
+        return super.visit(node, data);
     }
+
 
     public Object visit(ASTAllocationExpression node, Object data) {
         if (insideLoop(node)) {

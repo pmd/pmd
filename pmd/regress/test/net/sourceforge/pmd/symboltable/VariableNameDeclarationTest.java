@@ -5,7 +5,6 @@ package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.Scope;
@@ -35,14 +34,6 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
         assertTrue(decl.isExceptionBlockParameter());
     }
 
-    public void testMethodParam() {
-        parseCode(TEST3);
-        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
-        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId)nodes.get(0);
-        nodes = acu.findChildrenOfType(ASTName.class);
-        assertEquals(nodes.get(0), id.getTypeNameNode());
-    }
-
     public static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
@@ -56,10 +47,4 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
     "  try {} catch(Exception e) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
-
-    public static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " void foo(String bar) {}" + PMD.EOL +
-    "}";
-
 }

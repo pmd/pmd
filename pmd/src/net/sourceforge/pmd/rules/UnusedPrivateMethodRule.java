@@ -6,9 +6,7 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTArguments;
-import net.sourceforge.pmd.ast.ASTClassBody;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
@@ -31,10 +29,12 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     private boolean trollingForDeclarations;
     private int depth;
 
-    // Skip interfaces because they have no implementation
+/*
+FIXME
     public Object visit(ASTInterfaceDeclaration node, Object data) {
         return data;
     }
+*/
 
     // Reset state when we leave an ASTCompilationUnit
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -46,7 +46,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         return data;
     }
 
-    public Object visit(ASTClassBody node, Object data) {
+    /*public Object visit(ASTClassBody node, Object data) {
         depth++;
 
         // first troll for declarations, but only in the top level class
@@ -70,7 +70,8 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         depth--;
         return data;
     }
-
+    FIXME
+*/
     //ASTMethodDeclarator
     // FormalParameters
     //  FormalParameter

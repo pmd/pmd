@@ -10,12 +10,8 @@ import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -90,6 +86,7 @@ public class CyclomaticComplexity extends AbstractRule {
         return data;
     }
 
+/*
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         entryStack.push(new Entry(node));
         super.visit(node, data);
@@ -102,7 +99,9 @@ public class CyclomaticComplexity extends AbstractRule {
         }
         return data;
     }
+*/
 
+/*
     public Object visit(ASTMethodDeclaration node, Object data) {
         Node parentNode = node.jjtGetParent();
         while (parentNode != null) {
@@ -141,6 +140,7 @@ public class CyclomaticComplexity extends AbstractRule {
 
         return data;
     }
+*/
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
         entryStack.push(new Entry(node));

@@ -4,17 +4,19 @@
 package net.sourceforge.pmd.rules.optimization;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
 public class LocalVariableCouldBeFinal extends AbstractOptimizationRule {
 
-    public Object visit(ASTInterfaceDeclaration decl, Object data) {
-        return data; // just skip interfaces
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
+        return super.visit(node, data);
     }
 
-    
     /**
      * Find if this variable is ever written.
      * 

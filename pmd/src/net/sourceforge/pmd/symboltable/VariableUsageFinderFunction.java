@@ -3,10 +3,10 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.util.UnaryFunction;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import net.sourceforge.pmd.util.UnaryFunction;
 
 public class VariableUsageFinderFunction implements UnaryFunction {
 

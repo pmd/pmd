@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.dfa.variableaccess;
 
-import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
@@ -31,7 +31,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     private List undefList = new Vector();
 
     public void compute(ASTMethodDeclaration node) {
-        if (node.jjtGetParent() instanceof ASTClassBodyDeclaration) {
+        if (node.jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
             this.computeNow(node);
         }
     }

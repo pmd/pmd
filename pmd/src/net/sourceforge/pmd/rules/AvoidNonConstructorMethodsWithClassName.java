@@ -3,21 +3,23 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.text.MessageFormat;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+
+import java.text.MessageFormat;
 
 
 
 public class AvoidNonConstructorMethodsWithClassName extends AbstractRule {
 	
-	public Object visit(ASTInterfaceDeclaration node, Object data) {
-		// Skip interfaces
-		return super.visit(node, data);
+	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+    		return data;
+        }
+        return super.visit(node, data);
 	}
 	
 	/* (non-Javadoc)

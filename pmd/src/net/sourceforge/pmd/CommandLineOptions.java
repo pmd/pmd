@@ -21,6 +21,7 @@ public class CommandLineOptions {
 
     private boolean debugEnabled;
     private boolean jdk13;
+    private boolean jdk15;
     private boolean shortNamesEnabled;
 
     private String excludeMarker = ExcludeLines.EXCLUDE_MARKER;
@@ -54,6 +55,8 @@ public class CommandLineOptions {
                 excludeMarker = args[i + 1];
             } else if (args[i].equals("-jdk13")) {
                 jdk13 = true;
+            } else if (args[i].equals("-jdk15")) {
+                jdk15 = true;
             }
         }
     }
@@ -123,6 +126,10 @@ public class CommandLineOptions {
         return jdk13;
     }
 
+    public boolean jdk15() {
+        return jdk15;
+    }
+
     public boolean shortNamesEnabled() {
         return shortNamesEnabled;
     }
@@ -140,12 +147,13 @@ public class CommandLineOptions {
                 "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
                 "-debug: prints debugging information " + PMD.EOL +
                 "-jdk13: enables PMD to parse source code written using 'assert' as an identifier" + PMD.EOL +
+                "-jdk15: enables PMD to parse JDK 1.5 source code, i.e., enums, generics, annotations" + PMD.EOL +
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
                 "-excludemarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +
                 PMD.EOL +
                 "For example: " + PMD.EOL +
-                "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk13 -debug" + PMD.EOL +
+                "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk15 -debug" + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -encoding UTF-8" + PMD.EOL +
                 PMD.EOL;
     }

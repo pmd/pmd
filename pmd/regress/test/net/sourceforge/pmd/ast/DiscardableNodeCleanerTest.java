@@ -1,6 +1,6 @@
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTInstanceOfExpression;
@@ -40,7 +40,7 @@ public class DiscardableNodeCleanerTest extends ParserTst {
         ASTModifiers m = new ASTModifiers(3);
         m.jjtSetParent(td);
         td.jjtAddChild(m, 0);
-        ASTClassDeclaration cd = new ASTClassDeclaration(4);
+        ASTClassOrInterfaceDeclaration cd = new ASTClassOrInterfaceDeclaration(4);
         cd.jjtSetParent(td);
         td.jjtAddChild(cd, 1);
 

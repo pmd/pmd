@@ -18,17 +18,16 @@ public class ASTType extends SimpleNode {
         return visitor.visit(this, data);
     }
 
-    private int arrayDepth;
-
-    public void bumpArrayDepth() {
-        arrayDepth++;
-    }
-
     public int getArrayDepth() {
-        return arrayDepth;
+        if (jjtGetNumChildren() != 0 && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
+            return ((Dimensionable)jjtGetChild(0)).getArrayDepth();
+        }
+        throw new RuntimeException("ASTType.getArrayDepth called, but first child (of " + jjtGetNumChildren() + " total children) is neither a primitive nor a reference type.");
     }
 
     public boolean isArray() {
-        return arrayDepth > 0;
+        return getArrayDepth() > 0;
     }
+
+
 }

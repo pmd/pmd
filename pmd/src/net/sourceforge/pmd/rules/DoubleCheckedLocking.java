@@ -5,14 +5,10 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNestedClassDeclaration;
-import net.sourceforge.pmd.ast.ASTNestedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
@@ -143,6 +139,8 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
         return false;
     }
 
+/*
+FIXME
     public Object visit(ASTClassDeclaration node, Object data) {
         boolean temp = interfaceSkipper;
         interfaceSkipper = false;
@@ -151,7 +149,7 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
         return o;
     }
 
-    public Object visit(ASTNestedClassDeclaration node, Object data) {
+public Object visit(ASTNestedClassDeclaration node, Object data) {
         boolean temp = interfaceSkipper;
         interfaceSkipper = false;
         Object o = super.visit(node, data);
@@ -174,6 +172,7 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
         interfaceSkipper = temp;
         return o;
     }
+*/
 
     public boolean matchName(ASTPrimaryExpression ape, String name) {
         if ((ape.jjtGetNumChildren() == 1) && (ape.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {

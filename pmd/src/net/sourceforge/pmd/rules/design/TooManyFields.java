@@ -3,20 +3,17 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTInterfaceMemberDeclaration;
-import net.sourceforge.pmd.ast.ASTNestedClassDeclaration;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 public class TooManyFields extends AbstractRule {
@@ -44,9 +41,12 @@ public class TooManyFields extends AbstractRule {
             for (Iterator it = l.iterator() ; it.hasNext() ; ) {
                 ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
                 Node p = fd.jjtGetParent();
+/*
+FIXME
                 if (!(p instanceof ASTInterfaceMemberDeclaration)) {
                     processField(fd);
                 }
+*/
             }
         }
         for (Iterator it = stats.keySet().iterator() ; it.hasNext() ; ) {
@@ -65,6 +65,7 @@ public class TooManyFields extends AbstractRule {
         return data;
     }
     
+/*
     private void processField(ASTFieldDeclaration fd) {
         ASTNestedClassDeclaration nc = (ASTNestedClassDeclaration) fd.getFirstParentOfType(ASTNestedClassDeclaration.class);
         if (nc!=null) {
@@ -74,6 +75,8 @@ public class TooManyFields extends AbstractRule {
             addFieldCountFor(cd);
         }
     }
+*/
+    
     private void addFieldCountFor(SimpleNode nc) {
         String key = nc.getImage();
         if (!stats.containsKey(key)) {

@@ -7,7 +7,6 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTInterfaceMemberDeclaration;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
@@ -66,6 +65,8 @@ public class VariableNamingConventions extends AbstractRule {
                 return data;
             }
 
+/*
+FIXME
             // non static final class fields are OK
             if (node.isFinal() && !node.isStatic() && !(node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration)) {
                 return data;
@@ -85,6 +86,7 @@ public class VariableNamingConventions extends AbstractRule {
                 }
                 return data;
             }
+*/
 
             String strippedVarName = null;
             if (node.isStatic()) {

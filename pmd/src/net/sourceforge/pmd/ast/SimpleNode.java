@@ -182,12 +182,17 @@ public class SimpleNode implements Node , IPositionProvider {
         if (node.getClass().equals(targetType)) {
             results.add(node);
         }
-        if (node.getClass().equals(ASTNestedClassDeclaration.class) && !descendIntoNestedClasses) {
-            return;
+
+        if (!descendIntoNestedClasses) {
+            if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)node).isInnerClass()) {
+                return;
+            }
+
+            if (node instanceof ASTClassOrInterfaceBodyDeclaration && ((ASTClassOrInterfaceBodyDeclaration)node).isAnonymousInnerClass()) {
+                return;
+            }
         }
-        if (node.getClass().equals(ASTClassBodyDeclaration.class) && ((ASTClassBodyDeclaration) node).isAnonymousInnerClass() && !descendIntoNestedClasses) {
-            return;
-        }
+
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0) {

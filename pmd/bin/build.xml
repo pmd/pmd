@@ -126,9 +126,13 @@
 </target>
 
 <target name="jjtree">
-    <jjtree target="etc/grammar/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
-    <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
-    <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
+    <delete file="src/net/sourceforge/pmd/ast/JavaParser.java"/>
+    <delete file="src/net/sourceforge/pmd/ast/JavaParserConstants.java"/>
+    <delete file="src/net/sourceforge/pmd/ast/JavaParserTreeConstants.java"/>
+    <delete file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java"/>
+    <jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
+    <javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
+    <delete file="src/net/sourceforge/pmd/ast/Java.jj"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException"/>

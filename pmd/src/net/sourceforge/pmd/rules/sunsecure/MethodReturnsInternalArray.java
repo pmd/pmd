@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.rules.sunsecure;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
@@ -25,8 +25,11 @@ import java.util.List;
  */
 public class MethodReturnsInternalArray extends AbstractSunSecureRule {
 
-    public Object visit(ASTInterfaceDeclaration decl, Object data) {
-        return data; // just skip interfaces
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
+        return super.visit(node, data);
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {

@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 
 /**
  * This rule detects when a class exceeds a certain
@@ -12,6 +12,6 @@ import net.sourceforge.pmd.ast.ASTClassDeclaration;
  */
 public class LongClassRule extends ExcessiveLengthRule {
     public LongClassRule() {
-        super(ASTClassDeclaration.class);
+        super(ASTClassOrInterfaceDeclaration.class);
     }
 }

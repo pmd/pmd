@@ -5,7 +5,7 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -16,8 +16,11 @@ import java.util.List;
 
 public class OnlyOneReturnRule extends AbstractRule {
 
-    public Object visit(ASTInterfaceDeclaration node, Object data) {
-        return data;
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
+        return super.visit(node, data);
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {

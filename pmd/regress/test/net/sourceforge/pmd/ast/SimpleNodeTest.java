@@ -7,15 +7,19 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTExpression;
+import net.sourceforge.pmd.ast.ASTExtendsList;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.ASTImplementsList;
 import net.sourceforge.pmd.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTStatement;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -41,32 +45,32 @@ public class SimpleNodeTest extends ParserTst {
 
     public void testNoLookahead() throws Throwable {
         String code = NO_LOOKAHEAD; // 1, 8 -> 1, 20
-        Set uCD = getNodes(ASTUnmodifiedClassDeclaration.class, code);
+        Set uCD = getNodes(ASTClassOrInterfaceDeclaration.class, code);
         verifyNode((SimpleNode) uCD.iterator().next(), 1, 8, 1, 20);
     }
 
     public void testHasExplicitExtends() throws Throwable {
         String code = HAS_EXPLICIT_EXTENDS;
-        ASTUnmodifiedClassDeclaration ucd = (ASTUnmodifiedClassDeclaration)(getNodes(ASTUnmodifiedClassDeclaration.class, code).iterator().next());
-        assertTrue(ucd.hasExplicitExtends());
+        ASTClassOrInterfaceDeclaration ucd = (ASTClassOrInterfaceDeclaration)(getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next());
+        assertTrue(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
     public void testNoExplicitExtends() throws Throwable {
         String code = NO_EXPLICIT_EXTENDS;
-        ASTUnmodifiedClassDeclaration ucd = (ASTUnmodifiedClassDeclaration)(getNodes(ASTUnmodifiedClassDeclaration.class, code).iterator().next());
-        assertTrue(!ucd.hasExplicitExtends());
+        ASTClassOrInterfaceDeclaration ucd = (ASTClassOrInterfaceDeclaration)(getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next());
+        assertFalse(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
     public void testHasExplicitImplements() throws Throwable {
         String code = HAS_EXPLICIT_IMPLEMENTS;
-        ASTUnmodifiedClassDeclaration ucd = (ASTUnmodifiedClassDeclaration)(getNodes(ASTUnmodifiedClassDeclaration.class, code).iterator().next());
-        assertTrue(ucd.hasExplicitImplements());
+        ASTClassOrInterfaceDeclaration ucd = (ASTClassOrInterfaceDeclaration)(getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next());
+        assertTrue(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
     public void testNoExplicitImplements() throws Throwable {
         String code = NO_EXPLICIT_IMPLEMENTS;
-        ASTUnmodifiedClassDeclaration ucd = (ASTUnmodifiedClassDeclaration)(getNodes(ASTUnmodifiedClassDeclaration.class, code).iterator().next());
-        assertTrue(!ucd.hasExplicitImplements());
+        ASTClassOrInterfaceDeclaration ucd = (ASTClassOrInterfaceDeclaration)(getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next());
+        assertFalse(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
     public void testColumnsOnQualifiedName() throws Throwable {
@@ -201,7 +205,26 @@ public class SimpleNodeTest extends ParserTst {
         String x = b.asXml();
         assertEquals("<net.sourceforge.pmd.ast.ASTBlock id=\"1\"></net.sourceforge.pmd.ast.ASTBlock>", x);
     }
-    
+
+    public void testContainsNoInner() throws Throwable {
+        ASTCompilationUnit c = (ASTCompilationUnit)getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
+        List res = new ArrayList();
+        c.findChildrenOfType(ASTFieldDeclaration.class, res, false);
+        assertTrue(res.isEmpty());
+    }
+
+    public void testContainsNoInnerWithAnonInner() throws Throwable {
+        ASTCompilationUnit c = (ASTCompilationUnit)getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
+        List res = new ArrayList();
+        c.findChildrenOfType(ASTFieldDeclaration.class, res, false);
+        assertTrue(res.isEmpty());
+    }
+
+    public void testContainsChildOfType() throws Throwable {
+        ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration)getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE).iterator().next();
+        assertTrue(c.containsChildOfType(ASTFieldDeclaration.class));
+    }
+
     private void verifyNode(SimpleNode node, int beginLine, int beginCol, int endLine, int endCol) {
         assertEquals("Unexpected beginning line: ", beginLine, node.getBeginLine());
         assertEquals("Unexpected beginning column: ", beginCol, node.getBeginColumn());
@@ -255,15 +278,23 @@ public class SimpleNodeTest extends ParserTst {
     " }" + PMD.EOL +
     "}";
 
+    private static final String CONTAINS_CHILDREN_OF_TYPE =
+    "public class Test {" + PMD.EOL +
+    "  int x;" + PMD.EOL +
+    "}";
 
-    public void testContainsChildOfType() {
-        ASTBlock b = new ASTBlock(0);
-        b.jjtAddChild(new ASTBlockStatement(1), 0);
-        
-        boolean hasASTBlockStatement = b.containsChildOfType(ASTBlockStatement.class);
-        assertTrue(hasASTBlockStatement);
-        
-        boolean hasASTName = b.containsChildOfType(ASTName.class);
-        assertFalse(hasASTName);
-    }
+    private static final String CONTAINS_NO_INNER =
+    "public class Test {" + PMD.EOL +
+    "  public class Inner {" + PMD.EOL +
+    "   int foo;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
+    private static final String CONTAINS_NO_INNER_WITH_ANON_INNER =
+    "public class Test {" + PMD.EOL +
+    "  void bar() {" + PMD.EOL +
+    "   foo(new Fuz() { int x = 2;});" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
 }

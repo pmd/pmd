@@ -2,17 +2,14 @@ package test.net.sourceforge.pmd.ast;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ParseException;
 
 import java.io.StringReader;
 
 public class JDKVersionTest extends TestCase  {
 
+/*
     // enum keyword/identifier
     public void testEnumAsKeywordShouldFailWith14() throws Throwable {
         try {
@@ -119,39 +116,62 @@ public class JDKVersionTest extends TestCase  {
         }
     }
 
-/*
     public void testJDK15GenericsSyntaxShouldPassWith15() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_GENERICS));
         p.CompilationUnit();
     }
+
+    public void testFieldsBug() throws Throwable {
+        JavaParser p = new TargetJDK1_4().createParser(new StringReader(FIELDS_BUG));
+        p.CompilationUnit();
+    }
+
+    public void testGTBug() throws Throwable {
+        JavaParser p = new TargetJDK1_4().createParser(new StringReader(GT_BUG));
+        p.CompilationUnit();
+    }
+
+    public void testAnnotationsBug() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATIONS_BUG));
+        p.CompilationUnit();
+    }
+
+    public void testGenericsBug() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_BUG));
+        p.CompilationUnit();
+    }
 */
 
+    public void testGenericsAnnotationBug() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_ANNOTATION_BUG));
+        p.CompilationUnit();
+    }
 
     private static final String ASSERT_TEST1 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
-    "  assert x>2;" + PMD.EOL +
+    "  assert x == 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String ASSERT_TEST2 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
-    "  assert (x>2);" + PMD.EOL +
+    "  assert (x == 2);" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String ASSERT_TEST3 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
-    "  assert x>2 : \"hi!\";" + PMD.EOL +
+    "  assert (x==2) : \"hi!\";" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String ASSERT_TEST4 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
-    "  assert (x>2) : \"hi!\";" + PMD.EOL +
+    "  assert (x==2) : \"hi!\";" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
@@ -163,7 +183,7 @@ public class JDKVersionTest extends TestCase  {
     private static final String ASSERT_TEST6 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
-    "  assert (x>2) : \"hi!\";" + PMD.EOL +
+    "  assert (x == 2) : \"hi!\";" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
@@ -204,5 +224,32 @@ public class JDKVersionTest extends TestCase  {
     private static final String JDK15_GENERICS =
     "public class Test {" + PMD.EOL +
     "  ArrayList<Integer> list =  new ArrayList<Integer>();" + PMD.EOL +
+    "}";
+
+    private static final String FIELDS_BUG =
+    "public class Test {" + PMD.EOL +
+    "  private Foo bar;" + PMD.EOL +
+    "}";
+
+    private static final String GT_BUG =
+    "public class Test {" + PMD.EOL +
+    "  int y = x > 32;" + PMD.EOL +
+    "}";
+
+    private static final String ANNOTATIONS_BUG =
+    "@Target(ElementType.METHOD)" + PMD.EOL +
+    "public @interface Foo {" + PMD.EOL +
+    "}";
+
+    private static final String GENERICS_BUG =
+    "public class Foo {" + PMD.EOL +
+    " Class<Double> foo = (Class<Double>)clazz;" + PMD.EOL +
+    "}";
+
+    private static final String GENERICS_ANNOTATION_BUG =
+    "public class Foo {" + PMD.EOL +
+    " public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {\n"  + PMD.EOL +
+    "  return null;"  + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 }

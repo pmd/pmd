@@ -30,7 +30,6 @@ public class ASTFieldDeclarationTest extends ParserTst{
         assertEquals(3, node.getArrayDepth());
     }
 
-
     private static final String TEST1 =
     "class Foo {" + PMD.EOL +
     " String[] foo;" + PMD.EOL +

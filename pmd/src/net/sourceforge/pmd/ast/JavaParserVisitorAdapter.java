@@ -1,12 +1,121 @@
 package net.sourceforge.pmd.ast;
 
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
+
     public Object visit(SimpleNode node, Object data) {
         node.childrenAccept(this, data);
         return null;
     }
 
     public Object visit(ASTModifiers node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTExtendsList node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTImplementsList node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTTypeParameters node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTTypeParameter node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTTypeBound node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTClassOrInterfaceBody node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTEnumBody node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTEnumConstant node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTReferenceType node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTClassOrInterfaceType node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTTypeArguments node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTTypeArgument node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTWildcardBounds node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTAnnotation node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTNormalAnnotation node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTMarkerAnnotation node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTSingleMemberAnnotation node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTMemberValuePairs node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTMemberValuePair node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTMemberValue node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTMemberValueArrayInitializer node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTAnnotationTypeBody node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTAnnotationTypeMemberDeclaration node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTDefaultValue node, Object data) {
         return visit((SimpleNode) node, data);
     }
 
@@ -46,46 +155,9 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((SimpleNode) node, data);
     }
 
-    public Object visit(ASTClassDeclaration node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
-    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
-    public Object visit(ASTClassBody node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
-    public Object visit(ASTNestedClassDeclaration node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
-    public Object visit(ASTClassBodyDeclaration node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
     public Object visit(ASTMethodDeclarationLookahead node, Object data) {
         return visit((SimpleNode) node, data);
     }
-
-    public Object visit(ASTInterfaceDeclaration node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
-    public Object visit(ASTNestedInterfaceDeclaration node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
-    public Object visit(ASTUnmodifiedInterfaceDeclaration node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
-    public Object visit(ASTInterfaceMemberDeclaration node, Object data) {
-        return visit((SimpleNode) node, data);
-    }
-
     public Object visit(ASTFieldDeclaration node, Object data) {
         return visit((SimpleNode) node, data);
     }
