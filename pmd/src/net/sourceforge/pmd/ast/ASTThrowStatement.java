@@ -18,4 +18,20 @@ public class ASTThrowStatement extends SimpleNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+    
+    /**
+     * Gets the image of the first ASTName child or <code>null</code> if none is found.
+     * Note that when the statement is something like throw new Exception, this method 
+     * returns 'Exception' and if the throw statement is like throw e: this method returns 'e'.
+     * A special case of returning <code>null</code> is when the throws is like throw this.e or 
+     * throw this.
+     * 
+     * @return the image of the first ASTName node found or <code>null</code>
+     */
+    public final String getFirstASTNameImage() {
+        final ASTName name = (ASTName) getFirstChildOfType(ASTName.class);
+        if (name!=null)
+            return name.getImage();
+        return null;
+    }
 }
