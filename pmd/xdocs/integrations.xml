@@ -16,29 +16,29 @@
       <td><b>Download</b></td></tr>
   <tr><td>Eclipse</td>
       <td>pmd-eclipse</td>
-      <td>0.2</td>
+      <td>0.3</td>
       <td>dpeugh, dcraine</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=100231">X</a></td></tr>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Emacs</td>
       <td>pmd-emacs</td>
       <td>0.1</td>
       <td>dpeugh</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=99873">X</a></td></tr>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>JBuilder</td>
       <td>pmd-jbuilder</td>
-      <td>0.6</td>
+      <td>0.7</td>
       <td>dcraine</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=100422">X</a></td></tr>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>JEdit</td>
       <td>pmd-jedit</td>
       <td>0.8</td>
       <td>tomcopeland</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=103154">X</a></td></tr>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Maven</td>
       <td>pmd-maven</td>
-      <td>N/A</td>
-      <td>dpeugh</td>
-      <td>N/A</td></tr>
+      <td>0.1</td>
+      <td>wsdgoe</td>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Ant</td>
       <td>(located in PMD)</td>
       <td>N/A</td>
@@ -118,23 +118,10 @@ The way I use the JEdit plugin is:</p>
 <li>Select Plugins->PMD->Check directory recursively</li>
 </ul>
 
-<p>Things to do:</p>
-
-<ul>
-<li>Clean up the threading so the GUI doesn't freeze while PMD is working</li>
-<li>Modify PMD so that it can stream new RuleViolations to the plugin</li>
-</ul>
       </subsection>
       <subsection name="Maven">
 <p>
-The Maven plugin will be written using the new plugin architecture
-that is currently being developed by the Maven project.  Currently
-we are waiting for the development to settle down before commiting
-any serious resources to it.
-</p>
-<p>
-The Maven plugin will work by generating web pages which blend into
-the website, identifing Rule Violations.
+The Maven plugin was written by Siegfried Goeschl.
 </p>
 <p>
 A possible other integration with Maven, will be the integration
