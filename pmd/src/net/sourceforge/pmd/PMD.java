@@ -22,29 +22,6 @@ import java.util.ArrayList;
 public class PMD {
 
     /**
-     * @param fileContents - an InputStream to the Java code to analyse
-     * @param ruleSet - the set of rules to process against the file
-     * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
-     */
-    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws FileNotFoundException {
-        try {
-            InputStreamReader reader = new InputStreamReader(fileContents);
-            JavaParser parser = new JavaParser(reader);
-            ASTCompilationUnit c = parser.CompilationUnit();
-            //c.dump("");
-            List acus = new ArrayList();
-            acus.add(c);
-            ruleSet.apply(acus, ctx);
-            reader.close();
-        } catch (ParseException pe) {
-            System.out.println("Error while parsing " + ctx.getSourceCodeFilename() + " at line " + pe.currentToken.beginLine + "; continuing...");
-        } catch (Throwable t) {
-            System.out.println("Error while parsing " +  ctx.getSourceCodeFilename() + "; "+ t.getMessage() + "; continuing...");
-            //t.printStackTrace();
-        }
-	}
-
-    /**
      * @param reader - an InputStream to the Java code to analyse
      * @param ruleSet - the set of rules to process against the file
      * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
@@ -64,6 +41,15 @@ public class PMD {
             System.out.println("Error while parsing " +  ctx.getSourceCodeFilename() + "; "+ t.getMessage() + "; continuing...");
             //t.printStackTrace();
         }
+	}
+
+    /**
+     * @param fileContents - an InputStream to the Java code to analyse
+     * @param ruleSet - the set of rules to process against the file
+     * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
+     */
+    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws FileNotFoundException {
+        processFile(new InputStreamReader(fileContents), ruleSet, ctx);
 	}
 
     public static void main(String[] args) {
