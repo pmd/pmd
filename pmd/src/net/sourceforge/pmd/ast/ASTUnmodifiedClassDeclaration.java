@@ -17,6 +17,16 @@ public class ASTUnmodifiedClassDeclaration extends SimpleNode {
         return visitor.visit(this, data);
     }
 
+    private boolean hasExplicitExtends;
+
+    public void setHasExplicitExtends() {
+        this.hasExplicitExtends = true;
+    }
+
+    public boolean hasExplicitExtends() {
+        return hasExplicitExtends;
+    }
+
     public void dump(String prefix) {
         System.out.println(toString(prefix) + ":" + getImage());
         dumpChildren(prefix);

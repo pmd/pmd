@@ -6,6 +6,7 @@ Fixed bug 826805 - JumbledIncrementorRule no longer reports a false positive whe
 Fixed bug 845343 - AvoidDuplicateLiterals now picks up cases when a duplicate literal appears in field declarations.
 Implemented RFE 845348 - UnnecessaryReturn yields more useful line numbers now
 Added a ruleset DTD and a ruleset XML Schema.
+Added an 'ExplicitExtends' attribute to UnmodifiedClassDeclaration nodes.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 October 23, 2003 - 1.3:
