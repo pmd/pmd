@@ -21,8 +21,7 @@ cp pmd-jdeveloper/lib/pmd-jdeveloper-0.3.jar ~/tmp/pmd-jdeveloper/lib
 cd ~/tmp
 zip -q -r pmd-jdeveloper-src-0.3.zip pmd-jdeveloper
 
-ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-0.3.zip
-ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-src-0.3.zip
+ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-0.3.zip pmd-jdeveloper-src-0.3.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
