@@ -11,6 +11,7 @@ import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
+import net.jini.core.lease.Lease;
 
 import java.rmi.RemoteException;
 import java.io.IOException;

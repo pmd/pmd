@@ -47,15 +47,20 @@ public class DCPDWorker {
             tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, job.id), null, 100);
             System.out.println("Read a TokenSetsWrapper with " + tsw.tokenSets.size() + " token lists");
 
-            Entry twQuery = space.snapshot(new TileWrapper(null, null, job.id, TileWrapper.NOT_DONE));
+            Entry twQuery = space.snapshot(new TileWrapper(null, null, job.id, TileWrapper.NOT_DONE, null, null, null));
             TileWrapper tileWrapper = null;
             while ((tileWrapper = (TileWrapper)space.take(twQuery, null, 100)) != null) {
-                System.out.println("Expanding " + tileWrapper.tile.getImage());
                 Occurrences results = expand(tileWrapper);
                 for (Iterator i = results.getTiles();i.hasNext();) {
                     Tile tile = (Tile)i.next();
-                    TileWrapper newTW = new TileWrapper(tile, marshal(results.getOccurrences(tile)), job.id, TileWrapper.DONE);
-                    space.write(newTW, null, Lease.FOREVER);
+                    List theseOccurrences = marshal(results.getOccurrences(tile));
+                    int offset = 0;
+                    for (int j=0; j<theseOccurrences.size(); j++) {
+                        offset++;
+                        TileWrapper newTW = new TileWrapper(tile, theseOccurrences, job.id, TileWrapper.DONE, tileWrapper.sequenceNumber, new Integer(offset), new Integer(theseOccurrences.size()));
+                        space.write(newTW, null, Lease.FOREVER);
+                        System.out.println("wrote  " + newTW.tile.getImage() + "(" + newTW.sequenceNumber + ":" + newTW.expansionNumber + "/" + newTW.expansionTotal+ ")");
+                    }
                 }
             }
         } catch (Exception e) {

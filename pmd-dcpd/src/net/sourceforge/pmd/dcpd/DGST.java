@@ -8,11 +8,11 @@ package net.sourceforge.pmd.dcpd;
 import net.sourceforge.pmd.cpd.*;
 import net.jini.space.JavaSpace;
 import net.jini.core.entry.Entry;
+import net.jini.core.entry.UnusableEntryException;
 import net.jini.core.lease.Lease;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
+import net.jini.core.transaction.TransactionException;
+import java.rmi.RemoteException;
+import java.util.*;
 
 public class DGST {
 
@@ -20,6 +20,7 @@ public class DGST {
     private TokenSets tokenSets;
     private JavaSpace space;
     private Job job;
+    private Results results = new Results();
 
     public DGST(JavaSpace space, Job job, TokenSets tokenSets, int minimumTileSize) {
         this.minimumTileSize = minimumTileSize;
@@ -28,63 +29,68 @@ public class DGST {
         this.job = job;
     }
 
-    public Results crunch(CPDListener listener) {
-        Results results = new Results();
+    public void crunch(CPDListener listener) {
+        // this builds the initial frequency table
         Occurrences occ = new Occurrences(tokenSets, listener);
 
-        // write all the Tiles in the current Occurrences to the space
         try {
-            int tilesSoFar=0;
-            for (Iterator i = occ.getTiles(); i.hasNext();) {
-                Tile tile = (Tile)i.next();
-                TileWrapper tw = new TileWrapper(tile, marshal(occ.getOccurrences(tile)), job.id, TileWrapper.NOT_DONE);
-                space.write(tw, null, Lease.FOREVER);
-                tilesSoFar++;
-                if (tilesSoFar % 10 == 0) {
-                    System.out.println("tilesSoFar = " + tilesSoFar);
+            scatter(occ);
+            System.out.println("Writing the Job to the space");
+            space.write(job, null, Lease.FOREVER);
+
+            while (!occ.isEmpty()) {
+                Occurrences newOcc = gather(occ.size()-1);
+                System.out.println("occ size == " + occ.size());
+                if (!newOcc.isEmpty()) {
+                    occ = newOcc;
+                    scatter(occ);
                 }
             }
 
-            System.out.println("Writing the Job to the space");
-            space.write(job, null, Lease.FOREVER);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    private Occurrences gather(int lastMajorSequenceNumber) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+        System.out.println("STARTING TO GATHER");
+        Occurrences occ = new Occurrences(new CPDNullListener());
+        for (int i=0;i<lastMajorSequenceNumber; i++) {
 
+            // this gets tile x:1 - i.e., (5:1/3)
+            TileWrapper tw = (TileWrapper)space.take(new TileWrapper(null, null, job.id, TileWrapper.DONE, new Integer(i), new Integer(1), null), null, Lease.FOREVER);
+            addTileWrapperToOccurrences(tw, occ);
 
-
-/*
-        while (!occ.isEmpty()) {
-			listener.update("Tiles left to be crunched " + occ.size());
-
-
-
-            // add any tiles over the minimum size to the results
-			listener.update("Adding large tiles to results");
-            for (Iterator i = occ.getTiles(); i.hasNext();) {
-                Tile tile = (Tile)i.next();
-                if (tile.getTokenCount() >= minimumTileSize) {
-                    for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
-                        results.addTile(tile, (TokenEntry)j.next());
-                    }
-                }
+            // now get tiles x:2..n - i.e., (5:2/3 and 5:3/3)
+            for (int j = tw.expansionNumber.intValue()+1; j<tw.expansionTotal.intValue()+1; j++) {
+                tw = (TileWrapper)space.take(new TileWrapper(null, null, job.id, TileWrapper.DONE, new Integer(i), new Integer(j), null), null, 100);
+                addTileWrapperToOccurrences(tw, occ);
             }
-
-            Occurrences newOcc = new Occurrences(listener);
-            int tilesSoFar = 0;
-            int totalTiles = occ.size();
-            for (Iterator i = occ.getTiles(); i.hasNext();) {
-                tilesSoFar++;
-                Tile tile = (Tile)i.next();
-                if (!newOcc.containsAnyTokensIn(tile)) {
-                    expandTile(occ, newOcc, tile, listener, tilesSoFar, totalTiles);
-                }
-            }
-            occ = newOcc;
         }
-*/
-        return results;
+        System.out.println("DONE GATHERING");
+
+        return occ;
+    }
+
+    private void addTileWrapperToOccurrences(TileWrapper tw, Occurrences occ) {
+        for (int i=0; i<tw.occurrences.size(); i++) {
+            if (!occ.containsAnyTokensIn(tw.tile)) {
+                occ.addTile(tw.tile, (TokenEntry)tw.occurrences.get(i));
+            }
+        }
+    }
+
+    private void scatter(Occurrences occ) throws TransactionException, RemoteException {
+        int tilesSoFar=0;
+        for (Iterator i = occ.getTiles(); i.hasNext();) {
+            Tile tile = (Tile)i.next();
+            TileWrapper tw = new TileWrapper(tile, marshal(occ.getOccurrences(tile)), job.id, TileWrapper.NOT_DONE, new Integer(tilesSoFar), null, null);
+            space.write(tw, null, Lease.FOREVER);
+            tilesSoFar++;
+            if (tilesSoFar % 10 == 0) {
+                System.out.println("tilesSoFar = " + tilesSoFar);
+            }
+        }
     }
 
     private List marshal(Iterator i) {

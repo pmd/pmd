@@ -43,7 +43,7 @@ public class DCPD {
 
             System.out.println("Crunching");
             DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 50);
-            results = dgst.crunch(new CPDListenerImpl());
+            dgst.crunch(new CPDListenerImpl());
 
 /*
             System.out.println(render());
