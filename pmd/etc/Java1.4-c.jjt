@@ -371,10 +371,10 @@ void TypeDeclaration() :
 void ClassDeclaration() :
 {}
 {
-  ( "abstract"  { ((AccessNode) jjtThis).setAbstract(); }
-  | "final"     { ((AccessNode) jjtThis).setFinal(); }
-  | "public"    { ((AccessNode) jjtThis).setPublic(); }
-  | "strictfp"  { ((AccessNode) jjtThis).setStrict(); }
+  ( "abstract"  { jjtThis.setAbstract(); }
+  | "final"     { jjtThis.setFinal(); }
+  | "public"    { jjtThis.setPublic(); }
+  | "strictfp"  { jjtThis.setStrict(); }
   )*
   UnmodifiedClassDeclaration()
 }
@@ -399,13 +399,13 @@ void ClassBody() :
 void NestedClassDeclaration() :
 {}
 {
-  ("static"       { ((AccessNode) jjtThis).setStatic(); }
-  | "abstract"    { ((AccessNode) jjtThis).setAbstract(); }
-  | "final"       { ((AccessNode) jjtThis).setFinal(); }
-  | "public"      { ((AccessNode) jjtThis).setPublic(); }
-  | "protected"   { ((AccessNode) jjtThis).setProtected(); }
-  | "private"     { ((AccessNode) jjtThis).setPrivate(); }
-  | "strictfp"    { ((AccessNode) jjtThis).setStrict(); }
+  ("static"       { jjtThis.setStatic(); }
+  | "abstract"    { jjtThis.setAbstract(); }
+  | "final"       { jjtThis.setFinal(); }
+  | "public"      { jjtThis.setPublic(); }
+  | "protected"   { jjtThis.setProtected(); }
+  | "private"     { jjtThis.setPrivate(); }
+  | "strictfp"    { jjtThis.setStrict(); }
   )*
   UnmodifiedClassDeclaration()
 }
@@ -487,13 +487,13 @@ void FieldDeclaration() :
 {
 }
 {
-  ( "public"            { ((AccessNode) jjtThis).setPublic(); }
-  | "protected"         { ((AccessNode) jjtThis).setProtected(); }
-  | "private"           { ((AccessNode) jjtThis).setPrivate(); }
-  | "static"            { ((AccessNode) jjtThis).setStatic(); }
-  | "final"             { ((AccessNode) jjtThis).setFinal(); }
-  | "transient"         { ((AccessNode) jjtThis).setTransient(); }
-  | "volatile"          { ((AccessNode) jjtThis).setVolatile(); } )*
+  ( "public"            { jjtThis.setPublic(); }
+  | "protected"         { jjtThis.setProtected(); }
+  | "private"           { jjtThis.setPrivate(); }
+  | "static"            { jjtThis.setStatic(); }
+  | "final"             { jjtThis.setFinal(); }
+  | "transient"         { jjtThis.setTransient(); }
+  | "volatile"          { jjtThis.setVolatile(); } )*
 
   Type() VariableDeclarator() ( "," VariableDeclarator() )* ";"
 }
@@ -537,15 +537,15 @@ void ArrayInitializer() :
 void MethodDeclaration() :
 {}
 {
-  ( "public"            { ((AccessNode) jjtThis).setPublic(); }
-  | "protected"         { ((AccessNode) jjtThis).setProtected(); }
-  | "private"           { ((AccessNode) jjtThis).setPrivate(); }
-  | "static"            { ((AccessNode) jjtThis).setStatic(); }
-  | "abstract"          { ((AccessNode) jjtThis).setAbstract(); }
-  | "final"             { ((AccessNode) jjtThis).setFinal(); }
-  | "native"            { ((AccessNode) jjtThis).setNative(); }
-  | "synchronized"      { ((AccessNode) jjtThis).setSynchronized(); }
-  | "strictfp"          { ((AccessNode) jjtThis).setStrict(); }
+  ( "public"            { jjtThis.setPublic(); }
+  | "protected"         { jjtThis.setProtected(); }
+  | "private"           { jjtThis.setPrivate(); }
+  | "static"            { jjtThis.setStatic(); }
+  | "abstract"          { jjtThis.setAbstract(); }
+  | "final"             { jjtThis.setFinal(); }
+  | "native"            { jjtThis.setNative(); }
+  | "synchronized"      { jjtThis.setSynchronized(); }
+  | "strictfp"          { jjtThis.setStrict(); }
   )*
   ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
@@ -577,9 +577,9 @@ void ConstructorDeclaration() :
 {}
 {
   [
-  "public" { ((AccessNode) jjtThis).setPublic(); }
-  | "protected" { ((AccessNode) jjtThis).setProtected(); }
-  | "private"  { ((AccessNode) jjtThis).setPrivate(); }
+  "public" { jjtThis.setPublic(); }
+  | "protected" { jjtThis.setProtected(); }
+  | "private"  { jjtThis.setPrivate(); }
   ]
   <IDENTIFIER> FormalParameters() [ "throws" NameList() ]
   "{"

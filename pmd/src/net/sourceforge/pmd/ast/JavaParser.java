@@ -221,19 +221,19 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ABSTRACT:
           jj_consume_token(ABSTRACT);
-                  ((AccessNode) jjtn000).setAbstract();
+                  jjtn000.setAbstract();
           break;
         case FINAL:
           jj_consume_token(FINAL);
-                  ((AccessNode) jjtn000).setFinal();
+                  jjtn000.setFinal();
           break;
         case PUBLIC:
           jj_consume_token(PUBLIC);
-                  ((AccessNode) jjtn000).setPublic();
+                  jjtn000.setPublic();
           break;
         case STRICTFP:
           jj_consume_token(STRICTFP);
-                  ((AccessNode) jjtn000).setStrict();
+                  jjtn000.setStrict();
           break;
         default:
           jj_la1[6] = jj_gen;
@@ -402,31 +402,31 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case STATIC:
           jj_consume_token(STATIC);
-                    ((AccessNode) jjtn000).setStatic();
+                    jjtn000.setStatic();
           break;
         case ABSTRACT:
           jj_consume_token(ABSTRACT);
-                    ((AccessNode) jjtn000).setAbstract();
+                    jjtn000.setAbstract();
           break;
         case FINAL:
           jj_consume_token(FINAL);
-                    ((AccessNode) jjtn000).setFinal();
+                    jjtn000.setFinal();
           break;
         case PUBLIC:
           jj_consume_token(PUBLIC);
-                    ((AccessNode) jjtn000).setPublic();
+                    jjtn000.setPublic();
           break;
         case PROTECTED:
           jj_consume_token(PROTECTED);
-                    ((AccessNode) jjtn000).setProtected();
+                    jjtn000.setProtected();
           break;
         case PRIVATE:
           jj_consume_token(PRIVATE);
-                    ((AccessNode) jjtn000).setPrivate();
+                    jjtn000.setPrivate();
           break;
         case STRICTFP:
           jj_consume_token(STRICTFP);
-                    ((AccessNode) jjtn000).setStrict();
+                    jjtn000.setStrict();
           break;
         default:
           jj_la1[11] = jj_gen;
@@ -896,31 +896,31 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PUBLIC:
           jj_consume_token(PUBLIC);
-                          ((AccessNode) jjtn000).setPublic();
+                          jjtn000.setPublic();
           break;
         case PROTECTED:
           jj_consume_token(PROTECTED);
-                          ((AccessNode) jjtn000).setProtected();
+                          jjtn000.setProtected();
           break;
         case PRIVATE:
           jj_consume_token(PRIVATE);
-                          ((AccessNode) jjtn000).setPrivate();
+                          jjtn000.setPrivate();
           break;
         case STATIC:
           jj_consume_token(STATIC);
-                          ((AccessNode) jjtn000).setStatic();
+                          jjtn000.setStatic();
           break;
         case FINAL:
           jj_consume_token(FINAL);
-                          ((AccessNode) jjtn000).setFinal();
+                          jjtn000.setFinal();
           break;
         case TRANSIENT:
           jj_consume_token(TRANSIENT);
-                          ((AccessNode) jjtn000).setTransient();
+                          jjtn000.setTransient();
           break;
         case VOLATILE:
           jj_consume_token(VOLATILE);
-                          ((AccessNode) jjtn000).setVolatile();
+                          jjtn000.setVolatile();
           break;
         default:
           jj_la1[23] = jj_gen;
@@ -1208,39 +1208,39 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PUBLIC:
           jj_consume_token(PUBLIC);
-                          ((AccessNode) jjtn000).setPublic();
+                          jjtn000.setPublic();
           break;
         case PROTECTED:
           jj_consume_token(PROTECTED);
-                          ((AccessNode) jjtn000).setProtected();
+                          jjtn000.setProtected();
           break;
         case PRIVATE:
           jj_consume_token(PRIVATE);
-                          ((AccessNode) jjtn000).setPrivate();
+                          jjtn000.setPrivate();
           break;
         case STATIC:
           jj_consume_token(STATIC);
-                          ((AccessNode) jjtn000).setStatic();
+                          jjtn000.setStatic();
           break;
         case ABSTRACT:
           jj_consume_token(ABSTRACT);
-                          ((AccessNode) jjtn000).setAbstract();
+                          jjtn000.setAbstract();
           break;
         case FINAL:
           jj_consume_token(FINAL);
-                          ((AccessNode) jjtn000).setFinal();
+                          jjtn000.setFinal();
           break;
         case NATIVE:
           jj_consume_token(NATIVE);
-                          ((AccessNode) jjtn000).setNative();
+                          jjtn000.setNative();
           break;
         case SYNCHRONIZED:
           jj_consume_token(SYNCHRONIZED);
-                          ((AccessNode) jjtn000).setSynchronized();
+                          jjtn000.setSynchronized();
           break;
         case STRICTFP:
           jj_consume_token(STRICTFP);
-                          ((AccessNode) jjtn000).setStrict();
+                          jjtn000.setStrict();
           break;
         default:
           jj_la1[31] = jj_gen;
@@ -1444,15 +1444,15 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PUBLIC:
           jj_consume_token(PUBLIC);
-             ((AccessNode) jjtn000).setPublic();
+             jjtn000.setPublic();
           break;
         case PROTECTED:
           jj_consume_token(PROTECTED);
-                  ((AccessNode) jjtn000).setProtected();
+                  jjtn000.setProtected();
           break;
         case PRIVATE:
           jj_consume_token(PRIVATE);
-                 ((AccessNode) jjtn000).setPrivate();
+                 jjtn000.setPrivate();
           break;
         default:
           jj_la1[38] = jj_gen;
