@@ -9,9 +9,8 @@ import net.sourceforge.pmd.cpd.*;
 
 public class PMDPlugin implements GelAction {
 
-
+    // GelAction
     public boolean isActive(Gel p0) {
-           System.out.println("isActive");
            return true;
     }
 
@@ -38,11 +37,9 @@ public class PMDPlugin implements GelAction {
            if (ctx.getReport().isEmpty()) {
              JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
            } else {
-             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                 RuleViolation rv = (RuleViolation)i.next();
-                 p0.showMessage("File: " + rv.getFilename() + "\r\nLine: " + (rv.getLine()-1) + "\r\nProblem: " + rv.getDescription());
-              }
-             }
+             JFrame newFrame = createProblemFrame(ctx.getReport());
+             newFrame.show();
+           }
         } catch (Exception rsne) {
              JOptionPane.showMessageDialog(null, "ERROR" + rsne.getMessage());
             rsne.printStackTrace();
@@ -50,6 +47,30 @@ public class PMDPlugin implements GelAction {
     }
 
     public String getName() {
-           return "PMDPlugin";
+           return "PMD";
+    }
+    // GelAction
+
+    private JFrame createProblemFrame(Report report) {
+            JFrame newFrame = new JFrame("Problems found");
+            JDialog dialog = new JDialog(newFrame, "Modal dialog", true);
+            dialog.setContentPane(createProblemListPanel(report));
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.pack();
+            dialog.setLocationRelativeTo(newFrame);
+            dialog.setVisible(true);
+            return newFrame;
+    }
+
+    private JPanel createProblemListPanel(Report report) {
+            JPanel container = new JPanel();
+            container.add(new JLabel(report.size() + " problems"));
+            /*
+             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+                 RuleViolation rv = (RuleViolation)i.next();
+                 p0.showMessage("File: " + rv.getFilename() + "\r\nLine: " + (rv.getLine()-1) + "\r\nProblem: " + rv.getDescription());
+              }
+              */
+            return container;
     }
 }
