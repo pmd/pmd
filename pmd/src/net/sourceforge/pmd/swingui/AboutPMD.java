@@ -121,7 +121,7 @@ class AboutPMD extends JDialog
         aboutPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // Version Label
-        JLabel versionLabel = new JLabel("Version 0.9");
+        JLabel versionLabel = new JLabel("Version 1.0RC1");
         versionLabel.setFont(UIManager.getFont("labelFont"));
         versionLabel.setHorizontalAlignment(JLabel.CENTER);
         bottomPanel.add(versionLabel);
