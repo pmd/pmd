@@ -28,25 +28,22 @@ package pmd.config.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.swing.AbstractListModel;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
+import pmd.config.ConfigUtils;
 
 /**
  * The datamodel for the available rules list
+ *
  * @author ole martin mørk
  * @created 16. november 2002
  */
 public class AvailableListModel extends AbstractListModel {
-	/** The instance */	
+	/** The instance */
 	private static AvailableListModel listmodel = new AvailableListModel();
-	/** The data in the list */	
+	/** The data in the list */
 	private List list = new ArrayList();
 
 
@@ -97,7 +94,9 @@ public class AvailableListModel extends AbstractListModel {
 	}
 
 
-	/** Adds object <CODE>o</CODE> to the list
+	/**
+	 * Adds object <CODE>o</CODE> to the list
+	 *
 	 * @param o The parameter to add to the list
 	 */
 	public void add( Object o ) {
@@ -106,6 +105,7 @@ public class AvailableListModel extends AbstractListModel {
 			fireIntervalAdded( this, list.size(), list.size() );
 		}
 	}
+
 
 	/**
 	 * Removes <code>o</code> from the list
@@ -127,7 +127,9 @@ public class AvailableListModel extends AbstractListModel {
 	}
 
 
-	/** Adds all data in <CODE>coll</CODE> to the list
+	/**
+	 * Adds all data in <CODE>coll</CODE> to the list
+	 *
 	 * @param coll The collection containing Rule elements
 	 */
 	public void addAll( Collection coll ) {
@@ -137,28 +139,18 @@ public class AvailableListModel extends AbstractListModel {
 	}
 
 
-	/** Returns the data for the list
+	/**
+	 * Returns the data for the list
+	 *
 	 * @return The data
 	 */
-	public List getData() {
+	public List getList() {
 		return list;
 	}
 
 
 	/** Resets the list */
 	public void refresh() {
-		list.clear();
-		try {
-			RuleSetFactory ruleSetFactory = new RuleSetFactory();
-			Iterator iterator = ruleSetFactory.getRegisteredRuleSets();
-			while( iterator.hasNext() ) {
-				RuleSet ruleset = ( RuleSet )iterator.next();
-				Set rules = ruleset.getRules();
-				addAll( rules );
-			}
-		}
-		catch( RuleSetNotFoundException e ) {
-			e.printStackTrace();
-		}
+		list = ConfigUtils.getAllAvailableRules();
 	}
 }

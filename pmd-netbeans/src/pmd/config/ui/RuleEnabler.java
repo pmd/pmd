@@ -407,7 +407,7 @@ public class RuleEnabler extends JPanel {
 	 * @param evt the event fired
 	 */	
 	private void removeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllActionPerformed
-		AvailableListModel.getInstance().addAll( SelectedListModel.getSelectedListModelInstance().getData() );
+		AvailableListModel.getInstance().addAll( SelectedListModel.getSelectedListModelInstance().getList() );
 		SelectedListModel.getSelectedListModelInstance().removeAll();
 		editor.firePropertyChange();
 
@@ -425,8 +425,8 @@ public class RuleEnabler extends JPanel {
 				AvailableListModel.getInstance().add( object[i] );
 			}
 			editor.firePropertyChange();
-			if( index >= SelectedListModel.getSelectedListModelInstance().getData().size() ) {
-				index = SelectedListModel.getSelectedListModelInstance().getData().size() - 1;
+			if( index >= SelectedListModel.getSelectedListModelInstance().getList().size() ) {
+				index = SelectedListModel.getSelectedListModelInstance().getList().size() - 1;
 			}
 			if( index >= 0 ) {
 				chosenList.setSelectedIndex( index );
@@ -440,7 +440,7 @@ public class RuleEnabler extends JPanel {
 	 * @param evt the event fired
 	 */	
 	private void choseAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choseAllActionPerformed
-		SelectedListModel.getSelectedListModelInstance().addAll( AvailableListModel.getInstance().getData() );
+		SelectedListModel.getSelectedListModelInstance().addAll( AvailableListModel.getInstance().getList() );
 		AvailableListModel.getInstance().removeAll();
 		editor.firePropertyChange();
 	}//GEN-LAST:event_choseAllActionPerformed
@@ -457,8 +457,8 @@ public class RuleEnabler extends JPanel {
 				SelectedListModel.getSelectedListModelInstance().add( object[i] );
 			}
 			editor.firePropertyChange();
-			if( index >= AvailableListModel.getInstance().getData().size() ) {
-				index = AvailableListModel.getInstance().getData().size() - 1;
+			if( index >= AvailableListModel.getInstance().getList().size() ) {
+				index = AvailableListModel.getInstance().getList().size() - 1;
 			}
 			if( index >= 0 ) {
 				availableList.setSelectedIndex( index );			
