@@ -3,8 +3,10 @@ Added new rules: DontImportJavaLangRule, DuplicateImportsRule
 Changed sorting of RuleViolations to group Files together.
 Changed XML Renderer to improved format.
 Created DVSL Stylesheet for the new format.
+Moved the Cougaar rules out of the PMD core.
 Fixed bug 580093 - OverrideBothEqualsAndHashcodeRule reports a more correct line number.
 Fixed bug 581853 - UnusedLocalVariableRule now handles anonymous inner classes correctly.
+Fixed bug 580278 - this was a side effect of bug 581853.
 
 July 10 2002 - 0.4:
 Added new rules: OverrideBothEqualsAndHashcodeRule, EmptyTryBlock, EmptyFinallyBlock

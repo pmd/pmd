@@ -5,6 +5,7 @@
 The Unused Code Ruleset contains a collection of rules that find unused code.
   </description>
 
+
   <rule name="UnusedLocalVariable"
         message="Avoid unused local variables such as ''{0}''"
         class="net.sourceforge.pmd.rules.UnusedLocalVariableRule">
