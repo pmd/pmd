@@ -5,11 +5,12 @@
   <name>PMD</name>
   <currentVersion>0.1</currentVersion>
   <organization>
-    <name></name>
+    <name>Nobody</name>
     <url>http://pmd.sourceforge.net/</url>
     <logo>http://sourceforge.net/sflogo.php?group_id=56262&amp;type=5</logo>
   </organization>
 
+  <inceptionYear>2002</inceptionYear>
   <package>net.sourceforge.pmd</package>
 
   <description>
