@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.XPathRule;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 
 public class AssignmentInOperandRuleTest extends RuleTst {
 

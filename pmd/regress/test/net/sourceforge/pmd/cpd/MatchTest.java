@@ -1,8 +1,8 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Mark;
+import net.sourceforge.pmd.cpd.Match;
 
 import java.util.Iterator;
 

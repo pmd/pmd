@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules.junit;
 
-import net.sourceforge.pmd.rules.XPathRule;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class JUnitStaticSuiteRuleTest extends RuleTst {

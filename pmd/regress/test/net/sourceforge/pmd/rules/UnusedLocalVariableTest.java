@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 
 public class UnusedLocalVariableTest extends RuleTst {
 

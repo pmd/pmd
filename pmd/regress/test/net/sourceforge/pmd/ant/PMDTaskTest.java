@@ -1,8 +1,8 @@
 package test.net.sourceforge.pmd.ant;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.Formatter;
+import net.sourceforge.pmd.ant.PMDTask;
 import org.apache.tools.ant.BuildException;
 
 public class PMDTaskTest extends TestCase {

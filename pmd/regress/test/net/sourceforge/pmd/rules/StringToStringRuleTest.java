@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.StringToStringRule;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.rules.StringToStringRule;
 
 public class StringToStringRuleTest extends RuleTst {
 

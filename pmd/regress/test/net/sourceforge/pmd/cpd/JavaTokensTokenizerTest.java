@@ -7,8 +7,6 @@ import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JavaTokensTokenizerTest extends TestCase {
 

@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.UnusedPrivateFieldRule;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.rules.UnusedPrivateFieldRule;
 
 public class UnusedPrivateFieldRuleTest extends RuleTst {
 

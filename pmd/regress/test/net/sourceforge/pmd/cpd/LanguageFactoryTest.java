@@ -1,9 +1,9 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.JavaLanguage;
 import net.sourceforge.pmd.cpd.CPPLanguage;
+import net.sourceforge.pmd.cpd.JavaLanguage;
+import net.sourceforge.pmd.cpd.LanguageFactory;
 
 public class LanguageFactoryTest extends TestCase {
 
