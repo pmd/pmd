@@ -26,7 +26,7 @@
  */
 package pmd;
 
-import org.openide.TopManager;
+import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.LineCookie;
 import org.openide.loaders.DataObject;
 import org.openide.text.Line;
@@ -89,7 +89,7 @@ public class PMDOutputListener implements OutputListener {
 		annotation.attach( line );
 		line.addPropertyChangeListener( annotation );
 		line.show( Line.SHOW_GOTO );
-		TopManager.getDefault().setStatusText( msg );
+		StatusDisplayer.getDefault().setStatusText( msg );
 	}
 	
 	public void addAnnotation() {

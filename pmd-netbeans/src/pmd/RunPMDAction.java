@@ -45,8 +45,9 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 
+import org.netbeans.api.java.classpath.ClassPath;
 import org.openide.ErrorManager;
-import org.openide.TopManager;
+import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.EditorCookie;
 import org.openide.cookies.LineCookie;
 import org.openide.cookies.SourceCookie;
@@ -55,8 +56,10 @@ import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
+import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.TopComponent;
 
@@ -145,10 +148,11 @@ public class RunPMDAction extends CookieAction {
 		PMD pmd = new PMD();
 		ArrayList list = new ArrayList( 100 );
 		for( int i = 0; i < dataobjects.size(); i++ ) {
-			TopManager.getDefault().setStatusText( 
+			StatusDisplayer.getDefault().setStatusText( 
 				"PMD checking for rule violations, " + ( i + 1 ) + "/" + ( dataobjects.size()  ) );
 			DataObject dataobject = ( DataObject )dataobjects.get( i );
-			String name = dataobject.getPrimaryFile().getPackageName( '.' );
+			FileObject fobj = dataobject.getPrimaryFile();
+			String name = ClassPath.getClassPath( fobj, ClassPath.COMPILE ).getResourceName( fobj, '.', false );
 			
 			//The file is not a java file
 			if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
@@ -197,15 +201,16 @@ public class RunPMDAction extends CookieAction {
 		listener.detach();
 		FaultRegistry.getInstance().clearRegistry();
 		try {
-			TopManager.getDefault().setStatusText( "PMD checking for rule violations" );
+			StatusDisplayer.getDefault().setStatusText( "PMD checking for rule violations" );
 			List list = getDataObjects( node );
 			List violations = checkCookies( list );
+			IOProvider ioProvider = (IOProvider)Lookup.getDefault().lookup( IOProvider.class );
+			InputOutput io = ioProvider.getIO( "PMD output", false );
 			if( violations.isEmpty() ) {
-				TopManager.getDefault().setStatusText( "PMD found no rule violations" );
-				TopManager.getDefault().getIO( "PMD output", false ).closeInputOutput();
+				StatusDisplayer.getDefault().setStatusText( "PMD found no rule violations" );
+				io.closeInputOutput();
 			}
 			else {
-				InputOutput io = TopManager.getDefault().getIO( "PMD output", false );
 				io.select();
 				io.getOut().reset();
 				for( int i = 0; i < violations.size(); i++ ) {
@@ -217,7 +222,7 @@ public class RunPMDAction extends CookieAction {
 						io.getOut().println( String.valueOf( fault ), listener );
 					}
 				}
-				TopManager.getDefault().setStatusText( "PMD found rule violations" );
+				StatusDisplayer.getDefault().setStatusText( "PMD found rule violations" );
 			}
 
 		}

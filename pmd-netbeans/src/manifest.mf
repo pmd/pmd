@@ -4,8 +4,9 @@ Created-By: Ole-Martin Mørk
 Class-Path: ext/pmd-1.04.jar ext/jaxen-core-1.0-fcs.jar ext/saxpath-1.0-fcs.jar ext/jakarta-oro-2.0.jar
 OpenIDE-Module: pmd
 OpenIDE-Module-Layer: pmd/mf-layer.xml
-OpenIDE-Module-IDE-Dependencies: IDE/1 > 2.23
+OpenIDE-Module-IDE-Dependencies: IDE/1 > 3.14
 OpenIDE-Module-Localizing-Bundle: pmd/Bundle.properties
+OpenIDE-Module-Module-Dependencies: org.openide.io, org.openide.src, org.netbeans.api.java/1
 
 Name: pmd/RunPMDAction.class
 OpenIDE-Module-Class: Action

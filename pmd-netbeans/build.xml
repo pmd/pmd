@@ -4,8 +4,12 @@
 		<javac debug="on" debuglevel="source,lines" deprecation="on" destdir="build/classes" srcdir="src">
 			<include name="**/*.java"/>
 			<classpath>
-				<!-- Copy this from the netbeans installation directory -->
+				<!-- Copy this one from the netbeans/lib directory -->
 				<pathelement path="lib/openide.jar"/>
+				<!-- Copy these three from the netbeans/modules/autoload directory -->
+				<pathelement path="lib/openide-io.jar"/>
+				<pathelement path="lib/java-api.jar"/>
+				<pathelement path="lib/java-src-model.jar"/>
 				<pathelement path="lib/pmd-1.04.jar"/>
 				<pathelement path="lib/jakarta-oro-2.0.jar"/>
 			</classpath>
@@ -27,7 +31,7 @@
 		</jar>
 	</target>
 	<target depends="jars" description="Prepare the module for distribution via Auto Update." name="nbm">
-		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib\nbantext.jar" name="makenbm"/>
+		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib/nbantext.jar" name="makenbm"/>
 		<mkdir dir="build/temp_distribution/netbeans/modules/ext"/>
 		<copy file="build/pmd.jar" tofile="build/temp_distribution/netbeans/modules/pmd.jar"/>
 		<copy file="lib/pmd-1.04.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.04.jar"/>
@@ -45,7 +49,7 @@
 		</makenbm>
 	</target>
 	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
-		<zip compress="true" destfile="build\pmd-netbeans-src-${VERSION}.zip">
+		<zip compress="true" destfile="build/pmd-netbeans-src-${VERSION}.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 				<include name="build.xml"/>
@@ -57,13 +61,13 @@
 				<include name="lib/jakarta-oro-2.0.jar"/>
 				<exclude name="**/.nbattrs"/>
 			</zipfileset>
-			<zipfileset dir="." fullpath="pmd.nbm" includes="build\pmd.nbm"/>
+			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
-		<zip compress="true" destfile="build\pmd-netbeans-bin-${VERSION}.zip">
+		<zip compress="true" destfile="build/pmd-netbeans-bin-${VERSION}.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 			</zipfileset>
-			<zipfileset dir="." fullpath="pmd.nbm" includes="build\pmd.nbm"/>
+			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
 	</target>
 	<target description="Clean all build products." name="clean">
