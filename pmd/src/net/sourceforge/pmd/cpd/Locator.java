@@ -3,27 +3,22 @@ package net.sourceforge.pmd.cpd;
 public class Locator {
 
     private String file;
-    private int line;
-    private int indexIntoFile;
+    private int tokenIndex;
 
-    public Locator(String file, int line, int indexIntoFile) {
+    public Locator(String file, int tokenIndex) {
         this.file = file;
-        this.line = line;
-        this.indexIntoFile = indexIntoFile;
+        this.tokenIndex = tokenIndex;
     }
 
-    public int getLine() {
-        return this.line;
-    }
     public String getFile() {
         return file;
     }
 
-    public int getIndexIntoFile() {
-        return this.indexIntoFile;
+    public int getTokenIndex() {
+        return this.tokenIndex;
     }
 
     public String toString() {
-        return file + ":" + line;
+        return file + ":" + tokenIndex;
     }
 }
