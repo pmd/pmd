@@ -45,7 +45,32 @@ public class RuleViolation {
     private String className;
     private String methodName;
     private String variableName;
+    private int beginColumn = -1;
+    private int endColumn = -1;
 
+    /**
+     * gets the character in the line where the violation starts
+     * @return a greater than or zero if set and a negative value if not available
+     */
+    public final int getBeginColumn() {
+        return beginColumn;
+    }
+    /**
+     * gets the character in the line where the violation ends
+     * @return a greater than or zero if set and a negative value if not available
+     */
+    public final int getEndColumn() {
+        return endColumn;
+    }
+    /**
+     * sets both beginColumn and endColumn
+     * @param begin
+     * @param end
+     */
+    public void setColumnInfo(int begin, int end) {
+        this.beginColumn = begin;
+        this.endColumn = end;
+    }
     public RuleViolation(Rule rule, int line, RuleContext ctx, String packageName, String className, String methodName) {
         this(rule, line, rule.getMessage(), ctx, packageName, className, methodName);
     }
