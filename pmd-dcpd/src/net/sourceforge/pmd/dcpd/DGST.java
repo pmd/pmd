@@ -62,9 +62,9 @@ public class DGST {
             addTileWrapperToOccurrences(tw, occ);
 
             // now get tiles x:2..n - i.e., (5:2/3 and 5:3/3)
-            for (int j = tw.expansionNumber.intValue()+1; j<tw.expansionTotal.intValue()+1; j++) {
-                tw = (TileWrapper)space.take(new TileWrapper(null, null, job.id, TileWrapper.DONE, new Integer(i), new Integer(j), null), null, 100);
-                addTileWrapperToOccurrences(tw, occ);
+            for (int j = tw.expansionIndex.intValue()+1; j<tw.totalExpansions.intValue()+1; j++) {
+                TileWrapper tw2 = (TileWrapper)space.take(new TileWrapper(null, null, job.id, TileWrapper.DONE, new Integer(i), new Integer(j), null), null, 100);
+                addTileWrapperToOccurrences(tw2, occ);
             }
         }
         System.out.println("DONE GATHERING");
