@@ -12,8 +12,21 @@ import java.util.List;
 
 public class AcceptanceTest extends ParserTst {
 
-    public void testAll() throws Throwable {
-        //runTestFromString(AcceptanceTestRule.TEST, new AcceptanceTestRule(), new Report());
+    private boolean check(int[][] array, List methodNodes) {
+        for (int i=0; i<methodNodes.size(); i++) {
+            ASTMethodDeclarator decl = (ASTMethodDeclarator)methodNodes.get(i);
+            IDataFlowNode inode = decl.getDataFlowNode();
+            if (inode == null || inode.getFlow() == null) {
+                continue;
+            }
+            for (int j = 0; j < inode.getChildren().size(); j++) {
+                IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(j);
+                if (array[i][j] != child.getIndex()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void test_1() throws Throwable {
@@ -98,23 +111,6 @@ public class AcceptanceTest extends ParserTst {
         assertTrue(check(TEST28_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST28)));
     }
 
-    private boolean check(int[][] array, List methodNodes) {
-        for (int i=0; i<methodNodes.size(); i++) {
-            ASTMethodDeclarator decl = (ASTMethodDeclarator)methodNodes.get(i);
-            IDataFlowNode inode = decl.getDataFlowNode();
-            if (inode == null || inode.getFlow() == null) {
-                continue;
-            }
-            for (int j = 0; j < inode.getChildren().size(); j++) {
-                IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(j);
-                if (array[i][j] != child.getIndex()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     /**
      *  first dimension: the index of a node
      *  second dimension: the indices of the children
@@ -130,15 +126,15 @@ public class AcceptanceTest extends ParserTst {
         };
 
     private static final String TEST1 =
-        "class TestClass {" + PMD.EOL +
-        "    void test_1() {" + PMD.EOL +
-        "        int x = 0;" + PMD.EOL +
-        "        if (x == 0) {" + PMD.EOL +
-        "            x++;" + PMD.EOL +
-        "            x = 0;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "    }"  + PMD.EOL +
-        "    }";
+        "class Foo {" + PMD.EOL +
+        " void test_1() {" + PMD.EOL +
+        "  int x = 0;" + PMD.EOL +
+        "  if (x == 0) {" + PMD.EOL +
+        "   x++;" + PMD.EOL +
+        "   x = 0;" + PMD.EOL +
+        "  }" + PMD.EOL +
+        " }"  + PMD.EOL +
+        " }";
 
     private static final int[][] TEST2_NODES = {
             {1},
@@ -152,14 +148,14 @@ public class AcceptanceTest extends ParserTst {
         };
 
     private static final String TEST2 =
-            "class TestClass {" + PMD.EOL +
-            "    public void test_2() {" + PMD.EOL +
-            "        for (int i = 0; i < 1; i++) {" + PMD.EOL +
-            "            i++;" + PMD.EOL +
-            "            i = 8;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+            "class Foo {" + PMD.EOL +
+            " public void test_2() {" + PMD.EOL +
+            "  for (int i = 0; i < 1; i++) {" + PMD.EOL +
+            "   i++;" + PMD.EOL +
+            "   i = 8;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST3_NODES = {
             {1},
@@ -171,12 +167,12 @@ public class AcceptanceTest extends ParserTst {
         };
     
     private static final String TEST3 =
-            "public class TestClass {" + PMD.EOL +
-            "    public void test_3() {" + PMD.EOL +
-            "        for (int i = 0; i < 1; i++) {" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+            "public class Foo {" + PMD.EOL +
+            " public void test_3() {" + PMD.EOL +
+            "  for (int i = 0; i < 1; i++) {" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
 
     private static final int[][] TEST4_NODES =  {
@@ -187,12 +183,12 @@ public class AcceptanceTest extends ParserTst {
         };
 
     private static final String TEST4 =
-    "public class TestClass {" + PMD.EOL +
-    "    public void test_4() {" + PMD.EOL +
-    "        for (; ;) {" + PMD.EOL +
-    "        }" + PMD.EOL +
-    "    }" + PMD.EOL +
-    "    }";
+    "public class Foo {" + PMD.EOL +
+    " public void test_4() {" + PMD.EOL +
+    "  for (; ;) {" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    " }";
 
     private static final int[][] TEST5_NODES =  {
             {1},
@@ -203,20 +199,20 @@ public class AcceptanceTest extends ParserTst {
         };
 
     private static final String TEST6 =
-    "public class TestClass {" + PMD.EOL +
-    "    public void test_6() {" + PMD.EOL +
-    "        for (int i = 0; ;) {" + PMD.EOL +
-    "        }" + PMD.EOL +
-    "    }" + PMD.EOL +
-    "    }";
+    "public class Foo {" + PMD.EOL +
+    " public void test_6() {" + PMD.EOL +
+    "  for (int i = 0; ;) {" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    " }";
 
     private static final String TEST7 =
-            "public class TestClass {" + PMD.EOL +
-            "    public void test_7() {" + PMD.EOL +
-            "        for (int i = 0; i < 0;) {" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+            "public class Foo {" + PMD.EOL +
+            " public void test_7() {" + PMD.EOL +
+            "  for (int i = 0; i < 0;) {" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST8_NODES = {
             {1},
@@ -228,39 +224,39 @@ public class AcceptanceTest extends ParserTst {
         };
 
     public static final String TEST8 =
-        "public class TestClass {" + PMD.EOL +
-        "    public void test_8() {" + PMD.EOL +
-        "        for (int i = 0; ; i++) {" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+        " public void test_8() {" + PMD.EOL +
+        "  for (int i = 0; ; i++) {" + PMD.EOL +
+        "  }" + PMD.EOL +
+        " }" + PMD.EOL +
+            " }";
 
     public static final String TEST9 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_9() {" + PMD.EOL +
-            "        int i = 0;" + PMD.EOL +
-            "        for (; i < 0;) {" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_9() {" + PMD.EOL +
+            "  int i = 0;" + PMD.EOL +
+            "  for (; i < 0;) {" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     public static final String TEST10 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_10() {" + PMD.EOL +
-            "        int i = 0;" + PMD.EOL +
-            "        for (; i < 0; i++) {" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_10() {" + PMD.EOL +
+            "  int i = 0;" + PMD.EOL +
+            "  for (; i < 0; i++) {" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     public static final String TEST11 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_11() {" + PMD.EOL +
-            "        int i = 0;" + PMD.EOL +
-            "        for (; ; i++) {" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_11() {" + PMD.EOL +
+            "  int i = 0;" + PMD.EOL +
+            "  for (; ; i++) {" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST12_NODES = {
             {1},
@@ -271,13 +267,13 @@ public class AcceptanceTest extends ParserTst {
             {}
         };
     public static final String TEST12 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_12() {" + PMD.EOL +
-            "        for (; ;) {" + PMD.EOL +
-            "            int i = 0;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_12() {" + PMD.EOL +
+            "  for (; ;) {" + PMD.EOL +
+            "   int i = 0;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST13_NODES = {
         {1},
@@ -292,17 +288,17 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST13 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_13() {" + PMD.EOL +
-            "        for (int i = 0; i < 0; i++) {" + PMD.EOL +
-            "            i = 9;" + PMD.EOL +
-            "            if (i < 8) {" + PMD.EOL +
-            "                i = 7;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "            i = 6;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_13() {" + PMD.EOL +
+            "  for (int i = 0; i < 0; i++) {" + PMD.EOL +
+            "   i = 9;" + PMD.EOL +
+            "   if (i < 8) {" + PMD.EOL +
+            "    i = 7;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "   i = 6;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST14_NODES = {
         {1},
@@ -316,16 +312,16 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST14 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_14() {" + PMD.EOL +
-            "        for (int i = 0; i < 0; i++) {" + PMD.EOL +
-            "            i = 9;" + PMD.EOL +
-            "            if (i < 8) {" + PMD.EOL +
-            "                i = 7;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_14() {" + PMD.EOL +
+            "  for (int i = 0; i < 0; i++) {" + PMD.EOL +
+            "   i = 9;" + PMD.EOL +
+            "   if (i < 8) {" + PMD.EOL +
+            "    i = 7;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST15_NODES = {
         {1},
@@ -338,15 +334,15 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST15 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_15() {" + PMD.EOL +
-            "        for (int i = 0; i < 0; i++) {" + PMD.EOL +
-            "            if (i < 8) {" + PMD.EOL +
-            "                i = 7;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_15() {" + PMD.EOL +
+            "  for (int i = 0; i < 0; i++) {" + PMD.EOL +
+            "   if (i < 8) {" + PMD.EOL +
+            "    i = 7;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST16_NODES = {
         {1},
@@ -360,17 +356,17 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST16 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_16() {" + PMD.EOL +
-            "        for (int i = 0; i < 0; i++) {" + PMD.EOL +
-            "            if (i < 8) {" + PMD.EOL +
-            "                i = 7;" + PMD.EOL +
-            "            } else {" + PMD.EOL +
-            "                i = 6;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_16() {" + PMD.EOL +
+            "  for (int i = 0; i < 0; i++) {" + PMD.EOL +
+            "   if (i < 8) {" + PMD.EOL +
+            "    i = 7;" + PMD.EOL +
+            "   } else {" + PMD.EOL +
+            "    i = 6;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST17_NODES = {
         {1},
@@ -386,19 +382,19 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST17 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_17() {" + PMD.EOL +
-            "        for (int i = 0; i < 0; i++) {" + PMD.EOL +
-            "            if (i < 6) {" + PMD.EOL +
-            "                i = 7;" + PMD.EOL +
-            "            } else if (i > 8) {" + PMD.EOL +
-            "                i = 9;" + PMD.EOL +
-            "            } else {" + PMD.EOL +
-            "                i = 10;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_17() {" + PMD.EOL +
+            "  for (int i = 0; i < 0; i++) {" + PMD.EOL +
+            "   if (i < 6) {" + PMD.EOL +
+            "    i = 7;" + PMD.EOL +
+            "   } else if (i > 8) {" + PMD.EOL +
+            "    i = 9;" + PMD.EOL +
+            "   } else {" + PMD.EOL +
+            "    i = 10;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST18_NODES = {
         {1},
@@ -413,15 +409,15 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST18 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_18() {" + PMD.EOL +
-            "        for (int i = 0; i < 0; i++) {" + PMD.EOL +
-            "            for (int j = 0; j < 0; j++) {" + PMD.EOL +
-            "                j++;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_18() {" + PMD.EOL +
+            "  for (int i = 0; i < 0; i++) {" + PMD.EOL +
+            "   for (int j = 0; j < 0; j++) {" + PMD.EOL +
+            "    j++;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST19_NODES = {
         {1},
@@ -437,20 +433,20 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST19 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_19() {" + PMD.EOL +
-            "        int i = 0;" + PMD.EOL +
-            "        if (i == 1) {" + PMD.EOL +
-            "            i = 2;" + PMD.EOL +
-            "        } else if (i == 3) {" + PMD.EOL +
-            "            i = 4;" + PMD.EOL +
-            "        } else if (i == 5) {" + PMD.EOL +
-            "            i = 6;" + PMD.EOL +
-            "        } else {" + PMD.EOL +
-            "            i = 7;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_19() {" + PMD.EOL +
+            "  int i = 0;" + PMD.EOL +
+            "  if (i == 1) {" + PMD.EOL +
+            "   i = 2;" + PMD.EOL +
+            "  } else if (i == 3) {" + PMD.EOL +
+            "   i = 4;" + PMD.EOL +
+            "  } else if (i == 5) {" + PMD.EOL +
+            "   i = 6;" + PMD.EOL +
+            "  } else {" + PMD.EOL +
+            "   i = 7;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST20_NODES = {
         {1},
@@ -463,18 +459,18 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST20 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_20() {" + PMD.EOL +
-            "        int i = 0;" + PMD.EOL +
-            "        if (i == 1) {" + PMD.EOL +
-            "            if (i == 2) {" + PMD.EOL +
-            "                i = 3;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        } else {" + PMD.EOL +
-            "            i = 7;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_20() {" + PMD.EOL +
+            "  int i = 0;" + PMD.EOL +
+            "  if (i == 1) {" + PMD.EOL +
+            "   if (i == 2) {" + PMD.EOL +
+            "    i = 3;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "  } else {" + PMD.EOL +
+            "   i = 7;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST21_NODES = {
         {1},
@@ -491,19 +487,19 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST21 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_21() {" + PMD.EOL +
-            "        int i = 0;" + PMD.EOL +
-            "        if (i == 1) {" + PMD.EOL +
-            "            for (i = 3; i < 4; i++) {" + PMD.EOL +
-            "                i = 5;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "            i++;" + PMD.EOL +
-            "        } else if (i < 6) {" + PMD.EOL +
-            "            i = 7;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_21() {" + PMD.EOL +
+            "  int i = 0;" + PMD.EOL +
+            "  if (i == 1) {" + PMD.EOL +
+            "   for (i = 3; i < 4; i++) {" + PMD.EOL +
+            "    i = 5;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "   i++;" + PMD.EOL +
+            "  } else if (i < 6) {" + PMD.EOL +
+            "   i = 7;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST22_NODES = {
         {1},
@@ -518,18 +514,18 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST22 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_22() {" + PMD.EOL +
-            "        int i = 0;" + PMD.EOL +
-            "        if (i == 1) {" + PMD.EOL +
-            "            for (i = 3; i < 4; i++) {" + PMD.EOL +
-            "                i = 5;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        } else {" + PMD.EOL +
-            "            i = 7;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_22() {" + PMD.EOL +
+            "  int i = 0;" + PMD.EOL +
+            "  if (i == 1) {" + PMD.EOL +
+            "   for (i = 3; i < 4; i++) {" + PMD.EOL +
+            "    i = 5;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "  } else {" + PMD.EOL +
+            "   i = 7;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST23_NODES = {
         {1},
@@ -545,18 +541,18 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST23 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_23() {" + PMD.EOL +
-            "        int i = 0;" + PMD.EOL +
-            "        if (i == 1) {" + PMD.EOL +
-            "            for (i = 3; i < 4; i++) {" + PMD.EOL +
-            "                i = 5;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        } else if (i < 6) {" + PMD.EOL +
-            "            i = 7;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_23() {" + PMD.EOL +
+            "  int i = 0;" + PMD.EOL +
+            "  if (i == 1) {" + PMD.EOL +
+            "   for (i = 3; i < 4; i++) {" + PMD.EOL +
+            "    i = 5;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "  } else if (i < 6) {" + PMD.EOL +
+            "   i = 7;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST24_NODES = {
         {1},
@@ -573,20 +569,20 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST24 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_24() {" + PMD.EOL +
-            "        int x = 0;" + PMD.EOL +
-            "        if (x > 2) {" + PMD.EOL +
-            "            for (int i = 0; i < 1; i++) {" + PMD.EOL +
-            "                if (x > 3) {" + PMD.EOL +
-            "                    x++;" + PMD.EOL +
-            "                }" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        } else if (x > 4) {" + PMD.EOL +
-            "            x++;" + PMD.EOL +
-            "        }" + PMD.EOL +
+        "public class Foo {" + PMD.EOL +
+            " public void test_24() {" + PMD.EOL +
+            "  int x = 0;" + PMD.EOL +
+            "  if (x > 2) {" + PMD.EOL +
+            "   for (int i = 0; i < 1; i++) {" + PMD.EOL +
+            "    if (x > 3) {" + PMD.EOL +
+            "     x++;" + PMD.EOL +
             "    }" + PMD.EOL +
-            "    }";
+            "   }" + PMD.EOL +
+            "  } else if (x > 4) {" + PMD.EOL +
+            "   x++;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST25_NODES = {
         {1},
@@ -597,15 +593,15 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST25 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_25() {" + PMD.EOL +
-            "        int x = 0;" + PMD.EOL +
-            "        switch (x) {" + PMD.EOL +
-            "            default:" + PMD.EOL +
-            "                x = 9;" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_25() {" + PMD.EOL +
+            "  int x = 0;" + PMD.EOL +
+            "  switch (x) {" + PMD.EOL +
+            "   default:" + PMD.EOL +
+            "    x = 9;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST26_NODES = {
         {1},
@@ -620,18 +616,18 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST26 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_26() {" + PMD.EOL +
-            "        int x = 0;" + PMD.EOL +
-            "        do {" + PMD.EOL +
-            "            if (x > 0) {" + PMD.EOL +
-            "                x++;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "            x++;" + PMD.EOL +
-            "        } while (x < 9);" + PMD.EOL +
-            "        x++;" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_26() {" + PMD.EOL +
+            "  int x = 0;" + PMD.EOL +
+            "  do {" + PMD.EOL +
+            "   if (x > 0) {" + PMD.EOL +
+            "    x++;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "   x++;" + PMD.EOL +
+            "  } while (x < 9);" + PMD.EOL +
+            "  x++;" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST27_NODES = {
         {1},
@@ -646,16 +642,16 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST27 =
-        "public class TestClass {" + PMD.EOL +
-            "    public void test_27() {" + PMD.EOL +
-            "        for (int i = 0; i < 36; i++) {" + PMD.EOL +
-            "            int x = 0;" + PMD.EOL +
-            "            do {" + PMD.EOL +
-            "                x++;" + PMD.EOL +
-            "            } while (x < 9);" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "    }";
+        "public class Foo {" + PMD.EOL +
+            " public void test_27() {" + PMD.EOL +
+            "  for (int i = 0; i < 36; i++) {" + PMD.EOL +
+            "   int x = 0;" + PMD.EOL +
+            "   do {" + PMD.EOL +
+            "    x++;" + PMD.EOL +
+            "   } while (x < 9);" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
     private static final int[][] TEST28_NODES = {
         {1},
@@ -675,24 +671,24 @@ public class AcceptanceTest extends ParserTst {
         {}
         };
     public static final String TEST28 =
-        "public class TestClass {" + PMD.EOL +
-            "    private void test_28() {" + PMD.EOL +
-            "        for (int i = 0; i < 36; i++) {" + PMD.EOL +
-            "            int x = 0;" + PMD.EOL +
-            "            do {" + PMD.EOL +
-            "                if (x > 0) {" + PMD.EOL +
-            "                    x++;" + PMD.EOL +
-            "                    switch (i) {" + PMD.EOL +
-            "                        case 0:" + PMD.EOL +
-            "                            x = 0;" + PMD.EOL +
-            "                            break;" + PMD.EOL +
-            "                    }" + PMD.EOL +
-            "                }" + PMD.EOL +
-            "                x++;" + PMD.EOL +
-            "            } while (x < 9);" + PMD.EOL +
-            "        }" + PMD.EOL +
+        "public class Foo {" + PMD.EOL +
+            " private void test_28() {" + PMD.EOL +
+            "  for (int i = 0; i < 36; i++) {" + PMD.EOL +
+            "   int x = 0;" + PMD.EOL +
+            "   do {" + PMD.EOL +
+            "    if (x > 0) {" + PMD.EOL +
+            "     x++;" + PMD.EOL +
+            "     switch (i) {" + PMD.EOL +
+            "      case 0:" + PMD.EOL +
+            "       x = 0;" + PMD.EOL +
+            "       break;" + PMD.EOL +
+            "     }" + PMD.EOL +
             "    }" + PMD.EOL +
-            "    }";
+            "    x++;" + PMD.EOL +
+            "   } while (x < 9);" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            " }";
 
 
 }
