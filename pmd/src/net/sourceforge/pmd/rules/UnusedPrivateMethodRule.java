@@ -161,13 +161,10 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         String img = (nodeImage.indexOf('.') == -1) ? nodeImage : nodeImage.substring(nodeImage.indexOf('.') +1, nodeImage.length());
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
             ASTMethodDeclarator methodNode = (ASTMethodDeclarator)i.next();
-            // is the name the same?
-            if (methodNode.getImage().equals(img)) {
-                // is the number of params the same?
-                if (methodNode.getParameterCount() == args) {
-                    // should check param types here, this misses some unused methods
-                    i.remove();
-                }
+            // are name and number of parameters the same?
+            if (methodNode.getImage().equals(img) && methodNode.getParameterCount() == args) {
+                // should check parameter types here, this misses some unused methods
+                i.remove();
             }
         }
     }
