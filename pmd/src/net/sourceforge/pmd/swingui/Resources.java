@@ -11,7 +11,7 @@ import javax.swing.UIManager;
  * @since September 9, 2002
  * @version $Revision$, $Date$
  */
-class Resources
+public class Resources
 {
     private static ResourceBundle RESOURCES = ResourceBundle.getBundle("net.sourceforge.pmd.swingui.pmdViewer");
 
@@ -22,7 +22,7 @@ class Resources
      *
      * @return
      */
-    protected static final String getString(String name)
+    public static final String getString(String name)
     {
         return RESOURCES.getString(name);
     }
@@ -35,7 +35,7 @@ class Resources
      *
      * @return
      */
-    protected static final String getString(String name, String[] parameters)
+    public static final String getString(String name, String[] parameters)
     {
         String template = RESOURCES.getString(name);
         String message = MessageFormat.format(template, parameters);
