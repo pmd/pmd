@@ -11,10 +11,6 @@ import net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule;
 import net.sourceforge.pmd.Report;
 
 public class OverrideBothEqualsAndHashcodeRuleTest extends RuleTst {
-    public OverrideBothEqualsAndHashcodeRuleTest( String name ) {
-	super( name );
-    }
-
     public void test1() throws Throwable{
         Report report = process("OverrideBothEqualsAndHashcode1.java", new OverrideBothEqualsAndHashcodeRule());
         assertEquals(1, report.size());

@@ -18,9 +18,6 @@ import net.sourceforge.pmd.stat.Metric;
 public class UseSingletonRuleTest
     extends RuleTst implements ReportListener
 {
-    public UseSingletonRuleTest( String name ) {
-	super( name );
-    }
 
     public void testUseSingleton1()
 	throws Throwable 

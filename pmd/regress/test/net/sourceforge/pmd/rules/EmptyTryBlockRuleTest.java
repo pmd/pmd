@@ -11,9 +11,6 @@ import net.sourceforge.pmd.rules.EmptyCatchBlockRule;
 import net.sourceforge.pmd.rules.EmptyTryBlockRule;
 
 public class EmptyTryBlockRuleTest extends RuleTst {
-    public EmptyTryBlockRuleTest(String name) {
-        super(name);
-    }
 
     public void testEmptyTryBlock1() throws Throwable {
         Report report = process("EmptyTryBlock1.java", new EmptyTryBlockRule());

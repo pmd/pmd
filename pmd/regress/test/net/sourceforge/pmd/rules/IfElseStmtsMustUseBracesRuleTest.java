@@ -11,10 +11,6 @@ import net.sourceforge.pmd.Report;
 
 public class IfElseStmtsMustUseBracesRuleTest extends RuleTst {
 
-    public IfElseStmtsMustUseBracesRuleTest(String name) {
-        super(name);
-    }
-
     public void testIfElseStmtsMustUseBraces1() throws Throwable {
         Report report = process("IfElseStmtsNeedBraces1.java", new IfElseStmtsMustUseBracesRule());
         assertEquals(1, report.size());

@@ -14,10 +14,6 @@ public class LongVariableRuleTest
 
     private LongVariableRule rule;
 
-    public LongVariableRuleTest( String name ) {
-	super( name );
-    }
-
     public void setUp() {
         rule = new LongVariableRule();
         rule.setMessage("Avoid long names like {0}");

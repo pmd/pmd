@@ -13,10 +13,6 @@ import net.sourceforge.pmd.rules.EmptyCatchBlockRule;
 
 public class EmptyCatchBlockRuleTest extends RuleTst {
 
-    public EmptyCatchBlockRuleTest(String name) {
-        super(name);
-    }
-
     public void testEmptyCatchBlock() throws Throwable {
         Report report = process("EmptyCatchBlock.java", new EmptyCatchBlockRule());
         assertEquals(1, report.size());

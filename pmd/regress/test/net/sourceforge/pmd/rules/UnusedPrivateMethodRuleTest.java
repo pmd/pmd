@@ -11,10 +11,6 @@ import net.sourceforge.pmd.Report;
 public class UnusedPrivateMethodRuleTest  extends RuleTst {
     private UnusedPrivateMethodRule rule;
 
-    public UnusedPrivateMethodRuleTest(String name) {
-        super(name);
-    }
-
     public void setUp() {
         rule = new UnusedPrivateMethodRule();
         rule.setMessage("Avoid this stuff -> ''{0}''");

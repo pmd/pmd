@@ -11,9 +11,6 @@ import net.sourceforge.pmd.rules.DuplicateImportsRule;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 
 public class DuplicateImportsRuleTest extends RuleTst {
-    public DuplicateImportsRuleTest(String name) {
-        super(name);
-    }
 
     private DuplicateImportsRule rule;
 

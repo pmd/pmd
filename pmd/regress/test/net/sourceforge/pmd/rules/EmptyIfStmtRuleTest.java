@@ -11,9 +11,6 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.rules.EmptyIfStmtRule;
 
 public class EmptyIfStmtRuleTest extends RuleTst {
-    public EmptyIfStmtRuleTest(String name) {
-        super(name);
-    }
 
     public void testEmptyIf() throws Throwable {
         Report report = process("EmptyIfStmtRule.java", new EmptyIfStmtRule());

@@ -10,9 +10,6 @@ import test.net.sourceforge.pmd.rules.RuleTst;
 public class LongMethodRuleTest
     extends RuleTst
 {
-    public LongMethodRuleTest( String name ) {
-	super( name );
-    }
 
     public LongMethodRule getIUT() {
         LongMethodRule IUT = new LongMethodRule();

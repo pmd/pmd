@@ -14,10 +14,6 @@ public class ShortVariableRuleTest
 
     private ShortVariableRule rule;
 
-    public ShortVariableRuleTest( String name ) {
-	super( name );
-    }
-
     public void setUp() {
         rule = new ShortVariableRule();
         rule.setMessage("Avoid stuff like -> ''{0}''");

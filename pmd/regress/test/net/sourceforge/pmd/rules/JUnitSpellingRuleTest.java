@@ -12,9 +12,6 @@ public class JUnitSpellingRuleTest extends RuleTst {
 
     private Rule rule;
 
-    public JUnitSpellingRuleTest(String name) {
-        super(name);
-    }
 
     public void setUp() {
         rule = new JUnitSpellingRule();

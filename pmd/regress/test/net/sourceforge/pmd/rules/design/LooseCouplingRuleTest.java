@@ -14,10 +14,6 @@ import net.sourceforge.pmd.RuleViolation;
 public class LooseCouplingRuleTest extends RuleTst {
     private LooseCouplingRule rule;
 
-    public LooseCouplingRuleTest(String name) {
-        super(name);
-    }
-
     public void setUp() {
         rule = new LooseCouplingRule();
         rule.setMessage("Avoid this stuff -> ''{0}''");

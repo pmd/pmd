@@ -18,10 +18,6 @@ public class UnusedLocalVariableTest extends RuleTst {
 
     private UnusedLocalVariableRule rule;
 
-    public UnusedLocalVariableTest(String name) {
-        super(name);
-    }
-
     public void setUp() {
         rule = new UnusedLocalVariableRule();
         rule.setMessage("Avoid this stuff -> ''{0}''");

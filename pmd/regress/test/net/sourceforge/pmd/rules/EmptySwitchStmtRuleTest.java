@@ -9,10 +9,6 @@ import net.sourceforge.pmd.rules.EmptySwitchStmtRule;
 
 public class EmptySwitchStmtRuleTest extends RuleTst {
 
-    public  EmptySwitchStmtRuleTest(String name) {
-        super(name);
-    }
-
     public void test1() throws Throwable {
         runTest("EmptySwitchStmt1.java", 1, new EmptySwitchStmtRule());
     }

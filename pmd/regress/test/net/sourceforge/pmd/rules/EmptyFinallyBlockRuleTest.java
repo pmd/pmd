@@ -11,10 +11,6 @@ import net.sourceforge.pmd.rules.EmptyFinallyBlockRule;
 
 public class EmptyFinallyBlockRuleTest extends RuleTst {
 
-    public EmptyFinallyBlockRuleTest(String name) {
-        super(name);
-    }
-
     public void testEmptyFinallyBlock1() throws Throwable {
         Report report = process("EmptyFinallyBlock1.java", new EmptyFinallyBlockRule());
         assertEquals(1, report.size());

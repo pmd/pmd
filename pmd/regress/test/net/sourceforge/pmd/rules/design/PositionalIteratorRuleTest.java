@@ -13,10 +13,6 @@ import net.sourceforge.pmd.rules.design.PositionalIteratorRule;
 
 public class PositionalIteratorRuleTest extends RuleTst {
 
-    public PositionalIteratorRuleTest(String name) {
-        super(name);
-    }
-
     public void test1() throws Throwable {
         runTest("PositionalIterator1.java", 1, new PositionalIteratorRule());
     }

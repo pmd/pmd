@@ -9,9 +9,6 @@ import net.sourceforge.pmd.rules.UnusedImportsRule;
 import net.sourceforge.pmd.Report;
 
 public class UnusedImportsRuleTest extends RuleTst {
-    public UnusedImportsRuleTest(String name) {
-        super(name);
-    }
 
     private UnusedImportsRule rule;
 

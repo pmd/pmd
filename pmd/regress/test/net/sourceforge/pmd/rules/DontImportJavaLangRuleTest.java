@@ -10,10 +10,6 @@ import net.sourceforge.pmd.rules.DontImportJavaLangRule;
 
 public class DontImportJavaLangRuleTest extends RuleTst {
 
-    public DontImportJavaLangRuleTest(String name) {
-        super(name);
-    }
-
     public void test1() throws Throwable {
         Report report = process("DontImportJavaLang1.java", new DontImportJavaLangRule());
         assertEquals(1, report.size());

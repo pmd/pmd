@@ -9,9 +9,6 @@ import net.sourceforge.pmd.rules.IfStmtsMustUseBracesRule;
 
 public class IfStmtsMustUseBracesRuleTest extends RuleTst {
 
-    public IfStmtsMustUseBracesRuleTest(String name) {
-        super(name);
-    }
 
     public void test1() throws Throwable {
         runTest("IfStmtsMustUseBraces1.java", 1, new IfStmtsMustUseBracesRule());

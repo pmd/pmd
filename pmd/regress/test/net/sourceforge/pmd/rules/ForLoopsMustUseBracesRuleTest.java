@@ -10,9 +10,6 @@ import net.sourceforge.pmd.rules.WhileLoopsMustUseBracesRule;
 import net.sourceforge.pmd.rules.ForLoopsMustUseBracesRule;
 
 public class ForLoopsMustUseBracesRuleTest extends RuleTst {
-    public ForLoopsMustUseBracesRuleTest(String name) {
-        super(name);
-    }
 
     public void test1() throws Throwable {
         Report report = process("ForLoopsNeedBraces1.java", new ForLoopsMustUseBracesRule());

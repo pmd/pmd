@@ -10,10 +10,6 @@ import test.net.sourceforge.pmd.rules.RuleTst;
 public class LongParameterListRuleTest
     extends RuleTst
 {
-    public LongParameterListRuleTest( String name ) {
-	super( name );
-    }
-
     public LongParameterListRule getIUT() {
 	LongParameterListRule IUT = new LongParameterListRule();
 	IUT.addProperty("minimum", "9");

@@ -17,10 +17,6 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
 
     private UnusedPrivateInstanceVariableRule rule;
 
-    public UnusedPrivateInstanceVariableRuleTest(String name) {
-        super(name);
-    }
-
     public void setUp() {
         rule = new UnusedPrivateInstanceVariableRule();
         rule.setMessage("Avoid this stuff -> ''{0}''");

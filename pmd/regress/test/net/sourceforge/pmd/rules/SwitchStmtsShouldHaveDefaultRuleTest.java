@@ -9,10 +9,6 @@ import net.sourceforge.pmd.rules.SwitchStmtsShouldHaveDefaultRule;
 
 public class SwitchStmtsShouldHaveDefaultRuleTest extends RuleTst {
 
-    public SwitchStmtsShouldHaveDefaultRuleTest(String name) {
-        super(name);
-    }
-
     public void test1() throws Throwable {
         runTest("SwitchStmtsShouldHaveDefault1.java", 1, new SwitchStmtsShouldHaveDefaultRule());
     }

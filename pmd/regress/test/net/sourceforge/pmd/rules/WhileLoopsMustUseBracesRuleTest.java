@@ -9,9 +9,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.rules.WhileLoopsMustUseBracesRule;
 
 public class WhileLoopsMustUseBracesRuleTest extends RuleTst {
-    public WhileLoopsMustUseBracesRuleTest(String name) {
-        super(name);
-    }
 
     public void test1() throws Throwable {
         Report report = process("WhileLoopsNeedBraces1.java", new WhileLoopsMustUseBracesRule());

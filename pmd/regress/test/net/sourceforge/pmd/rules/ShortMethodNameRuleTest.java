@@ -14,10 +14,6 @@ public class ShortMethodNameRuleTest
 
     private ShortMethodNameRule rule;
 
-    public ShortMethodNameRuleTest( String name ) {
-	super( name );
-    }
-
     public void setUp() {
         rule = new ShortMethodNameRule();
         rule.setMessage("Avoid this stuff -> {0}");

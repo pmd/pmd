@@ -23,10 +23,6 @@ import net.sourceforge.pmd.ast.*;
 public class RuleTst
     extends TestCase
 {
-    public RuleTst( String name ) {
-	super( name );
-    }
-
     public Report process( String fileName,
 			   Rule rule )
 	throws Throwable

@@ -9,9 +9,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.rules.SimplifyBooleanReturnsRule;
 
 public class SimplifyBooleanReturnsRuleTest extends RuleTst {
-    public SimplifyBooleanReturnsRuleTest(String name) {
-        super(name);
-    }
 
     public void test1() throws Throwable {
         Report report = process("SimplifyBooleanReturns1.java", new SimplifyBooleanReturnsRule());

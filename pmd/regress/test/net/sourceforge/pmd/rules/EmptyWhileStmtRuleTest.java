@@ -11,9 +11,6 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.rules.EmptyWhileStmtRule;
 
 public class EmptyWhileStmtRuleTest extends RuleTst {
-    public EmptyWhileStmtRuleTest(String name) {
-        super(name);
-    }
 
     public void testEmptyWhileStmtRule() throws Throwable {
         Report report = process("EmptyWhileStmtRule.java", new EmptyWhileStmtRule());

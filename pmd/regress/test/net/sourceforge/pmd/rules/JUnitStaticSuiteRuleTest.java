@@ -9,10 +9,6 @@ import net.sourceforge.pmd.rules.JUnitStaticSuiteRule;
 
 public class JUnitStaticSuiteRuleTest extends RuleTst {
 
-    public JUnitStaticSuiteRuleTest(String name) {
-        super(name);
-    }
-
     public void test1() throws Throwable {
         runTest("JUnitStaticSuite1.java", 2, new JUnitStaticSuiteRule());
     }
