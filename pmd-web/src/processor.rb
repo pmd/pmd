@@ -1,6 +1,7 @@
 #!/usr/local/bin/ruby
 
-require '/home/tom/data/pmd/pmd-web/src/ikko.rb'
+require 'rubygems'
+require_gem 'ikko'
 require '/home/tom/data/ruby-doom/src/ruby/doom.rb'
 
 # add timeout thingy to the Thread class, thx to Rich Kilmer for the code
