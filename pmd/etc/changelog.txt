@@ -1,5 +1,6 @@
 ???? 2002 - 0.4:
 Added a JEdit plugin
+Added a new rule: OverrideBothEqualsAndHashcodeRule
 
 July 03 2002 - 0.3:
 Added new rules: UseSingletonRule, ShortVariableRule, LongVariableRule, ShortMethodNameRule

@@ -1,0 +1,2 @@
+public class OverrideBothEqualsAndHashcode3 {
+}

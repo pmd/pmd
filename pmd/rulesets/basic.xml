@@ -6,6 +6,7 @@ The Basic Ruleset contains a collection of good practice rules
 which everyone should follow.
   </description>
 
+
   <rule name="EmptyCatchBlock"
         message="Avoid empty catch blocks"
         class="net.sourceforge.pmd.rules.EmptyCatchBlockRule">

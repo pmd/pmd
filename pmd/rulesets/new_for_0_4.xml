@@ -4,6 +4,26 @@
   <description>
 These are new ones for 0.4
   </description>
+  <rule name="OverrideBothEqualsAndHashcodeRule"
+        message="Ensure you override both equals() and hashcode()"
+        class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule">
+    <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashcode(), or override neither
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo {
+    public boolean equals(Object other) {
+        // TODO
+    }
+    public int hashcode() {
+        // TODO
+    }
+}
+]]>
+    </example>
+  </rule>
 
 </ruleset>
 
