@@ -151,6 +151,11 @@
       <id>xml-apis</id>
       <version>2.0.2</version>
     </dependency>
+
+    <dependency>
+      <id>mockobjects</id>
+      <version>0.07</version>
+    </dependency>
   </dependencies>
 
   <build>
