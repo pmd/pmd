@@ -1,7 +1,7 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
-v0.5.1 - release date
+v0.6.0 - release date
 
 Runtime
 -------
@@ -13,7 +13,9 @@ Runtime
   (the PMD exception is logged as a warning)
 . Adding PMD actions on folder and package popup menus
   (request nnnnnn from Vladimir Bossica)
-
+. Processing markers changes as batch operations so that performances are improved.
+. Updating PMD engine to v1.05
+. Fixing CPD usage to conform to new engine implementation
 
 
 

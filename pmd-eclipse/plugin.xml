@@ -2,7 +2,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="0.5.1"
+   version="0.6.0"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
@@ -10,9 +10,11 @@
       <library name="pmd-eclipse.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-1.03.jar"/>
       <library name="lib/log4j-1.2.8.jar"/>
       <library name="lib/commons-logging.jar"/>
+      <library name="lib/pmd-1.05.jar"/>
+      <library name="lib/jaxen-core-1.0-fcs.jar"/>
+      <library name="lib/saxpath-1.0-fcs.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
