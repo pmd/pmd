@@ -6,7 +6,7 @@ The Unused Code Ruleset contains a collection of rules that find unused code.
   </description>
 
   <rule name="UnusedLocalVariable"
-        message="Avoid unused local variables such as {0}"
+        message="Avoid unused local variables such as ''{0}''"
         class="net.sourceforge.pmd.rules.UnusedLocalVariableRule">
     <description>
 Unused Local Variables: detects when a variable is declared, but not
@@ -26,7 +26,7 @@ public int doSomething() {
   </rule>
 
   <rule name="UnusedPrivateInstanceVariable"
-        message="Avoid unused private instance variables"
+        message="Avoid unused private instance variables such as ''{0}''"
         class="net.sourceforge.pmd.rules.UnusedPrivateInstanceVariableRule">
     <description>
 Unused Private Instance Variable: detects when a private field is declared
