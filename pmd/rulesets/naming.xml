@@ -142,9 +142,9 @@ public class Foo {
 
 
     <rule name="ClassNamingConventionsRule"
-          message="Class names should begin with an uppercase character and not include underscores"
+          message="Class names should begin with an uppercase character"
           class="net.sourceforge.pmd.rules.ClassNamingConventionsRule">
-      <description> Class names should always begin with an upper case character, and should not contain underscores.
+      <description> Class names should always begin with an upper case character.
       </description>
       <priority>1</priority>
       <example>
