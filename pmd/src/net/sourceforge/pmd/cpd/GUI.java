@@ -54,24 +54,23 @@ public class GUI implements CPDListener {
             FileDialog fdlg = new FileDialog(GUI.this.frame, "Save", FileDialog.SAVE);
             fdlg.setVisible(true);
             String selected = fdlg.getDirectory() + System.getProperty("file.separator") + fdlg.getFile();
-            if(selected !=null){
-                if(!new File(selected).canWrite()){
-                    try{
-                        PrintWriter pw = new PrintWriter(new FileOutputStream(selected));
-                        String report = resultsTextArea.getText();
-                        pw.print(report);
-                        pw.flush();
-                        pw.close();
-                    }catch(IOException e){
-                        error("Couldn't save file"+new File(selected).getAbsolutePath(), e);
-                    }
-                }else{
-                    error("Could not write to file "+new File(selected).getAbsolutePath(), null);
-
-                }
-
+            if (fdlg.getFile() == null) {
+                return;
             }
-
+            if(!new File(selected).canWrite()){
+                try{
+                    PrintWriter pw = new PrintWriter(new FileOutputStream(selected));
+                    String report = resultsTextArea.getText();
+                    pw.print(report);
+                    pw.flush();
+                    pw.close();
+                    JOptionPane.showMessageDialog(frame, "File saved");
+                }catch(IOException e){
+                    error("Couldn't save file"+new File(selected).getAbsolutePath(), e);
+                }
+            }else{
+                error("Could not write to file "+new File(selected).getAbsolutePath(), null);
+            }
         }
 
         private void error(String message, Exception e){

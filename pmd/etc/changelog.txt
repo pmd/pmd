@@ -6,6 +6,7 @@ Fixed bug 781393 - VariableNameDeclaration no longer throws ClassCastExpression 
 Tweaked CPD time display field
 Made CPD text fields uneditable
 Added more error checking to CPD GUI input
+Added "dialog cancelled" check to CPD "Save" function
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 August 1, 2003 - 1.2.1:
