@@ -28,6 +28,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2003/07/01 20:22:16  phherlin
+ * Make rules selectable from projects
+ *
  * Revision 1.7  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -80,7 +83,7 @@ public class PMDProcessor {
             context.setSourceCodeFilename(file.getName());
             context.setReport(new Report());
 
-            pmdEngine.processFile(input, PMDPlugin.getDefault().getRuleSet(), context);
+            pmdEngine.processFile(input, PMDPlugin.getDefault().getRuleSetForResource(file), context);
 
             updateMarkers(file, context, fTask, accumulator);
 

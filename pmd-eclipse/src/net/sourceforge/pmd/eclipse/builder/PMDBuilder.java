@@ -27,6 +27,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2003/07/01 20:22:16  phherlin
+ * Make rules selectable from projects
+ *
  * Revision 1.7  2003/06/30 22:05:07  phherlin
  * Improving incremental building
  *
@@ -167,7 +170,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         try {
             project.accept(visitor);
         } catch (CoreException e) {
-            // no exception processing
+            PMDPlugin.getDefault().logError("Exception when counting elements of a project", e);
         }
 
         return visitor.count;
@@ -192,7 +195,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         try {
             delta.accept(visitor);
         } catch (CoreException e) {
-            // no exception processing
+            PMDPlugin.getDefault().logError("Exception counting elemnts in a delta selection", e);
         }
 
         return visitor.count;

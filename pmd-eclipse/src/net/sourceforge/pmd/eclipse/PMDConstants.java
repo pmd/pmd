@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2003/07/01 20:22:16  phherlin
+ * Make rules selectable from projects
+ *
  * Revision 1.4  2003/06/30 22:00:53  phherlin
  * Adding clearer monitor message when visiting files
  *
@@ -15,8 +18,8 @@ package net.sourceforge.pmd.eclipse;
  */
 public interface PMDConstants {
     // Message keys
-    public static final String MSGKEY_ENABLE_BUTTON_LABEL = "property.pmd.enable";
-    public static final String MSGKEY_PMD_PROCESSING = "monitor.begintask";
+    public static final String MSGKEY_PROPERTY_BUTTON_ENABLE = "property.button.enable";
+    public static final String MSGKEY_PROPERTY_LABEL_SELECT_RULE = "property.label.select_rule";
     
     public static final String MSGKEY_PREF_GENERAL_TITLE = "preference.pmd.title";
     public static final String MSGKEY_PREF_RULESET_TITLE = "preference.ruleset.title";
@@ -63,6 +66,7 @@ public interface PMDConstants {
     public static final String MSGKEY_ERROR_EXPORTING_RULESET = "message.error.exporting_ruleset";
     public static final String MSGKEY_ERROR_READING_PREFERENCE = "message.error.reading_preference";
     public static final String MSGKEY_ERROR_WRITING_PREFERENCE = "message.error.writing_preference";
+    public static final String MSGKEY_ERROR_STORING_PROPERTY = "message.error.storing_property";
     
     public static final String MSGKEY_QUESTION_TITLE = "message.question.title";
     public static final String MSGKEY_QUESTION_RULES_CHANGED = "message.question.rules_changed";
@@ -86,5 +90,6 @@ public interface PMDConstants {
     public static final String MSGKEY_PRIORITY_INFORMATION  = "priority.information";
     
     public static final String MSGKEY_MONITOR_CHECKING_FILE = "monitor.checking_file";
+    public static final String MSGKEY_PMD_PROCESSING = "monitor.begintask";
     
 }

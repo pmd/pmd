@@ -5,16 +5,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -29,6 +36,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2003/07/01 20:22:16  phherlin
+ * Make rules selectable from projects
+ *
  * Revision 1.8  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -56,11 +66,18 @@ public class PMDPlugin extends AbstractUIPlugin {
     public static final String RULESET_PREFERENCE = "net.sourceforge.pmd.eclipse.ruleset";
     public static final String RULESET_DEFAULT = "";
 
-    public static String MIN_TILE_SIZE_PREFERENCE = "net.sourceforge.pmd.eclipse.CPDPreference.mintilesize";
-    public static int MIN_TILE_SIZE_DEFAULT = 25;
+    public static final String MIN_TILE_SIZE_PREFERENCE = "net.sourceforge.pmd.eclipse.CPDPreference.mintilesize";
+    public static final int MIN_TILE_SIZE_DEFAULT = 25;
 
-    public static String PMD_MARKER = "net.sourceforge.pmd.eclipse.pmdMarker";
-    public static String PMD_TASKMARKER = "net.sourceforge.pmd.eclipse.pmdTaskMarker";
+    public static final String PMD_MARKER = "net.sourceforge.pmd.eclipse.pmdMarker";
+    public static final String PMD_TASKMARKER = "net.sourceforge.pmd.eclipse.pmdTaskMarker";
+
+    public static final QualifiedName SESSION_PROPERTY_ACTIVE_RULESET =
+        new QualifiedName("net.sourceforge.pmd.eclipse.sessprops", "active_rulset");
+    public static final QualifiedName PERSISTENT_PROPERTY_ACTIVE_RULESET =
+        new QualifiedName("net.sourceforge.pmd.eclipse.persprops", "active_rulset");
+
+    public static final String LIST_DELIMITER = ";";
 
     // Static attributes
     private static PMDPlugin plugin;
@@ -153,6 +170,94 @@ public class PMDPlugin extends AbstractUIPlugin {
     public void setRuleSet(RuleSet newRuleSet) {
         ruleSet = newRuleSet;
         storeRuleSetInPreference();
+    }
+
+    /**
+     * Get a sub ruleset from a rule list
+     */
+    public RuleSet getRuleSetFromRuleList(String ruleList) {
+        RuleSet subRuleSet = new RuleSet();
+        RuleSet ruleSet = getRuleSet();
+
+        StringTokenizer st = new StringTokenizer(ruleList, LIST_DELIMITER);
+        while (st.hasMoreTokens()) {
+            try {
+                Rule rule = ruleSet.getRuleByName(st.nextToken());
+                if (rule != null) {
+                    subRuleSet.addRule(rule);
+                }
+            } catch (RuntimeException e) {
+                logError("Ignored runtime exception from PMD", e);
+            }
+        }
+
+        return subRuleSet;
+    }
+
+    /**
+     * Get the rulset configured for the resouce.
+     * Currently, it is the one configured for the resource's project
+     */
+    public RuleSet getRuleSetForResource(IResource resource) {
+        boolean flNeedSave = false;
+        RuleSet ruleSet = null;
+        RuleSet configuredRuleSet = getRuleSet();
+        IProject project = resource.getProject();
+        try {
+            ruleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
+            if (ruleSet == null) {
+                String activeRulesList = project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
+                if (activeRulesList != null) {
+                    ruleSet = getRuleSetFromRuleList(activeRulesList);
+                    flNeedSave = true;
+                } else {
+                    ruleSet = configuredRuleSet;
+                    flNeedSave = true;
+                }
+            }
+            
+            // If meanwhile, rules have been deleted from preferences
+            // delete them also from the project ruleset
+            if (ruleSet != configuredRuleSet) {
+                Iterator i = ruleSet.getRules().iterator();
+                while (i.hasNext()) {
+                    Object rule = i.next();
+                    if (!configuredRuleSet.getRules().contains(rule)) {
+                        i.remove();
+                        flNeedSave = true;
+                    }
+                }
+            }
+            
+            // If needed store modified ruleset
+            if (flNeedSave) {
+                storeRuleSetForResource(resource, ruleSet);
+            }
+        } catch (CoreException e) {
+            logError("Error when searching for project ruleset. Using the full ruleset.", e);
+        }
+
+        return ruleSet;
+    }
+
+    /**
+     * Store the rules selection in resource property
+     */
+    public void storeRuleSetForResource(IResource resource, RuleSet ruleSet) {
+        try {
+            StringBuffer ruleSelectionList = new StringBuffer();
+            Iterator i = ruleSet.getRules().iterator();
+            while (i.hasNext()) {
+                Rule rule = (Rule) i.next();                
+                    ruleSelectionList.append(rule.getName()).append(LIST_DELIMITER);
+            }
+
+            resource.setPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET, ruleSelectionList.toString());
+            resource.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, ruleSet);
+
+        } catch (CoreException e) {
+            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
+        }
     }
 
     /**
