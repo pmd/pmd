@@ -35,6 +35,9 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2004/04/19 22:25:50  phherlin
+ * Fixing UTF-8 encoding
+ *
  * Revision 1.4  2003/12/09 00:14:59  phherlin
  * Merging from v2 development
  *
@@ -175,7 +178,7 @@ public class ReviewAction extends Action {
     }
 
     /**
-     * Renvoie la position dans le code source du début de la ligne du marqueur
+     * Renvoie la position dans le code source du dÃ©but de la ligne du marqueur
      */
     private int getMarkerLineStart(String sourceCode, int lineNumber) {
         int lineStart = 0;
@@ -198,7 +201,7 @@ public class ReviewAction extends Action {
     }
 
     /**
-     * Insère un commentaire de révision juste au dessus de la ligne du marker
+     * InsÃ¨re un commentaire de rÃ©vision juste au dessus de la ligne du marker
      */
     private String addReviewComment(String sourceCode, int offset, IMarker marker) {
         String additionalCommentPattern = PMDPlugin.getDefault().getReviewAdditionalComment();
@@ -218,7 +221,7 @@ public class ReviewAction extends Action {
     }
 
     /**
-     * Calcul l'indentation employée sur la ligne du marker
+     * Calcul l'indentation employÃ©e sur la ligne du marker
      */
     private String computeIndent(String sourceCode, int offset) {
         StringBuffer indent = new StringBuffer();

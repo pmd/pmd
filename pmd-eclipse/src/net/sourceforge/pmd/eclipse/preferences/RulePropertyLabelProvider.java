@@ -14,6 +14,9 @@ import org.eclipse.swt.graphics.Image;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/04/19 22:25:50  phherlin
+ * Fixing UTF-8 encoding
+ *
  * Revision 1.1  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -38,10 +41,10 @@ public class RulePropertyLabelProvider implements ITableLabelProvider {
             RuleProperty ruleProperty = (RuleProperty) element;
             if (columnIndex == 0) {
                 result = ruleProperty.getProperty();
-                log.debug("Retour du nom de la propriété : " + result);
+                log.debug("Retour du nom de la propriÃ©tÃ© : " + result);
             } else if (columnIndex == 1) {
                 result = ruleProperty.getValue();
-                log.debug("Retour de la valeur de la propriété : " + result);
+                log.debug("Retour de la valeur de la propriÃ©tÃ© : " + result);
             }
         }
         return result;

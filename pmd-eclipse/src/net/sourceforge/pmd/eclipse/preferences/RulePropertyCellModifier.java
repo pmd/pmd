@@ -14,6 +14,9 @@ import org.eclipse.swt.widgets.TableItem;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/04/19 22:25:50  phherlin
+ * Fixing UTF-8 encoding
+ *
  * Revision 1.1  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -46,10 +49,10 @@ public class RulePropertyCellModifier implements ICellModifier {
             RuleProperty ruleProperty = (RuleProperty) element;
             if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PROPERTY)) {
                 result = ruleProperty.getProperty();
-                log.debug("Interrogation de la propriété : " + result);
+                log.debug("Interrogation de la propriÃ©tÃ© : " + result);
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_VALUE)) {
                 result = ruleProperty.getValue();
-                log.debug("Interrogation de la valeur de la propriété : " + result);
+                log.debug("Interrogation de la valeur de la propriÃ©tÃ© : " + result);
             }
         }
         return result;
@@ -67,7 +70,7 @@ public class RulePropertyCellModifier implements ICellModifier {
                 ruleProperty.setValue((String) value);
                 tableViewer.update(ruleProperty, new String[] {PMDPreferencePage.PROPERTY_VALUE});
                 PMDPreferencePage.getActiveInstance().setModified(true);
-                log.debug("modification de la valeur de la propriété : " + value);
+                log.debug("modification de la valeur de la propriÃ©tÃ© : " + value);
             }
         }
     }
