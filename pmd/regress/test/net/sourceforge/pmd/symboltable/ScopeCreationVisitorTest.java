@@ -1,12 +1,10 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
-import net.sourceforge.pmd.ast.ASTClassBody;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.BasicScopeCreationVisitor;
 import net.sourceforge.pmd.symboltable.BasicScopeFactory;

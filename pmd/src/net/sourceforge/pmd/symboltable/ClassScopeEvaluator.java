@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
 
 public class ClassScopeEvaluator extends AbstractScopeEvaluator {
          public ClassScopeEvaluator() {

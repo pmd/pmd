@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.renderers;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMD;
 
 import java.util.HashSet;
 import java.util.Iterator;

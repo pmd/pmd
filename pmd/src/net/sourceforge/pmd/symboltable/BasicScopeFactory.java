@@ -1,8 +1,5 @@
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTClassBody;
-import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.HashSet;
