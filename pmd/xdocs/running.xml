@@ -16,11 +16,11 @@ C:\data\pmd\pmd\etc>run c:\data\pmd\pmd\test-data\Unused1.java
 C:\data\pmd\pmd\etc>set CLASSPATH=../build/
 C:\data\pmd\pmd\etc>java net.sourceforge.pmd.PMD c:\data\pmd\pmd\test-data\Unuse
 d1.java
-<pmd><file>
-<name>c:\data\pmd\pmd\test-data\Unused1.java</name><ruleviolation><line>5</line>
-<description>Found unused local variable 'fr'</description></ruleviolation></fil
-e>
-</pmd>
+&lt;pmd&gt;&lt;file&gt;
+&lt;name&gt;c:\data\pmd\pmd\test-data\Unused1.java&lt;/name&gt;&lt;ruleviolation&gt;&lt;line&gt;5&lt;/line&gt;
+&lt;description&gt;Found unused local variable 'fr'&lt;/description&gt;&lt;/ruleviolation&gt;&lt;/fil
+e&gt;
+&lt;/pmd&gt;
     </pre>
    </ul>
    </section>
