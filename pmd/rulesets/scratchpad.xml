@@ -6,34 +6,7 @@
 These are new rules that are still in progress
   </description>
 
-<rule
-    name="Foo"
-    message="problem"
-    class="net.sourceforge.pmd.rules.XPathRule">
-    <description>
-        test
-    </description>
-    <properties>
-        <property name="xpath">
-            <value>
-    <![CDATA[
-//MethodDeclaration
- [@private = 'false']
- [count(descendant::PrimaryExpression/PrimaryPrefix/Name[contains (@image, 'log')])<2]
- [not (contains(/MethodDeclarator/@image, 'set'))]
 
-    ]]>
-                </value>
-             </property>
-          </properties>
-    <priority>2</priority>
-    <example>
-    <![CDATA[
-public class Foo {
-}
-    ]]>
-    </example>
-</rule>
 
 
 

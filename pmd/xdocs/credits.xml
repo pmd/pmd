@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Archimedes Trajano - suggested SimpleDateFormatNeedsLocale</li>
             <li>Joerg Kurt Wegner - bug report for UnusedLocalVariable</li>
             <li>Brant Langer Gurganus - project.xml patch, Javadoc patches, reported an encoding problem</li>
             <li>David Hovemeyer - a nice patch to let PMD process code in jar/zip files</li>

@@ -102,6 +102,34 @@ or
         </example>
     </rule>
 
+<rule
+    name="SimpleDateFormatNeedsLocale"
+    message="When instantiating a SimpleDateFormat object, specify a Locale"
+    class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+        test
+    </description>
+    <properties>
+        <property name="xpath">
+            <value>
+    <![CDATA[
+//AllocationExpression
+ [Name[@Image='SimpleDateFormat']]
+ [Arguments[@ArgumentCount=1]]
+    ]]>
+                </value>
+             </property>
+          </properties>
+    <priority>3</priority>
+    <example>
+    <![CDATA[
+public class Foo {
+ // Should specify Locale.US (or whatever)
+ private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
+}
+    ]]>
+    </example>
+</rule>
 
 </ruleset>
 
