@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<!-- The schema this is being validated against is non-normative so if things
+    seem fishy when validating against it, then it probably is fishy. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
   <xs:element name="description">
     <xs:complexType mixed="true" />
   </xs:element>
