@@ -10,13 +10,13 @@ public class CPD {
 
     public static final String EOL = System.getProperty("line.separator", "\n");
 
-    private int mts;
+    private int minimumTileSize;
     private TokenSets tokenSets = new TokenSets();
-    private MatchAlgorithm bwt;
-    private CPDListener listener;
+    private MatchAlgorithm matchAlgorithm;
+    private CPDListener listener = new CPDNullListener();
 
     public CPD(int minimumTileSize) {
-        this.mts = minimumTileSize;
+        this.minimumTileSize = minimumTileSize;
     }
 
     public void setCpdListener(CPDListener cpdListener) {
@@ -24,22 +24,22 @@ public class CPD {
     }
 
     public void go() {
-        bwt = new MatchAlgorithm(listener);
+        matchAlgorithm = new MatchAlgorithm(listener);
         for (Iterator i = tokenSets.iterator(); i.hasNext();) {
             TokenList tl = (TokenList)i.next();
             for (Iterator j = tl.iterator();j.hasNext();) {
                 TokenEntry te = (TokenEntry)j.next();
                 char[] chars = te.getImage().toCharArray();
                 MyToken mt = new MyToken(chars, 0, chars.length, true);
-                bwt.add(mt, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()));
+                matchAlgorithm.add(mt, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()));
             }
         }
-        bwt.findMatches(mts);
+        matchAlgorithm.findMatches(minimumTileSize);
     }
 
     public String getReport() {
         StringBuffer rpt = new StringBuffer();
-        for (Iterator i = bwt.matches(); i.hasNext();) {
+        for (Iterator i = matchAlgorithm.matches(); i.hasNext();) {
             Match match = (Match)i.next();
             TokenList tl = tokenSets.getTokenList(match.getStart().getFile());
             rpt.append("=====================================================================");
@@ -97,20 +97,17 @@ public class CPD {
             System.exit(1);
         }
 
-        CPD cpd = new CPD(Integer.parseInt(args[0]));
         try {
-            cpd.setCpdListener(new CPDNullListener());
+            CPD cpd = new CPD(Integer.parseInt(args[0]));
             cpd.addRecursively(args[1]);
+            long start = System.currentTimeMillis();
+            cpd.go();
+            long total = System.currentTimeMillis() - start;
+            System.out.println(cpd.getReport());
+            System.out.println("That took " + total + " milliseconds");
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(1);
         }
-
-        long start = System.currentTimeMillis();
-        cpd.go();
-        long total = System.currentTimeMillis() - start;
-        System.out.println(cpd.getReport());
-        System.out.println("That took " + total + " milliseconds");
     }
 
     private static void usage() {

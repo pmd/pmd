@@ -16,7 +16,7 @@ public class MatchAlgorithm {
     private List marks = new ArrayList();
     // separate what the token is from where it is. Locator is only used if we need to see the code at that location.
 
-    private List matchesList;
+    private List matchesList = new ArrayList();
     private CPDListener cpdListener;
 
     public MatchAlgorithm(CPDListener cpdListener) {

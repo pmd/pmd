@@ -43,12 +43,11 @@ public class CPDTask extends Task {
     	try{	
     		validateFields();
 	    	CPD cpd = new CPD(tileSize);
-		    cpd.setCpdListener(new CPDNullListener());
 	        cpd.addRecursively(this.codeLocation);
 	        cpd.go();
-	        Writer wrtr = new BufferedWriter(new FileWriter(this.outputFile));
-	        wrtr.write(cpd.getReport());
-	        wrtr.close();
+	        Writer writer = new BufferedWriter(new FileWriter(this.outputFile));
+	        writer.write(cpd.getReport());
+	        writer.close();
     	}catch(IOException ex){
     		ex.printStackTrace();
     		throw new BuildException("IOException in task", ex);
