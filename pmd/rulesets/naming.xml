@@ -10,8 +10,7 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
         message="Avoid variables with short names such as ''{0}''"
         class="net.sourceforge.pmd.rules.ShortVariableRule">
     <description>
-Short Variable: detects when a field, local or parameter has a
-short name.
+Detects when a field, local or parameter has a short name.
     </description>
    <properties>
     <property name="minimumLength" value="3"/>
@@ -37,8 +36,7 @@ public class Something {
         message="Avoid excessively long variable names such as ''{0}''"
         class="net.sourceforge.pmd.rules.LongVariableRule">
     <description>
-Long Variable: detects when a field, formal or local variable is declared
-with a big name.
+Detects when a field, formal or local variable is declared with a big name.
     </description>
    <properties>
     <property name="minimumLength" value="12"/>
@@ -66,8 +64,7 @@ public class Something {
         message="Avoid using short method names such as ''{0}''"
         class="net.sourceforge.pmd.rules.ShortMethodNameRule">
      <description>
-Short Method Names: Detects short method names.
-long are used.
+Detects when very short method names are used.
      </description>
    <properties>
     <property name="minimumLength" value="3"/>

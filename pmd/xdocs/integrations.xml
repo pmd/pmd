@@ -153,12 +153,30 @@ away every time I fix something in the code window.</p>
       </subsection>
       <subsection name="Maven">
 <p>
-The Maven plugin was written by Siegfried Goeschl.
-</p>
-<p>
-A possible other integration with Maven, will be the integration
-of PMD into JXR or LXR.  This should allow annotation of code in
-the web environment.  Work on this has not started.
+<ul>
+<li>Copy the downloaded plugin into the Maven plugin directory.</li>
+<li>Run "maven -g" and look out for documented PMD goals. If you see some then the unpacking succeeded.</li>
+<li>The PMD plugin can be started through "maven pmd" or integrated by using the following code snippet in
+maven.xml:</li>
+    <source>
+<![CDATA[
+<?xml version="1.0"?>
+ <preGoal name="site:generate">
+    <attainGoal name="pmd"/>
+ </preGoal>
+]]>
+    </source>
+<li>The generated report has to be added manually to the website which is usually done with navigation.xml</li>
+    <source>
+<![CDATA[
+<?xml version="1.0"?>
+  <menu name="Custom Reports">
+    <item name="PMD Report" href="/pmd-report.html"/>
+    <!-- Add more custom reports here -->
+  </menu>
+]]>
+    </source>
+</ul>
 </p>
       </subsection>
       <subsection name="Ant">
