@@ -119,8 +119,8 @@ class Job
 			"red"
 		end
 	end
-	def to_s_
-		@title + ":" + @unix_name +":"+@mod+":"+@srco
+	def to_s
+		@title + ":" + @unix_name + ":" + @mod + ":" + @src
 	end
 end
 
@@ -136,7 +136,7 @@ if __FILE__ == $0
 			if ARGV.include?("-job") && job.mod != ARGV.at(ARGV.index("-job")+1)
 				puts "Skipping " + job.mod
 			end
-			puts "Processing #{job}"
+			puts "Processing " + job.to_s
 			job.checkout_code
 			if File.exists?(job.src)
 				job.run_pmd
@@ -159,25 +159,21 @@ if __FILE__ == $0
 	if ARGV.include?("-doom")
 		jobs.each {|j|
 			pmd = PMDMap.new(j.pmd_lines)
-			w = Wad.new
-			w.lumps << UndecodedLump.new("MAP01")
-			t = Things.new
-			t.add_player Point.new(50,900)
-			w.lumps << t
+
+			puts "Creating the map"
 			p = Path.new(0, 1000)
 			p.add("e200/n200/e200/s200/e200/", pmd.nooks)
 			p.add("s400/")
 			p.add("w200/s200/w200/n200/w200/", pmd.nooks)
 			p.add("n400/")
+
+			m = SimpleLineMap(p)
+			m.set_player(Point.new(50,900))
 			0.upto(pmd.nooks-1) {|x|
-	     t.add_barrel Point.new((x*600)+300, 1100)
-	     t.add_barrel Point.new((x*600)+300, 500)
+	        m.add_barrel Point.new((x*600)+300, 1100)
+	        m.add_barrel Point.new((x*600)+300, 500)
 			}
-			w.lumps << p.vertexes
-			w.lumps << p.sectors
-			w.lumps << p.sidedefs
-			w.lumps << p.linedefs
-			w.write(j.wad + ".tmp")
+			m.create(j.wad + ".tmp")
 			cmd = "./bsp " + j.wad + ".tmp -o " + j.wad + " && rm -f " + j.wad + ".tmp"
 			`#{cmd}`
 		}
