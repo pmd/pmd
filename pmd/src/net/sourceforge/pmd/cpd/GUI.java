@@ -108,6 +108,9 @@ public class GUI implements CPDListener {
     public GUI() {
         frame = new JFrame("PMD Cut and Paste Detector");
 
+        timeField.setEditable(false);
+        comparisonsField.setEditable(false);
+
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
         JMenuItem saveItem = new JMenuItem("Save");

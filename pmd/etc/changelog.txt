@@ -4,6 +4,7 @@ Fixed bug 782235 - "ant -version" now prints more details when a file errors out
 Fixed bug 779874 - LooseCouplingRule no longer triggers on ArrayList
 Fixed bug 781393 - VariableNameDeclaration no longer throws ClassCastExpression since ASTLocalVariableDeclaration now subclasses AccessNode
 Tweaked CPD time display field
+Made CPD text fields uneditable
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 August 1, 2003 - 1.2.1:
