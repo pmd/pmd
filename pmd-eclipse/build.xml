@@ -5,10 +5,14 @@
 	<property name="ws" value="win32"/>
 	<property name="os" value="win32"/>
 	<property name="arch" value="x86"/>
+	<property name="runtimecp" value="C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.boot_2.0.2.1/boot.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.boot_2.0.2.1/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.runtime_2.0.2/runtime.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.runtime_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources.win32_2.0.1/resources.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources_2.0.1/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources_2.0.1/resources.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt_2.0.2/ws/${ws}/swt.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt.win32_2.0.2/ws/${ws}/swt.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui_2.0.2/workbench.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui.win32_2.0.0/workbench.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui.win32_2.0.0/workbenchwin32.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.jdt.core_2.0.2/jdtcore.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.jdt.core_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/xmlParserAPIs.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/xercesImpl.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/bin;"/>
+	<property name="pmdlib" value="lib/pmd-1.1.jar;lib/jaxen-core-1.0-fcs.jar;lib/saxpath-1.0-fcs.jar"/>
+	<property name="log4jcp" value="lib/commons-logging.jar;lib/log4j-1.2.8.jar;" />
+	<property name="classpath" value="${runtimecp}${log4jcp}${pmdlib}" />
 
 	<target name="init" depends="properties">
 		<property name="plugin" value="net.sourceforge.pmd.eclipse"/>
-		<property name="version.suffix" value="0.5.1"/>
+		<property name="version.suffix" value="1.0.0"/>
 		<property name="full.name" value="${plugin}_${version.suffix}"/>
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
 		<property name="plugin.destination" value="${basedir}"/>
@@ -41,6 +45,9 @@
 		<copy file="${build.result.folder}/TODO.txt" todir="${destination.temp.folder}/${full.name}"/>
 		<copy file="${build.result.folder}/RELNOTES.txt" todir="${destination.temp.folder}/${full.name}"/>
 		<copy file="${build.result.folder}/CHANGELOG.txt" todir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/LICENSE.txt" todir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/toc.xml" todir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/doc.zip" todir="${destination.temp.folder}/${full.name}"/>
 		<mkdir dir="${destination.temp.folder}/${full.name}/lib"/>
 		<copy todir="${destination.temp.folder}/${full.name}/lib">
 			<fileset dir="lib/"/>
@@ -59,7 +66,7 @@
 		<delete dir="${temp.folder}/pmd-eclipse.jar.bin"/>
 		<mkdir dir="${temp.folder}/pmd-eclipse.jar.bin"/>
 		<!-- compile the source code -->
-		<javac destdir="${temp.folder}/pmd-eclipse.jar.bin" failonerror="false" verbose="true" debug="on" includeAntRuntime="no" bootclasspath="${bootclasspath}" classpath="C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui.win32_2.0.0/workbench.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.boot_2.0.2.1/boot.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/xmlParserAPIs.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.runtime_2.0.2/runtime.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/xercesImpl.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui_2.0.2/workbench.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt.win32_2.0.2/ws/${ws}/swt.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.boot_2.0.2.1/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.runtime_2.0.2/bin;lib/pmd-1.03.jar;lib/commons-logging.jar;lib/log4j-1.2.8.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.jdt.core_2.0.2/jdtcore.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources_2.0.1/resources.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.jdt.core_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui.win32_2.0.0/workbenchwin32.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources.win32_2.0.1/resources.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources_2.0.1/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt_2.0.2/ws/${ws}/swt.jar">
+		<javac destdir="${temp.folder}/pmd-eclipse.jar.bin" failonerror="false" verbose="true" debug="on" includeAntRuntime="no" bootclasspath="${bootclasspath}" classpath="${classpath}">
 			<src path="src/"/>
 		</javac>
 		<!-- copy necessary resources -->
@@ -81,6 +88,7 @@
 			<fileset dir="." includes="README"/>
 			<fileset dir="." includes="**/*.txt"/>
 			<fileset dir="." includes="**/*.jar"/>
+			<fileset dir="." includes="doc.zip"/>
 		</zip>
 	</target>
 
