@@ -19,7 +19,7 @@
      <subsection name="Open Source">
        <ul>
          <li><a href="http://doctorj.org">DoctorJ</a> - Written in C++.  Uses Lex and YACC.  Checks Javadoc, syntax and calculates metrics.</li>
-         <li><a href="http://www.artho.com/jlint/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.<li>
+         <li><a href="http://www.artho.com/jlint/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.</li>
          <li><a href="http://www.tbbr32568.pwb.blueyonder.co.uk/jnp/">JNP</a> - Nifty research project, uses JJTree/JavaCC.</li>
          <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a> - Very detailed, supports both Maven and Ant. Uses ANTLR.</li>
          <li><a href="http://jcsc.sourceforge.net/">JCSC</a> - Does a variety of coding standard checks, uses JavaCC and the GNU Regexp package.</li>
