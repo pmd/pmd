@@ -16,17 +16,21 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
 public class UseSingletonTest extends SimpleAggregatorTst implements ReportListener {
 
     private int callbacks;
+    private Rule rule;
 
+    public void setUp() {
+        rule = findRule("rulesets/design.xml", "UseSingleton");
+    }
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "should be singleton since all static, public constructor", 1, new UseSingleton()),
-           new TestDescriptor(TEST2, "ok, uses non-static", 0, new UseSingleton()),
-           new TestDescriptor(TEST3, "should be singleton, couple of statics, no constructor", 1, new UseSingleton()),
-           new TestDescriptor(TEST4, "no constructor, one static - ok", 0, new UseSingleton()),
-           new TestDescriptor(TEST5, "classic singleton - ok", 0, new UseSingleton()),
-           new TestDescriptor(TEST6, "abstract, so ok", 0, new UseSingleton()),
-           new TestDescriptor(TEST7, "has no fields, so ok", 0, new UseSingleton()),
-           new TestDescriptor(TEST8, "has public static field, so need to check", 1, new UseSingleton()),
+           new TestDescriptor(TEST1, "should be singleton since all static, public constructor", 1, rule),
+           new TestDescriptor(TEST2, "ok, uses non-static", 0, rule),
+           new TestDescriptor(TEST3, "should be singleton, couple of statics, no constructor", 1, rule),
+           new TestDescriptor(TEST4, "no constructor, one static - ok", 0, rule),
+           new TestDescriptor(TEST5, "classic singleton - ok", 0, rule),
+           new TestDescriptor(TEST6, "abstract, so ok", 0, rule),
+           new TestDescriptor(TEST7, "has no fields, so ok", 0, rule),
+           new TestDescriptor(TEST8, "has public static field, so need to check", 1, rule),
        });
     }
 
