@@ -11,10 +11,22 @@ public class Match implements Comparable {
     private List marks = new ArrayList();
     private String code;
 
+    public Match(int tokenCount) {
+        this.tokenCount = tokenCount;
+    }
+
     public Match(int tokenCount, Mark first, Mark second) {
         marks.add(first);
         marks.add(second);
         this.tokenCount = tokenCount;
+    }
+
+    public void add(Mark mark) {
+        marks.add(mark);
+    }
+
+    public int getMarkCount() {
+        return this.marks.size();
     }
 
     public void setLineCount(int lineCount) {
