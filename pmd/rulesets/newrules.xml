@@ -384,5 +384,26 @@ public class Foo extends Bar{
      </rule>
 
 
+    <rule name="AvoidFieldNamesMatchingTypeName"
+          message="It is somewhat confusing to have a field name matching the declaring class name"
+          class="net.sourceforge.pmd.rules.AvoidFieldNamesMatchingTypeName">
+      <description>
+      It is somewhat confusing to have a field name matching the declaring class name.
+      This proabably means that type and or field names could be more precise.
+      </description>
+      <properties></properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class Foo extends Bar {
+	// There's probably a better name for foo
+	int foo;	
+}
+]]>
+      </example>
+    </rule>
+    
+
 </ruleset>
 
