@@ -44,15 +44,14 @@ public class NameOccurrence {
         return top.jjtGetNumChildren() > 1 && top.jjtGetChild(1) instanceof ASTAssignmentOperator;
     }
 
-    // do these two methods justify keeping a node as an instance var?
     public Scope getScope() {
         return occurrenceLocation.getScope();
     }
 
+
     public int getBeginLine() {
         return occurrenceLocation.getBeginLine();
     }
-    // do these two methods justify keeping a node as an instance var?
 
     public boolean isThisOrSuper() {
         return image.equals("this") || image.equals("super");

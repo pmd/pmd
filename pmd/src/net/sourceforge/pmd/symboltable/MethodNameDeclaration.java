@@ -8,6 +8,7 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.ASTFormalParameters;
 
 public class MethodNameDeclaration {
 
@@ -18,8 +19,28 @@ public class MethodNameDeclaration {
     }
 
     public boolean equals(Object o) {
-        MethodNameDeclaration n = (MethodNameDeclaration)o;
-        return n.node.getImage().equals(node.getImage()) && n.node.getParameterCount() == node.getParameterCount();
+        MethodNameDeclaration otherMethodDecl = (MethodNameDeclaration)o;
+
+        // compare method name
+        if (!otherMethodDecl.node.getImage().equals(node.getImage())) {
+            return false;
+        }
+
+        // compare parameter count - this catches the case where there are no params, too
+        if (otherMethodDecl.node.getParameterCount() != node.getParameterCount()) {
+            return false;
+        }
+
+        // compare parameter types
+/*
+        ASTFormalParameters myParams = (ASTFormalParameters)node.jjtGetChild(0);
+        ASTFormalParameters otherParams = (ASTFormalParameters)otherMethodDecl.node.jjtGetChild(0);
+        for (int i=0;i<node.getParameterCount();i++) {
+
+
+        }
+*/
+        return true;
     }
 
     public int getLine() {

@@ -1,3 +1,3 @@
-public class UnusedPrivateInstanceVar18 {
+public class UnusedPrivateField18 {
  public static final String FOO = "foo";
 }

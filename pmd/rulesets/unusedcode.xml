@@ -6,11 +6,11 @@ The Unused Code Ruleset contains a collection of rules that find unused code.
   </description>
 
 
-  <rule name="UnusedPrivateInstanceVariable"
+  <rule name="UnusedPrivateField"
         message="Avoid unused private fields such as ''{0}''"
-        class="net.sourceforge.pmd.rules.UnusedPrivateInstanceVariableRule">
+        class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule">
     <description>
-Unused Private Instance Variable detects when a private field is declared
+Unused Private Field detects when a private field is declared
 that is not used by the class.
     </description>
     <example>

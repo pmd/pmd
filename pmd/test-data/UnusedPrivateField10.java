@@ -1,4 +1,4 @@
-public class UnusedPrivateInstanceVar10 {
+public class UnusedPrivateField10 {
  private int x;
  private class Bar {
   public void baz() {

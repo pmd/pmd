@@ -1,4 +1,4 @@
-public class UnusedPrivateInstanceVar5 {
+public class UnusedPrivateField5 {
  public void bar() {
   Runnable r = new Runnable() {
    public void run() {

@@ -1,4 +1,4 @@
-public class UnusedPrivateInstanceVar3 {
+public class UnusedPrivateField3 {
 
  private String foo;
 

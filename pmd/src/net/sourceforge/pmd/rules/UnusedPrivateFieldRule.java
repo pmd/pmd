@@ -12,7 +12,7 @@ import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.symboltable.*;
 
-public class UnusedPrivateInstanceVariableRule extends AbstractRule {
+public class UnusedPrivateFieldRule extends AbstractRule {
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         for (Iterator i = node.getScope().getUnusedVariableDeclarations();i.hasNext();) {
