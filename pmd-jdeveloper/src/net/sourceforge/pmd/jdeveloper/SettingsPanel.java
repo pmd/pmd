@@ -1,22 +1,13 @@
 package net.sourceforge.pmd.jdeveloper;
 
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import oracle.ide.Ide;
 import oracle.ide.panels.DefaultTraversablePanel;
 import oracle.ide.panels.TraversableContext;
 
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -65,38 +56,76 @@ public class SettingsPanel extends DefaultTraversablePanel {
 
     }
 
-    private SelectedRules rules;
+    public static final String RULE_SELECTIONS_STORED_SEPARATELY = "pmd.settings.separate";
+    public static final String RULE_SELECTIONS_FILENAME = "pmd.settings.separate.name";
+
     private JTextArea exampleTextArea= new JTextArea(10, 50);
+    private JCheckBox selectedRulesStoredSeparatelyBox = new JCheckBox("", Boolean.valueOf(Ide.getProperty(RULE_SELECTIONS_STORED_SEPARATELY)).booleanValue());
+    private JTextField selectedRulesSeparateFileNameField = new JTextField(30);
+    private SelectedRules rules;
+
+    public static SettingsStorage createSettingsStorage() {
+        if (Boolean.valueOf(Ide.getProperty(RULE_SELECTIONS_STORED_SEPARATELY)).booleanValue()) {
+            //return new
+        }
+        return new IDEStorage();
+    }
 
     public void onEntry(TraversableContext tc) {
-        super.removeAll();
+        removeAll();
         try {
-            rules = new SelectedRules();
+            rules = new SelectedRules(createSettingsStorage());
         } catch (RuleSetNotFoundException rsne) {
             rsne.printStackTrace();
         }
 
-        JPanel boxesPanel = new JPanel();
-        boxesPanel.setBorder(BorderFactory.createTitledBorder("Rules"));
-        JList list = new CheckboxList(rules.getAllBoxes());
-        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        boxesPanel.add(new JScrollPane(list), BorderLayout.NORTH);
-        JPanel textPanel = new JPanel();
-        textPanel.setBorder(BorderFactory.createTitledBorder("Example"));
-        textPanel.add(new JScrollPane(exampleTextArea));
-        JPanel selectionPanel = new JPanel();
-        selectionPanel.setLayout(new BorderLayout());
-        selectionPanel.add(boxesPanel, BorderLayout.NORTH);
-        selectionPanel.add(textPanel, BorderLayout.CENTER);
-
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(new JLabel("Please see http://pmd.sf.net/ for more information"), BorderLayout.NORTH);
-        mainPanel.add(selectionPanel, BorderLayout.CENTER);
-
+        mainPanel.add(createTopPanel(), BorderLayout.NORTH);
+        mainPanel.add(createRulesSelectionPanel(), BorderLayout.SOUTH);
         add(mainPanel);
     }
 
+    private JPanel createRulesSelectionPanel() {
+        JPanel checkBoxesPanel = new JPanel();
+        checkBoxesPanel.setBorder(BorderFactory.createTitledBorder("Rules"));
+        JList rulesList = new CheckboxList(rules.getAllBoxes());
+        rulesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        checkBoxesPanel.add(new JScrollPane(rulesList), BorderLayout.NORTH);
+        JPanel examplePanel = new JPanel();
+        examplePanel.setBorder(BorderFactory.createTitledBorder("Example"));
+        examplePanel.add(new JScrollPane(exampleTextArea));
+        JPanel rulesSelectionPanel = new JPanel();
+        rulesSelectionPanel.setLayout(new BorderLayout());
+        rulesSelectionPanel.add(checkBoxesPanel, BorderLayout.NORTH);
+        rulesSelectionPanel.add(examplePanel, BorderLayout.CENTER);
+        return rulesSelectionPanel;
+    }
+
+    private JPanel createTopPanel() {
+        selectedRulesSeparateFileNameField.setText(Ide.getProperty(RULE_SELECTIONS_FILENAME));
+        selectedRulesStoredSeparatelyBox.setSelected(Boolean.valueOf(Ide.getProperty(RULE_SELECTIONS_STORED_SEPARATELY)).booleanValue());
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(new JLabel("Please see http://pmd.sf.net/ for more information"), BorderLayout.NORTH);
+        JPanel customStoragePanel = new JPanel(new BorderLayout());
+        customStoragePanel.setBorder(BorderFactory.createTitledBorder("Settings storage"));
+
+        JPanel customStorageCheckBoxPanel = new JPanel();
+        customStorageCheckBoxPanel.add(new JLabel("Use centrally managed rule settings?"));
+        customStorageCheckBoxPanel.add(selectedRulesStoredSeparatelyBox);
+        customStoragePanel.add(customStorageCheckBoxPanel, BorderLayout.NORTH);
+
+        JPanel customStorageTextFieldPanel = new JPanel();
+        customStorageTextFieldPanel.add(new JLabel("File:"));
+        customStorageTextFieldPanel.add(selectedRulesSeparateFileNameField);
+        customStoragePanel.add(customStorageTextFieldPanel, BorderLayout.SOUTH);
+        topPanel.add(customStoragePanel, BorderLayout.CENTER);
+        return topPanel;
+    }
+
     public void onExit(TraversableContext tc) {
-        rules.save();
+        Ide.setProperty(RULE_SELECTIONS_STORED_SEPARATELY, String.valueOf(selectedRulesStoredSeparatelyBox.isSelected()));
+        Ide.setProperty(RULE_SELECTIONS_FILENAME, selectedRulesSeparateFileNameField.getText());
+        rules.save(createSettingsStorage());
     }
 }

@@ -5,10 +5,8 @@ import oracle.ide.Ide;
 import oracle.ide.layout.ViewId;
 import oracle.ide.log.AbstractLogPage;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 
 public class RuleViolationPage extends AbstractLogPage {
 

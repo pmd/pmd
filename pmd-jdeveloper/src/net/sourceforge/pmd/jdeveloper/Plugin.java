@@ -8,7 +8,6 @@ import net.sourceforge.pmd.RuleViolation;
 import oracle.ide.ContextMenu;
 import oracle.ide.Ide;
 import oracle.ide.IdeAction;
-import oracle.ide.layout.ViewId;
 import oracle.ide.addin.Addin;
 import oracle.ide.addin.Context;
 import oracle.ide.addin.ContextMenuListener;
@@ -21,8 +20,7 @@ import oracle.ide.panels.Navigable;
 import oracle.jdeveloper.model.JProject;
 import oracle.jdeveloper.model.JavaSourceNode;
 
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;
@@ -85,7 +83,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         if (ideAction.getCommandId() == CHECK_CMD_ID) {
             try {
                 PMD pmd = new PMD();
-                SelectedRules rs = new SelectedRules();
+                SelectedRules rs = new SelectedRules(SettingsPanel.createSettingsStorage());
                 RuleContext ctx = new RuleContext();
                 ctx.setReport(new Report());
                 if (resolveType(context.getDocument()) == PROJECT) {

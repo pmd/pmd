@@ -4,9 +4,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import oracle.ide.Ide;
 
-import javax.swing.JCheckBox;
+import javax.swing.*;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,13 +22,13 @@ public class SelectedRules {
         }
     });
 
-    public SelectedRules() throws RuleSetNotFoundException {
+    public SelectedRules(SettingsStorage settings) throws RuleSetNotFoundException {
         RuleSetFactory rsf = new JDeveloperRuleSetFactory();
         for (Iterator i = rsf.getRegisteredRuleSets(); i.hasNext();) {
             RuleSet rs = (RuleSet)i.next();
             for (Iterator j = rs.getRules().iterator(); j.hasNext();) {
                 Rule rule = (Rule)j.next();
-                rules.put(rule, createCheckBox(rule.getName()));
+                rules.put(rule, createCheckBox(rule.getName(), settings));
             }
         }
     }
@@ -63,10 +62,10 @@ public class SelectedRules {
         return foo;
     }
 
-    public void save() {
+    public void save(SettingsStorage settings) {
         for (Iterator i = rules.keySet().iterator(); i.hasNext();) {
             Rule rule = (Rule)i.next();
-            Ide.setProperty("pmd.rule." + rule.getName(), String.valueOf(get(rule).isSelected()));
+            settings.save("pmd.rule." + rule.getName(), String.valueOf(get(rule).isSelected()));
         }
     }
 
@@ -81,9 +80,9 @@ public class SelectedRules {
         return newRuleSet;
     }
 
-    private JCheckBox createCheckBox(String name) {
+    private JCheckBox createCheckBox(String name, SettingsStorage settings) {
         JCheckBox box = new JCheckBox(name);
-        box.setSelected(Boolean.valueOf(Ide.getProperty("pmd.rule." + name)).booleanValue());
+        box.setSelected(Boolean.valueOf(settings.load("pmd.rule." + name)).booleanValue());
         return box;
     }
 
