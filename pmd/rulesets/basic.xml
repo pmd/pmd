@@ -219,7 +219,13 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     <properties>
         <property name="xpath">
             <value>
-                <![CDATA[//ForStatement[count(*) > 1][not(ForInit)][not(ForUpdate)]]]>
+                <![CDATA[
+ //ForStatement
+  [count(*) > 1]
+  [not(ForInit)]
+  [not(ForUpdate)]
+  [not(Type and Expression and Statement)]
+ ]]>
             </value>
         </property>
     </properties>

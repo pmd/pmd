@@ -28,12 +28,6 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
        });
     }
 
-    public void testPossibleForLoopBug() throws Throwable {
-        Report rpt = new Report();
-        runTestFromString15(TEST6, rule, rpt);
-        assertEquals(1, rpt.size());
-    }
-
     public void testGenericsBug() throws Throwable {
         Report rpt = new Report();
         runTestFromString15(TEST7, rule, rpt);

@@ -6,6 +6,7 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.Report;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -24,6 +25,13 @@ public class ForLoopShouldBeWhileLoopRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST3, "for loop like this: for (;;) {} ", 0, rule),
        });
     }
+
+    public void testJDK15ForLoop() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST4, rule, rpt);
+        assertEquals(0, rpt.size());
+    }
+
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
@@ -48,6 +56,13 @@ public class ForLoopShouldBeWhileLoopRuleTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
     "  for (;;) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  for (String x : mylist) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
