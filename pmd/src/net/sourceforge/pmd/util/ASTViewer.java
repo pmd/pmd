@@ -155,19 +155,8 @@ public class ASTViewer {
         controlPanel.add(createCodeEditPanel());
         controlPanel.add(createXPathQueryPanel());
 
-        JSmartPanel astPanel = new JSmartPanel();
-        astArea.setRows(20);
-        astArea.setColumns(20);
-        JScrollPane astScrollPane = new JScrollPane(astArea);
-        astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
-
-        JPanel xpathResultPanel = new JPanel();
-        xpathResults.addElement("No results yet");
-        xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
-        xpathResultList.setFixedCellWidth(300);
-        JScrollPane xpathResultListScrollPane = new JScrollPane();
-        xpathResultListScrollPane.getViewport().setView(xpathResultList);
-        xpathResultPanel.add(xpathResultListScrollPane);
+        JSmartPanel astPanel = createASTPanel();
+        JPanel xpathResultPanel = createXPathResultPanel();
 
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
         JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, resultsSplitPane);
@@ -187,31 +176,51 @@ public class ASTViewer {
         codeEditorPane.setText(loadText());
     }
 
+    private JSmartPanel createASTPanel() {
+        JSmartPanel astPanel = new JSmartPanel();
+        astArea.setRows(20);
+        astArea.setColumns(20);
+        JScrollPane astScrollPane = new JScrollPane(astArea);
+        astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
+        return astPanel;
+    }
+
+    private JPanel createXPathResultPanel() {
+        JPanel p = new JPanel();
+        xpathResults.addElement("No results yet");
+        xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
+        xpathResultList.setFixedCellWidth(300);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.getViewport().setView(xpathResultList);
+        p.add(scrollPane);
+        return p;
+    }
+
     private JSmartPanel createCodeEditPanel() {
         JPanel top = new JPanel();
         top.setLayout(new BorderLayout());
-        JSmartPanel panel = new JSmartPanel();
+        JSmartPanel p = new JSmartPanel();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
-        panel.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
-        return panel;
+        p.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
+        return p;
     }
 
     private JPanel createXPathQueryPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(new JLabel("XPath Query (if any)"), BorderLayout.NORTH);
+        JPanel p = new JPanel();
+        p.setLayout(new BorderLayout());
+        p.add(new JLabel("XPath Query (if any)"), BorderLayout.NORTH);
         xpathQueryArea.setBorder(BorderFactory.createLineBorder(Color.black));
-        JScrollPane jScrollPane = new JScrollPane(xpathQueryArea);
-        jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        panel.add(jScrollPane, BorderLayout.CENTER);
-        JButton goButton = new JButton("Go");
-        goButton.setMnemonic('g');
-        goButton.addActionListener(new ShowListener());
-        goButton.addActionListener(new SaveListener());
-        goButton.addActionListener(new XPathListener());
-        panel.add(goButton, BorderLayout.SOUTH);
-        return panel;
+        JScrollPane scrollPane = new JScrollPane(xpathQueryArea);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        p.add(scrollPane, BorderLayout.CENTER);
+        JButton b = new JButton("Go");
+        b.setMnemonic('g');
+        b.addActionListener(new ShowListener());
+        b.addActionListener(new SaveListener());
+        b.addActionListener(new XPathListener());
+        p.add(b, BorderLayout.SOUTH);
+        return p;
     }
 
     private String loadText() {
