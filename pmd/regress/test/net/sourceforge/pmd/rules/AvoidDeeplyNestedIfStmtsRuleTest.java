@@ -19,10 +19,53 @@ public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
     public void test1() throws Throwable {
         runTest("AvoidDeeplyNestedIfStmtsRule1.java", 1, rule);
     }
-/*
-    // TODO - this test fails... is that OK?
+
     public void test2() throws Throwable {
         runTest("AvoidDeeplyNestedIfStmtsRule2.java", 0, rule);
     }
-*/
 }
+
+/*
+
+CompilationUnit
+ TypeDeclaration
+  ClassDeclaration
+   UnmodifiedClassDeclaration
+    ClassBody
+     ClassBodyDeclaration
+      MethodDeclaration
+       ResultType
+       MethodDeclarator
+        FormalParameters
+       Block
+        BlockStatement
+         Statement
+          IfStatement
+           Expression
+           PrimaryExpression
+            PrimaryPrefix
+             Literal
+              BooleanLiteral
+           Statement
+            Block
+           Statement
+            IfStatement
+             Expression
+             PrimaryExpression
+              PrimaryPrefix
+               Literal
+                BooleanLiteral
+             Statement
+              Block
+             Statement
+              IfStatement
+               Expression
+               PrimaryExpression
+                PrimaryPrefix
+                 Literal
+                  BooleanLiteral
+               Statement
+                Block
+               Statement
+                Block
+*/

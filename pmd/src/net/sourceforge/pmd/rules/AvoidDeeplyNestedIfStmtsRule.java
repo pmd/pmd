@@ -13,7 +13,9 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractRule {
 	}
 	
 	public Object visit(ASTIfStatement node, Object data) {
-		depth++;
+        if (!node.hasElse()) {
+            depth++;
+        }
 		super.visit(node, data);
 		if (depth == getIntProperty("problemDepth")) {
 			RuleContext ctx = (RuleContext)data;

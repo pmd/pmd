@@ -1084,9 +1084,16 @@ void IfStatement() :
  * else's to the innermost if statement.  The LOOKAHEAD specification
  * is to tell JavaCC that we know what we are doing.
  */
-{}
 {
-  "if" "(" Expression() ")" Statement() [ LOOKAHEAD(1) "else" Statement() ]
+boolean hasElse = false;
+}
+{
+  "if" "(" Expression() ")" Statement() [ LOOKAHEAD(1) "else" {hasElse = true;} Statement() ]
+{
+    if (hasElse) {
+        jjtThis.setHasElse();
+    }
+}
 }
 
 void WhileStatement() :

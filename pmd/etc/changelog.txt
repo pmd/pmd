@@ -1,5 +1,6 @@
 ???? 2002 - ????:
 Added new rules: StringToStringRule, AvoidReassigningParametersRule
+Fixed bug 631010: AvoidDeeplyNestedIfStmtsRule works correctly with if..else stmts now
 
 October 04 2002 - 1.0rc3:
 Added new rules: OnlyOneReturnRule, JumbledIncrementerRule, AvoidDeeplyNestedIfStmtsRule

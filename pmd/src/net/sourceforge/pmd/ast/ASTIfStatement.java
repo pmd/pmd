@@ -11,6 +11,16 @@ public class ASTIfStatement extends SimpleNode {
     super(p, id);
   }
 
+  private boolean hasElse;
+
+  public void setHasElse() {
+      this.hasElse = true;
+  }
+
+    public boolean hasElse() {
+        return this.hasElse;
+    }
+
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
