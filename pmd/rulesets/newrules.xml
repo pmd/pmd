@@ -22,7 +22,7 @@ These are new rules for the next release
     </rule>
 
     <rule name="IdempotentOperationsRule"
-          message="Avoid idempotent operations"
+          message="NOT FULLY IMPLEMENTED - Avoid idempotent operations"
           class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
       <description>
       Avoid idempotent operations - they are silly.
