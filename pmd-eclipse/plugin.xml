@@ -58,10 +58,7 @@
             value="true">
       </persistent>
       <attribute
-            name="description">
-      </attribute>
-      <attribute
-            name="example">
+            name="rulename">
       </attribute>
    </extension>
    <extension
@@ -214,6 +211,17 @@
                id="net.sourceforge.pmd.eclipse.pmdRemoveAllMarkersAction">
          </action>
       </viewerContribution>
+      <viewerContribution
+            targetID="net.sourceforge.pmd.eclipse.views.ViolationView"
+            id="net.sourceforge.pmd.eclipse.pmdVioaltionViewContribution">
+         <action
+               label="%action.clearall"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
+               menubarPath="additions"
+               id="net.sourceforge.pmd.eclipse.pmdRemoveAllMarkersAction">
+         </action>
+      </viewerContribution>
    </extension>
    <extension
          point="org.eclipse.help.toc">
@@ -222,5 +230,15 @@
             primary="true">
       </toc>
    </extension>
+   <extension point="org.eclipse.ui.views">
+      <category id="net.sourceforge.pmd.eclipse.views" name="%view.category"></category>
+      <view id="net.sourceforge.pmd.eclipse.views.ViolationView"
+         name="%view.violation"
+         icon="icons/pmd-icon-16.gif"
+	     category="net.sourceforge.pmd.eclipse.views"
+         class="net.sourceforge.pmd.eclipse.views.ViolationView">
+      </view>
+   </extension>
+
 
 </plugin>

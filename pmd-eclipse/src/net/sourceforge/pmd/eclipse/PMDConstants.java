@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2003/07/07 19:23:59  phherlin
+ * Adding PMD violations view
+ *
  * Revision 1.5  2003/07/01 20:22:16  phherlin
  * Make rules selectable from projects
  *
@@ -58,6 +61,33 @@ public interface PMDConstants {
     public static final String MSGKEY_PREF_CPD_TITLE = "preference.cpd.title";
     public static final String MSGKEY_PREF_CPD_TILESIZE = "preference.cpd.tilesize";
     
+    public static final String MSGKEY_VIEW_COLUMN_MESSAGE = "view.column.message";
+    public static final String MSGKEY_VIEW_COLUMN_RULE = "view.column.rule";
+    public static final String MSGKEY_VIEW_COLUMN_CLASS = "view.column.class";
+    public static final String MSGKEY_VIEW_COLUMN_PACKAGE = "view.column.package";
+    public static final String MSGKEY_VIEW_COLUMN_PROJECT = "view.column.project";
+    public static final String MSGKEY_VIEW_COLUMN_LOCATION = "view.column.location";
+    public static final String MSGKEY_VIEW_TOOLTIP_PROJECT = "view.tooltip.project";
+    public static final String MSGKEY_VIEW_TOOLTIP_FILE = "view.tooltip.file";
+    public static final String MSGKEY_VIEW_TOOLTIP_ERRORHIGH_FILTER = "view.tooltip.errorhigh_filter";
+    public static final String MSGKEY_VIEW_TOOLTIP_ERROR_FILTER = "view.tooltip.error_filter";
+    public static final String MSGKEY_VIEW_TOOLTIP_WARNINGHIGH_FILTER = "view.tooltip.warninghigh_filter";
+    public static final String MSGKEY_VIEW_TOOLTIP_WARNING_FILTER = "view.tooltip.warning_filter";
+    public static final String MSGKEY_VIEW_TOOLTIP_INFORMATION_FILTER = "view.tooltip.information_filter";
+    public static final String MSGKEY_VIEW_TOOLTIP_SHOW_RULE = "view.tooltip.show_rule";
+    public static final String MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION = "view.tooltip.remove_violation";
+    public static final String MSGKEY_VIEW_ACTION_PROJECT = "view.action.project";
+    public static final String MSGKEY_VIEW_ACTION_FILE = "view.action.file";
+    public static final String MSGKEY_VIEW_ACTION_ERRORHIGH = "view.action.errorhigh";
+    public static final String MSGKEY_VIEW_ACTION_ERROR = "view.action.error";
+    public static final String MSGKEY_VIEW_ACTION_WARNINGHIGH = "view.action.warninghigh";
+    public static final String MSGKEY_VIEW_ACTION_WARNING = "view.action.warning";
+    public static final String MSGKEY_VIEW_ACTION_INFORMATION = "view.action.information";
+    public static final String MSGKEY_VIEW_ACTION_SHOW_RULE = "view.action.show_rule";
+    public static final String MSGKEY_VIEW_ACTION_REMOVE_VIOLATION = "view.action.remove_violation";
+    public static final String MSGKEY_VIEW_MENU_RESOURCE_FILTER = "view.menu.resource_filter";
+    public static final String MSGKEY_VIEW_MENU_PRIORITY_FILTER = "view.menu.priority_filter";
+    
     public static final String MSGKEY_ERROR_TITLE = "message.error.title";
     public static final String MSGKEY_ERROR_CORE_EXCEPTION = "message.error.core_exception";
     public static final String MSGKEY_ERROR_PMD_EXCEPTION = "message.error.pmd_exception";
@@ -67,6 +97,7 @@ public interface PMDConstants {
     public static final String MSGKEY_ERROR_READING_PREFERENCE = "message.error.reading_preference";
     public static final String MSGKEY_ERROR_WRITING_PREFERENCE = "message.error.writing_preference";
     public static final String MSGKEY_ERROR_STORING_PROPERTY = "message.error.storing_property";
+    public static final String MSGKEY_ERROR_FIND_MARKER = "message.error.find_marker";
     
     public static final String MSGKEY_QUESTION_TITLE = "message.question.title";
     public static final String MSGKEY_QUESTION_RULES_CHANGED = "message.question.rules_changed";
@@ -91,5 +122,6 @@ public interface PMDConstants {
     
     public static final String MSGKEY_MONITOR_CHECKING_FILE = "monitor.checking_file";
     public static final String MSGKEY_PMD_PROCESSING = "monitor.begintask";
+    public static final String MSGKEY_MONITOR_UPDATING_PROJECTS = "monitor.updating_projects";
     
 }

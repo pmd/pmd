@@ -4,12 +4,11 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.rules.XPathRule;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -17,8 +16,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Implements a dialog for adding or editing a rule.
@@ -29,6 +28,9 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/07/07 19:25:36  phherlin
+ * Adding PMD violations view
+ *
  * Revision 1.1  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -37,6 +39,7 @@ import org.eclipse.swt.widgets.Shell;
 public class RuleDialog extends Dialog {
     private static final int MODE_ADD = 1;
     private static final int MODE_EDIT = 2;
+    private static final int MODE_VIEW = 3;
 
     private int mode = MODE_ADD;
     private Rule editedRule;
@@ -65,6 +68,16 @@ public class RuleDialog extends Dialog {
     public RuleDialog(Shell parent, Rule editedRule) {
         super(parent);
         mode = MODE_EDIT;
+        this.editedRule = editedRule;
+    }
+
+    /**
+     * Constructor for RuleDialog.
+     * @param parentdlgArea
+     */
+    public RuleDialog(Shell parent, Rule editedRule, boolean flEdit) {
+        super(parent);
+        mode = flEdit ? MODE_EDIT : MODE_VIEW;
         this.editedRule = editedRule;
     }
 
@@ -169,9 +182,18 @@ public class RuleDialog extends Dialog {
      */
     private Text buildNameText(Composite parent) {
         Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        if (mode == MODE_ADD) {
+            text.setFocus();
+        }
+
         if (mode == MODE_EDIT) {
             text.setText(editedRule.getName());
             text.setEnabled(false);
+        }
+
+        if (mode == MODE_VIEW) {
+            text.setEditable(false);
+            text.setText(editedRule.getName());
         }
 
         return text;
@@ -183,34 +205,30 @@ public class RuleDialog extends Dialog {
     private Button buildXPathRuleButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(getMessage(PMDConstants.MSGKEY_PREF_RULEEDIT_BUTTON_XPATH_RULE));
-        if (mode == MODE_EDIT) {
-            button.setSelection(editedRule instanceof XPathRule);
-            button.setEnabled(false);
+
+        if (mode == MODE_VIEW) {
+            button.setVisible(false);
         } else {
-            button.setEnabled(true);
-            button.setSelection(false);
-        }
+            if (mode == MODE_EDIT) {
+                button.setSelection(editedRule instanceof XPathRule);
+                button.setEnabled(false);
+            } else {
+                button.setEnabled(true);
+                button.setSelection(false);
+            }
 
-        button.addSelectionListener(new SelectionListener() {
-            /**
-             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(SelectionEvent)
-             */
-            public void widgetSelected(SelectionEvent event) {
-                if (button.getSelection()) {
-                    implementationClassText.setText(XPathRule.class.getName());
-                    implementationClassText.setEnabled(false);
-                } else {
-                    implementationClassText.setText("");
-                    implementationClassText.setEnabled(true);
+            button.addSelectionListener(new SelectionAdapter() {
+                public void widgetSelected(SelectionEvent event) {
+                    if (button.getSelection()) {
+                        implementationClassText.setText(XPathRule.class.getName());
+                        implementationClassText.setEnabled(false);
+                    } else {
+                        implementationClassText.setText("");
+                        implementationClassText.setEnabled(true);
+                    }
                 }
-            }
-
-            /**
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(SelectionEvent)
-             */
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        });
+            });
+        }
 
         return button;
     }
@@ -225,6 +243,11 @@ public class RuleDialog extends Dialog {
             text.setEnabled(false);
         }
 
+        if (mode == MODE_VIEW) {
+            text.setEditable(false);
+            text.setText(editedRule.getClass().getName());
+        }
+
         return text;
     }
 
@@ -234,6 +257,12 @@ public class RuleDialog extends Dialog {
     private Text buildMessageText(Composite parent) {
         Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
         if (mode == MODE_EDIT) {
+            text.setFocus();
+            text.setText(editedRule.getMessage().trim());
+        }
+
+        if (mode == MODE_VIEW) {
+            text.setEditable(false);
             text.setText(editedRule.getMessage().trim());
         }
 
@@ -249,6 +278,11 @@ public class RuleDialog extends Dialog {
             text.setText(editedRule.getDescription().trim());
         }
 
+        if (mode == MODE_VIEW) {
+            text.setEditable(false);
+            text.setText(editedRule.getDescription().trim());
+        }
+
         return text;
     }
 
@@ -259,6 +293,11 @@ public class RuleDialog extends Dialog {
         Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         text.setFont(courierFont);
         if (mode == MODE_EDIT) {
+            text.setText(editedRule.getExample().trim());
+        }
+
+        if (mode == MODE_VIEW) {
+            text.setEditable(false);
             text.setText(editedRule.getExample().trim());
         }
 
@@ -278,7 +317,7 @@ public class RuleDialog extends Dialog {
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     protected void okPressed() {
-        if (validateForm()) {
+        if (validateForm() && (mode != MODE_VIEW)) {
             super.okPressed();
         }
     }

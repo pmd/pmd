@@ -4,9 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.Rule;
@@ -17,14 +20,19 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -36,6 +44,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2003/07/07 19:23:59  phherlin
+ * Adding PMD violations view
+ *
  * Revision 1.9  2003/07/01 20:22:16  phherlin
  * Make rules selectable from projects
  *
@@ -78,6 +89,28 @@ public class PMDPlugin extends AbstractUIPlugin {
         new QualifiedName("net.sourceforge.pmd.eclipse.persprops", "active_rulset");
 
     public static final String LIST_DELIMITER = ";";
+
+    public static final String ICON_ERROR = "icons/error.gif";
+    public static final String ICON_WARN = "icons/warn.gif";
+    public static final String ICON_INFO = "icons/info.gif";
+    public static final String ICON_PROJECT = "icons/prj.gif";
+    public static final String ICON_FILE = "icons/file.gif";
+    public static final String ICON_PRIO1 = "icons/prio_1.gif";
+    public static final String ICON_PRIO2 = "icons/prio_2.gif";
+    public static final String ICON_PRIO3 = "icons/prio_3.gif";
+    public static final String ICON_PRIO4 = "icons/prio_4.gif";
+    public static final String ICON_PRIO5 = "icons/prio_5.gif";
+    public static final String ICON_REMVIO = "icons/remvio.gif";
+
+    public static final String KEY_MARKERATT_RULENAME = "rulename";
+    
+    public static final String SETTINGS_VIEW_FILE_SELECTION = "view.file_selection";
+    public static final String SETTINGS_VIEW_PROJECT_SELECTION = "view.project_selection";
+    public static final String SETTINGS_VIEW_ERRORHIGH_FILTER = "view.errorhigh_filter";
+    public static final String SETTINGS_VIEW_ERROR_FILTER = "view.high_filter";
+    public static final String SETTINGS_VIEW_WARNINGHIGH_FILTER = "view.warninghigh_filter";
+    public static final String SETTINGS_VIEW_WARNING_FILTER = "view.warning_filter";
+    public static final String SETTINGS_VIEW_INFORMATION_FILTER = "view.information_filter";
 
     // Static attributes
     private static PMDPlugin plugin;
@@ -167,7 +200,12 @@ public class PMDPlugin extends AbstractUIPlugin {
     /**
      * Set the rule set and store it in the preferences
      */
-    public void setRuleSet(RuleSet newRuleSet) {
+    public void setRuleSet(RuleSet newRuleSet, IProgressMonitor monitor) {
+        Set addedRules = getNewRules(newRuleSet);
+        if (!addedRules.isEmpty()) {
+            addNewRulesToConfiguredProjects(addedRules, monitor);
+        }
+
         ruleSet = newRuleSet;
         storeRuleSetInPreference();
     }
@@ -198,28 +236,32 @@ public class PMDPlugin extends AbstractUIPlugin {
      * Get the rulset configured for the resouce.
      * Currently, it is the one configured for the resource's project
      */
-    public RuleSet getRuleSetForResource(IResource resource) {
+    public RuleSet getRuleSetForResource(IResource resource, boolean flCreateProperty) {
         boolean flNeedSave = false;
-        RuleSet ruleSet = null;
+        RuleSet projectRuleSet = null;
         RuleSet configuredRuleSet = getRuleSet();
         IProject project = resource.getProject();
         try {
-            ruleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
-            if (ruleSet == null) {
+            projectRuleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
+            if (projectRuleSet == null) {
                 String activeRulesList = project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
                 if (activeRulesList != null) {
-                    ruleSet = getRuleSetFromRuleList(activeRulesList);
+                    projectRuleSet = getRuleSetFromRuleList(activeRulesList);
                     flNeedSave = true;
                 } else {
-                    ruleSet = configuredRuleSet;
-                    flNeedSave = true;
+                    if (flCreateProperty) {
+                        projectRuleSet = configuredRuleSet;
+                        flNeedSave = true;
+                    } else {
+                        flNeedSave = false;
+                    }
                 }
             }
-            
+
             // If meanwhile, rules have been deleted from preferences
             // delete them also from the project ruleset
-            if (ruleSet != configuredRuleSet) {
-                Iterator i = ruleSet.getRules().iterator();
+            if ((projectRuleSet != null) && (projectRuleSet != configuredRuleSet)) {
+                Iterator i = projectRuleSet.getRules().iterator();
                 while (i.hasNext()) {
                     Object rule = i.next();
                     if (!configuredRuleSet.getRules().contains(rule)) {
@@ -228,16 +270,16 @@ public class PMDPlugin extends AbstractUIPlugin {
                     }
                 }
             }
-            
+
             // If needed store modified ruleset
             if (flNeedSave) {
-                storeRuleSetForResource(resource, ruleSet);
+                storeRuleSetForResource(resource, projectRuleSet);
             }
         } catch (CoreException e) {
             logError("Error when searching for project ruleset. Using the full ruleset.", e);
         }
 
-        return ruleSet;
+        return projectRuleSet;
     }
 
     /**
@@ -248,8 +290,8 @@ public class PMDPlugin extends AbstractUIPlugin {
             StringBuffer ruleSelectionList = new StringBuffer();
             Iterator i = ruleSet.getRules().iterator();
             while (i.hasNext()) {
-                Rule rule = (Rule) i.next();                
-                    ruleSelectionList.append(rule.getName()).append(LIST_DELIMITER);
+                Rule rule = (Rule) i.next();
+                ruleSelectionList.append(rule.getName()).append(LIST_DELIMITER);
             }
 
             resource.setPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET, ruleSelectionList.toString());
@@ -329,6 +371,39 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * Get an image corresponding to the severity
+     */
+    public Image getImage(String key, String iconPath) {
+        ImageRegistry registry = PMDPlugin.getDefault().getImageRegistry();
+        Image image = registry.get(key);
+        if (image == null) {
+            ImageDescriptor descriptor = getImageDescriptor(iconPath);
+            if (descriptor != null) {
+                registry.put(key, descriptor);
+                image = registry.get(key);
+            }
+        }
+
+        return image;
+    }
+
+    /**
+     * Get a new image descriptor
+     */
+    public ImageDescriptor getImageDescriptor(String iconPath) {
+        ImageDescriptor descriptor = null;
+        try {
+            URL urlBasic = getDescriptor().getInstallURL();
+            URL urlIcon = new URL(urlBasic, iconPath);
+            descriptor = ImageDescriptor.createFromURL(urlIcon);
+        } catch (MalformedURLException e) {
+            logError("Exception when search for icons", e);
+        }
+
+        return descriptor;
+    }
+
+    /**
      * Helper method to log error
      * @see IStatus
      */
@@ -352,5 +427,59 @@ public class PMDPlugin extends AbstractUIPlugin {
                     message + String.valueOf(t));
             }
         });
+    }
+
+    /**
+     * Find if rules has been added
+     */
+    private Set getNewRules(RuleSet newRuleSet) {
+        Set addedRules = new HashSet();
+        Set newRules = newRuleSet.getRules();
+        Iterator i = newRules.iterator();
+        while (i.hasNext()) {
+            Rule rule = (Rule) i.next();
+            try {
+                ruleSet.getRuleByName(rule.getName());
+            } catch (RuntimeException e) {
+                addedRules.add(rule);
+            }
+        }
+
+        return addedRules;
+    }
+
+    /**
+     * Add new rules to already configured projects
+     */
+    private void addNewRulesToConfiguredProjects(Set addedRules, IProgressMonitor monitor) {
+        RuleSet addedRuleSet = new RuleSet();
+        Iterator ruleIterator = addedRules.iterator();
+        while (ruleIterator.hasNext()) {
+            Rule rule = (Rule) ruleIterator.next();
+            addedRuleSet.addRule(rule);
+        }
+
+        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        if (monitor != null) {
+            monitor.beginTask(getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), projects.length);
+        }
+
+        for (int i = 0; i < projects.length; i++) {
+            if (monitor != null) {
+                monitor.subTask(getMessage(PMDConstants.MSGKEY_MONITOR_UPDATING_PROJECTS) + projects[i].getName());
+            }
+
+            if (projects[i].isAccessible()) {
+                RuleSet projectRuleSet = getRuleSetForResource(projects[i], false);
+                if (projectRuleSet != null) {
+                    projectRuleSet.addRuleSet(addedRuleSet);
+                    storeRuleSetForResource(projects[i], projectRuleSet);
+                }
+            }
+
+            if (monitor != null) {
+                monitor.worked(1);
+            }
+        }
     }
 }
