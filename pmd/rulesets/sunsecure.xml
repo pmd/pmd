@@ -28,10 +28,9 @@ These rules check the security guidelines from Sun, published at http://java.sun
       </example>
       </rule>
 
-<!--
     <rule name="ArrayIsStoredDirectly"
           message="A user given array is stored directly"
-          class="">
+          class="net.sourceforge.pmd.rules.sunsecure.ArrayIsStoredDirectly">
       <description>
       Constructors and methods receiving arrays shuold clone objects and store the copy.
       This prevents that future changes from the user affect the internal functionallity.
@@ -39,14 +38,18 @@ These rules check the security guidelines from Sun, published at http://java.sun
         <priority>3</priority>
       <example>
   <![CDATA[
-  public void foo (String param) {
-      // do stuff with param never assigning it
-      // better: public void foo (final String param) {
+  public class Foo {
+  private String [] x;
+  
+      public void foo (String [] param) {
+          // Don't do this, make a copy of the array at least
+          this.x=param;
+      }
   }
+  
   ]]>
       </example>
       </rule>
--->
 
 <!--
  -->

@@ -19,6 +19,7 @@ import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 /**
  * Utility methods for the package
@@ -106,5 +107,17 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
         return false;
     }
 
+    /**
+     * Gets the image of the first ASTName node found by {@link SimpleNode#getFirstChildOfType(Class)}
+     * 
+     * @param n the node to search 
+     * @return the image of the first ASTName or <code>null</code>
+     */
+    protected String getFirstNameImage(SimpleNode n) {
+        ASTName name = (ASTName) n.getFirstChildOfType(ASTName.class);
+        if (name!=null)
+            return name.getImage();
+        return null;
+    }
 
 }
