@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.ant.PathChecker;
+
 /**
  * CPDTask
  * 
@@ -80,9 +82,18 @@ public class CPDTask extends Task {
 	}
 
     private void write(String content) throws IOException {
-        Writer writer = new BufferedWriter(new FileWriter(outputFile));
+        Writer writer = getToFileWriter(project.getBaseDir().toString());
         writer.write(content);
         writer.close();
+    }
+
+    private Writer getToFileWriter(String baseDir) throws IOException {
+        String outFile = outputFile;
+        PathChecker pc = new PathChecker(System.getProperty("os.name"));
+        if (!pc.isAbsolute(outputFile)) {
+            outFile = baseDir + System.getProperty("file.separator") + outputFile;
+        }
+        return new BufferedWriter(new FileWriter(new File(outFile)));
     }
 
 	private void validateFields() throws BuildException{
