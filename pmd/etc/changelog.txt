@@ -1,4 +1,4 @@
-???????? - 1.03
+February 11, 2003 - 1.03
 Added new rules: CyclomaticComplexityRule, AssignmentInOperandRule
 Added numbering to the HTMLRenderer; thx to Luke Francl for the code.
 Added an optional Ant task attribute 'failOnRuleViolation'.  This stops the build if any rule violations are found.

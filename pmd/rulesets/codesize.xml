@@ -121,6 +121,83 @@ public class Foo {
  </rule>
 
 
+    <rule name="CyclomaticComplexityRule"
+      message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
+      class="net.sourceforge.pmd.rules.CyclomaticComplexityRule">
+   <description>
+Complexity is determined by the number of decision points in a method plus one for the
+method entry.  The decision points are 'if', 'while', 'for', and 'case labels'.  Scale:
+1-4 (low complexity)   5-7 (moderate complexity)   8-10 (high complexity)   10+ (very high complexity)
+   </description>
+   <priority>3</priority>
+   <properties>
+      <property name="reportLevel" value="10"/>
+   </properties>
+   <example>
+<![CDATA[
+Cyclomatic Complexity = 12
+
+public class Foo
+{
+1   public void example()
+    {
+2       if (a == b)
+        {
+3           if (a1 == b1)
+            {
+                do something;
+            }
+4           else if a2 == b2)
+            {
+                do something;
+            }
+            else
+            {
+                do something;
+            }
+        }
+5       else if (c == d)
+        {
+6           while (c == d)
+            {
+                do something;
+            }
+        }
+7       else if (e == f)
+        {
+8           for (int n = 0; n < h; n++)
+            {
+                do something;
+            }
+        }
+        else
+        {
+            switch (z)
+            {
+9               case 1:
+                    do something;
+                    break;
+
+10              case 2:
+                    do something;
+                    break;
+
+11              case 3:
+                    do something;
+                    break;
+
+12              default:
+                    do something;
+                    break;
+            }
+        }
+    }
+}
+]]>
+   </example>
+</rule>
+
+
 </ruleset>
 
 

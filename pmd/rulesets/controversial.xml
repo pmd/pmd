@@ -92,6 +92,31 @@ public abstract void bar(); // abstract compiles, but is useless
      </example>
      </rule>
 
+    <rule name="AssignmentInOperandRule"
+      message="Avoid assigments in operands"
+      class="net.sourceforge.pmd.rules.AssignmentInOperandRule">
+  <description>
+  Avoid assigments in operands; this can make code more complicated and harder to read.
+  </description>
+    <priority>3</priority>
+
+  <example>
+  <![CDATA[
+  public class Foo {
+   public void bar() {
+int x = 2;
+if ((x = getX()) == 3) {
+ System.out.println("3!");
+}
+   }
+   private int getX() {
+return 3;
+   }
+  }
+
+  ]]>
+  </example>
+</rule>
 
 </ruleset>
 
