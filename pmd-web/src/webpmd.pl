@@ -37,7 +37,7 @@ sub default() {
  print "Project title (i.e., PMD): ", textfield(-name=>'title',-default=>'',-override=>1);
  print br(), "Project's Unix name (i.e., pmd): ", textfield(-name=>'unixname',-default=>'',-override=>1);
  print br(), "Module directory (i.e., pmd-dcpd): ", textfield(-name=>'moduledirectory',-default=>'',-override=>1);
- print br(), "Source directory (i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
+ print br(), "Source directory (including module directory, i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
  my $cachebuster=`date`;
  print $query->hidden(-name=>'cachebuster', -value=>${cachebuster});
  print br(), submit(-value=>'Go');
