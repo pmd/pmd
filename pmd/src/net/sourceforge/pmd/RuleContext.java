@@ -28,14 +28,6 @@ public class RuleContext {
         this.sourceCodeFilename = filename;
     }
 
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
     public String getClassName() {
         return className;
     }

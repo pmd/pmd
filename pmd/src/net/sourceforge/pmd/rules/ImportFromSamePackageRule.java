@@ -9,18 +9,32 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
 public class ImportFromSamePackageRule extends AbstractRule {
+
+    private String packageName;
+
+    public Object visit(ASTCompilationUnit node, Object data) {
+        packageName = null;
+        return super.visit(node, data);
+    }
+
+    public Object visit(ASTPackageDeclaration node, Object data) {
+        packageName = ((ASTName)node.jjtGetChild(0)).getImage();
+        return data;
+    }
 
     public Object visit(ASTImportDeclaration node, Object data) {
         ASTName nameNode = node.getImportedNameNode();
         RuleContext ctx = (RuleContext)data;
-        if (ctx.getPackageName()!= null && !node.isImportOnDemand() && ctx.getPackageName().equals(getPackageName(nameNode.getImage()))) {
+        if (packageName!= null && !node.isImportOnDemand() && packageName.equals(getPackageName(nameNode.getImage()))) {
             addViolation(ctx, node);
         }
 
         // special case
-        if (ctx.getPackageName() == null && getPackageName(nameNode.getImage()).equals("")) {
+        if (packageName == null && getPackageName(nameNode.getImage()).equals("")) {
             addViolation(ctx, node);
         }
         return data;

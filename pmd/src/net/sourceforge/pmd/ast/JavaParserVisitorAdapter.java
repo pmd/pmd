@@ -22,10 +22,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     public Object visit(ASTPackageDeclaration node, Object data) {
-        if (data != null) {
-            String packageName = ((ASTName)node.jjtGetChild(0)).getImage();
-            ((RuleContext)data).setPackageName(packageName);
-        }
 	return visit( (SimpleNode) node, data );
     }
 

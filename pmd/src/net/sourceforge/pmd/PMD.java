@@ -38,7 +38,6 @@ public class PMD {
      */
     public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         try {
-            ctx.setPackageName(null);
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
             Thread.yield();
