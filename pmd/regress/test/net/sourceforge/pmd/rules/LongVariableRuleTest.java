@@ -22,8 +22,8 @@ public class LongVariableRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "param", 1, rule),
            new TestDescriptor(TEST2, "ok", 0, rule),
            new TestDescriptor(TEST3, "local", 1, rule),
-           new TestDescriptor(TEST4, "field", 1, rule),
-           new TestDescriptor(TEST5, "for", 1, rule),
+           new TestDescriptor(TEST4, "for", 1, rule),
+           new TestDescriptor(TEST5, "17 character max", 1, rule),
        });
     }
 
@@ -58,7 +58,8 @@ public class LongVariableRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST5 =
     "public class Foo {" + PMD.EOL +
-    "    private int abcdefghijklmnopqrstuvwxyz;" + PMD.EOL +
+    "    private int a2345678901234567;" + PMD.EOL +
+    "    private int a23456789012345678;" + PMD.EOL +
     "}";
 
 }

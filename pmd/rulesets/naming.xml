@@ -53,7 +53,7 @@ Detects when a field, formal or local variable is declared with a long name.
           <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
-    //VariableDeclaratorId[string-length(@Image) > 12]
+    //VariableDeclaratorId[string-length(@Image) > 17]
                   ]]>
               </value>
           </property>
