@@ -132,7 +132,7 @@ public class RuleSetFactory {
     private InputStream tryToGetStreamTo(String name, ClassLoader loader) throws RuleSetNotFoundException {
         InputStream in = ResourceLoader.loadResourceAsStream(name, loader);
         if (in == null) {
-            throw new RuleSetNotFoundException("Can't find resource " + name + ".  Make sure the resource is a valid file " + "or URL or is on the CLASSPATH");
+            throw new RuleSetNotFoundException("Can't find resource " + name + ".  Make sure the resource is a valid file or URL or is on the CLASSPATH");
         }
         return in;
     }
