@@ -15,6 +15,7 @@ public class SelectedRuleSetsMap {
     private Map selections = new HashMap();
 
     public SelectedRuleSetsMap() {
+        // TODO when PMD 0.6 comes out, modify to use RuleSetFactory.getRegisteredRulesets()
         selections.put("basic", createCheckBox("basic"));
         selections.put("unusedcode", createCheckBox("unusedcode"));
         selections.put("design", createCheckBox("design"));

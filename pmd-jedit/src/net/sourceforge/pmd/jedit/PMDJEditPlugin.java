@@ -55,7 +55,7 @@ public class PMDJEditPlugin extends EBPlugin {
     // boilerplate JEdit code
 
     public void instanceCheck(Buffer buffer, View view) {
-	errorSource.clear();
+        errorSource.clear();
         RuleContext ctx = new RuleContext();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
@@ -66,15 +66,17 @@ public class PMDJEditPlugin extends EBPlugin {
         }
         ctx.setReport(new Report());
         ctx.setSourceCodeFilename(buffer.getPath());
-	try {
-		pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
-	} catch (FileNotFoundException fnfe) {}
-	for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-		RuleViolation rv = (RuleViolation)i.next();
-		String path = buffer.getPath();
-		DefaultErrorSource.DefaultError err = new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription());
-		errorSource.addError(err);
-	}
+        try {
+            pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
+        } catch (FileNotFoundException fnfe) {
+            // this goes away in PMD v0.6
+        }
+        for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+            RuleViolation rv = (RuleViolation)i.next();
+            String path = buffer.getPath();
+            DefaultErrorSource.DefaultError err = new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription());
+            errorSource.addError(err);
+        }
     }
 
     public void instanceDisplayPreferencesDialog(View view) {
