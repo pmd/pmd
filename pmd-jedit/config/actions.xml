@@ -16,4 +16,19 @@
       net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectoryRecursively(view);
     </CODE>
   </ACTION>
+  <ACTION NAME="cpd-currentfile">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.CPDCurrentFile(view);
+    </CODE>
+  </ACTION>
+    <ACTION NAME="cpd-dir">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.CPDDir(view,false);
+    </CODE>
+  </ACTION>
+  <ACTION NAME="cpd-dir-recursively">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.CPDDir(view,true);
+    </CODE>
+  </ACTION>
 </ACTIONS>
