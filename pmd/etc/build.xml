@@ -28,6 +28,7 @@
         <copy todir="${build}rulesets">
             <fileset dir="${rulesets}">
                 <include name="*.xml"/>
+                <include name="*.properties"/>
             </fileset>
         </copy>
         <jar jarfile="${lib}\pmd-0.5.jar" basedir="${build}" excludes="test/**/*.class"/>
