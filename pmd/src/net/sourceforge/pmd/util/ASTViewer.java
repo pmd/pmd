@@ -110,7 +110,7 @@ public class ASTViewer {
             xpathResults.clear();
             if (xpathQueryArea.getText().length() == 0) {
                 xpathResults.addElement("XPath query field is empty");
-                xpathResultPanel.repaint();
+                xpathResultList.repaint();
                 codeEditorPane.requestFocus();
                 return;
             }
@@ -135,7 +135,7 @@ public class ASTViewer {
             } catch (JaxenException je) {
                 xpathResults.addElement(je.fillInStackTrace().getMessage());
             }
-            xpathResultPanel.repaint();
+            xpathResultList.repaint();
             xpathQueryArea.requestFocus();
         }
     }
@@ -148,7 +148,6 @@ public class ASTViewer {
     private JList xpathResultList = new JList(xpathResults);
     private JTextArea xpathQueryArea = new JTextArea(10, 30);
     private JFrame frame = new JFrame("AST Viewer");
-    private JPanel xpathResultPanel;
 
     public ASTViewer() {
         JPanel controlPanel = new JPanel();
@@ -162,7 +161,7 @@ public class ASTViewer {
         JScrollPane astScrollPane = new JScrollPane(astArea);
         astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
 
-        xpathResultPanel = new JPanel();
+        JPanel xpathResultPanel = new JPanel();
         xpathResults.addElement("No results yet");
         xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
         xpathResultList.setFixedCellWidth(300);
