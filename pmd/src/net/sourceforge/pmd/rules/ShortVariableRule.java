@@ -1,0 +1,35 @@
+package net.sourceforge.pmd.rules;
+
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
+
+import net.sourceforge.pmd.ast.*;
+
+public class ShortVariableRule 
+    extends AbstractRule
+{
+    public ShortVariableRule() { }
+
+    public Object visit(ASTVariableDeclaratorId decl, Object data) {
+	RuleContext ctx = (RuleContext) data;
+	String image = decl.getImage();
+
+	if ((image.length() <= 3) && 
+	    (!(isForInit( decl )))) {
+	    ctx.getReport().addRuleViolation( createRuleViolation( ctx, decl.getBeginLine() ));
+	}
+
+	return null;
+    }
+
+    protected boolean isForInit( Node node ) {
+	Node parent = node;
+	for (int i = 0; i < 4; i++) {
+	    parent = parent.jjtGetParent();
+	    if (parent instanceof ASTForInit) {
+		return true;
+	    }
+	}
+	return false;
+    }
+}
