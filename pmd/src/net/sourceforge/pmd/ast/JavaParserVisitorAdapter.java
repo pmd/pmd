@@ -10,6 +10,14 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((SimpleNode) node, data);
     }
 
+    public Object visit(ASTEnumDeclaration node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTEnumElement node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
     public Object visit(ASTAssertStatement node, Object data) {
         return visit((SimpleNode) node, data);
     }

@@ -14,6 +14,8 @@ public interface JavaParserVisitor
   public Object visit(ASTClassBody node, Object data);
   public Object visit(ASTNestedClassDeclaration node, Object data);
   public Object visit(ASTClassBodyDeclaration node, Object data);
+  public Object visit(ASTEnumDeclaration node, Object data);
+  public Object visit(ASTEnumElement node, Object data);
   public Object visit(ASTMethodDeclarationLookahead node, Object data);
   public Object visit(ASTInterfaceDeclaration node, Object data);
   public Object visit(ASTNestedInterfaceDeclaration node, Object data);

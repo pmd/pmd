@@ -66,9 +66,14 @@ package net.sourceforge.pmd.ast;
 public class JavaParser {
 
   private boolean usingAssertAsIdentifier;
+  private boolean isJDK15;
 
   public void setAssertAsIdentifier() {
    this.usingAssertAsIdentifier = true;
+  }
+
+  public void setJDK15() {
+   this.isJDK15 = true;
   }
 
   private void checkForBadAssertUsage(String in, String usage) {
@@ -77,12 +82,36 @@ public class JavaParser {
     }
   }
 
+  private void checkForBadEnumUsage(String in, String usage) {
+    if (isJDK15 && in.equals("enum")) {
+      throw new ParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
+    }
+  }
+
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
-  // Note that this can't be replaced with a syntactic lookahead since "assert" isn't a string literal token
+  // Note that this can't be replaced with a syntactic lookahead
+  // since "assert" isn't a string literal token
   private boolean isNextTokenAnAssert() {
     return getToken(1).image.equals("assert");
   }
 
+  private boolean enumLookahead() {
+    int x = 1;
+    Token tok = null;
+    while (true) {
+      tok = getToken(x);
+      if (tok.image.equals("static") ||
+          tok.image.equals("final") ||
+          tok.image.equals("public") ||
+          tok.image.equals("protected") ||
+          tok.image.equals("private") ) {
+        x++;
+      } else {
+        break;
+      }
+    }
+    return tok.image.equals("enum");
+  }
 }
 PARSER_END(JavaParser)
 
@@ -382,6 +411,9 @@ void TypeDeclaration() :
   LOOKAHEAD( ( "abstract" | "final" | "public" | "strictfp" )* "class" )
   ClassDeclaration()
 |
+  LOOKAHEAD( { enumLookahead() } )
+  EnumDeclaration()
+|
   InterfaceDeclaration()
 |
   ";"
@@ -451,9 +483,47 @@ void ClassBodyDeclaration() :
   LOOKAHEAD( MethodDeclarationLookahead() )
   MethodDeclaration()
 |
+  LOOKAHEAD( { enumLookahead() } )
+  EnumDeclaration()
+|
   FieldDeclaration()
 |
   ";"
+}
+
+void EnumDeclaration() :
+{Token t = null;}
+{
+  ( "public"            { jjtThis.setPublic(); }
+  | "protected"         { jjtThis.setProtected(); }
+  | "private"           { jjtThis.setPrivate(); }
+  | "static"            { jjtThis.setStatic(); }
+  | "final"             { jjtThis.setFinal(); }
+  )*
+  t = <IDENTIFIER> {
+    if (!t.image.equals("enum")) {
+      throw new ParseException("ERROR: expecting enum");
+    }
+    if (!this.isJDK15) {
+      throw new ParseException("ERROR: Can't use enum as a keyword in pre-JDK 1.5 target");
+    }
+  }
+  <IDENTIFIER>
+  "{"
+  [ "implements" NameList() ]
+  EnumElement()
+  (
+   "," EnumElement()
+  )*
+  "}"
+  ";"
+}
+
+void EnumElement() :
+{Token t = null;}
+{
+    t = <IDENTIFIER> {jjtThis.setImage(t.image);}
+    [ Arguments() ][ ClassBody() ]
 }
 
 // This production is to determine lookahead only.
@@ -550,6 +620,7 @@ void VariableDeclaratorId() :
   ( "[" "]" )*
   {
     checkForBadAssertUsage(t.image, "a variable name");
+    checkForBadEnumUsage(t.image, "a variable name");
     jjtThis.setImage( s );
   }
 }
@@ -592,6 +663,7 @@ void MethodDeclarator() :
   t=<IDENTIFIER>
   {
     checkForBadAssertUsage(t.image, "a method name");
+    checkForBadEnumUsage(t.image, "a method name");
     jjtThis.setImage( t.image );
   }
   FormalParameters() ( "[" "]" )*
