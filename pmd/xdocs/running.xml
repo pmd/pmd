@@ -25,7 +25,7 @@
    <section name="Running PMD via Ant">
    <ul>
     <li>Add a new Ant target to your build file - <a href="ant-task.html">here's an example</a>.</li>
-    <li>Make sure the pmd-0.1.jar file is on your classpath.</li>
+    <li>Make sure the pmd-0.2.jar file is on your classpath.</li>
     <li>Run Ant like you normally do.</li>
    </ul>
    </section>
