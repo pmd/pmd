@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import org.gjt.sp.jedit.msg.*;
+import org.gjt.sp.util.Log;
 
 
 public class PMDJEditPlugin extends EBPlugin {
@@ -41,12 +42,12 @@ public class PMDJEditPlugin extends EBPlugin {
 	public void start()
 	{
 		errorSource = new DefaultErrorSource(NAME);
-		ErrorSource.registerErrorSource(errorSource);
+		//ErrorSource.registerErrorSource(errorSource);
 	}
 
 	public void stop()
 	{
-		ErrorSource.unregisterErrorSource(errorSource);
+		unRegisterErrorSource();
  	}
 
 
@@ -190,6 +191,7 @@ public class PMDJEditPlugin extends EBPlugin {
 
 	public void instanceCheck(Buffer buffer, View view, boolean clearErrorList) {
 		try {
+			unRegisterErrorSource();
 			if(clearErrorList)
 			{
 				errorSource.clear();
@@ -213,6 +215,7 @@ public class PMDJEditPlugin extends EBPlugin {
 					RuleViolation rv = (RuleViolation)i.next();
 					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription()));
 				}
+				registerErrorSource();
 			}
 		} catch (RuleSetNotFoundException rsne) {
 			rsne.printStackTrace();
@@ -227,6 +230,7 @@ public class PMDJEditPlugin extends EBPlugin {
 	}// check current buffer
 
 	private void processFiles(List files) {
+		unRegisterErrorSource();
 		errorSource.clear();
 		PMD pmd = new PMD();
 		SelectedRules selectedRuleSets = null;
@@ -261,16 +265,33 @@ public class PMDJEditPlugin extends EBPlugin {
 				RuleViolation rv = (RuleViolation)j.next();
 				errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
 			}
-		}
-		if (!foundProblems) {
+		}//End of for
+		if (!foundProblems)
+		{
 			JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
 			errorSource.clear();
+		}
+		else
+		{
+			registerErrorSource();
 		}
 	}
 
 	private List findFiles(String dir, boolean recurse) {
 		FileFinder f  = new FileFinder();
 		return f.findFilesFrom(dir, new JavaLanguage.JavaFileOrDirectoryFilter(), recurse);
+	}
+
+	private void registerErrorSource()
+	{
+		Log.log(Log.DEBUG,this,"Registering ErrorSource of PMD");
+		ErrorSource.registerErrorSource(errorSource);
+	}
+
+	private void unRegisterErrorSource()
+	{
+		Log.log(Log.DEBUG,this,"Unregistering ErrorSource of PMD");
+		ErrorSource.unregisterErrorSource(errorSource);
 	}
 
 	public static void cpdCurrentFile(View view) throws IOException
@@ -280,7 +301,6 @@ public class PMDJEditPlugin extends EBPlugin {
 			JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
 			return;
 	} */
-		instance.errorSource.clear();
 		CPD cpd = null;
 		//Log.log(Log.DEBUG, PMDJEditPlugin.class , "See mode " + view.getBuffer().getMode().getName());
 
@@ -421,8 +441,6 @@ public class PMDJEditPlugin extends EBPlugin {
 					files.add(new File(de[i].path));
 				}
 			}
-
-			System.out.println("See final files to process " + files);
 		}
 	}
 
@@ -436,6 +454,25 @@ public class PMDJEditPlugin extends EBPlugin {
 		}
 		instance.process(instance.findFiles(de[0].path, recursive));
 	}
+
+
+	class ProgressBarDialog extends JDialog
+	{
+		private JProgressBar pBar;
+
+		public ProgressBarDialog(View view)
+		{
+			super(view,NAME);
+			pBar = new JProgressBar();
+		}
+
+		public void show()
+		{
+
+
+		}
+	}
+
 }
 
 
