@@ -53,7 +53,7 @@ public class XMLRenderer implements Renderer {
             StringUtil.appendXmlEscaped(buf, pe.getFile());
             buf.append("\" msg=\"");
             StringUtil.appendXmlEscaped(buf, pe.getMsg());
-            buf.append("/>")
+            buf.append("\"/>")
                .append(PMD.EOL);
         }
 

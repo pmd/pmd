@@ -39,6 +39,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Choi Ki Soo - Found bug in XMLRenderer</li>
             <li>wedemann - Found bug in RuleSetFactory XPath message variable plugging</li>
             <li>Lori Olson - Found copy/paste bug in rule descriptions</li>
             <li>Adrian Papari - Wrote the PapariTextRenderer</li>

@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class XMLRendererTest extends TestCase {
-    private XMLRenderer IUT;
+
     private MockRule RULE1 = new MockRule("RULE1", "RULE1", "msg");
     private MockRule RULE2 = new MockRule("RULE2", "RULE2", "msg");
     private RuleContext ctx = new RuleContext();
@@ -24,19 +24,17 @@ public class XMLRendererTest extends TestCase {
         super(name);
     }
 
-    public void setUp() {
-        IUT = new XMLRenderer();
-    }
-
     public void testEmptyReport() throws Throwable {
-        String rendered = IUT.render(new Report());
+        XMLRenderer renderer = new XMLRenderer();
+        String rendered = renderer.render(new Report());
         assertTrue("Expected empty PMD tag.", rendered.indexOf("violation") < 0);
     }
 
     public void testErrorReport() throws Throwable {
         Report r = new Report();
         r.addError(new Report.ProcessingError("test_msg", "test_filename"));
-        assertTrue(IUT.render(r).indexOf("msg=\"test_msg\">") == -1);
+        XMLRenderer renderer = new XMLRenderer();
+        assertTrue(renderer.render(r).indexOf("msg=\"test_msg\"/>") != -1);
     }
 
     public void testSingleReport() throws Throwable {
@@ -44,7 +42,8 @@ public class XMLRendererTest extends TestCase {
         ctx.setSourceCodeFilename("testSingleReport");
         report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
 
-        String rendered = IUT.render(report);
+        XMLRenderer renderer = new XMLRenderer();
+        String rendered = renderer.render(report);
 
         // <?xml version="1.0"?>
         // <pmd>
@@ -98,7 +97,8 @@ public class XMLRendererTest extends TestCase {
         expectedStrings.add("</file>");
         expectedStrings.add("</pmd>");
 
-        verifyPositions(IUT.render(report), expectedStrings);
+        XMLRenderer renderer = new XMLRenderer();
+        verifyPositions(renderer.render(report), expectedStrings);
     }
 
     public void testTwoFiles() throws Throwable {
@@ -137,7 +137,8 @@ public class XMLRendererTest extends TestCase {
         expectedStrings.add("</file>");
         expectedStrings.add("</pmd>");
 
-        verifyPositions(IUT.render(report), expectedStrings);
+        XMLRenderer renderer = new XMLRenderer();
+        verifyPositions(renderer.render(report), expectedStrings);
     }
 
     public void testUnorderedFiles() throws Throwable {
@@ -182,7 +183,8 @@ public class XMLRendererTest extends TestCase {
         expectedStrings.add("</file>");
         expectedStrings.add("</pmd>");
 
-        verifyPositions(IUT.render(report), expectedStrings);
+        XMLRenderer renderer = new XMLRenderer();
+        verifyPositions(renderer.render(report), expectedStrings);
     }
 
     /**
@@ -230,7 +232,8 @@ public class XMLRendererTest extends TestCase {
         expectedStrings.add("</file>");
         expectedStrings.add("</pmd>");
 
-        verifyPositions(IUT.render(report), expectedStrings);
+        XMLRenderer renderer = new XMLRenderer();
+        verifyPositions(renderer.render(report), expectedStrings);
     }
 
     public void verifyPositions(String rendered, List strings) {
