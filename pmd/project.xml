@@ -15,20 +15,16 @@
 
   <description>
   <![CDATA[
-PMD scans Java source code and looks for potential problems:
+<p>PMD scans Java source code and looks for potential problems like:
 <ul>
   <li>Unused local variables</li>
-  <li>Unused private instance variables</li>
-  <li>Unnecessary object creation</li>
   <li>Empty catch blocks</li>
+  <li>Unnecessary object creation</li>
   <li>Empty 'if' statements</li>
-  <li>Empty 'while' statements</li>
   <li>Classes which could be Singletons</li>
   <li>Short/long variable and method names</li>
-  <li>'if..else' statements without curly braces</li>
-  <li>A bunch of custom rules for <a href="http://cougaar.org/">Cougaar</a></li>
 </ul>
-<p>For a sample result, here's the unused code that PMD found in the <a href="jdk14.HTML">JDK 1.4 source code</a>. Yikes!</p>
+<p>For example, here's the unused code that PMD found in the <a href="jdk14.HTML">JDK 1.4 source code</a>. Yikes!</p>
 <p>You can get the current PMD release from <a href="http://sf.net/projects/pmd/">here</a></p>
   ]]>
   </description>
