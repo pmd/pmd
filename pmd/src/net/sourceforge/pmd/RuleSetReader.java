@@ -235,7 +235,7 @@ public class RuleSetReader implements Constants
                     {
                         Class ruleClass;
 
-                        className = "net.sourceforge.pmd.UnknownRule";
+                        className = "net.sourceforge.pmd.UndefinedRule";
                         ruleClass = Class.forName(className);
                         m_rule = (Rule) ruleClass.newInstance();
                     }
