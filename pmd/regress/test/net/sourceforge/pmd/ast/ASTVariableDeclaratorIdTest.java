@@ -3,17 +3,9 @@
 */
 package test.net.sourceforge.pmd.ast;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTType;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.PMD;
-
-import java.io.StringReader;
 
 public class ASTVariableDeclaratorIdTest extends ParserTst {
 

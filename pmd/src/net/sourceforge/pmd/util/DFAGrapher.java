@@ -3,18 +3,18 @@
  */
 package net.sourceforge.pmd.util;
 
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
-import net.sourceforge.pmd.dfa.DataFlowFacade;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.dfa.DataFlowFacade;
+import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,8 +25,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author raik

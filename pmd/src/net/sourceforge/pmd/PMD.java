@@ -8,9 +8,9 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaLanguage;
+import net.sourceforge.pmd.dfa.DataFlowFacade;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
-import net.sourceforge.pmd.dfa.DataFlowFacade;
 
 import java.io.BufferedInputStream;
 import java.io.File;

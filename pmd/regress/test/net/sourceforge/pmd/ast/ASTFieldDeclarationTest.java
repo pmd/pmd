@@ -1,13 +1,11 @@
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.Dimensionable;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.JavaParser;
 
 import java.io.StringReader;
 

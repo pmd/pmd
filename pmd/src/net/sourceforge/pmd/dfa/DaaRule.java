@@ -5,12 +5,12 @@ package net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
-import net.sourceforge.pmd.dfa.pathfinder.Executable;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
+import net.sourceforge.pmd.dfa.pathfinder.Executable;
+import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
