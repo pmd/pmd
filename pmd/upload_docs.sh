@@ -2,8 +2,8 @@
 
 #rm -rf target
 #maven pmd-site
-#maven xdoc:transform
 
+maven xdoc:transform
 DOCS_FILE=docs.tar.gz
 cp xdocs/cpdresults.txt target/docs/
 cd target
