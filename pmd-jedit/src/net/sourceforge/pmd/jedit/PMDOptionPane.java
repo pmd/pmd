@@ -75,7 +75,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         }
     }
 
-    public void init() {
+    public void _init() {
         removeAll();
 
         addComponent(new JLabel("Please see http://pmd.sf.net/ for more information"));
@@ -105,7 +105,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         addComponent(mainPanel);
     }
 
-    public void save() {
+    public void _save() {
         rules.save();
         if (directoryPopupBox != null) {
             jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP, directoryPopupBox.isSelected());
