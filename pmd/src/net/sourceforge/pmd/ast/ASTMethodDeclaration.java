@@ -2,7 +2,13 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTMethodDeclaration extends SimpleNode {
+import java.util.List;
+import java.util.ArrayList;
+
+public class ASTMethodDeclaration extends AccessNode {
+    protected List modifiers = new ArrayList();
+
+
   public ASTMethodDeclaration(int id) {
     super(id);
   }

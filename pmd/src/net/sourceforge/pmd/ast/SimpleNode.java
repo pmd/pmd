@@ -6,6 +6,7 @@ public class SimpleNode implements Node {
   protected Node parent;
   protected Node[] children;
   protected int id;
+
   protected JavaParser parser;
 
   public SimpleNode(int i) {
