@@ -25,7 +25,7 @@ public class OccurrencesTest  extends TestCase {
         occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
         assertEquals(4, occs.size());
         assertTrue(occs.contains(new Token('h', 0, "foo")));
-        Iterator i = occs.getOccurrences(new Tile(new Token('h', 0, "foo")));
+        Iterator i = occs.getTokens(new Tile(new Token('h', 0, "foo")));
         assertTrue(i.hasNext());
         assertTrue(occs.getTiles().hasNext());
         int count = 0;
@@ -39,7 +39,7 @@ public class OccurrencesTest  extends TestCase {
     public void testInitialFrequencyCount() {
         Occurrences occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
 
-        Iterator i = occs.getOccurrences(new Tile(new Token('h', 0, "foo")));
+        Iterator i = occs.getTokens(new Tile(new Token('h', 0, "foo")));
         Token tok = (Token)i.next();
         assertEquals("foo", tok.getTokenSrcID());
         assertEquals(0,tok.getIndex());

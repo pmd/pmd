@@ -75,7 +75,7 @@ public class Occurrences {
         return tiles.iterator();
     }
 
-    public Iterator getOccurrences(Tile tile) {
+    public Iterator getTokens(Tile tile) {
         return ((List)occurrences.get(tile)).iterator();
     }
 
