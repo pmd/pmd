@@ -82,7 +82,6 @@ MyPod:mypod:myPod:myPod/src
 OneBook:onebook:devel:devel/onebook
 P6spy:p6spy:p6spy:p6spy/com
 pcgen:pcgen:pcgen:pcgen/src/java
-PMD-DCPD:pmd:pmd-dcpd:pmd-dcpd/src
 PMD-Eclipse:pmd:pmd-eclipse:pmd-eclipse/src
 PMD-JBuilder:pmd:pmd-jbuilder:pmd-jbuilder/src
 PMD-JDeveloper:pmd:pmd-jdeveloper:pmd-jdeveloper/src
@@ -124,3 +123,5 @@ Octet:octet:octet:octet/src/
 Structure:structure:structure:structure/src/
 jEdit:jedit:jEdit:jEdit/org/
 hipergate:hipergate:java:java/src/
+Matra:matra:matra-java:matra-java/com/
+Kaprekar:kaprekar:kaprekar-java:kaprekar-java/com/

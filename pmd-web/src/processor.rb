@@ -150,7 +150,7 @@ if __FILE__ == $0
 	if ARGV.include?("-build") 
 		jobs.each {|job|
 			if ARGV.include?("-job") && job.mod != ARGV.at(ARGV.index("-job")+1)
-				#puts "Skipping " + job.mod
+				puts "Skipping " + job.mod
 				next
 			end
 			puts "Processing " + job.to_s
