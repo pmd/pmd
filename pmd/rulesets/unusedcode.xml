@@ -9,8 +9,7 @@ The Unused Code Ruleset contains a collection of rules that find unused code.
         message="Avoid unused private fields such as ''{0}''"
         class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule">
     <description>
-Unused Private Field detects when a private field is declared
-that is not used by the class.
+Detects when a private field is declared and/or assigned a value, but not used.
     </description>
       <priority>3</priority>
     <example>
@@ -19,7 +18,6 @@ public class Something {
   private static int FOO = 2; // Unused
   private int i = 5; // Unused
   private int j = 6;
-
   public int addOne() {
     return j++;
   }
@@ -32,18 +30,14 @@ public class Something {
         message="Avoid unused local variables such as ''{0}''"
         class="net.sourceforge.pmd.rules.UnusedLocalVariableRule">
     <description>
-Unused Local Variables detects when a variable is declared, but not
-used (except for possibly initial assignment)
+Detects when a local variable is declared and/or assigned, but not used.
     </description>
     <priority>3</priority>
 
     <example>
 <![CDATA[
-public int doSomething() {
+public void doSomething() {
   int i = 5; // Unused
-  int j = 6;
-  j += 3;
-  return j;
 }
 ]]>
     </example>

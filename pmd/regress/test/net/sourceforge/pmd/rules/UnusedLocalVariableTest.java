@@ -32,7 +32,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST11, "", 0, rule),
            new TestDescriptor(TEST12, "", 0, rule),
            new TestDescriptor(TEST13, "", 2, rule),
-           //new TestDescriptor(TEST14, "an assignment does not a usage make", 1, rule),
+           new TestDescriptor(TEST14, "an assignment does not a usage make", 1, rule),
        });
     }
 

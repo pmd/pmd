@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class VariableUsageFinderFunction implements UnaryFunction {
+
     private Map results = new HashMap();
     private Map decls;
     private boolean lookingForUsed;
