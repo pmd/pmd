@@ -39,10 +39,10 @@ public class GST {
             }
 
             Occurrences newOcc = new Occurrences(listener);
-						int tilesSoFar = 0;
-						int totalTiles = occ.size();
+            int tilesSoFar = 0;
+            int totalTiles = occ.size();
             for (Iterator i = occ.getTiles(); i.hasNext();) {
-							  tilesSoFar++;
+                tilesSoFar++;
                 Tile tile = (Tile)i.next();
                 if (!newOcc.containsAnyTokensIn(tile)) {
                     expandTile(occ, newOcc, tile, listener, tilesSoFar, totalTiles);
@@ -68,7 +68,7 @@ public class GST {
                     Tile newTile = tile.copy();
                     newTile.add(token);
                     newOcc.addTile(newTile, tok);
-										listener.addedNewTile(newTile, tilesSoFar, totalTiles);
+					listener.addedNewTile(newTile, tilesSoFar, totalTiles);
                 }
             }
         }

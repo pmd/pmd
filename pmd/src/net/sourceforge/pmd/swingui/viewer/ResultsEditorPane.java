@@ -43,14 +43,11 @@ class ResultsEditorPane extends JEditorPane implements ListSelectionListener
 
         setFont(new Font("Monospaced", Font.PLAIN, 12));
 
-        RuleSetFactory ruleSetFactory;
-        Iterator ruleSets;
-
         m_pmdViewer = pmdViewer;
         m_pmd = new PMD();
         m_ruleContext = new RuleContext();
-        ruleSetFactory = new RuleSetFactory();
-        ruleSets = null;
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        Iterator ruleSets = null;
         m_ruleSet = new RuleSet();
 
         try
@@ -104,13 +101,11 @@ class ResultsEditorPane extends JEditorPane implements ListSelectionListener
         // Swing may generate a changing event more than once.  All changing events, except
         // the last event, with have the "value is adjusting" flag set true.  We want only
         // the last event.
-        if (event.getValueIsAdjusting() == false)
-        {
+        if (event.getValueIsAdjusting() == false) {
             return;
         }
 
-        if (file == null)
-        {
+        if (file == null) {
             return;
         }
 

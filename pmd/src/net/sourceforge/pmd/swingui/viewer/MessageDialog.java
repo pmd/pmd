@@ -132,12 +132,9 @@ class MessageDialog extends JDialog
 
             exception.printStackTrace(writer);
 
-            if (message == null)
-            {
+            if (message == null) {
                 message = stream.toString();
-            }
-            else
-            {
+            } else {
                 message = message + "\n" + stream.toString();
             }
 
@@ -156,8 +153,7 @@ class MessageDialog extends JDialog
      */
     protected static void show(JFrame parentWindow, String message)
     {
-        if (message == null)
-        {
+        if (message == null)  {
             message = "There is no message.";
         }
 

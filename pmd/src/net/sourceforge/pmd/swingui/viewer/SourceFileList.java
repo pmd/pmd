@@ -146,13 +146,9 @@ class SourceFileList extends JList implements TreeSelectionListener
          */
         public String toString()
         {
-            String name = m_file.getName();
-
-            if ((name != null) && (name.length() > 0))
-            {
-                return name;
+            if ((m_file.getName() != null) && (m_file.getName().length() > 0)) {
+                return m_file.getName();
             }
-
             return m_file.getPath();
         }
     }

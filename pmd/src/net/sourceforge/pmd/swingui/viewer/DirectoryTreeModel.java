@@ -127,18 +127,10 @@ class DirectoryTreeModel
      */
     public void treeWillCollapse(TreeExpansionEvent event)
     {
-        TreePath treePath;
-        DirectoryTreeNode treeNode;
-        Enumeration children;
-
-        treePath = event.getPath();
-        treeNode = (DirectoryTreeNode) treePath.getLastPathComponent();
-        children = treeNode.children();
-
-        while (children.hasMoreElements())
-        {
+        TreePath treePath = event.getPath();
+        DirectoryTreeNode treeNode = (DirectoryTreeNode) treePath.getLastPathComponent();
+        for (Enumeration children = treeNode.children(); children.hasMoreElements();) {
             DirectoryTreeNode childTreeNode = (DirectoryTreeNode) children.nextElement();
-
             childTreeNode.removeAllChildren();
         }
     }
