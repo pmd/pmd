@@ -371,14 +371,22 @@ void TypeDeclaration() :
 void ClassDeclaration() :
 {}
 {
-  ( "abstract" | "final" | "public" | "strictfp")*
+  ( "abstract"  { ((AccessNode) jjtThis).setAbstract( true ); }
+  | "final"     { ((AccessNode) jjtThis).setFinal( true ); }
+  | "public"    { ((AccessNode) jjtThis).setPublic( true ); }
+  | "strictfp"  { ((AccessNode) jjtThis).setStrict( true ); }
+  )*
   UnmodifiedClassDeclaration()
 }
 
 void UnmodifiedClassDeclaration() :
-{}
+{ Token t = null; }
 {
-  "class" <IDENTIFIER> [ "extends" Name() ] [ "implements" NameList() ]
+  "class" t=<IDENTIFIER> 
+  {
+     ((ASTUnmodifiedClassDeclaration) jjtThis).setClassName( t.image );
+  }
+  [ "extends" Name() ] [ "implements" NameList() ]
   ClassBody()
 }
 

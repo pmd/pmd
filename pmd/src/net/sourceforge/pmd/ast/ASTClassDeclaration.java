@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTClassDeclaration extends SimpleNode {
+public class ASTClassDeclaration extends AccessNode {
   public ASTClassDeclaration(int id) {
     super(id);
   }
