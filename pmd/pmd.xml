@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<!--
+pmd.xml
+
+This is a Maven Callback Build File.  It will
+build the Parser again, if needed.  As well, it
+will update documents on the Build Site.
+
+-->
+
+<project name="pmd">
+  <target name="pre-build"
+          depends="JavaCC" />
+
+  <target name="checkJJTree">
+    <uptodate property="jjTree.notRequired"
+              srcfile="etc/Java1.4-c.jjt"
+              targetfile="src/net/sourceforge/pmd/ast/Java1.4-c.jj" />
+  </target>
+
+  <target name="jjTree" 
+          depends="checkJJTree"
+          unless="jjTree.notRequired">
+    <fail message="javacc.home must be set."
+          unless="javacc.home" />
+
+    <jjtree target="etc/Java1.4-c.jjt"
+            outputdirectory="src/net/sourceforge/pmd/ast/"
+            javacchome="${javacc.home}" />
+  </target>  
+
+  <target name="checkJavaCC"
+          depends="jjTree">
+    <uptodate property="javaCC.notRequired"
+              srcfile="src/net/sourceforge/pmd/ast/Java1.4-c.jj"
+              targetfile="src/net/sourceforge/pmd/ast/JavaParser.java" />   
+  </target>
+
+  <target name="JavaCC" 
+          depends="checkJavaCC" 
+          unless="javaCC.notRequired">
+    <fail message="javacc.home must be set."
+          unless="javacc.home" />
+
+    <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj"
+            outputdirectory="src/net/sourceforge/pmd/ast/"
+            javacchome="${javacc.home}" />
+  </target>  
+</project>
