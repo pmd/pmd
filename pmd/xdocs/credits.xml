@@ -17,8 +17,8 @@
             <li>Tom Copeland - lead developer, JDeveloper plugin, Gel plugin, initial jEdit plugin, IDEAJ integration</li>
             <li>Don Leckie - The PMD GUI</li>
             <li>Jiger Patel - jEdit plugin</li>
-            <li>Gunnlaugur Thor Briem - Netbeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
-            <li>Ole-Martin Mork - Netbeans plugin</li>
+            <li>Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
+            <li>Ole-Martin Mork - NetBeans plugin</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">
