@@ -63,11 +63,11 @@ options {
   MULTI=true;
   VISITOR=true;
   NODE_USES_PARSER=true;
-  NODE_PACKAGE="com.infoether.pmd.ast";
+  NODE_PACKAGE="net.sourceforge.pmd.ast";
 }
 
 PARSER_BEGIN(JavaParser)
-package com.infoether.pmd.ast;
+package net.sourceforge.pmd.ast;
 public class JavaParser
 {
 }

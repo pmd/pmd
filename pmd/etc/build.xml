@@ -27,9 +27,9 @@
     </target>
 
     <target name="pmd">
-        <taskdef name="pmd" classname="com.infoether.pmd.PMDTask"/>
-        <pmd reportFile="c:\foo.txt" verbose="true" rulesettype="all">
-            <fileset dir="c:\data\pmd\pmd\src\">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.PMDTask"/>
+        <pmd reportFile="c:\foo.txt" verbose="false" rulesettype="general">
+            <fileset dir="c:\j2sdk1.4.0\src\">
                 <include name="**/*.java"/>
             </fileset>
         </pmd>
@@ -65,7 +65,7 @@
         <quilt reportdir="${reports}"
                 register="junit.quilt.cover.ball94.B94Registry"
                 reporter="junit.quilt.reports.XMLSummary"
-                packages="com.infoether.pmd">
+                packages="net.sourceforge.pmd">
           <classpath>
             <pathelement location="${build}" />
           </classpath>
@@ -79,17 +79,17 @@
     <target name="jjtree">
         <mkdir dir="tmp"/>
         <copy overwrite="yes" todir="tmp">
-            <fileset dir="src/com/infoether/pmd/ast" includes="SimpleNode.java,JavaParserVisitorAdapter.java"/>
+            <fileset dir="src/net/sourceforge/pmd/ast" includes="SimpleNode.java,JavaParserVisitorAdapter.java"/>
         </copy>
         <delete>
-            <fileset dir="src/com/infoether/pmd/ast" includes="*.java,*.jj"/>
+            <fileset dir="src/net/sourceforge/pmd/ast" includes="*.java,*.jj"/>
         </delete>
         <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/com/infoether/pmd/ast" javacchome="c:/javacc2.1"/>
-        <javacc target="src/com/infoether/pmd/ast/Java1.4-c.jj" outputdirectory="src/com/infoether/pmd/ast" javacchome="c:/javacc2.1"/>
-        <copy overwrite="yes" todir="src/com/infoether/pmd/ast">
+        <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
+        <copy overwrite="yes" todir="src/net/sourceforge/pmd/ast">
             <fileset dir="tmp" includes="*.java"/>
         </copy>
-        <delete file="src/com/infoether/pmd/ast/Java1.4-c.jj"/>
+        <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
         <delete dir="tmp"/>
     </target>
 
