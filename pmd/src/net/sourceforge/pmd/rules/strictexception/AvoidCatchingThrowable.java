@@ -41,7 +41,7 @@ public class AvoidCatchingThrowable extends AbstractRule {
         ASTName name = (ASTName) type.findChildrenOfType(ASTName.class).get(0);
 
         if (name.getImage().equals("Throwable")) {
-            ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, name.getBeginLine()));
+            ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, name));
         }
     }
 }

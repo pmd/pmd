@@ -81,7 +81,7 @@ public class VariableNamingConventions extends AbstractRule {
             if ((node.isStatic() && node.isFinal()) || node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration) {
                 if (!varName.equals(varName.toUpperCase())) {
                     RuleContext ctx = (RuleContext) data;
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName.getBeginLine(), "Variables that are final and static should be in all caps."));
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName, "Variables that are final and static should be in all caps."));
                 }
                 return data;
             }
@@ -95,11 +95,11 @@ public class VariableNamingConventions extends AbstractRule {
 
             if (strippedVarName.indexOf("_") >= 0) {
                 RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName.getBeginLine(), "Variables that are not final should not contain underscores (except for underscores in standard prefix/suffix)."));
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName, "Variables that are not final should not contain underscores (except for underscores in standard prefix/suffix)."));
             }
             if (Character.isUpperCase(varName.charAt(0))) {
                 RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName.getBeginLine(), "Variables should start with a lowercase character"));
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName, "Variables should start with a lowercase character"));
             }
         }
         return data;

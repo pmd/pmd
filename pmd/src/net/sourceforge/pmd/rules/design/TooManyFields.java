@@ -58,7 +58,7 @@ public class TooManyFields extends AbstractRule {
 //				RuleContext ctx = (RuleContext) data;
 //				RuleViolation ruleViolation = createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{methodName}));
 //                ctx.getReport().addRuleViolation(ruleViolation);
-                addViolation((RuleContext) data, n.getBeginLine());
+                addViolation((RuleContext) data, n);
 
             }
         }

@@ -51,7 +51,7 @@ public class JUnitAssertionsShouldIncludeMessage extends AbstractRule implements
             if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix && primary.jjtGetChild(0).jjtGetNumChildren() > 0 && primary.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
                 ASTName name = (ASTName) primary.jjtGetChild(0).jjtGetChild(0);
                 if (name.getImage().equals(targetMethodName)) {
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, name.getBeginLine()));
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, name));
                 }
             }
         }

@@ -194,7 +194,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         SimpleNode node;
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
             node = (SimpleNode) i.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{node.getImage()})));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, MessageFormat.format(getMessage(), new Object[]{node.getImage()})));
         }
     }
 

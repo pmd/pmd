@@ -33,7 +33,7 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
             if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter)) {
                 if (!assigned((List)decls.get(var))) {
                     RuleContext ctx = (RuleContext)data;
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, var.getAccessNodeParent().getBeginLine(), MessageFormat.format(getMessage(), new Object[]{var.getImage()})));
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, var.getAccessNodeParent(), MessageFormat.format(getMessage(), new Object[]{var.getImage()})));
                 }
             }
         }
@@ -45,9 +45,8 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
             NameOccurrence occ = (NameOccurrence) j.next();
             if (occ.isOnLeftHandSide()) {
                 return true;
-            } else {
-                continue;
-            }
+            } 
+            continue;
         }
         return false;
     }

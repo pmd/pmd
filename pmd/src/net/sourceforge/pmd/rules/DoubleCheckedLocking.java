@@ -107,7 +107,7 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
                                             if (matchName(pe, returnVariableName)) {
                                                 if (se.jjtGetChild(1) instanceof ASTAssignmentOperator) {
                                                     RuleContext ctx = (RuleContext) data;
-                                                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+                                                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
                                                 }
                                             }
                                         }

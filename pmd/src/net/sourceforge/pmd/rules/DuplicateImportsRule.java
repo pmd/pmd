@@ -66,6 +66,6 @@ public class DuplicateImportsRule extends AbstractRule {
 
     private void createRV(RuleContext ctx, SimpleNode importNameNode) {
         String msg = MessageFormat.format(getMessage(), new Object[]{importNameNode.getImage()});
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, importNameNode.getBeginLine(), msg));
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, importNameNode, msg));
     }
 }

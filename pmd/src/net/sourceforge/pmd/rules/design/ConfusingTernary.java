@@ -67,7 +67,7 @@ public class ConfusingTernary extends AbstractRule {
 
     private void addRuleViolation(SimpleNode node, Object data) {
         RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
     }
 
     // recursive!

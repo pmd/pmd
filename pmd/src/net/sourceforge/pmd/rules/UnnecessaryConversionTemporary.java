@@ -60,7 +60,7 @@ public class UnnecessaryConversionTemporary extends AbstractRule implements Rule
         }
         if (node.getImage() != null && node.getImage().equals("toString")) {
             RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
         }
         return super.visit(node, data);
     }

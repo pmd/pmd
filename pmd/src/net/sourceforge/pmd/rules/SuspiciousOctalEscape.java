@@ -35,14 +35,14 @@ public class SuspiciousOctalEscape extends AbstractRule {
                                     if (first != '0' && first != '1' && first != '2' && first != '3') {
                                         // VIOLATION: it's a two-digit octal escape followed by
                                         // an octal digit -- legal but very confusing!
-                                        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+                                        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
                                     } else {
                                         // if there is a 4th decimal digit, it could never be part of
                                         // the escape sequence, which is confusing
                                         if (escapeSequence.length() > 3) {
                                             char fourth = escapeSequence.charAt(3);
                                             if (isDecimal(fourth)) {
-                                                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+                                                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
                                             }
                                         }
                                     }
@@ -50,13 +50,13 @@ public class SuspiciousOctalEscape extends AbstractRule {
                                 } else if (isDecimal(third)) {
                                     // this is a two-digit octal escape followed by a decimal digit
                                     // legal but very confusing
-                                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+                                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
                                 }
                             }
                         } else if (isDecimal(second)) {
                             // this is a one-digit octal escape followed by a decimal digit
                             // legal but very confusing
-                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
                         }
                     }
                 }

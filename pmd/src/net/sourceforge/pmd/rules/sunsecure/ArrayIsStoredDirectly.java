@@ -51,7 +51,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
     private void checkDirectlyAssigned(RuleContext context, ASTFormalParameter[] arrs, List bs) {
         for (int i=0;i<arrs.length;i++) {
             if (isDirectlyAssigned(arrs[i], bs)) {
-                addViolation(context, arrs[i].getBeginLine());
+                addViolation(context, arrs[i]);
             }   
         }
     }

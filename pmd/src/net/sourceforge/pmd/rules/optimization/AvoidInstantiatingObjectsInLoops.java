@@ -19,7 +19,7 @@ public class AvoidInstantiatingObjectsInLoops extends AbstractOptimizationRule {
 
     public Object visit(ASTAllocationExpression node, Object data) {
         if (insideLoop(node)) {
-            addViolation((RuleContext) data, node.getBeginLine());
+            addViolation((RuleContext) data, node);
         }
         return data;
     }

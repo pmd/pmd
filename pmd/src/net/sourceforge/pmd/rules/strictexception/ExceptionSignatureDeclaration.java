@@ -73,7 +73,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
         for (Iterator iter = exceptionList.iterator(); iter.hasNext();) {
             exception = (ASTName) iter.next();
             if (hasDeclaredExceptionInSignature(exception)) {
-                context.getReport().addRuleViolation(createRuleViolation(context, exception.getBeginLine()));
+                context.getReport().addRuleViolation(createRuleViolation(context, exception));
             }
         }
     }

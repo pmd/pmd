@@ -48,7 +48,7 @@ public class CouplingBetweenObjects extends AbstractRule {
 
         if (this.couplingCount > getIntProperty("threshold")) {
             RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, cu.getBeginLine(), "A value of " + this.couplingCount + " may denote a high amount of coupling within the class"));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, cu, "A value of " + this.couplingCount + " may denote a high amount of coupling within the class"));
         }
 
         return returnObj;

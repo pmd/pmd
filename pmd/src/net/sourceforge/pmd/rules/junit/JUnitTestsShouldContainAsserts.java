@@ -41,7 +41,7 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
             if (resultType.isVoid() && declarator.getImage().startsWith("test")) {
                 if (!hasAssertStatement(block)) {
                     RuleContext ctx = (RuleContext)data;
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, declaration.getBeginLine()));
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, declaration));
                 }
             }
         }

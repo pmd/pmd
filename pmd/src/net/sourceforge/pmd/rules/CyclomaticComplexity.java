@@ -97,7 +97,7 @@ public class CyclomaticComplexity extends AbstractRule {
         if ((classEntry.getComplexityAverage() >= getIntProperty("reportLevel")) || (classEntry.highestDecisionPoints >= getIntProperty("reportLevel"))) {
             RuleContext ruleContext = (RuleContext) data;
             String[] args = {"class", node.getImage(), String.valueOf(classEntry.getComplexityAverage()) + " (Highest = " + String.valueOf(classEntry.highestDecisionPoints) + ")"};
-            RuleViolation ruleViolation = createRuleViolation(ruleContext, node.getBeginLine(), MessageFormat.format(getMessage(), args));
+            RuleViolation ruleViolation = createRuleViolation(ruleContext, node, MessageFormat.format(getMessage(), args));
             ruleContext.getReport().addRuleViolation(ruleViolation);
         }
         return data;
@@ -136,7 +136,7 @@ public class CyclomaticComplexity extends AbstractRule {
         if (methodEntry.decisionPoints >= getIntProperty("reportLevel")) {
             RuleContext ruleContext = (RuleContext) data;
             String[] args = {"method", (methodDeclarator == null) ? "" : methodDeclarator.getImage(), String.valueOf(methodEntry.decisionPoints)};
-            ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, node.getBeginLine(), MessageFormat.format(getMessage(), args)));
+            ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, node, MessageFormat.format(getMessage(), args)));
         }
 
         return data;
@@ -156,7 +156,7 @@ public class CyclomaticComplexity extends AbstractRule {
         if (constructorEntry.decisionPoints >= getIntProperty("reportLevel")) {
             RuleContext ruleContext = (RuleContext) data;
             String[] args = {"constructor", classEntry.node.getImage(), String.valueOf(constructorDecisionPointCount)};
-            RuleViolation ruleViolation = createRuleViolation(ruleContext, node.getBeginLine(), MessageFormat.format(getMessage(), args));
+            RuleViolation ruleViolation = createRuleViolation(ruleContext, node, MessageFormat.format(getMessage(), args));
             ruleContext.getReport().addRuleViolation(ruleViolation);
         }
         return data;

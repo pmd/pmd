@@ -30,7 +30,7 @@ public class LocalVariableCouldBeFinal extends AbstractOptimizationRule {
         ASTMethodDeclaration md = (ASTMethodDeclaration) node.getFirstParentOfType(ASTMethodDeclaration.class);
         if (md!=null) {
             if (!isVarWritterInMethod(varName, md) ) {
-                addViolation((RuleContext)data, node.getBeginLine());
+                addViolation((RuleContext)data, node);
             }
         } 
         return data;

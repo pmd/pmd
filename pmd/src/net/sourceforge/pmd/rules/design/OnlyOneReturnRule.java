@@ -35,7 +35,7 @@ public class OnlyOneReturnRule extends AbstractRule {
                 if (!i.hasNext()) {
                     continue;
                 }
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, problem.getBeginLine()));
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, problem));
             }
         }
         return data;

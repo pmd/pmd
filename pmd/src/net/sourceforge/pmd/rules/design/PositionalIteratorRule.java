@@ -33,7 +33,7 @@ public class PositionalIteratorRule extends AbstractRule {
 
                 if (nextCount > 1) {
                     RuleContext ctx = (RuleContext) data;
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
                 }
 
             }

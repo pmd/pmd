@@ -24,7 +24,7 @@ public class UnusedFormalParameterRule extends AbstractRule {
                 if (!((List) vars.get(nameDecl)).isEmpty()) {
                     continue;
                 }
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{nameDecl.getImage()})));
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, MessageFormat.format(getMessage(), new Object[]{nameDecl.getImage()})));
             }
         }
         return data;

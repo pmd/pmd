@@ -49,7 +49,7 @@ public class ExceptionTypeChecking extends AbstractRule {
             return;
         }
         if (exceptionName.equals(getInstanceOfObjectReference(instanceOfExpression))) {
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, instanceOfExpression.getBeginLine()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, instanceOfExpression));
         }
     }
 

@@ -39,7 +39,7 @@ public class ImportFromSamePackageRule extends AbstractRule {
     }
 
     private void addViolation(RuleContext ctx, ASTImportDeclaration node) {
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
     }
 
     private String getPackageName(String importName) {

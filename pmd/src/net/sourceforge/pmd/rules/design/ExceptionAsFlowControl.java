@@ -36,7 +36,7 @@ public class ExceptionAsFlowControl extends AbstractRule {
                 ASTName name = (ASTName) type.findChildrenOfType(ASTName.class).get(0);
                 
                 if (throwName != null && throwName.equals(name.getImage())) {
-                    addViolation((RuleContext) data, name.getBeginLine());
+                    addViolation((RuleContext) data, name);
                 }
             }
         }

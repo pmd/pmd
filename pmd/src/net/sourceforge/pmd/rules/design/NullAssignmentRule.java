@@ -27,7 +27,7 @@ public class NullAssignmentRule extends AbstractRule {
 
             if (curr instanceof ASTNullLiteral) {
                 RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, expr.getBeginLine()));
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, expr));
             }
 
             return data;
