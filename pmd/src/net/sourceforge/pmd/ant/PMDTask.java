@@ -10,7 +10,7 @@ import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.reports.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleFactory;
 

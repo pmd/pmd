@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.reports.Report;
+
 public class RuleContext {
 
     private Report report;

@@ -5,7 +5,7 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.reports.Report;
 import net.sourceforge.pmd.rules.IfElseStmtsMustUseBracesRule;
 
 public class IfElseStmtsMustUseBracesRuleTest extends RuleTst {

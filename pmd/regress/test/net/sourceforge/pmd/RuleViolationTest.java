@@ -14,9 +14,6 @@ public class RuleViolationTest extends TestCase {
     public void testBasic() {
         Rule rule = new MockRule("name", "desc");
         RuleViolation r = new RuleViolation(rule, 2);
-        assertTrue(r.getText().indexOf("name") != -1);
-        assertTrue(r.getText().indexOf("desc") != -1);
-        assertTrue(r.getText().indexOf("2") != -1);
         System.out.println("r.getXML() = " + r.getXML());
         assertTrue(r.getXML().indexOf("desc") != -1);
         assertTrue(r.getXML().indexOf("2") != -1);

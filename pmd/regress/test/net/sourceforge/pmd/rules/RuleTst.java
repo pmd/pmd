@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.reports.Report;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.ast.*;
 

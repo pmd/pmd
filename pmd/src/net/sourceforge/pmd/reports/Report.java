@@ -1,4 +1,6 @@
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.reports;
+
+import net.sourceforge.pmd.RuleViolation;
 
 import java.util.*;
 

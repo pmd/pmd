@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.reports.Report;
 
 import java.io.*;
 import java.util.List;

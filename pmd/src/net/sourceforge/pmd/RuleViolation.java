@@ -17,10 +17,6 @@ public class RuleViolation {
         this.description = specificDescription;
     }
 
-    public String getText() {
-        return rule.getName() +":" + description + ":" + line;
-    }
-
     public Rule getRule() {
         return rule;
     }
