@@ -171,6 +171,8 @@ SKIP :
 
 <PREPROCESSOR_OUTPUT> MORE:
 {
+  "\\\n"
+  |
   < ~[] >
 }
 

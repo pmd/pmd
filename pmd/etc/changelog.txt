@@ -1,6 +1,7 @@
 ????? - 2.1:
 Fixed bug 1050173 - ImmutableFieldRule no longer reports false positives for static fields.
 Fixed bug 1041739 - EmptyStatementNotInLoop no longer reports false positives for nested class declarations in methods.
+Fixed bug 1039963 - CPD no longer fails to parse C++ files with multi-line macros.
 
 October 19, 2004 - 2.0:
 New rules: InstantiationToGetClass, IdempotentOperationsRule, SuspiciousEqualsMethodName, SimpleDateFormatNeedsLocale, JUnitTestsShouldContainAssertsRule, SuspiciousConstantFieldName, ImmutableFieldRule, MoreThanOneLoggerRule, LoggerIsNotStaticFinalRule, UseLocaleWithCaseConversions

@@ -108,6 +108,20 @@
   <formatter type="plain" />
     </junit>
 </target>
+ <target name="cpdtests" depends="compile">
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath>
+        <path refid="classpath.path" />
+        <pathelement location="${basedir}" />
+      </classpath>
+      <batchtest fork="no" todir="${build}">
+        <fileset dir="${regress}">
+          <include name="test/**/cpd/**/*Test.java" />
+        </fileset>
+      </batchtest>
+  <formatter type="plain" />
+    </junit>
+</target>
 
 <target name="jjtree">
     <jjtree target="etc/grammar/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
@@ -119,20 +133,6 @@
     <replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException"/>
     <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException"/>
     <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
-</target>
-
-<target name="cppjavacc">
-    <delete>
-        <fileset dir="src/net/sourceforge/pmd/cpd/cppast">
-            <include name="*.java"/>
-            <exclude name="ClassScope.java"/>
-            <exclude name="Declaration.java"/>
-            <exclude name="Scope.java"/>
-            <exclude name="SymtabManager.java"/>
-        </fileset>
-    </delete>
-    <javacc target="etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="/usr/local/javacc-3.2/"/>
-    <replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException"/>
 </target>
 
 <target name="clean" depends="delete,compile"/>
