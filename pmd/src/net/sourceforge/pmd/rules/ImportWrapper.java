@@ -15,7 +15,7 @@ public class ImportWrapper {
     }
 
     public boolean equals(Object other) {
-        ImportWrapper i = (ImportWrapper)other;
+        ImportWrapper i = (ImportWrapper) other;
         return i.getName().equals(getName());
     }
 

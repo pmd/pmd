@@ -46,8 +46,8 @@ public class LooseCouplingRule extends AbstractRule {
     public Object visit(ASTName node, Object data) {
         Node parent = node.jjtGetParent().jjtGetParent();
         if (implClassNames.contains(node.getImage()) && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter || parent instanceof ASTResultType)) {
-            RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {node.getImage()})));
+            RuleContext ctx = (RuleContext) data;
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{node.getImage()})));
         }
         return data;
     }

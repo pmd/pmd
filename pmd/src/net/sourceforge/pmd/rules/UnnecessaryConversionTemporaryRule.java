@@ -17,7 +17,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UnnecessaryConversionTemporaryRule extends AbstractRule implements Rule{
+public class UnnecessaryConversionTemporaryRule extends AbstractRule implements Rule {
 
     private boolean inPrimaryExpressionContext;
     private boolean usingPrimitiveWrapperAllocation;
@@ -49,7 +49,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
         if (!inPrimaryExpressionContext || !(node.jjtGetChild(0) instanceof ASTName)) {
             return super.visit(node, data);
         }
-        if (!primitiveWrappers.contains(((SimpleNode)node.jjtGetChild(0)).getImage())) {
+        if (!primitiveWrappers.contains(((SimpleNode) node.jjtGetChild(0)).getImage())) {
             return super.visit(node, data);
         }
         usingPrimitiveWrapperAllocation = true;
@@ -61,7 +61,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
             return super.visit(node, data);
         }
         if (node.getImage() != null && node.getImage().equals("toString")) {
-            RuleContext ctx = (RuleContext)data;
+            RuleContext ctx = (RuleContext) data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
         return super.visit(node, data);

@@ -13,7 +13,7 @@ public class SwitchStmtsShouldHaveDefaultRuleTest extends RuleTst {
         runTest("SwitchStmtsShouldHaveDefault1.java", 1, new SwitchStmtsShouldHaveDefaultRule());
     }
 
-    public void test2()  throws Throwable {
+    public void test2() throws Throwable {
         runTest("SwitchStmtsShouldHaveDefault2.java", 0, new SwitchStmtsShouldHaveDefaultRule());
     }
 

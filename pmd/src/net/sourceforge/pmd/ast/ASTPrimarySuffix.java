@@ -3,15 +3,15 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTPrimarySuffix extends SimpleNode {
-  public ASTPrimarySuffix(int id) {
-    super(id);
-  }
+    public ASTPrimarySuffix(int id) {
+        super(id);
+    }
 
-  public ASTPrimarySuffix(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTPrimarySuffix(JavaParser p, int id) {
+        super(p, id);
+    }
 
-  private boolean isArguments;
+    private boolean isArguments;
 
     public void setIsArguments() {
         this.isArguments = true;
@@ -21,8 +21,8 @@ public class ASTPrimarySuffix extends SimpleNode {
         return this.isArguments;
     }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

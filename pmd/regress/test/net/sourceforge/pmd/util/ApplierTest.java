@@ -16,9 +16,11 @@ public class ApplierTest extends TestCase {
 
     private static class MyFunction implements UnaryFunction {
         private boolean gotCallback;
+
         public void applyTo(Object o) {
             this.gotCallback = true;
         }
+
         public boolean gotCallback() {
             return this.gotCallback;
         }

@@ -17,10 +17,10 @@ import java.util.Iterator;
 public class UnusedLocalVariableRule extends AbstractRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
-            RuleContext ctx = (RuleContext)data;
-            for (Iterator i =  node.getScope().getVariableDeclarations(false).keySet().iterator(); i.hasNext();) {
-                VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[] {decl.getImage()})));
+            RuleContext ctx = (RuleContext) data;
+            for (Iterator i = node.getScope().getVariableDeclarations(false).keySet().iterator(); i.hasNext();) {
+                VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
             }
         }
         return data;

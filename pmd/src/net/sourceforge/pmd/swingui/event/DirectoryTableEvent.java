@@ -11,8 +11,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class DirectoryTableEvent extends EventObject
-{
+public class DirectoryTableEvent extends EventObject {
 
     private File m_selectedFile;
 
@@ -20,8 +19,7 @@ public class DirectoryTableEvent extends EventObject
      ****************************************************************************
      *
      */
-    private DirectoryTableEvent(Object source, File selectedFile)
-    {
+    private DirectoryTableEvent(Object source, File selectedFile) {
         super(source);
 
         m_selectedFile = selectedFile;
@@ -32,8 +30,7 @@ public class DirectoryTableEvent extends EventObject
      *
      * @return
      */
-    public File getSelectedFile()
-    {
+    public File getSelectedFile() {
         return m_selectedFile;
     }
 
@@ -42,16 +39,13 @@ public class DirectoryTableEvent extends EventObject
      *
      * @param dataNode
      */
-    public static void notifyRequestFileSelected(Object source)
-    {
-        if (source != null)
-        {
+    public static void notifyRequestFileSelected(Object source) {
+        if (source != null) {
             DirectoryTableEvent event = new DirectoryTableEvent(source, null);
             List listenerList = ListenerList.getListeners(DirectoryTableEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 DirectoryTableEventListener listener;
 
                 listener = (DirectoryTableEventListener) listeners.next();
@@ -65,16 +59,13 @@ public class DirectoryTableEvent extends EventObject
      *
      * @param dataNode
      */
-    public static void notifyFileSelectionChanged(Object source, File newFile)
-    {
-        if (source != null)
-        {
+    public static void notifyFileSelectionChanged(Object source, File newFile) {
+        if (source != null) {
             DirectoryTableEvent event = new DirectoryTableEvent(source, newFile);
             List listenerList = ListenerList.getListeners(DirectoryTableEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 DirectoryTableEventListener listener;
 
                 listener = (DirectoryTableEventListener) listeners.next();
@@ -88,16 +79,13 @@ public class DirectoryTableEvent extends EventObject
      *
      * @param dataNode
      */
-    public static void notifySelectedFile(Object source, File selectedFile)
-    {
-        if ((source != null) && (selectedFile != null))
-        {
+    public static void notifySelectedFile(Object source, File selectedFile) {
+        if ((source != null) && (selectedFile != null)) {
             DirectoryTableEvent event = new DirectoryTableEvent(source, selectedFile);
             List listenerList = ListenerList.getListeners(DirectoryTableEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 DirectoryTableEventListener listener;
 
                 listener = (DirectoryTableEventListener) listeners.next();

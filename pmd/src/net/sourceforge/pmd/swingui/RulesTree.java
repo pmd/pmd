@@ -46,8 +46,7 @@ import java.util.EventObject;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesTree extends JTree implements Constants
-{
+class RulesTree extends JTree implements Constants {
 
     private Color m_background;
     private boolean m_disablePopupMenu;
@@ -56,8 +55,7 @@ class RulesTree extends JTree implements Constants
     // Constants
     private final String UNTITLED = "Untitled";
 
-    protected RulesTree() throws PMDException
-    {
+    protected RulesTree() throws PMDException {
         super(RulesTreeModel.get());
 
         setRootVisible(true);
@@ -78,8 +76,7 @@ class RulesTree extends JTree implements Constants
      *
      * @return
      */
-    protected RulesTreeNode getRootNode()
-    {
+    protected RulesTreeNode getRootNode() {
         return (RulesTreeNode) ((RulesTreeModel) getModel()).getRoot();
     }
 
@@ -87,8 +84,7 @@ class RulesTree extends JTree implements Constants
      ******************************************************************************
      *
      */
-    public void updateUI()
-    {
+    public void updateUI() {
         super.updateUI();
         setBackground(m_background);
     }
@@ -98,8 +94,7 @@ class RulesTree extends JTree implements Constants
      *
      * @param node
      */
-    protected void expandNode(RulesTreeNode node)
-    {
+    protected void expandNode(RulesTreeNode node) {
         TreePath treePath = new TreePath(node.getPath());
 
         expandPath(treePath);
@@ -110,8 +105,7 @@ class RulesTree extends JTree implements Constants
      *
      * @return
      */
-    protected RulesTreeNode getSelectedNode()
-    {
+    protected RulesTreeNode getSelectedNode() {
         TreePath treePath = getSelectionPath();
 
         return (treePath == null) ? null : (RulesTreeNode) treePath.getLastPathComponent();
@@ -124,8 +118,7 @@ class RulesTree extends JTree implements Constants
      *
      * @return
      */
-    protected boolean isExpanded(RulesTreeNode node)
-    {
+    protected boolean isExpanded(RulesTreeNode node) {
         TreePath treePath = new TreePath(node.getPath());
 
         return isExpanded(treePath);
@@ -136,8 +129,7 @@ class RulesTree extends JTree implements Constants
      *
      * @param setting
      */
-    protected void setDisablePopupMenu(boolean setting)
-    {
+    protected void setDisablePopupMenu(boolean setting) {
         m_disablePopupMenu = setting;
     }
 
@@ -146,8 +138,7 @@ class RulesTree extends JTree implements Constants
      *
      * @param setting
      */
-    protected void setDisableEditing(boolean setting)
-    {
+    protected void setDisableEditing(boolean setting) {
         m_disableEditing = setting;
     }
 
@@ -156,8 +147,7 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class RulesTreeMouseListener extends MouseAdapter
-    {
+    private class RulesTreeMouseListener extends MouseAdapter {
 
         private JMenuItem m_addRuleSetMenuItem;
         private JMenuItem m_removeRuleSetMenuItem;
@@ -172,10 +162,8 @@ class RulesTree extends JTree implements Constants
          *
          * @param event
          */
-        public void mouseReleased(MouseEvent event)
-        {
-            if (event.isPopupTrigger())
-            {
+        public void mouseReleased(MouseEvent event) {
+            if (event.isPopupTrigger()) {
                 RulesTree rulesTree;
                 Point location;
                 TreePath treePath;
@@ -189,25 +177,17 @@ class RulesTree extends JTree implements Constants
                 treeNode = (RulesTreeNode) treePath.getLastPathComponent();
                 popupMenu = null;
 
-                if (treeNode.isRoot())
-                {
+                if (treeNode.isRoot()) {
                     popupMenu = createRootPopupMenu();
-                }
-                else if (treeNode.isRuleSet())
-                {
+                } else if (treeNode.isRuleSet()) {
                     popupMenu = createRuleSetPopupMenu();
-                }
-                else if (treeNode.isRule())
-                {
+                } else if (treeNode.isRule()) {
                     popupMenu = createRulePopupMenu();
-                }
-                else if (treeNode.isProperty())
-                {
+                } else if (treeNode.isProperty()) {
                     popupMenu = createPropertyPopupMenu();
                 }
 
-                if (popupMenu != null)
-                {
+                if (popupMenu != null) {
                     popupMenu.show(rulesTree, location.x, location.y);
                 }
             }
@@ -218,8 +198,7 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        private JPopupMenu createRootPopupMenu()
-        {
+        private JPopupMenu createRootPopupMenu() {
             JPopupMenu popupMenu = createPopupMenu(false);
 
             m_addRuleSetMenuItem.setEnabled(true);
@@ -237,8 +216,7 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        private JPopupMenu createRuleSetPopupMenu()
-        {
+        private JPopupMenu createRuleSetPopupMenu() {
             JPopupMenu popupMenu = createPopupMenu(true);
 
             m_addRuleSetMenuItem.setEnabled(false);
@@ -256,8 +234,7 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        private JPopupMenu createRulePopupMenu()
-        {
+        private JPopupMenu createRulePopupMenu() {
             JPopupMenu popupMenu = createPopupMenu(true);
 
             m_addRuleSetMenuItem.setEnabled(false);
@@ -275,8 +252,7 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        private JPopupMenu createPropertyPopupMenu()
-        {
+        private JPopupMenu createPropertyPopupMenu() {
             JPopupMenu popupMenu = createPopupMenu(false);
 
             m_addRuleSetMenuItem.setEnabled(false);
@@ -294,8 +270,7 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        private JPopupMenu createPopupMenu(boolean addInclude)
-        {
+        private JPopupMenu createPopupMenu(boolean addInclude) {
             JPopupMenu popupMenu = new JPopupMenu();
 
             m_addRuleSetMenuItem = new JMenuItem("Add Rule Set");
@@ -326,8 +301,7 @@ class RulesTree extends JTree implements Constants
             m_removePropertyMenuItem.addActionListener(new RemoveRulePropertyActionListener());
             popupMenu.add(m_removePropertyMenuItem);
 
-            if (addInclude)
-            {
+            if (addInclude) {
                 popupMenu.add(new JSeparator());
 
                 m_includeMenuItem = new JCheckBoxMenuItem("Include");
@@ -345,11 +319,9 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class IncludeActionListener implements ActionListener
-    {
+    private class IncludeActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             JCheckBoxMenuItem includeMenuItem = (JCheckBoxMenuItem) event.getSource();
             RulesTree.this.getSelectedNode().setInclude(includeMenuItem.isSelected());
             RulesTree.this.updateUI();
@@ -362,19 +334,16 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class AddRuleSetActionListener implements ActionListener
-    {
+    private class AddRuleSetActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             RuleSet ruleSet = new RuleSet();
             String ruleSetName = UNTITLED;
             int counter = 0;
             RulesTree rulesTree = RulesTree.this;
             RulesTreeNode rootNode = rulesTree.getSelectedNode();
 
-            while (rootNode.getChildNode(ruleSetName) != null)
-            {
+            while (rootNode.getChildNode(ruleSetName) != null) {
                 counter++;
                 ruleSetName = UNTITLED + "-" + counter;
             }
@@ -387,8 +356,7 @@ class RulesTree extends JTree implements Constants
             rootNode.add(ruleSetNode);
             treeModel.nodeStructureChanged(rootNode);
 
-            if (rulesTree.isExpanded(ruleSetNode) == false)
-            {
+            if (rulesTree.isExpanded(ruleSetNode) == false) {
                 rulesTree.expandNode(ruleSetNode);
             }
 
@@ -401,22 +369,18 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class RemoveRuleSetActionListener implements ActionListener
-    {
+    private class RemoveRuleSetActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             RulesTreeNode ruleSetNode = RulesTree.this.getSelectedNode();
 
-            if (ruleSetNode != null)
-            {
+            if (ruleSetNode != null) {
                 String ruleSetName = ruleSetNode.getName();
                 String template = "Do you really want to remove the rule set \"{0}\"?\nThe remove cannot be undone.";
                 String[] args = {ruleSetName};
                 String message = MessageFormat.format(template, args);
 
-                if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message))
-                {
+                if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message)) {
                     DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
                     treeModel.removeNodeFromParent(ruleSetNode);
                 }
@@ -429,24 +393,19 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class AddRuleActionListener implements ActionListener
-    {
+    private class AddRuleActionListener implements ActionListener {
 
         /**
          ***************************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             Rule rule = null;
 
-            try
-            {
+            try {
                 rule = getNewRuleFromUser();
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
@@ -454,8 +413,7 @@ class RulesTree extends JTree implements Constants
                 return;
             }
 
-            if (rule != null)
-            {
+            if (rule != null) {
                 String className = rule.getClass().getName();
                 int index = className.lastIndexOf('.') + 1;
                 String baseRuleName = className.substring(index);
@@ -464,8 +422,7 @@ class RulesTree extends JTree implements Constants
                 RulesTree rulesTree = RulesTree.this;
                 RulesTreeNode ruleSetNode = rulesTree.getSelectedNode();
 
-                while (ruleSetNode.getChildNode(ruleName) != null)
-                {
+                while (ruleSetNode.getChildNode(ruleName) != null) {
                     counter++;
                     ruleName = baseRuleName + "-" + counter;
                 }
@@ -478,8 +435,7 @@ class RulesTree extends JTree implements Constants
                 ruleSetNode.add(ruleNode);
                 treeModel.nodeStructureChanged(ruleSetNode);
 
-                if (rulesTree.isExpanded(ruleSetNode) == false)
-                {
+                if (rulesTree.isExpanded(ruleSetNode) == false) {
                     rulesTree.expandNode(ruleSetNode);
                 }
 
@@ -494,24 +450,19 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        private Rule getNewRuleFromUser()
-        throws PMDException
-        {
+        private Rule getNewRuleFromUser() throws PMDException {
             RulesClassSelectDialog dialog = new RulesClassSelectDialog(PMDViewer.getViewer());
             dialog.show();
 
-            if (dialog.selectWasPressed())
-            {
+            if (dialog.selectWasPressed()) {
                 File selectedFile = dialog.getSelectedClassFile();
                 RuleClassLoader classLoader = new RuleClassLoader();
                 Class clazz = classLoader.loadClass(selectedFile);
 
-                try
-                {
+                try {
                     Object object = clazz.newInstance();
 
-                    if (object instanceof AbstractRule)
-                    {
+                    if (object instanceof AbstractRule) {
                         return (Rule) object;
                     }
 
@@ -520,16 +471,12 @@ class RulesTree extends JTree implements Constants
                     String[] args = {clazz.getName(), abstractRuleClassName};
                     String message = MessageFormat.format(template, args);
                     MessageDialog.show(PMDViewer.getViewer(), message);
-                }
-                catch (InstantiationException exception)
-                {
+                } catch (InstantiationException exception) {
                     String template = "Could not instantiate class \"{0}\".";
                     String[] args = {clazz.getName()};
                     String message = MessageFormat.format(template, args);
                     MessageDialog.show(PMDViewer.getViewer(), message, exception);
-                }
-                catch (IllegalAccessException exception)
-                {
+                } catch (IllegalAccessException exception) {
                     String template = "Encountered illegal access while instantiating class \"{0}\".";
                     String[] args = {clazz.getName()};
                     String message = MessageFormat.format(template, args);
@@ -546,8 +493,7 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class RulesFileFilter implements FileFilter
-    {
+    private class RulesFileFilter implements FileFilter {
         /**
          ***************************************************************************
          *
@@ -555,10 +501,8 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        public boolean accept(File file)
-        {
-            if (file.isDirectory())
-            {
+        public boolean accept(File file) {
+            if (file.isDirectory()) {
                 return true;
             }
 
@@ -570,8 +514,7 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        public String getDescription()
-        {
+        public String getDescription() {
             return "Rule Class Files";
         }
     }
@@ -581,15 +524,13 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class RuleClassLoader extends ClassLoader
-    {
+    private class RuleClassLoader extends ClassLoader {
 
         /**
          **************************************************************************
          *
          */
-        private RuleClassLoader()
-        {
+        private RuleClassLoader() {
             super();
         }
 
@@ -597,18 +538,15 @@ class RulesTree extends JTree implements Constants
          **************************************************************************
          *
          */
-        private Class loadClass(File file)
-        {
+        private Class loadClass(File file) {
             FileInputStream inputStream = null;
             Class clazz = null;
 
-            try
-            {
+            try {
                 inputStream = new FileInputStream(file);
                 clazz = null;
 
-                if (inputStream != null)
-                {
+                if (inputStream != null) {
                     final int size = 10000;
                     int byteCount = 0;
                     byte[] buffer = new byte[size];
@@ -616,41 +554,28 @@ class RulesTree extends JTree implements Constants
 
                     byteArrayOutputStream = new ByteArrayOutputStream(size);
 
-                    try
-                    {
-                        while ((byteCount = inputStream.read(buffer)) > 0)
-                        {
+                    try {
+                        while ((byteCount = inputStream.read(buffer)) > 0) {
                             byteArrayOutputStream.write(buffer, 0, byteCount);
                         }
-                    }
-                    catch (IOException exception)
-                    {
+                    } catch (IOException exception) {
                         return null;
                     }
 
                     buffer = byteArrayOutputStream.toByteArray();
                     clazz = super.defineClass(null, buffer, 0, buffer.length);
 
-                    if (clazz != null)
-                    {
+                    if (clazz != null) {
                         resolveClass(clazz);
                     }
                 }
-            }
-            catch (FileNotFoundException exception)
-            {
+            } catch (FileNotFoundException exception) {
                 clazz = null;
-            }
-            finally
-            {
-                if (inputStream != null)
-                {
-                    try
-                    {
+            } finally {
+                if (inputStream != null) {
+                    try {
                         inputStream.close();
-                    }
-                    catch (IOException exception)
-                    {
+                    } catch (IOException exception) {
                         inputStream = null;
                     }
                 }
@@ -665,19 +590,16 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class RemoveRuleActionListener implements ActionListener
-    {
+    private class RemoveRuleActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             RulesTreeNode ruleNode = RulesTree.this.getSelectedNode();
             String ruleName = ruleNode.getName();
             String template = "Do you really want to remove the rule \"{0}\"?\nThe remove cannot be undone.";
             String[] args = {ruleName};
             String message = MessageFormat.format(template, args);
 
-            if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message))
-            {
+            if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message)) {
                 DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
                 treeModel.removeNodeFromParent(ruleNode);
             }
@@ -689,18 +611,15 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class AddRulePropertyActionListener implements ActionListener
-    {
+    private class AddRulePropertyActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             String propertyName = UNTITLED;
             int counter = 0;
             RulesTree rulesTree = RulesTree.this;
             RulesTreeNode ruleNode = rulesTree.getSelectedNode();
 
-            while (ruleNode.getChildNode(propertyName) != null)
-            {
+            while (ruleNode.getChildNode(propertyName) != null) {
                 counter++;
                 propertyName = UNTITLED + "-" + counter;
             }
@@ -711,8 +630,7 @@ class RulesTree extends JTree implements Constants
             ruleNode.add(propertyNode);
             treeModel.nodeStructureChanged(ruleNode);
 
-            if (rulesTree.isExpanded(ruleNode) == false)
-            {
+            if (rulesTree.isExpanded(ruleNode) == false) {
                 rulesTree.expandNode(ruleNode);
             }
 
@@ -725,19 +643,16 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class RemoveRulePropertyActionListener implements ActionListener
-    {
+    private class RemoveRulePropertyActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             RulesTreeNode propertyNode = RulesTree.this.getSelectedNode();
             String propertyName = propertyNode.getName();
             String template = "Do you really want to remove the property \"{0}\"?\nThe remove cannot be undone.";
             String[] args = {propertyName};
             String message = MessageFormat.format(template, args);
 
-            if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message))
-            {
+            if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message)) {
                 DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
                 treeModel.removeNodeFromParent(propertyNode);
             }
@@ -749,15 +664,13 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class TreeCellEditor extends DefaultTreeCellEditor
-    {
+    private class TreeCellEditor extends DefaultTreeCellEditor {
 
         /**
          ***************************************************************************
          *
          */
-        private TreeCellEditor()
-        {
+        private TreeCellEditor() {
             super(RulesTree.this, (DefaultTreeCellRenderer) RulesTree.this.getCellRenderer());
         }
 
@@ -766,8 +679,7 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        public boolean isCellEditable(EventObject event)
-        {
+        public boolean isCellEditable(EventObject event) {
             return false;
         }
     }
@@ -777,8 +689,7 @@ class RulesTree extends JTree implements Constants
      ********************************************************************************
      ********************************************************************************
      */
-    private class TreeNodeRenderer extends DefaultTreeCellRenderer
-    {
+    private class TreeNodeRenderer extends DefaultTreeCellRenderer {
 
         private Icon m_defaultClosedIcon;
         private Icon m_defaultLeafIcon;
@@ -791,8 +702,7 @@ class RulesTree extends JTree implements Constants
          ***************************************************************************
          *
          */
-        protected TreeNodeRenderer()
-        {
+        protected TreeNodeRenderer() {
             super();
 
             Font font;
@@ -821,37 +731,24 @@ class RulesTree extends JTree implements Constants
          *
          * @return
          */
-        public Component getTreeCellRendererComponent(JTree tree,
-                                                      Object object,
-                                                      boolean isSelected,
-                                                      boolean isExpanded,
-                                                      boolean isLeaf,
-                                                      int row,
-                                                      boolean hasFocus)
-        {
+        public Component getTreeCellRendererComponent(JTree tree, Object object, boolean isSelected, boolean isExpanded, boolean isLeaf, int row, boolean hasFocus) {
             RulesTreeNode treeNode = (RulesTreeNode) object;
 
-            if (treeNode.isProperty())
-            {
+            if (treeNode.isProperty()) {
                 setClosedIcon(m_defaultClosedIcon);
                 setLeafIcon(m_documentIcon);
                 setOpenIcon(m_defaultOpenIcon);
-            }
-            else
-            {
+            } else {
                 setClosedIcon(m_defaultClosedIcon);
                 setLeafIcon(m_defaultClosedIcon);
                 setOpenIcon(m_defaultOpenIcon);
             }
 
-            if (treeNode.include() && treeNode.includeAncestor())
-            {
+            if (treeNode.include() && treeNode.includeAncestor()) {
                 setTextNonSelectionColor(Color.blue);
                 setTextSelectionColor(Color.blue);
                 setFont(m_plainFont);
-            }
-            else
-            {
+            } else {
                 setTextNonSelectionColor(Color.black);
                 setTextSelectionColor(Color.black);
                 setFont(m_italicFont);
@@ -860,13 +757,7 @@ class RulesTree extends JTree implements Constants
 
             this.updateUI();
 
-            return super.getTreeCellRendererComponent(tree,
-                                                      object,
-                                                      isSelected,
-                                                      isExpanded,
-                                                      isLeaf,
-                                                      row,
-                                                      hasFocus);
+            return super.getTreeCellRendererComponent(tree, object, isSelected, isExpanded, isLeaf, row, hasFocus);
         }
 
         /**
@@ -874,8 +765,7 @@ class RulesTree extends JTree implements Constants
          *
          * @param graphics
          */
-        public void paint(Graphics graphics)
-        {
+        public void paint(Graphics graphics) {
             int x = getX();
             int y = getY();
             int width = getWidth();
@@ -890,16 +780,14 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class RulesEditingEventHandler implements RulesEditingEventListener
-    {
+    private class RulesEditingEventHandler implements RulesEditingEventListener {
 
         /**
          ***************************************************************************
          *
          * @param event
          */
-        public void saveData(RulesEditingEvent event)
-        {
+        public void saveData(RulesEditingEvent event) {
             SwingUtilities.invokeLater(new UpdateUI());
         }
 
@@ -908,8 +796,7 @@ class RulesTree extends JTree implements Constants
          *
          * @param event
          */
-        public void loadData(RulesEditingEvent event)
-        {
+        public void loadData(RulesEditingEvent event) {
         }
     }
 
@@ -918,15 +805,13 @@ class RulesTree extends JTree implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class UpdateUI implements Runnable
-    {
+    private class UpdateUI implements Runnable {
 
         /**
          ***************************************************************************
          *
          */
-        public void run()
-        {
+        public void run() {
             RulesTree.this.updateUI();
         }
     }

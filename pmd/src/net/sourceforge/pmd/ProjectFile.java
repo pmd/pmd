@@ -1,6 +1,7 @@
 package net.sourceforge.pmd;
 
 // import org.apache.xerces.parsers.SAXParser;
+
 import net.sourceforge.pmd.util.ResourceLoader;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -39,8 +40,7 @@ import java.util.StringTokenizer;
  * @since September 10, 2002
  * @version $Revision$, $Date$
  */
-public class ProjectFile
-{
+public class ProjectFile {
 
     private static Properties PROPERTIES;
     private static Exception PARSE_EXCEPTION;
@@ -53,12 +53,10 @@ public class ProjectFile
      *
      * @return
      */
-    public static final String getProperty(String key)
-    {
+    public static final String getProperty(String key) {
         key = (key == null) ? "" : key.trim().toLowerCase();
 
-        if (PROPERTIES == null)
-        {
+        if (PROPERTIES == null) {
             (new ProjectFile()).loadProperties();
         }
 
@@ -72,8 +70,7 @@ public class ProjectFile
      *
      * @return
      */
-    public static final Enumeration getPropertyKeys()
-    {
+    public static final Enumeration getPropertyKeys() {
         return PROPERTIES.propertyNames();
     }
 
@@ -82,13 +79,11 @@ public class ProjectFile
      *
      * @return
      */
-    public static final int getPropertyCount()
-    {
+    public static final int getPropertyCount() {
         int count = 0;
         Enumeration keys = PROPERTIES.propertyNames();
 
-        while (keys.hasMoreElements())
-        {
+        while (keys.hasMoreElements()) {
             keys.nextElement();
             count++;
         }
@@ -101,12 +96,10 @@ public class ProjectFile
      *
      * @return
      */
-    public static final String[] toArray(String propertyValue)
-    {
+    public static final String[] toArray(String propertyValue) {
         String[] values = new String[0];
 
-        if (propertyValue != null)
-        {
+        if (propertyValue != null) {
             StringTokenizer parser;
             int valueCount;
             int index;
@@ -116,8 +109,7 @@ public class ProjectFile
             values = new String[valueCount];
             index = 0;
 
-            while (parser.hasMoreTokens())
-            {
+            while (parser.hasMoreTokens()) {
                 values[index] = parser.nextToken();
                 index++;
             }
@@ -131,8 +123,7 @@ public class ProjectFile
      *
      * @return
      */
-    public static final Exception getException()
-    {
+    public static final Exception getException() {
         return PARSE_EXCEPTION;
     }
 
@@ -140,8 +131,7 @@ public class ProjectFile
      *****************************************************************************
      *
      */
-    private void loadProperties()
-    {
+    private void loadProperties() {
         InputStream inputStream;
         InputSource inputSource;
 
@@ -149,10 +139,9 @@ public class ProjectFile
         inputStream = ResourceLoader.loadResourceAsStream("project.xml");
         inputSource = new InputSource(inputStream);
 
-        try
-        {
+        try {
             MainContentHandler mainContentHandler;
-	    SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
             factory.setFeature("http://xml.org/sax/features/namespaces", false);
 
@@ -160,10 +149,8 @@ public class ProjectFile
 
             mainContentHandler = new MainContentHandler();
 
-	    parser.parse(inputSource, mainContentHandler);
-        }
-        catch (Exception exception)
-        {
+            parser.parse(inputSource, mainContentHandler);
+        } catch (Exception exception) {
             PARSE_EXCEPTION = exception;
         }
     }
@@ -173,8 +160,7 @@ public class ProjectFile
      *****************************************************************************
      *****************************************************************************
      */
-    private class MainContentHandler extends DefaultHandler
-    {
+    private class MainContentHandler extends DefaultHandler {
 
         private StringBuffer m_buffer = new StringBuffer(100);
         private Stack m_nameStack = new Stack();
@@ -183,8 +169,7 @@ public class ProjectFile
         /**
          *************************************************************************
          */
-        private MainContentHandler()
-        {
+        private MainContentHandler() {
             super();
         }
 
@@ -198,14 +183,8 @@ public class ProjectFile
          *
          * @throws SAXException
          */
-        public void startElement(String namespace,
-                                 String localName,
-                                 String qualifiedName,
-                                 Attributes attributes)
-            throws SAXException
-        {
-            if (qualifiedName.equalsIgnoreCase(PROJECT) == false)
-            {
+        public void startElement(String namespace, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+            if (qualifiedName.equalsIgnoreCase(PROJECT) == false) {
                 m_nameStack.push(qualifiedName);
             }
         }
@@ -219,8 +198,7 @@ public class ProjectFile
          *
          * @throws PMDException
          */
-        public void characters(char[] chars, int beginIndex, int length)
-        {
+        public void characters(char[] chars, int beginIndex, int length) {
             m_buffer.append(chars, beginIndex, length);
         }
 
@@ -233,15 +211,12 @@ public class ProjectFile
          *
          * @throws SAXException
          */
-        public void endElement(String namespace, String localName, String qualifiedName)
-            throws SAXException
-        {
+        public void endElement(String namespace, String localName, String qualifiedName) throws SAXException {
             String value = m_buffer.toString().replace('\n', ' ').trim();
             String key = buildKey();
             String existingValue = PROPERTIES.getProperty(key);
 
-            if (existingValue != null)
-            {
+            if (existingValue != null) {
                 value = existingValue + VALUE_SEPARATOR + value;
             }
 
@@ -255,19 +230,16 @@ public class ProjectFile
          *
          * @return
          */
-        private String buildKey()
-        {
+        private String buildKey() {
             StringBuffer name = new StringBuffer(100);
             Iterator iterator = m_nameStack.iterator();
 
-            while (iterator.hasNext())
-            {
+            while (iterator.hasNext()) {
                 name.append(iterator.next());
                 name.append('/');
             }
 
-            if (name.length() > 0)
-            {
+            if (name.length() > 0) {
                 name.setLength(name.length() - 1);
             }
 

@@ -8,8 +8,7 @@ import java.util.EventListener;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public interface RulesTreeModelEventListener extends EventListener
-{
+public interface RulesTreeModelEventListener extends EventListener {
 
     /**
      ****************************************************************************

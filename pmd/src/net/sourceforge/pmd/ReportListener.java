@@ -9,5 +9,6 @@ import net.sourceforge.pmd.stat.Metric;
 
 public interface ReportListener {
     void ruleViolationAdded(RuleViolation ruleViolation);
-    void metricAdded( Metric metric );
+
+    void metricAdded(Metric metric);
 }

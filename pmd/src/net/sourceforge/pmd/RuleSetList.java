@@ -20,8 +20,7 @@ import java.util.StringTokenizer;
  * @since September 11, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetList
-{
+public class RuleSetList {
 
     private static final String RULE_SET_LIST_FILE_NAME = "Included_Rule_Set_Names.txt";
 
@@ -32,24 +31,19 @@ public class RuleSetList
      *
      * @return
      */
-    public static final String[] getIncludedRuleSetNames(String directoryPath)
-    throws PMDException
-    {
+    public static final String[] getIncludedRuleSetNames(String directoryPath) throws PMDException {
         String[] ruleSetNames = new String[0];
 
-        if (directoryPath != null)
-        {
+        if (directoryPath != null) {
             File file;
 
             directoryPath = directoryPath.trim();
             file = new File(directoryPath + File.separator + RULE_SET_LIST_FILE_NAME);
 
-            if (file.exists())
-            {
+            if (file.exists()) {
                 BufferedReader inputStream = null;
 
-                try
-                {
+                try {
                     String ruleSetNameList;
                     StringTokenizer parser;
                     int index;
@@ -60,15 +54,12 @@ public class RuleSetList
                     ruleSetNames = new String[parser.countTokens()];
                     index = 0;
 
-                    while (parser.hasMoreTokens())
-                    {
+                    while (parser.hasMoreTokens()) {
                         ruleSetNames[index] = parser.nextToken().trim();
                         index++;
                     }
 
-                }
-                catch (FileNotFoundException exception)
-                {
+                } catch (FileNotFoundException exception) {
                     // Should not reach here because the file was already tested for existence.
                     String message;
                     PMDException pmdException;
@@ -77,9 +68,7 @@ public class RuleSetList
                     pmdException = new PMDException(message, exception);
                     pmdException.fillInStackTrace();
                     throw pmdException;
-                }
-                catch (IOException exception)
-                {
+                } catch (IOException exception) {
                     String message;
                     PMDException pmdException;
 
@@ -87,17 +76,11 @@ public class RuleSetList
                     pmdException = new PMDException(message, exception);
                     pmdException.fillInStackTrace();
                     throw pmdException;
-                }
-                finally
-                {
-                    if (inputStream != null)
-                    {
-                        try
-                        {
+                } finally {
+                    if (inputStream != null) {
+                        try {
                             inputStream.close();
-                        }
-                        catch (IOException exception)
-                        {
+                        } catch (IOException exception) {
                             // Ignore because the file is closed anyway.
                             inputStream = null;
                         }
@@ -116,22 +99,16 @@ public class RuleSetList
      *
      * @return
      */
-    public static final void saveIncludedRuleSetNames(String directoryPath, String[] ruleSetNames)
-    throws PMDException
-    {
-        if ((directoryPath != null) && (ruleSetNames != null))
-        {
+    public static final void saveIncludedRuleSetNames(String directoryPath, String[] ruleSetNames) throws PMDException {
+        if ((directoryPath != null) && (ruleSetNames != null)) {
             File file;
 
             directoryPath = directoryPath.trim();
             file = new File(directoryPath + File.separator + RULE_SET_LIST_FILE_NAME);
 
-            if (file.exists())
-            {
+            if (file.exists()) {
                 file.delete();
-            }
-            else
-            {
+            } else {
                 File directory = new File(directoryPath);
 
                 directory.mkdirs();
@@ -139,35 +116,28 @@ public class RuleSetList
 
             PrintWriter outputStream = null;
 
-            try
-            {
+            try {
                 StringBuffer buffer;
 
                 outputStream = new PrintWriter(new FileWriter(file));
                 buffer = new StringBuffer(100);
 
-                for (int n = 0; n < ruleSetNames.length; n++)
-                {
+                for (int n = 0; n < ruleSetNames.length; n++) {
                     buffer.append(ruleSetNames[n]);
                     buffer.append(',');
                 }
 
-                if (buffer.length() > 0)
-                {
+                if (buffer.length() > 0) {
                     buffer.setLength(buffer.length() - 1);
                 }
 
                 outputStream.println(buffer.toString());
-            }
-            catch (FileNotFoundException exception)
-            {
+            } catch (FileNotFoundException exception) {
                 String message = Resources.getString("RESOURCE_RuleSetListFileNotFound");
                 PMDException pmdException = new PMDException(message, exception);
                 pmdException.fillInStackTrace();
                 throw pmdException;
-            }
-            catch (IOException exception)
-            {
+            } catch (IOException exception) {
                 String message;
                 PMDException pmdException;
 
@@ -175,11 +145,8 @@ public class RuleSetList
                 pmdException = new PMDException(message, exception);
                 pmdException.fillInStackTrace();
                 throw pmdException;
-            }
-            finally
-            {
-                if (outputStream != null)
-                {
+            } finally {
+                if (outputStream != null) {
                     outputStream.close();
                 }
             }

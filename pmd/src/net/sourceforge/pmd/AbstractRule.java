@@ -11,10 +11,7 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class AbstractRule
-    extends JavaParserVisitorAdapter
-    implements Rule
-{
+public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
     private String name = getClass().getName();
     private RuleProperties properties = new RuleProperties();
@@ -40,8 +37,8 @@ public abstract class AbstractRule
         this.example = example;
     }
 
-    public boolean hasProperty( String name ) {
-        return properties.containsKey( name );
+    public boolean hasProperty(String name) {
+        return properties.containsKey(name);
     }
 
     public void addProperty(String name, String property) {
@@ -81,7 +78,7 @@ public abstract class AbstractRule
     }
 
     public boolean equals(Object o) {
-        Rule r = (Rule)o;
+        Rule r = (Rule) o;
         return r.getName().equals(getName());
     }
 
@@ -89,15 +86,15 @@ public abstract class AbstractRule
         return getName().hashCode();
     }
 
-    protected void visitAll( List acus, RuleContext ctx ) {
+    protected void visitAll(List acus, RuleContext ctx) {
         for (Iterator i = acus.iterator(); i.hasNext();) {
-           ASTCompilationUnit node = (ASTCompilationUnit)i.next();
-           visit( node, ctx );
+            ASTCompilationUnit node = (ASTCompilationUnit) i.next();
+            visit(node, ctx);
         }
     }
 
-    public void apply( List acus, RuleContext ctx ) {
-        visitAll( acus, ctx );
+    public void apply(List acus, RuleContext ctx) {
+        visitAll(acus, ctx);
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber) {
@@ -115,8 +112,7 @@ public abstract class AbstractRule
      *
      * @return An enumeration of property names
      */
-    public RuleProperties getProperties()
-    {
+    public RuleProperties getProperties() {
         return properties;
     }
 
@@ -127,8 +123,7 @@ public abstract class AbstractRule
      *
      * @return True when the rule is included in analysis.
      */
-    public boolean include()
-    {
+    public boolean include() {
         return m_include;
     }
 
@@ -139,8 +134,7 @@ public abstract class AbstractRule
      *
      * @param include True when the rule is included in analysis.
      */
-    public void setInclude(boolean include)
-    {
+    public void setInclude(boolean include) {
         m_include = include;
     }
 
@@ -151,10 +145,8 @@ public abstract class AbstractRule
      *
      * @return A number between 1 and LOWEST_PRIORITY.
      */
-    public int getPriority()
-    {
-        if ((m_priority < 0) || (m_priority > LOWEST_PRIORITY))
-        {
+    public int getPriority() {
+        if ((m_priority < 0) || (m_priority > LOWEST_PRIORITY)) {
             m_priority = LOWEST_PRIORITY;
         }
 
@@ -168,8 +160,7 @@ public abstract class AbstractRule
      *
      * @return A member of PRIORITIES.
      */
-    public String getPriorityName()
-    {
+    public String getPriorityName() {
         return PRIORITIES[getPriority() - 1];
     }
 
@@ -181,14 +172,10 @@ public abstract class AbstractRule
      *
      * @param The rule's priority of 1..LOWEST_PRIORITY.
      */
-    public void setPriority(int priority)
-    {
-        if ((priority < 1) || (priority > LOWEST_PRIORITY))
-        {
+    public void setPriority(int priority) {
+        if ((priority < 1) || (priority > LOWEST_PRIORITY)) {
             m_priority = LOWEST_PRIORITY;
-        }
-        else
-        {
+        } else {
             m_priority = priority;
         }
     }

@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTUnmodifiedInterfaceDeclaration extends SimpleNode {
-  public ASTUnmodifiedInterfaceDeclaration(int id) {
-    super(id);
-  }
+    public ASTUnmodifiedInterfaceDeclaration(int id) {
+        super(id);
+    }
 
-  public ASTUnmodifiedInterfaceDeclaration(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTUnmodifiedInterfaceDeclaration(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

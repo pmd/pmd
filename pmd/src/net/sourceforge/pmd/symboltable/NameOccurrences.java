@@ -33,7 +33,7 @@ public class NameOccurrences {
     }
 
     private void buildOccurrences(ASTPrimaryExpression node) {
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)node.jjtGetChild(0);
+        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
         if (prefix.usesSuperModifier()) {
             add(new NameOccurrence(prefix, "super"));
         } else if (prefix.usesThisModifier()) {
@@ -41,8 +41,8 @@ public class NameOccurrences {
         }
         checkForNameChild(prefix);
 
-        for (int i=1; i<node.jjtGetNumChildren(); i++) {
-            checkForNameChild((ASTPrimarySuffix)node.jjtGetChild(i));
+        for (int i = 1; i < node.jjtGetNumChildren(); i++) {
+            checkForNameChild((ASTPrimarySuffix) node.jjtGetChild(i));
         }
     }
 
@@ -52,20 +52,20 @@ public class NameOccurrences {
             add(new NameOccurrence(node, node.getImage()));
         }
         if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTName) {
-            ASTName grandchild = (ASTName)node.jjtGetChild(0);
+            ASTName grandchild = (ASTName) node.jjtGetChild(0);
             for (StringTokenizer st = new StringTokenizer(grandchild.getImage(), "."); st.hasMoreTokens();) {
                 add(new NameOccurrence(grandchild, st.nextToken()));
             }
         }
-        if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix)node).isArguments()) {
-            ((NameOccurrence)names.get(names.size()-1)).setIsMethodOrConstructorInvocation();
+        if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
+            ((NameOccurrence) names.get(names.size() - 1)).setIsMethodOrConstructorInvocation();
         }
     }
 
     private void add(NameOccurrence name) {
         names.add(name);
         if (names.size() > 1) {
-            NameOccurrence qualifiedName = (NameOccurrence)names.get(names.size()-2);
+            NameOccurrence qualifiedName = (NameOccurrence) names.get(names.size() - 2);
             qualifiedName.setNameWhichThisQualifies(name);
         }
     }
@@ -73,8 +73,8 @@ public class NameOccurrences {
 
     public String toString() {
         String result = "";
-        for (Iterator i=names.iterator();i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence)i.next();
+        for (Iterator i = names.iterator(); i.hasNext();) {
+            NameOccurrence occ = (NameOccurrence) i.next();
             result += occ.getImage();
         }
         return result;

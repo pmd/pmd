@@ -7,10 +7,8 @@ import net.sourceforge.pmd.ast.ASTClassDeclaration;
  * threshold.  i.e. if a class has more than 1000 lines
  * of code.
  */
-public class LongClassRule
-    extends ExcessiveLengthRule
-{
+public class LongClassRule extends ExcessiveLengthRule {
     public LongClassRule() {
-	super( ASTClassDeclaration.class );
+        super(ASTClassDeclaration.class);
     }
 }

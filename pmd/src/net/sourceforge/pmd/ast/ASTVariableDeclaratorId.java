@@ -3,18 +3,18 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTVariableDeclaratorId extends SimpleNode {
-  public ASTVariableDeclaratorId(int id) {
-    super(id);
-  }
+    public ASTVariableDeclaratorId(int id) {
+        super(id);
+    }
 
-  public ASTVariableDeclaratorId(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTVariableDeclaratorId(JavaParser p, int id) {
+        super(p, id);
+    }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 
     public boolean isExceptionBlockParameter() {
         return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
@@ -32,8 +32,8 @@ public class ASTVariableDeclaratorId extends SimpleNode {
     }
 
     private SimpleNode findTypeNameNode(Node node) {
-        ASTType typeNode = (ASTType)node.jjtGetChild(0);
-        return (SimpleNode)typeNode.jjtGetChild(0);
+        ASTType typeNode = (ASTType) node.jjtGetChild(0);
+        return (SimpleNode) typeNode.jjtGetChild(0);
     }
 
 

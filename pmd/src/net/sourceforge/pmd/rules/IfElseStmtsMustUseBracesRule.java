@@ -16,7 +16,7 @@ public class IfElseStmtsMustUseBracesRule extends BracesRule {
 
     public Object visit(ASTCompilationUnit node, Object data) {
         lineNumberOfLastViolation = -1;
-        return super.visit(node,data);
+        return super.visit(node, data);
     }
 
     public Object visit(ASTIfStatement node, Object data) {
@@ -26,15 +26,15 @@ public class IfElseStmtsMustUseBracesRule extends BracesRule {
         }
 
         // the first child is a Expression, so skip that and get the first 2 stmts
-        SimpleNode firstStmt = (SimpleNode)node.jjtGetChild(1);
-        SimpleNode secondStmt = (SimpleNode)node.jjtGetChild(2);
+        SimpleNode firstStmt = (SimpleNode) node.jjtGetChild(1);
+        SimpleNode secondStmt = (SimpleNode) node.jjtGetChild(2);
 
         if (!hasBlockAsFirstChild(firstStmt) && !hasBlockAsFirstChild(secondStmt) && (node.getBeginLine() != this.lineNumberOfLastViolation)) {
-            RuleContext ctx = (RuleContext)data;
+            RuleContext ctx = (RuleContext) data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
             lineNumberOfLastViolation = node.getBeginLine();
         }
 
-        return super.visit(node,data);
+        return super.visit(node, data);
     }
 }

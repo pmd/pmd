@@ -14,7 +14,7 @@ import net.sourceforge.pmd.ast.ASTForUpdate;
 public class ForLoopShouldBeWhileLoopRule extends AbstractRule {
     public Object visit(ASTForStatement node, Object data) {
         if (node.jjtGetNumChildren() > 1 && !forLoopHasInitOrUpdate(node)) {
-            RuleContext ctx = (RuleContext)data;
+            RuleContext ctx = (RuleContext) data;
             RuleViolation rv = createRuleViolation(ctx, node.getBeginLine());
             ctx.getReport().addRuleViolation(rv);
         }

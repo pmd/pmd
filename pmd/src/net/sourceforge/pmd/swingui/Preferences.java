@@ -17,8 +17,7 @@ import java.util.Properties;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class Preferences
-{
+class Preferences {
 
     private Properties m_properties = new Properties();
     private String m_defaultUserPathToPMD;
@@ -46,8 +45,7 @@ class Preferences
      *
      * @return
      */
-    private Preferences() throws PMDException
-    {
+    private Preferences() throws PMDException {
         //
         // Default user rule set directory.
         //
@@ -69,11 +67,7 @@ class Preferences
         //
         // Default analysis results path.
         //
-        m_defaultAnalysisResultsPath = m_defaultUserPathToPMD
-                                     + File.separator
-                                     + PMD_DIRECTORY
-                                     + File.separator
-                                     + ANALYSIS_RESULTS_DIRECTORY;
+        m_defaultAnalysisResultsPath = m_defaultUserPathToPMD + File.separator + PMD_DIRECTORY + File.separator + ANALYSIS_RESULTS_DIRECTORY;
         setPath(ANALYSIS_RESULTS_PATH, m_defaultAnalysisResultsPath);
 
         //
@@ -87,10 +81,8 @@ class Preferences
      *
      * @return
      */
-    protected static final Preferences getPreferences() throws PMDException
-    {
-        if (m_preferences == null)
-        {
+    protected static final Preferences getPreferences() throws PMDException {
+        if (m_preferences == null) {
             m_preferences = new Preferences();
             m_preferences.load();
         }
@@ -105,28 +97,18 @@ class Preferences
      *
      * @throws PMDException
      */
-    protected void getPreferencesPath()
-    throws PMDException
-    {
-        m_preferencesPath = System.getProperty("user.home")
-                          + File.separator
-                          + PMD_DIRECTORY
-                          + File.separator
-                          + PREFERENCES_FILE_NAME;
+    protected void getPreferencesPath() throws PMDException {
+        m_preferencesPath = System.getProperty("user.home") + File.separator + PMD_DIRECTORY + File.separator + PREFERENCES_FILE_NAME;
 
         File file = new File(m_preferencesPath);
 
-        if (file.exists() == false)
-        {
+        if (file.exists() == false) {
             File directory = file.getParentFile();
 
-            try
-            {
+            try {
                 directory.mkdirs();
                 file.createNewFile();
-            }
-            catch (IOException exception)
-            {
+            } catch (IOException exception) {
                 String template = "Could not create file \"{0}\" in your home directory \"{1}\".";
                 Object[] args = {PREFERENCES_FILE_NAME, directory};
                 String message = MessageFormat.format(template, args);
@@ -143,68 +125,51 @@ class Preferences
      *
      * @return
      */
-    protected boolean load()
-    throws PMDException
-    {
+    protected boolean load() throws PMDException {
         File file = new File(m_preferencesPath);
         FileInputStream inputStream = null;
 
-        try
-        {
+        try {
             inputStream = new FileInputStream(file);
 
             m_properties.load(inputStream);
 
-            if (m_properties.containsKey(USER_PATH_TO_PMD) == false)
-            {
+            if (m_properties.containsKey(USER_PATH_TO_PMD) == false) {
                 m_properties.setProperty(USER_PATH_TO_PMD, m_defaultUserPathToPMD);
             }
 
-            if (m_properties.containsKey(SHARED_PATH_TO_PMD) == false)
-            {
+            if (m_properties.containsKey(SHARED_PATH_TO_PMD) == false) {
                 m_properties.setProperty(SHARED_PATH_TO_PMD, m_defaultSharedPathToPMD);
             }
 
-            if (m_properties.containsKey(CURRENT_PATH_TO_PMD) == false)
-            {
+            if (m_properties.containsKey(CURRENT_PATH_TO_PMD) == false) {
                 m_properties.setProperty(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
             }
 
-            if (m_properties.containsKey(ANALYSIS_RESULTS_PATH) == false)
-            {
+            if (m_properties.containsKey(ANALYSIS_RESULTS_PATH) == false) {
                 m_properties.setProperty(ANALYSIS_RESULTS_PATH, m_defaultAnalysisResultsPath);
             }
 
             return true;
-        }
-        catch (FileNotFoundException exception)
-        {
+        } catch (FileNotFoundException exception) {
             String template = "Could not find file \"{0}\" in directory \"{1}\".";
             Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
             pmdException.fillInStackTrace();
             throw pmdException;
-        }
-        catch (IOException exception)
-        {
+        } catch (IOException exception) {
             String template = "Could not load file \"{0}\" from directory \"{1}\".";
             Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
             pmdException.fillInStackTrace();
             throw pmdException;
-        }
-        finally
-        {
-            if (inputStream != null)
-            {
-                try
-                {
+        } finally {
+            if (inputStream != null) {
+                try {
                     inputStream.close();
-                }
-                catch (IOException exception)
-                {
+                } catch (IOException exception) {
                     exception.printStackTrace();
                 }
             }
@@ -215,52 +180,38 @@ class Preferences
      *******************************************************************************
      *
      */
-    protected void save()
-    throws PMDException
-    {
+    protected void save() throws PMDException {
         FileOutputStream outputStream = null;
 
-        try
-        {
+        try {
             File file = new File(m_preferencesPath);
 
-            if (file.exists() == false)
-            {
+            if (file.exists() == false) {
                 file.createNewFile();
             }
 
             outputStream = new FileOutputStream(m_preferencesPath);
 
             m_properties.store(outputStream, null);
-        }
-        catch (FileNotFoundException exception)
-        {
+        } catch (FileNotFoundException exception) {
             String template = "Could not find your \"{0}\" file in your home directory \"{1}\".";
             Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
             pmdException.fillInStackTrace();
             throw pmdException;
-        }
-        catch (IOException exception)
-        {
+        } catch (IOException exception) {
             String template = "Could not save your \"{0}\" file in your home directory \"{1}\".";
             Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
             pmdException.fillInStackTrace();
             throw pmdException;
-        }
-        finally
-        {
-            if (outputStream != null)
-            {
-                try
-                {
+        } finally {
+            if (outputStream != null) {
+                try {
                     outputStream.close();
-                }
-                catch (IOException exception)
-                {
+                } catch (IOException exception) {
                     exception.printStackTrace();
                 }
             }
@@ -272,8 +223,7 @@ class Preferences
      *
      * @param path
      */
-    protected void setCurrentPathToPMD(String path)
-    {
+    protected void setCurrentPathToPMD(String path) {
         setPath(CURRENT_PATH_TO_PMD, path);
     }
 
@@ -282,8 +232,7 @@ class Preferences
      *
      * @param path
      */
-    protected void setUserPathToPMD(String path)
-    {
+    protected void setUserPathToPMD(String path) {
         setPath(USER_PATH_TO_PMD, path);
     }
 
@@ -292,8 +241,7 @@ class Preferences
      *
      * @param path
      */
-    protected void setSharedPathToPMD(String path)
-    {
+    protected void setSharedPathToPMD(String path) {
         setPath(SHARED_PATH_TO_PMD, path);
     }
 
@@ -303,13 +251,11 @@ class Preferences
      * @param name
      * @param directory
      */
-    private boolean setPath(String name, String directory)
-    {
+    private boolean setPath(String name, String directory) {
         name = trim(name);
         directory = trim(directory);
 
-        if ((name.length() == 0) || (directory.length() == 0))
-        {
+        if ((name.length() == 0) || (directory.length() == 0)) {
             return false;
         }
 
@@ -328,8 +274,7 @@ class Preferences
      *
      * @param directory
      */
-    protected void setAnalysisResultPath(String directory)
-    {
+    protected void setAnalysisResultPath(String directory) {
         directory = encodePath(trim(directory));
 
         m_properties.put(ANALYSIS_RESULTS_PATH, directory);
@@ -340,34 +285,27 @@ class Preferences
      *
      * @param priority
      */
-    protected void setLowestPriorityForAnalysis(int priority)
-    {
-        if (priority < 0)
-        {
+    protected void setLowestPriorityForAnalysis(int priority) {
+        if (priority < 0) {
             priority = 0;
-        }
-        else if (priority > LOWEST_RULE_PRIORITY)
-        {
+        } else if (priority > LOWEST_RULE_PRIORITY) {
             priority = LOWEST_RULE_PRIORITY;
         }
 
         m_properties.put(LOWEST_PRIORITY_FOR_ANALYSIS, String.valueOf(priority));
     }
+
     /**
      *******************************************************************************
      *
      * @return
      */
-    protected int getLowestPriorityForAnalysis()
-    {
+    protected int getLowestPriorityForAnalysis() {
         int priority;
 
-        try
-        {
+        try {
             priority = Integer.parseInt((String) m_properties.get(LOWEST_PRIORITY_FOR_ANALYSIS));
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             priority = LOWEST_RULE_PRIORITY;
         }
 
@@ -382,18 +320,14 @@ class Preferences
      *
      * @return
      */
-    private String encodePath(String directory)
-    {
-        if (directory != null)
-        {
+    private String encodePath(String directory) {
+        if (directory != null) {
             StringBuffer buffer = new StringBuffer(directory.length() + 50);
 
             buffer.append(directory);
 
-            for (int n = 0; n < buffer.length(); n++)
-            {
-                if (buffer.charAt(n) == File.separatorChar)
-                {
+            for (int n = 0; n < buffer.length(); n++) {
+                if (buffer.charAt(n) == File.separatorChar) {
                     buffer.replace(n, n + 1, UNIVERSAL_SEPARATOR);
                 }
             }
@@ -411,25 +345,17 @@ class Preferences
      *
      * @return
      */
-    private String decodePath(String value)
-    {
-        if (value != null)
-        {
+    private String decodePath(String value) {
+        if (value != null) {
             StringBuffer buffer = new StringBuffer(value);
             int universalSeparatorLength = UNIVERSAL_SEPARATOR.length();
 
-            for (int n = 0; n < buffer.length(); n++)
-            {
-                if (buffer.charAt(n) == '&')
-                {
-                    if ((n + universalSeparatorLength) <= buffer.length())
-                    {
-                        if (buffer.charAt(n + 1) == 'U')
-                        {
-                            if (buffer.charAt(n + 2) == 'S')
-                            {
-                                if (buffer.charAt(n + 3) == ';')
-                                {
+            for (int n = 0; n < buffer.length(); n++) {
+                if (buffer.charAt(n) == '&') {
+                    if ((n + universalSeparatorLength) <= buffer.length()) {
+                        if (buffer.charAt(n + 1) == 'U') {
+                            if (buffer.charAt(n + 2) == 'S') {
+                                if (buffer.charAt(n + 3) == ';') {
                                     buffer.replace(n, n + universalSeparatorLength, File.separator);
                                 }
                             }
@@ -449,12 +375,10 @@ class Preferences
      *
      * @return
      */
-    protected String getAnalysisResultsPath()
-    {
+    protected String getAnalysisResultsPath() {
         String path = decodePath(m_properties.getProperty(ANALYSIS_RESULTS_PATH));
 
-        if (path == null)
-        {
+        if (path == null) {
             path = m_defaultAnalysisResultsPath;
         }
 
@@ -470,13 +394,11 @@ class Preferences
      *
      * @return
      */
-    private String getPathToPMD(String pathName)
-    {
+    private String getPathToPMD(String pathName) {
         String key = trim(pathName).toLowerCase();
         String directory = decodePath(m_properties.getProperty(key));
 
-        if (directory == null)
-        {
+        if (directory == null) {
             directory = "";
         }
 
@@ -488,8 +410,7 @@ class Preferences
      *
      * @return
      */
-    protected String getCurrentPathToPMD()
-    {
+    protected String getCurrentPathToPMD() {
         return getPathToPMD(CURRENT_PATH_TO_PMD);
     }
 
@@ -498,8 +419,7 @@ class Preferences
      *
      * @return
      */
-    protected String getUserPathToPMD()
-    {
+    protected String getUserPathToPMD() {
         return getPathToPMD(USER_PATH_TO_PMD);
     }
 
@@ -508,8 +428,7 @@ class Preferences
      *
      * @return
      */
-    protected String getSharedPathToPMD()
-    {
+    protected String getSharedPathToPMD() {
         return getPathToPMD(SHARED_PATH_TO_PMD);
     }
 
@@ -520,18 +439,13 @@ class Preferences
      *
      * @return
      */
-    private String trim(String text)
-    {
-        if (text == null)
-        {
+    private String trim(String text) {
+        if (text == null) {
             text = "";
-        }
-        else
-        {
+        } else {
             text = text.trim();
 
-            if (text.length() == 0)
-            {
+            if (text.length() == 0) {
                 text = "";
             }
         }

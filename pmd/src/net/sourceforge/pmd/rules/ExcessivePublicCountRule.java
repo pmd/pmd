@@ -22,36 +22,38 @@ import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
  */
 public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
 
-	public ExcessivePublicCountRule() {
-		super(ASTCompilationUnit.class);
-	}
+    public ExcessivePublicCountRule() {
+        super(ASTCompilationUnit.class);
+    }
 
-	/**
+    /**
      * Method counts ONLY public methods.
      */
     public Object visit(ASTMethodDeclarator node, Object data) {
-        return this.getTallyOnAccessType((AccessNode)node.jjtGetParent());
+        return this.getTallyOnAccessType((AccessNode) node.jjtGetParent());
     }
+
     /**
      * Method counts ONLY public class attributes which are not PUBLIC and
      * static- these usually represent constants....
      */
     public Object visit(ASTFieldDeclaration node, Object data) {
-		if(node.isFinal() && node.isStatic()){
-			return new Integer(0);
-		}else{
-			return this.getTallyOnAccessType(node);
-		}
+        if (node.isFinal() && node.isStatic()) {
+            return new Integer(0);
+        } else {
+            return this.getTallyOnAccessType(node);
+        }
     }
+
     /**
      * Method counts a node if it is public
      * @param AccessNode node
      * @return Integer 1 if node is public 0 otherwise
      */
-    private Integer getTallyOnAccessType(AccessNode node){
-    	if(node.isPublic()){
-    		return new Integer(1);
-    	}
+    private Integer getTallyOnAccessType(AccessNode node) {
+        if (node.isPublic()) {
+            return new Integer(1);
+        }
         return new Integer(0);
     }
 }

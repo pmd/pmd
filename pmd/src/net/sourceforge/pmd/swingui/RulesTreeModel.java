@@ -25,9 +25,7 @@ import java.util.Set;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-class RulesTreeModel
-    extends DefaultTreeModel
-{
+class RulesTreeModel extends DefaultTreeModel {
 
     private PMDDirectoryReturnedEventHandler m_pmdDirectoryReturnedEventHandler;
     private RulesTreeModelEventHandler m_rulesTreeModelEventHandler;
@@ -38,8 +36,7 @@ class RulesTreeModel
      *
      * @param rootNode
      */
-    private RulesTreeModel(RulesTreeNode rootNode)
-    {
+    private RulesTreeModel(RulesTreeNode rootNode) {
         super(rootNode);
 
         m_pmdDirectoryReturnedEventHandler = new PMDDirectoryReturnedEventHandler();
@@ -54,19 +51,15 @@ class RulesTreeModel
      *
      * @return
      */
-    protected RulesTreeNode getRuleSetNode(String ruleSetName)
-    {
-        if (ruleSetName != null)
-        {
+    protected RulesTreeNode getRuleSetNode(String ruleSetName) {
+        if (ruleSetName != null) {
             RulesTreeNode rootNode = (RulesTreeNode) getRoot();
             Enumeration ruleSetNodes = rootNode.children();
 
-            while (ruleSetNodes.hasMoreElements())
-            {
+            while (ruleSetNodes.hasMoreElements()) {
                 RulesTreeNode ruleSetNode = (RulesTreeNode) ruleSetNodes.nextElement();
 
-                if (ruleSetNode.getName().equalsIgnoreCase(ruleSetName))
-                {
+                if (ruleSetNode.getName().equalsIgnoreCase(ruleSetName)) {
                     return ruleSetNode;
                 }
             }
@@ -83,27 +76,21 @@ class RulesTreeModel
      *
      * @return
      */
-    protected RulesTreeNode getRuleNode(String ruleSetName, String ruleName)
-    {
-        if ((ruleSetName != null) && (ruleName != null))
-        {
+    protected RulesTreeNode getRuleNode(String ruleSetName, String ruleName) {
+        if ((ruleSetName != null) && (ruleName != null)) {
             RulesTreeNode rootNode = (RulesTreeNode) getRoot();
             Enumeration ruleSetNodes = rootNode.children();
 
-            while (ruleSetNodes.hasMoreElements())
-            {
+            while (ruleSetNodes.hasMoreElements()) {
                 RulesTreeNode ruleSetNode = (RulesTreeNode) ruleSetNodes.nextElement();
 
-                if (ruleSetNode.getName().equalsIgnoreCase(ruleSetName))
-                {
+                if (ruleSetNode.getName().equalsIgnoreCase(ruleSetName)) {
                     Enumeration ruleNodes = ruleSetNode.children();
 
-                    while (ruleNodes.hasMoreElements())
-                    {
+                    while (ruleNodes.hasMoreElements()) {
                         RulesTreeNode ruleNode = (RulesTreeNode) ruleNodes.nextElement();
 
-                        if (ruleNode.getName().equalsIgnoreCase(ruleName))
-                        {
+                        if (ruleNode.getName().equalsIgnoreCase(ruleName)) {
                             return ruleNode;
                         }
                     }
@@ -118,10 +105,8 @@ class RulesTreeModel
      ***************************************************************************
      * @return
      */
-    protected static final RulesTreeModel get() throws PMDException
-    {
-        if (m_rulesTreeModel == null)
-        {
+    protected static final RulesTreeModel get() throws PMDException {
+        if (m_rulesTreeModel == null) {
             RulesTreeNode rootNode;
 
             rootNode = new RulesTreeNode("Rules");
@@ -136,16 +121,14 @@ class RulesTreeModel
      *******************************************************************************
      *
      */
-    private void buildTree() throws PMDException
-    {
+    private void buildTree() throws PMDException {
         RuleSet[] ruleSets;
         RulesTreeNode rootNode;
 
         ruleSets = loadRuleSets();
         rootNode = (RulesTreeNode) getRoot();
 
-        for (int n1 = 0; n1 < ruleSets.length; n1++)
-        {
+        for (int n1 = 0; n1 < ruleSets.length; n1++) {
             RulesTreeNode ruleSetNode = new RulesTreeNode(ruleSets[n1]);
 
             rootNode.add(ruleSetNode);
@@ -159,8 +142,7 @@ class RulesTreeModel
      *
      * @return
      */
-    private RuleSet[] loadRuleSets() throws PMDException
-    {
+    private RuleSet[] loadRuleSets() throws PMDException {
         PMDDirectoryRequestEvent.notifyRequestAllRuleSets(this);
 
         // The event is processed.  The requested rule set is assembled by another class
@@ -170,8 +152,7 @@ class RulesTreeModel
 
         List ruleSetList = m_pmdDirectoryReturnedEventHandler.getRuleSetList();
 
-        if (ruleSetList == null)
-        {
+        if (ruleSetList == null) {
             ruleSetList = new ArrayList();
         }
 
@@ -191,8 +172,7 @@ class RulesTreeModel
      *
      * @param ruleSetNode
      */
-    private void loadRuleTreeNodes(RulesTreeNode ruleSetNode)
-    {
+    private void loadRuleTreeNodes(RulesTreeNode ruleSetNode) {
         RuleSet ruleSet;
         Set setOfRules;
         Rule[] rules;
@@ -204,8 +184,7 @@ class RulesTreeModel
         setOfRules.toArray(rules);
         Arrays.sort(rules, new RuleNameComparator());
 
-        for (int n = 0; n < rules.length; n++)
-        {
+        for (int n = 0; n < rules.length; n++) {
             RulesTreeNode ruleNode = new RulesTreeNode(ruleSetNode, rules[n]);
 
             ruleSetNode.add(ruleNode);
@@ -220,8 +199,7 @@ class RulesTreeModel
      *
      * @param ruleNode
      */
-    private void loadProperties(RulesTreeNode ruleNode)
-    {
+    private void loadProperties(RulesTreeNode ruleNode) {
         Rule rule;
         RuleProperties properties;
         String[] propertyNames;
@@ -234,16 +212,14 @@ class RulesTreeModel
         keys = properties.keys();
         index = 0;
 
-        while (keys.hasMoreElements())
-        {
+        while (keys.hasMoreElements()) {
             propertyNames[index] = (String) keys.nextElement();
             index++;
         }
 
         Arrays.sort(propertyNames, new PropertyNameComparator());
 
-        for (int n = 0; n < propertyNames.length; n++)
-        {
+        for (int n = 0; n < propertyNames.length; n++) {
             String propertyName;
             String propertyValue;
             String propertyValueType;
@@ -265,15 +241,13 @@ class RulesTreeModel
      ****************************************************************************
      ****************************************************************************
      */
-    private class RulesTreeModelEventHandler implements RulesTreeModelEventListener
-    {
+    private class RulesTreeModelEventHandler implements RulesTreeModelEventListener {
 
         /**
          ***********************************************************************
          *
          */
-        private RulesTreeModelEventHandler()
-        {
+        private RulesTreeModelEventHandler() {
             ListenerList.addListener((RulesTreeModelEventListener) this);
         }
 
@@ -282,8 +256,7 @@ class RulesTreeModel
          *
          * @param parentNode
          */
-        public void reload(RulesTreeModelEvent event)
-        {
+        public void reload(RulesTreeModelEvent event) {
             RulesTreeNode parentNode = event.getParentNode();
             RulesTreeModel.this.reload(parentNode);
         }
@@ -293,8 +266,7 @@ class RulesTreeModel
          *
          * @param event
          */
-        public void requestSelectedRule(RulesTreeModelEvent event)
-        {
+        public void requestSelectedRule(RulesTreeModelEvent event) {
         }
 
         /**
@@ -302,8 +274,7 @@ class RulesTreeModel
          *
          * @param event
          */
-        public void returnedSelectedRule(RulesTreeModelEvent event)
-        {
+        public void returnedSelectedRule(RulesTreeModelEvent event) {
         }
     }
 
@@ -312,8 +283,7 @@ class RulesTreeModel
      *******************************************************************************
      *******************************************************************************
      */
-    private class PropertyNameComparator implements Comparator
-    {
+    private class PropertyNameComparator implements Comparator {
 
         /**
          ************************************************************************
@@ -323,8 +293,7 @@ class RulesTreeModel
          *
          * @return
          */
-        public int compare(Object objectA, Object objectB)
-        {
+        public int compare(Object objectA, Object objectB) {
             String propertyNameA = (String) objectA;
             String propertyNameB = (String) objectB;
 
@@ -337,8 +306,7 @@ class RulesTreeModel
      *******************************************************************************
      *******************************************************************************
      */
-    private class RuleSetNameComparator implements Comparator
-    {
+    private class RuleSetNameComparator implements Comparator {
 
         /**
          ************************************************************************
@@ -348,8 +316,7 @@ class RulesTreeModel
          *
          * @return
          */
-        public int compare(Object objectA, Object objectB)
-        {
+        public int compare(Object objectA, Object objectB) {
             String ruleSetNameA = ((RuleSet) objectA).getName();
             String ruleSetNameB = ((RuleSet) objectB).getName();
 
@@ -362,8 +329,7 @@ class RulesTreeModel
      *******************************************************************************
      *******************************************************************************
      */
-    private class RuleNameComparator implements Comparator
-    {
+    private class RuleNameComparator implements Comparator {
 
         /**
          ************************************************************************
@@ -373,8 +339,7 @@ class RulesTreeModel
          *
          * @return
          */
-        public int compare(Object objectA, Object objectB)
-        {
+        public int compare(Object objectA, Object objectB) {
             String ruleNameA = ((Rule) objectA).getName();
             String ruleNameB = ((Rule) objectB).getName();
 
@@ -387,8 +352,7 @@ class RulesTreeModel
      *******************************************************************************
      *******************************************************************************
      */
-    private class PMDDirectoryReturnedEventHandler implements PMDDirectoryReturnedEventListener
-    {
+    private class PMDDirectoryReturnedEventHandler implements PMDDirectoryReturnedEventListener {
 
         private List m_ruleSetList;
         private String m_ruleSetPath;
@@ -396,16 +360,14 @@ class RulesTreeModel
         /**
          ***************************************************************************
          */
-        private String getRuleSetPath()
-        {
+        private String getRuleSetPath() {
             return m_ruleSetPath;
         }
 
         /**
          ***************************************************************************
          */
-        private List getRuleSetList()
-        {
+        private List getRuleSetList() {
             return m_ruleSetList;
         }
 
@@ -414,8 +376,7 @@ class RulesTreeModel
          *
          * @param event
          */
-        public void returnedRuleSetPath(PMDDirectoryReturnedEvent event)
-        {
+        public void returnedRuleSetPath(PMDDirectoryReturnedEvent event) {
             m_ruleSetPath = event.getRuleSetPath();
         }
 
@@ -424,8 +385,7 @@ class RulesTreeModel
          *
          * @param event
          */
-        public void returnedAllRuleSets(PMDDirectoryReturnedEvent event)
-        {
+        public void returnedAllRuleSets(PMDDirectoryReturnedEvent event) {
             m_ruleSetList = event.getRuleSetList();
         }
 
@@ -434,8 +394,7 @@ class RulesTreeModel
          *
          * @param event
          */
-        public void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event)
-        {
+        public void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event) {
             m_ruleSetList = event.getRuleSetList();
         }
 
@@ -444,8 +403,7 @@ class RulesTreeModel
          *
          * @param event
          */
-        public void returnedIncludedRules(PMDDirectoryReturnedEvent event)
-        {
+        public void returnedIncludedRules(PMDDirectoryReturnedEvent event) {
             m_ruleSetList = event.getRuleSetList();
         }
     }

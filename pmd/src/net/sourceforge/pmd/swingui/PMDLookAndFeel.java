@@ -19,16 +19,14 @@ import java.util.Properties;
  * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-public class PMDLookAndFeel extends WindowsLookAndFeel
-{
+public class PMDLookAndFeel extends WindowsLookAndFeel {
 
     /**
      ****************************************************************************
      *
      * @return
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return "Source Forge PMD look and feel";
     }
 
@@ -37,8 +35,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @return
      */
-    public String getID()
-    {
+    public String getID() {
         return "SourceForgePMD";
     }
 
@@ -47,8 +44,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @return
      */
-    public String getName()
-    {
+    public String getName() {
         return "SourceForgePMD";
     }
 
@@ -57,8 +53,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @return
      */
-    public boolean isNativeLookAndFeel()
-    {
+    public boolean isNativeLookAndFeel() {
         return false;
     }
 
@@ -67,8 +62,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @return
      */
-    public boolean isSupportedLookAndFeel()
-    {
+    public boolean isSupportedLookAndFeel() {
         return true;
     }
 
@@ -77,8 +71,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @param table
      */
-    protected void initClassDefaults(UIDefaults table)
-    {
+    protected void initClassDefaults(UIDefaults table) {
         super.initClassDefaults(table);
 
         //String pkgName = "net.sourceforge.pmd.swingui";
@@ -89,34 +82,14 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @param table
      */
-    protected void initSystemColorDefaults(UIDefaults table)
-    {
-          super.initSystemColorDefaults(table);
+    protected void initSystemColorDefaults(UIDefaults table) {
+        super.initSystemColorDefaults(table);
 
-          Color darkBlue = Color.blue.darker();
+        Color darkBlue = Color.blue.darker();
 
-          String[] defaultSystemColors =
-          {
-                                   "pmdBlue", String.valueOf(darkBlue.getRGB()),
-                                    "pmdRed", String.valueOf(Color.red.getRGB()),
-                                  "pmdGreen", "#336666",
-                                   "pmdGray", "#F0F0F0",
-                         "pmdTreeBackground", "#F0F0F0",
-                        "pmdTableBackground", "#F0F0F0",
-                  "pmdMessageAreaBackground", "#F0F0F0",
-                   "pmdStatusAreaBackground", "#F0F0F0",
-                                "mediumGray", "#686868",
-                            "mediumDarkGray", "#434343",
-                                  "paleGray", "#AAAAAA",
-                  "standardButtonBackground", "#686868",
-                  "standardButtonForeground", "#FFFFFF",
-                  "pmdTableHeaderBackground", "#686868",
-                  "pmdTableHeaderForeground", "#FFFFFF",
-                 "pmdEditingPanelBackground", String.valueOf(Color.lightGray.getRGB()),
-                    "disabledTextBackground", "#AAAAAA",
-          };
+        String[] defaultSystemColors = {"pmdBlue", String.valueOf(darkBlue.getRGB()), "pmdRed", String.valueOf(Color.red.getRGB()), "pmdGreen", "#336666", "pmdGray", "#F0F0F0", "pmdTreeBackground", "#F0F0F0", "pmdTableBackground", "#F0F0F0", "pmdMessageAreaBackground", "#F0F0F0", "pmdStatusAreaBackground", "#F0F0F0", "mediumGray", "#686868", "mediumDarkGray", "#434343", "paleGray", "#AAAAAA", "standardButtonBackground", "#686868", "standardButtonForeground", "#FFFFFF", "pmdTableHeaderBackground", "#686868", "pmdTableHeaderForeground", "#FFFFFF", "pmdEditingPanelBackground", String.valueOf(Color.lightGray.getRGB()), "disabledTextBackground", "#AAAAAA", };
 
-          loadSystemColors(table, defaultSystemColors, isNativeLookAndFeel());
+        loadSystemColors(table, defaultSystemColors, isNativeLookAndFeel());
     }
 
     /**
@@ -124,62 +97,26 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @param table
      */
-    protected void initComponentDefaults(UIDefaults table)
-    {
+    protected void initComponentDefaults(UIDefaults table) {
         super.initComponentDefaults(table);
 
         Class wlafClass = WindowsLookAndFeel.class;
         Class plafClass = PMDLookAndFeel.class;
-        Object[] defaults =
-        {
-            "document",          LookAndFeel.makeIcon(plafClass, "icons/document.gif"),
-            "cancel",            LookAndFeel.makeIcon(plafClass, "icons/cancel.gif"),
-            "save",              LookAndFeel.makeIcon(plafClass, "icons/save.gif"),
-            "saveAs",            LookAndFeel.makeIcon(plafClass, "icons/saveAs.gif"),
-            "print",             LookAndFeel.makeIcon(plafClass, "icons/print.gif"),
-            "copy",              LookAndFeel.makeIcon(plafClass, "icons/copy.gif"),
-            "edit",              LookAndFeel.makeIcon(plafClass, "icons/edit.gif"),
-            "view",              LookAndFeel.makeIcon(plafClass, "icons/view.gif"),
-            "help",              LookAndFeel.makeIcon(plafClass, "icons/help.gif"),
-            "pmdLogo",           LookAndFeel.makeIcon(plafClass, "icons/pmdLogo.gif"),
-            "pmdLogoImage",      getImageIcon("icons/pmdLogo.jpg"),
-            "labelFont",         new Font("Dialog", Font.BOLD, 12),
-            "label14Font",       new Font("Dialog", Font.BOLD, 14),
-            "label16Font",       new Font("Dialog", Font.BOLD, 16),
-            "dataFont",          new Font("Dialog", Font.PLAIN, 12),
-            "codeFont",          new Font("Monospaced", Font.PLAIN, 12),
-            "tabFont",           new Font("SansSerif", Font.BOLD, 12),
-            "titleFont",         new Font("SansSerif", Font.BOLD, 14),
-            "buttonFont",        new Font("SansSerif", Font.BOLD, 12),
-            "messageFont",       new Font("Dialog", Font.PLAIN, 12),
-            "serif12Font",       new Font("Serif", Font.PLAIN, 12),
-            "serif14Font",       new Font("Serif", Font.PLAIN, 14),
-            "viewerProperties",  loadViewerProperties(),
+        Object[] defaults = {"document", LookAndFeel.makeIcon(plafClass, "icons/document.gif"), "cancel", LookAndFeel.makeIcon(plafClass, "icons/cancel.gif"), "save", LookAndFeel.makeIcon(plafClass, "icons/save.gif"), "saveAs", LookAndFeel.makeIcon(plafClass, "icons/saveAs.gif"), "print", LookAndFeel.makeIcon(plafClass, "icons/print.gif"), "copy", LookAndFeel.makeIcon(plafClass, "icons/copy.gif"), "edit", LookAndFeel.makeIcon(plafClass, "icons/edit.gif"), "view", LookAndFeel.makeIcon(plafClass, "icons/view.gif"), "help", LookAndFeel.makeIcon(plafClass, "icons/help.gif"), "pmdLogo", LookAndFeel.makeIcon(plafClass, "icons/pmdLogo.gif"), "pmdLogoImage", getImageIcon("icons/pmdLogo.jpg"), "labelFont", new Font("Dialog", Font.BOLD, 12), "label14Font", new Font("Dialog", Font.BOLD, 14), "label16Font", new Font("Dialog", Font.BOLD, 16), "dataFont", new Font("Dialog", Font.PLAIN, 12), "codeFont", new Font("Monospaced", Font.PLAIN, 12), "tabFont", new Font("SansSerif", Font.BOLD, 12), "titleFont", new Font("SansSerif", Font.BOLD, 14), "buttonFont", new Font("SansSerif", Font.BOLD, 12), "messageFont", new Font("Dialog", Font.PLAIN, 12), "serif12Font", new Font("Serif", Font.PLAIN, 12), "serif14Font", new Font("Serif", Font.PLAIN, 14), "viewerProperties", loadViewerProperties(),
 
-            // These are all the icons defined in the WindowsLookAndFeel.  We redefine them
-            // here because of the way they are defined in that class: in terms of the return
-            // value of getClass().  I.e., getClass() just returns the handle to the invoking
-            // class, which now is PMDLookAndFeel.  That means that the icons are searched
-            // for in the PMD look and feel package, which is not where they really are.
-            // Since we've just called the superclass method, the icons have been installed
-            // incorrectly in the table.  Reinstall them using the correct class.
+                             // These are all the icons defined in the WindowsLookAndFeel.  We redefine them
+                             // here because of the way they are defined in that class: in terms of the return
+                             // value of getClass().  I.e., getClass() just returns the handle to the invoking
+                             // class, which now is PMDLookAndFeel.  That means that the icons are searched
+                             // for in the PMD look and feel package, which is not where they really are.
+                             // Since we've just called the superclass method, the icons have been installed
+                             // incorrectly in the table.  Reinstall them using the correct class.
 
-            "Tree.openIcon",               LookAndFeel.makeIcon(wlafClass, "icons/TreeOpen.gif"),
-            "Tree.closedIcon",             LookAndFeel.makeIcon(wlafClass, "icons/TreeClosed.gif"),
-            "Tree.leafIcon",               LookAndFeel.makeIcon(wlafClass, "icons/TreeLeaf.gif"),
+                             "Tree.openIcon", LookAndFeel.makeIcon(wlafClass, "icons/TreeOpen.gif"), "Tree.closedIcon", LookAndFeel.makeIcon(wlafClass, "icons/TreeClosed.gif"), "Tree.leafIcon", LookAndFeel.makeIcon(wlafClass, "icons/TreeLeaf.gif"),
 
-            "FileChooser.newFolderIcon",   LookAndFeel.makeIcon(wlafClass, "icons/NewFolder.gif"),
-            "FileChooser.upFolderIcon",    LookAndFeel.makeIcon(wlafClass, "icons/UpFolder.gif"),
-            "FileChooser.homeFolderIcon",  LookAndFeel.makeIcon(wlafClass, "icons/HomeFolder.gif"),
-            "FileChooser.detailsViewIcon", LookAndFeel.makeIcon(wlafClass, "icons/DetailsView.gif"),
-            "FileChooser.listViewIcon",    LookAndFeel.makeIcon(wlafClass, "icons/ListView.gif"),
+                             "FileChooser.newFolderIcon", LookAndFeel.makeIcon(wlafClass, "icons/NewFolder.gif"), "FileChooser.upFolderIcon", LookAndFeel.makeIcon(wlafClass, "icons/UpFolder.gif"), "FileChooser.homeFolderIcon", LookAndFeel.makeIcon(wlafClass, "icons/HomeFolder.gif"), "FileChooser.detailsViewIcon", LookAndFeel.makeIcon(wlafClass, "icons/DetailsView.gif"), "FileChooser.listViewIcon", LookAndFeel.makeIcon(wlafClass, "icons/ListView.gif"),
 
-            "FileView.directoryIcon",      LookAndFeel.makeIcon(wlafClass, "icons/Directory.gif"),
-            "FileView.fileIcon",           LookAndFeel.makeIcon(wlafClass, "icons/File.gif"),
-            "FileView.computerIcon",       LookAndFeel.makeIcon(wlafClass, "icons/Computer.gif"),
-            "FileView.hardDriveIcon",      LookAndFeel.makeIcon(wlafClass, "icons/HardDrive.gif"),
-            "FileView.floppyDriveIcon",    LookAndFeel.makeIcon(wlafClass, "icons/FloppyDrive.gif"),
-        };
+                             "FileView.directoryIcon", LookAndFeel.makeIcon(wlafClass, "icons/Directory.gif"), "FileView.fileIcon", LookAndFeel.makeIcon(wlafClass, "icons/File.gif"), "FileView.computerIcon", LookAndFeel.makeIcon(wlafClass, "icons/Computer.gif"), "FileView.hardDriveIcon", LookAndFeel.makeIcon(wlafClass, "icons/HardDrive.gif"), "FileView.floppyDriveIcon", LookAndFeel.makeIcon(wlafClass, "icons/FloppyDrive.gif"), };
 
         table.putDefaults(defaults);
     }
@@ -189,21 +126,16 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @return
      */
-    private Properties loadViewerProperties()
-    {
+    private Properties loadViewerProperties() {
         Properties properties = new Properties();
 
-        try
-        {
+        try {
             InputStream inputStream = getClass().getResourceAsStream("pmdViewer.properties");
 
-            if (inputStream != null)
-            {
+            if (inputStream != null) {
                 properties.load(inputStream);
             }
-        }
-        catch (IOException exception)
-        {
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
 
@@ -217,16 +149,13 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      *
      * @return
      */
-    protected static final ImageIcon getImageIcon(String fileName)
-    {
+    protected static final ImageIcon getImageIcon(String fileName) {
         final byte[][] buffer = new byte[1][];
 
-        try
-        {
+        try {
             InputStream resource = PMDLookAndFeel.class.getResourceAsStream(fileName);
 
-            if (resource == null)
-            {
+            if (resource == null) {
                 return null;
             }
 
@@ -238,27 +167,22 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
             out = new ByteArrayOutputStream(1024);
             buffer[0] = new byte[1024];
 
-            while ((n = in.read(buffer[0])) > 0)
-            {
+            while ((n = in.read(buffer[0])) > 0) {
                 out.write(buffer[0], 0, n);
             }
 
             in.close();
             out.flush();
             buffer[0] = out.toByteArray();
-        }
-        catch (IOException ioe)
-        {
+        } catch (IOException ioe) {
             return null;
         }
 
-        if (buffer[0] == null)
-        {
+        if (buffer[0] == null) {
             return null;
         }
 
-        if (buffer[0].length == 0)
-        {
+        if (buffer[0].length == 0) {
             return null;
         }
 

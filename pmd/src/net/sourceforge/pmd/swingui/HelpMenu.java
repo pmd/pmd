@@ -16,15 +16,13 @@ import java.awt.event.KeyEvent;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class HelpMenu extends JMenu
-{
+class HelpMenu extends JMenu {
 
     /**
      ********************************************************************
      *
      */
-    protected HelpMenu()
-    {
+    protected HelpMenu() {
         super("Help");
 
         setMnemonic('H');
@@ -62,11 +60,9 @@ class HelpMenu extends JMenu
      *********************************************************************************
      *********************************************************************************
      */
-    private class HelpActionListener implements ActionListener
-    {
+    private class HelpActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             MessageDialog.show(PMDViewer.getViewer(), "Online Help not available yet.");
         }
     }
@@ -76,11 +72,9 @@ class HelpMenu extends JMenu
      *********************************************************************************
      *********************************************************************************
      */
-    private class AboutActionListener implements ActionListener
-    {
+    private class AboutActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             PMDViewer viewer = PMDViewer.getViewer();
             viewer.setEnableViewer(false);
             (new AboutPMD(viewer)).setVisible(true);

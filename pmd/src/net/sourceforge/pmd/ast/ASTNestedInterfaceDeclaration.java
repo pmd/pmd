@@ -3,21 +3,21 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTNestedInterfaceDeclaration extends SimpleNode {
-  public ASTNestedInterfaceDeclaration(int id) {
-    super(id);
-  }
+    public ASTNestedInterfaceDeclaration(int id) {
+        super(id);
+    }
 
-  public ASTNestedInterfaceDeclaration(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTNestedInterfaceDeclaration(JavaParser p, int id) {
+        super(p, id);
+    }
 
     public ASTUnmodifiedInterfaceDeclaration getUnmodifedInterfaceDeclaration() {
-        return (ASTUnmodifiedInterfaceDeclaration)jjtGetChild(0);
+        return (ASTUnmodifiedInterfaceDeclaration) jjtGetChild(0);
     }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

@@ -23,8 +23,7 @@ import java.util.StringTokenizer;
  * @since January 5, 2003
  * @version $Revision$, $Date$
  */
-class PrintAnalysisResults
-{
+class PrintAnalysisResults {
     private PrintJob m_printJob;
     private Graphics m_graphics;
     private int m_printAreaX;
@@ -49,19 +48,16 @@ class PrintAnalysisResults
     /**
      ***********************************************************************
      */
-    protected PrintAnalysisResults()
-    {
+    protected PrintAnalysisResults() {
     }
 
     /**
      ***********************************************************************
      */
-    protected void print()
-    {
+    protected void print() {
         TextAnalysisResultsEventListener textListener = null;
 
-        try
-        {
+        try {
             Toolkit toolkit;
             PMDViewer viewer;
             String jobTitle;
@@ -73,8 +69,7 @@ class PrintAnalysisResults
             jobTitle = "Print Analysis Results";
             m_printJob = toolkit.getPrintJob(viewer, jobTitle, null);
 
-            if (m_printJob != null)
-            {
+            if (m_printJob != null) {
                 Dimension pageSize;
                 int resolution;
                 int margin;
@@ -106,9 +101,7 @@ class PrintAnalysisResults
                 m_lineTable.clear();
                 m_printJob = null;
             }
-        }
-        finally
-        {
+        } finally {
             ListenerList.removeListener(textListener);
         }
     }
@@ -117,8 +110,7 @@ class PrintAnalysisResults
      **********************************************************************
      *
      */
-    private void buildLineTable()
-    {
+    private void buildLineTable() {
         StringTokenizer parser;
         PrintLineInfo blankLine;
 
@@ -133,18 +125,14 @@ class PrintAnalysisResults
         blankLine.m_dataFont = m_font;
         blankLine.m_dataFontMetrics = m_fontMetrics;
 
-        while (parser.hasMoreTokens())
-        {
+        while (parser.hasMoreTokens()) {
             String textLine = parser.nextToken();
             boolean startingExample = false;
 
-            if (textLine.startsWith("Example:"))
-            {
+            if (textLine.startsWith("Example:")) {
                 m_printingExample = true;
                 startingExample = true;
-            }
-            else if (textLine.startsWith("Line:"))
-            {
+            } else if (textLine.startsWith("Line:")) {
                 m_printingExample = false;
                 m_lineTable.add(blankLine);
                 m_lineTable.add(blankLine);
@@ -159,8 +147,7 @@ class PrintAnalysisResults
      **********************************************************************
      *
      */
-    private void buildPrintLineInfo(String textLine, boolean startingExample)
-    {
+    private void buildPrintLineInfo(String textLine, boolean startingExample) {
         PrintLineInfo printLineInfo;
         int index;
 
@@ -169,23 +156,17 @@ class PrintAnalysisResults
         printLineInfo.m_data = textLine;
         index = textLine.indexOf(':');
 
-        if (index >= 0)
-        {
+        if (index >= 0) {
             index++;
             printLineInfo.m_label = textLine.substring(0, index);
-            printLineInfo.m_data = (index < textLine.length())
-                                 ? textLine.substring(index)
-                                 : EMPTY_STRING;
+            printLineInfo.m_data = (index < textLine.length()) ? textLine.substring(index) : EMPTY_STRING;
         }
 
-        if (m_printingExample)
-        {
+        if (m_printingExample) {
             printLineInfo.m_dataFont = m_exampleFont;
             printLineInfo.m_dataFontMetrics = m_exampleFontMetrics;
             printLineInfo.m_label = "Example: ";
-        }
-        else
-        {
+        } else {
             printLineInfo.m_dataFont = m_font;
             printLineInfo.m_dataFontMetrics = m_fontMetrics;
 
@@ -198,20 +179,16 @@ class PrintAnalysisResults
         printLineInfo.m_labelX = m_printAreaX;
         printLineInfo.m_dataX = printLineInfo.m_labelX + printLineInfo.m_labelWidth;
 
-        if (m_printingExample && (startingExample == false))
-        {
+        if (m_printingExample && (startingExample == false)) {
             printLineInfo.m_label = EMPTY_STRING;
         }
 
         int dataAreaRight = printLineInfo.m_dataX + printLineInfo.m_dataWidth;
         int printAreaRight = m_printAreaX + m_printAreaWidth;
 
-        if (dataAreaRight <= printAreaRight)
-        {
+        if (dataAreaRight <= printAreaRight) {
             m_lineTable.add(printLineInfo);
-        }
-        else
-        {
+        } else {
             buildPrintLineInfoForMultipleLines(printLineInfo);
         }
     }
@@ -220,29 +197,23 @@ class PrintAnalysisResults
      **********************************************************************
      *
      */
-    private void buildPrintLineInfoForMultipleLines(PrintLineInfo basePrintLineInfo)
-    {
+    private void buildPrintLineInfoForMultipleLines(PrintLineInfo basePrintLineInfo) {
         char[] data = basePrintLineInfo.m_data.toCharArray();
         int printAreaRight = m_printAreaX + m_printAreaWidth;
         int dataAreaWidth = printAreaRight - basePrintLineInfo.m_dataX;
         StringBuffer buffer = new StringBuffer(500);
         boolean createPrintLineInfo = false;
 
-        for (int n = 0; n < data.length; n++)
-        {
+        for (int n = 0; n < data.length; n++) {
             char theChar = data[n];
             buffer.append(theChar);
 
-            if ((theChar == ' ') || (theChar == '\n'))
-            {
+            if ((theChar == ' ') || (theChar == '\n')) {
                 String textLine = buffer.toString();
 
-                if (m_fontMetrics.stringWidth(buffer.toString()) >= dataAreaWidth)
-                {
-                    for (int n1 = buffer.length() - 1; n1 >= 0; n1--)
-                    {
-                        if (buffer.charAt(n1) == ' ')
-                        {
+                if (m_fontMetrics.stringWidth(buffer.toString()) >= dataAreaWidth) {
+                    for (int n1 = buffer.length() - 1; n1 >= 0; n1--) {
+                        if (buffer.charAt(n1) == ' ') {
                             textLine = textLine.substring(0, n1);
                             buffer.delete(0, n1 + 1);
                             break;
@@ -250,15 +221,12 @@ class PrintAnalysisResults
                     }
 
                     createPrintLineInfo = true;
-                }
-                else if (theChar == '\n')
-                {
+                } else if (theChar == '\n') {
                     buffer.setLength(0);
                     createPrintLineInfo = true;
                 }
 
-                if (createPrintLineInfo)
-                {
+                if (createPrintLineInfo) {
                     PrintLineInfo printLineInfo;
 
                     printLineInfo = new PrintLineInfo();
@@ -283,8 +251,7 @@ class PrintAnalysisResults
             }
         }
 
-        if (buffer.length() > 0)
-        {
+        if (buffer.length() > 0) {
             PrintLineInfo printLineInfo;
 
             printLineInfo = new PrintLineInfo();
@@ -306,8 +273,7 @@ class PrintAnalysisResults
      **********************************************************************
      *
      */
-    private void printAnalysisResults()
-    {
+    private void printAnalysisResults() {
         int lineHeight;
         int printAreaBottom;
         Iterator lineTableIterator;
@@ -317,12 +283,10 @@ class PrintAnalysisResults
         lineHeight = m_fontMetrics.getHeight();
         printAreaBottom = m_printAreaY + m_printAreaHeight;
 
-        while (lineTableIterator.hasNext())
-        {
+        while (lineTableIterator.hasNext()) {
             PrintLineInfo printLineInfo = (PrintLineInfo) lineTableIterator.next();
 
-            if ((m_printLineTop + lineHeight) > printAreaBottom)
-            {
+            if ((m_printLineTop + lineHeight) > printAreaBottom) {
                 endPage();
                 beginPage();
                 printHeader();
@@ -338,8 +302,7 @@ class PrintAnalysisResults
      **********************************************************************
      *
      */
-    private void beginPage()
-    {
+    private void beginPage() {
         m_graphics = m_printJob.getGraphics();
     }
 
@@ -348,8 +311,7 @@ class PrintAnalysisResults
      *
      * <file path>        Page 1          <print date>
      */
-    private void printHeader()
-    {
+    private void printHeader() {
         int baseline;
 
         m_printLineTop = m_printAreaY;
@@ -375,8 +337,7 @@ class PrintAnalysisResults
         pageTextWidth = m_boldFontMetrics.stringWidth(pageText);
         pageTextX = m_printAreaX + (m_printAreaWidth / 2) - (pageTextWidth / 2);
 
-        if (pageTextX <= (m_printAreaX + fileNameWidth))
-        {
+        if (pageTextX <= (m_printAreaX + fileNameWidth)) {
             pageTextX = m_printAreaX + fileNameWidth + 10;
         }
 
@@ -410,10 +371,8 @@ class PrintAnalysisResults
      *
      * @param printLineInfo
      */
-    private void printBody(PrintLineInfo printLineInfo)
-    {
-        if ((printLineInfo.m_label.length() > 0) || (printLineInfo.m_data.length() > 0))
-        {
+    private void printBody(PrintLineInfo printLineInfo) {
+        if ((printLineInfo.m_label.length() > 0) || (printLineInfo.m_data.length() > 0)) {
             int x;
             int y;
             int baseline;
@@ -421,8 +380,7 @@ class PrintAnalysisResults
             baseline = m_printLineTop + printLineInfo.m_labelFontMetrics.getAscent();
 
             // Print label
-            if (printLineInfo.m_label.length() > 0)
-            {
+            if (printLineInfo.m_label.length() > 0) {
                 m_graphics.setFont(printLineInfo.m_labelFont);
                 x = printLineInfo.m_labelX;
                 y = baseline;
@@ -443,8 +401,7 @@ class PrintAnalysisResults
      **********************************************************************
      *
      */
-    private void endPage()
-    {
+    private void endPage() {
         m_graphics = null;
     }
 
@@ -453,16 +410,14 @@ class PrintAnalysisResults
      ***********************************************************************
      ***********************************************************************
      */
-    private class GetAnalysisResults implements TextAnalysisResultsEventListener
-    {
+    private class GetAnalysisResults implements TextAnalysisResultsEventListener {
 
         /**
          ****************************************************************************
          *
          * @param event
          */
-        public void requestTextAnalysisResults(TextAnalysisResultsEvent event)
-        {
+        public void requestTextAnalysisResults(TextAnalysisResultsEvent event) {
         }
 
         /**
@@ -470,8 +425,7 @@ class PrintAnalysisResults
          *
          * @param event
          */
-        public void returnedTextAnalysisResults(TextAnalysisResultsEvent event)
-        {
+        public void returnedTextAnalysisResults(TextAnalysisResultsEvent event) {
             m_analysisText = event.getText();
         }
     }
@@ -481,8 +435,7 @@ class PrintAnalysisResults
      ***********************************************************************
      ***********************************************************************
      */
-    private class PrintLineInfo
-    {
+    private class PrintLineInfo {
         public String m_label;
         public String m_data;
         public int m_labelWidth;

@@ -20,12 +20,15 @@ public class StringToStringRuleTest extends RuleTst {
     public void testInstanceVar() throws Throwable {
         runTest("StringToString3.java", 1, new StringToStringRule());
     }
+
     public void testPrimitiveType() throws Throwable {
         runTest("StringToString4.java", 0, new StringToStringRule());
     }
+
     public void testMultipleSimilarParams() throws Throwable {
         runTest("StringToString5.java", 0, new StringToStringRule());
     }
+
     public void testStringArray() throws Throwable {
         runTest("StringToString6.java", 1, new StringToStringRule());
     }

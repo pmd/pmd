@@ -19,16 +19,23 @@ public class Report {
     public static class ProcessingError {
         private String msg;
         private String file;
+
         public ProcessingError(String msg, String file) {
             this.msg = msg;
             this.file = file;
         }
-        public String getMsg() {return msg;}
-        public String getFile() {return file;}
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public String getFile() {
+            return file;
+        }
     }
 
     private Set violations = new TreeSet(new RuleViolation.RuleViolationComparator());
-	private Set metrics = new HashSet();
+    private Set metrics = new HashSet();
     private List listeners = new ArrayList();
     private List errors = new ArrayList();
 
@@ -38,32 +45,32 @@ public class Report {
 
     public void addRuleViolation(RuleViolation violation) {
         violations.add(violation);
-        for (Iterator i = listeners.iterator();i.hasNext();) {
-            ReportListener listener = (ReportListener)i.next();
+        for (Iterator i = listeners.iterator(); i.hasNext();) {
+            ReportListener listener = (ReportListener) i.next();
             listener.ruleViolationAdded(violation);
         }
     }
 
-	public void addMetric( Metric metric ) {
-		metrics.add( metric );
-		for (Iterator i = listeners.iterator(); i.hasNext(); ) {
-			ReportListener listener = (ReportListener) i.next();
-			listener.metricAdded( metric );	
-		}	
-	}
+    public void addMetric(Metric metric) {
+        metrics.add(metric);
+        for (Iterator i = listeners.iterator(); i.hasNext();) {
+            ReportListener listener = (ReportListener) i.next();
+            listener.metricAdded(metric);
+        }
+    }
 
     public void addError(ProcessingError error) {
         errors.add(error);
     }
 
-	public boolean hasMetrics() {
-		return !metrics.isEmpty();
-	}
-	
-	public Iterator metrics() {
-		return metrics.iterator();
-	}
-	
+    public boolean hasMetrics() {
+        return !metrics.isEmpty();
+    }
+
+    public Iterator metrics() {
+        return metrics.iterator();
+    }
+
     public boolean isEmpty() {
         return violations.isEmpty();
     }

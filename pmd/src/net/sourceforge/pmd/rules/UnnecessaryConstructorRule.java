@@ -40,7 +40,7 @@ public class UnnecessaryConstructorRule extends AbstractRule {
         }
 
         // must have no parameters
-        ASTFormalParameters params = (ASTFormalParameters)node.jjtGetChild(0);
+        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
         if (params.jjtGetNumChildren() > 0) {
             return data;
         }
@@ -50,7 +50,7 @@ public class UnnecessaryConstructorRule extends AbstractRule {
             return data;
         }
 
-        RuleContext ctx = (RuleContext)data;
+        RuleContext ctx = (RuleContext) data;
         ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
 
         return data;

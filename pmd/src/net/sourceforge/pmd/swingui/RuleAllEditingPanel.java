@@ -11,8 +11,7 @@ import java.awt.BorderLayout;
  * @since September 8, 2002
  * @version $Revision$, $Date$
  */
-class RuleAllEditingPanel extends JPanel
-{
+class RuleAllEditingPanel extends JPanel {
     private RuleSetEditingPanel m_ruleSetPanel;
     private RuleEditingPanel m_rulePanel;
     private RulePropertyEditingPanel m_rulePropertyPanel;
@@ -23,8 +22,7 @@ class RuleAllEditingPanel extends JPanel
      *
      * @return
      */
-    protected RuleAllEditingPanel()
-    {
+    protected RuleAllEditingPanel() {
         super(new BorderLayout());
 
         EmptyBorder emptyBorder = new EmptyBorder(15, 15, 15, 15);
@@ -48,8 +46,7 @@ class RuleAllEditingPanel extends JPanel
      *
      * @param isEditing
      */
-    protected void setIsEditing(boolean isEditing)
-    {
+    protected void setIsEditing(boolean isEditing) {
         m_isEditing = isEditing;
         m_ruleSetPanel.setIsEditing(isEditing);
         m_rulePanel.setIsEditing(isEditing);

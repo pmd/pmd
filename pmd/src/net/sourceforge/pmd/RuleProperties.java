@@ -11,8 +11,7 @@ import java.util.Properties;
  * @since October 1, 2002
  * @version $Revision$, $Date$
  */
-public class RuleProperties implements Constants
-{
+public class RuleProperties implements Constants {
 
     private Properties m_properties = new Properties();
 
@@ -23,8 +22,7 @@ public class RuleProperties implements Constants
      ******************************************************************************
      *
      */
-    public RuleProperties()
-    {
+    public RuleProperties() {
         super();
     }
 
@@ -35,8 +33,7 @@ public class RuleProperties implements Constants
      *
      * @return
      */
-    public boolean containsKey(String name)
-    {
+    public boolean containsKey(String name) {
         return m_properties.containsKey(name);
     }
 
@@ -47,8 +44,7 @@ public class RuleProperties implements Constants
      *
      * @return An enumeration of the property names in this properties table.
      */
-    public Enumeration keys()
-    {
+    public Enumeration keys() {
         return m_properties.keys();
     }
 
@@ -57,8 +53,7 @@ public class RuleProperties implements Constants
      *
      * @return
      */
-    public int size()
-    {
+    public int size() {
         return m_properties.size();
     }
 
@@ -69,16 +64,13 @@ public class RuleProperties implements Constants
      *
      * @return
      */
-    public String getValue(String name)
-    {
+    public String getValue(String name) {
         name = (name == null) ? EMPTY_STRING : name.trim();
 
-        if (name.length() > 0)
-        {
+        if (name.length() > 0) {
             String property = m_properties.getProperty(name);
 
-            if (property != null)
-            {
+            if (property != null) {
                 int index = property.indexOf(SEPARATOR);
 
                 return (index < 0) ? property : property.substring(0, index);
@@ -95,20 +87,16 @@ public class RuleProperties implements Constants
      *
      * @return
      */
-    public String getValueType(String name)
-    {
+    public String getValueType(String name) {
         name = (name == null) ? EMPTY_STRING : name.trim();
 
-        if (name.length() > 0)
-        {
+        if (name.length() > 0) {
             String property = m_properties.getProperty(name);
 
-            if (property != null)
-            {
+            if (property != null) {
                 int index = property.indexOf(SEPARATOR) + SEPARATOR.length();
 
-                if (index > 0)
-                {
+                if (index > 0) {
                     return property.substring(index);
                 }
             }
@@ -124,8 +112,7 @@ public class RuleProperties implements Constants
      *
      * @return
      */
-    public boolean getBooleanValue(String name)
-    {
+    public boolean getBooleanValue(String name) {
         return Boolean.getBoolean(getValue(name));
     }
 
@@ -136,14 +123,10 @@ public class RuleProperties implements Constants
      *
      * @return
      */
-    public double getDoubleValue(String name)
-    {
-        try
-        {
+    public double getDoubleValue(String name) {
+        try {
             return Double.parseDouble(getValue(name));
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             return 0.0;
         }
     }
@@ -155,14 +138,10 @@ public class RuleProperties implements Constants
      *
      * @return
      */
-    public int getIntegerValue(String name)
-    {
-        try
-        {
+    public int getIntegerValue(String name) {
+        try {
             return Integer.parseInt(getValue(name));
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             return 0;
         }
     }
@@ -174,8 +153,7 @@ public class RuleProperties implements Constants
      *
      * @return
      */
-    public String getProperty(String name)
-    {
+    public String getProperty(String name) {
         return getValue(name);
     }
 
@@ -185,8 +163,7 @@ public class RuleProperties implements Constants
      * @param name
      * @param value
      */
-    public Object setProperty(String name, String value)
-    {
+    public Object setProperty(String name, String value) {
         setValue(name, value);
 
         return null;
@@ -198,14 +175,11 @@ public class RuleProperties implements Constants
      * @param name
      * @param value
      */
-    public void setValue(String name, String value)
-    {
+    public void setValue(String name, String value) {
         name = (name == null) ? EMPTY_STRING : name.trim();
 
-        if (name.length() > 0)
-        {
-            if (value == null)
-            {
+        if (name.length() > 0) {
+            if (value == null) {
                 value = EMPTY_STRING;
             }
 
@@ -222,14 +196,11 @@ public class RuleProperties implements Constants
      * @param name
      * @param valueType
      */
-    public void setValueType(String name, String valueType)
-    {
+    public void setValueType(String name, String valueType) {
         name = (name == null) ? EMPTY_STRING : name.trim();
 
-        if (name.length() > 0)
-        {
-            if (valueType == null)
-            {
+        if (name.length() > 0) {
+            if (valueType == null) {
                 valueType = EMPTY_STRING;
             }
 

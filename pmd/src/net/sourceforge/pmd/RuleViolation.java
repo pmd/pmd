@@ -11,10 +11,10 @@ public class RuleViolation {
         // DDP 7/11/2002
         //
         public int compare(Object o1, Object o2) {
-            RuleViolation r1 = (RuleViolation)o1;
-            RuleViolation r2 = (RuleViolation)o2;
+            RuleViolation r1 = (RuleViolation) o1;
+            RuleViolation r2 = (RuleViolation) o2;
             if (!r1.getFilename().equals(r2.getFilename())) {
-                return r1.getFilename().compareTo( r2.getFilename() );
+                return r1.getFilename().compareTo(r2.getFilename());
             }
 
             if (r1.getLine() != r2.getLine())

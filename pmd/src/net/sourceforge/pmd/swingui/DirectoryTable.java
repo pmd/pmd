@@ -1,4 +1,5 @@
 package net.sourceforge.pmd.swingui;
+
 import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
 import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
 import net.sourceforge.pmd.swingui.event.ListenerList;
@@ -36,8 +37,7 @@ import java.util.Vector;
  * @since August 25, 2002
  * @version $Revision$, $Date$
  */
-class DirectoryTable extends JTable
-{
+class DirectoryTable extends JTable {
 
     private boolean m_sortAscending = true;
 
@@ -46,8 +46,7 @@ class DirectoryTable extends JTable
      *
      * @param directoryTree
      */
-    protected DirectoryTable(DirectoryTree directoryTree, String fileExtension)
-    {
+    protected DirectoryTable(DirectoryTree directoryTree, String fileExtension) {
         super(new DirectoryTableModel(directoryTree, fileExtension));
 
         setShowGrid(false);
@@ -122,8 +121,7 @@ class DirectoryTable extends JTable
      *
      * @return
      */
-    protected File getSelectedFile()
-    {
+    protected File getSelectedFile() {
         ListSelectionModel selectionModel = getSelectionModel();
         int row = selectionModel.getAnchorSelectionIndex();
         DirectoryTableModel tableModel = (DirectoryTableModel) getModel();
@@ -136,8 +134,7 @@ class DirectoryTable extends JTable
      ********************************************************************************
      ********************************************************************************
      */
-    private class ColumnHeaderRenderer extends DefaultTableCellRenderer
-    {
+    private class ColumnHeaderRenderer extends DefaultTableCellRenderer {
 
         private Font m_boldFont;
         private Border m_border;
@@ -148,8 +145,7 @@ class DirectoryTable extends JTable
          *********************************************************************************
          *
          */
-        protected ColumnHeaderRenderer()
-        {
+        protected ColumnHeaderRenderer() {
             super();
 
             Font oldFont;
@@ -177,13 +173,7 @@ class DirectoryTable extends JTable
          *
          * @return
          */
-        public Component getTableCellRendererComponent(JTable table,
-                                                       Object value,
-                                                       boolean isSelected,
-                                                       boolean hasFocus,
-                                                       int row,
-                                                       int column)
-        {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             setFont(m_boldFont);
@@ -201,16 +191,14 @@ class DirectoryTable extends JTable
      ********************************************************************************
      ********************************************************************************
      */
-    private class TableHeaderMouseListener extends MouseAdapter
-    {
+    private class TableHeaderMouseListener extends MouseAdapter {
 
         /**
          ****************************************************************************
          *
          * @param event
          */
-        public void mouseReleased(MouseEvent event)
-        {
+        public void mouseReleased(MouseEvent event) {
             int sortColumn;
             JTableHeader tableHeader;
             Point mouseLocation;
@@ -221,8 +209,7 @@ class DirectoryTable extends JTable
             tableHeader = getTableHeader();
             sortColumn = tableHeader.columnAtPoint(mouseLocation);
 
-            if (sortColumn >= 0)
-            {
+            if (sortColumn >= 0) {
                 // When the cursor is resizing a column, the mouse released event will
                 // reach here.  To prevent sorting happening during resizing, the column
                 // header area is inset on the left and right by 10 pixels each.
@@ -230,8 +217,7 @@ class DirectoryTable extends JTable
                 columnHeaderArea.x -= 10;
                 columnHeaderArea.width -= 20;
 
-                if (columnHeaderArea.contains(mouseLocation))
-                {
+                if (columnHeaderArea.contains(mouseLocation)) {
                     sort(sortColumn, m_sortAscending);
                 }
             }
@@ -242,8 +228,7 @@ class DirectoryTable extends JTable
          *
          * @param sortColumn
          */
-        protected void sort(int sortColumn, boolean sortAscending)
-        {
+        protected void sort(int sortColumn, boolean sortAscending) {
             TableSortComparator comparator;
             DirectoryTableModel tableModel;
             Vector tableData;
@@ -259,8 +244,7 @@ class DirectoryTable extends JTable
 
             Arrays.sort(rows, comparator);
 
-            for (int n = 0; n < rowCount; n++)
-            {
+            for (int n = 0; n < rowCount; n++) {
                 tableData.set(n, rows[n]);
             }
 
@@ -273,8 +257,7 @@ class DirectoryTable extends JTable
      ********************************************************************************
      ********************************************************************************
      */
-    private class TableSortComparator implements Comparator
-    {
+    private class TableSortComparator implements Comparator {
 
         private int m_sortColumn;
         private boolean m_sortAscending;
@@ -285,8 +268,7 @@ class DirectoryTable extends JTable
          * @param sortColumn
          * @param sortAscending
          */
-        private TableSortComparator(int sortColumn, boolean sortAscending)
-        {
+        private TableSortComparator(int sortColumn, boolean sortAscending) {
             m_sortColumn = sortColumn;
             m_sortAscending = sortAscending;
         }
@@ -299,13 +281,11 @@ class DirectoryTable extends JTable
          *
          * @int result
          */
-        public int compare(Object rowA, Object rowB)
-        {
+        public int compare(Object rowA, Object rowB) {
             String keyA = (String) ((Vector) rowA).get(m_sortColumn);
             String keyB = (String) ((Vector) rowB).get(m_sortColumn);
 
-            if (m_sortAscending)
-            {
+            if (m_sortAscending) {
                 return keyA.compareTo(keyB);
             }
 
@@ -317,8 +297,7 @@ class DirectoryTable extends JTable
          *
          * @param object
          */
-        public boolean equals(Object object)
-        {
+        public boolean equals(Object object) {
             return (object == this);
         }
     }
@@ -328,25 +307,21 @@ class DirectoryTable extends JTable
      ********************************************************************************
      ********************************************************************************
      */
-    private class ListSelectionHandler implements ListSelectionListener
-    {
+    private class ListSelectionHandler implements ListSelectionListener {
 
         /**
          ****************************************************************************
          *
          * @param event
          */
-        public void valueChanged(ListSelectionEvent event)
-        {
+        public void valueChanged(ListSelectionEvent event) {
             // Swing may generate a change event more than once.  All change events, except
             // the last event, will have the "value is adjusting" flag set true.  We want only
             // the last event.
-            if (event.getValueIsAdjusting() == false)
-            {
+            if (event.getValueIsAdjusting() == false) {
                 File file = getSelectedFile();
 
-                if (file != null)
-                {
+                if (file != null) {
                     DirectoryTableEvent.notifyFileSelectionChanged(this, file);
                 }
             }
@@ -358,20 +333,17 @@ class DirectoryTable extends JTable
      ********************************************************************************
      ********************************************************************************
      */
-    private class DirectoryTableEventHandler implements DirectoryTableEventListener
-    {
+    private class DirectoryTableEventHandler implements DirectoryTableEventListener {
 
         /**
          ******************************************************************************
          *
          * @param event
          */
-        public void requestSelectedFile(DirectoryTableEvent event)
-        {
+        public void requestSelectedFile(DirectoryTableEvent event) {
             File file = getSelectedFile();
 
-            if (file != null)
-            {
+            if (file != null) {
                 DirectoryTableEvent.notifySelectedFile(this, file);
             }
         }
@@ -381,8 +353,7 @@ class DirectoryTable extends JTable
          *
          * @param event
          */
-        public void fileSelectionChanged(DirectoryTableEvent event)
-        {
+        public void fileSelectionChanged(DirectoryTableEvent event) {
 
         }
 
@@ -391,8 +362,7 @@ class DirectoryTable extends JTable
          *
          * @param event
          */
-        public void fileSelected(DirectoryTableEvent event)
-        {
+        public void fileSelected(DirectoryTableEvent event) {
         }
     }
 }

@@ -14,13 +14,13 @@ public class EmptyTryBlockRuleTest extends RuleTst {
     public void testEmptyTryBlock1() throws Throwable {
         Report report = process("EmptyTryBlock1.java", new EmptyTryBlockRule());
         assertEquals(1, report.size());
-        assertEquals(new EmptyTryBlockRule(), ((RuleViolation)report.iterator().next()).getRule());
+        assertEquals(new EmptyTryBlockRule(), ((RuleViolation) report.iterator().next()).getRule());
     }
 
     public void testEmptyTryBlock2() throws Throwable {
         Report report = process("EmptyTryBlock2.java", new EmptyTryBlockRule());
         assertEquals(1, report.size());
-        assertEquals(new EmptyTryBlockRule(), ((RuleViolation)report.iterator().next()).getRule());
+        assertEquals(new EmptyTryBlockRule(), ((RuleViolation) report.iterator().next()).getRule());
     }
 
     public void testEmptyTryBlock3() throws Throwable {

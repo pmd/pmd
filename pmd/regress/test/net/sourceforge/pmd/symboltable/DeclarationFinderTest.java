@@ -35,5 +35,6 @@ public class DeclarationFinderTest extends TestCase {
         assertTrue(scope.contains(new NameOccurrence(new SimpleNode(4), "foo")));
     }
 
-    public void test1() {}
+    public void test1() {
+    }
 }

@@ -18,8 +18,7 @@ import javax.swing.tree.TreePath;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RuleEditingTabbedPane extends JTabbedPane
-{
+class RuleEditingTabbedPane extends JTabbedPane {
 
     private RulesTree m_rulesTree;
     private RuleAllEditingPanel m_ruleAllPanel;
@@ -33,8 +32,7 @@ class RuleEditingTabbedPane extends JTabbedPane
      *
      * @return
      */
-    protected RuleEditingTabbedPane(RulesTree rulesTree)
-    {
+    protected RuleEditingTabbedPane(RulesTree rulesTree) {
         super(JTabbedPane.TOP);
 
         m_rulesTree = rulesTree;
@@ -60,8 +58,7 @@ class RuleEditingTabbedPane extends JTabbedPane
      *
      * @return
      */
-    protected RulesTreeNode getSelectedTreeNode()
-    {
+    protected RulesTreeNode getSelectedTreeNode() {
         return m_rulesTree.getSelectedNode();
     }
 
@@ -69,10 +66,8 @@ class RuleEditingTabbedPane extends JTabbedPane
      *******************************************************************************
      *
      */
-    protected void saveData()
-    {
-        if (m_currentTreeNode != null)
-        {
+    protected void saveData() {
+        if (m_currentTreeNode != null) {
             RulesEditingEvent.notifySaveData(this, m_currentTreeNode);
         }
     }
@@ -81,24 +76,18 @@ class RuleEditingTabbedPane extends JTabbedPane
      *******************************************************************************
      *
      */
-    private void loadData(RulesTreeNode treeNode)
-    {
+    private void loadData(RulesTreeNode treeNode) {
         JPanel editingTab = (JPanel) getSelectedComponent();
 
-        if (editingTab == m_ruleAllPanel)
-        {
+        if (editingTab == m_ruleAllPanel) {
             m_ruleAllPanel.setIsEditing(true);
             m_rulePanel.setIsEditing(false);
             m_rulePropertyPanel.setIsEditing(false);
-        }
-        else if (editingTab == m_rulePanel)
-        {
+        } else if (editingTab == m_rulePanel) {
             m_ruleAllPanel.setIsEditing(false);
             m_rulePanel.setIsEditing(true);
             m_rulePropertyPanel.setIsEditing(false);
-        }
-        else
-        {
+        } else {
             m_ruleAllPanel.setIsEditing(false);
             m_rulePanel.setIsEditing(false);
             m_rulePropertyPanel.setIsEditing(true);
@@ -113,16 +102,14 @@ class RuleEditingTabbedPane extends JTabbedPane
      *******************************************************************************
      *******************************************************************************
      */
-    private class TabChangeListener implements ChangeListener
-    {
+    private class TabChangeListener implements ChangeListener {
 
         /**
          *******************************************************************************
          *
          * @param event
          */
-        public void stateChanged(ChangeEvent event)
-        {
+        public void stateChanged(ChangeEvent event) {
             RulesTreeNode selectedTreeNode = getSelectedTreeNode();
             saveData();
             loadData(selectedTreeNode);
@@ -135,48 +122,37 @@ class RuleEditingTabbedPane extends JTabbedPane
      *******************************************************************************
      *******************************************************************************
      */
-    private class RulesTreeSelectionListener implements TreeSelectionListener
-    {
+    private class RulesTreeSelectionListener implements TreeSelectionListener {
 
         /**
          *******************************************************************************
          *
          * @param event
          */
-        public void valueChanged(TreeSelectionEvent event)
-        {
+        public void valueChanged(TreeSelectionEvent event) {
             TreePath treePath = event.getPath();
             Object component = treePath.getLastPathComponent();
 
-            if (component instanceof RulesTreeNode)
-            {
+            if (component instanceof RulesTreeNode) {
                 saveData();
 
                 RulesTreeNode treeNode = (RulesTreeNode) component;
 
-                if (getSelectedComponent() != m_ruleAllPanel)
-                {
-                    if (treeNode.isRuleSet())
-                    {
+                if (getSelectedComponent() != m_ruleAllPanel) {
+                    if (treeNode.isRuleSet()) {
                         setSelectedComponent(m_ruleSetPanel);
-                    }
-                    else if (treeNode.isRule())
-                    {
+                    } else if (treeNode.isRule()) {
                         setSelectedComponent(m_rulePanel);
-                    }
-                    else if (treeNode.isProperty())
-                    {
+                    } else if (treeNode.isProperty()) {
                         setSelectedComponent(m_rulePropertyPanel);
                     }
                 }
 
-                if (treeNode.getParent() == null)
-                {
+                if (treeNode.getParent() == null) {
                     // Get next to last tree node in tree path.
                     int pathIndex = treePath.getPathCount() - 2;
 
-                    if (pathIndex >= 0)
-                    {
+                    if (pathIndex >= 0) {
                         treeNode = (RulesTreeNode) treePath.getPathComponent(pathIndex);
                     }
                 }
@@ -192,8 +168,7 @@ class RuleEditingTabbedPane extends JTabbedPane
      *******************************************************************************
      *******************************************************************************
      */
-    private class SortChildren implements Runnable
-    {
+    private class SortChildren implements Runnable {
 
         private RulesTreeNode m_parentNode;
 
@@ -202,8 +177,7 @@ class RuleEditingTabbedPane extends JTabbedPane
          *
          * @param parentNode
          */
-        private SortChildren(RulesTreeNode parentNode)
-        {
+        private SortChildren(RulesTreeNode parentNode) {
             m_parentNode = parentNode;
         }
 
@@ -211,10 +185,8 @@ class RuleEditingTabbedPane extends JTabbedPane
          ***************************************************************************
          *
          */
-        public void run()
-        {
-            if (m_parentNode != null)
-            {
+        public void run() {
+            if (m_parentNode != null) {
                 m_parentNode.sortChildren();
             }
         }

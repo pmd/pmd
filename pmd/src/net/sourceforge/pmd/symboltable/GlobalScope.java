@@ -22,7 +22,8 @@ public class GlobalScope extends AbstractScope implements Scope {
         return Collections.EMPTY_MAP;
     }
 
-    public void addDeclaration(VariableNameDeclaration decl) {}
+    public void addDeclaration(VariableNameDeclaration decl) {
+    }
 
     public boolean contains(NameOccurrence occ) {
         return false;

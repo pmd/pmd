@@ -1,6 +1,6 @@
 /**
  * $Id$
- * 
+ *
  * <copyright>
  *  Copyright 1997-2002 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
@@ -31,7 +31,7 @@ import test.net.sourceforge.pmd.rules.RuleTst;
  * @author dpeugh
  *
  * Tests the NullAssignmentRule
- * 
+ *
  */
 public class NullAssignmentRuleTest extends RuleTst {
 

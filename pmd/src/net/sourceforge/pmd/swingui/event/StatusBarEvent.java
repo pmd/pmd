@@ -10,8 +10,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class StatusBarEvent extends EventObject
-{
+public class StatusBarEvent extends EventObject {
 
     private String m_message;
 
@@ -20,8 +19,7 @@ public class StatusBarEvent extends EventObject
      *
      * @param message
      */
-    private StatusBarEvent(Object source)
-    {
+    private StatusBarEvent(Object source) {
         super(source);
     }
 
@@ -30,8 +28,7 @@ public class StatusBarEvent extends EventObject
      *
      * @param message
      */
-    private StatusBarEvent(Object source, String message)
-    {
+    private StatusBarEvent(Object source, String message) {
         super(source);
 
         m_message = message;
@@ -42,8 +39,7 @@ public class StatusBarEvent extends EventObject
      *
      * @return
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         return m_message;
     }
 
@@ -51,14 +47,12 @@ public class StatusBarEvent extends EventObject
      *****************************************************************************
      *
      */
-    public static final void notifyStartAnimation(Object source)
-    {
+    public static final void notifyStartAnimation(Object source) {
         StatusBarEvent event = new StatusBarEvent(source);
         List listenerList = ListenerList.getListeners(StatusBarEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             StatusBarEventListener listener;
 
             listener = (StatusBarEventListener) listeners.next();
@@ -71,14 +65,12 @@ public class StatusBarEvent extends EventObject
      *
      * @param message
      */
-    public static final void notifyShowMessage(Object source, String message)
-    {
+    public static final void notifyShowMessage(Object source, String message) {
         StatusBarEvent event = new StatusBarEvent(source, message);
         List listenerList = ListenerList.getListeners(StatusBarEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             StatusBarEventListener listener;
 
             listener = (StatusBarEventListener) listeners.next();
@@ -90,14 +82,12 @@ public class StatusBarEvent extends EventObject
      *****************************************************************************
      *
      */
-    public static final void notifyStopAnimation(Object source)
-    {
+    public static final void notifyStopAnimation(Object source) {
         StatusBarEvent event = new StatusBarEvent(source);
         List listenerList = ListenerList.getListeners(StatusBarEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             StatusBarEventListener listener;
 
             listener = (StatusBarEventListener) listeners.next();

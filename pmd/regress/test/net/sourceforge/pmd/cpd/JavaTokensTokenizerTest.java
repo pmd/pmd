@@ -22,21 +22,18 @@ public class JavaTokensTokenizerTest extends TestCase {
         String data = "public class Foo {}";
         tokenizer.tokenize(tl, new StringReader(data));
         assertEquals(5, tl.size());
-        assertEquals("public class Foo {}", tl.getSlice(0,0));
+        assertEquals("public class Foo {}", tl.getSlice(0, 0));
     }
 
     public void test2() throws Throwable {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList tl = new TokenList("1");
-        String data = "public class Foo {" + EOL +
-                      "public void bar() {}" + EOL +
-                      "public void buz() {}" + EOL +
-                      "}";
+        String data = "public class Foo {" + EOL + "public void bar() {}" + EOL + "public void buz() {}" + EOL + "}";
         t.tokenize(tl, new StringReader(data));
-        assertEquals("public class Foo {"+ EOL + "public void bar() {}", tl.getSlice(0,1));
+        assertEquals("public class Foo {" + EOL + "public void bar() {}", tl.getSlice(0, 1));
     }
 
-    public void testDiscardSemicolons() throws Throwable  {
+    public void testDiscardSemicolons() throws Throwable {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList tl = new TokenList("1");
         String data = "public class Foo {private int x;}";
@@ -59,6 +56,6 @@ public class JavaTokensTokenizerTest extends TestCase {
         t.tokenize(tl, new StringReader(data));
         assertEquals(5, tl.size());
     }
- }
+}
 
 

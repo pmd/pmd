@@ -10,8 +10,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-public class GridBagHelper
-{
+public class GridBagHelper {
     GridBagLayout gridbag;
     Container container;
     GridBagConstraints c;
@@ -20,8 +19,7 @@ public class GridBagHelper
     int labelAlignment = SwingConstants.RIGHT;
     double[] weights;
 
-    public GridBagHelper(Container container, double[] weights)
-    {
+    public GridBagHelper(Container container, double[] weights) {
         this.container = container;
         this.weights = weights;
 
@@ -29,18 +27,16 @@ public class GridBagHelper
         container.setLayout(gridbag);
 
         c = new GridBagConstraints();
-        c.insets = new Insets(2,2,2,2);
+        c.insets = new Insets(2, 2, 2, 2);
         c.anchor = GridBagConstraints.EAST;
         c.fill = GridBagConstraints.HORIZONTAL;
     }
 
-    public void add(Component component)
-    {
+    public void add(Component component) {
         add(component, 1);
     }
 
-    public void add(Component component, int width)
-    {
+    public void add(Component component, int width) {
         c.gridx = x;
         c.gridy = y;
         c.weightx = weights[x];
@@ -50,14 +46,12 @@ public class GridBagHelper
         x += width;
     }
 
-    public void nextRow()
-    {
+    public void nextRow() {
         y++;
-        x=0;
+        x = 0;
     }
 
-    public void addLabel(String label)
-    {
+    public void addLabel(String label) {
         add(new JLabel(label, labelAlignment));
     }
 

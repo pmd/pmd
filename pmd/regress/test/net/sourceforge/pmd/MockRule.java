@@ -43,16 +43,35 @@ public class MockRule implements Rule {
         return null;
     }
 
-    public void setPriority(int priority) {}
-    public String getDescription() {return description;}
-    public void setDescription(String description) {this.description = description;}
-    public String getName() {return name;}
-    public void setName(String name) {this.name = name;}
-    public String getMessage() {return message;}
-    public void setMessage(String message) {this.message = message;}
+    public void setPriority(int priority) {
+    }
 
-    public boolean hasProperty( String name ) {
-        return properties.containsKey( name );
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean hasProperty(String name) {
+        return properties.containsKey(name);
     }
 
     public void addProperty(String name, String value) {
@@ -75,25 +94,23 @@ public class MockRule implements Rule {
         return properties.getProperty(name);
     }
 
-    public RuleProperties getProperties()
-    {
+    public RuleProperties getProperties() {
         return properties;
     }
 
-    public boolean include()
-    {
+    public boolean include() {
         return true;
     }
 
-    public void setInclude(boolean include)
-    {
+    public void setInclude(boolean include) {
         m_include = include;
     }
 
     /**
      * For use by RuleSetFactory only!
      */
-    public MockRule() {}
+    public MockRule() {
+    }
 
     public MockRule(String name, String description, String message) {
         this.name = name;
@@ -102,17 +119,17 @@ public class MockRule implements Rule {
     }
 
 
-    public void addViolation( RuleViolation violation ) {
-    violations.add( violation );
+    public void addViolation(RuleViolation violation) {
+        violations.add(violation);
     }
 
     public void apply(List astCompilationUnits, RuleContext ctx) {
-    Report report = ctx.getReport();
+        Report report = ctx.getReport();
 
-    Iterator vs = violations.iterator();
-    while (vs.hasNext()) {
-        report.addRuleViolation( (RuleViolation) vs.next() );
-    }
+        Iterator vs = violations.iterator();
+        while (vs.hasNext()) {
+            report.addRuleViolation((RuleViolation) vs.next());
+        }
     }
 
 }

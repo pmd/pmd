@@ -40,9 +40,9 @@ public class NameOccurrence {
     public boolean isOnLeftHandSide() {
         SimpleNode primaryExpression;
         if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
-            primaryExpression = (SimpleNode)location.jjtGetParent().jjtGetParent();
+            primaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent();
         } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
-            primaryExpression = (SimpleNode)location.jjtGetParent().jjtGetParent().jjtGetParent();
+            primaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent().jjtGetParent();
         } else {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
@@ -64,7 +64,7 @@ public class NameOccurrence {
     }
 
     public boolean equals(Object o) {
-        NameOccurrence n = (NameOccurrence)o;
+        NameOccurrence n = (NameOccurrence) o;
         return n.getImage().equals(getImage());
     }
 

@@ -26,12 +26,12 @@ public class GSTTest extends TestCase {
         GST gst = new GST(tss, 5);
         Results results = gst.crunch();
         assertEquals(1, results.size());
-        Tile tile = (Tile)results.getTiles().next();
+        Tile tile = (Tile) results.getTiles().next();
         assertEquals("hello", tile.getImage());
         Iterator occs = results.getOccurrences(tile);
         assertTrue(occs.hasNext());
         while (occs.hasNext()) {
-            TokenEntry tok = (TokenEntry)occs.next();
+            TokenEntry tok = (TokenEntry) occs.next();
             if (tok.getTokenSrcID().equals("foo")) {
                 assertEquals(0, tok.getIndex());
             } else {

@@ -37,16 +37,14 @@ import java.util.List;
  * @since September 6, 2002
  * @version $Revision$, $Date$
  */
-class AboutPMD extends JDialog
-{
+class AboutPMD extends JDialog {
 
     /**
      ********************************************************************************
      *
      * @pmdViewer
      */
-    protected AboutPMD(PMDViewer pmdViewer)
-    {
+    protected AboutPMD(PMDViewer pmdViewer) {
         super(pmdViewer, "About PMD", true);
 
         initialize();
@@ -57,8 +55,7 @@ class AboutPMD extends JDialog
      *
      * @pmdViewer
      */
-    protected AboutPMD(JDialog dialog)
-    {
+    protected AboutPMD(JDialog dialog) {
         super(dialog, "About PMD", true);
 
         initialize();
@@ -67,8 +64,7 @@ class AboutPMD extends JDialog
     /**
      ********************************************************************************
      */
-    private void initialize()
-    {
+    private void initialize() {
         Dimension screenSize = getToolkit().getScreenSize();
         int windowWidth = 750;
         int windowHeight = 500;
@@ -95,8 +91,7 @@ class AboutPMD extends JDialog
      *
      * @return
      */
-    private JPanel createButtonPanel()
-    {
+    private JPanel createButtonPanel() {
         JButton closeButton = new JButton("Close");
         closeButton.setForeground(Color.white);
         closeButton.setBackground(UIManager.getColor("pmdBlue"));
@@ -113,8 +108,7 @@ class AboutPMD extends JDialog
      *
      * @return
      */
-    private JTabbedPane createTabbedPane()
-    {
+    private JTabbedPane createTabbedPane() {
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 
         tabbedPane.addTab("About", createAboutPanel());
@@ -130,8 +124,7 @@ class AboutPMD extends JDialog
      *
      * @return
      */
-    private JPanel createAboutPanel()
-    {
+    private JPanel createAboutPanel() {
         JPanel aboutPanel = new JPanel(new BorderLayout());
 
         // PMD Image
@@ -145,9 +138,7 @@ class AboutPMD extends JDialog
         aboutPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // Version Label
-        String versionText = Resources.getString("RESOURCEVersion")
-                           + " "
-                           + ProjectFile.getProperty("currentVersion");
+        String versionText = Resources.getString("RESOURCEVersion") + " " + ProjectFile.getProperty("currentVersion");
         JLabel versionLabel = new JLabel(versionText);
         versionLabel.setFont(UIManager.getFont("labelFont"));
         versionLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -168,8 +159,7 @@ class AboutPMD extends JDialog
      *
      * @return
      */
-    private JPanel createInfoPanel()
-    {
+    private JPanel createInfoPanel() {
         GridBagLayout layout = new GridBagLayout();
         JPanel infoPanel = new JPanel(layout);
         int row = 0;
@@ -235,8 +225,7 @@ class AboutPMD extends JDialog
      *
      * @param name
      */
-    private void addName(String name, int row, JPanel infoPanel)
-    {
+    private void addName(String name, int row, JPanel infoPanel) {
         JLabel label;
         GridBagLayout layout;
         GridBagConstraints constraints;
@@ -263,8 +252,7 @@ class AboutPMD extends JDialog
      *
      * @param value
      */
-    private void addValue(String value, int row, JPanel infoPanel)
-    {
+    private void addValue(String value, int row, JPanel infoPanel) {
         JLabel label;
         GridBagLayout layout;
         GridBagConstraints constraints;
@@ -289,8 +277,7 @@ class AboutPMD extends JDialog
      *
      * @param value
      */
-    private void addMultiLineValue(String value, int row, int lines, JPanel infoPanel)
-    {
+    private void addMultiLineValue(String value, int row, int lines, JPanel infoPanel) {
         JTextArea textArea;
         JScrollPane scrollPane;
         GridBagLayout layout;
@@ -332,8 +319,7 @@ class AboutPMD extends JDialog
      *
      * @return
      */
-    private JPanel createCreditsPanel()
-    {
+    private JPanel createCreditsPanel() {
         JPanel parentPanel = new JPanel(new BorderLayout());
 
         // Panel Title
@@ -381,8 +367,7 @@ class AboutPMD extends JDialog
         addTitle("Developers", row, creditsPanel);
         row--;
 
-        for (int n = 0; n < developers.length; n++)
-        {
+        for (int n = 0; n < developers.length; n++) {
             row++;
             addPerson(developers[n], row, creditsPanel);
         }
@@ -396,8 +381,7 @@ class AboutPMD extends JDialog
         addTitle("Contributors", row, creditsPanel);
         row--;
 
-        for (int n = 0; n < contributors.length; n++)
-        {
+        for (int n = 0; n < contributors.length; n++) {
             row++;
             addPerson(contributors[n], row, creditsPanel);
         }
@@ -410,8 +394,7 @@ class AboutPMD extends JDialog
      *
      * @param name
      */
-    private void addTitle(String name, int row, JPanel creditsPanel)
-    {
+    private void addTitle(String name, int row, JPanel creditsPanel) {
         JLabel label;
         GridBagLayout layout;
         GridBagConstraints constraints;
@@ -438,8 +421,7 @@ class AboutPMD extends JDialog
      *
      * @param value
      */
-    private void addPerson(String value, int row, JPanel creditsPanel)
-    {
+    private void addPerson(String value, int row, JPanel creditsPanel) {
         JLabel label;
         GridBagLayout layout;
         GridBagConstraints constraints;
@@ -468,21 +450,17 @@ class AboutPMD extends JDialog
      *
      * @return
      */
-    private String[] getPeople(String nameKey, String selectKey, String selectValue)
-    {
+    private String[] getPeople(String nameKey, String selectKey, String selectValue) {
         String nameList = ProjectFile.getProperty(nameKey);
         String[] names = ProjectFile.toArray(nameList);
 
-        if ((selectKey != null) && (selectValue != null))
-        {
+        if ((selectKey != null) && (selectValue != null)) {
             String selectList = ProjectFile.getProperty(selectKey);
             String[] selections = ProjectFile.toArray(selectList);
             List tempNameList = new ArrayList();
 
-            for (int n = 0; n < names.length; n++)
-            {
-                if ((n < selections.length) && selections[n].equalsIgnoreCase(selectValue))
-                {
+            for (int n = 0; n < names.length; n++) {
+                if ((n < selections.length) && selections[n].equalsIgnoreCase(selectValue)) {
                     tempNameList.add(names[n]);
                 }
 
@@ -505,8 +483,7 @@ class AboutPMD extends JDialog
      *******************************************************************************
      *******************************************************************************
      */
-    private class PeopleNameComparator implements Comparator
-    {
+    private class PeopleNameComparator implements Comparator {
 
         /**
          ********************************************************************************
@@ -516,21 +493,18 @@ class AboutPMD extends JDialog
          *
          * @return
          */
-        public int compare(Object object1, Object object2)
-        {
+        public int compare(Object object1, Object object2) {
             String name1 = (String) object1;
             String name2 = (String) object2;
             int index = name1.lastIndexOf(' ') + 1;
 
-            if (index >= 0)
-            {
+            if (index >= 0) {
                 name1 = name1.substring(index).concat(name1);
             }
 
             index = name2.lastIndexOf(' ') + 1;
 
-            if (index >= 0)
-            {
+            if (index >= 0) {
                 name2 = name2.substring(index).concat(name2);
             }
 
@@ -544,8 +518,7 @@ class AboutPMD extends JDialog
          *
          * @return
          */
-        public boolean compare(Object object)
-        {
+        public boolean compare(Object object) {
             return object == this;
         }
     }
@@ -555,16 +528,14 @@ class AboutPMD extends JDialog
      *******************************************************************************
      *******************************************************************************
      */
-    private class CloseButtonActionListener implements ActionListener
-    {
+    private class CloseButtonActionListener implements ActionListener {
 
         /**
          ********************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             AboutPMD.this.setVisible(false);
         }
     }

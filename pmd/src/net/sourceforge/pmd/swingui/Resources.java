@@ -9,8 +9,7 @@ import java.util.ResourceBundle;
  * @since September 9, 2002
  * @version $Revision$, $Date$
  */
-public class Resources
-{
+public class Resources {
     private static ResourceBundle RESOURCES = ResourceBundle.getBundle("net.sourceforge.pmd.swingui.pmdViewer");
 
     /**
@@ -20,8 +19,7 @@ public class Resources
      *
      * @return
      */
-    public static final String getString(String name)
-    {
+    public static final String getString(String name) {
         return RESOURCES.getString(name);
     }
 
@@ -33,8 +31,7 @@ public class Resources
      *
      * @return
      */
-    public static final String getString(String name, String[] parameters)
-    {
+    public static final String getString(String name, String[] parameters) {
         String template = RESOURCES.getString(name);
         String message = MessageFormat.format(template, parameters);
 

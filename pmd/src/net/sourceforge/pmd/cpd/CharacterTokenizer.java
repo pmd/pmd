@@ -31,7 +31,7 @@ public class CharacterTokenizer implements Tokenizer {
             lines.add(currentLine);
             sb.append(currentLine);
             sb.append(EOL);
-            for (int i=0; i<currentLine.length(); i++) {
+            for (int i = 0; i < currentLine.length(); i++) {
                 tokens.add(new TokenEntry(String.valueOf(currentLine.charAt(i)), position, tokens.getID(), lines.size()));
                 position++;
             }

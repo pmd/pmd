@@ -22,7 +22,8 @@ public class TokenList implements Serializable {
     protected String EOL = System.getProperty("line.separator", "\n");
 
     // don't use this, just for Serialization
-    protected TokenList() {}
+    protected TokenList() {
+    }
 
     public TokenList(String id) {
         this.id = id;
@@ -35,11 +36,11 @@ public class TokenList implements Serializable {
     public String getSlice(int startLine, int endLine) {
         StringBuffer sb = new StringBuffer();
         // TODO this check for i<code.size() should not be necessary
-        for (int i=startLine; (i<=endLine) && (i < code.size()) ; i++) {
-            if (sb.length() !=0) {
+        for (int i = startLine; (i <= endLine) && (i < code.size()); i++) {
+            if (sb.length() != 0) {
                 sb.append(EOL);
             }
-            sb.append((String)code.get(i));
+            sb.append((String) code.get(i));
         }
         return sb.toString();
     }
@@ -61,7 +62,7 @@ public class TokenList implements Serializable {
     }
 
     public boolean equals(Object other) {
-        TokenList o = (TokenList)other;
+        TokenList o = (TokenList) other;
         return o.getID().equals(id);
     }
 
@@ -79,6 +80,6 @@ public class TokenList implements Serializable {
     }
 
     public TokenEntry get(int index) {
-        return (TokenEntry)tokens.get(index);
+        return (TokenEntry) tokens.get(index);
     }
 }

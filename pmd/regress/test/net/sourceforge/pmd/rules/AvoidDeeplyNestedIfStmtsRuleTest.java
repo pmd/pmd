@@ -16,6 +16,7 @@ public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
         rule = new AvoidDeeplyNestedIfStmtsRule();
         rule.addProperty("problemDepth", "3");
     }
+
     public void test1() throws Throwable {
         runTest("AvoidDeeplyNestedIfStmtsRule1.java", 1, rule);
     }

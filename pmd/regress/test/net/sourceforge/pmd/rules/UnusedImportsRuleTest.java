@@ -19,12 +19,15 @@ public class UnusedImportsRuleTest extends RuleTst {
     public void test1() throws Throwable {
         runTest("UnusedImports1.java", 1, rule);
     }
+
     public void test2() throws Throwable {
         runTest("UnusedImports2.java", 0, rule);
     }
+
     public void test3() throws Throwable {
         runTest("UnusedImports3.java", 2, rule);
     }
+
     public void test4() throws Throwable {
         runTest("UnusedImports4.java", 0, rule);
     }

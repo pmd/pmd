@@ -4,8 +4,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
-public class SearchDirectoryEvent extends EventObject
-{
+public class SearchDirectoryEvent extends EventObject {
     private String m_searchDirectory;
 
     /**
@@ -14,8 +13,7 @@ public class SearchDirectoryEvent extends EventObject
      * @param source
      * @param searchDirectory
      */
-    private SearchDirectoryEvent(Object source, String searchDirectory)
-    {
+    private SearchDirectoryEvent(Object source, String searchDirectory) {
         super(source);
 
         m_searchDirectory = searchDirectory;
@@ -26,8 +24,7 @@ public class SearchDirectoryEvent extends EventObject
      *
      * @return
      */
-    public String getSearchDirectory()
-    {
+    public String getSearchDirectory() {
         return m_searchDirectory;
     }
 
@@ -36,14 +33,12 @@ public class SearchDirectoryEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifySetSearchDirectory(Object source, String searchDirectory)
-    {
+    public static final void notifySetSearchDirectory(Object source, String searchDirectory) {
         SearchDirectoryEvent event = new SearchDirectoryEvent(source, searchDirectory);
         List listenerList = ListenerList.getListeners(SearchDirectoryEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             SearchDirectoryEventListener listener;
 
             listener = (SearchDirectoryEventListener) listeners.next();

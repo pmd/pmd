@@ -13,15 +13,13 @@ import java.util.List;
  * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-class SearchResultsViewer extends ResultsViewer
-{
+class SearchResultsViewer extends ResultsViewer {
 
     /**
      ********************************************************************************
      *
      */
-    protected SearchResultsViewer()
-    {
+    protected SearchResultsViewer() {
         super();
 
     }
@@ -32,8 +30,7 @@ class SearchResultsViewer extends ResultsViewer
      * @param ruleSet
      * @param directory
      */
-    protected void analyze(File directory, RuleSet ruleSet)
-    {
+    protected void analyze(File directory, RuleSet ruleSet) {
         List fileList;
         FileFilter fileFilter;
         File[] sourceFiles;
@@ -54,18 +51,13 @@ class SearchResultsViewer extends ResultsViewer
      * @param fileList
      * @param fileFilter
      */
-    private void buildFileList(File directory, List fileList, FileFilter fileFilter)
-    {
+    private void buildFileList(File directory, List fileList, FileFilter fileFilter) {
         File[] files = directory.listFiles(fileFilter);
 
-        for (int n = 0; n < files.length; n++)
-        {
-            if (files[n].isDirectory())
-            {
+        for (int n = 0; n < files.length; n++) {
+            if (files[n].isDirectory()) {
                 buildFileList(files[n], fileList, fileFilter);
-            }
-            else
-            {
+            } else {
                 fileList.add(files[n]);
             }
 
@@ -78,20 +70,16 @@ class SearchResultsViewer extends ResultsViewer
      *******************************************************************************
      *******************************************************************************
      */
-    private class FilesFilter implements FileFilter
-    {
+    private class FilesFilter implements FileFilter {
 
         private String fileExtension = ".java";
 
-        public boolean accept(File file)
-        {
-            if (file.isDirectory() && (file.isHidden() == false))
-            {
+        public boolean accept(File file) {
+            if (file.isDirectory() && (file.isHidden() == false)) {
                 return true;
             }
 
-            if (file.isFile() && (file.isHidden() == false))
-            {
+            if (file.isFile() && (file.isHidden() == false)) {
                 String fileName = file.getName().toLowerCase();
 
                 return (fileName.endsWith(fileExtension));

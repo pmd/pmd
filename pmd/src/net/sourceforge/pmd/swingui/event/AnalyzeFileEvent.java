@@ -11,16 +11,14 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class AnalyzeFileEvent extends EventObject
-{
+public class AnalyzeFileEvent extends EventObject {
     private File m_file;
 
     /**
      *****************************************************************************
      *
      */
-    private AnalyzeFileEvent(Object source)
-    {
+    private AnalyzeFileEvent(Object source) {
         super(source);
     }
 
@@ -28,8 +26,7 @@ public class AnalyzeFileEvent extends EventObject
      *****************************************************************************
      *
      */
-    private AnalyzeFileEvent(Object source, File file)
-    {
+    private AnalyzeFileEvent(Object source, File file) {
         super(source);
 
         m_file = file;
@@ -40,8 +37,7 @@ public class AnalyzeFileEvent extends EventObject
      *
      * @return
      */
-    public File getFile()
-    {
+    public File getFile() {
         return m_file;
     }
 
@@ -51,14 +47,12 @@ public class AnalyzeFileEvent extends EventObject
      * @param source
      * @param file
      */
-    public static final void notifyStartAnalysis(Object source, File file)
-    {
+    public static final void notifyStartAnalysis(Object source, File file) {
         AnalyzeFileEvent event = new AnalyzeFileEvent(source, file);
         List listenerList = ListenerList.getListeners(AnalyzeFileEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             AnalyzeFileEventListener listener;
 
             listener = (AnalyzeFileEventListener) listeners.next();
@@ -72,14 +66,12 @@ public class AnalyzeFileEvent extends EventObject
      * @param source
      * @param file
      */
-    public static final void notifyStopAnalysis(Object source, File file)
-    {
+    public static final void notifyStopAnalysis(Object source, File file) {
         AnalyzeFileEvent event = new AnalyzeFileEvent(source, file);
         List listenerList = ListenerList.getListeners(AnalyzeFileEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             AnalyzeFileEventListener listener;
 
             listener = (AnalyzeFileEventListener) listeners.next();

@@ -13,7 +13,7 @@ public class EmptySwitchStmtRule extends AbstractRule {
 
     public Object visit(ASTSwitchStatement node, Object data) {
         if (node.jjtGetNumChildren() == 1) {
-            RuleContext ctx = (RuleContext)data;
+            RuleContext ctx = (RuleContext) data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
         return data;

@@ -9,16 +9,16 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-public class ForLoopsMustUseBracesRule  extends BracesRule {
+public class ForLoopsMustUseBracesRule extends BracesRule {
 
     public Object visit(ASTForStatement node, Object data) {
-        RuleContext ctx = (RuleContext)data;
-        SimpleNode loopBody = (SimpleNode)node.jjtGetChild(node.jjtGetNumChildren()-1);
+        RuleContext ctx = (RuleContext) data;
+        SimpleNode loopBody = (SimpleNode) node.jjtGetChild(node.jjtGetNumChildren() - 1);
 
         if (!hasBlockAsFirstChild(loopBody)) {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
-        return super.visit(node,data);
+        return super.visit(node, data);
     }
 
 }

@@ -28,9 +28,9 @@ public class IDEAJRenderer implements Renderer {
 
         public String clipPath(String fullFilename) {
             for (Iterator i = paths.iterator(); i.hasNext();) {
-                String path = (String)i.next();
+                String path = (String) i.next();
                 if (fullFilename.startsWith(path)) {
-                    return fullFilename.substring(path.length()+1);
+                    return fullFilename.substring(path.length() + 1);
                 }
             }
             throw new RuntimeException("Couldn't find src path for " + fullFilename);
@@ -61,28 +61,28 @@ public class IDEAJRenderer implements Renderer {
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(rv.getDescription() + EOL);
-            buf.append(" at " + getFullyQualifiedClassName(rv.getFilename(), sourcePath) + ".method(" + getSimpleFileName(rv.getFilename()) +":" + rv.getLine() +")" + EOL);
+            buf.append(" at " + getFullyQualifiedClassName(rv.getFilename(), sourcePath) + ".method(" + getSimpleFileName(rv.getFilename()) + ":" + rv.getLine() + ")" + EOL);
         }
         return buf.toString();
     }
 
-	private String render(Report report, String classAndMethod, String file) {
+    private String render(Report report, String classAndMethod, String file) {
         StringBuffer buf = new StringBuffer();
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(rv.getDescription() + EOL);
-            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getLine() +")" + EOL);
+            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getLine() + ")" + EOL);
         }
         return buf.toString();
-	}
+    }
 
     private String getFullyQualifiedClassName(String in, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(in);
-        String className = classNameWithSlashes.replace(System.getProperty("file.separator").charAt(0),'.');
+        String className = classNameWithSlashes.replace(System.getProperty("file.separator").charAt(0), '.');
         return className.substring(0, className.indexOf(".java"));
     }
 
     private String getSimpleFileName(String in) {
-        return in.substring(in.lastIndexOf(System.getProperty("file.separator"))+1);
+        return in.substring(in.lastIndexOf(System.getProperty("file.separator")) + 1);
     }
 }

@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTConditionalExpression extends SimpleNode {
-  public ASTConditionalExpression(int id) {
-    super(id);
-  }
+    public ASTConditionalExpression(int id) {
+        super(id);
+    }
 
-  public ASTConditionalExpression(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTConditionalExpression(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

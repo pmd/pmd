@@ -15,7 +15,8 @@ public class TokenEntry implements Serializable {
     private int beginLine;
 
     // don't use this, just for Serialization
-    protected TokenEntry() {}
+    protected TokenEntry() {
+    }
 
     public TokenEntry(String image, int index, String tokenSrcID, int beginLine) {
         this.image = image;
@@ -41,7 +42,7 @@ public class TokenEntry implements Serializable {
     }
 
     public String toString() {
-        return "[" + tokenSrcID + "," + index +"," + image + "," + beginLine +"]";
+        return "[" + tokenSrcID + "," + index + "," + image + "," + beginLine + "]";
     }
 
 }

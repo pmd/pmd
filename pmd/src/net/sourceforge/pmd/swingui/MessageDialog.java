@@ -26,8 +26,7 @@ import java.io.PrintStream;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-public class MessageDialog extends JDialog
-{
+public class MessageDialog extends JDialog {
 
     private JTextArea m_messageArea;
     private Exception m_exception;
@@ -40,8 +39,7 @@ public class MessageDialog extends JDialog
      * @param title
      * @param job
      */
-    private MessageDialog(Frame parentWindow, String title, String message)
-    {
+    private MessageDialog(Frame parentWindow, String title, String message) {
         super(parentWindow, title, true);
 
         initialize(parentWindow, message);
@@ -54,8 +52,7 @@ public class MessageDialog extends JDialog
      * @param title
      * @param job
      */
-    private MessageDialog(Dialog parentWindow, String title, String message)
-    {
+    private MessageDialog(Dialog parentWindow, String title, String message) {
         super(parentWindow, title, true);
 
         initialize(parentWindow, message);
@@ -67,8 +64,7 @@ public class MessageDialog extends JDialog
      * @param parentWindow
      * @param message
      */
-    private void initialize(Window parentWindow, String message)
-    {
+    private void initialize(Window parentWindow, String message) {
         int dialogWidth = 600;
         int dialogHeight = 150;
         Rectangle parentWindowBounds = parentWindow.getBounds();
@@ -84,7 +80,7 @@ public class MessageDialog extends JDialog
 
         basePanel = new JPanel();
         etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
-        emptyBorder = new EmptyBorder(15,15,15,15);
+        emptyBorder = new EmptyBorder(15, 15, 15, 15);
         compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
 
         basePanel.setBorder(compoundBorder);
@@ -102,8 +98,7 @@ public class MessageDialog extends JDialog
      *******************************************************************************
      *
      */
-    private void addCloseButton()
-    {
+    private void addCloseButton() {
         JButton closeButton = ComponentFactory.createButton("Close");
         JPanel buttonPanel = new JPanel(new FlowLayout());
 
@@ -119,8 +114,7 @@ public class MessageDialog extends JDialog
      *******************************************************************************
      *
      */
-    private void addAnswerButtons()
-    {
+    private void addAnswerButtons() {
         JButton yesButton;
         JButton noButton;
         JPanel buttonPanel;
@@ -149,25 +143,18 @@ public class MessageDialog extends JDialog
      * @param message
      * @param exception
      */
-    public static void show(Window parentWindow, String message, Exception exception)
-    {
-        if (exception == null)
-        {
+    public static void show(Window parentWindow, String message, Exception exception) {
+        if (exception == null) {
             show(parentWindow, message);
-        }
-        else
-        {
+        } else {
             ByteArrayOutputStream stream = new ByteArrayOutputStream(5000);
             PrintStream printStream = new PrintStream(stream);
 
             exception.printStackTrace(printStream);
 
-            if (message == null)
-            {
+            if (message == null) {
                 message = stream.toString();
-            }
-            else
-            {
+            } else {
                 message = message + "\n" + stream.toString();
             }
 
@@ -175,12 +162,9 @@ public class MessageDialog extends JDialog
 
             MessageDialog dialog;
 
-            if (parentWindow instanceof Frame)
-            {
+            if (parentWindow instanceof Frame) {
                 dialog = new MessageDialog((Frame) parentWindow, "Exception", message);
-            }
-            else
-            {
+            } else {
                 dialog = new MessageDialog((Dialog) parentWindow, "Exception", message);
             }
 
@@ -195,8 +179,7 @@ public class MessageDialog extends JDialog
      * @param parentWindow
      * @param message
      */
-    protected static boolean answerIsYes(Window parentWindow, String message)
-    {
+    protected static boolean answerIsYes(Window parentWindow, String message) {
         MessageDialog dialog = setup(parentWindow, message);
 
         dialog.addAnswerButtons();
@@ -211,8 +194,7 @@ public class MessageDialog extends JDialog
      * @param parentWindow
      * @param message
      */
-    public static void show(Window parentWindow, String message)
-    {
+    public static void show(Window parentWindow, String message) {
         MessageDialog dialog;
 
         dialog = setup(parentWindow, message);
@@ -226,10 +208,8 @@ public class MessageDialog extends JDialog
      * @param parentWindow
      * @param message
      */
-    private static MessageDialog setup(Window parentWindow, String message)
-    {
-        if (message == null)
-        {
+    private static MessageDialog setup(Window parentWindow, String message) {
+        if (message == null) {
             message = "There is no message.";
         }
 
@@ -238,12 +218,9 @@ public class MessageDialog extends JDialog
 
         title = "Information";
 
-        if (parentWindow instanceof Frame)
-        {
+        if (parentWindow instanceof Frame) {
             dialog = new MessageDialog((Frame) parentWindow, title, message);
-        }
-        else
-        {
+        } else {
             dialog = new MessageDialog((Dialog) parentWindow, title, message);
         }
 
@@ -255,16 +232,14 @@ public class MessageDialog extends JDialog
      *******************************************************************************
      *******************************************************************************
      */
-    private class CloseButtonActionListener implements ActionListener
-    {
+    private class CloseButtonActionListener implements ActionListener {
 
         /**
          ************************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             MessageDialog.this.setVisible(false);
         }
     }
@@ -274,16 +249,14 @@ public class MessageDialog extends JDialog
      *******************************************************************************
      *******************************************************************************
      */
-    private class YesButtonActionListener implements ActionListener
-    {
+    private class YesButtonActionListener implements ActionListener {
 
         /**
          ************************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             MessageDialog.this.m_yesButtonWasPressed = true;
             MessageDialog.this.setVisible(false);
         }
@@ -294,16 +267,14 @@ public class MessageDialog extends JDialog
      *******************************************************************************
      *******************************************************************************
      */
-    private class NoButtonActionListener implements ActionListener
-    {
+    private class NoButtonActionListener implements ActionListener {
 
         /**
          ************************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             MessageDialog.this.m_yesButtonWasPressed = false;
             MessageDialog.this.setVisible(false);
         }

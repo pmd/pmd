@@ -28,8 +28,7 @@ import java.text.MessageFormat;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulePropertyEditingPanel extends JPanel implements Constants
-{
+class RulePropertyEditingPanel extends JPanel implements Constants {
 
     private JLabel m_nameLabel;
     private JTextField m_name;
@@ -49,8 +48,7 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @return
      */
-    protected RulePropertyEditingPanel()
-    {
+    protected RulePropertyEditingPanel() {
         super(new BorderLayout());
 
         EmptyBorder emptyBorder = new EmptyBorder(5, 5, 5, 5);
@@ -166,19 +164,14 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @param dataNode
      */
-    private void saveData(RulesTreeNode dataNode)
-    {
-        if ((dataNode != null) && m_isEditing)
-        {
-            if (dataNode.isProperty())
-            {
+    private void saveData(RulesTreeNode dataNode) {
+        if ((dataNode != null) && m_isEditing) {
+            if (dataNode.isProperty()) {
                 // Test for valid property name.
                 String propertyName = m_name.getText();
 
-                if (propertyName.equalsIgnoreCase(m_originalName) == false)
-                {
-                    if (dataNode.getSibling(propertyName) != null)
-                    {
+                if (propertyName.equalsIgnoreCase(m_originalName) == false) {
+                    if (dataNode.getSibling(propertyName) != null) {
                         String template = "Another property already has the name \"{0}\".  The change will not be applied.";
                         String[] args = {propertyName};
                         String message = MessageFormat.format(template, args);
@@ -188,8 +181,7 @@ class RulePropertyEditingPanel extends JPanel implements Constants
                         MessageDialog.show(getParentWindow(), message);
                         m_name.addFocusListener(m_focusListener);
 
-                        if (hasFocus)
-                        {
+                        if (hasFocus) {
                             m_name.requestFocus();
                         }
 
@@ -201,16 +193,11 @@ class RulePropertyEditingPanel extends JPanel implements Constants
                 String valueText = m_value.getText();
                 String selectedItem = (String) m_valueType.getSelectedItem();
 
-                if (selectedItem.equalsIgnoreCase(BOOLEAN))
-                {
+                if (selectedItem.equalsIgnoreCase(BOOLEAN)) {
                     valueText = saveBoolean(valueText);
-                }
-                else if (selectedItem.equalsIgnoreCase(DECIMAL_NUMBER))
-                {
+                } else if (selectedItem.equalsIgnoreCase(DECIMAL_NUMBER)) {
                     valueText = saveDecimalNumber(valueText);
-                }
-                else if (selectedItem.equalsIgnoreCase(INTEGER))
-                {
+                } else if (selectedItem.equalsIgnoreCase(INTEGER)) {
                     valueText = saveInteger(valueText);
                 }
 
@@ -226,27 +213,20 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @param valueText
      */
-    private String saveBoolean(String valueText)
-    {
+    private String saveBoolean(String valueText) {
         boolean originalValue;
         boolean newValue;
 
-        try
-        {
+        try {
             originalValue = Boolean.getBoolean(m_originalValue);
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             originalValue = true;
         }
 
-        try
-        {
+        try {
             newValue = Boolean.getBoolean(valueText);
             valueText = String.valueOf(newValue);
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             String template = "New property of \"{0}\" is not a boolean.  The change will not be applied.";
             String[] args = {valueText};
             String message = MessageFormat.format(template, args);
@@ -267,27 +247,20 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @param valueText
      */
-    private String saveDecimalNumber(String valueText)
-    {
+    private String saveDecimalNumber(String valueText) {
         double originalValue;
         double newValue;
 
-        try
-        {
+        try {
             originalValue = Double.parseDouble(m_originalValue);
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             originalValue = 0.0;
         }
 
-        try
-        {
+        try {
             newValue = Double.parseDouble(valueText);
             valueText = String.valueOf(newValue);
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             String template = "New property of \"{0}\" is not a decimal number.  The change will not be applied.";
             String[] args = {valueText};
             String message = MessageFormat.format(template, args);
@@ -308,27 +281,20 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @param valueText
      */
-    private String saveInteger(String valueText)
-    {
+    private String saveInteger(String valueText) {
         int originalValue;
         int newValue;
 
-        try
-        {
+        try {
             originalValue = Integer.parseInt(m_originalValue);
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             originalValue = 0;
         }
 
-        try
-        {
+        try {
             newValue = Integer.parseInt(valueText);
             valueText = String.valueOf(newValue);
-        }
-        catch (NumberFormatException exception)
-        {
+        } catch (NumberFormatException exception) {
             String template = "New property of \"{0}\" is not an integer.  The change will not be applied.";
             String[] args = {valueText};
             String message = MessageFormat.format(template, args);
@@ -349,8 +315,7 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @param isEditing
      */
-    protected void setIsEditing(boolean isEditing)
-    {
+    protected void setIsEditing(boolean isEditing) {
         m_isEditing = isEditing;
     }
 
@@ -359,26 +324,16 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @param dataNode
      */
-    private void loadData(RulesTreeNode dataNode)
-    {
-        if (dataNode == null)
-        {
+    private void loadData(RulesTreeNode dataNode) {
+        if (dataNode == null) {
             enableData(false);
-        }
-        else if (dataNode.isRuleSet())
-        {
+        } else if (dataNode.isRuleSet()) {
             enableData(false);
-        }
-        else if (dataNode.isRule())
-        {
+        } else if (dataNode.isRule()) {
             enableData(false);
-        }
-        else if (dataNode.isProperty())
-        {
+        } else if (dataNode.isProperty()) {
             loadData_(dataNode);
-        }
-        else
-        {
+        } else {
             enableData(false);
         }
     }
@@ -388,10 +343,8 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @param data
      */
-    private void loadData_(RulesTreeNode dataNode)
-    {
-        if (m_enabled == false)
-        {
+    private void loadData_(RulesTreeNode dataNode) {
+        if (m_enabled == false) {
             enableData(true);
         }
 
@@ -411,10 +364,8 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *******************************************************************************
      *
      */
-    private void enableData(boolean enable)
-    {
-        if (enable)
-        {
+    private void enableData(boolean enable) {
+        if (enable) {
             // Just to be sure the focus listener isn't set.
             m_name.removeFocusListener(m_focusListener);
             m_name.addFocusListener(m_focusListener);
@@ -433,9 +384,7 @@ class RulePropertyEditingPanel extends JPanel implements Constants
 
             m_valueType.setEnabled(true);
             m_valueType.setBackground(Color.white);
-        }
-        else
-        {
+        } else {
             m_name.removeFocusListener(m_focusListener);
 
             Color background = UIManager.getColor("disabledTextBackground");
@@ -469,12 +418,10 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      *
      * @return
      */
-    private Window getParentWindow()
-    {
+    private Window getParentWindow() {
         Component component = getParent();
 
-        while ((component != null) && ((component instanceof Window) == false))
-        {
+        while ((component != null) && ((component instanceof Window) == false)) {
             component = component.getParent();
         }
 
@@ -486,16 +433,14 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      ************************************************************************************
      ************************************************************************************
      */
-     private class PropertyNameFocusListener implements FocusListener
-     {
+    private class PropertyNameFocusListener implements FocusListener {
 
         /**
          **************************************************************************
          *
          * @param event
          */
-        public void focusGained(FocusEvent event)
-        {
+        public void focusGained(FocusEvent event) {
         }
 
         /**
@@ -503,22 +448,17 @@ class RulePropertyEditingPanel extends JPanel implements Constants
          *
          * @param event
          */
-        public void focusLost(FocusEvent event)
-        {
+        public void focusLost(FocusEvent event) {
             String propertyName = m_name.getText().trim();
 
-            if (propertyName.length() == 0)
-            {
+            if (propertyName.length() == 0) {
                 String message = "The property name is missing.";
                 m_name.removeFocusListener(this);
                 MessageDialog.show(getParentWindow(), message);
                 m_name.addFocusListener(this);
                 m_name.requestFocus();
-            }
-            else if (propertyName.equalsIgnoreCase(m_originalName) == false)
-            {
-                if (m_currentDataNode.getSibling(propertyName) != null)
-                {
+            } else if (propertyName.equalsIgnoreCase(m_originalName) == false) {
+                if (m_currentDataNode.getSibling(propertyName) != null) {
                     String template = "Another property already has the name \"{0}\".";
                     String[] args = {propertyName};
                     String message = MessageFormat.format(template, args);
@@ -536,16 +476,14 @@ class RulePropertyEditingPanel extends JPanel implements Constants
      ************************************************************************************
      ************************************************************************************
      */
-    private class RulesEditingEventHandler implements RulesEditingEventListener
-    {
+    private class RulesEditingEventHandler implements RulesEditingEventListener {
 
         /**
          *************************************************************************
          *
          * @param event
          */
-        public void loadData(RulesEditingEvent event)
-        {
+        public void loadData(RulesEditingEvent event) {
             RulePropertyEditingPanel.this.loadData(event.getDataNode());
         }
 
@@ -554,8 +492,7 @@ class RulePropertyEditingPanel extends JPanel implements Constants
          *
          * @param event
          */
-        public void saveData(RulesEditingEvent event)
-        {
+        public void saveData(RulesEditingEvent event) {
             RulePropertyEditingPanel.this.saveData(event.getDataNode());
         }
     }

@@ -18,7 +18,7 @@ public class AbstractRuleTest extends TestCase {
         }
     }
 
-    public  AbstractRuleTest(String name) {
+    public AbstractRuleTest(String name) {
         super(name);
     }
 

@@ -22,14 +22,14 @@ public class ImportFromSamePackageRule extends AbstractRule {
     }
 
     public Object visit(ASTPackageDeclaration node, Object data) {
-        packageName = ((ASTName)node.jjtGetChild(0)).getImage();
+        packageName = ((ASTName) node.jjtGetChild(0)).getImage();
         return data;
     }
 
     public Object visit(ASTImportDeclaration node, Object data) {
         ASTName nameNode = node.getImportedNameNode();
-        RuleContext ctx = (RuleContext)data;
-        if (packageName!= null && !node.isImportOnDemand() && packageName.equals(getPackageName(nameNode.getImage()))) {
+        RuleContext ctx = (RuleContext) data;
+        if (packageName != null && !node.isImportOnDemand() && packageName.equals(getPackageName(nameNode.getImage()))) {
             addViolation(ctx, node);
         }
 

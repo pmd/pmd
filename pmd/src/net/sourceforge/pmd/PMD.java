@@ -48,9 +48,9 @@ public class PMD {
             ruleSet.apply(acus, ctx);
             reader.close();
         } catch (ParseException pe) {
-            throw new PMDException("Error while parsing " +  ctx.getSourceCodeFilename(), pe);
+            throw new PMDException("Error while parsing " + ctx.getSourceCodeFilename(), pe);
         } catch (Exception e) {
-            throw new PMDException("Error while processing " +  ctx.getSourceCodeFilename(), e);
+            throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
         }
     }
 
@@ -59,7 +59,7 @@ public class PMD {
      * @param ruleSet - the set of rules to process against the file
      * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
      */
-    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx)  throws PMDException {
+    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         processFile(new InputStreamReader(fileContents), ruleSet, ctx);
     }
 
@@ -110,7 +110,7 @@ public class PMD {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             RuleSet rules = ruleSetFactory.createRuleSet(ruleSets);
             for (Iterator i = files.iterator(); i.hasNext();) {
-                File file = (File)i.next();
+                File file = (File) i.next();
                 ctx.setSourceCodeFilename(file.getAbsolutePath());
                 try {
                     pmd.processFile(new FileInputStream(file), rules, ctx);
@@ -140,6 +140,6 @@ public class PMD {
     }
 
     private static void usage() {
-        System.err.println(System.getProperty("line.separator") + "Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml"+ System.getProperty("line.separator"));
+        System.err.println(System.getProperty("line.separator") + "Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml" + System.getProperty("line.separator"));
     }
 }

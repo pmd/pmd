@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTInitializer extends SimpleNode {
-  public ASTInitializer(int id) {
-    super(id);
-  }
+    public ASTInitializer(int id) {
+        super(id);
+    }
 
-  public ASTInitializer(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTInitializer(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

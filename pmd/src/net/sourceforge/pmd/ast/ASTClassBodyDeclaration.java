@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTClassBodyDeclaration extends AccessNode {
-  public ASTClassBodyDeclaration(int id) {
-    super(id);
-  }
+    public ASTClassBodyDeclaration(int id) {
+        super(id);
+    }
 
-  public ASTClassBodyDeclaration(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTClassBodyDeclaration(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

@@ -19,12 +19,15 @@ public class DuplicateImportsRuleTest extends RuleTst {
     public void test1() throws Throwable {
         runTest("DuplicateImports.java", 1, rule);
     }
+
     public void test2() throws Throwable {
         runTest("DuplicateImports2.java", 1, rule);
     }
+
     public void test3() throws Throwable {
         runTest("DuplicateImports3.java", 1, rule);
     }
+
     public void test4() throws Throwable {
         runTest("DuplicateImports4.java", 0, rule);
     }

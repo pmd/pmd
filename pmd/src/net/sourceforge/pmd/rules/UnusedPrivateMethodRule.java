@@ -64,7 +64,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
 
         // if we're back at the top level class, harvest
         if (depth == 1) {
-            RuleContext ctx = (RuleContext)data;
+            RuleContext ctx = (RuleContext) data;
             harvestUnused(ctx);
         }
 
@@ -81,12 +81,12 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             return super.visit(node, data);
         }
 
-        AccessNode parent = (AccessNode)node.jjtGetParent();
+        AccessNode parent = (AccessNode) node.jjtGetParent();
         if (!parent.isPrivate() || parent.isStatic()) {
             return super.visit(node, data);
         }
         // exclude these serializable things
-        if (node.getImage().equals("readObject") || node.getImage().equals("writeObject")|| node.getImage().equals("readResolve")) {
+        if (node.getImage().equals("readObject") || node.getImage().equals("writeObject") || node.getImage().equals("readResolve")) {
             return super.visit(node, data);
         }
         privateMethodNodes.add(node);
@@ -101,7 +101,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     public Object visit(ASTPrimarySuffix node, Object data) {
         if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
             if (node.jjtGetNumChildren() > 0) {
-                ASTArguments args = (ASTArguments)node.jjtGetChild(0);
+                ASTArguments args = (ASTArguments) node.jjtGetChild(0);
                 removeIfUsed(node.getImage(), args.getArgumentCount());
                 return super.visit(node, data);
             }
@@ -111,7 +111,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             // PrimarySuffix <-- this node has "foo"
             // PrimarySuffix <-- this node has null
             //  Arguments
-            ASTPrimaryExpression parent = (ASTPrimaryExpression)node.jjtGetParent();
+            ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
             int pointer = 0;
             while (true) {
                 if (parent.jjtGetChild(pointer).equals(node)) {
@@ -133,12 +133,12 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             if (!(parent.jjtGetChild(pointer) instanceof ASTPrimarySuffix)) {
                 return super.visit(node, data);
             }
-            ASTPrimarySuffix actualMethodNode = (ASTPrimarySuffix)parent.jjtGetChild(pointer);
+            ASTPrimarySuffix actualMethodNode = (ASTPrimarySuffix) parent.jjtGetChild(pointer);
             // when does this happen?
             if (actualMethodNode.jjtGetNumChildren() == 0 || !(actualMethodNode.jjtGetChild(0) instanceof ASTArguments)) {
                 return super.visit(node, data);
             }
-            ASTArguments args = (ASTArguments)actualMethodNode.jjtGetChild(0);
+            ASTArguments args = (ASTArguments) actualMethodNode.jjtGetChild(0);
             removeIfUsed(node.getImage(), args.getArgumentCount());
             // what about Outer.this.foo()?
         }
@@ -152,11 +152,11 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     //  Arguments
     public Object visit(ASTName node, Object data) {
         if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryPrefix)) {
-            ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression)node.jjtGetParent().jjtGetParent();
+            ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) node.jjtGetParent().jjtGetParent();
             if (primaryExpression.jjtGetNumChildren() > 1) {
-                ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix)primaryExpression.jjtGetChild(1);
+                ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primaryExpression.jjtGetChild(1);
                 if (primarySuffix.jjtGetNumChildren() > 0 && (primarySuffix.jjtGetChild(0) instanceof ASTArguments)) {
-                    ASTArguments arguments = (ASTArguments)primarySuffix.jjtGetChild(0);
+                    ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
                     removeIfUsed(node.getImage(), arguments.getArgumentCount());
                 }
             }
@@ -165,9 +165,9 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     }
 
     private void removeIfUsed(String nodeImage, int args) {
-        String img = (nodeImage.indexOf('.') == -1) ? nodeImage : nodeImage.substring(nodeImage.indexOf('.') +1, nodeImage.length());
+        String img = (nodeImage.indexOf('.') == -1) ? nodeImage : nodeImage.substring(nodeImage.indexOf('.') + 1, nodeImage.length());
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
-            ASTMethodDeclarator methodNode = (ASTMethodDeclarator)i.next();
+            ASTMethodDeclarator methodNode = (ASTMethodDeclarator) i.next();
             // are name and number of parameters the same?
             if (methodNode.getImage().equals(img) && methodNode.getParameterCount() == args) {
                 // should check parameter types here, this misses some unused methods
@@ -178,27 +178,27 @@ public class UnusedPrivateMethodRule extends AbstractRule {
 
     private void harvestUnused(RuleContext ctx) {
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
-            SimpleNode node = (SimpleNode)i.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {node.getImage()})));
+            SimpleNode node = (SimpleNode) i.next();
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{node.getImage()})));
         }
     }
 
-/*
-TODO this uses the symbol table
-    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
-        for (Iterator i = node.getScope().getUnusedMethodDeclarations();i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
+    /*
+    TODO this uses the symbol table
+        public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+            for (Iterator i = node.getScope().getUnusedMethodDeclarations();i.hasNext();) {
+                VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
 
-            // exclude non-private methods and serializable methods
-            if (!decl.getAccessNodeParent().isPrivate() || decl.getImage().equals("readObject") || decl.getImage().equals("writeObject")|| decl.getImage().equals("readResolve")) {
-                continue;
+                // exclude non-private methods and serializable methods
+                if (!decl.getAccessNodeParent().isPrivate() || decl.getImage().equals("readObject") || decl.getImage().equals("writeObject")|| decl.getImage().equals("readResolve")) {
+                    continue;
+                }
+
+                RuleContext ctx = (RuleContext)data;
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getNode().getBeginLine(), MessageFormat.format(getMessage(), new Object[] {decl.getNode().getImage()})));
             }
-
-            RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getNode().getBeginLine(), MessageFormat.format(getMessage(), new Object[] {decl.getNode().getImage()})));
+            return super.visit(node, data);
         }
-        return super.visit(node, data);
-    }
 
-*/
+    */
 }

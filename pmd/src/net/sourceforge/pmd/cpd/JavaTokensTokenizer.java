@@ -34,8 +34,8 @@ public class JavaTokensTokenizer implements Tokenizer {
         tokens.setCode(lines);
 
         // now tokenize it
-	    JavaCharStream javaStream = new JavaCharStream(new StringReader(sb.toString()));
-        JavaParserTokenManager tokenMgr = new JavaParserTokenManager( javaStream );
+        JavaCharStream javaStream = new JavaCharStream(new StringReader(sb.toString()));
+        JavaParserTokenManager tokenMgr = new JavaParserTokenManager(javaStream);
         net.sourceforge.pmd.ast.Token currToken = tokenMgr.getNextToken();
         while (currToken.image != "") {
             if (currToken.image.equals("import") || currToken.image.equals("package")) {

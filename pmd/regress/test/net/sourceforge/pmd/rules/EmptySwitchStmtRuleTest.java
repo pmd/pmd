@@ -13,7 +13,7 @@ public class EmptySwitchStmtRuleTest extends RuleTst {
         runTest("EmptySwitchStmt1.java", 1, new EmptySwitchStmtRule());
     }
 
-    public void test2()  throws Throwable {
+    public void test2() throws Throwable {
         runTest("EmptySwitchStmt2.java", 0, new EmptySwitchStmtRule());
     }
 }

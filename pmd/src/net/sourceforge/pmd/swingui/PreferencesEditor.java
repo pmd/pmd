@@ -42,8 +42,7 @@ import java.io.File;
  * @since September 8, 2002
  * @version $Revision$, $Date$
  */
-class PreferencesEditor extends JPanel
-{
+class PreferencesEditor extends JPanel {
     private JTextArea m_currentPathToPMD;
     private JTextArea m_userPathToPMD;
     private JTextArea m_sharedPathToPMD;
@@ -56,8 +55,7 @@ class PreferencesEditor extends JPanel
      *
      * @pmdViewer
      */
-    protected PreferencesEditor() throws PMDException
-    {
+    protected PreferencesEditor() throws PMDException {
         super(new BorderLayout());
 
         add(createContentPanel(), BorderLayout.CENTER);
@@ -69,8 +67,7 @@ class PreferencesEditor extends JPanel
      *
      * @return
      */
-    private JScrollPane createContentPanel() throws PMDException
-    {
+    private JScrollPane createContentPanel() throws PMDException {
         JPanel contentPanel = new JPanel(new BorderLayout());
         EmptyBorder emptyBorder = new EmptyBorder(100, 100, 100, 100);
         EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
@@ -86,8 +83,7 @@ class PreferencesEditor extends JPanel
      *
      * @return
      */
-    private JPanel createDataPanel() throws PMDException
-    {
+    private JPanel createDataPanel() throws PMDException {
         JPanel dataPanel;
         int row;
         Preferences preferences;
@@ -145,8 +141,7 @@ class PreferencesEditor extends JPanel
      * @param row
      * @param column
      */
-    private void createLabel(String text, JPanel dataPanel, int row, int column)
-    {
+    private void createLabel(String text, JPanel dataPanel, int row, int column) {
         JLabel label = new JLabel(text);
         label.setFont(UIManager.getFont("labelFont"));
         label.setHorizontalAlignment(JLabel.RIGHT);
@@ -176,8 +171,7 @@ class PreferencesEditor extends JPanel
      * @param row
      * @param column
      */
-    private JTextArea createTextArea(String text, JPanel dataPanel, int row, int column)
-    {
+    private JTextArea createTextArea(String text, JPanel dataPanel, int row, int column) {
         JTextArea textArea;
         JScrollPane scrollPane;
         GridBagLayout layout;
@@ -222,8 +216,7 @@ class PreferencesEditor extends JPanel
      * @param row
      * @param column
      */
-    private void createFileButton(JPanel dataPanel, int row, int column, JTextArea textArea)
-    {
+    private void createFileButton(JPanel dataPanel, int row, int column, JTextArea textArea) {
         JButton button;
         GridBagLayout layout;
         GridBagConstraints constraints;
@@ -259,8 +252,7 @@ class PreferencesEditor extends JPanel
      *******************************************************************************
      *
      */
-    private JComboBox createPriorityDropDownList(int priority, JPanel dataPanel, int row, int column)
-    {
+    private JComboBox createPriorityDropDownList(int priority, JPanel dataPanel, int row, int column) {
         JComboBox priorityLevel;
         GridBagLayout layout;
         GridBagConstraints constraints;
@@ -287,19 +279,17 @@ class PreferencesEditor extends JPanel
      *********************************************************************************
      *
      */
-    private void createMenuBar()
-    {
-       m_menuBar = new JMenuBar();
-       m_menuBar.add(new FileMenu());
-       m_menuBar.add(new HelpMenu());
+    private void createMenuBar() {
+        m_menuBar = new JMenuBar();
+        m_menuBar.add(new FileMenu());
+        m_menuBar.add(new HelpMenu());
     }
 
     /**
      *********************************************************************************
      *
      */
-    protected void setMenuBar()
-    {
+    protected void setMenuBar() {
         PMDViewer.getViewer().setJMenuBar(m_menuBar);
     }
 
@@ -307,8 +297,7 @@ class PreferencesEditor extends JPanel
      *********************************************************************************
      *
      */
-    public void adjustSplitPaneDividerLocation()
-    {
+    public void adjustSplitPaneDividerLocation() {
     }
 
     /**
@@ -316,27 +305,22 @@ class PreferencesEditor extends JPanel
      *******************************************************************************
      *******************************************************************************
      */
-    private class SaveActionListener implements ActionListener
-    {
+    private class SaveActionListener implements ActionListener {
 
         /**
          ********************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 Preferences preferences = Preferences.getPreferences();
                 preferences.setCurrentPathToPMD(m_currentPathToPMD.getText());
                 preferences.setUserPathToPMD(m_userPathToPMD.getText());
                 preferences.setSharedPathToPMD(m_sharedPathToPMD.getText());
                 preferences.setLowestPriorityForAnalysis(m_lowestPriorityForAnalysis.getSelectedIndex() + 1);
                 preferences.save();
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
@@ -351,16 +335,14 @@ class PreferencesEditor extends JPanel
      *******************************************************************************
      *******************************************************************************
      */
-    private class CancelButtonActionListener implements ActionListener
-    {
+    private class CancelButtonActionListener implements ActionListener {
 
         /**
          ********************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             PreferencesEditor.this.setVisible(false);
         }
     }
@@ -370,8 +352,7 @@ class PreferencesEditor extends JPanel
      *******************************************************************************
      *******************************************************************************
      */
-    private class FileButtonActionListener implements ActionListener
-    {
+    private class FileButtonActionListener implements ActionListener {
 
         private JTextArea m_textArea;
 
@@ -380,8 +361,7 @@ class PreferencesEditor extends JPanel
          *
          * @param directory
          */
-        private FileButtonActionListener(JTextArea textArea)
-        {
+        private FileButtonActionListener(JTextArea textArea) {
             m_textArea = textArea;
         }
 
@@ -390,16 +370,12 @@ class PreferencesEditor extends JPanel
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             File file = new File(m_textArea.getText());
 
-            if (file.exists() == false)
-            {
+            if (file.exists() == false) {
                 file = new File(System.getProperty("user.home"));
-            }
-            else if (file.isDirectory() == false)
-            {
+            } else if (file.isDirectory() == false) {
                 file = file.getParentFile();
             }
 
@@ -408,8 +384,7 @@ class PreferencesEditor extends JPanel
             fileChooser.setApproveButtonText("Select");
             fileChooser.setMinimumSize(new Dimension(500, 500));
 
-            if (fileChooser.showOpenDialog(PMDViewer.getViewer()) == JFileChooser.APPROVE_OPTION)
-            {
+            if (fileChooser.showOpenDialog(PMDViewer.getViewer()) == JFileChooser.APPROVE_OPTION) {
                 file = fileChooser.getSelectedFile();
 
                 m_textArea.setText(file.getPath());
@@ -422,16 +397,14 @@ class PreferencesEditor extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class FileMenu extends JMenu
-    {
+    private class FileMenu extends JMenu {
 
         /**
          ********************************************************************
          *
          * @param menuBar
          */
-        private FileMenu()
-        {
+        private FileMenu() {
             super("File");
 
             setMnemonic('F');
@@ -469,11 +442,9 @@ class PreferencesEditor extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class ExitActionListener implements ActionListener
-    {
+    private class ExitActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             System.exit(0);
         }
     }

@@ -12,8 +12,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetChangedEvent extends EventObject
-{
+public class RuleSetChangedEvent extends EventObject {
 
     private RuleSet m_ruleSet;
 
@@ -22,8 +21,7 @@ public class RuleSetChangedEvent extends EventObject
      *
      * @param ruleSet
      */
-    private RuleSetChangedEvent(Object source, RuleSet ruleSet)
-    {
+    private RuleSetChangedEvent(Object source, RuleSet ruleSet) {
         super(source);
 
         m_ruleSet = ruleSet;
@@ -34,8 +32,7 @@ public class RuleSetChangedEvent extends EventObject
      *
      * @return
      */
-    public boolean allRuleSetsChanged()
-    {
+    public boolean allRuleSetsChanged() {
         return m_ruleSet == null;
     }
 
@@ -44,8 +41,7 @@ public class RuleSetChangedEvent extends EventObject
      *
      * @return
      */
-    public RuleSet getRuleSet()
-    {
+    public RuleSet getRuleSet() {
         return m_ruleSet;
     }
 
@@ -54,16 +50,13 @@ public class RuleSetChangedEvent extends EventObject
      *
      * @param ruleSet
      */
-    public static void notifyRuleSetChanged(Object source, RuleSet ruleSet)
-    {
-        if ((source != null) && (ruleSet != null))
-        {
+    public static void notifyRuleSetChanged(Object source, RuleSet ruleSet) {
+        if ((source != null) && (ruleSet != null)) {
             RuleSetChangedEvent event = new RuleSetChangedEvent(source, ruleSet);
             List listenerList = ListenerList.getListeners(RuleSetChangedEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 RuleSetChangedEventListener listener;
 
                 listener = (RuleSetChangedEventListener) listeners.next();
@@ -76,16 +69,13 @@ public class RuleSetChangedEvent extends EventObject
      *******************************************************************************
      *
      */
-    public static void notifyRuleSetsChanged(Object source)
-    {
-        if (source != null)
-        {
+    public static void notifyRuleSetsChanged(Object source) {
+        if (source != null) {
             RuleSetChangedEvent event = new RuleSetChangedEvent(source, null);
             List listenerList = ListenerList.getListeners(RuleSetChangedEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 RuleSetChangedEventListener listener;
 
                 listener = (RuleSetChangedEventListener) listeners.next();

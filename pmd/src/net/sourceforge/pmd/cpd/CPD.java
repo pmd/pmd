@@ -27,7 +27,7 @@ public class CPD {
 
     public void add(List files) throws IOException {
         for (Iterator i = files.iterator(); i.hasNext();) {
-            add(files.size(), (File)i.next());
+            add(files.size(), (File) i.next());
         }
     }
 
@@ -48,10 +48,12 @@ public class CPD {
     }
 
     public void go() {
-        if (!listener.update("Starting to process " + tokenSets.size() + " files")) return;
+        if (!listener.update("Starting to process " + tokenSets.size() + " files"))
+            return;
         GST gst = new GST(tokenSets, minimumTileSize);
         results = gst.crunch(listener);
-        if (results == null) results = new ResultsImpl();  //just ot make sure we don't pass back a null Results
+        if (results == null)
+            results = new ResultsImpl();  //just ot make sure we don't pass back a null Results
     }
 
     public Results getResults() {
@@ -64,10 +66,10 @@ public class CPD {
 
     public String getImage(Tile tile) {
         try {
-            TokenEntry firstToken = (TokenEntry)results.getOccurrences(tile).next();
+            TokenEntry firstToken = (TokenEntry) results.getOccurrences(tile).next();
             TokenList tl = tokenSets.getTokenList(firstToken);
-            int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets)-1;
-            return tl.getSlice(firstToken.getBeginLine()-1, endLine-1);
+            int endLine = firstToken.getBeginLine() + results.getTileLineCount(tile, tokenSets) - 1;
+            return tl.getSlice(firstToken.getBeginLine() - 1, endLine - 1);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.cpd.TokenSets;
 
 import java.util.Iterator;
 
-public class OccurrencesTest  extends TestCase {
+public class OccurrencesTest extends TestCase {
 
     public void testBasic1() {
         Occurrences occs = new Occurrences(new TokenSets());
@@ -42,9 +42,9 @@ public class OccurrencesTest  extends TestCase {
         Occurrences occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
 
         Iterator i = occs.getOccurrences(new Tile(new TokenEntry("h", 0, "foo", 5)));
-        TokenEntry tok = (TokenEntry)i.next();
+        TokenEntry tok = (TokenEntry) i.next();
         assertEquals("foo", tok.getTokenSrcID());
-        assertEquals(0,tok.getIndex());
+        assertEquals(0, tok.getIndex());
     }
 
     public void testContains() {

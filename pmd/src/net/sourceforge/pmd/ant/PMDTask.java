@@ -26,7 +26,7 @@ import java.util.List;
 public class PMDTask extends Task {
 
     private List formatters = new ArrayList();
-    private List filesets  = new ArrayList();
+    private List filesets = new ArrayList();
     private boolean shortFilenames;
     private boolean verbose;
     private boolean printToConsole;
@@ -66,7 +66,7 @@ public class PMDTask extends Task {
     public void addFileset(FileSet set) {
         filesets.add(set);
     }
-    
+
     public void addFormatter(Formatter f) {
         formatters.add(f);
     }
@@ -77,7 +77,7 @@ public class PMDTask extends Task {
         }
 
         for (Iterator i = formatters.iterator(); i.hasNext();) {
-            Formatter f = (Formatter)i.next();
+            Formatter f = (Formatter) i.next();
             if (f.isToFileNull()) {
                 throw new BuildException("Formatter toFile attribute is required");
             }
@@ -99,9 +99,9 @@ public class PMDTask extends Task {
             FileSet fs = (FileSet) i.next();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             String[] srcFiles = ds.getIncludedFiles();
-            for (int j=0; j<srcFiles.length; j++) {
+            for (int j = 0; j < srcFiles.length; j++) {
                 File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
-                printIfVerbose (file.getAbsoluteFile().toString());
+                printIfVerbose(file.getAbsoluteFile().toString());
                 ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
                 try {
                     pmd.processFile(new FileInputStream(file), rules, ctx);
@@ -125,7 +125,7 @@ public class PMDTask extends Task {
 
         if (!ctx.getReport().isEmpty()) {
             for (Iterator i = formatters.iterator(); i.hasNext();) {
-                Formatter formatter = (Formatter)i.next();
+                Formatter formatter = (Formatter) i.next();
                 String buffer = formatter.getRenderer().render(ctx.getReport()) + EOL;
                 try {
                     Writer writer = formatter.getToFileWriter(project.getBaseDir().toString());
@@ -148,6 +148,7 @@ public class PMDTask extends Task {
     }
 
     private void printIfVerbose(String in) {
-        if (verbose) System.out.println(in);
+        if (verbose)
+            System.out.println(in);
     }
 }

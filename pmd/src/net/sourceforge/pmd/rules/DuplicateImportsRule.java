@@ -22,21 +22,21 @@ public class DuplicateImportsRule extends AbstractRule {
     private Set importOnDemandImports;
 
     public Object visit(ASTCompilationUnit node, Object data) {
-        RuleContext ctx = (RuleContext)data;
+        RuleContext ctx = (RuleContext) data;
         singleTypeImports = new HashSet();
         importOnDemandImports = new HashSet();
-        super.visit(node,data);
+        super.visit(node, data);
 
         // this checks for things like:
         // import java.io.*;
         // import java.io.File;
         for (Iterator i = importOnDemandImports.iterator(); i.hasNext();) {
-            ImportWrapper thisImportOnDemand = (ImportWrapper)i.next();
+            ImportWrapper thisImportOnDemand = (ImportWrapper) i.next();
             for (Iterator j = singleTypeImports.iterator(); j.hasNext();) {
-                ImportWrapper thisSingleTypeImport = (ImportWrapper)j.next();
+                ImportWrapper thisSingleTypeImport = (ImportWrapper) j.next();
                 String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf("."));
                 if (thisImportOnDemand.getName().equals(singleTypePkg)) {
-                    String msg = MessageFormat.format(getMessage(), new Object[] {thisSingleTypeImport.getName()});
+                    String msg = MessageFormat.format(getMessage(), new Object[]{thisSingleTypeImport.getName()});
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, thisSingleTypeImport.getLine(), msg));
                 }
             }
@@ -52,13 +52,13 @@ public class DuplicateImportsRule extends AbstractRule {
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {
             if (importOnDemandImports.contains(wrapper)) {
-                createRV((RuleContext)data, node.getImportedNameNode());
+                createRV((RuleContext) data, node.getImportedNameNode());
             } else {
                 importOnDemandImports.add(wrapper);
             }
         } else {
             if (singleTypeImports.contains(wrapper)) {
-                createRV((RuleContext)data, node.getImportedNameNode());
+                createRV((RuleContext) data, node.getImportedNameNode());
             } else {
                 singleTypeImports.add(wrapper);
             }
@@ -67,7 +67,7 @@ public class DuplicateImportsRule extends AbstractRule {
     }
 
     private void createRV(RuleContext ctx, SimpleNode importNameNode) {
-        String msg = MessageFormat.format(getMessage(), new Object[] {importNameNode.getImage()});
+        String msg = MessageFormat.format(getMessage(), new Object[]{importNameNode.getImage()});
         ctx.getReport().addRuleViolation(createRuleViolation(ctx, importNameNode.getBeginLine(), msg));
     }
 }

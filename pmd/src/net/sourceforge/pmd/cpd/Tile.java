@@ -15,7 +15,8 @@ public class Tile implements Serializable {
     private List tokens = new ArrayList();
 
     // don't use this, just for Serialization
-    protected Tile() {}
+    protected Tile() {
+    }
 
     public Tile(TokenEntry tok) {
         tokens.add(tok);
@@ -45,14 +46,14 @@ public class Tile implements Serializable {
     public String getImage() {
         StringBuffer sb = new StringBuffer();
         for (Iterator i = tokens.iterator(); i.hasNext();) {
-            TokenEntry tok = (TokenEntry)i.next();
+            TokenEntry tok = (TokenEntry) i.next();
             sb.append(tok.getImage());
         }
         return sb.toString();
     }
 
     public boolean equals(Object other) {
-        Tile tile = (Tile)other;
+        Tile tile = (Tile) other;
         return tile.getImage().equals(getImage());
     }
 
@@ -66,7 +67,7 @@ public class Tile implements Serializable {
 
     public boolean contains(TokenEntry candidate) {
         for (Iterator i = tokens.iterator(); i.hasNext();) {
-            TokenEntry token = (TokenEntry)i.next();
+            TokenEntry token = (TokenEntry) i.next();
             if (candidate.getIndex() == token.getIndex() && candidate.getTokenSrcID() == token.getTokenSrcID()) {
                 return true;
             }

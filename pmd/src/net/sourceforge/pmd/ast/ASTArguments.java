@@ -3,13 +3,13 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTArguments extends SimpleNode {
-  public ASTArguments(int id) {
-    super(id);
-  }
+    public ASTArguments(int id) {
+        super(id);
+    }
 
-  public ASTArguments(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTArguments(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
     public int getArgumentCount() {
@@ -19,8 +19,8 @@ public class ASTArguments extends SimpleNode {
         return this.jjtGetChild(0).jjtGetNumChildren();
     }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

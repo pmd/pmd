@@ -10,8 +10,8 @@ import java.io.FilenameFilter;
 
 public class JavaFileOrDirectoryFilter implements FilenameFilter {
 
-  public boolean accept(File dir, String filename) {
-      return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
-  }
+    public boolean accept(File dir, String filename) {
+        return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+    }
 
 }

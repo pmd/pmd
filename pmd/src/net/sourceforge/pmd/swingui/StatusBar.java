@@ -25,8 +25,7 @@ import java.awt.Rectangle;
  * @since January 6, 2003
  * @version $Revision$, $Date$
  */
-class StatusBar extends JPanel
-{
+class StatusBar extends JPanel {
     private JLabel m_message;
     private String m_defaultMessage;
     private StatusArea m_statusArea;
@@ -36,8 +35,7 @@ class StatusBar extends JPanel
      *
      * @param border
      */
-    protected StatusBar(String defaultMessage)
-    {
+    protected StatusBar(String defaultMessage) {
         super(new BorderLayout());
 
         m_defaultMessage = defaultMessage;
@@ -66,8 +64,7 @@ class StatusBar extends JPanel
      *********************************************************************************
      *
      */
-    protected void setDefaultMessage()
-    {
+    protected void setDefaultMessage() {
         setMessage(m_defaultMessage);
     }
 
@@ -76,10 +73,8 @@ class StatusBar extends JPanel
      *
      * @param message The message to be displayed in the status area.
      */
-    protected void setMessage(String message)
-    {
-        if (message == null)
-        {
+    protected void setMessage(String message) {
+        if (message == null) {
             message = "";
         }
 
@@ -91,8 +86,7 @@ class StatusBar extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class StatusArea extends JPanel
-    {
+    private class StatusArea extends JPanel {
         private StatusActionThread m_actionThread;
         private Color m_inactiveBackground;
         private Color m_activeBackground;
@@ -109,8 +103,7 @@ class StatusBar extends JPanel
          *
          * @param border
          */
-        private StatusArea()
-        {
+        private StatusArea() {
             super(null);
 
             m_inactiveBackground = Color.gray;
@@ -133,10 +126,8 @@ class StatusBar extends JPanel
          ****************************************************************************
          *
          */
-        private void startAction()
-        {
-            if (m_actionThread == null)
-            {
+        private void startAction() {
+            if (m_actionThread == null) {
                 setBackground(m_activeBackground);
                 m_direction = START_MOVING;
                 m_actionThread = new StatusActionThread(this);
@@ -148,10 +139,8 @@ class StatusBar extends JPanel
          ****************************************************************************
          *
          */
-        private void stopAction()
-        {
-            if (m_actionThread != null)
-            {
+        private void stopAction() {
+            if (m_actionThread != null) {
                 m_actionThread.stopAction();
                 m_actionThread = null;
                 setBackground(m_inactiveBackground);
@@ -164,12 +153,10 @@ class StatusBar extends JPanel
          *
          * @param graphics
          */
-        public void paint(Graphics graphics)
-        {
+        public void paint(Graphics graphics) {
             super.paint(graphics);
 
-            if (getBackground() == m_activeBackground)
-            {
+            if (getBackground() == m_activeBackground) {
                 Rectangle totalArea;
                 Insets insets;
                 int indicatorWidth;
@@ -189,28 +176,21 @@ class StatusBar extends JPanel
                 indicatorHeight = totalArea.height;
                 indicatorY = totalArea.y;
 
-                if (m_direction == MOVE_FORWARD)
-                {
+                if (m_direction == MOVE_FORWARD) {
                     m_indicatorCurrentPosition += POSITION_INCREMENT;
 
-                    if (m_indicatorCurrentPosition >= totalAreaRight)
-                    {
+                    if (m_indicatorCurrentPosition >= totalAreaRight) {
                         m_indicatorCurrentPosition = totalAreaRight - POSITION_INCREMENT;
                         m_direction = MOVE_BACKWARD;
                     }
-                }
-                else if (m_direction == MOVE_BACKWARD)
-                {
+                } else if (m_direction == MOVE_BACKWARD) {
                     m_indicatorCurrentPosition -= POSITION_INCREMENT;
 
-                    if (m_indicatorCurrentPosition < totalArea.x)
-                    {
+                    if (m_indicatorCurrentPosition < totalArea.x) {
                         m_indicatorCurrentPosition = totalArea.x + POSITION_INCREMENT;
                         m_direction = MOVE_FORWARD;
                     }
-                }
-                else
-                {
+                } else {
                     m_indicatorCurrentPosition = totalArea.x + POSITION_INCREMENT;
                     m_direction = MOVE_FORWARD;
                 }
@@ -225,12 +205,10 @@ class StatusBar extends JPanel
                 graphics.clipRect(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
                 graphics.fillRect(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
 
-                if (m_direction == MOVE_FORWARD)
-                {
+                if (m_direction == MOVE_FORWARD) {
                     int stopX = indicatorX - indicatorWidth;
 
-                    if (stopX < totalArea.x)
-                    {
+                    if (stopX < totalArea.x) {
                         stopX = totalArea.x;
                     }
 
@@ -238,19 +216,15 @@ class StatusBar extends JPanel
                     int y2 = y1 + indicatorHeight;
                     Color color = m_actionColor;
 
-                    for (int x = indicatorX; x > stopX; x--)
-                    {
+                    for (int x = indicatorX; x > stopX; x--) {
                         graphics.setColor(color);
                         graphics.drawLine(x, y1, x, y2);
                         color = brighter(color);
                     }
-                }
-                else
-                {
+                } else {
                     int stopX = indicatorX + indicatorWidth;
 
-                    if (stopX > totalAreaRight)
-                    {
+                    if (stopX > totalAreaRight) {
                         stopX = totalAreaRight;
                     }
 
@@ -258,8 +232,7 @@ class StatusBar extends JPanel
                     int y2 = indicatorY + indicatorHeight;
                     Color color = m_actionColor;
 
-                    for (int x = indicatorX; x < stopX; x++)
-                    {
+                    for (int x = indicatorX; x < stopX; x++) {
                         graphics.setColor(color);
                         graphics.drawLine(x, y1, x, y2);
                         color = brighter(color);
@@ -268,8 +241,7 @@ class StatusBar extends JPanel
 
                 graphics.setColor(oldColor);
 
-                if (oldClip != null)
-                {
+                if (oldClip != null) {
                     graphics.clipRect(oldClip.x, oldClip.y, oldClip.width, oldClip.height);
                     graphics.setClip(oldClip.x, oldClip.y, oldClip.width, oldClip.height);
                 }
@@ -283,8 +255,7 @@ class StatusBar extends JPanel
          *
          * @return
          */
-        private Color brighter(Color color)
-        {
+        private Color brighter(Color color) {
             int red;
             int green;
             int blue;
@@ -293,18 +264,15 @@ class StatusBar extends JPanel
             green = color.getGreen() + 5;
             blue = color.getBlue() + 5;
 
-            if (red > 255)
-            {
+            if (red > 255) {
                 red = 255;
             }
 
-            if (green > 255)
-            {
+            if (green > 255) {
                 green = 255;
             }
 
-            if (blue > 255)
-            {
+            if (blue > 255) {
                 blue = 255;
             }
 
@@ -317,8 +285,7 @@ class StatusBar extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class StatusActionThread extends Thread
-    {
+    private class StatusActionThread extends Thread {
         private StatusArea m_statusArea;
         private boolean m_stopAction;
         private int m_doNothing;
@@ -329,8 +296,7 @@ class StatusBar extends JPanel
          *
          * @param statusArea
          */
-        private StatusActionThread(StatusArea statusArea)
-        {
+        private StatusActionThread(StatusArea statusArea) {
             super("Status Action");
 
             m_statusArea = statusArea;
@@ -340,18 +306,13 @@ class StatusBar extends JPanel
          ****************************************************************************
          *
          */
-        public void run()
-        {
-            while (m_stopAction == false)
-            {
+        public void run() {
+            while (m_stopAction == false) {
                 m_statusArea.repaint();
 
-                try
-                {
+                try {
                     sleep(ELAPSED_TIME);
-                }
-                catch (InterruptedException exception)
-                {
+                } catch (InterruptedException exception) {
                     m_doNothing++;
                 }
             }
@@ -361,8 +322,7 @@ class StatusBar extends JPanel
          ****************************************************************************
          *
          */
-        private void stopAction()
-        {
+        private void stopAction() {
             m_stopAction = true;
         }
     }
@@ -372,16 +332,14 @@ class StatusBar extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class StatusBarEventHandler implements StatusBarEventListener
-    {
+    private class StatusBarEventHandler implements StatusBarEventListener {
 
         /**
          *****************************************************************************
          *
          * @param event
          */
-        public void startAnimation(StatusBarEvent event)
-        {
+        public void startAnimation(StatusBarEvent event) {
             m_statusArea.startAction();
             m_message.setText("");
             SwingUtilities.invokeLater(new Repaint(m_message));
@@ -392,8 +350,7 @@ class StatusBar extends JPanel
          *
          * @param event
          */
-        public void showMessage(StatusBarEvent event)
-        {
+        public void showMessage(StatusBarEvent event) {
             m_message.setText(event.getMessage());
             SwingUtilities.invokeLater(new Repaint(m_message));
         }
@@ -403,8 +360,7 @@ class StatusBar extends JPanel
          *
          * @param event
          */
-        public void stopAnimation(StatusBarEvent event)
-        {
+        public void stopAnimation(StatusBarEvent event) {
             setDefaultMessage();
             SwingUtilities.invokeLater(new Repaint(m_message));
             m_statusArea.stopAction();
@@ -416,8 +372,7 @@ class StatusBar extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class Repaint implements Runnable
-    {
+    private class Repaint implements Runnable {
         private Component m_component;
 
         /**
@@ -425,8 +380,7 @@ class StatusBar extends JPanel
          *
          * @param component
          */
-        private Repaint(Component component)
-        {
+        private Repaint(Component component) {
             m_component = component;
         }
 
@@ -434,8 +388,7 @@ class StatusBar extends JPanel
          *****************************************************************************
          *
          */
-        public void run()
-        {
+        public void run() {
             m_component.repaint();
         }
     }

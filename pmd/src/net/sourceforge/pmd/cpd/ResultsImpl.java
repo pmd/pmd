@@ -15,16 +15,16 @@ public class ResultsImpl extends TileOccurrences implements Serializable, Result
 
     public void addTile(Tile tile, TokenEntry tok) {
         super.addTile(tile, tok);
-        for (int i=orderedTiles.size()-1; i>=0; i--) {
-            Tile candidate = (Tile)orderedTiles.get(i);
+        for (int i = orderedTiles.size() - 1; i >= 0; i--) {
+            Tile candidate = (Tile) orderedTiles.get(i);
             removeDupesOf(candidate);
         }
     }
 
     public int getTileLineCount(Tile tile, TokenSets tokenSets) {
-        TokenEntry firstToken = (TokenEntry)((List)tileToOccurrenceMap.get(tile)).get(0);
+        TokenEntry firstToken = (TokenEntry) ((List) tileToOccurrenceMap.get(tile)).get(0);
         TokenList tl = tokenSets.getTokenList(firstToken);
-        TokenEntry lastToken = tl.get(firstToken.getIndex()-1 + tile.getTokenCount());
+        TokenEntry lastToken = tl.get(firstToken.getIndex() - 1 + tile.getTokenCount());
         int result = lastToken.getBeginLine() - firstToken.getBeginLine() + 1;
         if (result == 0) {
             result = 1;
@@ -34,16 +34,16 @@ public class ResultsImpl extends TileOccurrences implements Serializable, Result
 
     private void removeDupesOf(Tile tile) {
         Set occs = new HashSet();
-        occs.addAll((List)tileToOccurrenceMap.get(tile));
+        occs.addAll((List) tileToOccurrenceMap.get(tile));
         for (Iterator i = tileToOccurrenceMap.keySet().iterator(); i.hasNext();) {
-            Tile tile2 = (Tile)i.next();
+            Tile tile2 = (Tile) i.next();
 
             if (tile2.equals(tile)) {
                 continue;
             }
 
             Set possibleDupe = new HashSet();
-            possibleDupe.addAll((List)tileToOccurrenceMap.get(tile2));
+            possibleDupe.addAll((List) tileToOccurrenceMap.get(tile2));
             possibleDupe.removeAll(occs);
             if (possibleDupe.isEmpty()) {
                 tileToOccurrenceMap.remove(tile);

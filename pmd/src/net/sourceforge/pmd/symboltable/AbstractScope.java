@@ -58,7 +58,7 @@ public abstract class AbstractScope implements Scope {
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && !occurrence.isThisOrSuper()) {
-            List nameOccurrences = (List)variableNames.get(decl);
+            List nameOccurrences = (List) variableNames.get(decl);
             nameOccurrences.add(occurrence);
         }
         return decl;
@@ -69,7 +69,7 @@ public abstract class AbstractScope implements Scope {
     protected String glomNames() {
         String result = "";
         for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-            result += i.next().toString() +",";
+            result += i.next().toString() + ",";
         }
         return result;
     }

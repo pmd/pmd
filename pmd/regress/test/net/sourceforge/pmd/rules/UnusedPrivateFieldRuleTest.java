@@ -16,8 +16,8 @@ public class UnusedPrivateFieldRuleTest extends RuleTst {
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
-   public void test1() throws Throwable {
-       runTest("UnusedPrivateField1.java", 1, rule);
+    public void test1() throws Throwable {
+        runTest("UnusedPrivateField1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
@@ -35,6 +35,7 @@ public class UnusedPrivateFieldRuleTest extends RuleTst {
     public void test6() throws Throwable {
         runTest("UnusedPrivateField6.java", 0, rule);
     }
+
     public void test7() throws Throwable {
         runTest("UnusedPrivateField7.java", 0, rule);
     }
@@ -73,6 +74,7 @@ public class UnusedPrivateFieldRuleTest extends RuleTst {
     public void test14() throws Throwable {
         runTest("UnusedPrivateField14.java", 1, rule);
     }
+
     public void test15() throws Throwable {
         runTest("UnusedPrivateField15.java", 2, rule);
     }

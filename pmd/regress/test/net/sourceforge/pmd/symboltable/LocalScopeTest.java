@@ -19,6 +19,7 @@ public class LocalScopeTest extends TestCase {
         public MyASTVariableDeclaratorId(int x) {
             super(x);
         }
+
         public boolean isExceptionBlockParameter() {
             return true;
         }

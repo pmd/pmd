@@ -25,16 +25,16 @@ public class FileFinder {
      * Implements a tail recursive file scanner
      */
     private void scanDirectory(File dir, List list, boolean recurse) {
-     String[] possibles = dir.list(filter);
-     for (int i=0; i<possibles.length; i++) {
-        File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
-        if (tmp.isDirectory()) {
-            if (recurse) {
-                scanDirectory(tmp, list, true);
+        String[] possibles = dir.list(filter);
+        for (int i = 0; i < possibles.length; i++) {
+            File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
+            if (tmp.isDirectory()) {
+                if (recurse) {
+                    scanDirectory(tmp, list, true);
+                }
+            } else {
+                list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
             }
-        } else {
-           list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
         }
-     }
     }
 }

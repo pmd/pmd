@@ -32,8 +32,7 @@ import java.text.MessageFormat;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RuleEditingPanel extends JPanel
-{
+class RuleEditingPanel extends JPanel {
 
     private JLabel m_nameLabel;
     private JTextField m_name;
@@ -61,8 +60,7 @@ class RuleEditingPanel extends JPanel
      *
      * @return
      */
-    protected RuleEditingPanel()
-    {
+    protected RuleEditingPanel() {
         super(new BorderLayout());
 
         EmptyBorder emptyBorder = new EmptyBorder(5, 5, 5, 5);
@@ -277,33 +275,25 @@ class RuleEditingPanel extends JPanel
      *
      * @param dataNode
      */
-    private void saveData(RulesTreeNode dataNode)
-    {
-        if ((dataNode != null) && m_isEditing)
-        {
-            if (dataNode.isRule() || dataNode.isProperty())
-            {
+    private void saveData(RulesTreeNode dataNode) {
+        if ((dataNode != null) && m_isEditing) {
+            if (dataNode.isRule() || dataNode.isProperty()) {
                 String ruleName = m_name.getText().trim();
 
-                if (ruleName.length() == 0)
-                {
+                if (ruleName.length() == 0) {
                     String message = "The rule name is missing.  The change will not be applied.";
 
                     m_name.removeFocusListener(m_focusListener);
                     MessageDialog.show(getParentWindow(), message);
                     m_name.addFocusListener(m_focusListener);
 
-                    if (m_name.hasFocus())
-                    {
+                    if (m_name.hasFocus()) {
                         m_name.requestFocus();
                     }
 
                     ruleName = m_originalName;
-                }
-                else if (ruleName.equalsIgnoreCase(m_originalName) == false)
-                {
-                    if (dataNode.getSibling(ruleName) != null)
-                    {
+                } else if (ruleName.equalsIgnoreCase(m_originalName) == false) {
+                    if (dataNode.getSibling(ruleName) != null) {
                         String template = "Another rule already has the name \"{0}\".  The change will not be applied.";
                         String[] args = {ruleName};
                         String message = MessageFormat.format(template, args);
@@ -312,8 +302,7 @@ class RuleEditingPanel extends JPanel
                         MessageDialog.show(getParentWindow(), message);
                         m_name.addFocusListener(m_focusListener);
 
-                        if (m_name.hasFocus())
-                        {
+                        if (m_name.hasFocus()) {
                             m_name.requestFocus();
                         }
 
@@ -336,8 +325,7 @@ class RuleEditingPanel extends JPanel
      *
      * @param isEditing
      */
-    protected void setIsEditing(boolean isEditing)
-    {
+    protected void setIsEditing(boolean isEditing) {
         m_isEditing = isEditing;
     }
 
@@ -346,26 +334,16 @@ class RuleEditingPanel extends JPanel
      *
      * @param dataNode
      */
-    private void loadData(RulesTreeNode dataNode)
-    {
-        if (dataNode == null)
-        {
+    private void loadData(RulesTreeNode dataNode) {
+        if (dataNode == null) {
             enableData(false);
-        }
-        else if (dataNode.isRuleSet())
-        {
+        } else if (dataNode.isRuleSet()) {
             enableData(false);
-        }
-        else if (dataNode.isRule())
-        {
+        } else if (dataNode.isRule()) {
             loadData_(dataNode);
-        }
-        else if (dataNode.isProperty())
-        {
+        } else if (dataNode.isProperty()) {
             loadData_(dataNode.getParentRuleData());
-        }
-        else
-        {
+        } else {
             enableData(false);
         }
     }
@@ -375,10 +353,8 @@ class RuleEditingPanel extends JPanel
      *
      * @param dataNode
      */
-    private void loadData_(RulesTreeNode dataNode)
-    {
-        if (m_enabled == false)
-        {
+    private void loadData_(RulesTreeNode dataNode) {
+        if (m_enabled == false) {
             enableData(true);
         }
 
@@ -396,10 +372,8 @@ class RuleEditingPanel extends JPanel
      *******************************************************************************
      *
      */
-    private void enableData(boolean enable)
-    {
-        if (enable)
-        {
+    private void enableData(boolean enable) {
+        if (enable) {
             // Just to be sure the focus listener isn't already set.
             m_name.removeFocusListener(m_focusListener);
             m_name.addFocusListener(m_focusListener);
@@ -430,9 +404,7 @@ class RuleEditingPanel extends JPanel
 
             m_priority.setEnabled(true);
             m_priority.setBackground(Color.white);
-        }
-        else
-        {
+        } else {
             m_name.removeFocusListener(m_focusListener);
 
             Color background = UIManager.getColor("disabledTextBackground");
@@ -482,12 +454,10 @@ class RuleEditingPanel extends JPanel
      *
      * @return
      */
-    private Window getParentWindow()
-    {
+    private Window getParentWindow() {
         Component component = getParent();
 
-        while ((component != null) && ((component instanceof Window) == false))
-        {
+        while ((component != null) && ((component instanceof Window) == false)) {
             component = component.getParent();
         }
 
@@ -500,16 +470,14 @@ class RuleEditingPanel extends JPanel
      ************************************************************************************
      */
 
-     private class RuleNameFocusListener implements FocusListener
-     {
+    private class RuleNameFocusListener implements FocusListener {
 
         /**
          **************************************************************************
          *
          * @param event
          */
-        public void focusGained(FocusEvent event)
-        {
+        public void focusGained(FocusEvent event) {
         }
 
         /**
@@ -517,22 +485,17 @@ class RuleEditingPanel extends JPanel
          *
          * @param event
          */
-        public void focusLost(FocusEvent event)
-        {
+        public void focusLost(FocusEvent event) {
             String ruleName = m_name.getText().trim();
 
-            if (ruleName.length() == 0)
-            {
+            if (ruleName.length() == 0) {
                 String message = "The rule name is missing.";
                 m_name.removeFocusListener(this);
                 MessageDialog.show(getParentWindow(), message);
                 m_name.addFocusListener(this);
                 m_name.requestFocus();
-            }
-            else if (ruleName.equalsIgnoreCase(m_originalName) == false)
-            {
-                if (m_currentDataNode.getSibling(ruleName) != null)
-                {
+            } else if (ruleName.equalsIgnoreCase(m_originalName) == false) {
+                if (m_currentDataNode.getSibling(ruleName) != null) {
                     String template = "Another rule already has the name \"{0}\".";
                     String[] args = {ruleName};
                     String message = MessageFormat.format(template, args);
@@ -543,23 +506,21 @@ class RuleEditingPanel extends JPanel
                 }
             }
         }
-     }
+    }
 
     /**
      ************************************************************************************
      ************************************************************************************
      ************************************************************************************
      */
-    private class RulesEditingEventHandler implements RulesEditingEventListener
-    {
+    private class RulesEditingEventHandler implements RulesEditingEventListener {
 
         /**
          *************************************************************************
          *
          * @param event
          */
-        public void loadData(RulesEditingEvent event)
-        {
+        public void loadData(RulesEditingEvent event) {
             RuleEditingPanel.this.loadData(event.getDataNode());
         }
 
@@ -568,8 +529,7 @@ class RuleEditingPanel extends JPanel
          *
          * @param event
          */
-        public void saveData(RulesEditingEvent event)
-        {
+        public void saveData(RulesEditingEvent event) {
             RuleEditingPanel.this.saveData(event.getDataNode());
         }
     }

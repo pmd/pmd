@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CPDTest extends TestCase{
+public class CPDTest extends TestCase {
 
     public void testBasic() throws Throwable {
         CPD cpd = new CPD();
@@ -26,7 +26,7 @@ public class CPDTest extends TestCase{
         Results results = cpd.getResults();
         Iterator i = results.getOccurrences(new Tile(getHelloTokens()));
         assertTrue(i.hasNext());
-        TokenEntry tok = (TokenEntry)i.next();
+        TokenEntry tok = (TokenEntry) i.next();
         if (tok.getTokenSrcID().equals("1")) {
             assertEquals(0, tok.getIndex());
         } else {
@@ -44,7 +44,7 @@ public class CPDTest extends TestCase{
         Results results = cpd.getResults();
         Iterator i = results.getOccurrences(new Tile(getHelloTokens()));
         assertTrue(i.hasNext());
-        TokenEntry tok = (TokenEntry)i.next();
+        TokenEntry tok = (TokenEntry) i.next();
         if (tok.getTokenSrcID().equals("1")) {
             assertEquals(0, tok.getIndex());
         } else {

@@ -3,21 +3,21 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTConstructorDeclaration extends AccessNode {
-  public ASTConstructorDeclaration(int id) {
-    super(id);
-  }
+    public ASTConstructorDeclaration(int id) {
+        super(id);
+    }
 
-  public ASTConstructorDeclaration(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTConstructorDeclaration(JavaParser p, int id) {
+        super(p, id);
+    }
 
     public int getParameterCount() {
-        return ((ASTFormalParameters)jjtGetChild(0)).getParameterCount();
+        return ((ASTFormalParameters) jjtGetChild(0)).getParameterCount();
     }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

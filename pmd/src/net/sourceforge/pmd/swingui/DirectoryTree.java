@@ -21,15 +21,13 @@ import java.io.File;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class DirectoryTree extends JTree
-{
+class DirectoryTree extends JTree {
 
     /**
      *******************************************************************************
      *
      */
-    protected DirectoryTree(String rootName)
-    {
+    protected DirectoryTree(String rootName) {
         super(new DirectoryTreeModel(rootName));
 
         setRootVisible(true);
@@ -44,8 +42,7 @@ class DirectoryTree extends JTree
      *******************************************************************************
      *
      */
-    protected void expandRootNode()
-    {
+    protected void expandRootNode() {
         DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
         DirectoryTreeNode treeNode = (DirectoryTreeNode) treeModel.getRoot();
         TreePath treePath = new TreePath(treeNode.getPath());
@@ -56,8 +53,7 @@ class DirectoryTree extends JTree
      *******************************************************************************
      *
      */
-    protected DirectoryTreeNode getSelectedNode()
-    {
+    protected DirectoryTreeNode getSelectedNode() {
         TreePath path = getSelectionModel().getSelectionPath();
 
         return (DirectoryTreeNode) path.getLastPathComponent();
@@ -68,16 +64,14 @@ class DirectoryTree extends JTree
      *********************************************************************************
      *********************************************************************************
      */
-    private class SetupFilesEventHandler implements SetupFilesEventListener
-    {
+    private class SetupFilesEventHandler implements SetupFilesEventListener {
 
         /**
          ****************************************************************************
          *
          * @param event
          */
-        public void startSetup(SetupFilesEvent event)
-        {
+        public void startSetup(SetupFilesEvent event) {
         }
 
         /**
@@ -85,8 +79,7 @@ class DirectoryTree extends JTree
          *
          * @param event
          */
-        public void stopSetup(SetupFilesEvent event)
-        {
+        public void stopSetup(SetupFilesEvent event) {
         }
 
         /**
@@ -94,8 +87,7 @@ class DirectoryTree extends JTree
          *
          * @param event
          */
-        public void setFileList(SetupFilesEvent event)
-        {
+        public void setFileList(SetupFilesEvent event) {
             File[] directories = event.getFileList();
             String name = "Locating root directories.";
             SetupFilesThread setupFilesThread = new SetupFilesThread(name, directories);
@@ -108,8 +100,7 @@ class DirectoryTree extends JTree
      ********************************************************************************
      ********************************************************************************
      */
-    private class SetupFilesThread extends Thread
-    {
+    private class SetupFilesThread extends Thread {
         private File[] m_rootDirectories;
 
         /**
@@ -117,8 +108,7 @@ class DirectoryTree extends JTree
          *
          * @param name
          */
-        private SetupFilesThread(String threadName, File[] rootDirectories)
-        {
+        private SetupFilesThread(String threadName, File[] rootDirectories) {
             super(threadName);
 
             m_rootDirectories = rootDirectories;
@@ -128,8 +118,7 @@ class DirectoryTree extends JTree
          ***************************************************************************
          *
          */
-        public void run()
-        {
+        public void run() {
             setup();
             process();
             cleanup();
@@ -139,8 +128,7 @@ class DirectoryTree extends JTree
          ***************************************************************************
          *
          */
-        protected void setup()
-        {
+        protected void setup() {
             SetupFilesEvent.notifyStartSetup(this);
             StatusBarEvent.notifyStartAnimation(this);
         }
@@ -149,8 +137,7 @@ class DirectoryTree extends JTree
          ***************************************************************************
          *
          */
-        protected void process()
-        {
+        protected void process() {
             StatusBarEvent.notifyShowMessage(this, "Locating root directories.  Please wait...");
             DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
             treeModel.setupFiles(m_rootDirectories);
@@ -161,8 +148,7 @@ class DirectoryTree extends JTree
          ***************************************************************************
          *
          */
-        protected void cleanup()
-        {
+        protected void cleanup() {
             StatusBarEvent.notifyStopAnimation(this);
             SetupFilesEvent.notifyStopSetup(this);
         }
@@ -173,8 +159,7 @@ class DirectoryTree extends JTree
      ********************************************************************************
      ********************************************************************************
      */
-    private class DirectoryTreeNodeRenderer extends DefaultTreeCellRenderer
-    {
+    private class DirectoryTreeNodeRenderer extends DefaultTreeCellRenderer {
 
         private Icon m_defaultClosedIcon;
         private Icon m_defaultLeafIcon;
@@ -184,8 +169,7 @@ class DirectoryTree extends JTree
          ***************************************************************************
          *
          */
-        protected DirectoryTreeNodeRenderer()
-        {
+        protected DirectoryTreeNodeRenderer() {
             super();
 
             m_defaultClosedIcon = getDefaultClosedIcon();
@@ -207,33 +191,21 @@ class DirectoryTree extends JTree
          *
          * @return
          */
-        public Component getTreeCellRendererComponent(JTree tree,
-                                                      Object object,
-                                                      boolean isSelected,
-                                                      boolean isExpanded,
-                                                      boolean isLeaf,
-                                                      int row,
-                                                      boolean hasFocus)
-        {
+        public Component getTreeCellRendererComponent(JTree tree, Object object, boolean isSelected, boolean isExpanded, boolean isLeaf, int row, boolean hasFocus) {
             DirectoryTreeNode treeNode = (DirectoryTreeNode) object;
             Object userObject = treeNode.getUserObject();
 
-            if (userObject instanceof String)
-            {
+            if (userObject instanceof String) {
                 // The root node will display either an open or closed icon.
                 setClosedIcon(m_defaultClosedIcon);
                 setLeafIcon(m_defaultClosedIcon);
                 setOpenIcon(m_defaultOpenIcon);
-            }
-            else if (((File) userObject).isFile())
-            {
+            } else if (((File) userObject).isFile()) {
                 // A file cannot have any children; therefore, the default icon settings are used.
                 setClosedIcon(m_defaultClosedIcon);
                 setLeafIcon(m_defaultLeafIcon);
                 setOpenIcon(m_defaultOpenIcon);
-            }
-            else
-            {
+            } else {
                 // A directory may or may not have children.  The following conditions are used:
                 //
                 //   For a file
@@ -249,13 +221,7 @@ class DirectoryTree extends JTree
                 setOpenIcon(m_defaultOpenIcon);
             }
 
-            return super.getTreeCellRendererComponent(tree,
-                                                      object,
-                                                      isSelected,
-                                                      isExpanded,
-                                                      isLeaf,
-                                                      row,
-                                                      hasFocus);
+            return super.getTreeCellRendererComponent(tree, object, isSelected, isExpanded, isLeaf, row, hasFocus);
         }
     }
 }

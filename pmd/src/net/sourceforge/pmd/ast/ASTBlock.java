@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTBlock extends SimpleNode {
-  public ASTBlock(int id) {
-    super(id);
-  }
+    public ASTBlock(int id) {
+        super(id);
+    }
 
-  public ASTBlock(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTBlock(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

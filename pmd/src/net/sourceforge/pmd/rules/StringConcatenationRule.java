@@ -14,7 +14,7 @@ public class StringConcatenationRule extends AbstractRule {
 
     public Object visit(ASTForStatement node, Object data) {
         Node forLoopStmt = null;
-        for (int i=0;i<4;i++) {
+        for (int i = 0; i < 4; i++) {
             forLoopStmt = node.jjtGetChild(i);
             if (forLoopStmt instanceof ASTBlockStatement) {
                 break;
@@ -23,7 +23,6 @@ public class StringConcatenationRule extends AbstractRule {
         if (forLoopStmt == null) {
             return data;
         }
-
 
 
         return data;

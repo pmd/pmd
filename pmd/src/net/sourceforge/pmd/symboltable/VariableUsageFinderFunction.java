@@ -22,8 +22,8 @@ public class VariableUsageFinderFunction implements UnaryFunction {
     }
 
     public void applyTo(Object o) {
-        NameDeclaration decl = (NameDeclaration)o;
-        List usages = (List)decls.get(decl);
+        NameDeclaration decl = (NameDeclaration) o;
+        List usages = (List) decls.get(decl);
         if (!usages.isEmpty()) {
             if (lookingForUsed) {
                 results.put(decl, usages);

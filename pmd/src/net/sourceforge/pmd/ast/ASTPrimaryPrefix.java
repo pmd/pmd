@@ -3,13 +3,13 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTPrimaryPrefix extends SimpleNode {
-  public ASTPrimaryPrefix(int id) {
-    super(id);
-  }
+    public ASTPrimaryPrefix(int id) {
+        super(id);
+    }
 
-  public ASTPrimaryPrefix(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTPrimaryPrefix(JavaParser p, int id) {
+        super(p, id);
+    }
 
     private boolean usesThisModifier;
     private boolean usesSuperModifier;
@@ -30,8 +30,8 @@ public class ASTPrimaryPrefix extends SimpleNode {
         return this.usesSuperModifier;
     }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

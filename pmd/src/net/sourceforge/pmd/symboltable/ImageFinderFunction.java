@@ -25,7 +25,7 @@ public class ImageFinderFunction implements UnaryFunction {
     }
 
     public void applyTo(Object o) {
-        NameDeclaration nameDeclaration = (NameDeclaration)o;
+        NameDeclaration nameDeclaration = (NameDeclaration) o;
         if (images.contains(nameDeclaration.getImage())) {
             decl = nameDeclaration;
         }

@@ -25,10 +25,10 @@ public class UnusedImportsRule extends AbstractRule {
 
         super.visit(node, data);
 
-        RuleContext ctx = (RuleContext)data;
+        RuleContext ctx = (RuleContext) data;
         for (Iterator i = imports.iterator(); i.hasNext();) {
-            ImportWrapper wrapper = (ImportWrapper)i.next();
-            String msg = MessageFormat.format(getMessage(), new Object[] {wrapper.getName()});
+            ImportWrapper wrapper = (ImportWrapper) i.next();
+            String msg = MessageFormat.format(getMessage(), new Object[]{wrapper.getName()});
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, wrapper.getLine(), msg));
         }
         return data;
@@ -36,10 +36,10 @@ public class UnusedImportsRule extends AbstractRule {
 
     public Object visit(ASTImportDeclaration node, Object data) {
         if (!node.isImportOnDemand()) {
-            ASTName importedType = (ASTName)node.jjtGetChild(0);
+            ASTName importedType = (ASTName) node.jjtGetChild(0);
             String className;
             if (importedType.getImage().indexOf('.') != -1) {
-                int lastDot = importedType.getImage().lastIndexOf('.')+1;
+                int lastDot = importedType.getImage().lastIndexOf('.') + 1;
                 className = importedType.getImage().substring(lastDot);
             } else {
                 className = importedType.getImage();

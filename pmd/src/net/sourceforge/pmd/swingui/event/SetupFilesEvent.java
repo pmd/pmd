@@ -11,8 +11,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class SetupFilesEvent extends EventObject
-{
+public class SetupFilesEvent extends EventObject {
 
     private File[] m_fileList;
 
@@ -20,8 +19,7 @@ public class SetupFilesEvent extends EventObject
      *****************************************************************************
      *
      */
-    private SetupFilesEvent(Object source)
-    {
+    private SetupFilesEvent(Object source) {
         super(source);
     }
 
@@ -29,8 +27,7 @@ public class SetupFilesEvent extends EventObject
      *****************************************************************************
      *
      */
-    private SetupFilesEvent(Object source, File[] fileList)
-    {
+    private SetupFilesEvent(Object source, File[] fileList) {
         super(source);
 
         m_fileList = fileList;
@@ -41,8 +38,7 @@ public class SetupFilesEvent extends EventObject
      *
      * @return
      */
-    public File[] getFileList()
-    {
+    public File[] getFileList() {
         return m_fileList;
     }
 
@@ -51,14 +47,12 @@ public class SetupFilesEvent extends EventObject
      *
      * @param file
      */
-    public static final void notifySetFileList(Object source, File[] fileList)
-    {
+    public static final void notifySetFileList(Object source, File[] fileList) {
         SetupFilesEvent event = new SetupFilesEvent(source, fileList);
         List listenerList = ListenerList.getListeners(SetupFilesEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             SetupFilesEventListener listener;
 
             listener = (SetupFilesEventListener) listeners.next();
@@ -71,14 +65,12 @@ public class SetupFilesEvent extends EventObject
      *
      * @param file
      */
-    public static final void notifyStartSetup(Object source)
-    {
+    public static final void notifyStartSetup(Object source) {
         SetupFilesEvent event = new SetupFilesEvent(source);
         List listenerList = ListenerList.getListeners(SetupFilesEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             SetupFilesEventListener listener;
 
             listener = (SetupFilesEventListener) listeners.next();
@@ -91,14 +83,12 @@ public class SetupFilesEvent extends EventObject
      *
      * @param file
      */
-    public static final void notifyStopSetup(Object source)
-    {
+    public static final void notifyStopSetup(Object source) {
         SetupFilesEvent event = new SetupFilesEvent(source);
         List listenerList = ListenerList.getListeners(SetupFilesEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             SetupFilesEventListener listener;
 
             listener = (SetupFilesEventListener) listeners.next();

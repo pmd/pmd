@@ -20,7 +20,8 @@ public class TokenSets extends AbstractSet implements Serializable {
 
     private Map tokenMap = new HashMap();
 
-    public TokenSets() {}
+    public TokenSets() {
+    }
 
     public TokenSets(TokenList tokens) {
         tokenMap.put(tokens.getID(), tokens);
@@ -37,7 +38,7 @@ public class TokenSets extends AbstractSet implements Serializable {
     public int tokenCount() {
         int total = 0;
         for (Iterator i = tokenMap.values().iterator(); i.hasNext();) {
-            TokenList tl = (TokenList)i.next();
+            TokenList tl = (TokenList) i.next();
             total += tl.size();
         }
         return total;
@@ -48,13 +49,13 @@ public class TokenSets extends AbstractSet implements Serializable {
     }
 
     public TokenList getTokenList(TokenEntry tok) {
-        return (TokenList)tokenMap.get(tok.getTokenSrcID());
+        return (TokenList) tokenMap.get(tok.getTokenSrcID());
     }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
         for (Iterator i = tokenMap.values().iterator(); i.hasNext();) {
-            TokenList ts = (TokenList)i.next();
+            TokenList ts = (TokenList) i.next();
             sb.append(ts.toString());
             sb.append(EOL);
         }

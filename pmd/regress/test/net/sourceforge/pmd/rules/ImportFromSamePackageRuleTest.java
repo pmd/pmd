@@ -9,7 +9,7 @@ import net.sourceforge.pmd.rules.ImportFromSamePackageRule;
 
 public class ImportFromSamePackageRuleTest extends RuleTst {
 
-    public void testSimple()  throws Throwable {
+    public void testSimple() throws Throwable {
         runTest("ImportFromSamePackage1.java", 1, new ImportFromSamePackageRule());
     }
 

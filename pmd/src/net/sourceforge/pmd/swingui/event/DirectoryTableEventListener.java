@@ -2,8 +2,7 @@ package net.sourceforge.pmd.swingui.event;
 
 import java.util.EventListener;
 
-public interface DirectoryTableEventListener extends EventListener
-{
+public interface DirectoryTableEventListener extends EventListener {
 
     /**
      ******************************************************************************

@@ -22,8 +22,7 @@ import java.io.File;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesClassSelectDialog extends JDialog
-{
+class RulesClassSelectDialog extends JDialog {
 
     private DirectoryTree m_tree;
     private DirectoryTable m_table;
@@ -38,9 +37,7 @@ class RulesClassSelectDialog extends JDialog
      *
      * @param parentWindow
      */
-    protected RulesClassSelectDialog(JFrame parentWindow)
-        throws PMDException
-    {
+    protected RulesClassSelectDialog(JFrame parentWindow) throws PMDException {
         super(parentWindow, "Rules Class File Selector", true);
 
         setSize(ComponentFactory.adjustWindowSize(1200, 800));
@@ -63,8 +60,7 @@ class RulesClassSelectDialog extends JDialog
      *********************************************************************************
      *
      */
-    private void createDirectoryTreeScrollPane()
-    {
+    private void createDirectoryTreeScrollPane() {
         Color background;
 
         m_tree = new DirectoryTree("Rules Repository");
@@ -78,8 +74,7 @@ class RulesClassSelectDialog extends JDialog
      *********************************************************************************
      *
      */
-    private void createDirectoryTableScrollPane()
-    {
+    private void createDirectoryTableScrollPane() {
         Color background;
 
         m_table = new DirectoryTable(m_tree, ".class");
@@ -93,8 +88,7 @@ class RulesClassSelectDialog extends JDialog
      *********************************************************************************
      *
      */
-    private void createDirectorySplitPane()
-    {
+    private void createDirectorySplitPane() {
         m_splitPane = ComponentFactory.createHorizontalSplitPane(m_treeScrollPane, m_tableScrollPane);
     }
 
@@ -102,11 +96,10 @@ class RulesClassSelectDialog extends JDialog
      *******************************************************************************
      *
      */
-    private void buildTree() throws PMDException
-    {
+    private void buildTree() throws PMDException {
         PMDDirectory pmdDirectory = PMDDirectory.getDirectory();
         String rulesDirectoryPath = pmdDirectory.getRuleSetsDirectoryPath();
-        File[] rulesDirectory = { new File(rulesDirectoryPath) };
+        File[] rulesDirectory = {new File(rulesDirectoryPath)};
         ((DirectoryTreeModel) m_tree.getModel()).setupFiles(rulesDirectory);
         m_tree.expandRootNode();
     }
@@ -115,8 +108,7 @@ class RulesClassSelectDialog extends JDialog
      *******************************************************************************
      *
      */
-    private JPanel createButtonPanel()
-    {
+    private JPanel createButtonPanel() {
         ActionListener selectActionListener = new SelectButtonActionListener();
         ActionListener cancelActionListener = new CancelButtonActionListener();
         JPanel buttonPanel = ComponentFactory.createButtonPanel();
@@ -134,8 +126,7 @@ class RulesClassSelectDialog extends JDialog
      *
      * @return
      */
-    protected File getSelectedClassFile()
-    {
+    protected File getSelectedClassFile() {
         return m_selectedClassFile;
     }
 
@@ -144,8 +135,7 @@ class RulesClassSelectDialog extends JDialog
      *
      * @return
      */
-    protected boolean selectWasPressed()
-    {
+    protected boolean selectWasPressed() {
         return m_selectWasPressed;
     }
 
@@ -154,16 +144,14 @@ class RulesClassSelectDialog extends JDialog
      *******************************************************************************
      *******************************************************************************
      */
-    private class SelectButtonActionListener implements ActionListener
-    {
+    private class SelectButtonActionListener implements ActionListener {
 
         /**
          ********************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             m_selectWasPressed = true;
             m_selectedClassFile = m_table.getSelectedFile();
             RulesClassSelectDialog.this.setVisible(false);
@@ -175,16 +163,14 @@ class RulesClassSelectDialog extends JDialog
      *******************************************************************************
      *******************************************************************************
      */
-    private class CancelButtonActionListener implements ActionListener
-    {
+    private class CancelButtonActionListener implements ActionListener {
 
         /**
          ********************************************************************
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             RulesClassSelectDialog.this.setVisible(false);
         }
     }

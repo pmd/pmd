@@ -49,8 +49,7 @@ import java.io.IOException;
  * @since December 25, 2002
  * @version $Revision$, $Date$
  */
-class AnalysisViewer extends JPanel
-{
+class AnalysisViewer extends JPanel {
 
     private DirectoryTree m_directoryTree;
     private JLabel m_message;
@@ -74,8 +73,7 @@ class AnalysisViewer extends JPanel
      **********************************************************************************
      *
      */
-    protected AnalysisViewer()
-    {
+    protected AnalysisViewer() {
         super(new BorderLayout());
 
         createStatusBar();
@@ -94,8 +92,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createStatusBar()
-    {
+    private void createStatusBar() {
         String defaultMessage;
         CompoundBorder compoundBorder;
         EmptyBorder emptyBorder;
@@ -111,8 +108,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createDirectoryTreePanel()
-    {
+    private void createDirectoryTreePanel() {
         Color background;
         JScrollPane scrollPane;
 
@@ -129,8 +125,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createDirectoryTablePanel()
-    {
+    private void createDirectoryTablePanel() {
         Color background;
         JScrollPane scrollPane;
 
@@ -147,10 +142,8 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createDirectorySplitPane()
-    {
-        m_directorySplitPane = ComponentFactory.createHorizontalSplitPane(m_directoryTreePanel,
-                                                                          m_directoryTablePanel);
+    private void createDirectorySplitPane() {
+        m_directorySplitPane = ComponentFactory.createHorizontalSplitPane(m_directoryTreePanel, m_directoryTablePanel);
 
     }
 
@@ -158,8 +151,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createResultsViewer()
-    {
+    private void createResultsViewer() {
         m_resultsViewer = new AnalysisResultsViewer();
         m_resultsViewer.setSelectionColor(Color.blue);
     }
@@ -168,8 +160,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createResultsViewerScrollPane()
-    {
+    private void createResultsViewerScrollPane() {
         JScrollPane scrollPane;
 
         scrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
@@ -182,10 +173,8 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createMainSplitPane()
-    {
-        m_mainSplitPane = ComponentFactory.createVerticalSplitPane(m_directorySplitPane,
-                                                                   m_resultsViewerPanel);
+    private void createMainSplitPane() {
+        m_mainSplitPane = ComponentFactory.createVerticalSplitPane(m_directorySplitPane, m_resultsViewerPanel);
     }
 
     /**
@@ -193,8 +182,7 @@ class AnalysisViewer extends JPanel
      *
      * @param margin
      */
-    private JPanel createContentPanel(int margin)
-    {
+    private JPanel createContentPanel(int margin) {
         JPanel contentPanel = new JPanel(new BorderLayout());
 
         EtchedBorder outsideBorder = new EtchedBorder(EtchedBorder.RAISED);
@@ -203,7 +191,7 @@ class AnalysisViewer extends JPanel
 
         contentPanel.setBorder(compoundBorder);
         contentPanel.add(m_statusBar, BorderLayout.NORTH);
-        contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
+        contentPanel.add(m_mainSplitPane, BorderLayout.CENTER);
 
         return contentPanel;
     }
@@ -213,8 +201,7 @@ class AnalysisViewer extends JPanel
      *
      * @param title
      */
-    private TitledBorder createTitledBorder(String title)
-    {
+    private TitledBorder createTitledBorder(String title) {
         EtchedBorder etchedBorder;
         TitledBorder titledBorder;
         Font font;
@@ -232,8 +219,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    protected void setDefaultMessage()
-    {
+    protected void setDefaultMessage() {
         setMessage("Select a source file to view its analysis below.");
     }
 
@@ -242,10 +228,8 @@ class AnalysisViewer extends JPanel
      *
      * @param message The message to be displayed in the status area.
      */
-    protected void setMessage(String message)
-    {
-        if (message == null)
-        {
+    protected void setMessage(String message) {
+        if (message == null) {
             message = "";
         }
 
@@ -256,8 +240,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    protected void adjustSplitPaneDividerLocation()
-    {
+    protected void adjustSplitPaneDividerLocation() {
         m_mainSplitPane.setDividerLocation(0.4);
         m_directorySplitPane.setDividerLocation(0.4);
     }
@@ -266,21 +249,19 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createMenuBar()
-    {
-       m_menuBar = new JMenuBar();
+    private void createMenuBar() {
+        m_menuBar = new JMenuBar();
 
-       m_menuBar.add(new FileMenu());
-       m_menuBar.add(new EditMenu());
-       m_menuBar.add(new HelpMenu());
+        m_menuBar.add(new FileMenu());
+        m_menuBar.add(new EditMenu());
+        m_menuBar.add(new HelpMenu());
     }
 
     /**
      *********************************************************************************
      *
      */
-    protected void setMenuBar()
-    {
+    protected void setMenuBar() {
         PMDViewer.getViewer().setJMenuBar(m_menuBar);
     }
 
@@ -288,8 +269,7 @@ class AnalysisViewer extends JPanel
      ********************************************************************************
      *
      */
-    protected void analyze()
-    {
+    protected void analyze() {
         m_resultsViewer.analyze();
     }
 
@@ -298,11 +278,9 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class PrintAnalysisActionListener implements ActionListener
-    {
+    private class PrintAnalysisActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             (new PrintAnalysisResults()).print();
         }
     }
@@ -312,11 +290,9 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class ExitActionListener implements ActionListener
-    {
+    private class ExitActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             System.exit(0);
         }
     }
@@ -326,8 +302,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class CopyHTMLResultsActionListener implements ActionListener, HTMLAnalysisResultsEventListener
-    {
+    private class CopyHTMLResultsActionListener implements ActionListener, HTMLAnalysisResultsEventListener {
         private String m_htmlText;
 
         /**
@@ -335,22 +310,17 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
                 HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
 
-                if ((m_htmlText != null) && (m_htmlText.length() > 0))
-                {
+                if ((m_htmlText != null) && (m_htmlText.length() > 0)) {
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     StringSelection contents = new StringSelection(m_htmlText);
                     clipboard.setContents(contents, m_clipboardOwner);
                 }
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
             }
         }
@@ -360,8 +330,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
         }
 
         /**
@@ -369,8 +338,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
             m_htmlText = event.getHTMLText();
         }
     }
@@ -380,26 +348,20 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class CopyTextResultsActionListener implements ActionListener, TextAnalysisResultsEventListener
-    {
+    private class CopyTextResultsActionListener implements ActionListener, TextAnalysisResultsEventListener {
         private String m_text;
 
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 ListenerList.addListener((TextAnalysisResultsEventListener) this);
                 TextAnalysisResultsEvent.notifyRequestText(this);
 
-                if ((m_text != null) && (m_text.length() > 0))
-                {
+                if ((m_text != null) && (m_text.length() > 0)) {
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     StringSelection contents = new StringSelection(m_text);
                     clipboard.setContents(contents, m_clipboardOwner);
                 }
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((TextAnalysisResultsEventListener) this);
             }
         }
@@ -409,8 +371,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void requestTextAnalysisResults(TextAnalysisResultsEvent event)
-        {
+        public void requestTextAnalysisResults(TextAnalysisResultsEvent event) {
         }
 
         /**
@@ -418,8 +379,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void returnedTextAnalysisResults(TextAnalysisResultsEvent event)
-        {
+        public void returnedTextAnalysisResults(TextAnalysisResultsEvent event) {
             m_text = event.getText();
         }
     }
@@ -429,9 +389,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class FileMenuMouseListener extends MouseAdapter
-                                        implements HTMLAnalysisResultsEventListener
-    {
+    private class FileMenuMouseListener extends MouseAdapter implements HTMLAnalysisResultsEventListener {
 
         private String m_htmlText;
 
@@ -440,19 +398,15 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void mouseEntered(MouseEvent event)
-        {
-            try
-            {
+        public void mouseEntered(MouseEvent event) {
+            try {
                 ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
                 HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
                 boolean enable = (m_htmlText.length() > 0);
                 m_saveMenuItem.setEnabled(enable);
                 m_saveAsMenuItem.setEnabled(enable);
                 m_printAnalysisMenuItem.setEnabled(enable);
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
             }
         }
@@ -462,8 +416,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
         }
 
         /**
@@ -471,8 +424,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
             m_htmlText = event.getHTMLText();
         }
     }
@@ -482,9 +434,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class EditMenuMouseListener extends MouseAdapter
-                                        implements HTMLAnalysisResultsEventListener
-    {
+    private class EditMenuMouseListener extends MouseAdapter implements HTMLAnalysisResultsEventListener {
 
         String m_htmlText;
 
@@ -493,18 +443,14 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void mouseEntered(MouseEvent event)
-        {
-            try
-            {
+        public void mouseEntered(MouseEvent event) {
+            try {
                 ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
                 HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
                 boolean enable = (m_htmlText.length() > 0);
                 m_copyHTMLResultsMenuItem.setEnabled(enable);
                 m_copyTextResultsMenuItem.setEnabled(enable);
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
             }
         }
@@ -514,8 +460,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
         }
 
         /**
@@ -523,8 +468,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
             m_htmlText = event.getHTMLText();
         }
     }
@@ -534,15 +478,13 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class FileMenu extends JMenu
-    {
+    private class FileMenu extends JMenu {
 
         /**
          ********************************************************************
          *
          */
-        private FileMenu()
-        {
+        private FileMenu() {
             super("File");
 
             setMnemonic('F');
@@ -610,15 +552,13 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class EditMenu extends JMenu
-    {
+    private class EditMenu extends JMenu {
 
         /**
          ********************************************************************
          *
          */
-        private EditMenu()
-        {
+        private EditMenu() {
             super("Edit");
 
             setMnemonic('E');
@@ -658,8 +598,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class SaveSaveAs implements HTMLAnalysisResultsEventListener
-    {
+    private class SaveSaveAs implements HTMLAnalysisResultsEventListener {
 
         private String m_htmlText;
 
@@ -668,54 +607,38 @@ class AnalysisViewer extends JPanel
          *
          * @param outputFile
          */
-        private void perform(File outputFile)
-        {
-            if (outputFile != null)
-            {
-                try
-                {
+        private void perform(File outputFile) {
+            if (outputFile != null) {
+                try {
                     ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
                     HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
                     FileWriter writer = null;
 
-                    if (outputFile.exists())
-                    {
+                    if (outputFile.exists()) {
                         outputFile.delete();
                     }
 
-                    try
-                    {
+                    try {
                         writer = new FileWriter(outputFile);
                         writer.write(m_htmlText);
                         String message = "Saved Analysis results to file \"" + outputFile.getPath() + "\".";
                         MessageDialog.show(PMDViewer.getViewer(), message);
-                    }
-                    catch (IOException ioException)
-                    {
+                    } catch (IOException ioException) {
                         String message = "Could not save Analysis results to a file.";
                         PMDException pmdException = new PMDException(message, ioException);
                         pmdException.fillInStackTrace();
                         throw pmdException;
-                    }
-                    finally
-                    {
-                        try
-                        {
+                    } finally {
+                        try {
                             writer.close();
-                        }
-                        catch (IOException exception)
-                        {
+                        } catch (IOException exception) {
                         }
                     }
-                }
-                catch (PMDException pmdException)
-                {
+                } catch (PMDException pmdException) {
                     String message = pmdException.getMessage();
                     Exception exception = pmdException.getReason();
                     MessageDialog.show(PMDViewer.getViewer(), message, exception);
-                }
-                finally
-                {
+                } finally {
                     ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
                 }
             }
@@ -728,8 +651,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
         }
 
         /**
@@ -739,8 +661,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
             m_htmlText = event.getHTMLText();
         }
     }
@@ -750,8 +671,7 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class SaveActionListener implements ActionListener, DirectoryTableEventListener
-    {
+    private class SaveActionListener implements ActionListener, DirectoryTableEventListener {
 
         private File m_selectedFile;
 
@@ -760,20 +680,16 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 ListenerList.addListener((DirectoryTableEventListener) this);
                 DirectoryTableEvent.notifyRequestFileSelected(this);
 
-                if (m_selectedFile != null)
-                {
+                if (m_selectedFile != null) {
                     String fileName = m_selectedFile.getName();
                     int index = fileName.lastIndexOf('.');
 
-                    if (index >= 0)
-                    {
+                    if (index >= 0) {
                         fileName = fileName.substring(0, index);
                     }
 
@@ -782,15 +698,11 @@ class AnalysisViewer extends JPanel
                     File outputFile = new File(path);
                     (new SaveSaveAs()).perform(outputFile);
                 }
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((DirectoryTableEventListener) this);
             }
         }
@@ -802,8 +714,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void requestSelectedFile(DirectoryTableEvent event)
-        {
+        public void requestSelectedFile(DirectoryTableEvent event) {
         }
 
         /**
@@ -813,8 +724,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void fileSelectionChanged(DirectoryTableEvent event)
-        {
+        public void fileSelectionChanged(DirectoryTableEvent event) {
         }
 
         /**
@@ -824,8 +734,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void fileSelected(DirectoryTableEvent event)
-        {
+        public void fileSelected(DirectoryTableEvent event) {
             m_selectedFile = event.getSelectedFile();
         }
     }
@@ -835,25 +744,20 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class SaveAsActionListener implements ActionListener, DirectoryTableEventListener
-    {
+    private class SaveAsActionListener implements ActionListener, DirectoryTableEventListener {
 
         private File m_selectedFile;
 
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 ListenerList.addListener((DirectoryTableEventListener) this);
                 DirectoryTableEvent.notifyRequestFileSelected(this);
 
-                if (m_selectedFile != null)
-                {
+                if (m_selectedFile != null) {
                     String fileName = m_selectedFile.getName();
                     int index = fileName.lastIndexOf('.');
 
-                    if (index >= 0)
-                    {
+                    if (index >= 0) {
                         fileName = fileName.substring(0, index);
                     }
 
@@ -865,20 +769,15 @@ class AnalysisViewer extends JPanel
                     fileChooser.setSelectedFile(selectedFile);
                     int result = fileChooser.showSaveDialog(PMDViewer.getViewer());
 
-                    if (result == JFileChooser.APPROVE_OPTION)
-                    {
+                    if (result == JFileChooser.APPROVE_OPTION) {
                         (new SaveSaveAs()).perform(fileChooser.getSelectedFile());
                     }
                 }
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((DirectoryTableEventListener) this);
             }
         }
@@ -890,8 +789,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void requestSelectedFile(DirectoryTableEvent event)
-        {
+        public void requestSelectedFile(DirectoryTableEvent event) {
         }
 
         /**
@@ -901,8 +799,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void fileSelectionChanged(DirectoryTableEvent event)
-        {
+        public void fileSelectionChanged(DirectoryTableEvent event) {
         }
 
         /**
@@ -912,8 +809,7 @@ class AnalysisViewer extends JPanel
          *
          * @param event
          */
-        public void fileSelected(DirectoryTableEvent event)
-        {
+        public void fileSelected(DirectoryTableEvent event) {
             m_selectedFile = event.getSelectedFile();
         }
     }
@@ -923,16 +819,14 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class HTMLFileFilter extends FileFilter
-    {
+    private class HTMLFileFilter extends FileFilter {
 
         /**
          *****************************************************************************
          * @param file
          * @return
          */
-        public boolean accept(File file)
-        {
+        public boolean accept(File file) {
             String fileName = file.getName();
 
             return fileName.endsWith(".html") || fileName.endsWith(".htm");
@@ -941,8 +835,7 @@ class AnalysisViewer extends JPanel
         /**
          ******************************************************************************
          */
-        public String getDescription()
-        {
+        public String getDescription() {
             return "HTML Anaysis Result File (*.html, *.htm)";
         }
     }
@@ -952,15 +845,13 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class PMDClipboard implements ClipboardOwner
-    {
+    private class PMDClipboard implements ClipboardOwner {
 
         /**
          ************************************************************************
          *
          */
-        public void lostOwnership(Clipboard clipboard, Transferable contents)
-        {
+        public void lostOwnership(Clipboard clipboard, Transferable contents) {
         }
     }
 }

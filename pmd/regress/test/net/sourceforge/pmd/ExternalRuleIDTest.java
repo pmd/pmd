@@ -8,7 +8,7 @@ package test.net.sourceforge.pmd;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ExternalRuleID;
 
-public class ExternalRuleIDTest extends TestCase{
+public class ExternalRuleIDTest extends TestCase {
     public ExternalRuleIDTest(String name) {
         super(name);
     }

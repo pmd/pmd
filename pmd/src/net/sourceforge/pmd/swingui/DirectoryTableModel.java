@@ -22,8 +22,7 @@ import java.util.Vector;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class DirectoryTableModel extends DefaultTableModel
-{
+class DirectoryTableModel extends DefaultTableModel {
     private DateFormat m_dateFormat;
     private DecimalFormat m_decimalFormat;
     private String m_fileExtension;
@@ -38,8 +37,7 @@ class DirectoryTableModel extends DefaultTableModel
      *********************************************************************************
      *
      */
-    protected DirectoryTableModel(DirectoryTree directoryTree, String fileExtension)
-    {
+    protected DirectoryTableModel(DirectoryTree directoryTree, String fileExtension) {
         super(createData(), createColumnNames());
 
         DecimalFormatSymbols decimalFormatSymbols;
@@ -68,8 +66,7 @@ class DirectoryTableModel extends DefaultTableModel
      *
      * @return
      */
-    private static Vector createData()
-    {
+    private static Vector createData() {
         return new Vector();
     }
 
@@ -78,8 +75,7 @@ class DirectoryTableModel extends DefaultTableModel
      *
      * @return
      */
-    private static Vector createColumnNames()
-    {
+    private static Vector createColumnNames() {
         Vector row = new Vector(2);
 
         row.add("File Name");
@@ -94,10 +90,8 @@ class DirectoryTableModel extends DefaultTableModel
      *
      * @return
      */
-    protected File getFile(int row)
-    {
-        if ((row >= 0) && (row < getRowCount()))
-        {
+    protected File getFile(int row) {
+        if ((row >= 0) && (row < getRowCount())) {
             return (File) getValueAt(row, FILE_COLUMN);
         }
 
@@ -112,8 +106,7 @@ class DirectoryTableModel extends DefaultTableModel
      *
      * @return
      */
-    public boolean isCellEditable(int row, int column)
-    {
+    public boolean isCellEditable(int row, int column) {
         return false;
     }
 
@@ -122,15 +115,13 @@ class DirectoryTableModel extends DefaultTableModel
      *******************************************************************************
      *******************************************************************************
      */
-     private class DirectoryTreeSelectionListener implements TreeSelectionListener
-     {
+    private class DirectoryTreeSelectionListener implements TreeSelectionListener {
 
         /**
          *************************************************************************
          *
          */
-        private DirectoryTreeSelectionListener(DirectoryTree directoryTree)
-        {
+        private DirectoryTreeSelectionListener(DirectoryTree directoryTree) {
             directoryTree.addTreeSelectionListener(this);
         }
 
@@ -139,32 +130,27 @@ class DirectoryTableModel extends DefaultTableModel
          *
          * @param directoryTree
          */
-        public void valueChanged(TreeSelectionEvent event)
-        {
+        public void valueChanged(TreeSelectionEvent event) {
             TreePath treePath = event.getPath();
             DirectoryTreeNode treeNode = (DirectoryTreeNode) treePath.getLastPathComponent();
             Object userObject = treeNode.getUserObject();
             Vector rows = getDataVector();
 
-            for (int n = 0; n < rows.size(); n++)
-            {
+            for (int n = 0; n < rows.size(); n++) {
                 ((Vector) rows.get(n)).clear();
             }
 
             rows.clear();
 
-            if (userObject instanceof File)
-            {
+            if (userObject instanceof File) {
                 File directory;
                 File[] files;
 
                 directory = (File) userObject;
                 files = directory.listFiles(new FilesFilter());
 
-                if (files != null)
-                {
-                    for (int n1 = 0; n1 < files.length; n1++)
-                    {
+                if (files != null) {
+                    for (int n1 = 0; n1 < files.length; n1++) {
                         Vector row = new Vector(3);
                         String fileName = files[n1].getName();
                         int lineCount = countLines(files[n1]);
@@ -192,69 +178,51 @@ class DirectoryTableModel extends DefaultTableModel
          *
          * @return
          */
-        private int countLines(File file)
-        {
+        private int countLines(File file) {
             int lineCount = 0;
             InputStreamReader reader = null;
 
-            try
-            {
+            try {
                 char[] buffer;
 
                 buffer = new char[10000];
                 reader = new InputStreamReader(new FileInputStream(file));
 
-                while (reader.ready())
-                {
+                while (reader.ready()) {
                     int numberOfChars = reader.read(buffer);
 
-                    for (int n = 0; n < numberOfChars; n++)
-                    {
-                        if (buffer[n] == '\n')
-                        {
+                    for (int n = 0; n < numberOfChars; n++) {
+                        if (buffer[n] == '\n') {
                             lineCount++;
                         }
                     }
                 }
-            }
-            catch (FileNotFoundException exception)
-            {
+            } catch (FileNotFoundException exception) {
                 lineCount = 0;
-            }
-            catch (IOException exception)
-            {
+            } catch (IOException exception) {
                 lineCount = 0;
-            }
-            finally
-            {
-                if (reader != null)
-                {
-                    try
-                    {
+            } finally {
+                if (reader != null) {
+                    try {
                         reader.close();
-                    }
-                    catch (IOException exception)
-                    {
+                    } catch (IOException exception) {
                     }
                 }
             }
 
             return lineCount;
         }
-     }
+    }
 
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
-    private class FilesFilter implements FileFilter
-    {
+    private class FilesFilter implements FileFilter {
 
-        public boolean accept(File file)
-        {
-            if (file.isFile() && (file.isHidden() == false))
-            {
+        public boolean accept(File file) {
+            if (file.isFile() && (file.isHidden() == false)) {
                 String fileName = file.getName().toLowerCase();
 
                 return (fileName.endsWith(m_fileExtension));

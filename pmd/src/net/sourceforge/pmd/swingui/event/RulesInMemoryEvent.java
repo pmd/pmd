@@ -6,8 +6,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
-public class RulesInMemoryEvent extends EventObject
-{
+public class RulesInMemoryEvent extends EventObject {
 
     private int m_lowestPriorityForAnalysis;
     private RuleSet m_rules;
@@ -16,8 +15,7 @@ public class RulesInMemoryEvent extends EventObject
      *****************************************************************************
      *
      */
-    private RulesInMemoryEvent(Object source)
-    {
+    private RulesInMemoryEvent(Object source) {
         super(source);
     }
 
@@ -25,8 +23,7 @@ public class RulesInMemoryEvent extends EventObject
      *****************************************************************************
      *
      */
-    private RulesInMemoryEvent(Object source, int lowestPriorityForAnalysis)
-    {
+    private RulesInMemoryEvent(Object source, int lowestPriorityForAnalysis) {
         super(source);
 
         m_lowestPriorityForAnalysis = lowestPriorityForAnalysis;
@@ -36,8 +33,7 @@ public class RulesInMemoryEvent extends EventObject
      *****************************************************************************
      *
      */
-    private RulesInMemoryEvent(Object source, RuleSet rules)
-    {
+    private RulesInMemoryEvent(Object source, RuleSet rules) {
         super(source);
 
         m_rules = rules;
@@ -47,8 +43,7 @@ public class RulesInMemoryEvent extends EventObject
      *****************************************************************************
      *
      */
-    public RuleSet getRules()
-    {
+    public RuleSet getRules() {
         return m_rules;
     }
 
@@ -57,14 +52,12 @@ public class RulesInMemoryEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestAllRules(Object source)
-    {
+    public static final void notifyRequestAllRules(Object source) {
         RulesInMemoryEvent event = new RulesInMemoryEvent(source);
         List listenerList = ListenerList.getListeners(RulesInMemoryEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             RulesInMemoryEventListener listener;
 
             listener = (RulesInMemoryEventListener) listeners.next();
@@ -77,14 +70,12 @@ public class RulesInMemoryEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestIncludedRules(Object source, int lowestPriorityForAnalysis)
-    {
+    public static final void notifyRequestIncludedRules(Object source, int lowestPriorityForAnalysis) {
         RulesInMemoryEvent event = new RulesInMemoryEvent(source, lowestPriorityForAnalysis);
         List listenerList = ListenerList.getListeners(RulesInMemoryEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             RulesInMemoryEventListener listener;
 
             listener = (RulesInMemoryEventListener) listeners.next();
@@ -97,14 +88,12 @@ public class RulesInMemoryEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyReturnedRules(Object source, RuleSet rules)
-    {
+    public static final void notifyReturnedRules(Object source, RuleSet rules) {
         RulesInMemoryEvent event = new RulesInMemoryEvent(source, rules);
         List listenerList = ListenerList.getListeners(RulesInMemoryEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             RulesInMemoryEventListener listener;
 
             listener = (RulesInMemoryEventListener) listeners.next();

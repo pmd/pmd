@@ -14,7 +14,7 @@ public class EmptyWhileStmtRuleTest extends RuleTst {
     public void testEmptyWhileStmtRule() throws Throwable {
         Report report = process("EmptyWhileStmtRule.java", new EmptyWhileStmtRule());
         assertEquals(1, report.size());
-        assertEquals(new EmptyWhileStmtRule(), ((RuleViolation)report.iterator().next()).getRule());
+        assertEquals(new EmptyWhileStmtRule(), ((RuleViolation) report.iterator().next()).getRule());
     }
 
 

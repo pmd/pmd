@@ -15,8 +15,7 @@ import java.util.Enumeration;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
-{
+public class RulesTreeNode extends DefaultMutableTreeNode implements Constants {
     private RuleSet m_ruleSet;
     private Rule m_rule;
     private String m_className;
@@ -41,8 +40,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param name
      */
-    protected RulesTreeNode(String text)
-    {
+    protected RulesTreeNode(String text) {
         super();
 
         m_name = trim(text);
@@ -57,8 +55,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param name
      */
-    protected RulesTreeNode(RuleSet ruleSet)
-    {
+    protected RulesTreeNode(RuleSet ruleSet) {
         super();
 
         m_name = trim(ruleSet.getName());
@@ -74,8 +71,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param name
      */
-    protected RulesTreeNode(RulesTreeNode ruleSetNode, Rule rule)
-    {
+    protected RulesTreeNode(RulesTreeNode ruleSetNode, Rule rule) {
         super();
 
         m_name = trim(rule.getName());
@@ -96,11 +92,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param name
      */
-    protected RulesTreeNode(RulesTreeNode ruleNode,
-                            String propertyName,
-                            String propertyValue,
-                            String propertyValueType)
-    {
+    protected RulesTreeNode(RulesTreeNode ruleNode, String propertyName, String propertyValue, String propertyValueType) {
         super();
 
         m_name = trim(propertyName);
@@ -120,16 +112,13 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected RulesTreeNode getChildNode(String childName)
-    {
+    protected RulesTreeNode getChildNode(String childName) {
         Enumeration children = children();
 
-        while (children.hasMoreElements())
-        {
+        while (children.hasMoreElements()) {
             RulesTreeNode childNode = (RulesTreeNode) children.nextElement();
 
-            if (childNode.getName().equalsIgnoreCase(childName))
-            {
+            if (childNode.getName().equalsIgnoreCase(childName)) {
                 return childNode;
             }
         }
@@ -142,8 +131,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected String getClassName()
-    {
+    protected String getClassName() {
         return m_className;
     }
 
@@ -152,8 +140,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected String getDescription()
-    {
+    protected String getDescription() {
         return m_description;
     }
 
@@ -162,8 +149,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected String getExample()
-    {
+    protected String getExample() {
         return m_example;
     }
 
@@ -172,8 +158,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected String getMessage()
-    {
+    protected String getMessage() {
         return m_message;
     }
 
@@ -182,8 +167,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected String getName()
-    {
+    protected String getName() {
         return m_name;
     }
 
@@ -192,10 +176,8 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected RulesTreeNode getParentRuleData()
-    {
-        if (isProperty())
-        {
+    protected RulesTreeNode getParentRuleData() {
+        if (isProperty()) {
             return (RulesTreeNode) getParent();
         }
 
@@ -207,15 +189,12 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected RulesTreeNode getParentRuleSetData()
-    {
-        if (isProperty())
-        {
+    protected RulesTreeNode getParentRuleSetData() {
+        if (isProperty()) {
             return (RulesTreeNode) getParent().getParent();
         }
 
-        if (isRule())
-        {
+        if (isRule()) {
             return (RulesTreeNode) getParent();
         }
 
@@ -227,8 +206,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected String getPropertyValue()
-    {
+    protected String getPropertyValue() {
         return m_propertyValue;
     }
 
@@ -237,8 +215,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected String getPropertyValueType()
-    {
+    protected String getPropertyValueType() {
         return m_propertyValueType;
     }
 
@@ -247,12 +224,10 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected RulesTreeNode getSibling(String name)
-    {
+    protected RulesTreeNode getSibling(String name) {
         RulesTreeNode parentNode = (RulesTreeNode) getParent();
 
-        if (parentNode != null)
-        {
+        if (parentNode != null) {
             return parentNode.getChildNode(name);
         }
 
@@ -264,8 +239,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected boolean include()
-    {
+    protected boolean include() {
         return m_include;
     }
 
@@ -274,25 +248,19 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected boolean includeAncestor()
-    {
+    protected boolean includeAncestor() {
         boolean include = true;
 
-        if (include)
-        {
-            if (isRule())
-            {
+        if (include) {
+            if (isRule()) {
                 RulesTreeNode ruleSetNode;
 
                 ruleSetNode = (RulesTreeNode) getParent();
                 include = ruleSetNode.include();
-            }
-            else if (isProperty())
-            {
+            } else if (isProperty()) {
                 RulesTreeNode ruleNode = (RulesTreeNode) getParent();
 
-                if (ruleNode.include())
-                {
+                if (ruleNode.include()) {
                     RulesTreeNode ruleSetNode;
 
                     ruleSetNode = (RulesTreeNode) ruleNode.getParent();
@@ -309,8 +277,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected boolean isProperty()
-    {
+    protected boolean isProperty() {
         return m_type == IS_PROPERTY;
     }
 
@@ -319,8 +286,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected boolean isRule()
-    {
+    protected boolean isRule() {
         return m_type == IS_RULE;
     }
 
@@ -329,8 +295,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected boolean isRuleSet()
-    {
+    protected boolean isRuleSet() {
         return m_type == IS_RULE_SET;
     }
 
@@ -339,8 +304,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    public boolean isRoot()
-    {
+    public boolean isRoot() {
         return m_type == IS_ROOT;
     }
 
@@ -349,8 +313,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected Rule getRule()
-    {
+    protected Rule getRule() {
         return m_rule;
     }
 
@@ -359,8 +322,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected RuleSet getRuleSet()
-    {
+    protected RuleSet getRuleSet() {
         return m_ruleSet;
     }
 
@@ -369,8 +331,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    protected int getPriority()
-    {
+    protected int getPriority() {
         return m_priority;
     }
 
@@ -379,16 +340,12 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newName
      */
-    protected void setDisplayName()
-    {
+    protected void setDisplayName() {
         String displayName;
 
-        if (isProperty())
-        {
+        if (isProperty()) {
             displayName = m_name + ":" + m_propertyValue;
-        }
-        else
-        {
+        } else {
             displayName = m_name;
         }
 
@@ -400,8 +357,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newName
      */
-    protected void setName(String newName)
-    {
+    protected void setName(String newName) {
         m_name = trim(newName);
 
         setDisplayName();
@@ -412,8 +368,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newName
      */
-    protected void setMessage(String newMessage)
-    {
+    protected void setMessage(String newMessage) {
         m_message = trim(newMessage);
     }
 
@@ -422,8 +377,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newName
      */
-    protected void setDescription(String newDescription)
-    {
+    protected void setDescription(String newDescription) {
         m_description = trim(newDescription);
     }
 
@@ -432,8 +386,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newName
      */
-    protected void setExample(String newExample)
-    {
+    protected void setExample(String newExample) {
     }
 
     /**
@@ -441,8 +394,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newName
      */
-    protected void setPropertyValue(String newValue)
-    {
+    protected void setPropertyValue(String newValue) {
         m_propertyValue = trim(newValue);
 
         setDisplayName();
@@ -453,8 +405,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newName
      */
-    protected void setPropertyValueType(String newValue)
-    {
+    protected void setPropertyValueType(String newValue) {
         m_propertyValueType = trim(newValue);
     }
 
@@ -463,8 +414,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newName
      */
-    protected void setInclude(boolean include)
-    {
+    protected void setInclude(boolean include) {
         m_include = include;
     }
 
@@ -473,8 +423,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param priority
      */
-    protected void setPriority(int priority)
-    {
+    protected void setPriority(int priority) {
         m_priority = priority;
     }
 
@@ -483,8 +432,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param newClass
      */
-    protected void setClassName(String newClassName)
-    {
+    protected void setClassName(String newClassName) {
         m_className = trim(newClassName);
     }
 
@@ -492,25 +440,19 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *************************************************************************
      *
      */
-    protected void saveData()
-    {
-        if (isRuleSet())
-        {
+    protected void saveData() {
+        if (isRuleSet()) {
             m_ruleSet.setName(m_name);
             m_ruleSet.setDescription(m_description);
             m_ruleSet.setInclude(m_include);
-        }
-        else if (isRule())
-        {
+        } else if (isRule()) {
             m_rule.setName(m_name);
             m_rule.setMessage(m_message);
             m_rule.setDescription(m_description);
             m_rule.setExample(m_example);
             m_rule.setInclude(m_include);
             m_rule.setPriority(m_priority);
-        }
-        else if (isProperty())
-        {
+        } else if (isProperty()) {
             m_rule.getProperties().setValue(m_name, m_propertyValue);
             m_rule.getProperties().setValueType(m_name, m_propertyValueType);
         }
@@ -523,18 +465,13 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @return
      */
-    private String trim(String text)
-    {
-        if (text == null)
-        {
+    private String trim(String text) {
+        if (text == null) {
             text = EMPTY_STRING;
-        }
-        else
-        {
+        } else {
             text = text.trim();
 
-            if (text.length() == 0)
-            {
+            if (text.length() == 0) {
                 text = EMPTY_STRING;
             }
         }
@@ -547,43 +484,36 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *
      * @param event
      */
-    protected void sortChildren()
-    {
+    protected void sortChildren() {
         int childCount = getChildCount();
         RulesTreeNode[] treeNodes = new RulesTreeNode[childCount];
         boolean needToSort = false;
 
-        for (int n = 0; n < childCount; n++)
-        {
+        for (int n = 0; n < childCount; n++) {
             treeNodes[n] = (RulesTreeNode) getChildAt(n);
 
-            if ((n > 0) && (needToSort == false))
-            {
+            if ((n > 0) && (needToSort == false)) {
                 String previousNodeName = treeNodes[n - 1].getName();
                 String currentNodeName = treeNodes[n].getName();
 
-                if (currentNodeName.compareToIgnoreCase(previousNodeName) < 0)
-                {
+                if (currentNodeName.compareToIgnoreCase(previousNodeName) < 0) {
                     needToSort = true;
                 }
             }
         }
 
-        if (needToSort)
-        {
+        if (needToSort) {
             Arrays.sort(treeNodes, new SortComparator());
             removeAllChildren();
 
-            for (int n = 0; n < treeNodes.length; n++)
-            {
+            for (int n = 0; n < treeNodes.length; n++) {
                 add(treeNodes[n]);
             }
 
             RulesTreeModelEvent.notifyReload(this, this);
         }
 
-        for (int n = 0; n < treeNodes.length; n++)
-        {
+        for (int n = 0; n < treeNodes.length; n++) {
             treeNodes[n] = null;
         }
     }
@@ -593,8 +523,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
      *******************************************************************************
      *******************************************************************************
      */
-    private class SortComparator implements Comparator
-    {
+    private class SortComparator implements Comparator {
 
         /**
          ***************************************************************************
@@ -604,8 +533,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
          *
          * @return
          */
-        public int compare(Object object1, Object object2)
-        {
+        public int compare(Object object1, Object object2) {
             String name1 = ((RulesTreeNode) object1).getName();
             String name2 = ((RulesTreeNode) object2).getName();
 
@@ -619,8 +547,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
          *
          * @return
          */
-        public boolean equals(Object object)
-        {
+        public boolean equals(Object object) {
             return object == this;
         }
     }

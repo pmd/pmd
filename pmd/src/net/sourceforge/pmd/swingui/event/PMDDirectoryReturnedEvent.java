@@ -12,8 +12,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class PMDDirectoryReturnedEvent extends EventObject
-{
+public class PMDDirectoryReturnedEvent extends EventObject {
 
     private List m_ruleSetList;
     private RuleSet m_ruleSet;
@@ -24,8 +23,7 @@ public class PMDDirectoryReturnedEvent extends EventObject
      *
      * @param source
      */
-    private PMDDirectoryReturnedEvent(Object source)
-    {
+    private PMDDirectoryReturnedEvent(Object source) {
         super(source);
     }
 
@@ -35,8 +33,7 @@ public class PMDDirectoryReturnedEvent extends EventObject
      * @param source
      * @param ruleSetList
      */
-    private PMDDirectoryReturnedEvent(Object source, String ruleSetPath)
-    {
+    private PMDDirectoryReturnedEvent(Object source, String ruleSetPath) {
         super(source);
 
         m_ruleSetPath = ruleSetPath;
@@ -48,8 +45,7 @@ public class PMDDirectoryReturnedEvent extends EventObject
      * @param source
      * @param ruleSetList
      */
-    private PMDDirectoryReturnedEvent(Object source, List ruleSetList)
-    {
+    private PMDDirectoryReturnedEvent(Object source, List ruleSetList) {
         super(source);
 
         m_ruleSetList = ruleSetList;
@@ -61,8 +57,7 @@ public class PMDDirectoryReturnedEvent extends EventObject
      * @param source
      * @param ruleSet
      */
-    private PMDDirectoryReturnedEvent(Object source, RuleSet ruleSet)
-    {
+    private PMDDirectoryReturnedEvent(Object source, RuleSet ruleSet) {
         super(source);
 
         m_ruleSet = ruleSet;
@@ -73,8 +68,7 @@ public class PMDDirectoryReturnedEvent extends EventObject
      *
      * @return
      */
-    public String getRuleSetPath()
-    {
+    public String getRuleSetPath() {
         return m_ruleSetPath;
     }
 
@@ -83,8 +77,7 @@ public class PMDDirectoryReturnedEvent extends EventObject
      *
      * @return
      */
-    public List getRuleSetList()
-    {
+    public List getRuleSetList() {
         return m_ruleSetList;
     }
 
@@ -93,8 +86,7 @@ public class PMDDirectoryReturnedEvent extends EventObject
      *
      * @return
      */
-    public RuleSet getRuleSet()
-    {
+    public RuleSet getRuleSet() {
         return m_ruleSet;
     }
 
@@ -104,14 +96,12 @@ public class PMDDirectoryReturnedEvent extends EventObject
      * @param source
      * @param ruleSetPath
      */
-    public static final void notifyReturnedRuleSetPath(Object source, String ruleSetPath)
-    {
+    public static final void notifyReturnedRuleSetPath(Object source, String ruleSetPath) {
         PMDDirectoryReturnedEvent event = new PMDDirectoryReturnedEvent(source, ruleSetPath);
         List listenerList = ListenerList.getListeners(PMDDirectoryReturnedEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             PMDDirectoryReturnedEventListener listener;
 
             listener = (PMDDirectoryReturnedEventListener) listeners.next();
@@ -125,14 +115,12 @@ public class PMDDirectoryReturnedEvent extends EventObject
      * @param source
      * @param ruleSets
      */
-    public static final void notifyReturnedAllRuleSets(Object source, List ruleSets)
-    {
+    public static final void notifyReturnedAllRuleSets(Object source, List ruleSets) {
         PMDDirectoryReturnedEvent event = new PMDDirectoryReturnedEvent(source, ruleSets);
         List listenerList = ListenerList.getListeners(PMDDirectoryReturnedEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             PMDDirectoryReturnedEventListener listener;
 
             listener = (PMDDirectoryReturnedEventListener) listeners.next();
@@ -146,14 +134,12 @@ public class PMDDirectoryReturnedEvent extends EventObject
      * @param source
      * @param ruleSets
      */
-    public static final void notifyReturnedDefaultRuleSets(Object source, List ruleSets)
-    {
+    public static final void notifyReturnedDefaultRuleSets(Object source, List ruleSets) {
         PMDDirectoryReturnedEvent event = new PMDDirectoryReturnedEvent(source, ruleSets);
         List listenerList = ListenerList.getListeners(PMDDirectoryReturnedEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             PMDDirectoryReturnedEventListener listener;
 
             listener = (PMDDirectoryReturnedEventListener) listeners.next();
@@ -167,14 +153,12 @@ public class PMDDirectoryReturnedEvent extends EventObject
      * @param source
      * @param ruleSet
      */
-    public static final void notifyReturnedIncludedRules(Object source, RuleSet ruleSet)
-    {
+    public static final void notifyReturnedIncludedRules(Object source, RuleSet ruleSet) {
         PMDDirectoryReturnedEvent event = new PMDDirectoryReturnedEvent(source, ruleSet);
         List listenerList = ListenerList.getListeners(PMDDirectoryReturnedEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             PMDDirectoryReturnedEventListener listener;
 
             listener = (PMDDirectoryReturnedEventListener) listeners.next();

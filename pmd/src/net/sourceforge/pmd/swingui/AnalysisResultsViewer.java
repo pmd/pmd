@@ -16,16 +16,14 @@ import java.io.File;
  * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-class AnalysisResultsViewer extends ResultsViewer
-{
+class AnalysisResultsViewer extends ResultsViewer {
 
     private RuleSet m_ruleSet;
 
     /**
      ********************************************************************************
      */
-    protected AnalysisResultsViewer()
-    {
+    protected AnalysisResultsViewer() {
         super();
 
         //
@@ -40,16 +38,14 @@ class AnalysisResultsViewer extends ResultsViewer
      ***********************************************************************************
      ***********************************************************************************
      */
-    private class DirectoryTableEventHandler implements DirectoryTableEventListener
-    {
+    private class DirectoryTableEventHandler implements DirectoryTableEventListener {
 
         /**
          ***************************************************************************
          *
          * @param event
          */
-        public void requestSelectedFile(DirectoryTableEvent event)
-        {
+        public void requestSelectedFile(DirectoryTableEvent event) {
         }
 
         /**
@@ -57,17 +53,13 @@ class AnalysisResultsViewer extends ResultsViewer
          *
          * @param event
          */
-        public void fileSelectionChanged(DirectoryTableEvent event)
-        {
-            try
-            {
+        public void fileSelectionChanged(DirectoryTableEvent event) {
+            try {
                 File[] file = {event.getSelectedFile()};
                 int priority = Preferences.getPreferences().getLowestPriorityForAnalysis();
                 RulesInMemoryEvent.notifyRequestIncludedRules(this, priority);
                 AnalysisResultsViewer.this.analyze(file, m_ruleSet);
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 MessageDialog.show(PMDViewer.getViewer(), pmdException.getMessage(), pmdException.getReason());
             }
         }
@@ -77,8 +69,7 @@ class AnalysisResultsViewer extends ResultsViewer
          *
          * @param event
          */
-        public void fileSelected(DirectoryTableEvent event)
-        {
+        public void fileSelected(DirectoryTableEvent event) {
         }
     }
 
@@ -87,16 +78,14 @@ class AnalysisResultsViewer extends ResultsViewer
      ***************************************************************************
      ***************************************************************************
      */
-    private class RulesInMemoryEventHandler implements RulesInMemoryEventListener
-    {
+    private class RulesInMemoryEventHandler implements RulesInMemoryEventListener {
 
         /**
          ***********************************************************************
          *
          * @param event
          */
-        public void requestAllRules(RulesInMemoryEvent event)
-        {
+        public void requestAllRules(RulesInMemoryEvent event) {
         }
 
         /**
@@ -104,8 +93,7 @@ class AnalysisResultsViewer extends ResultsViewer
          *
          * @param event
          */
-        public void requestIncludedRules(RulesInMemoryEvent event)
-        {
+        public void requestIncludedRules(RulesInMemoryEvent event) {
         }
 
         /**
@@ -113,8 +101,7 @@ class AnalysisResultsViewer extends ResultsViewer
          *
          * @param event
          */
-        public void returnedRules(RulesInMemoryEvent event)
-        {
+        public void returnedRules(RulesInMemoryEvent event) {
             m_ruleSet = event.getRules();
         }
     }

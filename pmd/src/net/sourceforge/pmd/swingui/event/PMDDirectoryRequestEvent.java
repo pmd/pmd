@@ -15,8 +15,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class PMDDirectoryRequestEvent extends EventObject
-{
+public class PMDDirectoryRequestEvent extends EventObject {
 
     private List m_ruleSetList;
     private RuleSet m_ruleSet;
@@ -27,8 +26,7 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @param source
      */
-    private PMDDirectoryRequestEvent(Object source)
-    {
+    private PMDDirectoryRequestEvent(Object source) {
         super(source);
     }
 
@@ -38,8 +36,7 @@ public class PMDDirectoryRequestEvent extends EventObject
      * @param source
      * @param ruleSetList
      */
-    private PMDDirectoryRequestEvent(Object source, List ruleSetList)
-    {
+    private PMDDirectoryRequestEvent(Object source, List ruleSetList) {
         super(source);
 
         m_ruleSetList = ruleSetList;
@@ -51,8 +48,7 @@ public class PMDDirectoryRequestEvent extends EventObject
      * @param source
      * @param ruleSet
      */
-    private PMDDirectoryRequestEvent(Object source, RuleSet ruleSet)
-    {
+    private PMDDirectoryRequestEvent(Object source, RuleSet ruleSet) {
         super(source);
 
         m_ruleSet = ruleSet;
@@ -64,8 +60,7 @@ public class PMDDirectoryRequestEvent extends EventObject
      * @param source
      * @param lowestPriorityForAnalysis
      */
-    private PMDDirectoryRequestEvent(Object source, int lowestPriorityForAnalysis)
-    {
+    private PMDDirectoryRequestEvent(Object source, int lowestPriorityForAnalysis) {
         super(source);
 
         m_lowestPriorityForAnalysis = lowestPriorityForAnalysis;
@@ -76,8 +71,7 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @return
      */
-    public List getRuleSetList()
-    {
+    public List getRuleSetList() {
         return m_ruleSetList;
     }
 
@@ -86,8 +80,7 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @return
      */
-    public RuleSet getRuleSet()
-    {
+    public RuleSet getRuleSet() {
         return m_ruleSet;
     }
 
@@ -96,8 +89,7 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @return
      */
-    public int getLowestPriorityForAnalysis()
-    {
+    public int getLowestPriorityForAnalysis() {
         return m_lowestPriorityForAnalysis;
     }
 
@@ -106,14 +98,12 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestRuleSetPath(Object source)
-    {
+    public static final void notifyRequestRuleSetPath(Object source) {
         PMDDirectoryRequestEvent event = new PMDDirectoryRequestEvent(source);
         List listenerList = ListenerList.getListeners(PMDDirectoryRequestEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             PMDDirectoryRequestEventListener listener;
 
             listener = (PMDDirectoryRequestEventListener) listeners.next();
@@ -126,23 +116,18 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestAllRuleSets(Object source)
-    {
+    public static final void notifyRequestAllRuleSets(Object source) {
         PMDDirectoryRequestEvent event = new PMDDirectoryRequestEvent(source);
         List listenerList = ListenerList.getListeners(PMDDirectoryRequestEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
-            try
-            {
+        while (listeners.hasNext()) {
+            try {
                 PMDDirectoryRequestEventListener listener;
 
                 listener = (PMDDirectoryRequestEventListener) listeners.next();
                 listener.requestAllRuleSets(event);
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
@@ -155,18 +140,16 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestDefaultRuleSets(Object source)
-    {
+    public static final void notifyRequestDefaultRuleSets(Object source) {
         PMDDirectoryRequestEvent event = new PMDDirectoryRequestEvent(source);
         List listenerList = ListenerList.getListeners(PMDDirectoryRequestEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
-                PMDDirectoryRequestEventListener listener;
+        while (listeners.hasNext()) {
+            PMDDirectoryRequestEventListener listener;
 
-                listener = (PMDDirectoryRequestEventListener) listeners.next();
-                listener.requestDefaultRuleSets(event);
+            listener = (PMDDirectoryRequestEventListener) listeners.next();
+            listener.requestDefaultRuleSets(event);
         }
     }
 
@@ -175,23 +158,18 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestIncludedRules(Object source, int lowestPriorityForAnalysis)
-    {
+    public static final void notifyRequestIncludedRules(Object source, int lowestPriorityForAnalysis) {
         PMDDirectoryRequestEvent event = new PMDDirectoryRequestEvent(source, lowestPriorityForAnalysis);
         List listenerList = ListenerList.getListeners(PMDDirectoryRequestEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
-            try
-            {
+        while (listeners.hasNext()) {
+            try {
                 PMDDirectoryRequestEventListener listener;
 
                 listener = (PMDDirectoryRequestEventListener) listeners.next();
                 listener.requestIncludedRules(event);
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);

@@ -47,7 +47,7 @@ public class RuleSetFactory {
      */
     public RuleSet createRuleSet(String name) throws RuleSetNotFoundException {
         if (name.indexOf(',') == -1) {
-           return createRuleSet(tryToGetStreamTo(name));
+            return createRuleSet(tryToGetStreamTo(name));
         }
 
         RuleSet ruleSet = new RuleSet();
@@ -70,7 +70,7 @@ public class RuleSetFactory {
             ruleSet.setDescription(root.getChildNodes().item(1).getFirstChild().getNodeValue());
 
             NodeList rules = root.getElementsByTagName("rule");
-            for (int i =0; i<rules.getLength(); i++) {
+            for (int i = 0; i < rules.getLength(); i++) {
                 Node ruleNode = rules.item(i);
                 Rule rule;
                 if (ruleNode.getAttributes().getNamedItem("ref") != null) {
@@ -79,7 +79,7 @@ public class RuleSetFactory {
                     RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
                     rule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
                 } else {
-                    rule = (Rule)Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue()).newInstance();
+                    rule = (Rule) Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue()).newInstance();
                     rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
                     rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
                 }
@@ -121,11 +121,9 @@ public class RuleSetFactory {
     }
 
     private InputStream tryToGetStreamTo(String name) throws RuleSetNotFoundException {
-        InputStream in = ResourceLoader.loadResourceAsStream( name );
-        if ( in == null ) {
-            throw new RuleSetNotFoundException( "Can't find resource " + name +
-           "Make sure the resource is valid file " +
-            "or URL or is on the CLASSPATH\n" );
+        InputStream in = ResourceLoader.loadResourceAsStream(name);
+        if (in == null) {
+            throw new RuleSetNotFoundException("Can't find resource " + name + "Make sure the resource is valid file " + "or URL or is on the CLASSPATH\n");
         }
         return in;
     }

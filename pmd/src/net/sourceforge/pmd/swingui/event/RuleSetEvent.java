@@ -10,8 +10,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetEvent extends EventObject
-{
+public class RuleSetEvent extends EventObject {
 
     private List m_ruleSetList;
 
@@ -20,8 +19,7 @@ public class RuleSetEvent extends EventObject
      *
      * @param source
      */
-    private RuleSetEvent(Object source)
-    {
+    private RuleSetEvent(Object source) {
         super(source);
     }
 
@@ -31,8 +29,7 @@ public class RuleSetEvent extends EventObject
      * @param source
      * @param ruleSetList
      */
-    private RuleSetEvent(Object source, List ruleSetList)
-    {
+    private RuleSetEvent(Object source, List ruleSetList) {
         super(source);
 
         m_ruleSetList = ruleSetList;
@@ -43,8 +40,7 @@ public class RuleSetEvent extends EventObject
      *
      * @return
      */
-    public List getRuleSetList()
-    {
+    public List getRuleSetList() {
         return m_ruleSetList;
     }
 
@@ -53,14 +49,12 @@ public class RuleSetEvent extends EventObject
      *
      * @param registeredRuleSets
      */
-    public static final void notifySaveRuleSets(Object source, List ruleSetList)
-    {
+    public static final void notifySaveRuleSets(Object source, List ruleSetList) {
         RuleSetEvent event = new RuleSetEvent(source, ruleSetList);
         List listenerList = ListenerList.getListeners(RuleSetEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             RuleSetEventListener listener;
 
             listener = (RuleSetEventListener) listeners.next();

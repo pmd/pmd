@@ -15,8 +15,7 @@ import java.util.Iterator;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class TextRenderer
-{
+class TextRenderer {
 
     private boolean m_reportNoViolations;
     private StringWriter m_writer;
@@ -25,8 +24,7 @@ class TextRenderer
      *******************************************************************************
      *
      */
-    protected void beginRendering(boolean reportNoViolations)
-    {
+    protected void beginRendering(boolean reportNoViolations) {
         m_reportNoViolations = reportNoViolations;
         m_writer = new StringWriter(25000);
     }
@@ -36,8 +34,7 @@ class TextRenderer
      *
      * @return Results text.
      */
-    protected String endRendering()
-    {
+    protected String endRendering() {
         return m_writer.toString();
     }
 
@@ -46,14 +43,11 @@ class TextRenderer
      *
      * @param report
      */
-    public void render(String fileName, Report report)
-    {
+    public void render(String fileName, Report report) {
         Iterator violations = report.iterator();
 
-        if (violations.hasNext() == false)
-        {
-            if (m_reportNoViolations)
-            {
+        if (violations.hasNext() == false) {
+            if (m_reportNoViolations) {
                 m_writer.write("Source File: ");
                 m_writer.write(fileName);
                 m_writer.write('\n');
@@ -67,8 +61,7 @@ class TextRenderer
         m_writer.write(fileName);
         m_writer.write('\n');
 
-        while (violations.hasNext())
-        {
+        while (violations.hasNext()) {
             RuleViolation ruleViolation = (RuleViolation) violations.next();
             Rule rule = ruleViolation.getRule();
 
@@ -85,12 +78,9 @@ class TextRenderer
             //
             String ruleMessage = ruleViolation.getDescription();
 
-            if (ruleMessage == null)
-            {
+            if (ruleMessage == null) {
                 ruleMessage = "";
-            }
-            else
-            {
+            } else {
                 ruleMessage = ruleMessage.replace('\n', ' ').trim();
             }
 
@@ -110,12 +100,9 @@ class TextRenderer
             //
             String description = rule.getDescription();
 
-            if (description == null)
-            {
+            if (description == null) {
                 description = "";
-            }
-            else
-            {
+            } else {
                 description = description.replace('\n', ' ').trim();
             }
 
@@ -128,8 +115,7 @@ class TextRenderer
             //
             String example = rule.getExample();
 
-            if ((example != null) && (example.length() > 0))
-            {
+            if ((example != null) && (example.length() > 0)) {
                 m_writer.write("Example: ");
                 m_writer.write(example);
                 m_writer.write('\n');

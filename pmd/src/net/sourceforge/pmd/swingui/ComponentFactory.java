@@ -25,16 +25,14 @@ import java.awt.event.ActionListener;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class ComponentFactory
-{
+class ComponentFactory {
 
     /**
      ******************************************************************************
      *
      * @return
      */
-    protected static final JPanel createButtonPanel()
-    {
+    protected static final JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         EmptyBorder emptyBorder = new EmptyBorder(3, 3, 3, 3);
         EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.RAISED);
@@ -52,8 +50,7 @@ class ComponentFactory
      *
      * @return
      */
-    protected static final JButton createButton(String title)
-    {
+    protected static final JButton createButton(String title) {
         return createButton(title, null, null);
     }
 
@@ -64,8 +61,7 @@ class ComponentFactory
      *
      * @return
      */
-    protected static final JButton createButton(String title, Color background, Color foreground)
-    {
+    protected static final JButton createButton(String title, Color background, Color foreground) {
         JButton button;
         BevelBorder bevelBorder;
         EtchedBorder etchedBorder;
@@ -73,13 +69,11 @@ class ComponentFactory
         LineBorder lineBorder;
         Dimension size;
 
-        if (background == null)
-        {
+        if (background == null) {
             background = UIManager.getColor("standardButtonBackground");
         }
 
-        if (foreground == null)
-        {
+        if (foreground == null) {
             foreground = UIManager.getColor("standardButtonForeground");
         }
 
@@ -107,8 +101,7 @@ class ComponentFactory
      *******************************************************************************
      *
      */
-    protected static final JButton createSaveButton(ActionListener actionListener)
-    {
+    protected static final JButton createSaveButton(ActionListener actionListener) {
         Color background = UIManager.getColor("pmdGreen");
         Color foreground = Color.white;
         JButton saveButton = ComponentFactory.createButton("Save", background, foreground);
@@ -121,8 +114,7 @@ class ComponentFactory
      *******************************************************************************
      *
      */
-    protected static final JButton createCancelButton(ActionListener actionListener)
-    {
+    protected static final JButton createCancelButton(ActionListener actionListener) {
         Color background = UIManager.getColor("pmdRed");
         Color foreground = Color.white;
         JButton cancelButton = ComponentFactory.createButton("Cancel", background, foreground);
@@ -135,9 +127,7 @@ class ComponentFactory
      *******************************************************************************
      *
      */
-    protected static final JPanel createSaveCancelButtonPanel(ActionListener saveActionListener,
-                                                              ActionListener cancelActionListener)
-    {
+    protected static final JPanel createSaveCancelButtonPanel(ActionListener saveActionListener, ActionListener cancelActionListener) {
         JPanel buttonPanel = createButtonPanel();
         buttonPanel.add(createSaveButton(saveActionListener));
         buttonPanel.add(createCancelButton(cancelActionListener));
@@ -152,8 +142,7 @@ class ComponentFactory
      *
      * @return
      */
-    protected static final TitledBorder createTitledBorder(String title)
-    {
+    protected static final TitledBorder createTitledBorder(String title) {
         TitledBorder titledBorder;
         EtchedBorder etchedBorder;
         CompoundBorder compoundBorder;
@@ -176,9 +165,7 @@ class ComponentFactory
      *
      * @return
      */
-    protected static final JSplitPane createHorizontalSplitPane(Component leftPane,
-                                                                Component rightPane)
-    {
+    protected static final JSplitPane createHorizontalSplitPane(Component leftPane, Component rightPane) {
         JSplitPane splitPane = new JSplitPane();
 
         splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
@@ -198,9 +185,7 @@ class ComponentFactory
      *
      * @return
      */
-    protected static final JSplitPane createVerticalSplitPane(Component topPane,
-                                                              Component bottomPane)
-    {
+    protected static final JSplitPane createVerticalSplitPane(Component topPane, Component bottomPane) {
         JSplitPane splitPane = new JSplitPane();
 
         splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -220,8 +205,7 @@ class ComponentFactory
      *
      * @return
      */
-    protected static final JScrollPane createScrollPane(Component view)
-    {
+    protected static final JScrollPane createScrollPane(Component view) {
         JScrollPane scrollPane = new JScrollPane(view);
 
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -238,8 +222,7 @@ class ComponentFactory
      *
      * @return
      */
-    protected static final JTextArea createTextArea(String text)
-    {
+    protected static final JTextArea createTextArea(String text) {
         JTextArea textArea;
         BevelBorder bevelBorder;
         EmptyBorder emptyBorder;
@@ -247,7 +230,7 @@ class ComponentFactory
 
         textArea = new JTextArea(text);
         bevelBorder = new BevelBorder(BevelBorder.LOWERED);
-        emptyBorder = new EmptyBorder(3,3,3,3);
+        emptyBorder = new EmptyBorder(3, 3, 3, 3);
         compoundBorder = new CompoundBorder(bevelBorder, emptyBorder);
 
         textArea.setFont(UIManager.getFont("dataFont"));
@@ -266,17 +249,14 @@ class ComponentFactory
      * @param windowWidth
      * @param windowHeight
      */
-    protected static final Dimension adjustWindowSize(int windowWidth, int windowHeight)
-    {
+    protected static final Dimension adjustWindowSize(int windowWidth, int windowHeight) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        if (windowWidth >= screenSize.width)
-        {
+        if (windowWidth >= screenSize.width) {
             windowWidth = screenSize.width - 10;
         }
 
-        if (windowHeight >= screenSize.height)
-        {
+        if (windowHeight >= screenSize.height) {
             windowHeight = screenSize.height - 20;
         }
 

@@ -30,7 +30,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         NameOccurrences qualifiedNames = new NameOccurrences(node);
         NameDeclaration decl = null;
         for (Iterator i = qualifiedNames.iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence)i.next();
+            NameOccurrence occ = (NameOccurrence) i.next();
             Search search = new Search(occ);
             if (decl == null) {
                 // doing the first name lookup

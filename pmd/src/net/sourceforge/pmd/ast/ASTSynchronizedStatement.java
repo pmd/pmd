@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTSynchronizedStatement extends SimpleNode {
-  public ASTSynchronizedStatement(int id) {
-    super(id);
-  }
+    public ASTSynchronizedStatement(int id) {
+        super(id);
+    }
 
-  public ASTSynchronizedStatement(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTSynchronizedStatement(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

@@ -31,12 +31,15 @@ public class LooseCouplingRuleTest extends RuleTst {
     public void test4() throws Throwable {
         runTest("LooseCoupling4.java", 0, rule);
     }
+
     public void test5() throws Throwable {
         runTest("LooseCoupling5.java", 1, rule);
     }
+
     public void test6() throws Throwable {
         runTest("LooseCoupling6.java", 2, rule);
     }
+
     public void test7() throws Throwable {
         runTest("LooseCoupling7.java", 2, rule);
     }

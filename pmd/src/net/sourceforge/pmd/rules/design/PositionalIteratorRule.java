@@ -18,23 +18,23 @@ import java.util.List;
 public class PositionalIteratorRule extends AbstractRule {
 
     public Object visit(ASTWhileStatement node, Object data) {
-        if (hasNameAsChild((SimpleNode)node.jjtGetChild(0))) {
-            String exprName = getName((SimpleNode)node.jjtGetChild(0));
+        if (hasNameAsChild((SimpleNode) node.jjtGetChild(0))) {
+            String exprName = getName((SimpleNode) node.jjtGetChild(0));
             if (exprName.indexOf(".hasNext") != -1 && node.jjtGetNumChildren() > 1) {
 
-                SimpleNode loopBody = (SimpleNode)node.jjtGetChild(1);
+                SimpleNode loopBody = (SimpleNode) node.jjtGetChild(1);
                 List names = new ArrayList();
                 collectNames(getVariableName(exprName), names, loopBody);
                 int nextCount = 0;
                 for (Iterator i = names.iterator(); i.hasNext();) {
-                    String name = (String)i.next();
+                    String name = (String) i.next();
                     if (name.indexOf(".next") != -1) {
                         nextCount++;
                     }
                 }
 
                 if (nextCount > 1) {
-                    RuleContext ctx = (RuleContext)data;
+                    RuleContext ctx = (RuleContext) data;
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
                 }
 
@@ -48,8 +48,8 @@ public class PositionalIteratorRule extends AbstractRule {
     }
 
     private void collectNames(String target, List names, SimpleNode node) {
-        for (int i=0; i<node.jjtGetNumChildren(); i++) {
-            SimpleNode child = (SimpleNode)node.jjtGetChild(i);
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            SimpleNode child = (SimpleNode) node.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0) {
                 collectNames(target, names, child);
             } else {
@@ -65,7 +65,7 @@ public class PositionalIteratorRule extends AbstractRule {
             if (node.jjtGetChild(0) instanceof ASTName) {
                 return true;
             }
-            return hasNameAsChild((SimpleNode)node.jjtGetChild(0));
+            return hasNameAsChild((SimpleNode) node.jjtGetChild(0));
         }
         return false;
     }
@@ -73,9 +73,9 @@ public class PositionalIteratorRule extends AbstractRule {
     private String getName(SimpleNode node) {
         while (node.jjtGetNumChildren() > 0) {
             if (node.jjtGetChild(0) instanceof ASTName) {
-                return ((ASTName)node.jjtGetChild(0)).getImage();
+                return ((ASTName) node.jjtGetChild(0)).getImage();
             }
-            return getName((SimpleNode)node.jjtGetChild(0));
+            return getName((SimpleNode) node.jjtGetChild(0));
         }
         throw new IllegalArgumentException("Check with hasNameAsChild() first!");
     }

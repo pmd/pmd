@@ -6,16 +6,16 @@ public class ASTImportDeclaration extends SimpleNode {
 
     private boolean isImportOnDemand;
 
-  public ASTImportDeclaration(int id) {
-    super(id);
-  }
+    public ASTImportDeclaration(int id) {
+        super(id);
+    }
 
-  public ASTImportDeclaration(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTImportDeclaration(JavaParser p, int id) {
+        super(p, id);
+    }
 
     public void setImportOnDemand() {
-        this.isImportOnDemand= true;
+        this.isImportOnDemand = true;
     }
 
     public boolean isImportOnDemand() {
@@ -23,12 +23,12 @@ public class ASTImportDeclaration extends SimpleNode {
     }
 
     public ASTName getImportedNameNode() {
-        return (ASTName)jjtGetChild(0);
+        return (ASTName) jjtGetChild(0);
     }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

@@ -11,13 +11,13 @@ public class ASTTryStatement extends SimpleNode {
     private boolean hasFinally;
 
 
-  public ASTTryStatement(int id) {
-    super(id);
-  }
+    public ASTTryStatement(int id) {
+        super(id);
+    }
 
-  public ASTTryStatement(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTTryStatement(JavaParser p, int id) {
+        super(p, id);
+    }
 
     public void setHasCatch() {
         hasCatch = true;
@@ -39,7 +39,7 @@ public class ASTTryStatement extends SimpleNode {
      * Call hasFinally() before you call this method
      */
     public ASTBlock getFinallyBlock() {
-        return (ASTBlock)jjtGetChild(jjtGetNumChildren()-1);
+        return (ASTBlock) jjtGetChild(jjtGetNumChildren() - 1);
     }
 
     /**
@@ -50,13 +50,14 @@ public class ASTTryStatement extends SimpleNode {
         if (hasFinally)
             numChildren--;
         List blocks = new ArrayList();
-        for (int i=1 ; i<numChildren ; i+=2) {
-            blocks.add(new ASTCatch((ASTFormalParameter)jjtGetChild(i+0), (ASTBlock)jjtGetChild(i+1)));
+        for (int i = 1; i < numChildren; i += 2) {
+            blocks.add(new ASTCatch((ASTFormalParameter) jjtGetChild(i + 0), (ASTBlock) jjtGetChild(i + 1)));
         }
         return blocks;
     }
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

@@ -17,13 +17,13 @@ public class TextRenderer implements CPDRenderer {
         Results results = cpd.getResults();
         StringBuffer sb = new StringBuffer();
         for (Iterator i = results.getTiles(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
+            Tile tile = (Tile) i.next();
             sb.append("=============================================================");
             sb.append(EOL);
             sb.append("A " + cpd.getLineCountFor(tile) + " line (" + tile.getTokenCount() + " tokens) duplication:");
             sb.append(EOL);
             for (Iterator j = cpd.getResults().getOccurrences(tile); j.hasNext();) {
-                TokenEntry tok = (TokenEntry)j.next();
+                TokenEntry tok = (TokenEntry) j.next();
                 sb.append("Starting at line " + tok.getBeginLine() + " in " + tok.getTokenSrcID());
                 sb.append(EOL);
             }

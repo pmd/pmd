@@ -4,8 +4,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
-public class HTMLAnalysisResultsEvent extends EventObject
-{
+public class HTMLAnalysisResultsEvent extends EventObject {
     private String m_htmlText;
 
     /**
@@ -13,8 +12,7 @@ public class HTMLAnalysisResultsEvent extends EventObject
      *
      * @param source
      */
-    private HTMLAnalysisResultsEvent(Object source)
-    {
+    private HTMLAnalysisResultsEvent(Object source) {
         super(source);
     }
 
@@ -24,8 +22,7 @@ public class HTMLAnalysisResultsEvent extends EventObject
      * @param source
      * @param htmlText
      */
-    private HTMLAnalysisResultsEvent(Object source, String htmlText)
-    {
+    private HTMLAnalysisResultsEvent(Object source, String htmlText) {
         super(source);
 
         m_htmlText = htmlText;
@@ -36,8 +33,7 @@ public class HTMLAnalysisResultsEvent extends EventObject
      *
      * @return
      */
-    public String getHTMLText()
-    {
+    public String getHTMLText() {
         return m_htmlText;
     }
 
@@ -46,14 +42,12 @@ public class HTMLAnalysisResultsEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestHTMLText(Object source)
-    {
+    public static final void notifyRequestHTMLText(Object source) {
         HTMLAnalysisResultsEvent event = new HTMLAnalysisResultsEvent(source);
         List listenerList = ListenerList.getListeners(HTMLAnalysisResultsEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             HTMLAnalysisResultsEventListener listener;
 
             listener = (HTMLAnalysisResultsEventListener) listeners.next();
@@ -66,14 +60,12 @@ public class HTMLAnalysisResultsEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyReturnedHTMLText(Object source, String htmlText)
-    {
+    public static final void notifyReturnedHTMLText(Object source, String htmlText) {
         HTMLAnalysisResultsEvent event = new HTMLAnalysisResultsEvent(source, htmlText);
         List listenerList = ListenerList.getListeners(HTMLAnalysisResultsEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             HTMLAnalysisResultsEventListener listener;
 
             listener = (HTMLAnalysisResultsEventListener) listeners.next();

@@ -16,7 +16,8 @@ public class Occurrences extends TileOccurrences implements Serializable {
     }
 
     // don't use this, just for Serialization
-    protected Occurrences() {}
+    protected Occurrences() {
+    }
 
     public Occurrences(TokenSets tss) {
         this(tss, new CPDNullListener());
@@ -25,12 +26,13 @@ public class Occurrences extends TileOccurrences implements Serializable {
     public Occurrences(TokenSets tss, CPDListener listener) {
         int doneSoFar = 0;
         int totalCount = tss.tokenCount();
-        for (Iterator j = tss.iterator();j.hasNext();) {
-            TokenList ts = (TokenList)j.next();
-			if (!listener.addingTokens(totalCount, doneSoFar, ts.getID())) break;
+        for (Iterator j = tss.iterator(); j.hasNext();) {
+            TokenList ts = (TokenList) j.next();
+            if (!listener.addingTokens(totalCount, doneSoFar, ts.getID()))
+                break;
             doneSoFar += ts.size();
             for (Iterator i = ts.iterator(); i.hasNext();) {
-                TokenEntry tok = (TokenEntry)i.next();
+                TokenEntry tok = (TokenEntry) i.next();
                 addTile(new Tile(tok), tok);
             }
         }
@@ -38,8 +40,8 @@ public class Occurrences extends TileOccurrences implements Serializable {
 
     public void deleteSoloTiles() {
         for (Iterator i = orderedTiles.iterator(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
-            if (((List)tileToOccurrenceMap.get(tile)).size() == 1) {
+            Tile tile = (Tile) i.next();
+            if (((List) tileToOccurrenceMap.get(tile)).size() == 1) {
                 tileToOccurrenceMap.remove(tile);
                 i.remove();
             }
@@ -48,7 +50,7 @@ public class Occurrences extends TileOccurrences implements Serializable {
 
     public boolean containsAnyTokensIn(Tile tile) {
         for (Iterator i = tile.getTokens().iterator(); i.hasNext();) {
-            if (contains((TokenEntry)i.next())) {
+            if (contains((TokenEntry) i.next())) {
                 return true;
             }
         }
@@ -57,7 +59,7 @@ public class Occurrences extends TileOccurrences implements Serializable {
 
     public boolean contains(TokenEntry tok) {
         for (Iterator i = tileToOccurrenceMap.keySet().iterator(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
+            Tile tile = (Tile) i.next();
             if (tile.contains(tok)) {
                 return true;
             }

@@ -5,8 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class RuleSet
-{
+public class RuleSet {
     private Set rules = new HashSet();
     private String name;
     private String description;
@@ -25,20 +24,20 @@ public class RuleSet
     private String m_fileName;
 
     public int size() {
-    return rules.size();
+        return rules.size();
     }
 
-    public void addRule( Rule rule ) {
-    rules.add( rule );
+    public void addRule(Rule rule) {
+        rules.add(rule);
     }
 
     public Set getRules() {
-    return rules;
+        return rules;
     }
 
     public Rule getRuleByName(String ruleName) {
         for (Iterator i = rules.iterator(); i.hasNext();) {
-            Rule r = (Rule)i.next();
+            Rule r = (Rule) i.next();
             if (r.getName().equals(ruleName)) {
                 return r;
             }
@@ -50,14 +49,13 @@ public class RuleSet
         rules.addAll(ruleSet.getRules());
     }
 
-    public void apply( List acuList,
-               RuleContext ctx ) {
-    Iterator rs = rules.iterator();
-    while (rs.hasNext()) {
-        Rule rule = (Rule) rs.next();
+    public void apply(List acuList, RuleContext ctx) {
+        Iterator rs = rules.iterator();
+        while (rs.hasNext()) {
+            Rule rule = (Rule) rs.next();
 
-        rule.apply( acuList, ctx );
-    }
+            rule.apply(acuList, ctx);
+        }
     }
 
     public String getName() {
@@ -82,8 +80,7 @@ public class RuleSet
      *
      * @return True to include during analysis.
      */
-    public boolean include()
-    {
+    public boolean include() {
         return m_include;
     }
 
@@ -93,8 +90,7 @@ public class RuleSet
      *
      * @param include True to include during analysis.
      */
-    public void setInclude(boolean include)
-    {
+    public void setInclude(boolean include) {
         m_include = include;
     }
 
@@ -103,10 +99,8 @@ public class RuleSet
      *
      * @return The name of the rule set file.
      */
-    public String getFileName()
-    {
-        if (m_fileName == null)
-        {
+    public String getFileName() {
+        if (m_fileName == null) {
             m_fileName = name.toLowerCase().replace(' ', '_') + ".xml";
         }
 
@@ -118,14 +112,11 @@ public class RuleSet
      *
      * @param fileName The name of the rule set file.
      */
-    public void setFileName(String fileName)
-    {
-        if (fileName != null)
-        {
+    public void setFileName(String fileName) {
+        if (fileName != null) {
             fileName = fileName.trim();
 
-            if (fileName.length() == 0)
-            {
+            if (fileName.length() == 0) {
                 fileName = null;
             }
         }

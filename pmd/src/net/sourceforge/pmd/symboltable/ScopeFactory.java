@@ -38,7 +38,7 @@ public class ScopeFactory {
         } else if (methodTriggers.contains(node.getClass())) {
             return new MethodScope();
         } else if (classTriggers.contains(node.getClass())) {
-            return new ClassScope(((SimpleNode)node).getImage());
+            return new ClassScope(((SimpleNode) node).getImage());
         } else if (globalTriggers.contains(node.getClass())) {
             return new GlobalScope();
         }

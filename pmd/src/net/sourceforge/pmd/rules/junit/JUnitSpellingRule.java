@@ -24,8 +24,8 @@ public class JUnitSpellingRule extends AbstractRule {
     private void checkSpelling(String name, Object data, ASTMethodDeclarator node, String correctSpelling) {
         if (name.toLowerCase().equals(correctSpelling.toLowerCase())) {
             if (!name.equals(correctSpelling)) {
-                RuleContext ctx = (RuleContext)data;
-                String msg = MessageFormat.format(getMessage(), new Object[] {correctSpelling, name});
+                RuleContext ctx = (RuleContext) data;
+                String msg = MessageFormat.format(getMessage(), new Object[]{correctSpelling, name});
                 ctx.getReport().addRuleViolation(super.createRuleViolation(ctx, node.getBeginLine(), msg));
             }
         }

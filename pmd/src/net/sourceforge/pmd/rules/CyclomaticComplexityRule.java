@@ -26,8 +26,7 @@ import java.util.Stack;
  * @since January 14, 2003
  * @version $Revision$, $Date$
  */
-public class CyclomaticComplexityRule extends AbstractRule
-{
+public class CyclomaticComplexityRule extends AbstractRule {
     private Stack m_entryStack = new Stack();
 
     /**
@@ -38,8 +37,7 @@ public class CyclomaticComplexityRule extends AbstractRule
      *
      * @return
      */
-    public Object visit(ASTIfStatement node, Object data)
-    {
+    public Object visit(ASTIfStatement node, Object data) {
         Entry entry = (Entry) m_entryStack.peek();
         entry.m_decisionPoints++;
         super.visit(node, data);
@@ -55,8 +53,7 @@ public class CyclomaticComplexityRule extends AbstractRule
      *
      * @return
      */
-    public Object visit(ASTForStatement node, Object data)
-    {
+    public Object visit(ASTForStatement node, Object data) {
         Entry entry = (Entry) m_entryStack.peek();
         entry.m_decisionPoints++;
         super.visit(node, data);
@@ -72,23 +69,19 @@ public class CyclomaticComplexityRule extends AbstractRule
      *
      * @return
      */
-    public Object visit(ASTSwitchStatement node, Object data)
-    {
+    public Object visit(ASTSwitchStatement node, Object data) {
         Entry entry = (Entry) m_entryStack.peek();
 
         int childCount = node.jjtGetNumChildren();
         int lastIndex = childCount - 1;
 
-        for (int n = 0; n < lastIndex; n++)
-        {
+        for (int n = 0; n < lastIndex; n++) {
             Node childNode = node.jjtGetChild(n);
 
-            if (childNode instanceof ASTSwitchLabel)
-            {
+            if (childNode instanceof ASTSwitchLabel) {
                 childNode = node.jjtGetChild(n + 1);
 
-                if (childNode instanceof ASTBlockStatement)
-                {
+                if (childNode instanceof ASTBlockStatement) {
                     entry.m_decisionPoints++;
                 }
             }
@@ -107,8 +100,7 @@ public class CyclomaticComplexityRule extends AbstractRule
      *
      * @return
      */
-    public Object visit(ASTWhileStatement node, Object data)
-    {
+    public Object visit(ASTWhileStatement node, Object data) {
         Entry entry = (Entry) m_entryStack.peek();
         entry.m_decisionPoints++;
         super.visit(node, data);
@@ -124,8 +116,7 @@ public class CyclomaticComplexityRule extends AbstractRule
      *
      * @return
      */
-    public Object visit(ASTUnmodifiedClassDeclaration node, Object data)
-    {
+    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         m_entryStack.push(new Entry(node));
         super.visit(node, data);
         Entry classEntry = (Entry) m_entryStack.pop();
@@ -133,18 +124,13 @@ public class CyclomaticComplexityRule extends AbstractRule
         double methodCount = (double) classEntry.m_methodCount;
         int complexityAverage = (methodCount == 0) ? 1 : (int) (Math.rint(decisionPoints / methodCount));
 
-        if ((complexityAverage >= getIntProperty("reportLevel")) ||
-            (classEntry.m_highestDecisionPoints >= getIntProperty("reportLevel")))
-        {
+        if ((complexityAverage >= getIntProperty("reportLevel")) || (classEntry.m_highestDecisionPoints >= getIntProperty("reportLevel"))) {
             // The {0} "{1}" has a cyclomatic complexity of {2}.
             RuleContext ruleContext = (RuleContext) data;
             String template = getMessage();
             String className = node.getImage();
             String complexityHighest = String.valueOf(classEntry.m_highestDecisionPoints);
-            String complexity = String.valueOf(complexityAverage)
-                              + " (Highest = "
-                              + complexityHighest
-                              + ")";
+            String complexity = String.valueOf(complexityAverage) + " (Highest = " + complexityHighest + ")";
             String[] args = {"class", className, complexity};
             String message = MessageFormat.format(template, args);
             int lineNumber = node.getBeginLine();
@@ -163,14 +149,11 @@ public class CyclomaticComplexityRule extends AbstractRule
      *
      * @return
      */
-    public Object visit(ASTMethodDeclaration node, Object data)
-    {
+    public Object visit(ASTMethodDeclaration node, Object data) {
         Node parentNode = node.jjtGetParent();
 
-        while (parentNode != null)
-        {
-            if (parentNode instanceof ASTInterfaceDeclaration)
-            {
+        while (parentNode != null) {
+            if (parentNode instanceof ASTInterfaceDeclaration) {
                 return data;
             }
 
@@ -185,26 +168,22 @@ public class CyclomaticComplexityRule extends AbstractRule
         classEntry.m_methodCount++;
         classEntry.m_decisionPoints += methodDecisionPoints;
 
-        if (methodDecisionPoints > classEntry.m_highestDecisionPoints)
-        {
+        if (methodDecisionPoints > classEntry.m_highestDecisionPoints) {
             classEntry.m_highestDecisionPoints = methodDecisionPoints;
         }
 
         ASTMethodDeclarator methodDeclarator = null;
 
-        for (int n = 0; n < node.jjtGetNumChildren(); n++)
-        {
+        for (int n = 0; n < node.jjtGetNumChildren(); n++) {
             Node childNode = node.jjtGetChild(n);
 
-            if (childNode instanceof ASTMethodDeclarator)
-            {
+            if (childNode instanceof ASTMethodDeclarator) {
                 methodDeclarator = (ASTMethodDeclarator) childNode;
                 break;
             }
         }
 
-        if (methodEntry.m_decisionPoints >= getIntProperty("reportLevel"))
-        {
+        if (methodEntry.m_decisionPoints >= getIntProperty("reportLevel")) {
             // The {0} "{1}" has a cyclomatic complexity of {2}.
             RuleContext ruleContext = (RuleContext) data;
             String template = getMessage();
@@ -228,8 +207,7 @@ public class CyclomaticComplexityRule extends AbstractRule
      *
      * @return
      */
-    public Object visit(ASTConstructorDeclaration node, Object data)
-    {
+    public Object visit(ASTConstructorDeclaration node, Object data) {
         m_entryStack.push(new Entry(node));
         super.visit(node, data);
         Entry constructorEntry = (Entry) m_entryStack.pop();
@@ -238,13 +216,11 @@ public class CyclomaticComplexityRule extends AbstractRule
         classEntry.m_methodCount++;
         classEntry.m_decisionPoints += constructorDecisionPointCount;
 
-        if (constructorDecisionPointCount > classEntry.m_highestDecisionPoints)
-        {
+        if (constructorDecisionPointCount > classEntry.m_highestDecisionPoints) {
             classEntry.m_highestDecisionPoints = constructorDecisionPointCount;
         }
 
-        if (constructorEntry.m_decisionPoints >= getIntProperty("reportLevel"))
-        {
+        if (constructorEntry.m_decisionPoints >= getIntProperty("reportLevel")) {
             // The {0} "{1}" has a cyclomatic complexity of {2}.
             RuleContext ruleContext = (RuleContext) data;
             String template = getMessage();
@@ -265,8 +241,7 @@ public class CyclomaticComplexityRule extends AbstractRule
      ***************************************************************************
      ***************************************************************************
      */
-    private class Entry
-    {
+    private class Entry {
         // ASTUnmodifedClassDeclaration or ASTMethodDeclarator or ASTConstructorDeclaration
         private SimpleNode m_node;
         public int m_decisionPoints = 1;
@@ -278,8 +253,7 @@ public class CyclomaticComplexityRule extends AbstractRule
          *
          * @param node
          */
-        private Entry(SimpleNode node)
-        {
+        private Entry(SimpleNode node) {
             m_node = node;
         }
     }

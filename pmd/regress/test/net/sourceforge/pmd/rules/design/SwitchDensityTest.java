@@ -23,30 +23,28 @@ public class SwitchDensityTest extends RuleTst {
         super();
     }
 
-	public SwitchDensityRule getIUT() {
-		SwitchDensityRule RC = new SwitchDensityRule();
-		RC.addProperty("minimum", "4");	
-		
-		return RC;
-	}
-	
-	public void testSD1() throws Throwable {
-		runTest("SwitchDensity1.java", 1);	
-	}
-	
-	public void testSD2() throws Throwable {
-		runTest("SwitchDensity2.java", 0);
-	}
-	
-	public void testSD3() throws Throwable {
-		runTest("SwitchDensity3.java", 0);
-	}
-	
-	public void runTest(String fileName, int expected ) 
-		throws Throwable 
-	{
-		SwitchDensityRule sdr = getIUT();
-		Report report = process(fileName, sdr);
-		assertEquals(expected, report.size());
-	}
+    public SwitchDensityRule getIUT() {
+        SwitchDensityRule RC = new SwitchDensityRule();
+        RC.addProperty("minimum", "4");
+
+        return RC;
+    }
+
+    public void testSD1() throws Throwable {
+        runTest("SwitchDensity1.java", 1);
+    }
+
+    public void testSD2() throws Throwable {
+        runTest("SwitchDensity2.java", 0);
+    }
+
+    public void testSD3() throws Throwable {
+        runTest("SwitchDensity3.java", 0);
+    }
+
+    public void runTest(String fileName, int expected) throws Throwable {
+        SwitchDensityRule sdr = getIUT();
+        Report report = process(fileName, sdr);
+        assertEquals(expected, report.size());
+    }
 }

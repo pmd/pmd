@@ -13,8 +13,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class RulesTreeModelEvent extends EventObject
-{
+public class RulesTreeModelEvent extends EventObject {
 
     private RulesTreeNode m_parentNode;
     private Rule m_rule;
@@ -24,8 +23,7 @@ public class RulesTreeModelEvent extends EventObject
      *
      * @param source
      */
-    private RulesTreeModelEvent(Object source)
-    {
+    private RulesTreeModelEvent(Object source) {
         super(source);
     }
 
@@ -35,8 +33,7 @@ public class RulesTreeModelEvent extends EventObject
      * @param source
      * @param parentNode
      */
-    private RulesTreeModelEvent(Object source, RulesTreeNode parentNode)
-    {
+    private RulesTreeModelEvent(Object source, RulesTreeNode parentNode) {
         super(source);
 
         m_parentNode = parentNode;
@@ -48,8 +45,7 @@ public class RulesTreeModelEvent extends EventObject
      * @param source
      * @param rule
      */
-    private RulesTreeModelEvent(Object source, Rule rule)
-    {
+    private RulesTreeModelEvent(Object source, Rule rule) {
         super(source);
 
         m_rule = rule;
@@ -60,8 +56,7 @@ public class RulesTreeModelEvent extends EventObject
      *
      * @return
      */
-    public RulesTreeNode getParentNode()
-    {
+    public RulesTreeNode getParentNode() {
         return m_parentNode;
     }
 
@@ -70,8 +65,7 @@ public class RulesTreeModelEvent extends EventObject
      *
      * @return
      */
-    public Rule getRule()
-    {
+    public Rule getRule() {
         return m_rule;
     }
 
@@ -79,16 +73,13 @@ public class RulesTreeModelEvent extends EventObject
      ******************************************************************************
      *
      */
-    public static void notifyReload(Object source, RulesTreeNode parentNode)
-    {
-        if ((source != null) && (parentNode != null))
-        {
+    public static void notifyReload(Object source, RulesTreeNode parentNode) {
+        if ((source != null) && (parentNode != null)) {
             RulesTreeModelEvent event = new RulesTreeModelEvent(source, parentNode);
             List listenerList = ListenerList.getListeners(RulesTreeModelEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 RulesTreeModelEventListener listener;
 
                 listener = (RulesTreeModelEventListener) listeners.next();
@@ -101,16 +92,13 @@ public class RulesTreeModelEvent extends EventObject
      ******************************************************************************
      *
      */
-    public static void notifyRequestSelectedRule(Object source)
-    {
-        if (source != null)
-        {
+    public static void notifyRequestSelectedRule(Object source) {
+        if (source != null) {
             RulesTreeModelEvent event = new RulesTreeModelEvent(source);
             List listenerList = ListenerList.getListeners(RulesTreeModelEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 RulesTreeModelEventListener listener;
 
                 listener = (RulesTreeModelEventListener) listeners.next();
@@ -123,16 +111,13 @@ public class RulesTreeModelEvent extends EventObject
      ******************************************************************************
      *
      */
-    public static void notifyReturnedSelectedRule(Object source, Rule selectedRule)
-    {
-        if (source != null)
-        {
+    public static void notifyReturnedSelectedRule(Object source, Rule selectedRule) {
+        if (source != null) {
             RulesTreeModelEvent event = new RulesTreeModelEvent(source, selectedRule);
             List listenerList = ListenerList.getListeners(RulesTreeModelEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 RulesTreeModelEventListener listener;
 
                 listener = (RulesTreeModelEventListener) listeners.next();

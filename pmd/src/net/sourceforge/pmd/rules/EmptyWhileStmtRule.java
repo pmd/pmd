@@ -13,7 +13,7 @@ import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 
-public class EmptyWhileStmtRule extends AbstractRule implements Rule{
+public class EmptyWhileStmtRule extends AbstractRule implements Rule {
 
     /**
      * We're looking for anything other than
@@ -23,25 +23,25 @@ public class EmptyWhileStmtRule extends AbstractRule implements Rule{
      *   Block
      *    BlockStmt
      */
-   public Object visit(ASTWhileStatement node, Object data){
-        RuleContext ctx = (RuleContext)data;
-       ASTStatement stmt = (ASTStatement)node.jjtGetChild(1);
+    public Object visit(ASTWhileStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+        ASTStatement stmt = (ASTStatement) node.jjtGetChild(1);
 
-       // can this happen?  an Statement without a child?
-       if (stmt.jjtGetNumChildren() == 0) {
-           return super.visit(node, data);
-       }
+        // can this happen?  an Statement without a child?
+        if (stmt.jjtGetNumChildren() == 0) {
+            return super.visit(node, data);
+        }
 
-       // an Statement whose child is not a Block... this might be caught be another braces type rule
-       if (!(stmt.jjtGetChild(0) instanceof ASTBlock)) {
-           return super.visit(node, data);
-       }
+        // an Statement whose child is not a Block... this might be caught be another braces type rule
+        if (!(stmt.jjtGetChild(0) instanceof ASTBlock)) {
+            return super.visit(node, data);
+        }
 
-        ASTBlock block = (ASTBlock)stmt.jjtGetChild(0);
+        ASTBlock block = (ASTBlock) stmt.jjtGetChild(0);
         // this block must have 1 child, and that child must be a BlockStatement
-       if (block.jjtGetNumChildren() == 0 || (!(block.jjtGetChild(0) instanceof ASTBlockStatement))) {
-           ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
-       }
-       return super.visit(node, data);
+        if (block.jjtGetNumChildren() == 0 || (!(block.jjtGetChild(0) instanceof ASTBlockStatement))) {
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+        }
+        return super.visit(node, data);
     }
 }

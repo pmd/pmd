@@ -3,22 +3,22 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTExplicitConstructorInvocation extends SimpleNode {
-  public ASTExplicitConstructorInvocation(int id) {
-    super(id);
-  }
+    public ASTExplicitConstructorInvocation(int id) {
+        super(id);
+    }
 
-  public ASTExplicitConstructorInvocation(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTExplicitConstructorInvocation(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 
     public int getArgumentCount() {
-        return ((ASTArguments)this.jjtGetChild(0)).getArgumentCount();
+        return ((ASTArguments) this.jjtGetChild(0)).getArgumentCount();
     }
 
     private String thisOrSuper;

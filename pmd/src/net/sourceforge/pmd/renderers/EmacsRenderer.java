@@ -9,7 +9,7 @@ public class EmacsRenderer implements Renderer {
 
     protected String EOL = System.getProperty("line.separator", "\n");
 
-		public String render(Report report) {
+    public String render(Report report) {
         StringBuffer buf = new StringBuffer();
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
@@ -18,5 +18,5 @@ public class EmacsRenderer implements Renderer {
             buf.append(": ").append(rv.getDescription());
         }
         return buf.toString();
-		}
+    }
 }

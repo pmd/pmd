@@ -3,27 +3,27 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTIfStatement extends SimpleNode {
-  public ASTIfStatement(int id) {
-    super(id);
-  }
+    public ASTIfStatement(int id) {
+        super(id);
+    }
 
-  public ASTIfStatement(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTIfStatement(JavaParser p, int id) {
+        super(p, id);
+    }
 
-  private boolean hasElse;
+    private boolean hasElse;
 
-  public void setHasElse() {
-      this.hasElse = true;
-  }
+    public void setHasElse() {
+        this.hasElse = true;
+    }
 
     public boolean hasElse() {
         return this.hasElse;
     }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

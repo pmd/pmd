@@ -43,7 +43,7 @@ public class ClassScope extends AbstractScope {
             // }
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
-            return (NameDeclaration)variableNames.keySet().iterator().next();
+            return (NameDeclaration) variableNames.keySet().iterator().next();
         }
 
 
@@ -63,7 +63,7 @@ public class ClassScope extends AbstractScope {
 
     private String clipClassName(String in) {
         int firstDot = in.indexOf('.');
-        return in.substring(firstDot+1);
+        return in.substring(firstDot + 1);
     }
 
 }

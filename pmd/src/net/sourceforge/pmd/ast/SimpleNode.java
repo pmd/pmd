@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleNode implements Node {
-  protected Node parent;
-  protected Node[] children;
-  protected int id;
+    protected Node parent;
+    protected Node[] children;
+    protected int id;
 
-  protected JavaParser parser;
+    protected JavaParser parser;
 
-  public SimpleNode(int i) {
-    id = i;
-  }
+    public SimpleNode(int i) {
+        id = i;
+    }
 
-  public SimpleNode(JavaParser p, int i) {
-    this(i);
-    parser = p;
-  }
+    public SimpleNode(JavaParser p, int i) {
+        this(i);
+        parser = p;
+    }
 
     public void jjtOpen() {
         if (parser.token.next != null) {
@@ -43,18 +43,18 @@ public class SimpleNode implements Node {
 
     public Scope getScope() {
         if (scope == null) {
-            return ((SimpleNode)parent).getScope();
+            return ((SimpleNode) parent).getScope();
         }
         return scope;
     }
 
     public void jjtClose() {
-      if ((children == null) || (children.length == 0)){
-        beginLine = parser.token.beginLine;
-        beginColumn = parser.token.beginColumn;
-      }
-      endLine = parser.token.endLine;
-      endColumn = parser.token.endColumn;
+        if ((children == null) || (children.length == 0)) {
+            beginLine = parser.token.beginLine;
+            beginColumn = parser.token.beginColumn;
+        }
+        endLine = parser.token.endLine;
+        endColumn = parser.token.endColumn;
     }
 
     public int getBeginLine() {
@@ -64,7 +64,7 @@ public class SimpleNode implements Node {
             if ((children != null) && (children.length > 0)) {
                 return ((SimpleNode) children[0]).getBeginLine();
             } else {
-              throw new RuntimeException("Unable to determine begining line of Node.");
+                throw new RuntimeException("Unable to determine begining line of Node.");
             }
         }
     }
@@ -80,7 +80,7 @@ public class SimpleNode implements Node {
             if ((children != null) && (children.length > 0)) {
                 return ((SimpleNode) children[0]).getBeginColumn();
             } else {
-              throw new RuntimeException("Unable to determine begining line of Node.");
+                throw new RuntimeException("Unable to determine begining line of Node.");
             }
         }
     }
@@ -122,9 +122,9 @@ public class SimpleNode implements Node {
         if (node.getClass().equals(ASTClassBody.class) && !descendIntoNestedClasses) {
             return;
         }
-        for (int i=0; i<node.jjtGetNumChildren(); i++) {
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
-            if (child.jjtGetNumChildren()>0) {
+            if (child.jjtGetNumChildren() > 0) {
                 findChildrenOfType(child, targetType, results, descendIntoNestedClasses);
             } else {
                 if (child.getClass().equals(targetType)) {
@@ -136,65 +136,75 @@ public class SimpleNode implements Node {
 
     // NEW STUFF
 
-  public void jjtSetParent(Node n) { parent = n; }
-  public Node jjtGetParent() { return parent; }
-
-  public void jjtAddChild(Node n, int i) {
-    if (children == null) {
-      children = new Node[i + 1];
-    } else if (i >= children.length) {
-      Node c[] = new Node[i + 1];
-      System.arraycopy(children, 0, c, 0, children.length);
-      children = c;
+    public void jjtSetParent(Node n) {
+        parent = n;
     }
-    children[i] = n;
-  }
 
-  public Node jjtGetChild(int i) {
-    return children[i];
-  }
-
-  public int jjtGetNumChildren() {
-    return (children == null) ? 0 : children.length;
-  }
-
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
-
-  /** Accept the visitor. **/
-  public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-    if (children != null) {
-      for (int i = 0; i < children.length; ++i) {
-        children[i].jjtAccept(visitor, data);
-      }
+    public Node jjtGetParent() {
+        return parent;
     }
-    return data;
-  }
 
-  /* You can override these two methods in subclasses of SimpleNode to
-     customize the way the node appears when the tree is dumped.  If
-     your output uses more than one line you should override
-     toString(String), otherwise overriding toString() is probably all
-     you need to do. */
-
-  public String toString() { return JavaParserTreeConstants.jjtNodeName[id]; }
-  public String toString(String prefix) { return prefix + toString(); }
-
-  /* Override this method if you want to customize how the node dumps
-     out its children. */
-
-  public void dump(String prefix) {
-    System.out.println(toString(prefix));
-    if (children != null) {
-      for (int i = 0; i < children.length; ++i) {
-	SimpleNode n = (SimpleNode)children[i];
-	if (n != null) {
-	  n.dump(prefix + " ");
-	}
-      }
+    public void jjtAddChild(Node n, int i) {
+        if (children == null) {
+            children = new Node[i + 1];
+        } else if (i >= children.length) {
+            Node c[] = new Node[i + 1];
+            System.arraycopy(children, 0, c, 0, children.length);
+            children = c;
+        }
+        children[i] = n;
     }
-  }
+
+    public Node jjtGetChild(int i) {
+        return children[i];
+    }
+
+    public int jjtGetNumChildren() {
+        return (children == null) ? 0 : children.length;
+    }
+
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
+
+    /** Accept the visitor. **/
+    public Object childrenAccept(JavaParserVisitor visitor, Object data) {
+        if (children != null) {
+            for (int i = 0; i < children.length; ++i) {
+                children[i].jjtAccept(visitor, data);
+            }
+        }
+        return data;
+    }
+
+    /* You can override these two methods in subclasses of SimpleNode to
+       customize the way the node appears when the tree is dumped.  If
+       your output uses more than one line you should override
+       toString(String), otherwise overriding toString() is probably all
+       you need to do. */
+
+    public String toString() {
+        return JavaParserTreeConstants.jjtNodeName[id];
+    }
+
+    public String toString(String prefix) {
+        return prefix + toString();
+    }
+
+    /* Override this method if you want to customize how the node dumps
+       out its children. */
+
+    public void dump(String prefix) {
+        System.out.println(toString(prefix));
+        if (children != null) {
+            for (int i = 0; i < children.length; ++i) {
+                SimpleNode n = (SimpleNode) children[i];
+                if (n != null) {
+                    n.dump(prefix + " ");
+                }
+            }
+        }
+    }
 }
 

@@ -15,7 +15,7 @@ import java.util.List;
 public class TileTest extends TestCase {
 
     public void testConstructors() {
-        TokenEntry tok = new TokenEntry("a", 2,"foo", 5);
+        TokenEntry tok = new TokenEntry("a", 2, "foo", 5);
         Tile tile = new Tile(tok);
         assertEquals(1, tile.getTokenCount());
 
@@ -26,7 +26,7 @@ public class TileTest extends TestCase {
     }
 
     public void testCopy() {
-        TokenEntry tok = new TokenEntry("a", 2,"foo", 5);
+        TokenEntry tok = new TokenEntry("a", 2, "foo", 5);
         Tile tile = new Tile(tok);
         Tile tileCopy = tile.copy();
         assertEquals(1, tile.getTokenCount());
@@ -34,21 +34,21 @@ public class TileTest extends TestCase {
     }
 
     public void testEquality() {
-        Tile tile = new Tile(new TokenEntry("a", 2,"foo", 5));
-        Tile tile2 = new Tile(new TokenEntry("a", 2,"foo", 5));
+        Tile tile = new Tile(new TokenEntry("a", 2, "foo", 5));
+        Tile tile2 = new Tile(new TokenEntry("a", 2, "foo", 5));
         assertEquals(tile, tile2);
         assertEquals(tile.hashCode(), tile2.hashCode());
     }
 
     public void testContains() {
-        TokenEntry tok = new TokenEntry("a", 2,"foo", 5);
+        TokenEntry tok = new TokenEntry("a", 2, "foo", 5);
         Tile tile = new Tile(tok);
         assertTrue(tile.contains(tok));
-        assertTrue(tile.contains(new TokenEntry("a", 2,"foo", 5)));
+        assertTrue(tile.contains(new TokenEntry("a", 2, "foo", 5)));
     }
 
     public void testAdd() {
-        TokenEntry tok = new TokenEntry("a", 2,"foo", 5);
+        TokenEntry tok = new TokenEntry("a", 2, "foo", 5);
         Tile tile = new Tile(tok);
         tile.add(new TokenEntry("l", 8, "bar", 5));
         assertEquals(2, tile.getTokenCount());

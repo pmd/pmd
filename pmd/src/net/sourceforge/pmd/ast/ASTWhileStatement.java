@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTWhileStatement extends SimpleNode {
-  public ASTWhileStatement(int id) {
-    super(id);
-  }
+    public ASTWhileStatement(int id) {
+        super(id);
+    }
 
-  public ASTWhileStatement(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTWhileStatement(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

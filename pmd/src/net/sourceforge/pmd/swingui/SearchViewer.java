@@ -51,8 +51,7 @@ import java.util.Enumeration;
  * @since January 6, 2003
  * @version $Revision$, $Date$
  */
-class SearchViewer extends JPanel
-{
+class SearchViewer extends JPanel {
 
     private DirectoryTree m_directoryTree;
     private StatusBar m_statusBar;
@@ -77,8 +76,7 @@ class SearchViewer extends JPanel
      **********************************************************************************
      *
      */
-    protected SearchViewer() throws PMDException
-    {
+    protected SearchViewer() throws PMDException {
         super(new BorderLayout());
 
         createStatusBar();
@@ -99,8 +97,7 @@ class SearchViewer extends JPanel
      *
      * @param windowMargin
      */
-    private void createStatusBar()
-    {
+    private void createStatusBar() {
         String defaultMessage;
         CompoundBorder compoundBorder;
         EmptyBorder emptyBorder;
@@ -116,8 +113,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createDirectoryTreePanel()
-    {
+    private void createDirectoryTreePanel() {
         Color background;
         JScrollPane scrollPane;
 
@@ -134,8 +130,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createRulesTreePanel() throws PMDException
-    {
+    private void createRulesTreePanel() throws PMDException {
         Color background;
         JScrollPane scrollPane;
 
@@ -155,18 +150,15 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createDirectoryRuleSplitPane()
-    {
-        m_directoryRuleSplitPane = ComponentFactory.createHorizontalSplitPane(m_directoryTreePanel,
-                                                                              m_rulesTreePanel);
+    private void createDirectoryRuleSplitPane() {
+        m_directoryRuleSplitPane = ComponentFactory.createHorizontalSplitPane(m_directoryTreePanel, m_rulesTreePanel);
     }
 
     /**
      *********************************************************************************
      *
      */
-    private void createResultsViewer()
-    {
+    private void createResultsViewer() {
         m_resultsViewer = new SearchResultsViewer();
         m_resultsViewer.setSelectionColor(Color.blue);
     }
@@ -175,8 +167,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createResultsViewerScrollPane()
-    {
+    private void createResultsViewerScrollPane() {
         JScrollPane scrollPane;
 
         scrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
@@ -189,18 +180,15 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createMainSplitPane()
-    {
-        m_mainSplitPane = ComponentFactory.createVerticalSplitPane(m_directoryRuleSplitPane,
-                                                                   m_resultsViewerPanel);
+    private void createMainSplitPane() {
+        m_mainSplitPane = ComponentFactory.createVerticalSplitPane(m_directoryRuleSplitPane, m_resultsViewerPanel);
     }
 
     /**
      ********************************************************************************
      *
      */
-    private void createButtonPanel()
-    {
+    private void createButtonPanel() {
         Color background;
 
         m_buttonPanel = ComponentFactory.createButtonPanel();
@@ -215,8 +203,7 @@ class SearchViewer extends JPanel
      *
      * @param margin
      */
-    private JPanel createContentPanel(int margin)
-    {
+    private JPanel createContentPanel(int margin) {
         JPanel contentPanel = new JPanel(new BorderLayout());
 
         EtchedBorder outsideBorder = new EtchedBorder(EtchedBorder.RAISED);
@@ -225,7 +212,7 @@ class SearchViewer extends JPanel
 
         contentPanel.setBorder(compoundBorder);
         contentPanel.add(m_statusBar, BorderLayout.NORTH);
-        contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
+        contentPanel.add(m_mainSplitPane, BorderLayout.CENTER);
         contentPanel.add(m_buttonPanel, BorderLayout.SOUTH);
 
         return contentPanel;
@@ -236,8 +223,7 @@ class SearchViewer extends JPanel
      *
      * @param title
      */
-    private TitledBorder createTitledBorder(String title)
-    {
+    private TitledBorder createTitledBorder(String title) {
         EtchedBorder etchedBorder;
         TitledBorder titledBorder;
         Font font;
@@ -255,8 +241,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *
      */
-    protected void adjustSplitPaneDividerLocation()
-    {
+    protected void adjustSplitPaneDividerLocation() {
         m_mainSplitPane.setDividerLocation(0.4);
         m_directoryRuleSplitPane.setDividerLocation(0.5);
     }
@@ -265,21 +250,19 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createMenuBar()
-    {
-       m_menuBar = new JMenuBar();
+    private void createMenuBar() {
+        m_menuBar = new JMenuBar();
 
-       m_menuBar.add(new FileMenu());
-       m_menuBar.add(new EditMenu());
-       m_menuBar.add(new HelpMenu());
+        m_menuBar.add(new FileMenu());
+        m_menuBar.add(new EditMenu());
+        m_menuBar.add(new HelpMenu());
     }
 
     /**
      *********************************************************************************
      *
      */
-    protected void setMenuBar()
-    {
+    protected void setMenuBar() {
         PMDViewer.getViewer().setJMenuBar(m_menuBar);
     }
 
@@ -287,8 +270,7 @@ class SearchViewer extends JPanel
      ********************************************************************************
      *
      */
-    protected void analyze()
-    {
+    protected void analyze() {
         m_resultsViewer.analyze();
     }
 
@@ -297,11 +279,9 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class PrintAnalysisActionListener implements ActionListener
-    {
+    private class PrintAnalysisActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             (new PrintAnalysisResults()).print();
         }
     }
@@ -311,11 +291,9 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class ExitActionListener implements ActionListener
-    {
+    private class ExitActionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             System.exit(0);
         }
     }
@@ -325,8 +303,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class CopyHTMLResultsActionListener implements ActionListener, HTMLAnalysisResultsEventListener
-    {
+    private class CopyHTMLResultsActionListener implements ActionListener, HTMLAnalysisResultsEventListener {
         private String m_htmlText;
 
         /**
@@ -334,22 +311,17 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
                 HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
 
-                if ((m_htmlText != null) && (m_htmlText.length() > 0))
-                {
+                if ((m_htmlText != null) && (m_htmlText.length() > 0)) {
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     StringSelection contents = new StringSelection(m_htmlText);
                     clipboard.setContents(contents, m_clipboardOwner);
                 }
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
             }
         }
@@ -359,8 +331,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
         }
 
         /**
@@ -368,8 +339,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
             m_htmlText = event.getHTMLText();
         }
     }
@@ -379,26 +349,20 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class CopyTextResultsActionListener implements ActionListener, TextAnalysisResultsEventListener
-    {
+    private class CopyTextResultsActionListener implements ActionListener, TextAnalysisResultsEventListener {
         private String m_text;
 
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 ListenerList.addListener((TextAnalysisResultsEventListener) this);
                 TextAnalysisResultsEvent.notifyRequestText(this);
 
-                if ((m_text != null) && (m_text.length() > 0))
-                {
+                if ((m_text != null) && (m_text.length() > 0)) {
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     StringSelection contents = new StringSelection(m_text);
                     clipboard.setContents(contents, m_clipboardOwner);
                 }
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((TextAnalysisResultsEventListener) this);
             }
         }
@@ -408,8 +372,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void requestTextAnalysisResults(TextAnalysisResultsEvent event)
-        {
+        public void requestTextAnalysisResults(TextAnalysisResultsEvent event) {
         }
 
         /**
@@ -417,8 +380,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void returnedTextAnalysisResults(TextAnalysisResultsEvent event)
-        {
+        public void returnedTextAnalysisResults(TextAnalysisResultsEvent event) {
             m_text = event.getText();
         }
     }
@@ -428,9 +390,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class FileMenuMouseListener extends MouseAdapter
-                                        implements HTMLAnalysisResultsEventListener
-    {
+    private class FileMenuMouseListener extends MouseAdapter implements HTMLAnalysisResultsEventListener {
 
         private String m_htmlText;
 
@@ -439,19 +399,15 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void mouseEntered(MouseEvent event)
-        {
-            try
-            {
+        public void mouseEntered(MouseEvent event) {
+            try {
                 ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
                 HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
                 boolean enable = (m_htmlText.length() > 0);
                 m_saveMenuItem.setEnabled(enable);
                 m_saveAsMenuItem.setEnabled(enable);
                 m_printAnalysisMenuItem.setEnabled(enable);
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
             }
         }
@@ -461,8 +417,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
         }
 
         /**
@@ -470,8 +425,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
             m_htmlText = event.getHTMLText();
         }
     }
@@ -481,9 +435,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class EditMenuMouseListener extends MouseAdapter
-                                        implements HTMLAnalysisResultsEventListener
-    {
+    private class EditMenuMouseListener extends MouseAdapter implements HTMLAnalysisResultsEventListener {
 
         String m_htmlText;
 
@@ -492,18 +444,14 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void mouseEntered(MouseEvent event)
-        {
-            try
-            {
+        public void mouseEntered(MouseEvent event) {
+            try {
                 ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
                 HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
                 boolean enable = (m_htmlText.length() > 0);
                 m_copyHTMLResultsMenuItem.setEnabled(enable);
                 m_copyTextResultsMenuItem.setEnabled(enable);
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
             }
         }
@@ -513,8 +461,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
         }
 
         /**
@@ -522,8 +469,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
             m_htmlText = event.getHTMLText();
         }
     }
@@ -533,15 +479,13 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class FileMenu extends JMenu
-    {
+    private class FileMenu extends JMenu {
 
         /**
          ********************************************************************
          *
          */
-        private FileMenu()
-        {
+        private FileMenu() {
             super("File");
 
             setMnemonic('F');
@@ -609,15 +553,13 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class EditMenu extends JMenu
-    {
+    private class EditMenu extends JMenu {
 
         /**
          ********************************************************************
          *
          */
-        private EditMenu()
-        {
+        private EditMenu() {
             super("Edit");
 
             setMnemonic('E');
@@ -657,8 +599,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class SaveSaveAs implements HTMLAnalysisResultsEventListener
-    {
+    private class SaveSaveAs implements HTMLAnalysisResultsEventListener {
 
         private String m_htmlText;
 
@@ -667,54 +608,38 @@ class SearchViewer extends JPanel
          *
          * @param outputFile
          */
-        private void perform(File outputFile)
-        {
-            if (outputFile != null)
-            {
-                try
-                {
+        private void perform(File outputFile) {
+            if (outputFile != null) {
+                try {
                     ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
                     HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
                     FileWriter writer = null;
 
-                    if (outputFile.exists())
-                    {
+                    if (outputFile.exists()) {
                         outputFile.delete();
                     }
 
-                    try
-                    {
+                    try {
                         writer = new FileWriter(outputFile);
                         writer.write(m_htmlText);
                         String message = "Saved Search results to file \"" + outputFile.getPath() + "\".";
                         MessageDialog.show(PMDViewer.getViewer(), message);
-                    }
-                    catch (IOException ioException)
-                    {
+                    } catch (IOException ioException) {
                         String message = "Could not save Search results to a file.";
                         PMDException pmdException = new PMDException(message, ioException);
                         pmdException.fillInStackTrace();
                         throw pmdException;
-                    }
-                    finally
-                    {
-                        try
-                        {
+                    } finally {
+                        try {
                             writer.close();
-                        }
-                        catch (IOException exception)
-                        {
+                        } catch (IOException exception) {
                         }
                     }
-                }
-                catch (PMDException pmdException)
-                {
+                } catch (PMDException pmdException) {
                     String message = pmdException.getMessage();
                     Exception exception = pmdException.getReason();
                     MessageDialog.show(PMDViewer.getViewer(), message, exception);
-                }
-                finally
-                {
+                } finally {
                     ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
                 }
             }
@@ -727,8 +652,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
         }
 
         /**
@@ -738,8 +662,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
-        {
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event) {
             m_htmlText = event.getHTMLText();
         }
     }
@@ -749,8 +672,7 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class SaveActionListener implements ActionListener, DirectoryTableEventListener
-    {
+    private class SaveActionListener implements ActionListener, DirectoryTableEventListener {
 
         private File m_selectedFile;
 
@@ -759,20 +681,16 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 ListenerList.addListener((DirectoryTableEventListener) this);
                 DirectoryTableEvent.notifyRequestFileSelected(this);
 
-                if (m_selectedFile != null)
-                {
+                if (m_selectedFile != null) {
                     String fileName = m_selectedFile.getName();
                     int index = fileName.lastIndexOf('.');
 
-                    if (index >= 0)
-                    {
+                    if (index >= 0) {
                         fileName = fileName.substring(0, index);
                     }
 
@@ -781,15 +699,11 @@ class SearchViewer extends JPanel
                     File outputFile = new File(path);
                     (new SaveSaveAs()).perform(outputFile);
                 }
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((DirectoryTableEventListener) this);
             }
         }
@@ -801,8 +715,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void requestSelectedFile(DirectoryTableEvent event)
-        {
+        public void requestSelectedFile(DirectoryTableEvent event) {
         }
 
         /**
@@ -812,8 +725,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void fileSelectionChanged(DirectoryTableEvent event)
-        {
+        public void fileSelectionChanged(DirectoryTableEvent event) {
         }
 
         /**
@@ -823,8 +735,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void fileSelected(DirectoryTableEvent event)
-        {
+        public void fileSelected(DirectoryTableEvent event) {
             m_selectedFile = event.getSelectedFile();
         }
     }
@@ -834,25 +745,20 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class SaveAsActionListener implements ActionListener, DirectoryTableEventListener
-    {
+    private class SaveAsActionListener implements ActionListener, DirectoryTableEventListener {
 
         private File m_selectedFile;
 
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
+        public void actionPerformed(ActionEvent event) {
+            try {
                 ListenerList.addListener((DirectoryTableEventListener) this);
                 DirectoryTableEvent.notifyRequestFileSelected(this);
 
-                if (m_selectedFile != null)
-                {
+                if (m_selectedFile != null) {
                     String fileName = m_selectedFile.getName();
                     int index = fileName.lastIndexOf('.');
 
-                    if (index >= 0)
-                    {
+                    if (index >= 0) {
                         fileName = fileName.substring(0, index);
                     }
 
@@ -864,20 +770,15 @@ class SearchViewer extends JPanel
                     fileChooser.setSelectedFile(selectedFile);
                     int result = fileChooser.showSaveDialog(PMDViewer.getViewer());
 
-                    if (result == JFileChooser.APPROVE_OPTION)
-                    {
+                    if (result == JFileChooser.APPROVE_OPTION) {
                         (new SaveSaveAs()).perform(fileChooser.getSelectedFile());
                     }
                 }
-            }
-            catch (PMDException pmdException)
-            {
+            } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
-            }
-            finally
-            {
+            } finally {
                 ListenerList.removeListener((DirectoryTableEventListener) this);
             }
         }
@@ -889,8 +790,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void requestSelectedFile(DirectoryTableEvent event)
-        {
+        public void requestSelectedFile(DirectoryTableEvent event) {
         }
 
         /**
@@ -900,8 +800,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void fileSelectionChanged(DirectoryTableEvent event)
-        {
+        public void fileSelectionChanged(DirectoryTableEvent event) {
         }
 
         /**
@@ -911,8 +810,7 @@ class SearchViewer extends JPanel
          *
          * @param event
          */
-        public void fileSelected(DirectoryTableEvent event)
-        {
+        public void fileSelected(DirectoryTableEvent event) {
             m_selectedFile = event.getSelectedFile();
         }
     }
@@ -922,16 +820,14 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class HTMLFileFilter extends FileFilter
-    {
+    private class HTMLFileFilter extends FileFilter {
 
         /**
          *****************************************************************************
          * @param file
          * @return
          */
-        public boolean accept(File file)
-        {
+        public boolean accept(File file) {
             String fileName = file.getName();
 
             return fileName.endsWith(".html") || fileName.endsWith(".htm");
@@ -940,8 +836,7 @@ class SearchViewer extends JPanel
         /**
          ******************************************************************************
          */
-        public String getDescription()
-        {
+        public String getDescription() {
             return "HTML Anaysis Result File (*.html, *.htm)";
         }
     }
@@ -951,15 +846,13 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class PMDClipboard implements ClipboardOwner
-    {
+    private class PMDClipboard implements ClipboardOwner {
 
         /**
          ************************************************************************
          *
          */
-        public void lostOwnership(Clipboard clipboard, Transferable contents)
-        {
+        public void lostOwnership(Clipboard clipboard, Transferable contents) {
         }
     }
 
@@ -968,41 +861,31 @@ class SearchViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class SearchButtonActionEventHandler implements ActionListener
-    {
+    private class SearchButtonActionEventHandler implements ActionListener {
 
         /**
          **************************************************************************
          */
-        public void actionPerformed(ActionEvent event)
-        {
+        public void actionPerformed(ActionEvent event) {
             RulesTreeNode rulesNode;
             RuleSet ruleSet;
 
             rulesNode = m_rulesTree.getSelectedNode();
 
-            if (rulesNode.isRoot())
-            {
+            if (rulesNode.isRoot()) {
                 ruleSet = new RuleSet();
                 Enumeration ruleSets = rulesNode.children();
 
-                while(ruleSets.hasMoreElements())
-                {
+                while (ruleSets.hasMoreElements()) {
                     RulesTreeNode childNode = (RulesTreeNode) ruleSets.nextElement();
                     ruleSet.addRuleSet((RuleSet) childNode.getRuleSet());
                 }
-            }
-            else if (rulesNode.isRuleSet())
-            {
+            } else if (rulesNode.isRuleSet()) {
                 ruleSet = rulesNode.getRuleSet();
-            }
-            else if (rulesNode.isRule())
-            {
+            } else if (rulesNode.isRule()) {
                 ruleSet = new RuleSet();
                 ruleSet.addRule(rulesNode.getRule());
-            }
-            else
-            {
+            } else {
                 rulesNode = (RulesTreeNode) rulesNode.getParent();
                 ruleSet = new RuleSet();
                 ruleSet.addRule(rulesNode.getRule());

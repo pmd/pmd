@@ -11,8 +11,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class ListenerList
-{
+public class ListenerList {
 
     private static List m_listeners = new ArrayList();
 
@@ -21,12 +20,9 @@ public class ListenerList
      *
      * @param listener
      */
-    public static void addListener(EventListener listener)
-    {
-        if (listener != null)
-        {
-            if (m_listeners.contains(listener) == false)
-            {
+    public static void addListener(EventListener listener) {
+        if (listener != null) {
+            if (m_listeners.contains(listener) == false) {
                 m_listeners.add(listener);
             }
         }
@@ -37,10 +33,8 @@ public class ListenerList
      *
      * @param listener
      */
-    public static void removeListener(EventListener listener)
-    {
-        if (listener != null)
-        {
+    public static void removeListener(EventListener listener) {
+        if (listener != null) {
             m_listeners.remove(listener);
         }
     }
@@ -50,20 +44,16 @@ public class ListenerList
      *
      * @param event
      */
-    public static List getListeners(Class listenerType)
-    {
+    public static List getListeners(Class listenerType) {
         List list = new ArrayList();
 
-        if (listenerType != null)
-        {
+        if (listenerType != null) {
             Iterator listeners = m_listeners.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 Object listener = listeners.next();
 
-                if (listenerType.isInstance(listener))
-                {
+                if (listenerType.isInstance(listener)) {
                     list.add(listener);
                 }
             }

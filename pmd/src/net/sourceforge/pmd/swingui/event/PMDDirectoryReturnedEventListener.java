@@ -8,8 +8,7 @@ import java.util.EventListener;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public interface PMDDirectoryReturnedEventListener extends EventListener
-{
+public interface PMDDirectoryReturnedEventListener extends EventListener {
 
     /**
      *******************************************************************************

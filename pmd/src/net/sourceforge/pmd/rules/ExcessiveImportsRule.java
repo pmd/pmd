@@ -14,13 +14,13 @@ import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
  * @author aglover
  *
  */
-public class ExcessiveImportsRule extends ExcessiveNodeCountRule{
+public class ExcessiveImportsRule extends ExcessiveNodeCountRule {
 
     /**
-	 * Hook constructor to pass in parent type
-	 */
-	public ExcessiveImportsRule() {
-		super(ASTCompilationUnit.class);
+     * Hook constructor to pass in parent type
+     */
+    public ExcessiveImportsRule() {
+        super(ASTCompilationUnit.class);
     }
 
     /**
@@ -30,6 +30,6 @@ public class ExcessiveImportsRule extends ExcessiveNodeCountRule{
      * @param Object data
      */
     public Object visit(ASTImportDeclaration node, Object data) {
-    	return new Integer(1);
+        return new Integer(1);
     }
 }

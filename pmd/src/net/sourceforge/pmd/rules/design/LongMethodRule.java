@@ -7,10 +7,8 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
  * threshold.  i.e. if a method has more than x lines
  * of code.
  */
-public class LongMethodRule
-    extends ExcessiveLengthRule
-{
+public class LongMethodRule extends ExcessiveLengthRule {
     public LongMethodRule() {
-	super( ASTMethodDeclaration.class );
+        super(ASTMethodDeclaration.class);
     }
 }

@@ -14,6 +14,7 @@ public class IfElseStmtsMustUseBracesRuleTest extends RuleTst {
         Report report = process("IfElseStmtsNeedBraces1.java", new IfElseStmtsMustUseBracesRule());
         assertEquals(1, report.size());
     }
+
     public void testIfElseStmtsMustUseBraces2() throws Throwable {
         Report report = process("IfElseStmtsNeedBraces2.java", new IfElseStmtsMustUseBracesRule());
         assertTrue(report.isEmpty());

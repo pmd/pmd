@@ -41,8 +41,8 @@ public class TokenListTest extends TestCase {
         list.add(" public void baz() {}");
         list.add("}");
         tl.setCode(list);
-        assertEquals(" public void bar() {}", tl.getSlice(1,1));
-        assertEquals(" public void bar() {}" +EOL + " public void baz() {}", tl.getSlice(1,2));
+        assertEquals(" public void bar() {}", tl.getSlice(1, 1));
+        assertEquals(" public void bar() {}" + EOL + " public void baz() {}", tl.getSlice(1, 2));
     }
 
     public void testHasTokenAfter() {

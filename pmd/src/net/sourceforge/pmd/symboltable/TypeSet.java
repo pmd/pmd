@@ -30,12 +30,14 @@ public class TypeSet {
 
     public static class ExplicitImportResolver implements Resolver {
         private Set importStmts;
+
         public ExplicitImportResolver(Set importStmts) {
             this.importStmts = importStmts;
         }
+
         public Class resolve(String name) throws ClassNotFoundException {
             for (Iterator i = importStmts.iterator(); i.hasNext();) {
-                String importStmt = (String)i.next();
+                String importStmt = (String) i.next();
                 if (importStmt.endsWith(name)) {
                     return Class.forName(importStmt);
                 }
@@ -46,9 +48,11 @@ public class TypeSet {
 
     public static class CurrentPackageResolver implements Resolver {
         private String pkg;
+
         public CurrentPackageResolver(String pkg) {
             this.pkg = pkg;
         }
+
         public Class resolve(String name) throws ClassNotFoundException {
             return Class.forName(pkg + name);
         }
@@ -63,17 +67,20 @@ public class TypeSet {
 
     public static class ImportOnDemandResolver implements Resolver {
         private Set importStmts;
+
         public ImportOnDemandResolver(Set importStmts) {
             this.importStmts = importStmts;
         }
+
         public Class resolve(String name) throws ClassNotFoundException {
             for (Iterator i = importStmts.iterator(); i.hasNext();) {
-                String importStmt = (String)i.next();
+                String importStmt = (String) i.next();
                 if (importStmt.endsWith("*")) {
                     try {
-                        String importPkg = importStmt.substring(0, importStmt.indexOf("*")-1);
+                        String importPkg = importStmt.substring(0, importStmt.indexOf("*") - 1);
                         return Class.forName(importPkg + "." + name);
-                    } catch (ClassNotFoundException cnfe) {}
+                    } catch (ClassNotFoundException cnfe) {
+                    }
                 }
             }
             throw new ClassNotFoundException("Type " + name + " not found");
@@ -93,11 +100,12 @@ public class TypeSet {
             primitiveTypes.put("short", short.class);
             primitiveTypes.put("char", char.class);
         }
+
         public Class resolve(String name) throws ClassNotFoundException {
             if (!primitiveTypes.containsKey(name)) {
                 throw new ClassNotFoundException();
             }
-            return (Class)primitiveTypes.get(name);
+            return (Class) primitiveTypes.get(name);
         }
     }
 
@@ -143,10 +151,11 @@ public class TypeSet {
         }
 
         for (Iterator i = resolvers.iterator(); i.hasNext();) {
-            Resolver resolver = (Resolver)i.next();
+            Resolver resolver = (Resolver) i.next();
             try {
                 return resolver.resolve(name);
-            } catch (ClassNotFoundException cnfe) {}
+            } catch (ClassNotFoundException cnfe) {
+            }
         }
 
         throw new ClassNotFoundException("Type " + name + " not found");

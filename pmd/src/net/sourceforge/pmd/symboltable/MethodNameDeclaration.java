@@ -17,7 +17,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration implements Na
     }
 
     public boolean equals(Object o) {
-        MethodNameDeclaration otherMethodDecl = (MethodNameDeclaration)o;
+        MethodNameDeclaration otherMethodDecl = (MethodNameDeclaration) o;
 
         // compare method name
         if (!otherMethodDecl.node.getImage().equals(node.getImage())) {
@@ -25,18 +25,18 @@ public class MethodNameDeclaration extends AbstractNameDeclaration implements Na
         }
 
         // compare parameter count - this catches the case where there are no params, too
-        if (((ASTMethodDeclarator)(otherMethodDecl.node)).getParameterCount() != ((ASTMethodDeclarator)node).getParameterCount()) {
+        if (((ASTMethodDeclarator) (otherMethodDecl.node)).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
             return false;
         }
 
         // compare parameter types
-        ASTFormalParameters myParams = (ASTFormalParameters)node.jjtGetChild(0);
-        ASTFormalParameters otherParams = (ASTFormalParameters)otherMethodDecl.node.jjtGetChild(0);
-        for (int i=0;i<((ASTMethodDeclarator)node).getParameterCount();i++) {
-            ASTFormalParameter myParam = (ASTFormalParameter)myParams.jjtGetChild(i);
-            ASTFormalParameter otherParam = (ASTFormalParameter)otherParams.jjtGetChild(i);
-            SimpleNode myTypeNode = (SimpleNode)myParam.jjtGetChild(0).jjtGetChild(0);
-            SimpleNode otherTypeNode = (SimpleNode)otherParam.jjtGetChild(0).jjtGetChild(0);
+        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
+        ASTFormalParameters otherParams = (ASTFormalParameters) otherMethodDecl.node.jjtGetChild(0);
+        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
+            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
+            ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
+            SimpleNode myTypeNode = (SimpleNode) myParam.jjtGetChild(0).jjtGetChild(0);
+            SimpleNode otherTypeNode = (SimpleNode) otherParam.jjtGetChild(0).jjtGetChild(0);
 
             // simple comparison of type images
             // this can be fooled by one method using "String"
@@ -52,7 +52,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration implements Na
     }
 
     public int hashCode() {
-        return node.getImage().hashCode() + ((ASTMethodDeclarator)node).getParameterCount();
+        return node.getImage().hashCode() + ((ASTMethodDeclarator) node).getParameterCount();
     }
 
     public String toString() {

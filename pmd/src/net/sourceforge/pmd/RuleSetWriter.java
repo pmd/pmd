@@ -12,8 +12,7 @@ import java.util.Iterator;
  * @since August 30, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetWriter
-{
+public class RuleSetWriter {
 
     private PrintStream m_outputStream;
     private StringBuffer m_line = new StringBuffer(500);
@@ -24,8 +23,7 @@ public class RuleSetWriter
      *
      * @param outputStream
      */
-    public RuleSetWriter(OutputStream outputStream)
-    {
+    public RuleSetWriter(OutputStream outputStream) {
         m_outputStream = new PrintStream(outputStream);
 
         m_line.append("<?xml version=\"1.0\" ?>");
@@ -37,8 +35,7 @@ public class RuleSetWriter
      *
      * @param ruleSet
      */
-    public void write(RuleSet ruleSet)
-    {
+    public void write(RuleSet ruleSet) {
         // <ruleset name="xxxxxx"
         indent();
         setupNewLine();
@@ -66,8 +63,7 @@ public class RuleSetWriter
         //
         Iterator rules = ruleSet.getRules().iterator();
 
-        while (rules.hasNext())
-        {
+        while (rules.hasNext()) {
             write((Rule) rules.next());
         }
 
@@ -83,8 +79,7 @@ public class RuleSetWriter
      *
      * @param rule
      */
-    private void write(Rule rule)
-    {
+    private void write(Rule rule) {
         // Write a blank line to separate rules for easier reading.
         m_outputStream.println("");
 
@@ -159,8 +154,7 @@ public class RuleSetWriter
      *
      * @param description
      */
-    private void writeDescription(String description)
-    {
+    private void writeDescription(String description) {
         // <description>
         setupNewLine();
         m_line.append("<description>");
@@ -186,8 +180,7 @@ public class RuleSetWriter
      *
      * @param example
      */
-    private void writeExample(String example)
-    {
+    private void writeExample(String example) {
         // <example>
         setupNewLine();
         m_line.append("<example>");
@@ -219,8 +212,7 @@ public class RuleSetWriter
      *
      * @param priority
      */
-    private void writePriority(int priority)
-    {
+    private void writePriority(int priority) {
         // <priority>
         setupNewLine();
         m_line.append("<priority>");
@@ -246,8 +238,7 @@ public class RuleSetWriter
      *
      * @param rule
      */
-    private void writeProperties(Rule rule)
-    {
+    private void writeProperties(Rule rule) {
         // <properties>
         setupNewLine();
         m_line.append("<properties>");
@@ -257,8 +248,7 @@ public class RuleSetWriter
         RuleProperties properties = rule.getProperties();
         Enumeration keys = properties.keys();
 
-        while (keys.hasMoreElements())
-        {
+        while (keys.hasMoreElements()) {
             String name = (String) keys.nextElement();
             String value = properties.getValue(name);
             String valueType = properties.getValueType(name);
@@ -285,8 +275,7 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void indent()
-    {
+    private void indent() {
         m_indent += 3;
     }
 
@@ -295,8 +284,7 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void outdent()
-    {
+    private void outdent() {
         m_indent -= 3;
     }
 
@@ -304,12 +292,10 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void setupNewLine()
-    {
+    private void setupNewLine() {
         m_line.setLength(0);
 
-        for (int n = 0; n < m_indent; n++)
-        {
+        for (int n = 0; n < m_indent; n++) {
             m_line.append(' ');
         }
     }
@@ -318,8 +304,7 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void setupNewLineWithoutIndent()
-    {
+    private void setupNewLineWithoutIndent() {
         m_line.setLength(0);
     }
 
@@ -327,8 +312,7 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void outputLine()
-    {
+    private void outputLine() {
         m_outputStream.println(m_line.toString());
     }
 }

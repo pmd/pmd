@@ -10,12 +10,12 @@ import junit.framework.TestCase;
 public class SymbolFacadeTest extends TestCase {
 
     public void testBasic() throws Throwable {
-/*
-        Reader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("SymbolFacadeTest.java"));
-        JavaParser parser = new JavaParser(reader);
-        ASTCompilationUnit c = parser.CompilationUnit();
-*/
+        /*
+                Reader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("SymbolFacadeTest.java"));
+                JavaParser parser = new JavaParser(reader);
+                ASTCompilationUnit c = parser.CompilationUnit();
+        */
 
-   }
+    }
 
 }

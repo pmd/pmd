@@ -12,8 +12,7 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class RulesEditingEvent extends EventObject
-{
+public class RulesEditingEvent extends EventObject {
 
     private RulesTreeNode m_dataNode;
 
@@ -23,8 +22,7 @@ public class RulesEditingEvent extends EventObject
      * @param source
      * @param dataNode
      */
-    private RulesEditingEvent(Object source, RulesTreeNode dataNode)
-    {
+    private RulesEditingEvent(Object source, RulesTreeNode dataNode) {
         super(source);
 
         m_dataNode = dataNode;
@@ -35,8 +33,7 @@ public class RulesEditingEvent extends EventObject
      *
      * @return
      */
-    public RulesTreeNode getDataNode()
-    {
+    public RulesTreeNode getDataNode() {
         return m_dataNode;
     }
 
@@ -45,16 +42,13 @@ public class RulesEditingEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifySaveData(Object source, RulesTreeNode dataNode)
-    {
-        if ((source != null) && (dataNode != null))
-        {
+    public static final void notifySaveData(Object source, RulesTreeNode dataNode) {
+        if ((source != null) && (dataNode != null)) {
             RulesEditingEvent event = new RulesEditingEvent(source, dataNode);
             List listenerList = ListenerList.getListeners(RulesEditingEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 RulesEditingEventListener listener;
 
                 listener = (RulesEditingEventListener) listeners.next();
@@ -69,16 +63,13 @@ public class RulesEditingEvent extends EventObject
      * @param source
      * @param dataNode
      */
-    public static void notifyLoadData(Object source, RulesTreeNode dataNode)
-    {
-        if ((source != null) && (dataNode != null))
-        {
+    public static void notifyLoadData(Object source, RulesTreeNode dataNode) {
+        if ((source != null) && (dataNode != null)) {
             RulesEditingEvent event = new RulesEditingEvent(source, dataNode);
             List listenerList = ListenerList.getListeners(RulesEditingEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 RulesEditingEventListener listener;
 
                 listener = (RulesEditingEventListener) listeners.next();

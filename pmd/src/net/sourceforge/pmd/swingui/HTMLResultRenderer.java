@@ -17,8 +17,7 @@ import java.util.Iterator;
  * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-class HTMLResultRenderer
-{
+class HTMLResultRenderer {
 
     private boolean m_reportNoViolations;
     private StringWriter m_writer;
@@ -27,8 +26,7 @@ class HTMLResultRenderer
      *******************************************************************************
      *
      */
-    protected void beginRendering(boolean reportNoViolations)
-    {
+    protected void beginRendering(boolean reportNoViolations) {
         m_reportNoViolations = reportNoViolations;
         m_writer = new StringWriter(25000);
 
@@ -53,8 +51,7 @@ class HTMLResultRenderer
      *
      * @return HTML text.
      */
-    protected String endRendering()
-    {
+    protected String endRendering() {
         m_writer.write("</body>\n");
         m_writer.write("</html>\n");
 
@@ -67,14 +64,11 @@ class HTMLResultRenderer
      * @param fileName
      * @param report
      */
-    public void render(String fileName, Report report)
-    {
+    public void render(String fileName, Report report) {
         Iterator violations = report.iterator();
 
-        if (violations.hasNext() == false)
-        {
-            if (m_reportNoViolations)
-            {
+        if (violations.hasNext() == false) {
+            if (m_reportNoViolations) {
                 //
                 // Write the name of the file that was analyzed.
                 //
@@ -97,13 +91,11 @@ class HTMLResultRenderer
         Color pmdGray = UIManager.getColor("pmdGray");
         String hexValue = Integer.toHexString(pmdGray.getRGB());
 
-        if (hexValue.startsWith("0x"))
-        {
+        if (hexValue.startsWith("0x")) {
             hexValue = hexValue.substring(2);
         }
 
-        if (hexValue.length() > 6)
-        {
+        if (hexValue.length() > 6) {
             hexValue = hexValue.substring(hexValue.length() - 6);
         }
 
@@ -120,8 +112,7 @@ class HTMLResultRenderer
         m_writer.write("<th><b>Example</b></th>\n");
         m_writer.write("</tr>\n");
 
-        while (violations.hasNext())
-        {
+        while (violations.hasNext()) {
             RuleViolation ruleViolation = (RuleViolation) violations.next();
             Rule rule = ruleViolation.getRule();
 
@@ -144,12 +135,9 @@ class HTMLResultRenderer
             //
             String ruleMessage = ruleViolation.getDescription();
 
-            if (ruleMessage == null)
-            {
+            if (ruleMessage == null) {
                 ruleMessage = "";
-            }
-            else
-            {
+            } else {
                 removeNewLineCharacters(ruleMessage);
             }
 
@@ -173,12 +161,9 @@ class HTMLResultRenderer
             //
             String description = rule.getDescription();
 
-            if (description == null)
-            {
+            if (description == null) {
                 description = "";
-            }
-            else
-            {
+            } else {
                 removeNewLineCharacters(description);
             }
 
@@ -193,18 +178,13 @@ class HTMLResultRenderer
             //
             String example = rule.getExample();
 
-            if ((example != null) && (example.length() > 0))
-            {
+            if ((example != null) && (example.length() > 0)) {
                 StringBuffer buffer = new StringBuffer(example);
 
-                for (int n = buffer.length() - 1; n >= 0; n--)
-                {
-                    if (buffer.charAt(n) == '\n')
-                    {
+                for (int n = buffer.length() - 1; n >= 0; n--) {
+                    if (buffer.charAt(n) == '\n') {
                         buffer.deleteCharAt(n);
-                    }
-                    else
-                    {
+                    } else {
                         break;
                     }
                 }
@@ -237,15 +217,12 @@ class HTMLResultRenderer
      *
      * @return
      */
-    private String removeNewLineCharacters(String text)
-    {
+    private String removeNewLineCharacters(String text) {
         char[] chars = text.trim().toCharArray();
         int startIndex = 0;
 
-        for (int n = 0; n < chars.length; n++)
-        {
-            if ((chars[n] != ' ') && (chars[n] != '\n'))
-            {
+        for (int n = 0; n < chars.length; n++) {
+            if ((chars[n] != ' ') && (chars[n] != '\n')) {
                 startIndex = n;
                 break;
             }
@@ -253,10 +230,8 @@ class HTMLResultRenderer
 
         int lastIndex = chars.length - 1;
 
-        for (int n = lastIndex; n >= 0; n--)
-        {
-            if ((chars[n] != ' ') && (chars[n] != '\n'))
-            {
+        for (int n = lastIndex; n >= 0; n--) {
+            if ((chars[n] != ' ') && (chars[n] != '\n')) {
                 lastIndex = n;
                 break;
             }

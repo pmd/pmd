@@ -4,8 +4,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
-public class TextAnalysisResultsEvent extends EventObject
-{
+public class TextAnalysisResultsEvent extends EventObject {
     private String m_text;
 
     /**
@@ -13,8 +12,7 @@ public class TextAnalysisResultsEvent extends EventObject
      *
      * @param source
      */
-    private TextAnalysisResultsEvent(Object source)
-    {
+    private TextAnalysisResultsEvent(Object source) {
         super(source);
     }
 
@@ -24,8 +22,7 @@ public class TextAnalysisResultsEvent extends EventObject
      * @param source
      * @param text
      */
-    private TextAnalysisResultsEvent(Object source, String text)
-    {
+    private TextAnalysisResultsEvent(Object source, String text) {
         super(source);
 
         m_text = text;
@@ -36,8 +33,7 @@ public class TextAnalysisResultsEvent extends EventObject
      *
      * @return
      */
-    public String getText()
-    {
+    public String getText() {
         return m_text;
     }
 
@@ -46,14 +42,12 @@ public class TextAnalysisResultsEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestText(Object source)
-    {
+    public static final void notifyRequestText(Object source) {
         TextAnalysisResultsEvent event = new TextAnalysisResultsEvent(source);
         List listenerList = ListenerList.getListeners(TextAnalysisResultsEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             TextAnalysisResultsEventListener listener;
 
             listener = (TextAnalysisResultsEventListener) listeners.next();
@@ -66,14 +60,12 @@ public class TextAnalysisResultsEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyReturnedText(Object source, String htmlText)
-    {
+    public static final void notifyReturnedText(Object source, String htmlText) {
         TextAnalysisResultsEvent event = new TextAnalysisResultsEvent(source, htmlText);
         List listenerList = ListenerList.getListeners(TextAnalysisResultsEventListener.class);
         Iterator listeners = listenerList.iterator();
 
-        while (listeners.hasNext())
-        {
+        while (listeners.hasNext()) {
             TextAnalysisResultsEventListener listener;
 
             listener = (TextAnalysisResultsEventListener) listeners.next();

@@ -22,7 +22,7 @@ public class UnnecessaryCastRule extends AbstractRule {
 
     public Object visit(ASTCastExpression node, Object data) {
         inCastCtx = true;
-        super.visit(node,data);
+        super.visit(node, data);
         inCastCtx = false;
         return data;
     }
@@ -33,7 +33,8 @@ public class UnnecessaryCastRule extends AbstractRule {
                 TypeSet t = new TypeSet();
                 System.out.println(t.findClass(node.getImage()));
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return super.visit(node, data);
     }
 
@@ -43,7 +44,8 @@ public class UnnecessaryCastRule extends AbstractRule {
                 TypeSet t = new TypeSet();
                 System.out.println(t.findClass(node.getImage()));
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return super.visit(node, data);
     }
 }

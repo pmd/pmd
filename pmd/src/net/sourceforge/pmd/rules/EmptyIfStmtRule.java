@@ -13,11 +13,11 @@ import net.sourceforge.pmd.ast.ASTIfStatement;
 
 public class EmptyIfStmtRule extends AbstractRule implements Rule {
 
-   public Object visit(ASTBlock node, Object data){
-       RuleContext ctx = (RuleContext)data;
-       if ((node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement) && node.jjtGetNumChildren()==0) {
-           ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
-       }
+    public Object visit(ASTBlock node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+        if ((node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement) && node.jjtGetNumChildren() == 0) {
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+        }
 
         return super.visit(node, data);
     }

@@ -29,8 +29,8 @@ public class NameOccurrencesTest extends TestCase {
         primary.jjtAddChild(suffix, 1);
 
         NameOccurrences occs = new NameOccurrences(primary);
-        NameOccurrence thisOcc = (NameOccurrence)occs.iterator().next();
-        NameOccurrence xOcc = (NameOccurrence)occs.getNames().get(1);
+        NameOccurrence thisOcc = (NameOccurrence) occs.iterator().next();
+        NameOccurrence xOcc = (NameOccurrence) occs.getNames().get(1);
         assertEquals(thisOcc.getNameForWhichThisIsAQualifier(), xOcc);
     }
 
@@ -44,7 +44,7 @@ public class NameOccurrencesTest extends TestCase {
         primary.jjtAddChild(prefix, 0);
 
         NameOccurrences occs = new NameOccurrences(primary);
-        assertEquals("super", ((NameOccurrence)occs.getNames().get(0)).getImage());
+        assertEquals("super", ((NameOccurrence) occs.getNames().get(0)).getImage());
     }
 
     // this
@@ -57,7 +57,7 @@ public class NameOccurrencesTest extends TestCase {
         primary.jjtAddChild(prefix, 0);
 
         NameOccurrences occs = new NameOccurrences(primary);
-        assertEquals("this", ((NameOccurrence)occs.getNames().get(0)).getImage());
+        assertEquals("this", ((NameOccurrence) occs.getNames().get(0)).getImage());
     }
 
     // this.x
@@ -74,8 +74,8 @@ public class NameOccurrencesTest extends TestCase {
         primary.jjtAddChild(suffix, 1);
 
         NameOccurrences occs = new NameOccurrences(primary);
-        assertEquals("this", ((NameOccurrence)occs.getNames().get(0)).getImage());
-        assertEquals("x", ((NameOccurrence)occs.getNames().get(1)).getImage());
+        assertEquals("this", ((NameOccurrence) occs.getNames().get(0)).getImage());
+        assertEquals("x", ((NameOccurrence) occs.getNames().get(1)).getImage());
     }
 
     // x
@@ -90,7 +90,7 @@ public class NameOccurrencesTest extends TestCase {
         prefix.jjtAddChild(name, 0);
 
         NameOccurrences occs = new NameOccurrences(primary);
-        assertEquals("x", ((NameOccurrence)occs.getNames().get(0)).getImage());
+        assertEquals("x", ((NameOccurrence) occs.getNames().get(0)).getImage());
     }
 
 

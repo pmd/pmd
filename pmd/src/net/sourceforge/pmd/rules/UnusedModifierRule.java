@@ -17,7 +17,7 @@ public class UnusedModifierRule extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         if ((node.isAbstract() || node.isPublic()) && node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTInterfaceDeclaration) {
-            RuleContext ctx = (RuleContext)data;
+            RuleContext ctx = (RuleContext) data;
             ctx.getReport().addRuleViolation(super.createRuleViolation(ctx, node.getBeginLine()));
         }
         return data;

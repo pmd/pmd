@@ -7,8 +7,8 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 
-public class CPDListenerImpl implements CPDListener{
-    public boolean  update(String msg) {
+public class CPDListenerImpl implements CPDListener {
+    public boolean update(String msg) {
         System.out.println(msg);
         return true;
     }
@@ -19,7 +19,7 @@ public class CPDListenerImpl implements CPDListener{
     }
 
     public boolean addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
-        update("Adding token set " +  tokenSrcID);
+        update("Adding token set " + tokenSrcID);
         return true;
     }
 
@@ -27,7 +27,6 @@ public class CPDListenerImpl implements CPDListener{
         update("Added new tile " + tile.getImage());
         return true;
     }
-
 
 
 }

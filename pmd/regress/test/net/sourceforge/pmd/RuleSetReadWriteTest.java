@@ -26,8 +26,7 @@ import java.util.Set;
  * @since August 30, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetReadWriteTest extends TestCase
-{
+public class RuleSetReadWriteTest extends TestCase {
     private InputStream m_inputStream;
     private RuleSet m_ruleSetIn;
     private RuleSet m_ruleSetOut;
@@ -36,8 +35,7 @@ public class RuleSetReadWriteTest extends TestCase
      ********************************************************************************
      *
      */
-    public RuleSetReadWriteTest()
-    {
+    public RuleSetReadWriteTest() {
         super("Rule Set Read/Write Test");
     }
 
@@ -45,17 +43,14 @@ public class RuleSetReadWriteTest extends TestCase
      ********************************************************************************
      *
      */
-    public void testReadWrite()
-    {
-        try
-        {
+    public void testReadWrite() {
+        try {
             loadTestFile();
             m_ruleSetIn = (new RuleSetReader()).read(m_inputStream, "foo");
             write();
             m_ruleSetOut = (new RuleSetReader()).read(m_inputStream, "foo");
             compare();
-        }
-        catch (PMDException pmdException) {
+        } catch (PMDException pmdException) {
             pmdException.printStackTrace();
         }
     }
@@ -64,18 +59,16 @@ public class RuleSetReadWriteTest extends TestCase
      ********************************************************************************
      *
      */
-    private void loadTestFile()
-    {
+    private void loadTestFile() {
         m_inputStream = ResourceLoader.loadResourceAsStream("test-data/RuleSetReadWriteTest.xml");
-	assertNotNull("Could not retrieve RuleSetReadWriteTest.xml", m_inputStream);
+        assertNotNull("Could not retrieve RuleSetReadWriteTest.xml", m_inputStream);
     }
 
     /**
      ********************************************************************************
      *
      */
-    private void write()
-    {
+    private void write() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         (new RuleSetWriter(outputStream)).write(m_ruleSetIn);
@@ -87,8 +80,7 @@ public class RuleSetReadWriteTest extends TestCase
      ********************************************************************************
      *
      */
-    private void compare()
-    {
+    private void compare() {
         assertEquals("Rule set names are equal.", m_ruleSetIn.getName(), m_ruleSetOut.getName());
         //assertEquals("Rule set descriptions are equal.", m_ruleSetIn.getDescription(), m_ruleSetOut.getDescription());
 
@@ -103,10 +95,9 @@ public class RuleSetReadWriteTest extends TestCase
 
         rulesOut.toArray(rulesOutArray);
 
-        Map rulesOutMap = new HashMap((int)(rulesInCount / 0.75));
+        Map rulesOutMap = new HashMap((int) (rulesInCount / 0.75));
 
-        for (int n = 0; n < rulesOutCount; n++)
-        {
+        for (int n = 0; n < rulesOutCount; n++) {
             String key = rulesOutArray[n].getName();
 
             rulesOutMap.put(key, rulesOutArray[n]);
@@ -114,20 +105,18 @@ public class RuleSetReadWriteTest extends TestCase
 
         Iterator iterator = rulesIn.iterator();
 
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             Rule ruleIn = (Rule) iterator.next();
             String key = ruleIn.getName();
             Rule ruleOut = (Rule) rulesOutMap.get(key);
 
             assertNotNull("\"" + key + "\" exists in output rules.", ruleOut);
 
-            if (ruleOut != null)
-            {
+            if (ruleOut != null) {
                 assertEquals("Rule messages are equal.", ruleIn.getMessage(), ruleOut.getMessage());
                 assertEquals("Rule class are equal.", ruleIn.getClass().getName(), ruleOut.getClass().getName());
                 assertEquals("Rule includes are equal.", ruleIn.include(), ruleOut.include());
-          //      assertEquals("Rule descriptions are equal.", ruleIn.getDescription(), ruleOut.getDescription());
+                //      assertEquals("Rule descriptions are equal.", ruleIn.getDescription(), ruleOut.getDescription());
                 assertEquals("Rule examples are equal.", ruleIn.getExample(), ruleOut.getExample());
 
                 RuleProperties propertiesIn = ruleIn.getProperties();
@@ -137,8 +126,7 @@ public class RuleSetReadWriteTest extends TestCase
 
                 Enumeration property = propertiesIn.keys();
 
-                while (property.hasMoreElements())
-                {
+                while (property.hasMoreElements()) {
                     String propertyName = (String) property.nextElement();
                     String propertyInValue = propertiesIn.getValue(propertyName);
                     String propertyOutValue = propertiesOut.getValue(propertyName);
@@ -167,8 +155,7 @@ public class RuleSetReadWriteTest extends TestCase
      *
      * @param args
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         (new RuleSetReadWriteTest()).testReadWrite();
     }
 }

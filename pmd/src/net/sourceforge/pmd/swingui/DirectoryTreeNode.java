@@ -9,14 +9,12 @@ import java.io.File;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class DirectoryTreeNode extends DefaultMutableTreeNode
-{
+class DirectoryTreeNode extends DefaultMutableTreeNode {
 
     /**
      ******************************************************************************
      */
-    private DirectoryTreeNode(String name)
-    {
+    private DirectoryTreeNode(String name) {
         super(name);
     }
 
@@ -25,8 +23,7 @@ class DirectoryTreeNode extends DefaultMutableTreeNode
      *
      * @param directory
      */
-    protected DirectoryTreeNode(File directory)
-    {
+    protected DirectoryTreeNode(File directory) {
         super(directory);
     }
 
@@ -35,20 +32,17 @@ class DirectoryTreeNode extends DefaultMutableTreeNode
      *
      * @return The directory or file name.
      */
-    public String toString()
-    {
+    public String toString() {
         Object userObject = getUserObject();
 
-        if (userObject instanceof String)
-        {
+        if (userObject instanceof String) {
             return (String) userObject;
         }
 
         File file = ((File) userObject);
         String name = file.getName();
 
-        if ((name != null) && (name.length() > 0))
-        {
+        if ((name != null) && (name.length() > 0)) {
             return name;
         }
 
@@ -60,8 +54,7 @@ class DirectoryTreeNode extends DefaultMutableTreeNode
      *
      * @return A new root node.
      */
-    protected static DirectoryTreeNode createRootNode(String rootName)
-    {
+    protected static DirectoryTreeNode createRootNode(String rootName) {
         return new DirectoryTreeNode(rootName);
     }
 }

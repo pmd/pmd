@@ -1,8 +1,6 @@
 package net.sourceforge.pmd.ast;
 
-public class AccessNode
-        extends SimpleNode
-        implements AccessFlags {
+public class AccessNode extends SimpleNode implements AccessFlags {
     public AccessNode(int i) {
         super(i);
     }

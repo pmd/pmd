@@ -23,13 +23,13 @@ public class AvoidReassigningParametersRule extends AbstractRule {
         Scope scope = node.getScope();
         Map params = scope.getVariableDeclarations(true);
         for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
-            List usages = (List)params.get(decl);
-            for (Iterator j = usages.iterator();j.hasNext();) {
-                NameOccurrence occ = (NameOccurrence)j.next();
+            VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
+            List usages = (List) params.get(decl);
+            for (Iterator j = usages.iterator(); j.hasNext();) {
+                NameOccurrence occ = (NameOccurrence) j.next();
                 if (occ.isOnLeftHandSide() && (occ.getNameForWhichThisIsAQualifier() == null)) {
-                    RuleContext ctx = (RuleContext)data;
-                    String msg = MessageFormat.format(getMessage(), new Object[] {decl.getImage()});
+                    RuleContext ctx = (RuleContext) data;
+                    String msg = MessageFormat.format(getMessage(), new Object[]{decl.getImage()});
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), msg));
                 }
             }

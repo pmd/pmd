@@ -9,7 +9,10 @@ import java.io.File;
 
 public interface CPDListener {
     boolean update(String msg);
+
     boolean addedFile(int fileCount, File file);
+
     boolean addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID);
+
     boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles);
 }

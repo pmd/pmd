@@ -71,17 +71,13 @@ public class ASTViewer {
     public ASTViewer() {
         JSmartPanel codePanel = new JSmartPanel();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
-        codePanel.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, 
-                GridBagConstraints.NORTH, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0));
+        codePanel.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
 
         JSmartPanel astPanel = new JSmartPanel();
         astArea.setRows(40);
         astArea.setColumns(40);
         JScrollPane astScrollPane = new JScrollPane(astArea);
-        astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, 
-                GridBagConstraints.NORTH, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0));
+        astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
 
         JButton showButton = new JButton("Show AST");
         showButton.setMnemonic('s');
@@ -97,50 +93,46 @@ public class ASTViewer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.show();
 
-        splitPane.setDividerLocation(splitPane.getMaximumDividerLocation()/2);
+        splitPane.setDividerLocation(splitPane.getMaximumDividerLocation() / 2);
     }
 
     public static void main(String[] args) {
         new ASTViewer();
     }
-    
+
     public class JSmartPanel extends JPanel {
 
-       private GridBagConstraints constraints;
+        private GridBagConstraints constraints;
 
-       /**
-        * Create a JPanel with a GridBagLayout layout
-        *
-        * @see java.awt.GridBagLayout
-        */
-       public JSmartPanel () {
-          super(new GridBagLayout());
-          constraints = new GridBagConstraints();
-       }
+        /**
+         * Create a JPanel with a GridBagLayout layout
+         *
+         * @see java.awt.GridBagLayout
+         */
+        public JSmartPanel() {
+            super(new GridBagLayout());
+            constraints = new GridBagConstraints();
+        }
 
-       /**
-        * Add a component to the layout
-        *
-        * @see java.awt.GridBagLayout
-        * @see java.awt.GridBagConstraints
-        */
-       public void add (Component comp,
-                        int gridx, int gridy, int gridwidth, int gridheight,
-                        double weightx, double weighty,
-                        int anchor, int fill,
-                        Insets insets) {
-          constraints.gridx = gridx;
-          constraints.gridy = gridy;
-          constraints.gridwidth = gridwidth;
-          constraints.gridheight = gridheight;
-          constraints.weightx = weightx;
-          constraints.weighty = weighty;
-          constraints.anchor = anchor;
-          constraints.fill = fill;
-          constraints.insets = insets;
-         
-          add(comp, constraints);
-       }
+        /**
+         * Add a component to the layout
+         *
+         * @see java.awt.GridBagLayout
+         * @see java.awt.GridBagConstraints
+         */
+        public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, double weightx, double weighty, int anchor, int fill, Insets insets) {
+            constraints.gridx = gridx;
+            constraints.gridy = gridy;
+            constraints.gridwidth = gridwidth;
+            constraints.gridheight = gridheight;
+            constraints.weightx = weightx;
+            constraints.weighty = weighty;
+            constraints.anchor = anchor;
+            constraints.fill = fill;
+            constraints.insets = insets;
+
+            add(comp, constraints);
+        }
 
     }
 

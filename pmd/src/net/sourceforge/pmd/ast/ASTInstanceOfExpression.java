@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTInstanceOfExpression extends SimpleNode {
-  public ASTInstanceOfExpression(int id) {
-    super(id);
-  }
+    public ASTInstanceOfExpression(int id) {
+        super(id);
+    }
 
-  public ASTInstanceOfExpression(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTInstanceOfExpression(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

@@ -33,9 +33,9 @@ import net.sourceforge.pmd.ast.SimpleNode;
  * @author dpeugh
  *
  * This checks for excessive Null Assignments.
- * 
+ *
  * For instance:
- * 
+ *
  * public void foo() {
  *   Object x = null; // OK
  *   // Some stuff
@@ -47,12 +47,12 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 public class NullAssignmentRule extends AbstractRule {
 
-	public Object visit(ASTStatementExpression expr, Object data ) {
-    	if (expr.jjtGetNumChildren() <= 2) {
-			return expr.childrenAccept(this, data);
-		}
-			
-		if (expr.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+    public Object visit(ASTStatementExpression expr, Object data) {
+        if (expr.jjtGetNumChildren() <= 2) {
+            return expr.childrenAccept(this, data);
+        }
+
+        if (expr.jjtGetChild(1) instanceof ASTAssignmentOperator) {
             SimpleNode curr = (SimpleNode) expr.jjtGetChild(2);
             for (int i = 0; i < 5; i++) {
                 if (curr.jjtGetNumChildren() != 0) {
@@ -61,13 +61,13 @@ public class NullAssignmentRule extends AbstractRule {
             }
 
             if (curr instanceof ASTNullLiteral) {
-			   	RuleContext ctx = (RuleContext)data;
-           		ctx.getReport().addRuleViolation(createRuleViolation(ctx, expr.getBeginLine() ));
-			}
-		
-			return data;	
-		} else {
-			return expr.childrenAccept(this, data);
-		}
-	}
+                RuleContext ctx = (RuleContext) data;
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, expr.getBeginLine()));
+            }
+
+            return data;
+        } else {
+            return expr.childrenAccept(this, data);
+        }
+    }
 }

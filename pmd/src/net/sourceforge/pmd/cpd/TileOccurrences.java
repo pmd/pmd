@@ -25,7 +25,7 @@ public abstract class TileOccurrences implements Serializable {
             orderedTiles.add(tile);
             tileToOccurrenceMap.put(tile, list);
         } else {
-            List list = (List)tileToOccurrenceMap.get(tile);
+            List list = (List) tileToOccurrenceMap.get(tile);
             list.add(tok);
         }
     }
@@ -39,15 +39,15 @@ public abstract class TileOccurrences implements Serializable {
     }
 
     public Iterator getOccurrences(Tile tile) {
-        return ((List)tileToOccurrenceMap.get(tile)).iterator();
+        return ((List) tileToOccurrenceMap.get(tile)).iterator();
     }
 
     public List getOccurrencesList(Tile tile) {
-        return (List)tileToOccurrenceMap.get(tile);
+        return (List) tileToOccurrenceMap.get(tile);
     }
 
     public int getOccurrenceCountFor(Tile tile) {
-        return ((List)tileToOccurrenceMap.get(tile)).size();
+        return ((List) tileToOccurrenceMap.get(tile)).size();
     }
 
 

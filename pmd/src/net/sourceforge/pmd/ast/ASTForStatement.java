@@ -3,17 +3,17 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTForStatement extends SimpleNode {
-  public ASTForStatement(int id) {
-    super(id);
-  }
+    public ASTForStatement(int id) {
+        super(id);
+    }
 
-  public ASTForStatement(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTForStatement(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

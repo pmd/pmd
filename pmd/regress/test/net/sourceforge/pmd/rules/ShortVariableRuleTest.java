@@ -3,9 +3,7 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.rules.ShortVariableRule;
 
-public class ShortVariableRuleTest
-    extends RuleTst
-{
+public class ShortVariableRuleTest extends RuleTst {
 
     private ShortVariableRule rule;
 
@@ -16,32 +14,27 @@ public class ShortVariableRuleTest
     }
 
     public void testShortVariableField() throws Throwable {
-	Report report = process("ShortVariableField.java",
-				rule );
-	assertEquals( 1, report.size() );
+        Report report = process("ShortVariableField.java", rule);
+        assertEquals(1, report.size());
     }
 
     public void testShortVariableLocal() throws Throwable {
-	Report report = process("ShortVariableLocal.java",
-				rule );
-	assertEquals( 1, report.size() );
+        Report report = process("ShortVariableLocal.java", rule);
+        assertEquals(1, report.size());
     }
 
     public void testShortVariableFor() throws Throwable {
-	Report report = process("ShortVariableFor.java",
-				rule );
-	assertEquals( 0, report.size() );
+        Report report = process("ShortVariableFor.java", rule);
+        assertEquals(0, report.size());
     }
 
     public void testShortVariableParam() throws Throwable {
-	Report report = process("ShortVariableParam.java",
-				rule );
-	assertEquals( 1, report.size() );
+        Report report = process("ShortVariableParam.java", rule);
+        assertEquals(1, report.size());
     }
 
     public void testShortVariableNone() throws Throwable {
-	Report report = process("ShortVariableNone.java",
-				rule );
-	assertEquals( 0, report.size() );
+        Report report = process("ShortVariableNone.java", rule);
+        assertEquals(0, report.size());
     }
 }

@@ -17,22 +17,22 @@ import net.sourceforge.pmd.stat.StatisticalRule;
 public class ExcessiveLengthRule extends StatisticalRule {
     private Class nodeClass;
 
-    public ExcessiveLengthRule( Class nodeClass ) {
+    public ExcessiveLengthRule(Class nodeClass) {
         this.nodeClass = nodeClass;
     }
 
-    public Object visit( SimpleNode node, Object data ) {
-        if (nodeClass.isInstance( node )) {
+    public Object visit(SimpleNode node, Object data) {
+        if (nodeClass.isInstance(node)) {
             DataPoint point = new DataPoint();
-            point.setLineNumber( node.getBeginLine() );
-            point.setScore( 1.0 * (node.getEndLine() - node.getBeginLine() ));
-            point.setRule( this );
-            point.setMessage( getMessage() );
-            addDataPoint( point );
+            point.setLineNumber(node.getBeginLine());
+            point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
+            point.setRule(this);
+            point.setMessage(getMessage());
+            addDataPoint(point);
         }
 
-        return node.childrenAccept( this, data );
+        return node.childrenAccept(this, data);
     }
 }
 
-    
+

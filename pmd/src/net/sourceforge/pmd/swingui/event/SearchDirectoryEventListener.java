@@ -8,8 +8,7 @@ import java.util.EventListener;
  * @since January 6, 2003
  * @version $Revision$, $Date$
  */
-public interface SearchDirectoryEventListener extends EventListener
-{
+public interface SearchDirectoryEventListener extends EventListener {
 
     /**
      *

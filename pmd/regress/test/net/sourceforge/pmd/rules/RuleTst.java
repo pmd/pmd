@@ -18,7 +18,8 @@ import net.sourceforge.pmd.util.ResourceLoader;
 public class RuleTst extends TestCase {
 
     private static final String TEST_FILE_DIR = "test-data/";
-    public Report process( String fileName,  Rule rule ) throws Throwable {
+
+    public Report process(String fileName, Rule rule) throws Throwable {
         PMD p = new PMD();
         String _fileName = TEST_FILE_DIR + fileName;
         RuleContext ctx = new RuleContext();
