@@ -53,7 +53,7 @@ public class UnusedImportsRule extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         check(node);
-        return data;
+        return super.visit(node, data);
     }
 
     public Object visit(ASTName node, Object data) {

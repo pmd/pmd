@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.Report;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -25,6 +26,18 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "1 used single type import", 0, rule),
            new TestDescriptor(TEST5, "1 import stmt, used only in throws clause", 0, rule)
        });
+    }
+
+    public void testPossibleForLoopBug() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST6, rule, rpt);
+        assertEquals(1, rpt.size());
+    }
+
+    public void testGenericsBug() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST7, rule, rpt);
+        assertEquals(0, rpt.size());
     }
 
     private static final String TEST1 =
@@ -55,6 +68,20 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
     "import java.rmi.RemoteException;" + PMD.EOL +
     "public class Foo {" + PMD.EOL +
     " public void foo() throws RemoteException {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "import java.util.Arrays;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  for (String s : list) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "import foo.TestInterfaceTwo;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private List<TestInterfaceTwo> x = new ArrayList<TestInterfaceTwo>();" + PMD.EOL +
     "}";
 
 

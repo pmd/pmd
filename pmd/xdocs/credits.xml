@@ -43,7 +43,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Peter 'Bruno' Kofler - found and reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
+            <li>Wim Deblauwe - JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
+            <li>Peter 'Bruno' Kofler - reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
             <li>Zev Blut - nice patch to add Ruby support to CPD</li>
             <li>Eric Olander - AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Benoit Xhenseval - many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
@@ -71,7 +72,6 @@
             <li>Ken Foskey - C++ parser bug report, cpd.sh</li>
             <li>ehowe - a nice patch to include rule priority in the XML report</li>
             <li>aryanto - reported a broken reference in the 'favorites' ruleset.</li>
-            <li>Wim Deblauwe - suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Archimedes Trajano - suggested SimpleDateFormatNeedsLocale</li>
             <li>Joerg Kurt Wegner - bug report for UnusedLocalVariable</li>
             <li>David Hovemeyer - a nice patch to let PMD process code in jar/zip files</li>
