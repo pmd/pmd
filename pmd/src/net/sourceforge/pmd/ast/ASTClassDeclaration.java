@@ -17,4 +17,8 @@ public class ASTClassDeclaration extends AccessNode {
         return visitor.visit(this, data);
     }
 
+    public void dump(String prefix) {
+        System.out.println(collectDumpedModifiers(prefix));
+        dumpChildren(prefix);
+    }
 }

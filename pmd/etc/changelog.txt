@@ -1,6 +1,7 @@
 ???? - 1.11:
 Fixed bug 583047 - columns were wrong on ASTName nodes
 ASTViewer now shows node images where possible
+ASTViewer now saves last edited text to ~/.pmd_astviewer
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 June 19, 2003 - 1.1:

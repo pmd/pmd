@@ -119,4 +119,17 @@ public class AccessNode extends SimpleNode implements AccessFlags {
         return (accessFlags & ACC_SUPER) > 0;
     }
 
+    public String collectDumpedModifiers(String prefix) {
+        String out = toString(prefix) + ":";
+        if (isPrivate()) {out += "(private)";}
+        if (isPublic()) {out += "(public)";}
+        if (isAbstract()) {out += "(abstract)";}
+        if (isStatic()) {out += "(static)";}
+        if (isFinal()) {out += "(final)";}
+        if (isSynchronized()) {out += "(synchronized)";}
+        if (isNative()) {out += "(native)";}
+        if (isStrict()) {out += "(strict)";}
+        if (isTransient()) {out += "(transient)";}
+        return out;
+    }
 }

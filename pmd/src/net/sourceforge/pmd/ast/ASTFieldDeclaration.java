@@ -16,4 +16,10 @@ public class ASTFieldDeclaration extends AccessNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public void dump(String prefix) {
+        System.out.println(collectDumpedModifiers(prefix));
+        dumpChildren(prefix);
+    }
+
 }

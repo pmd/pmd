@@ -192,8 +192,8 @@ public class ASTViewer {
 
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
         upperSplitPane.setDividerLocation(upperSplitPane.getMaximumDividerLocation() / 3);
-        codeEditorPane.setSize(upperSplitPane.getMaximumDividerLocation() / 3, containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
         codeEditorPane.setText(loadText());
+        codeEditorPane.setSize(upperSplitPane.getMaximumDividerLocation() / 3, containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
     }
 
     private String loadText() {
