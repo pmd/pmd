@@ -67,8 +67,10 @@ public class PMDOpenTool {
             ConfigureRuleSetPropertyGroup cpropGrp = new ConfigureRuleSetPropertyGroup();
             AcceleratorPropertyGroup accpropGrp = new AcceleratorPropertyGroup();
 
-            //register the Keymap shortcuts
-            registerShortCuts();
+            //register the Keymap shortcuts if they are enabled
+            if (AcceleratorPropertyGroup.PROP_KEYS_ENABLED.getBoolean()) {
+                registerShortCuts();
+            }
 
             PropertyManager.registerPropertyGroup(apropGrp);
             PropertyManager.registerPropertyGroup(cpropGrp);

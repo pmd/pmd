@@ -41,7 +41,8 @@ public class AcceleratorPropertyPage extends PropertyPage {
     private JPanel jPanel3 = new JPanel();
     private JLabel jLabel2 = new JLabel();
     private JLabel jLabel3 = new JLabel();
-    private int[][]keys = new int[2][2];  //data structure to hold keycode and modifier info for 2 distinct actions
+    private int[][]keys = new int[2][2];
+    private JCheckBox jCheckBox1 = new JCheckBox();  //data structure to hold keycode and modifier info for 2 distinct actions
 
     /**
      * Constuctor
@@ -79,6 +80,13 @@ public class AcceleratorPropertyPage extends PropertyPage {
                 jComboBox1_itemStateChanged(e);
             }
         });
+        jCheckBox1.setHorizontalAlignment(SwingConstants.CENTER);
+        jCheckBox1.setText("Enabled");
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                jCheckBox1_itemStateChanged(e);
+            }
+        });
         this.add(jPanel1, null);
         jPanel1.add(jLabel1, null);
         jPanel1.add(jComboBox1, null);
@@ -88,6 +96,7 @@ public class AcceleratorPropertyPage extends PropertyPage {
         this.add(jPanel2, null);
         jPanel2.add(jTextField3, null);
         jPanel2.add(jTextField2, null);
+        this.add(jCheckBox1, null);
     }
 
     private void initKeys() {
@@ -102,9 +111,17 @@ public class AcceleratorPropertyPage extends PropertyPage {
      * non-Jbuilder specific initialization stuff
      */
     private void init2() {
+        //initialize the keys data structure
         initKeys();
+
+        //initialize the combo box with it's values
         jComboBox1.addItem("Check File");  //item 0
         jComboBox1.addItem("Check Project");  //item 1
+
+        //initialize the checkbox
+        jCheckBox1.setSelected(AcceleratorPropertyGroup.PROP_KEYS_ENABLED.getBoolean());
+
+        //initialize the text fields and register the key listener
         int selectedItem = jComboBox1.getSelectedIndex();
         jTextField2.setText(KeyEvent.getKeyText(keys[selectedItem][0]));
         jTextField3.setText(KeyEvent.getKeyModifiersText(keys[selectedItem][1]));
@@ -143,9 +160,12 @@ public class AcceleratorPropertyPage extends PropertyPage {
         AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.setInteger(keys[0][1]);
         AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.setInteger(keys[1][0]);
         AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.setInteger(keys[1][1]);
+        AcceleratorPropertyGroup.PROP_KEYS_ENABLED.setBoolean(jCheckBox1.isSelected());
 
-        //now we can tell PMDOpenTool to recreate the bindings based on the new global values
-        PMDOpenTool.registerShortCuts();
+        //now we can tell PMDOpenTool to recreate the bindings based on the new global values if they are enabled
+        if (jCheckBox1.isSelected()) {
+            PMDOpenTool.registerShortCuts();
+        }
 
     }
 
@@ -166,6 +186,10 @@ public class AcceleratorPropertyPage extends PropertyPage {
         int selectedItem = jComboBox1.getSelectedIndex();
         jTextField2.setText(KeyEvent.getKeyText(keys[selectedItem][0]));
         jTextField3.setText(KeyEvent.getKeyModifiersText(keys[selectedItem][1]));
+
+    }
+
+    void jCheckBox1_itemStateChanged(ItemEvent e) {
 
     }
 
