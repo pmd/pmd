@@ -64,14 +64,6 @@ public class Occurrences extends TileOccurrences {
         return orderedTiles.isEmpty();
     }
 
-    public Iterator getOccurrences(Tile tile) {
-        return ((List)tileToOccurrenceMap.get(tile)).iterator();
-    }
-		
-    public int getOccurrenceCountFor(Tile tile) {
-        return ((List)tileToOccurrenceMap.get(tile)).size();
-    }
-
     public String toString() {
         StringBuffer sb = new StringBuffer();
         for (Iterator i = getTiles(); i.hasNext();) {

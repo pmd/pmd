@@ -36,4 +36,10 @@ public abstract class TileOccurrences {
     public Iterator getOccurrences(Tile tile) {
         return ((List)tileToOccurrenceMap.get(tile)).iterator();
     }
+
+    public int getOccurrenceCountFor(Tile tile) {
+        return ((List)tileToOccurrenceMap.get(tile)).size();
+    }
+
+
 }
