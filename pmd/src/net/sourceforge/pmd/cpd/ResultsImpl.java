@@ -21,11 +21,12 @@ public class ResultsImpl extends TileOccurrences implements Serializable, Result
     public int getTileLineCount(Tile tile, TokenSets tokenSets) {
         TokenEntry firstToken = (TokenEntry)((List)tileToOccurrenceMap.get(tile)).get(0);
         TokenList tl = tokenSets.getTokenList(firstToken);
-        // note we subtract 1 here... if we didn't, then this:
         TokenEntry lastToken = (TokenEntry)tl.get(firstToken.getIndex()-1 + tile.getTokenCount());
-        // line20: foo =bar;
-        // line21: baz = bif;
-        return lastToken.getBeginLine() - firstToken.getBeginLine() - 1;
+        int result = lastToken.getBeginLine() - firstToken.getBeginLine() + 1;
+        if (result == 0) {
+            result = 1;
+        }
+        return result;
     }
 
     private void removeDupesOf(Tile tile) {

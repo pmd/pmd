@@ -86,10 +86,9 @@ public class CPD {
 
     public String getImage(Tile tile) {
         try {
-            Iterator i = results.getOccurrences(tile);
-            TokenEntry firstToken = (TokenEntry)i.next();
+            TokenEntry firstToken = (TokenEntry)results.getOccurrences(tile).next();
             TokenList tl = tokenSets.getTokenList(firstToken);
-            int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets);
+            int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets)-1;
             return tl.getSlice(firstToken.getBeginLine()-1, endLine-1);
         } catch (Exception ex) {
             ex.printStackTrace();
