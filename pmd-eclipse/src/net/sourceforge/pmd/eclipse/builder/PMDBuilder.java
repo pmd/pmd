@@ -6,12 +6,11 @@ import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDDeltaVisitor;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDVisitor;
-
+import net.sourceforge.pmd.eclipse.PMDVisitorRunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,6 +23,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2003/05/19 22:27:33  phherlin
+ * Refactoring to improve performance
+ *
  * Revision 1.4  2003/03/30 20:51:08  phherlin
  * Adding logging
  *
@@ -99,7 +101,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
             if ((resourceDelta != null) && (resourceDelta.getAffectedChildren().length != 0)) {
                 monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), IProgressMonitor.UNKNOWN);
                 PMDDeltaVisitor visitor = new PMDDeltaVisitor(monitor);
-                resourceDelta.accept(visitor);
+                new PMDVisitorRunner().run(resourceDelta, visitor);
                 monitor.done();
             } else {
                 log.info("No change reported. Performing a full build");
@@ -117,8 +119,8 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      */
     private void processProjectFiles(IProject project, IProgressMonitor monitor) throws CoreException {
         monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), IProgressMonitor.UNKNOWN);
-        IResourceVisitor visitor = new PMDVisitor(monitor);
-        project.accept(visitor);
+        PMDVisitor visitor = new PMDVisitor(monitor);
+        new PMDVisitorRunner().run(project, visitor);
         monitor.done();
     }
 

@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
@@ -20,6 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2003/05/19 22:27:32  phherlin
+ * Refactoring to improve performance
+ *
  * Revision 1.11  2003/03/30 20:47:03  phherlin
  * Adding logging
  *
@@ -31,12 +36,14 @@ public class PMDVisitor implements IResourceVisitor {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDVisitor");
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
+    private Map accumulator;
 
     /**
      * Construct with a progress monitor
      * @param monitor a progress indicator
      */
     public PMDVisitor(IProgressMonitor monitor) {
+        log.debug("Instanciating a new visitor");
         this.monitor = monitor;
     }
 
@@ -51,9 +58,17 @@ public class PMDVisitor implements IResourceVisitor {
             if ((resource instanceof IFile)
                 && (((IFile) resource).getFileExtension() != null)
                 && ((IFile) resource).getFileExtension().equals("java")) {
-                if (monitor != null) monitor.subTask(((IFile) resource).getName());
-                PMDProcessor.getInstance().run((IFile) resource, useTaskMarker);
-                if (monitor != null) monitor.worked(1);
+                    
+                if (monitor != null) {
+                    monitor.subTask(((IFile) resource).getName());
+                }
+                
+                PMDProcessor.getInstance().run((IFile) resource, useTaskMarker, getAccumulator());
+                
+                if (monitor != null) {
+                    monitor.worked(1);
+                }
+                
                 fVisitChildren = false;
             }
         } else {
@@ -76,6 +91,24 @@ public class PMDVisitor implements IResourceVisitor {
      */
     public void setUseTaskMarker(boolean useTaskMarker) {
         this.useTaskMarker = useTaskMarker;
+    }
+
+    /**
+     * Returns the accumulator.
+     * @return Map
+     */
+    public Map getAccumulator() {
+        log.debug("Returning the accumulator " + accumulator);
+        return accumulator;
+    }
+
+    /**
+     * Sets the accumulator.
+     * @param accumulator The accumulator to set
+     */
+    public void setAccumulator(Map accumulator) {
+        this.accumulator = accumulator;
+        log.debug("Setting accumulator " + accumulator);
     }
 
 }

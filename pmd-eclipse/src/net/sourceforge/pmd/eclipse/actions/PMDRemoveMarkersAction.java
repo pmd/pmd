@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,6 +28,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/05/19 22:27:33  phherlin
+ * Refactoring to improve performance
+ *
  * Revision 1.3  2003/03/30 20:49:37  phherlin
  * Adding logging
  * Displaying error dialog in a thread safe way
@@ -99,7 +103,12 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                     } else if (element instanceof IPackageFragment) {
                         IResource resource = ((IPackageFragment) element).getResource();
                         resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    } // else no processing for other types
+                    } else if (element instanceof IPackageFragmentRoot) {
+                        IResource resource = ((IPackageFragmentRoot) element).getResource();
+                        resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                    } else {// else no processing for other types
+                        log.info(element.getClass().getName() + " : Removing markers on this resource's type is not supported");
+                    }
                 } catch (CoreException e) {
                     PMDPlugin.getDefault().showError(
                         PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION),

@@ -33,15 +33,25 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/05/19 22:27:33  phherlin
+ * Refactoring to improve performance
+ *
  * Revision 1.3  2003/03/30 20:48:59  phherlin
  * Adding logging
  * Displaying error dialog in a thread safe way
  *
  */
 public class PMDGenerateASTAction implements IObjectActionDelegate {
-    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDGenerateASTAction");
-    private IWorkbenchPart targetPart;
+    private static final String QUOTE = "\"";
     private static final String INDENT = "\t";
+    private static final String TAG_BEGIN = "<";
+    private static final String TAG_END = ">";
+    private static final String TAG_ENDEND = "/>";
+    private static final String ENDTAG_BEGIN = TAG_BEGIN + "/";
+    private static final String ENDTAG_END = TAG_END;
+
+    private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDGenerateASTAction");
+    private IWorkbenchPart targetPart;
 
     /**
      * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
@@ -126,29 +136,29 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
      */
     private void dump(SimpleNode node, PrintWriter out, String prefix) {
         StringBuffer sb = new StringBuffer(prefix);
-        sb.append("<").append(node.toString());
+        sb.append(TAG_BEGIN).append(node.toString());
 
         if (node.jjtGetNumChildren() == 0) {
             if (node.getImage() != null) {
-                sb.append(">").append(node.getImage()).append("</").append(node.toString()).append(">");
+                sb.append(TAG_END).append(node.getImage()).append(ENDTAG_BEGIN).append(node.toString()).append(ENDTAG_END);
             } else {
-                sb.append("/>");
+                sb.append(TAG_ENDEND);
             }
             out.println(sb.toString());
         } else {
             sb
-                .append(" beginLine=\"")
+                .append(" beginLine=" + QUOTE)
                 .append(node.getBeginLine())
-                .append("\"")
-                .append(" beginColumn=\"")
+                .append(QUOTE)
+                .append(" beginColumn=" + QUOTE)
                 .append(node.getBeginColumn())
-                .append("\"")
-                .append(" endLine=\"")
+                .append(QUOTE)
+                .append(" endLine=" + QUOTE)
                 .append(node.getEndLine())
-                .append("\"")
-                .append(" endColumn=\"")
+                .append(QUOTE)
+                .append(" endColumn=" + QUOTE)
                 .append(node.getEndColumn())
-                .append("\"")
+                .append(QUOTE)
                 .append(">");
 
             if (node.getImage() != null) {
@@ -160,7 +170,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
                 dump((SimpleNode) node.jjtGetChild(i), out, prefix + INDENT);
             }
 
-            out.println(prefix + "</" + node.toString() + ">");
+            out.println(prefix + ENDTAG_BEGIN + node.toString() + ENDTAG_END);
         }
     }
 

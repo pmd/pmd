@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
@@ -15,6 +17,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Philippe Herlin
  * @version $Revision$
  * $Log$
+ * Revision 1.4  2003/05/19 22:27:32  phherlin
+ * Refactoring to improve performance
+ *
  * Revision 1.3  2003/03/30 20:44:27  phherlin
  * Adding logging
  *
@@ -23,6 +28,7 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDDeltaVisitor");
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
+    private Map accumulator;
 
     /**
      * Default construtor
@@ -84,9 +90,16 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
         if ((resource instanceof IFile)
             && (((IFile) resource).getFileExtension() != null)
             && ((IFile) resource).getFileExtension().equals("java")) {
-            if (monitor != null) monitor.subTask(((IFile) resource).getName());
-            PMDProcessor.getInstance().run((IFile) resource, useTaskMarker);
-            if (monitor != null) monitor.worked(1);
+                
+            if (monitor != null) {
+                monitor.subTask(((IFile) resource).getName());
+            }
+            
+            PMDProcessor.getInstance().run((IFile) resource, useTaskMarker, getAccumulator());
+            
+            if (monitor != null) {
+                monitor.worked(1);
+            }
         }
     }
 
@@ -120,6 +133,22 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
      */
     public void setUseTaskMarker(boolean useTaskMarker) {
         this.useTaskMarker = useTaskMarker;
+    }
+
+    /**
+     * Returns the accumulator.
+     * @return Map
+     */
+    public Map getAccumulator() {
+        return accumulator;
+    }
+
+    /**
+     * Sets the accumulator.
+     * @param accumulator The accumulator to set
+     */
+    public void setAccumulator(Map accumulator) {
+        this.accumulator = accumulator;
     }
 
 }
