@@ -7,7 +7,7 @@
 	<property name="build" value="build/"/>
 	<property name="pmdjar" value="pmd-1.03.jar"/>
 	<property name="pluginversion" value="0.1"/>
-	<property name="jdeveloper.install.dir" value="C:\downloads\jdev9031\jdev\lib\ext\${ant.project.name}-${pluginversion}"/>
+	<property name="jdeveloper.install.dir" value="/home/tom/jdev/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 	<path id="project.class.path">
 		<pathelement location="${lib}/${pmdjar}"/>
@@ -34,14 +34,14 @@
 	</target>
 
     <target name="jar" depends="compile">
-        <replace file="${etc}/manifest.mf" token="#pluginversion#" value="${pluginversion}"/>
-		<jar jarfile="${lib}/${ant.project.name}-${pluginversion}.jar" manifest="${etc}\manifest.mf">
+        <replace file="${etc}/Manifest.mf" token="#pluginversion#" value="${pluginversion}"/>
+		<jar jarfile="${lib}/${ant.project.name}-${pluginversion}.jar" manifest="${etc}\Manifest.mf">
 			<fileset dir="${build}" excludes="**/*.di,**/*.i"/>
 		</jar>
     </target>
 
 
-	<target name="dist" depends="jar">
+	<target name="dist" depends="delete,jar">
         <mkdir dir="${jdeveloper.install.dir}/lib"/>
         <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper.install.dir}/lib"/>
         <copy file="${lib}/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>
@@ -52,7 +52,7 @@
         <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
         <copy file="${lib}/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
         <zip zipfile="pmd-jdeveloper-bin-${pluginversion}.zip" basedir="tmp"/>
-        <move file="pmd-jdeveloper-bin-${pluginversion}.zip" todir="c:\tmp"/>
+        <move file="pmd-jdeveloper-bin-${pluginversion}.zip" todir="/home/tom/tmp"/>
         <delete dir="tmp"/>
     </target>
 

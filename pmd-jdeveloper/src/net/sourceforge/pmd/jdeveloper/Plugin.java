@@ -129,6 +129,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         rvPage.clearAll();
         if (ctx.getReport().isEmpty()) {
             JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
+            rvPage.close();
         } else {
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                 rvPage.add((RuleViolation)i.next());
