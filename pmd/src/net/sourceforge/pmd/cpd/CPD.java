@@ -119,9 +119,9 @@ public class CPD {
     public static void main(String[] args) {
         CPD cpd = new CPD();
         cpd.setListener(new CPDNullListener());
-        cpd.setMinimumTileSize(30);
+        cpd.setMinimumTileSize(Integer.parseInt(args[0]));
         try {
-            cpd.addRecursively("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd");
+            cpd.addRecursively(args[1]);
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return;
