@@ -19,7 +19,8 @@ in the code.  Currently, PMD supports:
 <ul>
   <li>Unused local variables</li>
   <li>Unnecessary object creation</li>
-  <li>Unecessary object creation</li>
+  <li>Empty catch blocks</li>
+  <li>Empty if statements</li>
 </ul>
 For example, here are the problems PMD found in the <a href="jdk14.XML">JDK 1.4 source code</a>
   ]]>
