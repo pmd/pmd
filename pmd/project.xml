@@ -129,6 +129,14 @@
       <email>pkendall@users.sourceforge.net</email>
       <roles><role>Developer</role></roles>
     </developer>
+
+      <developer>
+        <name>Tom Burke</name>
+        <id>tomburke</id>
+        <email>tomburke@users.sourceforge.net</email>
+        <roles><role>Developer</role></roles>
+      </developer>
+
    </developers>
 
   <contributors>
@@ -152,10 +160,6 @@
       <version>2.0.2</version>
     </dependency>
 
-    <dependency>
-      <id>mockobjects</id>
-      <version>0.07</version>
-    </dependency>
   </dependencies>
 
   <build>

@@ -41,9 +41,9 @@
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Maven</td>
       <td>pmd-maven</td>
-      <td>0.3</td>
+      <td>0.4</td>
       <td>Siegfried Goeschl</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
+      <td><a href="http://sourceforge.net/projects/maven-plugins/">X</a></td></tr>
   <tr><td>IntelliJ IDEA</td>
       <td>N/A</td>
       <td>N/A</td>
@@ -176,6 +176,7 @@ maven.xml:</li>
   </menu>
 ]]>
     </source>
+    <li>Please see <a href="http://sourceforge.net/projects/maven-plugins/">the Maven plugins web site</a> for more information.</li>
 </ul>
 </p>
       </subsection>
