@@ -39,18 +39,29 @@ public class CPD {
         StringBuffer rpt = new StringBuffer();
         for (Iterator i = matchAlgorithm.matches(); i.hasNext();) {
             Match match = (Match)i.next();
-            TokenList tokenList1 = tokenSets.getTokenList(match.getFirstOccurrence().getFile());
+
             rpt.append("=====================================================================");
             rpt.append(EOL);
-            rpt.append("Found a " + tokenList1.getLineCount(match.getFirstOccurrence().getIndexIntoFile(), match.getTokenCount()) + " line (" +match.getTokenCount() + " tokens) duplication in the following files: ");
-            rpt.append(EOL);
-            rpt.append("Starting at line " + tokenList1.getLineNumber(match.getFirstOccurrence().getIndexIntoFile())+ " of " + match.getFirstOccurrence().getFile());
-            rpt.append(EOL);
-            TokenList tokenList2 = tokenSets.getTokenList(match.getSecondOccurrence().getFile());
-            rpt.append("Starting at line " + tokenList2.getLineNumber(match.getSecondOccurrence().getIndexIntoFile())+ " of " + match.getSecondOccurrence().getFile());
-            rpt.append(EOL);
-            rpt.append(tokenList1.getLineSlice(match.getFirstOccurrence().getIndexIntoFile(), match.getTokenCount()));
-            rpt.append(EOL);
+
+            boolean printedHeader = false;
+            for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
+                Mark mark = (Mark)occurrences.next();
+
+                TokenList tokenList = tokenSets.getTokenList(mark.getFile());
+                if (!printedHeader) {
+                    rpt.append("Found a " + tokenList.getLineCount(mark.getIndexIntoFile(), match.getTokenCount()) + " line (" +match.getTokenCount() + " tokens) duplication in the following files: ");
+                    rpt.append(EOL);
+                    printedHeader = true;
+                }
+
+                rpt.append("Starting at line " + tokenList.getLineNumber(mark.getIndexIntoFile())+ " of " + mark.getFile());
+                rpt.append(EOL);
+
+                if (!occurrences.hasNext()) {
+                    rpt.append(tokenList.getLineSlice(mark.getIndexIntoFile(), match.getTokenCount()));
+                    rpt.append(EOL);
+                }
+            }
         }
         return rpt.toString();
     }

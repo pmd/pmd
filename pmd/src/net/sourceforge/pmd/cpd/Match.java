@@ -1,14 +1,17 @@
 package net.sourceforge.pmd.cpd;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+
 public class Match implements Comparable {
 
-    private Mark firstOccurrence;
-    private Mark secondOccurrence;
     private int tokenCount;
+    private List marks = new ArrayList();
 
-    public Match(int tokenCount, Mark firstOccurrence, Mark secondOccurrence) {
-        this.firstOccurrence = firstOccurrence;
-        this.secondOccurrence = secondOccurrence;
+    public Match(int tokenCount, Mark first, Mark second) {
+        marks.add(first);
+        marks.add(second);
         this.tokenCount = tokenCount;
     }
 
@@ -16,12 +19,8 @@ public class Match implements Comparable {
         return this.tokenCount;
     }
 
-    public Mark getFirstOccurrence() {
-        return this.firstOccurrence;
-    }
-
-    public Mark getSecondOccurrence() {
-        return this.secondOccurrence;
+    public Iterator iterator() {
+        return marks.iterator();
     }
 
     public int compareTo(Object o) {

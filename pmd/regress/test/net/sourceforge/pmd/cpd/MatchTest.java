@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Mark;
 
+import java.util.Iterator;
+
 public class MatchTest extends TestCase  {
 
     public void testSimple() {
@@ -11,8 +13,10 @@ public class MatchTest extends TestCase  {
         Mark mark2 = new Mark(2, "/var/Foo.java", 2);
         Match match = new Match(1, mark1, mark2);
         assertEquals(1, match.getTokenCount());
-        assertEquals(mark1, match.getFirstOccurrence());
-        assertEquals(mark2, match.getSecondOccurrence());
+        Iterator i = match.iterator();
+        assertEquals(mark1, i.next());
+        assertEquals(mark2, i.next());
+        assertFalse(i.hasNext());
     }
     public void testCompareTo() {
         Match m1 = new Match(1, new Mark(1, "/var/Foo.java", 1), new Mark(2, "/var/Foo.java", 2));
