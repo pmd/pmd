@@ -2,6 +2,42 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
+
+v2.0.7 - xx/xx/2004
+
+Runtime
+-------
+. update to PMD v2.0
+. update the icons (thanks to Ebu)
+. fix error in the fragment how to
+
+Development
+-----------
+. begin the refactoring; apply MVC to GUIs; apply Command and CommandProcessor
+  patterns for PMD and Eclipse resources operations.
+. Before generalizing the refactoring, test on the property page.
+
+
+----------------------------------------------------------------------------------------
+v2.0.6 - xx/07/2004
+
+Runtime
+-------
+. fix DOMSerializer class not found.
+  -> Package Xerces as an Eclipse feature because SUN JDK 1.4 packages an incomplete
+     Xerces implementation
+
+
+----------------------------------------------------------------------------------------
+v2.0.5 - 30/06/2004
+
+Runtime
+-------
+. Upgrading to PMD v1.8
+
+
+
+----------------------------------------------------------------------------------------
 v2.0.4 - 29/04/2004
 
 Runtime
