@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -147,7 +148,7 @@ public class PMDTask extends Task {
                 log("Processing file " + file.getAbsoluteFile().toString(), Project.MSG_VERBOSE);
                 ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
                 try {
-                    pmd.processFile(new FileInputStream(file), encoding, rules, ctx);
+                    pmd.processFile(new BufferedInputStream(new FileInputStream(file)), encoding, rules, ctx);
                 } catch (FileNotFoundException fnfe) {
                     if (failOnError) {
                         throw new BuildException(fnfe);

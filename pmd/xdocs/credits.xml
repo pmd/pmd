@@ -40,6 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
             <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>
             <li>Todd Wright - ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Noel Grandin - EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
@@ -82,7 +83,6 @@
             <li>Boris Gruschko - regression test suites, nifty AST/XPath viewer</li>
             <li>Trevor Harmon - rewrote XSLT script</li>
             <li>Vadim Nasardinov - xdocs cleanup, run.sh cleanup</li>
-            <li>Sreenivasa Viswanadha - grammar cleanup for Ctrl-Z problem</li>
             <li>Sigiswald Madou - bug report</li>
             <li>Dan Tullis - bug report</li>
             <li>George Menhorn - CPD bug reports and suggestions</li>
