@@ -1,0 +1,36 @@
+/*
+ * Created on 10.07.2004
+ */
+package net.sourceforge.pmd.dfa;
+
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+
+/**
+ * @author raik
+ *         <p/>
+ *         The Layer of data flow analysis.
+ */
+public class DataFlowFacade extends JavaParserVisitorAdapter {
+
+    private StatementAndBraceFinder sbf = new StatementAndBraceFinder();
+    private VariableAccessVisitor vav = new VariableAccessVisitor();
+
+    public void initializeWith(ASTCompilationUnit node) {
+        node.jjtAccept(this, null);
+    }
+
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        sbf.compute(node);
+        vav.compute(node);
+        return data;
+    }
+
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        sbf.compute(node);
+        vav.compute(node);
+        return data;
+    }
+}
