@@ -20,12 +20,15 @@ sub default() {
 
  print h3("<center>PMD-WEB</center>");
  print "PMD is a Java source code analysis tool - it checks your code for unused fields, empty try/catch/finally/if/while blocks, unused method parameters, and stuff like that.  There's much more info <a href=\"http://pmd.sf.net/\">here</a>.<p>This table contains the results of running PMD's <a href=\"http://pmd.sourceforge.net/rules/unusedcode.html\">unused code ruleset</a> against a bunch of Sourceforge projects.  The JavaNCSS column contains the lines of code analyzed as reported by the excellent <a href=\"http://www.kclee.com/clemens/java/javancss/\">JavaNCSS</a> utility."; 
- print "<p>Comments?  Questions?  Please post them <a href=\"http://sourceforge.net/forum/forum.php?forum_id=188192\">here</a>.<br>";
  open(FILE,"lastruntime.txt");
  my $lastruntime=<FILE>;
  close(FILE);
  print br();
- print "This report is regenerated 10 minutes past the hour at 0000, 0600, 1200, and 1800 U.S. Pacific Standard Time.<br>The last run finished at ", $lastruntime, ".  Right now it's ", ctime(), ".";
+ print br();
+ print "Want to run PMD on your Java Sourceforge project?  Please post <a href=\"http://sourceforge.net/forum/forum.php?forum_id=188192\">here</a> or email <a href=\"mailto:tom\@infoether.com\">tom\@infoether.com</a>";
+ print br();
+ print br();
+ print "This report is regenerated once a day.  The last run finished at ", $lastruntime;
  print "<p><b>1/31/03: The jakarta.apache.org and xml.apache.org projects have been moved <a href=\"http://cvs.apache.org/~tcopeland/pmdweb/\">here</a></b>";
  print br();
  print hr();
@@ -33,7 +36,6 @@ sub default() {
  print loadProjectList();
 
  print hr(); 
- print "Want to run PMD on your Java Sourceforge project?  Please post <a href=\"http://sourceforge.net/forum/forum.php?forum_id=188192\">here</a>";
 print " or email <a href=\"mailto:tom\@infoether.com\">tom\@infoether.com</a>.";
  print hr(); 
 }
