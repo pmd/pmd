@@ -158,7 +158,7 @@ public class Foo {
     <description>
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
     </description>
-      <priority>3</priority>
+      <priority>1</priority>
 
     <example>
 <![CDATA[
@@ -196,7 +196,7 @@ public class Foo {
     <description>
     Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
     </description>
-       <priority>3</priority>
+       <priority>2</priority>
 
     <example>
 <![CDATA[

@@ -11,7 +11,7 @@ These rules deal with different problems that can occur with a class' import sta
     <description>
     Avoid duplicate import statements.
     </description>
-      <priority>3</priority>
+      <priority>4</priority>
 
     <example>
 <![CDATA[
@@ -37,7 +37,7 @@ public class Foo {}
     <description>
     Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
     </description>
-      <priority>3</priority>
+      <priority>4</priority>
 
     <example>
 <![CDATA[
@@ -61,7 +61,7 @@ public class Foo {}
     <description>
     Avoid unused import statements.
     </description>
-      <priority>3</priority>
+      <priority>4</priority>
 
     <example>
 <![CDATA[

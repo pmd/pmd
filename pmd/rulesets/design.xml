@@ -144,7 +144,7 @@ public class Foo {
     <description>
 Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
     </description>
-        <priority>3</priority>
+        <priority>2</priority>
     <example>
 <![CDATA[
 public class Foo {

@@ -16,7 +16,7 @@ These are new rules for the next release
       super().  If the default constructor contains a call to an overridable method,
           the subclass may be completely uninstantiable.
       </description>
-        <priority>3</priority>
+        <priority>1</priority>
       <example>
   <![CDATA[
     public class SeniorClass {
@@ -107,7 +107,7 @@ These are new rules for the next release
       An optimizing JRE may assign a reference to the baz variable before it creates the object the
           reference is intended to point to.  For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html.
       </description>
-        <priority>3</priority>
+        <priority>1</priority>
       <example>
   <![CDATA[
   public class Foo {
