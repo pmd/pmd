@@ -6,22 +6,22 @@
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 public class NameDeclaration {
 
     private SimpleNode node;
-    private boolean isExceptionBlockParameter;
 
     public NameDeclaration(SimpleNode node) {
         this.node = node;
     }
 
-    public void setIsExceptionBlockParameter(boolean isExceptionBlockParameter) {
-        this.isExceptionBlockParameter = isExceptionBlockParameter;
-    }
-
     public boolean isExceptionBlockParameter() {
-        return isExceptionBlockParameter;
+        if (node instanceof ASTVariableDeclaratorId) {
+            ASTVariableDeclaratorId v = (ASTVariableDeclaratorId)node;
+            return v.isExceptionBlockParameter();
+        }
+        return false;
     }
 
     public int getLine() {

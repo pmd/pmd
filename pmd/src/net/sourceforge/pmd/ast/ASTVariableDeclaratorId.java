@@ -11,6 +11,9 @@ public class ASTVariableDeclaratorId extends SimpleNode {
     super(p, id);
   }
 
+  public boolean isExceptionBlockParameter() {
+      return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
+  }
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {

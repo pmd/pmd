@@ -36,11 +36,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         node.setScope(contextManager.getCurrentScope());
-        NameDeclaration nameDeclaration = new NameDeclaration(node);
-        // this seems an odd place to put this... should NameDeclaration figure
-        // this out on its own?
-        nameDeclaration.setIsExceptionBlockParameter(node.jjtGetParent().jjtGetParent() instanceof ASTTryStatement);
-        contextManager.getCurrentScope().addDeclaration(nameDeclaration);
+        contextManager.getCurrentScope().addDeclaration(new NameDeclaration(node));
         return super.visit(node, data);
     }
 

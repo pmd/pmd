@@ -28,8 +28,6 @@ public class NameDeclarationTest extends TestCase {
         assertEquals("foo", decl.getImage());
         assertEquals(decl, new NameDeclaration(node));
         assertTrue(!decl.isExceptionBlockParameter());
-        decl.setIsExceptionBlockParameter(true);
-        assertTrue(decl.isExceptionBlockParameter());
     }
 
     public void testConstructor() {
