@@ -549,7 +549,6 @@ class RulesTree extends JTree implements IConstants
                 {
                     String template = "The selected class \"{0}\" was not found on the classpath.  The class file path must be \"{1}\".";
                     String classFilePath = className.replace('.', File.separatorChar) + ".class";
-                    String correctPath = rulesDirectoryPath + File.separator + classFilePath;
                     String[] args = {className, classFilePath};
                     String message = MessageFormat.format(template, args);
                     MessageDialog.show(m_rulesEditor, message, exception);

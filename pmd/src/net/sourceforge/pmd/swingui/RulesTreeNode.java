@@ -27,7 +27,6 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
     private byte m_flags;
 
     // Constant
-    private static final char ROOT_TYPE = 'O';
     private static final byte IS_ROOT = 0x01;
     private static final byte IS_RULE_SET = 0x02;
     private static final byte IS_RULE = 0x04;
