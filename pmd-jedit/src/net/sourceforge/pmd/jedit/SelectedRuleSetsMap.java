@@ -54,7 +54,6 @@ public class SelectedRuleSetsMap {
 
     public RuleSet getSelectedRuleSets() {
         RuleSet newRuleSet = new RuleSet();
-        List selected = new ArrayList();
         for (Iterator i = keys(); i.hasNext();) {
             RuleSet rs = (RuleSet)i.next();
             if (get(rs).isSelected()) {
