@@ -5,32 +5,27 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="Test"
-         message="find anonymous"
-         class="net.sourceforge.pmd.rules.XPathRule">
-     <description>
-    anion
-     </description>
-       <properties>
-           <property name="xpath">
-               <value>
-  <![CDATA[
-//PrimaryExpression
- [PrimaryPrefix/Name[ends-with(@Image, 'equals')]]
- [PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression
-   /PrimaryPrefix/Literal/NullLiteral]
-  ]]>
-               </value>
-           </property>
-       </properties>
-       <priority>3</priority>
+  <rule name="UseSingletonRule"
+        message="All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor to silence this warning."
+        class="net.sourceforge.pmd.rules.design.UseSingletonRule">
+    <description>
+    If you have a class that has nothing but static methods, consider making it a Singleton
+    </description>
+      <priority>3</priority>
 
-     <example>
- <![CDATA[
-foo
- ]]>
-     </example>
-   </rule>
+    <example>
+<![CDATA[
+public class MaybeASingleton {
+    public static void foo() {
+     // etc
+    }
+    public static void bar() {
+     // etc
+    }
+}
+]]>
+    </example>
+  </rule>
 
 
     <!--

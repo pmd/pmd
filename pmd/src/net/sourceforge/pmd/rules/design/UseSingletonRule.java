@@ -30,7 +30,9 @@ public class UseSingletonRule extends AbstractRule {
     }
 
     public Object visit(ASTFieldDeclaration decl, Object data) {
-        isOK = true;
+        if (!decl.isStatic()) {
+            isOK = true;
+        }
         return data;
     }
 

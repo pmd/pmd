@@ -10,6 +10,7 @@ Implemented RFE 958714: Private field and local variables that are assigned but 
 Fixed bug 962782 - BeanMembersShouldSerializeRule no longer reports set/is as being a violation.
 Fixed bug 977022 - UnusedModifier no longer reports false positives for modifiers of nested classes in interfaces
 Fixed bug 976643 - IfElseStmtsMustUseBracesRule no longer reports false positives for certain if..else constructs.
+Fixed bug 985961 - UseSingletonRule now fires on classes which contain static fields
 
 May 19, 2004 - 1.8:
 New rules: ExceptionAsFlowControlRule, BadComparisonRule, AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, OptimizableToArrayCallRule

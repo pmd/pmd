@@ -26,6 +26,7 @@ public class UseSingletonRuleTest extends SimpleAggregatorTst implements ReportL
            new TestDescriptor(TEST5, "classic singleton - ok", 0, new UseSingletonRule()),
            new TestDescriptor(TEST6, "abstract, so ok", 0, new UseSingletonRule()),
            new TestDescriptor(TEST7, "has no fields, so ok", 0, new UseSingletonRule()),
+           new TestDescriptor(TEST8, "has public static field, so need to check", 1, new UseSingletonRule()),
        });
     }
 
@@ -42,6 +43,7 @@ public class UseSingletonRuleTest extends SimpleAggregatorTst implements ReportL
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         callbacks++;
     }
+
     public void metricAdded(Metric metric) {}
 
     private static final String TEST1 =
@@ -90,6 +92,12 @@ public class UseSingletonRuleTest extends SimpleAggregatorTst implements ReportL
     "public class Foo {" + PMD.EOL +
     " public Foo() { }" + PMD.EOL +
     " private int x;" + PMD.EOL +
+    " public static void doSomething() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST8 =
+    "public class Foo {" + PMD.EOL +
+    " public static final int x = 5;" + PMD.EOL +
     " public static void doSomething() {}" + PMD.EOL +
     "}";
 }
