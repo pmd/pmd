@@ -13,6 +13,9 @@ import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.ast.ASTInstanceOfExpression;
+import net.sourceforge.pmd.ast.ASTRelationalExpression;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -118,7 +121,6 @@ public class SimpleNodeTest extends ParserTst {
         ASTBlock block = new ASTBlock(1);
         block.jjtAddChild(new ASTBlockStatement(2), 0);
         block.jjtAddChild(new ASTBlockStatement(3), 1);
-
         List nodes = new ArrayList();
         block.findChildrenOfType(ASTBlockStatement.class, nodes);
         assertEquals(2, nodes.size());
@@ -129,10 +131,22 @@ public class SimpleNodeTest extends ParserTst {
         ASTBlock childBlock = new ASTBlock(2);
         block.jjtAddChild(childBlock, 0);
         childBlock.jjtAddChild(new ASTMethodDeclaration(3), 0);
-
         List nodes = new ArrayList();
         block.findChildrenOfType(ASTMethodDeclaration.class, nodes);
         assertEquals(1, nodes.size());
+    }
+
+    public void testReplaceChild() {
+        ASTEqualityExpression ee = new ASTEqualityExpression(1);
+        ASTInstanceOfExpression io1 = new ASTInstanceOfExpression(2);
+        ASTRelationalExpression re = new ASTRelationalExpression(3);
+        ASTInstanceOfExpression io2 = new ASTInstanceOfExpression(2);
+        ee.jjtAddChild(io1, 0);
+        ee.jjtAddChild(io2, 1);
+        io1.jjtAddChild(re, 0);
+        ee.jjtReplaceChild(io1, re);
+        assertEquals(ee.jjtGetChild(0), re);
+        assertEquals(ee.jjtGetChild(1), io2);
     }
 
 

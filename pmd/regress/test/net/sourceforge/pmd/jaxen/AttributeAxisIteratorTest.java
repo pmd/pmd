@@ -19,6 +19,7 @@ public class AttributeAxisIteratorTest extends TestCase {
         names.add("EndLine");
         names.add("BeginColumn");
         names.add("EndColumn");
+        names.add("Discardable");
         SimpleNode n = new SimpleNode(0);
         n.testingOnly__setBeginColumn(1);
         n.testingOnly__setBeginLine(1);

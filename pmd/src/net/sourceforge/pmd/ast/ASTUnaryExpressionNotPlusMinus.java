@@ -5,10 +5,12 @@ package net.sourceforge.pmd.ast;
 public class ASTUnaryExpressionNotPlusMinus extends SimpleNode {
     public ASTUnaryExpressionNotPlusMinus(int id) {
         super(id);
+        setDiscardable();
     }
 
     public ASTUnaryExpressionNotPlusMinus(JavaParser p, int id) {
         super(p, id);
+        setDiscardable();
     }
 
 

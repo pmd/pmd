@@ -1,7 +1,8 @@
 ????, 2004 - 1.8:
 New rule: ExceptionAsFlowControlRule
-GRAMMAR CHANGE - added ASTEqualityExpression notes, with image of "==" or "!="
-GRAMMAR CHANGE - removed broken "placeholder" notation from ASTUnaryExpression 
+Major grammar changes - lots of new node types added, many superfluous nodes removed from the runtime AST.  Bug 786611 - http://sourceforge.net/tracker/index.php?func=detail&aid=786611&group_id=56262&atid=479921 - explains it a bit more.
+Fixed bug 786611 - Expressions are no longer over-expanded in the AST
+Fixed bug 874284 - The AST now contains tokens for bitwise or expressions - i.e., "|"  
 
 April 22, 2004 - 1.7:
 Moved development environment to Maven 1.0-RC2.

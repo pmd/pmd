@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleNode implements Node {
+
     protected Node parent;
     protected Node[] children;
     protected int id;
@@ -17,6 +18,19 @@ public class SimpleNode implements Node {
     private int beginColumn = -1;
     private int endColumn;
     private Scope scope;
+    private boolean discardable;
+
+    public void setDiscardable() {
+        this.discardable = true;
+    }
+
+    public void setUnDiscardable() {
+        this.discardable = false;
+    }
+
+    public boolean isDiscardable() {
+        return this.discardable;
+    }
 
     public SimpleNode(int i) {
         id = i;
@@ -103,11 +117,9 @@ public class SimpleNode implements Node {
      */
     public Node getFirstParentOfType(Class parentType) {
       Node parentNode = jjtGetParent();
-
       while (parentNode != null && parentNode.getClass() != parentType) {
         parentNode = parentNode.jjtGetParent();
       }
-
       return parentNode;
     }
 
@@ -119,15 +131,12 @@ public class SimpleNode implements Node {
     public List getParentsOfType(Class parentType) {
       List parents = new ArrayList();
       Node parentNode = jjtGetParent();
-
       while (parentNode != null) {
         if (parentNode.getClass() == parentType) {
           parents.add(parentNode);
         }
-
         parentNode = parentNode.jjtGetParent();
       }
-
       return parents;
     }
 
@@ -173,6 +182,16 @@ public class SimpleNode implements Node {
 
     public Node jjtGetParent() {
         return parent;
+    }
+
+    public void jjtReplaceChild(Node old, Node newNode) {
+        for (int i=0; i<children.length; i++) {
+            if (children[i] == old) {
+                children[i] = newNode;
+                return;
+            }
+        }
+        throw new RuntimeException("PMD INTERNAL ERROR: SimpleNode.jjtReplaceChild called to replace a node, but couldn't find the old node");
     }
 
     public void jjtAddChild(Node n, int i) {

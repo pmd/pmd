@@ -112,6 +112,18 @@ public class JavaParser {
     }
     return tok.image.equals("enum");
   }
+
+  private void checkForDiscard(SimpleNode node) {
+    if (node.getImage() == null) {
+        node.setDiscardable();
+    }
+  }
+
+  private void discardNodes(ASTCompilationUnit node) {
+      DiscardableNodeCleaner c = new DiscardableNodeCleaner();
+      c.clean(node);
+  }
+
 }
 PARSER_END(JavaParser)
 
@@ -389,6 +401,7 @@ ASTCompilationUnit CompilationUnit() :
   ( < "~[]" > )?
   <EOF>
         {
+          discardNodes(jjtThis);
 		  return jjtThis;
 		}
 }
@@ -823,85 +836,82 @@ void AssignmentOperator() :
     | "|="    {jjtThis.setImage("|=");}
 }
 
-void ConditionalExpression()  #void :
+void ConditionalExpression() :
 {}
 {
-  ConditionalOrExpression() [ "?" Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() {checkForDiscard(jjtThis);} [ "?" {jjtThis.setUnDiscardable();} Expression() ":" ConditionalExpression() ]
 }
 
-void ConditionalOrExpression() #void :
+void ConditionalOrExpression() :
 {}
 {
-  ConditionalAndExpression() ( "||" ConditionalAndExpression() )*
+  ConditionalAndExpression() {checkForDiscard(jjtThis);} ( "||" {jjtThis.setUnDiscardable();} ConditionalAndExpression() )*
 }
 
 void ConditionalAndExpression() :
 {}
 {
-  InclusiveOrExpression() ( "&&" InclusiveOrExpression() )*
+  InclusiveOrExpression() {checkForDiscard(jjtThis);}  ( "&&" {jjtThis.setUnDiscardable();} InclusiveOrExpression() )*
 }
 
-void InclusiveOrExpression() #void :
+void InclusiveOrExpression() :
 {}
 {
-  ExclusiveOrExpression() ( "|" ExclusiveOrExpression() )*
+  ExclusiveOrExpression() {checkForDiscard(jjtThis);} ( "|" {jjtThis.setUnDiscardable();} ExclusiveOrExpression() )*
 }
 
-void ExclusiveOrExpression() #void :
+void ExclusiveOrExpression() :
 {}
 {
-  AndExpression() ( "^" AndExpression() )*
+  AndExpression() {checkForDiscard(jjtThis);} ( "^" {jjtThis.setUnDiscardable();} AndExpression() )*
 }
 
-void AndExpression() #void :
+void AndExpression() :
 {}
 {
-  EqualityExpression() ( "&" EqualityExpression() )*
+  EqualityExpression() {checkForDiscard(jjtThis);} ( "&" {jjtThis.setUnDiscardable();} EqualityExpression() )*
 }
 
 void EqualityExpression() :
 {}
 {
-  InstanceOfExpression() ( ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression() )*
+  InstanceOfExpression() {checkForDiscard(jjtThis);} ( ( "==" {jjtThis.setImage("==");jjtThis.setUnDiscardable(); } | "!=" {jjtThis.setImage("!=");jjtThis.setUnDiscardable();} ) InstanceOfExpression()  )*
 }
 
 void InstanceOfExpression() :
 {}
 {
-  RelationalExpression() [ "instanceof" Type() ]
+  RelationalExpression() {checkForDiscard(jjtThis);} [ "instanceof" {jjtThis.setUnDiscardable();} Type() ]
 }
 
-void RelationalExpression() #void :
+void RelationalExpression() :
 {}
 {
-  ShiftExpression() ( ( "<" | ">" | "<=" | ">=" ) ShiftExpression() )*
+  ShiftExpression() {checkForDiscard(jjtThis);} ( ( "<" {jjtThis.setImage("<");jjtThis.setUnDiscardable();} | ">" {jjtThis.setImage(">");jjtThis.setUnDiscardable();} | "<=" {jjtThis.setImage("<=");jjtThis.setUnDiscardable();} | ">=" {jjtThis.setImage(">=");jjtThis.setUnDiscardable();} ) ShiftExpression() )*
 }
 
-void ShiftExpression() #void :
+void ShiftExpression() :
 {}
 {
-  AdditiveExpression() ( ( "<<" | ">>" | ">>>" ) AdditiveExpression() )*
+  AdditiveExpression() {checkForDiscard(jjtThis);} ( ( "<<" {jjtThis.setImage("<<");jjtThis.setUnDiscardable();} | ">>" {jjtThis.setImage(">>");jjtThis.setUnDiscardable();} | ">>>" {jjtThis.setImage(">>>");jjtThis.setUnDiscardable();} ) AdditiveExpression() )*
 }
 
-void AdditiveExpression() #void :
+void AdditiveExpression() :
 {}
 {
-  MultiplicativeExpression() ( ( "+" | "-" ) MultiplicativeExpression() )*
+  MultiplicativeExpression() {checkForDiscard(jjtThis);} ( ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");jjtThis.setUnDiscardable();} ) MultiplicativeExpression() )*
 }
 
-void MultiplicativeExpression() #void :
+void MultiplicativeExpression() :
 {}
 {
-  UnaryExpression() ( ( "*" | "/" | "%" ) UnaryExpression() )*
+  UnaryExpression() {checkForDiscard(jjtThis);} ( ( "*" {jjtThis.setImage("*");jjtThis.setUnDiscardable();} | "/" {jjtThis.setImage("/");jjtThis.setUnDiscardable();} | "%" {jjtThis.setImage("%");jjtThis.setUnDiscardable();}) UnaryExpression() )*
 }
 
 void UnaryExpression() :
 {}
 {
-  ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) UnaryExpression()
-| PreIncrementExpression() 
-| PreDecrementExpression()
-| UnaryExpressionNotPlusMinus()
+  ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) UnaryExpression() | PreIncrementExpression() | PreDecrementExpression() | UnaryExpressionNotPlusMinus()
 }
 
 void PreIncrementExpression() :
@@ -916,10 +926,12 @@ void PreDecrementExpression() :
   "--" PrimaryExpression()
 }
 
-void UnaryExpressionNotPlusMinus()  #void :
+// TODO - something's wrong here; PostfixExpression nodes are not appearing
+void UnaryExpressionNotPlusMinus() :
 {}
 {
- ( "~" | "!" ) UnaryExpression()
+ {checkForDiscard(jjtThis);}
+ ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
 | LOOKAHEAD( CastLookahead() ) CastExpression()
 | PostfixExpression()
 }
@@ -935,10 +947,10 @@ void CastLookahead() :
 | "(" Name() ")" ( "~" | "!" | "(" | <IDENTIFIER> | "this" | "super" | "new" | Literal() )
 }
 
-void PostfixExpression()  #void :
+void PostfixExpression() :
 {}
 {
-  PrimaryExpression() [ "++" | "--" ]
+  PrimaryExpression() [ "++" {jjtThis.setImage("++");jjtThis.setUnDiscardable();} | "--" {jjtThis.setImage("--");jjtThis.setUnDiscardable();} ]
 }
 
 void CastExpression() :

@@ -123,7 +123,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     }
 
     public Object visit(ASTLiteral node, Object data) {
-        if (!hasAtLeast8Parents(node) || (!eighthParentIsAnArgList(node) && !eighthParentIsAVariableInitializer(node))) {
+        if (!hasAtLeast4Parents(node) || (!fourthParentIsAnArgList(node) && !fourthParentIsAVariableInitializer(node))) {
             return data;
         }
 
@@ -149,17 +149,17 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         return data;
     }
 
-    private boolean eighthParentIsAVariableInitializer(ASTLiteral node) {
-        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTVariableInitializer;
+    private boolean fourthParentIsAVariableInitializer(ASTLiteral node) {
+        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTVariableInitializer;
     }
 
-    private boolean eighthParentIsAnArgList(ASTLiteral node) {
-        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList;
+    private boolean fourthParentIsAnArgList(ASTLiteral node) {
+        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList;
     }
 
-    private boolean hasAtLeast8Parents(Node node) {
+    private boolean hasAtLeast4Parents(Node node) {
         Node currentNode = node;
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             if (currentNode instanceof ASTCompilationUnit) {
                 return false;
             }

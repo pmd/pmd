@@ -75,21 +75,6 @@
     </pmd>
 </target>
 
-    <target name="asttest" depends="compile">
-        <junit printsummary="yes" haltonfailure="yes">
-          <classpath>
-            <path refid="classpath.path" />
-            <pathelement location="${basedir}" />
-          </classpath>
-          <batchtest fork="no" todir="${build}">
-            <fileset dir="${regress}">
-              <include name="test/**/ast/**/*Test.java" />
-            </fileset>
-          </batchtest>
-      <formatter type="plain" />
-        </junit>
-    </target>
-
   <target name="requires-junit">
     <available classname="junit.framework.Test" property="junit.available"/>
     <fail unless="junit.available" message="Could find JUnit... please place a junit.jar file in the CLASSPATH."/>

@@ -39,48 +39,58 @@ public interface JavaParserTreeConstants
   public int JJTNAMELIST = 32;
   public int JJTEXPRESSION = 33;
   public int JJTASSIGNMENTOPERATOR = 34;
-  public int JJTVOID = 35;
-  public int JJTCONDITIONALANDEXPRESSION = 36;
-  public int JJTEQUALITYEXPRESSION = 37;
-  public int JJTINSTANCEOFEXPRESSION = 38;
-  public int JJTUNARYEXPRESSION = 39;
-  public int JJTPREINCREMENTEXPRESSION = 40;
-  public int JJTPREDECREMENTEXPRESSION = 41;
-  public int JJTCASTLOOKAHEAD = 42;
-  public int JJTCASTEXPRESSION = 43;
-  public int JJTPRIMARYEXPRESSION = 44;
-  public int JJTPRIMARYPREFIX = 45;
-  public int JJTPRIMARYSUFFIX = 46;
-  public int JJTLITERAL = 47;
-  public int JJTBOOLEANLITERAL = 48;
-  public int JJTNULLLITERAL = 49;
-  public int JJTARGUMENTS = 50;
-  public int JJTARGUMENTLIST = 51;
-  public int JJTALLOCATIONEXPRESSION = 52;
-  public int JJTARRAYDIMSANDINITS = 53;
-  public int JJTSTATEMENT = 54;
-  public int JJTLABELEDSTATEMENT = 55;
-  public int JJTBLOCK = 56;
-  public int JJTBLOCKSTATEMENT = 57;
-  public int JJTLOCALVARIABLEDECLARATION = 58;
-  public int JJTEMPTYSTATEMENT = 59;
-  public int JJTSTATEMENTEXPRESSION = 60;
-  public int JJTSWITCHSTATEMENT = 61;
-  public int JJTSWITCHLABEL = 62;
-  public int JJTIFSTATEMENT = 63;
-  public int JJTWHILESTATEMENT = 64;
-  public int JJTDOSTATEMENT = 65;
-  public int JJTFORSTATEMENT = 66;
-  public int JJTFORINIT = 67;
-  public int JJTSTATEMENTEXPRESSIONLIST = 68;
-  public int JJTFORUPDATE = 69;
-  public int JJTBREAKSTATEMENT = 70;
-  public int JJTCONTINUESTATEMENT = 71;
-  public int JJTRETURNSTATEMENT = 72;
-  public int JJTTHROWSTATEMENT = 73;
-  public int JJTSYNCHRONIZEDSTATEMENT = 74;
-  public int JJTTRYSTATEMENT = 75;
-  public int JJTASSERTSTATEMENT = 76;
+  public int JJTCONDITIONALEXPRESSION = 35;
+  public int JJTCONDITIONALOREXPRESSION = 36;
+  public int JJTCONDITIONALANDEXPRESSION = 37;
+  public int JJTINCLUSIVEOREXPRESSION = 38;
+  public int JJTEXCLUSIVEOREXPRESSION = 39;
+  public int JJTANDEXPRESSION = 40;
+  public int JJTEQUALITYEXPRESSION = 41;
+  public int JJTINSTANCEOFEXPRESSION = 42;
+  public int JJTRELATIONALEXPRESSION = 43;
+  public int JJTSHIFTEXPRESSION = 44;
+  public int JJTADDITIVEEXPRESSION = 45;
+  public int JJTMULTIPLICATIVEEXPRESSION = 46;
+  public int JJTUNARYEXPRESSION = 47;
+  public int JJTPREINCREMENTEXPRESSION = 48;
+  public int JJTPREDECREMENTEXPRESSION = 49;
+  public int JJTUNARYEXPRESSIONNOTPLUSMINUS = 50;
+  public int JJTCASTLOOKAHEAD = 51;
+  public int JJTPOSTFIXEXPRESSION = 52;
+  public int JJTCASTEXPRESSION = 53;
+  public int JJTPRIMARYEXPRESSION = 54;
+  public int JJTPRIMARYPREFIX = 55;
+  public int JJTPRIMARYSUFFIX = 56;
+  public int JJTLITERAL = 57;
+  public int JJTBOOLEANLITERAL = 58;
+  public int JJTNULLLITERAL = 59;
+  public int JJTARGUMENTS = 60;
+  public int JJTARGUMENTLIST = 61;
+  public int JJTALLOCATIONEXPRESSION = 62;
+  public int JJTARRAYDIMSANDINITS = 63;
+  public int JJTSTATEMENT = 64;
+  public int JJTLABELEDSTATEMENT = 65;
+  public int JJTBLOCK = 66;
+  public int JJTBLOCKSTATEMENT = 67;
+  public int JJTLOCALVARIABLEDECLARATION = 68;
+  public int JJTEMPTYSTATEMENT = 69;
+  public int JJTSTATEMENTEXPRESSION = 70;
+  public int JJTSWITCHSTATEMENT = 71;
+  public int JJTSWITCHLABEL = 72;
+  public int JJTIFSTATEMENT = 73;
+  public int JJTWHILESTATEMENT = 74;
+  public int JJTDOSTATEMENT = 75;
+  public int JJTFORSTATEMENT = 76;
+  public int JJTFORINIT = 77;
+  public int JJTSTATEMENTEXPRESSIONLIST = 78;
+  public int JJTFORUPDATE = 79;
+  public int JJTBREAKSTATEMENT = 80;
+  public int JJTCONTINUESTATEMENT = 81;
+  public int JJTRETURNSTATEMENT = 82;
+  public int JJTTHROWSTATEMENT = 83;
+  public int JJTSYNCHRONIZEDSTATEMENT = 84;
+  public int JJTTRYSTATEMENT = 85;
+  public int JJTASSERTSTATEMENT = 86;
 
 
   public String[] jjtNodeName = {
@@ -119,14 +129,24 @@ public interface JavaParserTreeConstants
     "NameList",
     "Expression",
     "AssignmentOperator",
-    "void",
+    "ConditionalExpression",
+    "ConditionalOrExpression",
     "ConditionalAndExpression",
+    "InclusiveOrExpression",
+    "ExclusiveOrExpression",
+    "AndExpression",
     "EqualityExpression",
     "InstanceOfExpression",
+    "RelationalExpression",
+    "ShiftExpression",
+    "AdditiveExpression",
+    "MultiplicativeExpression",
     "UnaryExpression",
     "PreIncrementExpression",
     "PreDecrementExpression",
+    "UnaryExpressionNotPlusMinus",
     "CastLookahead",
+    "PostfixExpression",
     "CastExpression",
     "PrimaryExpression",
     "PrimaryPrefix",

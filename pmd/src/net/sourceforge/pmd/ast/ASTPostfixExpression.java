@@ -5,10 +5,12 @@ package net.sourceforge.pmd.ast;
 public class ASTPostfixExpression extends SimpleNode {
     public ASTPostfixExpression(int id) {
         super(id);
+        setDiscardable();
     }
 
     public ASTPostfixExpression(JavaParser p, int id) {
         super(p, id);
+        setDiscardable();
     }
 
 

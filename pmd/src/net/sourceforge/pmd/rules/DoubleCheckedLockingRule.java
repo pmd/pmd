@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * void method() {
  *    if(x == null) {
- *        synchronize(this){
+ *        synchronized(this){
  *            if(x == null) {
  *                x = new | method();
  *            }
@@ -87,7 +87,7 @@ public class DoubleCheckedLockingRule extends net.sourceforge.pmd.AbstractRule {
             if (finder.size() == 2) {
                 ASTIfStatement is = (ASTIfStatement) finder.get(0);
                 if (ifVerify(is, returnVariableName)) {
-                    //find synchronize
+                    //find synchronized
                     finder.clear();
                     is.findChildrenOfType(ASTSynchronizedStatement.class, finder, true);
                     if (finder.size() == 1) {

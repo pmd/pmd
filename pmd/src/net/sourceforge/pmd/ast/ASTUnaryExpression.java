@@ -5,10 +5,12 @@ package net.sourceforge.pmd.ast;
 public class ASTUnaryExpression extends SimpleNode {
     public ASTUnaryExpression(int id) {
         super(id);
+        setDiscardable();
     }
 
     public ASTUnaryExpression(JavaParser p, int id) {
         super(p, id);
+        setDiscardable();
     }
 
     /** Accept the visitor. **/
@@ -20,5 +22,4 @@ public class ASTUnaryExpression extends SimpleNode {
         System.out.println(toString(prefix) + ":" + (getImage()));
         dumpChildren(prefix);
     }
-
 }

@@ -5,10 +5,12 @@ package net.sourceforge.pmd.ast;
 public class ASTConditionalExpression extends SimpleNode {
     public ASTConditionalExpression(int id) {
         super(id);
+        setDiscardable();
     }
 
     public ASTConditionalExpression(JavaParser p, int id) {
         super(p, id);
+        setDiscardable();
     }
 
 
