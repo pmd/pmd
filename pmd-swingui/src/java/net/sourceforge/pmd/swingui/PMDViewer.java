@@ -33,9 +33,9 @@ class PMDViewer extends JFrame {
     /**
      * This is the logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(
-        "net.sourceforge.pmd.swingui.PMDViewer",
-            "net.sourceforge.pmd.swingui.l10n.Logging");
+    private static final Logger LOGGER = Logger.getLogger(PMDViewer.class
+        .getName(),
+        "net.sourceforge.pmd.swingui.l10n.Logging");
     
     /**
      * This is the application menu bar.
@@ -66,6 +66,11 @@ class PMDViewer extends JFrame {
      * This is the PMD locator.
      */
     private PMDLocator pmdLocator;
+    
+    /**
+     * This is the file locator.
+     */
+    private FileLocator fileLocator;
     
     /**
      * Creates the PMD Viewer.
@@ -101,7 +106,20 @@ class PMDViewer extends JFrame {
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         pmdLocatorInit();
         contentPane.add(pmdLocator);
+        fileLocatorInit();
+        contentPane.add(fileLocator);
+        pack();
         LOGGER.exiting(getClass().getName(), "contentPaneInit");
+    }
+    
+    /**
+     * Initializes the file locator.
+     */
+    private void fileLocatorInit() {
+        LOGGER.entering(getClass().getName(), "fileLocatorInit");
+        assert fileLocator == null : "fileLocator already initialized.";
+        fileLocator = new FileLocator();
+        LOGGER.exiting(getClass().getName(), "fileLocatorInit");
     }
     
     /**

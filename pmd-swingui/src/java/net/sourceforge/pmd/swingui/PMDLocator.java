@@ -24,25 +24,25 @@ import javax.swing.border.TitledBorder;
  * @version 0.1
  * @since 0.1
  */
-class PMDLocator extends JPanel {
+class PMDLocator extends TitledPanel {
     /**
      * This is the resource bundle for this UI component.
      */
-    private ResourceBundle UI_STRINGS =
+    private static final ResourceBundle UI_STRINGS =
         ResourceBundle.getBundle("net.sourceforge.pmd.swingui.l10n.PMDLocator");
     
     /**
      * These are the preferences for this component.
      */
-    private Preferences PREFS =
+    private static final Preferences PREFS =
         Preferences.userNodeForPackage(PMDLocator.class);
         
     /**
      * This is the logger for the PMD Locator.
      */
-    private Logger LOGGER =
-        Logger.getLogger("net.sourceforge.pmd.swingui.PMDLocator",
-            "net.sourceforge.pmd.swingui.l10n.Logging");
+    private static final Logger LOGGER = Logger.getLogger(PMDLocator.class
+        .getName(),
+        "net.sourceforge.pmd.swingui.l10n.Logging");
         
     /**
      * This is the label.
@@ -68,9 +68,8 @@ class PMDLocator extends JPanel {
      * This creates the PMD Locator.
      */
     public PMDLocator() {
-        super();
+        super(UI_STRINGS.getString("title"));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setBorder(new TitledBorder(UI_STRINGS.getString("title")));
         locationFieldInit();
         locationLabelInit();
         locationButtonInit();

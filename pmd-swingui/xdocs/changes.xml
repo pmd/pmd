@@ -9,6 +9,9 @@
             <action dev="brantgurga" type="add">
                 Initial working PMD Viewer, not complete.
             </action>
+            <action dev="brantgurga" type="add">
+            	Added a file chooser.
+            </action>
         </release>
     </body>
 </document>
