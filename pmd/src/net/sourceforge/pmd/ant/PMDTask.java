@@ -76,8 +76,19 @@ public class PMDTask extends Task {
         this.classpath = classpath;
     }
 
+    public Path getClasspath() {
+        return classpath;
+    }
+
+    public Path createClasspath() {
+        if (classpath == null) {
+            classpath = new Path(getProject());
+        }
+        return classpath.createPath();
+    }
+
     public void setClasspathRef(Reference r) {
-        createClasspath().setRefid(r);
+        createLongClasspath().setRefid(r);
     }
 
     public void execute() throws BuildException {
@@ -178,7 +189,7 @@ public class PMDTask extends Task {
         }
     }
 
-    private Path createClasspath() {
+    private Path createLongClasspath() {
         if (classpath == null) {
             classpath = new Path(project);
         }

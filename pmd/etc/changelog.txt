@@ -3,6 +3,7 @@ Added new rules: FinalizeShouldBeProtected, FinalFieldCouldBeStatic
 Removed "verbose" attribute from PMD and CPD Ant tasks; now they use built in logging so you can do a "ant -verbose cpd" or "ant -verbose pmd".  Thanks to Philippe T'Seyen for the code.
 Added "excludes" feature to rulesets; thanks to Gael Marziou for the suggestion.
 CPD now processes PHP code.
+Fixed bug 732592 - Ant task now accepts a nested classpath element.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 April 17 - 1.05:

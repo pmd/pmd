@@ -61,6 +61,9 @@
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     <pmd rulesetfiles="rulesets/newrules.xml">
+        <classpath>
+            <pathelement location="/home/tom/tmp/"/>
+        </classpath>
         <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
         <fileset dir="/usr/local/java/src/java/lang">
             <include name="**/*.java"/>

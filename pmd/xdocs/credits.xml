@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Wim Bervoets - bug report for the PMD Ant task</li>
             <li>Niels Peter Strandberg - various tweaks to the PMD Swing UI</li>
             <li>Ian Shef - documentation updates, bug reports on the Gel IDE plugin</li>
             <li>Astro Jetson Jr - a tweak for the ShortVariableNameRule</li>
