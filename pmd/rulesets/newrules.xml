@@ -2,11 +2,30 @@
 
 <ruleset name="newrules">
   <description>
-These are new ones for the next release
+These are new rules for the next release
   </description>
 
 
+   <rule name="OnlyOneReturn"
+        message="Avoid multiple exit points from a method"
+        class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule">
+    <description>
+    Avoid multiple exit points from a method.
+    </description>
 
+    <example>
+<![CDATA[
+public class OneReturnOnly1 {
+ public void foo(int x) {
+  if (x > 0) {
+   return "hey";   // oops, multiple exit points!
+  }
+  return "hi";
+ }
+}
+]]>
+    </example>
+    </rule>
 
   </ruleset>
 

@@ -14,6 +14,10 @@
             <li>Ralph Schaer - bug report and verification on PMD-0.7</li>
             <li>Nanne Baars - rule suggestions</li>
             <li>Vladimir Bossicard - several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a></li>
+            <li>Rich Kilmer - logo design</li>
+            <li>Liam Holohan - bug reports</li>
+            <li>Peter Donald - design suggestions</li>
+            <li>Vincent Massol - bug reports, design suggestions</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
@@ -29,7 +33,7 @@
                   agent architecture Ultra*Log is based on.  (Which needs
                   quite a bit of PMD also.)</td></tr>
           <tr><td><center><img src="http://sourceforge.net/sflogo.php?group_id=56262"/></center></td>
-              <td><a href="http://sourceforge.net/">SourceForge</a> for 
+              <td><a href="http://sourceforge.net/">SourceForge</a> for
                   providing hosting services for PMD.</td></tr>
         </table>
         </subsection>
