@@ -20,7 +20,7 @@ public class ASTThrowStatementTest extends TestCase {
     public final void testGetFirstASTNameImageNull() {
         ASTThrowStatement ts = new ASTThrowStatement(0);
         
-        assertNull(ts.getFirstASTNameImage());
+        assertNull(ts.getFirstClassOrInterfaceTypeImage());
     }
 
     public final void testGetFirstASTNameImageNew() {
@@ -33,7 +33,7 @@ public class ASTThrowStatementTest extends TestCase {
         n.setImage("MyName");
         ao.jjtAddChild(n, 0);
         
-        assertEquals("MyName", ts.getFirstASTNameImage());
+        assertEquals("MyName", ts.getFirstClassOrInterfaceTypeImage());
     }
 
 }

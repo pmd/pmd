@@ -3,10 +3,10 @@ package net.sourceforge.pmd.rules.design;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCatch;
-import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +20,8 @@ public class ExceptionAsFlowControl extends AbstractRule {
     
     public Object visit(ASTThrowStatement node, Object data) {
         
-        String throwName = node.getFirstASTNameImage();
+        String throwName = node.getFirstClassOrInterfaceTypeImage();
+
         ASTTryStatement parent = (ASTTryStatement) node.getFirstParentOfType(ASTTryStatement.class);
         if (parent == null) {
             return data;
@@ -33,7 +34,7 @@ public class ExceptionAsFlowControl extends AbstractRule {
             for (Iterator iter = list.iterator(); iter.hasNext();) {
                 ASTCatch catchStmt = (ASTCatch) iter.next();
                 ASTType type = (ASTType) catchStmt.getFormalParameter().findChildrenOfType(ASTType.class).get(0);
-                ASTName name = (ASTName) type.findChildrenOfType(ASTName.class).get(0);
+                ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) type.findChildrenOfType(ASTClassOrInterfaceType.class).get(0);
                 
                 if (throwName != null && throwName.equals(name.getImage())) {
                     addViolation((RuleContext) data, name);
