@@ -71,7 +71,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void openMethodScope(SimpleNode node) {
+    private void createMethodScope(SimpleNode node) {
         addScopeWithParent(new MethodScope(), node);
     }
 
@@ -82,7 +82,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void openClassScope(SimpleNode node) {
+    private void createClassScope(SimpleNode node) {
        if (node instanceof ASTClassBodyDeclaration){
            addScopeWithParent(new ClassScope(), node);
        }
@@ -96,7 +96,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * The new scope is stored on the scope stack.
      * @param node the AST node for which the scope has to be created.
      */
-    private void openGlobalScope(SimpleNode node) {
+    private void createGlobalScope(SimpleNode node) {
        Scope scope = new GlobalScope();
        scopes.add(scope);
        node.setScope(scope);
@@ -106,20 +106,20 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
     }
     
     public Object visit(ASTCompilationUnit node, Object data) {
-        openGlobalScope(node);
+        createGlobalScope(node);
         cont(node);
         return data;
     }
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
-        openClassScope(node);
+        createClassScope(node);
         cont(node);
         return data;
     }
 
     public Object visit(ASTClassBodyDeclaration node, Object data) {
         if (node.isAnonymousInnerClass()) {
-            openClassScope(node);
+            createClassScope(node);
             cont(node);
         } else {
             super.visit(node, data);
@@ -128,7 +128,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTUnmodifiedInterfaceDeclaration node, Object data) {
-        openClassScope(node);
+        createClassScope(node);
         cont(node);
         return data;
     }
@@ -140,13 +140,13 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        openMethodScope(node);
+        createMethodScope(node);
         cont(node);
         return data;
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        openMethodScope(node);
+        createMethodScope(node);
         cont(node);
         return data;
     }
