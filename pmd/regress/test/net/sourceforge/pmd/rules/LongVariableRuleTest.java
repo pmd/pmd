@@ -13,22 +13,22 @@ public class LongVariableRuleTest extends RuleTst {
     }
 
     public void testLongVariableField() throws Throwable {
-        runTest("LongVariableField.java", 1, rule);
+        runTestFromFile("LongVariableField.java", 1, rule);
     }
 
     public void testLongVariableLocal() throws Throwable {
-        runTest("LongVariableLocal.java", 1, rule);
+        runTestFromFile("LongVariableLocal.java", 1, rule);
     }
 
     public void testLongVariableFor() throws Throwable {
-        runTest("LongVariableFor.java", 1, rule);
+        runTestFromFile("LongVariableFor.java", 1, rule);
     }
 
     public void testLongVariableParam() throws Throwable {
-        runTest("LongVariableParam.java", 1, rule);
+        runTestFromFile("LongVariableParam.java", 1, rule);
     }
 
     public void testLongVariableNone() throws Throwable {
-        runTest("LongVariableNone.java", 0, rule);
+        runTestFromFile("LongVariableNone.java", 0, rule);
     }
 }

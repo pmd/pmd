@@ -4,30 +4,79 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.design.UseSingletonRule;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class UseSingletonRuleTest extends RuleTst implements ReportListener {
 
+    private static final String TEST1 =
+    "public class UseSingleton1 {" + CPD.EOL +
+    " // Should trigger UseSingleton rule?" + CPD.EOL +
+    " public UseSingleton1() { }" + CPD.EOL +
+    " " + CPD.EOL +
+    " public static void doSomething() {" + CPD.EOL +
+    "  // Blah, blah, blah." + CPD.EOL +
+    " }" + CPD.EOL +
+    "" + CPD.EOL +
+    " public static void main(String args[]) {" + CPD.EOL +
+    "  doSomething();" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class UseSingleton2" + CPD.EOL +
+    "{" + CPD.EOL +
+    "    // Should not trigger UseSingleton rule." + CPD.EOL +
+    "    public UseSingleton2() { }" + CPD.EOL +
+    "" + CPD.EOL +
+    "    public void doSomething() { }" + CPD.EOL +
+    "    " + CPD.EOL +
+    "    public static void main(String args[]) { }" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class UseSingleton3" + CPD.EOL +
+    "{" + CPD.EOL +
+    "    // Should trigger it." + CPD.EOL +
+    "    public static void doSomething1() { }" + CPD.EOL +
+    "    public static void doSomething2() { }" + CPD.EOL +
+    "    public static void doSomething3() { }" + CPD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class UseSingleton4" + CPD.EOL +
+    "{" + CPD.EOL +
+    "    public UseSingleton4() { }" + CPD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class UseSingleton5 {" + CPD.EOL +
+    " private UseSingleton5() {}" + CPD.EOL +
+    " public static UseSingleton5 get() {" + CPD.EOL +
+    "  return null;" + CPD.EOL +
+    " }     " + CPD.EOL +
+    "}";
+
     public void testAllStaticsPublicConstructor() throws Throwable {
-        runTest("UseSingleton1.java", 1, new UseSingletonRule());
+        runTestFromString(TEST1, 1, new UseSingletonRule());
     }
 
     public void testOKDueToNonStaticMethod() throws Throwable {
-        runTest("UseSingleton2.java", 0, new UseSingletonRule());
+        runTestFromString(TEST2, 0, new UseSingletonRule());
     }
 
     public void testNoConstructorCoupleOfStatics() throws Throwable {
-        runTest("UseSingleton3.java", 1, new UseSingletonRule());
+        runTestFromString(TEST3, 1, new UseSingletonRule());
     }
 
     public void testNoConstructorOneStatic() throws Throwable {
-        runTest("UseSingleton4.java", 0, new UseSingletonRule());
+        runTestFromString(TEST4, 0, new UseSingletonRule());
     }
 
     public void testClassicSingleton() throws Throwable {
-        runTest("UseSingleton5.java", 0, new UseSingletonRule());
+        runTestFromString(TEST5, 0, new UseSingletonRule());
     }
 
     public void testResetState() throws Throwable {
@@ -35,8 +84,8 @@ public class UseSingletonRuleTest extends RuleTst implements ReportListener {
         Rule rule = new UseSingletonRule();
         Report report = new Report();
         report.addListener(this);
-        process("UseSingleton3.java", rule, report);
-        process("UseSingleton4.java", rule, report);
+        runTestFromString(TEST3, rule, report);
+        runTestFromString(TEST4, rule, report);
         assertEquals(1, callbacks);
     }
 

@@ -15,14 +15,14 @@ public class ForLoopShouldBeWhileLoopRuleTest extends RuleTst {
     }
 
     public void testSimple() throws Throwable {
-        runTest("ForLoopShouldBeWhileLoop1.java", 1, rule);
+        runTestFromFile("ForLoopShouldBeWhileLoop1.java", 1, rule);
     }
 
     public void testOK() throws Throwable {
-        runTest("ForLoopShouldBeWhileLoop2.java", 0, rule);
+        runTestFromFile("ForLoopShouldBeWhileLoop2.java", 0, rule);
     }
 
     public void testForSemicolonSemicolon() throws Throwable {
-        runTest("ForLoopShouldBeWhileLoop3.java", 0, rule);
+        runTestFromFile("ForLoopShouldBeWhileLoop3.java", 0, rule);
     }
 }

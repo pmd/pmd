@@ -15,29 +15,29 @@ public class LongMethodRuleTest extends RuleTst {
     }
 
     public void testShortMethod() throws Throwable {
-        Report report = process("LongMethod1.java", getIUT());
+        Report report = runTestFromFile("LongMethod1.java", getIUT());
         assertEquals(0, report.size());
     }
 
     public void testReallyLongMethod() throws Throwable {
-        Report report = process("LongMethod2.java", getIUT());
+        Report report = runTestFromFile("LongMethod2.java", getIUT());
         assertEquals(1, report.size());
     }
 
     public void testReallyLongMethodWithLongerRange() throws Throwable {
         LongMethodRule IUT = getIUT();
         IUT.addProperty("minimum", "1000");
-        Report report = process("LongMethod2.java", IUT);
+        Report report = runTestFromFile("LongMethod2.java", IUT);
         assertEquals(0, report.size());
     }
 
     public void testNotQuiteLongMethod() throws Throwable {
-        Report report = process("LongMethod3.java", getIUT());
+        Report report = runTestFromFile("LongMethod3.java", getIUT());
         assertEquals(0, report.size());
     }
 
     public void testLongMethod() throws Throwable {
-        Report report = process("LongMethod4.java", getIUT());
+        Report report = runTestFromFile("LongMethod4.java", getIUT());
         assertEquals(1, report.size());
     }
 }

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.rules.UnnecessaryConversionTemporaryRule;
 public class UnnecessaryTemporariesRuleTest extends RuleTst {
 
     public void testUnnecessaryTemporaries() throws Throwable {
-        Report report = process("UnnecessaryTemporary.java", new UnnecessaryConversionTemporaryRule());
+        Report report = runTestFromFile("UnnecessaryTemporary.java", new UnnecessaryConversionTemporaryRule());
         assertEquals(6, report.size());
         assertEquals(new UnnecessaryConversionTemporaryRule(), ((RuleViolation) report.iterator().next()).getRule());
     }

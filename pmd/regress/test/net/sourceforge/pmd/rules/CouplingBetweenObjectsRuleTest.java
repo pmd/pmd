@@ -14,10 +14,10 @@ public class CouplingBetweenObjectsRuleTest extends RuleTst {
     }
 
     public void testSimpleBad() throws Throwable {
-        super.runTest("CouplingBetweenObjects1.java", 1, rule);
+        super.runTestFromFile("CouplingBetweenObjects1.java", 1, rule);
     }
 
     public void testSimpleOK() throws Throwable {
-        super.runTest("CouplingBetweenObjects2.java", 0, rule);
+        super.runTestFromFile("CouplingBetweenObjects2.java", 0, rule);
     }
 }

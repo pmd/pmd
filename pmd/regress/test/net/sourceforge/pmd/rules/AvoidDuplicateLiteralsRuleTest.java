@@ -13,14 +13,14 @@ public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
     }
 
     public void testTwoLiteralStringArgs() throws Throwable {
-        runTest("AvoidDuplicateLiterals1.java", 1, rule);
+        runTestFromFile("AvoidDuplicateLiterals1.java", 1, rule);
     }
 
     public void testLiteralIntArg() throws Throwable {
-        runTest("AvoidDuplicateLiterals2.java", 0, rule);
+        runTestFromFile("AvoidDuplicateLiterals2.java", 0, rule);
     }
 
     public void testLiteralFieldDecl() throws Throwable {
-        runTest("AvoidDuplicateLiterals3.java", 0, rule);
+        runTestFromFile("AvoidDuplicateLiterals3.java", 0, rule);
     }
 }

@@ -13,15 +13,15 @@ public class ReturnFromFinallyBlockTest extends RuleTst {
     }
 
     public void testThrowExceptionButReturnFromFinally() throws Throwable {
-        runTest("ReturnFromFinallyBlock1.java", 1, rule);
+        runTestFromFile("ReturnFromFinallyBlock1.java", 1, rule);
     }
 
     public void testLotsOfReturns() throws Throwable {
-        runTest("ReturnFromFinallyBlock2.java", 1, rule);
+        runTestFromFile("ReturnFromFinallyBlock2.java", 1, rule);
     }
 
     public void testOK() throws Throwable {
-        runTest("ReturnFromFinallyBlock3.java", 0, rule);
+        runTestFromFile("ReturnFromFinallyBlock3.java", 0, rule);
     }
 
 }

@@ -14,17 +14,17 @@ public class LongParameterListRuleTest extends RuleTst {
     }
 
     public void testShortMethod() throws Throwable {
-        Report report = process("LongParameterList0.java", getIUT());
+        Report report = runTestFromFile("LongParameterList0.java", getIUT());
         assertEquals(0, report.size());
     }
 
     public void testOneLongMethod() throws Throwable {
-        Report report = process("LongParameterList1.java", getIUT());
+        Report report = runTestFromFile("LongParameterList1.java", getIUT());
         assertEquals(1, report.size());
     }
 
     //      public void testTwoLongMethods() throws Throwable {
-    //  	Report report = process("LongParameterList2.java", getIUT() );
+    //  	Report report = runTestFromFile("LongParameterList2.java", getIUT() );
     //  	assertEquals( 2, report.size() );
     //      }
 }

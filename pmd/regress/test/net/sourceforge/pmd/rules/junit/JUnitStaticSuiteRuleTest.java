@@ -19,14 +19,14 @@ public class JUnitStaticSuiteRuleTest extends RuleTst {
     }
 
     public void testNonstatic() throws Throwable {
-        runTest("junit/JUnitStaticSuite1.java", 1, rule);
+        runTestFromFile("junit/JUnitStaticSuite1.java", 1, rule);
     }
 
     public void testGoodOK() throws Throwable {
-        runTest("junit/JUnitStaticSuite2.java", 0, rule);
+        runTestFromFile("junit/JUnitStaticSuite2.java", 0, rule);
     }
 
     public void testPrivateSuite() throws Throwable {
-        runTest("junit/JUnitStaticSuite3.java", 1, rule);
+        runTestFromFile("junit/JUnitStaticSuite3.java", 1, rule);
     }
 }

@@ -18,26 +18,26 @@ public class UnnecessaryConstructorRuleTest extends RuleTst {
     }
 
     public void testSimpleFailureCase() throws Throwable {
-        runTest("UnnecessaryConstructor1.java", 1, rule);
+        runTestFromFile("UnnecessaryConstructor1.java", 1, rule);
     }
 
     public void testPrivate() throws Throwable {
-        runTest("UnnecessaryConstructor2.java", 0, rule);
+        runTestFromFile("UnnecessaryConstructor2.java", 0, rule);
     }
 
     public void testHasArgs() throws Throwable {
-        runTest("UnnecessaryConstructor3.java", 0, rule);
+        runTestFromFile("UnnecessaryConstructor3.java", 0, rule);
     }
 
     public void testHasBody() throws Throwable {
-        runTest("UnnecessaryConstructor4.java", 0, rule);
+        runTestFromFile("UnnecessaryConstructor4.java", 0, rule);
     }
 
     public void testHasExceptions() throws Throwable {
-        runTest("UnnecessaryConstructor5.java", 0, rule);
+        runTestFromFile("UnnecessaryConstructor5.java", 0, rule);
     }
 
     public void testMultipleConstructors() throws Throwable {
-        runTest("UnnecessaryConstructor6.java", 0, rule);
+        runTestFromFile("UnnecessaryConstructor6.java", 0, rule);
     }
 }

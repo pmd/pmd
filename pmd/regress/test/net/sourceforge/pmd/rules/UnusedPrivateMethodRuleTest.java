@@ -16,26 +16,26 @@ public class UnusedPrivateMethodRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("UnusedPrivateMethod1.java", 0, rule);
+        runTestFromFile("UnusedPrivateMethod1.java", 0, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("UnusedPrivateMethod2.java", 1, rule);
+        runTestFromFile("UnusedPrivateMethod2.java", 1, rule);
     }
 
     public void test3() throws Throwable {
-        runTest("UnusedPrivateMethod3.java", 0, rule);
+        runTestFromFile("UnusedPrivateMethod3.java", 0, rule);
     }
 
     public void test4() throws Throwable {
-        runTest("UnusedPrivateMethod4.java", 1, rule);
+        runTestFromFile("UnusedPrivateMethod4.java", 1, rule);
     }
 
     public void test5() throws Throwable {
-        runTest("UnusedPrivateMethod5.java", 0, rule);
+        runTestFromFile("UnusedPrivateMethod5.java", 0, rule);
     }
 
     public void test6() throws Throwable {
-        runTest("UnusedPrivateMethod6.java", 0, rule);
+        runTestFromFile("UnusedPrivateMethod6.java", 0, rule);
     }
 }

@@ -14,10 +14,10 @@ public class ExcessiveImportsRuleTest extends RuleTst {
     }
 
     public void testSimpleBad() throws Throwable {
-        super.runTest("ExcessiveImports1.java", 1, rule);
+        super.runTestFromFile("ExcessiveImports1.java", 1, rule);
     }
 
     public void testSimpleOK() throws Throwable {
-        super.runTest("ExcessiveImports2.java", 0, rule);
+        super.runTestFromFile("ExcessiveImports2.java", 0, rule);
     }
 }

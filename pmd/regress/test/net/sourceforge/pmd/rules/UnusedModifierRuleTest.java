@@ -13,14 +13,14 @@ public class UnusedModifierRuleTest extends RuleTst {
     }
 
     public void testAbstract() throws Throwable {
-        runTest("UnusedModifier1.java", 1, rule);
+        runTestFromFile("UnusedModifier1.java", 1, rule);
     }
 
     public void testAbstractClass() throws Throwable {
-        runTest("UnusedModifier2.java", 0, rule);
+        runTestFromFile("UnusedModifier2.java", 0, rule);
     }
 
     public void testPublicAndAbstract() throws Throwable {
-        runTest("UnusedModifier3.java", 1, rule);
+        runTestFromFile("UnusedModifier3.java", 1, rule);
     }
 }

@@ -10,26 +10,26 @@ import net.sourceforge.pmd.rules.StringToStringRule;
 public class StringToStringRuleTest extends RuleTst {
 
     public void testLocalVar() throws Throwable {
-        runTest("StringToString1.java", 1, new StringToStringRule());
+        runTestFromFile("StringToString1.java", 1, new StringToStringRule());
     }
 
     public void testParam() throws Throwable {
-        runTest("StringToString2.java", 1, new StringToStringRule());
+        runTestFromFile("StringToString2.java", 1, new StringToStringRule());
     }
 
     public void testInstanceVar() throws Throwable {
-        runTest("StringToString3.java", 1, new StringToStringRule());
+        runTestFromFile("StringToString3.java", 1, new StringToStringRule());
     }
 
     public void testPrimitiveType() throws Throwable {
-        runTest("StringToString4.java", 0, new StringToStringRule());
+        runTestFromFile("StringToString4.java", 0, new StringToStringRule());
     }
 
     public void testMultipleSimilarParams() throws Throwable {
-        runTest("StringToString5.java", 0, new StringToStringRule());
+        runTestFromFile("StringToString5.java", 0, new StringToStringRule());
     }
 
     public void testStringArray() throws Throwable {
-        runTest("StringToString6.java", 1, new StringToStringRule());
+        runTestFromFile("StringToString6.java", 1, new StringToStringRule());
     }
 }

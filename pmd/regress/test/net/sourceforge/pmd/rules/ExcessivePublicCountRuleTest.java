@@ -12,11 +12,11 @@ public class ExcessivePublicCountRuleTest extends RuleTst {
 
     public void testSimpleOK() throws Throwable {
         rule.addProperty("minimum", "50");
-        super.runTest("ExcessivePublicCountRule1.java", 0, rule);
+        super.runTestFromFile("ExcessivePublicCountRule1.java", 0, rule);
     }
 
     public void testSimpleBad() throws Throwable {
         rule.addProperty("minimum", "2");
-        super.runTest("ExcessivePublicCountRule2.java", 1, rule);
+        super.runTestFromFile("ExcessivePublicCountRule2.java", 1, rule);
     }
 }

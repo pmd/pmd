@@ -18,22 +18,22 @@ public class ForLoopsMustUseBracesRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("ForLoopsNeedBraces1.java",1, rule);
+        runTestFromFile("ForLoopsNeedBraces1.java",1, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("ForLoopsNeedBraces2.java",0, rule);
+        runTestFromFile("ForLoopsNeedBraces2.java",0, rule);
     }
 
     public void test3() throws Throwable {
-        runTest("ForLoopsNeedBraces3.java",1, rule);
+        runTestFromFile("ForLoopsNeedBraces3.java",1, rule);
     }
 
     public void test4() throws Throwable {
-        runTest("ForLoopsNeedBraces4.java",1, rule);
+        runTestFromFile("ForLoopsNeedBraces4.java",1, rule);
     }
 
     public void test5() throws Throwable {
-        runTest("ForLoopsNeedBraces5.java",1, rule);
+        runTestFromFile("ForLoopsNeedBraces5.java",1, rule);
     }
 }

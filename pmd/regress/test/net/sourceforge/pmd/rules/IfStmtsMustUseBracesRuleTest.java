@@ -18,14 +18,14 @@ public class IfStmtsMustUseBracesRuleTest extends RuleTst {
     }
 
     public void testSimpleBad() throws Throwable {
-        runTest("IfStmtsMustUseBraces1.java", 1, rule);
+        runTestFromFile("IfStmtsMustUseBraces1.java", 1, rule);
     }
 
     public void testSimpleOK() throws Throwable {
-        runTest("IfStmtsMustUseBraces2.java", 0, rule);
+        runTestFromFile("IfStmtsMustUseBraces2.java", 0, rule);
     }
 
     public void testNexted() throws Throwable {
-        runTest("IfStmtsMustUseBraces3.java", 1, rule);
+        runTestFromFile("IfStmtsMustUseBraces3.java", 1, rule);
     }
 }

@@ -18,7 +18,7 @@ public class EmptyIfStmtRuleTest extends RuleTst {
     }
 
     public void testOneEmptyOneNotEmpty() throws Throwable {
-        runTest("EmptyIfStmtRule.java", 1, rule);
+        runTestFromFile("EmptyIfStmtRule.java", 1, rule);
     }
 
 }

@@ -18,15 +18,15 @@ public class EmptyTryBlockRuleTest extends RuleTst {
     }
 
     public void testEmptyTryBlock1() throws Throwable {
-        runTest("EmptyTryBlock1.java", 1, rule);
+        runTestFromFile("EmptyTryBlock1.java", 1, rule);
     }
 
     public void testEmptyTryBlock2() throws Throwable {
-        runTest("EmptyTryBlock2.java", 1, rule);
+        runTestFromFile("EmptyTryBlock2.java", 1, rule);
     }
 
     public void testEmptyTryBlock3() throws Throwable {
-        runTest("EmptyTryBlock3.java", 0, rule);
+        runTestFromFile("EmptyTryBlock3.java", 0, rule);
     }
 
 }

@@ -13,18 +13,18 @@ public class ShortMethodNameRuleTest extends RuleTst {
     }
 
     public void testShortMethodName0() throws Throwable {
-        runTest("ShortMethodName0.java", 0, rule);
+        runTestFromFile("ShortMethodName0.java", 0, rule);
     }
 
     public void testShortMethodName1() throws Throwable {
-        runTest("ShortMethodName1.java", 1, rule);
+        runTestFromFile("ShortMethodName1.java", 1, rule);
     }
 
     public void testShortMethodName2() throws Throwable {
-        runTest("ShortMethodName2.java", 2, rule);
+        runTestFromFile("ShortMethodName2.java", 2, rule);
     }
 
     public void testShortMethodName3() throws Throwable {
-        runTest("ShortMethodName3.java", 1, rule);
+        runTestFromFile("ShortMethodName3.java", 1, rule);
     }
 }

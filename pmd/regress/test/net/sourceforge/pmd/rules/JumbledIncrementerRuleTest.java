@@ -20,14 +20,14 @@ public class JumbledIncrementerRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("JumbledIncrementerRule1.java", 1, rule);
+        runTestFromFile("JumbledIncrementerRule1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("JumbledIncrementerRule2.java", 0, rule);
+        runTestFromFile("JumbledIncrementerRule2.java", 0, rule);
     }
 
     public void test3() throws Throwable {
-        runTest("JumbledIncrementerRule3.java", 0, rule);
+        runTestFromFile("JumbledIncrementerRule3.java", 0, rule);
     }
 }

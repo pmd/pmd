@@ -17,62 +17,62 @@ public class UnusedLocalVariableTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("UnusedLocal1.java", 1, rule);
+        runTestFromFile("UnusedLocal1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("UnusedLocal2.java", 1, rule);
+        runTestFromFile("UnusedLocal2.java", 1, rule);
     }
 
     public void test3() throws Throwable {
-        runTest("UnusedLocal3.java", 1, rule);
+        runTestFromFile("UnusedLocal3.java", 1, rule);
     }
 
     public void test4() throws Throwable {
-        runTest("UnusedLocal4.java", 0, rule);
+        runTestFromFile("UnusedLocal4.java", 0, rule);
     }
 
     public void test5() throws Throwable {
-        runTest("UnusedLocal5.java", 1, rule);
+        runTestFromFile("UnusedLocal5.java", 1, rule);
     }
 
     public void test6() throws Throwable {
-        runTest("UnusedLocal6.java", 0, rule);
+        runTestFromFile("UnusedLocal6.java", 0, rule);
     }
 
     public void test7() throws Throwable {
-        runTest("UnusedLocal7.java", 0, rule);
+        runTestFromFile("UnusedLocal7.java", 0, rule);
     }
 
     public void test8() throws Throwable {
-        runTest("UnusedLocal8.java", 0, rule);
+        runTestFromFile("UnusedLocal8.java", 0, rule);
     }
 
     public void test9() throws Throwable {
-        runTest("UnusedLocal9.java", 0, rule);
+        runTestFromFile("UnusedLocal9.java", 0, rule);
     }
 
     public void test10() throws Throwable {
-        runTest("UnusedLocal10.java", 0, rule);
+        runTestFromFile("UnusedLocal10.java", 0, rule);
     }
 
     public void test11() throws Throwable {
-        runTest("UnusedLocal11.java", 2, rule);
+        runTestFromFile("UnusedLocal11.java", 2, rule);
     }
 
     public void test12() throws Throwable {
-        runTest("UnusedLocal12.java", 0, rule);
+        runTestFromFile("UnusedLocal12.java", 0, rule);
     }
 
     public void test13() throws Throwable {
-        runTest("UnusedLocal13.java", 0, rule);
+        runTestFromFile("UnusedLocal13.java", 0, rule);
     }
 
     public void test14() throws Throwable {
-        runTest("UnusedLocal14.java", 2, rule);
+        runTestFromFile("UnusedLocal14.java", 2, rule);
     }
 
     public void test15() throws Throwable {
-        runTest("UnusedLocal15.java", 0, rule);
+        runTestFromFile("UnusedLocal15.java", 0, rule);
     }
 }

@@ -17,26 +17,26 @@ public class AvoidReassigningParametersRuleTest extends RuleTst {
     }
 
     public void testSimple() throws Throwable {
-        runTest("AvoidReassigningParameters1.java", 1, rule);
+        runTestFromFile("AvoidReassigningParameters1.java", 1, rule);
     }
 
     public void testNoUsage() throws Throwable {
-        runTest("AvoidReassigningParameters2.java", 0, rule);
+        runTestFromFile("AvoidReassigningParameters2.java", 0, rule);
     }
 
     public void testInstanceVarSameNameAsParam() throws Throwable {
-        runTest("AvoidReassigningParameters3.java", 1, rule);
+        runTestFromFile("AvoidReassigningParameters3.java", 1, rule);
     }
 
     public void testQualifiedNameInstanceVarSameAsParam() throws Throwable {
-        runTest("AvoidReassigningParameters4.java", 0, rule);
+        runTestFromFile("AvoidReassigningParameters4.java", 0, rule);
     }
 
     public void testQualifiedNameSameAsParam() throws Throwable {
-        runTest("AvoidReassigningParameters5.java", 0, rule);
+        runTestFromFile("AvoidReassigningParameters5.java", 0, rule);
     }
 
     public void testAssignmentToParametersField() throws Throwable {
-        runTest("AvoidReassigningParameters6.java", 0, rule);
+        runTestFromFile("AvoidReassigningParameters6.java", 0, rule);
     }
 }

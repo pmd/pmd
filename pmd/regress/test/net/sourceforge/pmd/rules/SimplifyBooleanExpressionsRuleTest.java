@@ -13,14 +13,14 @@ public class SimplifyBooleanExpressionsRuleTest extends RuleTst {
     }
 
     public void testInFieldAssignment() throws Throwable {
-        runTest("SimplifyBooleanExpressions1.java", 1, rule);
+        runTestFromFile("SimplifyBooleanExpressions1.java", 1, rule);
     }
 
     public void testInMethodBody() throws Throwable {
-        runTest("SimplifyBooleanExpressions2.java", 1, rule);
+        runTestFromFile("SimplifyBooleanExpressions2.java", 1, rule);
     }
 
     public void testOK() throws Throwable {
-        runTest("SimplifyBooleanExpressions3.java", 0, rule);
+        runTestFromFile("SimplifyBooleanExpressions3.java", 0, rule);
     }
 }

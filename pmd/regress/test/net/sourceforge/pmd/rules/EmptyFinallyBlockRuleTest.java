@@ -20,18 +20,18 @@ public class EmptyFinallyBlockRuleTest extends RuleTst {
     }
 
     public void testEmptyFinallyBlock1() throws Throwable {
-        runTest("EmptyFinallyBlock1.java", 1, rule);
+        runTestFromFile("EmptyFinallyBlock1.java", 1, rule);
     }
 
     public void testEmptyFinallyBlock2() throws Throwable {
-        runTest("EmptyFinallyBlock2.java", 1, rule);
+        runTestFromFile("EmptyFinallyBlock2.java", 1, rule);
     }
 
     public void testEmptyFinallyBlock3() throws Throwable {
-        runTest("EmptyFinallyBlock3.java", 0, rule);
+        runTestFromFile("EmptyFinallyBlock3.java", 0, rule);
     }
 
     public void testMultipleCatchBlocksWithFinally() throws Throwable {
-        runTest("EmptyFinallyBlock4.java", 1, rule);
+        runTestFromFile("EmptyFinallyBlock4.java", 1, rule);
     }
 }

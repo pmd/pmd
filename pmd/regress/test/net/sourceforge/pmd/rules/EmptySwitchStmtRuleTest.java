@@ -18,10 +18,10 @@ public class EmptySwitchStmtRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("EmptySwitchStmt1.java", 1, rule);
+        runTestFromFile("EmptySwitchStmt1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("EmptySwitchStmt2.java", 0, rule);
+        runTestFromFile("EmptySwitchStmt2.java", 0, rule);
     }
 }

@@ -36,18 +36,18 @@ import test.net.sourceforge.pmd.rules.RuleTst;
 public class NullAssignmentRuleTest extends RuleTst {
 
     public void testInitAssignment() throws Throwable {
-        runTest("NullAssignment1.java", 0, new NullAssignmentRule());
+        runTestFromFile("NullAssignment1.java", 0, new NullAssignmentRule());
     }
 
     public void testBadAssignment() throws Throwable {
-        runTest("NullAssignment2.java", 1, new NullAssignmentRule());
+        runTestFromFile("NullAssignment2.java", 1, new NullAssignmentRule());
     }
 
     public void testCheckTest() throws Throwable {
-        runTest("NullAssignment3.java", 0, new NullAssignmentRule());
+        runTestFromFile("NullAssignment3.java", 0, new NullAssignmentRule());
     }
 
     public void testNullParamOnRHS() throws Throwable {
-        runTest("NullAssignment4.java", 0, new NullAssignmentRule());
+        runTestFromFile("NullAssignment4.java", 0, new NullAssignmentRule());
     }
 }

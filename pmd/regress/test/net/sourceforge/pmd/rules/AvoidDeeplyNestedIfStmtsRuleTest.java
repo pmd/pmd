@@ -18,10 +18,10 @@ public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("AvoidDeeplyNestedIfStmtsRule1.java", 1, rule);
+        runTestFromFile("AvoidDeeplyNestedIfStmtsRule1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("AvoidDeeplyNestedIfStmtsRule2.java", 0, rule);
+        runTestFromFile("AvoidDeeplyNestedIfStmtsRule2.java", 0, rule);
     }
 }

@@ -13,18 +13,18 @@ public class AssignmentInOperandRuleTest extends RuleTst {
     }
 
     public void testSimple() throws Throwable {
-        runTest("AssignmentInOperand1.java", 1, rule);
+        runTestFromFile("AssignmentInOperand1.java", 1, rule);
     }
 
     public void testOK() throws Throwable {
-        runTest("AssignmentInOperand2.java", 0, rule);
+        runTestFromFile("AssignmentInOperand2.java", 0, rule);
     }
 
     public void testAssignmentInIfBody() throws Throwable {
-        runTest("AssignmentInOperand3.java", 0, rule);
+        runTestFromFile("AssignmentInOperand3.java", 0, rule);
     }
 
     public void testAssignmentInWhileLoop() throws Throwable {
-        runTest("AssignmentInOperand4.java", 1, rule);
+        runTestFromFile("AssignmentInOperand4.java", 1, rule);
     }
 }

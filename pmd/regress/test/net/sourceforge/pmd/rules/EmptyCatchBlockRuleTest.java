@@ -24,23 +24,23 @@ public class EmptyCatchBlockRuleTest extends RuleTst {
     }
 
     public void testSimple() throws Throwable {
-        runTest("EmptyCatchBlock1.java", 1, rule);
+        runTestFromFile("EmptyCatchBlock1.java", 1, rule);
     }
 
     public void testNotEmpty() throws Throwable {
-        runTest("EmptyCatchBlock2.java", 0, rule);
+        runTestFromFile("EmptyCatchBlock2.java", 0, rule);
     }
 
     public void testNoCatchWithNestedCatchInFinally() throws Throwable {
-        runTest("EmptyCatchBlock3.java", 1, rule);
+        runTestFromFile("EmptyCatchBlock3.java", 1, rule);
     }
 
     public void testMultipleCatchBlocks() throws Throwable {
-        runTest("EmptyCatchBlock4.java", 2, rule);
+        runTestFromFile("EmptyCatchBlock4.java", 2, rule);
     }
 
     public void testEmptyTryAndFinally() throws Throwable {
-        runTest("EmptyCatchBlock5.java", 0, rule);
+        runTestFromFile("EmptyCatchBlock5.java", 0, rule);
     }
 }
 

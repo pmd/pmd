@@ -44,7 +44,7 @@ public class SwitchDensityTest extends RuleTst {
 
     public void runTest(String fileName, int expected) throws Throwable {
         SwitchDensityRule sdr = getIUT();
-        Report report = process(fileName, sdr);
+        Report report = runTestFromFile(fileName, sdr);
         assertEquals(expected, report.size());
     }
 }

@@ -27,26 +27,26 @@ public class OverrideBothEqualsAndHashcodeRuleTest extends RuleTst {
     }
 
     public void testHashCodeOnly() throws Throwable {
-        runTest("OverrideBothEqualsAndHashcode1.java", 1, rule);
+        runTestFromFile("OverrideBothEqualsAndHashcode1.java", 1, rule);
     }
 
     public void testEqualsOnly() throws Throwable {
-        runTest("OverrideBothEqualsAndHashcode2.java", 1, rule);
+        runTestFromFile("OverrideBothEqualsAndHashcode2.java", 1, rule);
     }
 
     public void testCorrectImpl() throws Throwable {
-        runTest("OverrideBothEqualsAndHashcode3.java", 0, rule);
+        runTestFromFile("OverrideBothEqualsAndHashcode3.java", 0, rule);
     }
 
     public void testNeither() throws Throwable {
-        runTest("OverrideBothEqualsAndHashcode4.java", 0, rule);
+        runTestFromFile("OverrideBothEqualsAndHashcode4.java", 0, rule);
     }
 
     public void testEqualsSignatureUsesStringNotObject() throws Throwable {
-        runTest("OverrideBothEqualsAndHashcode5.java", 1, rule);
+        runTestFromFile("OverrideBothEqualsAndHashcode5.java", 1, rule);
     }
 
     public void testInterface() throws Throwable {
-        runTest("OverrideBothEqualsAndHashcode6.java", 0, rule);
+        runTestFromFile("OverrideBothEqualsAndHashcode6.java", 0, rule);
     }
 }

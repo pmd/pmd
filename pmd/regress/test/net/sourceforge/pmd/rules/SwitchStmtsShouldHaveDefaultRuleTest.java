@@ -18,11 +18,11 @@ public class SwitchStmtsShouldHaveDefaultRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("SwitchStmtsShouldHaveDefault1.java", 1, rule);
+        runTestFromFile("SwitchStmtsShouldHaveDefault1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("SwitchStmtsShouldHaveDefault2.java", 0, rule);
+        runTestFromFile("SwitchStmtsShouldHaveDefault2.java", 0, rule);
     }
 
 }

@@ -16,7 +16,7 @@ public class CyclomaticComplexityRuleTest extends RuleTst {
 
     public void testOneMethod() throws Throwable {
         rule.addProperty("reportLevel", "1");
-        Report report = process("CyclomaticComplexity1.java", rule);
+        Report report = runTestFromFile("CyclomaticComplexity1.java", rule);
         Iterator i = report.iterator();
         RuleViolation rv = (RuleViolation) i.next();
         assertTrue(rv.getDescription().indexOf("Highest = 1") != -1);
@@ -24,7 +24,7 @@ public class CyclomaticComplexityRuleTest extends RuleTst {
 
     public void testNastyComplicatedMethod() throws Throwable {
         rule.addProperty("reportLevel", "10");
-        Report report = process("CyclomaticComplexity2.java", rule);
+        Report report = runTestFromFile("CyclomaticComplexity2.java", rule);
         Iterator i = report.iterator();
         RuleViolation rv = (RuleViolation) i.next();
         assertTrue(rv.getDescription().indexOf("Highest = 12") != -1);
@@ -32,7 +32,7 @@ public class CyclomaticComplexityRuleTest extends RuleTst {
 
     public void testConstructor() throws Throwable {
         rule.addProperty("reportLevel", "1");
-        Report report = process("CyclomaticComplexity3.java", rule);
+        Report report = runTestFromFile("CyclomaticComplexity3.java", rule);
         Iterator i = report.iterator();
         RuleViolation rv = (RuleViolation) i.next();
         assertTrue(rv.getDescription().indexOf("Highest = 1") != -1);
@@ -40,7 +40,7 @@ public class CyclomaticComplexityRuleTest extends RuleTst {
 
     public void testLessComplicatedThanReportLevel() throws Throwable {
         rule.addProperty("reportLevel", "10");
-        Report report = process("CyclomaticComplexity1.java", rule);
+        Report report = runTestFromFile("CyclomaticComplexity1.java", rule);
         assertEquals(0, report.size());
     }
 

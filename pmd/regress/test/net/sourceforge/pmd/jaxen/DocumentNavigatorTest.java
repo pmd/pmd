@@ -80,7 +80,7 @@ public class DocumentNavigatorTest extends RuleTst {
     public void setUp() throws Exception {
         try{
             rule = new TestRule();
-            process("EmptyCatchBlock1.java", rule);
+            runTestFromFile("EmptyCatchBlock1.java", rule);
         } catch (Throwable xx) {
             fail();
         }
@@ -189,7 +189,7 @@ public class DocumentNavigatorTest extends RuleTst {
 
 /*
     public void testTest() throws Throwable {
-        process("UnusedModifier1.java", rule);
+        runTestFromFile("UnusedModifier1.java", rule);
         DocumentNavigator nav = new DocumentNavigator();
 		XPath xpath1 = new BaseXPath(".[@Public = 'true']", nav);
 		assertTrue(xpath1.booleanValueOf(rule.methodDeclaration));
@@ -204,7 +204,7 @@ public class DocumentNavigatorTest extends RuleTst {
 /*
     public void testAttributeAxisIterator2() throws Throwable {
         //TODO: This is fragile - attribute order is not guaranteed
-        process("UnusedModifier1.java", rule);
+        runTestFromFile("UnusedModifier1.java", rule);
         DocumentNavigator nav = new DocumentNavigator();
         Attribute attr;
         assertNotNull(rule.methodDeclaration);

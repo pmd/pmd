@@ -16,12 +16,12 @@ public class LongClassRuleTest extends RuleTst {
     }
 
     public void testShortClass() throws Throwable {
-        Report report = process("LongClass0.java", getIUT());
+        Report report = runTestFromFile("LongClass0.java", getIUT());
         assertEquals(0, report.size());
     }
 
     public void testLongClass() throws Throwable {
-        Report report = process("LongClass1.java", getIUT());
+        Report report = runTestFromFile("LongClass1.java", getIUT());
         assertEquals(1, report.size());
     }
 
@@ -29,12 +29,12 @@ public class LongClassRuleTest extends RuleTst {
         LongClassRule IUT = getIUT();
         IUT.addProperty("minimum", "2000");
 
-        Report report = process("LongClass1.java", IUT);
+        Report report = runTestFromFile("LongClass1.java", IUT);
         assertEquals(0, report.size());
     }
 
     public void testNotQuiteLongClass() throws Throwable {
-        Report report = process("LongClass2.java", getIUT());
+        Report report = runTestFromFile("LongClass2.java", getIUT());
         assertEquals(0, report.size());
     }
 }

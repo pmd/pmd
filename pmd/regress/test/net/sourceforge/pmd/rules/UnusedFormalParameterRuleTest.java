@@ -17,18 +17,18 @@ public class UnusedFormalParameterRuleTest extends RuleTst {
     }
 
     public void testOneParam() throws Throwable {
-        runTest("UnusedFormalParam1.java", 1, rule);
+        runTestFromFile("UnusedFormalParam1.java", 1, rule);
     }
 
     public void testFullyQualified() throws Throwable {
-        runTest("UnusedFormalParam2.java", 0, rule);
+        runTestFromFile("UnusedFormalParam2.java", 0, rule);
     }
 
     public void testOneParamWithMethodCall() throws Throwable {
-        runTest("UnusedFormalParam3.java", 0, rule);
+        runTestFromFile("UnusedFormalParam3.java", 0, rule);
     }
 
     public void testInterface() throws Throwable {
-        runTest("UnusedFormalParam4.java", 0, rule);
+        runTestFromFile("UnusedFormalParam4.java", 0, rule);
     }
 }

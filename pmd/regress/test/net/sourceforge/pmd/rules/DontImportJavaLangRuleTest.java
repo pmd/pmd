@@ -21,14 +21,14 @@ public class DontImportJavaLangRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("DontImportJavaLang1.java", 1, rule);
+        runTestFromFile("DontImportJavaLang1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("DontImportJavaLang2.java", 1, rule);
+        runTestFromFile("DontImportJavaLang2.java", 1, rule);
     }
 
     public void test3() throws Throwable {
-        runTest("DontImportJavaLang3.java", 0, rule);
+        runTestFromFile("DontImportJavaLang3.java", 0, rule);
     }
 }

@@ -13,22 +13,22 @@ public class ShortVariableRuleTest extends RuleTst {
     }
 
     public void testShortVariableField() throws Throwable {
-        runTest("ShortVariableField.java", 1, rule);
+        runTestFromFile("ShortVariableField.java", 1, rule);
     }
 
     public void testShortVariableLocal() throws Throwable {
-        runTest("ShortVariableLocal.java", 1, rule);
+        runTestFromFile("ShortVariableLocal.java", 1, rule);
     }
 
     public void testShortVariableFor() throws Throwable {
-        runTest("ShortVariableFor.java", 0, rule);
+        runTestFromFile("ShortVariableFor.java", 0, rule);
     }
 
     public void testShortVariableParam() throws Throwable {
-        runTest("ShortVariableParam.java", 1, rule);
+        runTestFromFile("ShortVariableParam.java", 1, rule);
     }
 
     public void testShortVariableNone() throws Throwable {
-        runTest("ShortVariableNone.java", 0, rule);
+        runTestFromFile("ShortVariableNone.java", 0, rule);
     }
 }

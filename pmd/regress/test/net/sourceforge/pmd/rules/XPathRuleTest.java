@@ -37,23 +37,23 @@ public class XPathRuleTest extends RuleTst {
     
 //    public void testUnusedFormalParameterRule() throws Throwable {
 //        rule.addProperty("xpath", "//MethodDeclaration[@Private='true'][@Native='false']//FormalParameters//VariableDeclaratorId");
-//        runTest("UnusedFormalParam1.java", 1, rule);
-//        runTest("UnusedFormalParam2.java", 0, rule);
-//        runTest("UnusedFormalParam3.java", 0, rule);
-//        runTest("UnusedFormalParam4.java", 0, rule);
+//        runTestFromFile("UnusedFormalParam1.java", 1, rule);
+//        runTestFromFile("UnusedFormalParam2.java", 0, rule);
+//        runTestFromFile("UnusedFormalParam3.java", 0, rule);
+//        runTestFromFile("UnusedFormalParam4.java", 0, rule);
 //    }
     
 //	public void testUnnecessaryConversionTemporaryRule() throws Throwable{
-//        runTest("UnnecessaryTemporary.java", 6, rule);
+//        runTestFromFile("UnnecessaryTemporary.java", 6, rule);
 //	}
 	
 //    public void testStringToString() throws Throwable {
-//        runTest("StringToString1.java", 1, rule);
-//        runTest("StringToString2.java", 1, rule);
-//        runTest("StringToString3.java", 1, rule);
-//        runTest("StringToString4.java", 0, rule);
-//        runTest("StringToString5.java", 0, rule);
-//        runTest("StringToString6.java", 1, rule);
+//        runTestFromFile("StringToString1.java", 1, rule);
+//        runTestFromFile("StringToString2.java", 1, rule);
+//        runTestFromFile("StringToString3.java", 1, rule);
+//        runTestFromFile("StringToString4.java", 0, rule);
+//        runTestFromFile("StringToString5.java", 0, rule);
+//        runTestFromFile("StringToString6.java", 1, rule);
 //        
 //    }
 
@@ -62,8 +62,8 @@ public class XPathRuleTest extends RuleTst {
             "xpath",
             "//IfStatement[count(ancestor::IfStatement[not(Statement[2])]) > {0}]");
         rule.addProperty("subst", "1");
-        runTest("AvoidDeeplyNestedIfStmtsRule1.java", 1, rule);
-        runTest("AvoidDeeplyNestedIfStmtsRule2.java", 0, rule);
+        runTestFromFile("AvoidDeeplyNestedIfStmtsRule1.java", 1, rule);
+        runTestFromFile("AvoidDeeplyNestedIfStmtsRule2.java", 0, rule);
     }
 
     /**
@@ -75,9 +75,9 @@ public class XPathRuleTest extends RuleTst {
         rule.addProperty(
             "xpath",
             "//Literal[@Image = preceding::Literal/@Image or @Image = following::Literal/@Image]");
-        runTest("AvoidDuplicateLiterals1.java", 4, rule);
-        runTest("AvoidDuplicateLiterals2.java", 0, rule);
-        runTest("AvoidDuplicateLiterals3.java", 0, rule);
+        runTestFromFile("AvoidDuplicateLiterals1.java", 4, rule);
+        runTestFromFile("AvoidDuplicateLiterals2.java", 0, rule);
+        runTestFromFile("AvoidDuplicateLiterals3.java", 0, rule);
     }
 
     /**
@@ -88,19 +88,19 @@ public class XPathRuleTest extends RuleTst {
         rule.addProperty(
             "xpath",
             "//PrimaryExpression[following-sibling::AssignmentOperator][PrimaryPrefix/Name/@Image = ancestor::MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId/@Image]");
-        runTest("AvoidReassigningParameters1.java", 1, rule);
-        runTest("AvoidReassigningParameters2.java", 0, rule);
-        runTest("AvoidReassigningParameters3.java", 1, rule);
-        runTest("AvoidReassigningParameters4.java", 0, rule);
-        runTest("AvoidReassigningParameters5.java", 0, rule);
-        runTest("AvoidReassigningParameters6.java", 0, rule);
+        runTestFromFile("AvoidReassigningParameters1.java", 1, rule);
+        runTestFromFile("AvoidReassigningParameters2.java", 0, rule);
+        runTestFromFile("AvoidReassigningParameters3.java", 1, rule);
+        runTestFromFile("AvoidReassigningParameters4.java", 0, rule);
+        runTestFromFile("AvoidReassigningParameters5.java", 0, rule);
+        runTestFromFile("AvoidReassigningParameters6.java", 0, rule);
     }
 
     public void testSimplifyBooleanReturns() throws Throwable {
         rule.addProperty("xpath", "//IfStatement[count(.//ReturnStatement//BooleanLiteral) = 2]");
-        runTest("SimplifyBooleanReturns1.java", 1, rule);
-        runTest("SimplifyBooleanReturns2.java", 1, rule);
-        runTest("SimplifyBooleanReturns3.java", 0, rule);
+        runTestFromFile("SimplifyBooleanReturns1.java", 1, rule);
+        runTestFromFile("SimplifyBooleanReturns2.java", 1, rule);
+        runTestFromFile("SimplifyBooleanReturns3.java", 0, rule);
     }
 
     /**
@@ -112,9 +112,9 @@ public class XPathRuleTest extends RuleTst {
             "xpath",
             "//ImportDeclaration"
                 + "[preceding::ImportDeclaration/Name/@Image = Name/@Image]");
-        runTest("DuplicateImports.java", 1, rule);
-        runTest("DuplicateImports2.java", 1, rule);
-        //runTest("DuplicateImports3.java", 1, rule);
-        runTest("DuplicateImports4.java", 0, rule);
+        runTestFromFile("DuplicateImports.java", 1, rule);
+        runTestFromFile("DuplicateImports2.java", 1, rule);
+        //runTestFromFile("DuplicateImports3.java", 1, rule);
+        runTestFromFile("DuplicateImports4.java", 0, rule);
     }
 }

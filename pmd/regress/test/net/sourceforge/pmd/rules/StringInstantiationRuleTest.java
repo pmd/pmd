@@ -18,18 +18,18 @@ public class StringInstantiationRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTest("StringInstantiation1.java", 2, rule);
+        runTestFromFile("StringInstantiation1.java", 2, rule);
     }
 
     public void test2() throws Throwable {
-        runTest("StringInstantiation2.java", 0, rule);
+        runTestFromFile("StringInstantiation2.java", 0, rule);
     }
 
     public void test3() throws Throwable {
-        runTest("StringInstantiation3.java", 0, rule);
+        runTestFromFile("StringInstantiation3.java", 0, rule);
     }
 
     public void test4() throws Throwable {
-        runTest("StringInstantiation4.java", 0, rule);
+        runTestFromFile("StringInstantiation4.java", 0, rule);
     }
 }
