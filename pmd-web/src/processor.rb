@@ -14,7 +14,7 @@ jobsDir.each { |candidate|
     next
    end
    job = PMD::Job.new(location,title,unixname,moduleDir,srcDir)
-   puts "Processing #{job}"
+   #puts "Processing #{job}"
    File.open("/home/groups/p/pm/pmd/cgi-bin/currentjob.txt", "w") { |file| file.syswrite(job.unixName) }
    job.checkout_code
    job.run_pmd

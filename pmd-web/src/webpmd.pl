@@ -20,7 +20,7 @@ sub default() {
 
  print h3("<center>PMD-WEB</center>");
  print "PMD is a Java source code analysis tool - it checks your code for unused fields, empty try/catch/finally/if/while blocks, unused method parameters, and stuff like that.  There's much more info <a href=\"http://pmd.sf.net/\">here</a>.<p>This table contains the results of running PMD's <a href=\"http://pmd.sourceforge.net/rules/unusedcode.html\">unused code ruleset</a> against a bunch of Sourceforge and Jakarta projects."; 
- print "<p><b>1/21/03: This page has been down for a few days due to Sourceforge CVS migrations, but it's back on the hourly cycle now</b>";
+ print "<p><b>1/21/03: This page has been down for a few days due to Sourceforge CVS migrations, but it's back on the three hour cycle now</b>";
  print hr();
 
  if (param("location")) {
@@ -66,14 +66,14 @@ sub printStats() {
  print br();
  print "The last run took ", sprintf("%.0f", $lastruntime/60), " minutes";
  print br();
- print "This report is regenerated every two hours at 10 minutes past the hour";
+ print "This report is regenerated every three hours at 10 minutes past the hour";
  print br();
 }
 
 sub getTimeUntil() {
  # we're starting each build at 10 past the hour, so...
  my $offset = 10;
- my $everyXHours = 2;
+ my $everyXHours = 3;
  my $minutes = ((60 + $offset) - localtime()->min) % 60;
  if (localtime()->hour % $everyXHours != 0) {
   $minutes += 60;

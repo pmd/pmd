@@ -35,12 +35,11 @@ sub getLines() {
  open(FILE,getRptFile($self));
  my @x = <FILE>;
  close(FILE);
- my $y = @x;
- my $lines = sprintf("%0.f", ($y-5)/4);
- if ($lines == "-0" || $lines == "-1") {
-  $lines = "0";
+ my $lines;
+ foreach (@x) {
+  $lines = $lines + 1 if $_ =~ "<td ";
  }
- return $lines;
+ return sprintf("%0.f", $lines/3);
 }
 sub getLocation() {
  my $self = shift;
