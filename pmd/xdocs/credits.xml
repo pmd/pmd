@@ -10,30 +10,34 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
-
-            <li>Damian O'Neill - Ant task patches</li>
-            <li>Ralph Schaer - bug reports and verification</li>
-            <li>Nanne Baars - rule suggestions</li>
-            <li>Vladimir Bossicard - several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
-            <li>Rich Kilmer - logo design</li>
-            <li>Liam Holohan - bug reports</li>
-            <li>Peter Donald - design suggestions</li>
-            <li>Vincent Massol - bug reports, design suggestions, feature suggestions, Maven guidance</li>
-            <li>Alina Copeland - pmd-web formulas, pmd-dcpd optimizations</li>
-            <li>Dale Vissar - rule suggestions</li>
-            <li>Sean Sullivan - rule suggestions</li>
-            <li>Gael Marziou - bug reports</li>
-            <li>Paul Kendall - enhanced EmptyCatchBlock rule</li>
-            <li>Jiger Patell - pmd-jedit suggestions</li>
-            <li>Stefan Bodewig - bug report</li>
-            <li>Radim Kubacki - bug reports</li>
-            <li>Ales Bukovsky - pmd-netbeans feedback</li>
-            <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
-            <li>mcclain looney - bug report</li>
+            <li>C. Lamont Gilbert - bug reports, feature requests, and documentation improvements</li>
+            <li>Mats Henricson - an XSLT script and several bug reports</li>
+            <li>Jesse Glick - an excellent discussion on the UnnecessaryConstructorRule</li>
+            <li>Luke Francl - numerous <b>high quality</b> feature suggestions and bug reports</li>
             <li>Martin Cooper - feature suggestions</li>
-            <li>Luke Francl - several feature suggestions</li>
             <li>Bruce Mayhew - feedback on the jEdit plugin</li>
-            <li>C. Lamont Gilbert - several bug reports</li>
+            <li>Juergen Ebert - feature suggestions and pmd-netbeans feedback</li>
+            <li>Andriy Rozeluk - feature suggestions</li>
+            <li>J.D. Fagan - feature suggestions</li>
+            <li>mcclain looney - bug reports</li>
+            <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
+            <li>Ales Bukovsky - pmd-netbeans feedback</li>
+            <li>Radim Kubacki - bug reports, pmd-netbeans feedback</li>
+            <li>Stefan Bodewig - bug report</li>
+            <li>Jiger Patell - pmd-jedit suggestions</li>
+            <li>Paul Kendall - enhanced EmptyCatchBlock rule</li>
+            <li>Gael Marziou - bug reports</li>
+            <li>Sean Sullivan - rule suggestions</li>
+            <li>Dale Vissar - rule suggestions</li>
+            <li>Alina Copeland - pmd-web formulas, pmd-dcpd optimizations</li>
+            <li>Vincent Massol - bug reports, design suggestions, feature suggestions, Maven guidance</li>
+            <li>Peter Donald - design suggestions</li>
+            <li>Liam Holohan - bug reports</li>
+            <li>Rich Kilmer - logo design</li>
+            <li>Vladimir Bossicard - several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
+            <li>Nanne Baars - rule suggestions</li>
+            <li>Ralph Schaer - bug reports and verification</li>
+            <li>Damian O'Neill - Ant task patches</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
