@@ -38,7 +38,7 @@
       <td>Tom Copeland</td>
   </tr>
   <tr><td>Maven</td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-maven/">pmd-maven</a></td>
+      <td>N/A</td>
       <td>Vincent Massol</td>
   </tr>
     <tr><td>Gel</td>
@@ -127,7 +127,7 @@ selecting the "Ask for Directory" checkbox.</p>
       </subsection>
 
 <subsection name="Maven">
-<p>Please see <a href="http://maven.apache.org/reference/plugins/pmd/index.html">the Maven plugins web site</a> for more information.</p>
+<p>Please see <a href="http://maven.apache.org/reference/plugins/pmd/">the Maven plugins web site</a> for more information.</p>
 </subsection>
 
 <subsection name="TextPad">

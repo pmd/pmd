@@ -1,3 +1,6 @@
+?????, 2004 - 1.7:
+Moved development environment to Maven 1.0-RC2.
+
 March 15, 2004 - 1.6:
 Fixed bug 895661 - XML reports containing error elements no longer have malformed XML.
 Fixed a bug in UnconditionalIfStatement - it no longer flags things like "if (x==true)".
