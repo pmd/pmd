@@ -86,15 +86,23 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
             exceptions = p.parse(getStringProperty(EXCEPTION_LIST_PROPERTY));
         } else if (hasProperty(EXCEPTION_FILE_NAME_PROPERTY)) {
             exceptions = new HashSet();
+            LineNumberReader reader = null;
             try {
-                LineNumberReader reader = new LineNumberReader(new BufferedReader(new FileReader(new File(getStringProperty(EXCEPTION_FILE_NAME_PROPERTY)))));
-                String line ;
+                reader = new LineNumberReader(new BufferedReader(new FileReader(new File(getStringProperty(EXCEPTION_FILE_NAME_PROPERTY)))));
+                String line;
                 while ((line = reader.readLine()) != null) {
                     exceptions.add(line);
                 }
-                reader.close();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
+            }
+            finally {
+            	try {
+	            	if (reader != null)
+	            		reader.close();
+	            } catch (IOException ioe) {
+                	ioe.printStackTrace();
+	            }
             }
         }
 

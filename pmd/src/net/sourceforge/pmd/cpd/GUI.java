@@ -46,8 +46,9 @@ public class GUI implements CPDListener {
                 return;
             }
             if (!f.canWrite()) {
+                PrintWriter pw = null;
                 try {
-                    PrintWriter pw = new PrintWriter(new FileOutputStream(f));
+                    pw = new PrintWriter(new FileOutputStream(f));
                     if (evt.getActionCommand().equals(".txt")) {
                         pw.write(new SimpleRenderer().render(matches.iterator()));
                     } else if (evt.getActionCommand().equals(".xml")) {
@@ -56,10 +57,15 @@ public class GUI implements CPDListener {
                         pw.write(new CSVRenderer().render(matches.iterator()));
                     }
                     pw.flush();
-                    pw.close();
                     JOptionPane.showMessageDialog(frame, "File saved");
                 } catch (IOException e) {
                     error("Couldn't save file" + f.getAbsolutePath(), e);
+                }
+                finally
+                {
+                	if (pw != null) {
+                		pw.close();
+                	}
                 }
             } else {
                 error("Could not write to file " + f.getAbsolutePath(), null);

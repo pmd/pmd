@@ -148,18 +148,29 @@ public class PapariTextRenderer implements Renderer
     private String getLine( String sourceFile, int line )
     {
         String code = null;
+        BufferedReader br = null;
         try
         {
-            BufferedReader br = new BufferedReader( new FileReader( new File( sourceFile ) ) );
+            br = new BufferedReader( new FileReader( new File( sourceFile ) ) );
             for ( int i = 0; line > i; i++ )
             {
                 code = br.readLine().trim();
             }
-            br.close();
         }
         catch ( IOException ioErr )
         {
             ioErr.printStackTrace();
+        }
+        finally
+        {
+        	if (br != null) 
+        	{
+        		try {
+        			br.close();
+        		} catch (IOException ioErr) {
+            		ioErr.printStackTrace();
+        		}
+        	}
         }
         return code;
     }

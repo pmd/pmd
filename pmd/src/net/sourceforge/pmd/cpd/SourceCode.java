@@ -53,14 +53,21 @@ public class SourceCode {
     }
 
     public void readSource(Reader input) throws IOException {
-        List lines = new ArrayList();
-        LineNumberReader r = new LineNumberReader(input);
-        String currentLine;
-        while ((currentLine = r.readLine()) != null) {
-            lines.add(currentLine);
+        LineNumberReader r = null;
+        try {
+            List lines = new ArrayList();
+            r = new LineNumberReader(input);
+            String currentLine;
+            while ((currentLine = r.readLine()) != null) {
+                lines.add(currentLine);
+            }
+            input.close();
+            this.code = new SoftReference(lines);
+        } finally {
+            if (r != null) {
+                r.close();
+            }
         }
-        input.close();
-        this.code = new SoftReference(lines);
     }
 
     public String getSlice(int startLine, int endLine) {

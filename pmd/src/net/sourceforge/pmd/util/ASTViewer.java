@@ -88,12 +88,18 @@ public class ASTViewer {
 
     private class SaveListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
+            FileWriter fw = null;
             try {
                 File f = new File(SETTINGS_FILE_NAME);
-                FileWriter fw = new FileWriter(f);
+                fw = new FileWriter(f);
                 fw.write(codeEditorPane.getText());
-                fw.close();
             } catch (IOException ioe) {
+            } finally {
+            	try {
+	            	if (fw != null)
+	            		fw.close();
+	            } catch (IOException ioe) {
+	            }
             }
         }
     }
@@ -188,8 +194,9 @@ public class ASTViewer {
     }
 
     private String loadText() {
+        BufferedReader br = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File(SETTINGS_FILE_NAME)));
+            br = new BufferedReader(new FileReader(new File(SETTINGS_FILE_NAME)));
             StringBuffer text = new StringBuffer();
             String hold;
             while ( (hold = br.readLine()) != null) {
@@ -200,6 +207,13 @@ public class ASTViewer {
         }   catch (IOException e) {
             e.printStackTrace();
             return "";
+        } finally {
+        	try {
+	        	if (br != null)
+	        		br.close();
+	        } catch (IOException e) {
+            	e.printStackTrace();
+	        }
         }
     }
 
