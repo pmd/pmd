@@ -10,7 +10,7 @@ public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//ClassDeclaration/UnmodifiedClassDeclaration/ClassBody[count(ClassBodyDeclaration/ConstructorDeclaration)=1]/ClassBodyDeclaration/ConstructorDeclaration[@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)] | //NestedClassDeclaration/UnmodifiedClassDeclaration/ClassBody[count(ClassBodyDeclaration/ConstructorDeclaration)=1]/ClassBodyDeclaration/ConstructorDeclaration[@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)]");
+        rule.addProperty("xpath", "//UnmodifiedClassDeclaration/ClassBody[count(ClassBodyDeclaration/ConstructorDeclaration)=1]/ClassBodyDeclaration/ConstructorDeclaration[@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)]");
     }
 
     public void testAll() {

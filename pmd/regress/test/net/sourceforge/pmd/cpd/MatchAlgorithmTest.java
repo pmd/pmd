@@ -19,7 +19,7 @@ public class MatchAlgorithmTest extends TestCase {
     public static final String LINE_1 = "public class Foo { ";
     public static final String LINE_2 = " public void bar() {";
     public static final String LINE_3 = "  System.out.println(\"hello\");";
-    public static final String LINE_4 = " System.out.println(\"hello\");";
+    public static final String LINE_4 = "  System.out.println(\"hello\");";
     public static final String LINE_5 = " }";
     public static final String LINE_6 = "}";
 

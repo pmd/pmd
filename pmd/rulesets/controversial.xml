@@ -19,9 +19,13 @@ most people really dislike :-)
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ConstructorDeclaration[1][count(//ConstructorDeclaration)=1]
-  [@Public='true'][not(FormalParameters/*)]
-  [not(BlockStatement)][not(NameList)]
+//UnmodifiedClassDeclaration
+/ClassBody[count(ClassBodyDeclaration/ConstructorDeclaration)=1]
+/ClassBodyDeclaration/ConstructorDeclaration
+[@Public='true']
+[not(FormalParameters/*)]
+[not(BlockStatement)]
+[not(NameList)]
                     ]]>
                 </value>
             </property>
