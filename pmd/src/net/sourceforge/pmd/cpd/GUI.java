@@ -84,59 +84,22 @@ public class GUI implements CPDListener {
         menuBar.add(fileMenu);
         frame.setJMenuBar(menuBar);
 
-        JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(3,2));
-        inputPanel.add(new JLabel("Enter a root src directory"));
-        JPanel littlePanel = new JPanel();
-        littlePanel.add(rootDirectoryField);
+        // first make all the buttons
         JButton browseButton = new JButton("Browse");
         browseButton.addActionListener(new BrowseListener());
-        littlePanel.add(browseButton);
-        inputPanel.add(littlePanel);
-        inputPanel.add(new JLabel("Enter a minimum tile size"));
-		minimumLengthField.setColumns(4);
-        inputPanel.add(minimumLengthField);
-        inputPanel.add(recurseCheckbox);
-
-        JPanel buttonsPanel = new JPanel();
         JButton goButton = new JButton("Go");
         goButton.addActionListener(new GoListener());
-        buttonsPanel.add(goButton);
         JButton cxButton = new JButton("Cancel");
         cxButton.addActionListener(new CancelListener());
-        buttonsPanel.add(cxButton);
-        inputPanel.add(buttonsPanel);
-        inputPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
 
-        JPanel progressPanel = new JPanel();
-        progressPanel.setLayout(new BorderLayout());
-        JPanel panel1 = new JPanel();
-        panel1.add(new JLabel("Tokenizing files"));
-        panel1.add(tokenizingFilesBar);
-        progressPanel.add(panel1, BorderLayout.NORTH);
-        JPanel panel2 = new JPanel();
-        panel2.add(new JLabel("Adding tokens"));
-        panel2.add(addingTokensBar);
-        progressPanel.add(panel2, BorderLayout.CENTER);
-        JPanel panel3 = new JPanel();
-        panel3.add(new JLabel("Current tile"));
-        panel3.add(currentTileField);
-        panel3.add(tilesOnThisPassBar);
-        panel3.add(timeField);
-        progressPanel.add(panel3, BorderLayout.SOUTH);
-        progressPanel.setBorder(BorderFactory.createTitledBorder("Progress"));
-
-        JPanel resultsPanel = new JPanel();
-        JScrollPane areaScrollPane = new JScrollPane(resultsTextArea);
-        areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        areaScrollPane.setPreferredSize(new Dimension(600,300));
-        resultsPanel.add(areaScrollPane);
-        resultsPanel.setBorder(BorderFactory.createTitledBorder("Results"));
+        JPanel settingsPanel = makeSettingsPanel(browseButton, goButton, cxButton);
+        JPanel progressPanel = makeProgressPanel();
+        JPanel resultsPanel = makeResultsPanel();
 
         frame.getContentPane().setLayout(new BorderLayout());
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
-        topPanel.add(inputPanel, BorderLayout.NORTH);
+        topPanel.add(settingsPanel, BorderLayout.NORTH);
         topPanel.add(progressPanel, BorderLayout.CENTER);
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
         frame.getContentPane().add(resultsPanel, BorderLayout.CENTER);
@@ -144,7 +107,60 @@ public class GUI implements CPDListener {
         frame.pack();
         frame.show();
     }
-		
+
+    private JPanel makeSettingsPanel(JButton browseButton, JButton goButton, JButton cxButton)
+    {
+        JPanel settingsPanel = new JPanel();
+        GridBagHelper helper = new GridBagHelper(settingsPanel, new double[]{ 0.2, 0.7, 0.1, 0.1 });
+        helper.addLabel("Root source directory:");
+        helper.add(rootDirectoryField);
+        helper.add(browseButton, 2);
+        helper.nextRow();
+        helper.addLabel("Minimum tile size:");
+        minimumLengthField.setColumns(4);
+        helper.add(minimumLengthField);
+        helper.nextRow();
+        helper.addLabel("Also scan subdirectories?");
+        helper.add(recurseCheckbox);
+        helper.add(goButton);
+        helper.add(cxButton);
+        helper.nextRow();
+        settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
+        return settingsPanel;
+    }
+
+    private JPanel makeProgressPanel()
+    {
+        JPanel progressPanel = new JPanel();
+        final double[] weights = { 0.0, 0.8, 0.4, 0.2 };
+        GridBagHelper helper = new GridBagHelper(progressPanel, weights);
+        helper.addLabel("Tokenizing files:");
+        helper.add(tokenizingFilesBar, 3);
+        helper.nextRow();
+        helper.addLabel("Adding tokens:");
+        helper.add(addingTokensBar, 3);
+        helper.nextRow();
+        helper.addLabel("Current tile:");
+        helper.add(currentTileField);
+        helper.add(tilesOnThisPassBar);
+        helper.add(timeField);
+        helper.nextRow();
+        progressPanel.setBorder(BorderFactory.createTitledBorder("Progress"));
+        return progressPanel;
+    }
+
+    private JPanel makeResultsPanel()
+    {
+        JPanel resultsPanel = new JPanel();
+        resultsPanel.setLayout(new BorderLayout());
+        JScrollPane areaScrollPane = new JScrollPane(resultsTextArea);
+        areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        areaScrollPane.setPreferredSize(new Dimension(600,300));
+        resultsPanel.add(areaScrollPane, BorderLayout.CENTER);
+        resultsPanel.setBorder(BorderFactory.createTitledBorder("Results"));
+        return resultsPanel;
+    }
+
     private void go() {
         try {
             CPD cpd = new CPD();
@@ -177,7 +193,7 @@ public class GUI implements CPDListener {
                 }
             });
 			t.start();
-						
+
             cpd.go();
 			t.stop();
 			currentTileField.setText("");
@@ -229,7 +245,7 @@ public class GUI implements CPDListener {
         tilesOnThisPassBar.setValue(tilesSoFar);
 		tilesOnThisPassBar.setString(tilesSoFar + "/" + totalTiles);
 	}
-		
+
     private String findName(String name, String slash) {
         int lastSlash = name.lastIndexOf(slash)+1;
         return name.substring(lastSlash);
