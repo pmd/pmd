@@ -25,7 +25,7 @@ public class UseSingletonRuleTest
     {
 	Report report = process("design/UseSingleton1.java",
 				new UseSingletonRule());
-	assertEquals( 0, report.countViolationsInCurrentFile() );
+	assertEquals( 1, report.countViolationsInCurrentFile() );
     }
 
     public void testUseSingleton2() 
@@ -41,6 +41,6 @@ public class UseSingletonRuleTest
     {
 	Report report = process("design/UseSingleton3.java",
 				new UseSingletonRule());
-	assertEquals( 0, report.countViolationsInCurrentFile() );
+	assertEquals( 1, report.countViolationsInCurrentFile() );
     }
 }
