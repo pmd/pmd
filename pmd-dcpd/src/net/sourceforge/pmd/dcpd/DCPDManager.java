@@ -96,12 +96,12 @@ public class DCPDManager {
         FileFinder finder = new FileFinder();
         List files = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
         for (Iterator i = files.iterator(); i.hasNext();) {
-            tokenSets.add(tokenizeFile(files.size(), (File)i.next()));
+            tokenSets.add(tokenizeFile((File)i.next()));
         }
         return tokenSets;
     }
 
-    private TokenList tokenizeFile(int fileCount, File file) throws IOException {
+    private TokenList tokenizeFile(File file) throws IOException {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);

@@ -37,13 +37,13 @@ public class TileExpander {
             TokenSetsWrapper tsw = (TokenSetsWrapper)jobs.get(batch.job);
             total++;
             List wrappers = new ArrayList();
-            for (int j=0; j<batch.tileWrappers.size(); j++) {
-                TileWrapper tileWrapperToExpand = (TileWrapper)batch.tileWrappers.get(j);
+            for (int i=0; i<batch.tileWrappers.size(); i++) {
+                TileWrapper tileWrapperToExpand = (TileWrapper)batch.tileWrappers.get(i);
                 //System.out.println("Expanding " + tileWrapperToExpand.tile.getImage());
-                Occurrences results = expand(tsw, tileWrapperToExpand, j);
+                Occurrences results = expand(tsw, tileWrapperToExpand);
                 int expansionIndex = 0;
-                for (Iterator i = results.getTiles();i.hasNext();) {
-                    Tile tile = (Tile)i.next();
+                for (Iterator iter = results.getTiles();iter.hasNext();) {
+                    Tile tile = (Tile)iter.next();
                     // here's where we drop solo tiles
                     if (results.getOccurrenceCountFor(tile) == 1) {
                         continue;
@@ -60,7 +60,7 @@ public class TileExpander {
         if (total>0) System.out.println("Expanded " + total + " tiles");
     }
 
-    private Occurrences expand(TokenSetsWrapper tsw, TileWrapper tileWrapper, int sequenceID)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
+    private Occurrences expand(TokenSetsWrapper tsw, TileWrapper tileWrapper)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
         Occurrences newOcc = new Occurrences(new CPDNullListener());
         for (Iterator i = tileWrapper.occurrences.iterator(); i.hasNext();) {
             TokenEntry tok = (TokenEntry)i.next();
