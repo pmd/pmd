@@ -45,19 +45,18 @@ public class DuplicateImportsRule extends AbstractRule {
     }
 
     public Object visit(ASTImportDeclaration node, Object data) {
-        ASTName importNameNode = (ASTName)node.jjtGetChild(0);
-        ImportWrapper wrapper = new ImportWrapper(importNameNode.getImage(), importNameNode.getBeginLine());
+        ImportWrapper wrapper = new ImportWrapper(node.getImportedNameNode().getImage(), node.getImportedNameNode().getBeginLine());
 
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {
             if (importOnDemandImports.contains(wrapper)) {
-                createRV((RuleContext)data, importNameNode);
+                createRV((RuleContext)data, node.getImportedNameNode());
             } else {
                 importOnDemandImports.add(wrapper);
             }
         } else {
             if (singleTypeImports.contains(wrapper)) {
-                createRV((RuleContext)data, importNameNode);
+                createRV((RuleContext)data, node.getImportedNameNode());
             } else {
                 singleTypeImports.add(wrapper);
             }
