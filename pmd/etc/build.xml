@@ -49,6 +49,7 @@
             <fileset dir="${classes}">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpg"/>
+                <include name="**/*.properties"/>
             </fileset>
         </copy>
         <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF" excludes="test/**/*.class"/>
