@@ -3,7 +3,23 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.UnusedImportsRule;
 
-public class UnusedImportsRuleTest extends RuleTst {
+public class UnusedImportsRuleTest extends SimpleAggregatorTst {
+
+    private UnusedImportsRule rule;
+
+    public void setUp() {
+        rule = new UnusedImportsRule();
+        rule.setMessage("Avoid this stuff -> ''{0}''");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "simple unused single type import", 1, rule),
+           new TestDescriptor(TEST2, "one used single type import", 0, rule),
+           new TestDescriptor(TEST3, "2 unused single-type imports", 2, rule),
+           new TestDescriptor(TEST4, "1 used single type import", 0, rule)
+       });
+    }
 
     private static final String TEST1 =
     "import java.io.File;" + CPD.EOL +
@@ -30,26 +46,4 @@ public class UnusedImportsRuleTest extends RuleTst {
     "}";
 
 
-    private UnusedImportsRule rule;
-
-    public void setUp() {
-        rule = new UnusedImportsRule();
-        rule.setMessage("Avoid this stuff -> ''{0}''");
-    }
-
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-
-    public void test3() throws Throwable {
-        runTestFromString(TEST3, 2, rule);
-    }
-
-    public void test4() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
 }
