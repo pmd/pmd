@@ -3,6 +3,12 @@ package test.net.sourceforge.pmd;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.CommandLineOptions;
+import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.renderers.EmacsRenderer;
+import net.sourceforge.pmd.renderers.CSVRenderer;
+import net.sourceforge.pmd.renderers.IDEAJRenderer;
 
 public class CommandLineOptionsTest extends TestCase {
 
@@ -50,6 +56,35 @@ public class CommandLineOptionsTest extends TestCase {
             new CommandLineOptions(null);
             fail("Should have thrown an exception when null passed to constructor");
         } catch (RuntimeException re) {
+            // cool
+        }
+    }
+
+    public void testRenderer() {
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "xml", "ruleset"});
+        assertTrue(opt.createRenderer() instanceof XMLRenderer);
+        opt = new CommandLineOptions(new String[] {"file", "html", "ruleset"});
+        assertTrue(opt.createRenderer() instanceof HTMLRenderer);
+        opt = new CommandLineOptions(new String[] {"file", "text", "ruleset"});
+        assertTrue(opt.createRenderer() instanceof TextRenderer);
+        opt = new CommandLineOptions(new String[] {"file", "emacs", "ruleset"});
+        assertTrue(opt.createRenderer() instanceof EmacsRenderer);
+        opt = new CommandLineOptions(new String[] {"file", "csv", "ruleset"});
+        assertTrue(opt.createRenderer() instanceof CSVRenderer);
+        opt = new CommandLineOptions(new String[] {"file", "ideaj", "ruleset"});
+        assertTrue(opt.createRenderer() instanceof IDEAJRenderer);
+
+        try {
+            opt = new CommandLineOptions(new String[] {"file", "fiddlefaddle", "ruleset"});
+            opt.createRenderer();
+        } catch (IllegalArgumentException iae) {
+            // cool
+        }
+
+        try {
+            opt = new CommandLineOptions(new String[] {"file", "", "ruleset"});
+            opt.createRenderer();
+        } catch (IllegalArgumentException iae) {
             // cool
         }
     }

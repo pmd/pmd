@@ -92,33 +92,23 @@ public class PMD {
                 }
             }
         } catch (FileNotFoundException fnfe) {
+            System.out.println(opts.usage());
             fnfe.printStackTrace();
         } catch (RuleSetNotFoundException rsnfe) {
+            System.out.println(opts.usage());
             rsnfe.printStackTrace();
         }
 
-        Renderer renderer = null;
-        if (opts.getReportFormat().equals("xml")) {
-            renderer = new XMLRenderer();
-        } else if (opts.getReportFormat().equals("ideaj")) {
-            renderer = new IDEAJRenderer(args);
-        } else if (opts.getReportFormat().equals("text")) {
-            renderer = new TextRenderer();
-        } else if (opts.getReportFormat().equals("emacs")) {
-            renderer = new EmacsRenderer();
-        } else if (opts.getReportFormat().equals("csv")) {
-            renderer = new CSVRenderer();
-        } else if (opts.getReportFormat().equals("html")) {
-            renderer = new HTMLRenderer();
-        } else if (!opts.getReportFormat().equals("")) {
-            try {
-                renderer = (Renderer)Class.forName(opts.getReportFormat()).newInstance();
-            } catch (Exception e) {
-                System.out.println("Unable to load format type of " + opts.getReportFormat());
-                return;
+        try {
+            Renderer r = opts.createRenderer();
+            System.out.println(r.render(ctx.getReport()));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(opts.usage());
+            if (opts.debugEnabled()) {
+                e.printStackTrace();
             }
         }
-        System.out.println(renderer.render(ctx.getReport()));
     }
 
     private static String glomName(boolean shortNames, String inputFileName, File file) {
