@@ -1,3 +1,6 @@
+November 14 2002 - 1.1:
+Added "directory popup option" feature; thanks to Jigel Pater for the suggestion.
+
 November 7 2002 - 1.0:
 Updated to use pmd-1.01.
 
