@@ -1,0 +1,12 @@
+Version 0.3
+- Changed default rulesets
+- Removed all known bugs:
+  - Nullpointer when editor not open
+  - Nullpointer running on folders without java files
+- Added our own annotation type:
+  - With our own icon
+  - That is removed when the line is edited
+
+
+Version 0.2
+Fixed bug in manifest.mf to make it work on unix plattform.
