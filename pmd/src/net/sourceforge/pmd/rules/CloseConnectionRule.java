@@ -36,26 +36,14 @@ import java.util.Vector;
  */
 public class CloseConnectionRule extends AbstractRule {
 
-    private boolean importJavaSQLPackageFound;
-
     public Object visit(ASTCompilationUnit node, Object data) {
-        importJavaSQLPackageFound = false;
+        if (!importsJavaSqlPackage(node)) {
+            return data;
+        }
         return super.visit(node, data);
     }
 
-    public Object visit(ASTImportDeclaration node, Object data) {
-        if (node.getImportedNameNode().getImage().startsWith("java.sql")) {
-            importJavaSQLPackageFound = true;
-        }
-        return data;
-    }
-
     public Object visit(ASTMethodDeclaration node, Object data) {
-        // Quick exit if there's not an import java.sql.whatever;
-        if (!importJavaSQLPackageFound) {
-            return data;
-        }
-
         List vars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
         List ids = new Vector();
 
@@ -120,4 +108,18 @@ public class CloseConnectionRule extends AbstractRule {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, id.getBeginLine(), getMessage()));
         }
     }
+
+    private boolean importsJavaSqlPackage(ASTCompilationUnit node) {
+        List nodes = node.findChildrenOfType(ASTImportDeclaration.class);
+        boolean ok = false;
+        for (Iterator i = nodes.iterator(); i.hasNext();) {
+            ASTImportDeclaration n = (ASTImportDeclaration)i.next();
+            if (n.getImportedNameNode().getImage().startsWith("java.sql")) {
+                ok = true;
+                break;
+            }
+        }
+        return ok;
+    }
+
 }
