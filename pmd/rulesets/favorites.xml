@@ -14,6 +14,9 @@ This ruleset also serves as an example of do a custom ruleset.
     <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
     <rule ref="rulesets/strings.xml/StringToString"/>
     <rule ref="rulesets/strings.xml/StringInstantiation"/>
+     <rule ref="rulesets/controversial.xml/UnnecessaryConstructorRule"/>
+  <rule ref="rulesets/controversial.xml/NullAssignment"/>
+  <rule ref="rulesets/controversial.xml/UnusedModifier"/>
 
 </ruleset>
 
