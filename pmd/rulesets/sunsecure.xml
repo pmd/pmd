@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<ruleset name="Security Code Guidelines" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
+  <description>
+These rules check the security guidelines from Sun, published at http://java.sun.com/security/seccodeguide.html#gcg
+  </description>
+
+    <rule name="MethodReturnsInternalArray"
+          message="Never return a reference to an internal array that contains sensitive data"
+          class="net.sourceforge.pmd.rules.sunsecure.MethodReturnsInternalArray">
+      <description>
+      Exposing internal arrays directly allows the user to modify some code that could be critical.
+      It is safer to return a copy of the array.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+  public class SecureSystem {
+      UserData [] ud;
+      
+      public UserData [] getUserData() {
+          // Don't return directly the internal array, return a copy 
+          return ud;
+      }
+  }
+  ]]>
+      </example>
+      </rule>
+
+<!--
+    <rule name="ArrayIsStoredDirectly"
+          message="A user given array is stored directly"
+          class="">
+      <description>
+      Constructors and methods receiving arrays shuold clone objects and store the copy.
+      This prevents that future changes from the user affect the internal functionallity.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+  public void foo (String param) {
+      // do stuff with param never assigning it
+      // better: public void foo (final String param) {
+  }
+  ]]>
+      </example>
+      </rule>
+-->
+
+<!--
+ -->
+</ruleset>
+
+
+
+                                             
