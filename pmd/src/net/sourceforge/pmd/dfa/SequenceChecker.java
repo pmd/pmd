@@ -147,7 +147,7 @@ public class SequenceChecker {
      * Finds the first most inner sequence e.g IFStart & IFEnd. If no sequence
      * is found or the list is empty the method return false.
      */
-    public boolean run() throws SequenceException {
+    public boolean run() {
         this.aktStatus = root;
         this.firstIndex = 0;
         this.lastIndex = 0;

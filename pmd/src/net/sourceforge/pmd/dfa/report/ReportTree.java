@@ -50,12 +50,12 @@ public class ReportTree {
          */
 
         private Object getNext() {
-            AbstractReportNode node = null;
+            AbstractReportNode node;
 
             while (true) {
                 if (this.iterNode.isLeaf()) {
 
-                    while ((node = ((AbstractReportNode) this.iterNode).getNextSibling()) == null) {
+                    while ((node = (this.iterNode).getNextSibling()) == null) {
 
                         node = this.iterNode.getParent();
                         if (node == null) {
@@ -72,7 +72,7 @@ public class ReportTree {
                         continue;
                     }
                 } else {
-                    this.iterNode = ((AbstractReportNode) this.iterNode).getFirstChild();
+                    this.iterNode = this.iterNode.getFirstChild();
                     if (this.iterNode.isLeaf()) {
                         return this.iterNode;
                     } else {
@@ -107,7 +107,7 @@ public class ReportTree {
      */
     public void addRuleViolation(RuleViolation violation) {
         String pack = violation.getPackageName();
-        String[] a = null;
+        String[] a;
         if (pack == null) {
             a = new String[]{""};
         } else if (pack.indexOf(".") != -1) {
@@ -170,7 +170,7 @@ public class ReportTree {
     private boolean isStringInLevel(String str) {
 
         for (int i = 0; i < this.level.getChildCount(); i++) {
-            AbstractReportNode child = (AbstractReportNode) this.level.getChildAt(i);
+            AbstractReportNode child = this.level.getChildAt(i);
             String tmp = null;
 
             if (child instanceof PackageNode) {

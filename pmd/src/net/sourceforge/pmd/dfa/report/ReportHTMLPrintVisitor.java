@@ -10,14 +10,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * + * @author raik
- * + *
- * + * Uses the generated result tree instead of the result list. The visitor
- * + * traverses the tree and creates several html files. The "package view" file
- * + * (index.html) displays an overview of packgages, classes and the number of
- * + * rule violations they contain. All the other html files represent a class
- * + * and show detailed information about the violations.
- * +
+ *  @author raik
+ *
+ * * Uses the generated result tree instead of the result list. The visitor
+ * * traverses the tree and creates several html files. The "package view" file
+ * * (index.html) displays an overview of packgages, classes and the number of
+ * * rule violations they contain. All the other html files represent a class
+ * * and show detailed information about the violations.
+ *
  */
 public class ReportHTMLPrintVisitor extends ReportVisitor {
 
@@ -75,7 +75,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
 
         /*
          * The first node of result tree.
-         * */
+         */
         if (node.getParent() == null) {
             this.packageBuf.insert(0,
                     "<html>" +
@@ -109,7 +109,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
         }
         if (node instanceof ClassNode) {
             ClassNode cnode = (ClassNode) node;
-            String str = (String) cnode.getClassName();
+            String str = cnode.getClassName();
 
             classBuf.insert(0,
                     "<html><head><title>PMD - " + str + "</title></head><body>" + PMD.EOL + "" +
@@ -140,15 +140,13 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
         }
         if (node instanceof PackageNode) {
             PackageNode pnode = (PackageNode) node;
-            String str = "";
+            String str;
 
             // rootNode
             if (node.getParent() == null) {
                 str = "Aggregate";
-            }
-            // all the other nodes
-            else {
-                str = (String) pnode.getPackageName();
+            } else {           // all the other nodes
+                str = pnode.getPackageName();
                 node.getParent().addNumberOfViolation(node.getNumberOfViolations());
             }
 
