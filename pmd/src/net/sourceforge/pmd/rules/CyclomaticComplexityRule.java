@@ -243,16 +243,19 @@ public class CyclomaticComplexityRule extends AbstractRule
             classEntry.m_highestDecisionPoints = constructorDecisionPointCount;
         }
 
-        // The {0} "{1}" has a cyclomatic complexity of {2}.
-        RuleContext ruleContext = (RuleContext) data;
-        String template = getMessage();
-        String constructorName = classEntry.m_node.getImage();
-        String complexity = String.valueOf(constructorDecisionPointCount);
-        String[] args = {"constructor", constructorName, complexity};
-        String message = MessageFormat.format(template, args);
-        int lineNumber = node.getBeginLine();
-        RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
-        ruleContext.getReport().addRuleViolation(ruleViolation);
+        if (constructorEntry.m_decisionPoints >= getIntProperty("reportLevel"))
+        {
+            // The {0} "{1}" has a cyclomatic complexity of {2}.
+            RuleContext ruleContext = (RuleContext) data;
+            String template = getMessage();
+            String constructorName = classEntry.m_node.getImage();
+            String complexity = String.valueOf(constructorDecisionPointCount);
+            String[] args = {"constructor", constructorName, complexity};
+            String message = MessageFormat.format(template, args);
+            int lineNumber = node.getBeginLine();
+            RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
+            ruleContext.getReport().addRuleViolation(ruleViolation);
+        }
 
         return data;
     }
