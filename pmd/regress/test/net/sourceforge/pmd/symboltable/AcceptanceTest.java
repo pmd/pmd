@@ -8,9 +8,12 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.StringReader;
+import java.util.List;
 
 public class AcceptanceTest extends TestCase {
 
@@ -35,6 +38,16 @@ public class AcceptanceTest extends TestCase {
         assertTrue(a.isStatic());
     }
 
+    public void testFindFieldDecl() {
+        JavaParser parser = new JavaParser(new StringReader(TEST4));
+        ASTCompilationUnit c = parser.CompilationUnit();
+        SymbolFacade stb = new SymbolFacade();
+        stb.initializeWith(c);
+        List children = c.findChildrenOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId var =  (ASTVariableDeclaratorId)children.get(0);
+        assertEquals(var.getTypeNameNode().getImage(), "String");
+    }
+
     private static final String TEST1 =
     "import java.io.*;" + PMD.EOL +
     "public class Foo  {" + PMD.EOL +
@@ -52,6 +65,11 @@ public class AcceptanceTest extends TestCase {
     private static final String TEST3 =
     "public class Foo  {" + PMD.EOL +
     " static {} " + PMD.EOL +
+    "}" + PMD.EOL;
+
+    private static final String TEST4 =
+    "public class Foo  {" + PMD.EOL +
+    " String bar; " + PMD.EOL +
     "}" + PMD.EOL;
 
 }
