@@ -201,7 +201,6 @@ public class RuleSetReader implements Constants {
                 } catch (ClassNotFoundException classNotFoundException) {
                     try {
                         Class ruleClass;
-
                         className = "net.sourceforge.pmd.UndefinedRule";
                         ruleClass = Class.forName(className);
                         m_rule = (Rule) ruleClass.newInstance();
