@@ -27,6 +27,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2003/06/30 22:05:07  phherlin
+ * Improving incremental building
+ *
  * Revision 1.6  2003/06/19 20:58:33  phherlin
  * Improve progress indicator accuracy
  *
@@ -114,8 +117,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
                 monitor.done();
                 log.debug("Monitor done");
             } else {
-                log.info("No change reported. Performing a full build");
-                result = buildFull(args, monitor);
+                log.info("No change reported. Performing no build");
             }
         }
 
