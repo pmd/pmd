@@ -7,7 +7,7 @@
       Folgende Konstellationen werden durch diese Regeln abgedeckt:
       dd, du, ur
   </description>
-
+	<!--
   <rule name="FindDataFlowAnomalies"
       message="found anomalie"
         symboltable="true"
@@ -28,7 +28,6 @@
   
   </rule>
 
-<!--
   <rule name="DataFlowAsGraph"
         message="Graph"
         class="uni.stralsund.pmd.rules.DisplayDataFlowRule">
