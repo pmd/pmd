@@ -19,7 +19,7 @@
 			<title>PMD Rulesets index</title>
 		</properties>
 		<body>
-			<section name="Rules by ruleset">
+			<section name="Current Rulesets">
 			    <p>List of rulesets and rules contained in each ruleset.</p>
     		    <x:set var="ruleset" select="/rulesets/ruleset"/>
                 <ul>
