@@ -78,10 +78,11 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     SelectedRules rules;
     JTextArea exampleTextArea= new JTextArea(10, 50);
-    private JCheckBox chkRunPMDOnSave, chkShowProgressBar;
+    private JCheckBox chkRunPMDOnSave, chkShowProgressBar, chkIgnoreLiterals;
 	JTextField txtMinTileSize;
 	JTextField txtCustomRules;
 	JComboBox comboRenderer;
+
 
 
     public PMDOptionPane() {
@@ -116,6 +117,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
         chkRunPMDOnSave = new JCheckBox("Run PMD on Save", jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE));
 		chkShowProgressBar = new JCheckBox("Show PMD Progress Bar", jEdit.getBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS));
+		chkIgnoreLiterals = new JCheckBox("Ignore Literals & identifiers when detecting Duplicate Code", jEdit.getBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS));
 
 		JPanel pnlSouth = new JPanel(new GridLayout(0,1));
 
@@ -134,12 +136,14 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 		pnlTileSize.add(comboRenderer);
 		pnlTileSize.add(chkShowProgressBar);
 
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(rulesPanel, BorderLayout.NORTH);
         mainPanel.add(textPanel, BorderLayout.CENTER);
 
 		pnlSouth.add(chkRunPMDOnSave);
+		pnlSouth.add(chkIgnoreLiterals);
 		pnlSouth.add(pnlTileSize);
         mainPanel.add(pnlSouth, BorderLayout.SOUTH);
         addComponent(mainPanel);
@@ -150,6 +154,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
 		jEdit.setIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,(txtMinTileSize.getText().length() == 0)?100:Integer.parseInt(txtMinTileSize.getText()));
 		jEdit.setBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE,(chkRunPMDOnSave.isSelected()));
+		jEdit.setBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS,(chkIgnoreLiterals.isSelected()));
 		jEdit.setProperty(PMDJEditPlugin.RENDERER, (String)comboRenderer.getSelectedItem());
 		jEdit.setBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS, chkShowProgressBar.isSelected());
 

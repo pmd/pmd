@@ -6,8 +6,8 @@
 package net.sourceforge.pmd.jedit;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
@@ -25,6 +25,9 @@ import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPPLanguage;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaLanguage;
+import net.sourceforge.pmd.cpd.JavaTokenizer;
+import net.sourceforge.pmd.cpd.Language;
+import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.PHPLanguage;
 import net.sourceforge.pmd.cpd.TokenEntry;
@@ -43,6 +46,7 @@ public class PMDJEditPlugin extends EBPlugin
 	public static final String RUN_PMD_ON_SAVE = "pmd.runPMDOnSave";
 	public static final String CUSTOM_RULES_PATH_KEY = "pmd.customRulesPath";
 	public static final String SHOW_PROGRESS = "pmd.showprogress";
+	public static final String IGNORE_LITERALS = "pmd.ignoreliterals";
 	//private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
 
 	private static PMDJEditPlugin instance;
@@ -416,15 +420,15 @@ public class PMDJEditPlugin extends EBPlugin
 		{
 			if(name.endsWith("java"))
 			{
-				return "java";
+				return LanguageFactory.JAVA_KEY;
 			}
 			else if(name.endsWith("php"))
 			{
-				return "php";
+				return LanguageFactory.PHP_KEY;
 			}
 			else if(name.endsWith("c") || name.endsWith("cpp") || name.endsWith("c++"))
 			{
-				return "c";
+				return LanguageFactory.CPP_KEY;
 			}
 		}
 		return null;
@@ -432,34 +436,21 @@ public class PMDJEditPlugin extends EBPlugin
 
 	private void instanceCPDCurrentFile(View view, String filename, String fileType) throws IOException
 	{
-		CPD cpd = null;
+		CPD cpd = getCPD(fileType, view);
 		//Log.log(Log.DEBUG, PMDJEditPlugin.class , "See mode " + view.getBuffer().getMode().getName());
 
-		if (fileType.equals("java"))
+		if(cpd != null)
 		{
-			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing java");
-			cpd = new CPD(jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100),new JavaLanguage());
-		}
-		else if (fileType.equals("php"))
-		{
-			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing PHP");
-			cpd = new CPD(jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100),new PHPLanguage());
-		}
-		else if (fileType.equals("c"))
-		{
-			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing C/C++");
-			cpd = new CPD(jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100),new CPPLanguage());
+			cpd.add(new File(filename));
+			cpd.go();
+			instance.processDuplicates(cpd, view);
+			view.getDockableWindowManager().showDockableWindow("cpd-viewer");
 		}
 		else
 		{
-			JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java,C/C++,PHP code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
+			view.getStatus().setMessageAndClear("Cannot run CPD on an Invalid file type");
 			return;
 		}
-
-		cpd.add(new File(filename));
-		cpd.go();
-		instance.processDuplicates(cpd, view);
-		view.getDockableWindowManager().showDockableWindow("cpd-viewer");
 	}
 
 
@@ -548,19 +539,26 @@ public class PMDJEditPlugin extends EBPlugin
 		{
 			jEdit.setProperty("pmd.cpd.lastDirectory",dir);
 			instance.errorSource.clear();
+			CPD cpd = getCPD(tileSize, "java", view);
 
-			CPD cpd = new CPD(tileSize, new JavaLanguage());
-
-			if(recursive)
+			if(cpd != null)
 			{
-				cpd.addRecursively(dir);
+				if(recursive)
+				{
+					cpd.addRecursively(dir);
+				}
+				else
+				{
+					cpd.addAllInDirectory(dir);
+				}
+				cpd.go();
+				instance.processDuplicates(cpd, view);
 			}
 			else
 			{
-				cpd.addAllInDirectory(dir);
+				view.getStatus().setMessageAndClear("Cannot run CPD on Invalid directory/files.");
+				return;
 			}
-			cpd.go();
-			instance.processDuplicates(cpd, view);
 		}//End of if(dir != null)
 	}
 
@@ -587,8 +585,8 @@ public class PMDJEditPlugin extends EBPlugin
 			{
 				TokenEntry mark = (TokenEntry)occurrences.next();
 
-				//System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount());
 				int lastLine = mark.getBeginLine()+match.getLineCount();
+				System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount() +" last line "+ lastLine);
 
 				CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getTokenSrcID(),mark.getBeginLine(),lastLine);
 
@@ -775,6 +773,39 @@ public class PMDJEditPlugin extends EBPlugin
 	}
 
 
+	private CPD getCPD(int tileSize, String fileType, View view)
+	{
+		Language lang;
+		LanguageFactory lf = new LanguageFactory();
+		if (fileType.equals(LanguageFactory.JAVA_KEY))
+		{
+			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing java");
+			Properties props = new Properties();
+			props.setProperty(JavaTokenizer.IGNORE_LITERALS, String.valueOf(jEdit.getBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS)));
+			lang = lf.createLanguage(LanguageFactory.JAVA_KEY, props);
+		}
+		else if (fileType.equals(LanguageFactory.PHP_KEY))
+		{
+			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing PHP");
+			lang = lf.createLanguage(LanguageFactory.PHP_KEY);
+		}
+		else if (fileType.equals(LanguageFactory.CPP_KEY))
+		{
+			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing C/C++");
+			lang = lf.createLanguage(LanguageFactory.CPP_KEY);
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java,C/C++,PHP code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
+			return null;
+		}
+		return new CPD(tileSize,lang);
+	}
+
+	private CPD getCPD(String fileType, View view)
+	{
+		return getCPD(jEdit.getIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,100), fileType, view);
+	}
 }
 
 
