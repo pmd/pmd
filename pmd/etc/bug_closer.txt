@@ -1,6 +1,6 @@
-Fixed in CVS, and you can download a new pmd-2.2.jar file here:
+Fixed in CVS, and you can download a new pmd-2.3.jar file here:
 
-http://infoether.com/~tom/pmd-2.2.jar
+http://infoether.com/~tom/pmd-2.3.jar
 
 that contains this fix.
 
