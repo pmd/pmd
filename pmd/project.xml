@@ -228,10 +228,10 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
     <report>maven-clover-plugin</report>
     <report>maven-file-activity-plugin</report>
     <report>maven-developer-activity-plugin</report>
+    <report>maven-faq-plugin</report>
     <!-- interesing to add later
     <report>maven-pmd-plugin</report>
     
-    <report>maven-faq-plugin</report>
     <report>maven-changes-plugin</report>
     <report>maven-jdepend-plugin</report>
     <report>maven-findbugs-plugin</report>
