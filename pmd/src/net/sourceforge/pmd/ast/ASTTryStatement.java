@@ -35,10 +35,10 @@ public class ASTTryStatement extends SimpleNode {
         return hasFinally;
     }
 
-    /**
-     * Call hasFinally() before you call this method
-     */
     public ASTBlock getFinallyBlock() {
+        if (!hasFinally) {
+            throw new RuntimeException("ASTTryStatement.getFinallyBlock() called, but no finally statement exists");
+        }
         return (ASTBlock) jjtGetChild(jjtGetNumChildren() - 1);
     }
 
@@ -60,4 +60,20 @@ public class ASTTryStatement extends SimpleNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public void dump(String prefix) {
+        String x = "";
+        if (hasCatch) {
+            x += ":(has catch)";
+        }
+        if (hasFinally) {
+            if (x == "") {
+                x += ":";
+            }
+            x += "(has finally)";
+        }
+        System.out.println(toString(prefix) + x);
+        dumpChildren(prefix);
+    }
+
 }
