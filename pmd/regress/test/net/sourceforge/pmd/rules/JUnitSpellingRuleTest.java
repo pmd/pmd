@@ -19,19 +19,23 @@ public class JUnitSpellingRuleTest extends RuleTst {
     }
 
 
-    public void test1() throws Throwable {
+    public void testSetupMisspellings1() throws Throwable {
         runTest("JUnitSpelling1.java", 2, rule);
     }
 
-    public void test2() throws Throwable {
+    public void testTeardownMisspellings() throws Throwable {
         runTest("JUnitSpelling2.java", 2, rule);
     }
 
-    public void test3() throws Throwable {
+    public void testMethodsSpelledOK() throws Throwable {
         runTest("JUnitSpelling3.java", 0, rule);
     }
 
-    public void test4() throws Throwable {
+    public void testUnrelatedMethods() throws Throwable {
         runTest("JUnitSpelling4.java", 0, rule);
+    }
+
+    public void testMethodWithParams() throws Throwable {
+        runTest("JUnitSpelling5.java", 0, rule);
     }
 }

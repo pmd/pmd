@@ -14,8 +14,10 @@ import java.text.MessageFormat;
 public class JUnitSpellingRule extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
-        checkSpelling(node.getImage(), data, node, "setUp");
-        checkSpelling(node.getImage(), data, node, "tearDown");
+        if (node.getParameterCount() == 0) {
+            checkSpelling(node.getImage(), data, node, "setUp");
+            checkSpelling(node.getImage(), data, node, "tearDown");
+        }
         return data;
     }
 
@@ -28,5 +30,4 @@ public class JUnitSpellingRule extends AbstractRule {
             }
         }
     }
-
 }
