@@ -17,6 +17,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.ListSelectionModel;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -51,6 +52,7 @@ class DirectoryTable extends JTable
         setRowSelectionAllowed(false);
         setColumnSelectionAllowed(false);
         setCellSelectionEnabled(true);
+        getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setBackground(UIManager.getColor("pmdTableBackground"));
         setRowHeight(20);
         setSelectionBackground(Color.blue);
