@@ -8,7 +8,7 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.3
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.02.08.00
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.3.2
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-1.7.jar jaxen-core-1.0-fcs.jar saxpath-1.0-fcs.jar pmd-swingui-0.1.jar
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-1.8.jar jaxen-core-1.0-fcs.jar saxpath-1.0-fcs.jar pmd-swingui-0.1.jar
 
 #
 # Menu properties

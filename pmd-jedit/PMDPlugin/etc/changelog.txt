@@ -1,5 +1,5 @@
 ??? - 2.5
-- Updated to PMD 1.7
+- Updated to PMD 1.8
 
 22 March 2004- 2.4
 - Optimized usage of ErrorSource for faster Error Highlighting.
