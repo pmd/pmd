@@ -1,15 +1,15 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.RuleSetChangedEvent;
-import net.sourceforge.pmd.swingui.event.RuleSetEvent;
-import net.sourceforge.pmd.swingui.event.RulesInMemoryEvent;
-import net.sourceforge.pmd.swingui.event.RulesInMemoryEventListener;
-import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
-import net.sourceforge.pmd.swingui.event.RulesTreeModelEventListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JMenu;
@@ -22,16 +22,17 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.RuleSetChangedEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetEvent;
+import net.sourceforge.pmd.swingui.event.RulesInMemoryEvent;
+import net.sourceforge.pmd.swingui.event.RulesInMemoryEventListener;
+import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
+import net.sourceforge.pmd.swingui.event.RulesTreeModelEventListener;
 
 /**
  *
@@ -53,23 +54,22 @@ class RulesEditor extends JPanel
      *
      * @param parentWindow
      */
-    protected RulesEditor()
-        throws PMDException
+    protected RulesEditor() throws PMDException
     {
         super(new BorderLayout());
 
         m_tree = new RulesTree();
-        m_tree.buildTree();
 
         JScrollPane treeScrollPane;
         JSplitPane splitPane;
+        JScrollPane editingTabbedScrollPane;
 
         treeScrollPane = createTreeScrollPane();
         m_editingTabbedPane = new RuleEditingTabbedPane(m_tree);
-        splitPane = createSplitPane(treeScrollPane, m_editingTabbedPane);
+        m_splitPane = ComponentFactory.createHorizontalSplitPane(treeScrollPane, m_editingTabbedPane);
 
         JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.add(splitPane, BorderLayout.CENTER);
+        contentPanel.add(m_splitPane, BorderLayout.CENTER);
         add(contentPanel, BorderLayout.CENTER);
 
         createMenuBar();
@@ -84,30 +84,11 @@ class RulesEditor extends JPanel
      */
     private JScrollPane createTreeScrollPane()
     {
-        JScrollPane treeScrollPane = ComponentFactory.createScrollPane(m_tree);
+        JScrollPane scrollPane = ComponentFactory.createScrollPane(m_tree);
         Color background = UIManager.getColor("pmdTreeBackground");
+        scrollPane.getViewport().setBackground(background);
 
-        treeScrollPane.getViewport().setBackground(background);
-
-        return treeScrollPane;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    private JSplitPane createSplitPane(JScrollPane treeScrollPane, JTabbedPane editingTabbedPane)
-    {
-        m_splitPane = new JSplitPane();
-
-        m_splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-        m_splitPane.setResizeWeight(0.5);
-        m_splitPane.setDividerSize(5);
-        m_splitPane.setLeftComponent(treeScrollPane);
-        m_splitPane.setRightComponent(editingTabbedPane);
-
-        return m_splitPane;
+        return scrollPane;
     }
 
     /**

@@ -1,9 +1,10 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.BorderLayout;
+
+import javax.swing.border.EmptyBorder;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
-import java.awt.BorderLayout;
 
 /**
  *
@@ -31,20 +32,16 @@ class RuleAllEditingPanel extends JPanel
 
         setBorder(emptyBorder);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        add(mainPanel, BorderLayout.CENTER);
+        JScrollPane ruleScrollPane;
 
         m_ruleSetPanel = new RuleSetEditingPanel();
         m_rulePanel = new RuleEditingPanel();
+        ruleScrollPane = ComponentFactory.createScrollPane(m_rulePanel);
         m_rulePropertyPanel = new RulePropertyEditingPanel();
 
-        JScrollPane ruleSetScrollPane = ComponentFactory.createScrollPane(m_ruleSetPanel);
-        JScrollPane ruleScrollPane = ComponentFactory.createScrollPane(m_rulePanel);
-        JScrollPane rulePropertyScrollPane = ComponentFactory.createScrollPane(m_rulePropertyPanel);
-
-        mainPanel.add(ruleSetScrollPane, BorderLayout.NORTH);
-        mainPanel.add(ruleScrollPane, BorderLayout.CENTER);
-        mainPanel.add(rulePropertyScrollPane, BorderLayout.SOUTH);
+        add(m_ruleSetPanel, BorderLayout.NORTH);
+        add(ruleScrollPane, BorderLayout.CENTER);
+        add(m_rulePropertyPanel, BorderLayout.SOUTH);
     }
 
     /**

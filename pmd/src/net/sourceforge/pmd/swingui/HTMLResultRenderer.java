@@ -20,189 +20,212 @@ import java.util.Iterator;
 class HTMLResultRenderer
 {
 
+    private boolean m_reportNoViolations;
+    private StringWriter m_writer;
+
     /**
      *******************************************************************************
      *
-     * @param report
-     *
-     * @return Formatted text.
      */
-    public String render(String fileName, Report report)
+    protected void beginRendering(boolean reportNoViolations)
     {
-        StringWriter writer = new StringWriter(25000);
-        Iterator violations = report.iterator();
+        m_reportNoViolations = reportNoViolations;
+        m_writer = new StringWriter(25000);
 
         //
         // Write HTML header.
         //
-        writer.write("<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">\n");
-        writer.write("<html>\n");
-        writer.write("<head>\n");
-        writer.write("<meta content=\"text/html; charset=iso-8859-1\">\n");
-        writer.write("<title>PMD Analysis Results</title>\n");
-        writer.write("</head>\n");
+        m_writer.write("<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">\n");
+        m_writer.write("<html>\n");
+        m_writer.write("<head>\n");
+        m_writer.write("<meta content=\"text/html; charset=iso-8859-1\">\n");
+        m_writer.write("<title>PMD Analysis Results</title>\n");
+        m_writer.write("</head>\n");
 
         //
         // Write the body.
         //
-        writer.write("<body>\n");
+        m_writer.write("<body>\n");
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return HTML text.
+     */
+    protected String endRendering()
+    {
+        m_writer.write("</body>\n");
+        m_writer.write("</html>\n");
+
+        return m_writer.toString();
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param fileName
+     * @param report
+     */
+    public void render(String fileName, Report report)
+    {
+        Iterator violations = report.iterator();
+
+        if (violations.hasNext() == false)
+        {
+            if (m_reportNoViolations)
+            {
+                //
+                // Write the name of the file that was analyzed.
+                //
+                m_writer.write("<b>Source File:</b> ");
+                m_writer.write(fileName);
+                m_writer.write("\n<p>\n");
+                m_writer.write("No rule violations detected.<br>\n");
+            }
+
+            return;
+        }
 
         //
         // Write the name of the file that was analyzed.
         //
-        writer.write("<b>Source File:</b> ");
-        writer.write(fileName);
-        writer.write("\n<br>\n");
+        m_writer.write("<b>Source File:</b> ");
+        m_writer.write(fileName);
+        m_writer.write("\n<br>\n");
 
-        //
-        // Create a table.
-        //
-        if (violations.hasNext() == false)
+        Color pmdGray = UIManager.getColor("pmdGray");
+        String hexValue = Integer.toHexString(pmdGray.getRGB());
+
+        if (hexValue.startsWith("0x"))
         {
-            writer.write("<p>No rule violations detected.\n");
+            hexValue = hexValue.substring(2);
         }
-        else
+
+        if (hexValue.length() > 6)
         {
-            Color pmdGray = UIManager.getColor("pmdGray");
-            String hexValue = Integer.toHexString(pmdGray.getRGB());
+            hexValue = hexValue.substring(hexValue.length() - 6);
+        }
 
-            if (hexValue.startsWith("0x"))
-            {
-                hexValue = hexValue.substring(2);
-            }
+        m_writer.write("<table bgcolor=\"#" + hexValue + "\" border>\n");
 
-            if (hexValue.length() > 6)
-            {
-                hexValue = hexValue.substring(hexValue.length() - 6);
-            }
+        //
+        // Create the column headings.
+        //
+        m_writer.write("<tr>\n");
+        m_writer.write("<th><b>Line<br>No.</b></th>\n");
+        m_writer.write("<th><b>Rule</b></th>\n");
+        m_writer.write("<th><b>Priority</b></th>\n");
+        m_writer.write("<th><b>Description</b></th>\n");
+        m_writer.write("<th><b>Example</b></th>\n");
+        m_writer.write("</tr>\n");
 
-            writer.write("<table bgcolor=\"#" + hexValue + "\" border>\n");
+        while (violations.hasNext())
+        {
+            RuleViolation ruleViolation = (RuleViolation) violations.next();
+            Rule rule = ruleViolation.getRule();
 
             //
-            // Create the column headings.
+            // Begin table row.
             //
-            writer.write("<tr>\n");
-            writer.write("<th><b>Line<br>No.</b></th>\n");
-            writer.write("<th><b>Rule</b></th>\n");
-            writer.write("<th><b>Priority</b></th>\n");
-            writer.write("<th><b>Description</b></th>\n");
-            writer.write("<th><b>Example</b></th>\n");
-            writer.write("</tr>\n");
+            m_writer.write("<tr>\n");
 
-            while (violations.hasNext())
+            //
+            // Line Number
+            //
+            m_writer.write("<td align=\"center\" valign=\"top\">\n");
+            m_writer.write("<font size=\"3\">\n");
+            m_writer.write(String.valueOf(ruleViolation.getLine()));
+            m_writer.write("\n</font>\n");
+            m_writer.write("</td>\n");
+
+            //
+            // Rule Message
+            //
+            String ruleMessage = ruleViolation.getDescription();
+
+            if (ruleMessage == null)
             {
-                RuleViolation ruleViolation = (RuleViolation) violations.next();
-                Rule rule = ruleViolation.getRule();
+                ruleMessage = "";
+            }
+            else
+            {
+                removeNewLineCharacters(ruleMessage);
+            }
 
-                //
-                // Begin table row.
-                //
-                writer.write("<tr>\n");
+            m_writer.write("<td align=\"left\" valign=\"top\">\n");
+            m_writer.write("<font size=\"3\">\n");
+            m_writer.write(ruleMessage);
+            m_writer.write("\n</font>\n");
+            m_writer.write("</td>\n");
 
-                //
-                // Line Number
-                //
-                writer.write("<td align=\"center\" valign=\"top\">\n");
-                writer.write("<font size=\"3\">\n");
-                writer.write(String.valueOf(ruleViolation.getLine()));
-                writer.write("\n</font>\n");
-                writer.write("</td>\n");
+            //
+            // Rule Priority
+            //
+            m_writer.write("<td align=\"left\" valign=\"top\">\n");
+            m_writer.write("<font size=\"3\">\n");
+            m_writer.write(rule.getPriorityName());
+            m_writer.write("\n</font>\n");
+            m_writer.write("</td>\n");
 
-                //
-                // Rule Message
-                //
-                String ruleMessage = ruleViolation.getDescription();
+            //
+            // Rule Description
+            //
+            String description = rule.getDescription();
 
-                if (ruleMessage == null)
+            if (description == null)
+            {
+                description = "";
+            }
+            else
+            {
+                removeNewLineCharacters(description);
+            }
+
+            m_writer.write("<td align=\"left\" valign=\"top\">\n");
+            m_writer.write("<font size=\"3\">\n");
+            m_writer.write(description);
+            m_writer.write("\n</font>\n");
+            m_writer.write("</td>\n");
+
+            //
+            // Rule Example
+            //
+            String example = rule.getExample();
+
+            if ((example != null) && (example.length() > 0))
+            {
+                StringBuffer buffer = new StringBuffer(example);
+
+                for (int n = buffer.length() - 1; n >= 0; n--)
                 {
-                    ruleMessage = "";
-                }
-                else
-                {
-                    removeNewLineCharacters(ruleMessage);
-                }
-
-                writer.write("<td align=\"left\" valign=\"top\">\n");
-                writer.write("<font size=\"3\">\n");
-                writer.write(ruleMessage);
-                writer.write("\n</font>\n");
-                writer.write("</td>\n");
-
-                //
-                // Rule Priority
-                //
-                writer.write("<td align=\"left\" valign=\"top\">\n");
-                writer.write("<font size=\"3\">\n");
-                writer.write(rule.getPriorityName());
-                writer.write("\n</font>\n");
-                writer.write("</td>\n");
-
-                //
-                // Rule Description
-                //
-                String description = rule.getDescription();
-
-                if (description == null)
-                {
-                    description = "";
-                }
-                else
-                {
-                    removeNewLineCharacters(description);
-                }
-
-                writer.write("<td align=\"left\" valign=\"top\">\n");
-                writer.write("<font size=\"3\">\n");
-                writer.write(description);
-                writer.write("\n</font>\n");
-                writer.write("</td>\n");
-
-                //
-                // Rule Example
-                //
-                String example = rule.getExample();
-
-                if ((example != null) && (example.length() > 0))
-                {
-                    StringBuffer buffer = new StringBuffer(example);
-
-                    for (int n = buffer.length() - 1; n >= 0; n--)
+                    if (buffer.charAt(n) == '\n')
                     {
-                        if (buffer.charAt(n) == '\n')
-                        {
-                            buffer.deleteCharAt(n);
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        buffer.deleteCharAt(n);
                     }
-
-                    example = buffer.toString();
-
-                    writer.write("<td align=\"left\" valign=\"top\">\n");
-                    writer.write("<pre>\n");
-                    writer.write(example);
-                    writer.write("\n</pre>\n");
-                    writer.write("</td>\n");
+                    else
+                    {
+                        break;
+                    }
                 }
 
-                //
-                // End table row.
-                //
-                writer.write("</tr>\n");
+                example = buffer.toString();
+
+                m_writer.write("<td align=\"left\" valign=\"top\">\n");
+                m_writer.write("<pre>\n");
+                m_writer.write(example);
+                m_writer.write("\n</pre>\n");
+                m_writer.write("</td>\n");
             }
 
-            writer.write("</table>\n");
+            //
+            // End table row.
+            //
+            m_writer.write("</tr>\n");
         }
 
-        //
-        // Closeup.
-        //
-        writer.write("</body>\n");
-        writer.write("</html>\n");
-
-        return writer.toString();
+        m_writer.write("</table>\n");
+        m_writer.write("<p><p>\n");
     }
 
     /**
@@ -214,32 +237,29 @@ class HTMLResultRenderer
      */
     private String removeNewLineCharacters(String text)
     {
-        char[] chars = text.toCharArray();
-        /*
-        int lastIndex = chars.length - 1;
+        char[] chars = text.trim().toCharArray();
+        int startIndex = 0;
 
         for (int n = 0; n < chars.length; n++)
         {
-            if (chars[n] == '\n')
+            if ((chars[n] != ' ') && (chars[n] != '\n'))
             {
-                chars[n] = ' ';
-                / *
-                if (n == lastIndex)
-                {
-                    chars[n] = ' ';
-                }
-                else
-                {
-                    if ((chars[n + 1] != '.') && (chars[n + 1] != ':'))
-                    {
-                        chars[n] = ' ';
-                    }
-                }
-                * /
+                startIndex = n;
+                break;
             }
         }
-        */
 
-        return String.valueOf(chars).trim();
+        int lastIndex = chars.length - 1;
+
+        for (int n = lastIndex; n >= 0; n--)
+        {
+            if ((chars[n] != ' ') && (chars[n] != '\n'))
+            {
+                lastIndex = n;
+                break;
+            }
+        }
+
+        return String.valueOf(chars, startIndex, lastIndex + 1);
     }
 }

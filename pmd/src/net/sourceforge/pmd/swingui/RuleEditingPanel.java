@@ -1,9 +1,21 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
-import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+import java.awt.Window;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.text.MessageFormat;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -16,19 +28,11 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.Window;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.text.MessageFormat;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
+import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
 
 /**
  *
@@ -69,14 +73,20 @@ class RuleEditingPanel extends JPanel
     {
         super(new BorderLayout());
 
-        EmptyBorder emptyBorder = new EmptyBorder(15, 15, 15, 15);
+        EmptyBorder emptyBorder = new EmptyBorder(5, 5, 5, 5);
 
         setBorder(emptyBorder);
 
         JPanel panel;
         TitledBorder titledBorder;
+        GridBagLayout layout;
+        GridBagConstraints constraints;
 
-        panel = new JPanel(new RuleLayout());
+        int[] columnWidths = {50, 100, 100, 100, 100, 100};
+
+        layout = new GridBagLayout();
+        layout.columnWidths = columnWidths;
+        panel = new JPanel(layout);
         titledBorder = ComponentFactory.createTitledBorder("  Rule  ");
 
         panel.setBorder(titledBorder);
@@ -88,8 +98,15 @@ class RuleEditingPanel extends JPanel
         m_nameLabel = new JLabel("Name");
         m_nameLabel.setFont(labelFont);
         m_nameLabel.setHorizontalAlignment(JLabel.RIGHT);
-        m_nameLabel.setOpaque(true);
-        panel.add(m_nameLabel);
+        constraints = layout.getConstraints(m_nameLabel);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_nameLabel, constraints);
 
         // Rule Name Text
         m_name = new JTextField();
@@ -97,14 +114,29 @@ class RuleEditingPanel extends JPanel
         m_name.addFocusListener(m_focusListener);
         m_name.setRequestFocusEnabled(true);
         m_name.setOpaque(true);
-        panel.add(m_name);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.gridwidth = 2;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_name, constraints);
 
         // Rule Class Name Label
         m_classNameLabel = new JLabel("Class Name");
         m_classNameLabel.setFont(labelFont);
         m_classNameLabel.setHorizontalAlignment(JLabel.RIGHT);
-        m_classNameLabel.setOpaque(true);
-        panel.add(m_classNameLabel);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_classNameLabel, constraints);
 
         // Rule Class Name Text
         m_className = new JTextField();
@@ -116,40 +148,89 @@ class RuleEditingPanel extends JPanel
         m_className.setEditable(false);
         m_className.setEnabled(false);
         m_className.setOpaque(true);
-        panel.add(m_className);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_className, constraints);
 
         // Rule Message Label
         m_messageLabel = new JLabel("Message");
         m_messageLabel.setFont(labelFont);
         m_messageLabel.setHorizontalAlignment(JLabel.RIGHT);
-        m_messageLabel.setOpaque(true);
-        panel.add(m_messageLabel);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_messageLabel, constraints);
 
         // Rule Message Text
         m_message = ComponentFactory.createTextArea("");
 
         // Rule Message Scroll Pane;
         m_messageScrollPane = ComponentFactory.createScrollPane(m_message);
-        panel.add(m_messageScrollPane);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 2;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.gridheight = 1;
+        constraints.ipady = 4 * 20;  // 4 lines * 20 pixels/line
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_messageScrollPane, constraints);
 
         // Rule Description Label
         m_descriptionLabel = new JLabel("Description");
         m_descriptionLabel.setFont(labelFont);
         m_descriptionLabel.setHorizontalAlignment(JLabel.RIGHT);
-        panel.add(m_descriptionLabel);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_descriptionLabel, constraints);
 
         // Rule Description Text
         m_description = ComponentFactory.createTextArea("");
 
         // Rule Description Scroll Pane;
         m_descriptionScrollPane = ComponentFactory.createScrollPane(m_description);
-        panel.add(m_descriptionScrollPane);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 3;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.gridheight = 1;
+        constraints.ipady = 4 * 20;  // 4 lines * 20 pixels/line
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_descriptionScrollPane, constraints);
 
         // Rule Example Label
         m_exampleLabel = new JLabel("Example");
         m_exampleLabel.setFont(labelFont);
         m_exampleLabel.setHorizontalAlignment(JLabel.RIGHT);
-        panel.add(m_exampleLabel);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_exampleLabel, constraints);
 
         // Rule Example Text
         m_example = ComponentFactory.createTextArea("");
@@ -157,17 +238,42 @@ class RuleEditingPanel extends JPanel
 
         // Rule Example Scroll Pane;
         m_exampleScrollPane = ComponentFactory.createScrollPane(m_example);
-        panel.add(m_exampleScrollPane);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 4;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.gridheight = 1;
+        constraints.ipady = 6 * 20;  // 6 lines * 20 pixels/line
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_exampleScrollPane, constraints);
 
         // Rule Priority Label
         m_priorityLabel = new JLabel("Priority");
         m_priorityLabel.setFont(labelFont);
         m_priorityLabel.setHorizontalAlignment(JLabel.RIGHT);
-        panel.add(m_priorityLabel);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 0;
+        constraints.gridy = 5;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_priorityLabel, constraints);
 
         // Rule Priority
         m_priority = new JComboBox(Rule.PRIORITIES);
-        panel.add(m_priority);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 5;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_priority, constraints);
 
         enableData(false);
 
@@ -394,400 +500,6 @@ class RuleEditingPanel extends JPanel
         }
 
         return (Window) component;
-    }
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class RuleLayout implements LayoutManager
-    {
-
-        /**
-         ***************************************************************************
-         * Adds the specified component with the specified name to the layout.
-         *
-         * @param name The component name.
-         * @param component The component to be added.
-         */
-        public void addLayoutComponent(String name, Component component)
-        {
-        }
-
-        /**
-         ***************************************************************************
-         * Removes the specified component from the layout.
-         *
-         * @param component The component to be removed.
-         */
-        public void removeLayoutComponent(Component component)
-        {
-        }
-
-        /**
-         ***************************************************************************
-         * Calculates the preferred size dimensions for the specified panel given the
-         * components in the specified parent container.
-         *
-         * @param parent The component to be laid out.
-         */
-        public Dimension preferredLayoutSize(Container parent)
-        {
-            Dimension size;
-            int parentWidth;
-
-            size = layoutContainer(parent, true);
-            parentWidth = parent.getWidth();
-
-            if (size.width > parentWidth)
-            {
-                size.width = parentWidth;
-            }
-
-            return size;
-        }
-
-        /**
-         **************************************************************************
-         * Calculates the minimum size dimensions for the specified panel given the
-         * components in the specified parent container.
-         *
-         * @param parent The component to be laid out.
-         */
-        public Dimension minimumLayoutSize(Container parent)
-        {
-            Dimension size;
-
-            size = layoutContainer(parent, true);
-            size.width = 50;
-
-            return size;
-        }
-
-        /**
-         **************************************************************************
-         * Lays out the container in the specified panel.
-         *
-         * @param parent The component which needs to be laid out.
-         */
-        public void layoutContainer(Container parent)
-        {
-            layoutContainer(parent, false);
-        }
-
-        /**
-         **************************************************************************
-         * Lays out the container in the specified panel.
-         *
-         * @param parent The component which needs to be laid out.
-         * @param computePanelSize
-         *
-         * @return
-         */
-        private Dimension layoutContainer(Container parent, boolean computePanelSize)
-        {
-            Dimension containerSize;
-            Insets containerInsets;
-            Font font;
-            FontMetrics fontMetrics;
-
-            containerSize = parent.getSize();
-            containerInsets = new Insets(10, 10, 10, 10);
-
-            if (parent instanceof JComponent)
-            {
-                Border border = ((JComponent) parent).getBorder();
-
-                if (border != null)
-                {
-                    Insets borderInsets;
-
-                    borderInsets = border.getBorderInsets(parent);
-                    containerInsets.left += borderInsets.left;
-                    containerInsets.top += borderInsets.top;
-                    containerInsets.right += borderInsets.right;
-                    containerInsets.bottom += borderInsets.bottom;
-                }
-            }
-
-            //
-            // Calculate the first column that contains the labels.
-            //
-
-            // Calculate Name Label
-            int nameLabelWidth;
-            int nameLabelHeight;
-
-            font = m_nameLabel.getFont();
-            fontMetrics = m_nameLabel.getFontMetrics(font);
-            nameLabelWidth = fontMetrics.stringWidth(m_nameLabel.getText());
-            nameLabelHeight = fontMetrics.getHeight();
-
-            // Calculate Class Name Label
-            int classNameLabelWidth;
-            int classNameLabelHeight;
-
-            font = m_classNameLabel.getFont();
-            fontMetrics = m_classNameLabel.getFontMetrics(font);
-            classNameLabelWidth = fontMetrics.stringWidth(m_classNameLabel.getText());
-            classNameLabelHeight = fontMetrics.getHeight();
-
-            // Calculate Message Label
-            int messageLabelWidth;
-            int messageLabelHeight;
-
-            font = m_messageLabel.getFont();
-            fontMetrics = m_messageLabel.getFontMetrics(font);
-            messageLabelWidth = fontMetrics.stringWidth(m_messageLabel.getText());
-            messageLabelHeight = fontMetrics.getHeight();
-
-            // Calculate Description Label
-            int descriptionLabelWidth;
-            int descriptionLabelHeight;
-
-            font = m_descriptionLabel.getFont();
-            fontMetrics = m_descriptionLabel.getFontMetrics(font);
-            descriptionLabelWidth = fontMetrics.stringWidth(m_descriptionLabel.getText());
-            descriptionLabelHeight = fontMetrics.getHeight();
-
-            // Calculate Example Label
-            int exampleLabelWidth;
-            int exampleLabelHeight;
-
-            font = m_exampleLabel.getFont();
-            fontMetrics = m_exampleLabel.getFontMetrics(font);
-            exampleLabelWidth = fontMetrics.stringWidth(m_exampleLabel.getText());
-            exampleLabelHeight = fontMetrics.getHeight();
-
-            // Calculate Priority Label;
-            int priorityLabelWidth;
-            int priorityLabelHeight;
-
-            font = m_priorityLabel.getFont();
-            fontMetrics = m_priorityLabel.getFontMetrics(font);
-            priorityLabelWidth = fontMetrics.stringWidth(m_priorityLabel.getText());
-            priorityLabelHeight = fontMetrics.getHeight();
-
-            // Calculate first column width.
-            int firstColumnWidth = nameLabelWidth;
-
-            if (classNameLabelWidth > firstColumnWidth)
-            {
-                firstColumnWidth = classNameLabelWidth;
-            }
-
-            if (messageLabelWidth > firstColumnWidth)
-            {
-                firstColumnWidth = messageLabelWidth;
-            }
-
-            if (descriptionLabelWidth > firstColumnWidth)
-            {
-                firstColumnWidth = descriptionLabelWidth;
-            }
-
-            if (exampleLabelWidth > firstColumnWidth)
-            {
-                firstColumnWidth = exampleLabelWidth;
-            }
-
-            if (priorityLabelWidth > firstColumnWidth)
-            {
-                firstColumnWidth = priorityLabelWidth;
-            }
-
-            //
-            // Set the margin between label and data.
-            //
-            int columnSpacing = 5;
-            int lineSpacing = 10;
-
-            //
-            // Calculate the second column that contains the data fields.
-            //
-            Insets insets;
-
-            // Calculate Name Field
-            int nameWidth;
-            int nameHeight;
-
-            font = m_name.getFont();
-            fontMetrics = m_name.getFontMetrics(font);
-            insets = m_name.getBorder().getBorderInsets(m_name);
-            nameWidth = insets.left + insets.right;
-            nameHeight = fontMetrics.getHeight() + insets.top + insets.bottom;
-
-            // Calculate Class Name Field
-            int classNameWidth;
-            int classNameHeight;
-
-            font = m_name.getFont();
-            fontMetrics = m_className.getFontMetrics(font);
-            insets = m_className.getBorder().getBorderInsets(m_className);
-            classNameWidth = insets.left + insets.right;
-            classNameHeight = fontMetrics.getHeight() + insets.top + insets.bottom;
-
-            // Calculate Message Field
-            int messageWidth;
-            int messageHeight;
-            Border border;
-
-            font = m_messageScrollPane.getFont();
-            fontMetrics = m_messageScrollPane.getFontMetrics(font);
-            border = m_messageScrollPane.getBorder();
-            insets = border.getBorderInsets(m_messageScrollPane);
-            messageWidth = insets.left + insets.right;
-            messageHeight = fontMetrics.getHeight() * 3 + insets.top + insets.bottom;
-
-            // Calculate Description Field
-            int descriptionWidth;
-            int descriptionHeight;
-
-            font = m_descriptionScrollPane.getFont();
-            fontMetrics = m_descriptionScrollPane.getFontMetrics(font);
-            border = m_descriptionScrollPane.getBorder();
-            insets = border.getBorderInsets(m_descriptionScrollPane);
-            descriptionWidth = insets.left + insets.right;
-            descriptionHeight = fontMetrics.getHeight() * 7 + insets.top + insets.bottom;
-
-            // Calculate Example Field
-            int exampleWidth;
-            int exampleHeight;
-
-            font = m_exampleScrollPane.getFont();
-            fontMetrics = m_exampleScrollPane.getFontMetrics(font);
-            border = m_exampleScrollPane.getBorder();
-            insets = border.getBorderInsets(m_exampleScrollPane);
-            exampleWidth = insets.left + insets.right;
-            exampleHeight = fontMetrics.getHeight() * 20 + insets.top + insets.bottom;
-
-            // Calculate Priority ComboBox
-            int priorityWidth;
-            int priorityHeight;
-
-            font = m_priority.getFont();
-            fontMetrics = m_priority.getFontMetrics(font);
-            insets = m_priority.getBorder().getBorderInsets(m_priority);
-            priorityWidth = insets.left + insets.right;
-            priorityHeight = 20;
-
-            // Calculate second column width.
-            int secondColumnWidth = containerSize.width
-                                  - containerInsets.left
-                                  - containerInsets.right
-                                  - firstColumnWidth
-                                  - columnSpacing;
-
-            // Calculate Line Heights
-            int firstLineHeight = (nameHeight > nameLabelHeight)
-                                ? nameHeight
-                                : nameLabelHeight;
-            int secondLineHeight = (classNameHeight > classNameHeight)
-                                 ? classNameHeight
-                                 : classNameLabelHeight;
-            int thirdLineHeight = (messageHeight > messageLabelHeight)
-                                ? messageHeight
-                                : messageLabelHeight;
-            int fourthLineHeight = (descriptionHeight > descriptionLabelHeight)
-                                 ? descriptionHeight
-                                 : descriptionLabelHeight;
-            int fifthLineHeight = (exampleHeight > exampleLabelHeight)
-                                ? exampleHeight
-                                : exampleLabelHeight;
-            int sixthLineHeight = (priorityHeight > priorityLabelHeight)
-                                ? priorityHeight
-                                : priorityLabelHeight;
-
-            if (computePanelSize)
-            {
-                int panelWidth = containerInsets.left
-                               + firstColumnWidth
-                               + columnSpacing
-                               + secondColumnWidth
-                               + containerInsets.right;
-                int panelHeight = containerInsets.top
-                                + firstLineHeight
-                                + lineSpacing
-                                + secondLineHeight
-                                + lineSpacing
-                                + thirdLineHeight
-                                + lineSpacing
-                                + fourthLineHeight
-                                + lineSpacing
-                                + fifthLineHeight
-                                + lineSpacing
-                                + sixthLineHeight
-                                + containerInsets.bottom;
-
-                return new Dimension(panelWidth, panelHeight);
-            }
-
-            // Layout components
-            int x;
-            int y;
-            int yOffset;
-
-            // Layout Name Label
-            x = containerInsets.left;
-            y = containerInsets.top;
-            yOffset = (firstLineHeight - nameLabelHeight) / 2;
-            m_nameLabel.setBounds(x, y + yOffset, firstColumnWidth, nameLabelHeight);
-
-            // Layout Name
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            yOffset = (firstLineHeight - nameHeight) / 2;
-            m_name.setBounds(x, y + yOffset, secondColumnWidth, nameHeight);
-
-            // Layout Class Name Label
-            x = containerInsets.left;
-            y += firstLineHeight + lineSpacing;
-            yOffset = (firstLineHeight - classNameLabelHeight) / 2;
-            m_classNameLabel.setBounds(x, y + yOffset, firstColumnWidth, classNameLabelHeight);
-
-            // Layout Class Name
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            yOffset = (firstLineHeight - classNameHeight) / 2;
-            m_className.setBounds(x, y + yOffset, secondColumnWidth, classNameHeight);
-
-            // Layout Message Label
-            x = containerInsets.left;
-            y += secondLineHeight + lineSpacing;
-            m_messageLabel.setBounds(x, y, firstColumnWidth, messageLabelHeight);
-
-            // Layout Message
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            m_messageScrollPane.setBounds(x, y, secondColumnWidth, messageHeight);
-
-            // Layout Description Label
-            x = containerInsets.left;
-            y += thirdLineHeight + lineSpacing;
-            m_descriptionLabel.setBounds(x, y, firstColumnWidth, descriptionLabelHeight);
-
-            // Layout Description
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            m_descriptionScrollPane.setBounds(x, y, secondColumnWidth, descriptionHeight);
-
-            // Layout Example Label
-            x = containerInsets.left;
-            y += fourthLineHeight + lineSpacing;
-            m_exampleLabel.setBounds(x, y, firstColumnWidth, exampleLabelHeight);
-
-            // Layout Example
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            m_exampleScrollPane.setBounds(x, y, secondColumnWidth, exampleHeight);
-
-            // Layout Priority Label
-            x = containerInsets.left;
-            y += fifthLineHeight + lineSpacing;
-            m_priorityLabel.setBounds(x, y, firstColumnWidth, priorityLabelHeight);
-
-            // Layout Priority
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            m_priority.setBounds(x, y, secondColumnWidth, priorityHeight);
-
-            return null;
-        }
     }
 
     /**

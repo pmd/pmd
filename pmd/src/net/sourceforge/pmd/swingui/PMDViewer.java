@@ -102,8 +102,6 @@ public class PMDViewer extends JFrame
         if (visible && m_firstLayout)
         {
             m_tabbedPane.adjustSplitPaneDividerLocation();
-            validate();
-            repaint();
             m_firstLayout = false;
         }
     }
@@ -297,6 +295,7 @@ public class PMDViewer extends JFrame
     private class TabbedPane extends JTabbedPane implements ChangeListener
     {
         private AnalysisViewer m_analysisViewer;
+        private SearchViewer m_searchViewer;
         private RulesEditor m_rulesEditor;
         private PreferencesEditor m_preferencesEditor;
         private Component m_currentTab;
@@ -312,11 +311,13 @@ public class PMDViewer extends JFrame
             try
             {
                 m_analysisViewer = new AnalysisViewer();
+                m_searchViewer = new SearchViewer();
                 m_rulesEditor = new RulesEditor();
                 m_preferencesEditor = new PreferencesEditor();
 
                 setFont(UIManager.getFont("tabFont"));
                 addTab("Analysis Viewer", m_analysisViewer);
+                addTab("Search Viewer", m_searchViewer);
                 addTab("Rules Editor", m_rulesEditor);
                 addTab("Preferences Editor", m_preferencesEditor);
                 addChangeListener(this);
@@ -333,6 +334,7 @@ public class PMDViewer extends JFrame
         private void adjustSplitPaneDividerLocation()
         {
             m_analysisViewer.adjustSplitPaneDividerLocation();
+            m_searchViewer.adjustSplitPaneDividerLocation();
             m_rulesEditor.adjustSplitPaneDividerLocation();
             m_preferencesEditor.adjustSplitPaneDividerLocation();
         }
@@ -355,6 +357,11 @@ public class PMDViewer extends JFrame
             {
                 m_analysisViewer.setMenuBar();
                 m_analysisViewer.analyze();
+            }
+            else if (m_currentTab == m_searchViewer)
+            {
+                m_searchViewer.setMenuBar();
+                m_searchViewer.analyze();
             }
             else if (m_currentTab == m_rulesEditor)
             {

@@ -1,10 +1,11 @@
 package net.sourceforge.pmd.swingui;
 
+import java.io.StringWriter;
+import java.util.Iterator;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-
-import java.util.Iterator;
 
 /**
  *
@@ -17,26 +18,54 @@ import java.util.Iterator;
 class TextRenderer
 {
 
+    private boolean m_reportNoViolations;
+    private StringWriter m_writer;
+
+    /**
+     *******************************************************************************
+     *
+     */
+    protected void beginRendering(boolean reportNoViolations)
+    {
+        m_reportNoViolations = reportNoViolations;
+        m_writer = new StringWriter(25000);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return Results text.
+     */
+    protected String endRendering()
+    {
+        return m_writer.toString();
+    }
+
     /**
      *******************************************************************************
      *
      * @param report
-     *
-     * @return Formatted text.
      */
-    public String render(String fileName, Report report)
+    public void render(String fileName, Report report)
     {
-        StringBuffer outputText = new StringBuffer(500);
         Iterator violations = report.iterator();
-
-        outputText.append("Source File: ");
-        outputText.append(fileName);
-        outputText.append('\n');
 
         if (violations.hasNext() == false)
         {
-            outputText.append("\nNo rule violations detected.");
+            if (m_reportNoViolations)
+            {
+                m_writer.write("Source File: ");
+                m_writer.write(fileName);
+                m_writer.write('\n');
+                m_writer.write("\nNo rule violations detected.");
+            }
+
+            return;
         }
+
+        m_writer.write("Source File: ");
+        m_writer.write(fileName);
+        m_writer.write('\n');
 
         while (violations.hasNext())
         {
@@ -46,10 +75,10 @@ class TextRenderer
             //
             // Line Number
             //
-            outputText.append('\n');
-            outputText.append("Line: ");
-            outputText.append(ruleViolation.getLine());
-            outputText.append('\n');
+            m_writer.write('\n');
+            m_writer.write("Line: ");
+            m_writer.write(ruleViolation.getLine());
+            m_writer.write('\n');
 
             //
             // Rule Message
@@ -65,16 +94,16 @@ class TextRenderer
                 ruleMessage = ruleMessage.replace('\n', ' ').trim();
             }
 
-            outputText.append("Rule: ");
-            outputText.append(ruleMessage);
-            outputText.append('\n');
+            m_writer.write("Rule: ");
+            m_writer.write(ruleMessage);
+            m_writer.write('\n');
 
             //
             // Rule Priority
             //
-            outputText.append("Rule Priority: ");
-            outputText.append(rule.getPriorityName());
-            outputText.append('\n');
+            m_writer.write("Rule Priority: ");
+            m_writer.write(rule.getPriorityName());
+            m_writer.write('\n');
 
             //
             // Rule Description
@@ -90,9 +119,9 @@ class TextRenderer
                 description = description.replace('\n', ' ').trim();
             }
 
-            outputText.append("Description: ");
-            outputText.append(description);
-            outputText.append('\n');
+            m_writer.write("Description: ");
+            m_writer.write(description);
+            m_writer.write('\n');
 
             //
             // Rule Example
@@ -101,12 +130,15 @@ class TextRenderer
 
             if ((example != null) && (example.length() > 0))
             {
-                outputText.append("Example: ");
-                outputText.append(example);
-                outputText.append('\n');
+                m_writer.write("Example: ");
+                m_writer.write(example);
+                m_writer.write('\n');
             }
         }
 
-        return outputText.toString();
+        //
+        // Space separation between rules.
+        //
+        m_writer.write("\n\n\n");
     }
 }

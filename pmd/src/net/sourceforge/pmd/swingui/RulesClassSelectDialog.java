@@ -95,13 +95,7 @@ class RulesClassSelectDialog extends JDialog
      */
     private void createDirectorySplitPane()
     {
-        m_splitPane = new JSplitPane();
-
-        m_splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-        m_splitPane.setResizeWeight(0.5);
-        m_splitPane.setDividerSize(5);
-        m_splitPane.setLeftComponent(m_treeScrollPane);
-        m_splitPane.setRightComponent(m_tableScrollPane);
+        m_splitPane = ComponentFactory.createHorizontalSplitPane(m_treeScrollPane, m_tableScrollPane);
     }
 
     /**

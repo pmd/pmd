@@ -1,22 +1,24 @@
 package net.sourceforge.pmd.swingui;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.FlowLayout;
+import java.awt.Toolkit;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
-import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 /**
  *
@@ -166,6 +168,50 @@ class ComponentFactory
         titledBorder.setTitleJustification(TitledBorder.LEFT);
 
         return titledBorder;
+    }
+
+    /**
+     ******************************************************************************
+     *
+     * @param view
+     *
+     * @return
+     */
+    protected static final JSplitPane createHorizontalSplitPane(Component leftPane,
+                                                                Component rightPane)
+    {
+        JSplitPane splitPane = new JSplitPane();
+
+        splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setResizeWeight(0.5);
+        splitPane.setDividerSize(10);
+        splitPane.setLeftComponent(leftPane);
+        splitPane.setRightComponent(rightPane);
+        splitPane.setOpaque(true);
+
+        return splitPane;
+    }
+
+    /**
+     ******************************************************************************
+     *
+     * @param view
+     *
+     * @return
+     */
+    protected static final JSplitPane createVerticalSplitPane(Component topPane,
+                                                              Component bottomPane)
+    {
+        JSplitPane splitPane = new JSplitPane();
+
+        splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        splitPane.setResizeWeight(0.5);
+        splitPane.setDividerSize(10);
+        splitPane.setTopComponent(topPane);
+        splitPane.setBottomComponent(bottomPane);
+        splitPane.setOpaque(true);
+
+        return splitPane;
     }
 
     /**

@@ -1,29 +1,30 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
-import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEvent;
-import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEventListener;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.RulesInMemoryEvent;
-import net.sourceforge.pmd.swingui.event.RulesInMemoryEventListener;
-import net.sourceforge.pmd.swingui.event.StatusBarEvent;
-import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
-import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
+import java.awt.Component;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.text.html.HTMLEditorKit;
-import java.awt.Component;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
 
 /**
  *
@@ -31,14 +32,13 @@ import java.io.FileNotFoundException;
  * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-class ResultsViewer extends JEditorPane
+abstract class ResultsViewer extends JEditorPane
 {
 
-    private File m_selectedFile;
+    private File[] m_sourceFiles;
     private String m_htmlText;
     private PMD m_pmd;
     private RuleSet m_ruleSet;
-    private RuleContext m_ruleContext;
 
     /**
      ********************************************************************************
@@ -57,8 +57,6 @@ class ResultsViewer extends JEditorPane
         //
         // Add listeners
         //
-        ListenerList.addListener((DirectoryTableEventListener) new DirectoryTableEventHandler());
-        ListenerList.addListener((RulesInMemoryEventListener) new RulesInMemoryEventHandler());
         ListenerList.addListener((HTMLAnalysisResultsEventListener) new HTMLAnalysisResultsEventHandler());
         ListenerList.addListener((TextAnalysisResultsEventListener) new TextAnalysisResultsEventHandler());
     }
@@ -66,7 +64,6 @@ class ResultsViewer extends JEditorPane
     /**
      ********************************************************************************
      *
-     * @param event
      */
     private void scrollToTop()
     {
@@ -85,18 +82,6 @@ class ResultsViewer extends JEditorPane
             parentScrollPane.getVerticalScrollBar().setValue(0);
             parentScrollPane.repaint();
         }
-    }
-
-    /**
-     ********************************************************************************
-     *
-     * @param event
-     */
-    private void loadRuleSets()
-    throws PMDException
-    {
-        int priority = Preferences.getPreferences().getLowestPriorityForAnalysis();
-        RulesInMemoryEvent.notifyRequestIncludedRules(this, priority);
     }
 
     /**
@@ -127,21 +112,43 @@ class ResultsViewer extends JEditorPane
      */
     protected String getPlainText()
     {
-        if (m_ruleContext != null)
-        {
-            synchronized(m_ruleContext)
-            {
-                if (m_selectedFile != null)
-                {
-                    String filePath = m_selectedFile.getPath();
-                    TextRenderer renderer = new TextRenderer();
+        String fullText = "";
 
-                    return renderer.render(filePath, m_ruleContext.getReport());
+        if (m_sourceFiles != null)
+        {
+            synchronized(m_sourceFiles)
+            {
+                try
+                {
+                    RuleContext ruleContext = new RuleContext();
+                    TextRenderer renderer = new TextRenderer();
+                    renderer.beginRendering(m_sourceFiles.length == 1);
+
+                    for (int n = 0; n < m_sourceFiles.length; n++)
+                    {
+                        ruleContext.setSourceCodeFilename(m_sourceFiles[n].getPath());
+                        ruleContext.setReport(new Report());
+                        m_pmd.processFile(new FileInputStream(m_sourceFiles[n]), m_ruleSet, ruleContext);
+
+                        String filePath = m_sourceFiles[n].getPath();
+                        Report report = ruleContext.getReport();
+                        renderer.render(filePath, report);
+                    }
+
+                    fullText = renderer.endRendering();
+                }
+                catch (FileNotFoundException exception)
+                {
+                    MessageDialog.show(PMDViewer.getViewer(), null, exception);
+                }
+                catch (PMDException exception)
+                {
+                    MessageDialog.show(PMDViewer.getViewer(), exception.getMessage());
                 }
             }
         }
 
-        return "";
+        return fullText;
     }
 
     /**
@@ -150,9 +157,23 @@ class ResultsViewer extends JEditorPane
      */
     protected void analyze()
     {
-        if (m_selectedFile != null)
+        if ((m_sourceFiles != null) && (m_ruleSet != null))
         {
-            (new AnalyzeThread(m_selectedFile)).start();
+            (new AnalyzeThread()).start();
+        }
+    }
+
+    /**
+     ********************************************************************************
+     *
+     */
+    protected void analyze(File[] selectedFile, RuleSet ruleSet)
+    {
+        if ((selectedFile != null) && (ruleSet != null))
+        {
+            m_sourceFiles = selectedFile;
+            m_ruleSet = ruleSet;
+            (new AnalyzeThread()).start();
         }
     }
 
@@ -163,7 +184,6 @@ class ResultsViewer extends JEditorPane
      */
     private class AnalyzeThread extends Thread
     {
-        private File m_file;
         private ResultsViewer m_resultsViewer;
 
         /**
@@ -171,11 +191,10 @@ class ResultsViewer extends JEditorPane
          *
          * @param threadName
          */
-        private AnalyzeThread(File file)
+        private AnalyzeThread()
         {
             super("Analyze");
 
-            m_file = file;
             m_resultsViewer = ResultsViewer.this;
         }
 
@@ -206,7 +225,7 @@ class ResultsViewer extends JEditorPane
          */
         protected void process()
         {
-            if (m_file == null)
+            if (m_sourceFiles == null)
             {
                 return;
             }
@@ -215,31 +234,51 @@ class ResultsViewer extends JEditorPane
             {
                 StatusBarEvent.notifyShowMessage(this, "Analyzing.  Please wait...");
 
-                loadRuleSets();
-                m_ruleContext = new RuleContext();
-                m_ruleContext.setSourceCodeFilename(m_file.getPath());
-                m_ruleContext.setReport(new Report());
-                m_pmd.processFile(new FileInputStream(m_file), m_ruleSet, m_ruleContext);
-
-                StatusBarEvent.notifyShowMessage(this, "Rendering analysis results into HTML page.  Please wait...");
-
+                RuleContext ruleContext;
                 HTMLResultRenderer renderer;
+                boolean reportNoViolations;
 
+                ruleContext = new RuleContext();
                 renderer = new HTMLResultRenderer();
-                m_htmlText = renderer.render(m_file.getPath(), m_ruleContext.getReport());
+                reportNoViolations = (m_sourceFiles.length == 1);
+                renderer.beginRendering(reportNoViolations);
 
+                for (int n = 0; n < m_sourceFiles.length; n++)
+                {
+                    ruleContext.setSourceCodeFilename(m_sourceFiles[n].getPath());
+                    ruleContext.setReport(new Report());
+                    m_pmd.processFile(new FileInputStream(m_sourceFiles[n]), m_ruleSet, ruleContext);
+
+                    StatusBarEvent.notifyShowMessage(this, "Rendering analysis results into HTML page.  Please wait...");
+
+                    String filePath;
+                    Report report;
+
+                    filePath = m_sourceFiles[n].getPath();
+                    report = ruleContext.getReport();
+                    renderer.render(filePath, report);
+                }
+
+                m_htmlText = renderer.endRendering();
                 StatusBarEvent.notifyShowMessage(this, "Storing HTML page into viewer.  Please wait...");
                 setText(m_htmlText);
-
-                m_resultsViewer.scrollToTop();
-                StatusBarEvent.notifyShowMessage(this, "Finished");
             }
             catch (FileNotFoundException exception)
             {
                 MessageDialog.show(PMDViewer.getViewer(), null, exception);
             }
-            catch (Throwable throwable)
+            catch (PMDException exception)
             {
+                MessageDialog.show(PMDViewer.getViewer(), exception.getMessage());
+            }
+            catch (OutOfMemoryError error)
+            {
+                MessageDialog.show(PMDViewer.getViewer(), "Out of memory.");
+            }
+            finally
+            {
+                m_resultsViewer.scrollToTop();
+                StatusBarEvent.notifyShowMessage(this, "Finished");
             }
         }
 
@@ -251,85 +290,6 @@ class ResultsViewer extends JEditorPane
         {
             StatusBarEvent.notifyStopAnimation(this);
             PMDViewer.getViewer().setEnableViewer(true);
-        }
-    }
-
-    /**
-     ***************************************************************************
-     ***************************************************************************
-     ***************************************************************************
-     */
-    private class RulesInMemoryEventHandler implements RulesInMemoryEventListener
-    {
-
-        /**
-         ***********************************************************************
-         *
-         * @param event
-         */
-        public void requestAllRules(RulesInMemoryEvent event)
-        {
-        }
-
-        /**
-         ***********************************************************************
-         *
-         * @param event
-         */
-        public void requestIncludedRules(RulesInMemoryEvent event)
-        {
-        }
-
-        /**
-         ***********************************************************************
-         *
-         * @param event
-         */
-        public void returnedRules(RulesInMemoryEvent event)
-        {
-            m_ruleSet = event.getRules();
-        }
-    }
-
-    /**
-     ***********************************************************************************
-     ***********************************************************************************
-     ***********************************************************************************
-     */
-    private class DirectoryTableEventHandler implements DirectoryTableEventListener
-    {
-
-        /**
-         ***************************************************************************
-         *
-         * @param event
-         */
-        public void requestSelectedFile(DirectoryTableEvent event)
-        {
-        }
-
-        /**
-         ***************************************************************************
-         *
-         * @param event
-         */
-        public void fileSelectionChanged(DirectoryTableEvent event)
-        {
-            m_selectedFile = event.getSelectedFile();
-
-            if (m_selectedFile != null)
-            {
-                (new AnalyzeThread(m_selectedFile)).start();
-            }
-        }
-
-        /**
-         ***************************************************************************
-         *
-         * @param event
-         */
-        public void fileSelected(DirectoryTableEvent event)
-        {
         }
     }
 

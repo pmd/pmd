@@ -1,31 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleProperties;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
-import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
-import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.border.EtchedBorder;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -42,12 +16,31 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.EventObject;
-import java.util.List;
-import java.util.Set;
+
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.EtchedBorder;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
+import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
 
 /**
  *
@@ -58,8 +51,9 @@ import java.util.Set;
 class RulesTree extends JTree implements Constants
 {
 
-    private PMDDirectoryReturnedEventHandler m_pmdDirectoryReturnedEventHandler;
     private Color m_background;
+    private boolean m_disablePopupMenu;
+    private boolean m_disableEditing;
 
     // Constants
     private final String UNTITLED = "Untitled";
@@ -69,20 +63,31 @@ class RulesTree extends JTree implements Constants
      *
      * @param rulesEditor
      */
-    protected RulesTree()
+    protected RulesTree() throws PMDException
     {
-        super(new RulesTreeModel(RulesTreeNode.createRootNode()));
+        super(RulesTreeModel.get());
 
         setRootVisible(true);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         setCellRenderer(new TreeNodeRenderer());
         setCellEditor(new TreeCellEditor());
         m_background = UIManager.getColor("pmdTreeBackground");
+        expandNode(getRootNode());
+        TreePath treePath = new TreePath(getRootNode().getPath());
+        setSelectionPath(treePath);
         setBackground(m_background);
         addMouseListener(new RulesTreeMouseListener());
-        m_pmdDirectoryReturnedEventHandler = new PMDDirectoryReturnedEventHandler();
         ListenerList.addListener((RulesEditingEventListener) new RulesEditingEventHandler());
-        ListenerList.addListener((PMDDirectoryReturnedEventListener) m_pmdDirectoryReturnedEventHandler);
+    }
+
+    /**
+     ******************************************************************************
+     *
+     * @return
+     */
+    protected RulesTreeNode getRootNode()
+    {
+        return (RulesTreeNode) ((RulesTreeModel) getModel()).getRoot();
     }
 
     /**
@@ -93,133 +98,6 @@ class RulesTree extends JTree implements Constants
     {
         super.updateUI();
         setBackground(m_background);
-    }
-
-    /**
-     *******************************************************************************
-     *
-     */
-    protected void buildTree()
-        throws PMDException
-    {
-        RuleSet[] ruleSets;
-        RulesTreeNode rootNode;
-
-        ruleSets = loadRuleSets();
-        rootNode = (RulesTreeNode) getModel().getRoot();
-
-        for (int n1 = 0; n1 < ruleSets.length; n1++)
-        {
-            RulesTreeNode ruleSetNode = new RulesTreeNode(ruleSets[n1]);
-
-            rootNode.add(ruleSetNode);
-            loadRuleTreeNodes(ruleSetNode);
-        }
-
-        expandNode(rootNode);
-        TreePath treePath = new TreePath(rootNode.getPath());
-        setSelectionPath(treePath);
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    private RuleSet[] loadRuleSets() throws PMDException
-    {
-        PMDDirectoryRequestEvent.notifyRequestAllRuleSets(this);
-
-        // The event is processed.  The requested rule set is assembled by another class
-        // that calls notifyReturnedAllRuleSets.  The list of rule sets is stored in the
-        // inner class PMDDirectoryReturnedEventHandler.  Then processing will then continue here.
-        //
-
-        List ruleSetList = m_pmdDirectoryReturnedEventHandler.getRuleSetList();
-
-        //
-        // Sort the rule sets by name in ascending order.
-        //
-        RuleSet[] ruleSets = new RuleSet[ruleSetList.size()];
-
-        ruleSetList.toArray(ruleSets);
-        Arrays.sort(ruleSets, new RuleSetNameComparator());
-
-        return ruleSets;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param ruleSetNode
-     */
-    private void loadRuleTreeNodes(RulesTreeNode ruleSetNode)
-    {
-        RuleSet ruleSet;
-        Set setOfRules;
-        Rule[] rules;
-
-        ruleSet = ruleSetNode.getRuleSet();
-        setOfRules = ruleSet.getRules();
-        rules = new Rule[setOfRules.size()];
-
-        setOfRules.toArray(rules);
-        Arrays.sort(rules, new RuleNameComparator());
-
-        for (int n = 0; n < rules.length; n++)
-        {
-            RulesTreeNode ruleNode = new RulesTreeNode(ruleSetNode, rules[n]);
-
-            ruleSetNode.add(ruleNode);
-            loadProperties(ruleNode);
-
-            rules[n] = null;
-        }
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param ruleNode
-     */
-    private void loadProperties(RulesTreeNode ruleNode)
-    {
-        Rule rule;
-        RuleProperties properties;
-        String[] propertyNames;
-        Enumeration keys;
-        int index;
-
-        rule = ruleNode.getRule();
-        properties = rule.getProperties();
-        propertyNames = new String[properties.size()];
-        keys = properties.keys();
-        index = 0;
-
-        while (keys.hasMoreElements())
-        {
-            propertyNames[index] = (String) keys.nextElement();
-            index++;
-        }
-
-        Arrays.sort(propertyNames, new PropertyNameComparator());
-
-        for (int n = 0; n < propertyNames.length; n++)
-        {
-            String propertyName;
-            String propertyValue;
-            String propertyValueType;
-            RulesTreeNode propertyNode;
-
-            propertyName = propertyNames[n];
-            propertyValue = properties.getValue(propertyName);
-            propertyValueType = properties.getValueType(propertyName);
-            propertyNode = new RulesTreeNode(ruleNode, propertyName, propertyValue, propertyValueType);
-
-            ruleNode.add(propertyNode);
-
-            propertyNames[n] = null;
-        }
     }
 
     /**
@@ -258,6 +136,26 @@ class RulesTree extends JTree implements Constants
         TreePath treePath = new TreePath(node.getPath());
 
         return isExpanded(treePath);
+    }
+
+    /**
+     *****************************************************************************
+     *
+     * @param setting
+     */
+    protected void setDisablePopupMenu(boolean setting)
+    {
+        m_disablePopupMenu = setting;
+    }
+
+    /**
+     *****************************************************************************
+     *
+     * @param setting
+     */
+    protected void setDisableEditing(boolean setting)
+    {
+        m_disableEditing = setting;
     }
 
     /**
@@ -997,150 +895,6 @@ class RulesTree extends JTree implements Constants
             int height = getHeight();
             graphics.clearRect(x, y, width, height);
             super.paint(graphics);
-        }
-    }
-
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class RuleSetNameComparator implements Comparator
-    {
-
-        /**
-         ************************************************************************
-         *
-         * @param objectA
-         * @param objectB
-         *
-         * @return
-         */
-        public int compare(Object objectA, Object objectB)
-        {
-            String ruleSetNameA = ((RuleSet) objectA).getName();
-            String ruleSetNameB = ((RuleSet) objectB).getName();
-
-            return ruleSetNameA.compareToIgnoreCase(ruleSetNameB);
-        }
-    }
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class RuleNameComparator implements Comparator
-    {
-
-        /**
-         ************************************************************************
-         *
-         * @param objectA
-         * @param objectB
-         *
-         * @return
-         */
-        public int compare(Object objectA, Object objectB)
-        {
-            String ruleNameA = ((Rule) objectA).getName();
-            String ruleNameB = ((Rule) objectB).getName();
-
-            return ruleNameA.compareToIgnoreCase(ruleNameB);
-        }
-    }
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class PropertyNameComparator implements Comparator
-    {
-
-        /**
-         ************************************************************************
-         *
-         * @param objectA
-         * @param objectB
-         *
-         * @return
-         */
-        public int compare(Object objectA, Object objectB)
-        {
-            String propertyNameA = (String) objectA;
-            String propertyNameB = (String) objectB;
-
-            return propertyNameA.compareToIgnoreCase(propertyNameB);
-        }
-    }
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class PMDDirectoryReturnedEventHandler implements PMDDirectoryReturnedEventListener
-    {
-
-        private List m_ruleSetList;
-        private String m_ruleSetPath;
-
-        /**
-         ***************************************************************************
-         */
-        private String getRuleSetPath()
-        {
-            return m_ruleSetPath;
-        }
-
-        /**
-         ***************************************************************************
-         */
-        private List getRuleSetList()
-        {
-            return m_ruleSetList;
-        }
-
-        /**
-         ***************************************************************************
-         *
-         * @param event
-         */
-        public void returnedRuleSetPath(PMDDirectoryReturnedEvent event)
-        {
-            m_ruleSetPath = event.getRuleSetPath();
-        }
-
-        /**
-         ***************************************************************************
-         *
-         * @param event
-         */
-        public void returnedAllRuleSets(PMDDirectoryReturnedEvent event)
-        {
-            m_ruleSetList = event.getRuleSetList();
-        }
-
-        /**
-         ***************************************************************************
-         *
-         * @param event
-         */
-        public void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event)
-        {
-            m_ruleSetList = event.getRuleSetList();
-        }
-
-        /**
-         ***************************************************************************
-         *
-         * @param event
-         */
-        public void returnedIncludedRules(PMDDirectoryReturnedEvent event)
-        {
-            m_ruleSetList = event.getRuleSetList();
         }
     }
 

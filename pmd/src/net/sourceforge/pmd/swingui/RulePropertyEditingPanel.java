@@ -1,18 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
-import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
-
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -20,12 +7,28 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Window;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.text.MessageFormat;
+
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
+import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
 
 /**
  *
@@ -58,14 +61,19 @@ class RulePropertyEditingPanel extends JPanel implements Constants
     {
         super(new BorderLayout());
 
-        EmptyBorder emptyBorder = new EmptyBorder(15, 15, 15, 15);
+        EmptyBorder emptyBorder = new EmptyBorder(5, 5, 5, 5);
 
         setBorder(emptyBorder);
 
         JPanel panel;
         TitledBorder titledBorder;
+        GridBagLayout layout;
+        GridBagConstraints constraints;
 
-        panel = new JPanel(new PropertyLayout());
+        int[] columnWidths = {50, 100, 100};
+        layout = new GridBagLayout();
+        layout.columnWidths = columnWidths;
+        panel = new JPanel(layout);
         titledBorder = ComponentFactory.createTitledBorder("  Property  ");
 
         panel.setBorder(titledBorder);
@@ -75,43 +83,86 @@ class RulePropertyEditingPanel extends JPanel implements Constants
         m_nameLabel = new JLabel("Name");
         m_nameLabel.setFont(UIManager.getFont("labelFont"));
         m_nameLabel.setHorizontalAlignment(JLabel.RIGHT);
-        m_nameLabel.setOpaque(true);
-        panel.add(m_nameLabel);
+        constraints = layout.getConstraints(m_nameLabel);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_nameLabel, constraints);
 
         // Property Name Text
         m_name = new JTextField();
         m_name.setFont(UIManager.getFont("dataFont"));
         m_name.addFocusListener(m_focusListener);
         m_name.setRequestFocusEnabled(true);
-        m_name.setOpaque(true);
-        panel.add(m_name);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_name, constraints);
 
         // Property Value Label
         m_valueLabel = new JLabel("Value");
         m_valueLabel.setFont(UIManager.getFont("labelFont"));
         m_valueLabel.setHorizontalAlignment(JLabel.RIGHT);
-        m_valueLabel.setOpaque(true);
-        panel.add(m_valueLabel);
+        constraints = layout.getConstraints(m_nameLabel);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_valueLabel, constraints);
 
         // Property Value Text
         m_value = new JTextField();
         m_value.setFont(UIManager.getFont("dataFont"));
         m_value.setOpaque(true);
-        panel.add(m_value);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_value, constraints);
 
         // Property Value Type Label
         m_valueTypeLabel = new JLabel("Type");
         m_valueTypeLabel.setFont(UIManager.getFont("labelFont"));
         m_valueTypeLabel.setHorizontalAlignment(JLabel.RIGHT);
-        m_valueTypeLabel.setOpaque(true);
-        panel.add(m_valueTypeLabel);
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHEAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_valueTypeLabel, constraints);
 
         // Property Value Type
         String[] items = {STRING, BOOLEAN, DECIMAL_NUMBER, INTEGER};
         m_valueType = new JComboBox(items);
         m_valueType.setEditable(false);
         m_valueType.setOpaque(true);
-        panel.add(m_valueType);
+        constraints = layout.getConstraints(m_name);
+        constraints.gridx = 1;
+        constraints.gridy = 2;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 2, 4, 2);
+        panel.add(m_valueType, constraints);
 
         enableData(false);
 
@@ -436,274 +487,6 @@ class RulePropertyEditingPanel extends JPanel implements Constants
         }
 
         return (Window) component;
-    }
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class PropertyLayout implements LayoutManager
-    {
-
-        /**
-         ***************************************************************************
-         * Adds the specified component with the specified name to the layout.
-         *
-         * @param name The component name.
-         * @param component The component to be added.
-         */
-        public void addLayoutComponent(String name, Component component)
-        {
-        }
-
-        /**
-         ***************************************************************************
-         * Removes the specified component from the layout.
-         *
-         * @param component The component to be removed.
-         */
-        public void removeLayoutComponent(Component component)
-        {
-        }
-
-        /**
-         ***************************************************************************
-         * Calculates the preferred size dimensions for the specified panel given the
-         * components in the specified parent container.
-         *
-         * @param parent The component to be laid out.
-         */
-        public Dimension preferredLayoutSize(Container parent)
-        {
-            Dimension size;
-            int parentWidth;
-
-            size = layoutContainer(parent, true);
-            parentWidth = parent.getWidth();
-
-            if (size.width > parentWidth)
-            {
-                size.width = parentWidth;
-            }
-
-            return size;
-        }
-
-        /**
-         **************************************************************************
-         * Calculates the minimum size dimensions for the specified panel given the
-         * components in the specified parent container.
-         *
-         * @param parent The component to be laid out.
-         */
-        public Dimension minimumLayoutSize(Container parent)
-        {
-            Dimension size;
-
-            size = layoutContainer(parent, true);
-            size.width = 50;
-
-            return size;
-        }
-
-        /**
-         **************************************************************************
-         * Lays out the container in the specified panel.
-         *
-         * @param parent The component which needs to be laid out.
-         */
-        public void layoutContainer(Container parent)
-        {
-            layoutContainer(parent, false);
-        }
-
-        /**
-         **************************************************************************
-         * Lays out the container in the specified panel.
-         *
-         * @param parent The component which needs to be laid out.
-         * @param computePanelSize
-         *
-         * @return
-         */
-        private Dimension layoutContainer(Container parent, boolean computePanelSize)
-        {
-            Dimension containerSize;
-            Insets containerInsets;
-            Font font;
-            FontMetrics fontMetrics;
-
-            containerSize = parent.getSize();
-            containerInsets = new Insets(10, 10, 10, 10);
-
-            if (parent instanceof JComponent)
-            {
-                Border border = ((JComponent) parent).getBorder();
-
-                if (border != null)
-                {
-                    Insets borderInsets;
-
-                    borderInsets = border.getBorderInsets(parent);
-                    containerInsets.left += borderInsets.left;
-                    containerInsets.top += borderInsets.top;
-                    containerInsets.right += borderInsets.right;
-                    containerInsets.bottom += borderInsets.bottom;
-                }
-            }
-
-            //
-            // Calculate the first column that contains the labels.
-            //
-
-            // Calculate Name Label
-            int nameLabelWidth;
-            int nameLabelHeight;
-
-            font = m_nameLabel.getFont();
-            fontMetrics = m_nameLabel.getFontMetrics(font);
-            nameLabelWidth = fontMetrics.stringWidth(m_nameLabel.getText());
-            nameLabelHeight = fontMetrics.getHeight();
-
-            // Calculate Value Label
-            int valueLabelWidth;
-            int valueLabelHeight;
-
-            font = m_valueLabel.getFont();
-            fontMetrics = m_valueLabel.getFontMetrics(font);
-            valueLabelWidth = fontMetrics.stringWidth(m_valueLabel.getText());
-            valueLabelHeight = fontMetrics.getHeight();
-
-            // Calculate Value Type Label
-            int valueTypeLabelWidth;
-            int valueTypeLabelHeight;
-
-            font = m_valueTypeLabel.getFont();
-            fontMetrics = m_valueTypeLabel.getFontMetrics(font);
-            valueTypeLabelWidth = fontMetrics.stringWidth(m_valueTypeLabel.getText());
-            valueTypeLabelHeight = fontMetrics.getHeight();
-
-            // Calculate first column width.
-            int firstColumnWidth = nameLabelWidth;
-
-            if (valueLabelWidth > firstColumnWidth)
-            {
-                firstColumnWidth = valueLabelWidth;
-            }
-
-            if (valueTypeLabelWidth > firstColumnWidth)
-            {
-                firstColumnWidth = valueTypeLabelWidth;
-            }
-
-            //
-            // Set the margin between label and data.
-            //
-            int columnSpacing = 5;
-            int lineSpacing = 10;
-
-            //
-            // Calculate the second column that contains the data fields.
-            //
-            Insets insets;
-
-            // Calculate Name Field
-            int nameWidth;
-            int nameHeight;
-
-            font = m_name.getFont();
-            fontMetrics = m_name.getFontMetrics(font);
-            insets = m_name.getBorder().getBorderInsets(m_name);
-            nameWidth = insets.left + insets.right;
-            nameHeight = fontMetrics.getHeight() + insets.top + insets.bottom;
-
-            // Calculate Value Field
-            int valueWidth;
-            int valueHeight;
-
-            font = m_value.getFont();
-            fontMetrics = m_value.getFontMetrics(font);
-            insets = m_value.getBorder().getBorderInsets(m_value);
-            valueWidth = insets.left + insets.right;
-            valueHeight = fontMetrics.getHeight() + insets.top + insets.bottom;
-
-            // Calculate Value Type Popup Menu
-            int valueTypeWidth;
-            int valueTypeHeight;
-
-            font = m_value.getFont();
-            fontMetrics = m_valueType.getFontMetrics(font);
-            insets = m_valueType.getBorder().getBorderInsets(m_valueType);
-            valueTypeWidth = insets.left + insets.right;
-            valueTypeHeight = 20;
-
-            // Calculate second column width.
-            int secondColumnWidth = containerSize.width
-                                  - containerInsets.left
-                                  - containerInsets.right
-                                  - firstColumnWidth
-                                  - columnSpacing;
-
-            // Calculate Line Heights
-            int firstLineHeight = (nameHeight > nameLabelHeight) ? nameHeight : nameLabelHeight;
-            int secondLineHeight = (valueHeight > valueLabelHeight) ? valueHeight : valueLabelHeight;
-            int thirdLineHeight = (valueTypeHeight > valueTypeLabelHeight) ? valueTypeHeight : valueTypeLabelHeight;
-
-            if (computePanelSize)
-            {
-                int panelWidth = containerInsets.left
-                               + firstColumnWidth
-                               + columnSpacing
-                               + secondColumnWidth
-                               + containerInsets.right;
-                int panelHeight = containerInsets.top
-                                + firstLineHeight
-                                + lineSpacing
-                                + secondLineHeight
-                                + lineSpacing
-                                + thirdLineHeight
-                                + containerInsets.bottom;
-
-                return new Dimension(panelWidth, panelHeight);
-            }
-
-            // Layout components
-            int x;
-            int y;
-            int yOffset;
-
-            // Layout Name Label
-            x = containerInsets.left;
-            y = containerInsets.top;
-            yOffset = (firstLineHeight - nameLabelHeight) / 2;
-            m_nameLabel.setBounds(x, y + yOffset, firstColumnWidth, nameLabelHeight);
-
-            // Layout Name
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            yOffset = (firstLineHeight - nameHeight) / 2;
-            m_name.setBounds(x, y + yOffset, secondColumnWidth, nameHeight);
-
-            // Layout Value Label
-            x = containerInsets.left;
-            y += firstLineHeight + lineSpacing;
-            m_valueLabel.setBounds(x, y, firstColumnWidth, valueLabelHeight);
-
-            // Layout Value
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            m_value.setBounds(x, y, secondColumnWidth, valueHeight);
-
-            // Layout Value Type Label
-            x = containerInsets.left;
-            y += secondLineHeight + lineSpacing;
-            m_valueTypeLabel.setBounds(x, y, firstColumnWidth, valueTypeLabelHeight);
-
-            // Layout Value Type Popup Menu
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            m_valueType.setBounds(x, y, secondColumnWidth, valueTypeHeight);
-
-            return null;
-        }
     }
 
     /**

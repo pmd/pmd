@@ -1,17 +1,38 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
-import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEvent;
-import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEventListener;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.StatusBarEvent;
-import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
-import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
-import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Enumeration;
 
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -22,57 +43,39 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileFilter;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
 
 /**
  *
  * @author Donald A. Leckie
- * @since December 25, 2002
+ * @since January 6, 2003
  * @version $Revision$, $Date$
  */
-class AnalysisViewer extends JPanel
+class SearchViewer extends JPanel
 {
 
     private DirectoryTree m_directoryTree;
-    private JLabel m_message;
     private StatusBar m_statusBar;
     private JPanel m_directoryTreePanel;
-    private DirectoryTable m_directoryTable;
-    private JPanel m_directoryTablePanel;
-    private JSplitPane m_directorySplitPane;
-    private AnalysisResultsViewer m_resultsViewer;
+    private RulesTree m_rulesTree;
+    private JPanel m_rulesTreePanel;
+    private JSplitPane m_directoryRuleSplitPane;
+    private SearchResultsViewer m_resultsViewer;
     private JPanel m_resultsViewerPanel;
     private JSplitPane m_mainSplitPane;
+    private JButton m_searchButton;
+    private JPanel m_buttonPanel;
     private JMenuBar m_menuBar;
     private PMDClipboard m_clipboardOwner = new PMDClipboard();
     private JMenuItem m_saveMenuItem;
@@ -85,17 +88,18 @@ class AnalysisViewer extends JPanel
      **********************************************************************************
      *
      */
-    protected AnalysisViewer()
+    protected SearchViewer() throws PMDException
     {
         super(new BorderLayout());
 
         createStatusBar();
         createDirectoryTreePanel();
-        createDirectoryTablePanel();
-        createDirectorySplitPane();
+        createRulesTreePanel();
+        createDirectoryRuleSplitPane();
         createResultsViewer();
         createResultsViewerScrollPane();
         createMainSplitPane();
+        createButtonPanel();
         createMenuBar();
         setMenuBar();
         add(createContentPanel(10));
@@ -104,6 +108,7 @@ class AnalysisViewer extends JPanel
     /**
      *********************************************************************************
      *
+     * @param windowMargin
      */
     private void createStatusBar()
     {
@@ -111,7 +116,7 @@ class AnalysisViewer extends JPanel
         CompoundBorder compoundBorder;
         EmptyBorder emptyBorder;
 
-        defaultMessage = "Select a source file to view its analysis below.";
+        defaultMessage = "Select a source file directory and a rule to view the analysis below.";
         m_statusBar = new StatusBar(defaultMessage);
         emptyBorder = new EmptyBorder(0, 0, 5, 0);
         compoundBorder = new CompoundBorder(emptyBorder, m_statusBar.getBorder());
@@ -140,29 +145,31 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createDirectoryTablePanel()
+    private void createRulesTreePanel() throws PMDException
     {
         Color background;
         JScrollPane scrollPane;
 
-        m_directoryTable = new DirectoryTable(m_directoryTree, ".java");
-        scrollPane = ComponentFactory.createScrollPane(m_directoryTable);
+        m_rulesTree = new RulesTree();
+        m_rulesTree.setDisablePopupMenu(true);
+        m_rulesTree.setDisableEditing(true);
+        m_rulesTree.expandNode(m_rulesTree.getRootNode());
+        scrollPane = ComponentFactory.createScrollPane(m_rulesTree);
         background = UIManager.getColor("pmdTableBackground");
         scrollPane.getViewport().setBackground(background);
-        m_directoryTablePanel = new JPanel(new BorderLayout());
-        m_directoryTablePanel.setBorder(createTitledBorder(" Java Source Code "));
-        m_directoryTablePanel.add(scrollPane, BorderLayout.CENTER);
+        m_rulesTreePanel = new JPanel(new BorderLayout());
+        m_rulesTreePanel.setBorder(createTitledBorder(" Rule "));
+        m_rulesTreePanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     /**
      *********************************************************************************
      *
      */
-    private void createDirectorySplitPane()
+    private void createDirectoryRuleSplitPane()
     {
-        m_directorySplitPane = ComponentFactory.createHorizontalSplitPane(m_directoryTreePanel,
-                                                                          m_directoryTablePanel);
-
+        m_directoryRuleSplitPane = ComponentFactory.createHorizontalSplitPane(m_directoryTreePanel,
+                                                                              m_rulesTreePanel);
     }
 
     /**
@@ -171,7 +178,7 @@ class AnalysisViewer extends JPanel
      */
     private void createResultsViewer()
     {
-        m_resultsViewer = new AnalysisResultsViewer();
+        m_resultsViewer = new SearchResultsViewer();
         m_resultsViewer.setSelectionColor(Color.blue);
     }
 
@@ -185,7 +192,7 @@ class AnalysisViewer extends JPanel
 
         scrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
         m_resultsViewerPanel = new JPanel(new BorderLayout());
-        m_resultsViewerPanel.setBorder(createTitledBorder(" Analysis Results "));
+        m_resultsViewerPanel.setBorder(createTitledBorder(" Search Results "));
         m_resultsViewerPanel.add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -195,8 +202,23 @@ class AnalysisViewer extends JPanel
      */
     private void createMainSplitPane()
     {
-        m_mainSplitPane = ComponentFactory.createVerticalSplitPane(m_directorySplitPane,
+        m_mainSplitPane = ComponentFactory.createVerticalSplitPane(m_directoryRuleSplitPane,
                                                                    m_resultsViewerPanel);
+    }
+
+    /**
+     ********************************************************************************
+     *
+     */
+    private void createButtonPanel()
+    {
+        Color background;
+
+        m_buttonPanel = ComponentFactory.createButtonPanel();
+        background = UIManager.getColor("pmdBlue");
+        m_searchButton = ComponentFactory.createButton("Search", background, Color.white);
+        m_searchButton.addActionListener(new SearchButtonActionEventHandler());
+        m_buttonPanel.add(m_searchButton);
     }
 
     /**
@@ -215,6 +237,7 @@ class AnalysisViewer extends JPanel
         contentPanel.setBorder(compoundBorder);
         contentPanel.add(m_statusBar, BorderLayout.NORTH);
         contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
+        contentPanel.add(m_buttonPanel, BorderLayout.SOUTH);
 
         return contentPanel;
     }
@@ -243,34 +266,10 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    protected void setDefaultMessage()
-    {
-        setMessage("Select a source file to view its analysis below.");
-    }
-
-    /**
-     *********************************************************************************
-     *
-     * @param message The message to be displayed in the status area.
-     */
-    protected void setMessage(String message)
-    {
-        if (message == null)
-        {
-            message = "";
-        }
-
-        m_message.setText(message);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
     protected void adjustSplitPaneDividerLocation()
     {
         m_mainSplitPane.setDividerLocation(0.4);
-        m_directorySplitPane.setDividerLocation(0.4);
+        m_directoryRuleSplitPane.setDividerLocation(0.5);
     }
 
     /**
@@ -565,7 +564,7 @@ class AnalysisViewer extends JPanel
             // Save menu item
             //
             icon = UIManager.getIcon("save");
-            m_saveMenuItem = new JMenuItem("Save Analysis Results", icon);
+            m_saveMenuItem = new JMenuItem("Save Search Results", icon);
             m_saveMenuItem.addActionListener((ActionListener) new SaveActionListener());
             m_saveMenuItem.setMnemonic('S');
             m_saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
@@ -576,7 +575,7 @@ class AnalysisViewer extends JPanel
             // Save As menu item
             //
             icon = UIManager.getIcon("saveAs");
-            m_saveAsMenuItem = new JMenuItem("Save Analysis Results As...", icon);
+            m_saveAsMenuItem = new JMenuItem("Save Search Results As...", icon);
             m_saveAsMenuItem.addActionListener((ActionListener) new SaveAsActionListener());
             m_saveAsMenuItem.setMnemonic('A');
             m_saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
@@ -592,7 +591,7 @@ class AnalysisViewer extends JPanel
             // Print Analysis menu item
             //
             icon = UIManager.getIcon("print");
-            m_printAnalysisMenuItem = new JMenuItem("Print Analysis Results...", icon);
+            m_printAnalysisMenuItem = new JMenuItem("Print Search Results...", icon);
             m_printAnalysisMenuItem.addActionListener((ActionListener) new PrintAnalysisActionListener());
             m_printAnalysisMenuItem.setMnemonic('P');
             m_printAnalysisMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
@@ -640,7 +639,7 @@ class AnalysisViewer extends JPanel
             // Copy Results menu item
             //
             icon = UIManager.getIcon("copy");
-            m_copyHTMLResultsMenuItem = new JMenuItem("Copy Analysis Results as HTML", icon);
+            m_copyHTMLResultsMenuItem = new JMenuItem("Copy Results Results as HTML", icon);
             m_copyHTMLResultsMenuItem.addActionListener((ActionListener) new CopyHTMLResultsActionListener());
             m_copyHTMLResultsMenuItem.setMnemonic('C');
             m_copyHTMLResultsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
@@ -652,7 +651,7 @@ class AnalysisViewer extends JPanel
             // Copy Results menu item
             //
             icon = UIManager.getIcon("copy");
-            m_copyTextResultsMenuItem = new JMenuItem("Copy Analysis Results as Text", icon);
+            m_copyTextResultsMenuItem = new JMenuItem("Copy Results Results as Text", icon);
             m_copyTextResultsMenuItem.addActionListener((ActionListener) new CopyTextResultsActionListener());
             m_copyTextResultsMenuItem.setMnemonic('Y');
             m_copyTextResultsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
@@ -698,12 +697,12 @@ class AnalysisViewer extends JPanel
                     {
                         writer = new FileWriter(outputFile);
                         writer.write(m_htmlText);
-                        String message = "Saved Analysis results to file \"" + outputFile.getPath() + "\".";
+                        String message = "Saved Search results to file \"" + outputFile.getPath() + "\".";
                         MessageDialog.show(PMDViewer.getViewer(), message);
                     }
                     catch (IOException ioException)
                     {
-                        String message = "Could not save Analysis results to a file.";
+                        String message = "Could not save Search results to a file.";
                         PMDException pmdException = new PMDException(message, ioException);
                         pmdException.fillInStackTrace();
                         throw pmdException;
@@ -972,6 +971,58 @@ class AnalysisViewer extends JPanel
          */
         public void lostOwnership(Clipboard clipboard, Transferable contents)
         {
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class SearchButtonActionEventHandler implements ActionListener
+    {
+
+        /**
+         **************************************************************************
+         */
+        public void actionPerformed(ActionEvent event)
+        {
+            RulesTreeNode rulesNode;
+            RuleSet ruleSet;
+
+            rulesNode = m_rulesTree.getSelectedNode();
+
+            if (rulesNode.isRoot())
+            {
+                ruleSet = new RuleSet();
+                Enumeration ruleSets = rulesNode.children();
+
+                while(ruleSets.hasMoreElements())
+                {
+                    RulesTreeNode childNode = (RulesTreeNode) ruleSets.nextElement();
+                    ruleSet.addRuleSet((RuleSet) childNode.getRuleSet());
+                }
+            }
+            else if (rulesNode.isRuleSet())
+            {
+                ruleSet = rulesNode.getRuleSet();
+            }
+            else if (rulesNode.isRule())
+            {
+                ruleSet = new RuleSet();
+                ruleSet.addRule(rulesNode.getRule());
+            }
+            else
+            {
+                rulesNode = (RulesTreeNode) rulesNode.getParent();
+                ruleSet = new RuleSet();
+                ruleSet.addRule(rulesNode.getRule());
+            }
+
+            DirectoryTreeNode directoryNode = m_directoryTree.getSelectedNode();
+            File directory = (File) directoryNode.getUserObject();
+
+            m_resultsViewer.analyze(directory, ruleSet);
         }
     }
 }

@@ -53,6 +53,17 @@ class DirectoryTree extends JTree
     }
 
     /**
+     *******************************************************************************
+     *
+     */
+    protected DirectoryTreeNode getSelectedNode()
+    {
+        TreePath path = getSelectionModel().getSelectionPath();
+
+        return (DirectoryTreeNode) path.getLastPathComponent();
+    }
+
+    /**
      *********************************************************************************
      *********************************************************************************
      *********************************************************************************
