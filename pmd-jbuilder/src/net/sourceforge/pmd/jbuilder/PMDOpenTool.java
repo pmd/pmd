@@ -10,6 +10,7 @@
 package  net.sourceforge.pmd.jbuilder;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
@@ -24,19 +25,10 @@ import com.borland.primetime.editor.*;
 import com.borland.primetime.ide.*;
 import com.borland.primetime.node.*;
 import com.borland.primetime.properties.*;
+import com.borland.primetime.vfs.*;
 import com.borland.primetime.viewer.*;
 import net.sourceforge.pmd.*;
-import java.awt.event.ActionEvent;
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.cpd.Results;
-import net.sourceforge.pmd.cpd.Tile;
-import net.sourceforge.pmd.cpd.CPDNullListener;
-import net.sourceforge.pmd.cpd.CPDListener;
-import javax.swing.ProgressMonitor;
-import net.sourceforge.pmd.cpd.TokenEntry;
-import com.borland.primetime.vfs.Url;
-import java.util.ArrayList;
-import com.borland.jbcl.control.MessageDialog;
+import net.sourceforge.pmd.cpd.*;
 
 
 
@@ -258,14 +250,12 @@ public class PMDOpenTool {
             if (rpt == null) {
                 Message msg = new Message("Error Processing File");
                 msg.setFont(stdMsgFont);
-                Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
-                        msg);
+                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
             }
             else if (rpt.size() == 0) {
                 Message msg = new Message("No violations detected.");
                 msg.setFont(stdMsgFont);
-                Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
-                        msg);
+                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
             }
             else {
                 for (Iterator i = rpt.iterator(); i.hasNext();) {
@@ -275,8 +265,7 @@ public class PMDOpenTool {
                             node);
                     pmdMsg.setForeground(Color.red);
                     pmdMsg.setFont(stdMsgFont);
-                    Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
-                            pmdMsg);                //add the result message
+                    Browser.getActiveBrowser().getMessageView().addMessage(msgCat, pmdMsg, false);                //add the result message
                 }
             }
         } catch (Exception e) {
@@ -309,7 +298,7 @@ public class PMDOpenTool {
             if (fileNodes[j] instanceof JavaFileNode) {
                 Message fileNameMsg = new Message(fileNodes[j].getDisplayName());
                 fileNameMsg.setFont(fileNameMsgFont);
-                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg);
+                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg, false);
                 JavaFileNode javaNode = (JavaFileNode)fileNodes[j];
                 StringBuffer code = new StringBuffer();
                 try {
@@ -333,6 +322,7 @@ public class PMDOpenTool {
     }
 
     private static void pmdCheckProject() {
+        Browser.getActiveBrowser().waitMessage("PMD Status", "Please wait while PMD checks the files in your project.");
         Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
         Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
         RuleSet rules = constructRuleSets();
@@ -345,6 +335,7 @@ public class PMDOpenTool {
                 }
             }
         }
+        Browser.getActiveBrowser().clearWaitMessages();
     }
 
     private static void pmdCPDPackage(PackageNode packageNode, CPD cpd) {
@@ -397,13 +388,13 @@ public class PMDOpenTool {
                         TokenEntry te = (TokenEntry)iter2.next();
                         msg.addChildMessage(te.getBeginLine(), tileLineCount, te.getTokenSrcID());
                     }
-                    Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg);
+                    Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg, false);
                 }
             }
             cpdd.close();
         }
         catch (Exception e) {
-            Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, e.toString());
+            Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, new Message(e.toString()), false);
         }
     }
 
@@ -651,3 +642,4 @@ class HighlightMark extends LineMark {
         super(isLightWeight, highlightStyle);
     }
 }
+
