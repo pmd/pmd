@@ -39,6 +39,11 @@
       <td>N/A</td>
       <td>dpeugh</td>
       <td>N/A</td></tr>
+  <tr><td>Ant</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>tomcopeland</td>
+      <td>N/A</td></tr>
   </table>
       </subsection>
       <subsection name="Eclipse">
@@ -132,6 +137,12 @@ of PMD into JXR or LXR.  This should allow annotation of code in
 the web environment.  Work on this has not started.
 </p>
       </subsection>
-    </section>
+      <subsection name="Ant">
+<p>
+Using PMD with Ant is such a standard usage that we hardly think of it as an integration point.  But, I guess
+it is.  You can read more about the PMD Ant task <a href="running.html">here</a>.
+</p>
+      </subsection>
+      </section>
   </body>
 </document>
