@@ -6,6 +6,7 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.rules.*;
+import net.sourceforge.pmd.rules.design.UseSingletonRule;
 
 import java.util.*;
 
@@ -14,6 +15,7 @@ public class RuleFactory {
     public static final String ALL = "all";
     public static final String GENERAL = "general";
     public static final String COUGAAR = "cougaar";
+    public static final String DESIGN = "design";
 
     private static Set ruleSets = new HashSet();
 
@@ -21,6 +23,7 @@ public class RuleFactory {
         ruleSets.add(ALL);
         ruleSets.add(GENERAL);
         ruleSets.add(COUGAAR);
+        ruleSets.add(DESIGN);
     }
 
     public static List createRules(String ruleSetType) {
@@ -32,6 +35,8 @@ public class RuleFactory {
             return createAllRules();
         } else if (ruleSetType.equals(GENERAL)) {
             return createGeneralRules();
+        } else if (ruleSetType.equals(DESIGN)) {
+            return createDesignRules();
         }
         return createCougaarRules();
     }
@@ -40,6 +45,7 @@ public class RuleFactory {
         List list = new ArrayList();
         list.addAll(createCougaarRules());
         list.addAll(createGeneralRules());
+        list.addAll(createDesignRules());
         return list;
     }
 
@@ -61,6 +67,12 @@ public class RuleFactory {
         list.add(new UnusedLocalVariableRule());
         list.add(new UnusedPrivateInstanceVariableRule());
         list.add(new IfElseStmtsMustUseBracesRule());
+        return list;
+    }
+
+    private static List createDesignRules() {
+        List list = new ArrayList();
+        list.add(new UseSingletonRule());
         return list;
     }
 }
