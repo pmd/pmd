@@ -14,21 +14,31 @@ public class LongClassRuleTest
 	super( name );
     }
 
+    public LongClassRule getIUT() {
+        LongClassRule IUT = new LongClassRule();
+        IUT.addProperty("minimumLength", "1000");
+        return IUT;
+    }
+
     public void testShortClass() throws Throwable {
-	Report report = process("LongClass0.java", 
-				new LongClassRule());
+	Report report = process("LongClass0.java", getIUT() );
 	assertEquals( 0, report.size() );
     }
 
     public void testLongClass() throws Throwable {
-	Report report = process("LongClass1.java",
-				new LongClassRule() );
+	Report report = process("LongClass1.java", getIUT() );
 	assertEquals( 1, report.size() );
+    }
+    public void testLongClassWithLongerTest() throws Throwable {
+        LongClassRule IUT = getIUT();
+        IUT.addProperty("minimumLength", "2000");
+
+	Report report = process("LongClass1.java", IUT );
+	assertEquals( 0, report.size() );
     }
 
     public void testNotQuiteLongClass() throws Throwable {
-	Report report = process("LongClass2.java",
-				new LongClassRule() );
+	Report report = process("LongClass2.java", getIUT() );
 	assertEquals( 0, report.size() );
     }
 }

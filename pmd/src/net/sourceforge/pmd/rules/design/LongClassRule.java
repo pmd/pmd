@@ -18,7 +18,7 @@ public class LongClassRule
     public Object visit( ASTClassDeclaration decl, Object data ) {
 	RuleContext ctx = (RuleContext) data;
 
-	if ((decl.getEndLine() - decl.getBeginLine()) > 1000) {
+	if ((decl.getEndLine() - decl.getBeginLine()) > getIntProperty("minimumLength")) {
 	    ctx.getReport().addRuleViolation( createRuleViolation( ctx,
 							decl.getBeginLine(),
 							getMessage() ));
