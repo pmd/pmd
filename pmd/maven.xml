@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project default="java:jar"
+<project default="pmd:dist-bin"
 	xmlns:j="jelly:core"
 	xmlns:ant="jelly:ant"
 	xmlns:doc="doc"
@@ -47,4 +47,29 @@
 		<attainGoal name="maven-jdepend-plugin:deregister"/>
 	</postGoal>
 
+    <goal name="pmd:dist-bin" description="Build binary distribution archive">
+        <attainGoal name="site:generate"/>
+        <attainGoal name="jar:jar"/>
+        <j:set var="dist.bin.dir" value="${maven.build.dir}/pmd-${pom.currentVersion}"/>
+        <ant:mkdir dir="${dist.bin.dir}"/>
+        <ant:copy todir="${dist.bin.dir}">
+            <ant:fileset dir="." includes="lib/*jar"/>
+            <ant:fileset dir="${maven.build.dir}" includes="docs/**"/>
+        </ant:copy>
+            <ant:fileset dir="." includes="etc/**" excludes="CVS"/>
+        <ant:copy todir="${dist.bin.dir}/lib">
+            <ant:fileset dir="${maven.build.dir}" includes="${maven.final.name}.jar"/>
+        </ant:copy>
+        <ant:chmod perm="uga+x">
+            <ant:fileset dir="${dist.bin.dir}/etc" includes="*.sh"/>
+        </ant:chmod>
+        <ant:zip basedir="${dist.bin.dir}" destfile="${dist.bin.dir}.zip"/>
+        <echo>******************************************************************</echo>
+        <echo>* </echo>
+        <echo>* Binary distribuition built in ${dist.bin.dir}</echo>
+        <echo>* </echo>
+        <echo>* packaged into ${dist.bin.dir}.zip </echo>
+        <echo>* </echo>
+    </goal>
+    
 </project>
