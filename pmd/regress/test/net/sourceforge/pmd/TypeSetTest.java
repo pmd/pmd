@@ -66,6 +66,12 @@ public class TypeSetTest extends TestCase {
         TypeSet t = new TypeSet();
         assertEquals(void.class, t.findClass("void"));
     }
+
+    public void testFindFullyQualified() throws Throwable {
+        TypeSet t = new TypeSet();
+        assertEquals(String.class, t.findClass("java.lang.String"));
+        assertEquals(Set.class, t.findClass("java.util.Set"));
+    }
     // inner class tests
     public void testPrimitiveTypeResolver() throws Throwable {
         TypeSet.Resolver r = new TypeSet.PrimitiveTypeResolver();
