@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Benoit Xhenseval - suggestion for improving XML report, several bug reports</li>
             <li>Miguel Griffa - patch to add a status bar to Boris Gruschko's ASTViewer, documentation page for Maven, SystemPrintln rule, patch to improve JUnitTestsShouldContainAsserts, new Maven pmd:dist-bin goal, LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
             <li>Elliotte Rusty Harold - suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
@@ -50,7 +51,6 @@
             <li>Eric Olander - nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Jörn Stampehl - bug report</li>
             <li>Matthias Kerkhoff - several bug reports</li>
-            <li>Benoit Xhenseval - several bug reports</li>
             <li>Todd Wright - reported bug in EmptyStatementNotInLoop, XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Conrad Roche - UnusedModifier bug report, other bug reports</li>
             <li>Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion</li>
