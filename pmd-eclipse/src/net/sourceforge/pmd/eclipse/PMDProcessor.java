@@ -2,7 +2,12 @@ package net.sourceforge.pmd.eclipse;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
@@ -13,9 +18,9 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleViolation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.internal.resources.MarkerInfo;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -25,6 +30,10 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2003/05/19 22:26:58  phherlin
+ * Updating PMD engine to v1.05
+ * Refactoring to improve performance
+ *
  * Revision 1.4  2003/03/30 20:46:21  phherlin
  * Adding logging
  * Display error dialog in a thread safe way
@@ -57,8 +66,9 @@ public class PMDProcessor {
      * Process an IFile resource
      * @param file the IFile to process
      * @param fTask indicate if a task marker should be created
+     * @param accumulator a map that contains impacted file and marker informations
      */
-    public void run(IFile file, boolean fTask) {
+    public void run(IFile file, boolean fTask, Map accumulator) {
         log.info("Processing file " + file.getName());
         try {
             Reader input = new InputStreamReader(file.getContents());
@@ -68,7 +78,7 @@ public class PMDProcessor {
 
             pmdEngine.processFile(input, getRuleSet(), context);
 
-            updateMarkers(file, context, fTask);
+            updateMarkers(file, context, fTask, accumulator);
 
         } catch (CoreException e) {
             PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
@@ -84,38 +94,21 @@ public class PMDProcessor {
      * @param file the file for which markes are to be updated
      * @param context a PMD context
      * @param fTask indicate if a task marker should be created
+     * @param accumulator a map that contains impacted file and marker informations
      */
-    private void updateMarkers(IFile file, RuleContext context, boolean fTask) throws CoreException {
-        file.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+    private void updateMarkers(IFile file, RuleContext context, boolean fTask, Map accumulator) throws CoreException {
+        Set markerSet = new HashSet();
 
         Iterator iter = context.getReport().iterator();
         while (iter.hasNext()) {
             RuleViolation violation = (RuleViolation) iter.next();
-
-            IMarker marker = file.createMarker(fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER);
-            marker.setAttribute(IMarker.MESSAGE, violation.getDescription());
-            marker.setAttribute(IMarker.LINE_NUMBER, violation.getLine());
-            marker.setAttribute("description", violation.getRule().getMessage());
-            marker.setAttribute("example", violation.getRule().getExample());
-
-            switch (violation.getRule().getPriority()) {
-                case 1 :
-                    marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-                case 2 :
-                    marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-                    break;
-
-                case 5 :
-                    marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
-                    break;
-
-                case 3 :
-                    marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-                case 4 :
-                default :
-                    marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
-                    break;
-            }
+            markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
+            log.debug("Adding a violation " + violation);
+        }
+        
+        if (accumulator != null) {
+            log.debug("Adding markerSet to accumulator for file " + file);
+            accumulator.put(file, markerSet);
         }
     }
 
@@ -149,5 +142,60 @@ public class PMDProcessor {
      */
     private String getMessage(String key) {
         return PMDPlugin.getDefault().getMessage(key);
+    }
+
+    /**
+     * Create a marker info object from a violation
+     * @param violation a PMD violation
+     * @param type a marker type
+     * @return markerInfo a markerInfo object
+     */
+    private MarkerInfo getMarkerInfo(RuleViolation violation, String type) {
+        MarkerInfo markerInfo = new MarkerInfo();
+
+        markerInfo.setType(type);
+        // markerInfo.setCreationTime(System.currentTimeMillis());
+
+        List attributeNames = new ArrayList();
+        List values = new ArrayList();
+
+        attributeNames.add(IMarker.MESSAGE);
+        values.add(violation.getDescription());
+
+        attributeNames.add(IMarker.LINE_NUMBER);
+        values.add(new Integer(violation.getLine()));
+
+        attributeNames.add("description");
+        values.add(violation.getRule().getMessage());
+
+        attributeNames.add("example");
+        values.add(violation.getRule().getExample());
+
+        switch (violation.getRule().getPriority()) {
+            case 1 :
+                attributeNames.add(IMarker.PRIORITY);
+                values.add(new Integer(IMarker.PRIORITY_HIGH));
+            case 2 :
+                attributeNames.add(IMarker.SEVERITY);
+                values.add(new Integer(IMarker.SEVERITY_ERROR));
+                break;
+
+            case 5 :
+                attributeNames.add(IMarker.SEVERITY);
+                values.add(new Integer(IMarker.SEVERITY_INFO));
+                break;
+
+            case 3 :
+                attributeNames.add(IMarker.PRIORITY);
+                values.add(new Integer(IMarker.PRIORITY_HIGH));
+            case 4 :
+            default :
+                attributeNames.add(IMarker.SEVERITY);
+                values.add(new Integer(IMarker.SEVERITY_WARNING));
+                break;
+        }
+        markerInfo.setAttributes((String[]) attributeNames.toArray(new String[attributeNames.size()]), values.toArray());
+        
+        return markerInfo;
     }
 }
