@@ -80,19 +80,19 @@ public class MethodArgumentCouldBeFinalTest extends SimpleAggregatorTst {
 
     private static final String TEST7 =
         "public class Foo {" + PMD.EOL +
-        " protected void method() { }" +
+        " protected void method() { }" + PMD.EOL +
         " public void bar(final List batch) {" + PMD.EOL +
-        "   try { " +
-        "   method(); " +
-        "   } catch (final Exception e) {" +
+        "   try { " + PMD.EOL +
+        "   method(); " + PMD.EOL +
+        "   } catch (final Exception e) {" + PMD.EOL +
         "       for (Iterator it = batch.iterator() ; it.hasNext() ; ) {" + PMD.EOL +
-        "           try {" +
-        "               method(); " +
-        "           } catch (final Exception ee) { " +
-        "           throw new RuntimeException();" +
+        "           try {" + PMD.EOL +
+        "               method(); " + PMD.EOL +
+        "           } catch (final Exception ee) { " + PMD.EOL +
+        "               throw new RuntimeException(ee);" + PMD.EOL +
         "           }" + PMD.EOL +
         "       }" + PMD.EOL +
-        "   }" +
+        "   }" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
 
