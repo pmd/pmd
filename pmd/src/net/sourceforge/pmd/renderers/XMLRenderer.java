@@ -48,16 +48,12 @@ public class XMLRenderer implements Renderer {
         // errors
         for (Iterator i = report.errors(); i.hasNext();) {
             Report.ProcessingError pe = (Report.ProcessingError) i.next();
-            buf.append(PMD.EOL)
-               .append("<error ")
-               .append(PMD.EOL)
+            buf.append("<error ")
                .append("filename=\"");
             StringUtil.appendXmlEscaped(buf, pe.getFile());
             buf.append("\" msg=\"");
             StringUtil.appendXmlEscaped(buf, pe.getMsg());
-            buf.append("\">")
-               .append(PMD.EOL)
-               .append("/>")
+            buf.append("/>")
                .append(PMD.EOL);
         }
 

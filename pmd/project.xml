@@ -154,7 +154,7 @@ Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?g
 
     <dependency>
       <id>ant</id>
-      <version>1.5</version>
+      <version>1.6</version>
     </dependency>
 
     <dependency>
@@ -176,13 +176,9 @@ Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?g
 
   <build>
     <nagEmailAddress>tom@infoether.com</nagEmailAddress>
-
     <sourceDirectory>src</sourceDirectory>
-
     <unitTestSourceDirectory>regress</unitTestSourceDirectory>
-
     <integrationUnitTestSourceDirectory />
-
     <aspectSourceDirectory></aspectSourceDirectory>
 
     <unitTest>
