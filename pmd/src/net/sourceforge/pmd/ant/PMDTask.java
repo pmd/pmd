@@ -99,8 +99,10 @@ public class PMDTask extends Task {
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             if (classpath == null) {
+                printIfVerbose("Using the normal ClassLoader");
                 rules = ruleSetFactory.createRuleSet(ruleSetFiles);
             } else {
+                printIfVerbose("Using the AntClassLoader");
                 rules = ruleSetFactory.createRuleSet(ruleSetFiles, new AntClassLoader(project, classpath));
             }
         } catch (RuleSetNotFoundException rsnfe) {
@@ -116,7 +118,7 @@ public class PMDTask extends Task {
             String[] srcFiles = ds.getIncludedFiles();
             for (int j = 0; j < srcFiles.length; j++) {
                 File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
-                printIfVerbose(file.getAbsoluteFile().toString());
+                printIfVerbose("Processing file " + file.getAbsoluteFile().toString());
                 ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
                 try {
                     pmd.processFile(new FileInputStream(file), rules, ctx);

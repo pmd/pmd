@@ -115,7 +115,7 @@
 
 <target name="cpd">
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
-    <cpd tileSize="100" outputFile="/home/tom/cpd.txt" verbose="true">
+    <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt" verbose="true">
         <fileset dir="/home/tom/tmp/ant">
             <include name="**/*.java"/>
         </fileset>

@@ -22,7 +22,7 @@ import java.util.List;
  * <project name="CPDProj" default="main" basedir=".">
  *  <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  *	 <target name="main">
- * 		<cpd tileSize="100" outputFile="c:\cpdrun.txt" verbose=true>
+ * 		<cpd minimumTokenCount="100" outputFile="c:\cpdrun.txt" verbose=true>
  *          <fileset dir="/path/to/my/src">
  *              <include name="*.java"/>
  *          </fileset>
@@ -30,7 +30,7 @@ import java.util.List;
  *	</target>
  *</project>
  *
- * Required: tileSize, outputFile, and at least one file
+ * Required: minimumTokenCount, outputFile, and at least one file
  * Optional: verbose
  *
  * TODO: 1.Think about forking process? 
@@ -43,14 +43,14 @@ import java.util.List;
 public class CPDTask extends Task {
 
     private boolean verbose;
-	private int tileSize;
+	private int minimumTokenCount;
 	private String outputFile;
     private List filesets = new ArrayList();
 
 	public void execute() throws BuildException{
     	try{	
     		validateFields();
-	    	CPD cpd = new CPD(tileSize);
+	    	CPD cpd = new CPD(minimumTokenCount);
             for (Iterator i = filesets.iterator(); i.hasNext();) {
                 FileSet fs = (FileSet) i.next();
                 DirectoryScanner ds = fs.getDirectoryScanner(project);
@@ -66,6 +66,11 @@ public class CPDTask extends Task {
 	        cpd.go();
             long stop = System.currentTimeMillis();
             printIfVerbose("That took " + (stop-start) + " milliseconds");
+            if (!cpd.getMatches().hasNext()) {
+                printIfVerbose("No duplicates over " + minimumTokenCount + " tokens found");
+            } else {
+                printIfVerbose("Duplicates found; putting a report in " + outputFile);
+            }
 	        Writer writer = new BufferedWriter(new FileWriter(outputFile));
 	        writer.write(cpd.getReport());
 	        writer.close();
@@ -76,8 +81,8 @@ public class CPDTask extends Task {
 	}
 
 	private void validateFields() throws BuildException{
-		if(tileSize == 0){
-			throw new BuildException("tileSize is required and must be greater than zero");
+		if(minimumTokenCount == 0){
+			throw new BuildException("minimumTokenCount is required and must be greater than zero");
 		} else if(outputFile == null) {
             throw new BuildException("outputFile is a required attribute");
         } else if (filesets.isEmpty()) {
@@ -90,8 +95,8 @@ public class CPDTask extends Task {
         filesets.add(set);
     }
 
-	public void setTileSize(int tileSize) {
-		this.tileSize = tileSize;
+	public void setMinimumTokenCount(int minimumTokenCount) {
+		this.minimumTokenCount = minimumTokenCount;
 	}
 
 	public void setOutputFile(String outputFile) {
