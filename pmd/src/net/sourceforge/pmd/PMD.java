@@ -29,6 +29,16 @@ public class PMD {
 
     public static final String EOL = System.getProperty("line.separator", "\n");
 
+    private JLSVersion jlsVersion;
+
+    public PMD() {
+        jlsVersion = new JLS1_4();
+    }
+
+    public PMD(JLSVersion jlsVersion) {
+        this.jlsVersion = jlsVersion;
+    }
+
     /**
      * @param reader - a Reader to the Java code to analyse
      * @param ruleSet - the set of rules to process against the file
@@ -36,7 +46,7 @@ public class PMD {
      */
     public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         try {
-            JavaParser parser = new JavaParser(reader);
+            JavaParser parser = jlsVersion.createParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
             Thread.yield();
             SymbolFacade stb = new SymbolFacade();
