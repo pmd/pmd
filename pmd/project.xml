@@ -25,7 +25,7 @@
   <li>Short/long variable and method names</li>
 </ul>
 <p>For example, here's the unused code that PMD found in the <a href="jdk14.HTML">JDK 1.4 source code</a>. Yikes!</p>
-<p>You can get the current PMD release from <a href="http://sf.net/projects/pmd/">here</a></p>
+<p>You can get the current PMD release, a PMD JEdit plugin, and more information about PMD <a href="http://sf.net/projects/pmd/">here</a></p>
   ]]>
   </description>
   <shortDescription>PMD Source Checker</shortDescription>

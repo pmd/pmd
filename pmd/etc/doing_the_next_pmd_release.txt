@@ -1,7 +1,6 @@
 update run.bat to point to pmd-0.4.jar
 update the release date in the changelog
-copy rules from "new_for_v_0_4.xml" into a real ruleset file
-update docs to mention the JEdit plugin
+move rules from "new_for_v_0_4.xml" into a real ruleset file
 update docs to mention GUI if it's in a presentable state
 
 ant dist

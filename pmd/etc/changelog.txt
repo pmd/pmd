@@ -2,6 +2,7 @@
 Added new rules: OverrideBothEqualsAndHashcodeRule, EmptyTryBlock
 Reports are now sorted by line number
 Added a simple GUI
+RuleSets can now reference rules in other RuleSets
 
 July 03 2002 - 0.3:
 Added new rules: UseSingletonRule, ShortVariableRule, LongVariableRule, ShortMethodNameRule
