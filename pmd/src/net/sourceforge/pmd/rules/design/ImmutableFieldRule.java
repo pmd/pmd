@@ -12,6 +12,7 @@ import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -31,15 +32,15 @@ public class ImmutableFieldRule extends AbstractRule {
         Map vars = node.getScope().getVariableDeclarations();
         for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-            if (!decl.getAccessNodeParent().isPrivate() || decl.getAccessNodeParent().isFinal()) {
+            if (decl.getAccessNodeParent().isStatic() || !decl.getAccessNodeParent().isPrivate() || decl.getAccessNodeParent().isFinal()) {
                 continue;
             }
+
             int result = initializedInConstructor((List)vars.get(decl));
             if (result == MUTABLE) {
             	continue;
             }
-            if ((result == IMMUTABLE) ||
-                ((result == CHECKDECL) && initializedInDeclaration(decl.getAccessNodeParent()))) {
+            if (result == IMMUTABLE || ((result == CHECKDECL) && initializedInDeclaration(decl.getAccessNodeParent()))) {
                 ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
             }
         }
@@ -53,9 +54,9 @@ public class ImmutableFieldRule extends AbstractRule {
 
         for (Iterator j = usages.iterator(); j.hasNext();) {
         	foundUsage = true;
-        	NameOccurrence occurance = (NameOccurrence)j.next();
-            if (occurance.isOnLeftHandSide()) {
-            	SimpleNode node = occurance.getLocation();
+        	NameOccurrence occ = (NameOccurrence)j.next();
+            if (occ.isOnLeftHandSide()) {
+            	SimpleNode node = occ.getLocation();
             	if (node.getFirstParentOfType(ASTConstructorDeclaration.class) != null) {
             		setInConstructor = true;
             		initCount++;

@@ -7,6 +7,7 @@ import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
 
 public class NameOccurrence {
 
@@ -46,13 +47,7 @@ public class NameOccurrence {
 
     public boolean isOnRightHandSide() {
         SimpleNode node = (SimpleNode) location.jjtGetParent().jjtGetParent().jjtGetParent();
-        if (node instanceof ASTExpression) {
-            SimpleNode parent = (SimpleNode) node.jjtGetParent();
-            if (node.jjtGetNumChildren() == 3) {
-                return true;
-            }
-        }
-        return false;
+        return node instanceof ASTExpression && node.jjtGetNumChildren() == 3;
     }
 
     public boolean isOnLeftHandSide() {
@@ -64,6 +59,15 @@ public class NameOccurrence {
         } else {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
+
+/*
+        if (primaryExpression instanceof ASTStatementExpression) {
+            ASTStatementExpression stmt  = (ASTStatementExpression)primaryExpression;
+            if (stmt.getImage() != null && (stmt.getImage().equals("++") || stmt.getImage().equals("--"))) {
+                return true;
+            }
+        }
+*/
 
         if (primaryExpression.jjtGetNumChildren() <= 1) {
             return false;
@@ -80,6 +84,7 @@ public class NameOccurrence {
         if (((ASTAssignmentOperator) (primaryExpression.jjtGetChild(1))).isCompound()) {
             return false;
         }
+
         return true;
     }
 
