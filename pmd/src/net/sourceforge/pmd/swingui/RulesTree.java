@@ -56,11 +56,6 @@ class RulesTree extends JTree implements Constants
     // Constants
     private final String UNTITLED = "Untitled";
 
-    /**
-     ***************************************************************************
-     *
-     * @param rulesEditor
-     */
     protected RulesTree() throws PMDException
     {
         super(RulesTreeModel.get());
@@ -453,7 +448,7 @@ class RulesTree extends JTree implements Constants
             catch (PMDException pmdException)
             {
                 String message = pmdException.getMessage();
-                Exception exception = pmdException.getOriginalException();
+                Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
 
                 return;

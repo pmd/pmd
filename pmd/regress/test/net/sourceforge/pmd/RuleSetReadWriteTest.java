@@ -54,9 +54,8 @@ public class RuleSetReadWriteTest extends TestCase
             m_ruleSetOut = (new RuleSetReader()).read(m_inputStream, "foo");
             compare();
         }
-        catch (PMDException pmdException)
-        {
-            pmdException.getOriginalException().printStackTrace();
+        catch (PMDException pmdException) {
+            pmdException.printStackTrace();
         }
     }
 

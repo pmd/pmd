@@ -338,7 +338,7 @@ class PreferencesEditor extends JPanel
             catch (PMDException pmdException)
             {
                 String message = pmdException.getMessage();
-                Exception exception = pmdException.getOriginalException();
+                Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
 

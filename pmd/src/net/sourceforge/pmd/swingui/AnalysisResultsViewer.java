@@ -68,9 +68,7 @@ class AnalysisResultsViewer extends ResultsViewer
             }
             catch (PMDException pmdException)
             {
-                String message = pmdException.getMessage();
-                Exception exception = pmdException.getOriginalException();
-                MessageDialog.show(PMDViewer.getViewer(), message, exception);
+                MessageDialog.show(PMDViewer.getViewer(), pmdException.getMessage(), pmdException.getReason());
             }
         }
 

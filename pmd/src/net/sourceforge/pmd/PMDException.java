@@ -1,5 +1,8 @@
 package net.sourceforge.pmd;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+
 /**
  * A convenience exception wrapper.  Contains the original exception, if any.  Also, contains
  * a severity number (int).  Zero implies no severity.  The higher the number the greater the
@@ -9,62 +12,49 @@ package net.sourceforge.pmd;
  * @since August 30, 2002
  * @version $Revision$, $Date$
  */
-public class PMDException extends Exception
-{
+public class PMDException extends Exception {
 
-    private Exception m_originalException;
-    private int m_severity;
+    private Exception reason;
+    private int severity;
 
-    /**
-     ********************************************************************************
-     *
-     * @param message
-     */
-    public PMDException(String message)
-    {
+    public PMDException(String message) {
         super(message);
     }
 
-    /**
-     *******************************************************************************
-     *
-     * @param message
-     * @param originalException
-     */
-    public PMDException(String message, Exception originalException)
-    {
+    public PMDException(String message, Exception reason) {
         super(message);
-
-        m_originalException = originalException;
+        this.reason = reason;
     }
 
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    public Exception getOriginalException()
-    {
-        return m_originalException;
+    public void printStackTrace() {
+        printStackTrace(System.err);
     }
 
-    /**
-     *******************************************************************************
-     *
-     * @param severity
-     */
-    public void setSeverity(int severity)
-    {
-        m_severity = severity;
+    public void printStackTrace(PrintStream s) {
+        super.printStackTrace(s);
+        if (this.reason != null) {
+            s.print("Caused by: ");
+            this.reason.printStackTrace(s);
+        }
     }
 
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    public int getSeverity()
-    {
-        return m_severity;
+    public void printStackTrace(PrintWriter s) {
+        super.printStackTrace(s);
+        if (this.reason != null) {
+            s.print("Caused by: ");
+            this.reason.printStackTrace(s);
+        }
+    }
+
+    public Exception getReason() {
+        return reason;
+    }
+
+    public void setSeverity(int severity) {
+        this.severity = severity;
+    }
+
+    public int getSeverity() {
+        return severity;
     }
 }

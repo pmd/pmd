@@ -144,7 +144,7 @@ public class PMDDirectoryRequestEvent extends EventObject
             catch (PMDException pmdException)
             {
                 String message = pmdException.getMessage();
-                Exception exception = pmdException.getOriginalException();
+                Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
         }
@@ -193,7 +193,7 @@ public class PMDDirectoryRequestEvent extends EventObject
             catch (PMDException pmdException)
             {
                 String message = pmdException.getMessage();
-                Exception exception = pmdException.getOriginalException();
+                Exception exception = pmdException.getReason();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
         }

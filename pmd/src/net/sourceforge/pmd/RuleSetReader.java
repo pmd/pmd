@@ -116,10 +116,9 @@ public class RuleSetReader implements Constants
                 return null;
             }
 
-            Exception originalException = exception.getException();
+            Throwable originalException = exception.getException();
 
-            if (originalException instanceof PMDException)
-            {
+            if (originalException instanceof PMDException) {
                 throw (PMDException) originalException;
             }
 
@@ -217,7 +216,7 @@ public class RuleSetReader implements Constants
                     Object[] args = {ruleName, m_ruleSet.getName()};
                     String msg = MessageFormat.format(template, args);
                     PMDException pmdException = new PMDException(msg);
-                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
+                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException.getReason());
                     pmdException.fillInStackTrace();
                     throw saxException;
                 }
