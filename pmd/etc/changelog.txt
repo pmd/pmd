@@ -1,4 +1,6 @@
 ???? 2002 - 0.8:
+Added new rules: UnusedFormalParameterRule
+Fixed bug 588083 - ForLoopsNeedBraces rule correctly handles a variety of for statement formats
 
 July 25 2002 - 0.7:
 Added new rules: UnusedPrivateMethodRule, WhileLoopsMustUseBracesRule, ForLoopsMustUseBracesRule, LooseCouplingRule
