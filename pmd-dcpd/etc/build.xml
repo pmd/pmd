@@ -7,6 +7,7 @@
 <property name="jar" value="dcpd.jar"/>
 <property name="workerzipfile" value="worker.zip"/>
 <property name="build.compiler" value="jikes"/>
+<property name="httpserver" value="mordor"/>
 
 <target name="delete">
     <delete dir="${build}"/>
@@ -41,7 +42,7 @@
 
 <target name="copytoserver" depends="clean,jar">
     <exec executable="pscp.exe" os="Windows 2000">
-        <arg line=" ${lib}\${jar} tom@mordor:/home/tom/projects/jini/sdk/lib/"/>
+        <arg line=" ${lib}\${jar} tom@${httpserver}:/home/tom/projects/jini/sdk/lib/"/>
     </exec>
 </target>
 
@@ -55,13 +56,15 @@
    <copy file="${lib}/runtimeonly/reggie.jar" toDir="staging"/>
    <copy file="etc/policy.all" toDir="staging"/>
    <copy file="etc/linuxclient_go.sh" toDir="staging"/>
+   <copy file="etc/client_go.bat" toDir="staging"/>
    <zip zipfile="${workerzipfile}" basedir="staging"/>
     <exec executable="pscp.exe" os="Windows 2000">
-        <arg line=" ${workerzipfile} tom@mordor:/home/tom/"/>
+        <arg line=" ${workerzipfile} tom@${httpserver}:/home/tom/"/>
     </exec>
     <exec executable="pscp.exe" os="Windows 2000">
         <arg line=" ${workerzipfile} tom@shire:/home/tom/"/>
     </exec>
+   <delete dir="staging"/>
 </target>
 
 </project>
