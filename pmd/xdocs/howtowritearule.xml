@@ -18,7 +18,7 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     <subsection name="Figure out what you want to look for">
     <p>
     Lets's figure out what problem you want to spot; we'll use "While loops must use braces" as an example.
-    In the source code above, it's easy to get lost visually - it's kind of hard to tell what the curly braces belong to.
+    In the source code below, it's easy to get lost visually - it's kind of hard to tell what the curly braces belong to.
     </p>
     <source>
 <![CDATA[
@@ -37,7 +37,7 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
 
     <subsection name="Write a test-data example and look at the AST">
     <p>
-    PMD doesn't use the source code directly; it uses a JJTree/JavaCC generated parser to parse the source code and
+    PMD doesn't use the source code directly; it uses a <code>JavaCC</code> generated parser to parse the source code and
     produce an AST (Abstract Syntax Tree).  The AST for the code above looks like this:
     </p>
     <source>
@@ -87,7 +87,7 @@ CompilationUnit
     <p>
     You can generate this yourself by:
     <ul>
-    <li>Put the example file in the pmd/test-data directory in a file called "Example.java"</li>
+    <li>Put the example file in the <code>pmd/test-data</code> directory in a file called <code>Example.java</code></li>
     <li>Edit the class <code>net.sourceforge.pmd.PMD</code> and uncomment the line that
     says <code>c.dump();</code> and the line that says <code>t.printStackTrace();</code></li>
     <li>Open a command prompt and cd into the pmd/etc directory</li>
@@ -95,13 +95,13 @@ CompilationUnit
     <li>Run the <code>go</code> batch file to run PMD on one file, like this: <code>go Example xml rulesets/basic.xml</code>.  The go.bat file
     will fill in the directories and main class and whatnot.
     You'll probably have to edit this batch file to match where you unzipped PMD.</li>
-    <li>If you get a ClassNotFoundException, make sure the pmd-?.?.jar file is on your classpath.</li>
+    <li>If you get a <code>ClassNotFoundException</code>, make sure the <code>pmd-x.y.jar</code> file is on your classpath.</li>
     <li>The rulesets need to be on there too - so make sure the pmd directory is on your classpath too.</li>
-    <li>If you get a FileNotFoundException, make sure that go.bat is pointing to the test-data directory where you put Example.java</li>
+    <li>If you get a <code>FileNotFoundException</code>, make sure that go.bat is pointing to the test-data directory where you put Example.java</li>
     </ul>
     </p>
     <p>
-    So you can see in the example above that the AST for a WhileStatement looks kind of like this (excluding that expression gibberish for clarity):
+    So you can see in the example above that the AST for a <code>WhileStatement</code> looks kind of like this (excluding that expression gibberish for clarity):
     </p>
     <source>
 <![CDATA[
