@@ -113,6 +113,14 @@
     </exec>
 </target>
 
+<target name="tomserver" depends="dist">
+    <echo message="Uploading jar file"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/"/>
+    </exec>
+</target>
+
+
 <target name="cpd">
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
     <cpd minimumTokenCount="100" outputFile="cpd.txt" verbose="false">
