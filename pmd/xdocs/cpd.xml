@@ -13,8 +13,8 @@
      <p>Here's a <a href="images/screenshot_cpd.jpg">screenshot</a> of CPD after running on the JDK java.lang package.</p>
      <p>To run CPD as a JNLP application, click <a href="cpd.jnlp">here</a>.</p>
      <p>As a reference point, running the CPD GUI against the JDK 1.4 java packages  (1178 files, 13.4 MB of data)on a
-     Celeron 1.13 GHz machine with 256 MB of RAM took 19 hours and 59 minutes.  <!--It found some nice duplicates which
-     you can see <a href="cpd_java_dupes.txt">here</a> - the largest ones are at the bottom of the page.--></p>
+     Celeron 1.13 GHz machine with 256 MB of RAM took 19 hours and 59 minutes.  It found some nice duplicates which
+     you can see <a href="cpdresults.txt">here</a> - the largest ones are at the bottom of the page.</p>
      <p>There's also a JavaSpaces version available for splitting the CPD effort across a farm of machines.
      I usually post news on that <a href="http://cpd.jini.org/">here</a> and the releases are <a href="http://sf.net/projects/pmd/">here</a></p>
      <p>Future plans</p>

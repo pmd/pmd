@@ -1,0 +1,3175 @@
+That took 60526823
+=============================================================
+A 17 line (102 tokens) duplication:
+Starting at line 172 in c:\j2sdk1.4.1_01\src\java\awt\image\LookupOp.java
+Starting at line 380 in c:\j2sdk1.4.1_01\src\java\awt\image\RescaleOp.java
+                    int minx = srcRaster.getMinX();
+                    int miny = srcRaster.getMinY();
+                    int[] bands = new int[numBands-1];
+                    for (int i=0; i < numBands-1; i++) {
+                        bands[i] = i;
+                    }
+                    srcRaster =
+                        srcRaster.createWritableChild(minx, miny,
+                                                      srcRaster.getWidth(),
+                                                      srcRaster.getHeight(),
+                                                      minx, miny,
+                                                      bands);
+                }
+            }
+            if (dstCM.hasAlpha()) {
+                int dstNumBands = dstRaster.getNumBands();
+                if (dstNumBands-1 == numComponents || numComponents == 1) {
+=============================================================
+A 17 line (104 tokens) duplication:
+Starting at line 645 in c:\j2sdk1.4.1_01\src\java\util\prefs\WindowsPreferences.java
+Starting at line 694 in c:\j2sdk1.4.1_01\src\java\util\prefs\WindowsPreferences.java
+        int nativeHandle = openKey(KEY_QUERY_VALUE);
+        if (nativeHandle == NULL_NATIVE_HANDLE) {
+            throw new BackingStoreException("Could not open windows"
+            + "registry node " + byteArrayToString(windowsAbsolutePath()) + 
+            " at root 0x" + Integer.toHexString(rootNativeHandle()) + ".");
+        }
+        int[] result =  WindowsRegQueryInfoKey1(nativeHandle);
+        if (result[ERROR_CODE] != ERROR_SUCCESS) {
+            String info = "Could not query windows"
+            + "registry node " + byteArrayToString(windowsAbsolutePath()) + 
+            " at root 0x" + Integer.toHexString(rootNativeHandle()) +
+            ". Windows RegQueryInfoKeyEx(...) returned error code " + 
+            result[ERROR_CODE] + ".";
+            logger.warning(info);
+            throw new BackingStoreException(info);
+        }    
+        int maxValueNameLength = result[MAX_VALUE_NAME_LENGTH];
+=============================================================
+A 22 line (106 tokens) duplication:
+Starting at line 881 in c:\j2sdk1.4.1_01\src\java\awt\image\Raster.java
+Starting at line 969 in c:\j2sdk1.4.1_01\src\java\awt\image\Raster.java
+                    return new ShortInterleavedRaster(sm, db, location);
+            }
+        } else if (sm instanceof SinglePixelPackedSampleModel) {
+            switch(dataType) {
+                case DataBuffer.TYPE_BYTE:
+                    return new ByteInterleavedRaster(sm, db, location);
+
+                case DataBuffer.TYPE_USHORT:
+                    return new ShortInterleavedRaster(sm, db, location);
+
+                case DataBuffer.TYPE_INT:
+                    return new IntegerInterleavedRaster(sm, db, location);
+            }
+        } else if (sm instanceof MultiPixelPackedSampleModel &&
+                   dataType == DataBuffer.TYPE_BYTE &&
+                   sm.getSampleSize(0) < 8) {
+            return new BytePackedRaster(sm, db, location);
+        }
+
+        // we couldn't do anything special - do the generic thing
+
+        return new Raster(sm,db,location);
+=============================================================
+A 24 line (107 tokens) duplication:
+Starting at line 491 in c:\j2sdk1.4.1_01\src\java\lang\Long.java
+Starting at line 231 in c:\j2sdk1.4.1_01\src\java\lang\Byte.java
+Starting at line 835 in c:\j2sdk1.4.1_01\src\java\lang\Integer.java
+        if (nm.startsWith("-")) {
+            negative = true;
+            index++;
+        }
+
+        // Handle radix specifier, if present
+	if (nm.startsWith("0x", index) || nm.startsWith("0X", index)) {
+	    index += 2;
+            radix = 16;
+	}
+	else if (nm.startsWith("#", index)) {
+	    index ++;
+            radix = 16;
+	}
+	else if (nm.startsWith("0", index) && nm.length() > 1 + index) {
+	    index ++;
+            radix = 8;
+	}
+
+        if (nm.startsWith("-", index))
+            throw new NumberFormatException("Negative sign in wrong position");
+
+        try {
+            result = Long.valueOf(nm.substring(index), radix);
+=============================================================
+A 20 line (108 tokens) duplication:
+Starting at line 385 in c:\j2sdk1.4.1_01\src\java\lang\Package.java
+Starting at line 292 in c:\j2sdk1.4.1_01\src\java\net\URLClassLoader.java
+	    if (specVersion == null) {
+		specVersion = attr.getValue(Name.SPECIFICATION_VERSION);
+	    }
+	    if (specVendor == null) {
+		specVendor = attr.getValue(Name.SPECIFICATION_VENDOR);
+	    }
+	    if (implTitle == null) {
+		implTitle = attr.getValue(Name.IMPLEMENTATION_TITLE);
+	    }
+	    if (implVersion == null) {
+		implVersion = attr.getValue(Name.IMPLEMENTATION_VERSION);
+	    }
+	    if (implVendor == null) {
+		implVendor = attr.getValue(Name.IMPLEMENTATION_VENDOR);
+	    }
+	    if (sealed == null) {
+		sealed = attr.getValue(Name.SEALED);
+	    }
+	}
+	if ("true".equalsIgnoreCase(sealed)) {
+=============================================================
+A 127 line (110 tokens) duplication:
+Starting at line 65 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsShortBufferRL.java
+Starting at line 65 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsShortBufferRB.java
+						    this.markValue(),
+						    this.position(),
+						    this.limit(),
+						    this.capacity(),
+						    offset);
+    }
+
+    public ShortBuffer asReadOnlyBuffer() {
+
+
+
+
+
+
+
+
+	return duplicate();
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ShortBuffer put(short x) {
+
+
+
+
+	throw new ReadOnlyBufferException();
+
+    }
+
+    public ShortBuffer put(int i, short x) {
+
+
+
+
+	throw new ReadOnlyBufferException();
+
+    }
+
+    public ShortBuffer compact() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	throw new ReadOnlyBufferException();
+
+    }
+
+    public boolean isDirect() {
+	return bb.isDirect();
+    }
+
+    public boolean isReadOnly() {
+	return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ByteOrder order() {
+
+
+
+
+	return ByteOrder.LITTLE_ENDIAN;
+=============================================================
+A 81 line (110 tokens) duplication:
+Starting at line 426 in c:\j2sdk1.4.1_01\src\java\awt\TextField.java
+Starting at line 235 in c:\j2sdk1.4.1_01\src\java\awt\Button.java
+    public synchronized void addActionListener(ActionListener l) {
+	if (l == null) {
+	    return;
+	}
+	actionListener = AWTEventMulticaster.add(actionListener, l);
+        newEventsOnly = true;
+    }
+
+    /**
+     * Removes the specified action listener so that it no longer
+     * receives action events from this text field.
+     * If l is null, no exception is thrown and no action is performed.
+     *
+     * @param      	l the action listener.
+     * @see        	#addActionListener
+     * @see        	#getActionListeners
+     * @see        	java.awt.event.ActionListener
+     * @since      	JDK1.1
+     */
+    public synchronized void removeActionListener(ActionListener l) {
+	if (l == null) {
+	    return;
+	}
+	actionListener = AWTEventMulticaster.remove(actionListener, l);
+    }
+
+    /**
+     * Returns an array of all the action listeners
+     * registered on this textfield.
+     *
+     * @return all of this textfield's <code>ActionListener</code>s
+     *         or an empty array if no action 
+     *         listeners are currently registered
+     *
+     * @see #addActionListener
+     * @see #removeActionListener
+     * @see	java.awt.event#ActionListener
+     * @since 1.4
+     */
+    public synchronized ActionListener[] getActionListeners() {
+        return (ActionListener[])(getListeners(ActionListener.class));
+    }
+
+    /**
+     * Returns an array of all the objects currently registered
+     * as <code><em>Foo</em>Listener</code>s
+     * upon this <code>TextField</code>.
+     * <code><em>Foo</em>Listener</code>s are registered using the
+     * <code>add<em>Foo</em>Listener</code> method.
+     *
+     * <p>
+     * You can specify the <code>listenerType</code> argument
+     * with a class literal, such as
+     * <code><em>Foo</em>Listener.class</code>.
+     * For example, you can query a
+     * <code>TextField</code> <code>t</code>
+     * for its action listeners with the following code:
+     *
+     * <pre>ActionListener[] als = (ActionListener[])(t.getListeners(ActionListener.class));</pre>
+     *
+     * If no such listeners exist, this method returns an empty array.
+     *
+     * @param listenerType the type of listeners requested; this parameter
+     *          should specify an interface that descends from
+     *          <code>java.util.EventListener</code>
+     * @return an array of all objects registered as
+     *          <code><em>Foo</em>Listener</code>s on this textfield,
+     *          or an empty array if no such
+     *          listeners have been added
+     * @exception ClassCastException if <code>listenerType</code>
+     *          doesn't specify a class or interface that implements
+     *          <code>java.util.EventListener</code>
+     *
+     * @see #getActionListeners
+     * @since 1.3
+     */
+    public EventListener[] getListeners(Class listenerType) { 
+	EventListener l = null; 
+	if  (listenerType == ActionListener.class) { 
+	    l = actionListener;
+	} else {
+=============================================================
+A 8 line (110 tokens) duplication:
+Starting at line 51 in c:\j2sdk1.4.1_01\src\java\io\Bits.java
+Starting at line 62 in c:\j2sdk1.4.1_01\src\java\io\Bits.java
+	return ((b[off + 7] & 0xFFL) << 0) +
+	       ((b[off + 6] & 0xFFL) << 8) +
+	       ((b[off + 5] & 0xFFL) << 16) +
+	       ((b[off + 4] & 0xFFL) << 24) +
+	       ((b[off + 3] & 0xFFL) << 32) +
+	       ((b[off + 2] & 0xFFL) << 40) +
+	       ((b[off + 1] & 0xFFL) << 48) +
+	       ((b[off + 0] & 0xFFL) << 56);
+=============================================================
+A 16 line (112 tokens) duplication:
+Starting at line 154 in c:\j2sdk1.4.1_01\src\java\io\ByteArrayInputStream.java
+Starting at line 93 in c:\j2sdk1.4.1_01\src\java\io\StringBufferInputStream.java
+    public synchronized int read(byte b[], int off, int len) {
+	if (b == null) {
+	    throw new NullPointerException();
+	} else if ((off < 0) || (off > b.length) || (len < 0) ||
+		   ((off + len) > b.length) || ((off + len) < 0)) {
+	    throw new IndexOutOfBoundsException();
+	}
+	if (pos >= count) {
+	    return -1;
+	}
+	if (pos + len > count) {
+	    len = count - pos;
+	}
+	if (len <= 0) {
+	    return 0;
+	}
+=============================================================
+A 63 line (113 tokens) duplication:
+Starting at line 992 in c:\j2sdk1.4.1_01\src\java\nio\IntBuffer.java
+Starting at line 992 in c:\j2sdk1.4.1_01\src\java\nio\LongBuffer.java
+Starting at line 992 in c:\j2sdk1.4.1_01\src\java\nio\FloatBuffer.java
+Starting at line 992 in c:\j2sdk1.4.1_01\src\java\nio\ByteBuffer.java
+Starting at line 992 in c:\j2sdk1.4.1_01\src\java\nio\DoubleBuffer.java
+	sb.append("[pos=");
+	sb.append(position());
+	sb.append(" lim=");
+	sb.append(limit());
+	sb.append(" cap=");
+	sb.append(capacity());
+	sb.append("]");
+	return sb.toString();
+    }
+
+
+
+
+    
+
+    /**
+     * Returns the current hash code of this buffer.
+     *
+     * <p> The hash code of a int buffer depends only upon its remaining
+     * elements; that is, upon the elements from <tt>position()</tt> up to, and
+     * including, the element at <tt>limit()</tt>&nbsp;-&nbsp;<tt>1</tt>.
+     *
+     * <p> Because buffer hash codes are content-dependent, it is inadvisable
+     * to use buffers as keys in hash maps or similar data structures unless it
+     * is known that their contents will not change.  </p>
+     *
+     * @return  The current hash code of this buffer
+     */
+    public int hashCode() {
+	int h = 1;
+	int p = position();
+	for (int i = limit() - 1; i >= p; i--)
+	    h = 31 * h + (int)get(i);
+	return h;
+    }
+
+    /**
+     * Tells whether or not this buffer is equal to another object.
+     *
+     * <p> Two int buffers are equal if, and only if,
+     *
+     * <p><ol>
+     *
+     *   <li><p> They have the same element type,  </p></li>
+     *
+     *   <li><p> They have the same number of remaining elements, and
+     *   </p></li>
+     *
+     *   <li><p> The two sequences of remaining elements, considered
+     *   independently of their starting positions, are pointwise equal.
+     *   </p></li>
+     *
+     * </ol>
+     *
+     * <p> A int buffer is not equal to any other type of object.  </p>
+     *
+     * @param  ob  The object to which this buffer is to be compared
+     *
+     * @return  <tt>true</tt> if, and only if, this buffer is equal to the
+     *           given object
+     */
+    public boolean equals(Object ob) {
+	if (!(ob instanceof IntBuffer))
+=============================================================
+A 48 line (113 tokens) duplication:
+Starting at line 237 in c:\j2sdk1.4.1_01\src\java\security\cert\CertStore.java
+Starting at line 398 in c:\j2sdk1.4.1_01\src\java\security\cert\CertStore.java
+	    return new CertStore((CertStoreSpi)objs[0],
+				 (Provider)objs[1], type, params);
+	} catch (IllegalAccessException iae) {
+	    NoSuchAlgorithmException nsae = new
+	                   NoSuchAlgorithmException(type + " not found");
+	    nsae.initCause(iae);
+	    throw nsae;
+	} catch (InvocationTargetException ite) {
+            Throwable t = ite.getCause();
+            if (t != null) {
+	        if (t instanceof InvalidAlgorithmParameterException)
+	            throw (InvalidAlgorithmParameterException)t;
+	        if (t instanceof NoSuchAlgorithmException)
+	            throw (NoSuchAlgorithmException)t;
+            }
+	    NoSuchAlgorithmException nsae = new
+	        NoSuchAlgorithmException(type + " not found");
+	    nsae.initCause(ite);
+	    throw nsae;
+	}
+    }
+
+    /**
+     * Returns a <code>CertStore</code> object that implements the specified
+     * <code>CertStore</code> type, as supplied by the specified provider
+     * and initialized with the specified parameters.
+     *
+     * <p>The <code>CertStore</code> that is returned is initialized with the 
+     * specified <code>CertStoreParameters</code>. The type of parameters 
+     * needed may vary between different types of <code>CertStore</code>s.
+     * Note that the specified <code>CertStoreParameters</code> object is 
+     * cloned.
+     *
+     * @param type the requested <code>CertStore</code> type
+     * @param params the initialization parameters (may be <code>null</code>)
+     * @param provider the name of the provider
+     * @return a <code>CertStore</code> object that implements the
+     * specified type, as supplied by the specified provider
+     * @throws NoSuchAlgorithmException if the requested type is not
+     *  available from the specified provider
+     * @throws InvalidAlgorithmParameterException if the specified
+     * initialization parameters are inappropriate for this 
+     * <code>CertStore</code>
+     * @throws NoSuchProviderException if the provider has not been configured
+     * @exception IllegalArgumentException if the <code>provider</code> is
+     * null
+     */
+    public static CertStore getInstance(String type, 
+=============================================================
+A 60 line (113 tokens) duplication:
+Starting at line 856 in c:\j2sdk1.4.1_01\src\java\net\DatagramSocket.java
+Starting at line 1016 in c:\j2sdk1.4.1_01\src\java\net\Socket.java
+    public synchronized void setReceiveBufferSize(int size)
+    throws SocketException{
+	if (size <= 0) {
+	    throw new IllegalArgumentException("invalid receive size");
+	}
+	if (isClosed())
+	    throw new SocketException("Socket is closed");
+	getImpl().setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+    }
+
+    /**
+     * Get value of the SO_RCVBUF option for this <tt>DatagramSocket</tt>, that is the
+     * buffer size used by the platform for input on this <tt>DatagramSocket</tt>.
+     *
+     * @return the value of the SO_RCVBUF option for this <tt>DatagramSocket</tt>
+     * @exception SocketException if there is an error in the underlying protocol, such as an UDP error.
+     * @see #setReceiveBufferSize(int)
+     */
+    public synchronized int getReceiveBufferSize()
+    throws SocketException{
+	if (isClosed())
+	    throw new SocketException("Socket is closed");
+	int result = 0;
+	Object o = getImpl().getOption(SocketOptions.SO_RCVBUF);
+	if (o instanceof Integer) {
+	    result = ((Integer)o).intValue();
+	}
+	return result;
+    }
+
+    /**
+     * Enable/disable the SO_REUSEADDR socket option.
+     * <p>
+     * For UDP sockets it may be necessary to bind more than one
+     * socket to the same socket address. This is typically for the
+     * purpose of receiving multicast packets
+     * (See {@link #java.net.MulticastSocket}). The
+     * <tt>SO_REUSEADDR</tt> socket option allows multiple
+     * sockets to be bound to the same socket address if the
+     * <tt>SO_REUSEADDR</tt> socket option is enabled prior
+     * to binding the socket using {@link #bind(SocketAddress)}.
+     * <p>
+     * When a <tt>DatagramSocket</tt> is created the initial setting
+     * of <tt>SO_REUSEADDR</tt> is disabled.
+     * <p>
+     * The behaviour when <tt>SO_REUSEADDR</tt> is enabled or
+     * disabled after a socket is bound (See {@link #isBound()})
+     * is not defined.
+     * 
+     * @param on  whether to enable or disable the 
+     * @exception SocketException if an error occurs enabling or
+     *            disabling the <tt>SO_RESUEADDR</tt> socket option,
+     *	   	  or the socket is closed.
+     * @since 1.4
+     * @see #getReuseAddress()     
+     * @see #bind(SocketAddress)     
+     * @see #isBound()
+     * @see #isClosed()
+     */
+    public synchronized void setReuseAddress(boolean on) throws SocketException {
+=============================================================
+A 22 line (114 tokens) duplication:
+Starting at line 697 in c:\j2sdk1.4.1_01\src\java\awt\ScrollPane.java
+Starting at line 785 in c:\j2sdk1.4.1_01\src\java\awt\ScrollPane.java
+	    Adjustable adj = e.getAdjustable();
+	    int value = e.getValue();
+	    ScrollPanePeer peer = (ScrollPanePeer) scroller.peer;
+	    if (peer != null) {
+		peer.setValue(adj, value);
+	    }
+
+	    Component c = scroller.getComponent(0);
+	    switch(adj.getOrientation()) {
+	    case Adjustable.VERTICAL:
+		c.move(c.getLocation().x, -(value));
+		break;
+	    case Adjustable.HORIZONTAL:
+		c.move(-(value), c.getLocation().y);
+		break;
+	    default:
+		throw new IllegalArgumentException("Illegal adjustable orientation");
+	    }
+	}
+
+        private ScrollPane scroller;
+    }
+=============================================================
+A 22 line (117 tokens) duplication:
+Starting at line 322 in c:\j2sdk1.4.1_01\src\java\io\Win32FileSystem.java
+Starting at line 21 in c:\j2sdk1.4.1_01\src\java\io\WinNTFileSystem.java
+    public native String canonicalize(String path) throws IOException;
+
+
+    /* -- Attribute accessors -- */
+
+    public native int getBooleanAttributes(File f);
+    public native boolean checkAccess(File f, boolean write);
+    public native long getLastModifiedTime(File f);
+    public native long getLength(File f);
+
+
+    /* -- File operations -- */
+
+    public native boolean createFileExclusively(String path)
+	throws IOException;
+    public native boolean delete(File f);
+    public synchronized native boolean deleteOnExit(File f);
+    public native String[] list(File f);
+    public native boolean createDirectory(File f);
+    public native boolean rename(File f1, File f2);
+    public native boolean setLastModifiedTime(File f, long time);
+    public native boolean setReadOnly(File f);
+=============================================================
+A 16 line (118 tokens) duplication:
+Starting at line 231 in c:\j2sdk1.4.1_01\src\java\net\SocksSocketImpl.java
+Starting at line 451 in c:\j2sdk1.4.1_01\src\java\net\SocksSocketImpl.java
+	String userName = (String) java.security.AccessController.doPrivileged(
+               new sun.security.action.GetPropertyAction("user.name"));
+	out.write(userName.getBytes());
+	out.write(0);
+	out.flush();
+	byte[] data = new byte[8];
+	int n = readSocksReply(in, data);
+	if (n != 8)
+	    throw new SocketException("Reply from SOCKS server has bad length: " + n);
+	if (data[0] != 0 && data[0] != 4) 
+	    throw new SocketException("Reply from SOCKS server has bad version");
+	SocketException ex = null;
+	switch (data[1]) {
+	case 90:
+	    // Success!
+	    external_address = endpoint;
+=============================================================
+A 23 line (119 tokens) duplication:
+Starting at line 413 in c:\j2sdk1.4.1_01\src\java\awt\TexturePaintContext.java
+Starting at line 549 in c:\j2sdk1.4.1_01\src\java\awt\TexturePaintContext.java
+			    int copyw = (i < x) ? i : x;
+			    System.arraycopy(inData, in - x,
+					     outData, out - i,
+					     copyw);
+			    i -= copyw;
+			    if ((x -= copyw) == 0) {
+				x = bWidth;
+			    }
+			}
+		    } else {
+			for (int i = w; i > 0; i--) {
+			    outData[out - i] = inData[in - x];
+			    if (--x == 0) {
+				x = bWidth;
+			    }
+			}
+		    }
+		} else {
+		    x = rowx;
+		    y = rowy;
+		    xerr = rowxerr;
+		    yerr = rowyerr;
+		    for (int i = 0; i < w; i++) {
+=============================================================
+A 32 line (120 tokens) duplication:
+Starting at line 119 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsCharBufferL.java
+Starting at line 119 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsCharBufferB.java
+    public CharBuffer compact() {
+
+	int pos = position();
+	int lim = limit();
+	assert (pos <= lim);
+	int rem = (pos <= lim ? lim - pos : 0);
+
+	ByteBuffer db = bb.duplicate();
+ 	db.limit(ix(lim));
+	db.position(ix(0));
+	ByteBuffer sb = db.slice();
+	sb.position(pos << 1);
+	sb.compact();
+ 	position(rem);
+	limit(capacity());
+	return this;
+
+
+
+    }
+
+    public boolean isDirect() {
+	return bb.isDirect();
+    }
+
+    public boolean isReadOnly() {
+	return false;
+    }
+
+
+
+    public String toString(int start, int end) {
+=============================================================
+A 17 line (125 tokens) duplication:
+Starting at line 281 in c:\j2sdk1.4.1_01\src\java\util\Properties.java
+Starting at line 400 in c:\j2sdk1.4.1_01\src\java\awt\datatransfer\SystemFlavorMap.java
+    private String loadConvert (String theString) {
+        char aChar;
+        int len = theString.length();
+        StringBuffer outBuffer = new StringBuffer(len);
+
+        for(int x=0; x<len; ) {
+            aChar = theString.charAt(x++);
+            if (aChar == '\\') {
+                aChar = theString.charAt(x++);
+                if(aChar == 'u') {
+                    // Read the xxxx
+                    int value=0;
+		    for (int i=0; i<4; i++) {
+		        aChar = theString.charAt(x++);
+		        switch (aChar) {
+		          case '0': case '1': case '2': case '3': case '4':
+		          case '5': case '6': case '7': case '8': case '9':
+=============================================================
+A 56 line (126 tokens) duplication:
+Starting at line 325 in c:\j2sdk1.4.1_01\src\java\lang\Long.java
+Starting at line 428 in c:\j2sdk1.4.1_01\src\java\lang\Integer.java
+		    result = -digit;
+		}
+	    }
+	    while (i < max) {
+		// Accumulating negatively avoids surprises near MAX_VALUE
+		digit = Character.digit(s.charAt(i++),radix);
+		if (digit < 0) {
+		    throw NumberFormatException.forInputString(s);
+		}
+		if (result < multmin) {
+		    throw NumberFormatException.forInputString(s);
+		}
+		result *= radix;
+		if (result < limit + digit) {
+		    throw NumberFormatException.forInputString(s);
+		}
+		result -= digit;
+	    }
+	} else {
+	    throw NumberFormatException.forInputString(s);
+	}
+	if (negative) {
+	    if (i > 1) {
+		return result;
+	    } else {	/* Only got "-" */
+		throw NumberFormatException.forInputString(s);
+	    }
+	} else {
+	    return -result;
+	}
+    }
+
+    /**
+     * Parses the string argument as a signed decimal
+     * <code>long</code>.  The characters in the string must all be
+     * decimal digits, except that the first character may be an ASCII
+     * minus sign <code>'-'</code> (<code>&#92;u002D'</code>) to
+     * indicate a negative value. The resulting <code>long</code>
+     * value is returned, exactly as if the argument and the radix
+     * <code>10</code> were given as arguments to the {@link
+     * #parseLong(java.lang.String, int)} method.
+     * <p>
+     * Note that neither the character <code>L</code>
+     * (<code>'&#92;u004C'</code>) nor <code>l</code>
+     * (<code>'&#92;u006C'</code>) is permitted to appear at the end
+     * of the string as a type indicator, as would be permitted in
+     * Java programming language source code.
+     *
+     * @param      s   a <code>String</code> containing the <code>long</code>
+     *             representation to be parsed
+     * @return     the <code>long</code> represented by the argument in 
+     *		   decimal.
+     * @exception  NumberFormatException  if the string does not contain a
+     *               parsable <code>long</code>.
+     */
+    public static long parseLong(String s) throws NumberFormatException {
+=============================================================
+A 70 line (127 tokens) duplication:
+Starting at line 119 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsShortBufferB.java
+Starting at line 119 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsShortBufferL.java
+    public ShortBuffer compact() {
+
+	int pos = position();
+	int lim = limit();
+	assert (pos <= lim);
+	int rem = (pos <= lim ? lim - pos : 0);
+
+	ByteBuffer db = bb.duplicate();
+ 	db.limit(ix(lim));
+	db.position(ix(0));
+	ByteBuffer sb = db.slice();
+	sb.position(pos << 1);
+	sb.compact();
+ 	position(rem);
+	limit(capacity());
+	return this;
+
+
+
+    }
+
+    public boolean isDirect() {
+	return bb.isDirect();
+    }
+
+    public boolean isReadOnly() {
+	return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ByteOrder order() {
+
+	return ByteOrder.BIG_ENDIAN;
+=============================================================
+A 99 line (127 tokens) duplication:
+Starting at line 429 in c:\j2sdk1.4.1_01\src\java\awt\MenuItem.java
+Starting at line 219 in c:\j2sdk1.4.1_01\src\java\awt\Button.java
+    public String getActionCommand() {
+        return (actionCommand == null? label : actionCommand);
+    }
+
+    /**
+     * Adds the specified action listener to receive action events
+     * from this menu item.
+     * If l is null, no exception is thrown and no action is performed.
+     *
+     * @param      l the action listener.
+     * @see        #removeActionListener
+     * @see        #getActionListeners
+     * @see        java.awt.event.ActionEvent
+     * @see        java.awt.event.ActionListener
+     * @since      JDK1.1
+     */
+    public synchronized void addActionListener(ActionListener l) {
+	if (l == null) {
+	    return;
+	}
+	actionListener = AWTEventMulticaster.add(actionListener, l);
+        newEventsOnly = true;
+    }
+
+    /**
+     * Removes the specified action listener so it no longer receives
+     * action events from this menu item.
+     * If l is null, no exception is thrown and no action is performed.
+     *
+     * @param      l the action listener.
+     * @see        #addActionListener
+     * @see        #getActionListeners
+     * @see        java.awt.event.ActionEvent
+     * @see        java.awt.event.ActionListener
+     * @since      JDK1.1
+     */
+    public synchronized void removeActionListener(ActionListener l) {
+	if (l == null) {
+	    return;
+	}
+	actionListener = AWTEventMulticaster.remove(actionListener, l);
+    }
+
+    /**
+     * Returns an array of all the action listeners
+     * registered on this menu item.
+     *
+     * @return all of this menu item's <code>ActionListener</code>s
+     *         or an empty array if no action
+     *         listeners are currently registered
+     *
+     * @see        #addActionListener
+     * @see        #removeActionListener
+     * @see        java.awt.event.ActionEvent
+     * @see        java.awt.event.ActionListener
+     * @since 1.4
+     */
+    public synchronized ActionListener[] getActionListeners() {
+        return (ActionListener[])(getListeners(ActionListener.class));
+    }
+
+    /**
+     * Returns an array of all the objects currently registered
+     * as <code><em>Foo</em>Listener</code>s
+     * upon this <code>MenuItem</code>.
+     * <code><em>Foo</em>Listener</code>s are registered using the
+     * <code>add<em>Foo</em>Listener</code> method.
+     *
+     * <p>
+     * You can specify the <code>listenerType</code> argument
+     * with a class literal, such as
+     * <code><em>Foo</em>Listener.class</code>.
+     * For example, you can query a
+     * <code>MenuItem</code> <code>m</code>
+     * for its action listeners with the following code:
+     *
+     * <pre>ActionListener[] als = (ActionListener[])(m.getListeners(ActionListener.class));</pre>
+     *
+     * If no such listeners exist, this method returns an empty array.
+     *
+     * @param listenerType the type of listeners requested; this parameter
+     *          should specify an interface that descends from
+     *          <code>java.util.EventListener</code>
+     * @return an array of all objects registered as
+     *          <code><em>Foo</em>Listener</code>s on this menu item,
+     *          or an empty array if no such
+     *          listeners have been added
+     * @exception ClassCastException if <code>listenerType</code>
+     *          doesn't specify a class or interface that implements
+     *          <code>java.util.EventListener</code>
+     *
+     * @see #getActionListeners
+     * @since 1.3
+     */
+    public EventListener[] getListeners(Class listenerType) { 
+	EventListener l = null; 
+	if  (listenerType == ActionListener.class) { 
+	    l = actionListener;
+	}
+=============================================================
+A 24 line (129 tokens) duplication:
+Starting at line 349 in c:\j2sdk1.4.1_01\src\java\nio\DirectCharBufferS.java
+Starting at line 349 in c:\j2sdk1.4.1_01\src\java\nio\DirectCharBufferRU.java
+Starting at line 349 in c:\j2sdk1.4.1_01\src\java\nio\DirectCharBufferRS.java
+Starting at line 349 in c:\j2sdk1.4.1_01\src\java\nio\DirectCharBufferU.java
+	    CharBuffer cb = CharBuffer.wrap(ca);
+	    CharBuffer db = this.duplicate();
+	    db.position(start);
+	    db.limit(end);
+	    cb.put(db);
+	    return new String(ca);
+	} catch (StringIndexOutOfBoundsException x) {
+	    throw new IndexOutOfBoundsException();
+	}
+    }
+
+
+    // --- Methods to support CharSequence ---
+
+    public CharSequence subSequence(int start, int end) {
+	int len = length();
+	int pos = position();
+	assert (pos <= len);
+	pos = (pos <= len ? pos : len);
+
+	if ((start < 0) || (end > len) || (start > end))
+	    throw new IndexOutOfBoundsException();
+	int sublen = end - start;
+ 	int off = (pos + start) << 1;
+=============================================================
+A 31 line (129 tokens) duplication:
+Starting at line 476 in c:\j2sdk1.4.1_01\src\java\util\HashMap.java
+Starting at line 477 in c:\j2sdk1.4.1_01\src\java\util\WeakHashMap.java
+    public void putAll(Map t) {
+        // Expand enough to hold t's elements without resizing.
+        int n = t.size();
+        if (n == 0)
+            return;
+        if (n >= threshold) {
+            n = (int)(n / loadFactor + 1);
+            if (n > MAXIMUM_CAPACITY)
+                n = MAXIMUM_CAPACITY;
+            int capacity = table.length;
+            while (capacity < n) 
+                capacity <<= 1;
+            resize(capacity);
+        }
+
+        for (Iterator i = t.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry e = (Map.Entry) i.next();
+            put(e.getKey(), e.getValue());
+        }
+    }
+  
+    /**
+     * Removes the mapping for this key from this map if present.
+     *
+     * @param  key key whose mapping is to be removed from the map.
+     * @return previous value associated with specified key, or <tt>null</tt>
+     *	       if there was no mapping for key.  A <tt>null</tt> return can
+     *	       also indicate that the map previously associated <tt>null</tt>
+     *	       with the specified key.
+     */
+    public Object remove(Object key) {
+=============================================================
+A 31 line (129 tokens) duplication:
+Starting at line 454 in c:\j2sdk1.4.1_01\src\java\awt\image\PixelGrabber.java
+Starting at line 539 in c:\j2sdk1.4.1_01\src\java\awt\image\PixelGrabber.java
+			  byte pixels[], int srcOff, int srcScan) {
+	if (srcY < dstY) {
+	    int diff = dstY - srcY;
+	    if (diff >= srcH) {
+		return;
+	    }
+	    srcOff += srcScan * diff;
+	    srcY += diff;
+	    srcH -= diff;
+	}
+	if (srcY + srcH > dstY + dstH) {
+	    srcH = (dstY + dstH) - srcY;
+	    if (srcH <= 0) {
+		return;
+	    }
+	}
+	if (srcX < dstX) {
+	    int diff = dstX - srcX;
+	    if (diff >= srcW) {
+		return;
+	    }
+	    srcOff += diff;
+	    srcX += diff;
+	    srcW -= diff;
+	}
+	if (srcX + srcW > dstX + dstW) {
+	    srcW = (dstX + dstW) - srcX;
+	    if (srcW <= 0) {
+		return;
+	    }
+	}
+=============================================================
+A 30 line (133 tokens) duplication:
+Starting at line 538 in c:\j2sdk1.4.1_01\src\java\nio\charset\CharsetEncoder.java
+Starting at line 538 in c:\j2sdk1.4.1_01\src\java\nio\charset\CharsetDecoder.java
+		throw new CoderMalfunctionError(x);
+	    } catch (BufferOverflowException x) {
+		throw new CoderMalfunctionError(x);
+	    }
+
+	    if (cr.isOverflow())
+		return cr;
+
+	    if (cr.isUnderflow()) {
+		if (endOfInput && in.hasRemaining()) {
+		    cr = CoderResult.malformedForLength(in.remaining());
+		    // Fall through to malformed-input case
+		} else {
+		    return cr;
+		}
+	    }
+
+	    CodingErrorAction action = null;
+	    if (cr.isMalformed())
+		action = malformedInputAction;
+	    else if (cr.isUnmappable())
+		action = unmappableCharacterAction;
+	    else
+		assert false : cr.toString();
+
+	    if (action == CodingErrorAction.REPORT)
+		return cr;
+
+	    if (action == CodingErrorAction.REPLACE) {
+		if (out.remaining() < replacement.length)
+=============================================================
+A 26 line (136 tokens) duplication:
+Starting at line 661 in c:\j2sdk1.4.1_01\src\java\util\HashMap.java
+Starting at line 643 in c:\j2sdk1.4.1_01\src\java\util\WeakHashMap.java
+        public Object getValue() {
+            return value;
+        }
+    
+        public Object setValue(Object newValue) {
+            Object oldValue = value;
+            value = newValue;
+            return oldValue;
+        }
+    
+        public boolean equals(Object o) {
+            if (!(o instanceof Map.Entry))
+                return false;
+            Map.Entry e = (Map.Entry)o;
+            Object k1 = getKey();
+            Object k2 = e.getKey();
+            if (k1 == k2 || (k1 != null && k1.equals(k2))) {
+                Object v1 = getValue();
+                Object v2 = e.getValue();
+                if (v1 == v2 || (v1 != null && v1.equals(v2))) 
+                    return true;
+            }
+            return false;
+        }
+    
+        public int hashCode() {
+=============================================================
+A 51 line (136 tokens) duplication:
+Starting at line 1104 in c:\j2sdk1.4.1_01\src\java\awt\geom\QuadCurve2D.java
+Starting at line 1454 in c:\j2sdk1.4.1_01\src\java\awt\geom\CubicCurve2D.java
+	int c1tag, c2tag;
+	if (y1tag == INSIDE) {
+	    c1tag = x1tag;
+	} else {
+	    c1tag = getTag((k + dx * (y1tag < INSIDE ? y : y+h)) / dy, x, x+w);
+	}
+	if (y2tag == INSIDE) {
+	    c2tag = x2tag;
+	} else {
+	    c2tag = getTag((k + dx * (y2tag < INSIDE ? y : y+h)) / dy, x, x+w);
+	}
+	// If the part of the line segment that intersects the Y range
+	// of the rectangle crosses it horizontally - trivially accept
+	if (c1tag * c2tag <= 0) {
+	    return true;
+	}
+
+	// Now we know that both the X and Y ranges intersect and that
+	// the endpoint line segment does not directly cross the rectangle.
+	//
+	// We can almost treat this case like one of the cases above
+	// where both endpoints are to one side, except that we will
+	// only get one intersection of the curve with the vertical
+	// side of the rectangle.  This is because the endpoint segment
+	// accounts for the other intersection.
+	//
+	// (Remember there is overlap in both the X and Y ranges which
+	//  means that the segment must cross at least one vertical edge
+	//  of the rectangle - in particular, the "near vertical side" -
+	//  leaving only one intersection for the curve.)
+	//
+	// Now we calculate the y tags of the two intersections on the
+	// "near vertical side" of the rectangle.  We will have one with
+	// the endpoint segment, and one with the curve.  If those two
+	// vertical intersections overlap the Y range of the rectangle,
+	// we have an intersection.  Otherwise, we don't.
+
+	// c1tag = vertical intersection class of the endpoint segment
+	//
+	// Choose the y tag of the endpoint that was not on the same
+	// side of the rectangle as the subsegment calculated above.
+	// Note that we can "steal" the existing Y tag of that endpoint
+	// since it will be provably the same as the vertical intersection.
+	c1tag = ((c1tag * x1tag <= 0) ? y1tag : y2tag);
+
+	// c2tag = vertical intersection class of the curve
+	//
+	// We have to calculate this one the straightforward way.
+	// Note that the c2tag can still tell us which vertical edge
+	// to test against.
+	fillEqn(eqn, (c2tag < INSIDE ? x : x+w), x1, ctrlx, x2);
+=============================================================
+A 43 line (138 tokens) duplication:
+Starting at line 3638 in c:\j2sdk1.4.1_01\src\java\util\regex\Pattern.java
+Starting at line 3814 in c:\j2sdk1.4.1_01\src\java\util\regex\Pattern.java
+            int minL = info.minLength;
+            int maxL = info.maxLength;
+            boolean maxV = info.maxValid;
+            boolean detm = info.deterministic;
+            info.reset();
+
+            atom.study(info);
+
+            int temp = info.minLength * cmin + minL;
+            if (temp < minL) {
+                temp = 0xFFFFFFF; // arbitrary large number
+            }
+            info.minLength = temp;
+
+            if (maxV & info.maxValid) {
+                temp = info.maxLength * cmax + maxL;
+                info.maxLength = temp;
+                if (temp < maxL) {
+                    info.maxValid = false;
+                }
+            } else {
+                info.maxValid = false;
+            }
+
+            if (info.deterministic && cmin == cmax) {
+                info.deterministic = detm;
+            } else {
+                info.deterministic = false;
+            }
+
+            return next.study(info);
+        }
+    }
+
+    /**
+     * Handles the curly-brace style repetition with a specified minimum and
+     * maximum occurrences in deterministic cases. This is an iterative
+     * optimization over the Prolog and Loop system which would handle this
+     * in a recursive way. The * quantifier is handled as a special case.
+     * This class saves group settings so that the groups are unset when
+     * backing off of a group match.
+     */
+    static final class GroupCurly extends Node {
+=============================================================
+A 25 line (141 tokens) duplication:
+Starting at line 156 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsCharBufferL.java
+Starting at line 156 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsCharBufferRB.java
+Starting at line 156 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsCharBufferRL.java
+Starting at line 156 in c:\j2sdk1.4.1_01\src\java\nio\ByteBufferAsCharBufferB.java
+	    CharBuffer cb = CharBuffer.wrap(ca);
+	    CharBuffer db = this.duplicate();
+	    db.position(start);
+	    db.limit(end);
+	    cb.put(db);
+	    return new String(ca);
+	} catch (StringIndexOutOfBoundsException x) {
+	    throw new IndexOutOfBoundsException();
+	}
+    }
+
+
+    // --- Methods to support CharSequence ---
+
+    public CharSequence subSequence(int start, int end) {
+	int len = length();
+	int pos = position();
+	assert (pos <= len);
+	pos = (pos <= len ? pos : len);
+
+	if ((start < 0) || (end > len) || (start > end))
+	    throw new IndexOutOfBoundsException();
+	int sublen = end - start;
+ 	int off = offset + ((pos + start) << 1);
+	return new ByteBufferAsCharBufferL(bb, -1, 0, sublen, sublen, off);
+=============================================================
+A 39 line (141 tokens) duplication:
+Starting at line 460 in c:\j2sdk1.4.1_01\src\java\rmi\activation\Activatable.java
+Starting at line 231 in c:\j2sdk1.4.1_01\src\java\rmi\server\UnicastRemoteObject.java
+	return sun.rmi.transport.ObjectTable.unexportObject(obj, force);
+    }
+
+    /*
+     * Create an instance of given server ref type with constructor chosen
+     * by indicated paramters and supplied with given arguements, and
+     * export remote object with it.
+     *
+     * All this code needs to be duplicated from UnicastRemoteObject
+     * because java does not have "friends".
+     */
+    private static Remote exportObject(Remote obj, String refType,
+				       Class[] params, Object[] args)
+	throws RemoteException
+    {
+	// compose name of server ref class and find it
+	String refClassName = RemoteRef.packagePrefix + "." + refType;
+	Class refClass;
+	try {
+	    refClass = Class.forName(refClassName);
+	} catch (ClassNotFoundException e) {
+	    throw new ExportException(
+		"No class found for server ref type: " + refType);
+	}
+
+	if (!ServerRef.class.isAssignableFrom(refClass)) {
+	    throw new ExportException(
+		"Server ref class not instance of " +
+		ServerRef.class.getName() + ": " + refClass.getName());
+	}
+
+	// create server ref instance using given constructor and arguments
+	ServerRef serverRef;
+	try {
+	    java.lang.reflect.Constructor cons =
+		refClass.getConstructor(params);
+	    serverRef = (ServerRef) cons.newInstance(args);
+	    // if impl does extend Activatable, set its ref
+	    if (obj instanceof Activatable)
+=============================================================
+A 37 line (143 tokens) duplication:
+Starting at line 707 in c:\j2sdk1.4.1_01\src\java\lang\FloatingDecimal.java
+Starting at line 765 in c:\j2sdk1.4.1_01\src\java\lang\FloatingDecimal.java
+		    decExp--;
+		} else {
+		    digits[ndigit++] = (char)('0' + q);
+		}
+		/*
+		 * HACK! Java spec sez that we always have at least
+		 * one digit after the . in either F- or E-form output.
+		 * Thus we will need more than one digit if we're using
+		 * E-form
+		 */
+		if ( decExp <= -3 || decExp >= 8 ){
+		    high = low = false;
+		}
+		while( ! low && ! high ){
+		    q = (int) ( b / s );
+		    b = 10 * ( b % s );
+		    m *= 10;
+		    if ( q >= 10 ){
+			// bummer, dude
+			throw new RuntimeException( "Assertion botch: excessivly large digit "+q);
+		    }
+		    if ( m > 0L ){
+			low  = (b <  m );
+			high = (b+m > tens );
+		    } else {
+			// hack -- m might overflow!
+			// in this case, it is certainly > b,
+			// which won't
+			// and b+m > tens, too, since that has overflowed
+			// either!
+			low = true;
+			high = true;
+		    }
+		    digits[ndigit++] = (char)('0' + q);
+		}
+		lowDigitDifference = (b<<1) - tens;
+	    } else {
+=============================================================
+A 32 line (149 tokens) duplication:
+Starting at line 201 in c:\j2sdk1.4.1_01\src\java\nio\DirectLongBufferU.java
+Starting at line 201 in c:\j2sdk1.4.1_01\src\java\nio\DirectLongBufferS.java
+	if ((length << 3) > Bits.JNI_COPY_TO_ARRAY_THRESHOLD) {
+	    checkBounds(offset, length, dst.length);
+	    int pos = position();
+	    int lim = limit();
+	    assert (pos <= lim);
+	    int rem = (pos <= lim ? lim - pos : 0);
+	    if (length > rem)
+		throw new BufferUnderflowException();
+
+	    if (order() != ByteOrder.nativeOrder())
+		Bits.copyToLongArray(ix(pos), dst,
+				       offset << 3,
+				       length << 3);
+	    else
+		Bits.copyToByteArray(ix(pos), dst,
+				     offset << 3,
+				     length << 3);
+	    position(pos + length);
+	} else {
+	    super.get(dst, offset, length);
+	}
+	return this;
+
+
+
+    }
+
+
+
+    public LongBuffer put(long x) {
+
+	unsafe.putLong(ix(nextPutIndex()), (x));
+=============================================================
+A 84 line (152 tokens) duplication:
+Starting at line 502 in c:\j2sdk1.4.1_01\src\java\awt\TextField.java
+Starting at line 312 in c:\j2sdk1.4.1_01\src\java\awt\Button.java
+    public EventListener[] getListeners(Class listenerType) { 
+	EventListener l = null; 
+	if  (listenerType == ActionListener.class) { 
+	    l = actionListener;
+	} else {
+	    return super.getListeners(listenerType);
+	}
+	return AWTEventMulticaster.getListeners(l, listenerType);
+    }
+
+    // REMIND: remove when filtering is done at lower level
+    boolean eventEnabled(AWTEvent e) {
+        if (e.id == ActionEvent.ACTION_PERFORMED) {
+            if ((eventMask & AWTEvent.ACTION_EVENT_MASK) != 0 ||
+                actionListener != null) {
+                return true;
+            }
+            return false;
+        }
+        return super.eventEnabled(e);
+    }
+
+    /**
+     * Processes events on this text field. If the event
+     * is an instance of <code>ActionEvent</code>,
+     * it invokes the <code>processActionEvent</code>
+     * method. Otherwise, it invokes <code>processEvent</code>
+     * on the superclass.
+     * <p>Note that if the event parameter is <code>null</code>
+     * the behavior is unspecified and may result in an
+     * exception.
+     *
+     * @param      e the event
+     * @see        java.awt.event.ActionEvent
+     * @see        java.awt.TextField#processActionEvent
+     * @since      JDK1.1
+     */
+    protected void processEvent(AWTEvent e) {
+        if (e instanceof ActionEvent) {
+            processActionEvent((ActionEvent)e);
+            return;
+        }
+	super.processEvent(e);
+    }
+
+    /**
+     * Processes action events occurring on this text field by
+     * dispatching them to any registered
+     * <code>ActionListener</code> objects.
+     * <p>
+     * This method is not called unless action events are
+     * enabled for this component. Action events are enabled
+     * when one of the following occurs:
+     * <p><ul>
+     * <li>An <code>ActionListener</code> object is registered
+     * via <code>addActionListener</code>.
+     * <li>Action events are enabled via <code>enableEvents</code>.
+     * </ul>
+     * <p>Note that if the event parameter is <code>null</code>
+     * the behavior is unspecified and may result in an
+     * exception.
+     *
+     * @param       e the action event
+     * @see         java.awt.event.ActionListener
+     * @see         java.awt.TextField#addActionListener
+     * @see         java.awt.Component#enableEvents
+     * @since       JDK1.1
+     */
+    protected void processActionEvent(ActionEvent e) {
+        if (actionListener != null) {
+            actionListener.actionPerformed(e);
+        }
+    }
+
+    /**
+     * Returns a string representing the state of this <code>TextField</code>.
+     * This method is intended to be used only for debugging purposes, and the 
+     * content and format of the returned string may vary between 
+     * implementations. The returned string may be empty but may not be 
+     * <code>null</code>.
+     *
+     * @return      the parameter string of this text field
+     */
+    protected String paramString() {
+=============================================================
+A 66 line (154 tokens) duplication:
+Starting at line 195 in c:\j2sdk1.4.1_01\src\java\lang\reflect\Constructor.java
+Starting at line 228 in c:\j2sdk1.4.1_01\src\java\lang\reflect\Method.java
+	    sb.append("(");
+	    Class[] params = parameterTypes; // avoid clone
+	    for (int j = 0; j < params.length; j++) {
+		sb.append(Field.getTypeName(params[j]));
+		if (j < (params.length - 1))
+		    sb.append(",");
+	    }
+	    sb.append(")");
+	    Class[] exceptions = exceptionTypes; // avoid clone
+	    if (exceptions.length > 0) {
+		sb.append(" throws ");
+		for (int k = 0; k < exceptions.length; k++) {
+		    sb.append(exceptions[k].getName());
+		    if (k < (exceptions.length - 1))
+			sb.append(",");
+		}
+	    }
+	    return sb.toString();
+	} catch (Exception e) {
+	    return "<" + e + ">";
+	}
+    }
+
+    /**
+     * Uses the constructor represented by this <code>Constructor</code> object to
+     * create and initialize a new instance of the constructor's
+     * declaring class, with the specified initialization parameters.
+     * Individual parameters are automatically unwrapped to match
+     * primitive formal parameters, and both primitive and reference
+     * parameters are subject to method invocation conversions as necessary.
+     *
+     * <p>If the number of formal parameters required by the underlying constructor
+     * is 0, the supplied <code>initargs</code> array may be of length 0 or null.
+     *
+     * <p>If the required access and argument checks succeed and the
+     * instantiation will proceed, the constructor's declaring class
+     * is initialized if it has not already been initialized.
+     *
+     * <p>If the constructor completes normally, returns the newly
+     * created and initialized instance.
+     *
+     * @param initargs array of objects to be passed as arguments to
+     * the constructor call; values of primitive types are wrapped in
+     * a wrapper object of the appropriate type (e.g. a <tt>float</tt>
+     * in a {@link java.lang.Float Float})
+     *
+     * @return a new object created by calling the constructor
+     * this object represents
+     * 
+     * @exception IllegalAccessException    if this <code>Constructor</code> object
+     *              enforces Java language access control and the underlying
+     *              constructor is inaccessible.
+     * @exception IllegalArgumentException  if the number of actual
+     *              and formal parameters differ; if an unwrapping
+     *              conversion for primitive arguments fails; or if,
+     *              after possible unwrapping, a parameter value
+     *              cannot be converted to the corresponding formal
+     *              parameter type by a method invocation conversion.
+     * @exception InstantiationException    if the class that declares the
+     *              underlying constructor represents an abstract class.
+     * @exception InvocationTargetException if the underlying constructor
+     *              throws an exception.
+     * @exception ExceptionInInitializerError if the initialization provoked
+     *              by this method fails.
+     */
+    public Object newInstance(Object[] initargs)
+=============================================================
+A 33 line (156 tokens) duplication:
+Starting at line 472 in c:\j2sdk1.4.1_01\src\java\security\UnresolvedPermission.java
+Starting at line 445 in c:\j2sdk1.4.1_01\src\java\security\CodeSource.java
+	    String certType = ois.readUTF();
+	    if (cfs.containsKey(certType)) {
+		// reuse certificate factory
+		cf = (CertificateFactory)cfs.get(certType);
+	    } else {
+		// create new certificate factory
+		try {
+		    cf = CertificateFactory.getInstance(certType);
+		} catch (CertificateException ce) {
+		    throw new ClassNotFoundException
+			("Certificate factory for "+certType+" not found");
+		}
+		// store the certificate factory so we can reuse it later
+		cfs.put(certType, cf);
+	    }
+	    // parse the certificate
+	    byte[] encoded=null;
+	    try {
+		encoded = new byte[ois.readInt()];
+	    } catch (OutOfMemoryError oome) {
+		throw new IOException("Certificate too big");
+	    }
+	    ois.readFully(encoded);
+	    ByteArrayInputStream bais = new ByteArrayInputStream(encoded);
+	    try {
+		this.certs[i] = cf.generateCertificate(bais);
+	    } catch (CertificateException ce) {
+		throw new IOException(ce.getMessage());
+	    }
+	    bais.close();
+	}
+    }
+}
+=============================================================
+A 84 line (161 tokens) duplication:
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectShortBufferS.java
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectShortBufferU.java
+		Bits.copyFromShortArray(src, offset << 1,
+					 ix(pos), length << 1);
+	    else
+		Bits.copyFromByteArray(src, offset << 1,
+				       ix(pos), length << 1);
+	    position(pos + length);
+	} else {
+	    super.put(src, offset, length);
+	}
+	return this;
+
+
+
+    }
+    
+    public ShortBuffer compact() {
+
+	int pos = position();
+	int lim = limit();
+	assert (pos <= lim);
+	int rem = (pos <= lim ? lim - pos : 0);
+
+ 	unsafe.copyMemory(ix(pos), ix(0), rem << 1);
+ 	position(rem);
+	limit(capacity());
+	return this;
+
+
+
+    }
+
+    public boolean isDirect() {
+	return true;
+    }
+
+    public boolean isReadOnly() {
+	return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ByteOrder order() {
+
+	return ((ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN)
+=============================================================
+A 84 line (161 tokens) duplication:
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectIntBufferS.java
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectIntBufferU.java
+		Bits.copyFromIntArray(src, offset << 2,
+					 ix(pos), length << 2);
+	    else
+		Bits.copyFromByteArray(src, offset << 2,
+				       ix(pos), length << 2);
+	    position(pos + length);
+	} else {
+	    super.put(src, offset, length);
+	}
+	return this;
+
+
+
+    }
+    
+    public IntBuffer compact() {
+
+	int pos = position();
+	int lim = limit();
+	assert (pos <= lim);
+	int rem = (pos <= lim ? lim - pos : 0);
+
+ 	unsafe.copyMemory(ix(pos), ix(0), rem << 2);
+ 	position(rem);
+	limit(capacity());
+	return this;
+
+
+
+    }
+
+    public boolean isDirect() {
+	return true;
+    }
+
+    public boolean isReadOnly() {
+	return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ByteOrder order() {
+
+	return ((ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN)
+=============================================================
+A 88 line (161 tokens) duplication:
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectFloatBufferU.java
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectFloatBufferS.java
+		Bits.copyFromFloatArray(src, offset << 2,
+					 ix(pos), length << 2);
+	    else
+		Bits.copyFromByteArray(src, offset << 2,
+				       ix(pos), length << 2);
+	    position(pos + length);
+	} else {
+	    super.put(src, offset, length);
+	}
+	return this;
+
+
+
+    }
+    
+    public FloatBuffer compact() {
+
+	int pos = position();
+	int lim = limit();
+	assert (pos <= lim);
+	int rem = (pos <= lim ? lim - pos : 0);
+
+ 	unsafe.copyMemory(ix(pos), ix(0), rem << 2);
+ 	position(rem);
+	limit(capacity());
+	return this;
+
+
+
+    }
+
+    public boolean isDirect() {
+	return true;
+    }
+
+    public boolean isReadOnly() {
+	return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ByteOrder order() {
+
+
+
+
+
+	return ((ByteOrder.nativeOrder() != ByteOrder.BIG_ENDIAN)
+=============================================================
+A 84 line (161 tokens) duplication:
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectDoubleBufferS.java
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectDoubleBufferU.java
+		Bits.copyFromDoubleArray(src, offset << 3,
+					 ix(pos), length << 3);
+	    else
+		Bits.copyFromByteArray(src, offset << 3,
+				       ix(pos), length << 3);
+	    position(pos + length);
+	} else {
+	    super.put(src, offset, length);
+	}
+	return this;
+
+
+
+    }
+    
+    public DoubleBuffer compact() {
+
+	int pos = position();
+	int lim = limit();
+	assert (pos <= lim);
+	int rem = (pos <= lim ? lim - pos : 0);
+
+ 	unsafe.copyMemory(ix(pos), ix(0), rem << 3);
+ 	position(rem);
+	limit(capacity());
+	return this;
+
+
+
+    }
+
+    public boolean isDirect() {
+	return true;
+    }
+
+    public boolean isReadOnly() {
+	return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ByteOrder order() {
+
+	return ((ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN)
+=============================================================
+A 43 line (188 tokens) duplication:
+Starting at line 602 in c:\j2sdk1.4.1_01\src\java\awt\image\BandedSampleModel.java
+Starting at line 934 in c:\j2sdk1.4.1_01\src\java\awt\image\ComponentSampleModel.java
+		data.setElem(bankIndices[i], pixelOffset + bandOffsets[i],
+                             iarray[i]);
+	    }
+	    break;
+
+	case DataBuffer.TYPE_FLOAT:
+
+	    float[] farray = (float[])obj;
+
+	    for (int i=0; i<numDataElems; i++) {
+		data.setElemFloat(bankIndices[i], pixelOffset + bandOffsets[i],
+                                  farray[i]);
+	    }
+	    break;
+
+	case DataBuffer.TYPE_DOUBLE:
+
+	    double[] darray = (double[])obj;
+
+	    for (int i=0; i<numDataElems; i++) {
+		data.setElemDouble(bankIndices[i], pixelOffset + bandOffsets[i],
+                                   darray[i]);
+	    }
+	    break;
+
+	}
+    }
+
+    /**
+     * Sets a pixel in the DataBuffer using an int array of samples for input.
+     * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+     * not in bounds.
+     * @param x,&nbsp;y The coordinates of the pixel location
+     * @param iArray    The input samples in an int array
+     * @param data      The DataBuffer containing the image data
+     * @see #getPixel(int, int, int[], DataBuffer)
+     */
+    public void setPixel(int x, int y, int iArray[], DataBuffer data) {
+        if ((x < 0) || (y < 0) || (x >= width) || (y >= height)) {
+            throw new ArrayIndexOutOfBoundsException
+                ("Coordinate out of bounds!");
+        }
+       int pixelOffset = y*scanlineStride + x;
+=============================================================
+A 18 line (188 tokens) duplication:
+Starting at line 417 in c:\j2sdk1.4.1_01\src\java\io\FilePermission.java
+Starting at line 238 in c:\j2sdk1.4.1_01\src\java\util\PropertyPermission.java
+	    if (i >= 3 && (a[i-3] == 'r' || a[i-3] == 'R') &&
+			  (a[i-2] == 'e' || a[i-2] == 'E') &&
+			  (a[i-1] == 'a' || a[i-1] == 'A') &&
+			  (a[i] == 'd' || a[i] == 'D'))
+	    {
+		matchlen = 4;
+		mask |= READ;
+
+	    } else if (i >= 4 && (a[i-4] == 'w' || a[i-4] == 'W') &&
+				 (a[i-3] == 'r' || a[i-3] == 'R') &&
+				 (a[i-2] == 'i' || a[i-2] == 'I') &&
+				 (a[i-1] == 't' || a[i-1] == 'T') &&
+				 (a[i] == 'e' || a[i] == 'E'))
+	    {
+		matchlen = 5;
+		mask |= WRITE;
+
+	    } else if (i >= 6 && (a[i-6] == 'e' || a[i-6] == 'E') &&
+=============================================================
+A 35 line (201 tokens) duplication:
+Starting at line 255 in c:\j2sdk1.4.1_01\src\java\nio\DirectDoubleBufferS.java
+Starting at line 255 in c:\j2sdk1.4.1_01\src\java\nio\DirectDoubleBufferU.java
+	    int spos = sb.position();
+	    int slim = sb.limit();
+	    assert (spos <= slim);
+	    int srem = (spos <= slim ? slim - spos : 0);
+
+	    int pos = position();
+	    int lim = limit();
+	    assert (pos <= lim);
+	    int rem = (pos <= lim ? lim - pos : 0);
+
+	    if (srem > rem)
+		throw new BufferOverflowException();
+ 	    unsafe.copyMemory(sb.ix(spos), ix(pos), srem << 3);
+ 	    sb.position(spos + srem);
+ 	    position(pos + srem);
+	} else if (!src.isDirect()) {
+
+	    int spos = src.position();
+	    int slim = src.limit();
+	    assert (spos <= slim);
+	    int srem = (spos <= slim ? slim - spos : 0);
+
+	    put(src.array(), src.arrayOffset() + spos, srem);
+	    src.position(spos + srem);
+
+	} else {
+	    super.put(src);
+	}
+	return this;
+
+
+
+    }
+
+    public DoubleBuffer put(double[] src, int offset, int length) {
+=============================================================
+A 168 line (212 tokens) duplication:
+Starting at line 437 in c:\j2sdk1.4.1_01\src\java\lang\StrictMath.java
+Starting at line 526 in c:\j2sdk1.4.1_01\src\java\lang\Math.java
+	return (int)floor(a + 0.5f);
+    }
+
+    /**
+     * Returns the closest <code>long</code> to the argument. The result 
+     * is rounded to an integer by adding 1/2, taking the floor of the 
+     * result, and casting the result to type <code>long</code>. In other 
+     * words, the result is equal to the value of the expression:
+     * <p><pre>(long)Math.floor(a + 0.5d)</pre>
+     * <p>
+     * Special cases:
+     * <ul><li>If the argument is NaN, the result is 0.
+     * <li>If the argument is negative infinity or any value less than or 
+     * equal to the value of <code>Long.MIN_VALUE</code>, the result is 
+     * equal to the value of <code>Long.MIN_VALUE</code>. 
+     * <li>If the argument is positive infinity or any value greater than or 
+     * equal to the value of <code>Long.MAX_VALUE</code>, the result is 
+     * equal to the value of <code>Long.MAX_VALUE</code>.</ul> 
+     *
+     * @param   a  a floating-point value to be rounded to a
+     *		<code>long</code>. 
+     * @return  the value of the argument rounded to the nearest
+     *          <code>long</code> value.
+     * @see     java.lang.Long#MAX_VALUE
+     * @see     java.lang.Long#MIN_VALUE
+     */
+    public static long round(double a) {
+	return (long)floor(a + 0.5d);
+    }
+
+    private static Random randomNumberGenerator;
+
+    private static synchronized void initRNG() {
+        if (randomNumberGenerator == null) 
+            randomNumberGenerator = new Random();
+    }
+
+    /**
+     * Returns a <code>double</code> value with a positive sign, greater 
+     * than or equal to <code>0.0</code> and less than <code>1.0</code>. 
+     * Returned values are chosen pseudorandomly with (approximately) 
+     * uniform distribution from that range. 
+     * <p>
+     * When this method is first called, it creates a single new 
+     * pseudorandom-number generator, exactly as if by the expression 
+     * <blockquote><pre>new java.util.Random</pre></blockquote>
+     * This new pseudorandom-number generator is used thereafter for all 
+     * calls to this method and is used nowhere else. 
+     * <p>
+     * This method is properly synchronized to allow correct use by more 
+     * than one thread. However, if many threads need to generate 
+     * pseudorandom numbers at a great rate, it may reduce contention for 
+     * each thread to have its own pseudorandom number generator.
+     *  
+     * @return  a pseudorandom <code>double</code> greater than or equal 
+     * to <code>0.0</code> and less than <code>1.0</code>.
+     * @see     java.util.Random#nextDouble()
+     */
+    public static double random() {
+        if (randomNumberGenerator == null) initRNG();
+        return randomNumberGenerator.nextDouble();
+    }
+
+    /**
+     * Returns the absolute value of an <code>int</code> value..
+     * If the argument is not negative, the argument is returned.
+     * If the argument is negative, the negation of the argument is returned. 
+     * <p>
+     * Note that if the argument is equal to the value of 
+     * <code>Integer.MIN_VALUE</code>, the most negative representable 
+     * <code>int</code> value, the result is that same value, which is 
+     * negative. 
+     *
+     * @param   a   the  argument whose absolute value is to be determined.
+     * @return  the absolute value of the argument.
+     * @see     java.lang.Integer#MIN_VALUE
+     */
+    public static int abs(int a) {
+	return (a < 0) ? -a : a;
+    }
+
+    /**
+     * Returns the absolute value of a <code>long</code> value.
+     * If the argument is not negative, the argument is returned.
+     * If the argument is negative, the negation of the argument is returned. 
+     * <p>
+     * Note that if the argument is equal to the value of 
+     * <code>Long.MIN_VALUE</code>, the most negative representable 
+     * <code>long</code> value, the result is that same value, which is 
+     * negative. 
+     *
+     * @param   a   the  argument whose absolute value is to be determined.
+     * @return  the absolute value of the argument.
+     * @see     java.lang.Long#MIN_VALUE
+     */
+    public static long abs(long a) {
+	return (a < 0) ? -a : a;
+    }
+
+    /**
+     * Returns the absolute value of a <code>float</code> value. 
+     * If the argument is not negative, the argument is returned.
+     * If the argument is negative, the negation of the argument is returned. 
+     * Special cases:
+     * <ul><li>If the argument is positive zero or negative zero, the 
+     * result is positive zero. 
+     * <li>If the argument is infinite, the result is positive infinity. 
+     * <li>If the argument is NaN, the result is NaN.</ul>
+     * In other words, the result is the same as the value of the expression: 
+     * <p><pre>Float.intBitsToFloat(0x7fffffff & Float.floatToIntBits(a))</pre>
+     *
+     * @param   a   the argument whose absolute value is to be determined
+     * @return  the absolute value of the argument.
+     */
+    public static float abs(float a) {
+        return (a <= 0.0F) ? 0.0F - a : a;
+    }
+  
+    /**
+     * Returns the absolute value of a <code>double</code> value.
+     * If the argument is not negative, the argument is returned.
+     * If the argument is negative, the negation of the argument is returned. 
+     * Special cases:
+     * <ul><li>If the argument is positive zero or negative zero, the result 
+     * is positive zero. 
+     * <li>If the argument is infinite, the result is positive infinity. 
+     * <li>If the argument is NaN, the result is NaN.</ul>
+     * In other words, the result is the same as the value of the expression: 
+     * <p><code>Double.longBitsToDouble((Double.doubleToLongBits(a)&lt;&lt;1)&gt;&gt;&gt;1)</code>
+     *
+     * @param   a   the argument whose absolute value is to be determined
+     * @return  the absolute value of the argument.
+     */
+    public static double abs(double a) {
+        return (a <= 0.0D) ? 0.0D - a : a;
+    }
+
+    /**
+     * Returns the greater of two <code>int</code> values. That is, the 
+     * result is the argument closer to the value of 
+     * <code>Integer.MAX_VALUE</code>. If the arguments have the same value, 
+     * the result is that same value.
+     *
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return  the larger of <code>a</code> and <code>b</code>.
+     * @see     java.lang.Long#MAX_VALUE
+     */
+    public static int max(int a, int b) {
+	return (a >= b) ? a : b;
+    }
+
+    /**
+     * Returns the greater of two <code>long</code> values. That is, the 
+     * result is the argument closer to the value of 
+     * <code>Long.MAX_VALUE</code>. If the arguments have the same value, 
+     * the result is that same value. 
+     *
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return  the larger of <code>a</code> and <code>b</code>.
+     * @see     java.lang.Long#MAX_VALUE
+     */
+    public static long max(long a, long b) {
+	return (a >= b) ? a : b;
+    }
+
+    private static long negativeZeroFloatBits = Float.floatToIntBits(-0.0f);
+=============================================================
+A 157 line (213 tokens) duplication:
+Starting at line 479 in c:\j2sdk1.4.1_01\src\java\awt\Choice.java
+Starting at line 383 in c:\j2sdk1.4.1_01\src\java\awt\Checkbox.java
+        newEventsOnly = true;
+    }
+
+    /**
+     * Removes the specified item listener so that it no longer receives
+     * item events from this <code>Choice</code> menu.
+     * If l is <code>null</code>, no exception is thrown and no
+     * action is performed.
+     * @param         l    the item listener
+     * @see           #addItemListener
+     * @see           #getItemListeners
+     * @see           java.awt.event.ItemEvent
+     * @see           java.awt.event.ItemListener
+     * @since         JDK1.1
+     */
+    public synchronized void removeItemListener(ItemListener l) {
+	if (l == null) {
+	    return;
+	}
+        itemListener = AWTEventMulticaster.remove(itemListener, l);
+    }
+
+    /**
+     * Returns an array of all the item listeners
+     * registered on this choice.
+     *
+     * @return all of this choice's <code>ItemListener</code>s
+     *         or an empty array if no item 
+     *         listeners are currently registered
+     *
+     * @see           #addItemListener
+     * @see           #removeItemListener
+     * @see           java.awt.event.ItemEvent
+     * @see           java.awt.event.ItemListener
+     * @since 1.4
+     */
+    public synchronized ItemListener[] getItemListeners() {
+        return (ItemListener[])(getListeners(ItemListener.class));
+    }
+
+    /**
+     * Returns an array of all the objects currently registered
+     * as <code><em>Foo</em>Listener</code>s
+     * upon this <code>Choice</code>.
+     * <code><em>Foo</em>Listener</code>s are registered using the
+     * <code>add<em>Foo</em>Listener</code> method.
+     *
+     * <p>
+     * You can specify the <code>listenerType</code> argument
+     * with a class literal, such as
+     * <code><em>Foo</em>Listener.class</code>.
+     * For example, you can query a
+     * <code>Choice</code> <code>c</code>
+     * for its item listeners with the following code:
+     *
+     * <pre>ItemListener[] ils = (ItemListener[])(c.getListeners(ItemListener.class));</pre>
+     *
+     * If no such listeners exist, this method returns an empty array.
+     *
+     * @param listenerType the type of listeners requested; this parameter
+     *          should specify an interface that descends from
+     *          <code>java.util.EventListener</code>
+     * @return an array of all objects registered as
+     *          <code><em>Foo</em>Listener</code>s on this choice,
+     *          or an empty array if no such
+     *          listeners have been added
+     * @exception ClassCastException if <code>listenerType</code>
+     *          doesn't specify a class or interface that implements
+     *          <code>java.util.EventListener</code>
+     *
+     * @see #getItemListeners
+     * @since 1.3
+     */
+    public EventListener[] getListeners(Class listenerType) { 
+	EventListener l = null; 
+	if  (listenerType == ItemListener.class) { 
+	    l = itemListener;
+	} else {
+	    return super.getListeners(listenerType);
+	}
+	return AWTEventMulticaster.getListeners(l, listenerType);
+    }
+
+    // REMIND: remove when filtering is done at lower level
+    boolean eventEnabled(AWTEvent e) {
+        if (e.id == ItemEvent.ITEM_STATE_CHANGED) {
+            if ((eventMask & AWTEvent.ITEM_EVENT_MASK) != 0 ||
+                itemListener != null) {
+                return true;
+            }
+            return false;
+        }
+        return super.eventEnabled(e);
+    }
+
+    /**
+     * Processes events on this choice. If the event is an
+     * instance of <code>ItemEvent</code>, it invokes the
+     * <code>processItemEvent</code> method. Otherwise, it calls its
+     * superclass's <code>processEvent</code> method.
+     * <p>Note that if the event parameter is <code>null</code>
+     * the behavior is unspecified and may result in an
+     * exception.
+     *
+     * @param      e the event
+     * @see        java.awt.event.ItemEvent
+     * @see        #processItemEvent
+     * @since      JDK1.1
+     */
+    protected void processEvent(AWTEvent e) {
+        if (e instanceof ItemEvent) {
+            processItemEvent((ItemEvent)e);
+            return;
+        }
+	super.processEvent(e);
+    }
+
+    /**
+     * Processes item events occurring on this <code>Choice</code>
+     * menu by dispatching them to any registered
+     * <code>ItemListener</code> objects.
+     * <p>
+     * This method is not called unless item events are
+     * enabled for this component. Item events are enabled
+     * when one of the following occurs:
+     * <p><ul>
+     * <li>An <code>ItemListener</code> object is registered
+     * via <code>addItemListener</code>.
+     * <li>Item events are enabled via <code>enableEvents</code>.
+     * </ul>
+     * <p>Note that if the event parameter is <code>null</code>
+     * the behavior is unspecified and may result in an
+     * exception.
+     *
+     * @param       e the item event
+     * @see         java.awt.event.ItemEvent
+     * @see         java.awt.event.ItemListener
+     * @see         #addItemListener
+     * @see         java.awt.Component#enableEvents
+     * @since       JDK1.1
+     */
+    protected void processItemEvent(ItemEvent e) {
+        if (itemListener != null) {
+            itemListener.itemStateChanged(e);
+        }
+    }
+
+    /**
+     * Returns a string representing the state of this <code>Choice</code>
+     * menu. This method is intended to be used only for debugging purposes,
+     * and the content and format of the returned string may vary between
+     * implementations. The returned string may be empty but may not be
+     * <code>null</code>.
+     *
+     * @return    the parameter string of this <code>Choice</code> menu
+     */
+    protected String paramString() {
+=============================================================
+A 35 line (226 tokens) duplication:
+Starting at line 372 in c:\j2sdk1.4.1_01\src\java\lang\Package.java
+Starting at line 279 in c:\j2sdk1.4.1_01\src\java\net\URLClassLoader.java
+	    specTitle   = attr.getValue(Name.SPECIFICATION_TITLE);
+	    specVersion = attr.getValue(Name.SPECIFICATION_VERSION);
+	    specVendor  = attr.getValue(Name.SPECIFICATION_VENDOR);
+	    implTitle   = attr.getValue(Name.IMPLEMENTATION_TITLE);
+	    implVersion = attr.getValue(Name.IMPLEMENTATION_VERSION);
+	    implVendor  = attr.getValue(Name.IMPLEMENTATION_VENDOR);
+	    sealed      = attr.getValue(Name.SEALED);
+	}
+	attr = man.getMainAttributes();
+	if (attr != null) {
+	    if (specTitle == null) {
+		specTitle = attr.getValue(Name.SPECIFICATION_TITLE);
+	    }
+	    if (specVersion == null) {
+		specVersion = attr.getValue(Name.SPECIFICATION_VERSION);
+	    }
+	    if (specVendor == null) {
+		specVendor = attr.getValue(Name.SPECIFICATION_VENDOR);
+	    }
+	    if (implTitle == null) {
+		implTitle = attr.getValue(Name.IMPLEMENTATION_TITLE);
+	    }
+	    if (implVersion == null) {
+		implVersion = attr.getValue(Name.IMPLEMENTATION_VERSION);
+	    }
+	    if (implVendor == null) {
+		implVendor = attr.getValue(Name.IMPLEMENTATION_VENDOR);
+	    }
+	    if (sealed == null) {
+		sealed = attr.getValue(Name.SEALED);
+	    }
+	}
+	if ("true".equalsIgnoreCase(sealed)) {
+	    sealBase = url;
+	}
+=============================================================
+A 37 line (226 tokens) duplication:
+Starting at line 255 in c:\j2sdk1.4.1_01\src\java\nio\DirectLongBufferU.java
+Starting at line 255 in c:\j2sdk1.4.1_01\src\java\nio\DirectLongBufferS.java
+	    int spos = sb.position();
+	    int slim = sb.limit();
+	    assert (spos <= slim);
+	    int srem = (spos <= slim ? slim - spos : 0);
+
+	    int pos = position();
+	    int lim = limit();
+	    assert (pos <= lim);
+	    int rem = (pos <= lim ? lim - pos : 0);
+
+	    if (srem > rem)
+		throw new BufferOverflowException();
+ 	    unsafe.copyMemory(sb.ix(spos), ix(pos), srem << 3);
+ 	    sb.position(spos + srem);
+ 	    position(pos + srem);
+	} else if (!src.isDirect()) {
+
+	    int spos = src.position();
+	    int slim = src.limit();
+	    assert (spos <= slim);
+	    int srem = (spos <= slim ? slim - spos : 0);
+
+	    put(src.array(), src.arrayOffset() + spos, srem);
+	    src.position(spos + srem);
+
+	} else {
+	    super.put(src);
+	}
+	return this;
+
+
+
+    }
+
+    public LongBuffer put(long[] src, int offset, int length) {
+
+	if ((length << 3) > Bits.JNI_COPY_FROM_ARRAY_THRESHOLD) {
+=============================================================
+A 98 line (231 tokens) duplication:
+Starting at line 291 in c:\j2sdk1.4.1_01\src\java\nio\DirectLongBufferU.java
+Starting at line 291 in c:\j2sdk1.4.1_01\src\java\nio\DirectLongBufferS.java
+	if ((length << 3) > Bits.JNI_COPY_FROM_ARRAY_THRESHOLD) {
+	    checkBounds(offset, length, src.length);
+	    int pos = position();
+	    int lim = limit();
+	    assert (pos <= lim);
+	    int rem = (pos <= lim ? lim - pos : 0);
+	    if (length > rem)
+		throw new BufferOverflowException();
+
+	    if (order() != ByteOrder.nativeOrder()) 
+		Bits.copyFromLongArray(src, offset << 3,
+					 ix(pos), length << 3);
+	    else
+		Bits.copyFromByteArray(src, offset << 3,
+				       ix(pos), length << 3);
+	    position(pos + length);
+	} else {
+	    super.put(src, offset, length);
+	}
+	return this;
+
+
+
+    }
+    
+    public LongBuffer compact() {
+
+	int pos = position();
+	int lim = limit();
+	assert (pos <= lim);
+	int rem = (pos <= lim ? lim - pos : 0);
+
+ 	unsafe.copyMemory(ix(pos), ix(0), rem << 3);
+ 	position(rem);
+	limit(capacity());
+	return this;
+
+
+
+    }
+
+    public boolean isDirect() {
+	return true;
+    }
+
+    public boolean isReadOnly() {
+	return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ByteOrder order() {
+
+
+
+
+
+	return ((ByteOrder.nativeOrder() != ByteOrder.BIG_ENDIAN)
+=============================================================
+A 118 line (231 tokens) duplication:
+Starting at line 798 in c:\j2sdk1.4.1_01\src\java\net\DatagramSocket.java
+Starting at line 944 in c:\j2sdk1.4.1_01\src\java\net\Socket.java
+    public synchronized void setSendBufferSize(int size)
+    throws SocketException{
+	if (!(size > 0)) {
+	    throw new IllegalArgumentException("negative send size");
+	}
+	if (isClosed())
+	    throw new SocketException("Socket is closed");
+	getImpl().setOption(SocketOptions.SO_SNDBUF, new Integer(size));
+    }
+
+    /**
+     * Get value of the SO_SNDBUF option for this <tt>DatagramSocket</tt>, that is the
+     * buffer size used by the platform for output on this <tt>DatagramSocket</tt>.
+     *
+     * @return the value of the SO_SNDBUF option for this <tt>DatagramSocket</tt>
+     * @exception SocketException if there is an error in 
+     * the underlying protocol, such as an UDP error.
+     * @see #setSendBufferSize
+     */
+    public synchronized int getSendBufferSize() throws SocketException {
+	if (isClosed())
+	    throw new SocketException("Socket is closed");
+	int result = 0;
+	Object o = getImpl().getOption(SocketOptions.SO_SNDBUF);
+	if (o instanceof Integer) {
+	    result = ((Integer)o).intValue();
+	}
+	return result;
+    }
+
+    /**
+     * Sets the SO_RCVBUF option to the specified value for this
+     * <tt>DatagramSocket</tt>. The SO_RCVBUF option is used by the
+     * the network implementation as a hint to size the underlying
+     * network I/O buffers. The SO_RCVBUF setting may also be used
+     * by the network implementation to determine the maximum size
+     * of the packet that can be received on this socket.
+     * <p>
+     * Because SO_RCVBUF is a hint, applications that want to
+     * verify what size the buffers were set to should call
+     * {@link #getReceiveBufferSize()}.
+     * <p>
+     * Increasing SO_RCVBUF may allow the network implementation
+     * to buffer multiple packets when packets arrive faster than
+     * are being received using {@link #receive()}.
+     * <p>
+     * Note: It is implementation specific if a packet larger
+     * than SO_RCVBUF can be received.
+     *
+     * @param size the size to which to set the receive buffer
+     * size. This value must be greater than 0.
+     *
+     * @exception SocketException if there is an error in 
+     * the underlying protocol, such as an UDP error.
+     * @exception IllegalArgumentException if the value is 0 or is
+     * negative.
+     * @see #getReceiveBufferSize()
+     */
+    public synchronized void setReceiveBufferSize(int size)
+    throws SocketException{
+	if (size <= 0) {
+	    throw new IllegalArgumentException("invalid receive size");
+	}
+	if (isClosed())
+	    throw new SocketException("Socket is closed");
+	getImpl().setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+    }
+
+    /**
+     * Get value of the SO_RCVBUF option for this <tt>DatagramSocket</tt>, that is the
+     * buffer size used by the platform for input on this <tt>DatagramSocket</tt>.
+     *
+     * @return the value of the SO_RCVBUF option for this <tt>DatagramSocket</tt>
+     * @exception SocketException if there is an error in the underlying protocol, such as an UDP error.
+     * @see #setReceiveBufferSize(int)
+     */
+    public synchronized int getReceiveBufferSize()
+    throws SocketException{
+	if (isClosed())
+	    throw new SocketException("Socket is closed");
+	int result = 0;
+	Object o = getImpl().getOption(SocketOptions.SO_RCVBUF);
+	if (o instanceof Integer) {
+	    result = ((Integer)o).intValue();
+	}
+	return result;
+    }
+
+    /**
+     * Enable/disable the SO_REUSEADDR socket option.
+     * <p>
+     * For UDP sockets it may be necessary to bind more than one
+     * socket to the same socket address. This is typically for the
+     * purpose of receiving multicast packets
+     * (See {@link #java.net.MulticastSocket}). The
+     * <tt>SO_REUSEADDR</tt> socket option allows multiple
+     * sockets to be bound to the same socket address if the
+     * <tt>SO_REUSEADDR</tt> socket option is enabled prior
+     * to binding the socket using {@link #bind(SocketAddress)}.
+     * <p>
+     * When a <tt>DatagramSocket</tt> is created the initial setting
+     * of <tt>SO_REUSEADDR</tt> is disabled.
+     * <p>
+     * The behaviour when <tt>SO_REUSEADDR</tt> is enabled or
+     * disabled after a socket is bound (See {@link #isBound()})
+     * is not defined.
+     * 
+     * @param on  whether to enable or disable the 
+     * @exception SocketException if an error occurs enabling or
+     *            disabling the <tt>SO_RESUEADDR</tt> socket option,
+     *	   	  or the socket is closed.
+     * @since 1.4
+     * @see #getReuseAddress()     
+     * @see #bind(SocketAddress)     
+     * @see #isBound()
+     * @see #isClosed()
+     */
+    public synchronized void setReuseAddress(boolean on) throws SocketException {
+=============================================================
+A 162 line (238 tokens) duplication:
+Starting at line 474 in c:\j2sdk1.4.1_01\src\java\awt\Choice.java
+Starting at line 378 in c:\j2sdk1.4.1_01\src\java\awt\Checkbox.java
+    public synchronized void addItemListener(ItemListener l) {
+	if (l == null) {
+	   return;
+	}
+        itemListener = AWTEventMulticaster.add(itemListener, l);
+        newEventsOnly = true;
+    }
+
+    /**
+     * Removes the specified item listener so that it no longer receives
+     * item events from this <code>Choice</code> menu.
+     * If l is <code>null</code>, no exception is thrown and no
+     * action is performed.
+     * @param         l    the item listener
+     * @see           #addItemListener
+     * @see           #getItemListeners
+     * @see           java.awt.event.ItemEvent
+     * @see           java.awt.event.ItemListener
+     * @since         JDK1.1
+     */
+    public synchronized void removeItemListener(ItemListener l) {
+	if (l == null) {
+	    return;
+	}
+        itemListener = AWTEventMulticaster.remove(itemListener, l);
+    }
+
+    /**
+     * Returns an array of all the item listeners
+     * registered on this choice.
+     *
+     * @return all of this choice's <code>ItemListener</code>s
+     *         or an empty array if no item 
+     *         listeners are currently registered
+     *
+     * @see           #addItemListener
+     * @see           #removeItemListener
+     * @see           java.awt.event.ItemEvent
+     * @see           java.awt.event.ItemListener
+     * @since 1.4
+     */
+    public synchronized ItemListener[] getItemListeners() {
+        return (ItemListener[])(getListeners(ItemListener.class));
+    }
+
+    /**
+     * Returns an array of all the objects currently registered
+     * as <code><em>Foo</em>Listener</code>s
+     * upon this <code>Choice</code>.
+     * <code><em>Foo</em>Listener</code>s are registered using the
+     * <code>add<em>Foo</em>Listener</code> method.
+     *
+     * <p>
+     * You can specify the <code>listenerType</code> argument
+     * with a class literal, such as
+     * <code><em>Foo</em>Listener.class</code>.
+     * For example, you can query a
+     * <code>Choice</code> <code>c</code>
+     * for its item listeners with the following code:
+     *
+     * <pre>ItemListener[] ils = (ItemListener[])(c.getListeners(ItemListener.class));</pre>
+     *
+     * If no such listeners exist, this method returns an empty array.
+     *
+     * @param listenerType the type of listeners requested; this parameter
+     *          should specify an interface that descends from
+     *          <code>java.util.EventListener</code>
+     * @return an array of all objects registered as
+     *          <code><em>Foo</em>Listener</code>s on this choice,
+     *          or an empty array if no such
+     *          listeners have been added
+     * @exception ClassCastException if <code>listenerType</code>
+     *          doesn't specify a class or interface that implements
+     *          <code>java.util.EventListener</code>
+     *
+     * @see #getItemListeners
+     * @since 1.3
+     */
+    public EventListener[] getListeners(Class listenerType) { 
+	EventListener l = null; 
+	if  (listenerType == ItemListener.class) { 
+	    l = itemListener;
+	} else {
+	    return super.getListeners(listenerType);
+	}
+	return AWTEventMulticaster.getListeners(l, listenerType);
+    }
+
+    // REMIND: remove when filtering is done at lower level
+    boolean eventEnabled(AWTEvent e) {
+        if (e.id == ItemEvent.ITEM_STATE_CHANGED) {
+            if ((eventMask & AWTEvent.ITEM_EVENT_MASK) != 0 ||
+                itemListener != null) {
+                return true;
+            }
+            return false;
+        }
+        return super.eventEnabled(e);
+    }
+
+    /**
+     * Processes events on this choice. If the event is an
+     * instance of <code>ItemEvent</code>, it invokes the
+     * <code>processItemEvent</code> method. Otherwise, it calls its
+     * superclass's <code>processEvent</code> method.
+     * <p>Note that if the event parameter is <code>null</code>
+     * the behavior is unspecified and may result in an
+     * exception.
+     *
+     * @param      e the event
+     * @see        java.awt.event.ItemEvent
+     * @see        #processItemEvent
+     * @since      JDK1.1
+     */
+    protected void processEvent(AWTEvent e) {
+        if (e instanceof ItemEvent) {
+            processItemEvent((ItemEvent)e);
+            return;
+        }
+	super.processEvent(e);
+    }
+
+    /**
+     * Processes item events occurring on this <code>Choice</code>
+     * menu by dispatching them to any registered
+     * <code>ItemListener</code> objects.
+     * <p>
+     * This method is not called unless item events are
+     * enabled for this component. Item events are enabled
+     * when one of the following occurs:
+     * <p><ul>
+     * <li>An <code>ItemListener</code> object is registered
+     * via <code>addItemListener</code>.
+     * <li>Item events are enabled via <code>enableEvents</code>.
+     * </ul>
+     * <p>Note that if the event parameter is <code>null</code>
+     * the behavior is unspecified and may result in an
+     * exception.
+     *
+     * @param       e the item event
+     * @see         java.awt.event.ItemEvent
+     * @see         java.awt.event.ItemListener
+     * @see         #addItemListener
+     * @see         java.awt.Component#enableEvents
+     * @since       JDK1.1
+     */
+    protected void processItemEvent(ItemEvent e) {
+        if (itemListener != null) {
+            itemListener.itemStateChanged(e);
+        }
+    }
+
+    /**
+     * Returns a string representing the state of this <code>Choice</code>
+     * menu. This method is intended to be used only for debugging purposes,
+     * and the content and format of the returned string may vary between
+     * implementations. The returned string may be empty but may not be
+     * <code>null</code>.
+     *
+     * @return    the parameter string of this <code>Choice</code> menu
+     */
+    protected String paramString() {
+=============================================================
+A 69 line (247 tokens) duplication:
+Starting at line 947 in c:\j2sdk1.4.1_01\src\java\awt\geom\QuadCurve2D.java
+Starting at line 1277 in c:\j2sdk1.4.1_01\src\java\awt\geom\CubicCurve2D.java
+    private static int getTag(double coord, double low, double high) {
+	if (coord <= low) {
+	    return (coord < low ? BELOW : LOWEDGE);
+	}
+	if (coord >= high) {
+	    return (coord > high ? ABOVE : HIGHEDGE);
+	}
+	return INSIDE;
+    }
+
+    /*
+     * Determine if the pttag represents a coordinate that is already
+     * in its test range, or is on the border with either of the two
+     * opttags representing another coordinate that is "towards the
+     * inside" of that test range.  In other words, are either of the
+     * two "opt" points "drawing the pt inward"?
+     */
+    private static boolean inwards(int pttag, int opt1tag, int opt2tag) {
+	switch (pttag) {
+	case BELOW:
+	case ABOVE:
+	default:
+	    return false;
+	case LOWEDGE:
+	    return (opt1tag >= INSIDE || opt2tag >= INSIDE);
+	case INSIDE:
+	    return true;
+	case HIGHEDGE:
+	    return (opt1tag <= INSIDE || opt2tag <= INSIDE);
+	}
+    }
+
+    /**
+     * Tests if the shape of this <code>QuadCurve2D</code> intersects the
+     * interior of a specified set of rectangular coordinates.
+     * @param x,&nbsp;y the coordinates of the upper-left corner of the
+     *		specified rectangular area
+     * @param w the width of the specified rectangular area
+     * @param h the height of the specified rectangular area
+     * @return <code>true</code> if the shape of this
+     * 		<code>QuadCurve2D</code> intersects the interior of the
+     *		specified set of rectangular coordinates;
+     *		<code>false</code> otherwise.
+     */
+    public boolean intersects(double x, double y, double w, double h) {
+	// Trivially reject non-existant rectangles
+	if (w < 0 || h < 0) {
+	    return false;
+	}
+
+	// Trivially accept if either endpoint is inside the rectangle
+	// (not on its border since it may end there and not go inside)
+	// Record where they lie with respect to the rectangle.
+	//     -1 => left, 0 => inside, 1 => right
+	double x1 = getX1();
+	double y1 = getY1();
+	int x1tag = getTag(x1, x, x+w);
+	int y1tag = getTag(y1, y, y+h);
+	if (x1tag == INSIDE && y1tag == INSIDE) {
+	    return true;
+	}
+	double x2 = getX2();
+	double y2 = getY2();
+	int x2tag = getTag(x2, x, x+w);
+	int y2tag = getTag(y2, y, y+h);
+	if (x2tag == INSIDE && y2tag == INSIDE) {
+	    return true;
+	}
+	double ctrlx = getCtrlX();
+=============================================================
+A 126 line (304 tokens) duplication:
+Starting at line 604 in c:\j2sdk1.4.1_01\src\java\lang\StrictMath.java
+Starting at line 693 in c:\j2sdk1.4.1_01\src\java\lang\Math.java
+    private static long negativeZeroFloatBits = Float.floatToIntBits(-0.0f);
+    private static long negativeZeroDoubleBits = Double.doubleToLongBits(-0.0d);
+
+    /**
+     * Returns the greater of two <code>float</code> values.  That is,
+     * the result is the argument closer to positive infinity. If the
+     * arguments have the same value, the result is that same
+     * value. If either value is NaN, then the result is NaN.  Unlike
+     * the the numerical comparison operators, this method considers
+     * negative zero to be strictly smaller than positive zero. If one
+     * argument is positive zero and the other negative zero, the
+     * result is positive zero.
+     *
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return  the larger of <code>a</code> and <code>b</code>.
+     */
+    public static float max(float a, float b) {
+        if (a != a) return a;	// a is NaN
+	if ((a == 0.0f) && (b == 0.0f)
+	    && (Float.floatToIntBits(a) == negativeZeroFloatBits)) {
+	    return b;
+	}
+	return (a >= b) ? a : b;
+    }
+
+    /**
+     * Returns the greater of two <code>double</code> values.  That
+     * is, the result is the argument closer to positive infinity. If
+     * the arguments have the same value, the result is that same
+     * value. If either value is NaN, then the result is NaN.  Unlike
+     * the the numerical comparison operators, this method considers
+     * negative zero to be strictly smaller than positive zero. If one
+     * argument is positive zero and the other negative zero, the
+     * result is positive zero.
+     *
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return  the larger of <code>a</code> and <code>b</code>.
+     */
+    public static double max(double a, double b) {
+        if (a != a) return a;	// a is NaN
+	if ((a == 0.0d) && (b == 0.0d)
+	    && (Double.doubleToLongBits(a) == negativeZeroDoubleBits)) {
+	    return b;
+	}
+	return (a >= b) ? a : b;
+    }
+
+    /**
+     * Returns the smaller of two <code>int</code> values. That is,
+     * the result the argument closer to the value of
+     * <code>Integer.MIN_VALUE</code>.  If the arguments have the same
+     * value, the result is that same value.
+     *
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return  the smaller of <code>a</code> and <code>b</code>.
+     * @see     java.lang.Long#MIN_VALUE
+     */
+    public static int min(int a, int b) {
+	return (a <= b) ? a : b;
+    }
+
+    /**
+     * Returns the smaller of two <code>long</code> values. That is,
+     * the result is the argument closer to the value of
+     * <code>Long.MIN_VALUE</code>. If the arguments have the same
+     * value, the result is that same value.
+     *
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return  the smaller of <code>a</code> and <code>b</code>.
+     * @see     java.lang.Long#MIN_VALUE
+     */
+    public static long min(long a, long b) {
+	return (a <= b) ? a : b;
+    }
+
+    /**
+     * Returns the smaller of two <code>float</code> values.  That is,
+     * the result is the value closer to negative infinity. If the
+     * arguments have the same value, the result is that same
+     * value. If either value is NaN, then the result is NaN.  Unlike
+     * the the numerical comparison operators, this method considers
+     * negative zero to be strictly smaller than positive zero.  If
+     * one argument is positive zero and the other is negative zero,
+     * the result is negative zero.
+     *
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return  the smaller of <code>a</code> and <code>b.</code>
+     */
+    public static float min(float a, float b) {
+        if (a != a) return a;	// a is NaN
+	if ((a == 0.0f) && (b == 0.0f)
+	    && (Float.floatToIntBits(b) == negativeZeroFloatBits)) {
+	    return b;
+	}
+	return (a <= b) ? a : b;
+    }
+
+    /**
+     * Returns the smaller of two <code>double</code> values.  That
+     * is, the result is the value closer to negative infinity. If the
+     * arguments have the same value, the result is that same
+     * value. If either value is NaN, then the result is NaN.  Unlike
+     * the the numerical comparison operators, this method considers
+     * negative zero to be strictly smaller than positive zero. If one
+     * argument is positive zero and the other is negative zero, the
+     * result is negative zero.
+     *
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return  the smaller of <code>a</code> and <code>b</code>.
+     */
+    public static double min(double a, double b) {
+        if (a != a) return a;	// a is NaN
+	if ((a == 0.0d) && (b == 0.0d)
+	    && (Double.doubleToLongBits(b) == negativeZeroDoubleBits)) {
+	    return b;
+	}
+	return (a <= b) ? a : b;
+    }
+
+}
+=============================================================
+A 73 line (335 tokens) duplication:
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectCharBufferS.java
+Starting at line 301 in c:\j2sdk1.4.1_01\src\java\nio\DirectCharBufferU.java
+		Bits.copyFromCharArray(src, offset << 1,
+					 ix(pos), length << 1);
+	    else
+		Bits.copyFromByteArray(src, offset << 1,
+				       ix(pos), length << 1);
+	    position(pos + length);
+	} else {
+	    super.put(src, offset, length);
+	}
+	return this;
+
+
+
+    }
+    
+    public CharBuffer compact() {
+
+	int pos = position();
+	int lim = limit();
+	assert (pos <= lim);
+	int rem = (pos <= lim ? lim - pos : 0);
+
+ 	unsafe.copyMemory(ix(pos), ix(0), rem << 1);
+ 	position(rem);
+	limit(capacity());
+	return this;
+
+
+
+    }
+
+    public boolean isDirect() {
+	return true;
+    }
+
+    public boolean isReadOnly() {
+	return false;
+    }
+
+
+
+
+    public String toString(int start, int end) {
+	if ((end > limit()) || (start > end))
+	    throw new IndexOutOfBoundsException();
+	try {
+	    int len = end - start;
+	    char[] ca = new char[len];
+	    CharBuffer cb = CharBuffer.wrap(ca);
+	    CharBuffer db = this.duplicate();
+	    db.position(start);
+	    db.limit(end);
+	    cb.put(db);
+	    return new String(ca);
+	} catch (StringIndexOutOfBoundsException x) {
+	    throw new IndexOutOfBoundsException();
+	}
+    }
+
+
+    // --- Methods to support CharSequence ---
+
+    public CharSequence subSequence(int start, int end) {
+	int len = length();
+	int pos = position();
+	assert (pos <= len);
+	pos = (pos <= len ? pos : len);
+
+	if ((start < 0) || (end > len) || (start > end))
+	    throw new IndexOutOfBoundsException();
+	int sublen = end - start;
+ 	int off = (pos + start) << 1;
+	return new DirectCharBufferS(this, -1, 0, sublen, sublen, off);
+=============================================================
+A 61 line (481 tokens) duplication:
+Starting at line 253 in c:\j2sdk1.4.1_01\src\java\text\CharacterBreakData.java
+Starting at line 253 in c:\j2sdk1.4.1_01\src\java\text\CharacterBreakData.java
+            baseForm, baseForm, baseLF, baseForm, baseForm, baseCR, baseForm, baseForm,
+        //  dle       dc1       dc2       dc3       dc4       nak       syn       etb
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  can       em        sub       esc       fs        gs        rs        us
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  sp        !         "         #         $         %         &         '
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  (         )         *         +         ,         -         .         /
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  0         1         2         3         4         5         6         7
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  8         9         :         ;         <         =         >         ?
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  @         A         B         C         D         E         F         G
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  H         I         J         K         L         M         N         O
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  P         Q         R         S         T         U         V         W
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  X         Y         Z         [         \         ]         ^         _
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  `         a         b         c         d         e         f         g
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  h         i         j         k         l         m         n         o
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  p         q         r         s         t         u         v         w
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  x         y         z         {         |         }         ~         del
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  ctrl      ctrl      ctrl      ctrl      ctrl      ctrl      ctrl      ctrl
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  ctrl      ctrl      ctrl      ctrl      ctrl      ctrl      ctrl      ctrl
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  ctrl      ctrl      ctrl      ctrl      ctrl      ctrl      ctrl      ctrl
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  ctrl      ctrl      ctrl      ctrl      ctrl      ctrl      ctrl      ctrl
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  nbsp      inv-!     cents     pounds    currency  yen       broken-bar  section
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  umlaut    copyright super-a   gui-left  not       soft-hyph registered  macron
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  degree    +/-       super-2   super-3   acute     micro     paragraph  bullet
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  cedilla   super-1   super-o   gui-right 1/4       1/2       3/4      inv-?
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  A-grave   A-acute   A-hat     A-tilde   A-umlaut A-ring    AE        C-cedilla
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  E-grave   E-acute   E-hat     E-umlaut  I-grave   I-acute   I-hat    I-umlaut
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  Edh       N-tilde   O-grave   O-acute   O-hat     O-tilde   O-umlaut times
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  O-slash   U-grave   U-acute   U-hat     U-umlaut  Y-acute   Thorn    ess-zed
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  a-grave   a-acute   a-hat     a-tilde   a-umlaut  a-ring    ae       c-cedilla
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  e-grave   e-acute   e-hat     e-umlaut  i-grave   i-acute   i-hat    i-umlaut
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  edh       n-tilde   o-grave   o-acute   o-hat     o-tilde   o-umlaut  over
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm,
+        //  o-slash   u-grave   u-acute   u-hat     u-umlaut  y-acute   thorn    y-umlaut
+            baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm, baseForm
+
+That took 60526823
