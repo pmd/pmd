@@ -335,6 +335,7 @@ ASTCompilationUnit CompilationUnit() :
   ( ImportDeclaration() )*
   ( TypeDeclaration() )*
   ( < "\u001a" > )?
+  ( < "~[]" > )?
   <EOF>
         {
 		  return jjtThis;

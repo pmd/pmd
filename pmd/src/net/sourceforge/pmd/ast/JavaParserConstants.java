@@ -244,6 +244,7 @@ public interface JavaParserConstants {
     "\">>=\"",
     "\">>>=\"",
     "\"\\u001a\"",
+    "\"~[]\"",
   };
 
 }
