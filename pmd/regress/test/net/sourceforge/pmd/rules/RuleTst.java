@@ -19,31 +19,28 @@ public class RuleTst extends TestCase {
 
     private static final String TEST_FILE_DIR = "test-data/";
 
-    public Report process(String fileName, Rule rule) throws Throwable {
-        PMD p = new PMD();
-        String _fileName = TEST_FILE_DIR + fileName;
-        RuleContext ctx = new RuleContext();
-        Report report = new Report();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename(_fileName);
-        RuleSet rules = new RuleSet();
-        rules.addRule(rule);
-        p.processFile(ResourceLoader.loadResourceAsStream(_fileName), rules, ctx);
-        return ctx.getReport();
-    }
-
-    public void process(String fileName, Rule rule, Report report) throws Throwable {
-        PMD p = new PMD();
-        String _fileName = TEST_FILE_DIR + fileName;
-        RuleContext ctx = new RuleContext();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename(_fileName);
-        RuleSet rules = new RuleSet();
-        rules.addRule(rule);
-        p.processFile(ResourceLoader.loadResourceAsStream(_fileName), rules, ctx);
-    }
-
     public void runTest(String filename, int expectedResults, Rule rule) throws Throwable {
         assertEquals(expectedResults, process(filename, rule).size());
     }
+
+    public Report process(String fileName, Rule rule) throws Throwable {
+        Report report = new Report();
+        process(fileName, rule, report);
+        return report;
+    }
+
+    public void process(String fileName, Rule rule, Report report) throws Throwable {
+        processWithFullPath(TEST_FILE_DIR + fileName, rule, report);
+    }
+
+    public void processWithFullPath(String fullFileName, Rule rule, Report report) throws Throwable {
+        PMD p = new PMD();
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(report);
+        ctx.setSourceCodeFilename(fullFileName);
+        RuleSet rules = new RuleSet();
+        rules.addRule(rule);
+        p.processFile(ResourceLoader.loadResourceAsStream(fullFileName), rules, ctx);
+    }
+
 }
