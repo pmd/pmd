@@ -570,7 +570,7 @@ void FormalParameters() :
 void FormalParameter() :
 {}
 {
-  [ "final" ] Type() VariableDeclaratorId()
+  [ "final" {((AccessNode)jjtThis).setFinal();} ] Type() VariableDeclaratorId()
 }
 
 void ConstructorDeclaration() :

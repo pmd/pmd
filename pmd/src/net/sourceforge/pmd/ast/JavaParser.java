@@ -1403,6 +1403,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FINAL:
         jj_consume_token(FINAL);
+             ((AccessNode)jjtn000).setFinal();
         break;
       default:
         jj_la1[37] = jj_gen;

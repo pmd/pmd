@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTFormalParameter extends SimpleNode {
+public class ASTFormalParameter extends AccessNode {
     public ASTFormalParameter(int id) {
         super(id);
     }
@@ -16,4 +16,10 @@ public class ASTFormalParameter extends SimpleNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public void dump(String prefix) {
+        System.out.println(collectDumpedModifiers(prefix));
+        dumpChildren(prefix);
+    }
+
 }
