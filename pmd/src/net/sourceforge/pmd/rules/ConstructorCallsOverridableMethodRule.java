@@ -16,6 +16,7 @@ import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTNestedClassDeclaration;
+import net.sourceforge.pmd.ast.ASTNestedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
@@ -504,8 +505,8 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
         }
 	}
 	private static final NullEvalPackage nullEvalPackage = new NullEvalPackage();
-	
-	
+
+
 	/**
 	 * 1 package per class.
 	 */
@@ -531,14 +532,8 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 	 * get their own EvalPackage in order to perform independent evaluation.
 	 */
 	private Object visitClassDec(AccessNode node,Object data){
-		Node child1 =node.jjtGetChild(0);
-		String className=null;
-		if(child1 instanceof ASTUnmodifiedClassDeclaration){ //rid of this
-			className = ((ASTUnmodifiedClassDeclaration)child1).getImage();
-//			System.out.println("Class is " + className);
-		}
-
-		RuleContext ctx=null;
+		String className = ((ASTUnmodifiedClassDeclaration)node.jjtGetChild(0)).getImage();
+//		System.out.println("Class is " + className);
 		//evaluate each level independently
 		if(!node.isFinal() && !node.isStatic()){
 			putEvalPackage(new EvalPackage(className));
@@ -547,7 +542,16 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 			putEvalPackage(nullEvalPackage);
 		}
 		//store any errors caught from other passes.
-		ctx = (RuleContext) super.visit(node, data);
+		RuleContext ctx;
+		if(node instanceof ASTClassDeclaration){
+			ctx = (RuleContext) super.visit((ASTClassDeclaration)node, data);
+		}
+		else {
+			ctx = (RuleContext) super.visit((ASTNestedClassDeclaration)node, data);
+		}
+		if(ctx == null){
+			ctx = (RuleContext) data;
+		}
 
 		//skip this class if it has no evaluation package
 		if(!(getCurrentEvalPackage() instanceof NullEvalPackage)){
@@ -724,11 +728,10 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
     public Object visit(ASTCompilationUnit node, Object data) {
 		clearEvalPackages();
 //		try {
-			return super.visit(node,data);
+		return super.visit(node,data);
 //		}
 //		catch(Exception e){
 //			e.printStackTrace();
-//			throw new RuntimeException(e.getMessage());
 //		}
     }
 	//for testing only
@@ -754,6 +757,13 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 		removeCurrentEvalPackage();
 		return o;
 	}
+	public Object visit(ASTNestedInterfaceDeclaration node, Object data){
+		putEvalPackage(nullEvalPackage);
+		Object o = super.visit(node,data);//interface may have inner classes, possible? if not just skip whole interface
+		removeCurrentEvalPackage();
+		return o;
+	}
+
 
 	/**
 	 * Non-private constructor's methods are added to a list for later safety
@@ -905,7 +915,4 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 	private static String getNameFromSuffix(ASTPrimarySuffix node) {
 		return node.getImage();
 	}
-
-
-
 }
