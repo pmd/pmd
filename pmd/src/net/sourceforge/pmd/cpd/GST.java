@@ -41,7 +41,7 @@ public class GST {
             Occurrences newOcc = new Occurrences(new TokenSets(), listener);
             for (Iterator i = occ.getTiles(); i.hasNext();) {
                 Tile tile = (Tile)i.next();
-				listener.update("Expanding tile " + tile.getImage());
+				listener.expandingTile(tile.getImage());
                 if (!newOcc.containsAnyTokensIn(tile)) {
                     expandTile(occ, newOcc, tile, listener );
                 }
@@ -73,7 +73,6 @@ public class GST {
         if (newTile != null) {
             listener.update(newTile.getImage() + " expanded to " + newOcc.getOccurrenceCountFor(newTile) + " occurrences");
         }
-        listener.update("Deleting solo tiles");
         newOcc.deleteSoloTiles();
     }
 }

@@ -19,9 +19,12 @@ public class Occurrences {
     }
 
     public Occurrences(TokenSets tss, CPDListener listener) {
+        int doneSoFar = 0;
+        int totalCount = tss.tokenCount();
         for (Iterator j = tss.iterator();j.hasNext();) {
             TokenList ts = (TokenList)j.next();
-			listener.addingTokens(ts.getID());
+			listener.addingTokens(totalCount, doneSoFar, ts.getID());
+            doneSoFar += ts.size();
             for (Iterator i = ts.iterator(); i.hasNext();) {
                 TokenEntry tok = (TokenEntry)i.next();
                 addTile(new Tile(tok), tok);

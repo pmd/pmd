@@ -31,18 +31,22 @@ public class CPD {
 
     public void add(List files) throws IOException {
         for (Iterator i = files.iterator(); i.hasNext();) {
-            add((File)i.next());
+            add(files.size(), (File)i.next());
         }
     }
 
-    public void add(File file) throws IOException {
-		listener.addedFile(file);
+    public void add(int fileCount, File file) throws IOException {
+        listener.addedFile(fileCount, file);
         Tokenizer t = new JavaTokensTokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
         t.tokenize(ts, fr);
         fr.close();
         tokenSets.add(ts);
+    }
+
+    public void add(File file) throws IOException {
+        add(1, file);
     }
 
     public void addAllInDirectory(String dir) throws IOException {

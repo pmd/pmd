@@ -25,6 +25,15 @@ public class TokenSets extends AbstractSet {
         return tokenMap.size();
     }
 
+    public int tokenCount() {
+        int total = 0;
+        for (Iterator i = tokenMap.values().iterator(); i.hasNext();) {
+            TokenList tl = (TokenList)i.next();
+            total += tl.size();
+        }
+        return total;
+    }
+
     public Iterator iterator() {
         return tokenMap.values().iterator();
     }

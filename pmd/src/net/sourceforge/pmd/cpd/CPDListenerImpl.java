@@ -12,13 +12,18 @@ public class CPDListenerImpl implements CPDListener{
         System.out.println(msg);
     }
 
-    public void addedFile(File file) {
+    public void addedFile(int fileCount, File file) {
         update("Added file " + file.getAbsolutePath());
     }
 
-    public void addingTokens(String tokenSrcID) {
+    public void addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
         update("Adding token set " +  tokenSrcID);
     }
+
+    public void expandingTile(String tileImage) {
+        update("Expanding tile " +  tileImage);
+    }
+
 
 }
 

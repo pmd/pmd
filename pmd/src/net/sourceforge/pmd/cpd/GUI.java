@@ -37,8 +37,11 @@ public class GUI implements CPDListener {
     private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
     //private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
     private JTextField minimumLengthField= new JTextField("50");
-    private JTextField addingFileField = new JTextField(50);
-    private JTextField initialFrequencyField = new JTextField(50);
+
+    private JProgressBar tokenizingFilesBar = new JProgressBar();
+    private JProgressBar addingTokensBar = new JProgressBar();
+
+    private JTextField expandingTileField = new JTextField(50);
     private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
     private JFrame f;
     public GUI() {
@@ -63,12 +66,16 @@ public class GUI implements CPDListener {
         progressPanel.setLayout(new BorderLayout());
         JPanel panel1 = new JPanel();
         panel1.add(new JLabel("Tokenizing files"));
-        panel1.add(addingFileField);
+        panel1.add(tokenizingFilesBar);
         progressPanel.add(panel1, BorderLayout.NORTH);
         JPanel panel2 = new JPanel();
         panel2.add(new JLabel("Adding tokens"));
-        panel2.add(initialFrequencyField);
-        progressPanel.add(panel2, BorderLayout.SOUTH);
+        panel2.add(addingTokensBar);
+        progressPanel.add(panel2, BorderLayout.CENTER);
+        JPanel panel3 = new JPanel();
+        panel3.add(new JLabel("Expanding tile"));
+        panel3.add(expandingTileField);
+        progressPanel.add(panel3, BorderLayout.SOUTH);
 
         f.getContentPane().setLayout(new BorderLayout());
         f.getContentPane().add(inputPanel, BorderLayout.NORTH);
@@ -84,12 +91,12 @@ public class GUI implements CPDListener {
             CPD cpd = new CPD();
             cpd.setListener(this);
             cpd.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
+            addingTokensBar.setStringPainted(true);
             if (recurseCheckbox.isSelected()) {
                 cpd.addRecursively(rootDirectoryField.getText());
             } else {
                 cpd.addAllInDirectory(rootDirectoryField.getText());
             }
-            addingFileField.setText("");
             cpd.go();
             Results results = cpd.getResults();
             for (Iterator i = results.getTiles(); i.hasNext();) {
@@ -108,14 +115,36 @@ public class GUI implements CPDListener {
     }
 
     public void update(String msg) {
-        System.out.println(msg);
+        //System.out.println(msg);
     }
 
-    public void addedFile(File file) {
-        addingFileField.setText(file.getAbsolutePath());
+    public void addedFile(int fileCount, File file) {
+        tokenizingFilesBar.setMinimum(0);
+        tokenizingFilesBar.setMaximum(fileCount);
+        tokenizingFilesBar.setValue(tokenizingFilesBar.getValue()+1);
     }
 
-    public void addingTokens(String tokenSrcID) {
-        initialFrequencyField.setText(tokenSrcID);
+    public void addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
+        addingTokensBar.setMinimum(0);
+        addingTokensBar.setMaximum(tokenSetCount);
+        if (tokenSrcID.indexOf("/") != -1) {
+            int lastSlash = tokenSrcID.lastIndexOf("/")+1;
+            addingTokensBar.setString(tokenSrcID.substring(lastSlash));
+        } else if (tokenSrcID.indexOf("\\") != -1) {
+            int lastSlash = tokenSrcID.lastIndexOf("\\")+1;
+            addingTokensBar.setString(tokenSrcID.substring(lastSlash));
+        } else if (tokenSrcID.length() > 10) {
+            addingTokensBar.setString(tokenSrcID.substring(tokenSrcID.length()-10));
+        } else {
+            addingTokensBar.setString(tokenSrcID);
+        }
+        addingTokensBar.setValue(doneSoFar);
     }
+
+    public void expandingTile(String tileImage) {
+        addingTokensBar.setValue(addingTokensBar.getMaximum());
+        addingTokensBar.setString("");
+        expandingTileField.setText(tileImage);
+    }
+
 }
