@@ -7,7 +7,7 @@ CPD now processes PHP code.
 Added VBHTMLRenderer; thanks to Vladimir Bossicard for the code.
 Fixed bug 732592 - Ant task now accepts a nested classpath element.
 Fixed bug 744915 - UseSingletonRule no longer fires on abstract classes, thanks to Pablo Casado for the bug report.
-Fixed bug 735399 - false positive from ConstructorCallsOverridableMethodRule
+Fixed bugs 735396 and 735399 - false positives from ConstructorCallsOverridableMethodRule
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 April 17 - 1.05:
