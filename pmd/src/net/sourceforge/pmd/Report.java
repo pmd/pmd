@@ -7,14 +7,11 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.renderers.Renderer;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Collections;
+import java.util.*;
 
 public class Report {
 
-    private List violations = new ArrayList();
+    private Set violations = new TreeSet(new RuleViolation.RuleViolationComparator());
 
     public void addRuleViolation(RuleViolation violation) {
         violations.add(violation);
@@ -25,7 +22,6 @@ public class Report {
     }
 
     public Iterator iterator() {
-        Collections.sort(violations, new RuleViolation.RuleViolationComparator());
         return violations.iterator();
     }
 
