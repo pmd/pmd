@@ -5,7 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -13,9 +13,8 @@ public class ShortMethodNameRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclarator[string-length(@Image) < 3]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/naming.xml", "ShortMethodNameRule");
     }
 
     public void testAll() {

@@ -5,7 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -13,19 +13,8 @@ public class OverrideBothEqualsAndHashcodeRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//ClassDeclaration//MethodDeclarator" +
-        	"[" +
-        	"(" +
-        	"@Image = 'equals'" +
-        	" and count(FormalParameters/*) = 1" +
-        	" and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode'])" +
-        	") or (" +
-        	"@Image='hashCode'" +
-        	" and count(FormalParameters/*) = 0" +
-        	" and not(//MethodDeclarator[count(FormalParameters//Type/Name[@Image = 'Object' or @Image = 'java.lang.Object']) = 1][@Image = 'equals'])" +
-        	")]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/basic.xml", "OverrideBothEqualsAndHashcodeRule");
     }
 
     public void testAll() {

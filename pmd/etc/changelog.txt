@@ -5,6 +5,7 @@ Fixed bug 919308 - XMLRenderer was still messed up; 'twas missing a quotation ma
 Fixed bug 923410 - PMD now uses the default platform character set encoding; optionally, you can pass in a character encoding to use.
 Implemented RFE 925839 - Added some more detail to the UseSingletonRule.
 Added an optional 'failuresPropertyName' attribute to the Ant task.
+Refactored away duplicate copies of XPath rule definitions in regress/, yay!
 
 March 15, 2004 - 1.6:
 Fixed bug 895661 - XML reports containing error elements no longer have malformed XML.

@@ -5,7 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -13,10 +13,9 @@ public class ProperCloneImplementationRuleTest extends SimpleAggregatorTst{
 
   private Rule rule;
 
-  public void setUp() {
-      rule = new XPathRule();
-      rule.addProperty("xpath", "//ClassDeclaration//MethodDeclarator[@Image = 'clone'][count(FormalParameters/*) = 0][count(../Block//*[	(self::AllocationExpression) and	(./Name/@Image = ancestor::UnmodifiedClassDeclaration[position()=last()]/@Image)  ])> 0]");
-  }
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/design.xml", "ProperCloneImplementationRule");
+    }
 
   public void testAll() {
      runTests(new TestDescriptor[] {

@@ -2,7 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -10,9 +10,8 @@ public class MethodWithSameNameAsEnclosingClassRuleTest extends SimpleAggregator
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//UnmodifiedClassDeclaration[@Image = //MethodDeclarator/@Image]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/naming.xml", "MethodWithSameNameAsEnclosingClass");
     }
 
     public void testAll() {

@@ -102,7 +102,7 @@
         <path refid="classpath.path" />
         <pathelement location="${basedir}" />
       </classpath>
-      <batchtest fork="no" todir="${build}">
+      <batchtest fork="yes" todir="${build}">
         <fileset dir="${regress}">
           <include name="test/**/*Test.java" />
         </fileset>

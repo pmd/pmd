@@ -74,8 +74,7 @@ These rules deal with different problems that can occur with finalizers.
         <property name="xpath">
             <value>
 <![CDATA[
-//MethodDeclaration
- [MethodDeclarator[@Image='finalize'][FormalParameters/*]]
+//MethodDeclaration/MethodDeclarator[@Image='finalize'][FormalParameters[count(*)>0]]
 ]]>
             </value>
         </property>

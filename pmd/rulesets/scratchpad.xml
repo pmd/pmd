@@ -5,31 +5,43 @@
 These are new rules that are still in progress
   </description>
 
-  <rule name="ShortVariable"
-        message="Avoid variables with short names like {0}"
-        class="net.sourceforge.pmd.rules.XPathRule">
-    <description>
-Detects when a field, local or parameter has a short name.
-    </description>
-      <properties>
-          <property name="xpath" pluginname="true">
-              <value>
-                  <![CDATA[
-    //VariableDeclaratorId[string-length(@Image) < 3]
-     [not(ancestor::ForInit)]
-     [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
-                  ]]>
-              </value>
-          </property>
-      </properties>
-      <priority>3</priority>
-    <example>
-<![CDATA[
-public class Something {
-}
-]]>
-    </example>
-  </rule>
+    <rule name="IfElseStmtsMustUseBracesRule"
+         message="Avoid using 'if...else' statements without curly braces"
+         class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+     Avoid using if..else statements without using curly braces
+     </description>
+       <properties>
+           <property name="xpath">
+               <value>
+  <![CDATA[
+  //Statement
+   [parent::IfStatement]
+   [not(child::Block)]
+   [not(child::IfStatement)]
+  ]]>
+               </value>
+           </property>
+       </properties>
+       <priority>3</priority>
+
+     <example>
+ <![CDATA[
+
+   public void doSomething() {
+     // this is OK
+     if (foo) x++;
+
+     // but this is not
+     if (foo)
+         x=x+1;
+     else
+         x=x-1;
+   }
+ ]]>
+     </example>
+   </rule>
+
 
     <!--
 <rule name="IdempotentOperationsRule"

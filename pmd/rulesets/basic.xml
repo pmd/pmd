@@ -287,19 +287,18 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           <property name="xpath">
               <value>
                   <![CDATA[
-      //ClassDeclaration//MethodDeclarator
-      [
-      (@Image = 'equals'
-          and count(FormalParameters/*) = 1
-          and not(//MethodDeclarator[count(FormalParameters/*) = 0]
-          [@Image = 'hashCode'])
-       or
-      (@Image='hashCode'
-          and count(FormalParameters/*) = 0
-          and not(//MethodDeclarator[count(FormalParameters//Type/Name
-          [@Image = 'Object']) = 1 or @Image = 'java.lang.Object']
-          [@Image = 'equals']))
-      )]
+//ClassDeclaration//MethodDeclarator
+[(@Image = 'equals' and count(FormalParameters/*) = 1
+and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode']))
+or
+(@Image='hashCode' and count(FormalParameters/*) = 0
+and
+not
+(//MethodDeclarator
+ [count(
+   FormalParameters//Type/Name
+    [@Image = 'Object' or @Image = 'java.lang.Object']) = 1]
+    [@Image = 'equals']))]      
                   ]]>
               </value>
           </property>

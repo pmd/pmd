@@ -5,7 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -13,9 +13,8 @@ public class ShortVariableRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)][not((ancestor::FormalParameter) and (ancestor::TryStatement))]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/naming.xml", "ShortVariable");
         rule.setMessage("{0}");
         rule.addProperty("pluginname", "true");
     }
