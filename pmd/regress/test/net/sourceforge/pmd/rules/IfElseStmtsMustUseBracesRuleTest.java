@@ -15,16 +15,16 @@ public class IfElseStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//IfStatement[count(child::Statement) != count(child::Statement/Block)]");
+        rule.addProperty("xpath", "//Statement[parent::IfStatement][not(child::Block)][not(child::IfStatement)]");
     }
 
     public void testAll() {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "else without braces", 1, rule),
            new TestDescriptor(TEST2, "ok", 0, rule),
-           new TestDescriptor(TEST3, "two sets of missing braces", 1, rule),
-           new TestDescriptor(TEST4, "elseif with missing braces", 2, rule),
-           new TestDescriptor(TEST5, "elseif with braces after else", 1, rule),
+           new TestDescriptor(TEST3, "two sets of missing braces", 2, rule),
+           new TestDescriptor(TEST4, "elseif with missing braces", 1, rule),
+           new TestDescriptor(TEST5, "elseif with braces after else", 0, rule),
        });
     }
 
