@@ -26,7 +26,7 @@ import java.util.HashMap;
 /**
  * put your documentation comment here
  */
-public class RuleSetPropertyGroup
+public class ActiveRuleSetPropertyGroup
         implements PropertyGroup {
 
     public static final String RULESETS = "RuleSets";
@@ -57,7 +57,7 @@ public class RuleSetPropertyGroup
     /**
     * Standard Constructor
     */
-    public RuleSetPropertyGroup () {
+    public ActiveRuleSetPropertyGroup () {
    }
 
     /**
@@ -73,10 +73,10 @@ public class RuleSetPropertyGroup
      */
     public PropertyPageFactory getPageFactory (Object topic) {
         if (topic == RULESETS_TOPIC) {
-            return  new PropertyPageFactory("PMD Properties", "Set PMD RuleSet Properties") {
+            return  new PropertyPageFactory("Active PMD RuleSets", "Set the Active PMD RuleSets") {
 
                 public PropertyPage createPropertyPage () {
-                    return  new RuleSetPropertyPage();
+                    return  new ActiveRuleSetPropertyPage();
                 }
             };
         }

@@ -25,8 +25,8 @@ import com.borland.primetime.properties.*;
 
 
 
-public class RuleSetPropertyPage extends PropertyPage {
-    static MessageCategory msgCat = new MessageCategory("test");
+public class ActiveRuleSetPropertyPage extends PropertyPage {
+    //static MessageCategory msgCat = new MessageCategory("test");
     private BorderLayout borderLayout1 = new BorderLayout();
     private JSplitPane jSplitPane1 = new JSplitPane();
     private Border border1;
@@ -51,7 +51,7 @@ public class RuleSetPropertyPage extends PropertyPage {
     /**
      * Constuctor
      */
-    public RuleSetPropertyPage () {
+    public ActiveRuleSetPropertyPage () {
         try {
             jbInit();
         } catch (Exception ex) {
@@ -66,7 +66,7 @@ public class RuleSetPropertyPage extends PropertyPage {
      */
     private void initRuleSplitPanes () {
         //loop through the sets of rules and place them in the appropriate pane based upon their setting
-        Iterator iter = RuleSetPropertyGroup.ruleSets.values().iterator();
+        Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator();
         while (iter.hasNext()) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
             ListEntry le = new ListEntry(rsp.getRuleSet().getName(), rsp.getGlobalProperty());

@@ -54,7 +54,8 @@ public class PMDOpenTool {
             JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
             registerWithContentManager();
             registerWithProjectView();
-            PropertyManager.registerPropertyGroup(new RuleSetPropertyGroup());
+            PropertyManager.registerPropertyGroup(new ActiveRuleSetPropertyGroup());
+            PropertyManager.registerPropertyGroup(new ConfigureRuleSetPropertyGroup());
         }
     }
 
@@ -94,7 +95,7 @@ public class PMDOpenTool {
     private static RuleSet constructRuleSets (RuleSetFactory ruleSetFactory,
             PMD pmd) {
         RuleSet masterRuleSet = null;
-        for (Iterator iter = RuleSetPropertyGroup.ruleSets.values().iterator(); iter.hasNext(); ) {
+        for (Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator(); iter.hasNext(); ) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
             if (Boolean.valueOf(rsp.getGlobalProperty().getValue()).booleanValue()) {
                 RuleSet rules = rsp.getRuleSet();
@@ -198,7 +199,7 @@ public class PMDOpenTool {
     public static BrowserAction ACTION_PMDConfig = new BrowserAction("Configure PMD",
             'C', "Configure the PMD Settings") {
         public void actionPerformed (Browser browser) {
-            PropertyManager.showPropertyDialog(browser, "PMD Options", RuleSetPropertyGroup.RULESETS_TOPIC,
+            PropertyManager.showPropertyDialog(browser, "PMD Options", ActiveRuleSetPropertyGroup.RULESETS_TOPIC,
                     PropertyDialog.getLastSelectedPage());
         }
     };
