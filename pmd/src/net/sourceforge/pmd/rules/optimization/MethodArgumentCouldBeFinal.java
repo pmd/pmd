@@ -4,14 +4,17 @@
 package net.sourceforge.pmd.rules.optimization;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
+import java.text.MessageFormat;
 
 public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
 
@@ -19,44 +22,33 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
         return data; // just skip interfaces
     }
 
-    
-    /**
-     * Find if this variable is ever written.
-     * 
-     * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(net.sourceforge.pmd.ast.ASTLocalVariableDeclaration, java.lang.Object)
-     */
-    public Object visit(ASTMethodDeclaration methodDeclaration, Object data) {
-
-        List l = getNonFinalArguments(methodDeclaration);
-
-        if (l!=null && !l.isEmpty()) {
-            //There is at least one non final argument
-            for (Iterator it = l.iterator() ; it.hasNext() ; ) {
-                final String varName = (String)it.next();
-                if (!isVarWritterInMethod(varName, methodDeclaration)) { 
-                    addViolation((RuleContext)data, methodDeclaration.getBeginLine());
+    public Object visit(ASTMethodDeclaration meth, Object data) {
+        if (meth.isNative() || meth.isAbstract()) {
+            return data;
+        }
+        Scope s = meth.getScope();
+        Map decls = s.getVariableDeclarations();
+        for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
+            VariableNameDeclaration var = (VariableNameDeclaration)i.next();
+            if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter)) {
+                if (!assigned((List)decls.get(var))) {
+                    RuleContext ctx = (RuleContext)data;
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, var.getAccessNodeParent().getBeginLine(), MessageFormat.format(getMessage(), new Object[]{var.getImage()})));
                 }
             }
         }
-        
         return data;
     }
 
-
-    private List getNonFinalArguments(ASTMethodDeclaration methodDeclaration) {
-        List fp = methodDeclaration.findChildrenOfType(ASTFormalParameter.class);
-        if (fp!=null && !fp.isEmpty()) {
-            Vector v = new Vector();
-            for (Iterator it = fp.iterator() ; it.hasNext() ; ) {
-                ASTFormalParameter p = (ASTFormalParameter) it.next();
-                if (!p.isFinal()) {
-                    ASTVariableDeclaratorId vd = (ASTVariableDeclaratorId) p.getFirstChildOfType(ASTVariableDeclaratorId.class);
-                    v.add(vd.getImage());
-                }
+    private boolean assigned(List usages) {
+        for (Iterator j = usages.iterator(); j.hasNext();) {
+            NameOccurrence occ = (NameOccurrence) j.next();
+            if (occ.isOnLeftHandSide()) {
+                return true;
+            } else {
+                continue;
             }
-            return v;
         }
-        return null;
+        return false;
     }
-
 }

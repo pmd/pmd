@@ -26,10 +26,11 @@ These rules deal with different optimizations that generally apply to performanc
       </rule>
 
     <rule name="MethodArgumentCouldBeFinal"
-          message="A method argument that is not assigned could be declared final"
+          message="Parameter ''{0}'' is not assigned and could be declared final"
+          symboltable="true"
           class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal">
       <description>
-      A method argumetn that is never assigned can be declared final.
+      A method argument that is never assigned can be declared final.
       </description>
         <priority>3</priority>
       <example>

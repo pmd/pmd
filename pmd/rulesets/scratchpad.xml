@@ -7,27 +7,24 @@ These are new rules that are still in progress
   </description>
 
 
-  <rule name="UnusedPrivateField"
-        message="Avoid unused private fields such as ''{0}''"
-        symboltable="true"
-        class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule">
-    <description>
-Detects when a private field is declared and/or assigned a value, but not used.
-    </description>
-      <priority>3</priority>
-    <example>
-<![CDATA[
-public class Something {
-  private static int FOO = 2; // Unused
-  private int i = 5; // Unused
-  private int j = 6;
-  public int addOne() {
-    return j++;
+    <rule name="MethodArgumentCouldBeFinal"
+          message="Parameter ''{0}'' is not assigned and could be declared final"
+          symboltable="true"
+          class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal">
+      <description>
+      A method argument that is never assigned can be declared final.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+  public void foo (String param) {
+      // do stuff with param never assigning it
+      // better: public void foo (final String param) {
   }
-}
-]]>
-    </example>
-  </rule>
+  ]]>
+      </example>
+      </rule>
+
 
 
 <!--

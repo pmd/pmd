@@ -11,11 +11,6 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-/**
- * Tests for the rule LocalVariableCouldBeFinal
- * 
- * @author mgriffa
- */
 public class MethodArgumentCouldBeFinalTest extends SimpleAggregatorTst {
 
     private Rule rule;
@@ -32,7 +27,9 @@ public class MethodArgumentCouldBeFinalTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST4, "TEST4", 1, rule),
                new TestDescriptor(TEST5, "TEST5", 1, rule),
                new TestDescriptor(TEST6, "TEST6", 0, rule),
-               new TestDescriptor(TEST7, "BUG 1117983, false +", 0, rule),
+               new TestDescriptor(TEST7, "Shouldn't trigger on try blocks", 0, rule),
+               new TestDescriptor(TEST8, "Skip native methods", 0, rule),
+               new TestDescriptor(TEST9, "Skip abstract methods", 0, rule),
        });
     }
 
@@ -80,20 +77,20 @@ public class MethodArgumentCouldBeFinalTest extends SimpleAggregatorTst {
 
     private static final String TEST7 =
         "public class Foo {" + PMD.EOL +
-        " protected void method() { }" + PMD.EOL +
         " public void bar(final List batch) {" + PMD.EOL +
-        "   try { " + PMD.EOL +
-        "   method(); " + PMD.EOL +
-        "   } catch (final Exception e) {" + PMD.EOL +
-        "       for (Iterator it = batch.iterator() ; it.hasNext() ; ) {" + PMD.EOL +
-        "           try {" + PMD.EOL +
-        "               method(); " + PMD.EOL +
-        "           } catch (final Exception ee) { " + PMD.EOL +
-        "               throw new RuntimeException(ee);" + PMD.EOL +
-        "           }" + PMD.EOL +
-        "       }" + PMD.EOL +
-        "   }" + PMD.EOL +
+        "   try {} catch (Exception e) {} " + PMD.EOL +
+        "   try {} catch (Exception ee) {} " + PMD.EOL +
         " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST8 =
+        "public class Foo {" + PMD.EOL +
+        " public native void bar(Object x);" + PMD.EOL +
+        "}";
+
+    private static final String TEST9 =
+        "public class Foo {" + PMD.EOL +
+        " public abstract void bar(Object x);" + PMD.EOL +
         "}";
 
 }
