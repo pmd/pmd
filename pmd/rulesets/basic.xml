@@ -62,30 +62,6 @@ while (a == b) {
      </example>
   </rule>
 
-  <rule name="IfElseStmtsMustUseBracesRule"
-        message="Avoid using 'if...else' statements without curly braces"
-        class="net.sourceforge.pmd.rules.IfElseStmtsMustUseBracesRule">
-    <description>
-    Avoid using if..else statements without using curly braces
-    </description>
-
-    <example>
-<![CDATA[
-
-  public void doSomething() {
-    // this is OK
-    if (foo) x++;
-
-    // but this is not
-    if (foo)
-        x=x+1;
-    else
-        x=x-1;
-  }
-]]>
-    </example>
-  </rule>
-
   <rule name="UnnecessaryConversionTemporaryRule"
         message="Avoid unnecessary temporaries when converting primitives to Strings"
         class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporaryRule">
@@ -177,40 +153,6 @@ public void bar() {
     } finally {
     }
 }
-]]>
-    </example>
-  </rule>
-
-  <rule name="WhileLoopsMustUseBracesRule"
-        message="Avoid using 'while' statements without curly braces"
-        class="net.sourceforge.pmd.rules.WhileLoopsMustUseBracesRule">
-    <description>
-    Avoid using 'while' statements without using curly braces
-    </description>
-
-    <example>
-<![CDATA[
-  public void doSomething() {
-    while (true)
-        x++;
-  }
-]]>
-    </example>
-  </rule>
-
-  <rule name="ForLoopsMustUseBracesRule"
-        message="Avoid using 'for' statements without curly braces"
-        class="net.sourceforge.pmd.rules.ForLoopsMustUseBracesRule">
-    <description>
-    Avoid using 'for' statements without using curly braces
-    </description>
-
-    <example>
-<![CDATA[
-  public void foo() {
-    for (int i=0; i<42;i++)
-        foo();
-  }
 ]]>
     </example>
   </rule>
