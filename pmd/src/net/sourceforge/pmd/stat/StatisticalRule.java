@@ -1,8 +1,10 @@
 package net.sourceforge.pmd.stat;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -15,86 +17,114 @@ import net.sourceforge.pmd.RuleViolation;
  * Aug 8, 2002 StatisticalRule.java
  */
 public abstract class StatisticalRule extends AbstractRule {
+	public static double DELTA = 0.05; // Within this range. . .
+	
     private SortedSet dataPoints =
-	new TreeSet();
+		new TreeSet();
 
     private int count = 0;
     private double total = 0.0;
 
     public void addDataPoint( DataPoint point )
     {
-	count++;
-	total += point.getScore();
-	dataPoints.add( point );
+		count++;
+		total += point.getScore();
+		dataPoints.add( point );
     }
     
     public void apply( List acus, RuleContext ctx ) {
-	visitAll( acus, ctx );
+		visitAll( acus, ctx );
+
+		double deviation = 0.0;
+		double minimum = 0.0;
+		
+		if (hasProperty("sigma")) {
+			deviation = getStdDev();
+			double sigma = getDoubleProperty("sigma");
+			
+			minimum = getMean() + (sigma * deviation);
+		}
 	
-	if (hasProperty("minimum")) {
-	    applyMinimumValue( ctx, getDoubleProperty("minimum") );
-	} 
-	
-	if (hasProperty("sigma")) {
-	    applySigma( ctx, getDoubleProperty("sigma"));
-	}
-	
-	if (hasProperty("topscore")) {
-	    applyTopScore(ctx, getIntProperty("topscore"));
-	}
+		if (hasProperty("minimum")) {
+			double mMin = getDoubleProperty("minimum");
+			if (mMin > minimum) { minimum = mMin; }
+		} 
+		SortedSet newPoints = applyMinimumValue(dataPoints, minimum);
+			
+		if (hasProperty("topscore")) {
+			int topScore = getIntProperty("topscore");
+			if (newPoints.size() >= topScore) {
+		    	newPoints = 
+		    		applyTopScore(newPoints, topScore);
+			}
+		}
+		
+		makeViolations(ctx, newPoints);
     }
 
     protected double getMean() {
-	return total / count;
+		return total / count;
     }
 
-    protected void applyMinimumValue( RuleContext ctx,
-				      double minValue ) 
-    {
-	Iterator points = dataPoints.iterator();
+	protected double getStdDev() {
+    	double varTotal = 0.0;
+
+		Iterator points = dataPoints.iterator();
+
+    	while (points.hasNext()) {
+		    DataPoint point = (DataPoint) points.next();
+		    varTotal += ((point.getScore() - getMean()) *
+				 		 (point.getScore() - getMean()));	
+    	}                             	
+    	
+    	double variance = varTotal / count;
+		return Math.sqrt( variance );
+	}
 	
-	while (points.hasNext()) {
-	    DataPoint point = (DataPoint) points.next();
-	    
-	    if (point.getScore() > minValue) {
-		ctx.getReport()
-		   .addRuleViolation(this.createRuleViolation(ctx, 
-						      point.getLineNumber(),
-						      point.getMessage()));
-	    }
-	}    										
+    protected SortedSet applyMinimumValue( SortedSet pointSet,
+										   double minValue ) 
+    {
+		Iterator points = pointSet.iterator();
+
+		if (points.hasNext()) {
+			DataPoint point = (DataPoint) points.next();			
+			while ((point.getScore() < minValue) &&
+				   (points.hasNext())) {
+				point = (DataPoint) points.next();
+			}	
+			
+			if (points.hasNext()) {
+				return pointSet.subSet(point, pointSet.last());
+			}
+		}    
+		
+		return new TreeSet();
     }
     
-    protected void applySigma( RuleContext ctx,
-			       double sigma ) 
+    protected SortedSet applyTopScore( SortedSet points,
+									   int topScore ) 
+    {
+    	SortedSet RC = new TreeSet();
+		for (int i = 0; i < topScore; i++) {
+		    DataPoint point = (DataPoint) points.last();
+	    	points.remove( point );
+
+			RC.add( point );
+		}
+		
+		return RC;
+    }
+    
+    protected void makeViolations( RuleContext ctx, 
+    							   Set dataPoints ) 
     {
     	Iterator points = dataPoints.iterator();
-    	double varTotal = 0.0;
     	while (points.hasNext()) {
-	    DataPoint point = (DataPoint) points.next();
-	    varTotal += ((point.getScore() - getMean()) *
-			 (point.getScore() - getMean()));	
-    	}                             	
-    	double variance = varTotal / count;
-	double stdDev =
-	    Math.sqrt( variance );
-	applyMinimumValue( ctx, getMean() + (sigma * stdDev)); 
-    }
-    
-    protected void applyTopScore( RuleContext ctx,
-				  int topScore ) 
-    {
-	SortedSet pointsCopy =
-	    new TreeSet( dataPoints );
-
-	for (int i = 0; i < topScore; i++) {
-	    DataPoint point = (DataPoint) pointsCopy.last();
-	    pointsCopy.remove( point );
-
-	    ctx.getReport()
-		.addRuleViolation(this.createRuleViolation(ctx, 
-						   point.getLineNumber(),
-						   point.getMessage()));
-	}
-    }
+    		DataPoint point = (DataPoint) points.next();
+			ctx.getReport()
+			   .addRuleViolation(this.createRuleViolation(ctx, 
+							      point.getLineNumber(),
+							      point.getMessage()));						   	
+    	}
+    }	
 }

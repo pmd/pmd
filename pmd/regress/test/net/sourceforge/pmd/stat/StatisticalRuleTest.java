@@ -2,71 +2,411 @@ package test.net.sourceforge.pmd.stat;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.stat.*;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
+/**
+ * This class tests the Statistical Rules in PMD.
+ * 
+ * The idea is, that we fill up 999 datapoints into
+ * the Stat Rule, and then throw random parameters
+ * at it.
+ * 
+ * The three parameters which are checked are:
+ * 		sigma - # Sigmas over the mean.
+ * 		topscore - Only the top 5 or so items.
+ * 		minimum - Only things of score 10 or better
+ * 
+ * When more than one parameter is lumped together, then
+ * we expect the one which would return the fewest to 
+ * determine what gets sent back.
+ * 
+ * So, we throw each collection of parameters, where each
+ * one is a different order into the system.  We check the
+ * results off of what the smallest value should be.
+ * 
+ * If you are going to work with StatisticalRule any, please
+ * bump the "NUM_TESTS" number up to something like 128.  That
+ * way you are more likely to identify problems.  It is set low
+ * now to make building and running tests easier (when we aren't
+ * touching the file.)
+ * 
+ * Note also, that when verifying the Sigma, I wasn't quite able
+ * to determine how many results it would return (it would vary
+ * from -2 to 2 of what I expected.)  That is what the delta
+ * parameter on the verify method takes.  If you can figure it
+ * out exactly, (without stealing code from the StatRule) then
+ * feel free to change it and tighten the deltas.
+ */
 public class StatisticalRuleTest
     extends TestCase
 {
     private DataPoint points[] = new DataPoint[1000];
     private MockStatisticalRule IUT = null;
     private String testName = null;
+	private Random random = new Random();
 
+	public static final double MAX_MINIMUM = 1000.0;
+	public static final double NO_MINIMUM = -1.0;
+	public static final double MAX_SIGMA = 5.0;
+	public static final double NO_SIGMA = -1.0;
+	public static final int MIN_TOPSCORE = 0;
+	public static final int NO_TOPSCORE = -1;
+	
+		
+	public static final double MEAN = 499.5;
+	public static final double SIGMA = 288.8194;
+	public static final int NUM_TESTS = 32;
+	
     public StatisticalRuleTest(String name) 
     {
-	super( name );
-	this.testName = name;
+		super( name );
+		this.testName = name;
     }
 
     public void setUp() {
-	IUT = new MockStatisticalRule();
-	for (int i = 0; i < 1000; i++) {
-	    points[i] = new DataPoint();
-	    points[i].setScore( 1.0 * i );
-	    points[i].setLineNumber( i );
-	    points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
+		IUT = new MockStatisticalRule();
+		for (int i = 0; i < 1000; i++) {
+	    	points[i] = new DataPoint();
+	    	points[i].setScore( 1.0 * i );
+	    	points[i].setLineNumber( i );
+	    	points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
 
-	    IUT.addDataPoint( points[i] );
+		    IUT.addDataPoint( points[i] );
+		}
+    }
+
+	/**
+	 * This returns a Random value for Sigma which will
+	 * return some values.
+	 */
+	public double randomSigma() {
+		return random.nextDouble() * 1.0;		
 	}
-    }
-
-    public void testMinimumValue() {
-	IUT.addProperty("minimum", "499.0");
-	Report report = makeReport( IUT );
-
-	assertEquals("Expecting 500 results.",
-		     500, report.size() );
-    }
-
-    public void testSigma() {
-	IUT.addProperty("sigma", "1.0");
-	Report report = makeReport( IUT );
-
-	assertEquals("Expecting 211 results.",
-		     211, report.size() );
-    }
-
-    public void testTopScore() {
-	IUT.addProperty("topscore", "10");
-	Report report = makeReport( IUT );
 	
-	assertEquals("Expecting 10 results.",
-		     10, report.size() );
-    }
+	/**
+	 * This returns a Random value for Sigma which value
+	 * is greater than the parameter.
+	 */
+	public double randomSigma(int minimum) {
+		double minSigma = ((999 - minimum) - MEAN)/SIGMA;
+			
+		if (minSigma <= 0) return randomSigma();
+		
+		return minSigma + (random.nextDouble() * (2 - minSigma));
+	}
+	
+	/**
+	 * This returns the expected number of results when
+	 * the Sigma rating is the smallest.
+	 */
+	public int expectedSigma(double sigma) {
+		long expectedMin = Math.round(MEAN + (sigma * SIGMA));
+		
+		if ((999 - expectedMin) < 0) return 0;		
+		return 999 - (int) expectedMin;
+	}
+	
+	/**
+	 * This generates a random minimum value for testing.
+	 */
+	public double randomMinimum() {
+		return random.nextDouble() * 999;
+	}	
+	
+	/**
+	 * This generates a random minimum value for which fewer
+	 * results would be returned.
+	 */
+	public double randomMinimum(int minimum) {
+		double diffTarget = 1.0 * (999 - minimum);
+		return (random.nextDouble() * minimum) + diffTarget;	
+	}
+	
+	/**
+	 * This returns the expected number of reports.
+	 */
+	public int expectedMinimum(double minimum) {
+		int RC = 999 - ((int) Math.round(minimum - 0.5) + 1);
+		if (RC >= 0) return RC; else return 0;
+	}
+	
+	/**
+	 * This returns a random value for Top Score.
+	 */
+	public int randomTopScore() {
+		return random.nextInt(999);	
+	}
+	
+	/**
+	 * This will return a random value for the Top Score
+	 * which will return more than the minimum provided.
+	 */
+	public int randomTopScore(double target) {
+		return random.nextInt( (new Double(target)).intValue() );
+	}
+	
+	/**
+	 * This will return the expected number of results
+	 * with the given Top Score.
+	 */
+	public int expectedTopScore(int target) {
+		return target;
+	}
+	
+	// Okay, we have three properties we need to
+	// test in Combination:
+	//  S = Sigma
+	//  T = Top Score
+	//  M = Minimum
+	//
+	// They are listed in decreasing order of what
+	// to expect.
+	//
+	// Thus testSM() should have the Sigma less than
+	// the minimum, so we expect the Minimum # of results.
+	//
 
+	public void testS() throws Throwable
+	{
+		verifyResults( MAX_SIGMA, NO_MINIMUM, NO_TOPSCORE, 0, 2 );
+		
+		for (int i = 0; i < NUM_TESTS; i++) {
+			double sigma = randomSigma();
+			verifyResults( sigma, -1.0, -1, expectedSigma( sigma ), 2);	
+		}	
+	}	
+	
+	public void testT() throws Throwable
+	{
+		verifyResults( NO_SIGMA, NO_MINIMUM, MIN_TOPSCORE, 0, 0 );
+		
+		for (int i = 0; i < NUM_TESTS; i++) {
+			int topScore = randomTopScore();
+			verifyResults( -1.0, -1.0, topScore, expectedTopScore(topScore), 0);	
+		}	
+	}
+	
+	public void testM() throws Throwable
+	{
+		verifyResults( NO_SIGMA, MAX_MINIMUM, NO_TOPSCORE, 0, 0 );
+		
+		for (int i = 0; i < NUM_TESTS; i++) {
+			double minimum = randomMinimum();		
+			verifyResults( -1.0, minimum, -1, expectedMinimum( minimum ), 0 );
+		}
+	}
+	
+	public void testST() throws Throwable
+	{ 
+		verifyResults( randomSigma(), NO_MINIMUM, MIN_TOPSCORE, 0, 0 );
+		
+		for (int i = 0; i < NUM_TESTS; i++) {
+			double sigma = randomSigma();
+			int topScore = randomTopScore( expectedSigma( sigma ));
+			
+			verifyResults( sigma, NO_MINIMUM, topScore, expectedTopScore( topScore ), 0);			
+		}
+	}
+
+	public void testTS() throws Throwable
+	{ 
+		verifyResults( MAX_SIGMA, NO_MINIMUM, randomTopScore(), 0, 0 );
+		
+		for (int i = 0; i < NUM_TESTS; i++) {
+			int topScore = randomTopScore();
+			double sigma = randomSigma( expectedTopScore(topScore) );
+		
+			verifyResults( sigma, -1.0, topScore, expectedSigma( sigma ), 2);	
+		}
+	}
+
+	public void testSM() throws Throwable
+	{ 
+		verifyResults( randomSigma(), MAX_MINIMUM, NO_TOPSCORE, 0, 0);
+		for (int i = 0; i < NUM_TESTS; i++) {
+			double sigma = randomSigma();
+			double minimum = randomMinimum( expectedSigma( sigma ));
+			
+			verifyResults( sigma, minimum, -1, expectedMinimum( minimum ), 0);			
+		}
+	
+	}
+
+	public void testMS() throws Throwable
+	{ 
+		verifyResults(MAX_SIGMA, randomMinimum(), NO_TOPSCORE, 0, 0);
+		for (int i = 0; i < NUM_TESTS; i++) {
+			double minimum = randomMinimum();
+			double sigma = randomSigma( expectedMinimum( minimum ));
+			
+			verifyResults( sigma, minimum, -1, expectedSigma( sigma ), 2 );	
+		}
+	}
+
+	public void testTM() throws Throwable
+	{ 	
+		verifyResults(NO_SIGMA, MAX_MINIMUM, randomTopScore(), 0, 0);
+		for (int i = 0; i < NUM_TESTS; i++) {
+			int topScore = randomTopScore();
+			double minimum = randomMinimum( expectedTopScore( topScore ));
+			
+			verifyResults( NO_SIGMA, minimum, topScore, expectedMinimum( minimum ), 0 );	
+		}
+	}
+
+	public void testMT() throws Throwable
+	{ 	
+		verifyResults(NO_SIGMA, randomMinimum(), MIN_TOPSCORE, 0, 0);
+		for (int i = 0; i < NUM_TESTS; i++) {
+			double minimum = randomMinimum();
+			int topScore = randomTopScore( expectedMinimum( minimum ));
+			
+			verifyResults( NO_SIGMA, minimum, topScore, expectedTopScore(topScore), 0);	
+		}
+	}
+	
+	public void testSTM() throws Throwable
+	{ 
+		double sigma = randomSigma();
+		verifyResults(sigma, MAX_MINIMUM, randomTopScore( expectedSigma( sigma )),
+					  0, 0);
+					  
+		for (int i = 0; i < NUM_TESTS; i++) {
+			sigma = randomSigma();
+			int topScore = randomTopScore( expectedSigma( sigma ));
+			double minimum = randomMinimum( expectedTopScore( topScore ));
+			
+			verifyResults( sigma, minimum, topScore, expectedMinimum( minimum ), 0 );
+		}
+	}
+	public void testSMT() throws Throwable
+	{
+		double sigma = randomSigma();	
+		verifyResults(sigma, randomMinimum(expectedSigma( sigma )), MIN_TOPSCORE, 
+						0, 0 );
+		
+		for (int i = 0; i < NUM_TESTS; i++) {
+			sigma = randomSigma();
+			double minimum = randomMinimum( expectedSigma( sigma ));
+			int topScore = randomTopScore( expectedMinimum( minimum ));
+			
+			verifyResults( sigma, minimum, topScore, 
+						   expectedTopScore( topScore ), 0 );
+		}
+	}
+	
+	public void testTSM() throws Throwable
+	{
+		int topScore = randomTopScore();
+		verifyResults(randomSigma( expectedTopScore( topScore )), MAX_MINIMUM,
+					  topScore, 0, 0);
+		
+		for (int i = 0; i < NUM_TESTS; i++) {
+			topScore = randomTopScore();
+			double sigma = randomSigma( expectedTopScore( topScore ));
+			double minimum = randomMinimum( expectedSigma( sigma ));
+			
+			verifyResults( sigma, minimum, topScore,
+						   expectedMinimum( minimum ), 0 );	
+		}	
+	}
+	
+	public void testTMS() throws Throwable
+	{ 
+		int topScore = randomTopScore();
+		verifyResults( MAX_SIGMA, randomMinimum( expectedTopScore( topScore )), 
+						topScore, 0, 0 );
+						
+		for (int i = 0; i < NUM_TESTS; i++) {
+			topScore = randomTopScore();
+			double minimum = randomMinimum( expectedTopScore( topScore ));
+			double sigma = randomSigma( expectedMinimum( minimum ));
+			
+			verifyResults( sigma, minimum, topScore,
+							expectedSigma( sigma ), 2 );	
+		}
+	}
+
+	/**
+ 	 * Verifies what happens when you pass these parameters
+ 	 * into the thing.  DELTA is the amount of error allowed.
+ 	 * Usually DELTA is only used for Sigma, as we really can't
+ 	 * calculate it exactly.
+ 	 */
+	 	
+	public void verifyResults( double sigma, double minimum, 
+							   int topScore, int expected, int delta ) 
+	{
+		try {
+			setUp();
+			if (sigma >= 0) {
+				IUT.addProperty("sigma", Double.toString(sigma));	
+			}	
+			
+			if (minimum >= 0) {
+				IUT.addProperty("minimum", Double.toString(minimum));
+			}
+		
+			if (topScore >= 0) {
+				IUT.addProperty("topscore", Integer.toString(topScore));
+			}
+		
+			Report report = makeReport( IUT );
+			if (delta == 0) {
+				assertEquals("Unexpected number of results: sigma= " +
+							 Double.toString(sigma) + " min= " + 
+							 Double.toString(minimum) + " topscore= " +
+							 Integer.toString(topScore), 
+							 expected, report.size());		
+			} else {
+				String assertStr = "Unexpected number of results: sigma= " +
+						    		Double.toString(sigma) + " min= " +
+						    		Double.toString(minimum) + " topscore= "+
+					    			Integer.toString(topScore) + " expected= " +
+					    			Integer.toString(expected) + " +/- " +
+					    			Integer.toString(delta) + " actual-result= " +
+					    			report.size();
+
+				assertTrue( assertStr, report.size() >= (expected - delta));
+				assertTrue( assertStr, report.size() <= (expected + delta));
+			}
+		} catch (AssertionFailedError afe) {
+			System.err.println("******** " + testName + " ***********");
+			if (sigma != NO_SIGMA) {
+				System.err.println("SIGMA: " + Double.toString( sigma ) + 
+					   			   " EXPECT: " + Integer.toString(expectedSigma(sigma)));	
+			}	
+
+			if (minimum != NO_MINIMUM) {
+				System.err.println("MIN: " + Double.toString( minimum ) + 
+					   			   " EXPECT: " + Integer.toString(expectedMinimum(minimum)));	
+			}	
+
+			if (topScore != NO_TOPSCORE) {
+				System.err.println("TOP: " + Integer.toString( topScore ) + 
+					   			   " EXPECT: " + Integer.toString(expectedTopScore(topScore)));	
+			}	
+			
+			throw afe;
+
+		}
+	}
     public Report makeReport( Rule IUT ) {
-	List list = new ArrayList();
-	Report report = new Report();
+		List list = new ArrayList();
+		Report report = new Report();
 
-	RuleContext ctx = new RuleContext();
-	ctx.setReport( report );
-	ctx.setSourceCodeFilename(testName);
+		RuleContext ctx = new RuleContext();
+		ctx.setReport( report );
+		ctx.setSourceCodeFilename(testName);
 
-	IUT.apply( list, ctx );
+		IUT.apply( list, ctx );
 	
-	return report;
+		return report;
     }
 }
