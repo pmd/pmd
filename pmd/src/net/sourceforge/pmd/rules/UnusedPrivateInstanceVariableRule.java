@@ -99,10 +99,9 @@ public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
     }
 
     private void recordPossibleUsage(SimpleNode node) {
-        String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
         String otherImg = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(node.getImage().indexOf('.')+1);
         Namespace group = (Namespace)nameSpaces.peek();
-        group.peek().recordPossibleUsageOf(new Symbol(img, node.getBeginLine()));
+        group.peek().recordPossibleUsageOf(new Symbol(getEndName(node.getImage()), node.getBeginLine()));
         group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()));
     }
 

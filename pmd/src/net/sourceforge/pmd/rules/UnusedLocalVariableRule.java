@@ -56,20 +56,10 @@ public class UnusedLocalVariableRule extends UnusedCodeRule {
      */
     public Object visit(ASTName node, Object data) {
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
-            String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
-            nameSpace.peek().recordPossibleUsageOf(new Symbol(img, node.getBeginLine()));
+            nameSpace.peek().recordPossibleUsageOf(new Symbol(getEndName(node.getImage()), node.getBeginLine()));
         }
         return super.visit(node, data);
     }
-
-/*
-    private void reportUnusedLocals(RuleContext ctx, SymbolTable table) {
-        for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
-            Symbol symbol = (Symbol)i.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
-        }
-    }
-*/
 
     private Object addTable(SimpleNode node, Object data) {
         nameSpace.addTable();

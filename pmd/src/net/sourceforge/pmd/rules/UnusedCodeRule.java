@@ -20,4 +20,8 @@ public class UnusedCodeRule extends AbstractRule {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
         }
     }
+
+    protected String getEndName(String name) {
+        return (name.indexOf('.') == -1) ? name : name.substring(0, name.indexOf('.'));
+    }
 }
