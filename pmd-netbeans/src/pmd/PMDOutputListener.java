@@ -41,8 +41,7 @@ import org.openide.windows.OutputListener;
  * @created 24. oktober 2002
  */
 public class PMDOutputListener implements OutputListener {
-	/** The annotation used to mark the line where the error is */
-	private final PMDAnnotation annotation = new PMDAnnotation();
+	
 
 	/** The instance of this class */
 	private final static PMDOutputListener instance = new PMDOutputListener();
@@ -68,7 +67,7 @@ public class PMDOutputListener implements OutputListener {
 
 	/** Removes the marking of the line. */
 	public void detach() {
-		annotation.detach();
+		PMDAnnotation.clearAll();
 	}
 
 
@@ -78,18 +77,24 @@ public class PMDOutputListener implements OutputListener {
 	 * @param outputEvent the event that was fired
 	 */
 	public void outputLineAction( OutputEvent outputEvent ) {
-		annotation.detach();
+		PMDAnnotation.clearAll();
 		DataObject object = FaultRegistry.getInstance().getDataObject( outputEvent.getLine() );
 		LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
 		Set lineset = cookie.getLineSet();
 		int lineNum = Fault.getLineNum( outputEvent.getLine() );
 		Line line = lineset.getOriginal( lineNum - 1 );
 		String msg = Fault.getErrorMessage( outputEvent.getLine() );
+		PMDAnnotation annotation = PMDAnnotation.getNewInstance();
 		annotation.setErrorMessage( msg );
 		annotation.attach( line );
 		line.addPropertyChangeListener( annotation );
 		line.show( Line.SHOW_GOTO );
 		TopManager.getDefault().setStatusText( msg );
+	}
+	
+	public void addAnnotation() {
+	
+	
 	}
 
 
@@ -107,4 +112,4 @@ public class PMDOutputListener implements OutputListener {
 	 * @param outputEvent Description of the Parameter
 	 */
 	public void outputLineSelected( OutputEvent outputEvent ) { }
-}
+} 

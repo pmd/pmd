@@ -90,6 +90,9 @@ public class Fault implements Comparable {
 		return clazz + " [" + line + "]: " + message;
 	}
 
+	public String getMessage() {
+		return message;
+	}
 
 	/**
 	 * Parses the fault and returns the linenumber

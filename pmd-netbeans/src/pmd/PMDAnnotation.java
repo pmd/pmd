@@ -28,6 +28,9 @@ package pmd;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.openide.text.Annotation;
 import org.openide.text.Line;
 
@@ -42,7 +45,23 @@ public class PMDAnnotation extends Annotation implements PropertyChangeListener 
 
 	/** The error message shown on mouseover on the pmd icon */
 	private String errormessage = null;
-
+	private static List annotations = new ArrayList();
+	
+	private PMDAnnotation() {}
+	
+	public static final PMDAnnotation getNewInstance() {
+		PMDAnnotation pmd = new PMDAnnotation();
+		annotations.add( pmd );
+		return pmd;
+	}
+	
+	public static final void clearAll() {
+		Iterator iterator = annotations.iterator();
+		while( iterator.hasNext() ) {
+			((Annotation)iterator.next()).detach();
+		}
+		annotations.clear();
+	}
 
 	/**
 	 * The annotation type.

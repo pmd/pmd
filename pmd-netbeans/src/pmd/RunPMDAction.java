@@ -57,8 +57,10 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
 import org.openide.windows.InputOutput;
+import org.openide.windows.TopComponent;
 
 import pmd.config.ConfigUtils;
+import pmd.scan.EditorChangeListener;
 
 /**
  * Action that can always be invoked and work procedurally.
@@ -67,6 +69,14 @@ import pmd.config.ConfigUtils;
  * @created 17. oktober 2002
  */
 public class RunPMDAction extends CookieAction {
+	
+	
+	protected void initialize()
+	{
+		ErrorManager.getDefault().log(ErrorManager.ERROR, "2initialize");
+		super.initialize();
+		TopComponent.getRegistry().addPropertyChangeListener( new EditorChangeListener(TopComponent.getRegistry()) );
+	}
 	/**
 	 * Gets the name of this action
 	 *
@@ -127,7 +137,7 @@ public class RunPMDAction extends CookieAction {
 	 *      can't write to the output window
 	 * @exception PMDException Description of the Exception
 	 */
-	private List checkCookies( List dataobjects )
+	public static List checkCookies( List dataobjects )
 		 throws IOException
 	{
 		RuleSet set = constructRuleSets();
@@ -240,7 +250,7 @@ public class RunPMDAction extends CookieAction {
 	 * @return a reader for the dataobject
 	 * @exception IOException if the object can't be read
 	 */
-	private Reader getSourceReader( DataObject dataobject ) throws IOException {
+	private static Reader getSourceReader( DataObject dataobject ) throws IOException {
 		Reader reader;
 		EditorCookie editor = ( EditorCookie )dataobject.getCookie( EditorCookie.class );
 
