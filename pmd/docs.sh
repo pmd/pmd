@@ -21,5 +21,9 @@ elif [ $option = "upload" ]; then
 	cd ../
 	ssh -l tomcopeland pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ && rm -rf htdocs/xref && rm -rf htdocs/apidocs && ./update_docs.sh"
 fi
-rm velocity.log maven.log
-
+if [ -e velocity.log ]; then
+	rm velocity.log
+fi
+if [ -e maven.log ]; then
+	rm maven.log
+fi
