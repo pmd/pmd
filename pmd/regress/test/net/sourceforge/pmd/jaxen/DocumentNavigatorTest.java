@@ -1,9 +1,3 @@
-/*
- * Created on 15/03/2003
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
- */
 package test.net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.AbstractRule;
