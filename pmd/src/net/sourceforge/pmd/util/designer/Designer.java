@@ -169,7 +169,7 @@ public class Designer implements ClipboardOwner {
         controlPanel.add(createXPathQueryPanel());
 
         JComponent astPanel = createASTPanel();
-        JPanel xpathResultPanel = createXPathResultPanel();
+        JComponent xpathResultPanel = createXPathResultPanel();
 
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
 
@@ -213,6 +213,7 @@ public class Designer implements ClipboardOwner {
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         frame.setLocation((screenWidth / 2) - frame.getWidth() / 2, (screenHeight / 2) - frame.getHeight() / 2);
         frame.setVisible(true);
+        frame.pack();
         frame.show();
 
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation() / 2));
@@ -220,23 +221,19 @@ public class Designer implements ClipboardOwner {
     }
 
     private JComponent createASTPanel() {
-        //JSmartPanel astPanel = new JSmartPanel();
-        astArea.setRows(20);
+        astArea.setRows(20);        
         astArea.setColumns(20);
         JScrollPane astScrollPane = new JScrollPane(astArea);
-        //astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
-        return astScrollPane; //astPanel;
+        return astScrollPane; ;
     }
 
-    private JPanel createXPathResultPanel() {
-        JPanel p = new JPanel();
+    private JComponent createXPathResultPanel() {
         xpathResults.addElement("No results yet");
         xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
         xpathResultList.setFixedCellWidth(300);
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setView(xpathResultList);
-        p.add(scrollPane);
-        return p;
+        return scrollPane;
     }
 
     private JComponent createCodeEditPanel() {
