@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Hakan Civele - an order-of-magnitude optimization to the SystemOutPrintln rule</li>
             <li>Elliotte Rusty Harold - mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Benoit Xhenseval - more bug reports (with good failure cases!), Ant task patch, XSLT patch, suggestion for improving XML report, several bug reports</li>
             <li>George Sexton - Suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
