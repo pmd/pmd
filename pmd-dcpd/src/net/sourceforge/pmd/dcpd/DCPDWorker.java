@@ -25,9 +25,9 @@ public class DCPDWorker {
     private TokenSetsWrapper tsw;
     private JavaSpace space;
 
-    public DCPDWorker() {
+    public DCPDWorker(JavaSpace space) {
         try {
-            space = Util.findSpace(Util.SPACE_SERVER);
+            this.space = space;
             // register for future jobs
             space.notify(new Job(), null, new JobAddedListener(space, this), Lease.FOREVER, null);
             // get a job if there are any out there
@@ -50,7 +50,8 @@ public class DCPDWorker {
 
             while (true) {
                 System.out.println("Starting expansion");
-                doExpansion();
+                TileExpander te = new TileExpander(space, tsw);
+                te.expandAvailableTiles();
                 System.out.println("Done, sleeping");
                 Thread.currentThread().sleep(1000);
             }
@@ -60,58 +61,11 @@ public class DCPDWorker {
         }
     }
 
-    private void doExpansion() throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
-        Entry twQuery = space.snapshot(new TileWrapper(null, null, currentJob.id, TileWrapper.NOT_DONE, null, null, null));
-
-        TileWrapper tileWrapper = null;
-        while ((tileWrapper = (TileWrapper)space.take(twQuery, null, 10)) != null) {
-            System.out.println("got " + tileWrapper.tile.getImage());
-            Occurrences results = expand(tileWrapper);
-            int expansionIndex = 0;
-            for (Iterator i = results.getTiles();i.hasNext();) {
-                Tile tile = (Tile)i.next();
-                List theseOccurrences = marshal(results.getOccurrences(tile));
-                TileWrapper newTW = new TileWrapper(tile,
-                                                    theseOccurrences,
-                                                    currentJob.id,
-                                                    TileWrapper.DONE,
-                                                    tileWrapper.originalTilePosition,
-                                                    new Integer(expansionIndex),
-                                                    new Integer(results.size()));
-                space.write(newTW, null, Lease.FOREVER);
-                System.out.println("Wrote " + newTW.getExpansionIndexPicture());
-                expansionIndex++;
-            }
-        }
-    }
-
-    private List marshal(Iterator i) {
-        List list = new ArrayList();
-        while (i.hasNext()) {
-            list.add(i.next());
-        }
-        return list;
-    }
-
-    private Occurrences expand(TileWrapper tileWrapper) {
-        Occurrences newOcc = new Occurrences(new CPDNullListener());
-        for (Iterator i = tileWrapper.occurrences.iterator(); i.hasNext();) {
-            TokenEntry tok = (TokenEntry)i.next();
-            TokenList tokenSet = tsw.tokenSets.getTokenList(tok);
-            if (tokenSet.hasTokenAfter(tileWrapper.tile, tok)) {
-                TokenEntry token = (TokenEntry)tokenSet.get(tok.getIndex() + tileWrapper.tile.getTokenCount());
-                // make sure the next token hasn't already been used in an occurrence
-                if (!newOcc.contains(token)) {
-                    Tile newTile = tileWrapper.tile.copy();
-                    newTile.add(token);
-                    newOcc.addTile(newTile, tok);
-                }
-            }
-        }
-        return newOcc;
-    }
-
     public static void main(String[] args) {
-        new DCPDWorker();
+        try {
+            new DCPDWorker(Util.findSpace(Util.SPACE_SERVER));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

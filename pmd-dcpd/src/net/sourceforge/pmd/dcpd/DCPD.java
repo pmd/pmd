@@ -27,7 +27,6 @@ public class DCPD {
     private JavaSpace space;
     private Job job;
     private TokenSetsWrapper tokenSetWrapper;
-    private Results results;
 
     public DCPD(String javaSpaceURL) {
         try {
@@ -42,20 +41,21 @@ public class DCPD {
             space.write(tokenSetWrapper, null, Lease.FOREVER);
 
             System.out.println("Crunching");
-            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 50);
-            dgst.crunch(new CPDListenerImpl());
+            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 2);
+            Results results = dgst.crunch(new CPDListenerImpl());
 
+            System.out.println("Cleaning up");
+            space.take(tokenSetWrapper, null, 200);
+            space.take(job, null, 200);
 
-            System.out.println(render());
-
-
+            System.out.println(render(results));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't connect to the space on " + javaSpaceURL);
         }
     }
 
-    public String getImage(Tile tile) {
+    public String getImage(Tile tile, Results results) {
         try {
             Iterator i = results.getOccurrences(tile);
             TokenEntry firstToken = (TokenEntry)i.next();
@@ -68,7 +68,7 @@ public class DCPD {
 
     protected String EOL = System.getProperty("line.separator", "\n");
 
-    private String render() {
+    private String render(Results results) {
         StringBuffer sb = new StringBuffer();
         for (Iterator i = results.getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
@@ -81,7 +81,7 @@ public class DCPD {
                 sb.append("Starting at line " + tok.getBeginLine() + " in " + tok.getTokenSrcID());
                 sb.append(EOL);
             }
-            sb.append(getImage(tile));
+            sb.append(getImage(tile, results));
             sb.append(EOL);
         }
         return sb.toString();

@@ -29,26 +29,43 @@ public class DGST {
         this.job = job;
     }
 
-    public void crunch(CPDListener listener) {
+    public Results crunch(CPDListener listener) {
         Occurrences occ = new Occurrences(tokenSets, listener);
         try {
             scatter(occ);
             space.write(job, null, Lease.FOREVER);
             expand(occ);
+            System.out.println("DONE");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return results;
     }
 
     private void expand(Occurrences occ)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
         while (!occ.isEmpty()) {
-            occ = gather(occ.size()-1);
+            TileGatherer tg = new TileGatherer(space, job);
+            occ = tg.gather(occ.size());
+            addToResults(occ);
+            System.out.println("************* Scatter..gather complete; tile count now " + occ.size());
             scatter(occ);
-            System.out.println("scatter..gather complete; tile count now " + occ.size());
+        }
+    }
+
+    private void addToResults(Occurrences occ) {
+        for (Iterator i = occ.getTiles(); i.hasNext();) {
+            Tile tile = (Tile)i.next();
+            if (tile.getTokenCount() > this.minimumTileSize) {
+                for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
+                    TokenEntry te = (TokenEntry)j.next();
+                    results.addTile(tile, te);
+                }
+            }
         }
     }
 
     private void scatter(Occurrences occ) throws TransactionException, RemoteException {
+        System.out.println("Scattering");
         int tilesSoFar=0;
         for (Iterator i = occ.getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
@@ -59,56 +76,14 @@ public class DGST {
                     new Integer(tilesSoFar),
                     null, null);
             space.write(tw, null, Lease.FOREVER);
+            //System.out.println("Scattering " + tw);
             tilesSoFar++;
-            if (tilesSoFar % 10 == 0) {
+            if (tilesSoFar % 25 == 0) {
                 System.out.println("Written " + tilesSoFar + " tiles so far");
             }
         }
+        System.out.println("Done scattering");
     }
-
-    private Occurrences gather(int originalOccurrencesCount) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
-        System.out.println("STARTING TO GATHER");
-        Occurrences occ = new Occurrences(new CPDNullListener());
-        for (int i=0;i<originalOccurrencesCount; i++) {
-
-            // this gets tile (6:0/3:4:0/2:3)
-            TileWrapper tw = (TileWrapper)space.take(new TileWrapper(null,
-                    null,
-                    job.id,
-                    TileWrapper.DONE,
-                    new Integer(i), null, null), null, Lease.FOREVER);
-            System.out.println("Took " + tw.getExpansionIndexPicture());
-
-            addAllExpansions(i, tw, occ);
-        }
-        System.out.println("DONE GATHERING");
-
-        return occ;
-    }
-
-    private void addAllExpansions(int originalPosition, TileWrapper firstTileWrapper, Occurrences occ) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
-        addTileWrapperToOccurrences(firstTileWrapper, occ);
-        for (int i=1; i<firstTileWrapper.expansionsTotal.intValue(); i++) {
-            TileWrapper nextExpansion = (TileWrapper)space.take(new TileWrapper(null,
-                    null,
-                    firstTileWrapper.jobID,
-                    TileWrapper.DONE,
-                    new Integer(originalPosition),
-                    new Integer(i),
-                    firstTileWrapper.expansionsTotal), null, Lease.FOREVER);
-            System.out.println("Took " + nextExpansion.getExpansionIndexPicture());
-            addTileWrapperToOccurrences(nextExpansion, occ);
-        }
-    }
-
-    private void addTileWrapperToOccurrences(TileWrapper tw, Occurrences occ) {
-        for (int i=0; i<tw.occurrences.size(); i++) {
-            if (!occ.containsAnyTokensIn(tw.tile)) {
-                occ.addTile(tw.tile, (TokenEntry)tw.occurrences.get(i));
-            }
-        }
-    }
-
 
     private List marshal(Iterator i) {
         List list = new ArrayList();
@@ -116,24 +91,6 @@ public class DGST {
             list.add(i.next());
         }
         return list;
-    }
-
-    private void expandTile(Occurrences oldOcc, Occurrences newOcc, Tile tile, CPDListener listener, int tilesSoFar, int totalTiles) {
-        for (Iterator i = oldOcc.getOccurrences(tile); i.hasNext();) {
-            TokenEntry tok = (TokenEntry)i.next();
-            TokenList tokenSet = tokenSets.getTokenList(tok);
-            if (tokenSet.hasTokenAfter(tile, tok)) {
-                TokenEntry token = (TokenEntry)tokenSet.get(tok.getIndex() + tile.getTokenCount());
-                // make sure the next token hasn't already been used in an occurrence
-                if (!newOcc.contains(token)) {
-                    Tile newTile = tile.copy();
-                    newTile.add(token);
-                    newOcc.addTile(newTile, tok);
-					listener.addedNewTile(newTile, tilesSoFar, totalTiles);
-                }
-            }
-        }
-        newOcc.deleteSoloTiles();
     }
 
 }
