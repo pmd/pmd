@@ -11,45 +11,35 @@ public class ASTType extends SimpleNode {
         super(p, id);
     }
 
-    private boolean isArray;
-    private int dimensions;
-
-    public boolean isArray() {
-        return this.isArray;
-    }
-
-    public void setIsArray() {
-        this.isArray = true;
-    }
-
-    public void addDimension() {
-        dimensions++;
-    }
-
-    /**
-     * Note that this is only valid for array types.  It'd
-     * be better to have a ASTType subclass for this.
-     */
-    public int getDimensions() {
-        return dimensions;
-    }
-
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+    private int arrayDepth;
+
+    public void bumpArrayDepth() {
+        arrayDepth++;
+    }
+
+    public int getArrayDepth() {
+        return arrayDepth;
+    }
+
+    public boolean isArray() {
+        return arrayDepth > 0;
+    }
+
     public void dump(String prefix) {
-        String out = toString(prefix) + ":";
-        if (isArray()) {
+        String out = "";
+        if (arrayDepth > 0) {
             out += "(array";
-            for (int i=0;i<getDimensions();i++) {
+            for (int i=0;i<arrayDepth;i++) {
                 out += "[";
             }
             out += ")";
         }
-        System.out.println(out);
+        System.out.println(toString(prefix) + out);
         dumpChildren(prefix);
     }
-
 }

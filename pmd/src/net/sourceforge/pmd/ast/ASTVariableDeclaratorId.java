@@ -3,6 +3,7 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTVariableDeclaratorId extends SimpleNode {
+
     public ASTVariableDeclaratorId(int id) {
         super(id);
     }
@@ -14,6 +15,20 @@ public class ASTVariableDeclaratorId extends SimpleNode {
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    private int arrayDepth;
+
+    public void bumpArrayDepth() {
+        arrayDepth++;
+    }
+
+    public int getArrayDepth() {
+        return arrayDepth;
+    }
+
+    public boolean isArray() {
+        return arrayDepth > 0;
     }
 
     public boolean isExceptionBlockParameter() {
@@ -38,13 +53,22 @@ public class ASTVariableDeclaratorId extends SimpleNode {
         throw new RuntimeException("Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
     }
 
-    public void dump(String prefix) {
-        System.out.println(toString(prefix) + ":" + getImage());
-        dumpChildren(prefix);
-    }
-
     private SimpleNode findTypeNameNode(Node node) {
         ASTType typeNode = (ASTType) node.jjtGetChild(0);
         return (SimpleNode) typeNode.jjtGetChild(0);
     }
+
+    public void dump(String prefix) {
+        String out = ":" + getImage();
+        if (arrayDepth > 0) {
+            out += "(array";
+            for (int i=0;i<arrayDepth;i++) {
+                out += "[";
+            }
+            out += ")";
+        }
+        System.out.println(toString(prefix) + out);
+        dumpChildren(prefix);
+    }
+
 }

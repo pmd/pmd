@@ -6,6 +6,7 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.ast.Dimensionable;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
 
@@ -18,18 +19,18 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isArray() {
-        return ((ASTVariableDeclaratorId)node).getTypeNode().isArray();
+        return ((Dimensionable)(((ASTVariableDeclaratorId)node).getTypeNode().jjtGetParent())).isArray();
     }
 
     public boolean isExceptionBlockParameter() {
-        return ((ASTVariableDeclaratorId) node).isExceptionBlockParameter();
+        return ((ASTVariableDeclaratorId)node).isExceptionBlockParameter();
     }
 
     public AccessNode getAccessNodeParent() {
         if (node.jjtGetParent() instanceof ASTFormalParameter) {
             return (AccessNode)node.jjtGetParent();
         }
-        return (AccessNode) node.jjtGetParent().jjtGetParent();
+        return (AccessNode)node.jjtGetParent().jjtGetParent();
     }
 
     public ASTVariableDeclaratorId getDeclaratorId() {
