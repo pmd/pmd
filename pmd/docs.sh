@@ -6,9 +6,9 @@ if [ -z $option ]; then
 	echo "Generating from pom, regenerating ruleset docs, and transforming"
 	maven -qob xdoc:generate-from-pom pmd:ruleset-docs xdoc:transform 
 elif [ $option = "all" ]; then
-	echo "Running maven pmd-site"
+	echo "Running maven site"
 	rm -rf target
-	maven -qb pmd-site
+	maven -qb site
 elif [ $option = "upload" ]; then
 	echo "Generating xdocs and uploading"
 	maven -qob xdoc:generate-from-pom pmd:ruleset-docs xdoc:transform 

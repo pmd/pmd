@@ -22,6 +22,9 @@ public class ExceptionAsFlowControl extends AbstractRule {
         
         String throwName = node.getFirstASTNameImage();
         ASTTryStatement parent = (ASTTryStatement) node.getFirstParentOfType(ASTTryStatement.class);
+        if (parent == null) {
+            return data;
+        }
         for (parent = (ASTTryStatement) parent.getFirstParentOfType(ASTTryStatement.class)
                 ; parent != null
                 ; parent = (ASTTryStatement) parent.getFirstParentOfType(ASTTryStatement.class)) {

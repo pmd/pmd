@@ -18,7 +18,8 @@ public class ExceptionAsFlowControlTest extends SimpleAggregatorTst {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "failure case", 1, rule),
            new TestDescriptor(TEST2, "normal throw catch", 0, rule),
-           new TestDescriptor(TEST3, "BUG 996007", 0, rule)
+           new TestDescriptor(TEST3, "BUG 996007", 0, rule),
+           new TestDescriptor(TEST4, "NPE", 0, rule)
        });
     }
 
@@ -56,5 +57,15 @@ public class ExceptionAsFlowControlTest extends SimpleAggregatorTst {
         "  }" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  switch(foo) {" + PMD.EOL +
+    "   default:" + PMD.EOL +
+    "    throw new IllegalArgumentException();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
 }
