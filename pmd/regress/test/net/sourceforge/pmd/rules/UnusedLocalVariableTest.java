@@ -34,6 +34,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST13, "", 2, rule),
            new TestDescriptor(TEST14, "an assignment does not a usage make", 1, rule),
            new TestDescriptor(TEST15, "a compound assignment operator doth a usage make", 0, rule),
+           new TestDescriptor(TEST16, "assignment to a member field means used", 0, rule),
        });
     }
 
@@ -167,6 +168,14 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     " void bar() {" + PMD.EOL +
     "   int x = 0;" + PMD.EOL +
     "   x += 2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST16 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "   Bar b = new Bar();" + PMD.EOL +
+    "   b.buz = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }

@@ -35,6 +35,10 @@ public class NameOccurrence {
         return qualifiedName;
     }
 
+    public boolean isPartOfQualifiedName() {
+        return qualifiedName != null;
+    }
+
     public SimpleNode getLocation() {
       return location;
     }
@@ -57,7 +61,6 @@ public class NameOccurrence {
     public Scope getScope() {
         return location.getScope();
     }
-
 
     public int getBeginLine() {
         return location.getBeginLine();

@@ -2,8 +2,8 @@ package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.List;
 import java.util.Map;

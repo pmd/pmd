@@ -3,15 +3,19 @@
 */
 package test.net.sourceforge.pmd.symboltable;
 
-import junit.framework.TestCase;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-public class LocalScopeTest extends TestCase {
+import java.util.List;
+import java.util.Map;
+
+public class LocalScopeTest extends STBBaseTst {
 
     private class MyASTVariableDeclaratorId extends ASTVariableDeclaratorId {
         public MyASTVariableDeclaratorId(int x) {
@@ -54,4 +58,42 @@ public class LocalScopeTest extends TestCase {
         scope.addDeclaration(decl);
         assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
+
+    public void testLocalVariableDeclarationFound() {
+        parseCode(TEST1);
+        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId node = (ASTVariableDeclaratorId)nodes.get(0);
+        Map vars = node.getScope().getVariableDeclarations();
+        assertEquals(1, vars.size());
+        NameDeclaration decl = (NameDeclaration)vars.keySet().iterator().next();
+        assertEquals("b", decl.getImage());
+    }
+
+    public void testQualifiedNameOccurrence() {
+        parseCode(TEST2);
+        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId node = (ASTVariableDeclaratorId)nodes.get(0);
+        Map vars = node.getScope().getVariableDeclarations();
+        NameDeclaration decl = (NameDeclaration)vars.keySet().iterator().next();
+        NameOccurrence occ = (NameOccurrence)((List)vars.get(decl)).get(0);
+        System.out.println("occ = " + occ);
+    }
+
+    public static final String TEST1 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  Bar b = new Bar();" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  Bar b = new Bar();" + PMD.EOL +
+    "  b.buz = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+
+
 }

@@ -19,10 +19,10 @@ public class UnusedLocalVariableRule extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
-            Map unused = node.getScope().getVariableDeclarations();
-            for (Iterator i = unused.keySet().iterator(); i.hasNext();) {
+            Map locals = node.getScope().getVariableDeclarations();
+            for (Iterator i = locals.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-                if (!actuallyUsed((List)unused.get(decl))) {
+                if (!actuallyUsed((List)locals.get(decl))) {
                     ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
                 }
             }
@@ -32,7 +32,8 @@ public class UnusedLocalVariableRule extends AbstractRule {
 
     private boolean actuallyUsed(List usages) {
         for (Iterator j = usages.iterator(); j.hasNext();) {
-            if (!((NameOccurrence)j.next()).isOnLeftHandSide()) {
+            NameOccurrence nameOccurrence = (NameOccurrence)j.next();
+            if (!nameOccurrence.isOnLeftHandSide() || nameOccurrence.isPartOfQualifiedName()) {
                 return true;
             }
         }

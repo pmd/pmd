@@ -3,93 +3,82 @@
 */
 package test.net.sourceforge.pmd.symboltable;
 
-import junit.framework.TestCase;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.NameOccurrences;
 
-public class NameOccurrencesTest extends TestCase {
+import java.util.List;
 
+public class NameOccurrencesTest extends STBBaseTst {
+
+    public void testSuper() {
+        parseCode(TEST1);
+        List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
+        NameOccurrences occs = new NameOccurrences((ASTPrimaryExpression)nodes.get(0));
+        assertEquals("super", ((NameOccurrence)occs.getNames().get(0)).getImage());
+    }
+
+    public void testThis() {
+        parseCode(TEST2);
+        List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
+        NameOccurrences occs = new NameOccurrences((ASTPrimaryExpression)nodes.get(0));
+        assertEquals("this", ((NameOccurrence)occs.getNames().get(0)).getImage());
+        assertEquals("x", ((NameOccurrence)occs.getNames().get(1)).getImage());
+    }
 
     public void testNameLinkage() {
-        ASTPrimaryExpression primary = new ASTPrimaryExpression(1);
-        primary.testingOnly__setBeginLine(10);
-        ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
-        prefix.setUsesThisModifier();
-        prefix.testingOnly__setBeginLine(10);
-        primary.jjtAddChild(prefix, 0);
-        ASTPrimarySuffix suffix = new ASTPrimarySuffix(3);
-        suffix.setImage("x");
-        suffix.testingOnly__setBeginLine(10);
-        primary.jjtAddChild(suffix, 1);
-
-        NameOccurrences occs = new NameOccurrences(primary);
-        NameOccurrence thisOcc = (NameOccurrence) occs.iterator().next();
-        NameOccurrence xOcc = (NameOccurrence) occs.getNames().get(1);
-        assertEquals(thisOcc.getNameForWhichThisIsAQualifier(), xOcc);
+        parseCode(TEST2);
+        List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
+        NameOccurrences occs = new NameOccurrences((ASTPrimaryExpression)nodes.get(0));
+        NameOccurrence thisNameOccurrence = (NameOccurrence)occs.getNames().get(0);
+        assertEquals(thisNameOccurrence.getNameForWhichThisIsAQualifier(), (NameOccurrence)occs.getNames().get(1));
     }
 
-    // super
-    public void testSuper() {
-        ASTPrimaryExpression primary = new ASTPrimaryExpression(1);
-        primary.testingOnly__setBeginLine(10);
-        ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
-        prefix.setUsesSuperModifier();
-        prefix.testingOnly__setBeginLine(10);
-        primary.jjtAddChild(prefix, 0);
-
-        NameOccurrences occs = new NameOccurrences(primary);
-        assertEquals("super", ((NameOccurrence) occs.getNames().get(0)).getImage());
+    public void testSimpleVariableOccurrence() {
+        parseCode(TEST3);
+        List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
+        NameOccurrences occs = new NameOccurrences((ASTPrimaryExpression)nodes.get(0));
+        assertEquals("x", ((NameOccurrence)occs.getNames().get(0)).getImage());
+        assertFalse(((NameOccurrence)occs.getNames().get(0)).isThisOrSuper());
+        assertFalse(((NameOccurrence)occs.getNames().get(0)).isMethodOrConstructorInvocation());
+        assertTrue(((NameOccurrence)occs.getNames().get(0)).isOnLeftHandSide());
     }
 
-    // this
-    public void testThis() {
-        ASTPrimaryExpression primary = new ASTPrimaryExpression(1);
-        primary.testingOnly__setBeginLine(10);
-        ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
-        prefix.setUsesThisModifier();
-        prefix.testingOnly__setBeginLine(10);
-        primary.jjtAddChild(prefix, 0);
-
-        NameOccurrences occs = new NameOccurrences(primary);
-        assertEquals("this", ((NameOccurrence) occs.getNames().get(0)).getImage());
+    public void testQualifiedOccurrence() {
+        parseCode(TEST4);
+        List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
+        NameOccurrences occs = new NameOccurrences((ASTPrimaryExpression)nodes.get(0));
+        assertEquals("b", ((NameOccurrence)occs.getNames().get(0)).getImage());
+        assertEquals("x", ((NameOccurrence)occs.getNames().get(1)).getImage());
     }
 
-    // this.x
-    public void testFieldWithThis() {
-        ASTPrimaryExpression primary = new ASTPrimaryExpression(1);
-        primary.testingOnly__setBeginLine(10);
-        ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
-        prefix.setUsesThisModifier();
-        prefix.testingOnly__setBeginLine(10);
-        primary.jjtAddChild(prefix, 0);
-        ASTPrimarySuffix suffix = new ASTPrimarySuffix(3);
-        suffix.setImage("x");
-        suffix.testingOnly__setBeginLine(10);
-        primary.jjtAddChild(suffix, 1);
+    public static final String TEST1 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  super.x = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
-        NameOccurrences occs = new NameOccurrences(primary);
-        assertEquals("this", ((NameOccurrence) occs.getNames().get(0)).getImage());
-        assertEquals("x", ((NameOccurrence) occs.getNames().get(1)).getImage());
-    }
+    public static final String TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  this.x = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
-    // x
-    public void testField() {
-        ASTPrimaryExpression primary = new ASTPrimaryExpression(1);
-        primary.testingOnly__setBeginLine(10);
-        ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
-        prefix.testingOnly__setBeginLine(10);
-        primary.jjtAddChild(prefix, 0);
-        ASTName name = new ASTName(3);
-        name.setImage("x");
-        prefix.jjtAddChild(name, 0);
+    public static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  x = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
-        NameOccurrences occs = new NameOccurrences(primary);
-        assertEquals("x", ((NameOccurrence) occs.getNames().get(0)).getImage());
-    }
-
+    public static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  b.x = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
 }
