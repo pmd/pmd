@@ -8,12 +8,10 @@ import java.util.Set;
 public class MatchCollector {
 
     private List marks;
-    private int codeSize;
     private MarkComparator markComparator;
 
-    public MatchCollector(List marks, int codeSize, MarkComparator mc) {
+    public MatchCollector(List marks, MarkComparator mc) {
         this.marks = marks;
-        this.codeSize = codeSize;
         this.markComparator = mc;
     }
 
@@ -37,14 +35,11 @@ public class MatchCollector {
     }
 
     private int countDuplicateTokens(Mark mark1, Mark mark2) {
-        int numberOfDuplicateTokens = 0;
-        for (int i = 0; i < codeSize; i++) {
-            if (matchEnded(markComparator.tokenAt(i, mark1), markComparator.tokenAt(i, mark2))) {
-                return numberOfDuplicateTokens;
-            }
-            numberOfDuplicateTokens++;
+        int index = 0;
+        while (!matchEnded(markComparator.tokenAt(index, mark1), markComparator.tokenAt(index, mark2))) {
+            index++;
         }
-        return numberOfDuplicateTokens;
+        return index;
     }
 
     private boolean matchEnded(TokenEntry token1, TokenEntry token2) {

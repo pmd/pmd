@@ -53,7 +53,7 @@ public class MatchAlgorithm {
         MarkComparator mc = new MarkComparator(cpdListener, code);
         Collections.sort(marks, mc);
 
-        MatchCollector coll = new MatchCollector(marks, code.size(), mc);
+        MatchCollector coll = new MatchCollector(marks, mc);
         matches = coll.collect(min);
         Collections.sort(matches);
 

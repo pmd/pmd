@@ -8,15 +8,15 @@ public class MarkComparator implements Comparator {
     private final int comparisonUpdateInterval;
     private CPDListener l;
     private long comparisons;
-    private List code;
+    private List tokens;
 
-    public MarkComparator(CPDListener l, List code) {
-        this(l, code, 10000);
+    public MarkComparator(CPDListener l, List tokens) {
+        this(l, tokens, 10000);
     }
 
-    public MarkComparator(CPDListener l, List code, int comparisonUpdateInterval) {
+    public MarkComparator(CPDListener l, List tokens, int comparisonUpdateInterval) {
         this.l = l;
-        this.code = code;
+        this.tokens = tokens;
         this.comparisonUpdateInterval = comparisonUpdateInterval;
     }
 
@@ -28,7 +28,7 @@ public class MarkComparator implements Comparator {
 
         Mark mark1 = (Mark)o1;
         Mark mark2 = (Mark)o2;
-        for (int i = 1; i < code.size(); i++) {
+        for (int i = 1; i < tokens.size(); i++) {
             int cmp = tokenAt(i, mark1).compareTo(tokenAt(i, mark2));
             if (cmp != 0) {
                 return cmp;
@@ -38,6 +38,6 @@ public class MarkComparator implements Comparator {
     }
 
     public TokenEntry tokenAt(int index, Mark mark) {
-        return (TokenEntry)code.get((index + mark.getIndexIntoTokenArray()) % code.size());
+        return (TokenEntry)tokens.get((index + mark.getIndexIntoTokenArray()) % tokens.size());
     }
 }
