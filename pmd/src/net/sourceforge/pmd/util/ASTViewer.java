@@ -28,6 +28,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.io.IOException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.util.Iterator;
 
 public class ASTViewer {
@@ -90,6 +95,18 @@ public class ASTViewer {
         }
     }
 
+    private class SaveListener implements ActionListener {
+        public void actionPerformed(ActionEvent ae) {
+            try {
+                File f = new File(SETTINGS_FILE_NAME);
+                FileWriter fw = new FileWriter(f);
+                fw.write(codeEditorPane.getText());
+                fw.close();
+            } catch (IOException ioe) {
+            }
+        }
+    }
+
     private class XPathListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
             if (xpathQueryArea.getText().length() == 0) {
@@ -122,6 +139,8 @@ public class ASTViewer {
         }
     }
 
+    private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_astviewer";
+
     private JTextPane codeEditorPane = new JTextPane();
     private JTextArea astArea = new JTextArea();
     private JTextArea xpathResultArea = new JTextArea();
@@ -148,6 +167,7 @@ public class ASTViewer {
         JButton goButton = new JButton("Go");
         goButton.setMnemonic('g');
         goButton.addActionListener(new ShowListener());
+        goButton.addActionListener(new SaveListener());
         goButton.addActionListener(new XPathListener());
 
         JPanel controlPanel = new JPanel();
@@ -173,6 +193,23 @@ public class ASTViewer {
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
         upperSplitPane.setDividerLocation(upperSplitPane.getMaximumDividerLocation() / 3);
         codeEditorPane.setSize(upperSplitPane.getMaximumDividerLocation() / 3, containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
+        codeEditorPane.setText(loadText());
+    }
+
+    private String loadText() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(new File(SETTINGS_FILE_NAME)));
+            StringBuffer text = new StringBuffer();
+            String hold = null;
+            while ( (hold = br.readLine()) != null) {
+                text.append(hold);
+                text.append(System.getProperty("line.separator"));
+            }
+            return text.toString();
+        }   catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static void main(String[] args) {

@@ -31,6 +31,17 @@ public class ASTVariableDeclaratorId extends SimpleNode {
         throw new RuntimeException("Don't know how to get the type for anything other than a ASTLocalVariableDeclaration/ASTFormalParameterASTFieldDeclaration");
     }
 
+    public void dump(String prefix) {
+        System.out.println(toString(prefix) + ":" + getImage());
+        if (children != null) {
+            for (int i = 0; i < children.length; ++i) {
+                SimpleNode n = (SimpleNode) children[i];
+                if (n != null) {
+                    n.dump(prefix + " ");
+                }
+            }
+        }
+    }
     private SimpleNode findTypeNameNode(Node node) {
         ASTType typeNode = (ASTType) node.jjtGetChild(0);
         return (SimpleNode) typeNode.jjtGetChild(0);
