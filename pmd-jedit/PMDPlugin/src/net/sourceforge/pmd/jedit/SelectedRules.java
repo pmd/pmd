@@ -5,6 +5,7 @@
  */
 package net.sourceforge.pmd.jedit;
 
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;

@@ -6,11 +6,9 @@
 package net.sourceforge.pmd.jedit;
 
 import errorlist.DefaultErrorSource;
-import errorlist.ErrorList;
 import errorlist.ErrorSource;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,16 +16,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.swing.JWindow;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import net.sourceforge.pmd.cpd.CPD;
@@ -48,6 +43,7 @@ import org.gjt.sp.jedit.browser.VFSBrowser;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.EBMessage;
 import org.gjt.sp.jedit.EBPlugin;
+import org.gjt.sp.jedit.MiscUtilities;
 import org.gjt.sp.jedit.io.VFS;
 import org.gjt.sp.jedit.io.VFSManager;
 import org.gjt.sp.jedit.jEdit;
@@ -109,7 +105,7 @@ public class PMDJEditPlugin extends EBPlugin {
 	public void instanceCheckDirectory(View view) {
 		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP))
 		{
-			String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE);
+			String dir = (String)JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE, null, null, MiscUtilities.getParentOfPath(view.getBuffer().getPath()));
 			if (dir != null)
 			{
 				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() )
@@ -202,11 +198,11 @@ public class PMDJEditPlugin extends EBPlugin {
 		String dir = null;
 		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP))
 		{
-			dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
+			dir = (String)JOptionPane.showInputDialog(jEdit.getActiveView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE, null,null, MiscUtilities.getParentOfPath(view.getBuffer().getPath()));
 			if (dir != null && dir.trim() != null)
 			{
 				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
-					JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(jEdit.getActiveView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
@@ -215,7 +211,7 @@ public class PMDJEditPlugin extends EBPlugin {
 		{
 			VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
 			if(browser == null) {
-				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(jEdit.getActiveView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -289,7 +285,7 @@ public class PMDJEditPlugin extends EBPlugin {
 		}
 	}// check current buffer
 
-	private void processFiles(List files, View view) {
+	void processFiles(List files, View view) {
 		unRegisterErrorSource();
 		errorSource.clear();
 

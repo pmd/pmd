@@ -76,8 +76,8 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     }
 
-    private SelectedRules rules;
-    private JTextArea exampleTextArea= new JTextArea(10, 50);
+    SelectedRules rules;
+    JTextArea exampleTextArea= new JTextArea(10, 50);
     private JCheckBox directoryPopupBox, chkRunPMDOnSave, chkShowProgressBar;
 	JTextField txtMinTileSize;
 	JTextField txtCustomRules;

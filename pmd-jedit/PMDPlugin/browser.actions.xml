@@ -6,12 +6,12 @@
       net.sourceforge.pmd.jedit.PMDJEditPlugin.checkFile(view,browser);
     </CODE>
   </ACTION>
-  <ACTION NAME="pmd-check-current-directory">
+  <ACTION NAME="pmd-check-directory">
     <CODE>
       net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectory(view, browser,false);
     </CODE>
   </ACTION>
-  <ACTION NAME="pmd-check-current-directory-recursively">
+  <ACTION NAME="pmd-check-directory-recursively">
     <CODE>
       net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectory(view, browser,true);
     </CODE>

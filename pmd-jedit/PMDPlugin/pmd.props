@@ -19,14 +19,14 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.activate=defer
 
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu.label=$PMD
 
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu=pmd-check-current-buffer pmd-check-all-open-buffers pmd-check-current-directory pmd-check-current-directory-recursively pmd-clear-errorlist %pmd-cpd
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu=pmd-check-current-buffer pmd-check-all-open-buffers pmd-check-directory pmd-check-directory-recursively pmd-clear-errorlist %pmd-cpd
 pmd-cpd=cpd-currentfile cpd-dir cpd-dir-recursively
 
 #Dockables and Menu Labels
 pmd-check-current-buffer.label=Check current buffer
 pmd-check-all-open-buffers.label=Check all open buffers
-pmd-check-current-directory.label=Check all files in current directory
-pmd-check-current-directory-recursively.label=Check directory recursively
+pmd-check-directory.label=Check all files in directory
+pmd-check-directory-recursively.label=Check directory recursively
 pmd-clear-errorlist.label=Clear ErrorList
 pmd-cpd.label=Detect Duplicate Code
 cpd-currentfile.label=In Current File
@@ -49,7 +49,7 @@ cpd-viewer.title=Copy/Paste Detector
 
 #FS Browser properties
 
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.browser-menu=pmd-check-file pmd-check-current-directory pmd-check-current-directory-recursively
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.browser-menu=pmd-check-file pmd-check-directory pmd-check-directory-recursively
 
 #pmd properties
 pmd.renderer=None
