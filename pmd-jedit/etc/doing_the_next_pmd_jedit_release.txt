@@ -12,25 +12,25 @@ TESTS:
 3) Are options persistant?
 
 Create the src release:
-cvs -q rtag -D tomorrow "pmd_jedit_release_1_0" pmd-jedit
+cvs -q rtag -D tomorrow "pmd_jedit_release_1_01" pmd-jedit
 rmdir /q /s c:\tmp\pmd-jedit
 mkdir c:\tmp\pmd-jedit
-cvs -q export -d c:\tmp\pmd-jedit -r pmd_jedit_release_1_0 pmd-jedit
-copy pmd-jedit\lib\PMDJEditPlugin-1.0.jar c:\tmp\pmd-jedit\lib
-zip it up, rename it to pmd-jedit-src-1.0.zip
+cvs -q export -d c:\tmp\pmd-jedit -r pmd_jedit_release_1_01 pmd-jedit
+copy pmd-jedit\lib\PMDJEditPlugin-1.01.jar c:\tmp\pmd-jedit\lib
+zip it up, rename it to pmd-jedit-src-1.01.zip
 
 FTP the zip file to SF
 ftp upload.sourceforge.net
 generic userid/password: anonymous/tom@infoether.com
 cd incoming
 bin
-put pmd-jedit-src-1.0.zip
-put pmd-jedit-bin-1.0.zip
+put pmd-jedit-src-1.01.zip
+put pmd-jedit-bin-1.01.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jedit-src-1.0.zip file
-Add the pmd-jedit-bin-1.0.zip file
+Add the pmd-jedit-src-1.01.zip file
+Add the pmd-jedit-bin-1.01.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the JEdit plugin!"
