@@ -23,7 +23,6 @@
 	</path>
 
     <target name="delete">
-        <delete file="${install.dir}/${ant.project.name}.jar"/>
 		<delete dir="${build}"/>
         <mkdir dir="${build}"/>
     </target>
