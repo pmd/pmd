@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule;
 
 public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
 

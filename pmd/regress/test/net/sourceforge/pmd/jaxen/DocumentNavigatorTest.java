@@ -20,8 +20,8 @@ import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.UnsupportedAxisException;
-import test.net.sourceforge.pmd.rules.RuleTst;
 import test.net.sourceforge.pmd.rules.EmptyCatchBlockRuleTest;
+import test.net.sourceforge.pmd.rules.RuleTst;
 
 import java.util.Iterator;
 import java.util.List;

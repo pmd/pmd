@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.AtLeastOneConstructorRule;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.rules.AtLeastOneConstructorRule;
 
 public class AtLeastOneConstructorRuleTest extends RuleTst {
 

@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.rules.design.LooseCouplingRule;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.rules.design.LooseCouplingRule;
 import test.net.sourceforge.pmd.rules.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.rules.TestDescriptor;
 

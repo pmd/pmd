@@ -1,21 +1,15 @@
 package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleProperties;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSetReader;
 import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.util.ResourceLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.io.StringBufferInputStream;
 import java.util.Enumeration;
 import java.util.HashMap;

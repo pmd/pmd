@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.rules.design.PositionalIteratorRule;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.rules.design.PositionalIteratorRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class PositionalIteratorRuleTest extends RuleTst {

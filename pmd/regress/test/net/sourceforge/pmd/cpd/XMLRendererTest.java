@@ -1,7 +1,11 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.*;
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.Mark;
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.Renderer;
+import net.sourceforge.pmd.cpd.XMLRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
