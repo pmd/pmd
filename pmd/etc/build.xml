@@ -37,7 +37,7 @@
         </javac>
     </target>
 
-    <target name="jar">
+    <target name="copy">
         <mkdir dir="${lib}"/>
         <copy todir="${build}rulesets">
             <fileset dir="${rulesets}">
@@ -52,6 +52,9 @@
                 <include name="**/*.properties"/>
             </fileset>
         </copy>
+    </target>
+
+    <target name="jar" depends="copy">
         <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF"/>
     </target>
 
