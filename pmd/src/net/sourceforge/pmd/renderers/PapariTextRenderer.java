@@ -24,7 +24,7 @@ import java.util.Iterator;
  *     rule: AtLeastOneConstructor
  *     msg:  Each class should declare at least one constructor
  *     code: public class Test
- * 
+ *
  * * file: ./src/gilot/log/format/LogInterpreter.java
  *     src:  LogInterpreter.java:317
  *     rule: AvoidDuplicateLiterals
@@ -35,9 +35,9 @@ import java.util.Iterator;
  *     rule: AvoidDuplicateLiterals
  *     msg:  The same String literal appears 5 times in this file; the first occurrence is on line 317
  *     code: logger.error( "missing attribute 'app_arg' in rule '" + ((Element)element.getParent()).getAttributeValue( "name" ) + "'" );
- *  
+ *
  * * warnings: 3
- *												 
+ *
  * </pre>
  *
  * <p>Colorization is turned on by supplying -D<b>pmd.color</b> - any value other than
@@ -50,8 +50,8 @@ public class PapariTextRenderer implements Renderer
     /**
      * Directory from where java was invoked.
      */
-    private String pwd;
-    
+    private String pwd = null;
+
     private String yellowBold = "";
     private String whiteBold = "";
     private String redBold = "";
@@ -59,9 +59,9 @@ public class PapariTextRenderer implements Renderer
     private String green = "";
 
     private String colorReset = "";
-    
+
     /**
-     * Enables colors on *nix systems - not windows. Color support dependends
+     * Enables colors on *nix systems - not windows. Color support depends
      * on the pmd.color property, which should be set with the -D option
      * during execution - a set value other than 'false' or '0' enables color.
      *
@@ -69,17 +69,19 @@ public class PapariTextRenderer implements Renderer
      */
     private void initColors()
     {
-        if (System.getProperty("pmd.color") != null &&  !(System.getProperty("pmd.color").equals("0") || System.getProperty("pmd.color").equals("false")))
+        if (System.getProperty("pmd.color") != null &&
+                !(System.getProperty("pmd.color").equals("0") || System.getProperty("pmd.color").equals("false")))
         {
             this.yellowBold = "\u001B[1;33m";
             this.whiteBold = "\u001B[1;37m";
             this.redBold = "\u001B[1;31m";
             this.green = "\u001B[0;32m";
             this.cyan = "\u001B[0;36m";
+
             this.colorReset = "\u001B[0m";
         }
     }
-    
+
     public String render(Report report)
     {
         StringBuffer buf = new StringBuffer(PMD.EOL);
@@ -106,7 +108,7 @@ public class PapariTextRenderer implements Renderer
                 buf.append( this.yellowBold  + "*" + this.colorReset  + " file: " + this.whiteBold + this.getRelativePath(fileName) + this.colorReset + PMD.EOL);
             }
 
-            buf.append(this.green + "    src:  " + this.cyan + fileName.substring( fileName.lastIndexOf(File.pathSeparator)+1)+ this.colorReset + ":" + this.cyan + rv.getLine() + this.colorReset + PMD.EOL);
+            buf.append(this.green + "    src:  " + this.cyan + fileName.substring( fileName.lastIndexOf(File.separator)+1)+ this.colorReset + ":" + this.cyan + rv.getLine() + this.colorReset + PMD.EOL);
             buf.append(this.green + "    rule: " + this.colorReset + rv.getRule().getName() + PMD.EOL);
             buf.append(this.green + "    msg:  " + this.colorReset + rv.getDescription() + PMD.EOL);
             buf.append(this.green + "    code: " + this.colorReset + this.getLine( fileName, rv.getLine() ) + PMD.EOL + PMD.EOL);
@@ -117,7 +119,7 @@ public class PapariTextRenderer implements Renderer
         for (Iterator i = report.errors(); i.hasNext();)
         {
             errors++;
-            
+
             Report.ProcessingError error = (Report.ProcessingError)i.next();
             if (error.getFile().equals(fileName))
             {
@@ -133,7 +135,7 @@ public class PapariTextRenderer implements Renderer
             buf.append(this.redBold  + "*" + this.colorReset + " errors:   "+ this.whiteBold + warnings + this.colorReset + PMD.EOL);
         }
         buf.append(this.yellowBold  + "*" + this.colorReset + " warnings: "+ this.whiteBold + warnings + this.colorReset + PMD.EOL);
-        
+
         return buf.toString();
     }
 
@@ -150,8 +152,9 @@ public class PapariTextRenderer implements Renderer
         String code = null;
         try
         {
+            File file = new File( "." );
             BufferedReader br = new BufferedReader( new FileReader( new File( sourceFile ) ) );
-            
+
             for ( int i = 0; line > i; i++ )
             {
                 code = br.readLine().trim();
@@ -175,7 +178,7 @@ public class PapariTextRenderer implements Renderer
     private String getRelativePath( String fileName )
     {
         String relativePath = null;
-        
+
         // check if working directory need to be assigned
         if (pwd == null)
         {
@@ -194,14 +197,21 @@ public class PapariTextRenderer implements Renderer
         if (fileName.indexOf(this.pwd) == 0)
         {
             relativePath = "." + fileName.substring( this.pwd.length() );
-            
+
             // remove current dir occuring twice - occurs if . was supplied as path
-            if ( relativePath.startsWith( "." + File.pathSeparator + "." + File.pathSeparator ) )
+            if ( relativePath.startsWith( "." + File.separator + "." + File.separator ) )
             {
                 relativePath = relativePath.substring(2);
             }
         }
-        
+		else
+		{
+			// this happens when pmd's supplied argument deviates from the pwd 'branch' (god knows this terminolgy - i hope i make some sense).
+			// for instance, if supplied=/usr/lots/of/src and pwd=/usr/lots/of/shared/source
+			// TODO: a fix to get relative path?
+			relativePath = fileName;
+		}
+
         return relativePath;
     }
 }
