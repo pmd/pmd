@@ -1,19 +1,24 @@
 package net.sourceforge.pmd.util.designer;
 
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import net.sourceforge.pmd.util.HasLines;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.Graphics;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Canvas;
 import java.util.List;
 import java.util.Iterator;
+import java.util.ArrayList;
 
-public class DFAPanel extends JPanel {
+public class DFAPanel extends JPanel implements ListSelectionListener {
 
     public static class DFACanvas extends Canvas {
 
@@ -74,8 +79,11 @@ public class DFAPanel extends JPanel {
             }
         }
 
-        public void setMethod(SimpleNode node, HasLines lines) {
-            this.lines = lines;
+        public void setCode(HasLines h) {
+            this.lines = h;
+        }
+
+        public void setMethod(SimpleNode node) {
             this.node = node;
         }
 
@@ -126,36 +134,60 @@ public class DFAPanel extends JPanel {
         }
     }
 
+    private static class ElementWrapper {
+        private ASTMethodDeclaration node;
+        public ElementWrapper(ASTMethodDeclaration node) {
+            this.node = node;
+        }
+        public ASTMethodDeclaration getNode() {
+            return node;
+        }
+        public String toString() {
+            SimpleNode n = (SimpleNode)node.jjtGetChild(1);
+            return n.getImage();
+        }
+    }
+
     private DFACanvas dfaCanvas;
+    private JList nodeList;
     private DefaultListModel nodes = new DefaultListModel();
+    private JPanel wrapperPanel;
 
     public DFAPanel() {
         super();
-        setLayout(new BorderLayout());
 
+        setLayout(new BorderLayout());
         JPanel leftPanel = new JPanel();
-        nodes.addElement("FOOO");
-        nodes.addElement("FOOO");
-        nodes.addElement("FOOO");
-        nodes.addElement("FOOO");
-        JList nodeList = new JList(nodes);
+        nodeList = new JList(nodes);
+        nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         nodeList.setFixedCellWidth(300);
         nodeList.setBorder(BorderFactory.createLineBorder(Color.black));
+        nodeList.addListSelectionListener(this);
         leftPanel.add(nodeList);
         add(leftPanel, BorderLayout.WEST);
 
         dfaCanvas = new DFACanvas();
         JScrollPane scrollPane = new JScrollPane(dfaCanvas);
-        scrollPane.setBorder(BorderFactory.createLineBorder(Color.black));
-        add(scrollPane, BorderLayout.EAST);
+        wrapperPanel = new JPanel();
+        wrapperPanel.add(scrollPane);
+        add(wrapperPanel, BorderLayout.EAST);
     }
 
-    public void resetTo(List nodes, HasLines lines) {
-        for (Iterator i = nodes.iterator(); i.hasNext();) {
-            SimpleNode n = (SimpleNode)i.next();
-            System.out.println("image = " + ((SimpleNode)n.jjtGetChild(1)).getImage());
+    public void valueChanged(ListSelectionEvent event) {
+        ElementWrapper wrapper = (ElementWrapper)nodeList.getSelectedValue();
+        dfaCanvas.setMethod(wrapper.getNode());
+        repaint();
+    }
+
+    public void resetTo(List newNodes, HasLines lines) {
+        dfaCanvas.setCode(lines);
+        nodes.clear();
+        for (Iterator i = newNodes.iterator(); i.hasNext();) {
+            nodes.addElement(new ElementWrapper((ASTMethodDeclaration)i.next()));
         }
-        dfaCanvas.setMethod((SimpleNode)nodes.get(0), lines);
+        nodeList.setSelectedIndex(0);
+        dfaCanvas.setMethod((SimpleNode)newNodes.get(0));
+        repaint();
     }
 
     public void paint(Graphics g) {
