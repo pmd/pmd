@@ -13,10 +13,9 @@ import net.sourceforge.pmd.ast.ASTName;
 public class DontImportJavaLangRule extends AbstractRule {
 
     public Object visit(ASTImportDeclaration node, Object data) {
-        ASTName importedType = (ASTName)node.jjtGetChild(0);
-        if (importedType.getImage().startsWith("java.lang")
-                && !importedType.getImage().startsWith("java.lang.ref")
-                && !importedType.getImage().startsWith("java.lang.reflect")) {
+        if (node.getImportedNameNode().getImage().startsWith("java.lang")
+            && !node.getImportedNameNode().getImage().startsWith("java.lang.ref")
+            && !node.getImportedNameNode().getImage().startsWith("java.lang.reflect")) {
             ((RuleContext)data).getReport().addRuleViolation(createRuleViolation((RuleContext)data, node.getBeginLine()));
         }
         return data;
