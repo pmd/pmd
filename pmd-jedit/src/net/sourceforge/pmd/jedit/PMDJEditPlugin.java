@@ -66,7 +66,7 @@ public class PMDJEditPlugin extends EBPlugin {
             // TODO switch to use StringReader once PMD 0.4 gets released
             pmd.processFile(new StringBufferInputStream(text), rules, ctx);
 
-            String msg = "";
+            String msg = "No errors found";
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                 RuleViolation rv = (RuleViolation)i.next();
                 msg += rv.getDescription() + " at line " + rv.getLine() + System.getProperty("line.separator");
