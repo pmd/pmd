@@ -136,7 +136,6 @@ public class ASTViewer {
                 xpathResults.addElement(je.fillInStackTrace().getMessage());
             }
             xpathResultPanel.repaint();
-            xpathResultList.repaint();
             xpathQueryArea.requestFocus();
         }
     }
