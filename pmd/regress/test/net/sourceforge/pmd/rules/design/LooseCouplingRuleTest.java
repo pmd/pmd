@@ -44,4 +44,8 @@ public class LooseCouplingRuleTest extends RuleTst {
     public void test8() throws Throwable {
         runTest("LooseCoupling8.java", 1, rule);
     }
+
+    public void testVector() throws Throwable {
+        runTest("LooseCoupling9.java", 1, rule);
+    }
 }
