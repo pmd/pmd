@@ -133,7 +133,7 @@ public class CouplingBetweenObjects extends AbstractRule {
      * @return boolean true if variableType is not what we care about
      */
     private boolean filterTypes(String variableType) {
-        return variableType.startsWith("java.lang.") || (variableType.equals("String")) || filterPrimitivesAndWrappers(variableType);
+        return variableType != null && (variableType.startsWith("java.lang.") || (variableType.equals("String")) || filterPrimitivesAndWrappers(variableType));
     }
 
     /**

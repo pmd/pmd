@@ -62,8 +62,9 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
         if (ao == null) {
             return false;
         }
+        // note that the child can be an ArrayDimsAndInits, for example, from java.lang.FloatingDecimal:  t = new int[ nWords+wordcount+1 ];
         final ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        return an.getImage().endsWith("StringBuffer");
+        return an != null && an.getImage().endsWith("StringBuffer");
     }
 }
 
