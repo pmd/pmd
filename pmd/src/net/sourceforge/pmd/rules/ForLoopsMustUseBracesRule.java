@@ -16,7 +16,7 @@ public class ForLoopsMustUseBracesRule  extends BracesRule {
 
     public Object visit(ASTForStatement node, Object data) {
         RuleContext ctx = (RuleContext)data;
-        SimpleNode loopBody = (SimpleNode)node.jjtGetChild(3);
+        SimpleNode loopBody = (SimpleNode)node.jjtGetChild(node.jjtGetNumChildren()-1);
 
         if (!hasBlockAsFirstChild(loopBody)) {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));

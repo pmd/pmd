@@ -23,4 +23,19 @@ public class ForLoopsMustUseBracesRuleTest extends RuleTst {
         Report report = process("ForLoopsNeedBraces2.java", new ForLoopsMustUseBracesRule());
         assertTrue(report.isEmpty());
     }
+    public void test3() throws Throwable {
+        Report report = process("ForLoopsNeedBraces3.java", new ForLoopsMustUseBracesRule());
+        assertEquals(1, report.size());
+    }
+
+    public void test4() throws Throwable {
+        Report report = process("ForLoopsNeedBraces4.java", new ForLoopsMustUseBracesRule());
+        assertEquals(1, report.size());
+    }
+
+    public void test5() throws Throwable {
+        Report report = process("ForLoopsNeedBraces5.java", new ForLoopsMustUseBracesRule());
+        assertEquals(1, report.size());
+    }
+
 }
