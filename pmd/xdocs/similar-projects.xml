@@ -22,7 +22,8 @@
      </subsection>
      <subsection name="Commercial">
        <ul>
-           <li><a href="http://www.kodein.net/index.html">KodeIn</a> - $75, lots of rules, uses JavaCC.</li>
+         <li><a href="http://www.instantiations.com/codepro/default.htm">CodePro Studio</a> - $589, works with Eclipse, lots of rules</li>
+         <li><a href="http://www.kodein.net/index.html">KodeIn</a> - $75, lots of rules, uses JavaCC.</li>
          <li><a href="http://www.parasoft.com">JTest</a> - Very nice with tons of features,
              but also very expensive and requires a running X server (or Xvfb) to run on
              Linux.  They charge $500 to move a license from one machine to another.</li>

@@ -6,6 +6,39 @@ These are new rules for the next release
   </description>
 
 
+    <rule name="ReturnFromFinallyBlock"
+          message="Avoid returning from a finally blocks"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  Avoid returning from a finally block - this can discard exceptions.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //TryStatement[@Finally='true']/Block[position() = last()]//ReturnStatement
+                  ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+public class Bar {
+ public String bugga() {
+  try {
+   throw new Exception( "My Exception" );
+  } catch (Exception e) {
+   throw e;
+  } finally {
+   return "A. O. K."; // Very bad.
+  }
+ }
+}
+  ]]>
+      </example>
+    </rule>
 
     <rule name="SymbolTableTestRule"
           message="test"

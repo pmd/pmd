@@ -1,4 +1,5 @@
 ????? - 1.05:
+Added new rule: ReturnFromFinallyBlock
 TODO - update grammar - can we change setPublic(true) to setPublic()?
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 Brian Ewins completely rewrote CPD using a portion of the Burrows-Wheeler Transform - it's much, much, much faster now.
