@@ -9,8 +9,6 @@ import java.util.*;
 
 public class DontCreateThreadsRule extends AbstractRule implements Rule {
 
-    public String getMessage() {return "Don't create threads, use the ThreadService instead";}
-
     public Object visit(ASTAllocationExpression node, Object data){
         RuleContext ctx = (RuleContext)data;
         if ((node.jjtGetChild(0) instanceof ASTName)  // this avoids "new <primitive-type>", i.e., "new int[]"

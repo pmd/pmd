@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<ruleset name="basic">
+  <description>
+  These rules are specific to Cougaar
+  </description>
+
+  <rule name="DontCreateThreadsRule"
+        message="Don't create threads, use the ThreadService instead"
+        class="net.sourceforge.pmd.rules.DontCreateThreadsRule">
+    <description>
+Don't create Threads, use the Cougaar ThreadService instead.
+    </description>
+
+    <example>
+<![CDATA[
+ // TODO
+]]>
+    </example>
+  </rule>
+
+  <rule name="DontCreateTimersRule"
+        message="Don't create Timers, use the AlarmService instead"
+        class="net.sourceforge.pmd.rules.DontCreateTimersRule">
+    <description>
+Don't create Timers, use the AlarmService instead.
+    </description>
+
+    <example>
+<![CDATA[
+ // TODO
+]]>
+    </example>
+  </rule>
+  <rule name="DontUseSystemOut"
+        message="Don't use System.out/in/err, use the Cougaar logging service instead"
+        class="net.sourceforge.pmd.rules.SystemOutRule">
+    <description>
+Don't use System.out/in/err, use the Cougaar logging service instead.
+    </description>
+
+    <example>
+<![CDATA[
+ // TODO
+]]>
+    </example>
+  </rule>
+  <rule name="DontUseSystemProperties"
+        message="Don't use System.getProperty()/getProperties()/setProperty()"
+        class="net.sourceforge.pmd.rules.SystemPropsRule">
+    <description>
+Don't use System.getProperty()/getProperties()/setProperty()
+    </description>
+
+    <example>
+<![CDATA[
+ // TODO
+]]>
+    </example>
+  </rule>
+</ruleset>
+
+
+
