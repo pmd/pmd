@@ -8,9 +8,9 @@ public class Mark {
     private int offset;
     private List code;
 
-    public Mark(List code, Locator locator) {
+    public Mark(List code, int offset, Locator locator) {
         this.code = code;
-        this.offset = code.size();
+        this.offset = offset;
         this.locator = locator;
     }
 

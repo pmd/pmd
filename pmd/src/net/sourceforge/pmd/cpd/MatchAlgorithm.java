@@ -22,7 +22,7 @@ public class MatchAlgorithm {
             pool.put(token, token);
         }
         code.add(token);
-        marks.add(new Mark(code, locator));
+        marks.add(new Mark(code, code.size(), locator));
         this.cpdListener = cpdListener;
     }
 

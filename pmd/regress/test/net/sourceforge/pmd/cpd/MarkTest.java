@@ -11,7 +11,7 @@ public class MarkTest extends TestCase {
 
     public void testSimple() {
         Locator loc = new Locator("/var/foo.java", 10);
-        Mark mark = new Mark(new ArrayList(), loc);
+        Mark mark = new Mark(new ArrayList(), 0, loc);
         assertEquals(mark.getLocator(), loc);
     }
 }

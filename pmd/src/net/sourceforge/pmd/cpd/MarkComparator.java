@@ -5,23 +5,24 @@ import java.util.List;
 
 public class MarkComparator implements Comparator {
 
-    private static final int COMPARISON_UPDATE_INTERVAL = 100000;
+    private final int comparisonUpdateInterval;
     private CPDListener l;
     private long comparisons;
     private List code;
 
     public MarkComparator(CPDListener l, List code) {
-        this.l = l;
-        this.code = code;
+        this(l, code, 10000);
     }
 
-    public void reset() {
-        comparisons = 0;
+    public MarkComparator(CPDListener l, List code, int comparisonUpdateInterval) {
+        this.l = l;
+        this.code = code;
+        this.comparisonUpdateInterval = comparisonUpdateInterval;
     }
 
     public int compare(Object o1, Object o2) {
         comparisons++;
-        if (comparisons % COMPARISON_UPDATE_INTERVAL == 0) {
+        if (comparisons % comparisonUpdateInterval == 0) {
             l.comparisonCountUpdate(comparisons);
         }
 
@@ -30,7 +31,7 @@ public class MarkComparator implements Comparator {
         if (mark1.getOffset() == mark2.getOffset()) {
             return 0;
         }
-        // don't compare leading 'mark' token
+
         for (int i = 1; i < code.size(); i++) {
             int cmp = mark2.tokenAt(i).compareTo(mark1.tokenAt(i));
             if (cmp != 0) {
