@@ -19,6 +19,7 @@ public class SelectedRuleSetsMap {
         selections.put("basic", createCheckBox("basic"));
         selections.put("unusedcode", createCheckBox("unusedcode"));
         selections.put("design", createCheckBox("design"));
+        selections.put("naming", createCheckBox("naming"));
     }
 
     public Iterator keys() {

@@ -13,10 +13,9 @@ import java.util.Vector;
 import java.util.Iterator;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
-import java.io.StringBufferInputStream;
+import java.io.StringReader;
 
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.reports.ReportFactory;
 
 public class PMDJEditPlugin extends EBPlugin {
 
@@ -44,9 +43,7 @@ public class PMDJEditPlugin extends EBPlugin {
 
     public void instanceCheck(View view) {
         PMD pmd = new PMD();
-        ReportFactory rf = new ReportFactory();
         RuleContext ctx = new RuleContext();
-
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
         RuleSet rules = new RuleSet();
@@ -54,11 +51,10 @@ public class PMDJEditPlugin extends EBPlugin {
             rules.addRuleSet(ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream((String)i.next())));
         }
 
-        ctx.setReport(rf.createReport("xml"));
+        ctx.setReport(new Report());
         ctx.setSourceCodeFilename("this");
         try {
-            // TODO switch to use StringReader once PMD 0.4 gets released
-            pmd.processFile(new StringBufferInputStream(view.getTextArea().getText()), rules, ctx);
+            pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
 
             // TODO put this in a list box or something
             StringBuffer msg = new StringBuffer();
