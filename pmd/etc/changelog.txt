@@ -1,5 +1,5 @@
 ?????, 2004 - 2.0:
-New rules: InstantiationToGetClass, IdempotentOperationsRule
+New rules: InstantiationToGetClass, IdempotentOperationsRule, SuspiciousEqualsMethodName
 Moved development environment to Maven 1.0.
 Moved development environment to Ant 1.6.2.  This is nice because using the new JUnit task attribute "forkmode='perBatch'" cuts test runtime from 90 seconds to 7 seconds.  Sweet.
 MethodWithSameNameAsEnclosingClass now reports a more helpful line number.
