@@ -5,20 +5,17 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="IfElseStmtsMustUseBracesRule"
-         message="Avoid using 'if...else' statements without curly braces"
+    <rule name="Test"
+         message="find anonymous"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>
-     Avoid using if..else statements without using curly braces
+    anion
      </description>
        <properties>
            <property name="xpath">
                <value>
   <![CDATA[
-  //Statement
-   [parent::IfStatement]
-   [not(child::Block)]
-   [not(child::IfStatement)]
+//AllocationExpression/ClassBody/ClassBodyDeclaration
   ]]>
                </value>
            </property>
@@ -27,17 +24,7 @@ These are new rules that are still in progress
 
      <example>
  <![CDATA[
-
-   public void doSomething() {
-     // this is OK
-     if (foo) x++;
-
-     // but this is not
-     if (foo)
-         x=x+1;
-     else
-         x=x-1;
-   }
+foo
  ]]>
      </example>
    </rule>

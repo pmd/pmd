@@ -63,6 +63,7 @@ public class CPDTask extends Task {
         log(ioe.toString(), Project.MSG_ERR);
         throw new BuildException("IOException during task execution", ioe);
       } catch (ReportException re) {
+        re.printStackTrace();
         log(re.toString(), Project.MSG_ERR);
         throw new BuildException("ReportException during task execution", re);
       }
