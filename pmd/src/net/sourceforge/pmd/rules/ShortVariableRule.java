@@ -16,7 +16,7 @@ public class ShortVariableRule
 
 	if ((image.length() <= 3) && 
 	    (!(isForInit( decl )))) {
-	    ctx.getReport().addRuleViolation( createRuleViolation( ctx, decl.getBeginLine() ));
+	    ctx.getReport().addRuleViolation( createRuleViolation( ctx, decl.getBeginLine(), "Avoid short variable names like " + decl.getImage()));
 	}
 
 	return null;

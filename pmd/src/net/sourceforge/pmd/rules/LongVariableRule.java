@@ -17,7 +17,7 @@ public class LongVariableRule
 	String image = decl.getImage();
 
 	if (image.length() > LONG_VARIABLE_LIMIT) {
-	    ctx.getReport().addRuleViolation( createRuleViolation( ctx, decl.getBeginLine() ));
+	    ctx.getReport().addRuleViolation( createRuleViolation( ctx, decl.getBeginLine(), "Avoid long variable names like " + decl.getImage()));
 	}
 	
 	return null;
