@@ -1,63 +1,53 @@
-/*
- * DoubleCheckedLockingRule.java
- *
- * Created on February 17, 2003, 12:39 PM
- */
-
 package net.sourceforge.pmd.rules;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTLiteral;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNullLiteral;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTResultType;
-import net.sourceforge.pmd.ast.ASTReturnStatement;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.ast.ASTType;
-import net.sourceforge.pmd.ast.Node;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.sourceforge.pmd.ast.*;
+import java.util.*;
+import net.sourceforge.pmd.RuleContext;
 
 /**
+ * void method() {
+ *    if(x == null) {
+ *        synchronize(this){
+ *            if(x == null) {
+ *                x = new | method();
+ *            }
+ *         }
+ *  }
+ *  1.  The error is when one uses the value assigned within a synchronized
+ *      section, outside of a synchronized section.
+ *      if(x == null) is outside of synchronized section
+ *      x = new | method();
+ *
+ *
  * Very very specific check for double checked locking.
  *
  * @author  CL Gilbert (dnoyeb@users.sourceforge.net)
  */
-public class DoubleCheckedLockingRule extends AbstractRule implements Rule {
+public class DoubleCheckedLockingRule extends net.sourceforge.pmd.AbstractRule {
 
-    public Object visit(ASTInterfaceDeclaration node, Object data){
-        return data; // skip interfaces
-    }
+    private boolean interfaceSkipper;
 
     public Object visit(ASTMethodDeclaration node, Object data) {
+		if(interfaceSkipper == true){//skip methods in interfaces
+			return super.visit(node,data);
+		}
 		ASTResultType rt = (ASTResultType) node.jjtGetChild(0);
 		if(rt.isVoid() == true){
 			return super.visit(node,data);
 		}
-
 		ASTType t = (ASTType) rt.jjtGetChild(0);
 		if(t.jjtGetNumChildren() == 0 || !(t.jjtGetChild(0) instanceof ASTName)){
 			return super.visit(node,data);
 		}
-
 		String returnVariableName = null;
 		List finder = new ArrayList();
-
 		GET_RETURN_VARIABLE_NAME:{
 			node.findChildrenOfType(ASTReturnStatement.class,finder,true);
 			if(finder.size() != 1){
 				return super.visit(node,data);
 			}
-			ASTReturnStatement rs = (ASTReturnStatement) finder.get(0);
+			ASTReturnStatement rs = (ASTReturnStatement) finder.get(0);//EXPLODES IF THE CLASS IS AN INTERFACE SINCE NO RETURN
+
 			finder.clear();
 			rs.findChildrenOfType(ASTPrimaryExpression.class,finder,true);
 			ASTPrimaryExpression ape = (ASTPrimaryExpression) finder.get(0);
@@ -69,7 +59,6 @@ public class DoubleCheckedLockingRule extends AbstractRule implements Rule {
 				return super.visit(node,data);
 			}
 		}
-
 		CHECK_OUTER_IF:{
 			finder.clear();
 			node.findChildrenOfType(ASTIfStatement.class,finder,true);
@@ -110,8 +99,9 @@ public class DoubleCheckedLockingRule extends AbstractRule implements Rule {
 		}
 		return super.visit(node,data);
 	}
-	
+
 	private boolean ifVerify(ASTIfStatement is, String varname){
+		boolean success = true;
 		List finder = new ArrayList();
 		is.findChildrenOfType(ASTPrimaryExpression.class,finder,true);
 		if(finder.size() >1){
@@ -131,6 +121,39 @@ public class DoubleCheckedLockingRule extends AbstractRule implements Rule {
 		}
 		return false;
 	}
+	public Object visit(ASTClassDeclaration node, Object data){
+		boolean temp = interfaceSkipper;
+		interfaceSkipper = false;
+//		String className = ((ASTUnmodifiedClassDeclaration)node.jjtGetChild(0)).getImage();
+//		System.out.println("classname = " + className);
+		Object o = super.visit(node,data);
+		interfaceSkipper = temp;
+		return o;
+	}
+	public Object visit(ASTNestedClassDeclaration node, Object data){
+		boolean temp = interfaceSkipper;
+		interfaceSkipper = false;
+//		String className = ((ASTUnmodifiedNestedClassDeclaration)node.jjtGetChild(0)).getImage();
+//		System.out.println("classname = " + className);
+		Object o = super.visit(node,data);
+		interfaceSkipper = temp;
+		return o;
+	}
+
+	public Object visit(ASTInterfaceDeclaration node, Object data){
+		boolean temp = interfaceSkipper;
+		interfaceSkipper = true;
+		Object o = super.visit(node,data);
+		interfaceSkipper = temp;
+		return o;
+	}
+	public Object visit(ASTNestedInterfaceDeclaration node, Object data){
+		boolean temp = interfaceSkipper;
+		interfaceSkipper = true;
+		Object o = super.visit(node,data);
+		interfaceSkipper = temp;
+		return o;
+	}
 
 	public boolean matchName(ASTPrimaryExpression ape, String name){
 		if((ape.jjtGetNumChildren() == 1) && (ape.jjtGetChild(0) instanceof ASTPrimaryPrefix)){
@@ -144,12 +167,11 @@ public class DoubleCheckedLockingRule extends AbstractRule implements Rule {
 	}
 	public String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp){
 		if((pp.jjtGetNumChildren() == 1) && (pp.jjtGetChild(0) instanceof ASTName)){
-			return ((ASTName)pp.jjtGetChild(0)).getImage();
+			String name2 = ((ASTName)pp.jjtGetChild(0)).getImage();
+			return name2;
 		}
 		return null;
 	}
-	
-
 	//Testing Section
 //    public Object visit(ASTCompilationUnit node, Object data) {
 //		interfaceSkipper = false; //safety
