@@ -123,3 +123,4 @@ MTAC:mtac:mtac:mtac/net
 Octet:octet:octet:octet/src/
 Structure:structure:structure:structure/src/
 jEdit:jedit:jEdit:jEdit/org/
+hipergate:hipergate:java:java/src/
