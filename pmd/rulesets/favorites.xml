@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!DOCTYPE ruleset PUBLIC "-//PMD//EN" "http://infoether.com/~tom/ruleset.dtd">
 
 <ruleset name="Favorites">
   <description>
@@ -9,12 +10,12 @@ This ruleset also serves as an example of do a custom ruleset.
 
   <rule ref="rulesets/braces.xml/WhileLoopsMustUseBracesRule"/>
   <rule ref="rulesets/braces.xml/ForLoopsMustUseBracesRule"/>
-    <rule ref="rulesets/design.xml/LooseCouplingRule"/>
-    <rule ref="rulesets/design.xml/SimplifyBooleanReturnsRule"/>
-    <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
-    <rule ref="rulesets/strings.xml/StringToString"/>
-    <rule ref="rulesets/strings.xml/StringInstantiation"/>
-     <rule ref="rulesets/controversial.xml/UnnecessaryConstructorRule"/>
+  <rule ref="rulesets/design.xml/LooseCouplingRule"/>
+  <rule ref="rulesets/design.xml/SimplifyBooleanReturnsRule"/>
+  <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
+  <rule ref="rulesets/strings.xml/StringToString"/>
+  <rule ref="rulesets/strings.xml/StringInstantiation"/>
+  <rule ref="rulesets/controversial.xml/UnnecessaryConstructorRule"/>
   <rule ref="rulesets/controversial.xml/NullAssignment"/>
   <rule ref="rulesets/controversial.xml/UnusedModifier"/>
 

@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!DOCTYPE ruleset PUBLIC "-//PMD//EN" "http://infoether.com/~tom/ruleset.dtd">
 
 <ruleset name="Import Rules">
   <description>

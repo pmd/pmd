@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="description">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="example">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="priority">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="properties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="property" minOccurs="1" maxOccurs="1" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="property">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="value" minOccurs="0" maxOccurs="1" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="value" type="xs:NMTOKEN" use="optional" />
+      <xs:attribute name="pluginname" type="xs:NMTOKEN" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="rule">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="description" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="example" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="priority" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="properties" minOccurs="1" maxOccurs="1" />
+      </xs:choice>
+      <xs:attribute name="name" type="xs:ID" use="optional" />
+      <xs:attribute name="ref" type="xs:string" use="optional" />
+      <xs:attribute name="message" type="xs:string" use="optional" />
+      <xs:attribute name="class" type="xs:NMTOKEN" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ruleset">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="description" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="rule" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="value">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+</xs:schema>
