@@ -7,7 +7,6 @@ combine this ruleset with the unusedcode.xml, basic.xml, and import.xml rulesets
 This ruleset also serves as an example of how to reference one ruleset from another.
   </description>
 
-  <rule ref="rulesets/braces.xml/IfElseStmtsMustUseBracesRule"/>
   <rule ref="rulesets/braces.xml/WhileLoopsMustUseBracesRule"/>
   <rule ref="rulesets/braces.xml/ForLoopsMustUseBracesRule"/>
   <rule ref="rulesets/design.xml/UseSingletonRule"/>
