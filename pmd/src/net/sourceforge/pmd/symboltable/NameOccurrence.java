@@ -55,6 +55,7 @@ public class NameOccurrence {
 
         return primaryExpression.jjtGetNumChildren() > 1 &&
                 primaryExpression.jjtGetChild(1) instanceof ASTAssignmentOperator &&
+                !isPartOfQualifiedName() && 
                 !((ASTAssignmentOperator)(primaryExpression.jjtGetChild(1))).isCompound();
     }
 

@@ -32,7 +32,8 @@ public class UnusedPrivateFieldRule extends AbstractRule {
 
     private boolean actuallyUsed(List usages) {
         for (Iterator j = usages.iterator(); j.hasNext();) {
-            if (!((NameOccurrence)j.next()).isOnLeftHandSide()) {
+            NameOccurrence nameOccurrence = (NameOccurrence)j.next();
+            if (!nameOccurrence.isOnLeftHandSide()) {
                 return true;
             }
         }

@@ -40,11 +40,12 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>ereissner - several rule suggestions, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
+            <li>Philippe Couton - bug report for ExceptionAsFlowControl, OverrideBothEqualsAndHashcodeRule bug report, UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
             <li>Dave Brosius - a couple of nice patches to clean up some string handling inefficiencies, non-static class usages, and unclosed streams/readers - found with Findbugs, I daresay :-)</li>
             <li>Paul Rowe - suggestion for improving MethodWithSameNameAsEnclosingClass, bug reports for SimplifyBooleanExpressions and UnusedLocalVariable</li>
             <li>Enno Derksen - enhancements to VariableNamingConventionsRule</li>
             <li>Michael Haggerty - bug reports for FinalizeDoesNotCallSuperFinalize and UnusedModifier</li>
-            <li>ereissner - bug report and documentation suggestions for UseSingletonRule</li>
             <li>Phil Shaw - documentation suggestions</li>
             <li>Todd Wright - XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
@@ -70,7 +71,6 @@
             <li>Lokesh Gupta - improvements to the AST viewer</li>
             <li>Jesse Glick - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
-            <li>Philippe Couton - OverrideBothEqualsAndHashcodeRule bug report, UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
             <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
             <li>Andriy Rozeluk - Suggestions for improving UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
