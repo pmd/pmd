@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# test
-
 option="${1}"
 
 if [ -z $option ]; then
