@@ -1,2 +1,2 @@
-copy lib\PMDOpenTool.jar %1
-rem copy lib\pmd-dev.jar %1
+copy lib\PMDOpenTool.jar c:\Jbuilder7\lib\ext
+copy lib\PMDOpenTool.jar c:\Jbuilder4\lib\ext

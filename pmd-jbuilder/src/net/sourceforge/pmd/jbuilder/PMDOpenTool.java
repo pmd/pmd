@@ -29,6 +29,7 @@ import com.borland.primetime.vfs.*;
 import com.borland.primetime.viewer.*;
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.cpd.*;
+import com.borland.jbcl.control.MessageDialog;
 
 
 
@@ -58,7 +59,6 @@ public class PMDOpenTool {
     public static void initOpenTool (byte majorVersion, byte minorVersion) {
         if (majorVersion == PrimeTime.CURRENT_MAJOR_VERSION) {
 
-
             GROUP_MENU_PMD.add(B_ACTION_PMDCheck);
             GROUP_MENU_PMD.add(B_ACTION_PMDProjectCheck);
             GROUP_MENU_PMD.add(B_ACTION_CPDProjectCheck);
@@ -83,14 +83,18 @@ public class PMDOpenTool {
             CPDPropertyGroup cpdPropGrp = new CPDPropertyGroup();
 
             //register the Keymap shortcuts if they are enabled
-            if (AcceleratorPropertyGroup.PROP_KEYS_ENABLED.getBoolean()) {
-                registerShortCuts();
+            if (minorVersion > 1) {  //accelerators don't seem to work in OpenTools 4.1
+                if (AcceleratorPropertyGroup.PROP_KEYS_ENABLED.getBoolean()) {
+                    registerShortCuts();
+                }
             }
 
             PropertyManager.registerPropertyGroup(apropGrp);
             PropertyManager.registerPropertyGroup(cpropGrp);
             PropertyManager.registerPropertyGroup(ipropGrp);
-            PropertyManager.registerPropertyGroup(accpropGrp);
+            if (minorVersion > 1) { //accelerators don't seem to work in OpenTools 4.1
+                PropertyManager.registerPropertyGroup(accpropGrp);
+            }
             PropertyManager.registerPropertyGroup(cpdPropGrp);
 
         }
