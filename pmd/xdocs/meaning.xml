@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-  <section>What does it mean?</section>
+  <section>What does it mean?
 <p>
 Here on the PMD project, we've been trying to find the
 meaning of the letters PMD.  Because frankly, we don't
@@ -30,5 +30,6 @@ have come up with several "backronyms" to explain it.
       <td>Directives</td></tr>
 </table>
 </p>
+</section>
 </body>
 </document>
