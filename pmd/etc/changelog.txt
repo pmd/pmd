@@ -6,6 +6,7 @@ Implemented RFE 1086168 - PMD XML reports now contain a version and timestamp at
 Fixed a bug in the rule override logic; it no longer requires the "class" attribute of a rule be listed in the overrides section.
 Added 'ignoreLiterals' and 'ignoreIdentifiers' boolean options to the CPD task.
 Cleaned up a good bit of the symbol table code; thanks much to Harald Gurres for the patch.
+CPD now contains a generic copy/paste checker for programs in any language
 
 December 15, 2004 - 2.1:
 New rules: AvoidProtectedFieldInFinalClass, SystemPrintln

@@ -101,6 +101,7 @@ public class GUI implements CPDListener {
     private JCheckBox recurseCheckbox = new JCheckBox("", true);
     private JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
     private JComboBox languageBox = new JComboBox();
+    private JTextField extensionField = new JTextField(".java");
     private JFileChooser fcSave = new JFileChooser();
 
     private JFrame frame;
@@ -175,15 +176,22 @@ public class GUI implements CPDListener {
         languageBox.addItem("Java");
         languageBox.addItem("C++");
         languageBox.addItem("PHP");
+        languageBox.addItem("by extension...");
         languageBox.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 ignoreLiteralsCheckbox.setEnabled(languageBox.getSelectedItem().equals("Java"));
+                extensionField.setEnabled(languageBox.getSelectedItem().equals("by extension..."));
             }}
         );
         helper.add(languageBox);
         helper.nextRow();
         helper.addLabel("Also scan subdirectories?");
         helper.add(recurseCheckbox);
+        
+        helper.addLabel("Extension:");
+        helper.add(extensionField);
+        extensionField.setEnabled(false);
+        
         helper.nextRow();
         helper.addLabel("Ignore literals and identifiers?");
         helper.add(ignoreLiteralsCheckbox);
@@ -235,10 +243,13 @@ public class GUI implements CPDListener {
             LanguageFactory lf = new LanguageFactory();
             Properties p = new Properties();
             p.setProperty(JavaTokenizer.IGNORE_LITERALS, String.valueOf(ignoreLiteralsCheckbox.isSelected()));
+            p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
             if (languageBox.getSelectedItem().equals("Java")) {
                 language = lf.createLanguage(LanguageFactory.JAVA_KEY, p);
             } else if (languageBox.getSelectedItem().equals("C++")) {
                 language = lf.createLanguage(LanguageFactory.CPP_KEY);
+            } else if (languageBox.getSelectedItem().equals("by extension...")) {
+                language = lf.createLanguage(LanguageFactory.BY_EXTENSION, p);
             } else if (languageBox.getSelectedItem().equals("PHP")) {
                 language = lf.createLanguage(LanguageFactory.PHP_KEY);
             }
