@@ -88,7 +88,8 @@ CompilationUnit
     You can generate this yourself by:
     <ul>
     <li>Put the example file in the pmd/test-data directory in a file called "Example.java"</li>
-    <li>Edit the class <code>net.sourceforge.pmd.PMD</code> and uncomment the line that says <code>c.dump();</code></li>
+    <li>Edit the class <code>net.sourceforge.pmd.PMD</code> and uncomment the line that
+    says <code>c.dump();</code> and the line that says <code>t.printStackTrace();</code></li>
     <li>Open a command prompt and cd into the pmd/etc directory</li>
     <li>Recompile the project using the Ant task; i.e., <code>ant compile</code></li>
     <li>Run the <code>go</code> batch file to run PMD on one file, like this: <code>go Example xml rulesets/basic.xml</code>.  The go.bat file
@@ -198,14 +199,62 @@ which should either be acted on or reported.
     <li>example - A little code snippet in CDATA tags that shows a rule violation</li>
     </ul>
     </subsection>
-
+    <p>
+    We'll just leave this rule in the rulesets/basic.xml ruleset for now.  If you write rules for your own
+    project that aren't applicable to other projects (rules to catch Thread creation, for example, or rules to catch
+    System.out.println() usages) you might want to make a new ruleset <code>myproject.xml</code> and put your rules in there.
+    </p>
     <subsection name="Run PMD using your new ruleset">
+    <p>
+    Remember when we ran go.bat over the Example.java file?  Do it again.  This time your "hello world" will show up right after the
+    AST gets printed out.  If it doesn't, post a message to the
+    forum - http://sourceforge.net/forum/forum.php?forum_id=188192 - so we can improve this document :-)
+    </p>
     </subsection>
 
     <subsection name="Write code to add rule violations where appropriate">
+    <p>
+    Now that we've identified our problem, recognized the AST pattern that illustrates the problem, written a new rule, and plugged
+    it into a ruleset, we need to actually make our rule find the problem.  Like this:
+    </p>
+    <source>
+<![CDATA[
+public class WhileLoopsMustUseBracesRule extends AbstractRule {
+    public Object visit(ASTWhileStatement node, Object data) {
+        SimpleNode firstStmt = (SimpleNode)node.jjtGetChild(1);
+        if (!hasBlockAsFirstChild(firstStmt)) {
+            RuleContext ctx = (RuleContext)data;
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+        }
+        return super.visit(node,data);
+    }
+    private boolean hasBlockAsFirstChild(SimpleNode node) {
+        return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
+    }
+}
+]]>
+    </source>
     </subsection>
+    <p>
+    TODO - if you don't understand the code for the rule, post a message to the
+    forum - http://sourceforge.net/forum/forum.php?forum_id=188192 - so we can improve this document :-)
+    </p>
 
     <subsection name="Repeat as necessary">
+    <p>
+    I've found that my rules usually don't work the first time, and so I have to go back and tweak them a
+    couple times.  That's OK, if we were perfect programmers PMD would be useless anyhow :-).
+    </p>
+    <p>As an acceptance test of sorts, I usually run a rule on the JDK 1.4 source code and make sure that a random
+    sampling of the problems found are in fact legitimate rule violations.
+    This also ensures that the rule doesn't get confused by nested
+    inner classes or any of the other oddities that appear at various points in the JDK source.
+    </p>
+    <p>
+    You're rolling now.  If you think a rule would benefit the Java development community as a whole,
+    post a message to the forum - http://sourceforge.net/forum/forum.php?forum_id=188192 - so we can get the rule
+    moved into one of the core rulesets.  Thanks!
+    </p>
     </subsection>
     </section>
 </body>
