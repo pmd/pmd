@@ -11,6 +11,8 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 
 public class IdempotentOperationsRule extends AbstractRule {
 
@@ -18,7 +20,10 @@ public class IdempotentOperationsRule extends AbstractRule {
         if (node.jjtGetNumChildren() != 3
                 || !(node.jjtGetChild(0) instanceof ASTPrimaryExpression)
                 || !(node.jjtGetChild(1) instanceof ASTAssignmentOperator)
+                || (((ASTAssignmentOperator)(node.jjtGetChild(1))).isCompound())
                 || !(node.jjtGetChild(2) instanceof ASTExpression)
+                || node.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0
+                || node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0
         ) {
             return super.visit(node, data);
         }
@@ -37,7 +42,21 @@ public class IdempotentOperationsRule extends AbstractRule {
             return super.visit(node, data);
         }
 
+        if (lhs.jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
+           Node n = lhs.jjtGetParent().jjtGetParent().jjtGetChild(1);
+           if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix)n).isArrayDeference()) {
+               return super.visit(node, data);
+           }
+        }
+
+        if (rhs.jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
+           Node n = rhs.jjtGetParent().jjtGetParent().jjtGetChild(1);
+           if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix)n).isArguments() || ((ASTPrimarySuffix)n).isArrayDeference()) {
+               return super.visit(node, data);
+           }
+        }
+
         ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, node.getBeginLine(), "Avoid idempotent operations"));
-        return data;
+        return super.visit(node, data);
     }
 }

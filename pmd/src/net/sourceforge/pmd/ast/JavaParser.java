@@ -3357,6 +3357,9 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           jj_consume_token(LBRACKET);
           Expression();
           jj_consume_token(RBRACKET);
+                         jjtree.closeNodeScope(jjtn000, true);
+                         jjtc000 = false;
+                        jjtn000.setIsArrayDereference();
           break;
         case DOT:
           jj_consume_token(DOT);

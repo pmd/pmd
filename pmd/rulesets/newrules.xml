@@ -35,6 +35,28 @@ class Foo {
         </properties>
       </rule>
 
+    <rule name="IdempotentOperationsRule"
+          message="Avoid idempotent operations (like assigning a variable to itself)"
+          class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
+      <description>
+      Avoid idempotent operations - they are silly.
+      </description>
+        <priority>3</priority>
+
+      <example>
+      <![CDATA[
+    public class Foo {
+     public void bar() {
+      int x = 2;
+      x = x;
+     }
+    }
+      ]]>
+      </example>
+    </rule>
+
+
+
 </ruleset>
 
 

@@ -970,7 +970,7 @@ void PrimarySuffix() :
 { LOOKAHEAD(2) "." "this"
 | LOOKAHEAD(2) "." "super"
 | LOOKAHEAD(2) "." AllocationExpression()
-| "[" Expression() "]"
+| "[" Expression() "]" {jjtThis.setIsArrayDereference();}
 | "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
 | Arguments() {jjtThis.setIsArguments();}
 }
@@ -1231,5 +1231,5 @@ void AssertStatement() :
     }
 }
 {
-  <IDENTIFIER> Expression() [ ":" Expression() ] ";" 
+  <IDENTIFIER> Expression() [ ":" Expression() ] ";"
 }

@@ -5,7 +5,7 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="InstantiationToGetClass"
+<rule name="InstantiationToGetClass"
           message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
@@ -36,30 +36,7 @@ class Foo {
       </rule>
 
 
-
-
-
-    <!--
-<rule name="IdempotentOperationsRule"
-      message="NOT FULLY IMPLEMENTED - Avoid idempotent operations"
-      class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
-  <description>
-  Avoid idempotent operations - they are silly.
-  </description>
-    <priority>3</priority>
-
-  <example>
-  <![CDATA[
-public class Foo {
- public void bar() {
-  int x = 2;
-  x = x;
- }
-}
-  ]]>
-  </example>
-</rule>
-
+<!--
 <rule name="UnnecessaryParentheses"
       message="NOT FULLY IMPLEMENTED - Unnecessary parentheses are a bit noisy"
       class="net.sourceforge.pmd.rules.XPathRule">

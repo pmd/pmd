@@ -12,6 +12,15 @@ public class ASTPrimarySuffix extends SimpleNode {
     }
 
     private boolean isArguments;
+    private boolean isArrayDeference;
+
+    public void setIsArrayDereference() {
+        isArrayDeference = true;
+    }
+
+    public boolean isArrayDeference() {
+        return isArrayDeference;
+    }
 
     public void setIsArguments() {
         this.isArguments = true;
