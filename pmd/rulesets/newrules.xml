@@ -509,6 +509,43 @@ public class CarTest {
 ]]>
       </example>
     </rule>
+
+
+ <rule name="TooManyFields"
+       message="Too many fields"
+       class="net.sourceforge.pmd.rules.design.TooManyFields">
+   <description>
+
+   </description>
+     <priority>3</priority>
+   <properties>
+    <property name="maximum" value="10"/>
+   </properties>
+   <example>
+<![CDATA[
+public Class Person {
+    String street;
+    int number;
+    int floor;
+    String postal;
+    String street;
+    long phone;
+    String city;
+    String state;
+    String Country;
+    // fields above should be in a class for Address or something similar
+    // that information does not really belong to a person, but to a place
+    // fields below are really from person
+    String firstname;
+    String lastname;
+    Date born;
+    Person father;
+    Person mother;
+}
+]]>
+   </example>
+
+ </rule>
         
 </ruleset>
 
