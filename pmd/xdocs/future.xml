@@ -8,35 +8,48 @@
 
   <body>
   <section name="Future Directions">
+      <subsection name="Better symbol analysis">
+        <p>Currently PMD only looks at one source file at a time.  Instead, it
+        should resolve symbols across classes.  This will eliminate some open
+        bugs and enable a lot more rules to be written.  However, it'll taken some doing,
+        because it'll require parsing of class files.  Lots of work here.</p>
+      </subsection>
+
+         <subsection name="Data flow analysis (DFA)">
+             <p>Raik Schroeder, a graduate student at
+                 <a href="http://www.fh-stralsund.de/fh_stralsund/powerslave,id,223,nodeid,.html">Fachhochschule Stralsund</a>,
+    has written a DFA layer that should enable us to write some more complicated rules - stuff like
+    common subexpression elimination, loop invariant code motion (and code hoisting suggestions), shrink wrapping, and partial redundancy elimination.
+   The code is currently in CVS in the net.sourceforge.pmd.dfa packages, and we're going through
+    it now figuring out what rules we can write that use it.  We should be able to
+             use it to simplify some current rules, as well. </p>
+             <p>Raik's advisor, Dr. Gero Wedemann, has also mentioned that he may be able to find
+             a student who is interested in working on a PMD GUI.  That'd be great!</p>
+         </subsection>
+
       <subsection name="Code cleanups">
         <p>Some of the code is a bit sloppy:</p>
           <ul>
               <li>RuleSetFactory is a mess.  It needs to be refactored into something that has layers, or decorators, or something.</li>
               <li>Cleanups would be welcome for ConstructorCallsOverridableMethod and DoubleCheckedLocking</li>
               <li>The Designer GUI is a bit messed up; the bottom panes look funny.</li>
+              <li>The grammar has some odd bits:</li>
+              <ul>
+                  <li>BlockStatement has an odd hack for class definitions inside methods</li>
+                  <li>enumLookahead() seems like a bit of overkill, can it use Modifiers somehow?</li>
+                  <li>The whole "discardable node" thing seems wasteful</li>
+                  <li>Does ExtendsList need that 'extendsMoreThanOne' thing?</li>
+                  <li>ClassOrInterfaceBodyDeclaration has a monstrous lookahead to check for enums</li>
+                  <li>ClassOrInterfaceType gloms together dotted names... is that the right thing to do?</li>
+                  <li>Some complicated annotations are currently broken</li>
+              </ul>
           </ul>
       </subsection>
+
       <subsection name="Utilities">
           <ul>
               <li>It'd be nice to have a utility that would run each PMD rule on, say, the JDK, and time it.  Then we could see where our bottlenecks are.</li>
           </ul>
-      </subsection>
-   <subsection name="Better symbol analysis">
-     <p>Currently PMD only looks at one source file at a time.  Instead, it
-     should resolve symbols across classes.  This will eliminate some open
-     bugs and enable a lot more rules to be written.  However, it'll taken some doing,
-     because it'll require parsing of class files.  Lots of work here.</p>
-   </subsection>
-      <subsection name="Data flow analysis (DFA)">
-          <p>Raik Schroeder, a graduate student at
-              <a href="http://www.fh-stralsund.de/fh_stralsund/powerslave,id,223,nodeid,.html">Fachhochschule Stralsund</a>,
- has written a DFA layer that should enable us to write some more complicated rules - stuff like
- common subexpression elimination, loop invariant code motion (and code hoisting suggestions), shrink wrapping, and partial redundancy elimination.
-The code is currently in CVS in the net.sourceforge.pmd.dfa packages, and we're going through
- it now figuring out what rules we can write that use it.  We should be able to
-          use it to simplify some current rules, as well. </p>
-          <p>Raik's advisor, Dr. Gero Wedemann, has also mentioned that he may be able to find
-          a student who is interested in working on a PMD GUI.  That'd be great!</p>
       </subsection>
       </section>
   </body>
