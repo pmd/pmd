@@ -2,6 +2,7 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.ast.ASTFormalParameter;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
 
@@ -18,6 +19,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public AccessNode getAccessNodeParent() {
+        if (node.jjtGetParent() instanceof ASTFormalParameter) {
+            return (AccessNode)node.jjtGetParent();
+        }
         return (AccessNode) node.jjtGetParent().jjtGetParent();
     }
 

@@ -21,14 +21,12 @@ public class ASTVariableDeclaratorId extends SimpleNode {
     }
 
     public SimpleNode getTypeNameNode() {
-        if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
-            return findTypeNameNode(jjtGetParent().jjtGetParent());
-        } else if (jjtGetParent() instanceof ASTFormalParameter) {
+        if (jjtGetParent() instanceof ASTFormalParameter) {
             return findTypeNameNode(jjtGetParent());
-        } else if (jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
+        } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
             return findTypeNameNode(jjtGetParent().jjtGetParent());
         }
-        throw new RuntimeException("Don't know how to get the type for anything other than a ASTLocalVariableDeclaration/ASTFormalParameterASTFieldDeclaration");
+        throw new RuntimeException("Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
     }
 
     public void dump(String prefix) {
@@ -40,6 +38,4 @@ public class ASTVariableDeclaratorId extends SimpleNode {
         ASTType typeNode = (ASTType) node.jjtGetChild(0);
         return (SimpleNode) typeNode.jjtGetChild(0);
     }
-
-
 }

@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -31,6 +33,23 @@ public class VariableNameDeclarationTest extends TestCase {
 
         VariableNameDeclaration decl = new VariableNameDeclaration(id);
         assertTrue(decl.isExceptionBlockParameter());
+    }
+
+    public void testMethodParam() {
+        ASTVariableDeclaratorId id = new ASTVariableDeclaratorId(3);
+        id.testingOnly__setBeginLine(10);
+        id.setImage("foo");
+
+        ASTFormalParameter param = new ASTFormalParameter(2);
+        id.jjtSetParent(param);
+
+        ASTType type = new ASTType(4);
+        param.jjtAddChild(type, 0);
+
+        ASTName name = new ASTName(5);
+        type.jjtAddChild(name, 0);
+
+        assertEquals(name, id.getTypeNameNode());
     }
 
     private static ASTVariableDeclaratorId createNode(String image, int line) {

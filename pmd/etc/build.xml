@@ -62,7 +62,7 @@
     <pmd rulesetfiles="rulesets/unusedcode.xml" printtoconsole="true">
         <formatter type="csv" toFile="pmd_report.csv"/>
         <fileset dir="/usr/local/java/src/java/lang/">
-            <include name="Foo.java"/>
+            <include name="*.java"/>
         </fileset>
     </pmd>
 </target>
