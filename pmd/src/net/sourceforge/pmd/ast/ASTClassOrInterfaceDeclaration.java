@@ -33,7 +33,7 @@ public class ASTClassOrInterfaceDeclaration extends AccessNode {
     public void dump(String prefix) {
         String interfaceStr = isInterface ? "interface" : "class";
         String innerStr = isNested() ? "(nested)" : "";
-        System.out.println(toString(prefix) + "(" + interfaceStr  + ")" + innerStr);
+        System.out.println(toString(prefix) + "(" + getImage() + ")(" + interfaceStr  + ")" + innerStr);
         dumpChildren(prefix);
     }
 
