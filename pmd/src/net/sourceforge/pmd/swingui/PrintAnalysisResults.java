@@ -25,7 +25,6 @@ import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
  */
 class PrintAnalysisResults
 {
-
     private PrintJob m_printJob;
     private Graphics m_graphics;
     private int m_printAreaX;
