@@ -21,6 +21,10 @@ import java.util.Map;
 public class BeanMembersShouldSerializeRule extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
+
         List methList = new ArrayList();
         node.findChildrenOfType(ASTMethodDeclarator.class, methList);
 

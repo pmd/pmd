@@ -18,10 +18,9 @@ These are new rules for the next release
               <value>
     <![CDATA[
 //TypeDeclaration[
-//UnmodifiedClassDeclaration/NameList[Name/@Image="Serializable" or Name/@Image="java.io.Serializable"]
+//ClassOrInterfaceDeclaration/ImplementsList[ClassOrInterfaceType/@Image=("Serializable" or "java.io.Serializable")]
 and not(
-//ClassBodyDeclaration/FieldDeclaration[VariableDeclarator/VariableDeclaratorId/@Image='serialVersionUID'] )
-]
+//ClassOrInterfaceBodyDeclaration/FieldDeclaration[VariableDeclarator/VariableDeclaratorId/@Image='serialVersionUID'] )
 ]]>
               </value>
           </property>
