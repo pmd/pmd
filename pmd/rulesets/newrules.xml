@@ -6,6 +6,45 @@ These are new rules for the next release
   </description>
 
 
+    <rule name="OptimizableToArrayCallRule"
+          message="This call to Collection.toArray() may be optimizable"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  A call to Collection.toArray can use the Collection's size vs an empty Array of the desired type.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//PrimaryExpression
+[PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
+[
+PrimarySuffix/Arguments/ArgumentList/Expression
+ /PrimaryExpression/PrimaryPrefix/AllocationExpression
+ /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0']
+]
+
+                  ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+class Example {
+ void bar() {
+   // A bit inefficient, unlike...
+   x.toArray(new Foo[0]);
+
+   // ..this one, which sizes the destination array, avoiding
+   // a reflection call in some Collection implementations
+   x.toArray(new Foo[x.size()]);
+}
+}  ]]>
+      </example>
+    </rule>
+
     <rule name="BadComparisonRule"
           message="Avoid equality comparisons with Double.NaN"
           class="net.sourceforge.pmd.rules.XPathRule">

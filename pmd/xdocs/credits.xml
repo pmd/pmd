@@ -39,6 +39,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Radim Kubacki - OptimizableToArrayCallRule suggestion, bug reports, pmd-netbeans feedback</li>
             <li>Will Sargent - AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Mike Thome - BadComparisonRule suggestion</li>
             <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
@@ -131,7 +132,6 @@
             <li>J.D. Fagan - feature suggestions</li>
             <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
             <li>Ales Bukovsky - pmd-netbeans feedback</li>
-            <li>Radim Kubacki - bug reports, pmd-netbeans feedback</li>
             <li>Stefan Bodewig - bug report</li>
             <li>Paul Kendall - enhanced EmptyCatchBlock rule</li>
             <li>Sean Sullivan - rule suggestions</li>
