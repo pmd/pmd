@@ -26,6 +26,7 @@ most people really dislike :-)
 [not(FormalParameters/*)]
 [not(BlockStatement)]
 [not(NameList)]
+[count(ExplicitConstructorInvocation/Arguments/ArgumentList/Expression)=0]
                     ]]>
                 </value>
             </property>

@@ -102,6 +102,59 @@ public class ShortMethod {
      </example>
   </rule>
 
+
+    <rule name="VariableNamingConventionsRule"
+    message="{0} variable {1} should begin with {2}"
+    class="net.sourceforge.pmd.rules.VariableNamingConventionsRule">
+        <description>
+    A variable naming conventions rule - customize this to your liking
+    Final variables should be all caps
+    Non-final variables should not include underscores
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public static final int MY_NUM = 0;
+    public String myTest = "";
+    DataModule dmTest = new DataModule();
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MethodNamingConventions"
+              message="Method name does not begin with a lower case character."
+              class="net.sourceforge.pmd.rules.MethodNamingConventionsRule">
+          <description>
+              Method names should always begin with a lower case character, and should not contain underscores.
+          </description>
+          <priority>1</priority>
+          <example>
+<![CDATA[
+public class Foo {
+        public void fooStuff() {
+        }
+}
+]]>
+          </example>
+        </rule>
+
+
+    <rule name="ClassNamingConventionsRule"
+          message="Class names should begin with an uppercase character and not include underscores"
+          class="net.sourceforge.pmd.rules.ClassNamingConventionsRule">
+      <description> Class names should always begin with an upper case character, and should not contain underscores.
+      </description>
+      <priority>1</priority>
+      <example>
+<![CDATA[
+public class Foo {}
+]]>
+      </example>
+    </rule>
+
+
 </ruleset>
 
 
