@@ -1,6 +1,5 @@
 update the release date in the changelog
 change the build.xml to reflect pmd-jdeveloper release 0.8
-change manifest.mf to reflect pmd-jdeveloper release 0.8
 
 Create the binary release:
 ant release
