@@ -147,9 +147,9 @@ public class PMDViewer extends JFrame implements JobThreadListener
        JMenuBar menuBar = new JMenuBar();
 
        setJMenuBar(menuBar);
-       menuBar.add(new FileMenu(menuBar));
-       menuBar.add(new EditMenu(menuBar));
-       menuBar.add(new HelpMenu(menuBar));
+       menuBar.add(new FileMenu());
+       menuBar.add(new EditMenu());
+       menuBar.add(new HelpMenu());
     }
 
     /**
@@ -542,7 +542,6 @@ public class PMDViewer extends JFrame implements JobThreadListener
         private Color m_actionColor;
         private int m_direction;
         private int m_indicatorCurrentPosition;
-        private Insets m_insets;
         private final int POSITION_INCREMENT = 5;
         private final int START_MOVING = 0;
         private final int MOVE_FORWARD = 1;
@@ -871,7 +870,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
          *
          * @param menuBar
          */
-        private FileMenu(JMenuBar menuBar)
+        private FileMenu()
         {
             super("File");
 
@@ -952,7 +951,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
          *
          * @param menuBar
          */
-        private EditMenu(JMenuBar menuBar)
+        private EditMenu()
         {
             super("Edit");
 
@@ -1021,7 +1020,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
          *
          * @param menuBar
          */
-        private HelpMenu(JMenuBar menuBar)
+        private HelpMenu()
         {
             super("Help");
 

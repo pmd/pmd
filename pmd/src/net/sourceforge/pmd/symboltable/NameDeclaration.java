@@ -16,6 +16,10 @@ public class NameDeclaration {
         this.node = node;
     }
 
+    public SimpleNode getNode() {
+        return node;
+    }
+
     public boolean isExceptionBlockParameter() {
         if (node instanceof ASTVariableDeclaratorId) {
             return ((ASTVariableDeclaratorId)node).isExceptionBlockParameter();
