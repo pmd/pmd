@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.Rectangle;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.lang.Thread;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
