@@ -212,22 +212,6 @@ public class JumbledIncrementerRule1 {
     </example>
     </rule>
 
-    <rule name="UnusedModifier"
-         message="Unused modifiers are, well, unused"
-         class="net.sourceforge.pmd.rules.UnusedModifierRule">
-     <description>
-     Unused modifiers are, well, unused.
-     </description>
-        <priority>3</priority>
-     <example>
- <![CDATA[
-public interface Foo {
-public abstract void bar(); // abstract compiles, but is useless
-}
- ]]>
-     </example>
-     </rule>
-
     <rule name="ForLoopShouldBeWhileLoop"
           message="This for loop could be simplified to a while loop"
           class="net.sourceforge.pmd.rules.ForLoopShouldBeWhileLoopRule">

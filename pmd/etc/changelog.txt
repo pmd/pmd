@@ -10,6 +10,7 @@ Fixed bug 683465 - JavaCC parser no longer has ability to throw java.lang.Error;
 Fixed bug in OverrideBothEqualsAndHashcodeRule - it no longer bails out with a NullPtrException on interfaces that declare a method signature "equals(Object)".  Thx to Don Leckie for catching that.
 Added an optional Ant task formatter attribute 'isReportFilePathAbsolute'. Thx to Andriy Rozeluk for the feedback.
 Added an optional Ant task attribute 'failOnRuleViolation'.  This stops the build if any rule violations are found.
+Moved several rules into a new "controversial" ruleset.
 
 January 22, 2003 - 1.02:
 Added new rules: ImportFromSamePackageRule, SwitchDensityRule, NullAssignmentRule, UnusedModifierRule, ForLoopShouldBeWhileLoopRule

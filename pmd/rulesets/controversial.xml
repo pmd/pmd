@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+
+<ruleset name="Controversial Rules">
+  <description>
+The Controversial Ruleset contains rules that, for whatever reason, are considered controversial.  They
+are separated out here to allow people to include as they see fit via custom rulesets.  This ruleset was
+initially created in response to discussions over UnnecessaryConstructorRule which Tom likes but
+most people really dislike :-)
+  </description>
+
+    <rule name="UnnecessaryConstructorRule"
+          message="Avoid unnecessary constructors - the compiler will generate these for you"
+          class="net.sourceforge.pmd.rules.UnnecessaryConstructorRule">
+      <description>
+  Unnecessary constructor detects when a constructor is not necessary; i.e., when there's only one constructor,
+  it's public, has an empty body, and takes no arguments.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+  public class Foo {
+   public Foo() {}
+  }
+  ]]>
+      </example>
+    </rule>
+
+
+
+    <rule name="NullAssignment"
+          message="Assigning an Object to null is a code smell.  Consider refactoring."
+          class="net.sourceforge.pmd.rules.design.NullAssignmentRule">
+      <description>
+ Assigning a "null" to a variable (outside of its declaration) is usually in
+ bad form.  Some times, the assignment is an indication that the programmer doesn't
+ completely understand what is going on in the code.  NOTE: This sort of assignment
+ may in rare cases be useful to encourage garbage collection.  If that's what you're using
+ it for, by all means, disregard this rule :-)
+      </description>
+        <priority>3</priority>
+      <example>
+ <![CDATA[
+ public class Foo {
+   public void bar() {
+     Object x = null; // This is OK.
+     x = new Object();
+     // Big, complex piece of code here.
+     x = null; // This is BAD.
+     // Big, complex piece of code here.
+   }
+ }
+
+ ]]>
+      </example>
+
+    </rule>
+    <rule name="OnlyOneReturn"
+         message="A method should have only one exit point, and that should be the last statement in the method"
+         class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule">
+     <description>
+     A method should have only one exit point, and that should be the last statement in the method.
+     </description>
+        <priority>3</priority>
+
+     <example>
+ <![CDATA[
+ public class OneReturnOnly1 {
+  public void foo(int x) {
+   if (x > 0) {
+    return "hey";   // oops, multiple exit points!
+   }
+   return "hi";
+  }
+ }
+ ]]>
+     </example>
+     </rule>
+
+    <rule name="UnusedModifier"
+         message="Unused modifiers are, well, unused"
+         class="net.sourceforge.pmd.rules.UnusedModifierRule">
+     <description>
+     Unused modifiers are, well, unused.
+     </description>
+        <priority>3</priority>
+     <example>
+ <![CDATA[
+public interface Foo {
+public abstract void bar(); // abstract compiles, but is useless
+}
+ ]]>
+     </example>
+     </rule>
+
+
+</ruleset>
+
+
+
