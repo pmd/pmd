@@ -10,6 +10,7 @@ Fixed bug 997893 - UnusedPrivateField now detects assignments to members of priv
 Fixed bug 1020199 - UnusedLocalVariable no longer flags arrays as unused if an assignment is made to an array slot.
 Partially fixed bug 998122 - CloseConnectionRule now checks for imports of java.sql before reporting a rule violation.
 Applied patch 1001694 - Now PMD can process zip/jar files of source code.
+Fixed bug 1027133 - Now ExceptionSignatureDeclaration skips certain JUnit framework methods.
 Added data flow analysis facade from Raik Schroeder.
 
 July 14, 2004 - 1.9:
@@ -44,7 +45,7 @@ Added an optional 'failuresPropertyName' attribute to the Ant task.
 Refactored away duplicate copies of XPath rule definitions in regress/, yay!
 Removed manifest from jar file; it was only there for the Main-class attribute, and it's not very useful now since PMD has several dependencies.
 Began working on JDK 1.5 compatibility - added support for EnumDeclaration nodes.
-                        
+
 March 15, 2004 - 1.6:
 Fixed bug 895661 - XML reports containing error elements no longer have malformed XML.
 Fixed a bug in UnconditionalIfStatement - it no longer flags things like "if (x==true)".

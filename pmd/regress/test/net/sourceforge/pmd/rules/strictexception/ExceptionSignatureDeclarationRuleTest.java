@@ -15,6 +15,8 @@ public class ExceptionSignatureDeclarationRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "method throws Exception", 1, new ExceptionSignatureDeclaration()),
            new TestDescriptor(TEST2, "ok", 0, new ExceptionSignatureDeclaration()),
            new TestDescriptor(TEST3, "constructor throws Exception", 1, new ExceptionSignatureDeclaration()),
+           new TestDescriptor(TEST4, "skip junit setUp method", 0, new ExceptionSignatureDeclaration()),
+           new TestDescriptor(TEST5, "skip junit tearDown method", 0, new ExceptionSignatureDeclaration()),
        });
     }
 
@@ -31,6 +33,18 @@ public class ExceptionSignatureDeclarationRuleTest extends SimpleAggregatorTst {
     private static final String TEST3 =
     "public class Foo {" + PMD.EOL +
     " Foo() throws Exception {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "import junit.framework.*;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void setUp() throws Exception {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "import junit.framework.*;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void tearDown() throws Exception {}" + PMD.EOL +
     "}";
 
 

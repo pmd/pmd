@@ -6,6 +6,9 @@ import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +21,26 @@ import java.util.List;
  */
 public class ExceptionSignatureDeclaration extends AbstractRule {
 
+    private boolean junitImported;
+
+    public Object visit(ASTCompilationUnit node, Object o) {
+        junitImported = false;
+        return super.visit(node, o);
+    }
+
+    public Object visit(ASTImportDeclaration node, Object o) {
+        if (node.getImportedNameNode().getImage().indexOf("junit") != -1) {
+            junitImported = true;
+        }
+        return super.visit(node, o);
+    }
+
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
+        ASTMethodDeclarator declarator = (ASTMethodDeclarator)methodDeclaration.jjtGetChild(1);
+        if ((declarator.getImage().equals("setUp")||declarator.getImage().equals("tearDown")) && junitImported) {
+            return super.visit(methodDeclaration, o);
+        }
+
         List exceptionList = methodDeclaration.findChildrenOfType(ASTName.class);
         if (!hasContent(exceptionList)) {
             return super.visit(methodDeclaration, o);
