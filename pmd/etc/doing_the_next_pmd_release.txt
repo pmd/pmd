@@ -6,29 +6,31 @@ update run.bat to point to pmd-0.2.jar
 update the changelog
 
 ant dist
+ant test
+Do all the tests run?  OK, then:
+ant dist
 rename jar to pmd-0.2.jar
 cvs add -kb pmd-0.2.jar
 cvs rm pmd-0.1.jar
 cvs ci -m "adding new jar, removing old one"
+cd c:\data\pmd
 cvs rtag -D tomorrow "pmd_release_0_2" pmd
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
 cvs export -d c:\tmp\pmd -r pmd_release_0_2 pmd
 zip it up, rename it to pmd-0.2.zip
 unzip it into c:\tmp\pmd-0.2
-clear classpath, put pmd-0.2.jar in classpath
+clear classpath
 TESTS: Can you
 1) run 1 file and get a report
 run c:\data\pmd\pmd\test-data\Unused1.java xml all
-run c:\data\pmd\pmd\test-data\Unused1.java text  all
+run c:\data\pmd\pmd\test-data\Unused1.java text all
 2) run the Ant 'pmd' task and get a report
 ant pmd
-
 
 if you see a bug and fix it, you can delete the release using:
 cvs rtag -d pmd_release_0_2 pmd
 and then retag everything
-
 
 FTP the zip file to SF
 ftp upload.sourceforge.net
@@ -41,5 +43,9 @@ Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
 Add the pmd-0.2.zip file
 Classify the file
+
+SSH in to shell.sourceforge.net
+cd /home/groups/p/pm/pmd/build/
+./quickgo.sh
 
 Submit some news saying "hey, new release!"
