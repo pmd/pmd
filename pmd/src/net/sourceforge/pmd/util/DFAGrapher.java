@@ -129,7 +129,8 @@ public class DFAGrapher extends JFrame {
                 for (int j = 0; j < inode.getChildren().size(); j++) {
                     IDataFlowNode n = (IDataFlowNode) inode.getChildren().get(j);
                     this.drawMyLine(inode.getIndex(), n.getIndex(), g);
-                    g.drawString("," + String.valueOf(n.getIndex()), x - 3 * d + (j * 20), y + radius - 2);
+                    String output = (j==0 ? "" : "," ) + String.valueOf(n.getIndex());
+                    g.drawString(output, x - 3 * d + (j * 20), y + radius - 2);
                 }
             }
         }
