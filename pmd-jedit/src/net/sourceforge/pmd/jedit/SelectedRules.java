@@ -5,15 +5,17 @@
  */
 package net.sourceforge.pmd.jedit;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import org.gjt.sp.jedit.jEdit;
 
-import javax.swing.*;
-import java.util.*;
-
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.Rule;
+import javax.swing.JCheckBox;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SelectedRules {
 

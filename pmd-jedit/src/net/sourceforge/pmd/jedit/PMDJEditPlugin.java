@@ -5,21 +5,31 @@
  */
 package net.sourceforge.pmd.jedit;
 
-import org.gjt.sp.jedit.*;
-import org.gjt.sp.jedit.browser.VFSBrowser;
-import org.gjt.sp.jedit.gui.OptionsDialog;
-import errorlist.ErrorSource;
 import errorlist.DefaultErrorSource;
-import javax.swing.*;
-import java.util.Vector;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-import java.io.*;
-
-import net.sourceforge.pmd.*;
+import errorlist.ErrorSource;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
+import org.gjt.sp.jedit.Buffer;
+import org.gjt.sp.jedit.EditPlugin;
+import org.gjt.sp.jedit.GUIUtilities;
+import org.gjt.sp.jedit.View;
+import org.gjt.sp.jedit.browser.VFSBrowser;
+import org.gjt.sp.jedit.gui.OptionsDialog;
+import org.gjt.sp.jedit.jEdit;
+
+import javax.swing.JOptionPane;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 public class PMDJEditPlugin extends EditPlugin {
 
