@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTFieldDeclaration extends SimpleNode {
+public class ASTFieldDeclaration extends AccessNode {
   public ASTFieldDeclaration(int id) {
     super(id);
   }
