@@ -13,7 +13,7 @@
     <br></br>
     <source>
 C:\tmp\pmd-1.02\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
-&lt;?xml version="1.02"?&gt;&lt;pmd&gt;
+&lt;?xml version="1.0"?&gt;&lt;pmd&gt;
 &lt;file name="c:\data\pmd\pmd\test-data\Unused1.java"&gt;
 &lt;violation line="5" rule="UnusedLocalVariable"&gt;
 Avoid unused local variables such as 'fr'
