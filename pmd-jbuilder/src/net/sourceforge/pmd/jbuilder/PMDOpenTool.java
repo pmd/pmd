@@ -302,6 +302,35 @@ public class PMDOpenTool {
         }
     }
 
+    private static void pmdCheckPackage(PackageNode packageNode, RuleSet rules) {
+        Node[] fileNodes = packageNode.getDisplayChildren();
+        for (int j=0; j<fileNodes.length; j++) {
+            if (fileNodes[j] instanceof JavaFileNode) {
+                Message fileNameMsg = new Message(fileNodes[j].getDisplayName());
+                fileNameMsg.setFont(fileNameMsgFont);
+                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg);
+                JavaFileNode javaNode = (JavaFileNode)fileNodes[j];
+                StringBuffer code = new StringBuffer();
+                try {
+                    byte[] buffer = new byte[1024];
+                    InputStream is = javaNode.getInputStream();
+                    int charCount;
+                    while ((charCount = is.read(buffer)) != -1) {
+                        code.append(new String(buffer, 0, charCount));
+                    }
+                    checkCode(code.toString(), javaNode, rules);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            else if (fileNodes[j] instanceof PackageNode) {
+                pmdCheckPackage((PackageNode)fileNodes[j], rules);  //recursive call
+            }
+        }
+
+    }
+
     private static void pmdCheckProject() {
         Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
         Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
@@ -309,28 +338,23 @@ public class PMDOpenTool {
         for (int i=0; i<nodes.length; i++ ) {
             if (nodes[i] instanceof PackageNode) {
                 PackageNode node = (PackageNode)nodes[i];
-                Node[] fileNodes = node.getDisplayChildren();
-                for (int j=0; j<fileNodes.length; j++) {
-                    if (fileNodes[j] instanceof JavaFileNode) {
-                        Message fileNameMsg = new Message(fileNodes[j].getDisplayName());
-                        fileNameMsg.setFont(fileNameMsgFont);
-                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg);
-                        JavaFileNode javaNode = (JavaFileNode)fileNodes[j];
-                        StringBuffer code = new StringBuffer();
-                        try {
-                            byte[] buffer = new byte[1024];
-                            InputStream is = javaNode.getInputStream();
-                            int charCount;
-                            while ((charCount = is.read(buffer)) != -1) {
-                                code.append(new String(buffer, 0, charCount));
-                            }
-                            checkCode(code.toString(), javaNode, rules);
-                        }
-                        catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
+                pmdCheckPackage(node, rules);
+            }
+        }
+    }
+
+    private static void pmdCPDPackage(PackageNode packageNode, CPD cpd) {
+        Node[] fileNodes = packageNode.getDisplayChildren();
+        for (int j=0; j<fileNodes.length; j++) {
+            if (fileNodes[j] instanceof JavaFileNode) {
+                try {
+                    cpd.add(new File(fileNodes[j].getLongDisplayName()));
                 }
+                catch (Exception e){
+                }
+            }
+            else if (fileNodes[j] instanceof PackageNode) {
+                pmdCPDPackage((PackageNode)fileNodes[j], cpd);   //recursive call
             }
         }
     }
@@ -345,16 +369,7 @@ public class PMDOpenTool {
             for (int i=0; i<nodes.length; i++ ) {
                 if (nodes[i] instanceof PackageNode) {
                     PackageNode node = (PackageNode)nodes[i];
-                    Node[] fileNodes = node.getDisplayChildren();
-                    for (int j=0; j<fileNodes.length; j++) {
-                        if (fileNodes[j] instanceof JavaFileNode) {
-                            try {
-                                cpd.add(new File(fileNodes[j].getLongDisplayName()));
-                            }
-                            catch (Exception e){
-                            }
-                        }
-                    }
+                    pmdCPDPackage(node, cpd);
                 }
             }
             cpd.go();
