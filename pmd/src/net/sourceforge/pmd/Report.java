@@ -12,9 +12,18 @@ import java.util.*;
 public class Report {
 
     private Set violations = new TreeSet(new RuleViolation.RuleViolationComparator());
+    private List listeners = new ArrayList();
+
+    public void addListener(ReportListener listener) {
+        listeners.add(listener);
+    }
 
     public void addRuleViolation(RuleViolation violation) {
         violations.add(violation);
+        for (Iterator i = listeners.iterator();i.hasNext();) {
+            ReportListener listener = (ReportListener)i.next();
+            listener.ruleViolationAdded(violation);
+        }
     }
 
     public boolean isEmpty() {
