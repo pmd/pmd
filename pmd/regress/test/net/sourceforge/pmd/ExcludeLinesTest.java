@@ -37,11 +37,17 @@ public class ExcludeLinesTest extends RuleTst {
         assertEquals(TEST1, copyBuffer.toString());
     }
 
+    public void testAlternateMarker() throws Throwable {
+        ExcludeLines e = new ExcludeLines(new StringReader(TEST4), "FOOBAR");
+        assertFalse(e.getLinesToExclude().isEmpty());
+    }
+
     public void testAcceptance() throws Throwable {
         Rule rule = findRule("rulesets/unusedcode.xml", "UnusedLocalVariable");
         runTestFromString(TEST1, 0, rule);
         runTestFromString(TEST3, 1, rule);
     }
+
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
@@ -63,6 +69,13 @@ public class ExcludeLinesTest extends RuleTst {
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
     "  int x;" + PMD.EOL +
+    " } " + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  int x; // FOOBAR" + PMD.EOL +
     " } " + PMD.EOL +
     "}";
 

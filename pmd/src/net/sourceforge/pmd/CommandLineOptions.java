@@ -23,6 +23,7 @@ public class CommandLineOptions {
     private boolean jdk13;
     private boolean shortNamesEnabled;
 
+    private String excludeMarker = ExcludeLines.EXCLUDE_MARKER;
     private String inputPath;
     private String reportFormat;
     private String ruleSets;
@@ -49,6 +50,8 @@ public class CommandLineOptions {
                 shortNamesEnabled = true;
             } else if (args[i].equals("-encoding")) {
                 encoding = args[i + 1];
+            } else if (args[i].equals("-excludemarker")) {
+                excludeMarker = args[i + 1];
             } else if (args[i].equals("-jdk13")) {
                 jdk13 = true;
             }
@@ -108,6 +111,10 @@ public class CommandLineOptions {
         return this.ruleSets;
     }
 
+    public String getExcludeMarker() {
+        return this.excludeMarker;
+    }
+
     public boolean debugEnabled() {
         return debugEnabled;
     }
@@ -134,6 +141,7 @@ public class CommandLineOptions {
                 "-debug: prints debugging information " + PMD.EOL +
                 "-jdk13: enables PMD to parse source code written using 'assert' as an identifier" + PMD.EOL +
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
+                "-excludemarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +
                 PMD.EOL +
                 "For example: " + PMD.EOL +

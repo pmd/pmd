@@ -41,6 +41,11 @@ public class CommandLineOptionsTest extends TestCase {
         assertTrue(opt.debugEnabled());
     }
 
+    public void testExcludeMarker() {
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-excludemarker", "FOOBAR"});
+        assertEquals("FOOBAR", opt.getExcludeMarker());
+    }
+
     public void testTargetJDKVersion() {
         CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
         assertFalse(opt.jdk13());

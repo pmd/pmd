@@ -33,6 +33,7 @@ public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");
 
     private TargetJDKVersion targetJDKVersion;
+    private String excludeMarker = ExcludeLines.EXCLUDE_MARKER;
 
     public PMD() {
         this(new TargetJDK1_4());
@@ -52,7 +53,7 @@ public class PMD {
      */
     public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         try {
-            ExcludeLines excluder = new ExcludeLines(reader);
+            ExcludeLines excluder = new ExcludeLines(reader, excludeMarker);
             ctx.excludeLines(excluder.getLinesToExclude());
 
             JavaParser parser = targetJDKVersion.createParser(excluder.getCopyReader());
@@ -115,6 +116,10 @@ public class PMD {
         processFile(fileContents, System.getProperty("file.encoding"), ruleSet, ctx);
     }
 
+    public void setExcludeMarker(String marker) {
+        this.excludeMarker = marker;
+    }
+
 
     public static void main(String[] args) {
         CommandLineOptions opts = new CommandLineOptions(args);
@@ -132,6 +137,7 @@ public class PMD {
         } else {
             pmd = new PMD();
         }
+        pmd.setExcludeMarker(opts.getExcludeMarker());
 
         RuleContext ctx = new RuleContext();
         ctx.setReport(new Report());
