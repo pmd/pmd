@@ -18,8 +18,7 @@ public class NameDeclaration {
 
     public boolean isExceptionBlockParameter() {
         if (node instanceof ASTVariableDeclaratorId) {
-            ASTVariableDeclaratorId v = (ASTVariableDeclaratorId)node;
-            return v.isExceptionBlockParameter();
+            return ((ASTVariableDeclaratorId)node).isExceptionBlockParameter();
         }
         return false;
     }
