@@ -40,6 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Enno Derksen - enhancements to VariableNamingConventionsRule</li>
             <li>Michael Haggerty - bug reports for FinalizeDoesNotCallSuperFinalize and UnusedModifier</li>
             <li>ereissner - bug report and documentation suggestions for UseSingletonRule</li>
             <li>Phil Shaw - documentation suggestions</li>

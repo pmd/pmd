@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.VariableNamingConventionsRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -22,6 +23,19 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST8, "final non-statics need not be all caps", 0, new VariableNamingConventionsRule()),
        });
     }
+
+    public void testPrefixStripping() throws Throwable {
+        Rule r =  new VariableNamingConventionsRule();
+        r.addProperty("staticPrefix", "s_");
+        runTestFromString(TEST9, 0, r);
+    }
+
+    public void testSuffixStripping() throws Throwable {
+        Rule r =  new VariableNamingConventionsRule();
+        r.addProperty("staticSuffix", "_s");
+        runTestFromString(TEST10, 0, r);
+    }
+
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
@@ -64,5 +78,15 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
     private static final String TEST8 =
     "public class Foo {" + PMD.EOL +
     "  final int foo = 42;" + PMD.EOL +
+    "}";
+
+    private static final String TEST9 =
+    "public class Foo {" + PMD.EOL +
+    "  static int s_foo = 42;" + PMD.EOL +
+    "}";
+
+    private static final String TEST10 =
+    "public class Foo {" + PMD.EOL +
+    "  static int foo_s = 42;" + PMD.EOL +
     "}";
 }
