@@ -122,9 +122,9 @@ public class Foo {
  </rule>
 
 
-    <rule name="CyclomaticComplexityRule"
+    <rule name="CyclomaticComplexity"
       message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
-      class="net.sourceforge.pmd.rules.CyclomaticComplexityRule">
+      class="net.sourceforge.pmd.rules.CyclomaticComplexity">
    <description>
 Complexity is determined by the number of decision points in a method plus one for the
 method entry.  The decision points are 'if', 'while', 'for', and 'case labels'.  Scale:
@@ -198,9 +198,9 @@ public class Foo
    </example>
 </rule>
 
-    <rule name="ExcessivePublicCountRule"
+    <rule name="ExcessivePublicCount"
     message="A high number of public methods and attributes in an object can indicate the class may need to be broken up for exhaustive testing may prove difficult."
-    class="net.sourceforge.pmd.rules.ExcessivePublicCountRule">
+    class="net.sourceforge.pmd.rules.ExcessivePublicCount">
     <description>
     A large amount of public methods and attributes declared in an object can indicate the class may need
     to be broken up as increased effort will be required to thoroughly test such a class.

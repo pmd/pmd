@@ -28,7 +28,7 @@ import java.util.Stack;
  * @version $Revision$, $Date$
  * @since January 14, 2003
  */
-public class CyclomaticComplexityRule extends AbstractRule {
+public class CyclomaticComplexity extends AbstractRule {
 
     private static class Entry {
         private SimpleNode node;

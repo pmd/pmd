@@ -6,14 +6,15 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.rules.CyclomaticComplexityRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.CyclomaticComplexity;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import java.util.Iterator;
 
-public class CyclomaticComplexityRuleTest extends RuleTst {
+public class CyclomaticComplexityTest extends RuleTst {
 
-    private CyclomaticComplexityRule rule = new CyclomaticComplexityRule();
+    private Rule rule = new CyclomaticComplexity();
 
     public void setUp() {
         rule.setMessage("The {0} ''{1}'' has a Cyclomatic Complexity of {2}.");
@@ -54,12 +55,12 @@ public class CyclomaticComplexityRuleTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class CyclomaticComplexity1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void foo() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class CyclomaticComplexity2 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void example() {" + PMD.EOL +
     "  int x = 0;" + PMD.EOL +
     "  int a = 0;" + PMD.EOL +
@@ -125,8 +126,8 @@ public class CyclomaticComplexityRuleTest extends RuleTst {
     "}";
 
     private static final String TEST3 =
-    "public class CyclomaticComplexity3 {" + PMD.EOL +
-    " public CyclomaticComplexity3() {}" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public Foo() {}" + PMD.EOL +
     "}";
 
 }

@@ -23,16 +23,13 @@ by
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.ExcessivePublicCountRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.ExcessivePublicCount;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
-public class ExcessivePublicCountRuleTest extends RuleTst {
+public class ExcessivePublicCountTest extends RuleTst {
 
-    private ExcessivePublicCountRule rule;
-
-    public void setUp() {
-        rule = new ExcessivePublicCountRule();
-    }
+    private Rule rule = new ExcessivePublicCount();
 
     public void testSimpleOK() throws Throwable {
         rule.addProperty("minimum", "50");
@@ -45,12 +42,12 @@ public class ExcessivePublicCountRuleTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class ExcessivePublicCountRule1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public int foo;" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class ExcessivePublicCountRule2 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public int foo;" + PMD.EOL +
     " public int bif;" + PMD.EOL +
     " public int baz;" + PMD.EOL +

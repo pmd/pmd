@@ -20,6 +20,7 @@ Many rule names had the word "Rule" tacked on to the end.  Various folks thought
 - basic.xml: UnnecessaryConversionTemporary, OverrideBothEqualsAndHashcode, DoubleCheckedLocking
 - braces.xml: WhileLoopsMustUseBraces, IfElseStmtsMustUseBraces, ForLoopsMustUseBraces
 - clone.xml: ProperCloneImplementation
+- codesize.xml: CyclomaticComplexity, ExcessivePublicCount
 Continued working on JDK 1.5 compatibility - added support for static import statements, varargs, and the new for loop syntax
 - still TODO: generics and annotations  (note that autoboxing shouldn't require a grammar change)
 - Good article on features: http://java.sun.com/developer/technicalArticles/releases/j2se15/

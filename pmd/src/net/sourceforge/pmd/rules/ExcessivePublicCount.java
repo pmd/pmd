@@ -12,7 +12,7 @@ import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
 /**
  * @author aglover
  *         <p/>
- *         Class Name: ExcessivePublicCountRule
+ *         Class Name: ExcessivePublicCount
  *         <p/>
  *         Rule attempts to count all public methods and public attributes defined in a class.
  *         <p/>
@@ -23,9 +23,9 @@ import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
  *         affected by external classes. Futhermore, increased effort will be required to
  *         thoroughly test the class.
  */
-public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
+public class ExcessivePublicCount extends ExcessiveNodeCountRule {
 
-    public ExcessivePublicCountRule() {
+    public ExcessivePublicCount() {
         super(ASTCompilationUnit.class);
     }
 
