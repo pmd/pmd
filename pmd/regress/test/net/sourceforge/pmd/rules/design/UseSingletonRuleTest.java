@@ -30,33 +30,24 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.rules.design.UseSingletonRule;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class UseSingletonRuleTest extends RuleTst implements ReportListener {
+public class UseSingletonRuleTest extends SimpleAggregatorTst implements ReportListener {
 
-    public void testAllStaticsPublicConstructor() throws Throwable {
-        runTestFromString(TEST1, 1, new UseSingletonRule());
+    private int callbacks;
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "should be singleton since all static, public constructor", 1, new UseSingletonRule()),
+           new TestDescriptor(TEST2, "ok, uses non-static", 0, new UseSingletonRule()),
+           new TestDescriptor(TEST3, "should be singleton, couple of statics, no constructor", 1, new UseSingletonRule()),
+           new TestDescriptor(TEST4, "no constructor, one static - ok", 0, new UseSingletonRule()),
+           new TestDescriptor(TEST5, "classic singleton - ok", 0, new UseSingletonRule()),
+           new TestDescriptor(TEST6, "abstract, so ok", 0, new UseSingletonRule()),
+           new TestDescriptor(TEST7, "has no fields, so ok", 0, new UseSingletonRule()),
+       });
     }
-
-    public void testOKDueToNonStaticMethod() throws Throwable {
-        runTestFromString(TEST2, 0, new UseSingletonRule());
-    }
-
-    public void testNoConstructorCoupleOfStatics() throws Throwable {
-        runTestFromString(TEST3, 1, new UseSingletonRule());
-    }
-
-    public void testNoConstructorOneStatic() throws Throwable {
-        runTestFromString(TEST4, 0, new UseSingletonRule());
-    }
-
-    public void testClassicSingleton() throws Throwable {
-        runTestFromString(TEST5, 0, new UseSingletonRule());
-    }
-
-    public void testAbstractSingleton() throws Throwable {
-        runTestFromString(TEST6, 0, new UseSingletonRule());
-    }
-
 
     public void testResetState() throws Throwable {
         callbacks = 0;
@@ -68,18 +59,13 @@ public class UseSingletonRuleTest extends RuleTst implements ReportListener {
         assertEquals(1, callbacks);
     }
 
-    private int callbacks;
-
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         callbacks++;
     }
-
-    public void metricAdded(Metric metric) {
-    }
+    public void metricAdded(Metric metric) {}
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
-    " // Should trigger UseSingleton rule?" + PMD.EOL +
     " public Foo() { }" + PMD.EOL +
     " public static void doSomething() {}" + PMD.EOL +
     " public static void main(String args[]) {" + PMD.EOL +
@@ -88,33 +74,27 @@ public class UseSingletonRuleTest extends RuleTst implements ReportListener {
     "}";
 
     private static final String TEST2 =
-    "public class UseSingleton2" + PMD.EOL +
-    "{" + PMD.EOL +
-    "    // Should not trigger UseSingleton rule." + PMD.EOL +
-    "    public UseSingleton2() { }" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "    public Foo() { }" + PMD.EOL +
     "    public void doSomething() { }" + PMD.EOL +
     "    public static void main(String args[]) { }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class UseSingleton3" + PMD.EOL +
-    "{" + PMD.EOL +
-    "    // Should trigger it." + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     "    public static void doSomething1() { }" + PMD.EOL +
     "    public static void doSomething2() { }" + PMD.EOL +
-    "    public static void doSomething3() { }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class UseSingleton4" + PMD.EOL +
-    "{" + PMD.EOL +
-    "    public UseSingleton4() { }" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "    public Foo() { }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class UseSingleton5 {" + PMD.EOL +
-    " private UseSingleton5() {}" + PMD.EOL +
-    " public static UseSingleton5 get() {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private Foo() {}" + PMD.EOL +
+    " public static Foo get() {" + PMD.EOL +
     "  return null;" + PMD.EOL +
     " }     " + PMD.EOL +
     "}";
@@ -126,4 +106,10 @@ public class UseSingletonRuleTest extends RuleTst implements ReportListener {
     "    public static void doSomething3() { }" + PMD.EOL +
     "}";
 
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " public Foo() { }" + PMD.EOL +
+    " private int x;" + PMD.EOL +
+    " public static void doSomething() {}" + PMD.EOL +
+    "}";
 }
