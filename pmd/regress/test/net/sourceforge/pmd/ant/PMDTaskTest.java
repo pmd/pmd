@@ -6,6 +6,8 @@ package test.net.sourceforge.pmd.ant;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
+import net.sourceforge.pmd.ant.RuleSet;
+
 import org.apache.tools.ant.BuildException;
 
 public class PMDTaskTest extends TestCase {
@@ -42,4 +44,22 @@ public class PMDTaskTest extends TestCase {
         }
     }
 
+    public void testNestedRuleset() {
+        PMDTask task = new PMDTask();
+        RuleSet r = new RuleSet();
+        r.addText("rulesets/basic.xml");
+        task.addRuleset(r);
+        r.addText("rulesets/design.xml");
+        task.addRuleset(r);
+        Formatter f = new Formatter();
+        task.addFormatter(f);
+        
+        //TODO
+        try {
+            task.execute();
+        } catch (BuildException be) {
+            fail(be.toString());
+        }
+    }
 }
+
