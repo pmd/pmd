@@ -10,13 +10,28 @@ import net.sourceforge.pmd.rules.design.OnlyOneReturnRule;
 
 public class OnlyOneReturnRuleTest extends RuleTst {
 
-    public void test1() throws Throwable {
+    public void testTwoReturns() throws Throwable {
         runTest("OnlyOneReturn1.java", 1, new OnlyOneReturnRule());
     }
-    public void test2() throws Throwable {
+    public void testOneReturn() throws Throwable {
         runTest("OnlyOneReturn2.java", 0, new OnlyOneReturnRule());
     }
-    public void test3() throws Throwable {
+    public void testNoReturns() throws Throwable {
         runTest("OnlyOneReturn3.java", 0, new OnlyOneReturnRule());
     }
+    public void testVoidRtn() throws Throwable {
+        runTest("OnlyOneReturn4.java", 1, new OnlyOneReturnRule());
+    }
+    public void testRtnStmtSpillsOverToNextLine() throws Throwable {
+        runTest("OnlyOneReturn5.java", 0, new OnlyOneReturnRule());
+    }
+    // TODO this causes a rule violation
+    /**
+     * public int bar() {
+     *  return 2;
+     *
+     * }
+     */
+    // due to the blank line after "return 2;"
+    // is this OK?
 }
