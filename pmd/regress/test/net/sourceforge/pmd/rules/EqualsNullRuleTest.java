@@ -11,7 +11,7 @@ public class EqualsNullRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "EqualsNull");
+        rule = findRule("rulesets/design.xml", "EqualsNull");
     }
 
     public void testAll() {

@@ -31,33 +31,6 @@ public class MaybeASingleton {
   </rule>
 
 
-  <rule name="LooseCouplingRule"
-        message="Avoid using implementation types like ''{0}''; use the interface instead"
-        class="net.sourceforge.pmd.rules.design.LooseCouplingRule">
-    <description>
-    Avoid using implementation types (i.e., HashSet); use the interface (i.e, Set) instead
-    </description>
-      <priority>3</priority>
-
-    <example>
-<![CDATA[
-import java.util.*;
-public class Bar {
-
- // should be "private List list"
- private ArrayList list = new ArrayList();
-
- // should be "public Set getFoo()"
- public HashSet getFoo() {
-  return new HashSet();
- }
-}
-
-]]>
-    </example>
-  </rule>
-
-
   <rule name="SimplifyBooleanReturnsRule"
         message="Avoid unnecessary if..then..else statements when returning a boolean"
         class="net.sourceforge.pmd.rules.SimplifyBooleanReturnsRule">
@@ -590,5 +563,63 @@ int x = (y == Double.NaN);
   ]]>
       </example>
     </rule>
+
+    <rule   name="EqualsNull"
+            message="Don't use equals() to compare against null"
+            class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+         Newbie programmers sometimes get the comparison concepts confused
+         and use equals() to compare to null.
+        </description>
+        <properties>
+            <property name="xpath">
+                <value>
+    <![CDATA[
+    //PrimaryExpression
+     [PrimaryPrefix/Name[ends-with(@Image, 'equals')]]
+     [PrimarySuffix/Arguments/ArgumentList
+      /Expression/PrimaryExpression/PrimaryPrefix
+       /Literal/NullLiteral]
+    ]]>
+                </value>
+            </property>
+         </properties>
+        <priority>1</priority>
+    <example>
+       <![CDATA[
+    class Bar {
+       void foo() {
+           String x = "foo";
+           if (x.equals(null)) { // bad!
+            doSomething();
+           }
+       }
+    }
+    ]]>
+        </example>
+        </rule>
+
+      <rule name="ConfusingTernary"
+        message="Avoid if (x != y) ..; else ..;"
+        class="net.sourceforge.pmd.rules.design.ConfusingTernary">
+        <description>
+          In an "if" expression with an "else" clause, avoid negation in
+          the test.  For example, rephrase:
+            if (x != y) diff(); else same();
+          as:
+            if (x == y) same(); else diff();
+          Most "if (x != y)" cases without an "else" are often return
+          cases, so consistent use of this rule makes the code easier
+          to read.  Also, this resolves trivial ordering problems, such
+          as "does the error case go first?" or "does the common case
+          go first?".
+        </description>
+        <priority>3</priority>
+        <example>
+          <![CDATA[
+          return (x != y) ? diff : same;
+          ]]>
+        </example>
+      </rule>
 
 </ruleset>

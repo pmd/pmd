@@ -127,7 +127,7 @@ public class CommandLineOptions {
             "3) A ruleset filename or a comma-delimited string of ruleset filenames" + PMD.EOL +
             PMD.EOL +
             "For example: " + PMD.EOL +
-            "c:\\> java -jar pmd-1.8.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml" + PMD.EOL +
+            "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml" + PMD.EOL +
             PMD.EOL +
             "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
             "-debug: prints debugging information " + PMD.EOL +
@@ -136,8 +136,8 @@ public class CommandLineOptions {
             "-shortnames: prints shortened filenames in the report" + PMD.EOL +
             PMD.EOL +
             "For example: " + PMD.EOL +
-            "c:\\> java -jar pmd-1.8.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk13 -debug" + PMD.EOL +
-            "c:\\> java -jar pmd-1.8.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -encoding UTF-8" + PMD.EOL +
+            "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk13 -debug" + PMD.EOL +
+            "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -encoding UTF-8" + PMD.EOL +
             PMD.EOL;
     }
 }
