@@ -18,4 +18,13 @@ public class ASTBlockStatement extends SimpleNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    /**
+     * Tells if this BlockStatement is an allocation statement. 
+     * This is done by 
+     * @return
+     */
+    public final boolean isAllocation() {
+        return !findChildrenOfType(ASTAllocationExpression.class).isEmpty();
+    }
 }
