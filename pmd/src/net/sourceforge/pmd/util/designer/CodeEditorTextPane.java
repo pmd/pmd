@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 
 public class CodeEditorTextPane extends JTextPane implements HasLines, ActionListener {
 
-    private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_astviewer";
+    private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_designer";
 
     public CodeEditorTextPane() {
         setPreferredSize(new Dimension(400, 200));

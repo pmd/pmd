@@ -30,13 +30,13 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
     </p>
     </subsection>
     
-    <section name="Using the ASTViewer">
+    <section name="Using Designer">
     <p> PMD comes with a handy tool that you will love if you want to write an XPath rule.
-    The ASTViewer, runnable from a script in <code>etc/</code>, is a very simple and useful utility for writing rules.
+    Designer, runnable from a script in <code>etc/</code>, is a very simple and useful utility for writing rules.
     </p>
     <p>The basic steps involved in writing XPath rules are these: 
     	<ol>
-		    <li>Write a simple Java example source snippet in the ASTViewer</li>
+		    <li>Write a simple Java example source snippet in Designer</li>
 		    <li>See the AST for the class you wrote</li>
 		    <li>Write an XPath expression that matches the violation you are searching</li>
 		    <li>Modify the Java class and go back to previous step to refine the XPath expression</li>
@@ -49,8 +49,8 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
     <section name="Simple XPath expressions">
     <p>This section provides hands-on examples of XPath queries over the AST.
     You will probably find this section more useful if you follow it with
-    the ASTViewer and copy/paste the examples.</p>
-    <p>Copy the following Java source code to the ASTViewer:</p>
+    Designer and copy/paste the examples.</p>
+    <p>Copy the following Java source code to Designer:</p>
     <source>
 <![CDATA[public class a {
 	int fOne;
@@ -142,7 +142,7 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
 ]]></source>
 	<p>The following expression does the magic we need:</p>
 	<source><![CDATA[//VariableDeclarator[../Type/Name[@Image='Factory'] and ..[@Final='false'] ]]]></source>
-	<p>I must recommend at this point that you experiment with the ASTViewer putting
+	<p>I must recommend at this point that you experiment with Designer putting
 	the final modifier to the Factory and verifying that the results produced
 	are those expected.</p>
 	</subsection>
