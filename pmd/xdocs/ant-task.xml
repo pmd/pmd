@@ -42,6 +42,11 @@
     <td valign="top" align="center">No</td>
   </tr>
     <tr>
+      <td valign="top">shortFilenames</td>
+      <td valign="top">Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
       <td valign="top">verbose</td>
        <td valign="top">Verbose output - names of files processed, rule counts, etc.</td>
       <td valign="top" align="center">No</td>
@@ -117,8 +122,8 @@ tag has several attributes:
 <target name="pmd">
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
   <pmd verbose="true" rulesetfiles="rulesets/basic.xml,rulesets/design.xml" failonerror="no">
-    <database driver="com.mysql.jdbc.Driver" url="jdbc:mysql:///pmd" user="david" 
-              password="" projectid="10" /> 
+    <database driver="com.mysql.jdbc.Driver" url="jdbc:mysql:///pmd" user="david"
+              password="" projectid="10" />
     <formatter type="xml" toFile="c:\jdk-report.xml"/>
     <fileset dir="C:\j2sdk1.4.0\src\">
       <include name="**/*.java"/>

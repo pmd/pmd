@@ -54,6 +54,7 @@ public class PMDTask extends Task {
 	private String password = "";
 	private int projectId = 0;
 
+
 	public void setUrl(String url) {
 	    this.url = url;
 	}
@@ -99,6 +100,7 @@ public class PMDTask extends Task {
     private List filesets  = new ArrayList();
     private List databases = new ArrayList();
 
+    private boolean shortFilenames;
     private boolean verbose;
     private boolean printToConsole;
     private String ruleSetFiles;
@@ -108,6 +110,10 @@ public class PMDTask extends Task {
      * The end of line string for this machine.
      */
     protected String EOL = System.getProperty("line.separator", "\n");
+
+    public void setShortFilenames(boolean value) {
+        this.shortFilenames = value;
+    }
 
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;
@@ -183,7 +189,11 @@ public class PMDTask extends Task {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                     printIfVerbose (file.getAbsoluteFile().toString());
 
-                    ctx.setSourceCodeFilename(file.getAbsolutePath());
+                    String fileName = file.getAbsolutePath();
+                    if (shortFilenames) {
+                        fileName = srcFiles[j];
+                    }
+                    ctx.setSourceCodeFilename(fileName);
 
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (FileNotFoundException fnfe) {
