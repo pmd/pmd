@@ -10,7 +10,8 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 public class UseSingletonRule
     extends AbstractRule
 {
-    public boolean isOK = false;
+    private boolean isOK = false;
+    private int methodCount = 0;
 
     public UseSingletonRule() { }
 
@@ -19,6 +20,7 @@ public class UseSingletonRule
     }
 
     public Object visit( ASTMethodDeclaration decl, Object data ) {
+	methodCount ++;
 	if (isOK) return data;
 	
 	if (!decl.isStatic()) {
@@ -32,7 +34,7 @@ public class UseSingletonRule
 
 	Object RC = cu.childrenAccept( this, data );
 
-	if (!isOK) {
+	if ((!isOK) && (methodCount > 0)) {
 	    (((RuleContext) data).getReport()).
 		addRuleViolation( new RuleViolation( this, cu.getBeginLine() ));
 	}
