@@ -211,23 +211,10 @@ public abstract class Foo { // should be AbstractFoo
 
     <rule name="MethodWithSameNameAsEnclosingClass"
           message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.MethodWithSameNameAsEnclosingClass">
        <description>
        Non-constructor methods should not have the same name as the enclosing class.
        </description>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration
- [parent::ClassOrInterfaceBodyDeclaration
-  [parent::ClassOrInterfaceBody
-   [parent::ClassOrInterfaceDeclaration/@Image = //MethodDeclarator/@Image
-   ]]]
- ]]>
-                </value>
-            </property>
-        </properties>
         <priority>3</priority>
        <example>
     <![CDATA[
