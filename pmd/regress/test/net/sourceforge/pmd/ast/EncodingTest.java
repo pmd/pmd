@@ -14,7 +14,7 @@ import java.util.List;
 
 public class EncodingTest extends TestCase {
 
-    public void testDecodingOfPlatformEncoding() throws Throwable {
+    public void testDecodingOfUTF8() throws Throwable {
         String platformEncoding = System.getProperty("file.encoding");
         String iso = "ISO-8859-1";
         String utf8 = "UTF-8";
