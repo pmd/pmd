@@ -25,7 +25,7 @@ public class BatchBuilder {
         List batches = new ArrayList();
 
         int currentBatchSize = 0;
-        int maxBatchSize = 20;
+        int maxBatchSize = 10;
 
         List wrappers = new ArrayList();
         for (Iterator i = occ.getTiles(); i.hasNext();) {
