@@ -9,9 +9,8 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.renderers.*;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.swingui.PMDViewer;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
@@ -65,7 +64,7 @@ public class PMD {
             return;
         }
 
-        if (args.length != 3) {
+        if (args.length < 3) {
             System.err.println("");
             System.err.println("Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml");
             System.err.println("");
@@ -109,12 +108,15 @@ public class PMD {
             rsnfe.printStackTrace();
         }
 
-        Renderer rend = null;
         if (reportFormat.equals("xml")) {
-            rend = new XMLRenderer();
+            Renderer rend = new XMLRenderer();
+            System.out.println(rend.render(ctx.getReport()));
+        } else if (reportFormat.equals("text")) {
+            TextRendererForIDEAJ special = new TextRendererForIDEAJ();
+            System.out.println(special.render(ctx.getReport(), args[3], args[4]));
         } else {
-            rend = new HTMLRenderer();
+            Renderer rend = new HTMLRenderer();
+            System.out.println(rend.render(ctx.getReport()));
         }
-        System.out.println(rend.render(ctx.getReport()));
     }
 }
