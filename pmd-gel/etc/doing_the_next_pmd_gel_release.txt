@@ -1,4 +1,5 @@
-Change version in build.xml to 0.1
-cvs tag r0_1 pmd-gel
+Change version in build.xml to 0.2
+cvs tag r0_2 pmd-gel
 ant release
-Submit some news saying "hey, new release!"
+upload zip file to sourceforge
+use readme.txt as release notes
