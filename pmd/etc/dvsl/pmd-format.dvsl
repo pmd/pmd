@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+#match("pmd")
+<document>
+  <properties>
+    <title>PMD Results</title>
+  </properties>
+
+  <body>
+    $context.applyTemplates()
+  </body>
+</document>
+#end
+
+#match("file")
+  <section name="$attrib.name">
+    <table>
+      <tr><td width="80%"><b>Violation</b></td>
+          <td><b>Line</b></td></tr>
+      $context.applyTemplates()
+    </table>
+  </section>
+#end
+
+#match("violation")
+  <tr><td width="80%">$node</td>
+      <td width="20%">$attrib.line</td></tr>
+#end

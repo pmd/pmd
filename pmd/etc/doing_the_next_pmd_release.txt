@@ -41,7 +41,8 @@ rm -rf ~/tmp/pmd
 mkdir -p ~/tmp/pmd/etc ~/tmp/pmd/lib
 cp run.bat run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.bat ~/tmp/pmd/etc
 cp ../lib/pmd-1.04.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd/lib
-cp -R ../xslt ../target/docs ~/tmp/pmd/
+cp -R xslt/ ~/tmp/pmd/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd
 zip -q -r ~/tmp/pmd-bin-1.04.zip ~/tmp/pmd/  // TODO need to add a -b in here
 
 Time to tag:

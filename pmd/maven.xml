@@ -32,7 +32,7 @@
 	    	  extension=".xml"
 	    	  includes="**/*.xml"
 		      basedir="${rulesets.dir}"
-		      style="./dvsl/rule-format.dvsl"
+		      style="./etc/dvsl/rule-format.dvsl"
 		      destdir="${maven.gen.docs}/rules">
     	</dvsl:dvsl>
   	</goal>

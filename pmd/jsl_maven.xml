@@ -32,7 +32,7 @@
           <doc:jsl
             input="${rulesets.dir}/basic.xml"
             output="target/xdocs/rules/basic.xml"
-            stylesheet="./dvsl/rule-format.jsl"
+            stylesheet=".etc/dvsl/rule-format.jsl"
             omitXmlDeclaration="true"
             outputMode="xml"
             prettyPrint="true"
