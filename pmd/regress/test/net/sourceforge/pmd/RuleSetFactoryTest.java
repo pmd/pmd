@@ -120,9 +120,7 @@ public class RuleSetFactoryTest extends TestCase {
     private static final String SINGLE_RULE_SET =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
-            "<description>" + PMD.EOL +
-            "testdesc" + PMD.EOL +
-            "</description>" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
             "<rule " + PMD.EOL +
             "name=\"MockRuleName\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +
@@ -132,8 +130,7 @@ public class RuleSetFactoryTest extends TestCase {
     private static final String MULTIPLE_RULE_SET =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
-            "<description>" + PMD.EOL +
-            "testdesc" + PMD.EOL + "</description>" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
             "<rule name=\"MockRuleName1\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL +
@@ -146,14 +143,11 @@ public class RuleSetFactoryTest extends TestCase {
     private static final String RULE_WITH_PROPERTIES =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
-            "<description>" + PMD.EOL +
-            "testdesc" + PMD.EOL +
-            "</description>" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
             "<rule name=\"MockRuleName\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL +
-            "<description>" + PMD.EOL + "testdesc2" + PMD.EOL +
-            "</description>" + PMD.EOL +
+            "<description>testdesc2</description>" + PMD.EOL +
             "<properties>" + PMD.EOL +
             "<property name=\"fooBoolean\" value=\"true\"/>" + PMD.EOL +
             "<property name=\"fooDouble\" value=\"1.0\" />" + PMD.EOL +
@@ -165,16 +159,12 @@ public class RuleSetFactoryTest extends TestCase {
     private static final String RULE_WITH_XPATH =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
-            "<description>" + PMD.EOL +
-            "testdesc" + PMD.EOL +
-            "</description>" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
             "<priority>3</priority>" + PMD.EOL +
             "<rule name=\"MockRuleName\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL +
-            "<description>" + PMD.EOL +
-            "testdesc2" + PMD.EOL +
-            "</description>" + PMD.EOL +
+            "<description>testdesc2</description>" + PMD.EOL +
             "<properties>" + PMD.EOL +
             "<property name=\"xpath\">" + PMD.EOL +
             "<value>" + PMD.EOL +
@@ -187,16 +177,12 @@ public class RuleSetFactoryTest extends TestCase {
     private static final String RULE_WITH_XPATH_AND_PLUGINNAME =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
-            "<description>" + PMD.EOL +
-            "testdesc" + PMD.EOL +
-            "</description>" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
             "<priority>3</priority>" + PMD.EOL +
             "<rule name=\"MockRuleName\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL +
-            "<description>" + PMD.EOL +
-            "testdesc2" + PMD.EOL +
-            "</description>" + PMD.EOL +
+            "<description>testdesc2</description>" + PMD.EOL +
             "<properties>" + PMD.EOL +
             "<property name=\"xpath\" pluginname=\"true\">" + PMD.EOL +
             "<value>" + PMD.EOL +
@@ -210,9 +196,7 @@ public class RuleSetFactoryTest extends TestCase {
     private static final String SINGLE_RULE_SET_WITH_PRIORITY =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
-            "<description>" + PMD.EOL +
-            "testdesc" + PMD.EOL +
-            "</description>" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
             "<rule " + PMD.EOL +
             "name=\"MockRuleName\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +

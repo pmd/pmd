@@ -44,16 +44,6 @@ public class XMLRendererTest extends TestCase {
 
         XMLRenderer renderer = new XMLRenderer();
         String rendered = renderer.render(report);
-
-        // <?xml version="1.0"?>
-        // <pmd>
-        //   <file name="testSingleReport">
-        //     <violation line="1" rule="RULE1">
-        // Rule1
-        //     </violation>
-        //   </file>
-        // </pmd>
-
         List expectedStrings = new ArrayList();
         expectedStrings.add("<pmd>");
         expectedStrings.add("<file name=\"testSingleReport\">");
@@ -72,19 +62,6 @@ public class XMLRendererTest extends TestCase {
         report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
 
         report.addRuleViolation(new RuleViolation(RULE2, 2, "Rule2", ctx));
-
-        // <?xml version="1.0"?>
-        // <pmd>
-        //   <file name="testSingleReport">
-        //     <violation line="1" rule="RULE1">
-        // Rule1
-        //     </violation>
-        //     <violation line="2" rule="RULE2">
-        // Rule2
-        //     </violation>
-        //   </file>
-        // </pmd>
-
         List expectedStrings = new ArrayList();
         expectedStrings.add("<pmd>");
         expectedStrings.add("<file name=\"testDoubleReport\">");
@@ -96,7 +73,6 @@ public class XMLRendererTest extends TestCase {
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
         expectedStrings.add("</pmd>");
-
         XMLRenderer renderer = new XMLRenderer();
         verifyPositions(renderer.render(report), expectedStrings);
     }
@@ -105,24 +81,8 @@ public class XMLRendererTest extends TestCase {
         Report report = new Report();
         ctx.setSourceCodeFilename("testTwoFiles_0");
         report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
-
         ctx.setSourceCodeFilename("testTwoFiles_1");
         report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
-
-        // <?xml version="1.0"?>
-        // <pmd>
-        //   <file name="testTwoFiles_0">
-        //     <violation line="1" rule="RULE1">
-        // Rule1
-        //     </violation>
-        //   </file>
-        //   <file name="testTwoFiles_1">
-        //     <violation line="1" rule="RULE1">
-        // Rule1
-        //     </violation>
-        //   </file>
-        // </pmd>
-
         List expectedStrings = new ArrayList();
         expectedStrings.add("<pmd>");
         expectedStrings.add("<file name=\"testTwoFiles_0\">");
@@ -136,7 +96,6 @@ public class XMLRendererTest extends TestCase {
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
         expectedStrings.add("</pmd>");
-
         XMLRenderer renderer = new XMLRenderer();
         verifyPositions(renderer.render(report), expectedStrings);
     }
@@ -151,20 +110,6 @@ public class XMLRendererTest extends TestCase {
 
         ctx.setSourceCodeFilename("testTwoFiles_0");
         report.addRuleViolation(new RuleViolation(RULE2, 2, "Rule2", ctx));
-
-        // <?xml version="1.0"?>
-        // <pmd>
-        //   <file name="testTwoFiles_0">
-        //     <violation line="1" rule="RULE1">
-        // Rule1
-        //     </violation>
-        //   </file>
-        //   <file name="testTwoFiles_1">
-        //     <violation line="1" rule="RULE1">
-        // Rule1
-        //     </violation>
-        //   </file>
-        // </pmd>
 
         List expectedStrings = new ArrayList();
         expectedStrings.add("<pmd>");
