@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
     <classpathentry kind="src" path="src/"/>
-    <classpathentry exported="true" kind="lib" path="pmd-eclipse.jar"/>
     <classpathentry kind="lib" path="lib/pmd-1.03.jar"/>
     <classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
     <classpathentry kind="var"
