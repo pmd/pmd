@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Mike Thome - rule suggestions</li>
             <li>Brian Ewins - a complete rewrite of CPD based on the Burrows-Wheeler transform</li>
             <li>Andrew Glover - the CPDTask, ExcessivePublicCountRule, CouplingBetweenObjectsRule, ExcessiveImportsRule, documentation tweaks</li>
             <li>Robert Leland - bug report</li>

@@ -1,5 +1,5 @@
 ????? - 1.05:
-Added new rule: ReturnFromFinallyBlock
+Added new rule: ReturnFromFinallyBlock, SimplifyBooleanExpressions
 Added a new Ant task for CPD; thanks to Andy Glover for the code.
 Added ability to specify a class name as a renderer on the command line or in the formatter "type" attribute of the Ant task.
 Brian Ewins completely rewrote CPD using a portion of the Burrows-Wheeler Transform - it's much, much, much faster now.
