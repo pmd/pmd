@@ -25,7 +25,6 @@
 </ul>
 <p>PMD has plugins for JDeveloper, Eclipse, JEdit, JBuilder, Omnicore's CodeGuide, NetBeans/Sun ONE Studio, IntelliJ IDEA, TextPad, Maven, Ant,
 Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>.</p>
-<p>Thanks to the <a href="http://cougaar.org/index.php?referrer=pmd">Cougaar</a> program for sponsoring PMD!</p>
   ]]>
   </description>
   <shortDescription>Java Static Analysis Tool</shortDescription>
@@ -62,7 +61,7 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
         <name>PMD development</name>
         <subscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
         <unsubscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
-        <archive>http://www.geocrawler.com/lists/3/SourceForge/23403/0/</archive>
+				<archive>http://sourceforge.net/mailarchive/forum.php?forum=pmd-devel</archive>
     </mailingList>
   </mailingLists>
 
@@ -154,12 +153,9 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
 				<email>nascif@users.sourceforge.net</email>
         <roles><role>Developer</role></roles>
 			</developer>
+	 </developers>
 
-
-   </developers>
-
-  <contributors>
-    </contributors>
+  <contributors></contributors>
 
   <!-- Need to mark these as compile-time/run-time -->
 
@@ -189,13 +185,6 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
       <dependency>
         <id>saxpath</id>
         <version>1.0-FCS</version>
-      </dependency>
-
-      <dependency>
-        <id>maven-pmd-plugin</id>
-        <groupId>maven</groupId>
-        <version>1.6</version>
-        <type>plugin</type>
       </dependency>
 
   </dependencies>
