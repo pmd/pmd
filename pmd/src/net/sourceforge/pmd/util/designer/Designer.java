@@ -3,22 +3,6 @@
  */
 package net.sourceforge.pmd.util.designer;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.XPath;
-
-import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -36,6 +20,42 @@ import java.awt.event.MouseListener;
 import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.jaxen.DocumentNavigator;
+
+import org.jaxen.BaseXPath;
+import org.jaxen.JaxenException;
+import org.jaxen.XPath;
 
 public class Designer implements ClipboardOwner {
 
@@ -221,17 +241,13 @@ public class Designer implements ClipboardOwner {
         return p;
     }
 
-    private JSmartPanel createCodeEditPanel() {
-        JPanel top = new JPanel();
-        top.setLayout(new BorderLayout());
-        JSmartPanel p = new JSmartPanel();
+    private JComponent createCodeEditPanel() {
         codeEditorPane = new CodeEditorTextPane();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
-        p.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
-        
+        //p.add(codeScrollPane);
         codeEditorPane.addMouseListener(codeEditPanelMouseListener);
         
-        return p;
+        return codeScrollPane;
     }
 
     private JPanel createXPathQueryPanel() {
