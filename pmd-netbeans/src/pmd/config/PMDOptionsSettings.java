@@ -38,19 +38,38 @@ import org.openide.util.NbBundle;
  */
 public class PMDOptionsSettings extends SystemOption {
 
-	 private static final long serialVersionUID = 8418202279282091070L;
+	/** The serialVersionUID. Don't change! */
+	private final static long serialVersionUID = 8418202279282091070L;
 
-	/** The constant for the rulesets property  */
+	/** 
+	 * The constant for the rulesets property 
+	 * @deprecated this property is not in use.
+	 */
 	public final static String PROP_RULESETS = "rulesets";
-	/** The constant for the rulesets property  */
+	
+	/** The constant for the rulesets property */
 	public final static String PROP_RULES = "rules";
+	
+	/** The default rules.*/
+	private static final String DEFAULT_RULES = 
+		"AvoidDuplicateLiterals, StringToString, StringInstantiation, JUnitStaticSuite, " +
+		"JUnitSpelling, ForLoopsMustUseBracesRule, IfElseStmtsMustUseBracesRule, " +
+		"WhileLoopsMustUseBracesRule, IfStmtsMustUseBraces, EmptyCatchBlock, EmptyIfStmt, " +
+		"EmptyWhileStmt, JumbledIncrementer, UnnecessaryConversionTemporaryRule, " + 
+		"OverrideBothEqualsAndHashcodeRule, EmptyTryBlock, EmptySwitchStatements, " +
+		"EmptyFinallyBlock, UnusedLocalVariable, UnusedPrivateField, UnusedFormalParameter, " +
+		"UnnecessaryConstructorRule, UnusedPrivateMethod, SwitchStmtsShouldHaveDefault, " + 
+		"SimplifyBooleanReturnsRule, LooseCouplingRule, AvoidDeeplyNestedIfStmts, " +
+		"AvoidReassigningParametersRule, OnlyOneReturn, UseSingletonRule, " +
+		"DontImportJavaLang, UnusedImports, DuplicateImports, ";
 
 	// No constructor please!
 
-	/** Sets the default rulesets and initializes the option  */
+	/** Sets the default rulesets and initializes the option */
 	protected void initialize() {
 		super.initialize();
-		setRulesets("");
+		setRulesets( "" );
+		setRules( DEFAULT_RULES );
 	}
 
 
@@ -85,44 +104,41 @@ public class PMDOptionsSettings extends SystemOption {
 	}
 
 
-	/**
-	 * Returns the rulesets property
-	 *
+	/** Returns the rulesets property
+	 * @deprecated not used anymore, use {@link #getRules}
 	 * @return the rulesets property
 	 */
 	public String getRulesets() {
 		return ( String )getProperty( PROP_RULESETS );
-
 	}
 
 
-	/**
-	 * Sets the rulesets property
-	 *
+	/** Sets the rulesets property
+	 * @deprecated not used anymore, use {@link #setRules}
 	 * @param rulesets the rulesets value to set
 	 */
 	public void setRulesets( String rulesets ) {
 		putProperty( PROP_RULESETS, rulesets, true );
 	}
-	
-		/**
+
+
+	/**
 	 * Returns the rulesets property
 	 *
 	 * @return the rulesets property
 	 */
 	public String getRules() {
 		return ( String )getProperty( PROP_RULES );
-
 	}
 
 
 	/**
 	 * Sets the rulesets property
 	 *
-	 * @param rulesets the rulesets value to set
+	 * @param rules The new rules value
 	 */
-	public void setRules( String rules) {
+	public void setRules( String rules ) {
 		putProperty( PROP_RULES, rules, true );
 	}
-	
+
 }

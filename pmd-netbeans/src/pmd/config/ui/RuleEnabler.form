@@ -55,7 +55,6 @@
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <Properties>
-            <Property name="toolTipText" type="java.lang.String" value="null"/>
             <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[270, 100]"/>
@@ -137,7 +136,6 @@
               <ComponentRef name="chosenList"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Chosen rules"/>
-            <Property name="horizontalAlignment" type="int" value="11"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -217,7 +215,6 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
-            <Property name="displayedMnemonic" type="int" value="73"/>
             <Property name="text" type="java.lang.String" value="Information"/>
           </Properties>
           <Constraints>
@@ -228,12 +225,10 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
-            <Property name="displayedMnemonic" type="int" value="69"/>
             <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="example"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Example"/>
-            <Property name="horizontalAlignment" type="int" value="11"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -302,11 +297,11 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
-        <Property name="displayedMnemonic" type="int" value="80"/>
         <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
           <ComponentRef name="jScrollPane5"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Properties"/>
+        <Property name="text" type="java.lang.String" value="View properties"/>
+        <Property name="toolTipText" type="java.lang.String" value="These are readonly properties, you have to edit the rulesets properties to change them. Consult http://pmd.sf.net for more information"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -316,6 +311,7 @@
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane5">
       <Properties>
+        <Property name="toolTipText" type="java.lang.String" value="These are readonly properties, you have to edit the rulesets properties to change them. Consult http://pmd.sf.net for more information"/>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[600, 50]"/>
         </Property>

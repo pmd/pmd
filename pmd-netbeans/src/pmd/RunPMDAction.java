@@ -56,8 +56,9 @@ import org.openide.util.actions.CookieAction;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
+import pmd.config.ConfigUtils;
 import pmd.config.PMDOptionsSettings;
-import pmd.config.ui.SelectedListModel;
+
 
 /**
  * Action that can always be invoked and work procedurally.
@@ -66,7 +67,7 @@ import pmd.config.ui.SelectedListModel;
  * @created 17. oktober 2002
  */
 public class RunPMDAction extends CookieAction {
-	
+
 	/** Indicates if any violations has been printed */
 	private boolean printed = false;
 
@@ -115,7 +116,7 @@ public class RunPMDAction extends CookieAction {
 	 * Returns the mode of this action
 	 *
 	 * @return Description of the Return Value
-	 * @see org.openide.util.actions.SystemAction#MODE_EXACTLY_ONE
+	 * @see org.openide.util.actions.CookieAction#MODE_ALL
 	 */
 	protected int mode() {
 		return MODE_ALL;
@@ -207,6 +208,9 @@ public class RunPMDAction extends CookieAction {
 			if( !printed ) {
 				io.getOut().println( "Everything ok", null );
 			}
+			else {
+				io.getOut().println( "Finished", null );
+			}
 
 		}
 		catch( IOException e ) {
@@ -224,16 +228,12 @@ public class RunPMDAction extends CookieAction {
 	 */
 	private static RuleSet constructRuleSets() {
 		RuleSet rules = new RuleSet();
-			
-			
-			
-			SelectedListModel.getSelectedListModelInstance().setData( PMDOptionsSettings.getDefault().getRules() );
-			List list = SelectedListModel.getSelectedListModelInstance().getData();
-			Iterator iterator = list.iterator();
-			while( iterator.hasNext() ) {
-				rules.addRule( (Rule)iterator.next() );
-			}
-		
+		List list = ConfigUtils.createRuleList( 
+			PMDOptionsSettings.getDefault().getRules() );
+		Iterator iterator = list.iterator();
+		while( iterator.hasNext() ) {
+			rules.addRule( ( Rule )iterator.next() );
+		}
 		return rules;
 	}
 

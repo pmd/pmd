@@ -27,11 +27,9 @@
 package pmd;
 
 /**
- * Contains a fault that pmd discovers @authorOle-Martin Mørk @created17.
- * oktober 2002
- *
+ * Contains a fault that pmd discovers
+ * @created 17.oktober 2002
  * @author Ole-Martin Mørk
- * @created 3. november 2002
  */
 public class Fault implements Comparable {
 

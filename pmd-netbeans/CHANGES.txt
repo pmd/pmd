@@ -1,3 +1,6 @@
+Version 0.6
+- New properties dialog. Makes it possible to select individual rules
+
 Version 0.5
 - Fixed bug 633432 pmd-netbeans can't change settings (netbeans) 
 - Fixed bug 634463 Problem with UnusedPrivateField (netbeans) 

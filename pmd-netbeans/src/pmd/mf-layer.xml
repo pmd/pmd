@@ -23,14 +23,22 @@ SystemFileSystem
 		</folder>
 	</folder>
 	<folder name="Actions">
-		<file name="pmd-RunPMDAction.instance">
-			<attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.Bundle"/>
-		</file>
+        <folder name="pmd-netbeans">
+            <file name="pmd-RunPMDAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.Bundle"/>
+            </file>
+        </folder>
 	</folder>
       <folder name="Editors">
     <folder name="AnnotationTypes">
       <file name="pmd-annotation.xml" url="resources/annotation.xml"/>
     </folder>
   </folder>
+      <folder name="Shortcuts">
+        <file name="CS-P.instance">
+	    <attr name="instanceClass" stringvalue="pmd.RunPMDAction"/>
+	</file>
+    </folder>
+
 
 </filesystem>

@@ -1,7 +1,28 @@
 /*
- *  ListModel.java
+ *  Copyright (c) 2002, Ole-Martin Mørk
+ *  All rights reserved.
  *
- *  Created on 14. november 2002, 21:26
+ *  Redistribution and use in source and binary forms, with or without modification,
+ *  are permitted provided that the following conditions are met:
+ *
+ *  - Redistributions of source code must retain the above copyright notice,
+ *  this list of conditions and the following disclaimer.
+ *
+ *  - Redistributions in binary form must reproduce the above copyright
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ *  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ *  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ *  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ *  DAMAGE.
  */
 package pmd.config.ui;
 
@@ -12,25 +33,27 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.AbstractListModel;
 
-
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
 /**
+ * The datamodel for the available rules list
  * @author ole martin mørk
  * @created 16. november 2002
  */
 public class AvailableListModel extends AbstractListModel {
+	/** The instance */	
 	private static AvailableListModel listmodel = new AvailableListModel();
+	/** The data in the list */	
 	private List list = new ArrayList();
 
 
 	/**
-	 * Gets the instance attribute of the AvailableListModel class
+	 * Gets the instance of the AvailableListModel class
 	 *
-	 * @return The instance value
+	 * @return The instance
 	 */
 	public static AvailableListModel getInstance() {
 		return listmodel;
@@ -44,18 +67,18 @@ public class AvailableListModel extends AbstractListModel {
 
 
 	/**
-	 * Gets the elementAt attribute of the AvailableListModel object
+	 * Gets the element at the specified index
 	 *
-	 * @param param Description of the Parameter
-	 * @return The elementAt value
+	 * @param index index of the list
+	 * @return The list element
 	 */
-	public Object getElementAt( int param ) {
-		return ( ( Rule )list.get( param ) );
+	public Object getElementAt( int index ) {
+		return ( ( Rule )list.get( index ) );
 	}
 
 
 	/**
-	 * Gets the size attribute of the AvailableListModel object
+	 * Gets the size of the list
 	 *
 	 * @return The size value
 	 */
@@ -65,7 +88,7 @@ public class AvailableListModel extends AbstractListModel {
 
 
 	/**
-	 * Sets the list attribute of the AvailableListModel object
+	 * Sets the list.
 	 *
 	 * @param list The new list value
 	 */
@@ -74,10 +97,8 @@ public class AvailableListModel extends AbstractListModel {
 	}
 
 
-	/**
-	 * Description of the Method
-	 *
-	 * @param o Description of the Parameter
+	/** Adds object <CODE>o</CODE> to the list
+	 * @param o The parameter to add to the list
 	 */
 	public void add( Object o ) {
 		if( !list.contains( o ) ) {
@@ -86,11 +107,10 @@ public class AvailableListModel extends AbstractListModel {
 		}
 	}
 
-
 	/**
-	 * Description of the Method
+	 * Removes <code>o</code> from the list
 	 *
-	 * @param o Description of the Parameter
+	 * @param o the object to remove
 	 */
 	public void remove( Object o ) {
 		int i = list.indexOf( o );
@@ -99,7 +119,7 @@ public class AvailableListModel extends AbstractListModel {
 	}
 
 
-	/** Description of the Method */
+	/** Removes all elements in the list */
 	public void removeAll() {
 		int i = list.size();
 		list.clear();
@@ -107,10 +127,8 @@ public class AvailableListModel extends AbstractListModel {
 	}
 
 
-	/**
-	 * Adds a feature to the All attribute of the AvailableListModel object
-	 *
-	 * @param coll The feature to be added to the All attribute
+	/** Adds all data in <CODE>coll</CODE> to the list
+	 * @param coll The collection containing Rule elements
 	 */
 	public void addAll( Collection coll ) {
 		int i = list.size();
@@ -119,15 +137,15 @@ public class AvailableListModel extends AbstractListModel {
 	}
 
 
-	/**
-	 * Gets the data attribute of the AvailableListModel object
-	 *
-	 * @return The data value
+	/** Returns the data for the list
+	 * @return The data
 	 */
 	public List getData() {
 		return list;
 	}
 
+
+	/** Resets the list */
 	public void refresh() {
 		list.clear();
 		try {

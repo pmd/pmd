@@ -1,22 +1,44 @@
 /*
- * Editor.java
+ *  Copyright (c) 2002, Ole-Martin Mørk
+ *  All rights reserved.
  *
- * Created on 18. november 2002, 21:19
+ *  Redistribution and use in source and binary forms, with or without modification,
+ *  are permitted provided that the following conditions are met:
+ *
+ *  - Redistributions of source code must retain the above copyright notice,
+ *  this list of conditions and the following disclaimer.
+ *
+ *  - Redistributions in binary form must reproduce the above copyright
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ *  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ *  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ *  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ *  DAMAGE.
  */
-
 package pmd.config.ui;
 
 import java.beans.PropertyEditorSupport;
 import javax.swing.JPanel;
 import net.sourceforge.pmd.Rule;
 
-/**
- *
- * @author  ole martin mørk
+/** The JPanel used to edit the Rule property
+ * @author ole martin mørk
  */
 public class RuleEnabler extends JPanel {
 
 	private final PropertyEditorSupport editor;
+	/** Creates a new editor
+	 * @param editor The object to be notified of changes in the property
+	 */	
 	public RuleEnabler( PropertyEditorSupport editor ) {
 		this.editor = editor;
 		initComponents();
@@ -67,8 +89,8 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         add(jLabel1, gridBagConstraints);
 
         jLabel2.setText("See http://pmd.sf.net for more information");
@@ -77,8 +99,8 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         add(jLabel2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -90,7 +112,6 @@ public class RuleEnabler extends JPanel {
 
         jPanel5.setLayout(new java.awt.GridBagLayout());
 
-        jScrollPane1.setToolTipText("null");
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(270, 100));
         availableList.setModel(AvailableListModel.getInstance());
@@ -155,21 +176,20 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 3);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 3);
         jPanel5.add(jLabel3, gridBagConstraints);
 
         jLabel4.setDisplayedMnemonic('C');
         jLabel4.setLabelFor(chosenList);
         jLabel4.setText("Chosen rules");
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 0);
         jPanel5.add(jLabel4, gridBagConstraints);
 
         chooseOne.setText(">");
@@ -183,8 +203,8 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(2, 1, 0, 1);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 1, 0, 1);
         jPanel5.add(chooseOne, gridBagConstraints);
 
         choseAll.setText(">>");
@@ -226,16 +246,16 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 1, 2, 1);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 1, 2, 1);
         jPanel5.add(removeAll, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.weighty = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         add(jPanel5, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -247,7 +267,6 @@ public class RuleEnabler extends JPanel {
 
         jPanel6.setLayout(new java.awt.GridBagLayout());
 
-        jLabel6.setDisplayedMnemonic('I');
         jLabel6.setText("Information");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -255,17 +274,15 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         jPanel6.add(jLabel6, gridBagConstraints);
 
-        jLabel5.setDisplayedMnemonic('E');
         jLabel5.setLabelFor(example);
         jLabel5.setText("Example");
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         jPanel6.add(jLabel5, gridBagConstraints);
 
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -279,10 +296,10 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 2);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 2);
         jPanel6.add(jScrollPane4, gridBagConstraints);
 
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -297,19 +314,19 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 0);
         jPanel6.add(jScrollPane2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         add(jPanel6, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -319,17 +336,18 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         add(bottomSeparator, gridBagConstraints);
 
-        jLabel7.setDisplayedMnemonic('P');
         jLabel7.setLabelFor(jScrollPane5);
-        jLabel7.setText("Properties");
+        jLabel7.setText("View properties");
+        jLabel7.setToolTipText("These are readonly properties, you have to edit the rulesets properties to change them. Consult http://pmd.sf.net for more information");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         add(jLabel7, gridBagConstraints);
 
+        jScrollPane5.setToolTipText("These are readonly properties, you have to edit the rulesets properties to change them. Consult http://pmd.sf.net for more information");
         jScrollPane5.setPreferredSize(new java.awt.Dimension(600, 50));
         jScrollPane5.setMinimumSize(new java.awt.Dimension(300, 50));
         properties.setModel(new PropertiesModel(null));
@@ -339,26 +357,35 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         add(jScrollPane5, gridBagConstraints);
 
     }//GEN-END:initComponents
 
+	/** Fired when the user clicks on the chosenList list
+	 * @param evt the event fired
+	 */	
 	private void chosenListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chosenListMouseClicked
 		if( evt.getClickCount() >= 2 ) {
 			removeOneActionPerformed( null );
 		}
 	}//GEN-LAST:event_chosenListMouseClicked
 
+	/** Fired when the user clicks on the availableList list
+	 * @param evt the event fired
+	 */	
 	private void availableListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableListMouseClicked
 		if( evt.getClickCount() >= 2 ) {
 			chooseOneActionPerformed( null );
 		}
 	}//GEN-LAST:event_availableListMouseClicked
 
+	/** Called when the user selects a value in the chosenList
+	 * @param evt the event fired
+	 */	
 	private void chosenListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_chosenListValueChanged
 		Rule rule =  (Rule)chosenList.getSelectedValue();
 		example.setText( rule.getExample().trim());
@@ -366,6 +393,9 @@ public class RuleEnabler extends JPanel {
 		properties.setModel( new PropertiesModel( rule ) );
 	}//GEN-LAST:event_chosenListValueChanged
 
+	/** Called when the user selects a value in the availableList
+	 * @param evt the event fired
+	 */	
 	private void availableListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_availableListValueChanged
 		Rule rule =  (Rule)availableList.getSelectedValue();
 		example.setText( rule.getExample().trim() );
@@ -373,6 +403,9 @@ public class RuleEnabler extends JPanel {
 		properties.setModel( new PropertiesModel( rule ) );
 	}//GEN-LAST:event_availableListValueChanged
 
+	/** Called when the user clicks on the removeAll button
+	 * @param evt the event fired
+	 */	
 	private void removeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllActionPerformed
 		AvailableListModel.getInstance().addAll( SelectedListModel.getSelectedListModelInstance().getData() );
 		SelectedListModel.getSelectedListModelInstance().removeAll();
@@ -380,6 +413,9 @@ public class RuleEnabler extends JPanel {
 
 	}//GEN-LAST:event_removeAllActionPerformed
 
+	/** Called when the user clicks the removeOne button
+	 * @param evt the event fired
+	 */	
 	private void removeOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeOneActionPerformed
 		int index = chosenList.getSelectedIndex();
 		Object object[] = chosenList.getSelectedValues();
@@ -400,12 +436,18 @@ public class RuleEnabler extends JPanel {
 		
 	}//GEN-LAST:event_removeOneActionPerformed
 
+	/** Called when the user clicks on chooseAll button
+	 * @param evt the event fired
+	 */	
 	private void choseAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choseAllActionPerformed
 		SelectedListModel.getSelectedListModelInstance().addAll( AvailableListModel.getInstance().getData() );
 		AvailableListModel.getInstance().removeAll();
 		editor.firePropertyChange();
 	}//GEN-LAST:event_choseAllActionPerformed
 
+	/** Called when the user clicks on chooseOne button
+	 * @param evt the event fired
+	 */	
 	private void chooseOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseOneActionPerformed
 		int index = availableList.getSelectedIndex();
 		Object object[] = availableList.getSelectedValues();
@@ -444,9 +486,9 @@ public class RuleEnabler extends JPanel {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JSeparator middleSeparator;
     private javax.swing.JEditorPane information;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JSeparator middleSeparator;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel5;

@@ -10,7 +10,6 @@ the directory where you downloaded pmd-netbeans and choose the file pmd.nbm.
 Press Next, accept the license and choose to include the pmd module. Press 
 Finish, restart the IDE and you're done :)
 
-
 ------------------------
 USE
 ------------------------
@@ -25,5 +24,4 @@ OPTIONS
 ------------------------
 
 Go to Options/IDE Configuration/Server And External Tool Settings/PMD Settings
-to choose which rulesets to use. Go to the PMD documentation to learn more about
-rulesets.
+to choose which rules to use. 
