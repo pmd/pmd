@@ -128,25 +128,29 @@ public class CyclomaticComplexityRule extends AbstractRule
     {
         m_entryStack.push(new Entry(node));
         super.visit(node, data);
+            Entry classEntry = (Entry) m_entryStack.pop();
+            double decisionPoints = (double) classEntry.m_decisionPoints;
+            double methodCount = (double) classEntry.m_methodCount;
+            int complexityAverage = (int) (Math.rint(decisionPoints / methodCount));
 
-        // The {0} "{1}" has a cyclomatic complexity of {2}.
-        Entry classEntry = (Entry) m_entryStack.pop();
-        double decisionPoints = (double) classEntry.m_decisionPoints;
-        double methodCount = (double) classEntry.m_methodCount;
-        int complexityAverage = (int) (Math.rint(decisionPoints / methodCount));
-        RuleContext ruleContext = (RuleContext) data;
-        String template = getMessage();
-        String className = node.getImage();
-        String complexityHighest = String.valueOf(classEntry.m_highestDecisionPoints);
-        String complexity = String.valueOf(complexityAverage)
-                          + " (Highest = "
-                          + complexityHighest
-                          + ")";
-        String[] args = {"class", className, complexity};
-        String message = MessageFormat.format(template, args);
-        int lineNumber = node.getBeginLine();
-        RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
-        ruleContext.getReport().addRuleViolation(ruleViolation);
+        if ((complexityAverage >= getIntProperty("reportLevel")) ||
+            (classEntry.m_highestDecisionPoints >= getIntProperty("reportLevel")))
+        {
+            // The {0} "{1}" has a cyclomatic complexity of {2}.
+            RuleContext ruleContext = (RuleContext) data;
+            String template = getMessage();
+            String className = node.getImage();
+            String complexityHighest = String.valueOf(classEntry.m_highestDecisionPoints);
+            String complexity = String.valueOf(complexityAverage)
+                              + " (Highest = "
+                              + complexityHighest
+                              + ")";
+            String[] args = {"class", className, complexity};
+            String message = MessageFormat.format(template, args);
+            int lineNumber = node.getBeginLine();
+            RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
+            ruleContext.getReport().addRuleViolation(ruleViolation);
+        }
 
         return data;
     }
@@ -199,16 +203,19 @@ public class CyclomaticComplexityRule extends AbstractRule
             }
         }
 
-        // The {0} "{1}" has a cyclomatic complexity of {2}.
-        RuleContext ruleContext = (RuleContext) data;
-        String template = getMessage();
-        String methodName = (methodDeclarator == null) ? "" : methodDeclarator.getImage();
-        String complexity = String.valueOf(methodEntry.m_decisionPoints);
-        String[] args = {"method", methodName, complexity};
-        String message = MessageFormat.format(template, args);
-        int lineNumber = node.getBeginLine();
-        RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
-        ruleContext.getReport().addRuleViolation(ruleViolation);
+        if (methodEntry.m_decisionPoints >= getIntProperty("reportLevel"))
+        {
+            // The {0} "{1}" has a cyclomatic complexity of {2}.
+            RuleContext ruleContext = (RuleContext) data;
+            String template = getMessage();
+            String methodName = (methodDeclarator == null) ? "" : methodDeclarator.getImage();
+            String complexity = String.valueOf(methodEntry.m_decisionPoints);
+            String[] args = {"method", methodName, complexity};
+            String message = MessageFormat.format(template, args);
+            int lineNumber = node.getBeginLine();
+            RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
+            ruleContext.getReport().addRuleViolation(ruleViolation);
+        }
 
         return data;
     }
