@@ -4,7 +4,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class ForLoopsMustUseBracesRuleTest extends RuleTst {
+public class ForLoopsMustUseBracesRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
@@ -12,20 +12,15 @@ public class ForLoopsMustUseBracesRuleTest extends RuleTst {
         rule = new XPathRule();
         rule.addProperty("xpath", "//ForStatement[not(Statement/Block)]");
     }
-    public void test1() throws Throwable {
-        runTestFromString(TEST1,1, rule);
-    }
-    public void test2() throws Throwable {
-        runTestFromString(TEST2,0, rule);
-    }
-    public void test3() throws Throwable {
-        runTestFromString(TEST3,1, rule);
-    }
-    public void test4() throws Throwable {
-        runTestFromString(TEST4,1, rule);
-    }
-    public void test5() throws Throwable {
-        runTestFromString(TEST5,1, rule);
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "simple failure case", 1, rule),
+           new TestDescriptor(TEST2, "ok", 0, rule),
+           new TestDescriptor(TEST3, "", 1, rule),
+           new TestDescriptor(TEST4, "", 1, rule),
+           new TestDescriptor(TEST5, "", 1, rule),
+       });
     }
 
     private static final String TEST1 =
@@ -50,7 +45,6 @@ public class ForLoopsMustUseBracesRuleTest extends RuleTst {
     " public void foo() {   " + CPD.EOL +
     "  for (int i=0; i<42;) " + CPD.EOL +
     "       foo();" + CPD.EOL +
-    "  " + CPD.EOL +
     " }" + CPD.EOL +
     "}";
 
@@ -59,7 +53,6 @@ public class ForLoopsMustUseBracesRuleTest extends RuleTst {
     " public void foo() {   " + CPD.EOL +
     "  for (int i=0;;) " + CPD.EOL +
     "       foo();" + CPD.EOL +
-    "  " + CPD.EOL +
     " }" + CPD.EOL +
     "}";
 
@@ -68,7 +61,6 @@ public class ForLoopsMustUseBracesRuleTest extends RuleTst {
     " public void foo() {   " + CPD.EOL +
     "  for (;;) " + CPD.EOL +
     "       foo();" + CPD.EOL +
-    "  " + CPD.EOL +
     " }" + CPD.EOL +
     "}";
 }
