@@ -16,5 +16,12 @@
       <item name="Similar Projects" href="/similar-projects.html" />
       <item name="Credits" href="/credits.html" />
     </menu>
+    <menu name="Rule Sets">
+      <item name="Basic Rules" href="/rules/basic.html" />
+      <item name="Unused Code" href="/rules/unusedcode.html" />
+      <item name="Design Patterns" href="/rules/design.html" />
+      <item name="Cougaar Development" href="/rules/cougaar.html" />
+      <item name="TIC Build" href="/rules/ticbuild.html" />
+    </menu>
   </body>
 </project>
