@@ -15,8 +15,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/03/17 23:32:05  phherlin
- * minor cleaning
+ * Revision 1.3  2003/03/18 23:28:36  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class CPDVisitor implements IResourceVisitor {

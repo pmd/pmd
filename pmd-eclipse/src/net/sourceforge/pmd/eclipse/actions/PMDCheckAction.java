@@ -28,8 +28,8 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/03/18 23:24:25  phherlin
- * [Bug 686012] Adding a progress indicator and executing PMD on a secondary thread
+ * Revision 1.3  2003/03/18 23:28:36  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class PMDCheckAction implements IObjectActionDelegate {

@@ -21,8 +21,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.6  2003/03/17 23:38:04  phherlin
- * minor cleaning
+ * Revision 1.7  2003/03/18 23:28:36  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class CPDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {

@@ -27,9 +27,8 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2003/03/17 23:36:34  phherlin
- * first version
- * adding project property page
+ * Revision 1.2  2003/03/18 23:28:37  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class PMDPropertyPage extends PropertyPage {

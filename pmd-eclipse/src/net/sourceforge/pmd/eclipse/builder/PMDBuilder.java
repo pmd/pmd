@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/03/18 23:25:47  phherlin
- * When build auto, if delta resource is empty, then perform a full build
+ * Revision 1.3  2003/03/18 23:28:37  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class PMDBuilder extends IncrementalProjectBuilder {

@@ -24,8 +24,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2003/03/17 23:35:25  phherlin
- * first version
+ * Revision 1.2  2003/03/18 23:28:36  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class PMDProcessor {

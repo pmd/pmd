@@ -13,9 +13,8 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2003/03/17 23:35:59  phherlin
- * first version
- * adding nature and incremental builder
+ * Revision 1.2  2003/03/18 23:28:37  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class PMDNature implements IProjectNature {

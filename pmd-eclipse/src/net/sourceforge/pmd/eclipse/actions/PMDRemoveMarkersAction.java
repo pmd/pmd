@@ -25,8 +25,8 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2003/03/17 23:29:23  phherlin
- * new remove marker action
+ * Revision 1.2  2003/03/18 23:28:36  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActionDelegate {

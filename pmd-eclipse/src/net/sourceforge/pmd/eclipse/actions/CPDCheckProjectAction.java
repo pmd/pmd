@@ -32,8 +32,8 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2003/03/17 23:31:26  phherlin
- * minor cleaning
+ * Revision 1.4  2003/03/18 23:28:36  phherlin
+ * *** keyword substitution change ***
  *
  */
 public class CPDCheckProjectAction implements IObjectActionDelegate, IRunnableWithProgress {
