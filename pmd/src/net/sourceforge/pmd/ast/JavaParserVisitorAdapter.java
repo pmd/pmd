@@ -5,7 +5,7 @@
  */
 package net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.RuleContext;
+
 
 
 public class JavaParserVisitorAdapter implements JavaParserVisitor {

@@ -4,12 +4,7 @@ import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
 import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.PrintJob;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;

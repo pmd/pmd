@@ -49,12 +49,15 @@ import java.util.Random;
  * feel free to change it and tighten the deltas.
  */
 public class StatisticalRuleTest extends TestCase {
-    private DataPoint points[] = new DataPoint[1000];
+
+    private static final int POINTS = 100;
+
+    private DataPoint points[] = new DataPoint[POINTS];
     private MockStatisticalRule IUT = null;
     private String testName = null;
     private Random random = new Random();
 
-    public static final double MAX_MINIMUM = 1000.0;
+    public static final double MAX_MINIMUM = POINTS;
     public static final double NO_MINIMUM = -1.0;
     public static final double MAX_SIGMA = 5.0;
     public static final double NO_SIGMA = -1.0;
@@ -62,9 +65,9 @@ public class StatisticalRuleTest extends TestCase {
     public static final int NO_TOPSCORE = -1;
 
 
-    public static final double MEAN = 499.5;
-    public static final double SIGMA = 288.6750;
-    public static final int NUM_TESTS = 10;
+    public static final double MEAN = 49.5;
+    public static final double SIGMA = 28.86750;
+    public static final int NUM_TESTS = 1;
 
     public static final double DELTA = 0.005;
 
@@ -76,7 +79,7 @@ public class StatisticalRuleTest extends TestCase {
     public void setUp() {
         IUT = new MockStatisticalRule();
         if (testName.endsWith("0")) {
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
                 points[i].setLineNumber(i);
@@ -85,7 +88,7 @@ public class StatisticalRuleTest extends TestCase {
                 IUT.addDataPoint(points[i]);
             }
         } else if (testName.endsWith("1")) {
-            for (int i = 999; i >= 0; i--) {
+            for (int i = POINTS-1; i >= 0; i--) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
                 points[i].setLineNumber(i);
@@ -95,7 +98,7 @@ public class StatisticalRuleTest extends TestCase {
             }
         } else {
             List lPoints = new ArrayList();
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < POINTS; i++) {
                 DataPoint point = new DataPoint();
                 point.setScore(1.0 * i);
                 point.setLineNumber(i);
@@ -105,7 +108,7 @@ public class StatisticalRuleTest extends TestCase {
             }
 
             Collections.shuffle(lPoints);
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < POINTS; i++) {
                 IUT.addDataPoint((DataPoint) lPoints.get(i));
             }
         }
@@ -129,7 +132,7 @@ public class StatisticalRuleTest extends TestCase {
         assertEquals("test.net.sourceforge.pmd.stat.MockStatisticalRule", m.getMetricName());
 
         assertEquals(0.0, m.getLowValue(), 0.05);
-        assertEquals(999.0, m.getHighValue(), 0.05);
+        assertEquals(POINTS -1.0, m.getHighValue(), 0.05);
         assertEquals(MEAN, m.getAverage(), 0.05);
         assertEquals(SIGMA, m.getStandardDeviation(), 0.05);
     }
@@ -147,7 +150,7 @@ public class StatisticalRuleTest extends TestCase {
      * is greater than the parameter.
      */
     public double randomSigma(int minimum) {
-        double minSigma = ((999 - minimum) - MEAN) / SIGMA;
+        double minSigma = ((POINTS -1 - minimum) - MEAN) / SIGMA;
 
         if ((minSigma <= 0) || (minSigma > 2))
             return randomSigma();
@@ -162,16 +165,16 @@ public class StatisticalRuleTest extends TestCase {
     public int expectedSigma(double sigma) {
         long expectedMin = Math.round(MEAN + (sigma * SIGMA));
 
-        if ((999 - expectedMin) < 0)
+        if (((POINTS -1) - expectedMin) < 0)
             return 0;
-        return 999 - (int) expectedMin;
+        return (POINTS -1) - (int) expectedMin;
     }
 
     /**
      * This generates a random minimum value for testing.
      */
     public double randomMinimum() {
-        return random.nextDouble() * 999;
+        return random.nextDouble() * (POINTS -1);
     }
 
     /**
@@ -179,7 +182,7 @@ public class StatisticalRuleTest extends TestCase {
      * results would be returned.
      */
     public double randomMinimum(int minimum) {
-        double diffTarget = 1.0 * (999 - minimum);
+        double diffTarget = 1.0 * (POINTS -1 - minimum);
         return (random.nextDouble() * minimum) + diffTarget;
     }
 
@@ -191,13 +194,13 @@ public class StatisticalRuleTest extends TestCase {
      */
     public int expectedMinimum(double minimum) {
         Double d = new Double(minimum);
-        return 999 - d.intValue();
+        return POINTS -1 - d.intValue();
     }
 
     public void testExpectedMinimum() {
-        for (int i = 0; i < 999; i++) {
-            assertEquals("Integer Min", 999 - i, expectedMinimum(i * 1.0));
-            assertEquals("Double Min", 999 - i, expectedMinimum((i * 1.0) + 0.5));
+        for (int i = 0; i < POINTS -1; i++) {
+            assertEquals("Integer Min", POINTS -1 - i, expectedMinimum(i * 1.0));
+            assertEquals("Double Min", POINTS -1 - i, expectedMinimum((i * 1.0) + 0.5));
         }
     }
 
@@ -205,7 +208,7 @@ public class StatisticalRuleTest extends TestCase {
      * This returns a random value for Top Score.
      */
     public int randomTopScore() {
-        return random.nextInt(999);
+        return random.nextInt(POINTS -1);
     }
 
     /**
@@ -232,11 +235,11 @@ public class StatisticalRuleTest extends TestCase {
         StatisticalRule IUT = new MockStatisticalRule();
 
         DataPoint point = new DataPoint();
-        point.setScore(1001.0);
-        point.setLineNumber(1001);
+        point.setScore(POINTS + 1.0);
+        point.setLineNumber(POINTS + 1);
         point.setMessage("SingleDataPoint");
 
-        IUT.addProperty("minimum", "1000");
+        IUT.addProperty("minimum", Integer.toString(POINTS));
 
         IUT.addDataPoint(point);
 

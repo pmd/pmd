@@ -5,14 +5,11 @@ import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
 import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
 import net.sourceforge.pmd.swingui.event.StatusBarEvent;
 
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JTree;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import java.awt.Component;
+import java.awt.*;
 import java.io.File;
 
 /**

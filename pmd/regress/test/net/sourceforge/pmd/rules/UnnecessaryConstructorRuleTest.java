@@ -5,23 +5,31 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.UnnecessaryConstructorRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 
 public class UnnecessaryConstructorRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//ConstructorDeclaration[1][position() = last()][@Public='true'][not(FormalParameters/*)][not(BlockStatement)]");
+    }
+
     public void test1() throws Throwable {
-        super.runTest("UnnecessaryConstructor1.java", 1, new UnnecessaryConstructorRule());
+        runTest("UnnecessaryConstructor1.java", 1, rule);
     }
 
     public void testPrivate() throws Throwable {
-        super.runTest("UnnecessaryConstructor2.java", 0, new UnnecessaryConstructorRule());
+        runTest("UnnecessaryConstructor2.java", 0, rule);
     }
 
     public void testHasArgs() throws Throwable {
-        super.runTest("UnnecessaryConstructor3.java", 0, new UnnecessaryConstructorRule());
+        runTest("UnnecessaryConstructor3.java", 0, rule);
     }
 
     public void testHasBody() throws Throwable {
-        super.runTest("UnnecessaryConstructor4.java", 0, new UnnecessaryConstructorRule());
+        runTest("UnnecessaryConstructor4.java", 0, rule);
     }
 }

@@ -5,16 +5,20 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.rules.EmptyWhileStmtRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 
 public class EmptyWhileStmtRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//WhileStatement/Statement/Block[count(*) = 0]");
+    }
+
     public void testEmptyWhileStmtRule() throws Throwable {
-        Report report = process("EmptyWhileStmtRule.java", new EmptyWhileStmtRule());
-        assertEquals(1, report.size());
-        assertEquals(new EmptyWhileStmtRule(), ((RuleViolation) report.iterator().next()).getRule());
+        runTest("EmptyWhileStmtRule.java", 1, rule);
     }
 
 

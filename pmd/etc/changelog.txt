@@ -3,6 +3,7 @@ Added new rules: ConstructorCallsOverridableMethodRule, AtLeastOneConstructorRul
 The Ant task has been updated; if you set "verbose=true" full stacktraces are printed.  Thx to Paul Roebuck for the suggestion.
 Moved JUnit rules into their own package - "net.sourceforge.pmd.rules.junit".
 Incorporated new ResourceLoader; thanks to Dave Fuller
+Incorporated new XPath-based rule definitions; thanks to Dan Sheppard for the excellent work.
 Fixed bug 697187 - Problem with nested ifs
 Fixed bug 699287 - Grammar bug; good catch by David Whitmore
 

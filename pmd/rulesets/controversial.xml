@@ -10,11 +10,14 @@ most people really dislike :-)
 
     <rule name="UnnecessaryConstructorRule"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
-          class="net.sourceforge.pmd.rules.UnnecessaryConstructorRule">
+          class="net.sourceforge.pmd.rules.XPathRule">
       <description>
   Unnecessary constructor detects when a constructor is not necessary; i.e., when there's only one constructor,
   it's public, has an empty body, and takes no arguments.
       </description>
+        <properties>
+            <property name="xpath" value="//ConstructorDeclaration[1][position() = last()][@Public='true'][not(FormalParameters/*)][not(BlockStatement)]"/>
+        </properties>
         <priority>3</priority>
       <example>
   <![CDATA[
@@ -78,15 +81,18 @@ most people really dislike :-)
 
     <rule name="UnusedModifier"
          message="Unused modifiers are, well, unused"
-         class="net.sourceforge.pmd.rules.UnusedModifierRule">
+         class="net.sourceforge.pmd.rules.XPathRule">
      <description>
      Unused modifiers are, well, unused.
      </description>
+        <properties>
+            <property name="xpath" value="//InterfaceDeclaration//MethodDeclaration[@Public='true' or @Abstract = 'true']"/>
+        </properties>
         <priority>3</priority>
      <example>
  <![CDATA[
 public interface Foo {
-public abstract void bar(); // abstract compiles, but is useless
+ public abstract void bar(); // both abstract and public are ignored by the compiler
 }
  ]]>
      </example>

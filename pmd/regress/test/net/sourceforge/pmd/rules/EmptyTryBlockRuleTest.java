@@ -5,27 +5,28 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.rules.EmptyTryBlockRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 
 public class EmptyTryBlockRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//TryStatement/Block[1][count(*) = 0]");
+    }
+
     public void testEmptyTryBlock1() throws Throwable {
-        Report report = process("EmptyTryBlock1.java", new EmptyTryBlockRule());
-        assertEquals(1, report.size());
-        assertEquals(new EmptyTryBlockRule(), ((RuleViolation) report.iterator().next()).getRule());
+        runTest("EmptyTryBlock1.java", 1, rule);
     }
 
     public void testEmptyTryBlock2() throws Throwable {
-        Report report = process("EmptyTryBlock2.java", new EmptyTryBlockRule());
-        assertEquals(1, report.size());
-        assertEquals(new EmptyTryBlockRule(), ((RuleViolation) report.iterator().next()).getRule());
+        runTest("EmptyTryBlock2.java", 1, rule);
     }
 
     public void testEmptyTryBlock3() throws Throwable {
-        Report report = process("EmptyTryBlock3.java", new EmptyTryBlockRule());
-        assertTrue(report.isEmpty());
+        runTest("EmptyTryBlock3.java", 0, rule);
     }
 
 }

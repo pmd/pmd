@@ -1,18 +1,28 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.ForLoopShouldBeWhileLoopRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 
 public class ForLoopShouldBeWhileLoopRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty(
+            "xpath",
+            "//ForStatement[count(*) > 1][not(ForInit)][not(ForUpdate)]");
+    }
+
     public void testSimple() throws Throwable {
-        super.runTest("ForLoopShouldBeWhileLoop1.java", 1, new ForLoopShouldBeWhileLoopRule());
+        runTest("ForLoopShouldBeWhileLoop1.java", 1, rule);
     }
 
     public void testOK() throws Throwable {
-        super.runTest("ForLoopShouldBeWhileLoop2.java", 0, new ForLoopShouldBeWhileLoopRule());
+        runTest("ForLoopShouldBeWhileLoop2.java", 0, rule);
     }
 
     public void testForSemicolonSemicolon() throws Throwable {
-        super.runTest("ForLoopShouldBeWhileLoop3.java", 0, new ForLoopShouldBeWhileLoopRule());
+        runTest("ForLoopShouldBeWhileLoop3.java", 0, rule);
     }
 }

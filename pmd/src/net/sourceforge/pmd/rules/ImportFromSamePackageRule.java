@@ -7,10 +7,10 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
 public class ImportFromSamePackageRule extends AbstractRule {
 

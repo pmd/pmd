@@ -85,10 +85,13 @@ public class Foo {
 
   <rule name="SwitchStmtsShouldHaveDefault"
         message="Switch statements should have a default label"
-        class="net.sourceforge.pmd.rules.SwitchStmtsShouldHaveDefaultRule">
+        class="net.sourceforge.pmd.rules.XPathRule">
     <description>
     Switch statements should have a default label.
     </description>
+      <properties>
+          <property name="xpath" value="//SwitchStatement[not(SwitchLabel[count(*) = 0])]"/>
+      </properties>
       <priority>3</priority>
 
     <example>
