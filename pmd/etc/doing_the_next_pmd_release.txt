@@ -17,6 +17,7 @@ ant pmd
 
 cd ..
 ./docs all
+cd etc
 
 Prepare binary release:
 rm -rf ~/tmp/pmd-1.3
