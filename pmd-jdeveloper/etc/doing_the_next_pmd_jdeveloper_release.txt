@@ -10,7 +10,7 @@ TESTS:
 
 Create the src release:
 cd ~/data/pmd/
-cvs -q rtag -D tomorrow "pmd_jdeveloper_release_0_8" pmd-jdeveloper
+cvs -q tag -D tomorrow "pmd_jdeveloper_release_0_8" pmd-jdeveloper
 rm -rf ~/tmp/pmd-jdeveloper
 mkdir -p ~/tmp/pmd-jdeveloper
 cvs -q export -d tmp -r pmd_jdeveloper_release_0_8 pmd-jdeveloper
