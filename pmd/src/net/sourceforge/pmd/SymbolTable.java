@@ -10,7 +10,7 @@ import java.util.*;
 public class SymbolTable {
 
     private SymbolTable parent;
-    private Set symbols = new HashSet();
+    private Set unusedSymbols = new HashSet();
 
     public SymbolTable() {}
 
@@ -23,25 +23,25 @@ public class SymbolTable {
     }
 
     public void add(Symbol symbol) {
-        if (symbols.contains(symbol)) {
+        if (unusedSymbols.contains(symbol)) {
             throw new RuntimeException(symbol + " is already in the symbol table");
         }
-        symbols.add(symbol);
+        unusedSymbols.add(symbol);
     }
 
     public void recordPossibleUsageOf(Symbol symbol) {
-        if (!symbols.contains(symbol) && parent != null) {
+        if (!unusedSymbols.contains(symbol) && parent != null) {
             parent.recordPossibleUsageOf(symbol);
             return;
         }
-        if (!symbols.contains(symbol) ) {
+        if (!unusedSymbols.contains(symbol) ) {
             return;
         }
-        symbols.remove(symbol);
+        unusedSymbols.remove(symbol);
     }
 
     public Iterator getUnusedSymbols() {
-        return symbols.iterator();
+        return unusedSymbols.iterator();
     }
 
 }
