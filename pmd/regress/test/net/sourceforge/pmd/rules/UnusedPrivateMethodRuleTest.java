@@ -27,7 +27,8 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST5, "calling private method after instantiating new copy of myself", 0, rule),
            new TestDescriptor(TEST6, "calling private method using 'this' modifier", 0, rule),
            new TestDescriptor(TEST7, "simple unused private static method", 1, rule),
-           new TestDescriptor(TEST8, "readResolve/writeReplace/etc are OK", 0, rule)
+           new TestDescriptor(TEST8, "readResolve/writeReplace/etc are OK", 0, rule),
+           new TestDescriptor(BUG_1038229, "BUG 1038229", 1, rule)
        });
     }
 
@@ -95,5 +96,12 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
     " private void readObject() {}" + PMD.EOL +
     " private void writeObject() {}" + PMD.EOL +
     "}";
+
+    private static final String BUG_1038229 =
+        "public class Foo {" + PMD.EOL +
+        " private void bar() {" + PMD.EOL +
+        " bar(); " + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
 
 }

@@ -3,12 +3,18 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTClassBody;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
@@ -17,14 +23,9 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 public class UnusedPrivateMethodRule extends AbstractRule {
 
-    private Set privateMethodNodes = new HashSet();
+    private final Set privateMethodNodes = new HashSet();
 
     // TODO - What I need is a Visitor that does a breadth first search
     private boolean trollingForDeclarations;
@@ -100,7 +101,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
             if (node.jjtGetNumChildren() > 0) {
                 ASTArguments args = (ASTArguments) node.jjtGetChild(0);
-                removeIfUsed(node.getImage(), args.getArgumentCount());
+                removeIfUsed(node, node.getImage(), args.getArgumentCount());
                 return super.visit(node, data);
             }
             // to handle this.foo()
@@ -137,7 +138,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
                 return super.visit(node, data);
             }
             ASTArguments args = (ASTArguments) actualMethodNode.jjtGetChild(0);
-            removeIfUsed(node.getImage(), args.getArgumentCount());
+            removeIfUsed(node, node.getImage(), args.getArgumentCount());
             // what about Outer.this.foo()?
         }
         return super.visit(node, data);
@@ -155,28 +156,44 @@ public class UnusedPrivateMethodRule extends AbstractRule {
                 ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primaryExpression.jjtGetChild(1);
                 if (primarySuffix.jjtGetNumChildren() > 0 && (primarySuffix.jjtGetChild(0) instanceof ASTArguments)) {
                     ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
-                    removeIfUsed(node.getImage(), arguments.getArgumentCount());
+                    removeIfUsed(node, node.getImage(), arguments.getArgumentCount());
                 }
             }
         }
         return super.visit(node, data);
     }
 
-    private void removeIfUsed(String nodeImage, int args) {
+    private final void removeIfUsed(SimpleNode node, String nodeImage, int args) {
         String img = (nodeImage.indexOf('.') == -1) ? nodeImage : nodeImage.substring(nodeImage.indexOf('.') + 1, nodeImage.length());
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
             ASTMethodDeclarator methodNode = (ASTMethodDeclarator) i.next();
             // are name and number of parameters the same?
-            if (methodNode.getImage().equals(img) && methodNode.getParameterCount() == args) {
+            if (methodNode.getImage().equals(img) && methodNode.getParameterCount() == args
+                    && !methodCalledFromItself(node, nodeImage)) {
                 // should check parameter types here, this misses some unused methods
                 i.remove();
             }
         }
     }
 
-    private void harvestUnused(RuleContext ctx) {
+    /**
+     * This checks that the nodeImage is not the name of the enclosing method
+     */
+    private final boolean methodCalledFromItself(SimpleNode node, String nodeImage) {
+        final ASTMethodDeclaration md = (ASTMethodDeclaration) node.getFirstParentOfType(ASTMethodDeclaration.class);
+        if (md!=null) {
+            final ASTMethodDeclarator dcl = (ASTMethodDeclarator) md.getFirstChildOfType(ASTMethodDeclarator.class);
+            if (dcl!=null && dcl.getImage()!=null&&dcl.getImage().equals(nodeImage)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private final void harvestUnused(RuleContext ctx) {
+        SimpleNode node;
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
-            SimpleNode node = (SimpleNode) i.next();
+            node = (SimpleNode) i.next();
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{node.getImage()})));
         }
     }
