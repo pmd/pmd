@@ -87,7 +87,15 @@ TODO: dcraine - Please fill in this section.
 
       <subsection name="JEdit">
 <p>
-TODO: tomcopeland - Please fill in this section
+This is more or less the standard JEdit plugin - open a file, select Plugins->PMD->Check code and
+you get a popup list of problems.  Things to do:
+<ul>
+<li>Make the popup window dockable</li>
+<li>Make it so you can click on the warning msg and jump to the line of code</li>
+<li>Investigate colorizing</li>
+<li>Enable it to run on a whole directory tree</li>
+</ul>
+
 </p>
       </subsection>
       <subsection name="Maven">
