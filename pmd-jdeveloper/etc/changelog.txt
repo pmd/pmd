@@ -1,3 +1,7 @@
+May 25, 2004 - 1.1:
+Updated PMD version to 1.8.
+Verified that the plugin works with JDeveloper 10g build 9052.
+
 April 15, 2004 - 1.0:
 Updated to work with JDeveloper 10g final.
 

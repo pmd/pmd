@@ -3,9 +3,9 @@
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
 	<property name="etc" value="etc/"/>
-	<property name="pmdjar" value="pmd-1.6.jar"/>
-	<property name="pluginversion" value="1.0"/>
-	<property name="jdeveloper.install.dir" value="/home/tom/jdev9051/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
+	<property name="pmdjar" value="pmd-1.8.jar"/>
+	<property name="pluginversion" value="1.1"/>
+	<property name="jdeveloper.install.dir" value="/home/tom/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 	<path id="project.class.path">
 		<pathelement location="lib/${pmdjar}"/>
@@ -41,7 +41,7 @@
     </target>
 
 
-	<target name="dist" depends="delete,jar">
+	<target name="deploy" depends="delete,jar">
         <mkdir dir="${jdeveloper.install.dir}/lib"/>
         <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper.install.dir}/lib"/>
         <copy file="lib/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>
