@@ -1,7 +1,10 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.swingui.IConstants;
-import org.apache.xerces.parsers.SAXParser;
+// import org.apache.xerces.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.SAXParser;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -89,12 +92,14 @@ public class RuleSetReader implements IConstants
 
             inputSource = new InputSource(inputStream);
             mainContentHandler = new MainContentHandler();
-            parser = new SAXParser();
 
-            parser.setContentHandler(mainContentHandler);
-            parser.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-            parser.setFeature("http://xml.org/sax/features/namespaces", false);
-            parser.parse(inputSource);
+	    SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+            factory.setFeature("http://xml.org/sax/features/namespaces", false);
+
+            parser = factory.newSAXParser();
+
+	    parser.parse(inputSource, mainContentHandler);
             m_ruleSet.setFileName(ruleSetFileName);
 
             return m_ruleSet;

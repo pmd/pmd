@@ -23,7 +23,7 @@
     </goal>
     
     <preGoal name="site:generate">
-        <attainGoal name="pmd"/>
+        <attainGoal name="pmd:ruleset-docs"/>
     </preGoal>
 
   	<goal name="pmd:ruleset-docs" prereqs="init-dvsl-tag">
@@ -32,7 +32,7 @@
 	    	  extension=".xml"
 	    	  includes="**/*.xml"
 		      basedir="${rulesets.dir}"
-		      style="c:\data\pmd\pmd\dvsl\rule-format.dvsl"
+		      style="./dvsl/rule-format.dvsl"
 		      destdir="${maven.gen.docs}/rules">
     	</dvsl:dvsl>
   	</goal>

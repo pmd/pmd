@@ -1,6 +1,9 @@
 package net.sourceforge.pmd;
 
-import org.apache.xerces.parsers.SAXParser;
+// import org.apache.xerces.parsers.SAXParser;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -149,15 +152,15 @@ public class ProjectFile
         try
         {
             MainContentHandler mainContentHandler;
-            SAXParser parser;
+	    SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+            factory.setFeature("http://xml.org/sax/features/namespaces", false);
+
+            SAXParser parser = factory.newSAXParser();
 
             mainContentHandler = new MainContentHandler();
-            parser = new SAXParser();
 
-            parser.setContentHandler(mainContentHandler);
-            parser.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-            parser.setFeature("http://xml.org/sax/features/namespaces", false);
-            parser.parse(inputSource);
+	    parser.parse(inputSource, mainContentHandler);
         }
         catch (Exception exception)
         {

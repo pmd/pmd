@@ -66,6 +66,7 @@ public class RuleSetReadWriteTest extends TestCase
     private void loadTestFile()
     {
         m_inputStream = getClass().getClassLoader().getResourceAsStream("RuleSetReadWriteTest.xml");
+	assertNotNull("Could not retrieve RuleSetReadWriteTest.xml", m_inputStream);
     }
 
     /**

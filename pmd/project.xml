@@ -148,11 +148,6 @@
     </dependency>
 
     <dependency>
-      <id>xercesImpl</id>
-      <version>2.0.2</version>
-    </dependency>
-
-    <dependency>
       <id>xml-apis</id>
       <version>2.0.2</version>
     </dependency>
@@ -178,6 +173,7 @@
     <resources>
       <includes>
         <include>*.java</include>
+	<include>*.xml</include>
       </includes>
     </resources>
 
