@@ -3,6 +3,7 @@ PMD is now built and tested with JUnit 3.8.1 and Ant 1.5.
 Added some limited support for the IDEAJ IDE.
 Fixed bug 610018 - StringInstantiationRule now allows for String(byte[], int, int) usage.
 Fixed bug 610693 - UnusedPrivateInstanceVariable handles parameter shadowing better.
+Fixed a bug - the statistics rules now handle interfaces better.
 
 September 12 2002 - 1.0rc2:
 Added new rules: JUnitSpellingRule, JUnitStaticSuiteRule, StringInstantiationRule
