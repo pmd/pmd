@@ -55,6 +55,11 @@ public class PMD {
     }
 
     public static void main(String[] args) {
+        if (args.length == 0) {
+            usage();
+            System.exit(1);
+        }
+
         if (args[0].equals("-g")) {
             try {
                 PMDViewer.run();
@@ -65,9 +70,7 @@ public class PMD {
         }
 
         if (args.length < 3) {
-            System.err.println("");
-            System.err.println("Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml");
-            System.err.println("");
+            usage();
             System.exit(1);
         }
 
@@ -118,5 +121,11 @@ public class PMD {
             Renderer rend = new HTMLRenderer();
             System.out.println(rend.render(ctx.getReport()));
         }
+    }
+
+    private static void usage() {
+        System.err.println("");
+        System.err.println("Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml");
+        System.err.println("");
     }
 }
