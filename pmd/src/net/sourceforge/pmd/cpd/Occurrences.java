@@ -9,8 +9,8 @@ import java.util.*;
 
 public class Occurrences {
 
-    private List tiles = new ArrayList();
-    private Map occurrences = new HashMap();
+    private List orderedTiles = new ArrayList();
+    private Map tileToOccurrenceMap = new HashMap();
 
     public Occurrences(TokenSets tss) {
         for (Iterator j = tss.iterator();j.hasNext();) {
@@ -23,26 +23,26 @@ public class Occurrences {
     }
 
     public void addTile(Tile tile, Token tok) {
-        if (!tiles.contains(tile)) {
+        if (!orderedTiles.contains(tile)) {
             List list = new ArrayList();
             list.add(tok);
-            tiles.add(tile);
-            occurrences.put(tile, list);
+            orderedTiles.add(tile);
+            tileToOccurrenceMap.put(tile, list);
         } else {
-            List list = (List)occurrences.get(tile);
+            List list = (List)tileToOccurrenceMap.get(tile);
             list.add(tok);
         }
     }
 
     public int size() {
-        return tiles.size();
+        return orderedTiles.size();
     }
 
     public void deleteSoloTiles() {
-        for (Iterator i = tiles.iterator(); i.hasNext();) {
+        for (Iterator i = orderedTiles.iterator(); i.hasNext();) {
             Tile tile = (Tile)i.next();
-            if (((List)occurrences.get(tile)).size() == 1) {
-                occurrences.remove(tile);
+            if (((List)tileToOccurrenceMap.get(tile)).size() == 1) {
+                tileToOccurrenceMap.remove(tile);
                 i.remove();
             }
         }
@@ -58,7 +58,7 @@ public class Occurrences {
     }
 
     public boolean contains(Token tok) {
-        for (Iterator i = occurrences.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = tileToOccurrenceMap.keySet().iterator(); i.hasNext();) {
             Tile tile = (Tile)i.next();
             if (tile.contains(tok)) {
                 return true;
@@ -68,24 +68,23 @@ public class Occurrences {
     }
 
     public boolean isEmpty() {
-        return tiles.isEmpty();
+        return orderedTiles.isEmpty();
     }
 
     public Iterator getTiles() {
-        return tiles.iterator();
+        return orderedTiles.iterator();
     }
 
     public Iterator getOccurrences(Tile tile) {
-        return ((List)occurrences.get(tile)).iterator();
+        return ((List)tileToOccurrenceMap.get(tile)).iterator();
     }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        for (Iterator i = tiles.iterator(); i.hasNext();) {
+        for (Iterator i = getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
             sb.append(tile + ":");
-            List list = (List)occurrences.get(tile);
-            for (Iterator j = list.iterator(); j.hasNext();) {
+            for (Iterator j = getOccurrences(tile); j.hasNext();) {
                 Token tok = (Token)j.next();
                 sb.append(tok+",");
             }
