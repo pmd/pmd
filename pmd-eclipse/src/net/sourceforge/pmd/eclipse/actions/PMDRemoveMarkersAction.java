@@ -4,13 +4,15 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -25,13 +27,16 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/03/18 23:28:36  phherlin
- * *** keyword substitution change ***
+ * Revision 1.3  2003/03/30 20:49:37  phherlin
+ * Adding logging
+ * Displaying error dialog in a thread safe way
+ * Adding support for folders and package
  *
  */
 public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActionDelegate {
     private static final String VIEW_ACTION = "net.sourceforge.pmd.eclipse.pmdRemoveAllMarkersAction";
     private static final String OBJECT_ACTION = "net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction";
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction");
     private IViewPart viewPart;
     private IWorkbenchPart targetPart;
 
@@ -46,6 +51,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
      */
     public void run(IAction action) {
+        log.info("Remove Markers action requested");
         try {
             if (action.getId().equals(VIEW_ACTION)) {
                 ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
@@ -53,10 +59,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                 processResource();
             } // else action id not supported
         } catch (CoreException e) {
-            MessageDialog.openError(
-                null,
-                PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION) + e.getMessage());
+            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         }
     }
 
@@ -93,12 +96,14 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                     } else if (element instanceof IJavaProject) {
                         IResource resource = ((IJavaProject) element).getResource();
                         resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                    } else if (element instanceof IPackageFragment) {
+                        IResource resource = ((IPackageFragment) element).getResource();
+                        resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
                     } // else no processing for other types
                 } catch (CoreException e) {
-                    MessageDialog.openError(
-                        null,
-                        PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                        PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION) + e.getMessage());
+                    PMDPlugin.getDefault().showError(
+                        PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION),
+                        e);
                 }
             }
         }

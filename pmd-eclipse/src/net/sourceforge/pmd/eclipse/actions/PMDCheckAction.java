@@ -6,13 +6,15 @@ import java.util.Iterator;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDVisitor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -28,11 +30,14 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2003/03/18 23:28:36  phherlin
- * *** keyword substitution change ***
+ * Revision 1.4  2003/03/30 20:48:19  phherlin
+ * Adding logging
+ * Displaying error dialog in a thread safe way
+ * Adding support for folders and package
  *
  */
 public class PMDCheckAction implements IObjectActionDelegate {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDCheckAction");
     private IWorkbenchPart targetPart;
 
     /**
@@ -46,6 +51,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
      */
     public void run(IAction action) {
+        log.info("Check PMD action requested");
         ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
         try {
             // selection must be acquired in this thread, otherwise an exception would be raised
@@ -99,14 +105,16 @@ public class PMDCheckAction implements IObjectActionDelegate {
                         } else if (element instanceof IJavaProject) {
                             IResource resource = ((IJavaProject) element).getResource();
                             resource.accept(visitor);
+                        } else if (element instanceof IPackageFragment) {
+                            IResource resource = ((IPackageFragment) element).getResource();
+                            resource.accept(visitor);
                         } else { // else no processing for other types
                             monitor.worked(1);
                         }
                     } catch (CoreException e) {
-                        MessageDialog.openError(
-                            Display.getCurrent().getActiveShell(),
-                            PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                            PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION) + e.toString());
+                        PMDPlugin.getDefault().showError(
+                            PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION),
+                            e);
                     }
                 }
 
