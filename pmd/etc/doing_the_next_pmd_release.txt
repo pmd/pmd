@@ -34,6 +34,8 @@ copy build.xml c:\tmp\pmd\etc
 copy cpdgui.bat c:\tmp\pmd\etc
 copy readme.txt c:\tmp\pmd\etc
 copy changelog.txt c:\tmp\pmd\etc
+copy astviewer.sh c:\tmp\pmd\etc
+copy astviewer.bat c:\tmp\pmd\etc
 copy ..\lib\pmd-1.03.jar c:\tmp\pmd\lib
 copy ..\lib\xmlParserAPIs-2.0.2.jar c:\tmp\pmd\lib
 copy ..\lib\xercesImpl-2.0.2.jar c:\tmp\pmd\lib
