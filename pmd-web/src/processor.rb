@@ -125,6 +125,25 @@ class Job
 	end
 end
 
+class PreviousTracker
+	def initialize(jobs)
+		@jobs = jobs
+		@counter = 0
+	end
+	def bump
+		@counter += 1
+	end
+	def anchor_idx
+		@counter
+	end
+	def previous_anchor_idx
+		if (@counter + 2) > (@jobs.size-1)
+			return @jobs.size - 1
+		end
+		@counter + 2
+	end
+end
+
 if __FILE__ == $0
 	Dir.chdir(Job::ROOT)
 	ENV['JAVA_HOME']="/usr/local/java"
@@ -184,17 +203,21 @@ if __FILE__ == $0
 
 	fm = Ikko::FragmentManager.new
 	fm.base_path="./"
-	out = fm["header.frag", {"lastruntime"=>Time.now}]
+	pt = PreviousTracker.new(jobs)
+	out = fm["header.frag", {"lastruntime"=>Time.now, "prev2header1"=>jobs[0].unix_name, "prev2header2"=>jobs[1].unix_name}]
 	jobs.each {|j|
 		out << fm["row.frag", {	
 			"title"=>fm["title.frag", {"file"=>j.report, "title"=>j.title}],
 			"homepage"=>fm["homepage.frag", {"name"=>j.unix_name}],
 			"ncss"=>j.ncss, 
+			"anchor"=>jobs[pt.anchor_idx].unix_name, 
+			"previous_anchor"=>jobs[pt.previous_anchor_idx].unix_name, 
 			"pmd"=>j.pmd_lines.to_s,
 			"pctg"=>fm["pctg.frag", {"color"=>j.color, "pctg"=>j.pctg.to_s}], 
 			"dupe"=>fm["cpd.frag", {"file"=>j.cpd_file, "dupes"=>j.cpd_lines.to_s}],
 			"doom"=>fm["doom.frag", {"file"=>j.wad, "barrels"=>j.barrels}]
 		}] unless !File.exists?(j.report) || !File.exists?(j.ncss_report) || j.ncss == 0
+		pt.bump
 	}
 	File.open("scoreboard.html", "w") {|f| f.syswrite(out)}
 
