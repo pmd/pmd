@@ -10,11 +10,23 @@ will update documents on the Build Site.
 -->
 
 <project name="pmd" default="pre-build">
-  <target name="load-dvsl-task">
+  <target name="load-tasks">
     <taskdef 
        name="dvsl"
        classname="org.apache.tools.dvsl.DVSLTask">
        <classpath refid="maven-classpath" />
+    </taskdef>
+
+    <taskdef
+       name="quilt"
+       classname="junit.quilt.ant.AntQuiltRunner">
+      <classpath>
+        <pathelement location="lib/quilt.jar" />
+        <pathelement location="lib/bcel.jar" />
+        <pathelement location="lib/commons-graph.jar" />
+        <pathelement location="lib/commons-collections.jar" />
+        <pathelement location="lib/colt.jar" />
+      </classpath>
     </taskdef>
   </target>
 
@@ -57,9 +69,9 @@ will update documents on the Build Site.
   </target>  
 
 <!-- Documentation Chores -->
-  <target name="pre-docs" depends="load-dvsl-task,rule-docs" />
+  <target name="pre-docs" depends="rule-docs" />
 
-  <target name="rule-docs">
+  <target name="rule-docs" depends="load-tasks">
     <mkdir dir="${maven.gen.docs}/rules" />
     <dvsl basedir="rulesets"
           destdir="${maven.gen.docs}/rules"
@@ -68,5 +80,24 @@ will update documents on the Build Site.
           style="dvsl/rule-format.dvsl">
     </dvsl>
   </target>
+
+  <target name="quilt" depends="load-tasks">
+    <mkdir dir="${maven.quilt.reportsDirectory}" />
+    <quilt report="${maven.quilt.reportsDirectory}/coverage.xml"
+           register="junit.quilt.cover.ball94.B94Registry"
+           reporter="junit.quilt.reports.XMLSummary"
+           packages="${maven.package}">
+      <classpath>
+        <path refid="maven.dependency.classpath" />
+        <pathelement location="${maven.build.dest}" />
+        <pathelement location="${maven.test.dest}" />
+      </classpath>
+      <fileset dir="${maven.unitTestSourceDirectory}">
+        <patternset refid="maven.unit.test.set" />
+      </fileset>
+    </quilt>
+  </target>
+
+  <target name="quilt-docs" />
 
 </project>
