@@ -20,6 +20,7 @@ public class RuleTst extends TestCase {
 
     private Map rulesets = new HashMap();
     private RuleSetFactory rsf = new RuleSetFactory();
+
     public void runTestFromString(String code, int expectedResults, Rule rule) throws Throwable {
         assertEquals(expectedResults, processUsingStringReader(code, rule).size());
     }

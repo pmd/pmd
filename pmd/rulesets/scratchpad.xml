@@ -15,10 +15,10 @@ These are new rules that are still in progress
            <property name="xpath">
                <value>
   <![CDATA[
- //ConditionalExpression[
-    EqualityExpression[@Image="!="] or
-    PrimaryExpression/PrimaryPrefix/Expression/EqualityExpression[@Image="!="]
-    ]
+//PrimaryExpression
+ [PrimaryPrefix/Name[ends-with(@Image, 'equals')]]
+ [PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression
+   /PrimaryPrefix/Literal/NullLiteral]
   ]]>
                </value>
            </property>

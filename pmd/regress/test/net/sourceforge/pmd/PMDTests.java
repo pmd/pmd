@@ -7,7 +7,6 @@ import test.net.sourceforge.pmd.ast.ASTTests;
 import test.net.sourceforge.pmd.cpd.CPDTests;
 import test.net.sourceforge.pmd.jaxen.JaxenTests;
 import test.net.sourceforge.pmd.renderers.RenderersTests;
-import test.net.sourceforge.pmd.rules.RulesTests;
 import test.net.sourceforge.pmd.stat.StatTests;
 import test.net.sourceforge.pmd.symboltable.SymbolTableTests;
 import test.net.sourceforge.pmd.util.UtilTests;
@@ -36,7 +35,6 @@ public class PMDTests
     suite.addTest( CPDTests.suite(  ) );
     suite.addTest( JaxenTests.suite(  ) );
     suite.addTest( RenderersTests.suite(  ) );
-    suite.addTest( RulesTests.suite(  ) );
     suite.addTest( StatTests.suite(  ) );
     suite.addTest( SymbolTableTests.suite(  ) );
     suite.addTest( UtilTests.suite(  ) );
@@ -58,6 +56,9 @@ public class PMDTests
 
 /*
  * $Log$
+ * Revision 1.3  2004/06/23 14:30:51  tomcopeland
+ * New EqualsNull rule thanks to Noel Grandin
+ *
  * Revision 1.2  2003/11/13 20:28:02  tomcopeland
  * Implemented AbstractNamingRule
  *

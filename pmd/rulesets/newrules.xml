@@ -6,7 +6,40 @@ These are new rules for the next release
   </description>
 
 
-
+<rule   name="EqualsNull"
+        message="Don't use equals() to compare against null"
+        class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+     Newbie programmers sometimes get the comparison concepts confused
+     and use equals() to compare to null.
+    </description>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//PrimaryExpression
+ [PrimaryPrefix/Name[ends-with(@Image, 'equals')]]
+ [PrimarySuffix/Arguments/ArgumentList
+  /Expression/PrimaryExpression/PrimaryPrefix
+   /Literal/NullLiteral]
+]]>
+            </value>
+        </property>
+     </properties>
+    <priority>1</priority>
+<example>
+   <![CDATA[
+class Bar {
+   void foo() {
+       String x = "foo";
+       if (x.equals(null)) { // bad!
+        doSomething();
+       }
+   }
+}
+]]>
+    </example>
+    </rule>
 
 </ruleset>
 
