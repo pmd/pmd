@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Gunnlaugur Thor Briem - bug report on JavaCC parser's use of java.lang.Error</li>
             <li>C. Lamont Gilbert - bug reports, feature requests, and documentation improvements</li>
             <li>Vladimir Bossicard - numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Frédéric Harper - bug report and subsequent troubleshooting</li>

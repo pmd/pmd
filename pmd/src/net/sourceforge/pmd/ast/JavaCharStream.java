@@ -118,7 +118,7 @@ public final class JavaCharStream
      }
      catch (Throwable t)
      {
-        throw new Error(t.getMessage());
+        throw new RuntimeException(t.getMessage());
      }
 
      available = (bufsize += 2048);
@@ -317,7 +317,7 @@ public final class JavaCharStream
         }
         catch(java.io.IOException e)
         {
-           throw new Error("Invalid escape character at line " + line +
+           throw new RuntimeException("Invalid escape character at line " + line +
                                          " column " + column + ".");
         }
 

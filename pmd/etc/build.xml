@@ -86,6 +86,12 @@
         <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
         <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
         <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
+        <replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException"/>
+        <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException"/>
+        <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)"/>
+        <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
+        <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException"/>
+        <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
     </target>
 
 	<target name="clean" depends="delete,compile"/>
