@@ -35,13 +35,14 @@ public class GUI implements CPDListener {
     }
 
     private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
+    //private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     //private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
-    private JTextField minimumLengthField= new JTextField("50");
+    private JTextField minimumLengthField= new JTextField("20");
 
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JProgressBar addingTokensBar = new JProgressBar();
 
-    private JTextArea resultsTextArea = new JTextArea(20,50);
+    private JTextArea resultsTextArea = new JTextArea();
 
     private JTextField expandingTileField = new JTextField(50);
     private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
@@ -93,16 +94,19 @@ public class GUI implements CPDListener {
         progressPanel.setBorder(BorderFactory.createTitledBorder("Progress"));
 
         JPanel resultsPanel = new JPanel();
-        resultsPanel.add(new JScrollPane(resultsTextArea));
+        JScrollPane areaScrollPane = new JScrollPane(resultsTextArea);
+        areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        areaScrollPane.setPreferredSize(new Dimension(600,300));
+        resultsPanel.add(areaScrollPane);
         resultsPanel.setBorder(BorderFactory.createTitledBorder("Results"));
 
         frame.getContentPane().setLayout(new BorderLayout());
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.NORTH);
-        topPanel.add(progressPanel, BorderLayout.SOUTH);
+        topPanel.add(progressPanel, BorderLayout.CENTER);
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
-        frame.getContentPane().add(resultsPanel, BorderLayout.SOUTH);
+        frame.getContentPane().add(resultsPanel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.show();
@@ -121,7 +125,8 @@ public class GUI implements CPDListener {
             }
             cpd.go();
             CPDRenderer renderer = new TextRenderer();
-            resultsTextArea.setText(renderer.render(cpd));
+            resultsTextArea.setText("");
+            resultsTextArea.append(renderer.render(cpd));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
