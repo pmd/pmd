@@ -78,8 +78,8 @@ Integration with GNU Emacs is performed through ELisp. (what else?)
 </p>
 <p>
 There is only one command "pmd-current-buffer" which will execute
-PMD on the Java code in the current buffer.  It will generate an
-XML report in the *PMD* buffer.
+PMD on the Java code in the current buffer.  It will generate report in the
+*PMD* buffer.
 </p>
       </subsection>
       <subsection name="Borland JBuilder">
