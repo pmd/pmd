@@ -160,8 +160,9 @@ selecting the "Ask for Directory" checkbox.</p>
   <li>Click add and select "net.sourceforge.pmd.gel.PMDPlugin"</li>
   </ul>
   <p>That's pretty much it.  Now you can open a Java project and click on Plugins->PMD and
-  PMD will run several of the rulesets on the source code in your project.  Or,
-      if you don't have a project open, PMD will check the current file in the editor.</p>
+  a configuration panel will pop up.  You can pick which ruleset you want to run and
+      you can also pick whether you want to run PMD on the current file or on every
+      source file in your project.</p>
     <p>Note that the source code needs to be compilable before PMD can check it.</p>
         </subsection>
       <subsection name="IDEA">
