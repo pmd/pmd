@@ -221,9 +221,9 @@ public abstract class Foo { // should be AbstractFoo
                 <value>
 <![CDATA[
 //MethodDeclaration
- [parent::ClassBodyDeclaration
-  [parent::ClassBody
-   [parent::UnmodifiedClassDeclaration/@Image = //MethodDeclarator/@Image
+ [parent::ClassOrInterfaceBodyDeclaration
+  [parent::ClassOrInterfaceBody
+   [parent::ClassOrInterfaceDeclaration/@Image = //MethodDeclarator/@Image
    ]]]
  ]]>
                 </value>
