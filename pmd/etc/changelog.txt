@@ -1,5 +1,5 @@
 ????, 2005: 2.2:
-New rules: LocalVariableCouldBeFinal, MethodArgumentCouldBeFinal, AvoidInstantiatingObjectsInLoops, ArrayIsStoredDirectly, MethodReturnsInternalArray, AssignmentToNonFinalStatic
+New rules: LocalVariableCouldBeFinal, MethodArgumentCouldBeFinal, AvoidInstantiatingObjectsInLoops, ArrayIsStoredDirectly, MethodReturnsInternalArray, AssignmentToNonFinalStatic, AvoidConcatenatingNonLiteralsInStringBuffer
 Fixed bug 1088459 - JUnitTestsShouldContainAsserts no longer throws ClassCastException on interface, native, and abstract method declarations.
 Fixed bug 1100059 - The Ant task now generates a small empty-ish report if there are no violations.
 Implemented RFE 1086168 - PMD XML reports now contain a version and timestamp attribute in the <pmd> element.
@@ -8,6 +8,7 @@ Added 'ignoreLiterals' and 'ignoreIdentifiers' boolean options to the CPD task.
 Cleaned up a good bit of the symbol table code; thanks much to Harald Gurres for the patch.
 CPD now contains a generic copy/paste checker for programs in any language
 Implemented RFE 1031950 - Support For Nested Ruleset Tags By The PMD Ant Task
+Implemented RFE 1096770 - Additional String Concatenation Warnings
 December 15, 2004 - 2.1:
 New rules: AvoidProtectedFieldInFinalClass, SystemPrintln
 Fixed bug 1050173 - ImmutableFieldRule no longer reports false positives for static fields.
