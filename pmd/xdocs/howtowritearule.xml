@@ -31,6 +31,7 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     <p>
     PMD uses a JJTree/JavaCC generated parser to parse the source code and produce an AST (Abstract Syntax Tree).
     This means that the code above looks like this:
+    </p>
     <source>
 <![CDATA[
 CompilationUnit
@@ -76,7 +77,6 @@ CompilationUnit
 ]]>
     </source>
 
-    </p>
     </subsection>
 
     <subsection name="Write a rule class">
