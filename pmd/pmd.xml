@@ -17,6 +17,14 @@ will update documents on the Build Site.
        <classpath refid="maven-classpath" />
     </taskdef>
 
+    <taskdef
+       name="pmd"
+       classname="net.sourceforge.pmd.ant.PMDTask">
+       <classpath>
+         <pathelement location="${lib.repo}/pmd-0.5.jar" />
+       </classpath>
+    </taskdef>
+
 <!--
     <taskdef
        name="quilt"
@@ -72,7 +80,7 @@ will update documents on the Build Site.
   </target>  
 
 <!-- Documentation Chores -->
-  <target name="pre-docs" depends="rule-docs" />
+  <target name="pre-docs" depends="rule-docs,run-pmd,pmd-docs" />
   <target name="post-docs" depends="move-php" />
 
   <target name="rule-docs" depends="load-tasks">
@@ -110,5 +118,29 @@ will update documents on the Build Site.
   </target>
 
   <target name="quilt-docs" />
+
+  <target name="run-pmd" depends="load-tasks">
+    <mkdir dir="${maven.pmd.reportsDirectory}" />
+    <pmd reportFile="${maven.pmd.reportsDirectory}/${maven.final.name}.xml"
+         verbose="false"
+         rulesetfiles="rulesets/basic.xml"
+         format="xml"
+         failonerror="no">
+      <fileset dir="${maven.src.dir}">
+        <include name="**/*.java" />
+      </fileset>
+    </pmd>
+  </target>
+
+  <target name="pmd-docs" depends="load-tasks">
+    <mkdir dir="${maven.gen.docs}/demo" />
+    <dvsl basedir="${maven.pmd.reportsDirectory}"
+          destdir="${maven.gen.docs}/demo"
+          extension=".xml"
+          includes="*.xml"
+          style="dvsl/pmd-format.dvsl">
+    </dvsl>
+  </target>
+
 
 </project>
