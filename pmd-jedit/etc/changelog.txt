@@ -1,11 +1,15 @@
+April 18 2003 - 2.0:
+Jiger Patel integrated CPD functionality.
+Upgraded to work with pmd-1.05.
+
 March 24 2003 - 1.5:
 Upgraded to work with pmd-1.04.
 
 February 11 2003 - 1.4:
-Upgraded to work with PMD-1.03.
+Upgraded to work with pmd-1.03.
 
 January 24 2003 - 1.3:
-Upgraded to work with PMD-1.02.
+Upgraded to work with pmd-1.02.
 
 November 20 2002 - 1.2:
 Added some more fixes from Jiger.

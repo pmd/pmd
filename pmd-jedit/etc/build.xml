@@ -12,7 +12,6 @@
 
 
 	<path id="project.class.path">
-		<!-- I have changed pmdjar location from lib to jedit's jar since the pmd-jar in lib is not updated regularly. -->
 		<pathelement location="${jedit.jars.dir}/${pmdjar}"/>
 		<pathelement location="${jedit.home}/jedit.jar"/>
 		<pathelement location="${jedit.jars.dir}/ErrorList.jar"/>

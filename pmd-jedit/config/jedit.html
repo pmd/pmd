@@ -20,6 +20,12 @@ You can read much more about PMD here - http://pmd.sf.net/.</p>
 <li>"Check current file" checks your currently displayed Java code</li>
 <li>"Check all files in current directory" does just that</li>
 <li>"Check directory recursively" does just that, too! </li>
+<li>Detect Duplicate Code
+<ul>
+<li>"In current file" checks your currently displayed Java code for duplicates</li>
+<li>"Check all files in current directory" same thing for the directory</li>
+<li>"Check directory recursively" same thing for the directory, recursively</li>
+</ul>
 </ul>
 <p>"Current directory" means "the directory which is displayed in the file system browser".  So, for
 example, if you wanted to run PMD on your whole source tree, and your top level 
@@ -27,6 +33,7 @@ source directory is named "src", you would 1) double-click on the "src" director
 then 2) select the "PMD->Check directory recursively" menu option.</p>
 <p>All those options put any errors into the ErrorList so you can then go jumping around your project fixing stuff.
 <p>There's a section in the Utilities->Global Options->Plugins configuration panel that lets you pick which rule sets you want to use.</p>
+<p>Note that the configuration panel also contains the minimum tile size for CPD to turn up a duplicate chunk.
 <h3>License</h3>
 <p>The PMD-JEdit plugin is free software released under the Apache license.</p>
 </body>
