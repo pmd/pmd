@@ -9,21 +9,20 @@
     <PROPERTY Name="OpenFiles">
         <CLASS Type="TFiles">
             <PROPERTY Name="CurrentIndex">0</PROPERTY>
-            <PROPERTY Name="LastFileName">C:\pmd\pmd-gel\etc\build.xml</PROPERTY>
                 <CLASS Type="TFile">
-                    <PROPERTY Name="CaretLeft">1</PROPERTY>
-                    <PROPERTY Name="CaretTop">19</PROPERTY>
+                    <PROPERTY Name="CaretLeft">68</PROPERTY>
+                    <PROPERTY Name="CaretTop">43</PROPERTY>
                     <PROPERTY Name="FileName">$(PROJECT)\src\net\sourceforge\pmd\gel\PMDPlugin.java</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">9</PROPERTY>
+                    <PROPERTY Name="WindowTop">25</PROPERTY>
                 </CLASS>
                 <CLASS Type="TFile">
                     <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
-                    <PROPERTY Name="CaretLeft">35</PROPERTY>
-                    <PROPERTY Name="CaretTop">32</PROPERTY>
+                    <PROPERTY Name="CaretLeft">36</PROPERTY>
+                    <PROPERTY Name="CaretTop">40</PROPERTY>
                     <PROPERTY Name="FileName">$(PROJECT)\etc\build.xml</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">20</PROPERTY>
+                    <PROPERTY Name="WindowTop">4</PROPERTY>
                 </CLASS>
                 <CLASS Type="TFile">
                     <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
@@ -32,6 +31,30 @@
                     <PROPERTY Name="FileName">$(PROJECT)\etc\MANIFEST.MF</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
                     <PROPERTY Name="WindowTop">1</PROPERTY>
+                </CLASS>
+                <CLASS Type="TFile">
+                    <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
+                    <PROPERTY Name="CaretLeft">18</PROPERTY>
+                    <PROPERTY Name="CaretTop">22</PROPERTY>
+                    <PROPERTY Name="FileName">C:\Gel\plugin\src\com\gexperts\gel\Editor.java</PROPERTY>
+                    <PROPERTY Name="WindowLeft">1</PROPERTY>
+                    <PROPERTY Name="WindowTop">4</PROPERTY>
+                </CLASS>
+                <CLASS Type="TFile">
+                    <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
+                    <PROPERTY Name="CaretLeft">1</PROPERTY>
+                    <PROPERTY Name="CaretTop">1</PROPERTY>
+                    <PROPERTY Name="FileName">C:\Gel\plugin\src\com\gexperts\gel\Gel.java</PROPERTY>
+                    <PROPERTY Name="WindowLeft">1</PROPERTY>
+                    <PROPERTY Name="WindowTop">4</PROPERTY>
+                </CLASS>
+                <CLASS Type="TFile">
+                    <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
+                    <PROPERTY Name="CaretLeft">25</PROPERTY>
+                    <PROPERTY Name="CaretTop">13</PROPERTY>
+                    <PROPERTY Name="FileName">C:\Gel\plugin\src\com\gexperts\gel\Project.java</PROPERTY>
+                    <PROPERTY Name="WindowLeft">1</PROPERTY>
+                    <PROPERTY Name="WindowTop">40</PROPERTY>
                 </CLASS>
         </CLASS>
     </PROPERTY>
@@ -87,6 +110,15 @@
         <CLASS Type="TFileNode">
             <PROPERTY Name="Name">PMDPlugin.java</PROPERTY>
             <PROPERTY Name="FileName">$(PROJECT)\src\net\sourceforge\pmd\gel\PMDPlugin.java</PROPERTY>
+            <PROPERTY Name="Managed">0</PROPERTY>
+            <PROPERTY Name="Marks">
+                <CLASS Type="TMarks">
+                </CLASS>
+            </PROPERTY>
+        </CLASS>
+        <CLASS Type="TFileNode">
+            <PROPERTY Name="Name">Test.java</PROPERTY>
+            <PROPERTY Name="FileName">$(PROJECT)\src\net\sourceforge\pmd\gel\Test.java</PROPERTY>
             <PROPERTY Name="Managed">0</PROPERTY>
             <PROPERTY Name="Marks">
                 <CLASS Type="TMarks">
