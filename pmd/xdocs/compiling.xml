@@ -9,7 +9,7 @@
   <body>
   <section name="Compiling PMD">
 <p>
-First, you'll need to download and install <a href="http://ant.apache.org/bindownload.cgi">Ant</a> 1.5
+First, you'll need to download and install <a href="http://ant.apache.org/bindownload.cgi">Ant</a> 1.6
     and <a href="http://www.junit.org/">JUnit</a> 3.8.1.  I put the junit jar file in my ANT_HOME/lib/
     directory and all was well, your mileage may vary.</p>
 <p>
@@ -18,15 +18,15 @@ Now you'll need to either check out the source code or download the latest sourc
     <pre>
         [tom@hal building]$ ls -l
         total 5716
-        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-1.5.zip
-        [tom@hal building]$ unzip -q pmd-src-1.5.zip
+        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-1.6.zip
+        [tom@hal building]$ unzip -q pmd-src-1.6.zip
         [tom@hal building]$
     </pre>
 </p>
 <p>
     Now cd down into the pmd/etc directory:
     <pre>
-        [tom@hal building]$ cd pmd-1.5/etc/
+        [tom@hal building]$ cd pmd-1.6/etc/
         [tom@hal etc]$ ls -l | grep build.xml
         -rw-rw-r--    1 tom      tom          5736 Jun 19 15:36 build.xml
         [tom@hal etc]$
@@ -39,9 +39,9 @@ Now you'll need to either check out the source code or download the latest sourc
         Buildfile: build.xml
 
         compile:
-            [mkdir] Created dir: /home/tom/tmp/building/pmd-1.5/build
-            [javac] Compiling 417 source files to /home/tom/tmp/building/pmd-1.5/build
-            [javac] Note: /home/tom/tmp/building/pmd-1.5/regress/test/net/sourceforge/pmd/
+            [mkdir] Created dir: /home/tom/tmp/building/pmd-1.6/build
+            [javac] Compiling 417 source files to /home/tom/tmp/building/pmd-1.6/build
+            [javac] Note: /home/tom/tmp/building/pmd-1.6/regress/test/net/sourceforge/pmd/
              RuleSetReadWriteTest.java uses or overrides a deprecated API.
             [javac] Note: Recompile with -deprecation for details.
 

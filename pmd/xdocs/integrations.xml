@@ -136,7 +136,7 @@ selecting the "Ask for Directory" checkbox.</p>
 
     <P><UL>
         <LI>The Java Development Kit, version 1.3.1 (versions 1.3 and higher are acceptable) is properly installed into your machine, and exists in <CODE>D:\java\jdk_131\</CODE>.  This means that <CODE>D:\java\jdk_131\bin\java.exe</CODE> exists.</LI>
-        <LI>PMD version 1.5 exists in <CODE>D:\java\pmd-1.5\</CODE>.  This means that <CODE>D:\java\pmd-1.5\lib\pmd-1.5.jar</CODE> (among other jar files in the same directory) exist.</LI>
+        <LI>PMD version 1.6 exists in <CODE>D:\java\pmd-1.6\</CODE>.  This means that <CODE>D:\java\pmd-1.6\lib\pmd-1.6.jar</CODE> (among other jar files in the same directory) exist.</LI>
     </UL></P>
 
     <H5><U>To integrate into TextPad</U></H5>
@@ -152,7 +152,7 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>Expand the <B>Tools</B> branch (if not already) by clicking on the '<CODE>+</CODE>' directly to its left.</LI>
         <LI>In the expanded list, select <B>PMD directory</B>.  This changes the right side of this dialog to the "tool" form.</LI>
         <LI>In the "tool" form, enter these parameters:<UL>
-            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-1.5\lib\pmd-1.5.jar;D:\java\pmd-1.5\lib\jaxen-core-1.0-fcs.jar; D:\java\pmd-1.5\lib\saxpath-1.0-fcs.jar;D:\java\pmd-1.5\lib\xmlParserAPIs-2.0.2.jar; D:\java\pmd-1.5\lib\xercesImpl-2.0.2.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
+            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-1.6\lib\pmd-1.6.jar;D:\java\pmd-1.6\lib\jaxen-core-1.0-fcs.jar; D:\java\pmd-1.6\lib\saxpath-1.0-fcs.jar;D:\java\pmd-1.6\lib\xmlParserAPIs-2.0.2.jar; D:\java\pmd-1.6\lib\xercesImpl-2.0.2.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
             <BR/>(<I>Eliminate the spaces following both '<CODE>jaxen-core-1.0-fcs.jar;</CODE>' and '<CODE>xmlParserAPIs-2.0.2.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
             <LI><B>Initial Folder:</B>  <CODE>$FileDir</CODE></LI>
             <LI><B>Save all documents first:</B>  <CODE>Checked</CODE></LI>
@@ -229,7 +229,7 @@ works OK.  Here's how to set it up:</p>
 <li>Description: PMD doth help one clean the code</li>
 <li>Program: javaw</li>
 <li>For the next two parameters you'll need to plug in the location of your PMD installation, the rulesets you want to use, and your working directory</li>
-<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.5.jar;c:\pmd\lib\jaxen-core-1.0-fcs.jar;c:\pmd\lib\saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
+<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.6.jar;c:\pmd\lib\jaxen-core-1.0-fcs.jar;c:\pmd\lib\saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
 <li>Working directory: c:\</li>
 </ul>
 </ul>

@@ -1,8 +1,8 @@
-????, 2004 - 1.6:
+March 15, 2004 - 1.6:
 Fixed bug 895661 - XML reports containing error elements no longer have malformed XML.
 Fixed a bug in UnconditionalIfStatement - it no longer flags things like "if (x==true)".
 Applied Steve Hawkins' improvements to CPD:
-- BWT optimizations
+- Various optimizations; now it runs about 4 times faster!
 - fixed "single match per file" bug
 - tweaked source code slicing
 - CSV renderer

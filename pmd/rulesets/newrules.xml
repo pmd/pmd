@@ -5,36 +5,7 @@
 These are new rules for the next release
   </description>
 
-    <rule name="UnconditionalIfStatement"
-       message="Do not use 'if' statements that are always true or always false"
-          class="net.sourceforge.pmd.rules.XPathRule">
-      <description>
-      Do not use "if" statements that are always true or always false.
-      </description>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//IfStatement/Expression/ConditionalAndExpression
- /InstanceOfExpression/UnaryExpression
- /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-                    ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>3</priority>
-      <example>
-  <![CDATA[
-public class Foo {
- public void close() {
-  if (true) {
-       // ...
-   }
- }
-}
-  ]]>
-      </example>
-    </rule>
+
 
 
  </ruleset>
