@@ -5,6 +5,7 @@ Implemented RFE 1058039 - PMD's command line interface now accepts abbreviated n
 Implemented RFE 1119851 - PMD's Ant task now supports an 'excludeMarker' attribute.
 Fixed a bug - the StatisticalRule no longer 'merges' data points when using the 'topscore' property.
 Fixed a bug - the PMD Ant task's failOnRuleViolation attribute no longer causes a BuildException in the case when no rule violations occur.
+Modified the XSLT to add a summary section.
 Optimized the SystemOutPrintln rule; now it runs about an order of magnitude faster.
 
 February 1, 2005 - 2.3:

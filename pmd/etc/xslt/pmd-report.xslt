@@ -12,10 +12,40 @@
         body { margin-left: 2%; margin-right: 2%; font:normal verdana,arial,helvetica; color:#000000; }
         table.details tr th { font-weight: bold; text-align:left; background:#a6caf0; }
         table.details tr td { background:#eeeee0; }
+        table.summary tr th { font-weight: bold; text-align:left; background:#a6caf0; }
+        table.summary tr td { background:#eeeee0; text-align:center;}        
+        .p1 { background:#FF9999; }
+        .p2 { background:#FFCC66; }
+        .p3 { background:#FFFF99; }
+        .p4 { background:#99FF99; }
+        .p5 { background:#9999FF; }                        
+        
     </style>
 </head>
 <body>
     <H1>PMD Report</H1>
+    <hr/>
+    <h2>Summary</h2>
+    <table border="0" class="summary">
+      <tr>
+        <th>Files</th>
+        <th>Total</th>
+        <th>Priority 1</th>
+        <th>Priority 2</th>
+        <th>Priority 3</th>
+        <th>Priority 4</th>
+        <th>Priority 5</th>                                
+      </tr>
+      <tr>
+        <td><xsl:value-of select="count(//file)"/></td>
+        <td><xsl:value-of select="count(//violation)"/></td>
+        <td><div class="p1"><xsl:value-of select="count(//violation[@priority = 1])"/></div></td>
+        <td><div class="p2"><xsl:value-of select="count(//violation[@priority = 2])"/></div></td>
+        <td><div class="p3"><xsl:value-of select="count(//violation[@priority = 3])"/></div></td>
+        <td><div class="p4"><xsl:value-of select="count(//violation[@priority = 4])"/></div></td>
+        <td><div class="p5"><xsl:value-of select="count(//violation[@priority = 5])"/></div></td>                                
+      </tr>
+    </table>
     <hr/>
     <xsl:for-each select="file">
         <xsl:sort data-type="number" order="descending" select="count(violation)"/>
