@@ -121,7 +121,7 @@ public class PMDTask extends Task {
                 Formatter formatter = (Formatter)i.next();
                 String buffer = formatter.getRenderer().render(ctx.getReport()) + EOL;
                 try {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(new File(formatter.getToFile())));
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(new File(project.getBaseDir() + System.getProperty("file.separator") + formatter.getToFile())));
                     writer.write(buffer, 0, buffer.length());
                     writer.close();
                 } catch (IOException ioe) {
