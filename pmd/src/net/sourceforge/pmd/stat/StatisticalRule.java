@@ -82,13 +82,7 @@ public abstract class StatisticalRule extends AbstractRule {
     }
 
 	protected double getStdDev() {
-    	double varTotal = 0.0;
-
-		Iterator points = dataPoints.iterator();
-
-		double variance = ((totalSquared / count) -
-						   (getMean() * getMean() ));    	
-		return Math.sqrt( variance );
+		return Math.sqrt( ((totalSquared / count) - (getMean() * getMean() )) );
 	}
 	
     protected SortedSet applyMinimumValue( SortedSet pointSet,
