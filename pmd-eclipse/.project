@@ -24,5 +24,7 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
+		<nature>com.ibm.etools.beaninfo.BeaninfoNature</nature>
+		<nature>com.ibm.etools.java.JavaMOFNature</nature>
 	</natures>
 </projectDescription>
