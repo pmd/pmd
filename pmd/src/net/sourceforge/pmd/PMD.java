@@ -36,7 +36,7 @@ public class PMD {
             SymbolFacade stb = new SymbolFacade();
             stb.initializeWith(c);
             ctx.setSymbolTableBuilder(stb);
-            c.dump("");
+            //c.dump("");
             List acus = new ArrayList();
             acus.add(c);
             ruleSet.apply(acus, ctx);
@@ -120,7 +120,15 @@ public class PMD {
             System.out.println(rend.render(ctx.getReport()));
         } else if (reportFormat.equals("ideaj")) {
             IDEAJRenderer special = new IDEAJRenderer();
-            System.out.println(special.render(ctx.getReport(), args[3], args[4]));
+            if (args[3].equals(".method")) {
+                // working on a directory tree
+                System.out.println(special.render(ctx.getReport()));
+            } else {
+                // working on one file
+                String classAndMethodName = args[3];
+                String singleFileName = args[4];
+                System.out.println(special.render(ctx.getReport(), classAndMethodName, singleFileName));
+            }
         } else if (reportFormat.equals("text")) {
             Renderer rend = new TextRenderer();
             System.out.println(rend.render(ctx.getReport()));

@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ASTBlockStatement;

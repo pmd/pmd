@@ -5,11 +5,8 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 
 public class WhileLoopsMustUseBracesRule extends BracesRule {

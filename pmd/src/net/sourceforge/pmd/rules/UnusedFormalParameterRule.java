@@ -10,7 +10,6 @@ import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.RuleContext;
 import java.text.MessageFormat;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 
 
 public class UnusedFormalParameterRule extends AbstractRule {
