@@ -19,6 +19,9 @@ by
  *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.
  * </copyright>
+ *
+ * CHANGE RECORD
+ * - 17 Nov 2003: modified by Olivier Mengu\u00E9 to implement correct escaping
  */
 package net.sourceforge.pmd.renderers;
 
@@ -33,53 +36,51 @@ public class XMLRenderer implements Renderer {
 
     public String render(Report report) {
         StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?><pmd>" + PMD.EOL);
-        String filename = "*start*";
+        String filename = null;
 
         // rule violations
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             if (!rv.getFilename().equals(filename)) { // New File
-                if (!filename.equals("*start*")) {
+                if (filename != null) // Not first file ?
                     buf.append("</file>");
-                }
                 filename = rv.getFilename();
-                buf.append("<file name=\"" + filename + "\">");
-                buf.append(PMD.EOL);
+                buf.append("<file name=\"");
+                StringUtil.appendXmlEscaped(buf, filename);
+                buf.append("\">")
+                   .append(PMD.EOL);
             }
 
-            buf.append("<violation ");
-            buf.append("line=\"" + Integer.toString(rv.getLine()) + "\" ");
-            buf.append("rule=\"" + rv.getRule().getName() + "\">");
-            buf.append(PMD.EOL);
-
-            String d = rv.getDescription();
-            d = StringUtil.replaceString(d, '&', "&amp;");
-            d = StringUtil.replaceString(d, '<', "&lt;");
-            d = StringUtil.replaceString(d, '>', "&gt;");
-            buf.append(d);
+            buf.append("<violation line=\"")
+               .append(rv.getLine()) // int
+               .append("\" rule=\"");
+            StringUtil.appendXmlEscaped(buf, rv.getRule().getName());
+            buf.append("\">")
+               .append(PMD.EOL);
+            StringUtil.appendXmlEscaped(buf, rv.getDescription());
 
             buf.append(PMD.EOL);
             buf.append("</violation>");
             buf.append(PMD.EOL);
         }
-        if (!filename.equals("*start*")) {
+        if (filename != null) { // Not first file ?
             buf.append("</file>");
         }
 
         // errors
         for (Iterator i = report.errors(); i.hasNext();) {
             Report.ProcessingError pe = (Report.ProcessingError) i.next();
-            buf.append(PMD.EOL);
-            buf.append("<error ");
-            buf.append(PMD.EOL);
-            String attrs = "filename=\"" + pe.getFile() + "\" msg=\"" + pe.getMsg() + "\"";
-            attrs = StringUtil.replaceString(attrs, '&', "&amp;");
-            attrs = StringUtil.replaceString(attrs, '<', "&lt;");
-            attrs = StringUtil.replaceString(attrs, '>', "&gt;");
-            buf.append(attrs);
-            buf.append(PMD.EOL);
-            buf.append("/>");
-            buf.append(PMD.EOL);
+            buf.append(PMD.EOL)
+               .append("<error ")
+               .append(PMD.EOL)
+               .append("filename=\"");
+            StringUtil.appendXmlEscaped(buf, pe.getFile());
+            buf.append("\" msg=\"");
+            StringUtil.appendXmlEscaped(buf, pe.getMsg());
+            buf.append("\">")
+               .append(PMD.EOL)
+               .append("/>")
+               .append(PMD.EOL);
         }
 
         buf.append("</pmd>");

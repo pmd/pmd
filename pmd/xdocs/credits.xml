@@ -33,11 +33,12 @@
         <subsection name="Significant contributors">
         <ul>
             <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform</li>
-            <li>Dan Sheppard - XPath engine integration idea and implementation</li>
+            <li>Dan Sheppard - XPath engine integration concept and implementation</li>
         </ul>
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
             <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
             <li>Pieter Bloemendaal - AvoidReassigningParametersRule bug report</li>
             <li>Philippe Couton - UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>

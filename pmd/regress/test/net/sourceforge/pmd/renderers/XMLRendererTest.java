@@ -19,6 +19,10 @@ by
  *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.
  * </copyright>
+ *
+ * CHANGE RECORD
+ * - 17 Nov 2003: modified by Olivier Mengu\u00E9 to test correct escaping
+ *                after modification of XMLRenderer
  */
 package test.net.sourceforge.pmd.renderers;
 
@@ -197,6 +201,56 @@ public class XMLRendererTest extends TestCase {
         expectedStrings.add("<file name=\"testTwoFiles_1\">");
         expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
         expectedStrings.add("Rule1");
+        expectedStrings.add("</violation>");
+        expectedStrings.add("</file>");
+        expectedStrings.add("</pmd>");
+
+        verifyPositions(rendered, expectedStrings);
+    }
+
+    /**
+     * Verify correct escaping in generated XML.
+     */
+    public void testEscaping() throws Throwable {
+        Report report = new Report();
+        ctx.setSourceCodeFilename("testEscaping: Less than: < Greater than: > Ampersand: & Quote: \" 'e' acute: \u00E9");
+        report.addRuleViolation(new RuleViolation(RULE1, 1, "[RULE] Less than: < Greater than: > Ampersand: & Quote: \" 'e' acute: \u00E9", ctx));
+
+        String rendered = IUT.render(report);
+
+        // <?xml version="1.0"?>
+        // <pmd>
+        //   <file name="testEscaping: Less than: &lt; Greater than: &gt; Ampersand: &amp; Quote: &quot; 'e' acute: &#233;">
+        //     <violation line="1" rule="RULE1">
+        // [RULE] Less than: &lt; Greater than: &gt; Ampersand: &amp; Quote: &quot; 'e' acute: &#233;
+        //     </violation>
+        //   </file>
+        // </pmd>
+
+        List expectedStrings = new ArrayList();
+        expectedStrings.add("<pmd>");
+        expectedStrings.add("<file name=\"testEscaping: Less than: ");
+        expectedStrings.add("&lt;");
+        expectedStrings.add(" Greater than: ");
+        expectedStrings.add("&gt;");
+        expectedStrings.add(" Ampersand: ");
+        expectedStrings.add("&amp;");
+        expectedStrings.add(" Quote: ");
+        expectedStrings.add("&quot;");
+        expectedStrings.add(" 'e' acute: ");
+        expectedStrings.add("&#233;");
+        expectedStrings.add("\">");
+        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
+        expectedStrings.add("[RULE] Less than: ");
+        expectedStrings.add("&lt;");
+        expectedStrings.add(" Greater than: ");
+        expectedStrings.add("&gt;");
+        expectedStrings.add(" Ampersand: ");
+        expectedStrings.add("&amp;");
+        expectedStrings.add(" Quote: ");
+        expectedStrings.add("&quot;");
+        expectedStrings.add(" 'e' acute: ");
+        expectedStrings.add("&#233;");
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
         expectedStrings.add("</pmd>");
