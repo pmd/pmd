@@ -162,6 +162,15 @@ public class FunctionalTest extends TestCase{
         Report report = process("UnusedPrivateInstanceVar8.java");
         assertTrue(report.currentFileHasNoViolations());
     }
+
+    public void testIfElseStmtsMustUseBraces1() {
+        Report report = process("IfElseStmtsNeedBraces1.java");
+        assertEquals(1, report.countViolationsInCurrentFile());
+    }
+    public void testIfElseStmtsMustUseBraces2() {
+        Report report = process("IfElseStmtsNeedBraces2.java");
+        assertTrue(report.currentFileHasNoViolations());
+    }
 /*
 TODO - this tests unused variables in nested classes
     public void testUnusedPrivateInstanceVar9() {

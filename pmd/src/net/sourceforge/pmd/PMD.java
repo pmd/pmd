@@ -26,8 +26,7 @@ public class PMD {
             ASTCompilationUnit c = parser.CompilationUnit();
             //c.dump("");
             for (Iterator iterator = rules.iterator(); iterator.hasNext();) {
-                JavaParserVisitor rule = (JavaParserVisitor)iterator.next();
-                c.childrenAccept(rule, report);
+                c.childrenAccept((JavaParserVisitor)iterator.next(), report);
             }
             reader.close();
         } catch (ParseException pe) {

@@ -8,7 +8,10 @@ package net.sourceforge.pmd;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter {
-    public String getName() {return getClass().getName();}
+
+    public String getName() {
+        return getClass().getName();
+    }
 
     public boolean equals(Object o) {
         Rule r = (Rule)o;

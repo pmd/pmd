@@ -57,6 +57,7 @@ public class RuleFactory {
         list.add(new UnnecessaryConversionTemporaryRule());
         list.add(new UnusedLocalVariableRule());
         list.add(new UnusedPrivateInstanceVariableRule());
+        list.add(new IfElseStmtsMustUseBracesRule());
         return list;
     }
 }
