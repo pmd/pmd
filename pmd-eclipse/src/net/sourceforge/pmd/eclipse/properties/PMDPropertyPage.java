@@ -29,6 +29,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2003/06/30 20:16:06  phherlin
+ * Redesigning plugin configuration
+ *
  * Revision 1.4  2003/06/19 21:01:13  phherlin
  * Force a rebuild when PMD properties have changed
  *
@@ -97,9 +100,9 @@ public class PMDPropertyPage extends PropertyPage {
             }
         } catch (CoreException e) {
             PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
-        } finally {
-            return fEnabled;
         }
+
+        return fEnabled;
     }
 
     /**
@@ -120,9 +123,9 @@ public class PMDPropertyPage extends PropertyPage {
             PMDPlugin.getDefault().logError("Adding PMD nature interrupted", e);
         } catch (InvocationTargetException e) {
             PMDPlugin.getDefault().showError("Error adding PMD nature", e);
-        } finally {
-            return fNatureAdded;
         }
+        
+        return fNatureAdded;
     }
 
     /**

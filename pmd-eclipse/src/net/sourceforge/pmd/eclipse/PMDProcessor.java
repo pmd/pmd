@@ -13,8 +13,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleViolation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +28,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2003/06/30 20:16:06  phherlin
+ * Redesigning plugin configuration
+ *
  * Revision 1.6  2003/06/19 20:56:59  phherlin
  * Improve progress indicator accuracy
  *
@@ -79,7 +80,7 @@ public class PMDProcessor {
             context.setSourceCodeFilename(file.getName());
             context.setReport(new Report());
 
-            pmdEngine.processFile(input, getRuleSet(), context);
+            pmdEngine.processFile(input, PMDPlugin.getDefault().getRuleSet(), context);
 
             updateMarkers(file, context, fTask, accumulator);
 
@@ -121,22 +122,6 @@ public class PMDProcessor {
      */
     private void initialize() {
         pmdEngine = new PMD();
-    }
-
-    /**
-     * Get the rule set from preferences
-     */
-    private RuleSet getRuleSet() {
-        RuleSetFactory factory = new RuleSetFactory();
-        String[] ruleSetFiles = PMDPlugin.getDefault().getRuleSetsPreference();
-
-        RuleSet ruleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(ruleSetFiles[0]));
-        for (int i = 1; i < ruleSetFiles.length; i++) {
-            RuleSet tmpRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(ruleSetFiles[i]));
-            ruleSet.addRuleSet(tmpRuleSet);
-        }
-
-        return ruleSet;
     }
 
     /**

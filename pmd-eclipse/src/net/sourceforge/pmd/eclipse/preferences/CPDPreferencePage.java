@@ -21,8 +21,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.7  2003/03/18 23:28:36  phherlin
- * *** keyword substitution change ***
+ * Revision 1.8  2003/06/30 20:16:06  phherlin
+ * Redesigning plugin configuration
  *
  */
 public class CPDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
@@ -64,7 +64,7 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
-        getPreferenceStore().setValue(PMDPlugin.MIN_TILE_SIZE_PREFERENCE, PMDPlugin.DEFAULT_MIN_TILE_SIZE);
+        getPreferenceStore().setValue(PMDPlugin.MIN_TILE_SIZE_PREFERENCE, PMDPlugin.MIN_TILE_SIZE_DEFAULT);
         minTileText.setText(getPreferenceStore().getString(PMDPlugin.MIN_TILE_SIZE_PREFERENCE));
     }
 

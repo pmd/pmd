@@ -1,10 +1,14 @@
 package net.sourceforge.pmd.eclipse;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -24,30 +28,48 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @author Philippe Herlin
  * @version $Revision$
  * 
- * $Log :$
+ * $Log$
+ * Revision 1.8  2003/06/30 20:16:06  phherlin
+ * Redesigning plugin configuration
+ *
  */
 public class PMDPlugin extends AbstractUIPlugin {
 
     // Public constants
-    public static final String RULESETS_PREFERENCE = "net.sourceforge.pmd.eclipse.rulesets";
-    public static final String DEFAULT_RULESETS =
-        "rulesets/basic.xml;rulesets/design.xml;rulesets/imports.xml;rulesets/unusedcode.xml";
+    public static final String[] RULESET_DEFAULTLIST =
+        { "rulesets/basic.xml", "rulesets/design.xml", "rulesets/imports.xml", "rulesets/unusedcode.xml" };
+    public static final String[] RULESET_ALLPMD =
+        {
+            "rulesets/basic.xml",
+            "rulesets/braces.xml",
+            "rulesets/codesize.xml",
+            "rulesets/controversial.xml",
+            "rulesets/coupling.xml",
+            "rulesets/design.xml",
+            "rulesets/imports.xml",
+            "rulesets/javabeans.xml",
+            "rulesets/junit.xml",
+            "rulesets/naming.xml",
+            "rulesets/strings.xml",
+            "rulesets/unusedcode.xml" };
+
+    public static final String RULESET_PREFERENCE = "net.sourceforge.pmd.eclipse.ruleset";
+    public static final String RULESET_DEFAULT = "";
+
     public static String MIN_TILE_SIZE_PREFERENCE = "net.sourceforge.pmd.eclipse.CPDPreference.mintilesize";
-    public static int DEFAULT_MIN_TILE_SIZE = 25;
+    public static int MIN_TILE_SIZE_DEFAULT = 25;
+
     public static String PMD_MARKER = "net.sourceforge.pmd.eclipse.pmdMarker";
     public static String PMD_TASKMARKER = "net.sourceforge.pmd.eclipse.pmdTaskMarker";
 
-    // Private constants
-    private static final String PREFERENCE_DELIMITER = ";";
-
-    // The shared instance.
+    // Static attributes
     private static PMDPlugin plugin;
+    private static Log log;
 
-    // Externalized messages
+    // Private attributes
     private Properties messageTable;
-
-    // Log
-    private static Log log = null;
+    private RuleSet ruleSet;
+    private String[] priorityLabels;
 
     /**
      * The constructor.
@@ -109,57 +131,96 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeDefaultPreferences(IPreferenceStore)
      */
     protected void initializeDefaultPreferences(IPreferenceStore store) {
-        store.setDefault(RULESETS_PREFERENCE, DEFAULT_RULESETS);
-        store.setDefault(MIN_TILE_SIZE_PREFERENCE, DEFAULT_MIN_TILE_SIZE);
+        store.setDefault(RULESET_PREFERENCE, RULESET_DEFAULT);
+        store.setDefault(MIN_TILE_SIZE_PREFERENCE, MIN_TILE_SIZE_DEFAULT);
         super.initializeDefaultPreferences(store);
     }
 
     /**
-     * Convert the supplied PREFERENCE_DELIMITER delimited
-     * String to a String array.
-     * @return String[]
+     * Get the configured rule set
      */
-    private String[] convert(String preferenceValue) {
-        StringTokenizer tokenizer = new StringTokenizer(preferenceValue, PREFERENCE_DELIMITER);
-        int tokenCount = tokenizer.countTokens();
-        String[] elements = new String[tokenCount];
-        for (int i = 0; i < tokenCount; i++) {
-            elements[i] = tokenizer.nextToken();
+    public RuleSet getRuleSet() {
+        if (ruleSet == null) {
+            ruleSet = getRuleSetFromPreference();
         }
 
-        return elements;
+        return ruleSet;
     }
 
     /**
-     * Return the rulesets preference default
-     * as an array of Strings.
-     * @return String[]
+     * Set the rule set and store it in the preferences
      */
-    public String[] getDefaultRuleSetsPreference() {
-        return convert(getPreferenceStore().getDefaultString(RULESETS_PREFERENCE));
+    public void setRuleSet(RuleSet newRuleSet) {
+        ruleSet = newRuleSet;
+        storeRuleSetInPreference();
     }
 
     /**
-     * Return the rulesets preference as an array of
-     * Strings.
-     * @return String[]
+     * Get rule set from preference
      */
-    public String[] getRuleSetsPreference() {
-        return convert(getPreferenceStore().getString(RULESETS_PREFERENCE));
-    }
+    private RuleSet getRuleSetFromPreference() {
+        RuleSet preferedRuleSet = null;
+        RuleSetFactory factory = new RuleSetFactory();
+        String ruleSetPreference = getPreferenceStore().getString(RULESET_PREFERENCE);
 
-    /**
-     * Set the bad words preference
-     * @param String [] elements - the Strings to be 
-     * 	converted to the preference value
-     */
-    public void setRuleSetsPreference(String[] elements) {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < elements.length; i++) {
-            buffer.append(elements[i]);
-            buffer.append(PREFERENCE_DELIMITER);
+        // creating a default rule set from a ruleset list
+        if (ruleSetPreference.equals(RULESET_DEFAULT)) {
+            preferedRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(RULESET_DEFAULTLIST[0]));
+            for (int i = 1; i < RULESET_DEFAULTLIST.length; i++) {
+                RuleSet tmpRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(RULESET_DEFAULTLIST[i]));
+                preferedRuleSet.addRuleSet(tmpRuleSet);
+            }
+
+            preferedRuleSet.setName("pmd-eclipse");
+            preferedRuleSet.setDescription("PMD Plugin generated rule set");
         }
-        getPreferenceStore().setValue(RULESETS_PREFERENCE, buffer.toString());
+
+        // creating a rule set object from the preference store
+        else {
+            try {
+                InputStream ruleSetStream = new ByteArrayInputStream(ruleSetPreference.getBytes());
+                preferedRuleSet = factory.createRuleSet(ruleSetStream);
+                ruleSetStream.close();
+            } catch (IOException e) {
+                showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
+            }
+        }
+
+        return preferedRuleSet;
+
+    }
+
+    /**
+     * Store the rule set in preference store
+     */
+    private void storeRuleSetInPreference() {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            RuleSetWriter writer = new RuleSetWriter(out);
+            writer.write(ruleSet);
+            out.flush();
+            getPreferenceStore().setValue(PMDPlugin.RULESET_PREFERENCE, out.toString());
+            out.close();
+        } catch (IOException e) {
+            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_WRITING_PREFERENCE), e);
+        }
+    }
+
+    /**
+     * Return the priority labels
+     */
+    public String[] getPriorityLabels() {
+        if (priorityLabels == null) {
+            priorityLabels =
+                new String[] {
+                    getMessage(PMDConstants.MSGKEY_PRIORITY_ERROR_HIGH),
+                    getMessage(PMDConstants.MSGKEY_PRIORITY_ERROR),
+                    getMessage(PMDConstants.MSGKEY_PRIORITY_WARNING_HIGH),
+                    getMessage(PMDConstants.MSGKEY_PRIORITY_WARNING),
+                    getMessage(PMDConstants.MSGKEY_PRIORITY_INFORMATION)};
+        }
+
+        return priorityLabels;
     }
 
     /**

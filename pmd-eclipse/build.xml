@@ -12,7 +12,7 @@
 
 	<target name="init" depends="properties">
 		<property name="plugin" value="net.sourceforge.pmd.eclipse"/>
-		<property name="version.suffix" value="1.0.0"/>
+		<property name="version.suffix" value="1.1.0"/>
 		<property name="full.name" value="${plugin}_${version.suffix}"/>
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
 		<property name="plugin.destination" value="${basedir}"/>
@@ -41,7 +41,7 @@
 		<copy file="${build.result.folder}/pmd-eclipse.jar" todir="${destination.temp.folder}/${full.name}"/>
 		<copy file="${build.result.folder}/plugin.xml" todir="${destination.temp.folder}/${full.name}"/>
 		<copy file="${build.result.folder}/log4j.xml" todir="${destination.temp.folder}/${full.name}"/>
-		<copy file="${build.result.folder}/README" todir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/README.txt" todir="${destination.temp.folder}/${full.name}"/>
 		<copy file="${build.result.folder}/TODO.txt" todir="${destination.temp.folder}/${full.name}"/>
 		<copy file="${build.result.folder}/RELNOTES.txt" todir="${destination.temp.folder}/${full.name}"/>
 		<copy file="${build.result.folder}/CHANGELOG.txt" todir="${destination.temp.folder}/${full.name}"/>
@@ -85,7 +85,6 @@
 			<fileset dir="." includes="**/*.gif"/>
 			<fileset dir="." includes="**/*.xml"/>
 			<fileset dir="." includes="**/*.properties"/>
-			<fileset dir="." includes="README"/>
 			<fileset dir="." includes="**/*.txt"/>
 			<fileset dir="." includes="**/*.jar"/>
 			<fileset dir="." includes="doc.zip"/>

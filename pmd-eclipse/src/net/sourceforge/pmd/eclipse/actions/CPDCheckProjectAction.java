@@ -34,6 +34,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2003/06/30 20:16:06  phherlin
+ * Redesigning plugin configuration
+ *
  * Revision 1.5  2003/05/19 22:26:07  phherlin
  * Updating PMD engine to v1.05
  * Fixing CPD usage to conform to new engine implementation
@@ -42,13 +45,6 @@ import org.eclipse.ui.IWorkbenchPart;
 public class CPDCheckProjectAction implements IObjectActionDelegate, IRunnableWithProgress {
     private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.CPDCheckProjectAction");
     private IWorkbenchPart targetPart;
-
-    /**
-     * Constructor for CPDCheckProjectAction.
-     */
-    public CPDCheckProjectAction() {
-        super();
-    }
 
     /**
      * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
