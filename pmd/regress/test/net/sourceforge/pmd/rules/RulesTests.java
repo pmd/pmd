@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+*/
 package test.net.sourceforge.pmd.rules;
 
 import junit.framework.Test;
@@ -94,6 +97,9 @@ public class RulesTests
 
 /*
  * $Log$
+ * Revision 1.3  2003/12/03 19:52:42  tomcopeland
+ * [ 853409 ] VariableNamingConventionsRule false + on final instance vars
+ *
  * Revision 1.2  2003/11/13 20:28:03  tomcopeland
  * Implemented AbstractNamingRule
  *
