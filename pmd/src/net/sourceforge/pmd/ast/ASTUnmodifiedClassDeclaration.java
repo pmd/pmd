@@ -3,7 +3,6 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTUnmodifiedClassDeclaration extends SimpleNode {
-    private String className = null;
 
   public ASTUnmodifiedClassDeclaration(int id) {
     super(id);
