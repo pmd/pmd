@@ -152,6 +152,23 @@ public class Something {
     </example>
   </rule>
 
+  <rule name="ShortMethodNameRule"
+        message="Avoid using short method names."
+        class="net.sourceforge.pmd.rules.ShortMethodNameRule">
+     <description>
+Short Method Names: Detects when method names less than 4 characters
+long are used.
+     </description>
+     <example>
+<![CDATA[
+public class ShortMethod {
+  public void a( int i ) { // Violation
+  }
+}
+]]>
+     </example>
+  </rule>
+
   <rule name="IfElseStmtsMustUseBracesRule"
         message="Avoid using 'if...else' statements without curly braces"
         class="net.sourceforge.pmd.rules.IfElseStmtsMustUseBracesRule">
