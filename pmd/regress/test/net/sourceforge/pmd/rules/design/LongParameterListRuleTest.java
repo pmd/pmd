@@ -14,10 +14,6 @@ public class LongParameterListRuleTest
 	super( name );
     }
 
-    public void setUp() {
-	System.err.println("----------------");
-    }
-
     public LongParameterListRule getIUT() {
 	LongParameterListRule IUT = new LongParameterListRule();
 	IUT.addProperty("minimum", "9");
