@@ -6,24 +6,22 @@
 These are new rules that are still in progress
   </description>
 
-
-    <rule name="MethodArgumentCouldBeFinal"
-          message="Parameter ''{0}'' is not assigned and could be declared final"
+    <rule name="FindDataFlowAnomalies"
+        message="Found anomaly"
           symboltable="true"
-          class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal">
+          dfa="true"
+          class="net.sourceforge.pmd.dfa.DaaRule">
       <description>
-      A method argument that is never assigned can be declared final.
+          Merely figuring out how we can use this.
       </description>
-        <priority>3</priority>
+      <priority>3</priority>
       <example>
-  <![CDATA[
-  public void foo (String param) {
-      // do stuff with param never assigning it
-      // better: public void foo (final String param) {
-  }
-  ]]>
+        <![CDATA[
+          CODE
+        ]]>
       </example>
-      </rule>
+    </rule>
+
 
 
 
