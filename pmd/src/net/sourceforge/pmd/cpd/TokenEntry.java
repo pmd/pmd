@@ -15,6 +15,7 @@ public class TokenEntry implements Comparable {
     private TokenEntry() {
         this.image = "EOF";
         this.chars = image.toCharArray();
+        this.tokenSrcID = "EOFMarker";
     }
 
     public TokenEntry(String image, int index, String tokenSrcID, int beginLine) {

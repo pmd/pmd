@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.cpd;
 
-
-
 public class Mark {
 
     private int indexIntoFile;

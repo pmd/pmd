@@ -34,7 +34,9 @@ public class MatchAlgorithm {
             pool.put(token, token);
         }
         code.add(pool.get(token));
-        marks.add(new Mark(code.size(), token.getTokenSrcID(), token.getIndex(), token.getBeginLine()));
+        if (!(token.equals(TokenEntry.EOF))) {
+            marks.add(new Mark(code.size(), token.getTokenSrcID(), token.getIndex(), token.getBeginLine()));
+        }
     }
 
     public void findMatches(int min) {
