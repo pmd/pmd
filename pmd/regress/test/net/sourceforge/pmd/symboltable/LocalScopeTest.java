@@ -6,10 +6,7 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.LocalScope;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
-import net.sourceforge.pmd.symboltable.Kind;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.*;
 
 public class LocalScopeTest extends TestCase {
 
@@ -30,5 +27,12 @@ public class LocalScopeTest extends TestCase {
         scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE, Kind.LOCAL_VARIABLE));
         scope.addOccurrence(new NameOccurrence(NameDeclarationTest.createNode("foo", 12)));
         assertTrue(!scope.getUnusedDeclarations().hasNext());
+    }
+
+    public void testParent() {
+        Scope scope = new LocalScope();
+        Scope parent = new LocalScope();
+        scope.setParent(parent);
+        assertEquals(parent, scope.getParent());
     }
 }

@@ -12,6 +12,7 @@ import java.util.*;
 public class LocalScope implements Scope {
 
     private Map names = new HashMap();
+    private Scope parent;
 
     public void addDeclaration(NameDeclaration nameDecl) {
         if (names.containsKey(nameDecl)) {
@@ -61,4 +62,13 @@ public class LocalScope implements Scope {
         }
         return result;
     }
+
+    public void setParent(Scope parent) {
+        this.parent = parent;
+    }
+
+    public Scope getParent() {
+        return parent;
+    }
+
 }

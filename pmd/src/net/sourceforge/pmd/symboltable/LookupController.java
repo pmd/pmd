@@ -20,13 +20,12 @@ public class LookupController {
     }
 
     public void lookup(NameOccurrence nameOccurrence) {
-        lookup(nameOccurrence, symbolTable.size()-1);
+        lookup(nameOccurrence, symbolTable.getTail());
     }
 
-    private void lookup(NameOccurrence nameOccurrence, int startingDepth) {
-        Scope scope = (Scope)symbolTable.get(startingDepth);
-        if (!scope.contains(nameOccurrence) && startingDepth>1) {
-            lookup(nameOccurrence, startingDepth-1);
+    private void lookup(NameOccurrence nameOccurrence, Scope scope) {
+        if (!scope.contains(nameOccurrence) && scope.getParent() != null) {
+            lookup(nameOccurrence, scope.getParent());
         }
         if (scope.contains(nameOccurrence)) {
             scope.addOccurrence(nameOccurrence);

@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.symboltable;
 
 public class ContextManagerImpl implements ContextManager {
+
     private SymbolTable scopes;
 
     public ContextManagerImpl(SymbolTable scopes) {
@@ -13,7 +14,7 @@ public class ContextManagerImpl implements ContextManager {
     }
 
     public Scope getCurrentScope() {
-        return scopes.get(scopes.size()-1);
+        return scopes.getTail();
     }
 
     public void openScope(Scope scope) {
@@ -21,7 +22,7 @@ public class ContextManagerImpl implements ContextManager {
     }
 
     public void leaveScope() {
-        scopes.remove(scopes.size()-1);
+        scopes.removeTail();
     }
 
 }

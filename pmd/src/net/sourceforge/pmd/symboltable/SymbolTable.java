@@ -12,70 +12,28 @@ import java.util.*;
 
 public class SymbolTable {
 
-    private List scopes = new ArrayList(); // this will turn into a TreeSet at some point
+    // scopes is a List of Lists
+    private List scopes = new ArrayList();
 
-    public int size() {
+    public SymbolTable() {
+        scopes.add(new LocalScope());
+    }
+
+    public Scope getTail() {
+        return (Scope)scopes.get(scopes.size()-1);
+    }
+
+    public int depth() {
         return scopes.size();
     }
 
-    public Scope get(int index) {
-        return (Scope)scopes.get(index);
-    }
-
     public void add(Scope scope) {
+        scope.setParent(getTail());
         scopes.add(scope);
     }
 
-    public void remove(int index) {
-        scopes.remove(index);
-    }
-/*
-    private ContextManager cm;
-    private LookupController lookupController;
-*/
-/*
-    public SymbolTable() {
-        // this sharing of the scopes ArrayList seems evil.  Time will tell.
-        List scopes = new ArrayList();
-        lookupController = new LookupController(scopes);
-        cm = new ContextManager(scopes);
-        cm.openScope(new LocalScope()); // TODO this should be ClassScope, probably
-    }
-*/
-
-/*
-    public void openScope(Scope scope) {
-        cm.openScope(scope);
-    }
-*/
-
-/*
-    public void leaveScope() {
-        cm.leaveScope();
+    public void removeTail() {
+        scopes.remove(getTail());
     }
 
-*/
-/*
-    public void addDeclaration(NameDeclaration nameDecl) {
-        cm.getCurrentScope().addDeclaration(nameDecl);
-    }
-*/
-
-/*
-    public void lookup(NameOccurrence nameOccurrence) {
-        lookupController.lookup(nameOccurrence);
-    }
-*/
-
-/*
-    public Iterator getUnusedNameDeclarations() {
-        return cm.getCurrentScope().getUnusedDeclarations();
-    }
-
-*/
-/*
-    public Scope getCurrentScope() {
-        return cm.getCurrentScope();
-    }
-*/
 }

@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
@@ -21,20 +22,21 @@ public class SymbolTableTest extends TestCase {
     public void testAdd() {
         SymbolTable s = new SymbolTable();
         s.add(new LocalScope());
-        assertEquals(1,s.size());
+        assertEquals(2,s.depth());
     }
 
     public void testRemove() {
         SymbolTable s = new SymbolTable();
         s.add(new LocalScope());
-        s.remove(0);
-        assertEquals(0,s.size());
+        s.removeTail();
+        assertEquals(1,s.depth());
     }
 
     public void testGet() {
         SymbolTable s = new SymbolTable();
         Scope scope = new LocalScope();
         s.add(scope);
-        assertEquals(scope, s.get(0));
+        assertEquals(scope, s.getTail());
     }
+
 }

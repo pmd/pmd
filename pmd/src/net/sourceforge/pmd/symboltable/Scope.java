@@ -15,4 +15,6 @@ public interface Scope {
     public void addDeclaration(NameDeclaration decl);
     public boolean contains(NameOccurrence occ);
     public void addOccurrence(NameOccurrence occ);
+    public void setParent(Scope parent);
+    public Scope getParent();
 }
