@@ -7,19 +7,13 @@ package net.sourceforge.pmd.symboltable;
 
 public class LookupController {
 
-    private SymbolTable symbolTable;
-
-    public LookupController(SymbolTable scopes) {
-        this.symbolTable = scopes;
+    public void lookup(NameOccurrence nameOccurrence, Scope startingScope) {
+        lookupRecurse(nameOccurrence, startingScope);
     }
 
-    public void lookup(NameOccurrence nameOccurrence) {
-        lookup(nameOccurrence, symbolTable.peek());
-    }
-
-    private void lookup(NameOccurrence nameOccurrence, Scope scope) {
+    private void lookupRecurse(NameOccurrence nameOccurrence, Scope scope) {
         if (!scope.contains(nameOccurrence) && scope.getParent() != null) {
-            lookup(nameOccurrence, scope.getParent());
+            lookupRecurse(nameOccurrence, scope.getParent());
         }
         if (scope.contains(nameOccurrence)) {
             scope.addOccurrence(nameOccurrence);

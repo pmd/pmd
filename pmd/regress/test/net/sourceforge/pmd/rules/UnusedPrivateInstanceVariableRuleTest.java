@@ -22,89 +22,72 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
-    public void test1() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar1.java", rule);
-        assertEquals(1, report.size());
+   public void test1() throws Throwable {
+       runTest("UnusedPrivateInstanceVar1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar2.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar2.java", 0, rule);
     }
 
     public void test3() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar3.java", rule);
-        assertEquals(1, report.size());
+        runTest("UnusedPrivateInstanceVar3.java", 1, rule);
     }
 
     public void test4() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar4.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar4.java", 0, rule);
     }
 
     public void test6() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar6.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar6.java", 0, rule);
     }
     public void test7() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar7.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar7.java", 0, rule);
     }
 
     public void test8() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar8.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar8.java", 0, rule);
+    }
+
+    public void test9() throws Throwable {
+        runTest("UnusedPrivateInstanceVar9.java", 1, rule);
     }
 
     // TODO
     // this test defines the current behavior of this rule
     // i.e., it doesn't check instance vars in inner classes
     // when that's fixed, this test will break
-    // and we should replace the assertTrue() with the commented out assertEquals()
+    // and we should replace the current test with the commented out test
     // TODO
-    public void test9() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar10.java", rule);
-        //assertEquals(1, report.size());
-        assertTrue(report.isEmpty());
-    }
-
     public void test10() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar10.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar10.java", 0, rule);
+        //runTest("UnusedPrivateInstanceVar10.java", 1, rule);
     }
 
     public void test11() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar11.java", rule);
-        assertEquals(1, report.size());
+        runTest("UnusedPrivateInstanceVar11.java", 1, rule);
     }
 
     public void test12() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar12.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar12.java", 0, rule);
     }
 
     public void test13() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar13.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar13.java", 0, rule);
     }
 
     public void test14() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar14.java", rule);
-        assertEquals(1, report.size());
+        runTest("UnusedPrivateInstanceVar14.java", 1, rule);
     }
-
     public void test15() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar15.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar15.java", 2, rule);
     }
 
     public void test16() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar16.java", rule);
-        assertEquals(1, report.size());
+        runTest("UnusedPrivateInstanceVar16.java", 1, rule);
     }
 
     public void test17() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar17.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedPrivateInstanceVar17.java", 0, rule);
     }
 }

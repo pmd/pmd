@@ -17,22 +17,18 @@ import java.util.List;
 public class LookupControllerTest extends TestCase {
 
     public void testLookupFound() {
-        SymbolTable symbolTable = new SymbolTable();
         Scope scope = new LocalScope();
         scope.addDeclaration(NameDeclarationTest.FOO);
-        symbolTable.push(scope);
-        LookupController lc = new LookupController(symbolTable);
-        lc.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
+        LookupController lc = new LookupController();
+        lc.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE), scope);
         assertTrue(!scope.getUnusedDeclarations().hasNext());
     }
 
     public void testLookupNotFound() {
-        SymbolTable symbolTable = new SymbolTable();
         Scope scope = new LocalScope();
         scope.addDeclaration(NameDeclarationTest.FOO);
-        symbolTable.push(scope);
-        LookupController lc = new LookupController(symbolTable);
-        lc.lookup(new NameOccurrence(NameDeclarationTest.createNode("bar", 10)));
+        LookupController lc = new LookupController();
+        lc.lookup(new NameOccurrence(NameDeclarationTest.createNode("bar", 10)), scope);
         assertTrue(scope.getUnusedDeclarations().hasNext());
     }
 }

@@ -7,6 +7,8 @@ package net.sourceforge.pmd.symboltable;
 
 import java.util.Iterator;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GlobalScope extends AbstractScope implements Scope {
 
@@ -23,4 +25,18 @@ public class GlobalScope extends AbstractScope implements Scope {
 
     public void addOccurrence(NameOccurrence occ) {
     }
+
+    public String toString() {
+        String result = "GlobalScope:";
+        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            result += nameDeclaration.getImage() +",";
+        }
+        return result;
+    }
+
+    protected NameDeclaration findHere(NameOccurrence occ) {
+        return null;
+    }
+
 }

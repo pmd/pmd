@@ -6,10 +6,7 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.ScopeFactory;
-import net.sourceforge.pmd.symboltable.GlobalScope;
-import net.sourceforge.pmd.symboltable.ClassScope;
-import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.*;
 import net.sourceforge.pmd.ast.*;
 
 public class ScopeFactoryTest extends TestCase {
@@ -21,15 +18,18 @@ public class ScopeFactoryTest extends TestCase {
 
     public void testClassScope() {
         ScopeFactory sf = new ScopeFactory();
-        assertTrue(sf.createScope(new ASTClassBody(1)) instanceof ClassScope);
+        assertTrue(sf.createScope(new ASTUnmodifiedClassDeclaration(1)) instanceof ClassScope);
+    }
+
+    public void testfunctionScope() {
+        ScopeFactory sf = new ScopeFactory();
+        assertTrue(sf.createScope(new ASTMethodDeclaration(1)) instanceof FunctionScope);
+        assertTrue(sf.createScope(new ASTConstructorDeclaration(1)) instanceof FunctionScope);
     }
 
     public void testLocalScope() {
         ScopeFactory sf = new ScopeFactory();
-        assertTrue(sf.createScope(new ASTMethodDeclaration(1)) instanceof LocalScope);
         assertTrue(sf.createScope(new ASTBlock(1)) instanceof LocalScope);
-        assertTrue(sf.createScope(new ASTConstructorDeclaration(1)) instanceof LocalScope);
-        assertTrue(sf.createScope(new ASTFieldDeclaration(1)) instanceof LocalScope);
         assertTrue(sf.createScope(new ASTTryStatement(1)) instanceof LocalScope);
         assertTrue(sf.createScope(new ASTForStatement(1)) instanceof LocalScope);
         assertTrue(sf.createScope(new ASTIfStatement(1)) instanceof LocalScope);

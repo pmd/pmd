@@ -5,23 +5,30 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import java.util.Iterator;
-import java.util.Collections;
+import java.util.*;
 
-public class ClassScope extends AbstractScope implements Scope {
+public class ClassScope extends AbstractScope {
 
-    public Iterator getUnusedDeclarations() {
-        return Collections.EMPTY_LIST.iterator();
+    private String className;
+
+    public ClassScope(String className) {
+        this.className = className;
     }
 
-    public void addDeclaration(NameDeclaration decl) {
+    protected NameDeclaration findHere(NameOccurrence occurrence) {
+        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            if (nameDeclaration.getImage().equals(occurrence.getObjectName())
+             || (className + "." + nameDeclaration.getImage()).equals(occurrence.getImage())
+            ) {
+                return nameDeclaration;
+            }
+        }
+        return null;
     }
 
-    public boolean contains(NameOccurrence occ) {
-        return false;
-    }
-
-    public void addOccurrence(NameOccurrence occ) {
+    public String toString() {
+        return "ClassScope:" + super.glomNames();
     }
 
 }

@@ -42,7 +42,7 @@ public class SimpleNode implements Node {
 
     public Scope getScope() {
         if (scope == null) {
-            throw new RuntimeException("No scope set on " + this);
+            return ((SimpleNode)parent).getScope();
         }
         return scope;
     }

@@ -33,7 +33,6 @@ public class PMD {
             //c.dump("");
             SymbolFacade stb = new SymbolFacade();
             stb.initializeWith(c);
-            ctx.setSymbolTableBuilder(stb);
             List acus = new ArrayList();
             acus.add(c);
             ruleSet.apply(acus, ctx);

@@ -9,9 +9,7 @@ import net.sourceforge.pmd.ast.*;
 
 import java.util.*;
 
-public class LocalScope extends AbstractScope implements Scope {
-
-    private Map names = new HashMap();
+public class LocalScope extends AbstractScope {
 
     public void addDeclaration(NameDeclaration nameDecl) {
         if (nameDecl.isExceptionBlockParameter()) {
@@ -19,36 +17,10 @@ public class LocalScope extends AbstractScope implements Scope {
             // highest LocalScope?
             return;
         }
-        if (names.containsKey(nameDecl)) {
-            throw new RuntimeException(nameDecl + " is already in the symbol table");
-        }
-        names.put(nameDecl, new ArrayList());
+        super.addDeclaration(nameDecl);
     }
 
-    public boolean contains(NameOccurrence occurrence) {
-        return findHere(occurrence) != null;
-    }
-
-    public void addOccurrence(NameOccurrence occurrence) {
-        NameDeclaration decl = findHere(occurrence);
-        if (decl != null) {
-            List nameOccurrences = (List)names.get(decl);
-            nameOccurrences.add(occurrence);
-        }
-    }
-
-    public Iterator getUnusedDeclarations() {
-        List unused = new ArrayList();
-        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
-            if (((List)names.get(nameDeclaration)).isEmpty()) {
-                unused.add(nameDeclaration);
-            }
-        }
-        return unused.iterator();
-    }
-
-    private NameDeclaration findHere(NameOccurrence occurrence) {
+    protected NameDeclaration findHere(NameOccurrence occurrence) {
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
             NameDeclaration nameDeclaration = (NameDeclaration)i.next();
             if (nameDeclaration.getImage().equals(occurrence.getObjectName())) {
@@ -59,13 +31,6 @@ public class LocalScope extends AbstractScope implements Scope {
     }
 
     public String toString() {
-        String result = "";
-        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
-            result += nameDeclaration.getImage() +",";
-        }
-        return result;
+        return "LocalScope:" + super.glomNames();
     }
-
-
 }

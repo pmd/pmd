@@ -28,14 +28,4 @@ public class RuleContext {
     public void setSourceCodeFilename(String filename) {
         this.sourceCodeFilename = filename;
     }
-
-    public void setSymbolTableBuilder(SymbolFacade table) {
-        this.builder = table;
-    }
-
-    public SymbolFacade getSymbolTableBuilder() {
-        return this.builder;
-    }
-
-
 }
