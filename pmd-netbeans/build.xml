@@ -60,7 +60,7 @@
 		</makenbm>
 	</target>
 	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
-		<zip compress="true" destfile="build/pmd-netbeans-src-${VERSION}.zip">
+		<zip compress="true" destfile="build/pmd-netbeans35-src-${VERSION}.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 				<include name="build.xml"/>
@@ -74,7 +74,7 @@
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
-		<zip compress="true" destfile="build/pmd-netbeans-bin-${VERSION}.zip">
+		<zip compress="true" destfile="build/pmd-netbeans35-bin-${VERSION}.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 			</zipfileset>
