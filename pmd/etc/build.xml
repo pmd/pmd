@@ -58,9 +58,9 @@
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <!--<pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/tmp.xml" format="html">-->
-        <pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/braces.xml,rulesets/naming.xml,rulesets/design.xml,rulesets/junit.xml,rulesets/strings.xml,rulesets/basic.xml,rulesets/imports.xml,rulesets/unusedcode.xml,rulesets/newrules.xml" format="html">
+        <pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/unusedcode.xml" format="html">
             <!--<fileset dir="c:\data\pmd\pmd\src\net\sourceforge\pmd\">-->
-            <fileset dir="c:\j2sdk1.4.0_01\src\java\">
+            <fileset dir="c:\j2sdk1.4.0_01\src\java\text">
                 <include name="**/*.java"/>
                 <!--<exclude name="**/ast**/"/>-->
             </fileset>
