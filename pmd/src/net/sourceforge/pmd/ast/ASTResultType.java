@@ -11,6 +11,9 @@ public class ASTResultType extends SimpleNode {
     super(p, id);
   }
 
+    public boolean isVoid() {
+        return jjtGetNumChildren() == 0;
+    }
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {

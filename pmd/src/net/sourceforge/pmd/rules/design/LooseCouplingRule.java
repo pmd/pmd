@@ -41,28 +41,26 @@ public class LooseCouplingRule extends AbstractRule {
     }
 
     public Object visit(ASTResultType node, Object data) {
-        checkType(node, data);
-        return data;
+        if (node.isVoid()) {
+            return data;
+        }
+        return checkType(node, data);
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {
-        checkType(node, data);
-        return data;
+        return checkType(node, data);
     }
 
     public Object visit(ASTFormalParameter node, Object data) {
-        checkType(node, data);
-        return data;
+        return checkType(node, data);
     }
 
-    private void checkType(SimpleNode node, Object data) {
-        if (node.jjtGetNumChildren() ==0) {
-            return;
-        }
-        SimpleNode returnTypeNameNode = (SimpleNode)node.jjtGetChild(0).jjtGetChild(0);
-        if (implClassNames.contains(returnTypeNameNode.getImage())) {
+    private Object checkType(SimpleNode node, Object data) {
+        SimpleNode name = (SimpleNode)node.jjtGetChild(0).jjtGetChild(0);
+        if (implClassNames.contains(name.getImage())) {
             RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, returnTypeNameNode.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {returnTypeNameNode.getImage()})));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, name.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {name.getImage()})));
         }
+        return data;
     }
 }
