@@ -8,7 +8,7 @@
 <property name="test-data" value="test-data\"/>
 <property name="regress" value="regress\"/>
 <property name="reports" value="reports\"/>
-<property name="version" value="1.0rc2"/>
+<property name="version" value="1.0rc3"/>
 <property name="jnlp_staging_area" value="c:\data\importscrubberjnlp\"/>
 
   <path id="classpath.path">
@@ -57,9 +57,10 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/tmp.xml" format="html">
+        <!--<pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/tmp.xml" format="html">-->
+        <pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/braces.xml,rulesets/naming.xml,rulesets/design.xml,rulesets/junit.xml,rulesets/strings.xml,rulesets/basic.xml,rulesets/imports.xml,rulesets/unusedcode.xml,rulesets/newrules.xml" format="html">
             <!--<fileset dir="c:\data\pmd\pmd\src\net\sourceforge\pmd\">-->
-            <fileset dir="c:\j2sdk1.4.0_01\src\java\text">
+            <fileset dir="c:\j2sdk1.4.0_01\src\java\">
                 <include name="**/*.java"/>
                 <!--<exclude name="**/ast**/"/>-->
             </fileset>

@@ -1,7 +1,7 @@
-???? 2002 - ???:
+October 04 2002 - 1.0rc3:
 Added new rules: OnlyOneReturnRule, JumbledIncrementerRule, AvoidDeeplyNestedIfStmtsRule
 PMD is now built and tested with JUnit 3.8.1 and Ant 1.5.
-Added some limited support for the IDEAJ IDE.
+Added support for IntelliJ's IDEAJ.
 Fixed bug 610018 - StringInstantiationRule now allows for String(byte[], int, int) usage.
 Fixed bug 610693 - UnusedPrivateInstanceVariable handles parameter shadowing better.
 Fixed bug 616535 - Command line interface input checking is better now.

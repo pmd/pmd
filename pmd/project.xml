@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>1.0rc2</currentVersion>
+  <currentVersion>1.0rc3</currentVersion>
   <organization>
     <name>Project Ultra*Log @ DARPA</name>
     <url>http://pmd.sourceforge.net/</url>
@@ -47,9 +47,9 @@
 
   <versions>
     <version>
-      <id>1.0rc2</id>
-      <name>1.0rc2</name>
-      <tag>pmd_release_1_0rc2</tag>
+      <id>1.0rc3</id>
+      <name>1.0rc3</name>
+      <tag>pmd_release_1_0rc3</tag>
     </version>
     <version>
       <id>dev</id>
@@ -116,21 +116,6 @@
   </developers>
 
   <contributors>
-    <contributor>
-      <name>Damian ONeill</name>
-    </contributor>
-    <contributor>
-      <name>Ralph Schaer</name>
-    </contributor>
-    <contributor>
-      <name>Peter Friese</name>
-    </contributor>
-    <contributor>
-      <name>Nanne Baars</name>
-    </contributor>
-    <contributor>
-      <name>Vladimir Bossicard - http://junit-addons.sf.net/</name>
-    </contributor>
     </contributors>
 
   <!-- Need to mark these as compile-time/run-time -->

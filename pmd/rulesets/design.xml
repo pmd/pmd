@@ -212,7 +212,26 @@ public class Foo {
     </example>
     </rule>
 
+   <rule name="OnlyOneReturn"
+        message="A method should have only one exit point, and that should be the last statement in the method"
+        class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule">
+    <description>
+    A method should have only one exit point, and that should be the last statement in the method.
+    </description>
 
+    <example>
+<![CDATA[
+public class OneReturnOnly1 {
+ public void foo(int x) {
+  if (x > 0) {
+   return "hey";   // oops, multiple exit points!
+  }
+  return "hi";
+ }
+}
+]]>
+    </example>
+    </rule>
 </ruleset>
 
 
