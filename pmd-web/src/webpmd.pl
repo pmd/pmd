@@ -13,18 +13,19 @@ sub nopage() {
 
 sub default() {
  print start_html("Run PMD on your Sourceforge project");
- if (param("unixname")) {
-  addProject(param("unixname"), param("moduledirectory"), param("srcdir"));
+ if (param("title")) {
+  addProject(param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
   print p();
-  print b("Added that project to the schedule");
+  my $title = param("title");
+  print b("Added ${title} to the schedule");
  } 
  print p("PMD is run hourly on these projects:");
  print p(loadProjectList());
  #print p("Stats:");
  print p("Want to run PMD on your Sourceforge project?  Fill in the blanks and hit go");
  print start_form();
- print p(), "Project title (i.e., PMD): ", textfield(-name=>'unixname',-default=>'',-override=>1);
- print p(), "Project name (i.e., pmd): ", textfield(-name=>'unixname',-default=>'',-override=>1);
+ print p(), "Project title (i.e., PMD): ", textfield(-name=>'title',-default=>'',-override=>1);
+ print p(), "Project's Unix name (i.e., pmd): ", textfield(-name=>'unixname',-default=>'',-override=>1);
  print p(), "Module directory (i.e., pmd-dcpd): ", textfield(-name=>'moduledirectory',-default=>'',-override=>1);
  print p(), "Source directory (i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
  my $cachebuster=`date`;
@@ -56,8 +57,9 @@ sub loadProjectList() {
 
 
 sub addProject() {
- my ($project,$srcdir,$moduleDirectory) = @_;
- `echo "${project}:$moduleDirectory:${srcdir}" > jobs/${moduleDirectory}.txt`;
+ my ($title, $unixname,$moduleDirectory,$srcdir) = @_;
+ my $cmd="echo \"${title}:${unixname}:${moduleDirectory}:${srcdir}\" > jobs/${moduleDirectory}.txt";
+ `${cmd}`;
 }
 
 sub refreshReport() {
