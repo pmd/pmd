@@ -2,10 +2,9 @@
 
 require '/home/tom/data/pmd/pmd-web/src/pmd.rb'
 
-Dir.chdir(PMD::Job::ROOT);
+Dir.chdir(PMD::Job::ROOT)
 
-jobsDir = Dir.new("jobs/")
-jobsDir.each { |candidate| 
+Dir.new("jobs").each { |candidate| 
  begin 	
   if candidate[".txt"] 
    location,title,unixname,moduleDir,srcDir = File.new("jobs/#{candidate}").read.split(":") 
@@ -16,7 +15,7 @@ jobsDir.each { |candidate|
    puts "Processing #{job}"
    job.clear
    job.checkout_code
-   if (job.checkOutOK)
+   if job.checkOutOK
     job.run_pmd
     job.run_cpd
     job.ncss

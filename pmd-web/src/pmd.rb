@@ -67,9 +67,9 @@ class Job
    `#{cmd}`
   end
 	def copy_up
-		`scp #{reportFile} #{cpdReportFile} #{ncssReportFile} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
+		`scp #{ROOT}/#{reportFile} #{ROOT}/#{cpdReportFile} #{ROOT}/#{ncssReportFile} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
 		if File.exists?("lastruntime.txt")
-			`scp lastruntime.txt tomcopeland@pmd.sf.net:#{REMOTE_CGI_DIR}`
+			`scp #{ROOT}/lastruntime.txt tomcopeland@pmd.sf.net:#{REMOTE_CGI_DIR}`
 		end
 	end
 	def reportFile 
@@ -82,9 +82,9 @@ class Job
 		return "#{@unixName}_#{@moduleDirectory.sub(/ /, '')}_ncss.txt"
 	end
 	def clear
-		`rm -rf "#{@moduleDirectory}" #{reportFile} #{cpdReportFile} #{ncssReportFile}`
-		if File.exists?("lastruntime.txt")
-			`rm -rf lastruntime.txt`
+		`rm -rf "#{ROOT}/#{@moduleDirectory}" #{ROOT}/#{reportFile} #{ROOT}/#{cpdReportFile} #{ROOT}/#{ncssReportFile}`
+		if File.exists?("#{ROOT}/lastruntime.txt")
+			`rm -rf #{ROOT}/lastruntime.txt`
 		end
 	end
 	def to_s
