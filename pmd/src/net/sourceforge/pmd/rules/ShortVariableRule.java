@@ -5,6 +5,8 @@ import net.sourceforge.pmd.RuleContext;
 
 import net.sourceforge.pmd.ast.*;
 
+import java.text.MessageFormat;
+
 public class ShortVariableRule 
     extends AbstractRule
 {
@@ -14,9 +16,8 @@ public class ShortVariableRule
 	RuleContext ctx = (RuleContext) data;
 	String image = decl.getImage();
 
-	if ((image.length() <= 3) && 
-	    (!(isForInit( decl )))) {
-	    ctx.getReport().addRuleViolation( createRuleViolation( ctx, decl.getBeginLine(), "Avoid short variable names like " + decl.getImage()));
+	if ((image.length() <= 3) && (!(isForInit( decl )))) {
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {image})));
 	}
 
 	return null;

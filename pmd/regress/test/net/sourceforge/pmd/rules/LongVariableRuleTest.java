@@ -11,37 +11,45 @@ import junit.framework.*;
 public class LongVariableRuleTest
     extends RuleTst
 {
+
+    private LongVariableRule rule;
+
     public LongVariableRuleTest( String name ) {
 	super( name );
     }
 
+    public void setUp() {
+        rule = new LongVariableRule();
+        rule.setMessage("Avoid long names like {0}");
+    }
+
     public void testLongVariableField() throws Throwable {
 	Report report = process("LongVariableField.java",
-				new LongVariableRule() );
+				rule );
 	assertEquals( 1, report.size() );
     }
 
     public void testLongVariableLocal() throws Throwable {
 	Report report = process("LongVariableLocal.java",
-				new LongVariableRule() );
+				rule );
 	assertEquals( 1, report.size() );
     }
 
     public void testLongVariableFor() throws Throwable {
 	Report report = process("LongVariableFor.java",
-				new LongVariableRule() );
+				rule );
 	assertEquals( 1, report.size() );
     }
 
     public void testLongVariableParam() throws Throwable {
 	Report report = process("LongVariableParam.java",
-				new LongVariableRule() );
+				rule );
 	assertEquals( 1, report.size() );
     }
 
     public void testLongVariableNone() throws Throwable {
 	Report report = process("LongVariableNone.java",
-				new LongVariableRule() );
+				rule );
 	assertEquals( 0, report.size() );
     }
 }

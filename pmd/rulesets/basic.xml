@@ -64,7 +64,7 @@ while (a == b) {
   </rule>
 
   <rule name="ShortVariable"
-        message="Avoid variables with short names"
+        message="Avoid variables with short names such as ''{0}''"
         class="net.sourceforge.pmd.rules.ShortVariableRule">
     <description>
 Short Variable: detects when a field, local or parameter has a
@@ -88,7 +88,7 @@ public class Something {
   </rule>
 
   <rule name="LongVariable"
-        message="Avoid excessively long variable names"
+        message="Avoid excessively long variable names such as ''{0}''"
         class="net.sourceforge.pmd.rules.LongVariableRule">
     <description>
 Long Variable: detects when a field, formal or local variable is declared
@@ -114,7 +114,7 @@ public class Something {
   </rule>
 
   <rule name="ShortMethodNameRule"
-        message="Avoid using short method names."
+        message="Avoid using short method names such as ''{0}''"
         class="net.sourceforge.pmd.rules.ShortMethodNameRule">
      <description>
 Short Method Names: Detects when method names less than 4 characters

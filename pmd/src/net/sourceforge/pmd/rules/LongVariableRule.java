@@ -5,11 +5,11 @@ import net.sourceforge.pmd.RuleContext;
 
 import net.sourceforge.pmd.ast.*;
 
+import java.text.MessageFormat;
+
 public class LongVariableRule 
     extends AbstractRule
 {
-    public LongVariableRule() { }
-
     public static final int LONG_VARIABLE_LIMIT = 12;
 
     public Object visit(ASTVariableDeclaratorId decl, Object data) {
@@ -17,7 +17,8 @@ public class LongVariableRule
 	String image = decl.getImage();
 
 	if (image.length() > LONG_VARIABLE_LIMIT) {
-	    ctx.getReport().addRuleViolation( createRuleViolation( ctx, decl.getBeginLine(), "Avoid long variable names like " + decl.getImage()));
+        String msg = MessageFormat.format(getMessage(), new Object[] {image});
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getBeginLine(), msg));
 	}
 	
 	return null;

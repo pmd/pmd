@@ -6,6 +6,8 @@ import net.sourceforge.pmd.RuleViolation;
 
 import net.sourceforge.pmd.ast.*;
 
+import java.text.MessageFormat;
+
 public class ShortMethodNameRule
     extends AbstractRule
 {
@@ -16,11 +18,7 @@ public class ShortMethodNameRule
 	String image = decl.getImage();
 
 	if (image.length() <= 3) {
-	    RuleViolation violation =
-		createRuleViolation( ctx, decl.getBeginLine(),
-				     "Avoid short method names like " +
-				     decl.getImage() );
-	    ctx.getReport().addRuleViolation( violation );
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {decl.getImage()})));
 	}
 
 	return null;

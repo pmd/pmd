@@ -11,31 +11,39 @@ import junit.framework.*;
 public class ShortMethodNameRuleTest
     extends RuleTst
 {
+
+    private ShortMethodNameRule rule;
+
     public ShortMethodNameRuleTest( String name ) {
 	super( name );
     }
 
+    public void setUp() {
+        rule = new ShortMethodNameRule();
+        rule.setMessage("Avoid this stuff -> {0}");
+    }
+
     public void testShortMethodName0() throws Throwable {
 	Report report = process("ShortMethodName0.java",
-				new ShortMethodNameRule() );
+				rule );
 	assertEquals( 0, report.size() );
     }
 
     public void testShortMethodName1() throws Throwable {
 	Report report = process("ShortMethodName1.java",
-				new ShortMethodNameRule() );
+				rule );
 	assertEquals( 1, report.size() );
     }
 
     public void testShortMethodName2() throws Throwable {
 	Report report = process("ShortMethodName2.java",
-				new ShortMethodNameRule() );
+				rule );
 	assertEquals( 2, report.size() );
     }
 
     public void testShortMethodName3() throws Throwable {
 	Report report = process("ShortMethodName3.java",
-				new ShortMethodNameRule() );
+				rule );
 	assertEquals( 1, report.size() );
     }
 }
