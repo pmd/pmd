@@ -56,8 +56,17 @@ public class TypeSetTest extends TestCase {
         Class clazz = t.findClass("File");
         assertEquals(File.class, clazz);
     }
-    // inner class tests
 
+    public void testFindClassPrimitive() throws Throwable {
+        TypeSet t = new TypeSet();
+        assertEquals(int.class, t.findClass("int"));
+    }
+
+    public void testFindClassVoid() throws Throwable {
+        TypeSet t = new TypeSet();
+        assertEquals(void.class, t.findClass("void"));
+    }
+    // inner class tests
     public void testPrimitiveTypeResolver() throws Throwable {
         TypeSet.Resolver r = new TypeSet.PrimitiveTypeResolver();
         assertEquals(int.class, r.resolve("int"));
@@ -86,9 +95,7 @@ public class TypeSetTest extends TestCase {
         try {
             r.resolve("PMD");
             throw new RuntimeException("Should have thrown an exception");
-        } catch (ClassNotFoundException cnfe) {
-            // cool
-        }
+        } catch (ClassNotFoundException cnfe) {}
     }
 
     public void testCurrentPackageResolverPass() throws Throwable {
@@ -113,15 +120,11 @@ public class TypeSetTest extends TestCase {
         try {
             r.resolve("foo");
             throw new RuntimeException("Should have thrown an exception");
-        } catch (ClassNotFoundException cnfe) {
-            // cool
-        }
+        } catch (ClassNotFoundException cnfe) {}
         try {
             r.resolve("String");
             throw new RuntimeException("Should have thrown an exception");
-        } catch (ClassNotFoundException cnfe) {
-            // cool
-        }
+        } catch (ClassNotFoundException cnfe) {}
     }
 
 }

@@ -102,6 +102,12 @@ public class TypeSet {
         }
     }
 
+    public static class FullyQualifiedNameResolver implements Resolver {
+        public Class resolve(String name) throws ClassNotFoundException {
+            return Class.forName(name);
+        }
+    }
+
     private String pkg;
     private Set imports = new HashSet();
     private List resolvers = new ArrayList();
@@ -123,6 +129,7 @@ public class TypeSet {
     }
 
     public Class findClass(String name) throws ClassNotFoundException {
+        // we don't build the resolvers until now since we first want to get all the imports
         if (resolvers.isEmpty()) {
             buildResolvers();
         }
@@ -144,6 +151,7 @@ public class TypeSet {
         resolvers.add(new CurrentPackageResolver(pkg));
         resolvers.add(new ImplicitImportResolver());
         resolvers.add(new ImportOnDemandResolver(imports));
+        resolvers.add(new FullyQualifiedNameResolver());
     }
 
 }
