@@ -62,6 +62,10 @@ public class PMDJEditPlugin extends EditPlugin {
     public void instanceCheckDirectory(View view) {
         if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
             final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE);
+            if (dir == null || !(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
+                JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             process(findFilesInDirectory(dir));
         } else {
             final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
@@ -81,6 +85,10 @@ public class PMDJEditPlugin extends EditPlugin {
     public void instanceCheckDirectoryRecursively(View view) {
         if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
             final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
+            if (dir == null || !(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
+                JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             process(findFilesRecursively(dir));
         } else {
             final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
