@@ -1,3 +1,7 @@
+???? ?? 2002 - 1.0.1:
+Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.
+Fixed bug 633892: StringToStringRule false positive exposed problem in symbol table usage to declaration code.
+
 November 04 2002 - 1.0:
 Added new rules: StringToStringRule, AvoidReassigningParametersRule, UnnecessaryConstructorRule, AvoidStringLiteralsRule
 Fixed bug 631010: AvoidDeeplyNestedIfStmtsRule works correctly with if..else stmts now

@@ -53,7 +53,7 @@ public abstract class AbstractScope implements Scope {
 
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
         NameDeclaration decl = findVariableHere(occurrence);
-        if (decl != null) {
+        if (decl != null && !occurrence.isThisOrSuper()) {
             List nameOccurrences = (List)variableNames.get(decl);
             nameOccurrences.add(occurrence);
         }

@@ -22,7 +22,7 @@ public class StringToStringRule extends AbstractRule {
         if (nameNode instanceof ASTPrimitiveType || !nameNode.getImage().equals("String")) {
             return data;
         }
-        // now we know we're at a node of type String
+        // now we know we're at a variable declaration of type String
         Map decls = node.getScope().getVariableDeclarations(true);
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
