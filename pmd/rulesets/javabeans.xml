@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<ruleset name="JavaBean Rules">
+  <description>
+The JavaBeans Ruleset catches instances of bean rules not being followed.
+  </description>
+
+
+  <rule name="BeanMembersShouldSerialize"
+        message="Found non-transient, non-static member. Please mark as transient or provide accessors."
+        class="net.sourceforge.pmd.rules.BeanMembersShouldSerializeRule">
+    <description>
+If a class is a bean, or is referenced by a bean, directly or indirectly
+it needs to be serializable. Member variables need to be marked as transient,
+marked as static, or have accessor methods in the class. Marking variables
+as transient is the safest and easiest modification. Accessor methods should
+follow the Java naming conventions, i.e.if you have a variable foo, you should
+provide getFoo and setFoo methods.
+    </description>
+      <priority>3</priority>
+
+    <example>
+<![CDATA[
+  private transient int someFoo;//good, it's transient
+  private static int otherFoo;// also OK
+  private int moreFoo;// OK, has proper accessors, see below
+  private int badFoo;//bad, should be marked transient
+
+
+  private void setMoreFoo(int moreFoo){
+        this.moreFoo = moreFoo;
+  }
+
+  private int getMoreFoo(){
+        return this.moreFoo;
+  }
+
+]]>
+    </example>
+  </rule>
+
+
+
+</ruleset>

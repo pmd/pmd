@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Frank Hardisty - BeanMembersShouldSerializeRule</li>
             <li>Randall Schulz - bug report for LooseCouplingRule</li>
             <li>Wim Bervoets - bug report for the PMD Ant task</li>
             <li>Niels Peter Strandberg - various tweaks to the PMD Swing UI</li>
