@@ -38,8 +38,10 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Philippe Couton - JUnitStaticSuiteRule improvements</li>
+            <li>Vladimir Bossicard - suggested AbstractNamingRule, test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
+            <li>Ken Foskey - noticed bad link</li>
             <li>Stephan Janssen - promoted PMD for <a href="https://jjguidelines.dev.java.net/">JJGuidelines</a></li>
-            <li>Vladimir Bossicard - test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Ron Sidi - bug reports</li>
             <li>David Koontz - suggestions for tweaking PMD command line options</li>
             <li>Jesse Glick - patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>

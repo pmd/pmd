@@ -25,38 +25,45 @@ package test.net.sourceforge.pmd.rules.junit;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.XPathRule;
-import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class JUnitStaticSuiteRuleTest extends RuleTst {
-
-    private static final String TEST1 =
-    "public class JUnitStaticSuite1 {" + PMD.EOL +
-    " public TestSuite suite() {}" + PMD.EOL +
-    "}";
-
-    private static final String TEST2 =
-    "public class JUnitStaticSuite2 {" + PMD.EOL +
-    " public static TestSuite suite() {}" + PMD.EOL +
-    "}";
-
-    private static final String TEST3 =
-    "public class JUnitStaticSuite3 {" + PMD.EOL +
-    " private static TestSuite suite() {}" + PMD.EOL +
-    "}";
+public class JUnitStaticSuiteRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite']");
+        rule.addProperty("xpath", "//MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite'][MethodDeclarator/FormalParameters/@ParameterCount=0]");
     }
-    public void testNonstatic() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "nonstatic is bad", 1, rule),
+           new TestDescriptor(TEST2, "public static with no params is OK", 0, rule),
+           new TestDescriptor(TEST3, "private suite() is bad", 1, rule),
+           new TestDescriptor(TEST4, "if there are params, just skip it", 0, rule),
+       });
     }
-    public void testGoodOK() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void testPrivateSuite() throws Throwable {
-        runTestFromString(TEST3, 1, rule);
-    }
+
+    private static final String TEST1 =
+    "public class Foo {" + PMD.EOL +
+    " public TestSuite suite() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " public static TestSuite suite() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " private static TestSuite suite() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " protected static Test suite(Foo foo) {}" + PMD.EOL +
+    "}";
+
 }

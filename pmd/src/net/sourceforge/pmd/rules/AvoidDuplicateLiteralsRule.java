@@ -30,20 +30,19 @@ import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.StringTokenizer;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.File;
-import java.io.LineNumberReader;
-import java.io.BufferedReader;
 
 public class AvoidDuplicateLiteralsRule extends AbstractRule {
 

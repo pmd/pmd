@@ -36,7 +36,10 @@ public class JumbledIncrementerRuleTest extends SimpleAggregatorTst {
         rule = new XPathRule();
         rule.addProperty(
             "xpath",
-            "//ForStatement[ForUpdate/StatementExpressionList/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/@Image = ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]");
+            "//ForStatement"
+                +"[ForUpdate/StatementExpressionList/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/@Image"
+                +"="
+                +"ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]");
     }
 
     public void testAll() {

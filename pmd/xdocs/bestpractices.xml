@@ -15,7 +15,7 @@
        <p>Instead, start with some of the obvious rulesets - just run <a href="rules/unusedcode.html">unusedcode</a>
            and fix any unused locals and fields.
  Then, run <a href="rules/basic.html">basic</a> and fix all the empty <code>if</code> statements and such-like.
-           Then peruse the <a href="rules/basic.html">design</a> and
+           Then peruse the <a href="rules/design.html">design</a> and
  <a href="rules/controversial.html">controversial</a> rulesets and use the ones
            you like <a href="howtomakearuleset.html">via a custom ruleset.</a></p>
    </subsection>

@@ -29,6 +29,29 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class JUnitSpellingRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//MethodDeclarator[(not(@Image = 'setUp') and translate(@Image, 'SETuP', 'setUp') = 'setUp') or (not(@Image = 'tearDown') and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')][FormalParameters[count(*) = 0]]");
+    }
+
+    public void testSetupMisspellings1() throws Throwable {
+        runTestFromString(TEST1, 2, rule);
+    }
+    public void testTeardownMisspellings() throws Throwable {
+        runTestFromString(TEST2, 2, rule);
+    }
+    public void testMethodsSpelledOK() throws Throwable {
+        runTestFromString(TEST3, 0, rule);
+    }
+    public void testUnrelatedMethods() throws Throwable {
+        runTestFromString(TEST4, 0, rule);
+    }
+    public void testMethodWithParams() throws Throwable {
+        runTestFromString(TEST5, 0, rule);
+    }
+
     private static final String TEST1 =
     "public class JUnitSpelling1 {" + PMD.EOL +
     " // these should be 'setUp'" + PMD.EOL +
@@ -62,26 +85,4 @@ public class JUnitSpellingRuleTest extends RuleTst {
     " public void setup(String x) {}" + PMD.EOL +
     "}";
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclarator[(not(@Image = 'setUp') and translate(@Image, 'SETuP', 'setUp') = 'setUp') or (not(@Image = 'tearDown') and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')][FormalParameters[count(*) = 0]]");
-    }
-
-    public void testSetupMisspellings1() throws Throwable {
-        runTestFromString(TEST1, 2, rule);
-    }
-    public void testTeardownMisspellings() throws Throwable {
-        runTestFromString(TEST2, 2, rule);
-    }
-    public void testMethodsSpelledOK() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
-    public void testUnrelatedMethods() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
-    public void testMethodWithParams() throws Throwable {
-        runTestFromString(TEST5, 0, rule);
-    }
 }

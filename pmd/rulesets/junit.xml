@@ -17,6 +17,7 @@ These rules deal with different problems that can occur with JUnit tests.
                 <![CDATA[
   //MethodDeclaration[not(@Static='true') or not(@Public='true')]
    [MethodDeclarator/@Image='suite']
+   [MethodDeclarator/FormalParameters/@ParameterCount=0]
                 ]]>
             </value>
         </property>
