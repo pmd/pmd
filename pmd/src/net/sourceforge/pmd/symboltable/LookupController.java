@@ -7,7 +7,6 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 
 import java.util.List;
 

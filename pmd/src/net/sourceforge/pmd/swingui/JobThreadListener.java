@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
 import java.util.EventListener;
-import java.util.EventObject;
 
 /**
  *

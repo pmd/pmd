@@ -5,9 +5,6 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
-
 import java.util.*;
 
 public class SymbolTable {

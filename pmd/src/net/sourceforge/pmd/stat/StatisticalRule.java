@@ -8,7 +8,6 @@ import java.util.TreeSet;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 
 /**
  * @author David Dixon-Peugh

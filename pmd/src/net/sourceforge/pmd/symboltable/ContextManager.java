@@ -7,9 +7,6 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public interface ContextManager {
     public Scope getCurrentScope();
     public void openScope(Scope scope);
