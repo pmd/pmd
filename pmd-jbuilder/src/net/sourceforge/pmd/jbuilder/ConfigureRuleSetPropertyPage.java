@@ -58,7 +58,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
     }
 
     /**
-     * This methiod is called by JBuilder
+     * This methiod is called by JBuilder when the user presses "OK" in the property dialog
      */
     public void writeProperties() {
         /**

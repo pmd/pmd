@@ -105,6 +105,7 @@ public class PMDOpenTool {
      * @return A Ruleset and any embedded rulesets
      */
     private static RuleSet constructRuleSets () {
+    Browser.getActiveBrowser().getMessageView().addMessage(Constants.MSGCAT_TEST, "building ruleset");
         RuleSet masterRuleSet = new RuleSet();
         for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
@@ -121,11 +122,13 @@ public class PMDOpenTool {
      * @param text code to check
      * @return PMD Report object
      */
-    public static Report instanceCheck (String text) {
+    public static Report instanceCheck (String text, RuleSet rules) {
         PMD pmd = new PMD();
 
         RuleContext ctx = new RuleContext();
-        RuleSet rules = constructRuleSets();
+        if (rules == null) {
+            rules = constructRuleSets();
+        }
         if (rules == null)
             return  new Report();
         ctx.setReport(new Report());
@@ -154,7 +157,7 @@ public class PMDOpenTool {
                 if (viewer != null) {
                     Document doc = viewer.getEditor().getDocument();
                     try {
-                        checkCode(doc.getText(0, doc.getLength()), (JavaFileNode)node);
+                        checkCode(doc.getText(0, doc.getLength()), (JavaFileNode)node, null);
                     }
                     catch (Exception e){
                         e.printStackTrace();
@@ -165,9 +168,9 @@ public class PMDOpenTool {
 
     };
 
-    static void checkCode(String srcCode, JavaFileNode node) {
+    static void checkCode(String srcCode, JavaFileNode node, RuleSet rules) {
         try {
-            Report rpt = instanceCheck(srcCode);
+            Report rpt = instanceCheck(srcCode, rules);
 
             if (rpt == null) {
                 Message msg = new Message("Error Processing File");
@@ -208,50 +211,51 @@ public class PMDOpenTool {
         }
     };
 
-            //create the project menu action for running a PMD check against all the java files within the active project
-            public static BrowserAction ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project") {
-                public void actionPerformed(Browser browser) {
-                    Node[] nodes = browser.getActiveBrowser().getActiveProject().getDisplayChildren();
-                    Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
-                    for (int i=0; i<nodes.length; i++ ) {
-                        if (nodes[i] instanceof PackageNode) {
-                            PackageNode node = (PackageNode)nodes[i];
-                            Node[] fileNodes = node.getDisplayChildren();
-                            for (int j=0; j<fileNodes.length; j++) {
-                                if (fileNodes[j] instanceof JavaFileNode) {
-                                    Message fileNameMsg = new Message(fileNodes[j].getDisplayName());
-                                    fileNameMsg.setFont(fileNameMsgFont);
-                                    Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg);
-                                    JavaFileNode javaNode = (JavaFileNode)fileNodes[j];
-                                    StringBuffer code = new StringBuffer();
-                                    try {
-                                        byte[] buffer = new byte[1024];
-                                        InputStream is = javaNode.getInputStream();
-                                        int charCount;
-                                        while ((charCount = is.read(buffer)) != -1) {
-                                            code.append(new String(buffer, 0, charCount));
-                                        }
-                                        checkCode(code.toString(), javaNode);
-                                    }
-                                    catch (Exception ex) {
-                                        ex.printStackTrace();
-                                    }
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project") {
+        public void actionPerformed(Browser browser) {
+            Node[] nodes = browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+            Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
+            RuleSet rules = constructRuleSets();
+            for (int i=0; i<nodes.length; i++ ) {
+                if (nodes[i] instanceof PackageNode) {
+                    PackageNode node = (PackageNode)nodes[i];
+                    Node[] fileNodes = node.getDisplayChildren();
+                    for (int j=0; j<fileNodes.length; j++) {
+                        if (fileNodes[j] instanceof JavaFileNode) {
+                            Message fileNameMsg = new Message(fileNodes[j].getDisplayName());
+                            fileNameMsg.setFont(fileNameMsgFont);
+                            Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg);
+                            JavaFileNode javaNode = (JavaFileNode)fileNodes[j];
+                            StringBuffer code = new StringBuffer();
+                            try {
+                                byte[] buffer = new byte[1024];
+                                InputStream is = javaNode.getInputStream();
+                                int charCount;
+                                while ((charCount = is.read(buffer)) != -1) {
+                                    code.append(new String(buffer, 0, charCount));
                                 }
+                                checkCode(code.toString(), javaNode, rules);
+                            }
+                            catch (Exception ex) {
+                                ex.printStackTrace();
                             }
                         }
                     }
                 }
-            };
-
-
-            /**
-            * Main method for testing purposes
-            * @param args standard arguments
-            */
-            public static void main (String[] args) {
-                Report ret = PMDOpenTool.instanceCheck("package abc; \npublic class foo {\npublic void bar() {int i;}\n}");
-                System.out.println("PMD: " + ret);
             }
+        }
+    };
+
+
+    /**
+    * Main method for testing purposes
+    * @param args standard arguments
+    */
+    public static void main (String[] args) {
+        //Report ret = PMDOpenTool.instanceCheck("package abc; \npublic class foo {\npublic void bar() {int i;}\n}");
+        //System.out.println("PMD: " + ret);
+    }
 }
 
 
