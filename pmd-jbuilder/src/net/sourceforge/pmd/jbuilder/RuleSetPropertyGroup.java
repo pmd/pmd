@@ -49,7 +49,9 @@ public class RuleSetPropertyGroup
                 ruleSets.put(rs.getName(), rsp);
             }
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+        e.printStackTrace();
+        }
     }
 
     /**

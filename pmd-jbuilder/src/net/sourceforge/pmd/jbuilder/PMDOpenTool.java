@@ -9,26 +9,23 @@
 
 package  net.sourceforge.pmd.jbuilder;
 
-import  java.awt.*;
-import  java.io.*;
-import  java.util.*;
-import  javax.swing.*;
-import  javax.swing.text.*;
-import  com.borland.jbuilder.*;
-import  com.borland.jbuilder.node.*;
-import  com.borland.primetime.*;
-import  com.borland.primetime.editor.*;
-import  com.borland.primetime.ide.*;
-import  com.borland.primetime.node.*;
-import  com.borland.primetime.viewer.*;
-import  net.sourceforge.pmd.*;
+import java.awt.*;
+import java.io.*;
+import java.util.*;
 
-import  com.borland.primetime.actions.ActionGroup;
-import  com.borland.primetime.properties.NodeProperty;
-import  com.borland.primetime.properties.GlobalProperty;
-import  com.borland.primetime.properties.PropertyManager;
-import  com.borland.primetime.properties.PropertyDialog;
-import com.borland.jbuilder.node.PackageNode;
+import javax.swing.*;
+import javax.swing.text.*;
+
+import com.borland.jbuilder.*;
+import com.borland.jbuilder.node.*;
+import com.borland.primetime.*;
+import com.borland.primetime.actions.*;
+import com.borland.primetime.editor.*;
+import com.borland.primetime.ide.*;
+import com.borland.primetime.node.*;
+import com.borland.primetime.properties.*;
+import com.borland.primetime.viewer.*;
+import net.sourceforge.pmd.*;
 
 
 
@@ -131,8 +128,8 @@ public class PMDOpenTool {
             // TODO switch to use StringReader once PMD 0.4 gets released
             pmd.processFile(new StringReader(text), rules, ctx);
             return  ctx.getReport();
-        } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return  null;
     }

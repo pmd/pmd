@@ -12,22 +12,16 @@
 
 package  net.sourceforge.pmd.jbuilder;
 
-import  com.borland.primetime.properties.*;
-import  com.borland.primetime.help.HelpTopic;
-import  javax.swing.*;
-import  java.awt.*;
-import  java.util.HashMap;
-import  javax.swing.border.*;
-import  javax.swing.ListModel;
-import  javax.swing.DefaultListModel;
-import  java.awt.event.*;
-import  com.borland.primetime.ide.Browser;
-import  com.borland.primetime.ide.MessageCategory;
-import  java.util.Enumeration;
-import net.sourceforge.pmd.RuleSetFactory;
-import java.util.Iterator;
-import net.sourceforge.pmd.RuleSet;
-import com.borland.primetime.properties.GlobalProperty;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+
+import javax.swing.*;
+import javax.swing.border.*;
+
+import com.borland.primetime.help.*;
+import com.borland.primetime.ide.*;
+import com.borland.primetime.properties.*;
 
 
 
