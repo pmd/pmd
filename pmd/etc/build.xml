@@ -54,7 +54,7 @@
     </copy>
 </target>
 
-<target name="jar" depends="copy">
+<target name="jar" depends="copy,compile">
     <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF"/>
 </target>
 
