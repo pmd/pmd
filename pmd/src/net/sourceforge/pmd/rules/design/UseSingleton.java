@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 
 public class UseSingleton extends AbstractRule {
 
@@ -41,15 +42,12 @@ public class UseSingleton extends AbstractRule {
         return data;
     }
 
-/*
-FIXME
     public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
-        if (decl.jjtGetParent() instanceof ASTClassDeclaration && ((ASTClassDeclaration) decl.jjtGetParent()).isAbstract()) {
+        if (decl.isAbstract()) {
             isOK = true;
         }
         return super.visit(decl, data);
     }
-*/
 
     public Object visit(ASTMethodDeclaration decl, Object data) {
         methodCount++;
