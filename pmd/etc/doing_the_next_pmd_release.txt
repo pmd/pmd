@@ -38,13 +38,18 @@ cvs -q rtag -D tomorrow "pmd_release_1_5" pmd
 
 Prepare source release:
 rm -rf ~/tmp/pmd-1.5
-mkdir tmp
-cvs -q export -d tmp/ -r pmd_release_1_5 pmd
+rm -rf ~/tmp/pmd-src-1.5.zip
 cd pmd/etc
 ant jarsrc
 cd ../../
-cp pmd/lib/pmd-src-1.5.jar tmp/lib/
-mv tmp ~/tmp/pmd-1.5
+rm -rf tmp/
+mkdir tmp
+cd tmp
+cvs -q export -r pmd_release_1_5 pmd
+mv pmd/ pmd-1.5/
+cd ..
+cp pmd/lib/pmd-src-1.5.jar tmp/pmd-1.5/lib/
+mv tmp/pmd-1.5/ ~/tmp/
 cp pmd/lib/pmd-1.5.jar ~/tmp/pmd-1.5/lib
 cp -R pmd/target/docs ~/tmp/pmd-1.5/
 cd ~/tmp/
