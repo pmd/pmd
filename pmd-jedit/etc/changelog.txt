@@ -1,3 +1,9 @@
+August 18th 2003 - 2.2
+1. Updated to PMD 1.2.1
+2. Updated to jEdit 4.2 API changes
+3. Added PMD in jEdit's File System Browser Plugins Menu.
+
+
 May 19th 2003 - 2.1:
 Added "clear ErrorList" option - thanks to Randall Schultz for the suggestion.
 Added "check all open buffers" option - thanks to Randall Schultz for the suggestion.
