@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>mcclain looney - patch for CPD GUI, bug reports</li>
             <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Vladimir Bossicard - VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Pablo Casado - Bug report for UseSingletonRule</li>
@@ -56,7 +57,6 @@
             <li>Juergen Ebert - feature suggestions and pmd-netbeans feedback</li>
             <li>Andriy Rozeluk - feature suggestions</li>
             <li>J.D. Fagan - feature suggestions</li>
-            <li>mcclain looney - bug reports</li>
             <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
             <li>Ales Bukovsky - pmd-netbeans feedback</li>
             <li>Radim Kubacki - bug reports, pmd-netbeans feedback</li>

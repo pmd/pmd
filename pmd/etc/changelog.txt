@@ -5,6 +5,7 @@ Added "excludes" feature to rulesets; thanks to Gael Marziou for the suggestion.
 Removed "LinkedList" from LooseCouplingRule checks; thx to Randall Schulz for the suggestion.
 CPD now processes PHP code.
 Added VBHTMLRenderer; thanks to Vladimir Bossicard for the code.
+Added "Save" item to CPD GUI; thanks to mcclain looney for the patch.
 Fixed bug 732592 - Ant task now accepts a nested classpath element.
 Fixed bug 744915 - UseSingletonRule no longer fires on abstract classes, thanks to Pablo Casado for the bug report.
 Fixed bugs 735396 and 735399 - false positives from ConstructorCallsOverridableMethodRule

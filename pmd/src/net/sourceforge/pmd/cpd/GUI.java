@@ -18,9 +18,13 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 public class GUI implements CPDListener {
 
@@ -43,6 +47,40 @@ public class GUI implements CPDListener {
                 }
             }).start();
         }
+    }
+
+    private class SaveListener implements ActionListener {
+        public void actionPerformed(ActionEvent evt){
+            FileDialog fdlg = new FileDialog(GUI.this.frame, "Save", FileDialog.SAVE);
+            fdlg.setVisible(true);
+            String selected = fdlg.getDirectory() + System.getProperty("file.separator") + fdlg.getFile();
+            if(selected !=null){
+                if(!new File(selected).canWrite()){
+                    try{
+                        PrintWriter pw = new PrintWriter(new FileOutputStream(selected));
+                        String report = resultsTextArea.getText();
+                        pw.print(report);
+                        pw.flush();
+                        pw.close();
+                    }catch(IOException e){
+                        error("Couldn't save file"+new File(selected).getAbsolutePath(), e);
+                    }
+                }else{
+                    error("Could not write to file "+new File(selected).getAbsolutePath(), null);
+
+                }
+
+            }
+
+        }
+
+        private void error(String message, Exception e){
+            if(e != null){
+                e.printStackTrace();
+            }
+            JOptionPane.showMessageDialog(GUI.this.frame, message);
+        }
+
     }
 
     private class BrowseListener implements ActionListener {
@@ -72,7 +110,10 @@ public class GUI implements CPDListener {
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
-        JMenuItem exitItem = new JMenuItem("Exit");
+        JMenuItem saveItem = new JMenuItem("Save");
+        saveItem.setMnemonic('s');
+        saveItem.addActionListener(new SaveListener());
+        fileMenu.add(saveItem);        JMenuItem exitItem = new JMenuItem("Exit");
         exitItem.setMnemonic('x');
         exitItem.addActionListener(new CancelListener());
         fileMenu.add(exitItem);
