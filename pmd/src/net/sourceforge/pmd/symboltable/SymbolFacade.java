@@ -14,32 +14,14 @@ import java.util.List;
 
 public class SymbolFacade extends JavaParserVisitorAdapter {
 
-    private Set localScopeTriggers = new HashSet();
-    private Set classScopeTriggers = new HashSet();
-    private Set globalScopeTriggers = new HashSet();
-
     private ContextManager contextManager;
     private LookupController lookupController;
+    private ScopeFactory sf = new ScopeFactory();
 
     public SymbolFacade() {
-        initScopeTriggers();
         SymbolTable symbolTable = new SymbolTable();
         contextManager = new ContextManagerImpl(symbolTable);
         lookupController = new LookupController(symbolTable);
-    }
-
-    private void initScopeTriggers() {
-        localScopeTriggers.add(ASTBlock.class);
-        localScopeTriggers.add(ASTConstructorDeclaration.class);
-        localScopeTriggers.add(ASTMethodDeclaration.class);
-        localScopeTriggers.add(ASTFieldDeclaration.class);
-        localScopeTriggers.add(ASTTryStatement.class);
-        localScopeTriggers.add(ASTForStatement.class);
-        localScopeTriggers.add(ASTIfStatement.class);
-
-        classScopeTriggers.add(ASTClassBody.class);
-
-        globalScopeTriggers.add(ASTCompilationUnit.class);
     }
 
     public void initializeWith(ASTCompilationUnit node) {
@@ -62,9 +44,6 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    /**
-     * Collect NameOccurrences
-     */
     public Object visit(ASTName node, Object data) {
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
             lookupController.lookup(new NameOccurrence(node));
@@ -73,20 +52,13 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
     }
 
     private void openScope(SimpleNode node) {
-        if (localScopeTriggers.contains(node.getClass())) {
+        Scope scope = sf.createScope(node);
+        if (scope instanceof NullScope) {
+            super.visit(node, null);
+        } else {
             contextManager.openScope(new LocalScope());
             super.visit(node, null);
             contextManager.leaveScope();
-        } else if (classScopeTriggers.contains(node.getClass())) {
-            contextManager.openScope(new ClassScope());
-            super.visit(node, null);
-            contextManager.leaveScope();
-        } else if (globalScopeTriggers.contains(node.getClass())) {
-            contextManager.openScope(new GlobalScope());
-            super.visit(node, null);
-            contextManager.leaveScope();
-        } else {
-            super.visit(node, null);
         }
     }
 
