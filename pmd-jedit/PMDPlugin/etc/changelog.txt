@@ -1,3 +1,7 @@
+??? 2.4
+- Optimized usage of ErrorSource for faster Error Highlighting.
+- Fixed Run on save running when the buffer is non Java also.
+
 October 31st 2003 - 2.3
 1. Updated to PMD 1.3
 

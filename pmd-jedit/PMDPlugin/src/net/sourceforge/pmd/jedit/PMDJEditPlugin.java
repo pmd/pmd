@@ -17,6 +17,7 @@ import java.io.*;
 import java.util.*;
 import org.gjt.sp.jedit.msg.*;
 import org.gjt.sp.util.Log;
+import java.awt.BorderLayout;
 
 
 public class PMDJEditPlugin extends EBPlugin {
@@ -28,6 +29,7 @@ public class PMDJEditPlugin extends EBPlugin {
 	public static final String RUN_PMD_ON_SAVE = "pmd.runPMDOnSave";
 	public static final String CUSTOM_RULES_PATH_KEY = "pmd.customRulesPath";
 	//private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
+	private ProgressBar pbd;
 
 	private static PMDJEditPlugin instance;
 
@@ -128,7 +130,7 @@ public class PMDJEditPlugin extends EBPlugin {
 					if (buffers[i].getName().endsWith(".java"))
 					{
 						//fileSet.add(buffer.getFile());
-						System.out.println("checking = " + buffers[i].getPath());
+						Log.log(Log.DEBUG,this,"checking = " + buffers[i].getPath());
 						instanceCheck(buffers[i],view, false);
 					}
 			}
@@ -146,18 +148,18 @@ public class PMDJEditPlugin extends EBPlugin {
 		instance.instanceCheckDirectoryRecursively(view);
 	}
 
-	public void instanceCheckDirectoryRecursively(View view) {
+	public void instanceCheckDirectoryRecursively(View view)
+	{
+		String dir = null;
 		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP))
 		{
-			String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
+			 dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
 			if (dir != null && dir.trim() != null)
 			{
 				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
 					JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				process(findFiles(dir, true));
-
 			}
 		}
 		else
@@ -167,10 +169,13 @@ public class PMDJEditPlugin extends EBPlugin {
 				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			process(findFiles(browser.getDirectory(), true));
+
+			dir = browser.getDirectory();
 		}
-	}
-	// check directory recursively
+
+		List listOfFiles =findFiles(dir, true);
+		process(listOfFiles);
+	}// check directory recursively
 
 	// clear error list
 	public static void clearErrorList() {
@@ -272,6 +277,7 @@ public class PMDJEditPlugin extends EBPlugin {
 				errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
 			}
 		}//End of for
+
 		if (!foundProblems)
 		{
 			JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
@@ -290,13 +296,13 @@ public class PMDJEditPlugin extends EBPlugin {
 
 	private void registerErrorSource()
 	{
-		Log.log(Log.DEBUG,this,"Registering ErrorSource of PMD");
+		//Log.log(Log.DEBUG,this,"Registering ErrorSource of PMD");
 		ErrorSource.registerErrorSource(errorSource);
 	}
 
 	private void unRegisterErrorSource()
 	{
-		Log.log(Log.DEBUG,this,"Unregistering ErrorSource of PMD");
+		//Log.log(Log.DEBUG,this,"Unregistering ErrorSource of PMD");
 		ErrorSource.unregisterErrorSource(errorSource);
 	}
 
@@ -461,21 +467,44 @@ public class PMDJEditPlugin extends EBPlugin {
 		instance.process(instance.findFiles(de[0].path, recursive));
 	}
 
+	public void startProgressBarDisplay(View view, int min, int max)
+	{
+		if(pbd != null)
+		{
+			view.getStatus().setMessage("Only one Progress Display tracked.");
+			return;
+		}
+		pbd = new ProgressBar(min,max);
+		pbd.setVisible(true);
+		Log.log(Log.DEBUG,this,"Showing PBD");
+	}
 
-	class ProgressBarDialog extends JDialog
+	public void endProgressBarDisplay()
+	{
+		pbd.completeBar();
+		pbd = null;
+		Log.log(Log.DEBUG,this,"Comeplted display");
+	}
+
+	class ProgressBar extends JPanel
 	{
 		private JProgressBar pBar;
 
-		public ProgressBarDialog(View view)
+		public ProgressBar(int min,int max)
 		{
-			super(view,NAME);
-			pBar = new JProgressBar();
+			setLayout(new BorderLayout());
+			pBar = new JProgressBar(min,max);
+			add(pBar, BorderLayout.CENTER);
 		}
 
-		public void show()
+		public void increment(int num)
 		{
+			pBar.setValue(num);
+		}
 
-
+		public void completeBar()
+		{
+			pBar.setValue(pBar.getMaximum());
 		}
 	}
 
