@@ -1,8 +1,5 @@
 /*
  * Created on 15/03/2003
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
  */
 package net.sourceforge.pmd.jaxen;
 
@@ -11,8 +8,6 @@ import net.sourceforge.pmd.ast.Node;
 /**
  * @author daniels
  *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
  */
 public class Attribute {
     

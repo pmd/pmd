@@ -73,6 +73,10 @@ public class SimpleNode implements Node {
         this.beginLine = i;
     }
 
+    public void testingOnly__setBeginColumn(int i) {
+        this.beginColumn = i;
+    }
+
     public int getBeginColumn() {
         if (beginColumn != -1) {
             return beginColumn;

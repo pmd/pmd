@@ -7,7 +7,8 @@ import java.util.Iterator;
 
 
 public class AttributeAxisIterator implements Iterator {
-    
+
+    private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
     private Object currObj;
     private Method[] methods;
     private int position;
@@ -67,7 +68,7 @@ public class AttributeAxisIterator implements Iterator {
         throws IllegalAccessException, InvocationTargetException {
         String name = method.getName();
         name = truncateMethodName(name);
-        Object value = method.invoke(node, new Object[0]);
+        Object value = method.invoke(node, EMPTY_OBJ_ARRAY);
         if (value != null) {
             if (value instanceof String) {
                 return new Attribute(node, name, (String) value);
