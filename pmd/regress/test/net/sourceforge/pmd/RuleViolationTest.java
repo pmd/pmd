@@ -12,9 +12,9 @@ public class RuleViolationTest extends TestCase {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         RuleViolation r = new RuleViolation(rule, 2, ctx);
-        assertEquals(rule, r.getRule());
-        assertEquals(2, r.getLine());
-        assertEquals("filename", r.getFilename());
+        assertEquals("object mismatch", rule, r.getRule());
+        assertEquals("line number is wrong", 2, r.getLine());
+        assertEquals("filename is wrong", "filename", r.getFilename());
     }
 
     public void testConstructor2() {
@@ -22,10 +22,10 @@ public class RuleViolationTest extends TestCase {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         RuleViolation r = new RuleViolation(rule, 2, "description", ctx);
-        assertEquals(rule, r.getRule());
-        assertEquals(2, r.getLine());
-        assertEquals("filename", r.getFilename());
-        assertEquals("description", r.getDescription());
+        assertEquals("object mismatch", rule, r.getRule());
+        assertEquals("line number is wrong", 2, r.getLine());
+        assertEquals("filename is wrong", "filename", r.getFilename());
+        assertEquals("description is wrong", "description", r.getDescription());
     }
 
     public void testComparatorWithDifferentFilenames() {

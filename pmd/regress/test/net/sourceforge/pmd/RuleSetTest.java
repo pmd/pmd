@@ -28,41 +28,34 @@ public class RuleSetTest extends TestCase
     public void testAccessors() {
         RuleSet rs = new RuleSet();
         rs.setName("foo");
-        assertEquals("foo", rs.getName());
+        assertEquals("name mismatch", "foo", rs.getName());
         rs.setDescription("bar");
-        assertEquals("bar",rs.getDescription());
+        assertEquals("description mismatch", "bar",rs.getDescription());
     }
 
     public void testGetRuleByName() {
         RuleSet rs = new RuleSet();
         MockRule mock = new MockRule("name", "desc", "msg");
         rs.addRule(mock);
-        assertEquals(mock, rs.getRuleByName("name"));
+        assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
     }
 
     public void testRuleList() {
-	RuleSet IUT = new RuleSet();
+        RuleSet IUT = new RuleSet();
 
-	assertEquals( "Size of RuleSet isn't zero.",
-		      0, IUT.size() );
+        assertEquals( "Size of RuleSet isn't zero.", 0, IUT.size() );
 
-	MockRule rule = new MockRule("name", "desc", "msg");
-	IUT.addRule( rule );
+        MockRule rule = new MockRule("name", "desc", "msg");
+        IUT.addRule( rule );
 
-	assertEquals( "Size of RuleSet isn't one.",
-		      1, IUT.size() );
+        assertEquals( "Size of RuleSet isn't one.", 1, IUT.size() );
 
-	Set rules = IUT.getRules();
-	
-	Iterator i = rules.iterator();
-	assertTrue( "Empty Set",
-		    i.hasNext());
-	assertEquals( "Returned set of wrong size.",
-		      1, rules.size() );
+        Set rules = IUT.getRules();
 
-	assertEquals( "Rule isn't in ruleset.",
-		      rule, i.next() );
-
+        Iterator i = rules.iterator();
+        assertTrue( "Empty Set", i.hasNext());
+        assertEquals( "Returned set of wrong size.",  1, rules.size() );
+        assertEquals( "Rule isn't in ruleset.",rule, i.next() );
     }
 
     public void testAddRuleSet() {
@@ -71,7 +64,7 @@ public class RuleSetTest extends TestCase
         RuleSet set2 = new RuleSet();
         set2.addRule(new MockRule("name", "desc", "msg"));
         set1.addRuleSet(set2);
-        assertEquals(2, set1.size());
+        assertEquals("ruleset size wrong", 2, set1.size());
     }
 
     public void testApply0Rules()
@@ -133,8 +126,7 @@ public class RuleSetTest extends TestCase
 	IUT.apply( makeCompilationUnits(),
 		   context );
 
-	assertEquals("Invalid number of Violations Reported",
-		     size, context.getReport().size() );
+	assertEquals("Invalid number of Violations Reported", size, context.getReport().size() );
 
 	Iterator violations =
 	    context.getReport().iterator();
@@ -143,30 +135,23 @@ public class RuleSetTest extends TestCase
 		(RuleViolation) violations.next();
 
 	    reportedValues.add( violation );
-	    assertTrue( "Unexpected Violation Returned: " + 
-			violation,
-			values.contains( violation ) );
+	    assertTrue( "Unexpected Violation Returned: " + violation, values.contains( violation ) );
 	}
 
 	Iterator expected = values.iterator();
 	while (expected.hasNext()) {
 	    RuleViolation violation =
 		(RuleViolation) expected.next();
-	    assertTrue( "Expected Violation not Returned: " +
-			violation,
-			reportedValues.contains( violation ));
+	    assertTrue( "Expected Violation not Returned: " + violation, reportedValues.contains( violation ));
 	}    
     }
 
     
-    protected List makeCompilationUnits()
-	throws Throwable
+    protected List makeCompilationUnits() throws Throwable
     {
-	List RC = new ArrayList();
-
-	JavaParser parser = new JavaParser( new StringReader( javaCode ));
-	RC.add( parser.CompilationUnit() );
-
-	return RC;
+        List RC = new ArrayList();
+        JavaParser parser = new JavaParser( new StringReader( javaCode ));
+        RC.add( parser.CompilationUnit() );
+        return RC;
     }
 }

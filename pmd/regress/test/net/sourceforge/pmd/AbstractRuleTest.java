@@ -27,10 +27,10 @@ public class AbstractRuleTest extends TestCase {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         RuleViolation rv = r.createRuleViolation(ctx, 5);
-        assertEquals(5, rv.getLine());
-        assertEquals("filename", rv.getFilename());
-        assertEquals(r, rv.getRule());
-        assertEquals("myrule", rv.getDescription());
+        assertEquals("Line number mismatch!", 5, rv.getLine());
+        assertEquals("Filename mismatch!", "filename", rv.getFilename());
+        assertEquals("Rule object mismatch!", r, rv.getRule());
+        assertEquals("Rule description mismatch!", "myrule", rv.getDescription());
     }
 
     public void testCreateRV2() {
@@ -38,9 +38,10 @@ public class AbstractRuleTest extends TestCase {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         RuleViolation rv = r.createRuleViolation(ctx, 5, "specificdescription");
-        assertEquals(5, rv.getLine());
-        assertEquals("filename", rv.getFilename());
-        assertEquals(r, rv.getRule());
-        assertEquals("specificdescription", rv.getDescription());
+        assertEquals("Line number mismatch!", 5, rv.getLine());
+        assertEquals("Filename mismatch!", "filename", rv.getFilename());
+        assertEquals("Rule object mismatch!", r, rv.getRule());
+        assertEquals("Rule description mismatch!", "specificdescription", rv.getDescription());
     }
+
 }

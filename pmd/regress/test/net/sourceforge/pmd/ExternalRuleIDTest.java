@@ -16,7 +16,7 @@ public class ExternalRuleIDTest extends TestCase{
     public void testParse() {
         String xrefString = "rulesets/basic.xml/EmptyCatchBlock";
         ExternalRuleID xref = new ExternalRuleID(xrefString);
-        assertEquals("rulesets/basic.xml", xref.getFilename());
-        assertEquals("EmptyCatchBlock", xref.getRuleName());
+        assertEquals("Filename mismatch!", "rulesets/basic.xml", xref.getFilename());
+        assertEquals("Rule name mismatch!", "EmptyCatchBlock", xref.getRuleName());
     }
 }

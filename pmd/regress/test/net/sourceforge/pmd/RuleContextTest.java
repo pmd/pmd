@@ -13,17 +13,17 @@ public class RuleContextTest extends TestCase {
 
     public void testReport() {
         RuleContext ctx = new RuleContext();
-        assertNull(ctx.getReport());
+        assertNull("Report should be null", ctx.getReport());
         Report r = new Report();
         ctx.setReport(r);
         Report r2 = ctx.getReport();
-        assertEquals(r, r2);
+        assertEquals("report object mismatch", r, r2);
     }
 
     public void testFilename() {
         RuleContext ctx = new RuleContext();
-        assertNull(ctx.getSourceCodeFilename());
+        assertNull("filename should be null", ctx.getSourceCodeFilename());
         ctx.setSourceCodeFilename("foo");
-        assertEquals("foo", ctx.getSourceCodeFilename());
+        assertEquals("filename mismatch", "foo", ctx.getSourceCodeFilename());
     }
 }
