@@ -11,7 +11,7 @@ elif [ $option = "all" ]; then
 	maven -qb pmd-site
 elif [ $option = "upload" ]; then
 	echo "Generating xdocs and uploading"
-	maven -qob xdoc:generate-from-pom pmd:ruleset-docs xdoc:transform 
+#	maven -qob xdoc:generate-from-pom pmd:ruleset-docs xdoc:transform 
 	DOCS_FILE=docs.tar.gz
 	cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
 	cd target

@@ -1,4 +1,4 @@
-?????, 2004 - 1.7:
+April 22, 2004 - 1.7:
 Moved development environment to Maven 1.0-RC2.
 Fixed bug 925840 - Messages were no longer getting variable names plugged in correctly
 Fixed bug 919308 - XMLRenderer was still messed up; 'twas missing a quotation mark.

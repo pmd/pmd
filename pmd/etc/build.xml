@@ -6,7 +6,7 @@
 <property name="build" value="build\"/>
 <property name="rulesets" value="rulesets\"/>
 <property name="regress" value="regress\"/>
-<property name="version" value="1.6"/>
+<property name="version" value="1.7"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
 <path id="classpath.path">
