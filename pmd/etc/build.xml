@@ -81,7 +81,7 @@
   </target>
 
 <target name="test" depends="requires-junit,compile">
-    <junit printsummary="yes" haltonfailure="yes">
+    <junit printsummary="yes" haltonfailure="yes" forkmode="perBatch">
       <classpath>
         <path refid="classpath.path" />
         <pathelement location="${basedir}" />
