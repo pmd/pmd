@@ -54,6 +54,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.19  2003/12/09 00:15:00  phherlin
+ * Merging from v2 development
+ *
  * Revision 1.18  2003/12/01 22:27:49  phherlin
  * The default rulesets list is all pmd rulesets
  *
@@ -572,6 +575,17 @@ public class PMDPlugin extends AbstractUIPlugin {
         getLog().log(new Status(IStatus.ERROR, getDescriptor().getUniqueIdentifier(), 0, message + t.getMessage(), t));
         if (log != null) {
             log.error(message, t);
+        }
+    }
+
+    /**
+     * Helper method to log error
+     * @see IStatus
+     */
+    public void logError(IStatus status) {
+        getLog().log(status);
+        if (log != null) {
+            log.error(status.getMessage(), status.getException());
         }
     }
 

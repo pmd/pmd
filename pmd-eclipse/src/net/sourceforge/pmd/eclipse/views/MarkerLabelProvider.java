@@ -2,9 +2,13 @@ package net.sourceforge.pmd.eclipse.views;
 
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaModelStatus;
 import org.eclipse.jdt.core.IPackageDeclaration;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -20,6 +24,9 @@ import org.eclipse.swt.graphics.Image;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/12/09 00:14:59  phherlin
+ * Merging from v2 development
+ *
  * Revision 1.3  2003/08/11 21:56:29  phherlin
  * Adding a label for the default package
  *
@@ -31,6 +38,7 @@ import org.eclipse.swt.graphics.Image;
  *
  */
 public class MarkerLabelProvider implements ITableLabelProvider {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.views.MarkerLabelProvider");
     private static final String KEY_IMAGE_ERROR = "error";
     private static final String KEY_IMAGE_WARN = "warn";
     private static final String KEY_IMAGE_INFO = "info";
@@ -67,7 +75,7 @@ public class MarkerLabelProvider implements ITableLabelProvider {
                 IMarker marker = (IMarker) element;
                 IJavaElement javaElement = JavaCore.create(marker.getResource());
                 ICompilationUnit compilationUnit = null;
-                if ((javaElement != null) && (javaElement instanceof ICompilationUnit)) {
+                if ((javaElement != null) && (javaElement.exists()) && (javaElement instanceof ICompilationUnit)) {
                     compilationUnit = (ICompilationUnit) javaElement;
                 }
 
@@ -109,7 +117,17 @@ public class MarkerLabelProvider implements ITableLabelProvider {
                 }
             }
         } catch (JavaModelException e) {
-            PMDPlugin.getDefault().logError("Ignoring exception when displaying violations view", e);
+            IJavaModelStatus status = e.getJavaModelStatus();
+            PMDPlugin.getDefault().logError(status);
+            log.warn("Ignoring Java Model Exception : " + status.getMessage() );
+            if (log.isDebugEnabled()) {
+                log.debug("   code : " + status.getCode());
+                log.debug("   severity : " + status.getSeverity());
+                IJavaElement[] elements = status.getElements();
+                for (int i = 0; i < elements.length; i++) {
+                    log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ")");
+                }
+            }
         }
 
         return result;

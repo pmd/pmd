@@ -1,6 +1,9 @@
 package net.sourceforge.pmd.eclipse.views;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Date;
@@ -8,13 +11,15 @@ import java.util.Date;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaModelStatus;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -30,6 +35,9 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/12/09 00:14:59  phherlin
+ * Merging from v2 development
+ *
  * Revision 1.3  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -41,6 +49,7 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class ReviewAction extends Action {
+    private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.views.ReviewAction");
     private IProgressMonitor monitor;
     private ViolationView violationView;
 
@@ -80,9 +89,9 @@ public class ReviewAction extends Action {
                         }
                     });
                 } catch (InvocationTargetException e) {
-                    PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
+                    PMDPlugin.getDefault().logError(getMessage(PMDConstants.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
                 } catch (InterruptedException e) {
-                    PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
+                    PMDPlugin.getDefault().logError(getMessage(PMDConstants.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
                 }
             }
         }
@@ -97,27 +106,46 @@ public class ReviewAction extends Action {
             IResource resource = marker.getResource();
             if (resource instanceof IFile) {
                 IFile file = (IFile) resource;
-                ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(file);
+                if (file.exists()) {
+                    String sourceCode = readFile(file);
 
-                monitorWorked();
+                    monitorWorked();
 
-                String sourceCode = compilationUnit.getBuffer().getContents();
-                int offset = getMarkerLineStart(sourceCode, marker.getAttribute(IMarker.LINE_NUMBER, 0));
+                    int offset = getMarkerLineStart(sourceCode, marker.getAttribute(IMarker.LINE_NUMBER, 0));
 
-                monitorWorked();
+                    monitorWorked();
 
-                sourceCode = addReviewComment(sourceCode, offset, marker);
+                    sourceCode = addReviewComment(sourceCode, offset, marker);
 
-                monitorWorked();
+                    monitorWorked();
 
-                file.setContents(new ByteArrayInputStream(sourceCode.getBytes()), false, true, getMonitor());
+                    file.setContents(new ByteArrayInputStream(sourceCode.getBytes()), false, true, getMonitor());
 
-                monitorWorked();
+                    monitorWorked();
+                } else {
+                    MessageDialog.openError(
+                        Display.getCurrent().getActiveShell(),
+                        getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
+                        "The file " + file.getName() + " doesn't exists ! Review aborted. Try to refresh the workspace and retry.");
+                }
+
             }
         } catch (JavaModelException e) {
-            PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_JAVAMODEL_EXCEPTION, e);
+            IJavaModelStatus status = e.getJavaModelStatus();
+            PMDPlugin.getDefault().logError(status);
+            log.warn("Ignoring Java Model Exception : " + status.getMessage() );
+            if (log.isDebugEnabled()) {
+                log.debug("   code : " + status.getCode());
+                log.debug("   severity : " + status.getSeverity());
+                IJavaElement[] elements = status.getElements();
+                for (int i = 0; i < elements.length; i++) {
+                    log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ")");
+                }
+            }
         } catch (CoreException e) {
-            PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            PMDPlugin.getDefault().logError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
+        } catch (IOException e) {
+            PMDPlugin.getDefault().logError(getMessage(PMDConstants.MSGKEY_ERROR_IO_EXCEPTION), e);
         }
     }
 
@@ -202,6 +230,36 @@ public class ReviewAction extends Action {
         }
 
         return indent.toString();
+    }
+
+    /**
+     * Helper method to find message string
+     * @param messageId a message id
+     * @return the localized message OR the id if not found
+     */    
+    private String getMessage(String messageId) {
+        return PMDPlugin.getDefault().getMessage(messageId, messageId);
+    }
+    
+    private String readFile(IFile file) throws IOException, CoreException {
+        InputStream contents = file.getContents(true);
+        InputStreamReader reader = new InputStreamReader(contents);
+        
+        try {
+            char[] buffer = new char[4096];
+            StringBuffer stringBuffer = new StringBuffer(4096);
+            while (reader.ready()) {
+                int readCount = reader.read(buffer);
+                if (readCount != -1) {
+                    stringBuffer.append(buffer, 0, readCount);
+                }
+            }
+        
+            return stringBuffer.toString();
+
+        } finally {
+            reader.close();
+        }
     }
 
 }

@@ -2,13 +2,13 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
-v2.0.1 - ../12/2003
+v2.0.1 - 09/12/2003
 
 Runtime
 -------
 . Fixing bug #852522 : PreferencesPage doesn't show up
 . Adapting to Eclipse v3M5
-
+. Fixing Java Model Exception handling
 
 
 ----------------------------------------------------------------------------------------
