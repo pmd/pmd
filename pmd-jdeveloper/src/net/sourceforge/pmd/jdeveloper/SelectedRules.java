@@ -24,7 +24,7 @@ public class SelectedRules {
     });
 
     public SelectedRules(SettingsStorage settings) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new JDeveloperRuleSetFactory();
+        RuleSetFactory rsf = new RuleSetFactory();
         for (Iterator i = rsf.getRegisteredRuleSets(); i.hasNext();) {
             RuleSet rs = (RuleSet)i.next();
             for (Iterator j = rs.getRules().iterator(); j.hasNext();) {
