@@ -1,4 +1,6 @@
 ?????, 2003 - 1.3.0:
+Added new rule: EmptySynchronizedBlock
+ASTType now has an getDimensions() method.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 October 06, 2003 - 1.2.2:
