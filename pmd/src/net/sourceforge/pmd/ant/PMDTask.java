@@ -20,6 +20,11 @@ public class PMDTask extends Task {
     private boolean verbose;
     private String ruleSetFile;
     private String format;
+    private boolean failOnError;
+
+    public void setFailOnError(boolean failOnError) {
+        this.failOnError = failOnError;
+    }
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
@@ -75,6 +80,9 @@ public class PMDTask extends Task {
         if (!report.isEmpty()) {
             buf.append(ctx.getReport().render());
             buf.append(System.getProperty("line.separator"));
+            if (failOnError) {
+                throw new BuildException("Report contains problems");
+            }
         }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(reportFile)));
