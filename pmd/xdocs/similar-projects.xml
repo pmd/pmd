@@ -18,13 +18,13 @@
      </subsection>
      <subsection name="Open Source">
        <ul>
-         <li><a href="http://doctorj.org">DoctorJ</a>- Written in C++, checks Javadoc, syntax
+         <li><a href="http://doctorj.org">DoctorJ</a> - Written in C++, checks Javadoc, syntax
              and calculates metrics.</li>
-         <li><a href="http://www.artho.com/jlint/download.shtml">JLint</a>- Written in C++,
+         <li><a href="http://www.artho.com/jlint/download.shtml">JLint</a> - Written in C++,
              does lots of synchronization checks.</li>
-         <li><a href="http://www.tbbr32568.pwb.blueyonder.co.uk/jnp/">JNP</a>- Nifty research
+         <li><a href="http://www.tbbr32568.pwb.blueyonder.co.uk/jnp/">JNP</a> - Nifty research
              projects, uses JJTree/JavaCC.</li>
-         <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a>- Very detailed,
+         <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a> - Very detailed,
              supports both Maven and Ant.</li>
        </ul>
      </subsection>
