@@ -1,12 +1,18 @@
 package net.sourceforge.pmd.cpd;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.FileSet;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * CPDTask
@@ -16,11 +22,16 @@ import java.io.Writer;
  * <project name="CPDProj" default="main" basedir=".">
  *  <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  *	 <target name="main">
- * 		<cpd tileSize="100" codeLocation="c:\jdk14\src\java" outputFile="c:\cpdrun.txt"/>
+ * 		<cpd tileSize="100" outputFile="c:\cpdrun.txt" verbose=true>
+ *          <fileset dir="/path/to/my/src">
+ *              <include name="*.java"/>
+ *          </fileset>
+ *      </cpd>
  *	</target>
  *</project>
  *
- * tileSize, codeLocation, and outputFile are required fields right now.
+ * Required: tileSize, outputFile, and at least one file
+ * Optional: verbose
  *
  * TODO: 1.Think about forking process? 
  *       2. Perhaps come up with another renderer such as XML and 
@@ -31,21 +42,31 @@ import java.io.Writer;
  */
 public class CPDTask extends Task {
 
+    private boolean verbose;
 	private int tileSize;
-	private String codeLocation;
 	private String outputFile;
+    private List filesets = new ArrayList();
 
-	/**
-	 * Method actually runs CPD.
-	 * 
-	 */
 	public void execute() throws BuildException{
     	try{	
     		validateFields();
 	    	CPD cpd = new CPD(tileSize);
-	        cpd.addRecursively(this.codeLocation);
+            for (Iterator i = filesets.iterator(); i.hasNext();) {
+                FileSet fs = (FileSet) i.next();
+                DirectoryScanner ds = fs.getDirectoryScanner(project);
+                String[] srcFiles = ds.getIncludedFiles();
+                for (int j = 0; j < srcFiles.length; j++) {
+                    File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
+                    printIfVerbose("Tokenizing " + file.getAbsoluteFile().toString());
+                    cpd.add(file);
+                }
+            }
+            printIfVerbose("Starting to analyze code ");
+            long start = System.currentTimeMillis();
 	        cpd.go();
-	        Writer writer = new BufferedWriter(new FileWriter(this.outputFile));
+            long stop = System.currentTimeMillis();
+            printIfVerbose("That took " + (stop-start) + " milliseconds");
+	        Writer writer = new BufferedWriter(new FileWriter(outputFile));
 	        writer.write(cpd.getReport());
 	        writer.close();
     	}catch(IOException ex){
@@ -54,37 +75,35 @@ public class CPDTask extends Task {
     	}        
 	}
 
-	/**
-	 * quick validate of 2 string fields. 
-	 * TODO: must figure out if we can accept 0 for a tile size? 
-	 */
 	private void validateFields() throws BuildException{
-		if((this.codeLocation == null) || (this.outputFile == null) ){
-			throw new BuildException("Required Attribute missing.");
-		}			
+		if(tileSize == 0){
+			throw new BuildException("tileSize is required and must be greater than zero");
+		} else if(outputFile == null) {
+            throw new BuildException("outputFile is a required attribute");
+        } else if (filesets.isEmpty()) {
+            throw new BuildException("Must include at least one FileSet");
+        }
+
 	}
 
-	/**
-	 * Sets the codeLocation.
-	 * @param codeLocation The codeLocation to set
-	 */
-	public void setCodeLocation(String codeLocation) {
-		this.codeLocation = codeLocation;
-	}
+    public void addFileset(FileSet set) {
+        filesets.add(set);
+    }
 
-	/**
-	 * Sets the tileSize.
-	 * @param tileSize The tileSize to set
-	 */
 	public void setTileSize(int tileSize) {
 		this.tileSize = tileSize;
 	}
 
-	/**
-	 * Sets the outputFile.
-	 * @param outputFile The outputFile to set
-	 */
 	public void setOutputFile(String outputFile) {
 		this.outputFile = outputFile;
 	}
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+
+    private void printIfVerbose(String in) {
+        if (verbose)
+            System.out.println(in);
+    }
 }
