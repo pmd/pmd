@@ -11,7 +11,7 @@ public class OptimizableToArrayCallRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "OptimizableToArrayCallRule");
+        rule = findRule("rulesets/design.xml", "OptimizableToArrayCallRule");
     }
 
     public void testAll() {

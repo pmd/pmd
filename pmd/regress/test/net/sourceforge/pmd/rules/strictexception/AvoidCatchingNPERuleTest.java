@@ -11,7 +11,7 @@ public class AvoidCatchingNPERuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "AvoidCatchingNPERule");
+        rule = findRule("rulesets/strictexception.xml", "AvoidCatchingNPERule");
     }
 
     public void testAll() {

@@ -11,7 +11,7 @@ public class AvoidThrowingCertainExceptionTypesRuleTest extends SimpleAggregator
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "AvoidThrowingCertainExceptionTypesRule");
+        rule = findRule("rulesets/strictexception.xml", "AvoidThrowingCertainExceptionTypesRule");
     }
 
     public void testAll() {

@@ -1,8 +1,9 @@
-update run.bat, astviewer.*, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml, CommandLineOptions.java to point to pmd-1.7.jar
-update xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-1.7
+update run.bat, astviewer.*, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml, CommandLineOptions.java to point to pmd-1.8.jar
+update xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-1.8
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file, change unit tests to reflect new location
 update release number and tag name in project.xml
+Check in everything
 
 ant dist test
 Do all the JUnit tests run?  OK, then:
@@ -20,51 +21,51 @@ cd ..
 cd etc
 
 Prepare binary release:
-rm -rf ~/tmp/pmd-1.7
-mkdir -p ~/tmp/pmd-1.7/etc
-mkdir ~/tmp/pmd-1.7/lib
-cp ../LICENSE.txt run.* cygwin-run.sh build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.7/etc
-cp ../lib/pmd-1.7.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.7/lib/
-cp -R xslt/ ~/tmp/pmd-1.7/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd-1.7
+rm -rf ~/tmp/pmd-1.8
+mkdir -p ~/tmp/pmd-1.8/etc
+mkdir ~/tmp/pmd-1.8/lib
+cp ../LICENSE.txt run.* cygwin-run.sh build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.8/etc
+cp ../lib/pmd-1.8.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.8/lib/
+cp -R xslt/ ~/tmp/pmd-1.8/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd-1.8
 cd ~/tmp
-zip -q -r pmd-bin-1.7.zip pmd-1.7/
+zip -q -r pmd-bin-1.8.zip pmd-1.8/
 cd -
 
 Time to tag:
 
 cd ../../
-cvs -q tag -D tomorrow "pmd_release_1_7" pmd
+cvs -q tag -D tomorrow "pmd_release_1_8" pmd
 
 Prepare source release:
-rm -rf ~/tmp/pmd-1.7
-rm -rf ~/tmp/pmd-src-1.7.zip
+rm -rf ~/tmp/pmd-1.8
+rm -rf ~/tmp/pmd-src-1.8.zip
 cd pmd/etc
 ant jarsrc
 cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-cvs -q export -r pmd_release_1_7 pmd
-mv pmd/ pmd-1.7/
+cvs -q export -r pmd_release_1_8 pmd
+mv pmd/ pmd-1.8/
 cd ..
-cp pmd/lib/pmd-src-1.7.jar tmp/pmd-1.7/lib/
-mv tmp/pmd-1.7/ ~/tmp/
-cp pmd/lib/pmd-1.7.jar ~/tmp/pmd-1.7/lib
-cp -R pmd/target/docs ~/tmp/pmd-1.7/
+cp pmd/lib/pmd-src-1.8.jar tmp/pmd-1.8/lib/
+mv tmp/pmd-1.8/ ~/tmp/
+cp pmd/lib/pmd-1.8.jar ~/tmp/pmd-1.8/lib
+cp -R pmd/target/docs ~/tmp/pmd-1.8/
 cd ~/tmp/
-zip -q -r pmd-src-1.7.zip pmd-1.7/
+zip -q -r pmd-src-1.8.zip pmd-1.8/
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_1_7 pmd
+cvs rtag -d pmd_release_1_8 pmd
 and then retag everything
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-1.7.zip pmd-bin-1.7.zip
+ncftpput upload.sourceforge.net incoming/ pmd-src-1.8.zip pmd-bin-1.8.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-1.7.zip file
-Add the pmd-src-1.7.zip file
+Add the pmd-bin-1.8.zip file
+Add the pmd-src-1.8.zip file
 Classify the file
 
 Redo the web site

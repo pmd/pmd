@@ -12,7 +12,7 @@ public class BadComparisonRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "BadComparisonRule");
+        rule = findRule("rulesets/design.xml", "BadComparisonRule");
     }
 
     public void testAll() {
