@@ -6,4 +6,9 @@
       net.sourceforge.pmd.jedit.PMDJEditPlugin.check(view);
     </CODE>
   </ACTION>
+  <ACTION NAME="pmd.options">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.displayPreferencesDialog(view);
+    </CODE>
+  </ACTION>
 </ACTIONS>

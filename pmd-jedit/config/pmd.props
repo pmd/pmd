@@ -12,6 +12,7 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-0.3.jar
 #
 # Menu properties
 #
-pmd-menu=pmd.check
+pmd-menu=pmd.check - pmd.options
 pmd-menu.label=PMD
 pmd.check.label=$Check active buffer
+pmd.options.label=$Options

@@ -20,37 +20,34 @@ import net.sourceforge.pmd.reports.ReportFactory;
 
 public class PMDJEditPlugin extends EBPlugin {
 
-
-/*
-    private static class PMDJEditOptionPane extends AbstractOptionPane implements OptionPane {
-        public PMDJEditOptionPane() {
-            super("pmd.general");
-        }
-        public String getName() {
-            return "PMD Option Pane";
-        }
-    }
-*/
-
     public static final String NAME = "PMD";
     public static final String MENU = "pmd-menu";
     public static final String PROPERTY_PREFIX = "plugin.net.sourceforge.pmd.jedit.";
-//    public static final String OPTION_PREFIX = "options.pmd.";
+    public static final String OPTION_PREFIX = "options.pmd.";
 
     private static PMDJEditPlugin instance = new PMDJEditPlugin();
+
+    // boilerplate JEdit code
+    public static void check(View view) {
+        instance.instanceCheck(view);
+    }
+
+    public static void displayPreferencesDialog(View view) {
+        instance.instanceDisplayPreferencesDialog(view);
+    }
 
     public void createMenuItems(Vector menuItems) {
         menuItems.addElement(GUIUtilities.loadMenu(MENU));
     }
 
-/*
     public void createOptionPanes(OptionsDialog dialog) {
-        dialog.addOptionPane(new PMDJEditOptionPane());
+        OptionGroup grp = new OptionGroup("PMD");
+        grp.addOptionPane(new PMDOptionPane());
+        dialog.addOptionGroup(grp);
     }
-*/
+    // boilerplate JEdit code
 
     public void instanceCheck(View view) {
-        //view.getStatus().setMessage("HELLO PMD");
         String text = view.getTextArea().getText();
 
         PMD pmd = new PMD();
@@ -66,27 +63,23 @@ public class PMDJEditPlugin extends EBPlugin {
             // TODO switch to use StringReader once PMD 0.4 gets released
             pmd.processFile(new StringBufferInputStream(text), rules, ctx);
 
-            String msg = "No errors found";
+            StringBuffer msg = new StringBuffer();
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                 RuleViolation rv = (RuleViolation)i.next();
-                msg += rv.getDescription() + " at line " + rv.getLine() + System.getProperty("line.separator");
+                msg.append(rv.getDescription() + " at line " + rv.getLine() + System.getProperty("line.separator"));
             }
-            JOptionPane.showMessageDialog(view, msg, "PMD Results", JOptionPane.INFORMATION_MESSAGE);
+            if (msg.length() == 0) {
+                msg.append("No errors found");
+            }
+            JOptionPane.showMessageDialog(view, msg.toString(), "PMD Results", JOptionPane.INFORMATION_MESSAGE);
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         }
     }
 
     public void instanceDisplayPreferencesDialog(View view) {
-        //view.getStatus().setMessage("HELLO PMD DIALOG");
+
     }
 
-    public static void check(View view) {
-        instance.instanceCheck(view);
-    }
-
-    public static void displayPreferencesDialog(View view) {
-        instance.instanceDisplayPreferencesDialog(view);
-    }
 
 }
