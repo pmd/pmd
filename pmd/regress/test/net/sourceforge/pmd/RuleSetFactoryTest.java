@@ -35,7 +35,7 @@ public class RuleSetFactoryTest  extends TestCase {
     private static final String SINGLE_RULE_WITH_PROPS = "<?xml version=\"1.0\"?>" +
                          "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
                          "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\">" +
-                         "<properties><property name=\"fooBoolean\" value=\"true\"/><property name=\"foo\" value=\"bar\"/><property name=\"fooint\" value=\"2\"/></properties>" +
+                         "<description>testdesc2</description><properties><property name=\"fooBoolean\" value=\"true\"/><property name=\"foo\" value=\"bar\"/><property name=\"fooint\" value=\"2\"/></properties>" +
                          "</rule></ruleset>";
 
     private static final String SINGLE_RULE_NO_PROPS = "<?xml version=\"1.0\"?>" +
@@ -54,6 +54,7 @@ public class RuleSetFactoryTest  extends TestCase {
         assertEquals("bar", r.getStringProperty("foo"));
         assertEquals(2, r.getIntProperty("fooint"));
         assertTrue(r.getBooleanProperty("fooBoolean"));
+        assertEquals("testdesc2", r.getDescription());
     }
 
     public void testCreateSingleRuleNoPropsSet() {
@@ -69,13 +70,7 @@ public class RuleSetFactoryTest  extends TestCase {
         assertEquals(0, rs.size());
     }
 
-/*
-    public void testExternalReferences() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(EXTERNAL_REFERENCE_RULE_SET.getBytes()));
-        assertEquals(1, rs.size());
-    }
-*/
+
 
     public void testRuleSetNotFound() {
         RuleSetFactory rsf = new RuleSetFactory();
@@ -114,4 +109,12 @@ public class RuleSetFactoryTest  extends TestCase {
             assertTrue(expected.contains(rule.getName()));
         }
     }
+
+/*
+    public void testExternalReferences() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(EXTERNAL_REFERENCE_RULE_SET.getBytes()));
+        assertEquals(1, rs.size());
+    }
+*/
 }

@@ -53,7 +53,6 @@ public class Bar {
     </example>
   </rule>
 
-
  <rule name="ExcessiveMethodLength"
        message="Avoid really long methods."
        class="net.sourceforge.pmd.rules.design.LongMethodRule">
@@ -80,6 +79,7 @@ public void doSomething() {
    </example>
 
  </rule>
+
 
  <rule name="ExcessiveClassLength"
        message="Avoid really long Classes."

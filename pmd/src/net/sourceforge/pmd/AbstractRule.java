@@ -21,6 +21,16 @@ public abstract class AbstractRule
     private String name = getClass().getName();
     private Properties properties = new Properties();
     private String message;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
     public void addProperty(String name, String value) {
         properties.put(name, value);

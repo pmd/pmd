@@ -65,15 +65,24 @@ public class RuleSetFactory {
                     rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
                     rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
                 }
-                // get the properties
-                for (Node node = ruleNode.getFirstChild(); node != null; node = node.getNextSibling() ) {
+
+                // get the description and properties (if any)
+                Node node = ruleNode.getFirstChild();
+                while (node != null) {
+                    if (node.getNodeName() != null && node.getNodeName().equals("description")) {
+                        rule.setDescription(node.getFirstChild().getNodeValue());
+                    }
+
                     if (node.getNodeName().equals("properties")) {
-                        for (Node propNode = node.getFirstChild(); propNode != null; propNode = propNode.getNextSibling() ) {
+                        Node propNode = node.getFirstChild();
+                        while (propNode != null && propNode.getAttributes() != null) {
                             String propName = propNode.getAttributes().getNamedItem("name").getNodeValue();
                             String propValue = propNode.getAttributes().getNamedItem("value").getNodeValue();
                             rule.addProperty(propName, propValue);
+                            propNode = propNode.getNextSibling();
                         }
                     }
+                    node = node.getNextSibling();
                 }
                 ruleSet.addRule(rule);
             }

@@ -19,6 +19,15 @@ public class MockRule implements Rule {
     private String desc;
     private Set violations = new HashSet();
     private Properties properties = new Properties();
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public void addProperty(String name, String value) {
         properties.put(name, value);
