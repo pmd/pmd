@@ -48,6 +48,7 @@ public class GUI implements CPDListener {
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JTextArea resultsTextArea = new JTextArea();
     private JCheckBox recurseCheckbox = new JCheckBox("", true);
+    private JComboBox languageBox = new JComboBox();
 
     private JFrame frame;
 
@@ -100,6 +101,10 @@ public class GUI implements CPDListener {
         helper.addLabel("Minimum tile size:");
         minimumLengthField.setColumns(4);
         helper.add(minimumLengthField);
+        helper.addLabel("Language:");
+        languageBox.addItem("Java");
+        languageBox.addItem("C++");
+        helper.add(languageBox);
         helper.nextRow();
         helper.addLabel("Also scan subdirectories?");
         helper.add(recurseCheckbox);
@@ -139,7 +144,15 @@ public class GUI implements CPDListener {
 
     private void go() {
         try {
-            CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()), new JavaLanguage());
+            Language language = null;
+            LanguageFactory lf = new LanguageFactory();
+            if (languageBox.getSelectedItem().equals("Java")) {
+                language = lf.createLanguage(LanguageFactory.JAVA_KEY);
+            } else if (languageBox.getSelectedItem().equals("C++")) {
+                language = lf.createLanguage(LanguageFactory.CPP_KEY);
+            }
+
+            CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()), language);
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             comparisonsField.setText("");
