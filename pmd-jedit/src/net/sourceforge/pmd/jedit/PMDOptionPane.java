@@ -11,11 +11,13 @@ import org.gjt.sp.jedit.OptionPane;
 import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
+import java.awt.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.GridLayout;
 
 public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
@@ -65,6 +67,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
     private SelectedRules rules;
     private JTextArea exampleTextArea= new JTextArea(10, 50);
     private JCheckBox directoryPopupBox;
+	JTextField txtMinTileSize;
 
     public PMDOptionPane() {
         super(PMDJEditPlugin.NAME);
@@ -96,11 +99,24 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
         directoryPopupBox = new JCheckBox("Ask for directory?", jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP));
 
+		JPanel pnlSouth = new JPanel(new GridLayout(0,1));
+
+		JPanel pnlTileSize = new JPanel();
+		((FlowLayout)pnlTileSize.getLayout()).setAlignment(FlowLayout.LEFT);
+		JLabel lblMinTileSize = new JLabel("Minimum Tile Size :");
+		txtMinTileSize = new JTextField(jEdit.getProperty("pmd.cpd.defMinTileSize","100"),5);
+		pnlTileSize.add(lblMinTileSize);
+		pnlTileSize.add(txtMinTileSize);
+
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(rulesPanel, BorderLayout.NORTH);
         mainPanel.add(textPanel, BorderLayout.CENTER);
-        mainPanel.add(directoryPopupBox, BorderLayout.SOUTH);
+
+		pnlSouth.add(directoryPopupBox);
+		pnlSouth.add(pnlTileSize);
+        mainPanel.add(pnlSouth, BorderLayout.SOUTH);
 
         addComponent(mainPanel);
     }
@@ -110,5 +126,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         if (directoryPopupBox != null) {
             jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP, directoryPopupBox.isSelected());
         }
+
+		jEdit.setIntegerProperty("pmd.cpd.defMinTileSize",(txtMinTileSize.getText().length() == 0)?100:Integer.parseInt(txtMinTileSize.getText()));
     }
 }

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.jedit;
 
 import errorlist.DefaultErrorSource;
 import errorlist.ErrorSource;
+import net.sourceforge.pmd.cpd.*;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
@@ -22,8 +23,9 @@ import org.gjt.sp.jedit.View;
 import org.gjt.sp.jedit.browser.VFSBrowser;
 import org.gjt.sp.jedit.gui.OptionsDialog;
 import org.gjt.sp.jedit.jEdit;
+import gnu.regexp.*;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,172 +33,353 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.awt.BorderLayout;
+
 
 public class PMDJEditPlugin extends EditPlugin {
 
-    public static final String NAME = "PMD";
-    public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
-    public static final String OPTION_UI_DIRECTORY_POPUP = "options.pmd.ui.directorypopup";
+	public static final String NAME = "PMD";
+	public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
+	public static final String OPTION_UI_DIRECTORY_POPUP = "options.pmd.ui.directorypopup";
+	//private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
 
-    private static PMDJEditPlugin instance;
+	private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
 
-    static {
-	    instance = new PMDJEditPlugin();
-	    instance.start();
-    }
+	private static PMDJEditPlugin instance;
 
-    private DefaultErrorSource errorSource;
+	static {
+		instance = new PMDJEditPlugin();
+		instance.start();
+	}
 
-    // boilerplate JEdit code
-    public void start() {
-	    errorSource = new DefaultErrorSource(NAME);
-	    ErrorSource.registerErrorSource(errorSource);
-    }
+	private DefaultErrorSource errorSource;
 
-    public void createMenuItems(Vector menuItems) {
-        menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
-    }
+	// boilerplate JEdit code
+	public void start() {
+		errorSource = new DefaultErrorSource(NAME);
+		ErrorSource.registerErrorSource(errorSource);
+	}
 
-    public void createOptionPanes(OptionsDialog optionsDialog) {
-        optionsDialog.addOptionPane(new PMDOptionPane());
-    }
-    // boilerplate JEdit code
+	public void createMenuItems(Vector menuItems) {
+		menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
+	}
 
-    public static void checkDirectory(View view) {
-        instance.instanceCheckDirectory(view);
-    }
+	public void createOptionPanes(OptionsDialog optionsDialog) {
+		optionsDialog.addOptionPane(new PMDOptionPane());
+	}
+	// boilerplate JEdit code
 
-    public void instanceCheckDirectory(View view) {
-        if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
-            final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE);
-            if (dir == null) {
-                return;
-            }
-            if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
-                JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            process(findFiles(dir, false));
-        } else {
-            final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
-            if(browser == null) {
-                JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            process(findFiles(browser.getDirectory(), false));
-        }
-    }
+	public static void checkDirectory(View view) {
+		instance.instanceCheckDirectory(view);
+	}
+
+	public void instanceCheckDirectory(View view) {
+		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
+			final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE);
+			if (dir == null) {
+				return;
+			}
+			if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
+				JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			process(findFiles(dir, false));
+		} else {
+			final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
+			if(browser == null) {
+				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			process(findFiles(browser.getDirectory(), false));
+		}
+	}
 
 
-    public static void checkDirectoryRecursively(View view) {
-        instance.instanceCheckDirectoryRecursively(view);
-    }
+	public static void checkDirectoryRecursively(View view) {
+		instance.instanceCheckDirectoryRecursively(view);
+	}
 
-    public void instanceCheckDirectoryRecursively(View view) {
-        if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
-            final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
-            if (dir == null) {
-                return;
-            }
-            if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
-                JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            process(findFiles(dir, true));
-        } else {
-            final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
-            if(browser == null) {
-                JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            process(findFiles(browser.getDirectory(), true));
-        }
-    }
+	public void instanceCheckDirectoryRecursively(View view) {
+		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
+			final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
+			if (dir == null) {
+				return;
+			}
+			if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
+				JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			process(findFiles(dir, true));
+		} else {
+			final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
+			if(browser == null) {
+				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			process(findFiles(browser.getDirectory(), true));
+		}
+	}
 
-    private void process(final List files) {
-        new Thread(new Runnable () {
-            public void run() {
-                processFiles(files);
-            }
-        }).start();
-    }
+	private void process(final List files) {
+		new Thread(new Runnable () {
+					   public void run() {
+						   processFiles(files);
+					   }
+				   }).start();
+	}
 
-    public static void check(Buffer buffer, View view) {
-        instance.instanceCheck(buffer, view);
-    }
+	public static void check(Buffer buffer, View view) {
+		instance.instanceCheck(buffer, view);
+	}
 
-    public void instanceCheck(Buffer buffer, View view) {
-        try {
-            errorSource.clear();
+	public void instanceCheck(Buffer buffer, View view) {
+		try {
+			errorSource.clear();
 
-            PMD pmd = new PMD();
-            SelectedRules selectedRuleSets = new SelectedRules();
-            RuleContext ctx = new RuleContext();
-            ctx.setReport(new Report());
-            ctx.setSourceCodeFilename(buffer.getPath());
-            pmd.processFile(new StringReader(view.getTextArea().getText()), selectedRuleSets.getSelectedRules(), ctx);
-            if (ctx.getReport().isEmpty()) {
-                JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
-                errorSource.clear();
-            } else {
-                String path = buffer.getPath();
-                for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                    RuleViolation rv = (RuleViolation)i.next();
-                    errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription()));
-                }
-            }
-        } catch (RuleSetNotFoundException rsne) {
-            rsne.printStackTrace();
-        } catch (PMDException pmde) {
-            pmde.printStackTrace();
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + buffer.getPath());
-        }
-    }
+			PMD pmd = new PMD();
+			SelectedRules selectedRuleSets = new SelectedRules();
+			RuleContext ctx = new RuleContext();
+			ctx.setReport(new Report());
+			ctx.setSourceCodeFilename(buffer.getPath());
+			pmd.processFile(new StringReader(view.getTextArea().getText()), selectedRuleSets.getSelectedRules(), ctx);
+			if (ctx.getReport().isEmpty()) {
+				JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
+				errorSource.clear();
+			} else {
+				String path = buffer.getPath();
+				for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+					RuleViolation rv = (RuleViolation)i.next();
+					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription()));
+				}
+			}
+		} catch (RuleSetNotFoundException rsne) {
+			rsne.printStackTrace();
+		} catch (PMDException pmde) {
+			pmde.printStackTrace();
+			JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + buffer.getPath());
+		}
+	}
 
-    private void processFiles(List files) {
-        errorSource.clear();
-        PMD pmd = new PMD();
-        SelectedRules selectedRuleSets = null;
-        try {
-            selectedRuleSets = new SelectedRules();
-        } catch (RuleSetNotFoundException rsne) {
-            // should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
-            System.out.println("PMD ERROR: Couldn't find a ruleset");
-            rsne.printStackTrace();
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Unable to find rulesets, halting PMD", NAME, JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        RuleContext ctx = new RuleContext();
-        ctx.setReport(new Report());
+	private void processFiles(List files) {
+		errorSource.clear();
+		PMD pmd = new PMD();
+		SelectedRules selectedRuleSets = null;
+		try {
+			selectedRuleSets = new SelectedRules();
+		} catch (RuleSetNotFoundException rsne) {
+			// should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
+			System.out.println("PMD ERROR: Couldn't find a ruleset");
+			rsne.printStackTrace();
+			JOptionPane.showMessageDialog(jEdit.getFirstView(), "Unable to find rulesets, halting PMD", NAME, JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		RuleContext ctx = new RuleContext();
+		ctx.setReport(new Report());
 
-        boolean foundProblems = false;
-        for (Iterator i = files.iterator(); i.hasNext();) {
-            File file = (File)i.next();
-            ctx.setReport(new Report());
-            ctx.setSourceCodeFilename(file.getAbsolutePath());
-            try {
-                pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRules(), ctx);
-            } catch (FileNotFoundException fnfe) {
-                // should never happen, but if it does, carry on to the next file
-                System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
-            } catch (PMDException pmde) {
-                pmde.printStackTrace();
-                JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + file.getAbsolutePath());
-            }
-            for (Iterator j = ctx.getReport().iterator(); j.hasNext();) {
-                foundProblems = true;
-                RuleViolation rv = (RuleViolation)j.next();
-                errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
-            }
-        }
-        if (!foundProblems) {
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
-            errorSource.clear();
-        }
-    }
+		boolean foundProblems = false;
+		for (Iterator i = files.iterator(); i.hasNext();) {
+			File file = (File)i.next();
+			ctx.setReport(new Report());
+			ctx.setSourceCodeFilename(file.getAbsolutePath());
+			try {
+				pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRules(), ctx);
+			} catch (FileNotFoundException fnfe) {
+				// should never happen, but if it does, carry on to the next file
+				System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
+			} catch (PMDException pmde) {
+				pmde.printStackTrace();
+				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + file.getAbsolutePath());
+			}
+			for (Iterator j = ctx.getReport().iterator(); j.hasNext();) {
+				foundProblems = true;
+				RuleViolation rv = (RuleViolation)j.next();
+				errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
+			}
+		}
+		if (!foundProblems) {
+			JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
+			errorSource.clear();
+		}
+	}
 
-    private List findFiles(String dir, boolean recurse) {
-        FileFinder f  = new FileFinder();
-        return f.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
-    }
+	private List findFiles(String dir, boolean recurse) {
+		FileFinder f  = new FileFinder();
+		return f.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
+	}
+
+	public static void CPDCurrentFile(View view) throws IOException
+	{
+		if(!view.getBuffer().getMode().getName().equals("java"))
+		{
+			JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		instance.errorSource.clear();
+		CPD cpd = new  CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100));
+		cpd.add(view.getBuffer().getFile());
+		System.out.println("Add successfull.Going for go.");
+		cpd.go();
+		instance.processDuplicates(cpd, view);
+	}
+
+	public static void CPDDir(View view, boolean recursive) throws IOException
+	{
+		JFileChooser chooser = new JFileChooser(jEdit.getProperty("pmd.cpd.lastDirectory"));
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+		JPanel pnlAccessory = new JPanel();
+		pnlAccessory.add(new JLabel("Minimum Tile size :"));
+		JTextField txttilesize = new JTextField("100");
+		pnlAccessory.add(txttilesize);
+		chooser.setAccessory(pnlAccessory);
+
+		int returnVal = chooser.showOpenDialog(view);
+		File selectedFile = null;
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			selectedFile = chooser.getSelectedFile();
+			if(!selectedFile.isDirectory())
+			{
+				JOptionPane.showMessageDialog(view,"Selection not a directory.","PMD",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		}
+		else
+		{
+			return; //Incase the user presses cancel or escape.
+		}
+
+		jEdit.setProperty("pmd.cpd.lastDirectory",selectedFile.getCanonicalPath());
+		instance.errorSource.clear();
+
+		int tilesize = 100;
+		try
+		{
+			tilesize = Integer.parseInt(txttilesize.getText());
+		}
+		catch(NumberFormatException e)
+		{
+			//Use the default.
+		}
+
+		CPD cpd = new  CPD(tilesize);
+		if(recursive)
+		{
+			cpd.addRecursively(selectedFile.getCanonicalPath());
+		}
+		else
+		{
+			cpd.addAllInDirectory(selectedFile.getCanonicalPath());
+		}
+		System.out.println("Add successfull.Going for go.");
+		cpd.go();
+		instance.processDuplicates(cpd, view);
+	}
+
+
+	private void processDuplicates(CPD cpd, View view)
+	{
+		//StringBuffer report = new StringBuffer();
+		System.out.println("Report "+ new SimpleRenderer().render(cpd.getMatches()));
+		CPDDuplicateCodeViewer dv = getCPDDuplicateCodeViewer(view);
+
+		dv.clearDuplicates();
+		for (Iterator i = cpd.getMatches(); i.hasNext();)
+		{
+			Match match = (Match)i.next();
+
+			CPDDuplicateCodeViewer.Duplicates duplicates = dv.new Duplicates(match.getLineCount() + " duplicate lines", match.getSourceCodeSlice());
+
+			for (Iterator occurrences = match.iterator(); occurrences.hasNext();)
+			{
+				Mark mark = (Mark)occurrences.next();
+
+				//SourceCode sourceCode = (SourceCode)tokenSets.get(mark.getgetTokenSrcID());
+				/*                 if (!printedHeader) {
+				                    rpt.append("Found a " + tokens.getLineCount(mark, match) + " line (" + match.getTokenCount() + " tokens) duplication in the following files: ");
+				                    rpt.append(EOL);
+				                    printedHeader = true;
+				                }
+				 */
+				System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount());
+				int lastLine = mark.getBeginLine()+match.getLineCount();
+
+				//CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getgetTokenSrcID(),mark.getBeginLine(),view.getTextArea().getLineEndOffset(lastLine+1) - view.getTextArea().getLineStartOffset(mark.getBeginLine()-1));
+
+				CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getTokenSrcID(),mark.getBeginLine(),lastLine);
+
+				System.out.println("Adding Duplicate " + duplicate +" to Duplicates "+ duplicates);
+				duplicates.addDuplicate(duplicate);
+				//report.append(mark.getgetTokenSrcID()+":"+mark.getBeginLine() +",");
+
+				if(!occurrences.hasNext())
+				{
+					/* 					System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getgetTokenSrcID() +" Line Count "+ match.getLineCount());
+										int lastLine = mark.getBeginLine()+(match.getLineCount()-1);
+					 */					/*
+												JEditTextArea textArea = view.getTextArea();
+												textArea.setSelection(new Selection.Range(
+													buffer.getLineStartOffset(startLine),
+													buffer.getLineEndOffset(endLine) - 1));
+												textArea.moveCaretPosition(buffer.getLineEndOffset(endLine) - 1);
+
+										*/
+
+					//Below errorSource.addError code works perfectly find vis-a-vis the chunk of code shown by getReport.
+					//errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, mark.getgetTokenSrcID(), mark.getBeginLine()-1,0,view.getTextArea().getLineEndOffset(lastLine+1) - view.getTextArea().getLineStartOffset(mark.getBeginLine()-1) ,report.toString()));
+
+
+					//DefaultErrorSource.DefaultError error = new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, mark.getgetTokenSrcID(), mark.getBeginLine()-1,0,view.getTextArea().getLineEndOffset(lastLine -1) - view.getTextArea().getLineStartOffset(mark.getBeginLine()-1) ,report.toString());
+					//errorSource.addError(error);
+				}
+
+				/* if (!occurrences.hasNext()) {
+				    rpt.append(sourceCode.getSlice(mark.getBeginLine()-1, mark.getBeginLine() + tokens.getLineCount(mark, match)));
+				    rpt.append(EOL);
+			} */
+			}
+			//report.delete(0,report.length());
+			dv.addDuplicates(duplicates);
+		}
+
+		dv.refreshTree();
+		dv.expandAll();
+	}//End of processDuplicates
+
+
+	static class MatchInfo
+	{
+		int lineno;
+		String filename;
+
+		MatchInfo(int lineno, String filename)
+		{
+			this.lineno = lineno;
+			this.filename = filename;
+		}
+
+		public int getLineno()
+		{
+			return lineno;
+		}
+
+		public String getFilename()
+		{
+			return filename;
+		}
+
+		public String toString()
+		{
+			return (filename+":"+lineno);
+		}
+	}
+
+	public CPDDuplicateCodeViewer getCPDDuplicateCodeViewer(View view)
+	{
+		view.getDockableWindowManager().showDockableWindow("cpd-viewer");
+		return (CPDDuplicateCodeViewer)view.getDockableWindowManager().getDockableWindow("cpd-viewer");
+
+	}
 }
