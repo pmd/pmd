@@ -15,14 +15,16 @@ public class OccurrencesTest  extends TestCase {
         super(name);
     }
 
-    public void testBasic() {
+    public void testBasic1() {
         Occurrences occs = new Occurrences(new TokenSets());
         assertTrue(!occs.contains(new TokenEntry("h", 0, "foo", 5)));
         assertTrue(!occs.getTiles().hasNext());
         assertTrue(occs.isEmpty());
         assertEquals(0, occs.size());
+    }
 
-        occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
+    public void testBasic2() {
+        Occurrences occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
         assertEquals(4, occs.size());
         assertTrue(occs.contains(new TokenEntry("h", 0, "foo", 5)));
         Iterator i = occs.getOccurrences(new Tile(new TokenEntry("h", 0, "foo", 5)));

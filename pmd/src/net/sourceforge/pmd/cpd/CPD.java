@@ -17,7 +17,7 @@ public class CPD {
           return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
       }
     }
-		
+
     private TokenSets tokenSets = new TokenSets();
     private CPDListener listener = new CPDNullListener();
     private Results results;
@@ -119,14 +119,16 @@ public class CPD {
     public static void main(String[] args) {
         CPD cpd = new CPD();
         cpd.setListener(new CPDNullListener());
-        cpd.setMinimumTileSize(26);
+        cpd.setMinimumTileSize(30);
         try {
-            cpd.addRecursively("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\rules");
+            cpd.addRecursively("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd");
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return;
         }
+        long start = System.currentTimeMillis();
         cpd.go();
+        System.out.println("That took " + (System.currentTimeMillis() - start));
         CPDRenderer renderer = new TextRenderer();
         System.out.println(renderer.render(cpd));
     }
