@@ -53,7 +53,7 @@ class Job
     @title = title
     @unixName = unixName
     if (@location == "Sourceforge")
-     @cvsroot = ':pserver:anonymous@cvs.' + unixName + '.sourceforge.net:/cvsroot/' + unixName
+     @cvsroot = ':pserver:anonymous@cvs1:/cvsroot/' + unixName
     else
      @cvsroot = ':pserver:anoncvs@cvs.apache.org:/home/cvspublic'
     end
