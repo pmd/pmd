@@ -45,7 +45,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
                 }
             } else {
                 // now we've got a scope we're starting with, so work from there
-                search.execute(decl.getNode().getScope());
+                search.execute(decl.getScope());
                 decl = search.getResult();
             }
         }

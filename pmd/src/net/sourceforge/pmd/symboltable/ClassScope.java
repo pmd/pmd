@@ -19,7 +19,7 @@ public class ClassScope extends AbstractScope {
         return this;
     }
 
-    public void addMethodDeclaration(MethodNameDeclaration decl) {
+    public void addDeclaration(MethodNameDeclaration decl) {
         if (methodNames.containsKey(decl)) {
             return;
             //throw new RuntimeException("Method " + decl + " is already in the symbol table");
@@ -27,9 +27,9 @@ public class ClassScope extends AbstractScope {
         methodNames.put(decl, new ArrayList());
     }
 
-    protected VariableNameDeclaration findHere(NameOccurrence occurrence) {
+    protected VariableNameDeclaration findVariableHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
-            if (names.isEmpty()) {
+            if (variableNames.isEmpty()) {
                 // this could happen if you do this:
                 // public class Foo {
                 //  private String x = super.toString();
@@ -44,10 +44,10 @@ public class ClassScope extends AbstractScope {
             // }
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
-            return (VariableNameDeclaration)names.keySet().iterator().next();
+            return (VariableNameDeclaration)variableNames.keySet().iterator().next();
         }
 
-        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
             if (decl.getImage().equals(occurrence.getImage()) || (className + "." + decl.getImage()).equals(occurrence.getImage())) {
                 return decl;

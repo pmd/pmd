@@ -7,17 +7,19 @@ package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.ast.*;
 
 public class VariableNameDeclarationTest extends TestCase {
 
     public void testConstructor() {
-        ASTPrimaryExpression exp = createNode("foo", 10);
+        ASTVariableDeclaratorId exp = createNode("foo", 10);
+        LocalScope scope = new LocalScope();
+        exp.setScope(scope);
         VariableNameDeclaration decl = new VariableNameDeclaration(exp);
         assertEquals("foo", decl.getImage());
         assertEquals(10, decl.getLine());
-        assertEquals(exp, decl.getNode());
-        assertTrue(!decl.isExceptionBlockParameter());
+        assertEquals(scope, decl.getScope());
     }
 
     public void testExceptionBlkParam() {
@@ -35,38 +37,10 @@ public class VariableNameDeclarationTest extends TestCase {
         assertTrue(decl.isExceptionBlockParameter());
     }
 
-    private static ASTPrimaryExpression createNode(String image, int line) {
-        ASTPrimaryExpression node = new ASTPrimaryExpression(1);
+    private static ASTVariableDeclaratorId createNode(String image, int line) {
+        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage(image);
         node.testingOnly__setBeginLine(line);
         return node;
     }
-/*
-    public static final ASTPrimaryExpression FOO_NODE = VariableNameDeclarationTest.createNode("foo", 10);
-    public static final VariableNameDeclaration FOO = new VariableNameDeclaration(FOO_NODE);
-
-    public static ASTPrimaryExpression createNode(String image, int line) {
-        ASTPrimaryExpression node = new ASTPrimaryExpression(1);
-        node.setImage(image);
-        node.testingOnly__setBeginLine(line);
-        return node;
-    }
-
-    public void testBasic() {
-        SimpleNode node = FOO_NODE;
-        VariableNameDeclaration decl = new VariableNameDeclaration(node);
-        assertEquals(10, decl.getLine());
-        assertEquals("foo", decl.getImage());
-        assertEquals(decl, new VariableNameDeclaration(node));
-        assertTrue(!decl.isExceptionBlockParameter());
-    }
-
-    public void testConstructor() {
-        SimpleNode node = FOO_NODE;
-        VariableNameDeclaration decl = new VariableNameDeclaration(node);
-        assertEquals(node.getBeginLine(), decl.getLine());
-        assertEquals(node.getImage(), decl.getImage());
-    }
-
-*/
 }

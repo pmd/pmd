@@ -13,14 +13,12 @@ import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 public class DeclarationFinder extends JavaParserVisitorAdapter {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        VariableNameDeclaration decl = new VariableNameDeclaration(node);
-        node.getScope().addVariableDeclaration(decl);
+        node.getScope().addDeclaration(new VariableNameDeclaration(node));
         return super.visit(node, data);
     }
 
     public Object visit(ASTMethodDeclarator node, Object data) {
-        MethodNameDeclaration decl = new MethodNameDeclaration(node);
-        node.getScope().getEnclosingClassScope().addMethodDeclaration(decl);
+        node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(node));
         return super.visit(node, data);
     }
 }

@@ -11,15 +11,16 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 public class ClassScopeTest extends TestCase {
 
     public void testContains() {
         ClassScope s = new ClassScope("Foo");
-        SimpleNode node = new SimpleNode(1);
+        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage("bar");
-        s.addVariableDeclaration(new VariableNameDeclaration(node));
-        assertTrue(s.getUnusedDeclarations().hasNext());
+        s.addDeclaration(new VariableNameDeclaration(node));
+        assertTrue(s.getUnusedVariableDeclarations().hasNext());
     }
 
     public void testCantContainsSuperToString() {
@@ -31,9 +32,9 @@ public class ClassScopeTest extends TestCase {
 
     public void testContainsStaticVariablePrefixedWithClassName() {
         ClassScope s = new ClassScope("Foo");
-        SimpleNode node = new SimpleNode(1);
+        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage("X");
-        s.addVariableDeclaration(new VariableNameDeclaration(node));
+        s.addDeclaration(new VariableNameDeclaration(node));
 
         SimpleNode node2 = new SimpleNode(2);
         node2.setImage("Foo.X");

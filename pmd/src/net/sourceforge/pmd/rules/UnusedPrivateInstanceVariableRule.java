@@ -15,10 +15,9 @@ import net.sourceforge.pmd.symboltable.*;
 public class UnusedPrivateInstanceVariableRule extends AbstractRule {
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
-        for (Iterator i = node.getScope().getUnusedDeclarations();i.hasNext();) {
+        for (Iterator i = node.getScope().getUnusedVariableDeclarations();i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
-            AccessNode parent = (AccessNode)decl.getNode().jjtGetParent().jjtGetParent();
-            if (parent.isPrivate() && !decl.getImage().equals("serialVersionUID") && !decl.getImage().equals("serialPersistentFields")) {
+            if (decl.getAccessNodeParent().isPrivate() && !decl.getImage().equals("serialVersionUID") && !decl.getImage().equals("serialPersistentFields")) {
                 RuleContext ctx = (RuleContext)data;
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[] {decl.getImage()})));
             }

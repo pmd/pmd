@@ -36,7 +36,7 @@ public class Search {
             return searchUpward(nameOccurrence, scope.getParent());
         }
         if (scope.contains(nameOccurrence)) {
-            return scope.addOccurrence(nameOccurrence);
+            return scope.addVariableNameOccurrence(nameOccurrence);
         }
         return null;
     }

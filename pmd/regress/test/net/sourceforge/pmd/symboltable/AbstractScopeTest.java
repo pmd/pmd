@@ -8,6 +8,7 @@ package test.net.sourceforge.pmd.symboltable;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.symboltable.*;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 import java.util.Iterator;
 
@@ -15,8 +16,8 @@ public class AbstractScopeTest extends TestCase {
 
     // A helper class to stub out AbstractScope's abstract stuff
     private class MyScope extends AbstractScope {
-        protected VariableNameDeclaration findHere(NameOccurrence occ) {
-            for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+        protected VariableNameDeclaration findVariableHere(NameOccurrence occ) {
+            for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
                 if (decl.getImage().equals(occ.getImage())) {
                     return decl;
@@ -28,7 +29,7 @@ public class AbstractScopeTest extends TestCase {
 
     // Another helper class to test the search for a class scope behavior
     private class IsEnclosingClassScope extends AbstractScope {
-        protected VariableNameDeclaration findHere(NameOccurrence occ) {return null;}
+        protected VariableNameDeclaration findVariableHere(NameOccurrence occ) {return null;}
         public Scope getEnclosingClassScope() {
             return this;
         }
@@ -40,8 +41,8 @@ public class AbstractScopeTest extends TestCase {
         scope.setParent(parent);
         assertEquals(parent, scope.getParent());
 
-        assertTrue(!scope.getUnusedDeclarations().hasNext());
-        assertTrue(scope.getUsedDeclarations().isEmpty());
+        assertTrue(!scope.getUnusedVariableDeclarations().hasNext());
+        assertTrue(scope.getUsedVariableDeclarations().isEmpty());
     }
 
     public void testEnclClassScopeGetsDelegatedRight() {
@@ -53,10 +54,10 @@ public class AbstractScopeTest extends TestCase {
 
     public void testAdd() {
         Scope scope = new MyScope();
-        SimpleNode node = new SimpleNode(1);
+        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage("foo");
         VariableNameDeclaration decl = new VariableNameDeclaration(node);
-        scope.addVariableDeclaration(decl);
+        scope.addDeclaration(decl);
         assertTrue(scope.contains(new NameOccurrence(new SimpleNode(1), "foo")));
     }
 }

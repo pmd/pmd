@@ -28,8 +28,8 @@ public class LocalScopeTest extends TestCase {
         prefix.setUsesThisModifier();
         name.jjtAddChild(prefix, 1);
         NameOccurrence occ = new NameOccurrence(name, "foo");
-        scope.addOccurrence(occ);
-        assertTrue(!scope.getUnusedDeclarations().hasNext());
+        scope.addVariableNameOccurrence(occ);
+        assertTrue(!scope.getUnusedVariableDeclarations().hasNext());
     }
 
     public void testNameWithSuperIsNotFlaggedAsUnused() {
@@ -40,16 +40,16 @@ public class LocalScopeTest extends TestCase {
         prefix.setUsesSuperModifier();
         name.jjtAddChild(prefix, 1);
         NameOccurrence occ = new NameOccurrence(name, "foo");
-        scope.addOccurrence(occ);
-        assertTrue(!scope.getUnusedDeclarations().hasNext());
+        scope.addVariableNameOccurrence(occ);
+        assertTrue(!scope.getUnusedVariableDeclarations().hasNext());
     }
 
     public void testExceptionParamNameIsDiscarded() {
         ASTVariableDeclaratorId node = new MyASTVariableDeclaratorId(1);
         VariableNameDeclaration decl = new VariableNameDeclaration(node);
         LocalScope scope = new LocalScope();
-        scope.addVariableDeclaration(decl);
-        assertTrue(!scope.getUnusedDeclarations().hasNext());
+        scope.addDeclaration(decl);
+        assertTrue(!scope.getUnusedVariableDeclarations().hasNext());
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.*;
 public abstract class AbstractScope implements Scope {
 
     private Scope parent;
-    protected Map names = new HashMap();
+    protected Map variableNames = new HashMap();
     protected Map methodNames = new HashMap();
 
     public Scope getEnclosingClassScope() {
@@ -28,23 +28,26 @@ public abstract class AbstractScope implements Scope {
         return parent;
     }
 
-    public void addVariableDeclaration(VariableNameDeclaration nameDecl) {
-        if (names.containsKey(nameDecl)) {
-            throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
+    public void addDeclaration(VariableNameDeclaration variableDecl) {
+        if (variableNames.containsKey(variableDecl)) {
+            throw new RuntimeException("Variable " + variableDecl + " is already in the symbol table");
         }
-        names.put(nameDecl, new ArrayList());
+        variableNames.put(variableDecl, new ArrayList());
     }
 
+    public void addDeclaration(MethodNameDeclaration methodDecl) {
+        parent.addDeclaration(methodDecl);
+    }
 
     public boolean contains(NameOccurrence occurrence) {
-        return findHere(occurrence) != null;
+        return findVariableHere(occurrence) != null;
     }
 
-    public Map getUsedDeclarations() {
+    public Map getUsedVariableDeclarations() {
         Map used = new HashMap();
-        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
-            List usages = (List)names.get(nameDeclaration);
+            List usages = (List)variableNames.get(nameDeclaration);
             if (!usages.isEmpty()) {
                 used.put(nameDeclaration, usages);
             }
@@ -52,35 +55,31 @@ public abstract class AbstractScope implements Scope {
         return used;
     }
 
-    public Iterator getUnusedDeclarations() {
+    public Iterator getUnusedVariableDeclarations() {
         List unused = new ArrayList();
-        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
-            if (((List)names.get(nameDeclaration)).isEmpty()) {
+            if (((List)variableNames.get(nameDeclaration)).isEmpty()) {
                 unused.add(nameDeclaration);
             }
         }
         return unused.iterator();
     }
 
-    public VariableNameDeclaration addOccurrence(NameOccurrence occurrence) {
-        VariableNameDeclaration decl = findHere(occurrence);
+    public VariableNameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
+        VariableNameDeclaration decl = findVariableHere(occurrence);
         if (decl != null) {
-            List nameOccurrences = (List)names.get(decl);
+            List nameOccurrences = (List)variableNames.get(decl);
             nameOccurrences.add(occurrence);
         }
         return decl;
     }
 
-    public void addMethodDeclaration(MethodNameDeclaration decl) {
-        parent.addMethodDeclaration(decl);
-    }
-
-    protected abstract VariableNameDeclaration findHere(NameOccurrence occurrence);
+    protected abstract VariableNameDeclaration findVariableHere(NameOccurrence occurrence);
 
     protected String glomNames() {
         String result = "";
-        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
             result += i.next().toString() +",";
         }
         return result;

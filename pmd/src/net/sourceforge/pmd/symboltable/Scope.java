@@ -18,23 +18,23 @@ public interface Scope {
     /**
      * Returns an Iterator over a collection of unused declarations that exist at this scope
      */
-    public Iterator getUnusedDeclarations();
+    public Iterator getUnusedVariableDeclarations();
 
     /**
      * Returns a Map (VariableNameDeclaration->List(NameOccurrence,NameOccurrence)) of declarations that
      * exist and are used at the scope
      */
-    public Map getUsedDeclarations();
+    public Map getUsedVariableDeclarations();
 
     /**
      * Add a variable declaration to this scope
      */
-    public void addVariableDeclaration(VariableNameDeclaration decl);
+    public void addDeclaration(VariableNameDeclaration decl);
 
     /**
      * Add a method declaration to this scope
      */
-    public void addMethodDeclaration(MethodNameDeclaration decl);
+    public void addDeclaration(MethodNameDeclaration decl);
 
     /**
      * Tests whether or not a NameOccurrence is directly contained in the scope
@@ -47,7 +47,7 @@ public interface Scope {
      * Adds a NameOccurrence to this scope - only call this after getting
      * a true back from contains()
      */
-    public VariableNameDeclaration addOccurrence(NameOccurrence occ);
+    public VariableNameDeclaration addVariableNameOccurrence(NameOccurrence occ);
 
     /**
      * Points this scope to its parent

@@ -14,34 +14,34 @@ public class GlobalScope extends AbstractScope implements Scope {
         throw new RuntimeException("getEnclosingClassScope() called on GlobalScope");
     }
 
-    public void addMethodDeclaration(MethodNameDeclaration decl) {
+    public void addDeclaration(MethodNameDeclaration decl) {
         throw new RuntimeException("addMethodDeclaration() called on GlobalScope");
     }
 
-    public Iterator getUnusedDeclarations() {
+    public Iterator getUnusedVariableDeclarations() {
         return Collections.EMPTY_LIST.iterator();
     }
 
-    public void addVariableDeclaration(VariableNameDeclaration decl) {}
+    public void addDeclaration(VariableNameDeclaration decl) {}
 
     public boolean contains(NameOccurrence occ) {
         return false;
     }
 
-    public VariableNameDeclaration addOccurrence(NameOccurrence occ) {
+    public VariableNameDeclaration addVariableNameOccurrence(NameOccurrence occ) {
         return null;
     }
 
     public String toString() {
         String result = "GlobalScope:";
-        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
             result += nameDeclaration.getImage() +",";
         }
         return result;
     }
 
-    protected VariableNameDeclaration findHere(NameOccurrence occ) {
+    protected VariableNameDeclaration findVariableHere(NameOccurrence occ) {
         return null;
     }
 
