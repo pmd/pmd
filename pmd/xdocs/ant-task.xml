@@ -63,7 +63,7 @@
 
 <target name="pmd">
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
-  <pmd reportFile="C:\foo.xml" verbose="false" rulesetfiles="rulesets/design.xml" format="xml" failonerror="no">
+  <pmd reportFile="C:\foo.xml" verbose="false" rulesetfiles="rulesets/basic.xml,rulesets/design.xml" format="xml" failonerror="no">
     <fileset dir="C:\j2sdk1.4.0\src\">
       <include name="**/*.java"/>
     </fileset>
