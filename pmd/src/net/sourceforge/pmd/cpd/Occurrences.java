@@ -12,9 +12,13 @@ public class Occurrences {
     private List orderedTiles = new ArrayList();
     private Map tileToOccurrenceMap = new HashMap();
 
-    public Occurrences(TokenSets tss) {
+		public Occurrences(TokenSets tss) {
+			this(tss, new CPD.NullListener());
+		}
+    public Occurrences(TokenSets tss, CPD.Listener listener) {
         for (Iterator j = tss.iterator();j.hasNext();) {
             TokenList ts = (TokenList)j.next();
+						listener.update("Processing token set " + ts.getID());
             for (Iterator i = ts.iterator(); i.hasNext();) {
                 Token tok = (Token)i.next();
                 addTile(new Tile(tok), tok);
@@ -78,6 +82,10 @@ public class Occurrences {
     public Iterator getOccurrences(Tile tile) {
         return ((List)tileToOccurrenceMap.get(tile)).iterator();
     }
+		
+		public int getOccurrenceCountFor(Tile tile) {
+        return ((List)tileToOccurrenceMap.get(tile)).size();
+		}
 
     public String toString() {
         StringBuffer sb = new StringBuffer();

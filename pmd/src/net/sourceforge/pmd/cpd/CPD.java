@@ -17,11 +17,31 @@ public class CPD {
           return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
       }
     }
+		
+		public interface Listener {
+			public void update(String msg);
+		}
+		
+		public static class ListenerImpl implements Listener {
+			public void update(String msg) {
+				System.out.println(msg);
+			}
+		}
+		
+		public static class NullListener implements Listener {
+			public void update(String msg) {}
+		}
 
     private TokenSets tokenSets = new TokenSets();
     private Results results;
+		private Listener listener = new NullListener();
+		
+		public void addListener(Listener listener) {
+			this.listener = listener;
+		}
 
     public void add(File file) throws IOException {
+				listener.update("Adding file " + file.getAbsolutePath());
         Tokenizer t = new Tokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
@@ -44,8 +64,9 @@ public class CPD {
     }
 
     public void go(int minimumTileSize) {
+				listener.update("Starting to process " + tokenSets.size() + " files");
         GST gst = new GST(this.tokenSets, minimumTileSize);
-        results = gst.crunch();
+        results = gst.crunch(listener);
     }
 
     public Results getResults() {
@@ -53,23 +74,23 @@ public class CPD {
     }
 
     public static void main(String[] args) {
-        boolean timing = Boolean.valueOf(args[0]).booleanValue();
-        long start = System.currentTimeMillis();
-
-
         CPD cpd = new CPD();
+				cpd.addListener(new ListenerImpl());
         try {
 /*
             cpd.add("1", "helloworld");
             cpd.add("2", "hellothere");
 */
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused1.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused2.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused3.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused4.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused5.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused6.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused7.java"));
+/*
+            cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused1.java"));
+            cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused2.java"));
+            cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused3.java"));
+            cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused4.java"));
+            cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused5.java"));
+            cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused6.java"));
+            cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused7.java"));
+						*/
+						cpd.add(findFilesRecursively("c:\\pmd\\pmd\\src\\"));
 /*
             List files = findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity");
             files.addAll(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\agent"));
@@ -80,11 +101,7 @@ public class CPD {
             ioe.printStackTrace();
             return;
         }
-        cpd.go(150);
-        long stop = System.currentTimeMillis();
-        if (timing) {
-            System.out.println("Elapsed time = " + (stop-start) + " ms");
-        }
+        cpd.go(100);
         for (Iterator i = cpd.getResults().getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
             System.out.println(tile.getImage());
