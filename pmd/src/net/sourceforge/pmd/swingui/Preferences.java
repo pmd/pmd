@@ -24,19 +24,19 @@ import net.sourceforge.pmd.PMDException;
 class Preferences
 {
 
-    private PMDViewer m_pmdViewer;
     private Properties m_preferences = new Properties();
-    private String m_defaultUserRuleSetDirectory;
-    private String m_defaultSharedRuleSetDirectory;
-    private String m_defaultCurrentRuleSetDirectory;
+    private String m_defaultUserPathToPMD;
+    private String m_defaultSharedPathToPMD;
+    private String m_defaultCurrentPathToPMD;
     private String m_preferencesPath;
 
     // Constants
-    protected static final String USER_RULE_SET_DIRECTORY = "user_rule_set_directory";
-    protected static final String SHARED_RULE_SET_DIRECTORY = "shared_rule_set_directory";
-    protected static final String CURRENT_RULE_SET_DIRECTORY = "current_rule_set_directory";
-    private static final String UNIVERSAL_SEPARATOR = "&US;";
-    private static final String RULE_SET_DIRECTORY_MARK = "&RSDM;";
+    private final String USER_PATH_TO_PMD = "user_path_to_pmd";
+    private final String SHARED_PATH_TO_PMD = "shared_path_to_pmd";
+    private final String CURRENT_PATH_TO_PMD = "current_path_to_pmd";
+    private final String UNIVERSAL_SEPARATOR = "&US;";
+    private final String RULE_SET_DIRECTORY_MARK = "&RSDM;";
+    private final String PREFERENCES_FILE_NAME = "user.preferences";
 
 
     /**
@@ -44,32 +44,28 @@ class Preferences
      *
      * @return
      */
-    protected Preferences(PMDViewer pmdViewer)
+    protected Preferences()
+    throws PMDException
     {
-        String path;
+        StringBuffer path = new StringBuffer(100);
 
         //
         // Default user rule set directory.
         //
-        path = System.getProperty("user.home") + File.separator + "pmd" + File.separator + "rulesets";
-        m_defaultUserRuleSetDirectory = path;
-
-        setRuleSetDirectory(USER_RULE_SET_DIRECTORY, path);
+        m_defaultUserPathToPMD = System.getProperty("user.home");
+        setPathToPMD(USER_PATH_TO_PMD, m_defaultUserPathToPMD);
 
         //
         // Current rule set directory.
         //
-        m_defaultCurrentRuleSetDirectory = path;
-
-        setRuleSetDirectory(CURRENT_RULE_SET_DIRECTORY, path);
+        m_defaultCurrentPathToPMD = m_defaultUserPathToPMD;
+        setPathToPMD(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
 
         //
         // Default shared rule set directory.
         //
-        path = System.getProperty("user.dir") + File.separator + "pmd" + File.separator + "rulesets";
-        m_defaultSharedRuleSetDirectory = path;
-
-        setRuleSetDirectory(SHARED_RULE_SET_DIRECTORY, path);
+        m_defaultSharedPathToPMD = System.getProperty("user.dir");
+        setPathToPMD(SHARED_PATH_TO_PMD, m_defaultSharedPathToPMD);
 
         //
         // Preferences path.
@@ -81,17 +77,18 @@ class Preferences
     /**
      *******************************************************************************
      *
-     * @param pmdViewer
-     *
      * @return
+     *
+     * @throws PMDException
      */
     protected void getPreferencesPath()
+    throws PMDException
     {
         m_preferencesPath = System.getProperty("user.home")
                           + File.separator
                           + "pmd"
                           + File.separator
-                          + "pmd.preferences";
+                          + PREFERENCES_FILE_NAME;
 
         File file = new File(m_preferencesPath);
 
@@ -107,10 +104,12 @@ class Preferences
             catch (IOException exception)
             {
                 String template = "Could not create file \"{0}\" in your home directory \"{1}\".";
-                Object[] args = {"pmd.preferences", directory};
+                Object[] args = {PREFERENCES_FILE_NAME, directory};
                 String message = MessageFormat.format(template, args);
+                PMDException pmdException = new PMDException(message, exception);
+                pmdException.fillInStackTrace();
 
-                MessageDialog.show(m_pmdViewer, message, exception);
+                throw pmdException;
             }
         }
     }
@@ -119,11 +118,10 @@ class Preferences
     /**
      *******************************************************************************
      *
-     * @param pmdViewer
-     *
      * @return
      */
-    protected boolean load(PMDViewer pmdViewer)
+    protected boolean load()
+    throws PMDException
     {
         File file = new File(m_preferencesPath);
         FileInputStream inputStream = null;
@@ -134,39 +132,40 @@ class Preferences
 
             m_preferences.load(inputStream);
 
-            if (m_preferences.containsKey(USER_RULE_SET_DIRECTORY) == false)
+            if (m_preferences.containsKey(USER_PATH_TO_PMD) == false)
             {
-                m_preferences.setProperty(USER_RULE_SET_DIRECTORY, m_defaultUserRuleSetDirectory);
+                m_preferences.setProperty(USER_PATH_TO_PMD, m_defaultUserPathToPMD);
             }
 
-            if (m_preferences.containsKey(SHARED_RULE_SET_DIRECTORY) == false)
+            if (m_preferences.containsKey(SHARED_PATH_TO_PMD) == false)
             {
-                m_preferences.setProperty(SHARED_RULE_SET_DIRECTORY, m_defaultSharedRuleSetDirectory);
+                m_preferences.setProperty(SHARED_PATH_TO_PMD, m_defaultSharedPathToPMD);
             }
 
-            if (m_preferences.containsKey(CURRENT_RULE_SET_DIRECTORY) == false)
+            if (m_preferences.containsKey(CURRENT_PATH_TO_PMD) == false)
             {
-                m_preferences.setProperty(CURRENT_RULE_SET_DIRECTORY, m_defaultCurrentRuleSetDirectory);
+                m_preferences.setProperty(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
             }
 
             return true;
         }
         catch (FileNotFoundException exception)
         {
-            // Should not reach here because the file was created above.
-            exception.printStackTrace();
-
-            return false;
+            String template = "Could not find file \"{0}\" in directory \"{1}\".";
+            Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
+            String message = MessageFormat.format(template, args);
+            PMDException pmdException = new PMDException(message, exception);
+            pmdException.fillInStackTrace();
+            throw pmdException;
         }
         catch (IOException exception)
         {
             String template = "Could not load file \"{0}\" from directory \"{1}\".";
-            Object[] args = {"pmd.preferences", m_preferencesPath};
+            Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
             String message = MessageFormat.format(template, args);
-
-            MessageDialog.show(pmdViewer, message, exception);
-
-            return false;
+            PMDException pmdException = new PMDException(message, exception);
+            pmdException.fillInStackTrace();
+            throw pmdException;
         }
         finally
         {
@@ -189,43 +188,39 @@ class Preferences
      *
      */
     protected void save()
-        throws PMDException
+    throws PMDException
     {
         FileOutputStream outputStream = null;
 
         try
         {
+            File file = new File(m_preferencesPath);
+
+            if (file.exists() == false)
+            {
+                file.createNewFile();
+            }
+
             outputStream = new FileOutputStream(m_preferencesPath);
 
             m_preferences.store(outputStream, null);
         }
         catch (FileNotFoundException exception)
         {
-            try
-            {
-                (new File(m_preferencesPath)).createNewFile();
-            }
-            catch (IOException ioException)
-            {
-                String template = "Could not find your \"{0}\" file in your home directory \"{1}\".";
-                Object[] args = {"pmd.preferences", m_preferencesPath};
-                String message = MessageFormat.format(template, args);
-                PMDException pmdException = new PMDException(message, ioException);
-
-                pmdException.fillInStackTrace();
-
-                throw pmdException;
-            }
+            String template = "Could not find your \"{0}\" file in your home directory \"{1}\".";
+            Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
+            String message = MessageFormat.format(template, args);
+            PMDException pmdException = new PMDException(message, exception);
+            pmdException.fillInStackTrace();
+            throw pmdException;
         }
         catch (IOException exception)
         {
             String template = "Could not save your \"{0}\" file in your home directory \"{1}\".";
-            Object[] args = {"pmd.preferences", m_preferencesPath};
+            Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
-
             pmdException.fillInStackTrace();
-
             throw pmdException;
         }
         finally
@@ -247,34 +242,40 @@ class Preferences
     /**
      *******************************************************************************
      *
-     * @return
+     * @param path
      */
-    protected List getRuleSetDirectoryNames()
+    protected void setCurrentPathToPMD(String path)
     {
-        Enumeration values = m_preferences.elements();
-        List list = new ArrayList();
-
-        while (values.hasMoreElements())
-        {
-            String value = (String) values.nextElement();
-            String ruleSetName = decodeRuleSetName(value);
-
-            if (ruleSetName != null)
-            {
-                list.add(ruleSetName);
-            }
-        }
-
-        return list;
+        setPathToPMD(CURRENT_PATH_TO_PMD, path);
     }
 
     /**
      *******************************************************************************
      *
-     * @param newName
-     * @param newDirectory
+     * @param path
      */
-    protected boolean setRuleSetDirectory(String name, String directory)
+    protected void setUserPathToPMD(String path)
+    {
+        setPathToPMD(USER_PATH_TO_PMD, path);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param path
+     */
+    protected void setSharedPathToPMD(String path)
+    {
+        setPathToPMD(SHARED_PATH_TO_PMD, path);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param name
+     * @param directory
+     */
+    private boolean setPathToPMD(String name, String directory)
     {
         name = trim(name);
         directory = trim(directory);
@@ -287,7 +288,7 @@ class Preferences
         String key;
 
         key = name.toLowerCase();
-        directory = encodeRuleSetNameAndDirectory(name, directory);
+        directory = encodePathToPMD(name, directory);
 
         m_preferences.put(key, directory);
 
@@ -297,16 +298,17 @@ class Preferences
     /**
      *******************************************************************************
      *
+     * @param name
+     * @param directory
+     *
      * @return
      */
-    private String encodeRuleSetNameAndDirectory(String name, String directory)
+    private String encodePathToPMD(String name, String directory)
     {
         if (directory != null)
         {
             StringBuffer buffer = new StringBuffer(directory.length() + 50);
 
-            buffer.append(name);
-            buffer.append(RULE_SET_DIRECTORY_MARK);
             buffer.append(directory);
 
             for (int n = 0; n < buffer.length(); n++)
@@ -328,73 +330,35 @@ class Preferences
      *
      * @return
      */
-    private String decodeRuleSetName(String value)
+    private String decodePathToPMD(String value)
     {
         if (value != null)
         {
-            int endIndex = value.indexOf(RULE_SET_DIRECTORY_MARK);
+            StringBuffer buffer = new StringBuffer(value);
+            int beginIndex = 0;
+            int universalSeparatorLength = UNIVERSAL_SEPARATOR.length();
 
-            if (endIndex < 0)
+            for (int n = 0; n < buffer.length(); n++)
             {
-                value = null;
-            }
-            else
-            {
-                value = value.substring(0, endIndex);
-            }
-        }
-
-        return value;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    private String decodeRuleSetDirectory(String value)
-    {
-        if (value != null)
-        {
-            int beginIndex = value.indexOf(RULE_SET_DIRECTORY_MARK);
-
-            if (beginIndex < 0)
-            {
-                value = null;
-            }
-            else
-            {
-                StringBuffer buffer;
-                int universalSeparatorLength;
-
-                beginIndex += RULE_SET_DIRECTORY_MARK.length();
-                value = value.substring(beginIndex);
-                buffer = new StringBuffer(value);
-                universalSeparatorLength = UNIVERSAL_SEPARATOR.length();
-
-                for (int n = 0; n < buffer.length(); n++)
+                if (buffer.charAt(n) == '&')
                 {
-                    if (buffer.charAt(n) == '&')
+                    if ((n + universalSeparatorLength) <= buffer.length())
                     {
-                        if ((n + universalSeparatorLength) <= value.length())
+                        if (buffer.charAt(n + 1) == 'U')
                         {
-                            if (buffer.charAt(n + 1) == 'U')
+                            if (buffer.charAt(n + 2) == 'S')
                             {
-                                if (buffer.charAt(n + 2) == 'S')
+                                if (buffer.charAt(n + 3) == ';')
                                 {
-                                    if (buffer.charAt(n + 3) == ';')
-                                    {
-                                        buffer.delete(n, n + universalSeparatorLength);
-                                        buffer.insert(n, File.separatorChar);
-                                    }
+                                    buffer.replace(n, n + universalSeparatorLength, File.separator);
                                 }
                             }
                         }
                     }
                 }
-
-                value = buffer.toString();
             }
+
+            value = buffer.toString();
         }
 
         return value;
@@ -407,37 +371,22 @@ class Preferences
      */
     private boolean isDeletable(String key)
     {
-        return (SHARED_RULE_SET_DIRECTORY.equalsIgnoreCase(key) == false) &&
-               (USER_RULE_SET_DIRECTORY.equalsIgnoreCase(key) == false) &&
-               (CURRENT_RULE_SET_DIRECTORY.equalsIgnoreCase(key) == false);
+        return (SHARED_PATH_TO_PMD.equalsIgnoreCase(key) == false) &&
+               (USER_PATH_TO_PMD.equalsIgnoreCase(key) == false) &&
+               (CURRENT_PATH_TO_PMD.equalsIgnoreCase(key) == false);
     }
 
     /**
      *******************************************************************************
      *
-     * @param name
-     */
-    protected void removeRuleSetDirectory(String name)
-    {
-        String key = trim(name).toLowerCase();
-
-        if (isDeletable(key))
-        {
-            m_preferences.remove(key);
-        }
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param name
+     * @param pathName
      *
      * @return
      */
-    protected String getRuleSetDirectory(String name)
+    private String getPathToPMD(String pathName)
     {
-        String key = trim(name).toLowerCase();
-        String directory = decodeRuleSetDirectory(m_preferences.getProperty(key));
+        String key = trim(pathName).toLowerCase();
+        String directory = decodePathToPMD(m_preferences.getProperty(key));
 
         if (directory == null)
         {
@@ -452,9 +401,9 @@ class Preferences
      *
      * @return
      */
-    protected String getCurrentRuleSetDirectory()
+    protected String getCurrentPathToPMD()
     {
-        return getRuleSetDirectory(CURRENT_RULE_SET_DIRECTORY);
+        return getPathToPMD(CURRENT_PATH_TO_PMD);
     }
 
     /**
@@ -462,9 +411,9 @@ class Preferences
      *
      * @return
      */
-    protected String getUserRuleSetDirectory()
+    protected String getUserPathToPMD()
     {
-        return getRuleSetDirectory(USER_RULE_SET_DIRECTORY);
+        return getPathToPMD(USER_PATH_TO_PMD);
     }
 
     /**
@@ -472,9 +421,9 @@ class Preferences
      *
      * @return
      */
-    protected String getSharedRuleSetDirectory()
+    protected String getSharedPathToPMD()
     {
-        return getRuleSetDirectory(SHARED_RULE_SET_DIRECTORY);
+        return getPathToPMD(SHARED_PATH_TO_PMD);
     }
 
     /**
@@ -517,17 +466,17 @@ class Preferences
 
         String key = name.toLowerCase();
 
-        if (key.equals(USER_RULE_SET_DIRECTORY) && (value.length() == 0))
+        if (key.equals(USER_PATH_TO_PMD) && (value.length() == 0))
         {
             return false;
         }
 
-        if (key.equals(SHARED_RULE_SET_DIRECTORY) && (value.length() == 0))
+        if (key.equals(SHARED_PATH_TO_PMD) && (value.length() == 0))
         {
             return false;
         }
 
-        if (key.equals(CURRENT_RULE_SET_DIRECTORY) && (value.length() == 0))
+        if (key.equals(CURRENT_PATH_TO_PMD) && (value.length() == 0))
         {
             return false;
         }

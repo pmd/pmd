@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -15,6 +16,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
@@ -46,6 +50,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import net.sourceforge.pmd.PMDDirectory;
 import net.sourceforge.pmd.PMDException;
 
 /**
@@ -58,6 +63,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
 {
 
     private Preferences m_preferences;
+    private PMDDirectory m_pmdDirectory;
     private DirectoryTree m_directoryTree;
     private JLabel m_message;
     private JPanel m_statusBar;
@@ -68,7 +74,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
     private ResultsViewer m_resultsViewer;
     private JScrollPane m_resultsViewerScrollPane;
     private JSplitPane m_mainSplitPane;
-    private StatusIndicator m_statusIndicator;
+    private StatusArea m_statusArea;
     private PMDClipboard m_clipboardOwner = new PMDClipboard();
     private List m_ruleSetChangeListeners = new ArrayList();
     private int m_disabledCounter;
@@ -116,6 +122,20 @@ public class PMDViewer extends JFrame implements JobThreadListener
 
         ImageIcon image = (ImageIcon) UIManager.get("pmdLogoImage");
         setIconImage(image.getImage());
+
+        try
+        {
+            m_preferences = new Preferences();
+            m_preferences.load();
+            m_pmdDirectory = new PMDDirectory(m_preferences.getCurrentPathToPMD());
+        }
+        catch (PMDException pmdException)
+        {
+            String message = pmdException.getMessage();
+            Exception exception = pmdException.getOriginalException();
+
+            MessageDialog.show(this, message, exception);
+        }
     }
 
     /**
@@ -157,8 +177,8 @@ public class PMDViewer extends JFrame implements JobThreadListener
         //
         // Status Indicator
         //
-        m_statusIndicator = new StatusIndicator(componentBorder);
-        m_statusBar.add(m_statusIndicator, BorderLayout.WEST);
+        m_statusArea = new StatusArea(componentBorder);
+        m_statusBar.add(m_statusArea, BorderLayout.WEST);
 
         //
         // Message Area
@@ -287,14 +307,17 @@ public class PMDViewer extends JFrame implements JobThreadListener
      */
     protected Preferences getPreferences()
     {
-        if (m_preferences == null)
-        {
-            m_preferences = new Preferences(this);
-
-            m_preferences.load(this);
-        }
-
         return m_preferences;
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * @return
+     */
+    protected PMDDirectory getPMDDirectory()
+    {
+        return m_pmdDirectory;
     }
 
     /**
@@ -411,7 +434,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
      */
     public void jobThreadStarted(JobThreadEvent event)
     {
-        m_statusIndicator.startAction();
+        m_statusArea.startAction();
         m_message.setText(event.getMessage());
         SwingUtilities.invokeLater(new Repaint(m_message));
     }
@@ -425,7 +448,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
     {
         setDefaultMessage();
         SwingUtilities.invokeLater(new Repaint(m_message));
-        m_statusIndicator.stopAction();
+        m_statusArea.stopAction();
     }
 
     /**
@@ -447,6 +470,9 @@ public class PMDViewer extends JFrame implements JobThreadListener
     {
         try
         {
+            LoadRootDirectories loadRootDirectories = new LoadRootDirectories();
+            loadRootDirectories.start();
+
             // Setup the User Interface based on this computer's operating system.
             // This must be done before calling Java and Swing classes that call the GUI.
             //String useLookAndFeel = UIManager.getSystemLookAndFeelClassName();
@@ -454,8 +480,6 @@ public class PMDViewer extends JFrame implements JobThreadListener
 
             UIManager.setLookAndFeel(useLookAndFeel);
 
-            LoadRootDirectories loadRootDirectories = new LoadRootDirectories();
-            loadRootDirectories.start();
             PMDViewer pmdViewer = new PMDViewer();
             pmdViewer.setVisible(true);
             pmdViewer.setupFiles(loadRootDirectories.getDirectories());
@@ -487,40 +511,43 @@ public class PMDViewer extends JFrame implements JobThreadListener
      *********************************************************************************
      *********************************************************************************
      */
-    private class StatusIndicator extends JPanel
+    private class StatusArea extends JPanel
     {
-        private StatusIndicatorAction m_actionThread;
-        private JLabel[] m_iconPositions = new JLabel[20];
-        private Color TRANSPARENT = UIManager.getColor("pmdStatusAreaBackground");
-        private final int MAX_POSITION = m_iconPositions.length - 1;
+        private StatusActionThread m_actionThread;
+        private Color m_inactiveBackground;
+        private Color m_activeBackground;
+        private Color m_actionColor;
+        private int m_direction;
+        private int m_indicatorCurrentPosition;
+        private Insets m_insets;
+        private final int POSITION_INCREMENT = 5;
+        private final int START_MOVING = 0;
+        private final int MOVE_FORWARD = 1;
+        private final int MOVE_BACKWARD = 2;
 
         /**
          ****************************************************************************
          *
          * @param border
          */
-        private StatusIndicator(Border border)
+        private StatusArea(Border border)
         {
-            super(new FlowLayout(FlowLayout.LEFT, 0, 5));
+            super(null);
+
+            m_inactiveBackground = Color.gray;
+            m_activeBackground = UIManager.getColor("pmdStatusAreaBackground");
+            m_actionColor = Color.red;
 
             setOpaque(true);
-            setBackground(TRANSPARENT);
+            setBackground(m_inactiveBackground);
             setBorder(border);
 
-            Dimension size = new Dimension(8, 16);
+            Dimension size = new Dimension(160, 20);
 
-            for (int n = 0; n <= MAX_POSITION; n++)
-            {
-                JLabel actionIcon = new JLabel();
-                actionIcon.setBackground(TRANSPARENT);
-                actionIcon.setMinimumSize(size);
-                actionIcon.setMaximumSize(size);
-                actionIcon.setSize(size);
-                actionIcon.setPreferredSize(size);
-                actionIcon.setOpaque(true);
-                m_iconPositions[n] = actionIcon;
-                add(actionIcon);
-            }
+            setMinimumSize(size);
+            setMaximumSize(size);
+            setSize(size);
+            setPreferredSize(size);
         }
 
         /**
@@ -531,7 +558,9 @@ public class PMDViewer extends JFrame implements JobThreadListener
         {
             if (m_actionThread == null)
             {
-                m_actionThread = new StatusIndicatorAction(m_iconPositions);
+                setBackground(m_activeBackground);
+                m_direction = START_MOVING;
+                m_actionThread = new StatusActionThread(this);
                 m_actionThread.start();
             }
         }
@@ -546,7 +575,161 @@ public class PMDViewer extends JFrame implements JobThreadListener
             {
                 m_actionThread.stopAction();
                 m_actionThread = null;
+                setBackground(m_inactiveBackground);
+                repaint();
             }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param graphics
+         */
+        public void paint(Graphics graphics)
+        {
+            super.paint(graphics);
+
+            if (getBackground() == m_activeBackground)
+            {
+                Rectangle totalArea;
+                Insets insets;
+                int indicatorWidth;
+                int indicatorHeight;
+                int indicatorY;
+                int indicatorX;
+                int totalAreaRight;
+
+                totalArea = getBounds();
+                insets = getInsets();
+                totalArea.x += insets.left;
+                totalArea.y += insets.top;
+                totalArea.width -= (insets.left + insets.right);
+                totalArea.height -= (insets.top + insets.bottom);
+                totalAreaRight = totalArea.x + totalArea.width;
+                indicatorWidth = totalArea.width / 5;
+                indicatorHeight = totalArea.height;
+                indicatorY = totalArea.y;
+
+                if (m_direction == MOVE_FORWARD)
+                {
+                    m_indicatorCurrentPosition += POSITION_INCREMENT;
+
+                    if (m_indicatorCurrentPosition >= totalAreaRight)
+                    {
+                        m_indicatorCurrentPosition = totalAreaRight - POSITION_INCREMENT;
+                        m_direction = MOVE_BACKWARD;
+                    }
+                }
+                else if (m_direction == MOVE_BACKWARD)
+                {
+                    m_indicatorCurrentPosition -= POSITION_INCREMENT;
+
+                    if (m_indicatorCurrentPosition < totalArea.x)
+                    {
+                        m_indicatorCurrentPosition = totalArea.x + POSITION_INCREMENT;
+                        m_direction = MOVE_FORWARD;
+                    }
+                }
+                else
+                {
+                    m_indicatorCurrentPosition = totalArea.x + POSITION_INCREMENT;
+                    m_direction = MOVE_FORWARD;
+                }
+
+                indicatorX = m_indicatorCurrentPosition;
+
+                Rectangle oldClip = graphics.getClipBounds();
+                Color oldColor = graphics.getColor();
+
+                graphics.setColor(m_activeBackground);
+                graphics.setClip(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
+                graphics.clipRect(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
+                graphics.fillRect(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
+
+                if (m_direction == MOVE_FORWARD)
+                {
+                    int stopX = indicatorX - indicatorWidth;
+
+                    if (stopX < totalArea.x)
+                    {
+                        stopX = totalArea.x;
+                    }
+
+                    int y1 = indicatorY;
+                    int y2 = y1 + indicatorHeight;
+                    Color color = m_actionColor;
+
+                    for (int x = indicatorX; x > stopX; x--)
+                    {
+                        graphics.setColor(color);
+                        graphics.drawLine(x, y1, x, y2);
+                        color = brighter(color);
+                    }
+                }
+                else
+                {
+                    int stopX = indicatorX + indicatorWidth;
+
+                    if (stopX > totalAreaRight)
+                    {
+                        stopX = totalAreaRight;
+                    }
+
+                    int y1 = indicatorY;
+                    int y2 = indicatorY + indicatorHeight;
+                    Color color = m_actionColor;
+
+                    for (int x = indicatorX; x < stopX; x++)
+                    {
+                        graphics.setColor(color);
+                        graphics.drawLine(x, y1, x, y2);
+                        color = brighter(color);
+                    }
+                }
+
+                graphics.setColor(oldColor);
+
+                if (oldClip != null)
+                {
+                    graphics.clipRect(oldClip.x, oldClip.y, oldClip.width, oldClip.height);
+                    graphics.setClip(oldClip.x, oldClip.y, oldClip.width, oldClip.height);
+                }
+            }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param color
+         *
+         * @return
+         */
+        private Color brighter(Color color)
+        {
+            int red;
+            int green;
+            int blue;
+
+            red = color.getRed() + 7;
+            green = color.getGreen() + 7;
+            blue = color.getBlue() + 7;
+
+            if (red > 255)
+            {
+                red = 255;
+            }
+
+            if (green > 255)
+            {
+                green = 255;
+            }
+
+            if (blue > 255)
+            {
+                blue = 255;
+            }
+
+            return new Color(red, green, blue);
         }
     }
 
@@ -555,26 +738,23 @@ public class PMDViewer extends JFrame implements JobThreadListener
      *********************************************************************************
      *********************************************************************************
      */
-    private class StatusIndicatorAction extends Thread
+    private class StatusActionThread extends Thread
     {
-        private JLabel[] m_iconPositions;
+        private StatusArea m_statusArea;
         private boolean m_stopAction;
         private int m_doNothing;
-        private int MAX_POSITION;
-        private final Color ACTION = UIManager.getColor("pmdBlue");
-        private final Color TRANSPARENT = UIManager.getColor("pmdStatusAreaBackground");
-        private final long ELAPSED_TIME = 50;
+        private final long ELAPSED_TIME = 25;
 
         /**
          ****************************************************************************
          *
+         * @param statusArea
          */
-        private StatusIndicatorAction(JLabel[] iconPositions)
+        private StatusActionThread(StatusArea statusArea)
         {
-            super("Status Indicator Action");
+            super("Status Action");
 
-            m_iconPositions = iconPositions;
-            MAX_POSITION = m_iconPositions.length - 1;
+            m_statusArea = statusArea;
         }
 
         /**
@@ -583,53 +763,9 @@ public class PMDViewer extends JFrame implements JobThreadListener
          */
         public void run()
         {
-            boolean started = false;
-            int iconPosition = 0;
-            int direction = 1;
-
-            while (true)
+            while (m_stopAction == false)
             {
-                if (m_stopAction)
-                {
-                    return;
-                }
-
-                JLabel oldIcon = null;
-
-                if (started)
-                {
-                    oldIcon = m_iconPositions[iconPosition];
-                    oldIcon.setBackground(TRANSPARENT);
-                    oldIcon.repaint();
-
-                    if (direction > 0)
-                    {
-                        if (iconPosition < MAX_POSITION)
-                        {
-                            iconPosition++;
-                        }
-                        else
-                        {
-                            direction = -1;
-                        }
-                    }
-                    else
-                    {
-                        if (iconPosition > 0)
-                        {
-                            iconPosition--;
-                        }
-                        else
-                        {
-                            direction = 1;
-                        }
-                    }
-                }
-
-                JLabel newIcon = m_iconPositions[iconPosition];
-                newIcon.setBackground(ACTION);
-                newIcon.repaint();
-                started = true;
+                m_statusArea.repaint();
 
                 try
                 {
@@ -649,13 +785,6 @@ public class PMDViewer extends JFrame implements JobThreadListener
         private void stopAction()
         {
             m_stopAction = true;
-
-            for (int n = 0; n <= MAX_POSITION; n++)
-            {
-                m_iconPositions[n].setBackground(TRANSPARENT);
-            }
-
-            m_iconPositions[0].getParent().repaint();
         }
     }
 

@@ -6,14 +6,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.FlowLayout;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.EventObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -35,14 +27,10 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 
+import net.sourceforge.pmd.PMDDirectory;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetList;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSetReader;
-import net.sourceforge.pmd.RuleSetWriter;
 
 /**
  *
@@ -68,8 +56,8 @@ class RulesEditor extends JDialog
         super(pmdViewer, "Rules Editor", true);
 
         m_pmdViewer = pmdViewer;
-        int windowWidth = 1200;
-        int windowHeight = 900;
+        int windowWidth = pmdViewer.getWidth();
+        int windowHeight = pmdViewer.getHeight();
         int windowMargin = 10;
         Dimension screenSize = getToolkit().getScreenSize();
 
@@ -83,8 +71,8 @@ class RulesEditor extends JDialog
             windowHeight = screenSize.height - 20;
         }
 
-        int windowLocationX = (screenSize.width - windowWidth) / 2;
-        int windowLocationY = (screenSize.height - windowHeight) / 2;
+        int windowLocationX = pmdViewer.getX();
+        int windowLocationY = pmdViewer.getY();
 
         setLocation(windowLocationX, windowLocationY);
         setSize(windowWidth, windowHeight);
@@ -115,11 +103,9 @@ class RulesEditor extends JDialog
     private void buildTree()
         throws PMDException
     {
-        String[] includeRuleSets;
         RuleSet[] ruleSets;
         RulesTreeNode rootNode;
 
-        includeRuleSets = loadIncludeRuleSets();
         ruleSets = loadRuleSets();
         m_tree = new RulesTree();
         rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
@@ -127,16 +113,6 @@ class RulesEditor extends JDialog
         for (int n1 = 0; n1 < ruleSets.length; n1++)
         {
             RulesTreeNode ruleSetNode = new RulesTreeNode(ruleSets[n1]);
-            boolean include = false;
-
-            for (int n2 = 0; n2 < includeRuleSets.length; n2++)
-            {
-                if (ruleSets[n1].getName().equalsIgnoreCase(includeRuleSets[n2]))
-                {
-                    ruleSetNode.setInclude(true);
-                    break;
-                }
-            }
 
             rootNode.add(ruleSetNode);
             loadRuleTreeNodes(ruleSetNode);
@@ -150,132 +126,10 @@ class RulesEditor extends JDialog
      *
      * @return
      */
-    private String[] loadIncludeRuleSets()
-        throws PMDException
-    {
-        Preferences preferences;
-        String ruleSetDirectoryName;
-
-        preferences = m_pmdViewer.getPreferences();
-        ruleSetDirectoryName = preferences.getCurrentRuleSetDirectory();
-
-        return RuleSetList.getIncludedRuleSetNames(ruleSetDirectoryName);
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
     private RuleSet[] loadRuleSets()
         throws PMDException
     {
-        Preferences preferences;
-        String ruleSetDirectoryName;
-        File ruleSetDirectory;
-        List ruleSetList;
-        boolean getRegisteredRuleSets;
-
-        preferences = m_pmdViewer.getPreferences();
-        ruleSetDirectoryName = preferences.getCurrentRuleSetDirectory();
-        ruleSetDirectory = new File(ruleSetDirectoryName);
-        ruleSetList = new ArrayList();
-        getRegisteredRuleSets = false;
-
-        if (ruleSetDirectory.exists() == false)
-        {
-            ruleSetDirectory.mkdirs();
-            getRegisteredRuleSets = true;
-        }
-        else if (ruleSetDirectory.isDirectory() == false)
-        {
-            String template = "The rule set directory name \"{0}\" is not a directory.  "
-                            + "Verify that the directory name is correct in the Preferences Editor.";
-            Object[] args = {ruleSetDirectoryName};
-            String message = MessageFormat.format(template, args);
-            PMDException exception = new PMDException(message);
-
-            exception.fillInStackTrace();
-
-            throw exception;
-        }
-        else
-        {
-            File[] ruleSetFiles = ruleSetDirectory.listFiles(new XMLFileFilter());
-
-            if (ruleSetFiles.length == 0)
-            {
-                getRegisteredRuleSets = true;
-            }
-            else
-            {
-                for (int n = 0; n < ruleSetFiles.length; n++)
-                {
-                    FileInputStream inputStream = null;
-
-                    try
-                    {
-                        RuleSetReader ruleSetReader;
-
-                        inputStream = new FileInputStream(ruleSetFiles[n]);
-                        ruleSetReader = new RuleSetReader(inputStream);
-
-                        ruleSetList.add(ruleSetReader.read());
-                    }
-                    catch (FileNotFoundException exception)
-                    {
-                        String template = "Could not open file \"{0}\".  The file does not exist or the path may be incorrect.";
-                        Object[] args = {ruleSetFiles[n].getName()};
-                        String message = MessageFormat.format(template, args);
-                        PMDException pmdException = new PMDException(message, exception);
-
-                        pmdException.fillInStackTrace();
-
-                        throw pmdException;
-                    }
-                    finally
-                    {
-                        if (inputStream != null)
-                        {
-                            try
-                            {
-                                inputStream.close();
-                            }
-                            catch (IOException exception)
-                            {
-                                exception.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        //
-        // If no rule sets were found then load the registered rule sets.
-        //
-        if (getRegisteredRuleSets)
-        {
-            try
-            {
-                RuleSetFactory ruleSetFactory = new RuleSetFactory();
-                Iterator ruleSets = ruleSetFactory.getRegisteredRuleSets();
-
-                while (ruleSets.hasNext())
-                {
-                    ruleSetList.add(ruleSets.next());
-                }
-            }
-            catch (RuleSetNotFoundException exception)
-            {
-                String message = "Rule Set Not Found";
-                PMDException pmdException = new PMDException(message, exception);
-
-                pmdException.fillInStackTrace();
-
-                throw pmdException;
-            }
-        }
+        List ruleSetList = m_pmdViewer.getPMDDirectory().getRuleSets();
 
         //
         // Sort the rule sets by name in ascending order.
@@ -409,6 +263,16 @@ class RulesEditor extends JDialog
 
     /**
      *******************************************************************************
+     *
+     * @return
+     */
+    protected PMDViewer getPMDViewer()
+    {
+        return m_pmdViewer;
+    }
+
+    /**
+     *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
@@ -502,11 +366,8 @@ class RulesEditor extends JDialog
             RulesTreeNode rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
 
             saveData(rootNode);
-
-            if (writeRuleSets(rootNode))
-            {
-                RulesEditor.this.setVisible(false);
-            }
+            writeRuleSets(rootNode);
+            RulesEditor.this.setVisible(false);
         }
 
         /**
@@ -531,86 +392,29 @@ class RulesEditor extends JDialog
          *
          * @param treeNode
          */
-        private boolean writeRuleSets(RulesTreeNode treeNode)
+        private void writeRuleSets(RulesTreeNode rootNode)
         {
-            List includeRuleSetNames = new ArrayList();
-            Preferences preferences = m_pmdViewer.getPreferences();
-            String ruleSetDirectory = preferences.getCurrentRuleSetDirectory();
-            Enumeration ruleSetNodes = treeNode.children();
+            List ruleSetList = new ArrayList();
+            Enumeration ruleSetNodes = rootNode.children();
 
             while (ruleSetNodes.hasMoreElements())
             {
-                FileOutputStream fileOutputStream = null;
                 RulesTreeNode ruleSetNode = (RulesTreeNode) ruleSetNodes.nextElement();
                 RuleSet ruleSet = ruleSetNode.getRuleSet();
-                String ruleSetName = ruleSet.getName();
-                String fileName = ruleSetDirectory + File.separator + ruleSetName + ".xml";
+                Enumeration ruleNodes = ruleSetNode.children();
 
-                if (ruleSetNode.include())
+                ruleSetList.add(ruleSet);
+                ruleSet.getRules().clear();
+
+                while (ruleNodes.hasMoreElements())
                 {
-                    includeRuleSetNames.add(ruleSetName);
-                }
+                    RulesTreeNode ruleNode = (RulesTreeNode) ruleNodes.nextElement();
 
-                try
-                {
-                    Enumeration ruleNodes = ruleSetNode.children();
-
-                    ruleSet.getRules().clear();
-
-                    while (ruleNodes.hasMoreElements())
-                    {
-                        RulesTreeNode ruleNode = (RulesTreeNode) ruleNodes.nextElement();
-
-                        ruleSet.addRule(ruleNode.getRule());
-                    }
-
-                    RuleSetWriter writer;
-
-                    fileOutputStream = new FileOutputStream(fileName);
-                    writer = new RuleSetWriter(fileOutputStream);
-
-                    writer.write(ruleSet);
-                }
-                catch (FileNotFoundException exception)
-                {
-                    String template = "Could not create rule set file \"{0}\".  The file path may be incorrect.";
-                    Object[] args = {fileName};
-                    String message = MessageFormat.format(template, args);
-
-                    MessageDialog.show(RulesEditor.this, message);
-
-                    return false;
-                }
-                finally
-                {
-                    if (fileOutputStream != null)
-                    {
-                        try
-                        {
-                            fileOutputStream.close();
-                        }
-                        catch (IOException exception)
-                        {
-                            exception.printStackTrace();
-                        }
-                    }
+                    ruleSet.addRule(ruleNode.getRule());
                 }
             }
 
-            try
-            {
-                String[] ruleSetNames = new String[includeRuleSetNames.size()];
-                includeRuleSetNames.toArray(ruleSetNames);
-                RuleSetList.saveIncludedRuleSetNames(ruleSetDirectory, ruleSetNames);
-            }
-            catch (PMDException pmdException)
-            {
-                String message = pmdException.getMessage();
-                Exception originalException = pmdException.getOriginalException();
-                MessageDialog.show(m_pmdViewer, message, originalException);
-            }
-
-            return true;
+            m_pmdViewer.getPMDDirectory().saveRuleSets(ruleSetList);
         }
     }
 
@@ -630,27 +434,6 @@ class RulesEditor extends JDialog
         public void actionPerformed(ActionEvent event)
         {
             RulesEditor.this.setVisible(false);
-        }
-    }
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class XMLFileFilter implements FileFilter
-    {
-
-        /**
-         *************************************************************************
-         *
-         * @param file
-         *
-         * @return
-         */
-        public boolean accept(File file)
-        {
-            return file.getName().endsWith(".xml");
         }
     }
 

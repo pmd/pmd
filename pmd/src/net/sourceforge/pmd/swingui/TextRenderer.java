@@ -68,9 +68,12 @@ class TextRenderer
             //
             String ruleMessage = ruleViolation.getDescription();
 
-            if (ruleMessage == null) {
+            if (ruleMessage == null)
+            {
                 ruleMessage = "";
-            } else {
+            }
+            else
+            {
                 ruleMessage = ruleMessage.replace('\n', ' ').trim();
             }
 
@@ -83,9 +86,12 @@ class TextRenderer
             //
             String description = rule.getDescription();
 
-            if (description == null) {
+            if (description == null)
+            {
                 description = "";
-            } else {
+            }
+            else
+            {
                 description = description.replace('\n', ' ').trim();
             }
 

@@ -85,12 +85,10 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
         m_ruleSet = ruleSet;
         m_flags |= IS_RULE_SET;
 
-        /*
-        if (ruleSet.isInclude())
+        if (ruleSet.include())
         {
             m_flags |= INCLUDE;
         }
-        */
 
         setDisplayName();
     }
@@ -113,7 +111,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
         m_rule = rule;
         m_flags |= IS_RULE;
 
-        if (rule.isInclude())
+        if (rule.include())
         {
             m_flags |= INCLUDE;
         }
@@ -137,25 +135,6 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
         m_ruleSet = ((RulesTreeNode) ruleNode.getParent()).getRuleSet();
 
         setDisplayName();
-    }
-
-    /**
-     ***************************************************************************
-     *
-     * @param newChildNode
-     */
-    protected void addNode(RulesTreeNode newChildNode)
-    {
-        String newChildNodeName = newChildNode.m_name;
-
-        if (getChildCount() == 0)
-        {
-            add(newChildNode);
-        }
-        else
-        {
-
-        }
     }
 
     /**
@@ -458,6 +437,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
         {
             m_ruleSet.setName(m_name);
             m_ruleSet.setDescription(m_description);
+            m_ruleSet.setInclude(include());
         }
         else if (isRule())
         {

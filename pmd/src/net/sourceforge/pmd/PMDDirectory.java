@@ -1,0 +1,479 @@
+package net.sourceforge.pmd;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import net.sourceforge.pmd.swingui.Resources;
+
+/**
+ * Defines and provides access to PMD's directory structure.  The user defines the location
+ * of the root PMD directory, e.g., /users/userA/PMD.  The PMD directory structure provides
+ * the following:
+ * <ul>
+ * <li>Organization to simplify PMD's access to files.</li>
+ * <li>Eliminates dependence of manually updating the Java classpath.</li>
+ * <li>Permits adding and removing rule sets without updating lists.</li>
+ * </ul>
+ * <pre>
+ * The directory structure and contents are the following:
+ * <code>
+ *    PMD
+ *       pmd.properties
+ *       rulesets
+ *          basic.xml
+ *          design.xml
+ *          import.xml
+ *          com
+ *             myCompany
+ *                pmd
+ *                   rules
+ *                      myRule01.class
+ *                      myRule02.class
+ *                      myRule03.class
+ *          net
+ *             sourceforge
+ *                pmd
+ *                   rules
+ *                      myNewExperimentalRule.class
+ * </code>
+ * </pre>
+ * The <b>PMD</b> directory is the root directory of all PMD files.
+ * <p>
+ * The <b>pmd.properties</b> file contains various information to be defined.
+ * <p>
+ * The <b>rulesets</b> directory contains the rule set files and rule class file directories.
+ * <p>
+ * A <b>rule set file</b> is a XML file that describes the rule set and its rules.  This
+ * information is displayed and maintained in the PMD Viewer.  The rule class files are called by PMD
+ * to perform the analysis.
+ * <p>
+ * All rule classes, other than the rule classes in pmd.jar, are stored in directory paths
+ * defined by each rule's class name.  The Java classpath is appended with the rulesets
+ * directory so that the rule class and any supporting class files may be found.
+ * <p>
+ * <b>NOTE:</b> The user's home directory will contain a PMD directory with a user.preferences
+ * file.  An entry in the user's preferences will be the path to the PMD root directory
+ * described above.
+ *
+ * @author Donald A. Leckie
+ * @since September 19, 2002
+ * @version $Revision$, $Date$
+ */
+
+public class PMDDirectory
+{
+
+    private String m_rootDirectory;
+    private String m_ruleSetsDirectory;
+    private Properties m_properties;
+
+    // Constants
+    private final String PROPERTIES_FILE_NAME = "pmd.properties";
+
+    /**
+     ********************************************************************************
+     *
+     * Creates the information about the PMD directory structure that will be required
+     * for accessing the PMD files.
+     *
+     * @param pathToPMD The full path to the PMD directory, but excludes the PMD directory.
+     */
+    public PMDDirectory(String pathToPMD)
+    throws PMDException
+    {
+        String classpath;
+        String key;
+
+        m_rootDirectory = pathToPMD + File.separator + "PMD";
+        m_ruleSetsDirectory = m_rootDirectory + File.separator + "rulesets";
+        key = "java.class.path";
+        classpath = System.getProperty(key);
+        classpath = classpath + ";" + m_ruleSetsDirectory;
+        System.setProperty(key, classpath);
+        loadPropertiesFile(pathToPMD);
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * Gets a rule set containing only the rule sets and rules to be included for running
+     * the analysis.
+     *
+     * @return  A rule containing only included rules.
+     */
+    public RuleSet getIncludedRules()
+    throws PMDException
+    {
+        RuleSet includedRules = new RuleSet();
+        Iterator ruleSetFiles = getRuleSetFiles().iterator();
+
+        while (ruleSetFiles.hasNext())
+        {
+            File ruleSetFile = (File) ruleSetFiles.next();
+            RuleSet ruleSet = getRuleSet(ruleSetFile, true);
+
+            if (ruleSet != null)
+            {
+                Iterator allRules = ruleSet.getRules().iterator();
+
+                while (allRules.hasNext())
+                {
+                    Rule rule = (Rule) allRules.next();
+
+                    if (rule.include())
+                    {
+                        includedRules.addRule(rule);
+                    }
+                }
+            }
+        }
+
+        return includedRules;
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * Gets the rule set for the given rule set file.  All rules in the rule set file
+     * are stored in the rule set regardless of their <i>include</i> state.
+     *
+     * @param ruleSetFile The file of the desired rule set.
+     *
+     * @return A rule set containing all of its rules.
+     *
+     * @throws PMDException
+     */
+    public RuleSet getRuleSet(File ruleSetFile)
+    throws PMDException
+    {
+        return getRuleSet(ruleSetFile, false);
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * Gets the rule set for the given rule set File.  All rules in the rule set file
+     * are stored in the rule set according of their <i>include</i> state and the <i>onlyIfIncluded</i>
+     * flag.
+     *
+     * @param ruleSetFile The file of the desired rule set.
+     *
+     * @return A rule set containing all of its rules.
+     *
+     * @throws PMDException
+     */
+    public RuleSet getRuleSet(File ruleSetFile, boolean onlyIfIncluded)
+    throws PMDException
+    {
+        if (ruleSetFile == null)
+        {
+            String message = "Rule set file parameter is missing.";
+            PMDException exception = new PMDException(message);
+            exception.fillInStackTrace();
+            throw exception;
+        }
+
+        FileInputStream inputStream = null;
+        RuleSet ruleSet = null;
+
+        try
+        {
+            RuleSetReader reader;
+
+            inputStream = new FileInputStream(ruleSetFile);
+            reader = new RuleSetReader();
+            ruleSet = reader.read(inputStream, ruleSetFile.getName(), onlyIfIncluded);
+        }
+        catch (FileNotFoundException exception)
+        {
+            String template = "Rule set \"{0}\" was not found.";
+            String[] args = {ruleSetFile.getPath()};
+            String message = MessageFormat.format(template, args);
+            PMDException pmdException = new PMDException(message, exception);
+            pmdException.fillInStackTrace();
+            throw pmdException;
+        }
+        finally
+        {
+            if (inputStream != null)
+            {
+                try
+                {
+                    inputStream.close();
+                }
+                catch (IOException exception)
+                {
+                    exception.printStackTrace();
+                }
+            }
+        }
+
+        return ruleSet;
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @return
+     */
+    private List getRuleSetFiles()
+    {
+        List ruleSetFiles = new ArrayList();
+        File directory = new File(m_ruleSetsDirectory);
+
+        if (directory.exists() == false)
+        {
+            directory.mkdirs();
+        }
+
+        File[] files = directory.listFiles();
+
+        for (int n = 0; n < files.length; n++)
+        {
+            if (files[n].getName().toLowerCase().endsWith(".xml"))
+            {
+                ruleSetFiles.add(files[n]);
+            }
+        }
+
+        return ruleSetFiles;
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @param ruleSetDirectory
+     *
+     * @return
+     */
+    public List getRuleSets()
+    {
+        List ruleSetFilesList = getRuleSetFiles();
+        List ruleSetList = new ArrayList();
+
+        if (ruleSetFilesList.isEmpty())
+        {
+            try
+            {
+                RuleSetFactory ruleSetFactory = new RuleSetFactory();
+                Iterator ruleSets = ruleSetFactory.getRegisteredRuleSets();
+
+                while (ruleSets.hasNext())
+                {
+                    ruleSetList.add(ruleSets.next());
+                }
+            }
+            catch (RuleSetNotFoundException exception)
+            {
+                // This should not happen because the registered rule sets are resources
+                // in pmd.jar.
+                exception.printStackTrace();
+            }
+        }
+        else
+        {
+            Iterator ruleSetFiles = ruleSetFilesList.iterator();
+
+            while (ruleSetFiles.hasNext())
+            {
+                try
+                {
+                    File ruleSetFile = (File) ruleSetFiles.next();
+                    RuleSet ruleSet = getRuleSet(ruleSetFile);
+
+                    ruleSetList.add(ruleSet);
+                }
+                catch (PMDException exception)
+                {
+                    exception.printStackTrace();
+                }
+            }
+        }
+
+        return ruleSetList;
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @param ruleSetList
+     */
+    public void saveRuleSets(List ruleSetList)
+    {
+        Iterator ruleSets = ruleSetList.iterator();
+
+        while (ruleSets.hasNext())
+        {
+            RuleSet ruleSet = (RuleSet) ruleSets.next();
+            String ruleSetFileName = ruleSet.getFileName();
+            String path = m_ruleSetsDirectory + File.separator + ruleSetFileName;
+            File file = new File(path);
+            FileOutputStream outputStream = null;
+
+            if (file.exists())
+            {
+                file.delete();
+            }
+
+            try
+            {
+                RuleSetWriter writer;
+
+                outputStream = new FileOutputStream(file);
+                writer = new RuleSetWriter(outputStream);
+                writer.write(ruleSet);
+            }
+            catch (FileNotFoundException exception)
+            {
+                // Should not reach here because the rule set file has been deleted if it
+                // existed and the directories all exist.
+                exception.printStackTrace();
+            }
+            finally
+            {
+                if (outputStream != null)
+                {
+                    try
+                    {
+                        outputStream.close();
+                    }
+                    catch (IOException exception)
+                    {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @param pathToPMD
+     */
+    private void loadPropertiesFile(String pathToPMD)
+    throws PMDException
+    {
+        String propertiesFileName;
+        FileInputStream inputStream;
+
+        propertiesFileName = m_rootDirectory + File.separator + PROPERTIES_FILE_NAME;
+        m_properties = new Properties();
+        inputStream = null;
+
+        try
+        {
+            File file = new File(propertiesFileName);
+
+            if (file.exists() == false)
+            {
+                File directory = file.getParentFile();
+
+                directory.mkdirs();
+                file.createNewFile();
+            }
+
+            inputStream = new FileInputStream(propertiesFileName);
+            m_properties.load(inputStream);
+        }
+        catch (FileNotFoundException exception)
+        {
+            String template = "Could not find the file \"{0}\".";
+            String[] args = {propertiesFileName};
+            String message = MessageFormat.format(template, args);
+            PMDException pmdException = new PMDException(message, exception);
+            pmdException.fillInStackTrace();
+            throw pmdException;
+        }
+        catch (IOException exception)
+        {
+            String template = "Unable to read the file \"{0}\".";
+            String[] args = {propertiesFileName};
+            String message = MessageFormat.format(template, args);
+            PMDException pmdException = new PMDException(message, exception);
+            pmdException.fillInStackTrace();
+            throw pmdException;
+        }
+        finally
+        {
+            if (inputStream != null)
+            {
+                try
+                {
+                    inputStream.close();
+                }
+                catch (IOException exception)
+                {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     ********************************************************************************
+     *
+     */
+    private void savePropertiesFile()
+    throws PMDException
+    {
+        FileOutputStream outputStream;
+        String propertiesFileName;
+        File file;
+
+        outputStream = null;
+        propertiesFileName = m_rootDirectory + File.separator + PROPERTIES_FILE_NAME;
+        file = new File(propertiesFileName);
+
+        if (file.exists())
+        {
+            file.delete();
+        }
+
+        try
+        {
+            m_properties.store(outputStream, null);
+        }
+        catch (FileNotFoundException exception)
+        {
+            String template = "Could not find the file \"{0}\".";
+            String[] args = {propertiesFileName};
+            String message = MessageFormat.format(template, args);
+            PMDException pmdException = new PMDException(message, exception);
+            pmdException.fillInStackTrace();
+            throw pmdException;
+        }
+        catch (IOException exception)
+        {
+            String template = "Unable to read the file \"{0}\".";
+            String[] args = {propertiesFileName};
+            String message = MessageFormat.format(template, args);
+            PMDException pmdException = new PMDException(message, exception);
+            pmdException.fillInStackTrace();
+            throw pmdException;
+        }
+        finally
+        {
+            if (outputStream != null)
+            {
+                try
+                {
+                    outputStream.close();
+                }
+                catch (IOException exception)
+                {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+}

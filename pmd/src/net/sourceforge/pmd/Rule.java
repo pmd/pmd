@@ -19,6 +19,6 @@ public interface Rule {
     public String getStringProperty(String name);
     public double getDoubleProperty(String name);
     public Properties getProperties();
-    public boolean isInclude();
+    public boolean include();
     public void setInclude(boolean include);
 }

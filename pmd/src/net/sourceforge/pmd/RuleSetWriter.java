@@ -41,11 +41,18 @@ public class RuleSetWriter
      */
     public void write(RuleSet ruleSet)
     {
-        // <ruleset name="xxxxxx" >
+        // <ruleset name="xxxxxx"
         indent();
         setupNewLine();
         m_line.append("<ruleset name=\"");
         m_line.append(ruleSet.getName());
+        m_line.append('"');
+
+        //
+        // include="true">
+        //
+        m_line.append(" include=\"");
+        m_line.append(ruleSet.include() ? "true" : "false");
         m_line.append("\">");
         outputLine();
 
@@ -106,10 +113,10 @@ public class RuleSetWriter
         m_line.append('"');
         outputLine();
 
-        // include="yes"
+        // include="true">
         setupNewLine();
         m_line.append("include=\"");
-        m_line.append(rule.isInclude() ? "true" : "false");
+        m_line.append(rule.include() ? "true" : "false");
         m_line.append("\">");
         outputLine();
         m_indent -= 6;

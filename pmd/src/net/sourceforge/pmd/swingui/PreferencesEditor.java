@@ -36,9 +36,9 @@ class PreferencesEditor extends JDialog
 {
     private PMDViewer m_pmdViewer;
     private Preferences m_preferences;
-    private JTextArea m_currentDirectory;
-    private JTextArea m_userDirectory;
-    private JTextArea m_sharedDirectory;
+    private JTextArea m_currentPathToPMD;
+    private JTextArea m_userPathToPMD;
+    private JTextArea m_sharedPathToPMD;
 
     /**
      ********************************************************************************
@@ -98,22 +98,22 @@ class PreferencesEditor extends JDialog
         dataPanel = new JPanel(new GridBagLayout());
 
         row = 0;
-        createLabel("Current Rule Set Directory", dataPanel, row, 0);
-        directory = m_preferences.getCurrentRuleSetDirectory();
-        m_currentDirectory = createTextArea(directory, dataPanel, row, 1);
-        createFileButton(dataPanel, row, 2, m_currentDirectory);
+        createLabel("Current Path to PMD", dataPanel, row, 0);
+        directory = m_preferences.getCurrentPathToPMD();
+        m_currentPathToPMD = createTextArea(directory, dataPanel, row, 1);
+        createFileButton(dataPanel, row, 2, m_currentPathToPMD);
 
         row++;
-        createLabel("User Rule Set Directory", dataPanel, row, 0);
-        directory = m_preferences.getUserRuleSetDirectory();
-        m_userDirectory = createTextArea(directory, dataPanel, row, 1);
-        createFileButton(dataPanel, row, 2, m_userDirectory);
+        createLabel("User Path to PMD", dataPanel, row, 0);
+        directory = m_preferences.getUserPathToPMD();
+        m_userPathToPMD = createTextArea(directory, dataPanel, row, 1);
+        createFileButton(dataPanel, row, 2, m_userPathToPMD);
 
         row++;
-        createLabel("Shared Rule Set Directory", dataPanel, row, 0);
-        directory = m_preferences.getSharedRuleSetDirectory();
-        m_sharedDirectory = createTextArea(directory, dataPanel, row, 1);
-        createFileButton(dataPanel, row, 2, m_sharedDirectory);
+        createLabel("Shared Path to PMD", dataPanel, row, 0);
+        directory = m_preferences.getSharedPathToPMD();
+        m_sharedPathToPMD = createTextArea(directory, dataPanel, row, 1);
+        createFileButton(dataPanel, row, 2, m_sharedPathToPMD);
 
         return dataPanel;
     }
@@ -256,14 +256,11 @@ class PreferencesEditor extends JDialog
         {
             String key;
 
-            key = Preferences.CURRENT_RULE_SET_DIRECTORY;
-            m_preferences.setRuleSetDirectory(key, m_currentDirectory.getText());
+            m_preferences.setCurrentPathToPMD(m_currentPathToPMD.getText());
 
-            key = Preferences.USER_RULE_SET_DIRECTORY;
-            m_preferences.setRuleSetDirectory(key, m_userDirectory.getText());
+            m_preferences.setUserPathToPMD(m_userPathToPMD.getText());
 
-            key = Preferences.SHARED_RULE_SET_DIRECTORY;
-            m_preferences.setRuleSetDirectory(key, m_sharedDirectory.getText());
+            m_preferences.setSharedPathToPMD(m_sharedPathToPMD.getText());
 
             try
             {

@@ -44,6 +44,7 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
         addTab("Property", m_rulePropertyPanel);
         setFont(UIManager.getFont("tabFont"));
 
+        m_ruleAllPanel.setIsEditing(true);
         rulesTree.addTreeSelectionListener(this);
         addChangeListener(this);
     }

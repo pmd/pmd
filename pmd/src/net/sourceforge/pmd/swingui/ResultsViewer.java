@@ -132,91 +132,11 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
      * @param event
      */
     private void loadRuleSets()
+    throws PMDException
     {
         if (m_loadRuleSets)
         {
-            m_ruleSet = new RuleSet();
-            String[] ruleSetNames = null;
-
-            String directoryPath = m_pmdViewer.getPreferences().getCurrentRuleSetDirectory();
-
-            try
-            {
-                ruleSetNames = RuleSetList.getIncludedRuleSetNames(directoryPath);
-            }
-            catch (PMDException pmdException)
-            {
-                Exception exception = pmdException.getOriginalException();
-                String message = pmdException.getMessage();
-
-                MessageDialog.show(m_pmdViewer, message, exception);
-
-                return;
-            }
-
-            for (int n = 0; n < ruleSetNames.length; n++)
-            {
-                String ruleSetPath = directoryPath + File.separator + ruleSetNames[n] + ".xml";
-                File file = new File(ruleSetPath);
-
-                if (file.exists())
-                {
-                    FileInputStream inputStream = null;
-
-                    try
-                    {
-                        RuleSet ruleSet;
-                        RuleSet tempRuleSet;
-
-                        inputStream = new FileInputStream(file);
-                        ruleSet = (new RuleSetReader(inputStream)).read();
-                        tempRuleSet = new RuleSet();
-                        tempRuleSet.setName(ruleSet.getName());
-                        tempRuleSet.setDescription(ruleSet.getDescription());
-
-                        Iterator rules = ruleSet.getRules().iterator();
-
-                        while (rules.hasNext())
-                        {
-                            Rule rule = (Rule) rules.next();
-
-                            if (rule.isInclude())
-                            {
-                                tempRuleSet.addRule(rule);
-                            }
-                        }
-
-                        m_ruleSet.addRuleSet(tempRuleSet);
-                    }
-                    catch (FileNotFoundException exception)
-                    {
-                        // Should not reach here because we already tested for the file's existence.
-                        exception.printStackTrace();
-                    }
-                    catch (PMDException pmdException)
-                    {
-                        Exception exception = pmdException.getOriginalException();
-                        String message = pmdException.getMessage();
-
-                        MessageDialog.show(m_pmdViewer, message, exception);
-                    }
-                    finally
-                    {
-                        if (inputStream != null)
-                        {
-                            try
-                            {
-                                inputStream.close();
-                            }
-                            catch (IOException exception)
-                            {
-                                inputStream = null;
-                            }
-                        }
-                    }
-                }
-            }
-
+            m_ruleSet = m_pmdViewer.getPMDDirectory().getIncludedRules();
             m_loadRuleSets = false;
         }
     }

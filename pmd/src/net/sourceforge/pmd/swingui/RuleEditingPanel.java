@@ -95,6 +95,11 @@ public class RuleEditingPanel extends JPanel
         // Rule Class Name Text
         m_className = new JTextField();
         m_className.setFont(UIManager.getFont("dataFont"));
+        m_className.setBackground(UIManager.getColor("disabledTextBackground"));
+        m_className.setForeground(Color.black);
+        m_className.setSelectedTextColor(Color.black);
+        m_className.setEditable(false);
+        m_className.setEnabled(false);
         panel.add(m_className);
 
         // Rule Message Label
@@ -237,8 +242,6 @@ public class RuleEditingPanel extends JPanel
         {
             m_name.setEnabled(true);
             m_name.setBackground(Color.white);
-            m_className.setEnabled(true);
-            m_className.setBackground(Color.white);
             m_message.setEnabled(true);
             m_message.setBackground(Color.white);
             m_description.setEnabled(true);
@@ -260,8 +263,6 @@ public class RuleEditingPanel extends JPanel
             m_message.setBackground(background);
 
             m_className.setText("");
-            m_className.setEnabled(false);
-            m_className.setBackground(background);
 
             m_description.setText("");
             m_description.setEnabled(false);

@@ -130,7 +130,7 @@ public abstract class AbstractRule
      *
      * @return True when the rule is included in analysis.
      */
-    public boolean isInclude()
+    public boolean include()
     {
         return m_include;
     }
