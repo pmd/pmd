@@ -1,6 +1,8 @@
 ????? 2002 - 0.6:
+DuplicateImportsRule now reports the correct line number.
 Fixed bug 582639 - Rule violations are now reported on the proper line
 Fixed bug 582509 - Removed unneeded throws clause
+Fixed bug 583009 - Now rulesets.properties is in the jar file
 
 July 16 2002 - 0.5:
 Added new rules: DontImportJavaLangRule, DuplicateImportsRule

@@ -19,13 +19,10 @@ public class SimpleNode implements Node {
   }
 
     public void jjtOpen() {
-	if (parser.token.next != null) {
-	    beginLine = parser.token.next.beginLine;
-	    beginColumn = parser.token.next.beginColumn;
-	} else {
-	    beginLine = 0;
-	    beginColumn = 0;
-	}
+        if (parser.token.next != null) {
+            beginLine = parser.token.next.beginLine;
+            beginColumn = parser.token.next.beginColumn;
+        }
     }
 
     // NEW STUFF
@@ -33,22 +30,42 @@ public class SimpleNode implements Node {
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image;}
 
-    private int beginLine;
+    private int beginLine = -1;
     private int endLine;
-    private int beginColumn;
+    private int beginColumn = -1;
     private int endColumn;
 
     public void jjtClose() {
+      if ((children == null) || (children.length == 0)){
+        beginLine = parser.token.beginLine;
+        beginColumn = parser.token.beginColumn;
+      }
       endLine = parser.token.endLine;
       endColumn = parser.token.endColumn;
     }
 
     public int getBeginLine() {
-        return beginLine;
+        if (beginLine != -1) {
+            return beginLine;
+        } else {
+            if ((children != null) && (children.length > 0)) {
+                return ((SimpleNode) children[0]).getBeginLine();
+            } else {
+              throw new RuntimeException("Unable to determine begining line of Node.");
+            }
+        }
     }
     
     public int getBeginColumn() {
-	return beginColumn;
+        if (beginColumn != -1) {
+            return beginColumn;
+        } else {
+            if ((children != null) && (children.length > 0)) {
+                return ((SimpleNode) children[0]).getBeginColumn();
+            } else {
+              throw new RuntimeException("Unable to determine begining line of Node.");
+            }
+        }
     }
 
     public int getEndLine() {

@@ -60,9 +60,10 @@ public class SimpleNodeTest
 		    2, 3, 2, 29 );
     }
 
+
     public void testNoLookahead() throws Throwable
     {
-	String javaCode = "public class Foo { }\n"; // 1, 7 -> 1, 20
+	String javaCode = "public class Foo { }\n"; // 1, 8 -> 1, 20
 
 	Set uCD = getNodes( ASTUnmodifiedClassDeclaration.class,
 					    javaCode );
@@ -71,6 +72,45 @@ public class SimpleNodeTest
 	verifyNode( (SimpleNode) iter.next(),
 		    1, 8, 1, 20 );
 	
+    }
+
+    public void testNames() throws Throwable {
+        String code = "import java.io.File; \n public class Foo{}";
+        Set name = getNodes(ASTName.class, code);
+        Iterator i = name.iterator();
+        assertTrue(i.hasNext());
+
+        while (i.hasNext()) {
+            SimpleNode node = (SimpleNode) i.next();
+            System.err.println( node.getImage() + " # Kids: " + Integer.toString(node.jjtGetNumChildren()) );
+
+            if (node.getImage().equals("java.io.File")) {
+                verifyNode(node, 1, 16, 1, 19);
+            }
+
+        }
+    }
+
+    public void testNames2() throws Throwable {
+        String code = "import java.io.\nFile; \n public class Foo{}";
+        Set name = getNodes(ASTName.class, code);
+        Iterator i = name.iterator();
+        assertTrue(i.hasNext());
+
+        while (i.hasNext()) {
+            SimpleNode node = (SimpleNode) i.next();
+            System.err.println( node.getImage() + " # Kids: " + Integer.toString(node.jjtGetNumChildren()) );
+
+            if (node.getImage().equals("java.io.File")) {
+                verifyNode(node, 2, 1, 2, 4);
+                // This is a BUG!  Should start on line 1.
+            }
+
+            if (node.getImage().equals("Foo")) {
+                verifyNode(node, 2, 15, 2, 18);
+            }
+
+        }
     }
 
     public void verifyNode( SimpleNode node,

@@ -16,6 +16,28 @@ import java.text.MessageFormat;
 
 public class DuplicateImportsRule extends AbstractRule {
 
+    private static class ImportWrapper {
+        private int line;
+        private String name;
+        public ImportWrapper(String name, int line) {
+            this.name = name;
+            this.line = line;
+        }
+        public boolean equals(Object other) {
+            ImportWrapper i = (ImportWrapper)other;
+            return i.getName().equals(getName());
+        }
+        public int hashCode() {
+            return getName().hashCode();
+        }
+        public String getName() {
+            return name;
+        }
+        public int getLine() {
+            return line;
+        }
+    }
+
     private Set singleTypeImports;
     private Set importOnDemandImports;
 
@@ -25,41 +47,41 @@ public class DuplicateImportsRule extends AbstractRule {
         importOnDemandImports = new HashSet();
         super.visit(node,data);
 
-        // check for things like:
+        // this checks for things like:
         // import java.io.*;
         // import java.io.File;
-        // TODO twiddle with this to somehow get a real line number for the single type import
-        for (Iterator i = this.importOnDemandImports.iterator(); i.hasNext();) {
-            String thisImportOnDemand = (String)i.next();
-            for (Iterator j = this.singleTypeImports.iterator(); j.hasNext();) {
-                String thisSingleTypeImport = (String)j.next();
-                String singleTypePkg = thisSingleTypeImport.substring(0, thisSingleTypeImport.lastIndexOf("."));
-                if (thisImportOnDemand.equals(singleTypePkg)) {
-                    String msg = MessageFormat.format(getMessage(), new Object[] {thisSingleTypeImport});
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, 0, msg));
+        for (Iterator i = importOnDemandImports.iterator(); i.hasNext();) {
+            ImportWrapper thisImportOnDemand = (ImportWrapper)i.next();
+            for (Iterator j = singleTypeImports.iterator(); j.hasNext();) {
+                ImportWrapper thisSingleTypeImport = (ImportWrapper)j.next();
+                String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf("."));
+                if (thisImportOnDemand.getName().equals(singleTypePkg)) {
+                    String msg = MessageFormat.format(getMessage(), new Object[] {thisSingleTypeImport.getName()});
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, thisSingleTypeImport.getLine(), msg));
                 }
             }
         }
-        singleTypeImports = new HashSet();
-        importOnDemandImports = new HashSet();
+        singleTypeImports.clear();
+        importOnDemandImports.clear();
         return data;
     }
 
     public Object visit(ASTImportDeclaration node, Object data) {
         ASTName importNameNode = (ASTName)node.jjtGetChild(0);
+        ImportWrapper wrapper = new ImportWrapper(importNameNode.getImage(), importNameNode.getBeginLine());
 
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {
-            if (importOnDemandImports.contains(importNameNode.getImage())) {
+            if (importOnDemandImports.contains(wrapper)) {
                 createRV((RuleContext)data, importNameNode);
             } else {
-                importOnDemandImports.add(importNameNode.getImage());
+                importOnDemandImports.add(wrapper);
             }
         } else {
-            if (singleTypeImports.contains(importNameNode.getImage())) {
+            if (singleTypeImports.contains(wrapper)) {
                 createRV((RuleContext)data, importNameNode);
             } else {
-                singleTypeImports.add(importNameNode.getImage());
+                singleTypeImports.add(wrapper);
             }
         }
         return data;

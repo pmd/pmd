@@ -46,7 +46,7 @@
         </pmd>
     </target>
 
-    <target name="test">
+    <target name="test" depends="compile">
         <junit printsummary="yes" haltonfailure="yes">
           <classpath>
             <pathelement location="${build}" />
