@@ -335,7 +335,7 @@ ASTCompilationUnit CompilationUnit() :
   ( ImportDeclaration() )*
   ( TypeDeclaration() )*
   <EOF>
-                {
+        {
 		  return jjtThis;
 		}
 }

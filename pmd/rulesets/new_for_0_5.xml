@@ -16,6 +16,23 @@ These are new ones for 0.5
 ]]>
     </example>
   </rule>
+
+  <rule name="DuplicateImports"
+        message="Avoid duplicate imports"
+        class="net.sourceforge.pmd.rules.DuplicateImportsRule">
+    <description>
+    Avoid duplicate import statements.
+    </description>
+
+    <example>
+<![CDATA[
+import java.io.File;
+import java.io.File;
+
+public class Foo {}
+]]>
+    </example>
+    </rule>
 </ruleset>
 
 
