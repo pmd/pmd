@@ -11,10 +11,6 @@
             href="http://sourceforge.net/projects/pmd" />
       <item name="Hosted by SourceForge" 
             href="http://sourceforge.net" />
-      <item name="Ultra*Log"
-            href="http://www.ultralog.net/" />
-      <item name="DARPA"
-            href="http://www.darpa.mil/" />
     </links>
     <menu name="Overview">
       <item name="Installation" href="/installing.html" />
