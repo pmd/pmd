@@ -54,6 +54,7 @@
       <item name="Coupling" href="/rules/coupling.html" />
       <item name="Strict Exceptions" href="/rules/strictexception.html" />
       <item name="Controversial" href="/rules/controversial.html" />
+      <item name="Logging (Java)" href="/rules/logging-java.html" />
     </menu>
   </body>
 </project>

@@ -43,7 +43,7 @@
         <subsection name="Contributors">
         <ul>
             <li>Eric Olander - ImmutableFieldRule</li>
-            <li>Miguel Griffa - XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
+            <li>Miguel Griffa - LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
             <li>Conrad Roche - UnusedModifier bug report, other bug reports</li>
             <li>Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion</li>
             <li>Ken Foskey - C++ parser bug report, cpd.sh</li>

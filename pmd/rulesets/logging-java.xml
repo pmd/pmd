@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+
+<ruleset name="Java Logging Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
+  <description>
+The Java Logging ruleset contains a collection of rules that find questionable usages of the Logger.
+  </description>
+
+    <rule name="MoreThanOneLoggerRule"
+         message="Class contains more than one Logger"
+         class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+     Normally only one logger is used in each class.
+     </description>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+//ClassBody[
+	count(//VariableDeclarator[../Type/Name[@Image='Logger']])
+	>1
+	]
+                ]]>
+             </value>
+         </property>
+     </properties>
+        <priority>2</priority>
+
+     <example>
+ <![CDATA[
+class Foo{
+    Logger log = Logger.getLogger(Foo.class.getName());
+    // It is very rare to see two loggers on a class, normally 
+    // log information is multiplexed by levels
+    Logger log2= Logger.getLogger(Foo.class.getName());
+}
+]]>
+     </example>
+     </rule>
+
+     <rule name="LoggerIsNotStaticFinalRule"
+         message="The Logger variable declaration does not contain the static and final modifiers"
+         class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+     In most cases, the Logger can be declared static and final.
+     </description>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+//VariableDeclarator[../Type/Name[@Image='Logger'] and (..[@Final='false'] or ..[@Static = 'false'] ) ]
+                ]]>
+             </value>
+         </property>
+     </properties>
+        <priority>2</priority>
+
+     <example>
+ <![CDATA[
+class Foo{
+    Logger log = Logger.getLogger(Foo.class.getName());
+    // It is much better to declare the logger as follows 
+    // static final Logger log = Logger.getLogger(Foo.class.getName());
+}
+]]>
+     </example>
+     </rule>
+    
+<!-- This rule will probably be implemented in a java class, since we need to search the logger name 
+first -->
+<!--
+     <rule name="LogBlockWithoutIfRule"
+         message="There is log block not surrounded by if"
+         class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+     When many log statements are used, it is conveninent to surround them with an if.
+     </description>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+                ]]>
+             </value>
+         </property>
+     </properties>
+        <priority>2</priority>
+
+     <example>
+ <![CDATA[
+
+ 	// Add this for performance
+	// if (log.isLoggable(Level.FINE)) { ...
+ 	log.fine("This happens");
+	log.fine("Value of x:"+x);
+	log.fine("Value of y:"+y);
+	log.fine("Value of z:"+z);
+	log.fine("Value of w:"+w);
+ 
+]]>
+     </example>
+     </rule>
+    -->
+     
+</ruleset>
+
