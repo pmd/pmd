@@ -483,6 +483,35 @@ public class MyClass {
  ]]>
        </example>
      </rule>
+
+    <rule name="SuspiciousOctalEscapeRule"
+       message="Suspicious decimal characters following octal escape in string literal"
+          class="net.sourceforge.pmd.rules.SuspiciousOctalEscapeRule">
+      <description>
+      A suspicious octal escape sequence was found inside a String literal.
+      The Java language specification (section 3.10.6) says an octal
+      escape sequence inside a literal String shall consist of a backslash
+      followed by:
+
+           OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
+
+      Any octal escape sequence followed by non-octal digits can be confusing,
+      e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
+      the literal character "8".
+      </description>
+      <priority>3</priority>
+      <example>
+<![CDATA[
+ public class Foo {
+    public void foo() {
+       // interpreted as octal 12, followed by character '8'
+       System.out.println("suspicious: \128");
+    }
+ }
+]]>
+      </example>
+    </rule>
+
  </ruleset>
 
 
