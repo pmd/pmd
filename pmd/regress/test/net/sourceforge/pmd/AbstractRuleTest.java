@@ -13,7 +13,7 @@ import net.sourceforge.pmd.RuleContext;
 public class AbstractRuleTest extends TestCase {
 
     private static class MyRule extends AbstractRule {
-        public String getDescription() {
+        public String getMessage() {
             return "myrule";
         }
     }

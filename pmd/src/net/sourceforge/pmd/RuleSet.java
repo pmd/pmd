@@ -17,7 +17,6 @@ public class RuleSet
     }
 
     public void addRule( Rule rule ) {
-        System.out.println("rule = " + rule);
  	rules.add( rule );
     }
 

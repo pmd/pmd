@@ -28,14 +28,15 @@ public class RuleSetFactory {
             RuleSet ruleSet = new RuleSet();
             ruleSet.setName(root.getAttribute("name"));
 
-
-            NodeList rules = root.getChildNodes();
+            NodeList rules = root.getElementsByTagName("rule");
             for (int i =0; i<rules.getLength(); i++) {
                 Node ruleNode = (Node)rules.item(i);
                 String ruleName = ruleNode.getAttributes().getNamedItem("name").getNodeValue();
                 String className = ruleNode.getAttributes().getNamedItem("class").getNodeValue();
+                String message = ruleNode.getAttributes().getNamedItem("message").getNodeValue();
                 Rule rule = (Rule)Class.forName(className).newInstance();
                 rule.setName(ruleName);
+                rule.setMessage(message);
                 ruleSet.addRule(rule);
             }
 

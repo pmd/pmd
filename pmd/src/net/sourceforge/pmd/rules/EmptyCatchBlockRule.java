@@ -13,8 +13,6 @@ import net.sourceforge.pmd.*;
 
 public class EmptyCatchBlockRule extends AbstractRule implements Rule {
 
-    public String getDescription() {return "Avoid empty catch blocks";}
-
     public Object visit(ASTTryStatement node, Object data){
         RuleContext ctx = (RuleContext)data;
         // this skips try..finally constructs since they don't have catch blocks

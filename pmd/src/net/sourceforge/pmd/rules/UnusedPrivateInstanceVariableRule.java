@@ -25,10 +25,6 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     // TODO
     private boolean alreadyWorking;
 
-    public String getDescription() {
-        return "Avoid unused private instance variables";
-    }
-
     /**
      * Skip interfaces because they don't have instance variables.
      */

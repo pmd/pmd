@@ -9,7 +9,7 @@ import java.util.*;
 
 public class DontCreateTimersRule extends AbstractRule implements Rule {
 
-    public String getDescription() {return "Don't create java.util.Timers, use the Cougaar alarm service instead";}
+    public String getMessage() {return "Don't create java.util.Timers, use the Cougaar alarm service instead";}
 
     public Object visit(ASTAllocationExpression node, Object data){
         RuleContext ctx = (RuleContext)data;

@@ -12,7 +12,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.*;
 
 public class EmptyWhileStmtRule extends AbstractRule implements Rule{
-    public String getDescription() {return "Avoid empty 'while' statements";}
 
     /**
      * We're looking for anything other than

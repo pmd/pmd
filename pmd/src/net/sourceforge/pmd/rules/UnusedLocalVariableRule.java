@@ -16,10 +16,6 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
 
     private Stack tableGroups = new Stack();
 
-    public String getDescription() {
-        return "Avoid unused local variables";
-    }
-
     public Object createGroup(SimpleNode node, Object data) {
         tableGroups.push(new Namespace());
         Object report = super.visit(node, data);

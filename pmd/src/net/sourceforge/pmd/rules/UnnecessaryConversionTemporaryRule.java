@@ -27,7 +27,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
         primitiveTypes.add("Float");
     }
 
-    public String getDescription() {
+    public String getMessage() {
         return "Avoid unnecessary temporaries when converting primitives to Strings";
     }
 

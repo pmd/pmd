@@ -12,7 +12,6 @@ import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.*;
 
 public class EmptyIfStmtRule extends AbstractRule implements Rule {
-    public String getDescription() {return "Avoid empty 'if' statements";}
 
    public Object visit(ASTBlock node, Object data){
        RuleContext ctx = (RuleContext)data;

@@ -9,7 +9,7 @@ import java.util.*;
 
 public class SystemPropsRule extends AbstractRule implements Rule {
 
-    public String getDescription() {return "Don't use System.getProperty()/getProperties()/setProperty";}
+    public String getMessage() {return "Don't use System.getProperty()/getProperties()/setProperty";}
 
     public Object visit(ASTName node, Object data){
         RuleContext ctx = (RuleContext)data;

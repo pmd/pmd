@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+
+<ruleset name="basic">
+  <description>
+The Basic Ruleset contains a collection of good practice rules
+which everyone should follow.
+  </description>
+
+  <rule name="EmptyCatchBlock"
+        message="Avoid empty catch blocks"
+        class="net.sourceforge.pmd.rules.EmptyCatchBlockRule">
+    <description>
+Empty Catch Block, will find instances where an exception is caught,
+but nothing is done.  In most circumstances, this swallows an exception
+which should either be acted on, or reported.
+    </description>
+
+    <example>
+<![CDATA[
+  public void doSomething() {
+    try {
+      FileInputStream fis = new FileInputStream("/tmp/bugger");
+    } catch (IOException ioe) { }
+  }
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyIfStmt"
+        message="Avoid empty 'if' statements"
+        class="net.sourceforge.pmd.rules.EmptyIfStmtRule">
+    <description>
+Empty If Statement, will find instances where a condition is checked,
+but nothing is done about it.
+    </description>
+    <example>
+<![CDATA[
+  if (absValue < 1) {
+     // Do Nothing
+  }
+]]>
+     </example>
+  </rule>
+
+  <rule name="EmptyWhileStmt"
+        message="Avoid empty 'while' statements"
+        class="net.sourceforge.pmd.rules.EmptyWhileStmtRule">
+     <description>
+Empty While Statement, will find all instances where a while statement
+does nothing.  This is just a waste of time.  If it is a timing loop,
+then you should use Thread.sleep() for it.
+     </description>
+
+     <example>
+<![CDATA[
+while (a == b) {
+  // Do Nothing.
+}
+]]>
+     </example>
+  </rule>
+
+  <rule name="UnusedLocalVariable"
+        message="Avoid unused local variables"
+        class="net.sourceforge.pmd.rules.UnusedLocalVariableRule">
+    <description>
+Unused Local Variables: detects when a variable is declared, but not
+used (except for possibly initial setting.)
+    </description>
+
+    <example>
+<![CDATA[
+public int doSomething() {
+  int i = 5; // Unused
+  int j = 6;
+
+  j += 3;
+  return j;
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="UnusedPrivateInstanceVariable"
+        message="Avoid unused private instance variables"
+        class="net.sourceforge.pmd.rules.UnusedPrivateInstanceVariableRule">
+    <description>
+Unused Private Instance Variable: detects when a private field is declared
+that is not used by the class.
+    </description>
+    <example>
+<![CDATA[
+public class Something {
+  private int i = 5; // Unused
+  private int j = 6;
+
+  public int addOne() {
+    return j++;
+  }
+
+}
+]]>
+    </example>
+  </rule>
+</ruleset>
+
+
+

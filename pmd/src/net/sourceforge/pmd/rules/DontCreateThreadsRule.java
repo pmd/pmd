@@ -9,7 +9,7 @@ import java.util.*;
 
 public class DontCreateThreadsRule extends AbstractRule implements Rule {
 
-    public String getDescription() {return "Don't create threads, use the ThreadService instead";}
+    public String getMessage() {return "Don't create threads, use the ThreadService instead";}
 
     public Object visit(ASTAllocationExpression node, Object data){
         RuleContext ctx = (RuleContext)data;

@@ -32,7 +32,7 @@ public class MockRule implements Rule {
         this.name = name;
     }
 
-    public void setDescription(String description) {
+    public void setMessage(String description) {
         this.desc = description;
     }
 
@@ -41,7 +41,7 @@ public class MockRule implements Rule {
     }
 
     public String getName() {return name;}
-    public String getDescription() {return desc;}
+    public String getMessage() {return desc;}
 
     public void apply(List astCompilationUnits, RuleContext ctx) {
 	Report report = ctx.getReport();

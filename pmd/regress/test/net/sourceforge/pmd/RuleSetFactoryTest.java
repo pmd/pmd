@@ -21,12 +21,12 @@ public class RuleSetFactoryTest  extends TestCase {
     private static final String EMPTY_RULE_SET = "<?xml version=\"1.0\"?><ruleset name=\"test\"></ruleset>";
     private static final String SINGLE_RULE_SET = "<?xml version=\"1.0\"?>" +
                          "<ruleset name=\"test\">" +
-                         "<rule name=\"MockRuleName\" class=\"test.net.sourceforge.pmd.MockRule\">" +
+                         "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\">" +
                          "</rule></ruleset>";
     private static final String MULTIPLE_RULE_SET = "<?xml version=\"1.0\"?>" +
                          "<ruleset name=\"test\">" +
-                         "<rule name=\"MockRuleName1\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
-                         "<rule name=\"MockRuleName2\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
+                         "<rule name=\"MockRuleName1\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
+                         "<rule name=\"MockRuleName2\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
                          "</ruleset>";
 
     public RuleSetFactoryTest(String name) {
@@ -52,6 +52,7 @@ public class RuleSetFactoryTest  extends TestCase {
         assertTrue(!i.hasNext());
         Rule r = (Rule)o;
         assertEquals("MockRuleName", r.getName());
+        assertEquals("avoid the mock rule", r.getMessage());
     }
 
     public void testCreateMultipleRuleSet() {
@@ -67,5 +68,4 @@ public class RuleSetFactoryTest  extends TestCase {
             assertTrue(expected.contains(rule.getName()));
         }
     }
-
 }

@@ -1,10 +1,11 @@
 @echo off
 set CVSROOT=:ext:tomcopeland@cvs.pmd.sourceforge.net:/cvsroot/pmd
 set HOME=c:
+set ANT_HOME=c:\ant151
 set JAVA_HOME=c:\jdk1.3.1_03
 set PATH=c:\jdk1.3.1_03\bin;%PATH%
 set CVS_RSH=c:\bin\ssh\ssh
 set CLASSPATH=../build/
 set CLASSPATH=%CLASSPATH%;../test-data/
-set CLASSPATH=%CLASSPATH%;../lib/crimson.jar
+set CLASSPATH=%CLASSPATH%;../lib/xercesImpl-2.0.2.jar
 set CLASSPATH=%CLASSPATH%;c:\javacc2.1\bin\lib\JavaCC.zip

@@ -8,7 +8,7 @@ import java.util.*;
 
 public class SystemOutRule extends AbstractRule implements Rule {
 
-    public String getDescription() {return "Don't use System.out/in/err, use the Cougaar logging service instead";}
+    public String getMessage() {return "Don't use System.out/in/err, use the Cougaar logging service instead";}
 
     public Object visit(ASTName node, Object data){
         RuleContext ctx = (RuleContext)data;

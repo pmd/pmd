@@ -15,7 +15,7 @@ public class UseSingletonRule
 
     public UseSingletonRule() { }
 
-    public String getDescription() { 
+    public String getMessage() {
 	return "All methods are static.  Consider using Singleton instead.";
     }
 

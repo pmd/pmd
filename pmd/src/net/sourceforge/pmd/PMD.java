@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class PMD {
 		
-    public void processFile(String filename, InputStream is, List rules, RuleContext ctx) throws FileNotFoundException {
+    public void processFile(String filename, InputStream is, RuleSet ruleSet, RuleContext ctx) throws FileNotFoundException {
         try {
             InputStreamReader reader = new InputStreamReader(is);
             JavaParser parser = new JavaParser(reader);
@@ -27,10 +27,7 @@ public class PMD {
             List acus = new ArrayList();
             acus.add(c);
             ctx.setFilename(filename);
-            for (Iterator iterator = rules.iterator(); iterator.hasNext();) {
-                Rule rule = (Rule)iterator.next();
-                rule.apply(acus, ctx);
-            }
+            ruleSet.apply(acus, ctx);
             reader.close();
         } catch (ParseException pe) {
             System.out.println("Error while parsing " + filename + " at line " + pe.currentToken.beginLine + "; continuing...");
@@ -41,24 +38,25 @@ public class PMD {
 	}
 
     public void processFile(String filename, InputStream is, Rule rule, RuleContext ctx) throws FileNotFoundException {
-        List rules = new ArrayList();
-        rules.add(rule);
+        RuleSet rules = new RuleSet();
+        rules.addRule(rule);
         processFile(filename, is, rules, ctx);
     }
 
-	public void processFile(String filename, InputStream is, String ruleSetType, RuleContext ctx) throws FileNotFoundException {
-        RuleFactory ruleFactory = new RuleFactory();
-        List rules = ruleFactory.createRules(ruleSetType);
+	public void processFile(String filename, InputStream is, String ruleSetFile, RuleContext ctx) throws FileNotFoundException {
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        FileInputStream fis = new FileInputStream(ruleSetFile);
+        RuleSet rules = ruleSetFactory.createRuleSet(fis);
         processFile(filename, is, rules, ctx);
 	}
 
-    public void processFile(File file, String ruleSetType, RuleContext ctx) throws FileNotFoundException{
-        processFile(file.getAbsolutePath(), new FileInputStream(file), ruleSetType, ctx);
+    public void processFile(File file, String ruleSetFile, RuleContext ctx) throws FileNotFoundException{
+        processFile(file.getAbsolutePath(), new FileInputStream(file), ruleSetFile, ctx);
     }
 
     public static void main(String[] args) {
         if (args.length != 3) {
-            throw new RuntimeException("Please pass in a filename, a format, and a rule set");
+            throw new RuntimeException("Please pass in a java source code filename, a report format, and a rule set file");
         }
         File input = new File(args[0]);
         if (!input.exists()) {

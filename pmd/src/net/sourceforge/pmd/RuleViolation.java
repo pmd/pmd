@@ -9,7 +9,7 @@ public class RuleViolation {
     private String filename;
 
     public RuleViolation(Rule rule, int line, String filename) {
-        this(rule, line, rule.getDescription(), filename);
+        this(rule, line, rule.getMessage(), filename);
     }
 
     public RuleViolation(Rule rule, int line, String specificDescription, String filename) {

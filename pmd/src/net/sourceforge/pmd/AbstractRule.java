@@ -18,7 +18,7 @@ public abstract class AbstractRule
 {
 
     private String name = getClass().getName();
-    private String description;
+    private String message;
 
     public String getName() {
         return name;
@@ -28,12 +28,12 @@ public abstract class AbstractRule
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMessage() {
+        return message;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public boolean equals(Object o) {
