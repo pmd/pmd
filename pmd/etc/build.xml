@@ -7,6 +7,7 @@
 <property name="test-data" value="test-data\"/>
 <property name="regress" value="regress\"/>
 <property name="reports" value="reports\"/>
+<property name="version" value="0.8"/>
 
 	<target name="delete">
         <delete dir="${build}"/>
@@ -31,16 +32,17 @@
                 <include name="*.properties"/>
             </fileset>
         </copy>
-        <jar jarfile="${lib}\pmd-0.7.jar" basedir="${build}" excludes="test/**/*.class"/>
+        <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" excludes="test/**/*.class"/>
     </target>
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd reportFile="c:\jdk.html" rulesetfiles="rulesets/newrules.xml" format="html">
-            <!--<fileset dir="c:\data\pmd\pmd\src">-->
-            <fileset dir="c:\j2sdk1.4.0_01\src\com\sun\corba\se">
+        <pmd reportFile="c:\pmd.html" rulesetfiles="rulesets/basic.xml,rulesets/unusedcode.xml,rulesets/imports.xml,rulesets/design.xml" format="html">
+            <fileset dir="c:\data\pmd\pmd\src">
+<!--            <fileset dir="c:\j2sdk1.4.0_01\src\com\sun\corba\se">-->
             <!--<fileset dir="c:\j2sdk1.4.0_01\src\">-->
                 <include name="**/*.java"/>
+                <exclude name="**/ast**/"/>
             </fileset>
         </pmd>
     </target>

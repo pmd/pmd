@@ -1,6 +1,7 @@
-???? 2002 - 0.8:
-Added new rules: UnusedFormalParameterRule
+July 30 2002 - 0.8:
+Added new rule: UnusedFormalParameterRule
 Fixed bug 588083 - ForLoopsNeedBraces rule correctly handles a variety of for statement formats
+Added prototype of the copy and paste detector
 
 July 25 2002 - 0.7:
 Added new rules: UnusedPrivateMethodRule, WhileLoopsMustUseBracesRule, ForLoopsMustUseBracesRule, LooseCouplingRule
