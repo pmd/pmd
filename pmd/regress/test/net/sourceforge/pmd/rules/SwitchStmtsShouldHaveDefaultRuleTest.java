@@ -4,7 +4,21 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class SwitchStmtsShouldHaveDefaultRuleTest extends RuleTst {
+public class SwitchStmtsShouldHaveDefaultRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//SwitchStatement[not(SwitchLabel[count(*) = 0])]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "simple failure case", 1, rule),
+           new TestDescriptor(TEST2, "simple ok case", 0, rule)
+       });
+    }
 
     private static final String TEST1 =
     "public class SwitchStmtsShouldHaveDefault1 {" + CPD.EOL +
@@ -27,20 +41,5 @@ public class SwitchStmtsShouldHaveDefaultRuleTest extends RuleTst {
     " }" + CPD.EOL +
     "}";
 
-
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//SwitchStatement[not(SwitchLabel[count(*) = 0])]");
-    }
-
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
 
 }

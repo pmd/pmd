@@ -4,7 +4,23 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class StringInstantiationRuleTest extends RuleTst {
+public class StringInstantiationRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//AllocationExpression[Name/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "new 'new String's", 2, rule),
+           new TestDescriptor(TEST2, "new String array", 0, rule),
+           new TestDescriptor(TEST3, "using multiple parameter constructor", 0, rule),
+           new TestDescriptor(TEST4, "using 4 parameter constructor", 0, rule)
+       });
+    }
 
     private static final String TEST1 =
     "public class StringInstantiation1 {" + CPD.EOL +
@@ -34,23 +50,4 @@ public class StringInstantiationRuleTest extends RuleTst {
     "}";
 
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//AllocationExpression[Name/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]");
-    }
-
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 2, rule);
-    }
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void test3() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
-    public void test4() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
 }

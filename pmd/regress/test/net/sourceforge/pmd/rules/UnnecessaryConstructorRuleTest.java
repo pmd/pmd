@@ -4,7 +4,25 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class UnnecessaryConstructorRuleTest extends RuleTst {
+public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//ConstructorDeclaration[1][count(//ConstructorDeclaration)=1][@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "simple failure case", 1, rule),
+           new TestDescriptor(TEST2, "private constructor", 0, rule),
+           new TestDescriptor(TEST3, "constructor with arguments", 0, rule),
+           new TestDescriptor(TEST4, "constructor with contents", 0, rule),
+           new TestDescriptor(TEST5, "constructor throws exception", 0, rule),
+           new TestDescriptor(TEST6, "two constructors", 0, rule)
+       });
+    }
 
     private static final String TEST1 =
     "public class UnnecessaryConstructor1 {" + CPD.EOL +
@@ -42,29 +60,4 @@ public class UnnecessaryConstructorRuleTest extends RuleTst {
     "}";
 
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//ConstructorDeclaration[1][count(//ConstructorDeclaration)=1][@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)]");
-    }
-
-    public void testSimpleFailureCase() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void testPrivate() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void testHasArgs() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
-    public void testHasBody() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
-    public void testHasExceptions() throws Throwable {
-        runTestFromString(TEST5, 0, rule);
-    }
-    public void testMultipleConstructors() throws Throwable {
-        runTestFromString(TEST6, 0, rule);
-    }
 }

@@ -3,9 +3,20 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.StringToStringRule;
 
-public class StringToStringRuleTest extends RuleTst {
+public class StringToStringRuleTest extends SimpleAggregatorTst {
 
-    private static final String TEST1 =
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "local var", 1, new StringToStringRule()),
+           new TestDescriptor(TEST2, "parameter", 1, new StringToStringRule()),
+           new TestDescriptor(TEST3, "field", 1, new StringToStringRule()),
+           new TestDescriptor(TEST4, "primitive", 0, new StringToStringRule()),
+           new TestDescriptor(TEST5, "multiple similar params", 0, new StringToStringRule()),
+           new TestDescriptor(TEST6, "string array", 1, new StringToStringRule())
+       });
+    }
+
+   private static final String TEST1 =
     "public class StringToString1 {" + CPD.EOL +
     " private String baz() {" + CPD.EOL +
     "  String bar = \"howdy\";" + CPD.EOL +
@@ -51,27 +62,4 @@ public class StringToStringRuleTest extends RuleTst {
     " }" + CPD.EOL +
     "}";
 
-    public void testLocalVar() throws Throwable {
-        runTestFromString(TEST1, 1, new StringToStringRule());
-    }
-
-    public void testParam() throws Throwable {
-        runTestFromString(TEST2, 1, new StringToStringRule());
-    }
-
-    public void testInstanceVar() throws Throwable {
-        runTestFromString(TEST3, 1, new StringToStringRule());
-    }
-
-    public void testPrimitiveType() throws Throwable {
-        runTestFromString(TEST4, 0, new StringToStringRule());
-    }
-
-    public void testMultipleSimilarParams() throws Throwable {
-        runTestFromString(TEST5, 0, new StringToStringRule());
-    }
-
-    public void testStringArray() throws Throwable {
-        runTestFromString(TEST6, 1, new StringToStringRule());
-    }
 }
