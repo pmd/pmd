@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Nicolai Czempin - Various rule suggestions, additional PMD backronyms</li>
             <li>Frank Hardisty - BeanMembersShouldSerializeRule</li>
             <li>Randall Schulz - bug report for LooseCouplingRule</li>

@@ -1,0 +1,16 @@
+#! /bin/sh
+cygwin=false;
+case "`uname`" in
+  CYGWIN*) cygwin=true ;;
+esac
+FILE=$1
+FORMAT=$2
+RULESETFILES=$3
+PMD_CLASSPATH=../lib/pmd-1.05.jar:../lib/jaxen-core-1.0-fcs.jar:../lib/saxpath-1.0-fcs.jar
+if $cygwin; then
+  FILE=`cygpath --windows "$FILE"`
+  PMD_CLASSPATH=`cygpath --path --windows "$PMD_CLASSPATH"`
+  echo since they are comma delimited the RULESETFILES "$RULESETFILES"
+  echo will need an iteration loop to convert properly
+fi
+java -cp ${PMD_CLASSPATH} net.sourceforge.pmd.PMD $FILE $FORMAT $RULESETFILES
