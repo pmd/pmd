@@ -20,6 +20,16 @@ public class ResourceLoader {
      *
      */
     public static InputStream loadResourceAsStream(String name) {
+        return ResourceLoader.loadResourceAsStream(name, new ResourceLoader().getClass().getClassLoader());
+    }
+
+    /**
+     *
+     * Uses the ClassLoader passed in to attempt to load the
+     * resource if it's not a File or a URL
+     *
+     */
+    public static InputStream loadResourceAsStream(String name, ClassLoader loader) {
         File file = new File(name);
         if (file.exists()) {
             try {
@@ -31,10 +41,9 @@ public class ResourceLoader {
             try {
                 return new URL(name).openConnection().getInputStream();
             } catch (Exception e) {
-                return new ResourceLoader().getClass().getClassLoader().getResourceAsStream(name);
+                return loader.getResourceAsStream(name);
             }
         }
         return null;
     }
-
 }

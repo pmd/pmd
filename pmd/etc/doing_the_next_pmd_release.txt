@@ -1,4 +1,15 @@
 TODO--------------- update docs to include new CPD task
+TODO--------------- update Ant docs to reflect ability to accept classpath
+    <pmd rulesetfiles="rulesets/favorites.xml">
+        <classpath>
+            <pathelement path="/home/tom/tmp/"/>
+        </classpath>
+        <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
+        <fileset dir="/usr/local/java/src/java/lang/ref">
+            <include name="**/*.java"/>
+        </fileset>
+    </pmd>
+
 
 Move rulesets/tmp.xml somewhere else
 update run.bat to point to pmd-1.04.jar

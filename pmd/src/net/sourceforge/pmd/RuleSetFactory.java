@@ -41,13 +41,9 @@ public class RuleSetFactory {
         }
     }
 
-    /**
-     * Creates a ruleset.  If passed a comma-delimited string (rulesets/basic.xml,rulesets/unusedcode.xml)
-     * it will parse that string and create a new ruleset for each item in the list.
-     */
-    public RuleSet createRuleSet(String name) throws RuleSetNotFoundException {
+    public RuleSet createRuleSet(String name, ClassLoader classLoader) throws RuleSetNotFoundException {
         if (name.indexOf(',') == -1) {
-            return createRuleSet(tryToGetStreamTo(name));
+            return createRuleSet(tryToGetStreamTo(name, classLoader));
         }
 
         RuleSet ruleSet = new RuleSet();
@@ -57,6 +53,14 @@ public class RuleSetFactory {
             ruleSet.addRuleSet(tmpRuleSet);
         }
         return ruleSet;
+    }
+
+    /**
+     * Creates a ruleset.  If passed a comma-delimited string (rulesets/basic.xml,rulesets/unusedcode.xml)
+     * it will parse that string and create a new ruleset for each item in the list.
+     */
+    public RuleSet createRuleSet(String name) throws RuleSetNotFoundException {
+        return createRuleSet(name, getClass().getClassLoader());
     }
 
     public RuleSet createRuleSet(InputStream inputStream) {
@@ -130,8 +134,8 @@ public class RuleSetFactory {
         }
     }
 
-    private InputStream tryToGetStreamTo(String name) throws RuleSetNotFoundException {
-        InputStream in = ResourceLoader.loadResourceAsStream(name);
+    private InputStream tryToGetStreamTo(String name, ClassLoader loader) throws RuleSetNotFoundException {
+        InputStream in = ResourceLoader.loadResourceAsStream(name, loader);
         if (in == null) {
             throw new RuleSetNotFoundException("Can't find resource " + name + "Make sure the resource is valid file " + "or URL or is on the CLASSPATH\n");
         }

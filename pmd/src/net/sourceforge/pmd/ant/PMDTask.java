@@ -12,7 +12,10 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Reference;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +28,7 @@ import java.util.List;
 
 public class PMDTask extends Task {
 
+    private Path classpath;
     private List formatters = new ArrayList();
     private List filesets = new ArrayList();
     private boolean shortFilenames;
@@ -71,6 +75,14 @@ public class PMDTask extends Task {
         formatters.add(f);
     }
 
+    public void setClasspath(Path classpath) {
+        this.classpath = classpath;
+    }
+
+    public void setClasspathRef(Reference r) {
+        createClasspath().setRefid(r);
+    }
+
     public void execute() throws BuildException {
         if (formatters.isEmpty() && !printToConsole) {
             throw new BuildException("No formatter specified; and printToConsole was false");
@@ -86,7 +98,11 @@ public class PMDTask extends Task {
         RuleSet rules;
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
-            rules = ruleSetFactory.createRuleSet(ruleSetFiles);
+            if (classpath == null) {
+                rules = ruleSetFactory.createRuleSet(ruleSetFiles);
+            } else {
+                rules = ruleSetFactory.createRuleSet(ruleSetFiles, new AntClassLoader(project, classpath));
+            }
         } catch (RuleSetNotFoundException rsnfe) {
             throw new BuildException(rsnfe.getMessage());
         }
@@ -94,7 +110,6 @@ public class PMDTask extends Task {
         PMD pmd = new PMD();
         RuleContext ctx = new RuleContext();
         ctx.setReport(new Report());
-
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
@@ -151,4 +166,12 @@ public class PMDTask extends Task {
         if (verbose)
             System.out.println(in);
     }
+
+    private Path createClasspath() {
+        if (classpath == null) {
+            classpath = new Path(project);
+        }
+        return classpath.createPath();
+    }
+
 }
