@@ -101,7 +101,7 @@
 
 <target name="dist" depends="clean,jar"/>
 
-<target name="cpdjnlp">
+<target name="cpdjnlp" depends="dist">
     <signjar jar="${lib}/pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <echo message="Uploading jar file"/>
     <exec executable="scp" os="Linux">
