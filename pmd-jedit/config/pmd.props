@@ -21,6 +21,6 @@ pmd-check-current-directory-recursively.label=Check directory recursively
 #
 # Option pane properties
 #
-options.pmd.title=PMD
-options.pmd.label=PMD
+options.PMD.title=PMD
+options.PMD.label=PMD
 

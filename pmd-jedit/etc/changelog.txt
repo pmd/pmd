@@ -1,5 +1,6 @@
 ???? 2002 - 0.8:
 Fixed GUI lockup problem.
+Added example text to option pane.
 
 August 2 2002 - 0.7:
 Updated to use pmd-0.8

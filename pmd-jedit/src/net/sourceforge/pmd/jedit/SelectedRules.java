@@ -18,6 +18,7 @@ import net.sourceforge.pmd.Rule;
 
 public class SelectedRules {
 
+    // Rule -> JCheckBox
     private Map rules = new TreeMap(new Comparator() {
         public int compare(Object o1, Object o2) {
             Rule r1 = (Rule)o1;
@@ -39,6 +40,17 @@ public class SelectedRules {
 
     public int size() {
         return rules.size();
+    }
+
+    public Rule getRule(JCheckBox candidate) {
+        for (Iterator i = rules.keySet().iterator(); i.hasNext();) {
+            Rule rule = (Rule)i.next();
+            JCheckBox box = (JCheckBox)rules.get(rule);
+            if (box.equals(candidate)) {
+                return rule;
+            }
+        }
+        throw new RuntimeException("Couldn't find a rule that mapped to the passed in JCheckBox " + candidate);
     }
 
     public JCheckBox get(Object key) {
