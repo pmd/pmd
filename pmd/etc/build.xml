@@ -5,7 +5,6 @@
 <property name="classes" value="classes\"/>
 <property name="build" value="build\"/>
 <property name="rulesets" value="rulesets\"/>
-<property name="test-data" value="test-data\"/>
 <property name="regress" value="regress\"/>
 <property name="version" value="1.1"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
@@ -74,7 +73,6 @@
     <junit printsummary="yes" haltonfailure="yes">
       <classpath>
         <path refid="classpath.path" />
-        <pathelement location="${test-data}" />
         <pathelement location="${basedir}" />
       </classpath>
       <batchtest fork="no" todir="${build}">
