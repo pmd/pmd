@@ -1,0 +1,523 @@
+=====================================================================
+Found a 307 line (984 tokens) duplication in the following files: 
+Starting at line 1510 of /home/tom/tmp/httpd-2.0/server/mpm/worker/worker.c
+Starting at line 1640 of /home/tom/tmp/httpd-2.0/server/mpm/experimental/threadpool/threadpool.c
+            last_non_dead = i;
+            ++total_non_dead;
+        }
+    }
+    ap_max_daemons_limit = last_non_dead + 1;
+
+    if (idle_thread_count > max_spare_threads) {
+        /* Kill off one child */
+        ap_mpm_pod_signal(pod, TRUE);
+        idle_spawn_rate = 1;
+    }
+    else if (idle_thread_count < min_spare_threads) {
+        /* terminate the free list */
+        if (free_length == 0) {
+            /* only report this condition once */
+            static int reported = 0;
+            
+            if (!reported) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, 
+                             ap_server_conf,
+                             "server reached MaxClients setting, consider"
+                             " raising the MaxClients setting");
+                reported = 1;
+            }
+            idle_spawn_rate = 1;
+        }
+        else {
+            if (free_length > idle_spawn_rate) {
+                free_length = idle_spawn_rate;
+            }
+            if (idle_spawn_rate >= 8) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, 
+                             ap_server_conf,
+                             "server seems busy, (you may need "
+                             "to increase StartServers, ThreadsPerChild "
+                             "or Min/MaxSpareThreads), "
+                             "spawning %d children, there are around %d idle "
+                             "threads, and %d total children", free_length,
+                             idle_thread_count, total_non_dead);
+            }
+            for (i = 0; i < free_length; ++i) {
+                make_child(ap_server_conf, free_slots[i]);
+            }
+            /* the next time around we want to spawn twice as many if this
+             * wasn't good enough, but not if we've just done a graceful
+             */
+            if (hold_off_on_exponential_spawning) {
+                --hold_off_on_exponential_spawning;
+            }
+            else if (idle_spawn_rate < MAX_SPAWN_RATE) {
+                idle_spawn_rate *= 2;
+            }
+        }
+    }
+    else {
+      idle_spawn_rate = 1;
+    }
+}
+
+static void server_main_loop(int remaining_children_to_start)
+{
+    int child_slot;
+    apr_exit_why_e exitwhy;
+    int status, processed_status;
+    apr_proc_t pid;
+    int i;
+
+    while (!restart_pending && !shutdown_pending) {
+        ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
+        
+        if (pid.pid != -1) {
+            processed_status = ap_process_child_status(&pid, exitwhy, status);
+            if (processed_status == APEXIT_CHILDFATAL) {
+                shutdown_pending = 1;
+                child_fatal = 1;
+                return;
+            }
+            /* non-fatal death... note that it's gone in the scoreboard. */
+            child_slot = find_child_by_pid(&pid);
+            if (child_slot >= 0) {
+                for (i = 0; i < ap_threads_per_child; i++)
+                    ap_update_child_status_from_indexes(child_slot, i, SERVER_DEAD, 
+                                                        (request_rec *) NULL);
+                
+                ap_scoreboard_image->parent[child_slot].pid = 0;
+                ap_scoreboard_image->parent[child_slot].quiescing = 0;
+                if (processed_status == APEXIT_CHILDSICK) {
+                    /* resource shortage, minimize the fork rate */
+                    idle_spawn_rate = 1;
+                }
+                else if (remaining_children_to_start
+                    && child_slot < ap_daemons_limit) {
+                    /* we're still doing a 1-for-1 replacement of dead
+                     * children with new children
+                     */
+                    make_child(ap_server_conf, child_slot);
+                    --remaining_children_to_start;
+                }
+#if APR_HAS_OTHER_CHILD
+            }
+            else if (apr_proc_other_child_read(&pid, status) == 0) {
+                /* handled */
+#endif
+            }
+            else if (is_graceful) {
+                /* Great, we've probably just lost a slot in the
+                 * scoreboard.  Somehow we don't know about this child.
+                 */
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
+                             ap_server_conf,
+                             "long lost child came home! (pid %ld)",
+                             (long)pid.pid);
+            }
+            /* Don't perform idle maintenance when a child dies,
+             * only do it when there's a timeout.  Remember only a
+             * finite number of children can die, and it's pretty
+             * pathological for a lot to die suddenly.
+             */
+            continue;
+        }
+        else if (remaining_children_to_start) {
+            /* we hit a 1 second timeout in which none of the previous
+             * generation of children needed to be reaped... so assume
+             * they're all done, and pick up the slack if any is left.
+             */
+            startup_children(remaining_children_to_start);
+            remaining_children_to_start = 0;
+            /* In any event we really shouldn't do the code below because
+             * few of the servers we just started are in the IDLE state
+             * yet, so we'd mistakenly create an extra server.
+             */
+            continue;
+        }
+
+        perform_idle_server_maintenance();
+    }
+}
+
+int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
+{
+    int remaining_children_to_start;
+    apr_status_t rv;
+
+    ap_log_pid(pconf, ap_pid_fname);
+
+    first_server_limit = server_limit;
+    first_thread_limit = thread_limit;
+    if (changed_limit_at_restart) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                     "WARNING: Attempt to change ServerLimit or ThreadLimit "
+                     "ignored during restart");
+        changed_limit_at_restart = 0;
+    }
+    
+    /* Initialize cross-process accept lock */
+    ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_PID_T_FMT,
+                                 ap_server_root_relative(_pconf, ap_lock_fname),
+                                 ap_my_pid);
+
+    rv = apr_proc_mutex_create(&accept_mutex, ap_lock_fname, 
+                               ap_accept_lock_mech, _pconf);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                     "Couldn't create accept lock");
+        return 1;
+    }
+
+#if APR_USE_SYSVSEM_SERIALIZE
+    if (ap_accept_lock_mech == APR_LOCK_DEFAULT || 
+        ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
+#else
+    if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
+#endif
+        rv = unixd_set_proc_mutex_perms(accept_mutex);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                         "Couldn't set permissions on cross-process lock; "
+                         "check User and Group directives");
+            return 1;
+        }
+    }
+
+    if (!is_graceful) {
+        if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
+            return 1;
+        }
+        /* fix the generation number in the global score; we just got a new,
+         * cleared scoreboard
+         */
+        ap_scoreboard_image->global->running_generation = ap_my_generation;
+    }
+
+    set_signals();
+    /* Don't thrash... */
+    if (max_spare_threads < min_spare_threads + ap_threads_per_child)
+        max_spare_threads = min_spare_threads + ap_threads_per_child;
+
+    /* If we're doing a graceful_restart then we're going to see a lot
+     * of children exiting immediately when we get into the main loop
+     * below (because we just sent them AP_SIG_GRACEFUL).  This happens pretty
+     * rapidly... and for each one that exits we'll start a new one until
+     * we reach at least daemons_min_free.  But we may be permitted to
+     * start more than that, so we'll just keep track of how many we're
+     * supposed to start up without the 1 second penalty between each fork.
+     */
+    remaining_children_to_start = ap_daemons_to_start;
+    if (remaining_children_to_start > ap_daemons_limit) {
+        remaining_children_to_start = ap_daemons_limit;
+    }
+    if (!is_graceful) {
+        startup_children(remaining_children_to_start);
+        remaining_children_to_start = 0;
+    }
+    else {
+        /* give the system some time to recover before kicking into
+            * exponential mode */
+        hold_off_on_exponential_spawning = 10;
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                "%s configured -- resuming normal operations",
+                ap_get_server_version());
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+                "Server built: %s", ap_get_server_built());
+#ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+		"AcceptMutex: %s (default: %s)",
+		apr_proc_mutex_name(accept_mutex),
+		apr_proc_mutex_defname());
+#endif
+    restart_pending = shutdown_pending = 0;
+
+    server_main_loop(remaining_children_to_start);
+
+    if (shutdown_pending) {
+        /* Time to gracefully shut down:
+         * Kill child processes, tell them to call child_exit, etc...
+         * (By "gracefully" we don't mean graceful in the same sense as 
+         * "apachectl graceful" where we allow old connections to finish.)
+         */
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
+        ap_reclaim_child_processes(1);                /* Start with SIGTERM */
+
+        if (!child_fatal) {
+            /* cleanup pid file on normal shutdown */
+            const char *pidfile = NULL;
+            pidfile = ap_server_root_relative (pconf, ap_pid_fname);
+            if ( pidfile != NULL && unlink(pidfile) == 0)
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0,
+                             ap_server_conf,
+                             "removed PID file %s (pid=%ld)",
+                             pidfile, (long)getpid());
+    
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
+                         ap_server_conf, "caught SIGTERM, shutting down");
+        }
+        return 1;
+    }
+
+    /* we've been told to restart */
+    apr_signal(SIGHUP, SIG_IGN);
+
+    if (one_process) {
+        /* not worth thinking about */
+        return 1;
+    }
+
+    /* advance to the next generation */
+    /* XXX: we really need to make sure this new generation number isn't in
+     * use by any of the children.
+     */
+    ++ap_my_generation;
+    ap_scoreboard_image->global->running_generation = ap_my_generation;
+    
+    if (is_graceful) {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                     AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
+        /* wake up the children...time to die.  But we'll have more soon */
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, TRUE);
+    
+
+        /* This is mostly for debugging... so that we know what is still
+         * gracefully dealing with existing request.
+         */
+        
+    }
+    else {
+        /* Kill 'em all.  Since the child acts the same on the parents SIGTERM 
+         * and a SIGHUP, we may as well use the same signal, because some user
+         * pthreads are stealing signals from us left and right.
+         */
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
+
+        ap_reclaim_child_processes(1);                /* Start with SIGTERM */
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                    "SIGHUP received.  Attempting to restart");
+    }
+
+    return 0;
+}
+
+/* This really should be a post_config hook, but the error log is already
+ * redirected by that point, so we need to do this in the open_logs phase.
+ */
+static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    apr_status_t rv;
+=====================================================================
+Found a 111 line (491 tokens) duplication in the following files: 
+Starting at line 424 of /home/tom/tmp/httpd-2.0/server/mpm/prefork/prefork.c
+Starting at line 571 of /home/tom/tmp/httpd-2.0/server/mpm/experimental/leader/leader.c
+        sa.sa_handler = sig_coredump;
+#if defined(SA_ONESHOT)
+        sa.sa_flags = SA_ONESHOT;
+#elif defined(SA_RESETHAND)
+        sa.sa_flags = SA_RESETHAND;
+#endif
+        if (sigaction(SIGSEGV, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                         "sigaction(SIGSEGV)");
+#ifdef SIGBUS
+        if (sigaction(SIGBUS, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                         "sigaction(SIGBUS)");
+#endif
+#ifdef SIGABORT
+        if (sigaction(SIGABORT, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                         "sigaction(SIGABORT)");
+#endif
+#ifdef SIGABRT
+        if (sigaction(SIGABRT, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                         "sigaction(SIGABRT)");
+#endif
+#ifdef SIGILL
+        if (sigaction(SIGILL, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                         "sigaction(SIGILL)");
+#endif
+        sa.sa_flags = 0;
+    }
+    sa.sa_handler = sig_term;
+    if (sigaction(SIGTERM, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                     "sigaction(SIGTERM)");
+#ifdef SIGINT
+    if (sigaction(SIGINT, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                     "sigaction(SIGINT)");
+#endif
+#ifdef SIGXCPU
+    sa.sa_handler = SIG_DFL;
+    if (sigaction(SIGXCPU, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                     "sigaction(SIGXCPU)");
+#endif
+#ifdef SIGXFSZ
+    sa.sa_handler = SIG_DFL;
+    if (sigaction(SIGXFSZ, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                     "sigaction(SIGXFSZ)");
+#endif
+#ifdef SIGPIPE
+    sa.sa_handler = SIG_IGN;
+    if (sigaction(SIGPIPE, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                     "sigaction(SIGPIPE)");
+#endif
+
+    /* we want to ignore HUPs and AP_SIG_GRACEFUL while we're busy 
+     * processing one */
+    sigaddset(&sa.sa_mask, SIGHUP);
+    sigaddset(&sa.sa_mask, AP_SIG_GRACEFUL);
+    sa.sa_handler = restart;
+    if (sigaction(SIGHUP, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                     "sigaction(SIGHUP)");
+    if (sigaction(AP_SIG_GRACEFUL, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                     "sigaction(" AP_SIG_GRACEFUL_STRING ")");
+#else
+    if (!one_process) {
+        apr_signal(SIGSEGV, sig_coredump);
+#ifdef SIGBUS
+        apr_signal(SIGBUS, sig_coredump);
+#endif /* SIGBUS */
+#ifdef SIGABORT
+        apr_signal(SIGABORT, sig_coredump);
+#endif /* SIGABORT */
+#ifdef SIGABRT
+        apr_signal(SIGABRT, sig_coredump);
+#endif /* SIGABRT */
+#ifdef SIGILL
+        apr_signal(SIGILL, sig_coredump);
+#endif /* SIGILL */
+#ifdef SIGXCPU
+        apr_signal(SIGXCPU, SIG_DFL);
+#endif /* SIGXCPU */
+#ifdef SIGXFSZ
+        apr_signal(SIGXFSZ, SIG_DFL);
+#endif /* SIGXFSZ */
+    }
+
+    apr_signal(SIGTERM, sig_term);
+#ifdef SIGHUP
+    apr_signal(SIGHUP, restart);
+#endif /* SIGHUP */
+#ifdef AP_SIG_GRACEFUL
+    apr_signal(AP_SIG_GRACEFUL, restart);
+#endif /* AP_SIG_GRACEFUL */
+#ifdef SIGPIPE
+    apr_signal(SIGPIPE, SIG_IGN);
+#endif /* SIGPIPE */
+
+#endif
+}
+
+/*****************************************************************
+ * Here follows a long bunch of generic server bookkeeping stuff...
+ */
+
+=====================================================================
+Found a 34 line (170 tokens) duplication in the following files: 
+Starting at line 114 of /home/tom/tmp/httpd-2.0/server/mpm/experimental/threadpool/pod.c
+Starting at line 118 of /home/tom/tmp/httpd-2.0/server/mpm/worker/pod.c
+        return rv;
+    }
+    return rv;
+}
+
+static apr_status_t pod_signal_internal(ap_pod_t *pod, int graceful)
+{
+    apr_status_t rv;
+    char char_of_death = graceful ? GRACEFUL_CHAR : RESTART_CHAR;
+    apr_size_t one = 1;
+
+    do {
+        rv = apr_file_write(pod->pod_out, &char_of_death, &one);
+    } while (APR_STATUS_IS_EINTR(rv));
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+                     "write pipe_of_death");
+    }
+    return rv;
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod, int graceful)
+{
+    return pod_signal_internal(pod, graceful);
+}
+
+AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num, int graceful)
+{
+    int i;
+    apr_status_t rv = APR_SUCCESS;
+
+    for (i = 0; i < num && rv == APR_SUCCESS; i++) {
+        rv = pod_signal_internal(pod, graceful);
+    }
+=====================================================================
+Found a 35 line (111 tokens) duplication in the following files: 
+Starting at line 1084 of /home/tom/tmp/httpd-2.0/server/request.c
+Starting at line 809 of /home/tom/tmp/httpd-2.0/server/request.c
+                /* If we merged this same section last time, reuse it
+                 */
+                if (matches) {
+                    if (last_walk->matched == sec_ent[sec_idx]) {
+                        now_merged = last_walk->merged;
+                        ++last_walk;
+                        --matches;
+                        continue;
+                    }
+
+                    /* We fell out of sync.  This is our own copy of walked,
+                     * so truncate the remaining matches and reset remaining.
+                     */
+                    cache->walked->nelts -= matches;
+                    matches = 0;
+                }
+
+                if (now_merged) {
+                    now_merged = ap_merge_per_dir_configs(r->pool,
+                                                          now_merged,
+                                                          sec_ent[sec_idx]);
+                }
+                else {
+                    now_merged = sec_ent[sec_idx];
+                }
+
+                last_walk = (walk_walked_t*)apr_array_push(cache->walked);
+                last_walk->matched = sec_ent[sec_idx];
+                last_walk->merged = now_merged;
+            }
+
+            /* If .htaccess files are enabled, check for one, provided we
+             * have reached a real path.
+             */
+=====================================================================
+Found a 68 line (106 tokens) duplication in the following files: 
+Starting at line 190 of /home/tom/tmp/httpd-2.0/server/mpm/beos/beos.c
+Starting at line 344 of /home/tom/tmp/httpd-2.0/server/mpm/experimental/perchild/perchild.c
+
+=====================================================================
+Found a 10 line (101 tokens) duplication in the following files: 
+Starting at line 209 of /home/tom/tmp/httpd-2.0/server/util_time.c
+Starting at line 263 of /home/tom/tmp/httpd-2.0/server/util_time.c
+    *date_str++ = ' ';
+    *date_str++ = xt.tm_hour / 10 + '0';
+    *date_str++ = xt.tm_hour % 10 + '0';
+    *date_str++ = ':';
+    *date_str++ = xt.tm_min / 10 + '0';
+    *date_str++ = xt.tm_min % 10 + '0';
+    *date_str++ = ':';
+    *date_str++ = xt.tm_sec / 10 + '0';
+    *date_str++ = xt.tm_sec % 10 + '0';
+    *date_str++ = ' ';
+
+That took 3706 milliseconds
