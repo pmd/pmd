@@ -1,5 +1,5 @@
 ???? 2002 - ???:
-Added new rules: OnlyOneReturnRule, JumbledIncrementerRule
+Added new rules: OnlyOneReturnRule, JumbledIncrementerRule, AvoidDeeplyNestedIfStmts
 PMD is now built and tested with JUnit 3.8.1 and Ant 1.5.
 Added some limited support for the IDEAJ IDE.
 Fixed bug 610018 - StringInstantiationRule now allows for String(byte[], int, int) usage.
