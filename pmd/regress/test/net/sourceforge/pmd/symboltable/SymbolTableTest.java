@@ -21,22 +21,22 @@ public class SymbolTableTest extends TestCase {
 
     public void testAdd() {
         SymbolTable s = new SymbolTable();
-        s.add(new LocalScope());
+        s.push(new LocalScope());
         assertEquals(2,s.depth());
     }
 
     public void testRemove() {
         SymbolTable s = new SymbolTable();
-        s.add(new LocalScope());
-        s.removeTail();
+        s.push(new LocalScope());
+        s.pop();
         assertEquals(1,s.depth());
     }
 
     public void testGet() {
         SymbolTable s = new SymbolTable();
         Scope scope = new LocalScope();
-        s.add(scope);
-        assertEquals(scope, s.getTail());
+        s.push(scope);
+        assertEquals(scope, s.peek());
     }
 
 }

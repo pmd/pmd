@@ -20,7 +20,7 @@ public class LookupController {
     }
 
     public void lookup(NameOccurrence nameOccurrence) {
-        lookup(nameOccurrence, symbolTable.getTail());
+        lookup(nameOccurrence, symbolTable.peek());
     }
 
     private void lookup(NameOccurrence nameOccurrence, Scope scope) {

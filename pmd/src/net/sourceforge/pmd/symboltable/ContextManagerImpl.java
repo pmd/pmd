@@ -14,15 +14,15 @@ public class ContextManagerImpl implements ContextManager {
     }
 
     public Scope getCurrentScope() {
-        return scopes.getTail();
+        return scopes.peek();
     }
 
     public void openScope(Scope scope) {
-        scopes.add(scope);
+        scopes.push(scope);
     }
 
     public void leaveScope() {
-        scopes.removeTail();
+        scopes.pop();
     }
 
 }

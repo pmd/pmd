@@ -20,7 +20,7 @@ public class LookupControllerTest extends TestCase {
         SymbolTable symbolTable = new SymbolTable();
         Scope scope = new LocalScope();
         scope.addDeclaration(NameDeclarationTest.FOO);
-        symbolTable.add(scope);
+        symbolTable.push(scope);
         LookupController lc = new LookupController(symbolTable);
         lc.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
         assertTrue(!scope.getUnusedDeclarations().hasNext());
@@ -30,7 +30,7 @@ public class LookupControllerTest extends TestCase {
         SymbolTable symbolTable = new SymbolTable();
         Scope scope = new LocalScope();
         scope.addDeclaration(NameDeclarationTest.FOO);
-        symbolTable.add(scope);
+        symbolTable.push(scope);
         LookupController lc = new LookupController(symbolTable);
         lc.lookup(new NameOccurrence(NameDeclarationTest.createNode("bar", 10)));
         assertTrue(scope.getUnusedDeclarations().hasNext());

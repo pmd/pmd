@@ -12,14 +12,13 @@ import java.util.*;
 
 public class SymbolTable {
 
-    // scopes is a List of Lists
     private List scopes = new ArrayList();
 
     public SymbolTable() {
         scopes.add(new LocalScope());
     }
 
-    public Scope getTail() {
+    public Scope peek() {
         return (Scope)scopes.get(scopes.size()-1);
     }
 
@@ -27,13 +26,13 @@ public class SymbolTable {
         return scopes.size();
     }
 
-    public void add(Scope scope) {
-        scope.setParent(getTail());
+    public void push(Scope scope) {
+        scope.setParent(peek());
         scopes.add(scope);
     }
 
-    public void removeTail() {
-        scopes.remove(getTail());
+    public void pop() {
+        scopes.remove(peek());
     }
 
 }
