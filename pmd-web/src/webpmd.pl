@@ -100,12 +100,21 @@ sub loadProjectList() {
 }
 
 sub addProject() {
- my ($project) = @_;
- my $cmd = "echo \"@{[$project->getString()]}\" > @{[$project->getJobsFile()]}";
- eval {
-  # for some reason this succeeds, but the CGI script fails.  Very odd.
-  `${cmd}`;
- }
+	my ($project) = @_;
+	#my $cmd = "echo \"@{[$project->getString()]}\" > @{[$project->getJobsFile()]}";
+	#my $cmd = "mail tomcopeland@users.sourceforge.net -s \"@{[$project->getString()]}\"";
+	#system("${cmd}");
+  open(SENDMAIL, "|/usr/lib/sendmail -oi -t -odq") or die "Couldn't send email: $!\n";
+  print SENDMAIL <<"EOF";
+From: PMD-WEB <tomcopeland\@users.sourceforge.net>
+To: Tom Copeland <tomcopeland\@users.sourceforge.net>
+Subject: @{[$project->getString()]}
+
+enter it
+
+EOF
+
+  close(SENDMAIL) or warn "Sendmail didn't close nicely";
 }
 
 $page=param("state") || "default";
