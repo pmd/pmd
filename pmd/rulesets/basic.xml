@@ -54,15 +54,15 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           <property name="xpath">
               <value>
                   <![CDATA[
-                    //IfStatement/Statement/Block[count(*) = 0]
+    //IfStatement/Statement/Block[count(*) = 0]
                   ]]>
               </value>
           </property>
       </properties>
       <example>
   <![CDATA[
-    if (absValue < 1) {
-       // not good
+    if (foo == 0) {
+       // why bother checking up on foo?
     }
   ]]>
        </example>
