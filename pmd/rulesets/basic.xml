@@ -228,9 +228,9 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     </rule>
 
 
-    <rule name="UnnecessaryConversionTemporaryRule"
+    <rule name="UnnecessaryConversionTemporary"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
-          class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporaryRule">
+          class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporary">
       <description>
       Avoid unnecessary temporaries when converting primitives to Strings
       </description>
@@ -245,7 +245,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       </example>
     </rule>
 
-    <rule name="OverrideBothEqualsAndHashcodeRule"
+    <rule name="OverrideBothEqualsAndHashcode"
           message="Ensure you override both equals() and hashCode()"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
@@ -298,9 +298,9 @@ not
       </example>
     </rule>
 
-    <rule name="DoubleCheckedLockingRule"
+    <rule name="DoubleCheckedLocking"
           message="Double checked locking is not thread safe in Java."
-          class="net.sourceforge.pmd.rules.DoubleCheckedLockingRule">
+          class="net.sourceforge.pmd.rules.DoubleCheckedLocking">
       <description>
       Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
       An optimizing JRE may assign a reference to the baz variable before it creates the object the

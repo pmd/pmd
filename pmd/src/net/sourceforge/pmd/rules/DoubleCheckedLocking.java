@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
-public class DoubleCheckedLockingRule extends net.sourceforge.pmd.AbstractRule {
+public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
 
     private boolean interfaceSkipper;
 
@@ -146,8 +146,6 @@ public class DoubleCheckedLockingRule extends net.sourceforge.pmd.AbstractRule {
     public Object visit(ASTClassDeclaration node, Object data) {
         boolean temp = interfaceSkipper;
         interfaceSkipper = false;
-        //		String className = ((ASTUnmodifiedClassDeclaration)node.jjtGetChild(0)).getImage();
-        //		System.out.println("classname = " + className);
         Object o = super.visit(node, data);
         interfaceSkipper = temp;
         return o;
@@ -156,8 +154,6 @@ public class DoubleCheckedLockingRule extends net.sourceforge.pmd.AbstractRule {
     public Object visit(ASTNestedClassDeclaration node, Object data) {
         boolean temp = interfaceSkipper;
         interfaceSkipper = false;
-        //		String className = ((ASTUnmodifiedNestedClassDeclaration)node.jjtGetChild(0)).getImage();
-        //		System.out.println("classname = " + className);
         Object o = super.visit(node, data);
         interfaceSkipper = temp;
         return o;

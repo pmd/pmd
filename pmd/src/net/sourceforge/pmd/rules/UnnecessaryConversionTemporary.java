@@ -15,13 +15,13 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UnnecessaryConversionTemporaryRule extends AbstractRule implements Rule {
+public class UnnecessaryConversionTemporary extends AbstractRule implements Rule {
 
     private boolean inPrimaryExpressionContext;
     private boolean usingPrimitiveWrapperAllocation;
     private Set primitiveWrappers = new HashSet();
 
-    public UnnecessaryConversionTemporaryRule() {
+    public UnnecessaryConversionTemporary() {
         primitiveWrappers.add("Integer");
         primitiveWrappers.add("Boolean");
         primitiveWrappers.add("Double");

@@ -4,17 +4,17 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.DoubleCheckedLockingRule;
+import net.sourceforge.pmd.rules.DoubleCheckedLocking;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class DoubleCheckedLockingRuleTest extends SimpleAggregatorTst {
+public class DoubleCheckedLockingTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "simple ok", 0, new DoubleCheckedLockingRule()),
-           new TestDescriptor(TEST2, "simple failure", 1, new DoubleCheckedLockingRule()),
-           new TestDescriptor(TEST3, "skip interfaces", 0, new DoubleCheckedLockingRule()),
+           new TestDescriptor(TEST1, "simple ok", 0, new DoubleCheckedLocking()),
+           new TestDescriptor(TEST2, "simple failure", 1, new DoubleCheckedLocking()),
+           new TestDescriptor(TEST3, "skip interfaces", 0, new DoubleCheckedLocking()),
        });
     }
 
