@@ -90,6 +90,21 @@
       <email>dave@infoether.com</email>
       <roles><role>Developer</role></roles>
     </developer>
+
+    <developer>
+      <name>Rich Kilmer</name>
+      <id>richkilmer</id>
+      <email>rich@infoether.com</email>
+      <roles><role>Developer</role></roles>
+    </developer>
+
+    <developer>
+      <name>Don Leckie</name>
+      <id>donleckie</id>
+      <email>donleckie@users.sourceforge.net</email>
+      <roles><role>Developer</role></roles>
+    </developer>
+
   </developers>
 
   <contributors>

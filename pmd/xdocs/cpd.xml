@@ -9,13 +9,12 @@
   <body>
    <section name="Copied and pasted code is usually bad">
      <p>But it can be hard to find, especially in a large project.  So we wrote a utility - CPD - to find it for us.
-     CPD uses (more or less) Michael Wise's Greedy String Tiling algorithm to find duplicate code.  Here's
-     a <a href="screenshot.jpg">screenshot</a> of CPD after running on itself.  Looks like we've got
-     some refactoring to do....</p>
+     CPD uses (more or less) Michael Wise's Greedy String Tiling algorithm to find duplicate code.</p>
+     <p>Here's a <a href="screenshot.jpg">screenshot</a> of CPD after running on the JDK java.lang package.</p>
      <p>To run CPD as a JNLP application, click <a href="cpd.jnlp">here</a>.</p>
-     <p>As a reference point, running the CPD GUI against the JDK 1.4 java.net package on a
-     Pentium III 1.1 GHz machine with 512 MB of RAM took 6 minutes 22 seconds.  It found some nice duplicates which
-     you can see <a href="cpd_java_net_dupes.txt">here</a> - the largest ones are at the bottom of the page.</p>
+     <p>As a reference point, running the CPD GUI against the JDK 1.4 java packages  (1178 files, 13.4 MB of data)on a
+     Celeron 1.13 GHz machine with 256 MB of RAM took 19 hours and 59 minutes.  It found some nice duplicates which
+     you can see <a href="cpd_java_dupes.txt">here</a> - the largest ones are at the bottom of the page.</p>
      <p>Future plans</p>
      <ul>
         <li>Make a PMD rule for CPD</li>
