@@ -29,6 +29,7 @@ import net.sourceforge.pmd.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.stat.StatisticalRule;
 
 /**
@@ -48,38 +49,28 @@ import net.sourceforge.pmd.stat.StatisticalRule;
  */
 
 public class NullAssignmentRule extends AbstractRule {
-	private class NullAssignments extends Object {
-		private int count = 0;
-		public void addNullAssignment() { count++; }
-		public int getNullAssignments() { return count; }
-	}
-	
+
 	public Object visit(ASTStatementExpression expr, Object data ) {
-		if (!(data instanceof NullAssignments)) {
-			if (expr.jjtGetNumChildren() <= 2) {
-				return expr.childrenAccept(this, data);
-			}			
+    	if (expr.jjtGetNumChildren() <= 2) {
+			return expr.childrenAccept(this, data);
+		}
 			
-			if (expr.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-				NullAssignments newData = new NullAssignments();
-				newData = (NullAssignments) expr.childrenAccept(this, newData);
-		
-				if (newData.count > 0) {
-        		   	RuleContext ctx = (RuleContext)data;
-            		ctx.getReport().addRuleViolation(createRuleViolation(ctx, expr.getBeginLine() ));
-				}
+		if (expr.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+            SimpleNode curr = (SimpleNode) expr.jjtGetChild(2);
+            for (int i = 0; i < 5; i++) {
+                if (curr.jjtGetNumChildren() != 0) {
+                    curr = (SimpleNode) curr.jjtGetChild(0);
+                }
+            }
+
+            if (curr instanceof ASTNullLiteral) {
+			   	RuleContext ctx = (RuleContext)data;
+           		ctx.getReport().addRuleViolation(createRuleViolation(ctx, expr.getBeginLine() ));
 			}
 		
 			return data;	
 		} else {
 			return expr.childrenAccept(this, data);
 		}
-	}
-	
-	public Object visit(ASTNullLiteral nullLiteral, Object data ) {
-		if (data instanceof NullAssignments) {
-			((NullAssignments) data).addNullAssignment();	
-		}		
-		return data;
 	}
 }

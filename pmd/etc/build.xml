@@ -57,13 +57,10 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <!--<pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/tmp.xml" format="html">-->
-        <pmd rulesetfiles="rulesets/imports.xml">
-            <formatter type="xml" toFile="c:\foo.xml"/>
-            <formatter type="html" toFile="c:\foo.html"/>
-            <fileset dir="c:\j2sdk1.4.1_01\src\java\lang\reflect">
+        <pmd rulesetfiles="rulesets/newrules.xml">
+            <formatter type="html" toFile="foo.html"/>
+            <fileset dir="C:\j2sdk1.4.1_01\src">
                 <include name="**/*.java"/>
-                <!--<exclude name="**/ast**/"/>-->
             </fileset>
         </pmd>
     </target>

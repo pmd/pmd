@@ -1,9 +1,10 @@
 ???? ?? ???? - 1.02:
-Added new rule: ImportFromSamePackageRule
+Added new rules: ImportFromSamePackageRule, SwitchDensityRule, NullAssignmentRule
 Updated LooseCouplingRule to check for usage of Vector; thx to Vladimir for the good catch.
 Updated AvoidDuplicateLiteralsRule to report the line number of the first occurrence of the duplicate String.
 Modified Ant task to use a formatter element; this lets you render a report in several formats without having to rerun PMD.
 Fixed bug 650623 - the Ant task now uses relative directories for the report file
+
 
 November 07 2002 - 1.01:
 Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.

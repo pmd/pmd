@@ -37,22 +37,19 @@ import test.net.sourceforge.pmd.rules.RuleTst;
  */
 public class NullAssignmentRuleTest extends RuleTst {
 
-	public NullAssignmentRule getIUT() {
-		return new NullAssignmentRule();
-	}
-
     public void testInitAssignment() throws Throwable {
-		Report report = process("NullAssignment1.java", getIUT() );
-		assertEquals( 0, report.size() );
+        runTest("NullAssignment1.java", 0, new NullAssignmentRule());
     }
 
     public void testBadAssignment() throws Throwable {
-		Report report = process("NullAssignment2.java", getIUT() );
-		assertEquals( 1, report.size() );
+        runTest("NullAssignment2.java", 1, new NullAssignmentRule());
     }
 
     public void testCheckTest() throws Throwable {
-		Report report = process("NullAssignment3.java", getIUT() );
-		assertEquals( 0, report.size() );
+        runTest("NullAssignment3.java", 0, new NullAssignmentRule());
+    }
+
+    public void testNullParamOnRHS() throws Throwable {
+        runTest("NullAssignment4.java", 0, new NullAssignmentRule());
     }
 }
