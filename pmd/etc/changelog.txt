@@ -1,5 +1,5 @@
 ????, 2005 - 2.4:
-New rules: MissingSerialVersionUID, UnnecessaryFinalModifier, AbstractClassDoesNotContainAbstractMethod, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, AvoidCallingFinalize, UseNotifyAllInsteadOfNotify, MissingBreakInSwitch, AvoidInstanceofChecksInCatchClause, AvoidFieldNamesMatchingTypeName
+New rules: MissingSerialVersionUID, UnnecessaryFinalModifier, AbstractClassDoesNotContainAbstractMethod, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, AvoidCallingFinalize, UseNotifyAllInsteadOfNotify, MissingBreakInSwitch, AvoidInstanceofChecksInCatchClause, AvoidFieldNamesMatchingTypeName, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingMethodName
 Fixed bug 1114625 - UnusedPrivateField no longer throws an NPE on standalone postfix expressions which are prefixed with 'this'.
 Fixed bug 1114020 - The Ant task now reports a complete stack trace when run with the -verbose flag.
 Fixed bug 1117983 - MethodArgumentCouldBeFinal no longer reports false positives on try..catch blocks.

@@ -405,5 +405,29 @@ public class Foo extends Bar {
     </rule>
     
 
+    <rule name="AvoidFieldNameMatchingMethodName"
+          message="It is somewhat confusing to have a field name with the same name as a method"
+          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingMethodName">
+      <description>
+      It is somewhat confusing to have a field name with the same name as a method.
+      While this is totally legal, having information (field) and actions (method) is 
+      not clear naming.
+      </description>
+      <properties></properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class Foo {	
+	Object bar;	
+	// bar is data or an action or both?
+	void bar() {
+	}
+}
+]]>
+      </example>
+    </rule>
+    
+
 </ruleset>
 
