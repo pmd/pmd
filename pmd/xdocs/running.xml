@@ -12,7 +12,7 @@
     <li>Build PMD by going to the etc directory and typing 'ant clean'</li>
     <li>Type run 'filename', i.e.:</li>
     <source>
-    <![CDATA[
+<![CDATA[
     C:\data\pmd\pmd\etc>run c:\data\pmd\pmd\test-data\Unused1.java
     <pmd>
     <file>
@@ -20,7 +20,7 @@
     <description>Found unused local variable 'fr'</description></ruleviolation>
     </file>
     </pmd>
-    ]]>
+]]>
     </source>
     <li>Notice that the output is in an XML format, so you can redirect it to a file and process it later or whatever</li>
    </ul>
