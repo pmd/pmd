@@ -1,10 +1,40 @@
+update the xdocs to reflect the new release
+update the changelog.txt (when we get one)
+update the readme.txt (when we get one)
+
 ant dist
 rename jar to pmd-0.1.jar
 cvs add -kb pmd-0.1.jar
-cvs rtag -D tomorrow "pmd_release_0_1"
-cvs export -d c:\tmp -P -r pmd_release_0_1
+cvs rtag -D tomorrow "pmd_release_0_1" pmd
+mkdir c:\tmp\pmd
+cvs export -d c:\tmp\pmd -r pmd_release_0_1 pmd
 cd c:\tmp
 zip it up
 unzip it into c:\tmp2
 clear classpath, put pmd.jar in classpath
-can you 1) run 1 file and get a report 2) run the Ant 'pmd' task and get a report
+TESTS: Can you
+1) run 1 file and get a report
+run c:\data\pmd\pmd\test-data\Unused1.java xml
+run c:\data\pmd\pmd\test-data\Unused1.java text
+2) run the Ant 'pmd' task and get a report
+ant pmd
+
+
+if you see a bug and fix it, you can delete the release using:
+cvs rtag -d pmd_release_0_1_pmd
+and then retag everything
+
+
+FTP the zip file to SF
+ftp upload.sourceforge.net
+generic userid/password: anonymous/tomcopeland@users.sourceforge.net
+cd incoming
+bin
+put pmd-0.1.zip
+
+Go to Admin, Edit/Release Files, click on Add new release
+Paste stuff into the changelog/readme boxes
+Add the pmd.zip file
+Classify the file
+
+Submit some news saying "hey, new release!"
