@@ -163,6 +163,8 @@ private final int jjMoveStringLiteralDfa0_0()
          return jjStopAtPos(0, 5);
       case 13:
          return jjStopAtPos(0, 4);
+      case 26:
+         return jjStopAtPos(0, 121);
       case 32:
          return jjStopAtPos(0, 1);
       case 33:
@@ -256,7 +258,8 @@ private final int jjMoveStringLiteralDfa0_0()
       case 125:
          return jjStopAtPos(0, 78);
       case 126:
-         return jjStopAtPos(0, 88);
+         jjmatchedKind = 88;
+         return jjMoveStringLiteralDfa1_0(0x0L, 0x400000000000000L);
       default :
          return jjMoveNfa_0(0, 0);
    }
@@ -326,6 +329,8 @@ private final int jjMoveStringLiteralDfa1_0(long active0, long active1)
             jjmatchedPos = 1;
          }
          return jjMoveStringLiteralDfa2_0(active0, 0L, active1, 0x180200000000000L);
+      case 91:
+         return jjMoveStringLiteralDfa2_0(active0, 0L, active1, 0x400000000000000L);
       case 97:
          return jjMoveStringLiteralDfa2_0(active0, 0x90008030000L, active1, 0L);
       case 98:
@@ -400,6 +405,10 @@ private final int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, 
             jjmatchedPos = 2;
          }
          return jjMoveStringLiteralDfa3_0(active0, 0L, active1, 0x100000000000000L);
+      case 93:
+         if ((active1 & 0x400000000000000L) != 0L)
+            return jjStopAtPos(2, 122);
+         break;
       case 97:
          return jjMoveStringLiteralDfa3_0(active0, 0x1020000000c0000L, active1, 0L);
       case 98:
@@ -1429,7 +1438,7 @@ null, null, null, null, null, null, null, null, null, "\50", "\51", "\173", "\17
 "\75\75", "\74\75", "\76\75", "\41\75", "\174\174", "\46\46", "\53\53", "\55\55", "\53", 
 "\55", "\52", "\57", "\46", "\174", "\136", "\45", "\74\74", "\76\76", "\76\76\76", 
 "\53\75", "\55\75", "\52\75", "\57\75", "\46\75", "\174\75", "\136\75", "\45\75", 
-"\74\74\75", "\76\76\75", "\76\76\76\75", };
+"\74\74\75", "\76\76\75", "\76\76\76\75", "\32", "\176\133\135", };
 public static final String[] lexStateNames = {
    "DEFAULT", 
    "IN_FORMAL_COMMENT", 
@@ -1440,10 +1449,10 @@ public static final int[] jjnewLexState = {
    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
 };
 static final long[] jjtoToken = {
-   0xfffffffffffff001L, 0x1fffffffffff9d1L, 
+   0xfffffffffffff001L, 0x7fffffffffff9d1L, 
 };
 static final long[] jjtoSkip = {
    0x67eL, 0x0L, 

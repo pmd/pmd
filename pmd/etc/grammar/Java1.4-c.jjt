@@ -334,7 +334,8 @@ ASTCompilationUnit CompilationUnit() :
   [ PackageDeclaration() ]
   ( ImportDeclaration() )*
   ( TypeDeclaration() )*
-  <EOF>
+  ( [ "\u001a" ] )
+  ( "~[]" | <EOF> )
         {
 		  return jjtThis;
 		}
