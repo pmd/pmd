@@ -1,8 +1,8 @@
-???? 2002 - 0.9:
+August 16 2002 - 0.9:
 Added new rule: LongParameterListRule, SimplifyBooleanReturnsRule
 Enhanced statistics rules to support various ways of triggering rule violations
 Added rule customization via XML parameters
-Enhanced CopyAndPasteDetector; added GUI
+Enhanced CopyAndPasteDetector; added a GUI
 Fixed bug 592060 - UnusedPrivateInstanceVariable handles explicitly referenced statics correctly
 Fixed bug 593849 - UnusedPrivateInstanceVariable handles nested classes better
 

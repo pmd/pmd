@@ -49,6 +49,14 @@ public class RuleSet
 	}
     }
 
+    public void applyToFiles(List files, RuleContext ctx) {
+        Iterator rs = rules.iterator();
+        while (rs.hasNext()) {
+            Rule rule = (Rule) rs.next();
+            rule.applyToFiles( files, ctx );
+        }
+    }
+
     public String getName() {
         return name;
     }

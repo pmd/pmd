@@ -12,6 +12,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Properties;
+import java.io.File;
 
 public abstract class AbstractRule 
     extends JavaParserVisitorAdapter

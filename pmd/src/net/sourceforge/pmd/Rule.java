@@ -10,6 +10,7 @@ public interface Rule {
     public void setMessage(String message);
     public void setDescription(String description);
     public void apply(List astCompilationUnits, RuleContext ctx);
+    public void applyToFiles(List files, RuleContext ctx);
     public boolean hasProperty(String name);
     public void addProperty(String name, String value);
     public int getIntProperty(String name);
