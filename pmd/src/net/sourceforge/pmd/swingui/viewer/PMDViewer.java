@@ -22,7 +22,7 @@ public class PMDViewer extends JFrame
      *******************************************************************************
      *
      */
-    private PMDViewer()
+    public PMDViewer()
     {
         super("PMD Viewer");
 
@@ -166,7 +166,7 @@ public class PMDViewer extends JFrame
      *
      * @param args
      */
-    private void setupFiles()
+    public void setupFiles()
     {
         m_directoryTree.setupFiles();
     }

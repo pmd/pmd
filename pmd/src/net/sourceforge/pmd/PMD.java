@@ -13,7 +13,9 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.swingui.PMDFrame;
+import net.sourceforge.pmd.swingui.viewer.PMDViewer;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.List;
 import java.util.Iterator;
@@ -54,7 +56,14 @@ public class PMD {
 
     public static void main(String[] args) {
         if (args[0].equals("-g")) {
-            new PMDFrame();
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                PMDViewer pmdViewer = new PMDViewer();
+                pmdViewer.setVisible(true);
+                pmdViewer.setupFiles();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return;
         }
 
