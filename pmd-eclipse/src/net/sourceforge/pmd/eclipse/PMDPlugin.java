@@ -1,7 +1,10 @@
 package net.sourceforge.pmd.eclipse;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -22,6 +25,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -44,6 +48,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2003/08/11 21:57:28  phherlin
+ * Refactoring ruleset preference store : moving to state location
+ *
  * Revision 1.11  2003/07/30 19:29:02  phherlin
  * Updating to PMD v1.2
  *
@@ -80,6 +87,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     public static final String RULESET_PREFERENCE = "net.sourceforge.pmd.eclipse.ruleset";
     public static final String RULESET_DEFAULT = "";
+    public static final String RULESET_FILE = "/ruleset.xml";
 
     public static final String MIN_TILE_SIZE_PREFERENCE = "net.sourceforge.pmd.eclipse.CPDPreference.mintilesize";
     public static final int MIN_TILE_SIZE_DEFAULT = 25;
@@ -107,7 +115,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     public static final String ICON_REMVIO = "icons/remvio.gif";
 
     public static final String KEY_MARKERATT_RULENAME = "rulename";
-    
+
     public static final String SETTINGS_VIEW_FILE_SELECTION = "view.file_selection";
     public static final String SETTINGS_VIEW_PROJECT_SELECTION = "view.project_selection";
     public static final String SETTINGS_VIEW_ERRORHIGH_FILTER = "view.errorhigh_filter";
@@ -195,7 +203,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     public RuleSet getRuleSet() {
         if (ruleSet == null) {
-            ruleSet = getRuleSetFromPreference();
+            ruleSet = getRuleSetFromStateLocation();
         }
 
         return ruleSet;
@@ -205,13 +213,13 @@ public class PMDPlugin extends AbstractUIPlugin {
      * Set the rule set and store it in the preferences
      */
     public void setRuleSet(RuleSet newRuleSet, IProgressMonitor monitor) {
-        Set addedRules = getNewRules(newRuleSet);
-        if (!addedRules.isEmpty()) {
-            addNewRulesToConfiguredProjects(addedRules, monitor);
+        Set newRules = getNewRules(newRuleSet);
+        if (!newRules.isEmpty()) {
+            addNewRulesToConfiguredProjects(newRules, monitor);
         }
 
         ruleSet = newRuleSet;
-        storeRuleSetInPreference();
+        storeRuleSetInStateLocation(ruleSet);
     }
 
     /**
@@ -229,7 +237,7 @@ public class PMDPlugin extends AbstractUIPlugin {
                     subRuleSet.addRule(rule);
                 }
             } catch (RuntimeException e) {
-                logError("Ignored runtime exception from PMD", e);
+                logError("Ignored runtime exception from PMD : ", e);
             }
         }
 
@@ -307,15 +315,39 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Get rule set from preference
+     * Get rule set from state location
      */
-    private RuleSet getRuleSetFromPreference() {
+    private RuleSet getRuleSetFromStateLocation() {
         RuleSet preferedRuleSet = null;
         RuleSetFactory factory = new RuleSetFactory();
-        String ruleSetPreference = getPreferenceStore().getString(RULESET_PREFERENCE);
-
-        // creating a default rule set from a ruleset list
-        if (ruleSetPreference.equals(RULESET_DEFAULT)) {
+        
+        // First find the ruleset file in the state location
+        IPath ruleSetLocation = getStateLocation().append(RULESET_FILE);
+        File ruleSetFile = new File(ruleSetLocation.toOSString());
+        if (ruleSetFile.exists()) {
+            try {
+                FileInputStream in = new FileInputStream(ruleSetLocation.toOSString());
+                preferedRuleSet = factory.createRuleSet(in);
+                in.close();
+            } catch (FileNotFoundException e) {
+                showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
+            } catch (IOException e) {
+                showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
+            }
+        }
+        
+        // For compatibility test the preference store
+        if (preferedRuleSet == null) {
+            preferedRuleSet = getRuleSetFromPreference();
+            if (preferedRuleSet != null) {
+                storeRuleSetInStateLocation(preferedRuleSet);
+                getPreferenceStore().setValue(RULESET_PREFERENCE, RULESET_DEFAULT);
+                
+            }
+        }
+        
+        // Finally, build a default ruleser
+        if (preferedRuleSet == null) {
             preferedRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(RULESET_DEFAULTLIST[0]));
             for (int i = 1; i < RULESET_DEFAULTLIST.length; i++) {
                 RuleSet tmpRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(RULESET_DEFAULTLIST[i]));
@@ -323,17 +355,28 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
 
             preferedRuleSet.setName("pmd-eclipse");
-            preferedRuleSet.setDescription("PMD Plugin generated rule set");
+            preferedRuleSet.setDescription("PMD Plugin preferences rule set");
         }
 
-        // creating a rule set object from the preference store
-        else {
+        return preferedRuleSet;
+
+    }
+
+    /**
+     * Get rule set from preference (old version ; used for compatibility)
+     */
+    private RuleSet getRuleSetFromPreference() {
+        RuleSet preferedRuleSet = null;
+        RuleSetFactory factory = new RuleSetFactory();
+        String ruleSetPreference = getPreferenceStore().getString(RULESET_PREFERENCE);
+
+        if (!ruleSetPreference.equals(RULESET_DEFAULT)) {
             try {
                 InputStream ruleSetStream = new ByteArrayInputStream(ruleSetPreference.getBytes());
                 preferedRuleSet = factory.createRuleSet(ruleSetStream);
                 ruleSetStream.close();
             } catch (IOException e) {
-                showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
+                logError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
             }
         }
 
@@ -344,13 +387,13 @@ public class PMDPlugin extends AbstractUIPlugin {
     /**
      * Store the rule set in preference store
      */
-    private void storeRuleSetInPreference() {
+    private void storeRuleSetInStateLocation(RuleSet ruleSet) {
         try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            IPath ruleSetLocation = getStateLocation().append(RULESET_FILE);
+            FileOutputStream out = new FileOutputStream(ruleSetLocation.toOSString());
             RuleSetWriter writer = new RuleSetWriter(out);
             writer.write(ruleSet);
             out.flush();
-            getPreferenceStore().setValue(PMDPlugin.RULESET_PREFERENCE, out.toString());
             out.close();
         } catch (IOException e) {
             PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_WRITING_PREFERENCE), e);
