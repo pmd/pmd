@@ -39,14 +39,6 @@
 		</j:forEach>
 	</goal>
 
-	<postGoal name="xdoc:register-reports"> 
-		<attainGoal name="maven-linkcheck-plugin:deregister"/> 
-		<attainGoal name="maven-checkstyle-plugin:deregister"/> 
-		<attainGoal name="maven-tasklist-plugin:deregister"/>
-		<attainGoal name="maven-license-plugin:deregister"/>
-		<attainGoal name="maven-jdepend-plugin:deregister"/>
-	</postGoal>
-
     <goal name="pmd:dist-bin" description="Build binary distribution archive">
         <attainGoal name="site:generate"/>
         <attainGoal name="jar:jar"/>
