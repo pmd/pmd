@@ -16,7 +16,6 @@ update run.bat to point to pmd-1.04.jar
 update run.sh to point to pmd-1.04.jar
 update cpdgui.bat to point to pmd-1.04.jar
 update build.xml to reflect pmd-1.04
-update readme.txt to reflect pmd-1.04
 update xdocs/running.xml to reflect pmd-1.04
 update xdocs/integrations.xml to reflect pmd-1.04
 update the release date in the changelog
@@ -40,11 +39,9 @@ Regenerate the web site
 Prepare binary release:
 rm -rf ~/tmp/pmd
 mkdir -p ~/tmp/pmd/etc ~/tmp/pmd/lib
-cp run.bat run.sh gui.bat build.xml cpdgui.bat readme.txt changelog.txt astviewer.bat ~/tmp/pmd/etc
+cp run.bat run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.bat ~/tmp/pmd/etc
 cp ../lib/pmd-1.04.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd/lib
-cp -R ../target/docs ~/tmp/pmd/
-cp -R ../test-data ~/tmp/pmd/
-cp -R ../xslt ~/tmp/pmd/
+cp -R ../xslt ../target/docs ~/tmp/pmd/
 zip -q -r ~/tmp/pmd-bin-1.04.zip ~/tmp/pmd/  // TODO need to add a -b in here
 
 Time to tag:
