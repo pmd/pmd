@@ -55,6 +55,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         Ide.getEditorManager().getContextMenu().addContextMenuListener(this, null);
         IdeSettings.registerUI(new Navigable(TITLE, SettingsPanel.class, new Navigable[] {}));
         Ide.getVersionInfo().addComponent(TITLE, " JDeveloper Extension " + getVersion());
+        rvPage = new RuleViolationPage();
     }
 
     public void shutdown() {
@@ -120,16 +121,14 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
      * TODO investigate CompilerPage as a replacement for RuleViolationPage; or could perhaps subclass it instead.
      */
     private void render(RuleContext ctx) {
-        if (rvPage == null) {
-            rvPage = new RuleViolationPage();
-        }
         if (!rvPage.isVisible()) {
             rvPage.show();
         }
+
         rvPage.clearAll();
         if (ctx.getReport().isEmpty()) {
             JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
-            rvPage.close();
+            rvPage.movePMDToBack();
         } else {
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                 rvPage.add((RuleViolation)i.next());

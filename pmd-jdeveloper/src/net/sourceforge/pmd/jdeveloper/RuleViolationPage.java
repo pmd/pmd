@@ -32,6 +32,10 @@ public class RuleViolationPage extends AbstractLogPage {
         return scrollPane;
     }
 
+    public void movePMDToBack() {
+        Ide.getLogManager().getLogWindow().getPage().show();
+    }
+
     public void clearAll() {
         model.clear();
     }
