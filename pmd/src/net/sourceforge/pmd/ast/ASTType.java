@@ -12,6 +12,7 @@ public class ASTType extends SimpleNode {
     }
 
     private boolean isArray;
+    private int dimensions;
 
     public boolean isArray() {
         return this.isArray;
@@ -19,6 +20,18 @@ public class ASTType extends SimpleNode {
 
     public void setIsArray() {
         this.isArray = true;
+    }
+
+    public void addDimension() {
+        dimensions++;
+    }
+
+    /**
+     * Note that this is only valid for array types.  It'd
+     * be better to have a ASTType subclass for this.
+     */
+    public int getDimensions() {
+        return dimensions;
     }
 
     /** Accept the visitor. **/

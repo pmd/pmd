@@ -636,10 +636,16 @@ void Initializer() :
  */
 
 void Type() :
-{}
 {
-  ( PrimitiveType() | Name() ) ( "[" "]" {jjtThis.setIsArray();} )*
 }
+{
+  ( PrimitiveType() | Name() ) ( "[" "]"
+  {
+    jjtThis.addDimension();
+    jjtThis.setIsArray();
+  } )*
+}
+
 
 void PrimitiveType() :
 {}
