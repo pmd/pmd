@@ -24,6 +24,7 @@ public class IfElseStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "elseif with missing braces", 1, rule),
            new TestDescriptor(TEST5, "elseif with braces after else", 0, rule),
            new TestDescriptor(TEST6, "elseif with missing braces, first braces on separate line", 1, rule),
+           new TestDescriptor(TEST7, "bug 976643 - nested ifs without braces", 0, rule),
        });
     }
 
@@ -95,6 +96,15 @@ public class IfElseStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
     "  else " + PMD.EOL +
     "   y=4;" + PMD.EOL +
     "  " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  if (true) " + PMD.EOL +
+    "   if (false) " + PMD.EOL +
+    "    x=2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

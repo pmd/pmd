@@ -72,10 +72,10 @@ The Braces Ruleset contains a collection of braces rules.
                  <value>
 <![CDATA[
 //Statement
- [parent::IfStatement]
+ [parent::IfStatement[@Else='true']]
  [not(child::Block)]
  [not(child::IfStatement)]
-]]>
+ ]]>
                  </value>
              </property>
          </properties>

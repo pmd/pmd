@@ -1164,12 +1164,8 @@ void IfStatement() :
 boolean hasElse = false;
 }
 {
-  "if" "(" Expression() ")" Statement() [ LOOKAHEAD(1) "else" {hasElse = true;} Statement() ]
-{
-    if (hasElse) {
-        jjtThis.setHasElse();
-    }
-}
+  "if" "(" Expression() ")" Statement() [ LOOKAHEAD(1) "else" {jjtThis.setHasElse();} Statement() ]
+{}
 }
 
 void WhileStatement() :

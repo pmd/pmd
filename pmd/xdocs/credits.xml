@@ -40,6 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Noel Grandin - bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Todd Wright - reported missing ASTUnaryExpressionNotPlusMinus images</li>
             <li>Michael Haggerty - bug report for UnusedModifier</li>
             <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>

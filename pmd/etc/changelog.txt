@@ -7,27 +7,7 @@ Implemented RFE 958714: Private field and local variables that are assigned but 
 Postfix expressions (i.e., x++) are now available in the grammar.  To access them, search for StatementExpressions with an image of "++" or "--" - i.e., in XPath, //StatementExpression[@Image="++"].  This is an odd hack and hopefully will get cleared up later.
 Fixed bug 962782 - BeanMembersShouldSerializeRule no longer reports set/is as being a violation.
 Fixed bug 977022 - UnusedModifier no longer reports false positives for modifiers of nested classes in interfaces
-
-Refactored the Scope.getVariableDeclarations() method - now it no longer takes a "lookingForUsed" boolean parameter.  This means that if you had code like this in a rule:
-==========
- for (Iterator i = node.getScope().getVariableDeclarations(false).keySet().iterator(); i.hasNext();) {
-  VariableNameDeclaration nameDecl = (VariableNameDeclaration) i.next();
-  // do stuff with unused variables
- }
-==========
-it now needs to be like this:
-==========
- Map vars = node.getScope().getVariableDeclarations();
- for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-  VariableNameDeclaration nameDecl = (VariableNameDeclaration) i.next();
-  if (!((List)vars.get(nameDecl)).isEmpty()){
-   continue;
-  }
-  // do stuff with unused variables
- }
-==========
-This may change before the 1.9 release to make this method return some sort of more domain-specific object rather than a Map of NameDeclaration->List of NameOccurrences.  Just putting this in here in case it doesn't.
-
+Fixed bug 976643 - IfElseStmtsMustUseBracesRule no longer reports false positives for certain if..else constructs.
 
 May 19, 2004 - 1.8:
 New rules: ExceptionAsFlowControlRule, BadComparisonRule, AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, OptimizableToArrayCallRule
