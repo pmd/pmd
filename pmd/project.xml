@@ -15,7 +15,7 @@
 
   <description>
   <![CDATA[
-<p>PMD scans Java source code and looks for potential problems like:
+<p>PMD scans Java source code and looks for potential problems like:</p>
 <ul>
   <li>Unused local variables</li>
   <li>Empty catch blocks</li>
