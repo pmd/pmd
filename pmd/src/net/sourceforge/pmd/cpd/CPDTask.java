@@ -68,12 +68,15 @@ public class CPDTask extends Task {
             printIfVerbose("That took " + (stop-start) + " milliseconds");
             if (!cpd.getMatches().hasNext()) {
                 printIfVerbose("No duplicates over " + minimumTokenCount + " tokens found");
+                Writer writer = new BufferedWriter(new FileWriter(outputFile));
+                writer.write("No problems found");
+                writer.close();
             } else {
                 printIfVerbose("Duplicates found; putting a report in " + outputFile);
+                Writer writer = new BufferedWriter(new FileWriter(outputFile));
+                writer.write(new SimpleRenderer().render(cpd.getMatches()));
+                writer.close();
             }
-	        Writer writer = new BufferedWriter(new FileWriter(outputFile));
-	        writer.write(new SimpleRenderer().render(cpd.getMatches()));
-	        writer.close();
     	}catch(IOException ex){
     		ex.printStackTrace();
     		throw new BuildException("IOException in task", ex);
