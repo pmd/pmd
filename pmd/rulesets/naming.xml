@@ -7,7 +7,7 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
 
 
   <rule name="ShortVariable"
-        message="Avoid variables with short names such as ''{0}''"
+        message="Avoid variables with short names"
         class="net.sourceforge.pmd.rules.XPathRule">
     <description>
 Detects when a field, local or parameter has a short name.
@@ -40,7 +40,7 @@ public class Something {
   </rule>
 
   <rule name="LongVariable"
-        message="Avoid excessively long variable names such as ''{0}''"
+        message="Avoid excessively long variable names"
         class="net.sourceforge.pmd.rules.XPathRule">
     <description>
 Detects when a field, formal or local variable is declared with a big name.
@@ -75,7 +75,7 @@ public class Something {
   </rule>
 
   <rule name="ShortMethodNameRule"
-        message="Avoid using short method names such as ''{0}''"
+        message="Avoid using short method names"
         class="net.sourceforge.pmd.rules.XPathRule">
      <description>
 Detects when very short method names are used.

@@ -256,7 +256,6 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       Avoid unnecessary temporaries when converting primitives to Strings
       </description>
         <priority>3</priority>
-
       <example>
   <![CDATA[
     public String convert(int x) {
@@ -276,7 +275,6 @@ The Basic Ruleset contains a collection of good practices which everyone should 
   Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
       </description>
       <properties>
-          <property name="xpath" value=""/>
           <property name="xpath">
               <value>
                   <![CDATA[

@@ -11,6 +11,7 @@ These rules deal with different problems that can occur with JUnit tests.
       <description>
       The suite() method in a JUnit test needs to be both public and static.
       </description>
+        <properties>
         <property name="xpath">
             <value>
                 <![CDATA[
@@ -18,6 +19,7 @@ These rules deal with different problems that can occur with JUnit tests.
                 ]]>
             </value>
         </property>
+        </properties>
         <priority>3</priority>
 
       <example>
@@ -38,6 +40,7 @@ These rules deal with different problems that can occur with JUnit tests.
     <description>
     Some JUnit framework methods are easy to misspell.
     </description>
+      <properties>
       <property name="xpath">
           <value>
               <![CDATA[
@@ -45,6 +48,7 @@ These rules deal with different problems that can occur with JUnit tests.
               ]]>
           </value>
       </property>
+      </properties>
       <priority>3</priority>
 
     <example>
