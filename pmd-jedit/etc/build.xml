@@ -1,5 +1,6 @@
 <project name="PMDJEditPlugin" default="jar" basedir="../">
 
+	<property file="etc/build.properties"></property>
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
 	<property name="lib" value="lib/"/>

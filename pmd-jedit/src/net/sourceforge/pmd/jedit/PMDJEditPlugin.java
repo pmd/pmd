@@ -69,13 +69,13 @@ public class PMDJEditPlugin extends EditPlugin {
 		ErrorSource.registerErrorSource(errorSource);
 	}
 
-	public void createMenuItems(Vector menuItems) {
+/* 	public void createMenuItems(Vector menuItems) {
 		menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
 	}
 
 	public void createOptionPanes(OptionsDialog optionsDialog) {
 		optionsDialog.addOptionPane(new PMDOptionPane());
-	}
+	} */
 	// boilerplate JEdit code
 
 	public static void checkDirectory(View view) {
@@ -141,16 +141,17 @@ public class PMDJEditPlugin extends EditPlugin {
 	}
 
 	public void instanceCheckDirectoryRecursively(View view) {
-		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) 
+		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP))
 		{
 			final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
-			if (dir != null) 
+			if (dir != null && dir.trim() != null)
 			{
 				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
 					JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				process(findFiles(dir, true));
+
 			}
 		}
 		else
