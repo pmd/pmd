@@ -11,102 +11,102 @@
 <property name="version" value="1.04"/>
 <property name="jnlp_staging_area" value="c:\data\importscrubberjnlp\"/>
 
-  <path id="classpath.path">
-   <pathelement location="${build}"/>
-   <fileset dir="${lib}">
-    <include name="*.jar"/>
-   </fileset>
-  </path>
+<path id="classpath.path">
+<pathelement location="${build}"/>
+<fileset dir="${lib}">
+<include name="*.jar"/>
+</fileset>
+</path>
 
-    <target name="delete">
-        <delete dir="${build}"/>
-        <delete file="${lib}\pmd.jar"/>
-        <mkdir dir="${build}"/>
-    </target>
+<target name="delete">
+    <delete dir="${build}"/>
+    <delete file="${lib}\pmd.jar"/>
+    <mkdir dir="${build}"/>
+</target>
 
-    <target name="compile">
-        <mkdir dir="${build}"/>
-        <javac  deprecation="false"
-                debug="true"
-                optimize="false"
-                srcdir="${src}:${regress}"
-                destdir="${build}">
-	<classpath>
- 	    <path refid="classpath.path"/>
-	</classpath>
-        </javac>
-    </target>
+<target name="compile">
+    <mkdir dir="${build}"/>
+    <javac  deprecation="false"
+            debug="true"
+            optimize="false"
+            srcdir="${src}:${regress}"
+            destdir="${build}">
+<classpath>
+    <path refid="classpath.path"/>
+</classpath>
+    </javac>
+</target>
 
-    <target name="copy">
-        <mkdir dir="${lib}"/>
-        <copy todir="${build}rulesets">
-            <fileset dir="${rulesets}">
-                <include name="*.xml"/>
-                <include name="*.properties"/>
-            </fileset>
-        </copy>
-        <copy todir="${build}">
-            <fileset dir="${classes}">
-                <include name="**/*.gif"/>
-                <include name="**/*.jpg"/>
-                <include name="**/*.properties"/>
-            </fileset>
-        </copy>
-    </target>
+<target name="copy">
+    <mkdir dir="${lib}"/>
+    <copy todir="${build}rulesets">
+        <fileset dir="${rulesets}">
+            <include name="*.xml"/>
+            <include name="*.properties"/>
+        </fileset>
+    </copy>
+    <copy todir="${build}">
+        <fileset dir="${classes}">
+            <include name="**/*.gif"/>
+            <include name="**/*.jpg"/>
+            <include name="**/*.properties"/>
+        </fileset>
+    </copy>
+</target>
 
-    <target name="jar" depends="copy">
-        <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF"/>
-    </target>
+<target name="jar" depends="copy">
+    <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF"/>
+</target>
 
-    <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
-            <formatter type="xml" toFile="foo.xml"/>
-            <fileset dir="/home/tom/data/pmd/pmd/src">
-                <include name="**/*.java"/>
-            </fileset>
-        </pmd>
-    </target>
+<target name="pmd">
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+    <pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
+        <formatter type="xml" toFile="foo.xml"/>
+        <fileset dir="/home/tom/data/pmd/pmd/src">
+            <include name="**/*.java"/>
+        </fileset>
+    </pmd>
+</target>
 
-    <target name="test" depends="compile">
-        <junit printsummary="yes" haltonfailure="yes">
-          <classpath>
-            <pathelement location="${build}" />
-            <pathelement location="${test-data}" />
-            <pathelement location="${basedir}" />
-          </classpath>
-          <batchtest fork="no" todir="${build}">
-            <fileset dir="${regress}">
-              <include name="test/**/*Test.java" />
-            </fileset>
-          </batchtest>
-	  <formatter type="plain" />
-        </junit>
-    </target>
+<target name="test" depends="compile">
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath>
+        <pathelement location="${build}" />
+        <pathelement location="${test-data}" />
+        <pathelement location="${basedir}" />
+      </classpath>
+      <batchtest fork="no" todir="${build}">
+        <fileset dir="${regress}">
+          <include name="test/**/*Test.java" />
+        </fileset>
+      </batchtest>
+  <formatter type="plain" />
+    </junit>
+</target>
 
 
-    <target name="jjtree">
-        <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
-        <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
-        <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
-        <replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException"/>
-        <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException"/>
-        <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)"/>
-        <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
-        <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException"/>
-        <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
-    </target>
+<target name="jjtree">
+    <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
+    <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
+    <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
+    <replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException"/>
+    <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException"/>
+    <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)"/>
+    <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
+    <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException"/>
+    <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
+</target>
 
-	<target name="clean" depends="delete,compile"/>
+<target name="clean" depends="delete,compile"/>
 
-    <target name="dist" depends="clean,jar"/>
+<target name="dist" depends="clean,jar"/>
 
-    <target name="cpdjnlp" depends="dist">
-        <signjar jar="${lib}\pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
-        <exec executable="pscp.exe" os="Windows 2000">
-            <arg line=" ${lib}\pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
-        </exec>
-    </target>
+<target name="cpdjnlp" depends="dist">
+    <signjar jar="${lib}\pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <exec executable="pscp.exe" os="Windows 2000">
+        <arg line=" ${lib}\pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+    </exec>
+</target>
 
 <target name="run-cpd" depends="compile">
  <java classname="net.sourceforge.pmd.cpd.GUI" fork="yes">
@@ -115,45 +115,6 @@
 	</classpath>
  </java>
 </target>
-
-
-
-  <path id="quilt.classpath">
-    <pathelement location="${lib.repo}/quilt-0.4.jar" />
-    <pathelement location="${lib.repo}/bcel-5.1-dev.jar" />
-    <pathelement location="${lib.repo}/commons-graph.jar" />
-    <pathelement location="${lib.repo}/commons-collections.jar" />
-    <pathelement location="${lib.repo}/colt.jar" />
-  </path>
-
-    <target name="cover">
-        <taskdef name="quilt" classname="junit.quilt.ant.AntQuiltRunner" classpathref="quilt.classpath" />
-        <quilt reportdir="${reports}"
-                register="junit.quilt.cover.ball94.B94Registry"
-                reporter="junit.quilt.reports.XMLSummary"
-                packages="net.sourceforge.pmd">
-          <classpath>
-            <pathelement location="${build}" />
-          </classpath>
-
-            <fileset dir="${src}">
-              <include name="**/*Test.java" />
-            </fileset>
-        </quilt>
-    </target>
-
-    <target name="jjtree-2">
-        <mkdir dir="tmp"/>
-        <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/home/dpeugh/software/javacc2.1"/>
-        <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/home/dpeugh/software/javacc2.1"/>
-        <copy overwrite="yes" todir="src/net/sourceforge/pmd/ast">
-            <fileset dir="tmp" includes="*.java"/>
-        </copy>
-        <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
-        <delete dir="tmp"/>
-    </target>
-
-
 
 </project>
 

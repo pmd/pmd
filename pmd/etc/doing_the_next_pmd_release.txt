@@ -1,5 +1,6 @@
 Move rulesets/tmp.xml somewhere else
 update run.bat to point to pmd-1.04.jar
+update run.sh to point to pmd-1.04.jar
 update cpdgui.bat to point to pmd-1.04.jar
 update build.xml to reflect pmd-1.04
 update readme.txt to reflect pmd-1.04
@@ -16,8 +17,8 @@ ant dist
 
 TESTS: Can you
 1) run 1 file and get a report
-run c:\data\pmd\pmd\test-data\UnusedLocal1.java xml rulesets/unusedcode.xml
-run c:\data\pmd\pmd\test-data\UnusedLocal1.java html rulesets/unusedcode.xml
+run ~/data/pmd/pmd/test-data/UnusedLocal1.java xml rulesets/unusedcode.xml
+run ~/data/pmd/pmd/test-data/UnusedLocal1.java html rulesets/unusedcode.xml
 2) run the Ant 'pmd' task and get a report
 ant pmd
 
