@@ -9,8 +9,6 @@ These are new rules that are still in progress
 
 
 
-
-
 <!--
 <rule name="UnnecessaryParentheses"
       message="NOT FULLY IMPLEMENTED - Unnecessary parentheses are a bit noisy"

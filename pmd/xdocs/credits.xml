@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Elliotte Rusty Harold - UseLocaleWithCaseConversions rule suggestion</li>
             <li>Eric Olander - ImmutableFieldRule</li>
             <li>Miguel Griffa - LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
             <li>Conrad Roche - UnusedModifier bug report, other bug reports</li>

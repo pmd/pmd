@@ -4,13 +4,14 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.UnusedPrivateMethodRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
 
-    private UnusedPrivateMethodRule rule;
+    private Rule rule;
 
     public void setUp() {
         rule = new UnusedPrivateMethodRule();
@@ -29,6 +30,7 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST8, "readResolve/writeReplace/etc are OK", 0, rule)
        });
     }
+
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " public void bar() {" + PMD.EOL +

@@ -161,6 +161,40 @@ public class Foo {
     </rule>
 
 
+    <rule name="UseLocaleWithCaseConversions"
+          message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
+          problems with certain locales, i.e. Turkish.
+      </description>
+        <example>
+    <![CDATA[
+class Foo {
+ String x = y.toLowerCase(); // BAD
+ String z = a.toLowerCase(Locale.EN); // GOOD
+
+}
+    ]]>
+        </example>
+        <priority>3</priority>
+        <properties>
+          <property name="xpath">
+            <value>
+                <![CDATA[
+//PrimaryExpression
+[PrimaryPrefix/Name
+ [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
+'toUpperCase')]
+ ]
+[PrimarySuffix/Arguments[@ArgumentCount=0]]
+     ]]>
+            </value>
+          </property>
+        </properties>
+      </rule>
+
+
     </ruleset>
 
 
