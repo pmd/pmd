@@ -6,28 +6,42 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="AvoidConcatenatingNonLiteralsInStringBuffer"
-        message="Avoid concatenating non literals in a StringBuffer constructor or append()"
-        class="net.sourceforge.pmd.rules.AvoidConcatenatingNonLiteralsInStringBuffer">
-    <description>
-    Avoid concatenating non literals in a StringBuffer constructor or append().
-    </description>
-       <priority>2</priority>
+    <rule name="SystemPrintln"
+         message="System.out.println is used"
+         class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+     System.(out|err).println is used, consider using a logger.
+     </description>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+//Statement[
+child:://Name[
+    starts-with(@Image, 'System.out.print')
+    or
+    starts-with(@Image, 'System.err.print')
+    ]
+                ]]>
+             </value>
+         </property>
+     </properties>
+        <priority>2</priority>
 
-    <example>
-<![CDATA[
+     <example>
+ <![CDATA[
+class Foo{
+    Logger log = Logger.getLogger(Foo.class.getName());
 
-// Avoid this
-StringBuffer sb=new
-StringBuffer("AAAAAAAAAA"+System.getProperty("java.io.tmpdir"));
-
-// use instead something like this
-StringBuffer sb = new StringBuffer("AAAAAAAAAA");
-sb.append(System.getProperty("java.io.tmpdir"));
-
+    public void testA () {
+        System.out.println("Entering test");
+        // Better use this
+        log.fine("Entering test");
+    }
+}
 ]]>
-    </example>
-    </rule>
+     </example>
+     </rule>
    
 
 <!--

@@ -21,6 +21,7 @@ public class SystemPrintlnTest extends SimpleAggregatorTst {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "one", 1, rule),
            new TestDescriptor(TEST2, "many", 3, rule),
+           new TestDescriptor(TEST3, "none", 0, rule),
        });
     }
 
@@ -39,6 +40,13 @@ public class SystemPrintlnTest extends SimpleAggregatorTst {
     " private void foo2() { " + PMD.EOL +
     " 	System.out.println(\"debug message\");  " + PMD.EOL +
     " 	System.out.println(\"debug message\");  " + PMD.EOL +
+    " }  " + PMD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " private void foo() { " + PMD.EOL +
+    " 	int x = 2;  " + PMD.EOL +
     " }  " + PMD.EOL +
     "}";
 

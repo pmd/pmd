@@ -113,7 +113,7 @@ first -->
              <value>
                  <![CDATA[
 //Statement[
-//Name[
+child:://Name[
     starts-with(@Image, 'System.out.print')
     or
     starts-with(@Image, 'System.err.print')

@@ -1,4 +1,5 @@
 ????, 2005 - 2.4:
+Optimized the SystemOutPrintln rule; now it runs about an order of magnitude faster.
 
 February 1, 2005 - 2.3:
 Fixed bug 1113927 - ExceptionAsFlowControl no longer throws NPEs on code where a throw statement exists without a try statement wrapping it.
