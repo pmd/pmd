@@ -73,14 +73,12 @@ the Eclipse plugin.
 </p>
       </subsection>
       <subsection name="Emacs">
-<p>
-Integration with GNU Emacs is performed through ELisp. (what else?)
-</p>
-<p>
-There is only one command "pmd-current-buffer" which will execute
-PMD on the Java code in the current buffer.  It will generate report in the
-*PMD* buffer.
-</p>
+    <p>
+    Integration with GNU Emacs is performed through an ELisp package, pmd.el.
+    It supports two commands, &quot;pmd-current-buffer&quot; and &quot;pmd-current-dir&quot;.
+    The output is captured in a compilation buffer which allows the user to &quot;jump&quot;
+    directly to the source code position associated with the PMD warnings.
+          </p>
       </subsection>
       <subsection name="Borland JBuilder">
 <p>
