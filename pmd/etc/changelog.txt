@@ -1,3 +1,5 @@
+????, 2005 - 2.4:
+
 February 1, 2005 - 2.3:
 Fixed bug 1113927 - ExceptionAsFlowControl no longer throws NPEs on code where a throw statement exists without a try statement wrapping it.
 Fixed bug 1113981 - AvoidConcatenatingNonLiteralsInStringBuffer no longer throws NPEs on code where an append appears as a child of an ExplicitConstructorInvocation node.
