@@ -15,20 +15,65 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     First, figure out what you're looking for.  Let's use "While loops must use braces" as an example.
     You've seen this before a thousand times so you know what it looks like:
     </p>
-    <code>
+    <source>
+<![CDATA[
        public class Foo {
         public void bar() {
          while (baz)
             Buz.doSomething();
         }
        }
-    </code>
+]]>
+    </source>
     </subsection>
 
     <subsection name="Write a test-data example and look at the AST">
     <p>
     PMD uses a JJTree/JavaCC generated parser to parse the source code and produce an AST (Abstract Syntax Tree).
     This means that the code above looks like this:
+    <source>
+CompilationUnit
+ TypeDeclaration
+  ClassDeclaration
+   UnmodifiedClassDeclaration
+    ClassBody
+     ClassBodyDeclaration
+      MethodDeclaration
+       ResultType
+       MethodDeclarator
+        FormalParameters
+       Block
+        BlockStatement
+         Statement
+          WhileStatement
+           Expression
+            ConditionalExpression
+             ConditionalOrExpression
+              ConditionalAndExpression
+               InclusiveOrExpression
+                ExclusiveOrExpression
+                 AndExpression
+                  EqualityExpression
+                   InstanceOfExpression
+                    RelationalExpression
+                     ShiftExpression
+                      AdditiveExpression
+                       MultiplicativeExpression
+                        UnaryExpression
+                         UnaryExpressionNotPlusMinus
+                          PostfixExpression
+                           PrimaryExpression
+                            PrimaryPrefix
+                             Name
+           Statement
+            StatementExpression
+             PrimaryExpression
+              PrimaryPrefix
+               Name
+              PrimarySuffix
+               Arguments
+    </source>
+
     </p>
     </subsection>
 
