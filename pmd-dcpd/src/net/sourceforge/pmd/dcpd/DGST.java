@@ -37,7 +37,7 @@ public class DGST {
             int tilesSoFar=0;
             for (Iterator i = occ.getTiles(); i.hasNext();) {
                 Tile tile = (Tile)i.next();
-                TileWrapper tw = new TileWrapper(tile, marshal(occ.getOccurrences(tile)), job.id);
+                TileWrapper tw = new TileWrapper(tile, marshal(occ.getOccurrences(tile)), job.id, TileWrapper.NOT_DONE);
                 space.write(tw, null, Lease.FOREVER);
                 tilesSoFar++;
                 if (tilesSoFar % 10 == 0) {

@@ -45,8 +45,6 @@ public class DCPD {
             DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 50);
             results = dgst.crunch(new CPDListenerImpl());
 
-
-
 /*
             System.out.println(render());
 */
