@@ -45,41 +45,16 @@ public class PMDPreferencePage
 	implements IWorkbenchPreferencePage {
 
 	private List rulesetsList;
-	private Text newEntryText;
 	private Combo newEntryCombo;
+	private Label title;
 
 	public PMDPreferencePage() {
 		super();
 	}
 
-/**
- * Sets the default values of the preferences.
-
-	private void initializeDefaults() {
-		IPreferenceStore store = getPreferenceStore();
-		store.setDefault(P_RULESETS, "rulesets/basic.xml");		
-	}
-*/	
-/**
- * Creates the field editors. Field editors are abstractions of
- * the common GUI blocks needed to manipulate various types
- * of preferences. Each field editor knows how to save and
- * restore itself.
- *
-
-	public void createFieldEditors() {
-		//addField( new StringFieldEditor( P_RULESETS,
-		//	     "&Ruleset", getFieldEditorParent() ));
-		addField(new RuleSetListEditor( P_RULESETS, "&Ruleset", getFieldEditorParent()));
-			     	
-			   
-	}
-*/	
 	public void init(IWorkbench workbench) {
 		setPreferenceStore(PMDPlugin.getDefault().getPreferenceStore());
 		setDescription("PMD Configuration Options");
-		//initializeDefaults();
-	
 	}
 	
 
@@ -116,9 +91,13 @@ public class PMDPreferencePage
 		//Add in a dummy label for spacing
 		new Label(entryTable,SWT.NONE);
 
+		title = new Label(entryTable, SWT.NONE);
+		title.setText("Active Rule Sets");
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		title.setLayoutData(data);
+		
 		rulesetsList = new List(entryTable, SWT.BORDER);
 		rulesetsList.setItems(PMDPlugin.getDefault().getRuleSetsPreference());
-
 		//Create a data that takes up the extra space in the dialog and spans both columns.
 		data = new GridData(GridData.FILL_BOTH);
 		rulesetsList.setLayoutData(data);
@@ -135,7 +114,7 @@ public class PMDPreferencePage
 		
 		Button addButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
 
-		addButton.setText("Add Ruleset to List"); //$NON-NLS-1$
+		addButton.setText("Add Rule Set to List"); //$NON-NLS-1$
 		addButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				rulesetsList.add(newEntryCombo.getText(), rulesetsList.getItemCount());
@@ -157,18 +136,13 @@ public class PMDPreferencePage
 				newEntryCombo.add(st.nextToken());
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	
-		/*newEntryText = new Text(buttonComposite, SWT.BORDER);
-		//Create a data that takes up the extra space in the dialog .
-		data = new GridData(GridData.FILL_HORIZONTAL);
-		data.grabExcessHorizontalSpace = true;
-		newEntryText.setLayoutData(data);*/
-		
 		
 		Button removeButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
 
-		removeButton.setText("Remove RuleSet from List"); //$NON-NLS-1$
+		removeButton.setText("Remove Rule Set from List"); //$NON-NLS-1$
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				rulesetsList.remove(rulesetsList.getSelectionIndex());
