@@ -10,7 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
-            <li>David Campbell - documentation tweaks, Ant task refactoring</li>
+            <li>David Campbell - detailed bugs reports, Ant task refactoring, documentation tweaks</li>
             <li>Michael Sutherland - bug report in IfStmtMustUseBracesRule</li>
             <li>Andrew Glover - ExcessivePublicCountRule, CouplingBetweenObjectsRule, ExcessiveImportsRule, documentation tweaks</li>
             <li>Egon Willighagen - pmd-web suggestion</li>
