@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<project name="PMD">
+  <title>PMD</title>
+  <body>
+    <links>
+      <item name="SF Project Page" 
+            href="http://www.sourceforge.net/projects/pmd" />
+      <item name="Hosted by SourceForge" 
+            href="http://www.sourceforge.net" />
+    </links>
+    <menu name="Overview">
+      <item name="Ant Task" href="/ant-task.html" />
+      <item name="Credits" href="/credits.html" />
+      <item name="Similar Projects" href="/similar-projects.html" />
+    </menu>
+  </body>
+</project>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="tom@infoether.com">Tom Copeland</author>
+    <author email="ddp@apache.org">David Dixon-Peugh</author>
+    <title>Similar Projects</title>
+  </properties>
+
+  <body>
+   <section name="Similar Projects">
+     <subsection name="Commercial">
+       <ul>
+         <li><a href="http://www.parasoft.com">JTest</a>- Very nice with tons of features,
+             but also very expensive and requires a running X server (or Xvfb) to run on
+             Linux.  They charge $500 to move a license from one machine to another.</li>
+       </ul>
+     </subsection>
+     <subsection name="Open Source">
+       <ul>
+         <li><a href="http://doctorj.org">DoctorJ</a>- Written in C++, checks Javadoc, syntax
+             and calculates metrics.</li>
+         <li><a href="http://www.artho.com/jlint/download.shtml">JLint</a>- Written in C++,
+             does lots of synchronization checks.</li>
+         <li><a href="http://www.tbbr32568.pwb.blueyonder.co.uk/jnp/">JNP</a>- Nifty research
+             projects, uses JJTree/JavaCC.</li>
+         <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a>- Very detailed,
+             supports both Maven and Ant.</li>
+       </ul>
+     </subsection>
+   </section>
+  </body>
+</document>
