@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+$| =1;
 
 use CGI qw(:standard escapeHTML);
 use CGI::Carp qw(fatalsToBrowser);
@@ -10,23 +11,52 @@ sub nopage() {
  print $query->p("How'd we get here?");
 }
 
-sub printGreeting() {
+sub default() {
  print start_html("Run PMD on your Sourceforge project");
+ if (param("projectname")) {
+  addProject(param("projectname"), param("moduledirectory"), param("srcdir"));
+  print p();
+  print b("Added that project to the schedule");
+ } 
+ print p("PMD is run hourly on these projects:");
+ print p(loadProjectList());
+ #print p("Stats:");
  print p("Want to run PMD on your Sourceforge project?  Fill in the blanks and hit go");
  print start_form();
- print p(), "Project name (i.e., pmd): ", textfield('project');
- print p(), "Source directory (i.e., src): ", textfield('srcdir');
+ print p(), "Project name (i.e., PMD): ", textfield(-name=>'projectname',-default=>'',-override=>1);
+ print p(), "Module directory (i.e., pmd): ", textfield(-name=>'moduledirectory',-default=>'',-override=>1);
+ print p(), "Source directory (i.e., pmd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
  my $cachebuster=`date`;
  print $query->hidden(-name=>'cachebuster', -value=>${cachebuster});
- print p(), submit(-name=>'state',-value=>'writedata');
+ print p(), submit(-value=>'Go');
  print end_form();
 }
 
-sub writeData() {
- my $project = $query->param('project');
- my $srcdir = $query->param('srcdir');
- `echo "${project}:${srcdir}:" > runthis.txt`;
- print start_html(-title=>'PMD Results', -head=>meta({-http_equiv=>'Refresh',-content=>'0;URL=http://pmd.sf.net/cgi-bin/webpmd.pl?state=refreshreport'}));
+sub loadProjectList() {
+ my $result="<table>";
+ opendir(DIR, "jobs/") or return "can't open jobs directory!";
+ while (defined($file=readdir(DIR))) {
+  if ($file =~ /txt/) {
+   open(FILE,"jobs/${file}");
+   my $jobdata=<FILE>;
+   my ($name, $mod, $src) = split(":", $jobdata);
+   my $jobtext="";
+   if (-e "../htdocs/reports/${mod}.html") {
+    $jobtext="<a href=\"http://pmd.sf.net/reports/${mod}.html\">${name}</a>";
+   } else {
+    $jobtext=$name;
+   }
+   $result="${result}<tr><td>${jobtext}</td>";
+  }
+ }
+ $result = "${result}</table>";
+ return $result;
+}
+
+
+sub addProject() {
+ my ($project,$srcdir,$moduleDirectory) = @_;
+ `echo "${project}:$moduleDirectory:${srcdir}" > jobs/${moduleDirectory}.txt`;
 }
 
 sub refreshReport() {
@@ -39,9 +69,7 @@ sub refreshReport() {
 $page=param("state") || "default";
 
 %states = (
- 'default'      =>      \&printGreeting,
- 'writedata'    =>      \&writeData,
- 'refreshreport'=>      \&refreshReport,
+ 'default'      =>      \&default
 );
 
 if ($states{$page}) {
