@@ -5,6 +5,18 @@
 These are new ones for the next release
   </description>
 
+  <rule name="UnusedFormalParameter"
+        message="Avoid unused formal paramters such as ''{0}''"
+        class="net.sourceforge.pmd.rules.UnusedFormalParameterRule">
+    <description>
+Complete this description
+    </description>
+
+    <example>
+<![CDATA[
+]]>
+    </example>
+  </rule>
 
 </ruleset>
 
