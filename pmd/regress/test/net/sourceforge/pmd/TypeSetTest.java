@@ -51,6 +51,12 @@ public class TypeSetTest extends TestCase {
         assertEquals(File.class, clazz);
     }
 
+    public void testFindClassImportOnDemand() throws Throwable {
+        TypeSet t = new TypeSet();
+        t.addImport("java.io.*");
+        Class clazz = t.findClass("File");
+        assertEquals(File.class, clazz);
+    }
     // inner class tests
     public void testExplicitImportResolver() throws Throwable {
         Set imports = new HashSet();
@@ -67,7 +73,7 @@ public class TypeSetTest extends TestCase {
     public void testImplicitImportResolverPassFail() throws Throwable {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
         try {
-            r.resolve("foo");
+            r.resolve("PMD");
             throw new RuntimeException("Should have thrown an exception");
         } catch (ClassNotFoundException cnfe) {
             // cool
@@ -76,7 +82,7 @@ public class TypeSetTest extends TestCase {
 
     public void testCurrentPackageResolverPass() throws Throwable {
         TypeSet.Resolver r = new TypeSet.CurrentPackageResolver("net.sourceforge.pmd.");
-        assertEquals(PMD.class,  r.resolve("PMD"));
+        assertEquals(PMD.class, r.resolve("PMD"));
     }
 
     public void testImportOnDemandResolverPass() throws Throwable {

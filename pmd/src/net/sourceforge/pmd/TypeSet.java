@@ -5,9 +5,7 @@
  */
 package net.sourceforge.pmd;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Keeps track of the types encountered in a ASTCompilationUnit
@@ -76,8 +74,9 @@ public class TypeSet {
         }
     }
 
-   private String pkg;
+    private String pkg;
     private Set imports = new HashSet();
+    private List resolvers = new ArrayList();
 
     public void setASTCompilationUnitPackage(String pkg) {
         this.pkg = pkg;
@@ -96,22 +95,25 @@ public class TypeSet {
     }
 
     public Class findClass(String name) throws ClassNotFoundException {
+        if (resolvers.isEmpty()) {
+            buildResolvers();
+        }
 
-        Resolver resolver = new ExplicitImportResolver(imports);
-        try {
-            return resolver.resolve(name);
-        } catch (ClassNotFoundException cnfe) {}
+        for (Iterator i = resolvers.iterator(); i.hasNext();) {
+            Resolver resolver = (Resolver)i.next();
+            try {
+                return resolver.resolve(name);
+            } catch (ClassNotFoundException cnfe) {}
+        }
 
-        resolver = new CurrentPackageResolver(pkg);
-        try {
-            return resolver.resolve(name);
-        } catch (ClassNotFoundException cnfe) {}
-
-        resolver = new ImplicitImportResolver();
-        try {
-            return resolver.resolve(name);
-        } catch (ClassNotFoundException cnfe) {}
         throw new ClassNotFoundException("Type " + name + " not found");
+    }
+
+    private void buildResolvers() {
+        resolvers.add(new ExplicitImportResolver(imports));
+        resolvers.add(new CurrentPackageResolver(pkg));
+        resolvers.add(new ImplicitImportResolver());
+        resolvers.add(new ImportOnDemandResolver(imports));
     }
 
 }
