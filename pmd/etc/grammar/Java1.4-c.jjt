@@ -926,33 +926,20 @@ void PrimarySuffix() :
 void Literal() :
 {}
 {
-{ String intValue = ""; Token t = null;}
-t=<INTEGER_LITERAL>
-{ intValue=t.image;} {jjtThis.setImage(intValue);}
-|
-{ String floatValue = "";}
-t=<FLOATING_POINT_LITERAL>
-{ floatValue=t.image;} {jjtThis.setImage(floatValue);}
-|
-{ String charValue = "";}
-t=<CHARACTER_LITERAL>
-{ charValue=t.image;} {jjtThis.setImage(charValue);}
-|
-{ String stringValue = "";}
-t=<STRING_LITERAL>
-{ stringValue=t.image;} {jjtThis.setImage(stringValue);}
-|
-  BooleanLiteral()
-|
-  NullLiteral()
+{ Token t = null;}
+  t=<INTEGER_LITERAL> {jjtThis.setImage(t.image);}
+| t=<FLOATING_POINT_LITERAL> {jjtThis.setImage(t.image);}
+| t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image);}
+| t=<STRING_LITERAL> {jjtThis.setImage(t.image);}
+| BooleanLiteral()
+| NullLiteral()
 }
 
 void BooleanLiteral() :
 {}
 {
   "true"
-|
-  "false"
+| "false"
 }
 
 void NullLiteral() :
