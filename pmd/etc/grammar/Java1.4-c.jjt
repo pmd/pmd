@@ -778,14 +778,9 @@ void Name() :
     s.append(t.image);
   }
   ( LOOKAHEAD(2) "." t=<IDENTIFIER>
-    {
-        s.append(".");
-        s.append(t.image);
-    }
+    {s.append(".").append(t.image);}
   )*
-  {
-    jjtThis.setImage( s.toString() );
-  }
+  {jjtThis.setImage(s.toString());}
 }
 
 void NameList() :
@@ -975,7 +970,7 @@ void PrimaryPrefix() :
 {
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
-| "super"  {jjtThis.setUsesSuperModifier();} "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+| "super" {jjtThis.setUsesSuperModifier();} "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
 | "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
@@ -984,14 +979,13 @@ void PrimaryPrefix() :
 
 void PrimarySuffix() :
 {
-  String s;
   Token t;
 }
 { LOOKAHEAD(2) "." "this"
 | LOOKAHEAD(2) "." "super"
 | LOOKAHEAD(2) "." AllocationExpression()
 | "[" Expression() "]"
-| "." t=<IDENTIFIER> {s = t.image;} {jjtThis.setImage(s);}
+| "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
 | Arguments() {jjtThis.setIsArguments();}
 }
 
