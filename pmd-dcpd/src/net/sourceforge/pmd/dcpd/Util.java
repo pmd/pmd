@@ -34,7 +34,7 @@ public class Util {
                 JavaSpace space = Util.findSpace(SPACE_SERVER);
                 Entry e = null;
                 while ( (e = space.take(null, null, 100)) != null) {
-                    System.out.println("took " + e);
+                    //System.out.println("took " + e);
                 }
             } else {
                 System.out.println("Usage: clear");

@@ -30,32 +30,41 @@ public class DGST {
     }
 
     public void crunch(CPDListener listener) {
-        // this builds the initial frequency table
         Occurrences occ = new Occurrences(tokenSets, listener);
-
         try {
             scatter(occ);
-            System.out.println("Writing the Job to the space");
             space.write(job, null, Lease.FOREVER);
-
-            while (!occ.isEmpty()) {
-                Occurrences newOcc = gather(occ.size()-1);
-                System.out.println("occ size == " + occ.size());
-                if (!newOcc.isEmpty()) {
-                    occ = newOcc;
-                    scatter(occ);
-                }
-            }
-
+            expand(occ);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Occurrences gather(int lastMajorSequenceNumber) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+    private void expand(Occurrences occ)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+        while (!occ.isEmpty()) {
+            occ = gather(occ.size()-1);
+            scatter(occ);
+            System.out.println("scatter..gather complete; tile count now " + occ.size());
+        }
+    }
+
+    private void scatter(Occurrences occ) throws TransactionException, RemoteException {
+        int tilesSoFar=0;
+        for (Iterator i = occ.getTiles(); i.hasNext();) {
+            Tile tile = (Tile)i.next();
+            TileWrapper tw = new TileWrapper(tile, marshal(occ.getOccurrences(tile)), job.id, TileWrapper.NOT_DONE, new Integer(tilesSoFar), null, null);
+            space.write(tw, null, Lease.FOREVER);
+            tilesSoFar++;
+            if (tilesSoFar % 10 == 0) {
+                System.out.println("tilesSoFar = " + tilesSoFar);
+            }
+        }
+    }
+
+    private Occurrences gather(int originalOccurrencesCount) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
         System.out.println("STARTING TO GATHER");
         Occurrences occ = new Occurrences(new CPDNullListener());
-        for (int i=0;i<lastMajorSequenceNumber; i++) {
+        for (int i=0;i<originalOccurrencesCount; i++) {
 
             // this gets tile x:1 - i.e., (5:1/3)
             TileWrapper tw = (TileWrapper)space.take(new TileWrapper(null, null, job.id, TileWrapper.DONE, new Integer(i), new Integer(1), null), null, Lease.FOREVER);
@@ -80,18 +89,6 @@ public class DGST {
         }
     }
 
-    private void scatter(Occurrences occ) throws TransactionException, RemoteException {
-        int tilesSoFar=0;
-        for (Iterator i = occ.getTiles(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
-            TileWrapper tw = new TileWrapper(tile, marshal(occ.getOccurrences(tile)), job.id, TileWrapper.NOT_DONE, new Integer(tilesSoFar), null, null);
-            space.write(tw, null, Lease.FOREVER);
-            tilesSoFar++;
-            if (tilesSoFar % 10 == 0) {
-                System.out.println("tilesSoFar = " + tilesSoFar);
-            }
-        }
-    }
 
     private List marshal(Iterator i) {
         List list = new ArrayList();
