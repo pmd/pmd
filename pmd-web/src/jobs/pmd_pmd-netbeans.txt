@@ -1,1 +1,0 @@
-Sourceforge:PMD-Netbeans:pmd:pmd-netbeans:pmd-netbeans/src

@@ -1,1 +1,0 @@
-Sourceforge:Easy Explore Eclipse version:easystruts:easyexplore-plugin:easyexplore-plugin/src

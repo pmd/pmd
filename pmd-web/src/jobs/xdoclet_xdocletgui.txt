@@ -1,1 +1,0 @@
-Sourceforge:XDoclet:xdoclet:xdocletgui:xdocletgui/src

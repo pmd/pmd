@@ -1,1 +1,0 @@
-Sourceforge:PMD-JEdit:pmd:pmd-jedit:pmd-jedit/src

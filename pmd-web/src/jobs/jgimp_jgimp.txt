@@ -1,1 +1,0 @@
-Sourceforge:jgimp:jgimp:jgimp:jgimp/src/java

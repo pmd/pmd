@@ -1,1 +1,0 @@
-Sourceforge:Abbot Java GUI Test Framework:abbot:abbot:abbot/src

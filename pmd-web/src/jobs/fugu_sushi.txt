@@ -1,1 +1,0 @@
-Sourceforge:SUSHI - Universal Student Help Interface:fugu:sushi:sushi/WEB-INF/src

@@ -1,1 +1,0 @@
-Sourceforge:Easy Struts Eclipse version:easystruts:easystruts-plugin:easystruts-plugin/src

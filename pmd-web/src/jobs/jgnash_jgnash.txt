@@ -1,1 +1,0 @@
-Sourceforge:jGnash:jgnash:jgnash:jgnash/src

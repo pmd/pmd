@@ -1,1 +1,0 @@
-Sourceforge:PMD-JDeveloper:pmd:pmd-jdeveloper:pmd-jdeveloper/src

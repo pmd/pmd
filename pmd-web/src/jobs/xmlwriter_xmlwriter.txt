@@ -1,1 +1,0 @@
-Sourceforge:XmlWriter:xmlwriter:xmlwriter:xmlwriter/src/java

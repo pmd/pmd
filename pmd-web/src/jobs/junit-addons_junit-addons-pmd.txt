@@ -1,1 +1,0 @@
-Sourceforge:JUnit Addons PMD rules:junit-addons:junit-addons-pmd:junit-addons-pmd/src
