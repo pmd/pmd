@@ -44,6 +44,7 @@
       <item name="Strings" href="/rules/strings.html" />
       <item name="Braces" href="/rules/braces.html" />
       <item name="Code Size" href="/rules/codesize.html" />
+      <item name="Javabeans" href="/rules/javabeans.html" />
       <item name="Controversial" href="/rules/controversial.html" />
     </menu>
   </body>
