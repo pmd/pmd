@@ -131,6 +131,36 @@ public class Foo {
     </example>
 </rule>
 
-</ruleset>
+    <rule name="ImmutableFieldRule"
+          symboltable="true"
+          message="Private field could be made final.  It is only initialized in the declaration or constructor."
+          class="net.sourceforge.pmd.rules.design.ImmutableFieldRule">
+      <description>
+      Identifies private fields whose values never change once they are initialized either in the declaration of the field or by
+      a constructor.  This aids in converting existing classes to immutable classes.
+      </description>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+  public class FinalFields {
+      private int x;
+
+      public FinalFields() {
+          x = 7;
+      }
+
+      public void foo() {
+         int a = x + 2;
+      }
+
+  }
+  Identifies x as being eligible for making final.
+  ]]>
+      </example>
+    </rule>
+
+
+    </ruleset>
 
 
