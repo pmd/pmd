@@ -29,4 +29,8 @@ public class Mark {
     public int getIndexIntoTokenArray() {
         return indexIntoTokenArray;
     }
+
+    public String toString() {
+        return "Mark:\r\nindexIntoFile = " + indexIntoFile + "\r\nindexIntoTokenArray = " + indexIntoTokenArray + "\r\nbeginLine = " + beginLine;
+    }
 }

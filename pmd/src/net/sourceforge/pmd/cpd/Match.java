@@ -45,4 +45,8 @@ public class Match implements Comparable {
         Match other = (Match)o;
         return other.getTokenCount() - this.getTokenCount();
     }
+
+    public String toString() {
+        return "Match:\r\ntokenCount = " + tokenCount + "\r\nmark1 = " + marks.get(0) + "\r\nmark2 =" + marks.get(1);
+    }
 }

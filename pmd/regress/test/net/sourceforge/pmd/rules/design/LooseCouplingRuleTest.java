@@ -2,9 +2,31 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.rules.design.LooseCouplingRule;
 import net.sourceforge.pmd.cpd.CPD;
-import test.net.sourceforge.pmd.rules.RuleTst;
+import test.net.sourceforge.pmd.rules.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.rules.TestDescriptor;
 
-public class LooseCouplingRuleTest extends RuleTst {
+public class LooseCouplingRuleTest extends SimpleAggregatorTst {
+
+    private LooseCouplingRule rule;
+
+    public void setUp() {
+        rule = new LooseCouplingRule();
+        rule.setMessage("Avoid this stuff -> ''{0}''");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "", 1, rule),
+           new TestDescriptor(TEST2, "", 0, rule),
+           new TestDescriptor(TEST3, "", 0, rule),
+           new TestDescriptor(TEST4, "", 0, rule),
+           new TestDescriptor(TEST5, "", 1, rule),
+           new TestDescriptor(TEST6, "", 2, rule),
+           new TestDescriptor(TEST7, "", 2, rule),
+           new TestDescriptor(TEST8, "", 1, rule),
+           new TestDescriptor(TEST9, "Vector could be List", 1, rule),
+       });
+    }
 
     private static final String TEST1 =
     "import java.util.*;" + CPD.EOL +
@@ -31,7 +53,6 @@ public class LooseCouplingRuleTest extends RuleTst {
     "import java.util.*;" + CPD.EOL +
     "public class LooseCoupling1 {" + CPD.EOL +
     " private Set fooSet = new HashSet(); // OK" + CPD.EOL +
-    "" + CPD.EOL +
     " public Set getFoo() {" + CPD.EOL +
     "  return fooSet;" + CPD.EOL +
     " }" + CPD.EOL +
@@ -41,7 +62,6 @@ public class LooseCouplingRuleTest extends RuleTst {
     "import java.util.*;" + CPD.EOL +
     "public class LooseCoupling5 {" + CPD.EOL +
     " private HashSet fooSet = new HashSet(); // NOT OK" + CPD.EOL +
-    "" + CPD.EOL +
     " public Set getFoo() {" + CPD.EOL +
     "  return fooSet;" + CPD.EOL +
     " }" + CPD.EOL +
@@ -51,7 +71,6 @@ public class LooseCouplingRuleTest extends RuleTst {
     "import java.util.*;" + CPD.EOL +
     "public class LooseCoupling1 {" + CPD.EOL +
     " private HashSet fooSet = new HashSet(); // NOT OK" + CPD.EOL +
-    "" + CPD.EOL +
     " public HashSet getFoo() { // NOT OK" + CPD.EOL +
     "  return fooSet;" + CPD.EOL +
     " }" + CPD.EOL +
@@ -76,38 +95,4 @@ public class LooseCouplingRuleTest extends RuleTst {
     " public void foo(Vector bar) {}" + CPD.EOL +
     "}";
 
-    private LooseCouplingRule rule;
-
-    public void setUp() {
-        rule = new LooseCouplingRule();
-        rule.setMessage("Avoid this stuff -> ''{0}''");
-    }
-
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void test3() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
-    public void test4() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
-    public void test5() throws Throwable {
-        runTestFromString(TEST5, 1, rule);
-    }
-    public void test6() throws Throwable {
-        runTestFromString(TEST6, 2, rule);
-    }
-    public void test7() throws Throwable {
-        runTestFromString(TEST7, 2, rule);
-    }
-    public void test8() throws Throwable {
-        runTestFromString(TEST8, 1, rule);
-    }
-    public void testVector() throws Throwable {
-        runTestFromString(TEST9, 1, rule);
-    }
 }
