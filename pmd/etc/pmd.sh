@@ -3,7 +3,7 @@
 if [ -z "$3" ]; then
     script=`basename $0`
     echo "Usage:"
-    echo "    $script <java-src-file> html|xml rulesetfile1[,rulesetfile2[,..]]"
+    echo "    $script <java-src-file> html|xml|text|vbhtml rulesetfile1[,rulesetfile2[,..]]"
     exit 1
 fi
 
