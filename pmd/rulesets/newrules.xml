@@ -67,6 +67,7 @@ public class Foo {
 ]]>
      </example>
    </rule>   
+
    <rule name="ImportFromSamePackage"
         message="No need to import a type that's in the same package"
         class="net.sourceforge.pmd.rules.ImportFromSamePackageRule">
@@ -82,6 +83,22 @@ public class Bar{}
 ]]>
     </example>
     </rule>
+
+    <rule name="UnusedModifier"
+         message="Unused modifiers are, well, unused"
+         class="net.sourceforge.pmd.rules.UnusedModifierRule">
+     <description>
+     Unused modifiers are, well, unused.
+     </description>
+
+     <example>
+ <![CDATA[
+public interface Foo {
+public abstract void bar(); // abstract compiles, but is useless
+}
+ ]]>
+     </example>
+     </rule>
 
   </ruleset>
 

@@ -1,4 +1,5 @@
 @echo off
+rmdir /q /s docs
 rmdir /q /s src\com
 rmdir /q /s src\org
 rmdir /q /s src\net\sourceforge\pmd\reports
