@@ -37,7 +37,7 @@ public class DGST {
             TilePlanter planter = new TilePlanter(space, job);
             planter.plant(batches);
             space.write(job, null, Lease.FOREVER);
-            expand(occ);
+            expand(occ, batches.size());
             System.out.println("Done");
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,10 +45,11 @@ public class DGST {
         return results;
     }
 
-    private void expand(Occurrences occ)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+    private void expand(Occurrences occ, int initialNumberOfBatches)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+        int batchCount = initialNumberOfBatches;
         while (!occ.isEmpty()) {
             TileHarvester tg = new TileHarvester(space, job);
-            occ = tg.harvest(occ.size());
+            occ = tg.harvest(batchCount);
             addToResults(occ);
             if (!occ.isEmpty()) {
                 System.out.println("**Season complete" + System.getProperty("line.separator") + "->Tile count: " + occ.size() + System.getProperty("line.separator") + "->Tile size: " + ((Tile)(occ.getTiles().next())).getTokenCount());
@@ -57,6 +58,7 @@ public class DGST {
             List batches = builder.buildBatches();
             TilePlanter planter = new TilePlanter(space, job);
             planter.plant(batches);
+            batchCount = batches.size();
         }
     }
 
