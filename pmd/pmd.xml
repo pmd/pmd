@@ -80,7 +80,7 @@ will update documents on the Build Site.
   </target>  
 
 <!-- Documentation Chores -->
-  <target name="pre-docs" depends="rule-docs,run-pmd,run-jdk,pmd-docs" />
+  <target name="pre-docs" depends="rule-docs,run-jdk,pmd-docs" />
   <target name="post-docs" depends="move-php" />
 
   <target name="rule-docs" depends="load-tasks">
