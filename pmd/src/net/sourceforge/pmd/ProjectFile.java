@@ -1,14 +1,13 @@
 package net.sourceforge.pmd;
 
 // import org.apache.xerces.parsers.SAXParser;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Iterator;

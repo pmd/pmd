@@ -4,19 +4,24 @@
 
 package test.net.sourceforge.pmd.jdbc;
 
-import java.sql.*;
-import java.util.Properties;
-
+import com.mockobjects.sql.MockConnection;
+import com.mockobjects.sql.MockDriver;
+import com.mockobjects.sql.MockPreparedStatement;
+import com.mockobjects.sql.MockSingleRowResultSet;
 import junit.framework.TestCase;
-
-import com.mockobjects.sql.*;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.jdbc.JDBCReportListener;
 import net.sourceforge.pmd.stat.Metric;
-
 import test.net.sourceforge.pmd.MockRule;
+
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 
 public class JDBCReportListenerTest extends TestCase {
     private MockDriver driver = null;

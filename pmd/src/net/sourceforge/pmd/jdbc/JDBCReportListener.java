@@ -1,14 +1,16 @@
-/*
- *
- */
-
 package net.sourceforge.pmd.jdbc;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ReportListener;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.stat.Metric;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 /**

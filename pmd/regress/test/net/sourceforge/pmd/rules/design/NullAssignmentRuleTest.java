@@ -24,9 +24,7 @@
  */
 package test.net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.rules.design.NullAssignmentRule;
-
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 /**

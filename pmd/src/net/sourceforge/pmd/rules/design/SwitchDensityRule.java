@@ -3,10 +3,6 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.sourceforge.pmd.ast.ASTDoStatement;
 import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.ast.ASTSwitchStatement;

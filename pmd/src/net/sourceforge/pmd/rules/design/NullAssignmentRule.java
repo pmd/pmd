@@ -25,12 +25,9 @@ package net.sourceforge.pmd.rules.design;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.stat.StatisticalRule;
 
 /**
  * @author dpeugh
