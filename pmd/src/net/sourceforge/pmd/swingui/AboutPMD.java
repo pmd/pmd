@@ -127,7 +127,7 @@ class AboutPMD extends JDialog
         aboutPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // Version Label
-        String versionText = Resources.getString("RESOURCEVersion")
+        String versionText = Resources.getString("RESOURCE_Version")
                            + " "
                            + ProjectFile.getProperty("currentVersion");
         JLabel versionLabel = new JLabel(versionText);
@@ -136,7 +136,7 @@ class AboutPMD extends JDialog
         bottomPanel.add(versionLabel);
 
         // SourceForge PMD Project
-        String sourceForgeText = Resources.getString("RESOURCEDevelopedBySourceForgePMDTeam");
+        String sourceForgeText = Resources.getString("RESOURCE_DevelopedBySourceForgePMDTeam");
         JLabel sourceForgeLabel = new JLabel(sourceForgeText);
         sourceForgeLabel.setFont(UIManager.getFont("labelFont"));
         sourceForgeLabel.setHorizontalAlignment(JLabel.CENTER);
