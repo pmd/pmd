@@ -17,12 +17,21 @@ import java.util.Set;
 public class MockRule implements Rule {
 
     private String name;
+    private String ruleSetName;
     private String description;
     private String message;
     private Set violations = new HashSet();
     private Properties properties = new Properties();
     private String example;
     private int priority;
+
+    public String getRuleSetName() {
+        return ruleSetName;
+    }
+
+    public void setRuleSetName(String ruleSetName) {
+        this.ruleSetName = ruleSetName;
+    }
 
     public String getExample() {
         return example;
@@ -109,10 +118,11 @@ public class MockRule implements Rule {
     public MockRule() {
     }
 
-    public MockRule(String name, String description, String message) {
+    public MockRule(String name, String description, String message, String ruleSetName) {
         this.name = name;
         this.description = description;
         this.message = message;
+        this.ruleSetName = ruleSetName;
     }
 
 

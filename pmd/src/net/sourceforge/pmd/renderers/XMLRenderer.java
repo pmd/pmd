@@ -29,12 +29,14 @@ public class XMLRenderer implements Renderer {
                    .append(PMD.EOL);
             }
 
-            buf.append("<violation line=\"")
-               .append(rv.getLine()) // int
-               .append("\" rule=\"");
+            buf.append("<violation line=\"").append(rv.getLine()).append("\"");
+            buf.append(" rule=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getName());
-            buf.append("\">")
-               .append(PMD.EOL);
+            buf.append("\"");
+            buf.append(" ruleset=\"");
+            StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName());
+            buf.append("\">");
+            buf.append(PMD.EOL);
             StringUtil.appendXmlEscaped(buf, rv.getDescription());
 
             buf.append(PMD.EOL);

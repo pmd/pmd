@@ -147,7 +147,6 @@ public class RuleSetFactory {
         if (in == null) {
             throw new RuleSetNotFoundException("Can't find resource " + name + ".  Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: " + System.getProperty("java.class.path"));
         }
-        
         return in;
     }
     
@@ -199,7 +198,8 @@ public class RuleSetFactory {
         Rule rule = (Rule) getClassLoader().loadClass(className).newInstance();
         rule.setName(name);
         rule.setMessage(message);
-        
+        rule.setRuleSetName(ruleSet.getName());
+
         NodeList nodeList = ruleElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);

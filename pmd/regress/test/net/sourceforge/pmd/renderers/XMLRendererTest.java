@@ -16,8 +16,8 @@ import java.util.List;
 
 public class XMLRendererTest extends TestCase {
 
-    private MockRule RULE1 = new MockRule("RULE1", "RULE1", "msg");
-    private MockRule RULE2 = new MockRule("RULE2", "RULE2", "msg");
+    private MockRule RULE1 = new MockRule("RULE1", "RULE1", "msg", "rulesetname");
+    private MockRule RULE2 = new MockRule("RULE2", "RULE2", "msg", "rulesetname");
     private RuleContext ctx = new RuleContext();
 
     public XMLRendererTest(String name) {
@@ -57,7 +57,7 @@ public class XMLRendererTest extends TestCase {
         List expectedStrings = new ArrayList();
         expectedStrings.add("<pmd>");
         expectedStrings.add("<file name=\"testSingleReport\">");
-        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
+        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\" ruleset=\"rulesetname\">");
         expectedStrings.add("Rule1");
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
@@ -88,10 +88,10 @@ public class XMLRendererTest extends TestCase {
         List expectedStrings = new ArrayList();
         expectedStrings.add("<pmd>");
         expectedStrings.add("<file name=\"testDoubleReport\">");
-        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
+        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\" ruleset=\"rulesetname\">");
         expectedStrings.add("Rule1");
         expectedStrings.add("</violation>");
-        expectedStrings.add("<violation line=\"2\" rule=\"RULE2\">");
+        expectedStrings.add("<violation line=\"2\" rule=\"RULE2\" ruleset=\"rulesetname\">");
         expectedStrings.add("Rule2");
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
@@ -126,12 +126,12 @@ public class XMLRendererTest extends TestCase {
         List expectedStrings = new ArrayList();
         expectedStrings.add("<pmd>");
         expectedStrings.add("<file name=\"testTwoFiles_0\">");
-        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
+        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\" ruleset=\"rulesetname\">");
         expectedStrings.add("Rule1");
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
         expectedStrings.add("<file name=\"testTwoFiles_1\">");
-        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
+        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\" ruleset=\"rulesetname\">");
         expectedStrings.add("Rule1");
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
@@ -169,15 +169,15 @@ public class XMLRendererTest extends TestCase {
         List expectedStrings = new ArrayList();
         expectedStrings.add("<pmd>");
         expectedStrings.add("<file name=\"testTwoFiles_0\">");
-        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
+        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\" ruleset=\"rulesetname\">");
         expectedStrings.add("Rule1");
         expectedStrings.add("</violation>");
-        expectedStrings.add("<violation line=\"2\" rule=\"RULE2\">");
+        expectedStrings.add("<violation line=\"2\" rule=\"RULE2\" ruleset=\"rulesetname\">");
         expectedStrings.add("Rule2");
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
         expectedStrings.add("<file name=\"testTwoFiles_1\">");
-        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
+        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\" ruleset=\"rulesetname\">");
         expectedStrings.add("Rule1");
         expectedStrings.add("</violation>");
         expectedStrings.add("</file>");
@@ -217,7 +217,7 @@ public class XMLRendererTest extends TestCase {
         expectedStrings.add(" 'e' acute: ");
         expectedStrings.add("&#233;");
         expectedStrings.add("\">");
-        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\">");
+        expectedStrings.add("<violation line=\"1\" rule=\"RULE1\" ruleset=\"rulesetname\">");
         expectedStrings.add("[RULE] Less than: ");
         expectedStrings.add("&lt;");
         expectedStrings.add(" Greater than: ");

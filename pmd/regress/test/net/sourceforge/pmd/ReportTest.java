@@ -45,7 +45,7 @@ public class ReportTest extends TestCase implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 5, ctx));
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), 5, ctx));
         assertTrue(!r.isEmpty());
     }
 
@@ -81,9 +81,9 @@ public class ReportTest extends TestCase implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 10, ctx));
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), 10, ctx));
         ctx.setSourceCodeFilename("bar");
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 20, ctx));
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), 20, ctx));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
@@ -93,9 +93,9 @@ public class ReportTest extends TestCase implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
-        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg"), 10, ctx));
+        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg", "rulesetname"), 10, ctx));
         ctx.setSourceCodeFilename("foo2");
-        r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1", "msg"), 20, ctx));
+        r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1", "msg", "rulesetname"), 20, ctx));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
@@ -107,7 +107,7 @@ public class ReportTest extends TestCase implements ReportListener {
         violationSemaphore = false;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("file");
-        rpt.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 5, ctx));
+        rpt.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), 5, ctx));
         assertTrue(violationSemaphore);
 
         metricSemaphore = false;
@@ -128,9 +128,9 @@ public class ReportTest extends TestCase implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
-        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg"), 10, ctx));
+        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg", "rulesetname"), 10, ctx));
         ctx.setSourceCodeFilename("foo2");
-        Rule mr = new MockRule("rule1", "rule1", "msg");
+        Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
         r.addRuleViolation(new RuleViolation(mr, 20, ctx));
         r.addRuleViolation(new RuleViolation(mr, 30, ctx));
         Map summary = r.getSummary();

@@ -41,6 +41,7 @@ public class AbstractRuleTest extends TestCase {
 
     public void testCreateRV() {
         MyRule r = new MyRule();
+        r.setRuleSetName("foo");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         RuleViolation rv = r.createRuleViolation(ctx, 5);
@@ -48,6 +49,7 @@ public class AbstractRuleTest extends TestCase {
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
         assertEquals("Rule description mismatch!", "myrule", rv.getDescription());
+        assertEquals("RuleSet name mismatch!", "foo", rv.getRule().getRuleSetName());
     }
 
     public void testCreateRV2() {

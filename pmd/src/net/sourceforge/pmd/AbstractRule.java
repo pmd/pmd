@@ -17,8 +17,17 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     private String message;
     private String description;
     private String example;
+    private String ruleSetName;
     private boolean m_include;
     private int m_priority = LOWEST_PRIORITY;
+
+    public String getRuleSetName() {
+        return ruleSetName;
+    }
+
+    public void setRuleSetName(String ruleSetName) {
+        this.ruleSetName = ruleSetName;
+    }
 
     public String getDescription() {
         return description;

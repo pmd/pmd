@@ -57,7 +57,7 @@ public class RuleSetTest extends TestCase {
 
     public void testGetRuleByName() {
         RuleSet rs = new RuleSet();
-        MockRule mock = new MockRule("name", "desc", "msg");
+        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
         rs.addRule(mock);
         assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
     }
@@ -67,7 +67,7 @@ public class RuleSetTest extends TestCase {
 
         assertEquals("Size of RuleSet isn't zero.", 0, IUT.size());
 
-        MockRule rule = new MockRule("name", "desc", "msg");
+        MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
         IUT.addRule(rule);
 
         assertEquals("Size of RuleSet isn't one.", 1, IUT.size());
@@ -82,9 +82,9 @@ public class RuleSetTest extends TestCase {
 
     public void testAddRuleSet() {
         RuleSet set1 = new RuleSet();
-        set1.addRule(new MockRule("name", "desc", "msg"));
+        set1.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
         RuleSet set2 = new RuleSet();
-        set2.addRule(new MockRule("name", "desc", "msg"));
+        set2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
         set1.addRuleSet(set2);
         assertEquals("ruleset size wrong", 2, set1.size());
     }
@@ -97,7 +97,7 @@ public class RuleSetTest extends TestCase {
     public void testApply1Rule() throws Throwable {
         RuleSet IUT = new RuleSet();
 
-        MockRule rule = new MockRule("name", "desc", "msg");
+        MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         RuleViolation violation = new RuleViolation(rule, 1, ctx);
@@ -116,7 +116,7 @@ public class RuleSetTest extends TestCase {
         Set ruleViolations = new HashSet();
 
         for (int i = 0; i < numRules; i++) {
-            MockRule rule = new MockRule("name", "desc", "msg");
+            MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
             RuleContext ctx = new RuleContext();
             ctx.setSourceCodeFilename("filename");
             RuleViolation violation = new RuleViolation(rule, i, ctx);

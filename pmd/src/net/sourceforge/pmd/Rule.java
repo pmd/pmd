@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 
 public interface Rule {
+
     public static final int LOWEST_PRIORITY = 5;
     public static final String[] PRIORITIES = {"High", "Medium High", "Medium", "Medium Low", "Low"};
 
@@ -19,6 +20,10 @@ public interface Rule {
     String getExample();
 
     void setName(String name);
+
+    String getRuleSetName();
+    
+    void setRuleSetName(String name);
 
     void setMessage(String message);
 

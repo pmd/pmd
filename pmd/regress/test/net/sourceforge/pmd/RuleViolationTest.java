@@ -31,7 +31,7 @@ import test.net.sourceforge.pmd.testframework.MockRule;
 public class RuleViolationTest extends TestCase {
 
     public void testConstructor1() {
-        Rule rule = new MockRule("name", "desc", "msg");
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         RuleViolation r = new RuleViolation(rule, 2, ctx);
@@ -41,7 +41,7 @@ public class RuleViolationTest extends TestCase {
     }
 
     public void testConstructor2() {
-        Rule rule = new MockRule("name", "desc", "msg");
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         RuleViolation r = new RuleViolation(rule, 2, "description", ctx);
@@ -52,7 +52,7 @@ public class RuleViolationTest extends TestCase {
     }
 
     public void testComparatorWithDifferentFilenames() {
-        Rule rule = new MockRule("name", "desc", "msg");
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename1");
@@ -64,7 +64,7 @@ public class RuleViolationTest extends TestCase {
     }
 
     public void testComparatorWithSameFileDifferentLines() {
-        Rule rule = new MockRule("name", "desc", "msg");
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
@@ -75,7 +75,7 @@ public class RuleViolationTest extends TestCase {
     }
 
     public void testComparatorWithSameFileSameLines() {
-        Rule rule = new MockRule("name", "desc", "msg");
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
