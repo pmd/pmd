@@ -31,6 +31,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
         if (node.jjtGetNumChildren() == 0 || ((SimpleNode)node.jjtGetChild(0)).jjtGetNumChildren() == 0 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
             return super.visit(node, data);
         }
+        // TODO... hmmm... is this inPrimaryExpressionContext gibberish necessary?
         inPrimaryExpressionContext = true;
         Object report = super.visit(node, data);
         inPrimaryExpressionContext = false;

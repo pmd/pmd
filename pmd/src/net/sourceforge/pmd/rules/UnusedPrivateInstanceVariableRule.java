@@ -17,6 +17,9 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     // TODO
     // this being an instance variable totally hoses up the recursion
     // need to attach it to the report or the stack or something
+    // I still need something to do forward references, though...
+    // and this "do the declarations first and the names second" works
+    // Actually, what I need is a Visitor that does a breadth first search
     // TODO
     private boolean doingIDTraversal;
     // TODO
