@@ -129,7 +129,9 @@ public class PMDTask extends Task {
                     }
                 } catch (PMDException pmde) {
                     log(pmde.toString(), Project.MSG_VERBOSE);
-                    log(pmde.getReason().getMessage(), Project.MSG_VERBOSE);
+                    if (pmde.getReason() != null && pmde.getReason().getMessage() != null) {
+                        log(pmde.getReason().getMessage(), Project.MSG_VERBOSE);
+                    }
                     if (failOnError) {
                         throw new BuildException(pmde);
                     }
