@@ -1,4 +1,4 @@
-package test.net.sourceforge.pmd.rules.design;
+package test.net.sourceforge.pmd.rules.strictexception;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.design.ExceptionAsFlowControlRule;
