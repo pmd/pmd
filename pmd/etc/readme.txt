@@ -45,7 +45,7 @@ HOW TO RUN PMD FROM THE COMMAND LINE (UNIX)
 
 -run PMD on a Java source file
 
-[build@ul020-dmz etc]$ java -jar ../lib/pmd-1.03.jar Foo.java html rulesets/unusedcode.xml
+[build@ul020-dmz etc]$ run Foo.java html rulesets/unusedcode.xml
 <html><head><title>PMD</title></head><body>
 <table><tr>
 <th>File</th><th>Line</th><th>Problem</th></tr>
@@ -60,7 +60,7 @@ HOW TO RUN PMD FROM THE COMMAND LINE (UNIX)
 -if you send in a directory as the first parameter, PMD will run recursively on all files and subdirectories
 -note that if you're using JDK 1.3, you'll need to use java -cp, not java -jar.  Like this:
 
-java -cp lib\pmd-1.03.jar;lib\xercesImpl-2.0.2.jar;lib\xmlParserAPIs-2.0.2.jar net.sourceforge.pmd.PMD c:\j2sdk1.4.1_01\src\java\lang xml rulesets/imports.xml
+java -cp lib\pmd-1.03.jar;lib\xercesImpl-2.0.2.jar;lib\xmlParserAPIs-2.0.2.jar;lib\jaxen-core-1.0-fcs.jar;lib\saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD c:\j2sdk1.4.1_01\src\java\lang xml rulesets/imports.xml
 
 
 
