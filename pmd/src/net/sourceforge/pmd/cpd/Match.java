@@ -2,11 +2,11 @@ package net.sourceforge.pmd.cpd;
 
 public class Match {
 
-    private Locator start;
-    private Locator end;
+    private Mark start;
+    private Mark end;
     private int tokenCount;
 
-    public Match(int tokenCount, Locator start, Locator end) {
+    public Match(int tokenCount, Mark start, Mark end) {
         this.start = start;
         this.end = end;
         this.tokenCount = tokenCount;
@@ -16,11 +16,11 @@ public class Match {
         return this.tokenCount;
     }
 
-    public Locator getStart() {
+    public Mark getStart() {
         return this.start;
     }
 
-    public Locator getEnd() {
+    public Mark getEnd() {
         return this.end;
     }
 }

@@ -17,12 +17,12 @@ public class MatchAlgorithm {
     private List matches = new ArrayList();
     private CPDListener cpdListener;
 
-    public void add(TokenEntry token, Locator locator, CPDListener cpdListener) {
+    public void add(TokenEntry token, CPDListener cpdListener) {
         if (!pool.containsKey(token)) {
             pool.put(token, token);
         }
         code.add(pool.get(token));
-        marks.add(new Mark(code, code.size(), locator));
+        marks.add(new Mark(code, code.size(), token.getTokenSrcID(), token.getIndex()));
         this.cpdListener = cpdListener;
     }
 
@@ -52,10 +52,10 @@ public class MatchAlgorithm {
                }
                matchedTokens++;
            }
-           if (matchedTokens > min && !soFar.contains(mark1.getLocator().getFile()) && !soFar.contains(mark2.getLocator().getFile())) {
-               soFar.add(mark1.getLocator().getFile());
-               soFar.add(mark2.getLocator().getFile());
-               matches.add(new Match(matchedTokens, mark1.getLocator(), mark2.getLocator()));
+           if (matchedTokens > min && !soFar.contains(mark1.getFile()) && !soFar.contains(mark2.getFile())) {
+               soFar.add(mark1.getFile());
+               soFar.add(mark2.getFile());
+               matches.add(new Match(matchedTokens, mark1, mark2));
            }
        }
     }

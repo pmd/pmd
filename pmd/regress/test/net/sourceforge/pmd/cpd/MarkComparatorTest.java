@@ -1,16 +1,15 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.MarkComparator;
-import net.sourceforge.pmd.cpd.CPDNullListener;
-import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.cpd.Mark;
-import net.sourceforge.pmd.cpd.Locator;
 import net.sourceforge.pmd.cpd.CPDListener;
+import net.sourceforge.pmd.cpd.CPDNullListener;
+import net.sourceforge.pmd.cpd.Mark;
+import net.sourceforge.pmd.cpd.MarkComparator;
+import net.sourceforge.pmd.cpd.TokenEntry;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
 
 public class MarkComparatorTest extends TestCase {
 
@@ -27,16 +26,16 @@ public class MarkComparatorTest extends TestCase {
     public void testEqualMarksAreEqual() {
         List code = getCode();
         MarkComparator comp = new MarkComparator(new CPDNullListener(), code);
-        Mark mark1 = new Mark(code, code.size(), new Locator("/var/Foo.java", 0));
-        Mark mark6 = new Mark(code, code.size(), new Locator("/var/Foo.java", 5));
+        Mark mark1 = new Mark(code, code.size(), "/var/Foo.java", 0);
+        Mark mark6 = new Mark(code, code.size(), "/var/Foo.java", 5);
         assertEquals(0, comp.compare(mark1, mark6));
     }
 
     public void testUnuequalMarksAreUnequal() {
         List code = getCode();
         MarkComparator comp = new MarkComparator(new CPDNullListener(), code);
-        Mark mark1 = new Mark(code, 0, new Locator("/var/Foo.java", 0));
-        Mark mark5 = new Mark(code, 4, new Locator("/var/Foo.java", 4));
+        Mark mark1 = new Mark(code, 0, "/var/Foo.java", 0);
+        Mark mark5 = new Mark(code, 4, "/var/Foo.java", 4);
         assertFalse(0 == comp.compare(mark1, mark5));
     }
 
@@ -44,8 +43,8 @@ public class MarkComparatorTest extends TestCase {
         gotCallback = false;
         List code = getCode();
         MarkComparator comp = new MarkComparator(new MyListener(), code, 3);
-        Mark mark1 = new Mark(code, code.size(), new Locator("/var/Foo.java", 0));
-        Mark mark2 = new Mark(code, code.size(), new Locator("/var/Foo.java", 1));
+        Mark mark1 = new Mark(code, code.size(), "/var/Foo.java", 0);
+        Mark mark2 = new Mark(code, code.size(), "/var/Foo.java", 1);
         comp.compare(mark1, mark2);
         comp.compare(mark1, mark2);
         comp.compare(mark1, mark2);

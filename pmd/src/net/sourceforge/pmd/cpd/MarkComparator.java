@@ -28,7 +28,7 @@ public class MarkComparator implements Comparator {
 
         Mark mark1 = (Mark)o1;
         Mark mark2 = (Mark)o2;
-        if (mark1.getOffset() == mark2.getOffset()) {
+        if (mark1.getIndexIntoTokenArray() == mark2.getIndexIntoTokenArray()) {
             return 0;
         }
 

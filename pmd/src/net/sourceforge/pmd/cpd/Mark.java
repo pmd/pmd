@@ -4,21 +4,27 @@ import java.util.List;
 
 public class Mark {
 
-    private Locator locator;
+    private int index;
     private int offset;
     private List code;
+    private String file;
 
-    public Mark(List code, int offset, Locator locator) {
+    public Mark(List code, int offset, String file, int index) {
         this.code = code;
         this.offset = offset;
-        this.locator = locator;
+        this.index = index;
+        this.file = file;
     }
 
-    public Locator getLocator() {
-        return this.locator;
+    public String getFile() {
+        return this.file;
     }
 
-    public int getOffset() {
+    public int getIndexIntoFile() {
+        return this.index;
+    }
+
+    public int getIndexIntoTokenArray() {
         return offset;
     }
 
