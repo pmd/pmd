@@ -38,7 +38,7 @@
 
 <target name="clean" depends="delete,compile,rmic"/>
 
-<target name="copytomordor" depends="clean,jar">
+<target name="copytoserver" depends="clean,jar">
     <exec executable="pscp.exe" os="Windows 2000">
         <arg line=" ${lib}\${jar} tom@mordor:/home/tom/projects/jini/sdk/lib/"/>
     </exec>

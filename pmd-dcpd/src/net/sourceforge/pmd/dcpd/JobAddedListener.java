@@ -14,7 +14,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class JobAddedListener extends UnicastRemoteObject implements RemoteEventListener {
-    private JavaSpace space;
+
+    public JavaSpace space;
 
     public JobAddedListener() throws RemoteException {}
 
@@ -25,11 +26,15 @@ public class JobAddedListener extends UnicastRemoteObject implements RemoteEvent
     public void notify(RemoteEvent event) throws UnknownEventException, RemoteException {
         System.out.println("HOWDY!");
         try {
-            Job job = (Job)space.take(new Job("test"), null, 1000);
-            if (job == null) {
-                System.out.println("No job found");
+            if (space == null) {
+                System.out.println("SPACE IS NULL");
             } else {
-                System.out.println("job = " + job.name);
+                Job job = (Job)space.take(new Job("test"), null, 1000);
+                if (job == null) {
+                    System.out.println("No job found");
+                } else {
+                    System.out.println("job = " + job.name);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
