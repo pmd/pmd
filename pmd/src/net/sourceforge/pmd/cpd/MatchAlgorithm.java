@@ -37,7 +37,7 @@ public class MatchAlgorithm {
            token.setSortCode(count++);
        }
 
-       Collections.sort(marks, new MarkComparator(cpdListener, code));
+       Collections.sort(marks, new MarkComparator(cpdListener, code.size()));
 
        Set soFar = new HashSet();
        for (int i = 1; i < marks.size();  i++) {

@@ -1,20 +1,19 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.Comparator;
-import java.util.List;
 
 public class MarkComparator implements Comparator {
 
     private final int comparisonUpdateInterval;
     private CPDListener l;
     private long comparisons;
-    private List code;
+    private int code;
 
-    public MarkComparator(CPDListener l, List code) {
+    public MarkComparator(CPDListener l, int code) {
         this(l, code, 10000);
     }
 
-    public MarkComparator(CPDListener l, List code, int comparisonUpdateInterval) {
+    public MarkComparator(CPDListener l, int code, int comparisonUpdateInterval) {
         this.l = l;
         this.code = code;
         this.comparisonUpdateInterval = comparisonUpdateInterval;
@@ -28,11 +27,7 @@ public class MarkComparator implements Comparator {
 
         Mark mark1 = (Mark)o1;
         Mark mark2 = (Mark)o2;
-        if (mark1.getIndexIntoTokenArray() == mark2.getIndexIntoTokenArray()) {
-            return 0;
-        }
-
-        for (int i = 1; i < code.size(); i++) {
+        for (int i = 1; i < code; i++) {
             int cmp = mark2.tokenAt(i).compareTo(mark1.tokenAt(i));
             if (cmp != 0) {
                 return cmp;
