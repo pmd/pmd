@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Brandon Franklin - many pmd-web ideas</li>
             <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
             <li>Andriy Rozeluk - Suggestions for improving UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
@@ -65,7 +66,6 @@
             <li>Jon A. Maxwell - Bug report</li>
             <li>Maik Schreiber - Bug report</li>
             <li>Erik Lee - Bug report</li>
-            <li>Brandon Franklin - pmd-web suggestions</li>
             <li>Joerg K. Wegner - pmd-web suggestions</li>
             <li>Chris Webster - fix (and test) for UnnecessaryConstructorRule, BooleanInstantiation rule</li>
             <li>Colin Simmonds - detailed bug reports</li>
