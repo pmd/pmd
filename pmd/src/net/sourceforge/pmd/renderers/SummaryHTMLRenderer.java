@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
 
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 public class SummaryHTMLRenderer implements Renderer {
     public String render(Report report) {

@@ -36,10 +36,8 @@ public class MatchAlgorithm {
         if (!pool.containsKey(token)) {
             pool.put(token, token);
         }
-        code.add(pool.get(token));
-        if (!(token.equals(TokenEntry.EOF))) {
-            marks.add(new Mark(code.size(), token.getTokenSrcID(), token.getIndex(), token.getBeginLine()));
-        }
+        marks.add(new Mark(code.size(), token.getTokenSrcID(), token.getBeginLine()));
+		code.add(pool.get(token));
     }
 
     public void findMatches(int min) {
@@ -47,19 +45,18 @@ public class MatchAlgorithm {
          Assign sort codes to all the pooled code. This should speed
          up sorting them.
        */
-        int count = 1;
+        int count = 0;
         for (Iterator iter = pool.keySet().iterator(); iter.hasNext();) {
            TokenEntry token = (TokenEntry)iter.next();
            token.setSortCode(count++);
         }
 
-        MarkComparator mc = new MarkComparator(cpdListener, code);
+        MarkComparator mc = new MarkComparator(cpdListener, code, min);
         Collections.sort(marks, mc);
 
         MatchCollector coll = new MatchCollector(marks, mc);
         matches = coll.collect(min);
-        Collections.sort(matches);
-
+        
         for (Iterator i = matches(); i.hasNext();) {
             Match match = (Match)i.next();
             for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {

@@ -9,8 +9,7 @@ import net.sourceforge.pmd.cpd.Mark;
 public class MarkTest extends TestCase {
 
     public void testSimple() {
-        Mark mark = new Mark(0, "/var/Foo.java", 10, 1);
-        assertEquals(mark.getIndexIntoFile(), 10);
+        Mark mark = new Mark(0, "/var/Foo.java", 1);
         assertEquals(1, mark.getBeginLine());
         assertEquals("/var/Foo.java", mark.getTokenSrcID());
         assertEquals(0, mark.getIndexIntoTokenArray());

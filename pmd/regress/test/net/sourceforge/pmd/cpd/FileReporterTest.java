@@ -19,7 +19,7 @@ public class FileReporterTest extends TestCase
 {
   public void testCreation() {
     try {
-      FileReporter fileReporter = new FileReporter(null);
+      new FileReporter(null);
       fail("expected NullPointerException");
     } catch (NullPointerException npe) {
     }

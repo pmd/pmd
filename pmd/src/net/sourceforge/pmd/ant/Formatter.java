@@ -6,9 +6,9 @@ package net.sourceforge.pmd.ant;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import org.apache.tools.ant.BuildException;
 
 import java.io.BufferedWriter;

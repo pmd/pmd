@@ -6,7 +6,6 @@ package net.sourceforge.pmd.cpd;
 public class TokenEntry implements Comparable {
 
     public static final TokenEntry EOF = new TokenEntry();
-    private char[] chars;
     private int hash;
     private String image;
     private int index;
@@ -17,7 +16,6 @@ public class TokenEntry implements Comparable {
 
     private TokenEntry() {
         this.image = "EOF";
-        this.chars = image.toCharArray();
         this.tokenSrcID = "EOFMarker";
     }
 
@@ -26,7 +24,6 @@ public class TokenEntry implements Comparable {
         this.index = index;
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
-        this.chars = image.toCharArray();
     }
 
     public int getIndex() {
@@ -51,15 +48,7 @@ public class TokenEntry implements Comparable {
             if (this == EOF) {
                 return token == EOF;
             }
-            if (token.image.length() != image.length()) {
-                return false;
-            }
-            for (int i = 0; i < image.length(); i++) {
-                if (this.chars[i] != token.chars[i]) {
-                    return false;
-                }
-            }
-            return true;
+            return image.equals(token.image);
         }
         return false;
     }
@@ -67,17 +56,12 @@ public class TokenEntry implements Comparable {
     public int hashCode() {
         int h = hash;
         if (h == 0) {
-            if ( this == EOF ) {
-                h = -1;
-            } else {
-                for (int i = 0 ; i < image.length(); i++) {
-                    h = (37 * h + this.chars[i]);
-                }
-            }
+            h = image.hashCode();
             hash = h; // single assignment = thread safe hashcode.
         }
         return h;
     }
+    
     public int compareTo(Object o) {
         TokenEntry token = (TokenEntry)o;
         // try to use sort codes if available.
@@ -91,23 +75,6 @@ public class TokenEntry implements Comparable {
             return this.sortCode - token.sortCode;
         }
         // otherwise sort lexicographically
-        if (image.length() == token.image.length()) {
-            for (int i = 0; i < image.length() && i < token.image.length(); i++) {
-                char c1 = this.chars[i];
-                char c2 = token.chars[i];
-                if (c1 != c2) {
-                    return c1 - c2;
-                }
-            }
-            return 0;
-        }
-        for (int i = 0; i < image.length() && i < token.image.length(); i++) {
-            char c1 = this.chars[i];
-            char c2 = token.chars[i];
-            if (c1 != c2) {
-                return c1 - c2;
-            }
-        }
-        return image.length()  - token.image.length();
+        return image.compareTo(token.image);
     }
 }

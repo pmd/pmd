@@ -3,16 +3,14 @@
 */
 package net.sourceforge.pmd.cpd;
 
-public class Mark {
+public class Mark implements Comparable {
 
-    private int indexIntoFile;
     private int indexIntoTokenArray;
     private String tokenSrcID;
-    private int  beginLine;
+    private int beginLine;
 
-    public Mark(int offset, String tokenSrcID, int index, int beginLine) {
+    public Mark(int offset, String tokenSrcID, int beginLine) {
         this.indexIntoTokenArray = offset;
-        this.indexIntoFile = index;
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
     }
@@ -25,15 +23,17 @@ public class Mark {
         return this.tokenSrcID;
     }
 
-    public int getIndexIntoFile() {
-        return this.indexIntoFile;
-    }
-
     public int getIndexIntoTokenArray() {
         return indexIntoTokenArray;
     }
 
     public String toString() {
-        return "Mark:\r\nindexIntoFile = " + indexIntoFile + "\r\nindexIntoTokenArray = " + indexIntoTokenArray + "\r\nbeginLine = " + beginLine;
+        return "Mark:\r\nindexIntoTokenArray = " + indexIntoTokenArray + "\r\nbeginLine = " + beginLine;
     }
+
+    public int compareTo(Object o) {
+        Mark other = (Mark) o;
+        return getIndexIntoTokenArray() - other.getIndexIntoTokenArray();
+    }
+
 }

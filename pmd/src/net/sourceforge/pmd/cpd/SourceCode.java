@@ -22,7 +22,7 @@ public class SourceCode {
 
     public String getSlice(int startLine, int endLine) {
         StringBuffer sb = new StringBuffer();
-        for (int i = startLine; i <= endLine && i < code.size(); i++) {
+        for (int i = startLine - 1; i < endLine && i < code.size(); i++) {
             if (sb.length() != 0) {
                 sb.append(PMD.EOL);
             }

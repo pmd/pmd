@@ -20,8 +20,8 @@ public class SourceCodeTest extends TestCase {
         assertEquals("Foo.java", sourceCode.getFileName());
         tokenizer.tokenize(sourceCode, new Tokens(), new StringReader(code));
 
-        assertEquals(MatchAlgorithmTest.LINE_1, sourceCode.getSlice(0,0));
-        assertEquals(MatchAlgorithmTest.LINE_2, sourceCode.getSlice(1,1));
-        assertEquals(MatchAlgorithmTest.LINE_1 + PMD.EOL + MatchAlgorithmTest.LINE_2, sourceCode.getSlice(0,1));
+        assertEquals(MatchAlgorithmTest.LINE_1, sourceCode.getSlice(1,1));
+        assertEquals(MatchAlgorithmTest.LINE_2, sourceCode.getSlice(2,2));
+        assertEquals(MatchAlgorithmTest.LINE_1 + PMD.EOL + MatchAlgorithmTest.LINE_2, sourceCode.getSlice(1,2));
     }
 }

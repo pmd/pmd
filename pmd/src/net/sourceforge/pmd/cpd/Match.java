@@ -1,35 +1,62 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.cpd;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Match implements Comparable {
 
     private int tokenCount;
     private int lineCount;
-    private List marks = new ArrayList();
+    private Set markSet = new TreeSet();
+    private Mark[] marks = new Mark[2];
     private String code;
+    private MatchCode mc;
 
-    public Match(int tokenCount) {
-        this.tokenCount = tokenCount;
+    public static class MatchCode {
+
+        private int first;
+        private int second;
+
+        public MatchCode() {}
+
+        public MatchCode(Mark m1, Mark m2) {
+            first = m1.getIndexIntoTokenArray();
+            second = m2.getIndexIntoTokenArray();
+        }
+
+        public int hashCode() {
+            return first + 37 * second;
+        }
+
+        public boolean equals(Object other) {
+            MatchCode mc = (MatchCode) other;
+            return mc.first == first && mc.second == second;
+        }
+
+        public void setFirst(int first) {
+            this.first = first;
+        }
+
+        public void setSecond(int second) {
+            this.second = second;
+        }
+
     }
 
     public Match(int tokenCount, Mark first, Mark second) {
-        marks.add(first);
-        marks.add(second);
+        markSet.add(first);
+        markSet.add(second);
+        marks[0] = first;
+        marks[1] = second;
         this.tokenCount = tokenCount;
     }
 
-    public void add(Mark mark) {
-        marks.add(mark);
-    }
-
     public int getMarkCount() {
-        return this.marks.size();
+        return markSet.size();
     }
 
     public void setLineCount(int lineCount) {
@@ -53,15 +80,47 @@ public class Match implements Comparable {
     }
 
     public Iterator iterator() {
-        return marks.iterator();
+        return markSet.iterator();
     }
 
     public int compareTo(Object o) {
-        Match other = (Match)o;
-        return other.getTokenCount() - this.getTokenCount();
+        Match other = (Match) o;
+        int diff = other.getTokenCount() - getTokenCount();
+        if (diff != 0) {
+            return diff;
+        }
+        return other.getFirstMark().getIndexIntoTokenArray() - getFirstMark().getIndexIntoTokenArray();
+    }
+    
+    public Mark getFirstMark() {
+        return marks[0];
+    }
+    
+    public Mark getSecondMark() {
+        return marks[1];
     }
 
     public String toString() {
-        return "Match:\r\ntokenCount = " + tokenCount + "\r\nmark1 = " + marks.get(0) + "\r\nmark2 =" + marks.get(1);
+        return "Match:\r\ntokenCount = " + tokenCount + "\r\nmarks = " + markSet.size();
     }
+
+    public Set getMarkSet() {
+        return markSet;
+    }
+
+    public MatchCode getMatchCode() {
+        if (mc == null) {
+            mc = new MatchCode(marks[0], marks[1]);
+        }
+        return mc;
+    }
+    
+    public int getEndIndex() {
+        return marks[1].getIndexIntoTokenArray() + getTokenCount() -1;
+    }
+
+    public void setMarkSet(Set markSet) {
+        this.markSet = markSet;
+    }
+
 }

@@ -6,13 +6,9 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.LocalScope;
-import net.sourceforge.pmd.symboltable.MethodScope;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
 
 import java.text.MessageFormat;
 import java.util.Iterator;

@@ -28,10 +28,10 @@ public class Tokens {
     }
 
     public int getLineCount(Mark mark, Match match) {
-        TokenEntry endTok = get(mark.getIndexIntoTokenArray() + match.getTokenCount());
+        TokenEntry endTok = get(mark.getIndexIntoTokenArray() + match.getTokenCount() - 1);
         if (endTok.equals(TokenEntry.EOF)) {
-            endTok = get(mark.getIndexIntoTokenArray() + match.getTokenCount() - 1);
+            endTok = get(mark.getIndexIntoTokenArray() + match.getTokenCount() - 2);
         }
-        return endTok.getBeginLine() - mark.getBeginLine() - 1;
+        return endTok.getBeginLine() - mark.getBeginLine() + 1;
     }
 }

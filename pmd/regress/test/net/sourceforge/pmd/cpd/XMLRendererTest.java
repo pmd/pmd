@@ -30,7 +30,7 @@ public class XMLRendererTest extends TestCase
   {
     Renderer renderer = new XMLRenderer();
     List list = new ArrayList();
-    Match match = new Match(75, new Mark(1, "/var/Foo.java", 1, 48), new Mark(2, "/var/Foo.java", 2, 73));
+    Match match = new Match(75, new Mark(1, "/var/Foo.java", 48), new Mark(2, "/var/Foo.java", 73));
     match.setLineCount(6);
     match.setSourceCodeSlice("code fragment");
     list.add(match);
@@ -42,10 +42,10 @@ public class XMLRendererTest extends TestCase
   {
     Renderer renderer = new XMLRenderer();
     List list = new ArrayList();
-    Match match1 = new Match(75, new Mark(1, "/var/Foo.java", 1, 48), new Mark(2, "/var/Foo.java", 2, 73));
+    Match match1 = new Match(75, new Mark(1, "/var/Foo.java", 48), new Mark(2, "/var/Foo.java", 73));
     match1.setLineCount(6);
     match1.setSourceCodeSlice("code fragment");
-    Match match2 = new Match(76, new Mark(2, "/var/Foo2.java", 2, 49), new Mark(3, "/var/Foo2.java", 3, 74));
+    Match match2 = new Match(76, new Mark(2, "/var/Foo2.java", 49), new Mark(3, "/var/Foo2.java", 74));
     match2.setLineCount(7);
     match2.setSourceCodeSlice("code fragment 2");
     list.add(match1);

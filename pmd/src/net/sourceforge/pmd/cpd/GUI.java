@@ -21,13 +21,15 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class GUI implements CPDListener {
 
@@ -53,31 +55,35 @@ public class GUI implements CPDListener {
     }
 
     private class SaveListener implements ActionListener {
-        public void actionPerformed(ActionEvent evt){
-            FileDialog fdlg = new FileDialog(GUI.this.frame, "Save", FileDialog.SAVE);
-            fdlg.setVisible(true);
-            String selected = fdlg.getDirectory() + System.getProperty("file.separator") + fdlg.getFile();
-            if (fdlg.getFile() == null) {
+        public void actionPerformed(ActionEvent evt) {
+            int ret = fcSave.showSaveDialog(GUI.this.frame);
+            File f = fcSave.getSelectedFile();
+            if (f == null || ret != JFileChooser.APPROVE_OPTION) {
                 return;
             }
-            if(!new File(selected).canWrite()){
-                try{
-                    PrintWriter pw = new PrintWriter(new FileOutputStream(selected));
-                    String report = resultsTextArea.getText();
-                    pw.print(report);
+            if (!f.canWrite()) {
+                try {
+                    PrintWriter pw = new PrintWriter(new FileOutputStream(f));
+                    if (evt.getActionCommand().equals(".txt")) {
+                        pw.write(new SimpleRenderer().render(matches.iterator()));
+                    } else if (evt.getActionCommand().equals(".xml")) {
+                        pw.write(new XMLRenderer().render(matches.iterator()));
+                    } else if (evt.getActionCommand().equals(".csv")) {
+                        pw.write(new CSVRenderer().render(matches.iterator()));
+                    }
                     pw.flush();
                     pw.close();
                     JOptionPane.showMessageDialog(frame, "File saved");
-                }catch(IOException e){
-                    error("Couldn't save file"+new File(selected).getAbsolutePath(), e);
+                } catch (IOException e) {
+                    error("Couldn't save file" + f.getAbsolutePath(), e);
                 }
-            }else{
-                error("Could not write to file "+new File(selected).getAbsolutePath(), null);
+            } else {
+                error("Could not write to file " + f.getAbsolutePath(), null);
             }
         }
 
-        private void error(String message, Exception e){
-            if(e != null){
+        private void error(String message, Exception e) {
+            if (e != null) {
                 e.printStackTrace();
             }
             JOptionPane.showMessageDialog(GUI.this.frame, message);
@@ -104,8 +110,11 @@ public class GUI implements CPDListener {
     private JTextArea resultsTextArea = new JTextArea();
     private JCheckBox recurseCheckbox = new JCheckBox("", true);
     private JComboBox languageBox = new JComboBox();
+	private JFileChooser fcSave = new JFileChooser();
 
     private JFrame frame;
+
+    private List matches = new ArrayList();
 
     public GUI() {
         frame = new JFrame("PMD Cut and Paste Detector");
@@ -115,10 +124,20 @@ public class GUI implements CPDListener {
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
-        JMenuItem saveItem = new JMenuItem("Save");
+        JMenuItem saveItem = new JMenuItem("Save Text");
         saveItem.setMnemonic('s');
         saveItem.addActionListener(new SaveListener());
-        fileMenu.add(saveItem);        JMenuItem exitItem = new JMenuItem("Exit");
+        fileMenu.add(saveItem);
+        saveItem.setActionCommand(".txt");
+        saveItem = new JMenuItem("Save XML");
+        saveItem.addActionListener(new SaveListener());
+        fileMenu.add(saveItem);
+        saveItem.setActionCommand(".xml");
+        saveItem = new JMenuItem("Save CSV");
+        saveItem.setActionCommand(".csv");
+        saveItem.addActionListener(new SaveListener());
+        fileMenu.add(saveItem);
+        JMenuItem exitItem = new JMenuItem("Exit");
         exitItem.setMnemonic('x');
         exitItem.addActionListener(new CancelListener());
         fileMenu.add(exitItem);
@@ -154,7 +173,7 @@ public class GUI implements CPDListener {
 
     private JPanel makeSettingsPanel(JButton browseButton, JButton goButton, JButton cxButton) {
         JPanel settingsPanel = new JPanel();
-        GridBagHelper helper = new GridBagHelper(settingsPanel, new double[]{0.2, 0.7, 0.1, 0.1});
+        GridBagHelper helper = new GridBagHelper(settingsPanel, new double[] { 0.2, 0.7, 0.1, 0.1 });
         helper.addLabel("Root source directory:");
         helper.add(rootDirectoryField);
         helper.add(browseButton, 2);
@@ -179,7 +198,7 @@ public class GUI implements CPDListener {
 
     private JPanel makeProgressPanel() {
         JPanel progressPanel = new JPanel();
-        final double[] weights = {0.0, 0.8, 0.4, 0.2};
+        final double[] weights = { 0.0, 0.8, 0.4, 0.2 };
         GridBagHelper helper = new GridBagHelper(progressPanel, weights);
         helper.addLabel("Tokenizing files:");
         helper.add(tokenizingFilesBar, 3);
@@ -207,7 +226,11 @@ public class GUI implements CPDListener {
     private void go() {
         try {
             if (!(new File(rootDirectoryField.getText())).exists()) {
-                JOptionPane.showMessageDialog(frame, "Can't read from that root source directory", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                    frame,
+                    "Can't read from that root source directory",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -225,7 +248,11 @@ public class GUI implements CPDListener {
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             comparisonsField.setText("");
-            if (rootDirectoryField.getText().endsWith(".class") || rootDirectoryField.getText().endsWith(".php") || rootDirectoryField.getText().endsWith(".java") || rootDirectoryField.getText().endsWith(".cpp") || rootDirectoryField.getText().endsWith(".c")) {
+            if (rootDirectoryField.getText().endsWith(".class")
+                || rootDirectoryField.getText().endsWith(".php")
+                || rootDirectoryField.getText().endsWith(".java")
+                || rootDirectoryField.getText().endsWith(".cpp")
+                || rootDirectoryField.getText().endsWith(".c")) {
                 cpd.add(new File(rootDirectoryField.getText()));
             } else {
                 if (recurseCheckbox.isSelected()) {
@@ -243,7 +270,13 @@ public class GUI implements CPDListener {
                     long hours = (long) Math.floor(elapsedSeconds / 3600);
                     long minutes = (long) Math.floor((elapsedSeconds - (hours * 3600)) / 60);
                     long seconds = elapsedSeconds - ((minutes * 60) + (hours * 3600));
-                    timeField.setText("" + munge(String.valueOf(hours)) + ":" + munge(String.valueOf(minutes)) + ":" + munge(String.valueOf(seconds)));
+                    timeField.setText(
+                        ""
+                            + munge(String.valueOf(hours))
+                            + ":"
+                            + munge(String.valueOf(minutes))
+                            + ":"
+                            + munge(String.valueOf(seconds)));
                 }
                 private String munge(String in) {
                     if (in.length() < 2) {
@@ -256,9 +289,17 @@ public class GUI implements CPDListener {
             t.start();
             cpd.go();
             t.stop();
+            matches = new ArrayList();
+            for (Iterator i = cpd.getMatches(); i.hasNext();) {
+                Match m = (Match) i.next();
+                matches.add(m);
+            }
+
             String report = new SimpleRenderer().render(cpd.getMatches());
             if (report.length() == 0) {
-                JOptionPane.showMessageDialog(frame, "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
+                JOptionPane.showMessageDialog(
+                    frame,
+                    "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
             } else {
                 resultsTextArea.setText(report);
             }

@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.JavaTokenizer;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokenizer;
@@ -13,8 +14,6 @@ import java.io.StringReader;
 
 public class JavaTokensTokenizerTest extends TestCase {
 
-    private static final String EOL = System.getProperty("line.separator", "\n");
-
     public void test1() throws Throwable {
         Tokenizer tokenizer = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode("1");
@@ -22,16 +21,16 @@ public class JavaTokensTokenizerTest extends TestCase {
         Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens, new StringReader(data));
         assertEquals(6, tokens.size());
-        assertEquals("public class Foo {}", sourceCode.getSlice(0, 0));
+        assertEquals("public class Foo {}", sourceCode.getSlice(1, 1));
     }
 
     public void test2() throws Throwable {
         Tokenizer t = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode("1");
-        String data = "public class Foo {" + EOL + "public void bar() {}" + EOL + "public void buz() {}" + EOL + "}";
+        String data = "public class Foo {" + PMD.EOL + "public void bar() {}" + PMD.EOL + "public void buz() {}" + PMD.EOL + "}";
         Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens, new StringReader(data));
-        assertEquals("public class Foo {" + EOL + "public void bar() {}", sourceCode.getSlice(0, 1));
+        assertEquals("public class Foo {" + PMD.EOL + "public void bar() {}", sourceCode.getSlice(1,2));
     }
 
     public void testDiscardSemicolons() throws Throwable {
@@ -46,7 +45,7 @@ public class JavaTokensTokenizerTest extends TestCase {
     public void testDiscardImports() throws Throwable {
         Tokenizer t = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode("1");
-        String data = "import java.io.File;" + EOL + "public class Foo {}";
+        String data = "import java.io.File;" + PMD.EOL + "public class Foo {}";
         Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens, new StringReader(data));
         assertEquals(6, tokens.size());
@@ -55,7 +54,7 @@ public class JavaTokensTokenizerTest extends TestCase {
     public void testDiscardPkgStmts() throws Throwable {
         Tokenizer t = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode("1");
-        String data = "package foo.bar.baz;" + EOL + "public class Foo {}";
+        String data = "package foo.bar.baz;" + PMD.EOL + "public class Foo {}";
         Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens, new StringReader(data));
         assertEquals(6, tokens.size());
