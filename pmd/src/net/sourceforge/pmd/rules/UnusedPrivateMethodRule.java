@@ -23,16 +23,12 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     private boolean trollingForDeclarations;
     private int depth;
 
-    /**
-     * Skip interfaces because they have no implementation
-     */
+    // Skip interfaces because they have no implementation
     public Object visit(ASTInterfaceDeclaration node, Object data) {
         return data;
     }
 
-    /**
-     * Reset state when we leave an ASTCompilationUnit
-     */
+    // Reset state when we leave an ASTCompilationUnit
     public Object visit(ASTCompilationUnit node, Object data) {
         depth = 0;
         super.visit(node, data);
@@ -75,6 +71,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         if (!trollingForDeclarations) {
             return super.visit(node, data);
         }
+
         AccessNode parent = (AccessNode)node.jjtGetParent();
         if (!parent.isPrivate() || parent.isStatic()) {
             return super.visit(node, data);
