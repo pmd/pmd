@@ -47,6 +47,33 @@ public class JumbledIncrementerRule1 {
 }}]]>
     </example>
     </rule>
+		
+   <rule name="AvoidDeeplyNestedIfStmts"
+        message="Deeply nested if..then statements lead to madness"
+        class="net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule">
+    <description>
+    Deeply nested if..then statements lead to madness.
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo { 
+ public void bar() { 
+  int x=2; 
+  int y=3; 
+  int z=4; 
+  if (x>y) { 
+   if (y>z) { 
+    if (z==x) { 
+     // this is officially out of control now 
+    } 
+   } 
+  }
+ }
+} 
+]]>
+    </example>
+    </rule>		
 
   </ruleset>
 
