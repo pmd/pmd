@@ -33,6 +33,33 @@ These are new rules for the next release
        </example>
     </rule>
 
+    <rule name="EmptyFinalizer"
+          message="Avoid empty finalize methods"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       If the finalize() method is empty, then it does not need to exist.
+       </description>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+   //MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
+      /Block[count(*)=0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+       <example>
+<![CDATA[
+   public class Foo {
+       public void finalize() {
+       }
+   }
+]]>
+       </example>
+     </rule>
+
 </ruleset>
 
 
