@@ -1,4 +1,4 @@
 #!/bin/bash
 
-CLASSPATH=../:../build/:../lib/jaxen-core.jar:../lib/saxpath.jar:/usr/local/ant/lib/junit.jar
+CLASSPATH=../:../build/:../lib/jaxen-core-1.0-fcs.jar:../lib/saxpath-1.0-fcs.jar:/usr/local/ant/lib/junit.jar
 export CLASSPATH
