@@ -18,7 +18,7 @@ public class UnusedPrivateFieldRule extends AbstractRule {
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         for (Iterator i = node.getScope().getVariableDeclarations(false).keySet().iterator();i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
-            if (decl.getAccessNodeParent().isPrivate() && !decl.getImage().equals("serialVersionUID") && !decl.getImage().equals("serialPersistentFields")) {
+            if (decl.getAccessNodeParent().isPrivate() && !decl.getImage().equals("serialVersionUID") && !decl.getImage().equals("serialPersistentFields") && !decl.getImage().equals("IDENT")) {
                 RuleContext ctx = (RuleContext)data;
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[] {decl.getImage()})));
             }
