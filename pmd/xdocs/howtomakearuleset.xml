@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<document>
+<properties>
+    <author email="tomcopeland@users.sourceforge.net">Tom Copeland</author>
+    <title>How to make a rule set</title>
+</properties>
+<body>
+    <section name="How to make a new rule set">
+<p>
+Say you want to check for certain rules but not others.  You can do this by making your own rule set.
+</p>
+    <subsection name="Create a new ruleset.xml file">
+    </subsection>
+    <subsection name="Add some rule references to it">
+    </subsection>
+    <subsection name="Reference it your Ant task">
+    </subsection>
+    </section>
+</body>
+</document>
