@@ -7,8 +7,8 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,13 +40,10 @@ public class TooManyFields extends AbstractRule {
         if (l!=null && !l.isEmpty()) {
             for (Iterator it = l.iterator() ; it.hasNext() ; ) {
                 ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
-                Node p = fd.jjtGetParent();
-/*
-FIXME
-                if (!(p instanceof ASTInterfaceMemberDeclaration)) {
+                ASTClassOrInterfaceDeclaration p = (ASTClassOrInterfaceDeclaration)fd.jjtGetParent().jjtGetParent().jjtGetParent();
+                if (!p.isInterface()) {
                     processField(fd);
                 }
-*/
             }
         }
         for (Iterator it = stats.keySet().iterator() ; it.hasNext() ; ) {
@@ -65,24 +62,13 @@ FIXME
         return data;
     }
     
-/*
     private void processField(ASTFieldDeclaration fd) {
-        ASTNestedClassDeclaration nc = (ASTNestedClassDeclaration) fd.getFirstParentOfType(ASTNestedClassDeclaration.class);
-        if (nc!=null) {
-            addFieldCountFor((SimpleNode)nc.jjtGetChild(0));
-        } else {
-            ASTUnmodifiedClassDeclaration cd = (ASTUnmodifiedClassDeclaration) fd.getFirstParentOfType(ASTUnmodifiedClassDeclaration.class);
-            addFieldCountFor(cd);
-        }
-    }
-*/
-    
-    private void addFieldCountFor(SimpleNode nc) {
-        String key = nc.getImage();
+        ASTClassOrInterfaceDeclaration clazz = (ASTClassOrInterfaceDeclaration) fd.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        String key = clazz.getImage();
         if (!stats.containsKey(key)) {
             stats.put(key, new Integer(0));
-            nodes.put(key, nc);
-        } 
+            nodes.put(key, clazz);
+        }
         Integer i = new Integer(((Integer) stats.get(key)).intValue()+1);
         stats.put(key,i);
     }
