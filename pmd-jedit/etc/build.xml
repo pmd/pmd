@@ -5,7 +5,7 @@
 	<property name="lib" value="lib/"/>
 	<property name="build" value="build/"/>
 	<property name="pmdjar" value="pmd-1.04.jar"/>
-	<property name="pluginversion" value="1.4"/>
+	<property name="pluginversion" value="1.5"/>
 	<property name="jedit.install.dir"  value="/home/tom/jedit/4.1/jars"/>
 
 
