@@ -7,13 +7,18 @@ package net.sourceforge.pmd.jedit;
 
 import errorlist.DefaultErrorSource;
 import errorlist.ErrorSource;
-import net.sourceforge.pmd.cpd.*;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.FileFinder;
+import net.sourceforge.pmd.cpd.JavaLanguage;
+import net.sourceforge.pmd.cpd.Mark;
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.SimpleRenderer;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.EditPlugin;
 import org.gjt.sp.jedit.GUIUtilities;
@@ -26,14 +31,33 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.io.IOException;
 
 
 public class PMDJEditPlugin extends EditPlugin {
+
+/*
+    This is unused... do we need it? --Tom
+
+    public static class MatchInfo
+    {
+        public int lineno;
+        public String filename;
+
+        MatchInfo(int lineno, String filename) {
+            this.lineno = lineno;
+            this.filename = filename;
+        }
+
+        public String toString() {
+            return (filename+":"+lineno);
+        }
+    }
+*/
 
 	public static final String NAME = "PMD";
 	public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
@@ -304,33 +328,6 @@ public class PMDJEditPlugin extends EditPlugin {
 		dv.expandAll();
 	}//End of processDuplicates
 
-
-	static class MatchInfo
-	{
-		int lineno;
-		String filename;
-
-		MatchInfo(int lineno, String filename)
-		{
-			this.lineno = lineno;
-			this.filename = filename;
-		}
-
-		public int getLineno()
-		{
-			return lineno;
-		}
-
-		public String getFilename()
-		{
-			return filename;
-		}
-
-		public String toString()
-		{
-			return (filename+":"+lineno);
-		}
-	}
 
 	public CPDDuplicateCodeViewer getCPDDuplicateCodeViewer(View view)
 	{

@@ -1,22 +1,20 @@
 package net.sourceforge.pmd.jedit;
 
 //Imports
-import java.util.*;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.tree.*;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
-import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.Buffer;
-import org.gjt.sp.jedit.textarea.Selection;
-import java.awt.BorderLayout;
-import javax.swing.JScrollPane;
 import org.gjt.sp.jedit.View;
 import org.gjt.sp.jedit.io.VFSManager;
-import java.awt.Component;
-import javax.swing.JLabel;
-import javax.swing.JComponent;
+import org.gjt.sp.jedit.jEdit;
+import org.gjt.sp.jedit.textarea.Selection;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
+import java.util.Vector;
 //End of Imports
 
 /**
