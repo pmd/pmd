@@ -8,6 +8,9 @@ package net.sourceforge.pmd.util;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.RuleContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,10 +18,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.util.Iterator;
+
+import org.jaxen.BaseXPath;
+import org.jaxen.XPath;
+import org.jaxen.JaxenException;
 
 public class ASTViewer {
 
-    private class MyPrintStream extends PrintStream {
+    private static class MyPrintStream extends PrintStream {
 
         public MyPrintStream() {
             super(System.out);
@@ -54,9 +62,42 @@ public class ASTViewer {
         }
     }
 
+    private class XPathListener implements ActionListener {
+        public void actionPerformed(ActionEvent ae) {
+            StringReader sr = new StringReader(codeEditorPane.getText());
+            JavaParser parser = new JavaParser(sr);
+            try {
+                if (xpathQueryField.getText().length() == 0) {
+                    astArea.setText("XPath query field is empty");
+                    xpathQueryField.requestFocus();
+                    return;
+                }
+                XPath xpath = new BaseXPath(xpathQueryField.getText(), new DocumentNavigator());
+                ASTCompilationUnit c = parser.CompilationUnit();
+                StringBuffer sb = new StringBuffer();
+                for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
+                    SimpleNode node = (SimpleNode) iter.next();
+                    String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.')+1);
+                    String line = " at line " + String.valueOf(node.getBeginLine());
+                    sb.append(name).append(line).append(System.getProperty("line.separator"));
+                }
+                astArea.setText(sb.toString());
+                if (sb.length() == 0) {
+                    astArea.setText("No results returned " + System.currentTimeMillis());
+                }
+            } catch (ParseException pe) {
+                astArea.setText(pe.fillInStackTrace().getMessage());
+            } catch (JaxenException je) {
+                astArea.setText(je.fillInStackTrace().getMessage());
+            }
+            xpathQueryField.requestFocus();
+        }
+    }
+
     private JTextPane codeEditorPane = new JTextPane();
     private JTextArea astArea = new JTextArea();
     private JFrame frame = new JFrame("AST Viewer");
+    private JTextField xpathQueryField = new JTextField(40);
 
     public ASTViewer() {
         JSmartPanel codePanel = new JSmartPanel();
@@ -73,10 +114,18 @@ public class ASTViewer {
         showButton.setMnemonic('s');
         showButton.addActionListener(new ShowListener());
 
+        JPanel controlPanel = new JPanel();
+        controlPanel.add(xpathQueryField);
+        JButton xPathButton = new JButton("Run XPath query");
+        xPathButton.setMnemonic('r');
+        xPathButton.addActionListener(new XPathListener());
+        controlPanel.add(xPathButton);
+        controlPanel.add(showButton);
+
         frame.getContentPane().setLayout(new BorderLayout());
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, astPanel);
         frame.getContentPane().add(splitPane, BorderLayout.NORTH);
-        frame.getContentPane().add(showButton, BorderLayout.SOUTH);
+        frame.getContentPane().add(controlPanel, BorderLayout.SOUTH);
 
         frame.setSize(1000, 800);
         frame.setVisible(true);
@@ -92,24 +141,12 @@ public class ASTViewer {
 
     public class JSmartPanel extends JPanel {
 
-        private GridBagConstraints constraints;
+        private GridBagConstraints constraints = new GridBagConstraints();
 
-        /**
-         * Create a JPanel with a GridBagLayout layout
-         *
-         * @see java.awt.GridBagLayout
-         */
         public JSmartPanel() {
             super(new GridBagLayout());
-            constraints = new GridBagConstraints();
         }
 
-        /**
-         * Add a component to the layout
-         *
-         * @see java.awt.GridBagLayout
-         * @see java.awt.GridBagConstraints
-         */
         public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, double weightx, double weighty, int anchor, int fill, Insets insets) {
             constraints.gridx = gridx;
             constraints.gridy = gridy;
@@ -123,7 +160,6 @@ public class ASTViewer {
 
             add(comp, constraints);
         }
-
     }
 
 }
