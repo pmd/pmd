@@ -911,7 +911,10 @@ void MultiplicativeExpression() :
 void UnaryExpression() :
 {}
 {
-  ( "+" {jjtThis.setImage("+");jjtThis.setUnDiscardable();} | "-" {jjtThis.setImage("-");jjtThis.setUnDiscardable();} ) UnaryExpression() | PreIncrementExpression() | PreDecrementExpression() | UnaryExpressionNotPlusMinus()
+  ("+" {jjtThis.setImage("+");jjtThis.setUnDiscardable();} | "-" {jjtThis.setImage("-");jjtThis.setUnDiscardable();}) UnaryExpression()
+  | PreIncrementExpression()
+  | PreDecrementExpression()
+  | UnaryExpressionNotPlusMinus()
 }
 
 void PreIncrementExpression() :
@@ -1129,8 +1132,8 @@ void StatementExpression() :
   PreDecrementExpression()
 |
   PrimaryExpression()
-  [ "++"
-  | "--"
+  [ "++" {jjtThis.setImage("++");}
+  | "--" {jjtThis.setImage("--");}
   | AssignmentOperator() Expression()
   ]
 }
