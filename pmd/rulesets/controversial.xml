@@ -20,7 +20,7 @@ most people really dislike :-)
                 <value>
                     <![CDATA[
 //ConstructorDeclaration[1][position() = last()][@Public='true']
-  [not(FormalParameters/*)][not(BlockStatement)]
+  [not(FormalParameters/*)][not(BlockStatement)][not(NameList)]
                     ]]>
                 </value>
             </property>

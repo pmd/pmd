@@ -14,7 +14,7 @@ public class UnnecessaryConstructorRuleTest extends RuleTst {
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//ConstructorDeclaration[1][position() = last()][@Public='true'][not(FormalParameters/*)][not(BlockStatement)]");
+        rule.addProperty("xpath", "//ConstructorDeclaration[1][position() = last()][@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)]");
     }
 
     public void test1() throws Throwable {
@@ -31,5 +31,9 @@ public class UnnecessaryConstructorRuleTest extends RuleTst {
 
     public void testHasBody() throws Throwable {
         runTest("UnnecessaryConstructor4.java", 0, rule);
+    }
+
+    public void testHasExceptions() throws Throwable {
+        runTest("UnnecessaryConstructor5.java", 0, rule);
     }
 }
