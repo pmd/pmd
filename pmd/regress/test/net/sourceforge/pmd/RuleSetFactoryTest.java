@@ -76,10 +76,6 @@ public class RuleSetFactoryTest  extends TestCase {
                         "</rule>" + EOL +
                         "</ruleset>";
 
-    public RuleSetFactoryTest(String name) {
-        super(name);
-    }
-
     public void testRuleSetNotFound() {
         RuleSetFactory rsf = new RuleSetFactory();
         try {

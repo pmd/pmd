@@ -7,9 +7,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
 public class RuleViolationTest extends TestCase {
-    public RuleViolationTest(String name) {
-        super(name);
-    }
 
     public void testConstructor1() {
         Rule rule = new MockRule("name", "desc");
@@ -28,11 +25,6 @@ public class RuleViolationTest extends TestCase {
         assertEquals("description", r.getDescription());
     }
 
-    //
-    // Changed logic of Comparator so that rules in the same file
-    // get grouped together in the output report.
-    // DDP 7/11/2002
-    //
     public void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();

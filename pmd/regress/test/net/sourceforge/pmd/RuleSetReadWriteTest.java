@@ -34,17 +34,6 @@ public class RuleSetReadWriteTest extends TestCase
     /**
      ********************************************************************************
      *
-     * @param name
-     */
-    public RuleSetReadWriteTest(String name)
-    {
-        super(name);
-
-    }
-
-    /**
-     ********************************************************************************
-     *
      */
     public void testReadWrite()
     {
@@ -163,6 +152,6 @@ public class RuleSetReadWriteTest extends TestCase
      */
     public static void main(String[] args)
     {
-        (new RuleSetReadWriteTest("")).testReadWrite();
+        (new RuleSetReadWriteTest()).testReadWrite();
     }
 }

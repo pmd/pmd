@@ -10,10 +10,6 @@ import net.sourceforge.pmd.Symbol;
 
 public class SymbolTest extends TestCase {
 
-    public SymbolTest(String name) {
-        super(name);
-    }
-
     public void testBasic() {
         Symbol s = new Symbol("foo", 10);
         assertEquals(10, s.getLine());

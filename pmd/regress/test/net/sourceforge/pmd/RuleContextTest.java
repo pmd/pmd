@@ -11,9 +11,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.Renderer;
 
 public class RuleContextTest extends TestCase {
-    public RuleContextTest(String name) {
-        super(name);
-    }
 
     public void testReport() {
         RuleContext ctx = new RuleContext();

@@ -24,10 +24,6 @@ public class ReportTest extends TestCase implements ReportListener {
     private boolean violationSemaphore;
 	private boolean metricSemaphore;
 	
-    public ReportTest(String name) {
-        super(name);
-    }
-
     public void testBasic() {
         Report r = new Report();
         r.addRuleViolation(new RuleViolation(new MockRule(), 5, "foo"));

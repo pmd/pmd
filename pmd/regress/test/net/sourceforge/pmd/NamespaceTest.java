@@ -10,9 +10,6 @@ import net.sourceforge.pmd.Namespace;
 import net.sourceforge.pmd.SymbolTable;
 
 public class NamespaceTest extends TestCase{
-    public NamespaceTest(String name) {
-        super(name);
-    }
 
     public void testBasic() {
         Namespace nameSpace = new Namespace();

@@ -15,10 +15,6 @@ public class SymbolTableTest extends TestCase {
 
     private static final Symbol FOO = new Symbol("foo", 10);
 
-    public SymbolTableTest(String name) {
-        super(name);
-    }
-
     public void testAdd() {
         SymbolTable s = new SymbolTable();
         s.add(FOO);

@@ -1,4 +1,5 @@
 ???? 2002 - ???:
+Modified PMD to be built and used with JUnit 3.8.1 and Ant 1.5.
 
 September 12 2002 - 1.0rc2:
 Added new rules: JUnitSpellingRule, JUnitStaticSuiteRule, StringInstantiationRule

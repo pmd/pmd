@@ -21,10 +21,6 @@ public class RuleSetTest extends TestCase
     private String javaCode =
 	"public class Test { }";
 
-    public RuleSetTest( String name ) {
-	super( name );
-    }
-
     public void testConstructor() {
 	RuleSet IUT = new RuleSet();
     }

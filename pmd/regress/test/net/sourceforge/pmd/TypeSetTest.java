@@ -14,9 +14,6 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class TypeSetTest extends TestCase {
-    public TypeSetTest(String name) {
-        super(name);
-    }
 
     public void testASTCompilationUnitPackage() {
         TypeSet t = new TypeSet();
