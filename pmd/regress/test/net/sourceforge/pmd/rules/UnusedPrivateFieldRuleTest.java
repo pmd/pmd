@@ -14,31 +14,24 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "1", 1, rule),
-           new TestDescriptor(TEST2, "2", 0, rule),
-           new TestDescriptor(TEST3, "3", 1, rule),
-           new TestDescriptor(TEST4, "4", 0, rule),
-           new TestDescriptor(TEST5, "5", 0, rule),
-           new TestDescriptor(TEST6, "6", 0, rule),
-           new TestDescriptor(TEST7, "7", 0, rule),
-           new TestDescriptor(TEST8, "8", 1, rule),
-    // TODO
-    // test 9 defines the current behavior of this rule
-    // i.e., it doesn't check instance vars in inner classes
-    // when that's fixed, this test will break
-    // and we should replace the current test with the commented out test
-    // TODO
-           new TestDescriptor(TEST9, "9", 0, rule),
-           new TestDescriptor(TEST10, "10", 1, rule),
-           new TestDescriptor(TEST11, "11", 0, rule),
-           new TestDescriptor(TEST12, "12", 0, rule),
-           new TestDescriptor(TEST13, "13", 1, rule),
-           new TestDescriptor(TEST14, "14", 2, rule),
-           new TestDescriptor(TEST15, "15", 1, rule),
-           new TestDescriptor(TEST16, "16", 0, rule),
-           new TestDescriptor(TEST17, "17", 0, rule),
-           new TestDescriptor(TEST18, "18", 0, rule),
-           new TestDescriptor(TEST19, "19", 0, rule),
+           new TestDescriptor(TEST1, "simple unused private field", 1, rule),
+           new TestDescriptor(TEST2, "private field referenced in another field's initializer", 0, rule),
+           new TestDescriptor(TEST3, "private field with field of same name in anonymous inner class", 1, rule),
+           new TestDescriptor(TEST4, "field is used semantically before it's declared syntactically", 0, rule),
+           new TestDescriptor(TEST5, "private field referenced via 'this' modifier", 0, rule),
+           new TestDescriptor(TEST6, "private referenced by anonymous inner class", 0, rule),
+           new TestDescriptor(TEST7, "interface sanity test", 0, rule),
+           new TestDescriptor(TEST8, "unused private field in static inner class", 1, rule),
+           new TestDescriptor(TEST9, "private field referenced in nonstatic inner class", 0, rule),
+           new TestDescriptor(TEST10, "unused private static field", 1, rule),
+           new TestDescriptor(TEST11, "private static final referenced with qualifier", 0, rule),
+           new TestDescriptor(TEST12, "unused private field after class decl", 1, rule),
+           new TestDescriptor(TEST13, "two unused private fields in separate inner classes", 2, rule),
+           new TestDescriptor(TEST14, "method param shadows unused private field", 1, rule),
+           new TestDescriptor(TEST15, "private field referenced via 'this' not shadowed by param of same name", 0, rule),
+           new TestDescriptor(TEST16, "don't catch public fields", 0, rule),
+           new TestDescriptor(TEST17, "instantiate self and reference private field on other object", 0, rule),
+           new TestDescriptor(TEST18, "don't count Serialization fields as being unused", 0, rule),
        });
     }
     private static final String TEST1 =
@@ -72,7 +65,6 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST4 =
-    "// this catches the case where the variable is used semantically before it's declared syntactically" + CPD.EOL +
     "public class UnusedPrivateField4 {" + CPD.EOL +
     " public void bar() {" + CPD.EOL +
     "  foo[0] = 0;" + CPD.EOL +
@@ -132,60 +124,55 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST11 =
-    "public class UnusedPrivateField11 {" + CPD.EOL +
-    " private static String serialVersionUID=\"hey\";" + CPD.EOL +
+    "public class Foo {" + CPD.EOL +
+    " private static final int BAR = 2;" + CPD.EOL +
+    " int x = Foo.BAR;" + CPD.EOL +
     "}";
 
     private static final String TEST12 =
-    "public class UnusedPrivateField12 {" + CPD.EOL +
-    " private static final int BAR = 2;" + CPD.EOL +
-    " int x = UnusedPrivateField12.BAR;" + CPD.EOL +
-    "}";
-
-    private static final String TEST13 =
-    "public class UnusedPrivateField13 {" + CPD.EOL +
+    "public class Foo {" + CPD.EOL +
     " public class Foo {}" + CPD.EOL +
     " private int x;" + CPD.EOL +
     "}";
 
-    private static final String TEST14 =
-    "public class UnusedPrivateField14 {" + CPD.EOL +
+    private static final String TEST13 =
+    "public class Foo {" + CPD.EOL +
     " public class Foo {private int x;}" + CPD.EOL +
     " public class Bar {private int x;}" + CPD.EOL +
     "}";
 
-    private static final String TEST15 =
-    "public class UnusedPrivateField15 {" + CPD.EOL +
+    private static final String TEST14 =
+    "public class Foo {" + CPD.EOL +
     " private int value;" + CPD.EOL +
     " public int doSomething(int value) { " + CPD.EOL +
     "  return value + 1; " + CPD.EOL +
     " }" + CPD.EOL +
     "}";
 
-    private static final String TEST16 =
-    "public class UnusedPrivateField16 {" + CPD.EOL +
+    private static final String TEST15 =
+    "public class Foo {" + CPD.EOL +
     " private int x; " + CPD.EOL +
     " public UnusedPrivateField17(int x) {" + CPD.EOL +
     "  this.x=x;" + CPD.EOL +
     " }" + CPD.EOL +
     "}";
 
-    private static final String TEST17 =
-    "public class UnusedPrivateField17 {" + CPD.EOL +
+    private static final String TEST16 =
+    "public class Foo {" + CPD.EOL +
     " public static final String FOO = \"foo\";" + CPD.EOL +
     "}";
 
-    private static final String TEST18 =
-    "public class UnusedPrivateField18 {" + CPD.EOL +
+    private static final String TEST17 =
+    "public class Foo {" + CPD.EOL +
     " private int x;" + CPD.EOL +
     " public void foo() {" + CPD.EOL +
-    "  UnusedPrivateField19 u = new UnusedPrivateField19();  " + CPD.EOL +
-    "  u.x = 2;" + CPD.EOL +
+    "  Foo foo = new Foo();  " + CPD.EOL +
+    "  foo.x = 2;" + CPD.EOL +
     " }" + CPD.EOL +
     "}";
 
-    private static final String TEST19 =
-    "public class UnusedPrivateField19 {" + CPD.EOL +
+    private static final String TEST18 =
+    "public class Foo {" + CPD.EOL +
     " private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField(\"foo\", String.class)};" + CPD.EOL +
     "}";
 

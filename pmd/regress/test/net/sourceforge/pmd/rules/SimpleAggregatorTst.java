@@ -8,7 +8,7 @@ public class SimpleAggregatorTst extends RuleTst {
                 runTestFromString(tests[i].code, tests[i].numberOfProblemsExpected, tests[i].rule);
             } catch (Throwable t) {
                 t.printStackTrace();
-                throw new RuntimeException(tests[i].description + " test failed");
+                throw new RuntimeException("Test \"" + tests[i].description + "\" failed");
             }
         }
     }
