@@ -13,6 +13,8 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.reports.Report;
 import net.sourceforge.pmd.reports.ReportFactory;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSet;
 
 public class PMDTask extends Task {
 
@@ -57,7 +59,11 @@ public class PMDTask extends Task {
         }
 
         PMD pmd = new PMD();
+
         ReportFactory rf = new ReportFactory();
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream(ruleSetFile));
+
         RuleContext ctx = new RuleContext();
         ctx.setReport(rf.createReport(format));
 
@@ -70,7 +76,7 @@ public class PMDTask extends Task {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                     if (verbose) System.out.println(file.getAbsoluteFile());
                     ctx.setSourceCodeFilename(file.getAbsolutePath());
-                    pmd.processFile(file, ruleSetFile, ctx);
+                    pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (FileNotFoundException fnfe) {
                     throw new BuildException(fnfe);
                 }

@@ -42,17 +42,11 @@ public class PMD {
         }
 	}
 
-    public void processFile(File file, String ruleSetFile, RuleContext ctx) throws FileNotFoundException{
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        FileInputStream fis = new FileInputStream(ruleSetFile);
-        RuleSet rules = ruleSetFactory.createRuleSet(fis);
-        processFile(new FileInputStream(file), rules, ctx);
-    }
-
     public static void main(String[] args) {
         if (args.length != 3) {
             throw new RuntimeException("Please pass in a java source code filename, a report format, and a rule set file name");
         }
+
         String inputFileName = args[0];
         String reportFormat = args[1];
         String ruleSetFilename = args[2];
@@ -61,13 +55,18 @@ public class PMD {
         if (!inputFile.exists()) {
             throw new RuntimeException("File " + inputFileName + " doesn't exist");
         }
+
         PMD pmd = new PMD();
+
         ReportFactory rf = new ReportFactory();
         RuleContext ctx = new RuleContext();
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream(ruleSetFilename));
+
         ctx.setReport(rf.createReport(reportFormat));
         ctx.setSourceCodeFilename(inputFile.getAbsolutePath());
         try {
-            pmd.processFile(inputFile, ruleSetFilename, ctx);
+            pmd.processFile(new FileInputStream(inputFile), rules, ctx);
             System.out.println(ctx.getReport().render());
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
