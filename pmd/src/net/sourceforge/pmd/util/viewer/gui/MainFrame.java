@@ -28,6 +28,7 @@ public class MainFrame
     private XPathPanel xPathPanel;
     private JButton compileBtn;
     private JButton evalBtn;
+    private JLabel statusLbl;
 
     /**
      * constructs and shows the frame
@@ -69,10 +70,14 @@ public class MainFrame
         evalBtn.addActionListener(this);
         evalBtn.setEnabled(false);
 
+        statusLbl = new JLabel();
+        statusLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+        
         JPanel btnPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         btnPane.add(compileBtn);
         btnPane.add(evalBtn);
+        btnPane.add(statusLbl);
 
         getContentPane().add(btnPane, BorderLayout.SOUTH);
 
@@ -89,23 +94,41 @@ public class MainFrame
      */
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
-
+        long t0, t1;
         if (command.equals(COMPILE_ACTION)) {
             try {
+                t0 = System.currentTimeMillis();
                 model.commitSource(sourcePanel.getSourceCode());
+                t1 = System.currentTimeMillis();
+                setStatus(NLS.nls("MAIN.FRAME.COMPILATION.TOOK")+ " "+(t1-t0)+" ms"); 
             } catch (ParseException exc) {
+                setStatus(NLS.nls("MAIN.FRAME.COMPILATION.PROBLEM")+ " "+exc.toString());
                 new ParseExceptionHandler(this, exc);
-            }
+            } 
         } else if (command.equals(EVALUATE_ACTION)) {
             try {
+                t0 = System.currentTimeMillis();
                 model.evaluateXPathExpression(xPathPanel.getXPathExpression(), this);
+                t1 = System.currentTimeMillis();
+                setStatus(NLS.nls("MAIN.FRAME.EVALUATION.TOOK")+ " "+(t1-t0)+" ms");
             } catch (Exception exc) {
+                setStatus(NLS.nls("MAIN.FRAME.EVALUATION.PROBLEM")+ " "+exc.toString());
                 new ParseExceptionHandler(this, exc);
             }
         }
     }
 
     /**
+     * Sets the status bar message
+	 * @param string the new status, the empty string will be set if the value is <code>null</code>
+	 */
+	private void setStatus(String string) {
+        if (string == null)
+            string = "";
+        statusLbl.setText(string);		
+	}
+
+	/**
      * @see org.gruschko.pmd.viewer.model.ViewerModelListener#viewerModelChanged(org.gruschko.pmd.viewer.model.ViewerModelEvent)
      */
     public void viewerModelChanged(ViewerModelEvent e) {
@@ -116,6 +139,9 @@ public class MainFrame
 
 /*
  * $Log$
+ * Revision 1.5  2004/12/13 14:46:11  tomcopeland
+ * Applied, thanks Miguel!
+ *
  * Revision 1.4  2004/09/27 19:42:52  tomcopeland
  * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
  *

@@ -42,8 +42,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Elliotte Rusty Harold - , suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
-            <li>Miguel Griffa - Documentation page for Maven, SystemPrintln rule, patch to improve JUnitTestsShouldContainAsserts, new Maven pmd:dist-bin goal, LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
+            <li>Miguel Griffa - patch to add a status bar to Boris Gruschko's ASTViewer, documentation page for Maven, SystemPrintln rule, patch to improve JUnitTestsShouldContainAsserts, new Maven pmd:dist-bin goal, LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
+            <li>Elliotte Rusty Harold - suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
             <li>Olaf Heimburger - reported a possible NPE in ReportTree</li>
             <li>Ryan Gustafson - patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
