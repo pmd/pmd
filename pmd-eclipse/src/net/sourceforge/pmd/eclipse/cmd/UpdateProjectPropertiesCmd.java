@@ -36,6 +36,9 @@
 package net.sourceforge.pmd.eclipse.cmd;
 
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.model.ModelException;
+import net.sourceforge.pmd.eclipse.model.ModelFactory;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
@@ -49,6 +52,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/11/28 20:31:37  phherlin
+ * Continuing the refactoring experiment
+ *
  * Revision 1.1  2004/11/21 21:39:45  phherlin
  * Applying Command and CommandProcessor patterns
  *
@@ -61,7 +67,7 @@ public class UpdateProjectPropertiesCmd extends JobCommand {
     private RuleSet projectRuleSet;
     private boolean ruleSetStoredInProject;
     private boolean needRebuild;
-    private boolean ruleSetFileNotFound;
+    private boolean ruleSetFileExists;
     
     /**
      * Default constructor. Initializes command attributes
@@ -83,51 +89,30 @@ public class UpdateProjectPropertiesCmd extends JobCommand {
         if (this.projectRuleSet == null) throw new MandatoryInputParameterMissingException("projectRuleSet");
 
         this.getMonitor().beginTask("Updating project properties", 4);
-        UpdatePmdEnabledPropertyCmd pmdEnabledCmd = new UpdatePmdEnabledPropertyCmd();
         if (!this.getMonitor().isCanceled()) {
-            this.getMonitor().subTask("Updating PMD enabling state");
-            pmdEnabledCmd.setProject(this.project);
-            pmdEnabledCmd.setPmdEnabled(this.pmdEnabled);
-            pmdEnabledCmd.execute();
-            this.getMonitor().worked(1);
-        }
-        
-        UpdateProjectRuleSetCmd projectRuleSetCmd = new UpdateProjectRuleSetCmd();
-        if (!this.getMonitor().isCanceled()) {
-            this.getMonitor().subTask("Updating project rule set");
-            projectRuleSetCmd.setProject(this.project);
-            projectRuleSetCmd.setProjectRuleSet(this.projectRuleSet);
-            projectRuleSetCmd.execute();
-            this.getMonitor().worked(1);
-        }
-        
-        UpdateProjectWorkingSetCmd projectWorkingSetCmd = new UpdateProjectWorkingSetCmd();
-        if (!this.getMonitor().isCanceled()) {
-            this.getMonitor().subTask("Updating project working set");
-            projectWorkingSetCmd.setProject(this.project);
-            projectWorkingSetCmd.setProjectWorkingSet(this.projectWorkingSet);
-            projectWorkingSetCmd.execute();
-            this.getMonitor().worked(1);
-        }
-        
-        UpdateRuleSetStoredInProjectPropertyCmd ruleSetStoredInProjectCmd = new UpdateRuleSetStoredInProjectPropertyCmd();
-        if (!this.getMonitor().isCanceled()) {
-            this.getMonitor().subTask("Updating rule set location state");
-            ruleSetStoredInProjectCmd.setProject(this.project);
-            ruleSetStoredInProjectCmd.setRuleSetStoredInProject(this.ruleSetStoredInProject);
-            ruleSetStoredInProjectCmd.execute();
-            this.ruleSetFileNotFound = ruleSetStoredInProjectCmd.isRuleSetFileNotFound();
-            this.getMonitor().worked(1);
-        }
-        
-        if (!this.getMonitor().isCanceled()) {
-            this.needRebuild = ruleSetStoredInProjectCmd.isNeedRebuild();
-            if (this.pmdEnabled) {
-                if (!this.ruleSetStoredInProject) {
-                    this.needRebuild |= projectRuleSetCmd.isNeedRebuild();
-                }
-                this.needRebuild |= pmdEnabledCmd.isNeedRebuild();
-                this.needRebuild |= projectWorkingSetCmd.isNeedRebuild();
+            try {
+                ProjectPropertiesModel projectPropertyModel = ModelFactory.getFactory().getProperiesModelForProject(this.project);
+
+                this.getMonitor().subTask("Updating PMD enabling state");
+                projectPropertyModel.setPmdEnabled(this.pmdEnabled);
+                this.getMonitor().worked(1);
+      
+                this.getMonitor().subTask("Updating project rule set");
+                projectPropertyModel.setProjectRuleSet(this.projectRuleSet);
+                this.getMonitor().worked(1);
+
+                this.getMonitor().subTask("Updating project working set");
+                projectPropertyModel.setProjectWorkingSet(this.projectWorkingSet);
+                this.getMonitor().worked(1);
+
+                this.getMonitor().subTask("Updating rule set location state");
+                projectPropertyModel.setRuleSetStoredInProject(this.ruleSetStoredInProject);
+                this.getMonitor().worked(1);
+
+                this.needRebuild = projectPropertyModel.isNeedRebuild();
+                this.ruleSetFileExists = !projectPropertyModel.isRuleSetFileExist();
+            } catch (ModelException e) {
+                throw new CommandException(e.getMessage(), e);
             }
         }
 
@@ -174,13 +159,13 @@ public class UpdateProjectPropertiesCmd extends JobCommand {
      * @return Returns the needRebuild.
      */
     public boolean isNeedRebuild() {
-        return needRebuild;
+        return this.needRebuild;
     }
 
     /**
-     * @return Returns the ruleSetFileNotFound.
+     * @return Returns the ruleSetFileExists.
      */
-    public boolean isRuleSetFileNotFound() {
-        return ruleSetFileNotFound;
+    public boolean isRuleSetFileExists() {
+        return this.ruleSetFileExists;
     }
 }

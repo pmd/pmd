@@ -47,6 +47,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/11/28 20:31:37  phherlin
+ * Continuing the refactoring experiment
+ *
  * Revision 1.1  2004/11/21 21:39:45  phherlin
  * Applying Command and CommandProcessor patterns
  *
@@ -55,7 +58,7 @@ import org.eclipse.core.runtime.CoreException;
 public class UpdateRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
     private IProject project;
     private boolean ruleSetStoredInProject;
-    private boolean ruleSetFileNotFound;
+    private boolean ruleSetFileExists;
     private boolean needRebuild;
     
     /**
@@ -90,7 +93,7 @@ public class UpdateRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
             }
 
             IFile ruleSetFile = this.project.getFile(".ruleset");
-            this.ruleSetFileNotFound = !ruleSetFile.exists();
+            this.ruleSetFileExists = ruleSetFile.exists();
             
         } catch (CoreException e) {
             throw new CommandException(getMessage(MSGKEY_ERROR_CORE_EXCEPTION), e);
@@ -101,10 +104,10 @@ public class UpdateRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
     }
 
     /**
-     * @return Returns the ruleSetFileNotFound.
+     * @return Returns the ruleSetFileExists.
      */
-    public boolean isRuleSetFileNotFound() {
-        return ruleSetFileNotFound;
+    public boolean isRuleSetFileExists() {
+        return ruleSetFileExists;
     }
 
     /**

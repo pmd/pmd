@@ -75,6 +75,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.15  2004/11/28 20:31:38  phherlin
+ * Continuing the refactoring experiment
+ *
  * Revision 1.14  2004/11/21 21:38:43  phherlin
  * Continue applying MVC.
  *
@@ -132,7 +135,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.properties.PMDPropertyPage");
     private PMDPropertyPageController controller;
-    private PMDPropertyPageModel model;
+    private PMDPropertyPageBean model;
     private IProject project;
     private Button enablePMDButton;
     protected TableViewer availableRulesTableViewer;
@@ -156,7 +159,7 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
         log.info("PMD properties editing requested");
         this.project = (IProject) this.getElement().getAdapter(IProject.class);
         this.controller.setProject(this.project);
-        this.model = controller.getPropertyPageModel();
+        this.model = controller.getPropertyPageBean();
 
         Composite composite = null;
         noDefaultAndApplyButton();

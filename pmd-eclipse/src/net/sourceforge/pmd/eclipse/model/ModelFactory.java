@@ -1,5 +1,5 @@
 /*
- * Created on 20 nov. 2004
+ * Created on 24 nov. 2004
  *
  * Copyright (c) 2004, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,77 +33,55 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.properties;
+package net.sourceforge.pmd.eclipse.model;
 
-import net.sourceforge.pmd.RuleSet;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.ui.IWorkingSet;
+import org.eclipse.core.resources.IProject;
 
 /**
- * This class is a bean that hold the property page data.
- * It acts as the model in the MVC paradigm. 
+ * This class holds methods factory for plugin models
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2004/11/21 21:38:42  phherlin
- * Continue applying MVC.
+ * Revision 1.1  2004/11/28 20:31:38  phherlin
+ * Continuing the refactoring experiment
  *
  *
  */
-public class PMDPropertyPageModel {
-    private boolean pmdEnabled;
-    private IWorkingSet projectWorkingSet;
-    private RuleSet projectRuleSet;
-    private boolean ruleSetStoredInProject;
+public class ModelFactory {
+    private static final ModelFactory modelFactory = new ModelFactory();
+    private Map projectPropertiesModels = new HashMap();
+
+    /**
+     * Default private constructor. The ModelFactory is a singleton
+     */
+    public ModelFactory() {
+    }
     
     /**
-     * @return Returns the pmdEnabled.
+     * @return the default implementation
      */
-    public boolean isPmdEnabled() {
-        return pmdEnabled;
+    public static ModelFactory getFactory() {
+        return modelFactory;
     }
+    
     /**
-     * @param pmdEnabled The pmdEnabled to set.
+     * Method factory for ProjectPropertiesModels
+     * @param project the project for which properties are requested
+     * @return The PMD related properties for that project
      */
-    public void setPmdEnabled(boolean pmdEnabled) {
-        this.pmdEnabled = pmdEnabled;
+    public synchronized ProjectPropertiesModel getProperiesModelForProject(IProject project) {
+        ProjectPropertiesModel model = (ProjectPropertiesModel) this.projectPropertiesModels.get(project.getName());
+        if (model == null) {
+            model = new ProjectPropertiesModelImpl(project);
+            this.projectPropertiesModels.put(project.getName(), model);
+        }
+        
+        return model;
     }
-    /**
-     * @return Returns the projectRuleSet.
-     */
-    public RuleSet getProjectRuleSet() {
-        return projectRuleSet;
-    }
-    /**
-     * @param projectRuleSet The projectRuleSet to set.
-     */
-    public void setProjectRuleSet(RuleSet projectRuleSet) {
-        this.projectRuleSet = projectRuleSet;
-    }
-    /**
-     * @return Returns the ruleSetStoredInProject.
-     */
-    public boolean isRuleSetStoredInProject() {
-        return ruleSetStoredInProject;
-    }
-    /**
-     * @param ruleSetStoredInProject The ruleSetStoredInProject to set.
-     */
-    public void setRuleSetStoredInProject(boolean ruleSetStoredInProject) {
-        this.ruleSetStoredInProject = ruleSetStoredInProject;
-    }
-    /**
-     * @return Returns the projectWorkingSet.
-     */
-    public IWorkingSet getProjectWorkingSet() {
-        return projectWorkingSet;
-    }
-    /**
-     * @param projectWorkingSet The projectWorkingSet to set.
-     */
-    public void setProjectWorkingSet(IWorkingSet selectedWorkingSet) {
-        this.projectWorkingSet = selectedWorkingSet;
-    }
+
 }

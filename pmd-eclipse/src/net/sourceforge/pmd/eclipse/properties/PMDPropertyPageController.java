@@ -47,8 +47,10 @@ import net.sourceforge.pmd.eclipse.RuleSetWriter;
 import net.sourceforge.pmd.eclipse.WriterAbstractFactory;
 import net.sourceforge.pmd.eclipse.cmd.BuildProjectCommand;
 import net.sourceforge.pmd.eclipse.cmd.CommandException;
-import net.sourceforge.pmd.eclipse.cmd.QueryProjectPropertiesCmd;
 import net.sourceforge.pmd.eclipse.cmd.UpdateProjectPropertiesCmd;
+import net.sourceforge.pmd.eclipse.model.ModelException;
+import net.sourceforge.pmd.eclipse.model.ModelFactory;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +58,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbench;
@@ -72,6 +73,9 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2004/11/28 20:31:39  phherlin
+ * Continuing the refactoring experiment
+ *
  * Revision 1.2  2004/11/21 21:38:43  phherlin
  * Continue applying MVC.
  * Revision 1.1 2004/11/18 23:54:27
@@ -84,7 +88,8 @@ public class PMDPropertyPageController implements PMDConstants {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.properties.PMDPropertyPageController");
     private IProject project;
     private PMDPropertyPage propertyPage;
-    private PMDPropertyPageModel propertyPageModel;
+    private PMDPropertyPageBean propertyPageBean;
+    private ProjectPropertiesModel projectPropertiesModel;
 
     /**
      * Contructor
@@ -99,7 +104,7 @@ public class PMDPropertyPageController implements PMDConstants {
     /**
      * @return Returns the project.
      */
-    public IAdaptable getProject() {
+    public IProject getProject() {
         return this.project;
     }
 
@@ -116,28 +121,26 @@ public class PMDPropertyPageController implements PMDConstants {
     }
 
     /**
-     * @return Returns the propertyPageModel.
+     * @return Returns the propertyPageBean.
      */
-    public PMDPropertyPageModel getPropertyPageModel() {
+    public PMDPropertyPageBean getPropertyPageBean() {
         // assert ((this.project != null) && (this.project.isAccessible()))
 
-        if (propertyPageModel == null) {
+        if (this.propertyPageBean == null) {
             try {
-                QueryProjectPropertiesCmd cmd = new QueryProjectPropertiesCmd();
-                cmd.setProject(this.project);
-                cmd.performExecute();
+                this.projectPropertiesModel = ModelFactory.getFactory().getProperiesModelForProject(this.project);
 
-                propertyPageModel = new PMDPropertyPageModel();
-                propertyPageModel.setPmdEnabled(cmd.isPMDEnabled());
-                propertyPageModel.setProjectWorkingSet(cmd.getProjectWorkingSet());
-                propertyPageModel.setProjectRuleSet(cmd.getProjectRuleSet());
-                propertyPageModel.setRuleSetStoredInProject(cmd.isRuleSetStoredInProject());
-            } catch (CommandException e) {
+                this.propertyPageBean = new PMDPropertyPageBean();
+                this.propertyPageBean.setPmdEnabled(this.projectPropertiesModel.isPmdEnabled());
+                this.propertyPageBean.setProjectWorkingSet(this.projectPropertiesModel.getProjectWorkingSet());
+                this.propertyPageBean.setProjectRuleSet(this.projectPropertiesModel.getProjectRuleSet());
+                this.propertyPageBean.setRuleSetStoredInProject(this.projectPropertiesModel.isRuleSetStoredInProject());
+            } catch (ModelException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
             }
         }
 
-        return propertyPageModel;
+        return this.propertyPageBean;
     }
 
     /**
@@ -158,17 +161,17 @@ public class PMDPropertyPageController implements PMDConstants {
         try {
             // first check whether the project ruleset file exists if user has
             // choosen this option
-            if ((this.propertyPageModel.isPmdEnabled()) && (this.propertyPageModel.isRuleSetStoredInProject())) {
+            if ((this.propertyPageBean.isPmdEnabled()) && (this.propertyPageBean.isRuleSetStoredInProject())) {
                 this.checkProjectRuleSetFile();
             }
             
             // Then updates the project properties
             UpdateProjectPropertiesCmd cmd = new UpdateProjectPropertiesCmd();
             cmd.setProject(this.project);
-            cmd.setPmdEnabled(this.propertyPageModel.isPmdEnabled());
-            cmd.setProjectWorkingSet(this.propertyPageModel.getProjectWorkingSet());
-            cmd.setProjectRuleSet(this.propertyPageModel.getProjectRuleSet());
-            cmd.setRuleSetStoredInProject(this.propertyPageModel.isRuleSetStoredInProject());
+            cmd.setPmdEnabled(this.propertyPageBean.isPmdEnabled());
+            cmd.setProjectWorkingSet(this.propertyPageBean.getProjectWorkingSet());
+            cmd.setProjectRuleSet(this.propertyPageBean.getProjectRuleSet());
+            cmd.setRuleSetStoredInProject(this.propertyPageBean.isRuleSetStoredInProject());
             cmd.performExecute();
 
             // If rebuild is needed, then rebuild the project
@@ -240,7 +243,7 @@ public class PMDPropertyPageController implements PMDConstants {
         if (!ruleSetFile.exists()) {
             if (MessageDialog.openQuestion(this.propertyPage.getShell(), this.getMessage(MSGKEY_QUESTION_TITLE),
                     this.getMessage(MSGKEY_QUESTION_CREATE_RULESET_FILE))) {
-                RuleSet ruleSet = this.propertyPageModel.getProjectRuleSet();
+                RuleSet ruleSet = this.propertyPageBean.getProjectRuleSet();
                 ruleSet.setName("Project rulset");
                 ruleSet.setDescription("Generated by PMD Plugin for Eclipse");
                 try {

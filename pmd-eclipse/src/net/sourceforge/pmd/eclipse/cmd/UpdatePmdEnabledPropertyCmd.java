@@ -51,6 +51,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/11/28 20:31:37  phherlin
+ * Continuing the refactoring experiment
+ *
  * Revision 1.1  2004/11/21 21:39:45  phherlin
  * Applying Command and CommandProcessor patterns
  *
@@ -104,7 +107,7 @@ public class UpdatePmdEnabledPropertyCmd extends DefaultCommand {
      * @return Returns the needRebuild.
      */
     public boolean isNeedRebuild() {
-        return needRebuild;
+        return this.needRebuild;
     }
     
     /**

@@ -1,5 +1,5 @@
 /*
- * Created on 21 nov. 2004
+ * Created on 24 nov. 2004
  *
  * Copyright (c) 2004, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,66 +33,48 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.cmd;
-
-import net.sourceforge.pmd.eclipse.model.ModelFactory;
-import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+package net.sourceforge.pmd.eclipse.model;
 
 /**
- * Rebuild a project to force PMD to be run on that project.
+ * This is the default exception thrown by public model method
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2004/11/28 20:31:37  phherlin
+ * Revision 1.1  2004/11/28 20:31:38  phherlin
  * Continuing the refactoring experiment
- *
- * Revision 1.1  2004/11/21 21:39:45  phherlin
- * Applying Command and CommandProcessor patterns
  *
  *
  */
-public class BuildProjectCommand extends JobCommand {
-    private IProject project;
+public class ModelException extends Exception {
 
     /**
-     * @param name
+     * Default constructor
      */
-    public BuildProjectCommand() {
-        super("Building project");
-        setReadOnly(false);
-        setOutputData(false);
-        setName("BuildProject");
-        setDescription("Rebuild a project.");
+    public ModelException() {
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.cmd.JobCommand#execute()
+     * @param message a message for the exception
      */
-    protected IStatus execute() throws CommandException {
-        try {
-            this.project.build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
-            
-            ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
-            model.setNeedRebuild(false);
-        } catch (CoreException e) {
-            throw new CommandException(e);
-        }
-        
-        return this.getMonitor().isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
+    public ModelException(String message) {
+        super(message);
     }
 
     /**
-     * @param project The project to set.
+     * @param message a message for the exception
+     * @param cause a root cause
      */
-    public void setProject(IProject project) {
-        this.project = project;
+    public ModelException(String message, Throwable cause) {
+        super(message, cause);
     }
+
+    /**
+     * @param cause a root cause
+     */
+    public ModelException(Throwable cause) {
+        super(cause);
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Created on 21 nov. 2004
+ * Created on 20 nov. 2004
  *
  * Copyright (c) 2004, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,66 +33,80 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.cmd;
+package net.sourceforge.pmd.eclipse.properties;
 
-import net.sourceforge.pmd.eclipse.model.ModelFactory;
-import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
+import net.sourceforge.pmd.RuleSet;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.IWorkingSet;
 
 /**
- * Rebuild a project to force PMD to be run on that project.
+ * This class is a bean that hold the property page data.
+ * It acts as the model in the MVC paradigm. 
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2004/11/28 20:31:37  phherlin
+ * Revision 1.1  2004/11/28 20:31:38  phherlin
  * Continuing the refactoring experiment
  *
- * Revision 1.1  2004/11/21 21:39:45  phherlin
- * Applying Command and CommandProcessor patterns
+ * Revision 1.1  2004/11/21 21:38:42  phherlin
+ * Continue applying MVC.
  *
  *
  */
-public class BuildProjectCommand extends JobCommand {
-    private IProject project;
-
+public class PMDPropertyPageBean {
+    private boolean pmdEnabled;
+    private IWorkingSet projectWorkingSet;
+    private RuleSet projectRuleSet;
+    private boolean ruleSetStoredInProject;
+    
     /**
-     * @param name
+     * @return Returns the pmdEnabled.
      */
-    public BuildProjectCommand() {
-        super("Building project");
-        setReadOnly(false);
-        setOutputData(false);
-        setName("BuildProject");
-        setDescription("Rebuild a project.");
+    public boolean isPmdEnabled() {
+        return pmdEnabled;
     }
-
     /**
-     * @see net.sourceforge.pmd.eclipse.cmd.JobCommand#execute()
+     * @param pmdEnabled The pmdEnabled to set.
      */
-    protected IStatus execute() throws CommandException {
-        try {
-            this.project.build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
-            
-            ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
-            model.setNeedRebuild(false);
-        } catch (CoreException e) {
-            throw new CommandException(e);
-        }
-        
-        return this.getMonitor().isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
+    public void setPmdEnabled(boolean pmdEnabled) {
+        this.pmdEnabled = pmdEnabled;
     }
-
     /**
-     * @param project The project to set.
+     * @return Returns the projectRuleSet.
      */
-    public void setProject(IProject project) {
-        this.project = project;
+    public RuleSet getProjectRuleSet() {
+        return projectRuleSet;
+    }
+    /**
+     * @param projectRuleSet The projectRuleSet to set.
+     */
+    public void setProjectRuleSet(RuleSet projectRuleSet) {
+        this.projectRuleSet = projectRuleSet;
+    }
+    /**
+     * @return Returns the ruleSetStoredInProject.
+     */
+    public boolean isRuleSetStoredInProject() {
+        return ruleSetStoredInProject;
+    }
+    /**
+     * @param ruleSetStoredInProject The ruleSetStoredInProject to set.
+     */
+    public void setRuleSetStoredInProject(boolean ruleSetStoredInProject) {
+        this.ruleSetStoredInProject = ruleSetStoredInProject;
+    }
+    /**
+     * @return Returns the projectWorkingSet.
+     */
+    public IWorkingSet getProjectWorkingSet() {
+        return projectWorkingSet;
+    }
+    /**
+     * @param projectWorkingSet The projectWorkingSet to set.
+     */
+    public void setProjectWorkingSet(IWorkingSet selectedWorkingSet) {
+        this.projectWorkingSet = selectedWorkingSet;
     }
 }
