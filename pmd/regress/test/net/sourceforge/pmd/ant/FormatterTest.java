@@ -27,6 +27,7 @@ public class FormatterTest extends TestCase {
         assertTrue(f.getRenderer() instanceof HTMLRenderer);
         try {
             f.setType("FAIL");
+            f.getRenderer();
             throw new RuntimeException("Should have failed!");
         } catch (BuildException be) {
             // cool

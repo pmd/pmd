@@ -12,6 +12,16 @@ import java.util.Iterator;
 
 public class HTMLRenderer implements Renderer {
 
+    private String linkPrefix;
+
+    public HTMLRenderer(String linkPrefix) {
+        this.linkPrefix = linkPrefix;
+    }
+
+    public HTMLRenderer() {
+        this(null);
+    }
+
     public String render(Report report) {
         StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + PMD.EOL + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
         buf.append(renderBody(report));
@@ -34,7 +44,7 @@ public class HTMLRenderer implements Renderer {
             }
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
-            buf.append("<td width=\"*%\">" + rv.getFilename() + "</td>" + PMD.EOL);
+            buf.append("<td width=\"*%\">" + maybeWrap(rv.getFilename(), Integer.toString(rv.getLine())) + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getLine()) + "</td>" + PMD.EOL);
 
             String d = rv.getDescription();
@@ -48,5 +58,13 @@ public class HTMLRenderer implements Renderer {
             violationCount++;
         }
         return buf.toString();
+    }
+
+    private String maybeWrap(String filename, String line) {
+        if (linkPrefix == null) {
+            return filename;
+        }
+        String newFileName = filename.substring(0, filename.indexOf(".java")) + ".html";
+        return "<a href=\"" + linkPrefix + newFileName + "#" + line + "\">" + newFileName + "</a>";
     }
 }

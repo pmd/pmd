@@ -47,11 +47,6 @@ public class PMDTask extends Task {
     private boolean targetJDK13;
     private String failuresPropertyName;
 
-    /**
-     * The end of line string for this machine.
-     */
-    protected String EOL = System.getProperty("line.separator", "\n");
-
     public void setShortFilenames(boolean value) {
         this.shortFilenames = value;
     }
@@ -172,7 +167,7 @@ public class PMDTask extends Task {
             for (Iterator i = formatters.iterator(); i.hasNext();) {
                 Formatter formatter = (Formatter) i.next();
                 log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-                String buffer = formatter.getRenderer().render(ctx.getReport()) + EOL;
+                String buffer = formatter.getRenderer().render(ctx.getReport()) + PMD.EOL;
                 try {
                     Writer writer = formatter.getToFileWriter(getProject().getBaseDir().toString());
                     writer.write(buffer, 0, buffer.length());

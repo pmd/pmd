@@ -21,7 +21,7 @@
   </tr>
   <tr>
     <td valign="top">formatter</td>
-    <td valign="top">Specifies the format of and the files to which the report is written.   Formats can be of type 'xml', 'text', 'csv', 'papari', 'summaryhtml', or 'html', and filenames can be either relative or absolute.  See example belows.</td>
+    <td valign="top">Specifies the format of and the files to which the report is written.   Formats can be of type 'xml', 'text', 'csv', 'papari', 'summaryhtml', or 'html', filenames can be either relative or absolute, and you can supply a "linkPrefix" for linking to online HTMLized source (like <a href="http://pmd.sourceforge.net/xref/index.html">this</a>).  See example belows.</td>
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>
@@ -181,6 +181,21 @@ pmd:
 BUILD SUCCESSFUL
 Total time: 2 seconds
 [tom@hal etc]$
+]]>
+</source>
+
+<p>An HTML report with the "linkPrefix" gizmo</p>
+<source>
+<![CDATA[
+<target name="pmd">
+  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+  <pmd rulesetfiles="rulesets/imports.xml" shortFilenames="true">
+      <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+      <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
+          <include name="java/lang/*.java"/>
+      </fileset>
+  </pmd>
+</target>
 ]]>
 </source>
 

@@ -20,14 +20,28 @@ import java.io.Writer;
 
 public class Formatter {
 
-    private Renderer renderer;
     private File toFile;
+    private String linkPrefix;
+    private String type;
 
     public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setLinkPrefix(String linkPrefix) {
+        this.linkPrefix = linkPrefix;
+    }
+
+    public void setToFile(File toFile) {
+        this.toFile = toFile;
+    }
+
+    public Renderer getRenderer() {
+        Renderer renderer;
         if (type.equals("xml")) {
             renderer = new XMLRenderer();
         } else if (type.equals("html")) {
-            renderer = new HTMLRenderer();
+            renderer = new HTMLRenderer(linkPrefix);
         } else if (type.equals("summaryhtml")) {
             renderer = new SummaryHTMLRenderer();
         } else if (type.equals("papari")) {
@@ -45,13 +59,6 @@ public class Formatter {
         } else {
             throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'summaryhtml', 'papari', 'csv', or a class name; you specified " + type);
         }
-    }
-
-    public void setToFile(File toFile) {
-        this.toFile = toFile;
-    }
-
-    public Renderer getRenderer() {
         return renderer;
     }
 
@@ -67,6 +74,6 @@ public class Formatter {
     }
 
     public String toString() {
-        return "file = " + toFile + "; renderer = " + renderer.getClass().getName();
+        return "file = " + toFile + "; renderer = " + type;
     }
 }
