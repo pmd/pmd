@@ -39,6 +39,7 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST18, "don't count Serialization fields as being unused", 0, rule),
            new TestDescriptor(TEST19, "an assignment does not a usage make", 1, rule),
            new TestDescriptor(TEST20, "assignment to field member is a usage", 0, rule),
+           new TestDescriptor(TEST21, "assignment to field member using this modifier is a usage", 0, rule),
        });
     }
     private static final String TEST1 =
@@ -192,6 +193,14 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
     " private Foo x = new Foo();" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  x.y = 42;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST21 =
+    "public class Foo {" + PMD.EOL +
+    " private Foo x = new Foo();" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  this.x.y = 42;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
