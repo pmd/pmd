@@ -87,8 +87,11 @@ class Job
    	count = count == 0 ? 0 : (count/4).to_i
 		return count
 	end
+	def pctg
+		sprintf("%.2f", (pmd_lines.to_f/(ncss == 0 ? 1 : ncss.to_i))*100)
+	end
 	def to_s
-		return @location + ":" + @title + ":" + @unix_name +":"+@mod+":"+@src
+		@location + ":" + @title + ":" + @unix_name +":"+@mod+":"+@src
 	end
 end
 
@@ -122,7 +125,8 @@ if __FILE__ == $0
 			"title"=>fm["title.frag", {"file"=>j.reportFile, "title"=>j.title}],
 			"homepage"=>fm["homepage.frag", {"name"=>j.unix_name}],
 			"ncss"=>j.ncss, 
-			"pmd"=>j.pmd_lines.to_s
+			"pmd"=>j.pmd_lines.to_s,
+			"pctg"=>j.pctg.to_s
 		}]	
 	}
 	File.open("index.html", "w") {|f| f.syswrite(out)}
