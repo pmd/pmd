@@ -15,6 +15,8 @@ public class MockRule implements Rule {
     private String name;
     private String desc;
 
+    public MockRule() {}
+
     public MockRule(String name, String desc) {
         this.name = name;
         this.desc = desc;
