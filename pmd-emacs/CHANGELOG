@@ -1,9 +1,10 @@
-Version 0.2 -
+???? - 0.3:
+Checked in alternate plugin thx to Jason Rumney.
 
+1/16/03 - 0.2:
 Completely rewritten by John Russell.
 
-Version 0.1 -
-
+6/6/02 - 0.1:
 First version of PMD for Emacs
 
 Defined one function "pmd-current-buffer" which will
