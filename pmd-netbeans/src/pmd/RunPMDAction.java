@@ -176,7 +176,7 @@ public class RunPMDAction extends CookieAction {
 			}
 			DataObject dataobject = ( DataObject )dataobjects.get( i );
 			FileObject fobj = dataobject.getPrimaryFile();
-			String name = ClassPath.getClassPath( fobj, ClassPath.COMPILE ).getResourceName( fobj, '.', false );
+			String name = ClassPath.getClassPath( fobj, ClassPath.SOURCE ).getResourceName( fobj, '.', false );
 			
 			//The file is not a java file
 			if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
