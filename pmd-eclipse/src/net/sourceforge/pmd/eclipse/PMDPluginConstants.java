@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.QualifiedName;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/01/16 22:52:17  phherlin
+ * Upgrade to PMD 2.1: add new packaged rulesets
+ *
  * Revision 1.1  2004/06/29 22:00:30  phherlin
  * Adapting the plugin to the new OSGi standards
  *
@@ -16,10 +19,23 @@ import org.eclipse.core.runtime.QualifiedName;
 public interface PMDPluginConstants {
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse";
 
-    public static final String[] RULESET_ALLPMD = {"rulesets/basic.xml", "rulesets/braces.xml", "rulesets/codesize.xml",
-            "rulesets/controversial.xml", "rulesets/coupling.xml", "rulesets/design.xml", "rulesets/finalizers.xml",
-            "rulesets/imports.xml", "rulesets/javabeans.xml", "rulesets/junit.xml", "rulesets/naming.xml",
-            "rulesets/scratchpad.xml", "rulesets/strictexception.xml", "rulesets/strings.xml", "rulesets/unusedcode.xml"};
+    public static final String[] RULESET_ALLPMD = {
+            "rulesets/basic.xml", 
+            "rulesets/braces.xml", 
+            "rulesets/clone.xml",
+            "rulesets/codesize.xml",
+            "rulesets/controversial.xml", 
+            "rulesets/coupling.xml", 
+            "rulesets/design.xml", 
+            "rulesets/finalizers.xml",
+            "rulesets/imports.xml",
+            "rulesets/javabeans.xml",
+            "rulesets/junit.xml",
+            "rulesets/logging-java.xml",
+            "rulesets/naming.xml",
+            "rulesets/strictexception.xml",
+            "rulesets/strings.xml",
+            "rulesets/unusedcode.xml"};
 
     public static final String[] RULESET_DEFAULTLIST = RULESET_ALLPMD;
     public static final String RULESET_PREFERENCE = PLUGIN_ID + ".ruleset";
