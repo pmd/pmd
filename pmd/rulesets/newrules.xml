@@ -260,5 +260,40 @@ switch(status) {
       </example>
     </rule>
     
+    
+    <rule name="UseNotifyAllInsteadOfNotify"
+          message="avoid calling notify() prefer instead notifyAll()"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
+      one is choosen. In this case, the choice is arbitrary and occurs at the discretion of the implementation
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix
+[
+./Name[
+	@Image='notify'
+	or ends-with(@Image,'.notify')
+	]
+or @Image='notify'
+or (  ./AllocationExpression 
+    and ../PrimarySuffix[@Image='notify'] )
+]   
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+
+]]>
+      </example>
+    </rule>
+    
 </ruleset>
 
