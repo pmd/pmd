@@ -16,8 +16,7 @@ import net.sourceforge.pmd.RuleContext;
 public abstract class StatisticalRule extends AbstractRule {
 	public static double DELTA = 0.000005; // Within this range. . .
 	
-    private SortedSet dataPoints =
-		new TreeSet();
+    private SortedSet dataPoints = new TreeSet();
 
     private int count = 0;
     private double total = 0.0;
@@ -32,7 +31,7 @@ public abstract class StatisticalRule extends AbstractRule {
     }
     
     public void apply( List acus, RuleContext ctx ) {
-		visitAll( acus, ctx );
+        visitAll( acus, ctx );
 
 		double deviation = 0.0;
 		double minimum = 0.0;
@@ -70,8 +69,7 @@ public abstract class StatisticalRule extends AbstractRule {
             high = ((DataPoint) dataPoints.last()).getScore();
         }
 
-		ctx.getReport().addMetric( new Metric( this.getName(), low, high,
-		                                       getMean(), getStdDev()));
+		ctx.getReport().addMetric( new Metric( this.getName(), low, high, getMean(), getStdDev()));
     }
 
     protected double getMean() {
