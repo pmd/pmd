@@ -33,7 +33,7 @@
       <td>pmd-jedit</td>
       <td>0.5</td>
       <td>tomcopeland</td>
-      <td><a href="https://sourceforge.net/project/showfiles.php?group_id=56262&release_id=101112">X</a></td></tr>
+      <td><a href="https://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=101112">X</a></td></tr>
   <tr><td>Maven</td>
       <td>pmd-maven</td>
       <td>N/A</td>
