@@ -183,13 +183,13 @@
     </dependency>
 
       <dependency>
-        <id>jaxen-core</id>
-        <version>1.0-fcs</version>
+        <id>jaxen</id>
+        <version>1.0-FCS-full</version>
       </dependency>
 
       <dependency>
         <id>saxpath</id>
-        <version>1.0-fcs</version>
+        <version>1.0-FCS</version>
       </dependency>
 
   </dependencies>
