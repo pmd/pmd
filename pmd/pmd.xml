@@ -80,7 +80,7 @@ will update documents on the Build Site.
   </target>  
 
 <!-- Documentation Chores -->
-  <target name="pre-docs" depends="rule-docs,run-pmd,pmd-docs" />
+  <target name="pre-docs" depends="rule-docs,run-pmd,run-jdk,pmd-docs" />
   <target name="post-docs" depends="move-php" />
 
   <target name="rule-docs" depends="load-tasks">
@@ -127,6 +127,21 @@ will update documents on the Build Site.
          format="xml"
          failonerror="no">
       <fileset dir="${maven.src.dir}">
+        <include name="**/*.java" />
+      </fileset>
+    </pmd>
+  </target>
+
+  <target name="run-jdk" 
+          depends="load-tasks"
+          if="jdk14.src">
+    <mkdir dir="${maven.pmd.reportsDirectory}" />
+    <pmd reportFile="${maven.pmd.reportsDirectory}/jdk-1.4.xml"
+         verbose="false"
+         rulesetfiles="rulesets/basic.xml"
+         format="xml"
+         failonerror="no">
+      <fileset dir="${jdk14.src}">
         <include name="**/*.java" />
       </fileset>
     </pmd>
