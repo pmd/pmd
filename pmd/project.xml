@@ -4,6 +4,7 @@
   <id>pmd</id>
   <name>PMD</name>
   <currentVersion>0.5</currentVersion>
+  <logo>images/pmd_logo_small.jpg</logo>
   <organization>
     <name>Tom Copeland/David Dixon-Peugh</name>
     <url>http://pmd.sourceforge.net/</url>
@@ -89,6 +90,9 @@
   <contributors>
     <contributor>
       <name>Damian ONeill</name>
+    </contributor>
+    <contributor>
+      <name>Rich Kilmer</name>
     </contributor>
   </contributors>
 
