@@ -54,14 +54,15 @@ class Job
   end
   
   def checkout_code
-  `cvs -Q -d#{@cvsroot} co #{@moduleDirectory}`
+  `cvs -Q -d#{@cvsroot} co "#{@moduleDirectory}"`
   end
   
   def run_pmd
-   cmd="java -jar pmd-1.0rc2.jar #{@sourceDirectory} html rulesets/unusedcode.xml > ../htdocs/reports/#{@unixName}_#{@moduleDirectory}.html"
+   cmd="java -jar pmd-1.0rc2.jar \"#{@sourceDirectory}\" html rulesets/unusedcode.xml > \"#{reportFile()}\""
+   puts "running #{cmd}"
    `#{cmd}`
-   arr = IO.readlines("../htdocs/reports/#{@unixName}_#{@moduleDirectory}.html")
-   newFile=File.open("../htdocs/reports/#{@unixName}_#{@moduleDirectory}.html", "w")
+   arr = IO.readlines(reportFile())
+   newFile=File.open(reportFile(), "w")
    arr.each do | line | 
     if (line["Error while parsing"] == nil) 
      newFile << line
@@ -69,9 +70,13 @@ class Job
    end
    newFile.close
   end
+ 
+  def reportFile 
+   return "../htdocs/reports/#{@unixName}_#{@moduleDirectory.sub(" ", "")}.html"
+  end
   
   def clear
-  `rm -rf #{@moduleDirectory}`
+  `rm -rf "#{@moduleDirectory}"`
   end
   
   def to_s

@@ -72,17 +72,36 @@ sub loadProjectList() {
    my $jobdata=<FILE>;
    my ($title,$unixname, $mod, $src) = split(":", $jobdata);
    my $jobtext="";
-   if (-e "../htdocs/reports/${unixname}_${mod}.html") {
-    $jobtext="<a href=\"http://pmd.sf.net/reports/${unixname}_${mod}.html\">${title}</a>";
+   if (-e getReportFile($unixname, $mod)) {
+     my $reportURL=getReportURL(${unixname}, ${mod});
+    $jobtext="<a href=\"${reportURL}\")>${title}</a>";
    } else {
     $jobtext=$title;
    }
-   my $lines = getLines("../htdocs/reports/${unixname}_${mod}.html");
+   my $lines = getLines(getReportFile($unixname, $mod));
    $result="${result}<tr><td>${jobtext}</td><td></td><td><a href=\"http://${unixname}.sf.net/\">http://${unixname}.sf.net/</a></td><td>${lines}</td>";
   }
  }
  $result = "${result}</table>";
  return $result;
+}
+
+sub getReportURL() {
+ my ($unixname, $mod) = @_;
+ my $name = getReportFileName($unixname, $mod);
+ return "http://pmd.sf.net/reports/${name}";
+}
+
+sub getReportFile() {
+ my ($unixname, $mod) = @_;
+ my $name = getReportFileName($unixname, $mod);
+ return "../htdocs/reports/${name}";
+}
+
+sub getReportFileName() {
+ my ($unixname, $mod) = @_;
+ $mod=~s/\s+//g;
+ return "${unixname}_${mod}.html";
 }
 
 sub getLines() {
