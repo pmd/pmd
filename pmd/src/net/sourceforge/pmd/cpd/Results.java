@@ -15,4 +15,5 @@ public interface Results  {
     public List getOccurrencesList(Tile tile);
     public int size();
     public Iterator getTiles();
+    public int getOccurrenceCountFor(Tile tile);
 }
