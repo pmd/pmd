@@ -11,10 +11,8 @@ import net.sourceforge.pmd.rules.EmptyIfStmtRule;
 
 public class EmptyIfStmtRuleTest extends RuleTst {
 
-    public void testEmptyIf() throws Throwable {
-        Report report = process("EmptyIfStmtRule.java", new EmptyIfStmtRule());
-        assertEquals(1, report.size());
-        assertEquals(new EmptyIfStmtRule(), ((RuleViolation)report.iterator().next()).getRule());
+    public void testOneEmptyOneNotEmpty() throws Throwable {
+        runTest("EmptyIfStmtRule.java", 1, new EmptyIfStmtRule());
     }
 
 }

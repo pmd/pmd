@@ -88,4 +88,12 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
     public void test18() throws Throwable {
         runTest("UnusedPrivateInstanceVar18.java", 0, rule);
     }
+
+    public void test19() throws Throwable {
+        runTest("UnusedPrivateInstanceVar19.java", 0, rule);
+    }
+
+    public void test20() throws Throwable {
+        runTest("UnusedPrivateInstanceVar20.java", 0, rule);
+    }
 }
