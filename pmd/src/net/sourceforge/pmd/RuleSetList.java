@@ -2,13 +2,13 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.swingui.Resources;
 
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
 /**
@@ -46,7 +46,7 @@ public class RuleSetList
 
             if (file.exists())
             {
-                DataInputStream inputStream = null;
+                BufferedReader inputStream = null;
 
                 try
                 {
@@ -54,7 +54,7 @@ public class RuleSetList
                     StringTokenizer parser;
                     int index;
 
-                    inputStream = new DataInputStream(new FileInputStream(file));
+                    inputStream = new BufferedReader(new FileReader(file));
                     ruleSetNameList = inputStream.readLine();
                     parser = new StringTokenizer(ruleSetNameList, ",");
                     ruleSetNames = new String[parser.countTokens()];
@@ -137,13 +137,13 @@ public class RuleSetList
                 directory.mkdirs();
             }
 
-            PrintStream outputStream = null;
+            PrintWriter outputStream = null;
 
             try
             {
                 StringBuffer buffer;
 
-                outputStream = new PrintStream(new FileOutputStream(file));
+                outputStream = new PrintWriter(new FileWriter(file));
                 buffer = new StringBuffer(100);
 
                 for (int n = 0; n < ruleSetNames.length; n++)
