@@ -32,6 +32,10 @@ public class NameOccurrence {
         return qualifiedName;
     }
 
+    public SimpleNode getLocation() {
+      return location;
+    }
+
     public boolean isOnLeftHandSide() {
         SimpleNode primaryExpression;
         if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
