@@ -86,7 +86,6 @@ public class DCPDWorker {
                 }
             }
         }
-        newOcc.deleteSoloTiles();
         return newOcc;
     }
 
