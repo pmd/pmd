@@ -7,7 +7,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 
-public class ClassNamingConventionsRule extends AbstractRule {
+public class ClassNamingConventions extends AbstractRule {
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         if (Character.isLowerCase(node.getImage().charAt(0))) {

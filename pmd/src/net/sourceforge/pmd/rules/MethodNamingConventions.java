@@ -7,7 +7,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
-public class MethodNamingConventionsRule extends AbstractRule {
+public class MethodNamingConventions extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
         if (Character.isUpperCase(node.getImage().charAt(0))) {

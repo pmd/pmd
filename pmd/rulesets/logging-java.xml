@@ -6,7 +6,7 @@
 The Java Logging ruleset contains a collection of rules that find questionable usages of the Logger.
   </description>
 
-    <rule name="MoreThanOneLoggerRule"
+    <rule name="MoreThanOneLogger"
          message="Class contains more than one Logger"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>
@@ -38,7 +38,7 @@ class Foo{
      </example>
      </rule>
 
-     <rule name="LoggerIsNotStaticFinalRule"
+     <rule name="LoggerIsNotStaticFinal"
          message="The Logger variable declaration does not contain the static and final modifiers"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>
@@ -69,7 +69,7 @@ class Foo{
 <!-- This rule will probably be implemented in a java class, since we need to search the logger name 
 first -->
 <!--
-     <rule name="LogBlockWithoutIfRule"
+     <rule name="LogBlockWithoutIf"
          message="There is log block not surrounded by if"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>

@@ -8,12 +8,12 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class AbstractNamingRuleTest extends SimpleAggregatorTst {
+public class AbstractNamingTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "AbstractNamingRule");
+        rule = findRule("rulesets/naming.xml", "AbstractNaming");
     }
 
     public void testAll() {

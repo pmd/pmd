@@ -77,7 +77,7 @@ public class Something {
     </example>
   </rule>
 
-  <rule name="ShortMethodNameRule"
+  <rule name="ShortMethodName"
         message="Avoid using short method names"
         class="net.sourceforge.pmd.rules.XPathRule">
      <description>
@@ -104,9 +104,9 @@ public class ShortMethod {
   </rule>
 
 
-    <rule name="VariableNamingConventionsRule"
+    <rule name="VariableNamingConventions"
     message="{0} variable {1} should begin with {2}"
-    class="net.sourceforge.pmd.rules.VariableNamingConventionsRule">
+    class="net.sourceforge.pmd.rules.VariableNamingConventions">
         <description>
     A variable naming conventions rule - customize this to your liking
     Final variables should be all caps
@@ -126,7 +126,7 @@ public class Foo {
 
     <rule name="MethodNamingConventions"
               message="Method name does not begin with a lower case character."
-              class="net.sourceforge.pmd.rules.MethodNamingConventionsRule">
+              class="net.sourceforge.pmd.rules.MethodNamingConventions">
           <description>
               Method names should always begin with a lower case character, and should not contain underscores.
           </description>
@@ -142,9 +142,9 @@ public class Foo {
         </rule>
 
 
-    <rule name="ClassNamingConventionsRule"
+    <rule name="ClassNamingConventions"
           message="Class names should begin with an uppercase character"
-          class="net.sourceforge.pmd.rules.ClassNamingConventionsRule">
+          class="net.sourceforge.pmd.rules.ClassNamingConventions">
       <description> Class names should always begin with an upper case character.
       </description>
       <priority>1</priority>
@@ -155,7 +155,7 @@ public class Foo {}
       </example>
     </rule>
 
-    <rule name="AbstractNamingRule"
+    <rule name="AbstractNaming"
           message="Abstract classes should be named 'AbstractXXX'"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>

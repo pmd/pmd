@@ -25,6 +25,8 @@ Many rule names had the word "Rule" tacked on to the end.  Various folks thought
 - coupling.xml: CouplingBetweenObjects, ExcessiveImports, LooseCoupling
 - design.xml: UseSingleton, SimplifyBooleanReturns, AvoidReassigningParameters, ConstructorCallsOverridableMethod, AccessorClassGeneration, CloseConnection, OptimizableToArrayCall, IdempotentOperations. ImmutableField
 - junit.xml: JUnitAssertionsShouldIncludeMessage, JUnitTestsShouldIncludeAssert
+- logging-java.xml: MoreThanOneLogger, LoggerIsNotStaticFinal
+- naming.xml: ShortMethodName, VariableNamingConventions, ClassNamingConventions, AbstractNaming
 Continued working on JDK 1.5 compatibility - added support for static import statements, varargs, and the new for loop syntax
 - still TODO: generics and annotations  (note that autoboxing shouldn't require a grammar change)
 - Good article on features: http://java.sun.com/developer/technicalArticles/releases/j2se15/

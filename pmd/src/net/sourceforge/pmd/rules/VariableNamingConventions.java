@@ -19,7 +19,7 @@ import net.sourceforge.pmd.ast.AccessNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariableNamingConventionsRule extends AbstractRule {
+public class VariableNamingConventions extends AbstractRule {
 
     public static final String SEPARATOR = ",";
 

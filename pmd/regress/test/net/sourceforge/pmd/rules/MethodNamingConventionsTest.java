@@ -4,17 +4,17 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.MethodNamingConventionsRule;
+import net.sourceforge.pmd.rules.MethodNamingConventions;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class MethodNamingConventionsRuleTest extends SimpleAggregatorTst {
+public class MethodNamingConventionsTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "method names should start with lowercase character", 1, new MethodNamingConventionsRule()),
-           new TestDescriptor(TEST2, "method names should not contain underscores", 1, new MethodNamingConventionsRule()),
-           new TestDescriptor(TEST3, "all is well", 0, new MethodNamingConventionsRule()),
+           new TestDescriptor(TEST1, "method names should start with lowercase character", 1, new MethodNamingConventions()),
+           new TestDescriptor(TEST2, "method names should not contain underscores", 1, new MethodNamingConventions()),
+           new TestDescriptor(TEST3, "all is well", 0, new MethodNamingConventions()),
        });
     }
 

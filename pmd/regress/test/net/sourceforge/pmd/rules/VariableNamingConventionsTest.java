@@ -5,33 +5,33 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.VariableNamingConventionsRule;
+import net.sourceforge.pmd.rules.VariableNamingConventions;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
+public class VariableNamingConventionsTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "final statics should be all caps", 1, new VariableNamingConventionsRule()),
-           new TestDescriptor(TEST2, "non-finals shouldn't have underscores", 1, new VariableNamingConventionsRule()),
-           new TestDescriptor(TEST3, "variables names should start with lowercase character", 1, new VariableNamingConventionsRule()),
-           new TestDescriptor(TEST4, "all is well", 0, new VariableNamingConventionsRule()),
-           new TestDescriptor(TEST5, "local finals are ok", 0, new VariableNamingConventionsRule()),
-           new TestDescriptor(TEST6, "serialVersionUID is OK", 0, new VariableNamingConventionsRule()),
-           new TestDescriptor(TEST7, "interface fields are tested", 1, new VariableNamingConventionsRule()),
-           new TestDescriptor(TEST8, "final non-statics need not be all caps", 0, new VariableNamingConventionsRule()),
+           new TestDescriptor(TEST1, "final statics should be all caps", 1, new VariableNamingConventions()),
+           new TestDescriptor(TEST2, "non-finals shouldn't have underscores", 1, new VariableNamingConventions()),
+           new TestDescriptor(TEST3, "variables names should start with lowercase character", 1, new VariableNamingConventions()),
+           new TestDescriptor(TEST4, "all is well", 0, new VariableNamingConventions()),
+           new TestDescriptor(TEST5, "local finals are ok", 0, new VariableNamingConventions()),
+           new TestDescriptor(TEST6, "serialVersionUID is OK", 0, new VariableNamingConventions()),
+           new TestDescriptor(TEST7, "interface fields are tested", 1, new VariableNamingConventions()),
+           new TestDescriptor(TEST8, "final non-statics need not be all caps", 0, new VariableNamingConventions()),
        });
     }
 
     public void testPrefixStripping() throws Throwable {
-        Rule r =  new VariableNamingConventionsRule();
+        Rule r =  new VariableNamingConventions();
         r.addProperty("staticPrefix", "s_");
         runTestFromString(TEST9, 0, r);
     }
 
     public void testSuffixStripping() throws Throwable {
-        Rule r =  new VariableNamingConventionsRule();
+        Rule r =  new VariableNamingConventions();
         r.addProperty("staticSuffix", "_s");
         runTestFromString(TEST10, 0, r);
     }

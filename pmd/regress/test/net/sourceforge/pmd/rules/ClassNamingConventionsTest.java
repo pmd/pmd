@@ -3,16 +3,16 @@
 */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.ClassNamingConventionsRule;
+import net.sourceforge.pmd.rules.ClassNamingConventions;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class ClassNamingConventionsRuleTest extends SimpleAggregatorTst {
+public class ClassNamingConventionsTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "class names should not start with lowercase character", 1, new ClassNamingConventionsRule()),
-           new TestDescriptor(TEST2, "all is well", 0, new ClassNamingConventionsRule()),
+           new TestDescriptor(TEST1, "class names should not start with lowercase character", 1, new ClassNamingConventions()),
+           new TestDescriptor(TEST2, "all is well", 0, new ClassNamingConventions()),
        });
     }
 
