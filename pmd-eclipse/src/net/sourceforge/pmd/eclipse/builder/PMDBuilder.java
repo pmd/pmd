@@ -21,9 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2003/03/17 23:35:59  phherlin
- * first version
- * adding nature and incremental builder
+ * Revision 1.2  2003/03/18 23:25:47  phherlin
+ * When build auto, if delta resource is empty, then perform a full build
  *
  */
 public class PMDBuilder extends IncrementalProjectBuilder {
@@ -86,7 +85,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         IProject currentProject = getProject();
         if (currentProject != null) {
             IResourceDelta resourceDelta = getDelta(currentProject);
-            if (resourceDelta != null) {
+            if ((resourceDelta != null) && (resourceDelta.getAffectedChildren().length != 0)) {
                 monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), IProgressMonitor.UNKNOWN);
                 PMDDeltaVisitor visitor = new PMDDeltaVisitor(monitor);
                 resourceDelta.accept(visitor);
