@@ -22,6 +22,14 @@ Avoid unused local variables such as 'fr'
 
 C:\tmp\pmd-1.01\pmd\etc&gt;
     </source>
+       <li>Or, if you want to just run PMD without the batch file, you can do a:</li>
+       <source>
+C:\data\pmd\pmd>java -cp lib\pmd-1.01.jar;lib\xercesImpl-2.0.2.jar;lib\xmlParser
+APIs-2.0.2.jar net.sourceforge.pmd.PMD c:\j2sdk1.4.1_01\src\java\lang xml rulese
+ts/imports.xml > report.xml
+
+C:\data\pmd\pmd>
+       </source>
 <br></br>
     <li>Notice that in this case the output is in XML, so you can redirect it to a file and XSLT it or whatever</li>
    </ul>
