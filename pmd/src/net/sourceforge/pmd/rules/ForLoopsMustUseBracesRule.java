@@ -13,15 +13,13 @@ import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTForStatement;
 
 public class ForLoopsMustUseBracesRule  extends AbstractRule {
-    private int lineNumberOfLastViolation;
 
     public Object visit(ASTForStatement node, Object data) {
         RuleContext ctx = (RuleContext)data;
         SimpleNode loopBody = (SimpleNode)node.jjtGetChild(3);
 
-        if (!hasBlockAsFirstChild(loopBody) && (node.getBeginLine() != this.lineNumberOfLastViolation)) {
+        if (!hasBlockAsFirstChild(loopBody)) {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
-            lineNumberOfLastViolation = node.getBeginLine();
         }
         return super.visit(node,data);
     }

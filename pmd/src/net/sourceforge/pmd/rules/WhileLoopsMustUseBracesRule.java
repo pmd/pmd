@@ -13,15 +13,13 @@ import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 
 public class WhileLoopsMustUseBracesRule extends AbstractRule {
-    private int lineNumberOfLastViolation;
 
     public Object visit(ASTWhileStatement node, Object data) {
         RuleContext ctx = (RuleContext)data;
         SimpleNode firstStmt = (SimpleNode)node.jjtGetChild(1);
 
-        if (!hasBlockAsFirstChild(firstStmt) && (node.getBeginLine() != this.lineNumberOfLastViolation)) {
+        if (!hasBlockAsFirstChild(firstStmt)) {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
-            lineNumberOfLastViolation = node.getBeginLine();
         }
         return super.visit(node,data);
     }
