@@ -4,15 +4,17 @@
 	<property name="src" value="src/"/>
 	<property name="lib" value="lib/"/>
 	<property name="build" value="build/"/>
-	<property name="pmdjar" value="pmd-1.03.jar"/>
+	<property name="pmdjar" value="pmd-1.04.jar"/>
 	<property name="pluginversion" value="1.4"/>
-	<property name="jedit.install.dir"  value="c:\jedit\jars"/>
+	<property name="jedit.install.dir"  value="/home/tom/jedit/4.1/jars"/>
 
 
 	<path id="project.class.path">
 		<pathelement location="${lib}/${pmdjar}"/>
 		<pathelement location="${lib}/jedit.jar"/>
 		<pathelement location="${lib}/ErrorList.jar"/>
+		<pathelement location="${lib}/jaxen-core-1.0-fcs.jar"/>
+		<pathelement location="${lib}/saxpath-1.0-fcs.jar"/>
 		<pathelement location="${build}"/>
 	</path>
 
@@ -57,6 +59,8 @@
         <mkdir dir="tmp/jars"/>
         <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="tmp/jars"/>
         <copy file="${lib}/${pmdjar}" todir="tmp/jars"/>
+        <copy file="${lib}/jaxen-core-1.0-fcs.jar" todir="tmp/jars"/>
+        <copy file="${lib}/saxpath-1.0-fcs.jar" todir="tmp/jars"/>
         <zip zipfile="pmd-jedit-bin-${pluginversion}.zip" basedir="tmp"/>
         <move file="pmd-jedit-bin-${pluginversion}.zip" todir="c:\tmp"/>
         <delete dir="tmp"/>

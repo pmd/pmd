@@ -1,3 +1,6 @@
+March 24 2003 - 1.5:
+Upgraded to work with pmd-1.04.
+
 February 11 2003 - 1.4:
 Upgraded to work with PMD-1.03.
 
