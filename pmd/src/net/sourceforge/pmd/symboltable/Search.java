@@ -9,21 +9,24 @@ public class Search {
     private static final boolean TRACE = false;
 
     private NameOccurrence occ;
+    private NameDeclaration decl;
 
     public Search(NameOccurrence occ) {
         if (TRACE) System.out.println("new search for " + occ);
         this.occ = occ;
     }
 
-    public NameDeclaration execute() {
-        NameDeclaration decl = searchUpward(occ, occ.getScope());
+    public void execute() {
+        decl = searchUpward(occ, occ.getScope());
         if (TRACE) System.out.println("found " + decl);
-        return decl;
     }
 
-    public NameDeclaration execute(Scope startingScope) {
-        NameDeclaration decl = searchUpward(occ, startingScope);
+    public void execute(Scope startingScope) {
+        decl = searchUpward(occ, startingScope);
         if (TRACE) System.out.println("found " + decl);
+    }
+
+    public NameDeclaration getResult() {
         return decl;
     }
 

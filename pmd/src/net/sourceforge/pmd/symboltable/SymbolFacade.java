@@ -29,8 +29,26 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
 
     public Object visit(ASTPrimaryExpression node, Object data) {
         NameOccurrences qualifiedNames = new NameOccurrences(node);
-        LookupController lookupController = new LookupController();
-        lookupController.lookup(qualifiedNames);
+        NameDeclaration decl = null;
+        for (Iterator i = qualifiedNames.iterator(); i.hasNext();) {
+            NameOccurrence occ = (NameOccurrence)i.next();
+            Search search = new Search(occ);
+            if (decl == null) {
+                // doing the first name lookup
+                search.execute();
+                decl = search.getResult();
+                if (decl == null) {
+                    // we can't find it, so just give up
+                    // when we decide searches across compilation units like a compiler would, we'll
+                    // force this to either find a symbol or throw a "cannot resolve symbol" Exception
+                    break;
+                }
+            } else {
+                // now we've got a scope we're starting with, so work from there
+                search.execute(decl.getNode().getScope());
+                decl = search.getResult();
+            }
+        }
         return super.visit(node, data);
     }
 
