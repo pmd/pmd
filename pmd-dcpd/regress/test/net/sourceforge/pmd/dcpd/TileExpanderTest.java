@@ -37,7 +37,7 @@ public class TileExpanderTest extends TestCase {
             TileWrapper tw = new TileWrapper(tile,
                     marshal(occ.getOccurrences(tile)),
                     job.id,
-                    Chunk.NOT_DONE,
+                    Batch.NOT_DONE,
                     null,
                     new Integer(tilesSoFar),
                     null, null);
