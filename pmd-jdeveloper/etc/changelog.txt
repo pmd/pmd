@@ -1,3 +1,6 @@
+April 3, 2003 - 0.3:
+Implemented the "centralized rule selection storage" feature as suggested by Ronald Kinion.
+
 April 1, 2003 - 0.2:
 Updated to work with pmd-1.04.
 Implemented several of Ronald Kinion's suggestions.
