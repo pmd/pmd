@@ -96,24 +96,20 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-    //TryStatement/Block[1][count(*) = 0]
-                  ]]>
+                  <![CDATA[//TryStatement/Block[1][count(*) = 0]]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-  // this is bad
+  <![CDATA[// this is bad
   public void bar() {
       try {
       } catch (Exception e) {
           e.printStackTrace();
       }
-  }
-  ]]>
+  }]]>
       </example>
     </rule>
 
@@ -126,25 +122,21 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-    //TryStatement[@Finally='true']/Block[position() = last()]
-      [count(*) = 0]
-                  ]]>
+                  <![CDATA[//TryStatement[@Finally='true']/Block[position() = last()]
+      [count(*) = 0]]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-  // this is bad
+  <![CDATA[// this is bad
   public void bar() {
       try {
           int x=2;
       } finally {
       }
-  }
-  ]]>
+  }]]>
       </example>
     </rule>
 
@@ -158,17 +150,14 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-    //SwitchStatement[count(*) = 1]
-                  ]]>
+                  <![CDATA[//SwitchStatement[count(*) = 1]]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-  public class Foo {
+  <![CDATA[public class Foo {
    public void bar() {
     int x = 2;
     switch (x) {
@@ -176,8 +165,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
      // but it's been commented out or something
     }
    }
-  }
-  ]]>
+  }]]>
       </example>
       </rule>
 
@@ -191,8 +179,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
      <properties>
          <property name="xpath">
              <value>
-                 <![CDATA[
-//ForStatement
+ <![CDATA[//ForStatement
  [
   ForUpdate/StatementExpressionList/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
   =
@@ -204,8 +191,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
         <priority>3</priority>
 
      <example>
- <![CDATA[
- public class JumbledIncrementerRule1 {
+ <![CDATA[public class JumbledIncrementerRule1 {
   public void foo() {
    for (int i = 0; i < 10; i++) {
     for (int k = 0; k < 20; i++) {
@@ -227,21 +213,17 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     <properties>
         <property name="xpath">
             <value>
-                <![CDATA[
-    //ForStatement[count(*) > 1][not(ForInit)][not(ForUpdate)]
-                ]]>
+                <![CDATA[//ForStatement[count(*) > 1][not(ForInit)][not(ForUpdate)]]]>
             </value>
         </property>
     </properties>
         <priority>3</priority>
       <example>
-  <![CDATA[
-  public class Foo {
+  <![CDATA[public class Foo {
       void bar() {
           for (;true;) true; // No Init or Update part, may as well be: while (true)
       }
-  }
-  ]]>
+  }]]>
       </example>
     </rule>
 
@@ -254,14 +236,12 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       </description>
         <priority>3</priority>
       <example>
-  <![CDATA[
-    public String convert(int x) {
+  <![CDATA[public String convert(int x) {
       // this wastes an object
       String foo = new Integer(x).toString();
       // this is better
       return Integer.toString(x);
-    }
-  ]]>
+    }]]>
       </example>
     </rule>
 
@@ -274,8 +254,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-//ClassDeclaration//MethodDeclarator
+<![CDATA[//ClassDeclaration//MethodDeclarator
 [(@Image = 'equals' and count(FormalParameters/*) = 1
 and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode']))
 or
@@ -286,16 +265,14 @@ not
  [count(
    FormalParameters//Type/Name
     [@Image = 'Object' or @Image = 'java.lang.Object']) = 1]
-    [@Image = 'equals']))]
-                  ]]>
+    [@Image = 'equals']))]]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-  // this is bad
+  <![CDATA[// this is bad
   public class Bar {
       public boolean equals(Object o) {
           // do some comparison
@@ -317,8 +294,7 @@ not
       public int hashCode() {
           // return some hash value
       }
-  }
-  ]]>
+  }]]>
       </example>
     </rule>
 
@@ -332,8 +308,7 @@ not
       </description>
         <priority>1</priority>
       <example>
-  <![CDATA[
-  public class Foo {
+  <![CDATA[public class Foo {
       Object baz;
       Object bar() {
         if(baz == null) { //baz may be non-null yet not fully created
@@ -345,8 +320,7 @@ not
         }
         return baz;
       }
-  }
-  ]]>
+  }]]>
       </example>
     </rule>
 
@@ -359,17 +333,14 @@ not
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-    //TryStatement[@Finally='true']/Block[position() = last()]//ReturnStatement
-                  ]]>
+                  <![CDATA[//TryStatement[@Finally='true']/Block[position() = last()]//ReturnStatement]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-public class Bar {
+  <![CDATA[public class Bar {
  public String bugga() {
   try {
    throw new Exception( "My Exception" );
@@ -379,8 +350,7 @@ public class Bar {
    return "A. O. K."; // Very bad.
   }
  }
-}
-  ]]>
+}]]>
       </example>
     </rule>
 
@@ -393,21 +363,17 @@ public class Bar {
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-    //SynchronizedStatement/Block[1][count(*) = 0]
-                  ]]>
+                  <![CDATA[//SynchronizedStatement/Block[1][count(*) = 0]]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-  // this is bad
+  <![CDATA[// this is bad
   public void bar() {
       synchronized (this) {}
-  }
-  ]]>
+  }]]>
       </example>
     </rule>
 
@@ -420,29 +386,25 @@ public class Bar {
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-//ReturnStatement
+ <![CDATA[//ReturnStatement
  [parent::Statement
   [parent::BlockStatement
    [parent::Block
     [parent::MethodDeclaration/ResultType[@Void='true']
     ]
    ]
-  ]
-                  ]]>
+  ] ]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-  // this is bad
+  <![CDATA[// this is bad
   public void bar() {
       int x = 42;
       return;
-  }
-  ]]>
+  }]]>
       </example>
     </rule>
 
@@ -456,20 +418,16 @@ public class Bar {
          <properties>
              <property name="xpath">
                  <value>
-<![CDATA[
-//ClassBodyDeclaration/Initializer[@Static='true']/Block[count(*)=0]
-]]>
+<![CDATA[//ClassBodyDeclaration/Initializer[@Static='true']/Block[count(*)=0]]]>
                  </value>
              </property>
          </properties>
          <priority>3</priority>
        <example>
-   <![CDATA[
- public class Foo {
+   <![CDATA[public class Foo {
   // why are there no statements in this static block?
   static {}
- }
-   ]]>
+ }]]>
        </example>
      </rule>
 
@@ -482,25 +440,21 @@ public class Bar {
         <properties>
             <property name="xpath">
                 <value>
-                    <![CDATA[
-//IfStatement/Expression
+ <![CDATA[//IfStatement/Expression
  [count(PrimaryExpression)=1]
- /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-                    ]]>
+ /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]]>
                 </value>
             </property>
         </properties>
         <priority>3</priority>
       <example>
-  <![CDATA[
-public class Foo {
+  <![CDATA[public class Foo {
  public void close() {
   if (true) {
        // ...
    }
  }
-}
-  ]]>
+}]]>
       </example>
     </rule>
 
@@ -516,22 +470,19 @@ public class Foo {
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[
-   //Statement/EmptyStatement[not(
+<![CDATA[//Statement/EmptyStatement[not(
        ../../../ForStatement
        or ../../../WhileStatement
        or ../../../../../../ForStatement/Statement[1]
         /Block[1]/BlockStatement[1]/Statement/EmptyStatement
        or ../../../../../../WhileStatement/Statement[1]
-        /Block[1]/BlockStatement[1]/Statement/EmptyStatement)]
-]]>
+        /Block[1]/BlockStatement[1]/Statement/EmptyStatement)]]]>
                 </value>
             </property>
         </properties>
         <priority>3</priority>
        <example>
-<![CDATA[
-public class MyClass {
+<![CDATA[public class MyClass {
    public void doit()
    {
       // this is probably not what you meant to do
@@ -539,8 +490,7 @@ public class MyClass {
       // the extra semicolon here this is not necessary
       System.out.println("look at the extra semicolon");;
    }
-}
- ]]>
+}]]>
        </example>
      </rule>
 
