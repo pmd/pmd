@@ -130,38 +130,6 @@
     <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
 </target>
 
-<target name="jjtree11">
-    <jjtree target="etc/grammar/Java1.1.jjt" outputdirectory="src/net/sourceforge/pmd/ast11" javacchome="/usr/local/javacc-3.0/"/>
-    <javacc target="src/net/sourceforge/pmd/ast11/Java1.1.jj" outputdirectory="src/net/sourceforge/pmd/ast11" javacchome="/usr/local/javacc-3.0/"/>
-    <delete file="src/net/sourceforge/pmd/ast11/Java1.1.jj"/>
-    <replace file="src/net/sourceforge/pmd/ast11/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException"/>
-    <replace file="src/net/sourceforge/pmd/ast11/JavaParser.java" token="throw new Error" value="throw new RuntimeException"/>
-    <replace file="src/net/sourceforge/pmd/ast11/JavaParser.java" token="(Error)" value="(RuntimeException)"/>
-    <replace file="src/net/sourceforge/pmd/ast11/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
-    <replace file="src/net/sourceforge/pmd/ast11/ParseException.java" token="throw new Error" value="throw new RuntimeException"/>
-    <replace file="src/net/sourceforge/pmd/ast11/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
-    <delete>
-        <fileset dir="src/net/sourceforge/pmd/ast11/">
-            <include name="AST*.java"/>
-            <include name="SimpleNode.java"/>
-        </fileset>
-    </delete>
-    <copy todir="src/net/sourceforge/pmd/ast11/">
-        <fileset dir="src/net/sourceforge/pmd/ast/">
-            <include name="AST*.java"/>
-            <exclude name="ASTAssertStatement.java"/>
-        </fileset>
-    </copy>
-    <copy todir="src/net/sourceforge/pmd/ast11/">
-        <fileset dir="src/net/sourceforge/pmd/ast/">
-            <include name="AccessNode.java"/>
-            <include name="AccessFlags.java"/>
-            <include name="SimpleNode.java"/>
-        </fileset>
-    </copy>
-    <replace dir="src/net/sourceforge/pmd/ast11/" token="package net.sourceforge.pmd.ast;" value="package net.sourceforge.pmd.ast11;"/>
-</target>
-
 <target name="cppjavacc">
     <delete>
         <fileset dir="src/net/sourceforge/pmd/cpd/cppast">
