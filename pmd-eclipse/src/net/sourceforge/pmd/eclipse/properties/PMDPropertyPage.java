@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -28,6 +29,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/06/19 21:01:13  phherlin
+ * Force a rebuild when PMD properties have changed
+ *
  * Revision 1.3  2003/03/30 20:52:17  phherlin
  * Adding logging
  * Displaying error dialog in a thread safe way
@@ -180,6 +184,7 @@ public class PMDPropertyPage extends PropertyPage {
                     newNatureIds[natureIds.length] = PMDNature.PMD_NATURE;
                     description.setNatureIds(newNatureIds);
                     project.setDescription(description, monitor);
+                    project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
                 }
             } catch (CoreException e) {
                 PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
