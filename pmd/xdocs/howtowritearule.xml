@@ -22,8 +22,8 @@
     </subsection>
 
     <subsection name="Write a test-data example and look at the AST">
-    <p>PMD uses a JJTree/JavaCC generated parser to parse the source code and produce an AST (Abstract Syntax Tree).  This means that
-    the code above looks like this:</p>
+    <p>PMD uses a JJTree/JavaCC generated parser to parse the source code and produce an AST (Abstract Syntax Tree).
+    This means that the code above looks like this:</p>
     <pre>
     </pre>
     </subsection>
