@@ -18,7 +18,9 @@ rmdir /q /s c:\tmp\pmd-jedit
 mkdir c:\tmp\pmd-jedit
 cvs -q export -d c:\tmp\pmd-jedit -r pmd_jedit_release_1_1 pmd-jedit
 copy pmd-jedit\lib\PMDJEditPlugin-1.1.jar c:\tmp\pmd-jedit\lib
-zip it up, rename it to pmd-jedit-src-1.1.zip
+cd c:\tmp
+"c:\program files\winzip\wzzip.exe" -r -p pmd-jedit-src-1.1.zip pmd-jedit
+rmdir /q /s pmd-jedit
 
 FTP the zip file to SF
 ftp upload.sourceforge.net
