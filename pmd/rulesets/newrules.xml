@@ -44,7 +44,7 @@ public class Foo {
 
     <rule name="FinalizeShouldBeProtected"
           message="If you override finalize(), make it protected"
-          class="net.sourceforge.pmd.rules.XpathRule">
+          class="net.sourceforge.pmd.rules.XPathRule">
       <description>
       If you override finalize(), make it protected
       </description>
@@ -75,7 +75,7 @@ public class Foo {
 
     <rule name="FinalFieldCouldBeStatic"
           message="This final field could be made static"
-          class="net.sourceforge.pmd.rules.XpathRule">
+          class="net.sourceforge.pmd.rules.XPathRule">
       <description>
       If a final field is assigned to a compile-time constant, it could be
           made static, thus saving overhead in each object
