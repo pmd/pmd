@@ -19,14 +19,14 @@ public class RuleFactory {
 
     private static Set ruleSets = new HashSet();
 
-    static {
+    public RuleFactory() {
         ruleSets.add(ALL);
         ruleSets.add(GENERAL);
         ruleSets.add(COUGAAR);
         ruleSets.add(DESIGN);
     }
 
-    public static String getConcatenatedRuleSetList() {
+    public String getConcatenatedRuleSetList() {
         StringBuffer buf = new StringBuffer();
         for (Iterator i = ruleSets.iterator(); i.hasNext();) {
             if (buf.length() != 0) {
@@ -37,11 +37,11 @@ public class RuleFactory {
         return buf.toString();
     }
 
-    public static boolean containsRuleSet(String ruleSet) {
+    public boolean containsRuleSet(String ruleSet) {
         return ruleSets.contains(ruleSet);
     }
 
-    public static List createRules(String ruleSetType) {
+    public List createRules(String ruleSetType) {
         if (ruleSetType.equals(ALL)) {
             return createAllRules();
         } else if (ruleSetType.equals(GENERAL)) {
@@ -54,7 +54,7 @@ public class RuleFactory {
         throw new RuntimeException("Unknown rule set type " + ruleSetType);
     }
 
-    private static List createAllRules() {
+    private List createAllRules() {
         List list = new ArrayList();
         list.addAll(createCougaarRules());
         list.addAll(createGeneralRules());
@@ -62,7 +62,7 @@ public class RuleFactory {
         return list;
     }
 
-    private static List createCougaarRules() {
+    private List createCougaarRules() {
         List list = new ArrayList();
         list.add(new DontCreateThreadsRule());
         list.add(new DontCreateTimersRule());
@@ -71,7 +71,7 @@ public class RuleFactory {
         return list;
     }
 
-    private static List createGeneralRules() {
+    private List createGeneralRules() {
         List list = new ArrayList();
         list.add(new EmptyCatchBlockRule());
         list.add(new EmptyIfStmtRule());
@@ -83,7 +83,7 @@ public class RuleFactory {
         return list;
     }
 
-    private static List createDesignRules() {
+    private List createDesignRules() {
         List list = new ArrayList();
         list.add(new UseSingletonRule());
         return list;

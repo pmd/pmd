@@ -15,29 +15,34 @@ import net.sourceforge.pmd.rules.DontCreateTimersRule;
 import net.sourceforge.pmd.rules.EmptyIfStmtRule;
 
 public class RuleFactoryTest extends TestCase {
+
     public RuleFactoryTest(String name) {
         super(name);
     }
 
     public void testCougaar() {
-        List r = RuleFactory.createRules(RuleFactory.COUGAAR);
+        RuleFactory rf = new RuleFactory();
+        List r = rf.createRules(RuleFactory.COUGAAR);
         assertTrue(r.contains(new DontCreateTimersRule()));
     }
 
     public void testAll() {
-        List r = RuleFactory.createRules(RuleFactory.ALL);
+        RuleFactory rf = new RuleFactory();
+        List r = rf.createRules(RuleFactory.ALL);
         assertTrue(r.contains(new EmptyIfStmtRule()));
     }
 
     public void testGeneral() {
-        List r = RuleFactory.createRules(RuleFactory.GENERAL);
+        RuleFactory rf = new RuleFactory();
+        List r = rf.createRules(RuleFactory.GENERAL);
         assertTrue(r.contains(new EmptyIfStmtRule()));
         assertTrue(!r.contains(new DontCreateTimersRule()));
     }
 
     public void testException() {
+        RuleFactory rf = new RuleFactory();
         try {
-            RuleFactory.createRules("blah");
+            rf.createRules("blah");
         } catch (Exception e) {
             return; // cool
         }
@@ -45,13 +50,15 @@ public class RuleFactoryTest extends TestCase {
     }
 
     public void testConcatenatedList() {
-        String list = RuleFactory.getConcatenatedRuleSetList();
+        RuleFactory rf = new RuleFactory();
+        String list = rf.getConcatenatedRuleSetList();
         assertTrue(list.indexOf("design") != -1);
     }
 
     public void testContains() {
-        assertTrue(RuleFactory.containsRuleSet("all"));
-        assertTrue(!RuleFactory.containsRuleSet("foo"));
+        RuleFactory rf = new RuleFactory();
+        assertTrue(rf.containsRuleSet("all"));
+        assertTrue(!rf.containsRuleSet("foo"));
     }
 
 }

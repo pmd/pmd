@@ -45,7 +45,8 @@ public class PMD {
     }
 
 	public void processFile(String filename, InputStream is, String ruleSetType, RuleContext ctx) throws FileNotFoundException {
-        List rules = RuleFactory.createRules(ruleSetType);
+        RuleFactory ruleFactory = new RuleFactory();
+        List rules = ruleFactory.createRules(ruleSetType);
         processFile(filename, is, rules, ctx);
 	}
 

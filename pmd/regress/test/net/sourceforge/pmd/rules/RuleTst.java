@@ -30,27 +30,6 @@ public class RuleTst
 			   Rule rule )
 	throws Throwable
     {
-/*
-	// Set up the Context
-	RuleContext ctx = new RuleContext();
-	ctx.setReport( new Report("xml", fileName) );
-
-	// Parse the file
-	InputStream javaFile =
-	    getClass().getClassLoader().getResourceAsStream( fileName );
-	JavaParser parser = new JavaParser( javaFile );
-	ASTCompilationUnit astCU = parser.CompilationUnit();
-
-	// Collect the ACUs
-	List acus = new ArrayList();
-	acus.add( astCU );
-	
-	// Apply the rules
-	rule.apply( acus, ctx );
-	
-	// Return the report.
-	return ctx.getReport();
-*/
         PMD p = new PMD();
         RuleContext ctx = new RuleContext();
         ctx.setReport(new Report("xml", fileName));
