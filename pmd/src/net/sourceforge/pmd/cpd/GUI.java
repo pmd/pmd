@@ -1,7 +1,23 @@
 package net.sourceforge.pmd.cpd;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -103,6 +119,7 @@ public class GUI implements CPDListener {
         helper.addLabel("Language:");
         languageBox.addItem("Java");
         languageBox.addItem("C++");
+        languageBox.addItem("PHP");
         helper.add(languageBox);
         helper.nextRow();
         helper.addLabel("Also scan subdirectories?");
@@ -149,13 +166,15 @@ public class GUI implements CPDListener {
                 language = lf.createLanguage(LanguageFactory.JAVA_KEY);
             } else if (languageBox.getSelectedItem().equals("C++")) {
                 language = lf.createLanguage(LanguageFactory.CPP_KEY);
+            } else if (languageBox.getSelectedItem().equals("PHP")) {
+                language = lf.createLanguage(LanguageFactory.PHP_KEY);
             }
 
             CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()), language);
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             comparisonsField.setText("");
-            if (rootDirectoryField.getText().endsWith(".java") || rootDirectoryField.getText().endsWith(".cpp") || rootDirectoryField.getText().endsWith(".c")) {
+            if (rootDirectoryField.getText().endsWith(".class") || rootDirectoryField.getText().endsWith(".php") || rootDirectoryField.getText().endsWith(".java") || rootDirectoryField.getText().endsWith(".cpp") || rootDirectoryField.getText().endsWith(".c")) {
                 cpd.add(new File(rootDirectoryField.getText()));
             } else {
                 if (recurseCheckbox.isSelected()) {

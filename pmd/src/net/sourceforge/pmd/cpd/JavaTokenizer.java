@@ -13,8 +13,6 @@ import java.util.List;
 
 public class JavaTokenizer implements Tokenizer {
 
-    protected String EOL = System.getProperty("line.separator", "\n");
-
     public void tokenize(SourceCode tokens, Tokens tokenEntries, Reader input) throws IOException {
         // first get a snapshot of the code
         List lines = new ArrayList();
@@ -24,7 +22,7 @@ public class JavaTokenizer implements Tokenizer {
         while ((currentLine = r.readLine()) != null) {
             lines.add(currentLine);
             sb.append(currentLine);
-            sb.append(EOL);
+            sb.append(CPD.EOL);
         }
         tokens.setCode(lines);
 
