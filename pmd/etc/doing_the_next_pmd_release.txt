@@ -15,8 +15,8 @@ ant dist
 
 TESTS: Can you
 1) run 1 file and get a report
-./run.sh ~/tmp/Test.java xml rulesets/unusedcode.xml
-./run.sh ~/tmp/Test.java html rulesets/unusedcode.xml
+./pmd.sh ~/tmp/Test.java xml rulesets/unusedcode.xml
+./pmd.sh ~/tmp/Test.java html rulesets/unusedcode.xml
 2) run the Ant 'pmd' task and get a report
 ant pmd
 

@@ -9,10 +9,10 @@
   <body>
    <section name="Running PMD via command line">
    <ul>
-    <li>Type run [filename|jar or zip file containing source code|directory] [report format] [ruleset file], i.e:</li>
+    <li>Type pmd [filename|jar or zip file containing source code|directory] [report format] [ruleset file], i.e:</li>
     <br></br>
     <source>
-C:\tmp\pmd-2.1\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+C:\tmp\pmd-2.1\pmd\etc&gt;pmd c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
 &lt;?xml version="1.0"?&gt;&lt;pmd&gt;
 &lt;file name="c:\data\pmd\pmd\test-data\Unused1.java"&gt;
 &lt;violation line="5" rule="UnusedLocalVariable"&gt;
