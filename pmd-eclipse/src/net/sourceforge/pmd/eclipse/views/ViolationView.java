@@ -49,6 +49,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/08/05 19:27:41  phherlin
+ * Fixing CoreException when refreshing (Eclipse v3)
+ *
  * Revision 1.1  2003/07/07 19:24:54  phherlin
  * Adding PMD violations view
  *
@@ -94,7 +97,9 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
      * @see org.eclipse.ui.IWorkbenchPart#setFocus()
      */
     public void setFocus() {
-        violationTableViewer.getControl().setFocus();
+        if (!violationTableViewer.getControl().isDisposed()) {
+            violationTableViewer.getControl().setFocus();
+        }
     }
 
     /**
@@ -141,9 +146,13 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
      * Force the violation table to refresh
      */
     public void refresh() {
-        violationTableViewer.getControl().setRedraw(false);
-        violationTableViewer.refresh();
-        violationTableViewer.getControl().setRedraw(true);
+        // Seems this can be called when table is disposed ; so test before
+        // refreshing
+        if (!violationTableViewer.getControl().isDisposed()) {
+            violationTableViewer.getControl().setRedraw(false);
+            violationTableViewer.refresh();
+            violationTableViewer.getControl().setRedraw(true);
+        }
     }
 
     /**
@@ -285,7 +294,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
                 }
                 workspace.endOperation(false, null);
             } catch (CoreException e) {
-                // do nothing
+                ; // do nothing
             }
         }
     }
