@@ -3,8 +3,25 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.UnusedPrivateMethodRule;
 
-public class UnusedPrivateMethodRuleTest extends RuleTst {
+public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
 
+    private UnusedPrivateMethodRule rule;
+
+    public void setUp() {
+        rule = new UnusedPrivateMethodRule();
+        rule.setMessage("Avoid this stuff -> ''{0}''");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "1", 0, rule),
+           new TestDescriptor(TEST2, "2", 1, rule),
+           new TestDescriptor(TEST3, "3", 0, rule),
+           new TestDescriptor(TEST4, "4", 1, rule),
+           new TestDescriptor(TEST5, "5", 0, rule),
+           new TestDescriptor(TEST6, "6", 0, rule),
+       });
+    }
     private static final String TEST1 =
     "public class UnusedPrivateMethod1 {" + CPD.EOL +
     " public void bar() {" + CPD.EOL +
@@ -57,34 +74,4 @@ public class UnusedPrivateMethodRuleTest extends RuleTst {
     " private void foo() {}" + CPD.EOL +
     "}";
 
-    private UnusedPrivateMethodRule rule;
-
-    public void setUp() {
-        rule = new UnusedPrivateMethodRule();
-        rule.setMessage("Avoid this stuff -> ''{0}''");
-    }
-
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 0, rule);
-    }
-
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 1, rule);
-    }
-
-    public void test3() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
-
-    public void test4() throws Throwable {
-        runTestFromString(TEST4, 1, rule);
-    }
-
-    public void test5() throws Throwable {
-        runTestFromString(TEST5, 0, rule);
-    }
-
-    public void test6() throws Throwable {
-        runTestFromString(TEST6, 0, rule);
-    }
 }

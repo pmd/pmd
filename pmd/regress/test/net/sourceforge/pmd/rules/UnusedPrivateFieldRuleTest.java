@@ -3,8 +3,44 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.UnusedPrivateFieldRule;
 
-public class UnusedPrivateFieldRuleTest extends RuleTst {
+public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
 
+    private UnusedPrivateFieldRule rule;
+
+    public void setUp() {
+        rule = new UnusedPrivateFieldRule();
+        rule.setMessage("Avoid this stuff -> ''{0}''");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "1", 1, rule),
+           new TestDescriptor(TEST2, "2", 0, rule),
+           new TestDescriptor(TEST3, "3", 1, rule),
+           new TestDescriptor(TEST4, "4", 0, rule),
+           new TestDescriptor(TEST5, "5", 0, rule),
+           new TestDescriptor(TEST6, "6", 0, rule),
+           new TestDescriptor(TEST7, "7", 0, rule),
+           new TestDescriptor(TEST8, "8", 1, rule),
+    // TODO
+    // test 9 defines the current behavior of this rule
+    // i.e., it doesn't check instance vars in inner classes
+    // when that's fixed, this test will break
+    // and we should replace the current test with the commented out test
+    // TODO
+           new TestDescriptor(TEST9, "9", 0, rule),
+           new TestDescriptor(TEST10, "10", 1, rule),
+           new TestDescriptor(TEST11, "11", 0, rule),
+           new TestDescriptor(TEST12, "12", 0, rule),
+           new TestDescriptor(TEST13, "13", 1, rule),
+           new TestDescriptor(TEST14, "14", 2, rule),
+           new TestDescriptor(TEST15, "15", 1, rule),
+           new TestDescriptor(TEST16, "16", 0, rule),
+           new TestDescriptor(TEST17, "17", 0, rule),
+           new TestDescriptor(TEST18, "18", 0, rule),
+           new TestDescriptor(TEST19, "19", 0, rule),
+       });
+    }
     private static final String TEST1 =
     "public class UnusedPrivateField1 {" + CPD.EOL +
     "private String foo;" + CPD.EOL +
@@ -153,77 +189,4 @@ public class UnusedPrivateFieldRuleTest extends RuleTst {
     " private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField(\"foo\", String.class)};" + CPD.EOL +
     "}";
 
-    private UnusedPrivateFieldRule rule;
-
-    public void setUp() {
-        rule = new UnusedPrivateFieldRule();
-        rule.setMessage("Avoid this stuff -> ''{0}''");
-    }
-
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void test3() throws Throwable {
-        runTestFromString(TEST3, 1, rule);
-    }
-    public void test4() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
-    public void test5() throws Throwable {
-        runTestFromString(TEST5, 0, rule);
-    }
-    public void test6() throws Throwable {
-        runTestFromString(TEST6, 0, rule);
-    }
-    public void test7() throws Throwable {
-        runTestFromString(TEST7, 0, rule);
-    }
-    public void test8() throws Throwable {
-        runTestFromString(TEST8, 1, rule);
-    }
-
-    // TODO
-    // this test defines the current behavior of this rule
-    // i.e., it doesn't check instance vars in inner classes
-    // when that's fixed, this test will break
-    // and we should replace the current test with the commented out test
-    // TODO
-    public void test9() throws Throwable {
-        runTestFromString(TEST9, 0, rule);
-        //runTestFromString(TEST9, 1, rule);
-    }
-
-    public void test10() throws Throwable {
-        runTestFromString(TEST10, 1, rule);
-    }
-    public void test11() throws Throwable {
-        runTestFromString(TEST11, 0, rule);
-    }
-    public void test12() throws Throwable {
-        runTestFromString(TEST12, 0, rule);
-    }
-    public void test13() throws Throwable {
-        runTestFromString(TEST13, 1, rule);
-    }
-    public void test14() throws Throwable {
-        runTestFromString(TEST14, 2, rule);
-    }
-    public void test15() throws Throwable {
-        runTestFromString(TEST15, 1, rule);
-    }
-    public void test16() throws Throwable {
-        runTestFromString(TEST16, 0, rule);
-    }
-    public void test17() throws Throwable {
-        runTestFromString(TEST17, 0, rule);
-    }
-    public void test18() throws Throwable {
-        runTestFromString(TEST18, 0, rule);
-    }
-    public void test19() throws Throwable {
-        runTestFromString(TEST19, 0, rule);
-    }
 }
