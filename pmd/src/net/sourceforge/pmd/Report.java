@@ -45,8 +45,10 @@ public class Report {
             }
             for (Iterator iterator = violations.iterator(); iterator.hasNext();) {
                 RuleViolation rv = (RuleViolation) iterator.next();
+                if (buf.length() != 0) {
+                    buf.append(System.getProperty("line.separator"));
+                }
                 buf.append(filename + ":" + rv.getText());
-                buf.append(System.getProperty("line.separator"));
             }
         }
         return buf.toString();
