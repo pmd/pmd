@@ -45,7 +45,7 @@
   <property category="sys" name="WorkingDirectory" value="."/>
   <node name="Copy to JBuilder OpenTools Dir" type="ExternalTask">
     <property category="external" name="dependencies" value="archive"/>
-    <property category="external" name="executable" value="&quot;C:\Documents and Settings\David Craine\jbproject\pmd-jbuilder\copyfile.bat&quot;"/>
+    <property category="external" name="executable" value="&quot;C:\Documents and Settings\David Craine\My Documents\InfoEther-SF\pmd\pmd-jbuilder\copyfile.bat&quot;"/>
     <property category="external" name="params" value="c:\JBuilder7\lib\ext\"/>
     <property category="external" name="phase" value="package"/>
   </node>
