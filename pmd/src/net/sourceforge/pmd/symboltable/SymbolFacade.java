@@ -10,48 +10,13 @@ import net.sourceforge.pmd.ast.*;
 
 public class SymbolFacade extends JavaParserVisitorAdapter {
 
-    private class ScopeCreator extends JavaParserVisitorAdapter {
-
-        private ContextManager contextManager = new ContextManager(new SymbolTable());
-        private ScopeFactory sf = new ScopeFactory();
-
-        public Object visit(ASTCompilationUnit node, Object data){openScope(node);return data;}
-        public Object visit(ASTUnmodifiedClassDeclaration node, Object data){openScope(node);return data;}
-        public Object visit(ASTBlock node, Object data){openScope(node);return data;}
-        public Object visit(ASTConstructorDeclaration node, Object data){openScope(node);return data;}
-        public Object visit(ASTMethodDeclaration node, Object data){openScope(node);return data;}
-        public Object visit(ASTTryStatement node, Object data){openScope(node);return data;}
-        public Object visit(ASTForStatement node, Object data){openScope(node);return data;}
-        public Object visit(ASTIfStatement node, Object data){openScope(node);return data;}
-
-        private void openScope(SimpleNode node) {
-            Scope scope = sf.createScope(node);
-            if (scope instanceof NullScope) {
-                super.visit(node, null);
-            } else {
-                contextManager.openScope(scope);
-                node.setScope(contextManager.getCurrentScope());
-                super.visit(node, null);
-                contextManager.leaveScope();
-            }
-        }
-    }
-
-    private static class DeclFinder extends JavaParserVisitorAdapter {
-        public Object visit(ASTVariableDeclaratorId node, Object data) {
-            node.getScope().addDeclaration(new NameDeclaration(node));
-            return super.visit(node, data);
-        }
-    }
-
     public void initializeWith(ASTCompilationUnit node) {
         // first, traverse the AST and create all the scopes
         ScopeCreator sc = new ScopeCreator();
         node.jjtAccept(sc, null);
 
         // traverse the AST and pick up all the declarations
-        // this takes care of forward references
-        DeclFinder df = new DeclFinder();
+        DeclarationFinder df = new DeclarationFinder();
         node.jjtAccept(df, null);
 
         // finally, traverse the AST and pick up all the usages
