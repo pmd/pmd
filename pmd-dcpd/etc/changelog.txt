@@ -1,3 +1,6 @@
+???? 2002 - 0.3:
+Faster still - now the workers can being working before all the batches are written to the space.
+
 September 11 2001 - 0.2:
 Much, much faster now.  java.lang on my basic farm of 3 machines takes 21 minutes.
 

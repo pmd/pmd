@@ -17,4 +17,17 @@ public class Job implements Entry {
         this.id = id;
         this.name = name;
     }
+
+    public boolean equals(Object o) {
+        Job other = (Job)o;
+        return other.id.equals(id);
+    }
+
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    public String toString() {
+        return id + ":" + name;
+    }
 }

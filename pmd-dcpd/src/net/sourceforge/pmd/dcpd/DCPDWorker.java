@@ -21,9 +21,8 @@ import java.util.*;
 
 public class DCPDWorker {
 
-    private Job currentJob;
-    private TokenSetsWrapper tsw;
     private JavaSpace space;
+    private Map jobs = new HashMap();
 
     public DCPDWorker(JavaSpace space) {
         try {
@@ -42,14 +41,17 @@ public class DCPDWorker {
 
     public void jobAdded(Job job) {
         try {
-            currentJob = job;
-            System.out.println("Received a job " + currentJob.name + ", id is " + currentJob.id.intValue());
+            System.out.println("Received a job " + job.name + ", id is " + job.id.intValue());
+            if (!jobs.containsKey(job)) {
+                TokenSetsWrapper tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, job), null, 100);
+                System.out.println("Read a TokenSetsWrapper with " + tsw.tokenSets.size() + " token lists");
+                jobs.put(job, tsw);
+            }
 
-            tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, currentJob.id), null, 100);
-            System.out.println("Read a TokenSetsWrapper with " + tsw.tokenSets.size() + " token lists");
+
 
             while (true) {
-                TileExpander te = new TileExpander(space, tsw);
+                TileExpander te = new TileExpander(space, jobs);
                 te.expandAvailableTiles();
                 Thread.currentThread().yield();
             }

@@ -32,11 +32,11 @@ public class DGST {
     public Results crunch(CPDListener listener) {
         Occurrences occ = new Occurrences(tokenSets, listener);
         try {
+            space.write(job, null, Lease.FOREVER);
             BatchBuilder builder = new BatchBuilder(occ, job);
             List batches = builder.buildBatches();
             TilePlanter planter = new TilePlanter(space, job);
             planter.plant(batches);
-            space.write(job, null, Lease.FOREVER);
             expand(occ, batches.size());
             System.out.println("Done");
         } catch (Exception e) {

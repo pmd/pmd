@@ -18,13 +18,13 @@ public class Batch implements Entry {
 
     // payload
     public List tileWrappers;
-    public Integer jobID;
+    public Job job;
     public Integer sequenceID;
 
     public Batch() {}
 
-    public Batch(Integer jobID, List tileWrappers, Integer isDone, Integer sequenceID) {
-        this.jobID = jobID;
+    public Batch(Job job, List tileWrappers, Integer isDone, Integer sequenceID) {
+        this.job = job;
         this.tileWrappers = tileWrappers;
         this.isDone = isDone;
         this.sequenceID = sequenceID;

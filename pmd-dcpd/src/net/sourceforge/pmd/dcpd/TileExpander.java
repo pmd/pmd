@@ -16,29 +16,31 @@ import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class TileExpander {
 
     private JavaSpace space;
-    private TokenSetsWrapper tsw;
+    private Map jobs;
 
-    public TileExpander(JavaSpace space, TokenSetsWrapper tsw) {
+    public TileExpander(JavaSpace space, Map jobs) {
         this.space = space;
-        this.tsw = tsw;
+        this.jobs = jobs;
     }
 
     public void expandAvailableTiles() throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
-        Entry twQuery = space.snapshot(new Batch(tsw.jobID, null, Batch.NOT_DONE, null));
+        Entry twQuery = space.snapshot(new Batch(null, null, Batch.NOT_DONE, null));
 
         Batch batch = null;
         int total = 0;
         while ((batch = (Batch)space.take(twQuery, null, 250)) != null) {
+            TokenSetsWrapper tsw = (TokenSetsWrapper)jobs.get(batch.job);
             total++;
             List wrappers = new ArrayList();
             for (int j=0; j<batch.tileWrappers.size(); j++) {
                 TileWrapper tileWrapperToExpand = (TileWrapper)batch.tileWrappers.get(j);
                 //System.out.println("Expanding " + tileWrapperToExpand.tile.getImage());
-                Occurrences results = expand(tileWrapperToExpand, j);
+                Occurrences results = expand(tsw, tileWrapperToExpand, j);
                 int expansionIndex = 0;
                 for (Iterator i = results.getTiles();i.hasNext();) {
                     Tile tile = (Tile)i.next();
@@ -48,13 +50,13 @@ public class TileExpander {
                     expansionIndex++;
                 }
             }
-            Batch batchToWrite = new Batch(tsw.jobID, wrappers, Batch.DONE, batch.sequenceID);
+            Batch batchToWrite = new Batch(batch.job, wrappers, Batch.DONE, batch.sequenceID);
             space.write(batchToWrite, null, Lease.FOREVER);
         }
         if (total>0) System.out.println("Expanded " + total + " tiles");
     }
 
-    private Occurrences expand(TileWrapper tileWrapper, int sequenceID)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
+    private Occurrences expand(TokenSetsWrapper tsw, TileWrapper tileWrapper, int sequenceID)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
         Occurrences newOcc = new Occurrences(new CPDNullListener());
         for (Iterator i = tileWrapper.occurrences.iterator(); i.hasNext();) {
             TokenEntry tok = (TokenEntry)i.next();

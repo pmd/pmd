@@ -35,7 +35,7 @@ public class BatchBuilder {
             currentBatchSize++;
 
             if (wrappers.size() > maxBatchSize) {
-                Batch batch = new Batch(job.id, wrappers, Batch.NOT_DONE, new Integer(batches.size()));
+                Batch batch = new Batch(job, wrappers, Batch.NOT_DONE, new Integer(batches.size()));
                 batches.add(batch);
 
                 currentBatchSize = 0;
@@ -44,7 +44,7 @@ public class BatchBuilder {
         }
 
         if (currentBatchSize > 0) {
-            Batch batch = new Batch(job.id, wrappers, Batch.NOT_DONE, new Integer(batches.size()));
+            Batch batch = new Batch(job, wrappers, Batch.NOT_DONE, new Integer(batches.size()));
             batches.add(batch);
         }
 
