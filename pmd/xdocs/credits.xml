@@ -10,8 +10,8 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
-            <li>Damian O'Neill - a patch to the Ant task for v0.3</li>
-            <li>Ralph Schaer - bug report and verification on PMD-0.7</li>
+            <li>Damian O'Neill - Ant task patches</li>
+            <li>Ralph Schaer - bug reports and verification</li>
             <li>Nanne Baars - rule suggestions</li>
             <li>Vladimir Bossicard - several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a></li>
             <li>Rich Kilmer - logo design</li>
@@ -23,9 +23,10 @@
             <li>Sean Sullivan - rule suggestions</li>
             <li>Gael Marziou - bug reports</li>
             <li>Paul Kendall - enhanced EmptyCatchBlock rule</li>
-            <li>Jiger Patell - PMD-JEdit suggestions</li>
+            <li>Jiger Patell - pmd-jedit suggestions</li>
             <li>Stefan Bodewig - bug report</li>
             <li>Radim Kubacki - bug reports</li>
+            <li>Ales Bukovsky - pmd-netbeans feedback</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
