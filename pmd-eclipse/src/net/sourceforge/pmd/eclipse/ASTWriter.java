@@ -19,34 +19,25 @@
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.   
  *   
  * </copyright>
- */
+ */ 
 package net.sourceforge.pmd.eclipse;
 
+import java.io.Writer;
+
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+
 /**
- * Interface of a writer factory.
+ * Interface of an AST Writer
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/10/27 20:14:13  phherlin
+ * Revision 1.1  2003/10/27 20:14:13  phherlin
  * Refactoring AST generation. Using a ASTWriter.
  *
- * Revision 1.1  2003/10/16 22:26:37  phherlin
- * Fix bug #810858.
- * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
- *
  */
-public interface WriterFactory {
-    /**
-     * Return a ruleset writer
-     * @return a ruleset writer
-     */
-    RuleSetWriter getRuleSetWriter();
+public interface ASTWriter {
+    void write(Writer writer, ASTCompilationUnit compilationUnit) throws PMDEclipseException;
 
-    /**
-     * Return a ast writer
-     * @return a ruleset writer
-     */
-    ASTWriter getASTWriter();
 }

@@ -31,6 +31,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/10/27 20:14:13  phherlin
+ * Refactoring AST generation. Using a ASTWriter.
+ *
  * Revision 1.1  2003/10/16 22:26:37  phherlin
  * Fix bug #810858.
  * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
@@ -43,6 +46,13 @@ public class DefaultWriterFactory extends WriterAbstractFactory {
      */
     public RuleSetWriter getRuleSetWriter() {
         return new RuleSetWriterImpl();
+    }
+
+    /**
+     * @see net.sourceforge.pmd.eclipse.WriterFactory#getASTWriter()
+     */
+    public ASTWriter getASTWriter() {
+        return new ASTWriterImpl();
     }
 
 }

@@ -1,15 +1,18 @@
 package net.sourceforge.pmd.eclipse.actions;
 
 import java.io.ByteArrayInputStream;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Iterator;
 
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.eclipse.ASTWriter;
 import net.sourceforge.pmd.eclipse.PMDConstants;
+import net.sourceforge.pmd.eclipse.PMDEclipseException;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+import net.sourceforge.pmd.eclipse.WriterAbstractFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IContainer;
@@ -33,6 +36,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2003/10/27 20:14:13  phherlin
+ * Refactoring AST generation. Using a ASTWriter.
+ *
  * Revision 1.5  2003/06/19 20:59:45  phherlin
  * In the generated XML AST, put the image information on an image attribute instead of the tag body
  *
@@ -45,14 +51,6 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class PMDGenerateASTAction implements IObjectActionDelegate {
-    private static final String QUOTE = "\"";
-    private static final String INDENT = "\t";
-    private static final String TAG_BEGIN = "<";
-    private static final String TAG_END = ">";
-    private static final String TAG_ENDEND = "/>";
-    private static final String ENDTAG_BEGIN = TAG_BEGIN + "/";
-    private static final String ENDTAG_END = TAG_END;
-
     private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDGenerateASTAction");
     private IWorkbenchPart targetPart;
 
@@ -97,12 +95,11 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
         log.info("Genrating AST for file " + file.getName());
         try {
             JavaParser parser = new JavaParser(file.getContents());
-            SimpleNode root = parser.CompilationUnit();
-            StringWriter sr = new StringWriter();
-            PrintWriter pr = new PrintWriter(sr);
-            pr.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            dump(root, pr, "");
-            pr.flush();
+            ASTCompilationUnit compilationUnit = parser.CompilationUnit();
+            StringWriter stringWriter = new StringWriter();
+            ASTWriter astWriter = WriterAbstractFactory.getFactory().getASTWriter();
+            astWriter.write(stringWriter, compilationUnit);
+            stringWriter.flush();
 
             String name = file.getName();
             int dotPosition = name.indexOf('.');
@@ -120,7 +117,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
                 if (astFile.exists()) {
                     astFile.delete(false, null);
                 }
-                ByteArrayInputStream astInputStream = new ByteArrayInputStream(sr.toString().getBytes());
+                ByteArrayInputStream astInputStream = new ByteArrayInputStream(stringWriter.toString().getBytes());
                 astFile.create(astInputStream, false, null);
             }
 
@@ -128,49 +125,8 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
             PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         } catch (ParseException e) {
             PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
-        }
-    }
-
-    /**
-     * Dump a node and its subnodes -> recursive
-     * @param node a node
-     * @param out a print writer to write into
-     * @param prefix texte to print before the name of the node
-     */
-    private void dump(SimpleNode node, PrintWriter out, String prefix) {
-        StringBuffer sb = new StringBuffer(prefix);
-        sb
-            .append(TAG_BEGIN)
-            .append(node.toString())
-            .append(" beginLine=" + QUOTE)
-            .append(node.getBeginLine())
-            .append(QUOTE)
-            .append(" beginColumn=" + QUOTE)
-            .append(node.getBeginColumn())
-            .append(QUOTE)
-            .append(" endLine=" + QUOTE)
-            .append(node.getEndLine())
-            .append(QUOTE)
-            .append(" endColumn=" + QUOTE)
-            .append(node.getEndColumn())
-            .append(QUOTE);
-
-        if (node.getImage() != null) {
-            sb.append(" image=").append(QUOTE).append(node.getImage()).append(QUOTE);
-        }
-
-        if (node.jjtGetNumChildren() == 0) {
-            sb.append(TAG_ENDEND);
-            out.println(sb.toString());
-        } else {
-            sb.append(">");
-            out.println(sb.toString());
-
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                dump((SimpleNode) node.jjtGetChild(i), out, prefix + INDENT);
-            }
-
-            out.println(prefix + ENDTAG_BEGIN + node.toString() + ENDTAG_END);
+        } catch (PMDEclipseException e) {
+            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
         }
     }
 
