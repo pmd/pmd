@@ -2,8 +2,8 @@ package net.sourceforge.pmd.jdeveloper;
 
 import oracle.ide.Ide;
 
-import java.util.Properties;
 import java.util.Iterator;
+import java.util.Properties;
 
 public class IDEStorage implements SettingsStorage {
 

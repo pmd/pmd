@@ -1,13 +1,11 @@
 package net.sourceforge.pmd.jdeveloper;
 
-import oracle.ide.Ide;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Properties;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Properties;
 
 public class FileStorage implements SettingsStorage {
 

@@ -9,8 +9,8 @@ import javax.swing.*;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Properties;
+import java.util.TreeMap;
 
 public class SelectedRules {
 
