@@ -24,7 +24,6 @@ public class JavaTokenizer implements Tokenizer {
         JavaParserTokenManager tokenMgr = new TargetJDK1_4().createJavaParserTokenManager(new StringReader(sb.toString()));
         Token currToken = tokenMgr.getNextToken();
         boolean discarding = false;
-        int count = 0;
         while (currToken.image != "") {
             if (currToken.image.equals("import") || currToken.image.equals("package")) {
                 discarding = true;
@@ -42,7 +41,6 @@ public class JavaTokenizer implements Tokenizer {
             }
 
             if (!currToken.image.equals(";")) {
-                count++;
                 tokenEntries.add(new TokenEntry(currToken.image, tokens.getFileName(), currToken.beginLine));
             }
 
