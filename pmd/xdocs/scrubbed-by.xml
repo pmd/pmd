@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="ddp@apache.org">David Dixon-Peugh</author>
+    <title>Scrubbed By PMD</title>
+  </properties>
+  <body>
+<section title="Scrubbed By . . .">
+This page lists the many projects which are scrubbed by PMD.
+If you would like to add your project to this list, please
+file a Support Request on SourceForge, and we will try to get
+your project up here.
+</section>
+<section title="Projects. . .">
+<table>
+  <tr><td><center><img src="images/ultralog.jpg"/></center></td>
+      <td><a href="http://www.ultralog.net/">Ultra*Log</a></td></tr>
+  <tr><td><center><img src="images/pmd_logo_small.jpg"/></center></td>
+      <td><a href="http://pmd.sourceforge.net/">PMD</a></td></tr>
+</table>
+</section>
+  </body>
+</document>
