@@ -11,10 +11,11 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.List;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.io.File;
 
-public abstract class AbstractRule 
+public abstract class AbstractRule
     extends JavaParserVisitorAdapter
     implements Rule
 {
@@ -41,18 +42,18 @@ public abstract class AbstractRule
         this.example = example;
     }
 
-	public boolean hasProperty( String name ) {
-		return properties.containsKey( name );	
-	}
+    public boolean hasProperty( String name ) {
+        return properties.containsKey( name );
+    }
 
     public void addProperty(String name, String value) {
         properties.put(name, value);
     }
 
-	public double getDoubleProperty(String name) {
-		return Double.parseDouble(properties.getProperty(name));
-	}
-	
+    public double getDoubleProperty(String name) {
+        return Double.parseDouble(properties.getProperty(name));
+    }
+
     public int getIntProperty(String name) {
         return Integer.parseInt(properties.getProperty(name));
     }
@@ -109,4 +110,13 @@ public abstract class AbstractRule
         return new RuleViolation(this, lineNumber, specificDescription, ctx.getSourceCodeFilename());
     }
 
+    /**
+     * Gets an enumeration to enumerate through this rule's property names.
+     *
+     * @return An enumeration of property names
+     */
+    public Map getProperties()
+    {
+        return properties;
+    }
 }

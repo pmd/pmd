@@ -18,4 +18,5 @@ public interface Rule {
     public boolean getBooleanProperty(String name);
     public String getStringProperty(String name);
     public double getDoubleProperty(String name);
+    public Map getProperties();
 }
