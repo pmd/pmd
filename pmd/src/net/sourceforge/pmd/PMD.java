@@ -23,14 +23,14 @@ public class PMD {
 
     public static final String EOL = System.getProperty("line.separator", "\n");
 
-    private JLSVersion jlsVersion;
+    private TargetJDKVersion targetJDKVersion;
 
     public PMD() {
-        jlsVersion = new JLS1_4();
+        targetJDKVersion = new TargetJDK1_4();
     }
 
-    public PMD(JLSVersion jlsVersion) {
-        this.jlsVersion = jlsVersion;
+    public PMD(TargetJDKVersion targetJDKVersion) {
+        this.targetJDKVersion = targetJDKVersion;
     }
 
     /**
@@ -40,7 +40,7 @@ public class PMD {
      */
     public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         try {
-            JavaParser parser = jlsVersion.createParser(reader);
+            JavaParser parser = targetJDKVersion.createParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
             Thread.yield();
             SymbolFacade stb = new SymbolFacade();

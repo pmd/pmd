@@ -1,4 +1,9 @@
 /**
+ *
+ * Added in support for assert as a name using lookaheads
+ *
+ * Tom Copeland, 09/03
+ * ===================================================================
  * Copied over the changes made by Andrea Gini and Marco Savard to
  * support JDK 1.4 language constructs, i.e., asserts.
  * See the java1_4c.jj distributed in the javacc2.1/examples/JavaGrammers directory.
@@ -59,6 +64,12 @@ options {
 PARSER_BEGIN(JavaParser)
 package net.sourceforge.pmd.ast;
 public class JavaParser {
+
+  private boolean usingAssertAsIdentifier;
+
+  public void setAssertAsIdentifier() {
+   this.usingAssertAsIdentifier = true;
+  }
 
   private boolean assertLookahead() {
     return getToken(1).image.equals("assert");
@@ -976,7 +987,9 @@ void ArrayDimsAndInits() :
 void Statement() :
 {}
 {
-  LOOKAHEAD( { assertLookahead() } )
+  LOOKAHEAD( {
+  assertLookahead()
+  } )
   AssertStatement()
 |
   LOOKAHEAD(2)
@@ -1193,6 +1206,9 @@ void TryStatement() :
 
 void AssertStatement() :
 {
+    if (usingAssertAsIdentifier) {
+     throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
+    }
     Token tok;
 }
 {

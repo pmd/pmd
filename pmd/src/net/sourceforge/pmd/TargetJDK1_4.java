@@ -5,13 +5,13 @@ import net.sourceforge.pmd.ast.JavaParser;
 import java.io.InputStream;
 import java.io.Reader;
 
-public class JLS1_1 implements JLSVersion {
+public class TargetJDK1_4 implements TargetJDKVersion {
 
     public JavaParser createParser(InputStream in) {
-        throw new RuntimeException("Not yet implemented");
+        return new JavaParser(in);
     }
 
     public JavaParser createParser(Reader in) {
-        throw new RuntimeException("Not yet implemented");
+        return new JavaParser(in);
     }
 }
