@@ -22,13 +22,13 @@ import java.io.FileReader;
 import java.util.List;
 import java.util.Iterator;
 
-public class DCPD {
+public class DCPDManager {
 
     private JavaSpace space;
     private Job job;
     private TokenSetsWrapper tokenSetWrapper;
 
-    public DCPD(String javaSpaceURL) {
+    public DCPDManager(String javaSpaceURL) {
         try {
             long start = System.currentTimeMillis();
             System.out.println("Connecting to JavaSpace");
@@ -111,6 +111,6 @@ public class DCPD {
     }
 
     public static void main(String[] args) {
-        new DCPD(Util.SPACE_SERVER);
+        new DCPDManager(Util.SPACE_SERVER);
     }
 }
