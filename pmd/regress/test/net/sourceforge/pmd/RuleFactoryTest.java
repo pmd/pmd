@@ -44,4 +44,14 @@ public class RuleFactoryTest extends TestCase {
         throw new RuntimeException("Should have thrown RuntimeException");
     }
 
+    public void testConcatenatedList() {
+        String list = RuleFactory.getConcatenatedRuleSetList();
+        assertTrue(list.indexOf("design") != -1);
+    }
+
+    public void testContains() {
+        assertTrue(RuleFactory.containsRuleSet("all"));
+        assertTrue(!RuleFactory.containsRuleSet("foo"));
+    }
+
 }

@@ -1,5 +1,5 @@
 ??? - 0.3:
-foo
+Added new rule: UseSingletonRule
 
 June 27 2002 - 0.2:
 Added new rules: IfElseStmtsMustUseBracesRule, EmptyWhileStmtRule

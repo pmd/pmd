@@ -26,19 +26,32 @@ public class RuleFactory {
         ruleSets.add(DESIGN);
     }
 
-    public static List createRules(String ruleSetType) {
-        if (!ruleSets.contains(ruleSetType)) {
-            throw new RuntimeException("Unknown rule set type " + ruleSetType);
+    public static String getConcatenatedRuleSetList() {
+        StringBuffer buf = new StringBuffer();
+        for (Iterator i = ruleSets.iterator(); i.hasNext();) {
+            if (buf.length() != 0) {
+                buf.append(",");
+            }
+            buf.append(i.next());
         }
+        return buf.toString();
+    }
 
+    public static boolean containsRuleSet(String ruleSet) {
+        return ruleSets.contains(ruleSet);
+    }
+
+    public static List createRules(String ruleSetType) {
         if (ruleSetType.equals(ALL)) {
             return createAllRules();
         } else if (ruleSetType.equals(GENERAL)) {
             return createGeneralRules();
         } else if (ruleSetType.equals(DESIGN)) {
             return createDesignRules();
+        } else if (ruleSetType.equals(COUGAAR)) {
+            return createCougaarRules();
         }
-        return createCougaarRules();
+        throw new RuntimeException("Unknown rule set type " + ruleSetType);
     }
 
     private static List createAllRules() {
