@@ -49,6 +49,48 @@
 </table>
 
       </subsection>
+<subsection name="Database">
+<p>
+PMD can record its information into a JDBC datasource using a <![CDATA[<database />]]> tag.  This
+tag has several attributes:
+<table>
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td>driver</td>
+    <td>Class name of the JDBC driver to use to connect to the database.</td>
+    <td><i>Optional.</i>  If your default system is set up to install the JDBC driver,
+    or if something else will install it, don't do it.  Otherwise, provide the
+    value.</td>
+  </tr>
+  <tr>
+    <td>url</td>
+    <td>JDBC URL to connect to the database with.</td>
+    <td>Required</td>
+  </tr>
+  <tr>
+    <td>user</td>
+    <td>User to connect to the database as.</td>
+    <td>Required</td>
+  </tr>
+  <tr>
+    <td>password</td>
+    <td>Password to use for logging into the database.</td>
+    <td>Required</td>
+  </tr>
+  <tr>
+    <td>projectid</td>
+    <td>This is an integer which will get put into the PMD_RUNS table.  Ideally this should
+    be used to connect this run to other data in the system.</td>
+    <td><i>Optional.</i>  If this value is ommitted, the default value will be 0.</td>
+  </tr>
+</table>
+</p>
+</subsection>
+
       <subsection name="Examples">
 <source>
 <![CDATA[
@@ -65,6 +107,18 @@
 <target name="pmd">
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
   <pmd verbose="true" rulesetfiles="rulesets/basic.xml,rulesets/design.xml" failonerror="no">
+    <formatter type="xml" toFile="c:\jdk-report.xml"/>
+    <fileset dir="C:\j2sdk1.4.0\src\">
+      <include name="**/*.java"/>
+    </fileset>
+  </pmd>
+</target>
+
+<target name="pmd">
+  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
+  <pmd verbose="true" rulesetfiles="rulesets/basic.xml,rulesets/design.xml" failonerror="no">
+    <database driver="com.mysql.jdbc.Driver" url="jdbc:mysql:///pmd" user="david" 
+              password="" projectid="10" /> 
     <formatter type="xml" toFile="c:\jdk-report.xml"/>
     <fileset dir="C:\j2sdk1.4.0\src\">
       <include name="**/*.java"/>
