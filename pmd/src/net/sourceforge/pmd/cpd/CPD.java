@@ -22,9 +22,7 @@ public class CPD {
     private Occurrences occ = new Occurrences();
     private Occurrences results;
 
-
     public void add(File file) throws IOException {
-        System.out.println("Adding file " + file);
         Tokenizer t = new Tokenizer();
         TokenSet ts = new TokenSet(file.getAbsolutePath());
         FileReader fr = new FileReader(file);

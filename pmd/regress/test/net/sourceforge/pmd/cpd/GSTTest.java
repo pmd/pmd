@@ -8,6 +8,8 @@ package test.net.sourceforge.pmd.cpd;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.*;
 
+import java.util.Iterator;
+
 public class GSTTest extends TestCase {
     public GSTTest(String name) {
         super(name);
@@ -25,6 +27,21 @@ public class GSTTest extends TestCase {
         gst.crunch();
         occ = gst.getResults();
         assertEquals(1, occ.size());
+        Iterator tiles = occ.getTiles();
+        assertTrue(tiles.hasNext());
+        Tile tile = (Tile)tiles.next();
+        assertEquals("hello", tile.getImage());
+        Iterator occs = occ.getOccurrences(tile);
+        assertTrue(occs.hasNext());
+        while (occs.hasNext()) {
+            Occurrence oc = (Occurrence)occs.next();
+            if (oc.getTokenSetID().equals("foo")) {
+                assertEquals(0, oc.getIndex());
+            } else {
+                assertEquals("bar", oc.getTokenSetID());
+            }
+        }
+
     }
 
     public static TokenSet createHelloTokenSet(String id) {
