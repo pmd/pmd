@@ -59,15 +59,55 @@ public class TypeSetTest extends TestCase {
         assertEquals(File.class,  r.resolve("File"));
     }
 
-    public void testImplicitImportResolver() throws Throwable {
+    public void testImplicitImportResolverPass() throws Throwable {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
         assertEquals(String.class, r.resolve("String"));
     }
 
-    public void testCurrentPackageResolver() throws Throwable {
+    public void testImplicitImportResolverPassFail() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        try {
+            r.resolve("foo");
+            throw new RuntimeException("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+            // cool
+        }
+    }
+
+    public void testCurrentPackageResolverPass() throws Throwable {
         TypeSet.Resolver r = new TypeSet.CurrentPackageResolver("net.sourceforge.pmd.");
         assertEquals(PMD.class,  r.resolve("PMD"));
     }
+
+    public void testImportOnDemandResolverPass() throws Throwable {
+        Set imports = new HashSet();
+        imports.add("java.io.*");
+        imports.add("java.util.*");
+        TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(imports);
+        assertEquals(Set.class, r.resolve("Set"));
+        assertEquals(File.class, r.resolve("File"));
+    }
+
+    public void testImportOnDemandResolverFail() throws Throwable {
+        Set imports = new HashSet();
+        imports.add("java.io.*");
+        imports.add("java.util.*");
+        TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(imports);
+        try {
+            r.resolve("foo");
+            throw new RuntimeException("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+            // cool
+        }
+        try {
+            r.resolve("String");
+            throw new RuntimeException("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+            // cool
+        }
+    }
+
 }
+
 
 

@@ -25,12 +25,12 @@ public class TypeSet {
     }
 
     public static class ExplicitImportResolver implements Resolver {
-        private Set imports;
-        public ExplicitImportResolver(Set imports) {
-            this.imports = imports;
+        private Set importStmts;
+        public ExplicitImportResolver(Set importStmts) {
+            this.importStmts = importStmts;
         }
         public Class resolve(String name) throws ClassNotFoundException {
-            for (Iterator i = imports.iterator(); i.hasNext();) {
+            for (Iterator i = importStmts.iterator(); i.hasNext();) {
                 String importStmt = (String)i.next();
                 if (importStmt.endsWith(name)) {
                     return Class.forName(importStmt);
@@ -50,14 +50,33 @@ public class TypeSet {
         }
     }
 
-    // TODO reference the relevant JLS section
+    // TODO cite the JLS section on implicit imports
     public static class ImplicitImportResolver implements Resolver {
         public Class resolve(String name) throws ClassNotFoundException {
             return Class.forName("java.lang." + name);
         }
     }
 
-    private String pkg;
+    public static class ImportOnDemandResolver implements Resolver {
+        private Set importStmts;
+        public ImportOnDemandResolver(Set importStmts) {
+            this.importStmts = importStmts;
+        }
+        public Class resolve(String name) throws ClassNotFoundException {
+            for (Iterator i = importStmts.iterator(); i.hasNext();) {
+                String importStmt = (String)i.next();
+                if (importStmt.endsWith("*")) {
+                    try {
+                        String importPkg = importStmt.substring(0, importStmt.indexOf("*")-1);
+                        return Class.forName(importPkg + "." + name);
+                    } catch (ClassNotFoundException cnfe) {}
+                }
+            }
+            throw new ClassNotFoundException("Type " + name + " not found");
+        }
+    }
+
+   private String pkg;
     private Set imports = new HashSet();
 
     public void setASTCompilationUnitPackage(String pkg) {
