@@ -184,13 +184,11 @@ return 3;
             </property>
         </properties>
         <priority>3</priority>
-
       <example>
   <![CDATA[
 public class Foo {
- public void bar() {
-  int x = 2;
-  x = x;
+ public void finalize() {
+  // do something
  }
 }
   ]]>
