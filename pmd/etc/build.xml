@@ -1,11 +1,11 @@
 <project name="pmd" default="compile" basedir="../">
 
-<property name="etc" value="etc"/>
-<property name="lib" value="lib"/>
-<property name="src" value="src"/>
-<property name="build" value="build"/>
-<property name="rulesets" value="rulesets"/>
-<property name="regress" value="regress"/>
+<property name="etc" value="etc\"/>
+<property name="lib" value="lib\"/>
+<property name="src" value="src\"/>
+<property name="build" value="build\"/>
+<property name="rulesets" value="rulesets\"/>
+<property name="regress" value="regress\"/>
 <property name="version" value="1.2"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
