@@ -40,7 +40,7 @@
 	</target>
 
     <target name="jar" depends="compile">
-		<jar jarfile="${lib}/${ant.project.name}-${pluginversion}.jar">
+		<jar jarfile="${lib}/${ant.project.name}.jar">
 			<fileset dir="${build}"/>
 			<fileset dir="${config}">
 				<include name="*.props"/>
@@ -48,7 +48,7 @@
 				<include name="*.html"/>
 			</fileset>
 		</jar>
-		<copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="${jedit.jars.dir}"></copy>
+		<copy file="${lib}/${ant.project.name}.jar" todir="${jedit.jars.dir}"></copy>
     </target>
 
 
