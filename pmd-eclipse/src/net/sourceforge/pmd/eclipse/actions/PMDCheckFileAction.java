@@ -35,9 +35,6 @@ public class PMDCheckFileAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 		String[] rulesetFiles = PMDPlugin.getDefault().getRuleSetsPreference();
-		
-		Shell shell = new Shell();
-
 		PMDVisitor visitor = null;
 		try {
 			visitor = new PMDVisitor(rulesetFiles);
@@ -49,13 +46,10 @@ public class PMDCheckFileAction implements IObjectActionDelegate {
 					if (obj instanceof IFile) {
 						((IFile)obj).accept(visitor);
 					} 
-					
 				}
 			}
-
-			//PMDPlugin.getWorkspace().getRoot().accept( visitor );
-			
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 

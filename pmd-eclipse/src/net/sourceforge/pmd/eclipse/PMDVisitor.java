@@ -99,8 +99,9 @@ public class PMDVisitor implements IResourceVisitor {
 			(((IFile) resource).getFileExtension() != null) &&
 			((IFile) resource).getFileExtension().equals("java")) {	
 				runPMD( (IFile) resource );
-			return false;
-		} else {
+				return false;
+		} 
+		else {
 			return true;
 		}
 	}

@@ -10,7 +10,7 @@
       <library name="pmd-eclipse.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-0.8.jar"/>
+      <library name="lib/pmd-dev.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
@@ -65,6 +65,12 @@
             class="net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage"
             id="net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage">
       </page>
+      <page
+            name="CPD Preferences"
+            category="net.sourceforge.pmd.eclipse.preferences.GeneralPreferencesPage"
+            class="net.sourceforge.pmd.eclipse.preferences.CPDPreferencePage"
+            id="net.sourceforge.pmd.eclipse.CPDPreferencePage">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -87,6 +93,27 @@
                menubarPath="net.sourceforge.pmd.eclipse.PMDCheckFileMenu/group1"
                enablesFor="*"
                id="net.sourceforge.pmd.eclipse.PMDCheckFileActionItem">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            nameFilter="*"
+            id="net.sourceforge.pmd.eclipse.CPDCheckProject">
+         <menu
+               label="&amp;CPD"
+               path="cpdadditions"
+               id="net.sourceforge.pmd.eclipse.CPDCheckProjectMenu">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Check Project"
+               state="false"
+               class="net.sourceforge.pmd.eclipse.actions.CPDCheckProjectAction"
+               menubarPath="net.sourceforge.pmd.eclipse.CPDCheckProjectMenu/group1"
+               enablesFor="1"
+               id="net.sourceforge.pmd.eclipse.CPDCheckProjectActionItem">
          </action>
       </objectContribution>
    </extension>

@@ -14,6 +14,6 @@
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.3/xmlParserAPIs.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.3/xercesImpl.jar"/>
     <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
-    <classpathentry kind="lib" path="C:/eclipse/workspace/pmd-eclipse/lib/pmd-0.8.jar"/>
+    <classpathentry kind="lib" path="C:/eclipse/workspace/pmd-eclipse/lib/pmd-dev.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
