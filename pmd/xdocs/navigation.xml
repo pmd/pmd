@@ -33,10 +33,12 @@
       <item name="Basic" href="/rules/basic.html" />
       <item name="Naming" href="/rules/naming.html" />
       <item name="Unused Code" href="/rules/unusedcode.html" />
-      <item name="Design Patterns" href="/rules/design.html" />
+      <item name="Design" href="/rules/design.html" />
       <item name="Import Statements" href="/rules/imports.html" />
       <item name="JUnit Tests" href="/rules/junit.html" />
       <item name="Strings" href="/rules/strings.html" />
+      <item name="Braces" href="/rules/braces.html" />
+      <item name="Code Size" href="/rules/codesize.html" />
     </menu>
   </body>
 </project>
