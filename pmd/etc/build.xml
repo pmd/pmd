@@ -67,7 +67,12 @@
     </pmd>
 </target>
 
-<target name="test" depends="compile">
+  <target name="requires-junit">
+    <available classname="junit.framework.Test" property="junit.available"/>
+    <fail unless="junit.available" message="JUnit not available. Place a copy in CLASSPATH."/>
+  </target>
+
+<target name="test" depends="requires-junit,compile">
     <junit printsummary="yes" haltonfailure="yes">
       <classpath>
         <path refid="classpath.path" />

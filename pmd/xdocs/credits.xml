@@ -10,8 +10,8 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Paul Roebuck - Ant build improvement, several bug reports</li>
             <li>Jon A. Maxwell - Bug report</li>
-            <li>Paul Roebuck - Several bug reports</li>
             <li>Maik Schreiber - Bug report</li>
             <li>Erik Lee - Bug report</li>
             <li>Brandon Franklin - pmd-web suggestions</li>
