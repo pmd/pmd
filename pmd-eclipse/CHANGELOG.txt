@@ -1,6 +1,25 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
+v1.2.0 - 27/10/2003
+
+Runtime
+-------
+. Refactoring some classes to avoid the warnings about accessing private members from inner types.
+. Adding the review feature (RFE#785023 and RFE#787086)
+. Adding a Java 1.3 compatibility property for projects
+. Upgrading to PMD 1.3.0
+. Fixing encoding in rulesets (bug #810858)
+. Fixing encoding of AST (bug #819520)
+
+Development
+-----------
+. Rebuild the build.xml file according to the "Create Ant Build File" feature
+
+
+
+
+----------------------------------------------------------------------------------------
 v1.1.2 - 11/08/2003
 
 Runtime

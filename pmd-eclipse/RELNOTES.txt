@@ -1,6 +1,38 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
+v1.2.0 - 27/10/2003
+
+NEW : Adding a JDK 1.3 compatibility option
+-------------------------------------------
+With the upgrade to PMD 1.3, the plug-in now provide an option to flag the project to
+be JDK1.3 compatible. If the flag is checked, the "assert" keyword will be processed by
+PMD like a identifier. If the flag is unchecked, the "assert" will be processed as a
+keyword.
+
+NEW : Adding a review feature
+-----------------------------
+Some rules occured and nothing can be done to correct it (unused parameter in a
+framework abstract method or interface method, complexity warning, deep ifs,...)
+You cannot remove the rules from the configuration because other or future occurrences
+are still needed. But if the rule is still used, then the violations view will be
+polluted by the undesired violations.
+
+To address this problem, the plug-in now provide a review feature. When a violation
+occurs, if it cannot be corrected, then it can be marked as "reviewed". Reviews are
+comments placed above the targeted line of code that avoid the violation to be raised
+in future checks. As it is in the code, it is automatically shared with other developpers.
+
+To learn more about this feature, please read the online documentation in the howto
+chapter.
+
+FIX : Encoding of generated XML files
+-------------------------------------
+The plugin may generates 2 kind of XML files : rulesets file and AST files. Encoding
+problems that were sometimes encountered are now fixed.
+
+
+----------------------------------------------------------------------------------------
 v1.1.0 - 30/07/2003
 
 NEW : Redesigning the plugin configuration
