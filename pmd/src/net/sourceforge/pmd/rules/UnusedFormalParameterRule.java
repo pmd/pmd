@@ -75,7 +75,7 @@ public class UnusedFormalParameterRule extends AbstractRule {
                 checkParamNames(paramNames, blockNode);   //check the block node for the occurence of the parameter names
                 if (!paramNames.isEmpty()) {  //there are still names left in the set so the must not have been used
                     RuleContext ctx = (RuleContext)data;
-                    System.out.println(paramNames);
+                    //System.out.println(paramNames);
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, md.getBeginLine(), MessageFormat.format(getMessage(), paramNames.toArray())));
                 }
             }
