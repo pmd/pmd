@@ -22,7 +22,7 @@ import  com.borland.primetime.ide.*;
 import  com.borland.primetime.node.*;
 import  com.borland.primetime.viewer.*;
 import  net.sourceforge.pmd.*;
-import  net.sourceforge.pmd.reports.*;
+
 import  com.borland.primetime.actions.ActionGroup;
 import  com.borland.primetime.properties.NodeProperty;
 import  com.borland.primetime.properties.GlobalProperty;
@@ -39,6 +39,7 @@ public class PMDOpenTool {
      * Default constructor
      */
     public PMDOpenTool () {
+        int i;
     }
 
     /**
@@ -102,18 +103,17 @@ public class PMDOpenTool {
      */
     public static Report instanceCheck (String text) {
         PMD pmd = new PMD();
-        ReportFactory rf = new ReportFactory();
+
         RuleContext ctx = new RuleContext();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        //RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream("rulesets/unusedcode.xml"));
         RuleSet rules = constructRuleSets(ruleSetFactory, pmd);
         if (rules == null)
             return  null;
-        ctx.setReport(rf.createReport("xml"));
+        ctx.setReport(new Report());
         ctx.setSourceCodeFilename("this");
         try {
             // TODO switch to use StringReader once PMD 0.4 gets released
-            pmd.processFile(new StringBufferInputStream(text), rules, ctx);
+            pmd.processFile(new StringReader(text), rules, ctx);
             return  ctx.getReport();
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
@@ -148,7 +148,7 @@ public class PMDOpenTool {
                         else {
                             for (Iterator i = rpt.iterator(); i.hasNext();) {
                                 RuleViolation rv = (RuleViolation)i.next();
-                                PMDMessage pmdMsg = new PMDMessage(rv.getDescription()
+                                PMDMessage pmdMsg = new PMDMessage(rv.getRule().getName() + ": " + rv.getDescription()
                                         + " at line " + rv.getLine(), rv.getLine(),
                                         (JavaFileNode)node);
                                 pmdMsg.setForeground(Color.red);

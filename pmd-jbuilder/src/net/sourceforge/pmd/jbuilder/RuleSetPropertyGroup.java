@@ -33,19 +33,19 @@ public class RuleSetPropertyGroup
     public static final String RULESET_DESIGN = "design";
     public static final String RULESET_UNUSEDCODE = "unusedcode";
     public static final String RULESET_COUGAAR = "cougaar";
-    public static final String RULESET_TICBUILD = "ticbuild";
+    public static final String RULESET_NAMING = "naming";
     public static final Object RULESETS_TOPIC = new Object();
     public static final GlobalProperty PROPKEY_RULESET_DESIGN = new GlobalProperty(RULESETS, RULESET_DESIGN, "true");
     public static final GlobalProperty PROPKEY_RULESET_BASIC = new GlobalProperty(RULESETS, RULESET_BASIC, "true");
     public static final GlobalProperty PROPKEY_RULESET_UNUSEDCODE = new GlobalProperty(RULESETS, RULESET_UNUSEDCODE, "true");
     public static final GlobalProperty PROPKEY_RULESET_COUGAAR = new GlobalProperty(RULESETS, RULESET_COUGAAR, "true");
-    public static final GlobalProperty PROPKEY_RULESET_TICBUILD = new GlobalProperty(RULESETS, RULESET_TICBUILD, "true");
+    public static final GlobalProperty PROPKEY_RULESET_NAMING = new GlobalProperty(RULESETS, RULESET_NAMING, "true");
     //make sure that these two arrays are synchronized
     public static final String[] RULESET_NAMES =  {
-        RULESET_BASIC, RULESET_DESIGN, RULESET_UNUSEDCODE, RULESET_COUGAAR, RULESET_TICBUILD
+        RULESET_BASIC, RULESET_DESIGN, RULESET_UNUSEDCODE, RULESET_COUGAAR, RULESET_NAMING
     };
     public static final GlobalProperty[] PROPKEYS =  {
-        PROPKEY_RULESET_BASIC, PROPKEY_RULESET_DESIGN, PROPKEY_RULESET_UNUSEDCODE, PROPKEY_RULESET_COUGAAR, PROPKEY_RULESET_TICBUILD
+        PROPKEY_RULESET_BASIC, PROPKEY_RULESET_DESIGN, PROPKEY_RULESET_UNUSEDCODE, PROPKEY_RULESET_COUGAAR, PROPKEY_RULESET_NAMING
     };
 
     /**
