@@ -5,6 +5,7 @@ Fixed bug 1050295 - ImmutableFieldRule no longer reports false positives for fie
 Fixed bug 1041739 - EmptyStatementNotInLoop no longer reports false positives for nested class declarations in methods.
 Fixed bug 1039963 - CPD no longer fails to parse C++ files with multi-line macros.
 Fixed bug 1053663 - SuspiciousConstantFieldName no longer reports false positives for interface members.
+YAHTMLRenderer no longer has dependence on Ant packages.
 Modified the AST to correctly include PostfixExpression nodes.  Previously a statement like "x++;" was embedded in the parent StatementExpression node.
 
 October 19, 2004 - 2.0:
