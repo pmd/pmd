@@ -7,6 +7,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.util.StringUtil;
 
 import java.util.Iterator;
 
@@ -40,9 +41,9 @@ public class XMLRenderer implements Renderer {
             buf.append(lineSep);
 
             String d = rv.getDescription();
-            d = replaceString(d, '&', "&amp;");
-            d = replaceString(d, '<', "&lt;");
-            d = replaceString(d, '>', "&gt;");
+            d = StringUtil.replaceString(d, '&', "&amp;");
+            d = StringUtil.replaceString(d, '<', "&lt;");
+            d = StringUtil.replaceString(d, '>', "&gt;");
             buf.append(d);
 
             buf.append(lineSep);
@@ -60,9 +61,9 @@ public class XMLRenderer implements Renderer {
             buf.append("<error ");
             buf.append(lineSep);
             String attrs = "filename=\"" + pe.getFile() + "\" msg=\"" + pe.getMsg() + "\"";
-            attrs = replaceString(attrs, '&', "&amp;");
-            attrs = replaceString(attrs, '<', "&lt;");
-            attrs = replaceString(attrs, '>', "&gt;");
+            attrs = StringUtil.replaceString(attrs, '&', "&amp;");
+            attrs = StringUtil.replaceString(attrs, '<', "&lt;");
+            attrs = StringUtil.replaceString(attrs, '>', "&gt;");
             buf.append(attrs);
             buf.append(lineSep);
             buf.append("/>");
@@ -73,17 +74,4 @@ public class XMLRenderer implements Renderer {
         return buf.toString();
     }
 
-    private static String replaceString(String d, char oldChar, String newString) {
-        StringBuffer desc = new StringBuffer();
-        int index = d.indexOf(oldChar);
-        int last = 0;
-        while (index != -1) {
-            desc.append(d.substring(last, index));
-            desc.append(newString);
-            last = index + 1;
-            index = d.indexOf(oldChar, last);
-        }
-        desc.append(d.substring(last));
-        return desc.toString();
-    }
 }
