@@ -29,6 +29,7 @@
     </menu>
     <menu name="For example">
       <item name="Run PMD on a Sourceforge project" href="http://pmd.sf.net/cgi-bin/webpmd.pl" />
+      <item name="PMD results for Apache projects" href="http://cvs.apache.org/~tcopeland/pmdweb/" />
     </menu>
     <menu name="Rule Sets">
       <item name="Basic" href="/rules/basic.html" />
@@ -40,6 +41,7 @@
       <item name="Strings" href="/rules/strings.html" />
       <item name="Braces" href="/rules/braces.html" />
       <item name="Code Size" href="/rules/codesize.html" />
+      <item name="Controversial" href="/rules/controversial.html" />
     </menu>
   </body>
 </project>
