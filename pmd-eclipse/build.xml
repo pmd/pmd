@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="net.sourceforge.pmd.eclipse" default="build.jars" basedir=".">
+
+	<property name="bootclasspath" value=""/>
+	<property name="ws" value="win32"/>
+	<property name="os" value="win32"/>
+	<property name="arch" value="x86"/>
+
+	<target name="init" depends="properties">
+		<property name="plugin" value="net.sourceforge.pmd.eclipse"/>
+		<property name="version.suffix" value="0.5.0"/>
+		<property name="full.name" value="${plugin}_${version.suffix}"/>
+		<property name="temp.folder" value="${basedir}/temp.folder"/>
+		<property name="plugin.destination" value="${basedir}"/>
+		<property name="build.result.folder" value="${basedir}"/>
+		<property name="plugin.zip" value="pmd-eclipse-bin-${version.suffix}.zip"/>
+		<property name="source.zip" value="pmd-eclipse-src-${version.suffix}.zip"/>
+	</target>
+
+	<target name="properties" if="eclipse.running">
+		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+	</target>
+
+	<target name="build.update.jar" depends="init">
+		<delete dir="${temp.folder}"/>
+		<mkdir dir="${temp.folder}"/>
+		<antcall target="build.jars"/>
+		<antcall target="gather.bin.parts">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<zip zipfile="${plugin.destination}/${full.name}.jar" basedir="${temp.folder}/${full.name}" filesonly="false"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/pmd-eclipse.jar" todir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/plugin.xml" todir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/README" todir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/TODO.txt" todir="${destination.temp.folder}/${full.name}"/>
+		<mkdir dir="${destination.temp.folder}/${full.name}/lib"/>
+		<copy todir="${destination.temp.folder}/${full.name}/lib">
+			<fileset dir="lib/"/>
+		</copy>
+		<mkdir dir="${destination.temp.folder}/${full.name}/icons"/>
+		<copy todir="${destination.temp.folder}/${full.name}/icons">
+			<fileset dir="icons/"/>
+		</copy>
+		<copy todir="${destination.temp.folder}/${full.name}">
+			<fileset dir="." includes="**/*.properties"/>
+		</copy>
+	</target>
+
+	<target name="pmd-eclipse.jar" depends="init" unless="pmd-eclipse.jar">
+		<property name="destdir" value="${temp.folder}/pmd-eclipse.jar.bin"/>
+		<delete dir="${temp.folder}/pmd-eclipse.jar.bin"/>
+		<mkdir dir="${temp.folder}/pmd-eclipse.jar.bin"/>
+		<!-- compile the source code -->
+		<javac destdir="${temp.folder}/pmd-eclipse.jar.bin" failonerror="false" verbose="true" debug="on" includeAntRuntime="no" bootclasspath="${bootclasspath}" classpath="C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui.win32_2.0.0/workbench.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.boot_2.0.2.1/boot.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/xmlParserAPIs.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.runtime_2.0.2/runtime.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/xercesImpl.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui_2.0.2/workbench.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt.win32_2.0.2/ws/${ws}/swt.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.boot_2.0.2.1/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.runtime_2.0.2/bin;lib/pmd-1.03.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.jdt.core_2.0.2/jdtcore.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources_2.0.1/resources.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.jdt.core_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.apache.xerces_4.0.7/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.ui.win32_2.0.0/workbenchwin32.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt_2.0.2/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources.win32_2.0.1/resources.jar;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.core.resources_2.0.1/bin;C:/Program Files/IBM/WebSphere Studio/eclipse/plugins/org.eclipse.swt_2.0.2/ws/${ws}/swt.jar">
+			<src path="src/"/>
+		</javac>
+		<!-- copy necessary resources -->
+		<copy todir="${temp.folder}/pmd-eclipse.jar.bin">
+			<fileset dir="src/" excludes="**/*.java"/>
+		</copy>
+		<mkdir dir="${build.result.folder}"/>
+		<jar jarfile="${build.result.folder}/pmd-eclipse.jar" basedir="${temp.folder}/pmd-eclipse.jar.bin"/>
+		<delete dir="${temp.folder}/pmd-eclipse.jar.bin"/>
+	</target>
+
+	<target name="pmd-eclipsesrc.zip" depends="init" unless="pmd-eclipsesrc.zip">
+		<mkdir dir="${build.result.folder}"/>
+		<zip zipfile="${build.result.folder}/${source.zip}" filesonly="false">
+			<fileset dir="." includes="**/*.java"/>
+			<fileset dir="." includes="**/*.gif"/>
+			<fileset dir="." includes="**/*.xml"/>
+			<fileset dir="." includes="**/*.properties"/>
+			<fileset dir="." includes="README"/>
+			<fileset dir="." includes="TODO.txt"/>
+		</zip>
+	</target>
+
+	<target name="build.jars" depends="init">
+		<available property="pmd-eclipse.jar" file="${build.result.folder}/pmd-eclipse.jar"/>
+		<antcall target="pmd-eclipse.jar"/>
+	</target>
+
+	<target name="build.sources" depends="init">
+		<available property="pmd-eclipsesrc.zip" file="${build.result.folder}/pmd-eclipse-src${version.suffix}.zip"/>
+		<antcall target="pmd-eclipsesrc.zip"/>
+	</target>
+
+	<target name="build.zips" depends="init">
+	</target>
+
+	<target name="gather.sources" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${build.result.folder}/${source.zip}" todir="${destination.temp.folder}/${full.name}"/>
+	</target>
+
+	<target name="gather.logs" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/${full.name}"/>
+		<copy file="${temp.folder}/pmd-eclipse.jar.bin.log" todir="${destination.temp.folder}/${full.name}"/>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete file="${build.result.folder}/pmd-eclipse.jar"/>
+		<delete file="${build.result.folder}/${source.zip}"/>
+		<delete file="${plugin.destination}/${full.name}.jar"/>
+		<delete file="${plugin.destination}/${plugin.zip}"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="refresh" depends="init" if="eclipse.running">
+		<eclipse.refreshLocal resource="${plugin}" depth="infinite"/>
+	</target>
+
+	<target name="zip.plugin" depends="init">
+		<delete dir="${temp.folder}"/>
+		<mkdir dir="${temp.folder}"/>
+		<antcall target="build.jars"/>
+		<antcall target="gather.bin.parts">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<delete>
+			<fileset dir="${temp.folder}" includes="**/*.bin.log"/>
+		</delete>
+		<zip zipfile="${plugin.destination}/${plugin.zip}" basedir="${temp.folder}" filesonly="true"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+</project>
