@@ -115,6 +115,7 @@ public interface JavaParserConstants {
   int LSHIFTASSIGN = 117;
   int RSIGNEDSHIFTASSIGN = 118;
   int RUNSIGNEDSHIFTASSIGN = 119;
+  int ELLIPSIS = 120;
 
   int DEFAULT = 0;
   int IN_FORMAL_COMMENT = 1;
@@ -241,9 +242,9 @@ public interface JavaParserConstants {
     "\"<<=\"",
     "\">>=\"",
     "\">>>=\"",
+    "\"...\"",
     "\"\\u001a\"",
     "\"~[]\"",
-    "\"...\"",
   };
 
 }

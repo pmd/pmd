@@ -399,6 +399,7 @@ TOKEN :
 | < LSHIFTASSIGN: "<<=" >
 | < RSIGNEDSHIFTASSIGN: ">>=" >
 | < RUNSIGNEDSHIFTASSIGN: ">>>=" >
+| < ELLIPSIS: "..." >
 }
 
 
