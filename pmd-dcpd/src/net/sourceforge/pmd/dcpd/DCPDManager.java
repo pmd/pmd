@@ -32,7 +32,7 @@ public class DCPDManager {
         try {
             long start = System.currentTimeMillis();
             System.out.println("Connecting to JavaSpace");
-            space = Util.findSpace(javaSpaceURL);
+            space = Util.getInstance().findSpace(javaSpaceURL);
 
             System.out.println("Tokenizing");
             job = new Job("java_lang", new Integer((int)System.currentTimeMillis()));
@@ -121,6 +121,6 @@ public class DCPDManager {
             System.out.println("Example (using the go.bat script): go /home/tom/myproject/src 75");
             return;
         }
-        new DCPDManager(Util.SPACE_SERVER, args[0], Integer.parseInt(args[1]));
+        new DCPDManager(Util.getInstance().getSpaceServer(), args[0], Integer.parseInt(args[1]));
     }
 }

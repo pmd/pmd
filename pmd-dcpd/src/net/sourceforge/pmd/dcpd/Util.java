@@ -15,24 +15,44 @@ import net.jini.core.lease.Lease;
 
 import java.rmi.RemoteException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Properties;
 
 public class Util {
 
-    public static final String SPACE_SERVER = "mordor";
+    private static Util singleton;
+    public static Util getInstance() {
+        if (singleton == null) {
+            singleton = new Util();
+        }
+        return singleton;
+    }
+    public String getSpaceServer() {
+        try {
+            Properties props = new Properties();
+            InputStream is = (getClass().getClassLoader().getResourceAsStream("net/sourceforge/pmd/dcpd/dcpd.properties"));
+            if (is == null) {
+                throw new IOException();
+            }
+            props.load(is);
+            return props.getProperty("dcpd.spaceserver");
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load dcpd.properties!");
+        }
+    }
 
-    public static JavaSpace findSpace(String serverName) throws ClassNotFoundException, MalformedURLException, IOException, RemoteException {
+    public JavaSpace findSpace(String serverName) throws ClassNotFoundException, MalformedURLException, IOException, RemoteException {
         ServiceRegistrar registrar = (new LookupLocator("jini://" + serverName)).getRegistrar();
         ServiceMatches sm = registrar.lookup(new ServiceTemplate(null, new Class[] {JavaSpace.class}, new Entry[] {}),  1);
         return (JavaSpace)sm.items[0].service;
     }
 
-
     public static void main(String[] args) {
         try {
             int objectCount = 0;
             if (args[0].equals("clear")) {
-                JavaSpace space = Util.findSpace(SPACE_SERVER);
+                JavaSpace space = Util.getInstance().findSpace(Util.getInstance().getSpaceServer());
                 Entry e = null;
                 while ((e = space.take(null, null, 100)) != null) {
                     objectCount++;

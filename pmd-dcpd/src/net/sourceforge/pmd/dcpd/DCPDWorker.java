@@ -61,7 +61,7 @@ public class DCPDWorker {
 
     public static void main(String[] args) {
         try {
-            new DCPDWorker(Util.findSpace(Util.SPACE_SERVER));
+            new DCPDWorker(Util.getInstance().findSpace(Util.getInstance().getSpaceServer()));
         } catch (Exception e) {
             e.printStackTrace();
         }
