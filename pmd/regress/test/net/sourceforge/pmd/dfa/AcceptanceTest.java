@@ -689,6 +689,4 @@ public class AcceptanceTest extends ParserTst {
             "  }" + PMD.EOL +
             " }" + PMD.EOL +
             " }";
-
-
 }
