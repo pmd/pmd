@@ -34,6 +34,10 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2003/10/30 23:27:59  phherlin
+ * Merging from eclipse-v2 branch
+ * Simplify the code : moving the deep nested CountVisitor class as a first level nested inner class.
+ *
  * Revision 1.8  2003/08/13 20:08:40  phherlin
  * Refactoring private->protected to remove warning about non accessible member access in enclosing types
  *
@@ -84,6 +88,24 @@ public class PMDCheckAction implements IObjectActionDelegate {
      */
     public void selectionChanged(IAction action, ISelection selection) {
     }
+
+    // Inner visitor to count number of childs of a resource
+    private class CountVisitor implements IResourceVisitor {
+        public int count = 0;
+        public boolean visit(IResource resource) {
+            boolean fVisitChildren = true;
+            count++;
+
+            if ((resource instanceof IFile)
+                && (((IFile) resource).getFileExtension() != null)
+                && ((IFile) resource).getFileExtension().equals("java")) {
+
+                fVisitChildren = false;
+            }
+
+            return fVisitChildren;
+        }
+    };
 
     // Inner class to run PMD in a thread
     private class CheckPMDTask implements IRunnableWithProgress {
@@ -149,23 +171,6 @@ public class PMDCheckAction implements IObjectActionDelegate {
          * @return the element count
          */
         private int countElement(IStructuredSelection selection) {
-            final class CountVisitor implements IResourceVisitor {
-                public int count = 0;
-                public boolean visit(IResource resource) {
-                    boolean fVisitChildren = true;
-                    count++;
-
-                    if ((resource instanceof IFile)
-                        && (((IFile) resource).getFileExtension() != null)
-                        && ((IFile) resource).getFileExtension().equals("java")) {
-
-                        fVisitChildren = false;
-                    }
-
-                    return fVisitChildren;
-                }
-            };
-
             CountVisitor visitor = new CountVisitor();
 
             for (Iterator i = selection.iterator(); i.hasNext();) {
