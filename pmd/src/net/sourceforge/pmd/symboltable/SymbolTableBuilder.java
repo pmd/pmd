@@ -23,15 +23,6 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
         return table;
     }
 
-    /**
-     * Skip interfaces because they don't have local variables.
-     */
-/*
-    public Object visit(ASTInterfaceDeclaration node, Object data) {
-        return data;
-    }
-*/
-
     // these AST types trigger a new scope
     public Object visit(ASTBlock node, Object data){return openScope(node);}
     public Object visit(ASTConstructorDeclaration node, Object data){return openScope(node);}
