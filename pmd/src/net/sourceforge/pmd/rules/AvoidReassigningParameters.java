@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class AvoidReassigningParametersRule extends AbstractRule {
+public class AvoidReassigningParameters extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
         Scope scope = node.getScope();

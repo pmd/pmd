@@ -8,12 +8,12 @@ import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class AvoidReassigningParametersRuleTest extends SimpleAggregatorTst {
+public class AvoidReassigningParametersTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/design.xml", "AvoidReassigningParametersRule");
+        rule = findRule("rulesets/design.xml", "AvoidReassigningParameters");
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 

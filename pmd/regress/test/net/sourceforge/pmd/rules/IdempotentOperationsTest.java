@@ -4,19 +4,19 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.IdempotentOperationsRule;
+import net.sourceforge.pmd.rules.IdempotentOperations;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class IdempotentOperationsRuleTest extends SimpleAggregatorTst {
+public class IdempotentOperationsTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "assignment of a variable (local or field) to itself", 1, new IdempotentOperationsRule()),
-           new TestDescriptor(TEST2, "assignment of one array element to another", 0, new IdempotentOperationsRule()),
-           new TestDescriptor(TEST3, "qualified names causing NPE troubleshooting", 0, new IdempotentOperationsRule()),
-           new TestDescriptor(TEST4, "check for method calls", 0, new IdempotentOperationsRule()),
-           new TestDescriptor(TEST5, "compound assignments are OK", 0, new IdempotentOperationsRule())
+           new TestDescriptor(TEST1, "assignment of a variable (local or field) to itself", 1, new IdempotentOperations()),
+           new TestDescriptor(TEST2, "assignment of one array element to another", 0, new IdempotentOperations()),
+           new TestDescriptor(TEST3, "qualified names causing NPE troubleshooting", 0, new IdempotentOperations()),
+           new TestDescriptor(TEST4, "check for method calls", 0, new IdempotentOperations()),
+           new TestDescriptor(TEST5, "compound assignments are OK", 0, new IdempotentOperations())
        });
     }
 

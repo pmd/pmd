@@ -6,9 +6,9 @@
 The Design Ruleset contains a collection of rules that find questionable designs.
   </description>
 
-  <rule name="UseSingletonRule"
+  <rule name="UseSingleton"
         message="All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor or make the class abstract to silence this warning."
-        class="net.sourceforge.pmd.rules.design.UseSingletonRule">
+        class="net.sourceforge.pmd.rules.design.UseSingleton">
     <description>
     If you have a class that has nothing but static methods, consider making it a Singleton.
         Note that this doesn't apply to abstract classes, since their subclasses may
@@ -32,9 +32,9 @@ public class MaybeASingleton {
   </rule>
 
 
-  <rule name="SimplifyBooleanReturnsRule"
+  <rule name="SimplifyBooleanReturns"
         message="Avoid unnecessary if..then..else statements when returning a boolean"
-        class="net.sourceforge.pmd.rules.SimplifyBooleanReturnsRule">
+        class="net.sourceforge.pmd.rules.SimplifyBooleanReturns">
     <description>
 Avoid unnecessary if..then..else statements when returning a boolean
     </description>
@@ -153,10 +153,10 @@ public class Foo {
     </rule>
 
 
-    <rule name="AvoidReassigningParametersRule"
+    <rule name="AvoidReassigningParameters"
         message="Avoid reassigning parameters such as ''{0}''"
         symboltable="true"
-        class="net.sourceforge.pmd.rules.AvoidReassigningParametersRule">
+        class="net.sourceforge.pmd.rules.AvoidReassigningParameters">
     <description>
 Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
     </description>
@@ -212,9 +212,9 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="ConstructorCallsOverridableMethodRule"
+    <rule name="ConstructorCallsOverridableMethod"
           message="Avoid calls to overridable methods during construction"
-          class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethodRule">
+          class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethod">
       <description>
       Calling overridable methods during construction poses a risk of invoking methods on an
           incompletely constructed object.  This situation can be difficult to discern.
@@ -250,9 +250,9 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="AccessorClassGenerationRule"
+    <rule name="AccessorClassGeneration"
           message="Avoid instantiation through private constructors from outside of the constructor's class."
-          class="net.sourceforge.pmd.rules.AccessorClassGenerationRule">
+          class="net.sourceforge.pmd.rules.AccessorClassGeneration">
       <description>
       Instantiation by way of private constructors from outside of the constructor's class often causes the generation of an accessor.
       A factory method, or non-privitization of the constructor can eliminate this situation.
@@ -341,9 +341,9 @@ public class Foo {
     </rule>
 
 
-  <rule name="CloseConnectionRule"
+  <rule name="CloseConnection"
         message="Ensures that Connection objects are always closed after use"
-        class="net.sourceforge.pmd.rules.CloseConnectionRule">
+        class="net.sourceforge.pmd.rules.CloseConnection">
     <description>
       Ensures that Connection objects are always closed after use
     </description>
@@ -468,7 +468,7 @@ public class Foo {
        </example>
      </rule>
 
-    <rule name="OptimizableToArrayCallRule"
+    <rule name="OptimizableToArrayCall"
           message="This call to Collection.toArray() may be optimizable"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
@@ -507,7 +507,7 @@ class Example {
     </rule>
 
 
-    <rule name="BadComparisonRule"
+    <rule name="BadComparison"
           message="Avoid equality comparisons with Double.NaN"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
@@ -624,9 +624,9 @@ class Foo {
         </properties>
       </rule>
 
-    <rule name="IdempotentOperationsRule"
+    <rule name="IdempotentOperations"
           message="Avoid idempotent operations (like assigning a variable to itself)"
-          class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
+          class="net.sourceforge.pmd.rules.IdempotentOperations">
       <description>
       Avoid idempotent operations - they are silly.
       </description>
@@ -673,10 +673,10 @@ class Foo {
         </example>
     </rule>
 
-    <rule name="ImmutableFieldRule"
+    <rule name="ImmutableField"
           symboltable="true"
           message="Private field could be made final.  It is only initialized in the declaration or constructor."
-          class="net.sourceforge.pmd.rules.design.ImmutableFieldRule">
+          class="net.sourceforge.pmd.rules.design.ImmutableField">
       <description>
       Identifies private fields whose values never change once they are initialized either in the declaration of the field or by
       a constructor.  This aids in converting existing classes to immutable classes.

@@ -4,18 +4,18 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.SimplifyBooleanReturnsRule;
+import net.sourceforge.pmd.rules.SimplifyBooleanReturns;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class SimplifyBooleanReturnsRuleTest extends SimpleAggregatorTst {
+public class SimplifyBooleanReturnsTest extends SimpleAggregatorTst {
 
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "bad", 1, new SimplifyBooleanReturnsRule()),
-           new TestDescriptor(TEST2, "bad", 1, new SimplifyBooleanReturnsRule()),
-           new TestDescriptor(TEST3, "ok", 0, new SimplifyBooleanReturnsRule()),
+           new TestDescriptor(TEST1, "bad", 1, new SimplifyBooleanReturns()),
+           new TestDescriptor(TEST2, "bad", 1, new SimplifyBooleanReturns()),
+           new TestDescriptor(TEST3, "ok", 0, new SimplifyBooleanReturns()),
        });
     }
 

@@ -4,22 +4,22 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.ConstructorCallsOverridableMethodRule;
+import net.sourceforge.pmd.rules.ConstructorCallsOverridableMethod;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class ConstructorCallsOverridableMethodRuleTest extends SimpleAggregatorTst {
+public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "calling public method from constructor", 1, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST2, "calling protected method from constructor", 1, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST3, "calling package private method from constructor", 1, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST4, "calling private method, ok", 0, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST5, "overloaded constructors, calling public method", 1, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST6, "calling method on literal bug", 0, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST7, "method in anonymous inner class is ok", 0, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST8, "bug report 975407", 0, new ConstructorCallsOverridableMethodRule()),
+           new TestDescriptor(TEST1, "calling public method from constructor", 1, new ConstructorCallsOverridableMethod()),
+           new TestDescriptor(TEST2, "calling protected method from constructor", 1, new ConstructorCallsOverridableMethod()),
+           new TestDescriptor(TEST3, "calling package private method from constructor", 1, new ConstructorCallsOverridableMethod()),
+           new TestDescriptor(TEST4, "calling private method, ok", 0, new ConstructorCallsOverridableMethod()),
+           new TestDescriptor(TEST5, "overloaded constructors, calling public method", 1, new ConstructorCallsOverridableMethod()),
+           new TestDescriptor(TEST6, "calling method on literal bug", 0, new ConstructorCallsOverridableMethod()),
+           new TestDescriptor(TEST7, "method in anonymous inner class is ok", 0, new ConstructorCallsOverridableMethod()),
+           new TestDescriptor(TEST8, "bug report 975407", 0, new ConstructorCallsOverridableMethod()),
        });
     }
 

@@ -8,31 +8,31 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.rules.design.UseSingletonRule;
+import net.sourceforge.pmd.rules.design.UseSingleton;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class UseSingletonRuleTest extends SimpleAggregatorTst implements ReportListener {
+public class UseSingletonTest extends SimpleAggregatorTst implements ReportListener {
 
     private int callbacks;
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "should be singleton since all static, public constructor", 1, new UseSingletonRule()),
-           new TestDescriptor(TEST2, "ok, uses non-static", 0, new UseSingletonRule()),
-           new TestDescriptor(TEST3, "should be singleton, couple of statics, no constructor", 1, new UseSingletonRule()),
-           new TestDescriptor(TEST4, "no constructor, one static - ok", 0, new UseSingletonRule()),
-           new TestDescriptor(TEST5, "classic singleton - ok", 0, new UseSingletonRule()),
-           new TestDescriptor(TEST6, "abstract, so ok", 0, new UseSingletonRule()),
-           new TestDescriptor(TEST7, "has no fields, so ok", 0, new UseSingletonRule()),
-           new TestDescriptor(TEST8, "has public static field, so need to check", 1, new UseSingletonRule()),
+           new TestDescriptor(TEST1, "should be singleton since all static, public constructor", 1, new UseSingleton()),
+           new TestDescriptor(TEST2, "ok, uses non-static", 0, new UseSingleton()),
+           new TestDescriptor(TEST3, "should be singleton, couple of statics, no constructor", 1, new UseSingleton()),
+           new TestDescriptor(TEST4, "no constructor, one static - ok", 0, new UseSingleton()),
+           new TestDescriptor(TEST5, "classic singleton - ok", 0, new UseSingleton()),
+           new TestDescriptor(TEST6, "abstract, so ok", 0, new UseSingleton()),
+           new TestDescriptor(TEST7, "has no fields, so ok", 0, new UseSingleton()),
+           new TestDescriptor(TEST8, "has public static field, so need to check", 1, new UseSingleton()),
        });
     }
 
     public void testResetState() throws Throwable {
         callbacks = 0;
-        Rule rule = new UseSingletonRule();
+        Rule rule = new UseSingleton();
         Report report = new Report();
         report.addListener(this);
         runTestFromString(TEST3, rule, report);

@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -42,7 +42,7 @@ import java.util.Set;
  * compares the names as is.
  * @todo What about interface declarations which can have internal classes
  */
-public final class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.AbstractRule {
+public final class ConstructorCallsOverridableMethod extends AbstractRule {
     /**
      * 2: method();
      * ASTPrimaryPrefix

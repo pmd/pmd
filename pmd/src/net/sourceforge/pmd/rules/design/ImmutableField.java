@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  * @author Olander
  */
-public class ImmutableFieldRule extends AbstractRule {
+public class ImmutableField extends AbstractRule {
     
     static private final int MUTABLE = 0;
     static private final int IMMUTABLE = 1;

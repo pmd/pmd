@@ -37,7 +37,7 @@ import java.util.ListIterator;
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  * @author David Konecny (david.konecny@)
  */
-public class AccessorClassGenerationRule extends AbstractRule {
+public class AccessorClassGeneration extends AbstractRule {
     private int classID = -1;
     private List classDataList;
     private String packageName;

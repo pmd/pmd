@@ -12,7 +12,7 @@ import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 
-public class UseSingletonRule extends AbstractRule {
+public class UseSingleton extends AbstractRule {
 
     private boolean isOK;
     private int methodCount;

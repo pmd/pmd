@@ -34,7 +34,7 @@ import java.util.Vector;
  *  }
  * </pre>
  */
-public class CloseConnectionRule extends AbstractRule {
+public class CloseConnection extends AbstractRule {
 
     public Object visit(ASTCompilationUnit node, Object data) {
         if (!importsJavaSqlPackage(node)) {

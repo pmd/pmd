@@ -6,12 +6,12 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
+public class ImmutableFieldTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "ImmutableFieldRule");
+        rule = findRule("rulesets/design.xml", "ImmutableField");
     }
 
     public void testAll() {

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-public class SimplifyBooleanReturnsRule extends AbstractRule {
+public class SimplifyBooleanReturns extends AbstractRule {
 
     public Object visit(ASTIfStatement node, Object data) {
         // only deal with if..then..else stmts

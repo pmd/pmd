@@ -4,25 +4,25 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.AccessorClassGenerationRule;
+import net.sourceforge.pmd.rules.AccessorClassGeneration;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
-public class AccessorClassGenerationRuleTest extends RuleTst {
+public class AccessorClassGenerationTest extends RuleTst {
 
     public void testInnerClassHasPrivateConstructor() throws Throwable {
-        runTestFromString(TEST1, 1, new AccessorClassGenerationRule());
+        runTestFromString(TEST1, 1, new AccessorClassGeneration());
     }
 
     public void testInnerClassHasPublicConstructor() throws Throwable {
-        runTestFromString(TEST2, 0, new AccessorClassGenerationRule());
+        runTestFromString(TEST2, 0, new AccessorClassGeneration());
     }
 
     public void testOuterClassHasPrivateConstructor() throws Throwable {
-        runTestFromString(TEST3, 1, new AccessorClassGenerationRule());
+        runTestFromString(TEST3, 1, new AccessorClassGeneration());
     }
 
     public void testFinalInnerClass() throws Throwable {
-        runTestFromString(TEST4, 0, new AccessorClassGenerationRule());
+        runTestFromString(TEST4, 0, new AccessorClassGeneration());
     }
 
     private static final String TEST1 =

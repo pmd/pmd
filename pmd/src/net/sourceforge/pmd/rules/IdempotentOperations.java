@@ -14,7 +14,7 @@ import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-public class IdempotentOperationsRule extends AbstractRule {
+public class IdempotentOperations extends AbstractRule {
 
     public Object visit(ASTStatementExpression node, Object data) {
         if (node.jjtGetNumChildren() != 3
