@@ -160,7 +160,7 @@ if __FILE__ == $0
 	if ARGV.include?("-doom")
 		jobs.each {|j|
 			pmd = PMDMap.new(j.pmd_lines)
-			p = Path.new(Point.new(0, 1000))
+			p = Path.new(0, 1000)
 			p.add("e200/n200/e200/s200/e200/", pmd.nooks)
 			p.add("s400/")
 			p.add("w200/s200/w200/n200/w200/", pmd.nooks)
