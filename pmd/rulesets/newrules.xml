@@ -5,77 +5,7 @@
 These are new rules for the next release
   </description>
 
-   <rule name="StringToString"
-        message="Avoid calling toString() on String objects; this is unnecessary"
-        class="net.sourceforge.pmd.rules.StringToStringRule">
-    <description>
-    Avoid calling toString() on String objects; this is unnecessary
-    </description>
 
-    <example>
-<![CDATA[
-public class Foo {
- private String baz() {
-  String bar = "howdy";
-  return bar.toString();
- }
-}
-]]>
-    </example>
-    </rule>
-
-
-    <rule name="AvoidReassigningParametersRule"
-        message="Avoid reassigning parameters such as ''{0}''"
-        class="net.sourceforge.pmd.rules.AvoidReassigningParametersRule">
-    <description>
-Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
-    </description>
-    <example>
-<![CDATA[
-public class Foo {
- private void foo(String bar) {
-  bar = "something else";
- }
-}
-]]>
-    </example>
-  </rule>
-
-  <rule name="UnnecessaryConstructorRule"
-        message="Avoid unnecessary constructors - the compiler will generate these for you"
-        class="net.sourceforge.pmd.rules.UnnecessaryConstructorRule">
-    <description>
-Unnecessary constructor detects when a constructor is not necessary; i.e., when there's only one constructor,
-it's public, has an empty body, and takes no arguments.
-    </description>
-    <example>
-<![CDATA[
-public class Foo {
- public Foo() {}
-}
-]]>
-    </example>
-  </rule>
-
-    <rule name="AvoidStringLiterals"
-        message="Avoid embedding String literals such as ''{0}'' in your code"
-        class="net.sourceforge.pmd.rules.AvoidStringLiteralsRule">
-    <description>
-Avoid String Literals detects when a literal String is embedded within your code.  Code like this can usually be
-improved by declaring the String as a constant field.
-    </description>
-    <example>
-<![CDATA[
-public class Foo {
- private void bar() {
-    buz("Howdy");
- }
- private void buz(String x) {}
-}
-]]>
-    </example>
-  </rule>
 
   </ruleset>
 

@@ -1,8 +1,9 @@
-???? 2002 - ????:
+November 04 2002 - 1.0:
 Added new rules: StringToStringRule, AvoidReassigningParametersRule, UnnecessaryConstructorRule, AvoidStringLiteralsRule
 Fixed bug 631010: AvoidDeeplyNestedIfStmtsRule works correctly with if..else stmts now
 Fixed bug 631605: OnlyOneReturn handles line spillover now.
 Moved AvoidDeeplyNestedIfStmts from the braces ruleset to the design ruleset.
+Moved several rules from the design ruleset to the codesize ruleset.
 
 October 04 2002 - 1.0rc3:
 Added new rules: OnlyOneReturnRule, JumbledIncrementerRule, AvoidDeeplyNestedIfStmtsRule
