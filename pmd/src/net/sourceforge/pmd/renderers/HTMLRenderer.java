@@ -15,8 +15,9 @@ public class HTMLRenderer implements Renderer {
     protected String EOL = System.getProperty("line.separator", "\n");
 
     public String render(Report report) {
-        StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + EOL+ "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + EOL+ "<th>File</th><th>Line</th><th>Problem</th></tr>" + EOL);
+        StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + EOL+ "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + EOL+ "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL);
         boolean colorize = true;
+    	int violationCount = 1;
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append("<tr ");
@@ -27,6 +28,7 @@ public class HTMLRenderer implements Renderer {
                 colorize = true;
             }
             buf.append("> ");
+    	    buf.append("<td align=center>" + violationCount + "</td>" + EOL);
             buf.append(EOL+ "<td width=\"*%\">" + rv.getFilename() + "</td>" + EOL);
             buf.append("<td align=center width=\"5%\">" + Integer.toString(rv.getLine()) + "</td>" + EOL);
 
@@ -36,8 +38,9 @@ public class HTMLRenderer implements Renderer {
             d = replaceString(d, '>', "&gt;");
             buf.append("<td width=\"*\">" + d + "</td>" + EOL);
 
-
             buf.append("</tr>" + EOL);
+
+            violationCount++;
         }
         buf.append("</table></body></html>");
         return buf.toString();
