@@ -934,7 +934,7 @@ void UnaryExpressionNotPlusMinus() :
 {}
 {
  {checkForDiscard(jjtThis);}
- ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
+ ( "~" {jjtThis.setImage("~");jjtThis.setUnDiscardable();} | "!" {jjtThis.setImage("!");jjtThis.setUnDiscardable();} ) UnaryExpression()
 | LOOKAHEAD( CastLookahead() ) CastExpression()
 | PostfixExpression()
 }

@@ -2971,11 +2971,11 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case TILDE:
           jj_consume_token(TILDE);
-        jjtn000.setImage("~");
+        jjtn000.setImage("~");jjtn000.setUnDiscardable();
           break;
         case BANG:
           jj_consume_token(BANG);
-                                       jjtn000.setImage("!");
+                                                                  jjtn000.setImage("!");jjtn000.setUnDiscardable();
           break;
         default:
           jj_la1[75] = jj_gen;
@@ -7312,6 +7312,11 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
+  final private boolean jj_3R_329() {
+    if (jj_scan_token(BANG)) return true;
+    return false;
+  }
+
   final private boolean jj_3R_104() {
     if (jj_3R_59()) return true;
     return false;
@@ -7476,11 +7481,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
   final private boolean jj_3_21() {
     if (jj_scan_token(LPAREN)) return true;
     if (jj_3R_61()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_329() {
-    if (jj_scan_token(BANG)) return true;
     return false;
   }
 

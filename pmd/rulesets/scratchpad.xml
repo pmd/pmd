@@ -15,7 +15,10 @@ These are new rules that are still in progress
            <property name="xpath">
                <value>
   <![CDATA[
-//AllocationExpression/ClassBody/ClassBodyDeclaration
+ //ConditionalExpression[
+    EqualityExpression[@Image="!="] or
+    PrimaryExpression/PrimaryPrefix/Expression/EqualityExpression[@Image="!="]
+    ]
   ]]>
                </value>
            </property>

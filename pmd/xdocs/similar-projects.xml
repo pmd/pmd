@@ -11,6 +11,7 @@
    <section name="Similar to PMD">
      <subsection name="Open Source">
        <ul>
+         <li><a href="http://www.hammurapi.org/content/menu.show@id=Hammurapi.html">Hammurapi</a> - Uses ANTLR, excellent documentation, lots of <a href="http://www.hammurapi.org/content/inspectors.html">rules</a></li>
          <li><a href="http://www.cs.kun.nl/sos/research/escjava/index.html">ESC/Java</a> - Finds null dereference errors, array bounds errors, type cast errors, and race conditions.  Uses Java Modeling Language annotations.</li>
          <li><a href="http://findbugs.sourceforge.net/">FindBugs</a> - works on bytecode, uses BCEL.  Source code uses templates, nifty stuff!</li>
          <li><a href="http://www.ovmj.org/jamit/index.html">Jamit</a> - bytecode analyzer, nice <a href="http://www.ovmj.org/jamit/data2_classes.php3">graphs</a></li>
