@@ -636,8 +636,7 @@ void Initializer() :
  */
 
 void Type() :
-{
-}
+{}
 {
   ( PrimitiveType() | Name() ) ( "[" "]"
   {
