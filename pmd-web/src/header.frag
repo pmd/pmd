@@ -1,8 +1,26 @@
 <html>
 <head>
 <title>Run PMD on your Sourceforge project</title>
+<script language="JavaScript"> 
+function highlight() {
+	var strURL = window.location.toString();
+	var myId = null;
+	var hilight = strURL.split("#");
+	var hash=hilight[1];
+	
+	if(hash != null) {
+	  if(hash.substr(0,6) == 'prev2-') {
+	    hash = hash.substr(6);
+	  }
+	  myId = document.getElementById(hash);
+	  if(myId != null) {
+	    myId.bgColor="#c0c0c0";
+	  }
+	}
+}
+</script>
 </head>
-<body>
+<BODY onLoad="javascript:highlight();">
 <center>
 <a href="http://pmd.sourceforge.net/">
 <img src="http://sourceforge.net/sflogo.php?group_id=56262&type=5" alt="PMD" border="0"/>

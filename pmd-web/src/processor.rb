@@ -205,6 +205,7 @@ if __FILE__ == $0
 			"title"=>fm["title.frag", {"file"=>j.report, "title"=>j.title}],
 			"homepage"=>fm["homepage.frag", {"name"=>j.unix_name}],
 			"ncss"=>j.ncss, 
+			"unix_name"=>j.unix_name, 
 			"anchor"=>jobs[pt.anchor_idx].unix_name, 
 			"previous_anchor"=>jobs[pt.previous_anchor_idx].unix_name, 
 			"pmd"=>j.pmd_lines.to_s,
