@@ -25,7 +25,7 @@ These rules deal with different problems that can occur with finalizers.
        <example>
 <![CDATA[
    public class Foo {
-       public void finalize() {}
+       protected void finalize() {}
    }
 ]]>
        </example>
@@ -53,11 +53,11 @@ These rules deal with different problems that can occur with finalizers.
         <priority>3</priority>
        <example>
            <![CDATA[
-               public class Foo {
-                   public void finalize() {
-                     super.finalize();
-                   }
-               }
+   public class Foo {
+       protected void finalize() {
+         super.finalize();
+       }
+   }
            ]]>
        </example>
      </rule>
@@ -85,7 +85,7 @@ These rules deal with different problems that can occur with finalizers.
 <![CDATA[
    public class Foo {
        // this is confusing and probably a bug
-       public void finalize(int a) {
+       protected void finalize(int a) {
        }
    }
 ]]>
@@ -116,7 +116,7 @@ a block whose last statement is NOT a call to super.finalize -->
        <example>
 <![CDATA[
 public class Foo {
-   public void finalize() {
+   protected void finalize() {
        something();
        // neglected to call super.finalize()
    }

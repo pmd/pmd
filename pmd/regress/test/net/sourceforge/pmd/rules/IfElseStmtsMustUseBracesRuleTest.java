@@ -24,6 +24,7 @@ public class IfElseStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "ok", 0, rule),
            new TestDescriptor(TEST3, "two sets of missing braces", 1, rule),
            new TestDescriptor(TEST4, "elseif with missing braces", 2, rule),
+           new TestDescriptor(TEST5, "elseif with braces after else", 1, rule),
        });
     }
 
@@ -62,7 +63,6 @@ public class IfElseStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST4 =
     "public class Foo {" + PMD.EOL +
-    " int y;" + PMD.EOL +
     " public void foo() {     " + PMD.EOL +
     "  if (true) {" + PMD.EOL +
     "   x=2;" + PMD.EOL +
@@ -71,6 +71,19 @@ public class IfElseStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
     "  } else " + PMD.EOL +
     "   y=4;" + PMD.EOL +
     "  " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {     " + PMD.EOL +
+    "  if (true) {" + PMD.EOL +
+    "   x=2;" + PMD.EOL +
+    "  } else if (true) { " + PMD.EOL +
+    "   x = 3; " + PMD.EOL +
+    "  } else { " + PMD.EOL +
+    "   y=4;" + PMD.EOL +
+    "  }" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
