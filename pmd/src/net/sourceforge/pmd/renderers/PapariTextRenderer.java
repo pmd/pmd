@@ -150,9 +150,7 @@ public class PapariTextRenderer implements Renderer
         String code = null;
         try
         {
-            File file = new File( "." );
             BufferedReader br = new BufferedReader( new FileReader( new File( sourceFile ) ) );
-
             for ( int i = 0; line > i; i++ )
             {
                 code = br.readLine().trim();

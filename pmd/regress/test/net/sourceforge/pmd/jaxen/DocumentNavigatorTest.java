@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
@@ -17,7 +18,6 @@ import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.UnsupportedAxisException;
-import test.net.sourceforge.pmd.rules.EmptyCatchBlockRuleTest;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import java.util.Iterator;
@@ -32,11 +32,9 @@ public class DocumentNavigatorTest extends RuleTst {
 		
         private Node compilationUnit;
         private Node importDeclaration;
-        private Node typeDeclaration;
         private Node statement;
         private Node primaryPrefix;
         private Node primaryExpression;
-        private Node methodDeclaration;
         /**
          * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(ASTCompilationUnit, Object)
          */
@@ -48,20 +46,12 @@ public class DocumentNavigatorTest extends RuleTst {
             this.importDeclaration = node;
             return super.visit(node, data);
         }
-        public Object visit(ASTTypeDeclaration node, Object data) {
-            this.typeDeclaration = node;
-            return super.visit(node, data);
-        }
         public Object visit(ASTStatement node, Object data) {
             this.statement = node;
             return super.visit(node, data);
         }
         public Object visit(ASTPrimaryPrefix node, Object data) {
             this.primaryPrefix = node;
-            return super.visit(node, data);
-        }
-        public Object visit(ASTMethodDeclaration node, Object data) {
-            this.methodDeclaration = node;
             return super.visit(node, data);
         }
         public Object visit(ASTPrimaryExpression node, Object data) {
@@ -73,7 +63,7 @@ public class DocumentNavigatorTest extends RuleTst {
     public void setUp() throws Exception {
         try{
             rule = new TestRule();
-            runTestFromString(EmptyCatchBlockRuleTest.TEST1, rule, new Report());
+            runTestFromString(TEST, rule, new Report());
         } catch (Throwable xx) {
             fail();
         }
@@ -163,4 +153,20 @@ public class DocumentNavigatorTest extends RuleTst {
         List matches = xPath.selectNodes(rule.importDeclaration);
         assertEquals(1, matches.size());        
     }
-}
+
+
+      public static final String TEST =
+      "import java.io.*;" + PMD.EOL +
+      "public class Foo {" + PMD.EOL +
+      " public Foo() {" + PMD.EOL +
+      "  try {" + PMD.EOL +
+      "   FileReader fr = new FileReader(\"/dev/null\");" + PMD.EOL +
+      "  } catch (Exception e) {}" + PMD.EOL +
+      "  try {" + PMD.EOL +
+      "   FileReader fr = new FileReader(\"/dev/null\");" + PMD.EOL +
+      "  } catch (Exception e) {" + PMD.EOL +
+      "   e.printStackTrace();" + PMD.EOL +
+      "   // this shouldn't show up on the report" + PMD.EOL +
+      "  }" + PMD.EOL +
+      " }" + PMD.EOL +
+      "}";}

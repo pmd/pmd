@@ -15,7 +15,7 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "initial assignment", 0, new NullAssignmentRule()),
            new TestDescriptor(TEST2, "bad assignment", 1, new NullAssignmentRule()),
            new TestDescriptor(TEST3, "check test", 0, new NullAssignmentRule()),
-           new TestDescriptor(TEST3, "null param on right hand sidel", 0, new NullAssignmentRule()),
+           new TestDescriptor(TEST4, "null param on right hand sidel", 0, new NullAssignmentRule()),
        });
     }
 

@@ -38,15 +38,6 @@ public class AcceptanceTest extends TestCase {
         assertTrue(a.isStatic());
     }
 
-    public void testFindFieldDecl() {
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST4));
-        ASTCompilationUnit c = parser.CompilationUnit();
-        SymbolFacade stb = new SymbolFacade();
-        stb.initializeWith(c);
-        List children = c.findChildrenOfType(ASTVariableDeclaratorId.class);
-        ASTVariableDeclaratorId v1 = (ASTVariableDeclaratorId)children.get(0);
-    }
-
     private static final String TEST1 =
     "import java.io.*;" + PMD.EOL +
     "public class Foo  {" + PMD.EOL +
@@ -64,12 +55,6 @@ public class AcceptanceTest extends TestCase {
     private static final String TEST_STATIC_INITIALIZER =
     "public class Foo  {" + PMD.EOL +
     " static {} " + PMD.EOL +
-    "}" + PMD.EOL;
-
-    private static final String TEST4 =
-    "public class Foo  {" + PMD.EOL +
-    " String bar; " + PMD.EOL +
-    " String baz; " + PMD.EOL +
     "}" + PMD.EOL;
 
 }
