@@ -20,9 +20,9 @@ most people really dislike :-)
             <property name="xpath">
                 <value>
                     <![CDATA[
-//UnmodifiedClassDeclaration
-/ClassBody[count(ClassBodyDeclaration/ConstructorDeclaration)=1]
-/ClassBodyDeclaration/ConstructorDeclaration
+//ClassOrInterfaceDeclaration
+/ClassOrInterfaceBody[count(ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)=1]
+/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
 [@Public='true']
 [not(FormalParameters/*)]
 [not(BlockStatement)]
