@@ -26,20 +26,24 @@
  */
 package pmd.config.ui;
 
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map;
 import javax.swing.table.AbstractTableModel;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleProperties;
+import pmd.config.PMDOptionsSettings;
 
 /** The datamodel for the properties table
  * @author ole martin mørk
+ * @author Gunnlaugur Þór Briem
  * @created 25. november 2002
  */
 public class PropertiesModel extends AbstractTableModel {
 
 	/** The values used in the table */	
 	private final String values[][];
-
 
 	/** Creates a new instance of PropertiesModel
 	 * @param rule The rule the table should be based upon
@@ -50,19 +54,27 @@ public class PropertiesModel extends AbstractTableModel {
 			return;
 		}
 		RuleProperties properties = rule.getProperties();
+		Map propertyOverrides = (Map)PMDOptionsSettings.getDefault().getRuleProperties().get(rule.getName());
+		if(propertyOverrides == null) {
+			propertyOverrides = Collections.EMPTY_MAP;
+		}
 		values = new String[properties.size()][2];
 		Enumeration keys = properties.keys();
 		int counter = 0;
 		while( keys.hasMoreElements() ) {
 			String key = ( String )keys.nextElement();
 			values[counter][0] = key;
-			values[counter][1] = properties.getProperty( key );
+			
+			if( propertyOverrides.containsKey( key ) ) {
+				values[counter][1] = (String)propertyOverrides.get( key );
+			} else {
+				values[counter][1] = properties.getProperty( key );
+			}
 			counter++;
 		}
 
 	}
-
-
+	
 	/** Gets the number of columns in the table
 	 * @return the number of columns
 	 */
@@ -101,10 +113,33 @@ public class PropertiesModel extends AbstractTableModel {
 	/** Says if the cell is editable
 	 * @param rowIndex The row
 	 * @param columnIndex The column
-	 * @return false
+	 * @return true if and only if <code>columnIndex == 1</code>.
 	 */
 	public boolean isCellEditable( int rowIndex, int columnIndex ) {
-		return false;
+		return columnIndex == 1;
+	}
+
+	/** Sets the value in the cell at the given coordinates in the table.
+	 *
+	 * @param obj the new value of the cell.
+	 * @param rowIndex The row
+	 * @param columnIndex The column
+	 * @throws IllegalArgumentException if row is out of range, column is not 1, or obj is not a String.
+	 */
+	public void setValueAt(Object obj, int rowIndex, int columnIndex) {
+		if(columnIndex != 1) {
+			throw new IllegalArgumentException("Can only edit property values, not property names");
+		}
+		if(rowIndex < 0 || rowIndex >= values.length) {
+			throw new IllegalArgumentException("Row " + rowIndex + " out of range 0.." + (values.length - 1));
+		}
+		if(obj instanceof String) {
+			String value = (String)obj;
+			values[rowIndex][columnIndex] = value;
+			fireTableCellUpdated(rowIndex, columnIndex);
+		} else {
+			throw new IllegalArgumentException("Property value must be String, was: " + String.valueOf(obj));
+		}
 	}
 
 }

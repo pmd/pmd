@@ -26,18 +26,28 @@
  */
 package pmd.config.ui;
 
-import java.beans.PropertyEditorSupport;
-import javax.swing.JPanel;
-import net.sourceforge.pmd.Rule;
 import java.awt.event.MouseEvent;
-import org.apache.oro.text.perl.Perl5Util;
+import java.beans.PropertyEditorSupport;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JPanel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
-/** The JPanel used to edit the Rule property
+import net.sourceforge.pmd.Rule;
+import org.apache.oro.text.perl.Perl5Util;
+import pmd.config.PMDOptionsSettings;
+
+/**
+ * The UI for editing the Rule and RuleProperties properties.
+ *
  * @author ole martin mørk
+ * @author Gunnlaugur Þór Briem
  */
-public class RuleEnabler extends JPanel {
+public class RuleEnabler extends JPanel implements TableModelListener {
 
 	private final PropertyEditorSupport editor;
+	private String currentRuleName = null;
 	private final String REGEX = "s/ +/ /g";
 	private final static Perl5Util regex = new Perl5Util();
 	/** Creates a new editor
@@ -397,7 +407,7 @@ public class RuleEnabler extends JPanel {
 		if( rule != null ) {
 			example.setText( regex.substitute( REGEX, rule.getExample().trim() ) );
 			information.setText( regex.substitute( REGEX, rule.getDescription().trim() ) );
-			properties.setModel( new PropertiesModel( rule ) );
+			updatePropertiesModel( rule );
 		}
 	}//GEN-LAST:event_chosenListValueChanged
 
@@ -409,7 +419,7 @@ public class RuleEnabler extends JPanel {
 		if( rule != null ) {
 			example.setText( regex.substitute( REGEX, rule.getExample().trim() ) );
 			information.setText( regex.substitute( REGEX, rule.getDescription().trim() ) );
-			properties.setModel( new PropertiesModel( rule ) );
+			updatePropertiesModel( rule );
 		}
 	}//GEN-LAST:event_availableListValueChanged
 
@@ -477,7 +487,40 @@ public class RuleEnabler extends JPanel {
 		}
 
 	}//GEN-LAST:event_chooseOneActionPerformed
+	
+	public void tableChanged(TableModelEvent evt) {
+		if(evt.getType() == TableModelEvent.UPDATE && evt.getColumn() == 1) {
+			int row = evt.getFirstRow();
+			PropertiesModel model = (PropertiesModel)properties.getModel();
+			PMDOptionsSettings settings = PMDOptionsSettings.getDefault();
+			String propName = (String)model.getValueAt(row, 0);
+			String newValue = (String)model.getValueAt(row, 1);
+			Map rulePropOverrides = (Map)settings.getRuleProperties().get(this.currentRuleName);
+			if(rulePropOverrides == null) {
+				rulePropOverrides = new HashMap();
+				settings.getRuleProperties().put(this.currentRuleName, rulePropOverrides);
+			}
+			rulePropOverrides.put(propName, newValue);
+			editor.firePropertyChange();
+		}
+	}	
 
+	/**
+	 * Reinitializes the rule properties table with a model based on the given rule.
+	 * Called when a new rule is selected in the available list or the selected list.
+	 *
+	 * @param rule the rule to base the new table model on.
+	 */
+	private void updatePropertiesModel( Rule rule ) {
+		PropertiesModel oldModel = (PropertiesModel)properties.getModel();
+		if(oldModel != null) {
+			oldModel.removeTableModelListener(this);
+		}
+		this.currentRuleName = rule.getName();
+		PropertiesModel newModel = new PropertiesModel( rule );
+		newModel.addTableModelListener(this);
+		properties.setModel( newModel );
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSeparator topSeparator;

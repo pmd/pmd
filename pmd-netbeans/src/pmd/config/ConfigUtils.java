@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -42,6 +43,7 @@ import pmd.custom.RuleClassLoader;
 
 /**
  * @author ole martin mørk
+ * @author Gunnlaugur Þór Briem
  * @created 26. november 2002
  */
 public abstract class ConfigUtils {
@@ -54,10 +56,20 @@ public abstract class ConfigUtils {
 	 */
 	public static List createRuleList( String rules ) {
 		Iterator iterator = getAllAvailableRules().iterator();
+		Map propOverrides = PMDOptionsSettings.getDefault().getRuleProperties();
 		List list = new ArrayList();
 		while( iterator.hasNext() ) {
 			Rule rule = ( Rule )iterator.next();
 			if( rules.indexOf( rule.getName() + ", " ) > -1 ) {
+				// add it, but first check for property overrides.
+				Map rulePropOverrides = (Map)propOverrides.get( rule.getName() );
+				if(rulePropOverrides != null) {
+					Iterator iter = rulePropOverrides.entrySet().iterator();
+					while( iter.hasNext() ) {
+						Map.Entry entry = (Map.Entry)iter.next();
+						rule.addProperty( (String)entry.getKey(), (String)entry.getValue() );
+					}
+				}
 				list.add( rule );
 			}
 		}
