@@ -97,7 +97,7 @@ sub loadProjectList() {
 		if (-e $project->getCPDRptFile() && $project->getCPDLines() > 0) {
 			$cpdLink="<a href=\"@{[$project->getCPDRptURL]}\">@{[$project->getCPDLines()]}</a>";
 		}
-		$result = "${result}<td bgcolor=$color>$cpdLink</td></tr>";
+		$result = "${result}<td align=center>$cpdLink</td></tr>";
 	}
 	$result="${result}</tr></table>";
 	return $result;
