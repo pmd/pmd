@@ -1,9 +1,32 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class SwitchStmtsShouldHaveDefaultRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class SwitchStmtsShouldHaveDefault1 {" + CPD.EOL +
+    " public void bar() {" + CPD.EOL +
+    "  int x = 2;" + CPD.EOL +
+    "  switch (x) {" + CPD.EOL +
+    "   case 2: int y=8;" + CPD.EOL +
+    "  }" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class SwitchStmtsShouldHaveDefault2 {" + CPD.EOL +
+    " public void bar() {" + CPD.EOL +
+    "  int x = 2;" + CPD.EOL +
+    "  switch (x) {" + CPD.EOL +
+    "   case 2: int y=8;" + CPD.EOL +
+    "   default: int j=8;" + CPD.EOL +
+    "  }" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
 
     private Rule rule;
 
@@ -13,11 +36,11 @@ public class SwitchStmtsShouldHaveDefaultRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTestFromFile("SwitchStmtsShouldHaveDefault1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTestFromFile("SwitchStmtsShouldHaveDefault2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
 
 }
