@@ -36,13 +36,6 @@ import java.util.Set;
 
 public class RuleSetFactoryTest extends TestCase {
 
-    public void testSingleRuleWithPriority() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(PRIORITY.getBytes()));
-        Rule r = (Rule)rs.getRules().iterator().next();
-        assertEquals(3, r.getPriority());
-    }
-
     public void testRuleSetNotFound() {
         RuleSetFactory rsf = new RuleSetFactory();
         try {
@@ -54,15 +47,13 @@ public class RuleSetFactoryTest extends TestCase {
     }
 
     public void testCreateEmptyRuleSet() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(EMPTY_RULESET.getBytes()));
+        RuleSet rs = loadRuleSet(EMPTY_RULESET);
         assertEquals("test", rs.getName());
         assertEquals(0, rs.size());
     }
 
     public void testSingleRule() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes()));
+        RuleSet rs = loadRuleSet(SINGLE_RULE);
         assertEquals(1, rs.size());
         Rule r = (Rule)rs.getRules().iterator().next();
         assertEquals("MockRuleName", r.getName());
@@ -70,8 +61,7 @@ public class RuleSetFactoryTest extends TestCase {
     }
 
     public void testMultipleRules() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(MULTIPLE_RULES.getBytes()));
+        RuleSet rs = loadRuleSet(MULTIPLE_RULES);
         assertEquals(2, rs.size());
         Set expected = new HashSet();
         expected.add("MockRuleName1");
@@ -81,10 +71,12 @@ public class RuleSetFactoryTest extends TestCase {
         }
     }
 
+    public void testSingleRuleWithPriority() {
+        assertEquals(3, loadFirstRule(PRIORITY).getPriority());
+    }
+
     public void testProps() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(PROPERTIES.getBytes()));
-        Rule r = (Rule) rs.getRules().iterator().next();
+        Rule r = loadFirstRule(PROPERTIES);
         assertTrue(r.hasProperty("foo"));
         assertEquals("bar", r.getStringProperty("foo"));
         assertEquals(2, r.getIntProperty("fooint"));
@@ -97,41 +89,39 @@ public class RuleSetFactoryTest extends TestCase {
     }
 
     public void testXPathPluginnameProperty() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(XPATH_PLUGINNAME.getBytes()));
-        Rule r = (Rule) rs.getRules().iterator().next();
+        Rule r = loadFirstRule(XPATH_PLUGINNAME);
         assertTrue(r.hasProperty("pluginname"));
     }
 
     public void testXPath() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(XPATH.getBytes()));
-        Rule r = (Rule) rs.getRules().iterator().next();
+        Rule r = loadFirstRule(XPATH);
         assertTrue(r.hasProperty("xpath"));
         assertTrue(r.getStringProperty("xpath").indexOf(" //Block ") != -1);
     }
 
     public void testFacadesOffByDefault() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(XPATH.getBytes()));
-        Rule r = (Rule) rs.getRules().iterator().next();
+        Rule r = loadFirstRule(XPATH);
         assertFalse(r.usesDFA());
         assertFalse(r.usesSymbolTable());
     }
 
     public void testSymbolTableFacadeFlag() {
-        RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SYMBOLTABLE.getBytes()));
-        Rule r = (Rule) rs.getRules().iterator().next();
+        Rule r = loadFirstRule(SYMBOLTABLE);
         assertTrue(r.usesSymbolTable());
         assertFalse(r.usesDFA());
     }
 
     public void testDFAFlag() {
+        assertTrue(loadFirstRule(DFA).usesDFA());
+    }
+
+    private Rule loadFirstRule(String ruleSetName) {
+        return ((Rule)(loadRuleSet(ruleSetName).getRules().iterator().next()));
+    }
+
+    private RuleSet loadRuleSet(String ruleSetName) {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(DFA.getBytes()));
-        Rule r = (Rule) rs.getRules().iterator().next();
-        assertTrue(r.usesDFA());
+        return rsf.createRuleSet(new ByteArrayInputStream(ruleSetName.getBytes()));
     }
 
     private static final String EMPTY_RULESET =
