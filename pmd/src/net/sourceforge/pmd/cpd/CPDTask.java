@@ -25,7 +25,7 @@ import java.util.Properties;
  * <project name="CPDProj" default="main" basedir=".">
  * <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  * <target name="main">
- * <cpd ignoreIdentifiers="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
+ * <cpd ignoreIdentifiers="true" ignoreLiterals="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
  * <fileset dir="/path/to/my/src">
  * <include name="*.java"/>
  * </fileset>
@@ -44,6 +44,7 @@ public class CPDTask extends Task {
     private String format = TEXT_FORMAT;
     private int minimumTokenCount;
     private boolean ignoreLiterals;
+    private boolean ignoreIdentifiers;
     private File outputFile;
     private List filesets = new ArrayList();
 
@@ -55,6 +56,9 @@ public class CPDTask extends Task {
             Properties p = new Properties();
             if (ignoreLiterals) {
                 p.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
+            }
+            if (ignoreIdentifiers) {
+                p.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
             }
             CPD cpd = new CPD(minimumTokenCount, new JavaLanguage(p));
             tokenizeFiles(cpd);
@@ -138,6 +142,10 @@ public class CPDTask extends Task {
 
     public void setIgnoreLiterals(boolean value) {
         this.ignoreLiterals = value;
+    }
+
+    public void setIgnoreIdentifiers(boolean value) {
+        this.ignoreIdentifiers = value;
     }
 
     public void setOutputFile(File outputFile) {

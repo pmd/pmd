@@ -42,7 +42,9 @@
        <p>There's a <code>ignoreLiterals="true"</code> option which makes CPD ignore literal
  value differences when evaluating a duplicate block.  This means that <code>foo=42;</code> and <code>foo=43;</code>
  will be seen as equivalent.  You may want to run PMD with this option off to start with and
-           then switch it on to see what it turns up.
+           then switch it on to see what it turns up.   There's also a <code>ignoreIdentifiers="true"</code> option
+           that does the same thing with identifiers; i.e., variable names, methods names, and so forth.
+           The same guidelines apply.
  </p>
        <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e., <code>ant -v -f mybuildfile.xml cpd</code>.</p>
        <p>There's also a JavaSpaces version available for splitting the CPD effort across a farm of machines.

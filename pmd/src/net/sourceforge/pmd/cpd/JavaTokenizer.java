@@ -14,11 +14,14 @@ import net.sourceforge.pmd.ast.Token;
 public class JavaTokenizer implements Tokenizer {
     
     public static final String IGNORE_LITERALS = "ignore_literals";
-    
+    public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
+
     private boolean ignoreLiterals;
-    
+    private boolean ignoreIdentifiers;
+
     public void setProperties(Properties properties) {
         ignoreLiterals = Boolean.valueOf(properties.getProperty(IGNORE_LITERALS, "false")).booleanValue();
+        ignoreIdentifiers = Boolean.valueOf(properties.getProperty(IGNORE_IDENTIFIERS, "false")).booleanValue();
     }
 
     public void tokenize(SourceCode tokens, Tokens tokenEntries) {
@@ -52,8 +55,10 @@ public class JavaTokenizer implements Tokenizer {
             if (currToken.kind != JavaParserConstants.SEMICOLON) {
                 String image = currToken.image;
                 if (ignoreLiterals && (currToken.kind == JavaParserConstants.STRING_LITERAL || currToken.kind == JavaParserConstants.CHARACTER_LITERAL 
-                        || currToken.kind == JavaParserConstants.DECIMAL_LITERAL || currToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL
-                        || currToken.kind == JavaParserConstants.IDENTIFIER)) {
+                        || currToken.kind == JavaParserConstants.DECIMAL_LITERAL || currToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
+                    image = String.valueOf(currToken.kind);
+                }
+                if (ignoreIdentifiers && currToken.kind == JavaParserConstants.IDENTIFIER) {
                     image = String.valueOf(currToken.kind);
                 }
                 tokenEntries.add(new TokenEntry(image, tokens.getFileName(), currToken.beginLine));
