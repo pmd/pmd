@@ -5,9 +5,9 @@ Addin0: net.sourceforge.pmd.jdeveloper.Plugin
 
 Name: net/sourceforge/pmd/jdeveloper/
 Specification-Title: PMD Static Code Analyzer
-Specification-Version: 0.4
+Specification-Version: 0.5
 Specification-Vendor: Tom Copeland
 Implementation-Title: net.sourceforge.pmd.jdeveloper
-Implementation-Version: 0.4
+Implementation-Version: 0.5
 Implementation-Vendor: Tom Copeland
 Implementation-URL: http://pmd.sf.net/

@@ -6,7 +6,7 @@
 	<property name="etc" value="etc/"/>
 	<property name="build" value="build/"/>
 	<property name="pmdjar" value="pmd-1.2.1.jar"/>
-	<property name="pluginversion" value="0.4"/>
+	<property name="pluginversion" value="0.5"/>
 	<property name="jdeveloper.install.dir" value="/home/tom/jdev/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 	<path id="project.class.path">
