@@ -10,34 +10,34 @@ import net.sourceforge.pmd.RuleContext;
 
 public class SymbolTableBuilder extends JavaParserVisitorAdapter {
 
-    private SymbolTable table = new SymbolTable();
+    private SymbolTable symbolTable = new SymbolTable();
 
     public void initializeWith(ASTCompilationUnit node) {
         node.jjtAccept(this, null);
     }
 
     public SymbolTable getSymbolTable() {
-        return table;
+        return symbolTable;
     }
 
     /**
      *  these AST types trigger a new LocalScope
      */
-    public Object visit(ASTBlock node, Object data){return openScope(node);}
-    public Object visit(ASTConstructorDeclaration node, Object data){return openScope(node);}
-    public Object visit(ASTMethodDeclaration node, Object data){return openScope(node);}
-    public Object visit(ASTFieldDeclaration node, Object data){return openScope(node);}
-    public Object visit(ASTTryStatement node, Object data){return openScope(node);}
-    public Object visit(ASTForStatement node, Object data){return openScope(node);}
-    public Object visit(ASTIfStatement node, Object data){return openScope(node);}
+    public Object visit(ASTBlock node, Object data){return openLocalScope(node);}
+    public Object visit(ASTConstructorDeclaration node, Object data){return openLocalScope(node);}
+    public Object visit(ASTMethodDeclaration node, Object data){return openLocalScope(node);}
+    public Object visit(ASTFieldDeclaration node, Object data){return openLocalScope(node);}
+    public Object visit(ASTTryStatement node, Object data){return openLocalScope(node);}
+    public Object visit(ASTForStatement node, Object data){return openLocalScope(node);}
+    public Object visit(ASTIfStatement node, Object data){return openLocalScope(node);}
 
     /**
      * Collect NameDeclarations
      */
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
-            node.setScope(table.getCurrentScope());
-            table.addDeclaration(new NameDeclaration(node, Kind.LOCAL_VARIABLE));
+            node.setScope(symbolTable.getCurrentScope());
+            symbolTable.addDeclaration(new NameDeclaration(node, Kind.LOCAL_VARIABLE));
         }
         return super.visit(node, data);
     }
@@ -47,15 +47,15 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
      */
     public Object visit(ASTName node, Object data) {
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
-            table.lookup(new NameOccurrence(node));
+            symbolTable.lookup(new NameOccurrence(node));
         }
         return super.visit(node, data);
     }
 
-    private Object openScope(SimpleNode node) {
-        table.openScope();
+    private Object openLocalScope(SimpleNode node) {
+        symbolTable.openScope(new LocalScope());
         super.visit(node, null);
-        table.leaveScope();
+        symbolTable.leaveScope();
         return null;
     }
 

@@ -7,10 +7,7 @@ package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.symboltable.SymbolTable;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.Kind;
+import net.sourceforge.pmd.symboltable.*;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -34,7 +31,7 @@ public class SymbolTableTest extends TestCase {
 
     public void testParentContains() {
         SymbolTable table = new SymbolTable();
-        table.openScope();
+        table.openScope(new LocalScope());
         table.addDeclaration(new NameDeclaration(NameDeclarationTest.createNode("bar", 12), Kind.UNKNOWN));
         table.addDeclaration(new NameDeclaration(NameDeclarationTest.createNode("baz", 12), Kind.UNKNOWN));
         assertTrue(table.getUnusedNameDeclarations().hasNext());
@@ -52,7 +49,7 @@ public class SymbolTableTest extends TestCase {
 
     public void testRecordOccurrence() {
         SymbolTable table = new SymbolTable();
-        table.openScope();
+        table.openScope(new LocalScope());
         table.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
         assertTrue(!table.getUnusedNameDeclarations().hasNext());
     }
@@ -66,7 +63,7 @@ public class SymbolTableTest extends TestCase {
     public void testRecordUsageParent() {
         SymbolTable parent = new SymbolTable();
         parent.addDeclaration(NameDeclarationTest.FOO);
-        parent.openScope();
+        parent.openScope(new LocalScope());
         parent.leaveScope();
         assertEquals(NameDeclarationTest.FOO, parent.getUnusedNameDeclarations().next());
     }
@@ -74,7 +71,7 @@ public class SymbolTableTest extends TestCase {
     public void testRecordUsageParent2() {
         SymbolTable parent = new SymbolTable();
         parent.addDeclaration(NameDeclarationTest.FOO);
-        parent.openScope();
+        parent.openScope(new LocalScope());
         parent.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
         assertTrue(!parent.getUnusedNameDeclarations().hasNext());
     }

@@ -11,10 +11,7 @@ import java.text.MessageFormat;
 
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
-import net.sourceforge.pmd.symboltable.Namespace;
-import net.sourceforge.pmd.symboltable.SymbolTable;
-import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.*;
 
 public class UnusedLocalVariableRule extends AbstractRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {

@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.ast.SimpleNode;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -20,11 +22,12 @@ public class ContextManager {
         return (Scope)scopes.get(scopes.size()-1);
     }
 
-    public void openScope() {
-        scopes.add(new Scope());
+    public void openScope(Scope scope) {
+        scopes.add(scope);
     }
 
     public void leaveScope() {
         scopes.remove(scopes.size()-1);
     }
+
 }

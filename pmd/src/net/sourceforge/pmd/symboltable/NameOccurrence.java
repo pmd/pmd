@@ -15,29 +15,21 @@ public class NameOccurrence {
         this.node = node;
     }
 
-    public int getBeginLine() {
-        return node.getBeginLine();
-    }
-
-    public String getImage() {
-        return node.getImage();
-    }
-
     public boolean equals(Object o) {
         NameOccurrence n = (NameOccurrence)o;
-        return n.getImage().equals(node.getImage());
+        return n.getObjectName().equals(node.getImage());
     }
 
     public int hashCode() {
-        return node.getImage().hashCode();
+        return getObjectName().hashCode();
     }
 
     public String toString() {
         return node.getImage() + ":" + node.getBeginLine();
     }
 
-    public NameDeclaration copyIntoNameDeclaration() {
-        return new NameDeclaration(node, Kind.UNKNOWN);
+    public String getObjectName() {
+        return (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
     }
 
 }

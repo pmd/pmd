@@ -20,11 +20,11 @@ public class SymbolTable {
         List scopes = new ArrayList();
         lookupController = new LookupController(scopes);
         cm = new ContextManager(scopes);
-        cm.openScope();
+        cm.openScope(new LocalScope()); // TODO this should be ClassScope, probably
     }
 
-    public void openScope() {
-        cm.openScope();
+    public void openScope(Scope scope) {
+        cm.openScope(scope);
     }
 
     public void leaveScope() {
