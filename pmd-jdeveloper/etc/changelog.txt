@@ -1,3 +1,6 @@
+Nov 17 2003 - 0.7:
+Fixed bug 765847 - PMD plugin now works on BC4J project.  Thanks to Hariolf Häfele for the report.
+
 Nov 04 2003 - 0.6:
 Added rule name to LogWindow; thx to Roman Legat for the suggestion.
 Updated PMD version to 1.3.

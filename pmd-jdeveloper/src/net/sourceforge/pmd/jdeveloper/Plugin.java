@@ -95,8 +95,13 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 RuleContext ctx = new RuleContext();
                 ctx.setReport(new Report());
                 if (resolveType(context.getDocument()) == PROJECT) {
-                    for (Iterator i = ((Project)context.getDocument()).getListOfChildren().iterator(); i.hasNext();) {
-                        Document candidate = (Document)i.next();
+                    Iterator i = ((Project)context.getDocument()).getListOfChildren().iterator();
+                    while (i.hasNext()) {
+                        Object obj = i.next();
+                        if (!(obj instanceof Document)) {
+                            continue;
+                        }
+                        Document candidate = (Document)obj;
                         if (candidate.getLongLabel().endsWith(".java")) {
                             ctx.setSourceCodeFilename(candidate.getLongLabel());
                             FileInputStream fis = new FileInputStream(new File(candidate.getLongLabel()));
