@@ -572,7 +572,7 @@ void NestedInterfaceDeclaration() :
 }
 
 void UnmodifiedInterfaceDeclaration() :
-{Token t; }
+{Token t;}
 {
   "interface" t=<IDENTIFIER>
   {
@@ -620,9 +620,7 @@ void VariableDeclarator() :
 }
 
 void VariableDeclaratorId() :
-{
-  Token t;
-}
+{Token t;}
 {
   t=<IDENTIFIER>
   ( "[" "]" )*
@@ -664,9 +662,7 @@ void MethodDeclaration() :
 }
 
 void MethodDeclarator() :
-{
-  Token t;
-}
+{Token t;}
 {
   t=<IDENTIFIER>
   {
@@ -752,8 +748,7 @@ void PrimitiveType() :
 void ResultType() :
 {}
 {
-  "void"
-| Type()
+  "void" | Type()
 }
 
 void Name() :
@@ -959,9 +954,7 @@ void PrimaryExpression() :
 }
 
 void PrimaryPrefix() :
-{
-  Token t;
-}
+{Token t;}
 {
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
@@ -973,9 +966,7 @@ void PrimaryPrefix() :
 }
 
 void PrimarySuffix() :
-{
-  Token t;
-}
+{Token t;}
 { LOOKAHEAD(2) "." "this"
 | LOOKAHEAD(2) "." "super"
 | LOOKAHEAD(2) "." AllocationExpression()
@@ -999,15 +990,12 @@ void Literal() :
 void BooleanLiteral() :
 {}
 {
-  "true" { jjtThis.setTrue(); }
-| "false"
+  "true" { jjtThis.setTrue(); } | "false"
 }
 
 void NullLiteral() :
 {}
-{
-  "null"
-}
+{ "null" }
 
 void Arguments() :
 {}
@@ -1149,9 +1137,7 @@ void IfStatement() :
  * else's to the innermost if statement.  The LOOKAHEAD specification
  * is to tell JavaCC that we know what we are doing.
  */
-{
-boolean hasElse = false;
-}
+{}
 {
   "if" "(" Expression() ")" Statement() [ LOOKAHEAD(1) "else" {jjtThis.setHasElse();} Statement() ]
 {}
