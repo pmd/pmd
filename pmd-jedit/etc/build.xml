@@ -52,7 +52,7 @@
         <mkdir dir="tmp/jars"/>
         <copy file="${lib}/${ant.project.name}.jar" todir="tmp/jars"/>
         <copy file="${lib}/pmd-0.3.jar" todir="tmp/jars"/>
-        <zip zipfile="pmd-jedit-0.1.zip" basedir="tmp"/>
+        <zip zipfile="pmd-jedit-bin-0.2.zip" basedir="tmp"/>
         <delete dir="tmp"/>
     </target>
 
