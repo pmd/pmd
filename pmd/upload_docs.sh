@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#rm -rf /q /s target
+#rm -rf target
 #maven pmd-site
 #maven xdoc:transform
 

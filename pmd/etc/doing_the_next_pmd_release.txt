@@ -27,12 +27,12 @@ Regenerate the web site
 Prepare binary release:
 rm -rf ~/tmp/pmd
 mkdir -p ~/tmp/pmd/etc ~/tmp/pmd/lib
-cp run.bat build.xml cpdgui.bat readme.txt changelog.txt astviewer.bat ~/tmp/pmd/etc
-cp ../lib/pmd-1.04.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/xercesImpl-2.0.2.jar  ~/tmp/pmd/lib
+cp run.bat run.sh gui.bat build.xml cpdgui.bat readme.txt changelog.txt astviewer.bat ~/tmp/pmd/etc
+cp ../lib/pmd-1.04.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd/lib
 cp -R ../target/docs ~/tmp/pmd/
 cp -R ../test-data ~/tmp/pmd/
 cp -R ../xslt ~/tmp/pmd/
-zip -b ~/tmp/pmd pmd-bin-1.04.zip
+zip -q -r ~/tmp/pmd-bin-1.04.zip ~/tmp/pmd/
 
 Time to tag:
 cvs -q rtag -D tomorrow "pmd_release_1_04" pmd
