@@ -93,16 +93,25 @@ most people really dislike :-)
      </rule>
 
     <rule name="UnusedModifier"
-         message="Unused modifiers are, well, unused"
+         message="Avoid modifiers which are implied by the context"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>
-     Unused modifiers are, well, unused.
+     Fields in interfaces are automatically public static final, and
+     methods are public abstract.
+     Classes or interfaces nested in an interface are automatically public
+     and static (all nested interfaces are automatically static).
+     For historical reasons, modifiers which are implied by the context
+     are accepted by the compiler, but are superfluous.
      </description>
         <properties>
             <property name="xpath">
                 <value>
                     <![CDATA[
-    //InterfaceDeclaration//MethodDeclaration[@Public='true' or @Abstract = 'true']
+    //UnmodifiedInterfaceDeclaration//MethodDeclaration[@Public = 'true' or @Abstract = 'true']
+|   //UnmodifiedInterfaceDeclaration//FieldDeclaration[@Public = 'true' or @Static = 'true' or @Final = 'true']
+|   //UnmodifiedInterfaceDeclaration//NestedClassDeclaration[@Public = 'true' or @Static = 'true']
+|   //UnmodifiedInterfaceDeclaration//NestedInterfaceDeclaration[@Public = 'true' or @Static = 'true']
+|   //UnmodifiedClassDeclaration//NestedInterfaceDeclaration[@Static = 'true']
                     ]]>
                 </value>
             </property>
@@ -112,6 +121,12 @@ most people really dislike :-)
  <![CDATA[
     public interface Foo {
      public abstract void bar(); // both abstract and public are ignored by the compiler
+     public static final int X = 0; // public, static, and final all ignored
+     public static class Bar {} // public, static ignored
+     public static interface Baz {} // ditto
+    }
+    public class Bar {
+     public static interface Baz {} // static ignored
     }
  ]]>
      </example>

@@ -423,7 +423,7 @@ void ClassBody() :
 void NestedClassDeclaration() :
 {}
 {
-  ("static"       { jjtThis.setStatic(); }
+  ( "static"       { jjtThis.setStatic(); }
   | "abstract"    { jjtThis.setAbstract(); }
   | "final"       { jjtThis.setFinal(); }
   | "public"      { jjtThis.setPublic(); }
@@ -468,14 +468,24 @@ void MethodDeclarationLookahead() :
 void InterfaceDeclaration() :
 {}
 {
-  ( "abstract" | "public" | "strictfp")*
+  ( "abstract"  { jjtThis.setAbstract(); }
+  | "public"    { jjtThis.setPublic(); }
+  | "strictfp"  { jjtThis.setStrict(); }
+  )*
   UnmodifiedInterfaceDeclaration()
 }
 
 void NestedInterfaceDeclaration() :
 {}
 {
-  ( "static" | "abstract" | "final" | "public" | "protected" | "private" | "strictfp")*
+  ( "static"       { jjtThis.setStatic(); }
+  | "abstract"    { jjtThis.setAbstract(); }
+  | "final"       { jjtThis.setFinal(); }
+  | "public"      { jjtThis.setPublic(); }
+  | "protected"   { jjtThis.setProtected(); }
+  | "private"     { jjtThis.setPrivate(); }
+  | "strictfp"    { jjtThis.setStrict(); }
+  )*
   UnmodifiedInterfaceDeclaration()
 }
 

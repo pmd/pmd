@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jesse Glick - patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Jeff Epstein - TextPad integration and tests</li>
             <li>Gabe Johnson - CloseConnectionRule</li>
             <li>Roelof Vuurboom - posted report of QStudio analysis of PMD</li>
@@ -100,7 +101,6 @@
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Frederic Harper - bug report and subsequent troubleshooting</li>
             <li>Mats Henricson - an XSLT script and several bug reports</li>
-            <li>Jesse Glick - an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Luke Francl - numerous <b>high quality</b> feature suggestions and bug reports</li>
             <li>Martin Cooper - feature suggestions</li>
             <li>Bruce Mayhew - feedback on the jEdit plugin</li>

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTInterfaceDeclaration extends SimpleNode {
+public class ASTInterfaceDeclaration extends AccessNode  {
     public ASTInterfaceDeclaration(int id) {
         super(id);
     }
@@ -19,4 +19,10 @@ public class ASTInterfaceDeclaration extends SimpleNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public void dump(String prefix) {
+        System.out.println(collectDumpedModifiers(prefix));
+        dumpChildren(prefix);
+    }
+
 }
