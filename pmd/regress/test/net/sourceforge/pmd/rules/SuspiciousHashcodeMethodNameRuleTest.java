@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -9,9 +10,8 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
 public class SuspiciousHashcodeMethodNameRuleTest  extends SimpleAggregatorTst {
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclaration[ResultType//PrimitiveType[@Image='int'][//MethodDeclarator[@Image='hashcode' or @Image='HashCode' or @Image='Hashcode'][not(FormalParameters/*)]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/naming.xml", "SuspiciousHashcodeMethodName");
     }
 
     public void testAll() {

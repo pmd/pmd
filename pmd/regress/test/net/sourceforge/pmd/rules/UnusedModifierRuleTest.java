@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -13,13 +14,8 @@ public class UnusedModifierRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//UnmodifiedInterfaceDeclaration//MethodDeclaration[@Public='true' or @Abstract = 'true']" +
-                              "|   //UnmodifiedInterfaceDeclaration//FieldDeclaration[@Public = 'true' or @Static = 'true' or @Final = 'true']" +
-                              "|   //UnmodifiedInterfaceDeclaration//NestedClassDeclaration[@Public = 'true' or @Static = 'true']" +
-                              "|   //UnmodifiedInterfaceDeclaration//NestedInterfaceDeclaration[@Public = 'true' or @Static = 'true']" +
-                              "|   //UnmodifiedClassDeclaration//NestedInterfaceDeclaration[@Static = 'true']");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/controversial.xml", "UnusedModifier");
     }
 
     public void testAll() {

@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -13,9 +14,8 @@ public class StringInstantiationRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//AllocationExpression[Name/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/strings.xml", "StringInstantiation");
     }
 
     public void testAll() {
@@ -28,27 +28,27 @@ public class StringInstantiationRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class StringInstantiation1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " private String bar = new String(\"bar\");" + PMD.EOL +
     " private String baz = new String();" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class StringInstantiation2 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " private String[] bar = new String[5];" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class StringInstantiation3 {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  byte[] bytes = new byte[50];" + PMD.EOL +
     "  String bar = new String(bytes, 0, bytes.length);" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class StringInstantiation4 {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  byte[] bytes = new byte[50];" + PMD.EOL +
     "  String bar = new String(bytes, 0, bytes.length, \"some-encoding\");" + PMD.EOL +
     " }" + PMD.EOL +

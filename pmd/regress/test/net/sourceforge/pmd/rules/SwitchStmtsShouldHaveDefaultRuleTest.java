@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -13,9 +14,8 @@ public class SwitchStmtsShouldHaveDefaultRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//SwitchStatement[not(SwitchLabel[count(*) = 0])]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/design.xml", "SwitchStmtsShouldHaveDefault");
     }
 
     public void testAll() {
@@ -27,7 +27,7 @@ public class SwitchStmtsShouldHaveDefaultRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
-    " public void bar() {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
     "  int x = 2;" + PMD.EOL +
     "  switch (x) {" + PMD.EOL +
     "   case 2: int y=8;" + PMD.EOL +
@@ -37,7 +37,7 @@ public class SwitchStmtsShouldHaveDefaultRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST2 =
     "public class Foo {" + PMD.EOL +
-    " public void bar() {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
     "  int x = 2;" + PMD.EOL +
     "  switch (x) {" + PMD.EOL +
     "   case 2: int y=8;" + PMD.EOL +
