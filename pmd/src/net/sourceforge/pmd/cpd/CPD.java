@@ -29,16 +29,6 @@ public class CPD {
         }
     }
 
-    public void add(int fileCount, File file) throws IOException {
-        listener.addedFile(fileCount, file);
-        Tokenizer t = new JavaTokensTokenizer();
-        TokenList ts = new TokenList(file.getAbsolutePath());
-        FileReader fr = new FileReader(file);
-        t.tokenize(ts, fr);
-        fr.close();
-        tokenSets.add(ts);
-    }
-
     public void setMinimumTileSize(int tileSize) {
         minimumTileSize = tileSize;
     }
@@ -54,20 +44,6 @@ public class CPD {
     public void addRecursively(String dir) throws IOException {
         addDirectory(dir, true);
     }
-
-    private void addDirectory(String dir, boolean recurse) throws IOException {
-        FileFinder finder = new FileFinder();
-        List list = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
-        add(list);
-    }
-
-    public void add(String id, String input) throws IOException {
-        Tokenizer t = new JavaTokensTokenizer();
-        TokenList ts = new TokenList(id);
-        t.tokenize(ts, new StringReader(input));
-        tokenSets.add(ts);
-    }
-
 
     public void go() {
         if (!listener.update("Starting to process " + tokenSets.size() + " files")) return;
@@ -96,6 +72,30 @@ public class CPD {
         return "";
     }
 
+    private void addDirectory(String dir, boolean recurse) throws IOException {
+        FileFinder finder = new FileFinder();
+        List list = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
+        add(list);
+    }
+
+    public void add(String id, String input) throws IOException {
+        Tokenizer t = new JavaTokensTokenizer();
+        TokenList ts = new TokenList(id);
+        t.tokenize(ts, new StringReader(input));
+        tokenSets.add(ts);
+    }
+
+    private void add(int fileCount, File file) throws IOException {
+        listener.addedFile(fileCount, file);
+        Tokenizer t = new JavaTokensTokenizer();
+        //Tokenizer t = new LinesTokenizer();
+        TokenList ts = new TokenList(file.getAbsolutePath());
+        FileReader fr = new FileReader(file);
+        t.tokenize(ts, fr);
+        fr.close();
+        tokenSets.add(ts);
+    }
+
     public static void main(String[] args) {
         CPD cpd = new CPD();
         cpd.setListener(new CPDNullListener());
@@ -108,9 +108,11 @@ public class CPD {
         }
         long start = System.currentTimeMillis();
         cpd.go();
-        System.out.println("That took " + (System.currentTimeMillis() - start));
+        long total = System.currentTimeMillis() - start;
+        System.out.println("That took " + total);
         CPDRenderer renderer = new TextRenderer();
         System.out.println(renderer.render(cpd));
+        System.out.println("That took " + total);
     }
 
 }

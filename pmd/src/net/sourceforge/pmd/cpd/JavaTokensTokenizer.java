@@ -18,10 +18,6 @@ import java.util.ArrayList;
 public class JavaTokensTokenizer implements Tokenizer {
 
     private boolean discarding;
-
-    /**
-     * The end of line string for this machine.
-     */
     protected String EOL = System.getProperty("line.separator", "\n");
 
     public void tokenize(TokenList tokens, Reader input) throws IOException {
