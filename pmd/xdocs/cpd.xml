@@ -9,14 +9,16 @@
   <body>
    <section name="Copied and pasted code is usually bad">
      <p>But it can be hard to find, especially in a large project.  So we wrote a utility creatively titled
-     "CPD - Copy and Paste Detector" - to find it for us.  This utility uses (more or less) Michael Wise's Greedy String Tiling Algorithm
-     to find duplicate code.  </p>
+     "CPD - Copy and Paste Detector" - to find it for us.  This utility uses (more or less) Michael Wise's Greedy String Tiling algorithm
+     to find duplicate code.</p>
      <p>To run CPD as a JNLP application, click <a href="cpd.jnlp">here</a>.</p>
      <p>Future plans</p>
      <ul>
         <li>Make a PMD rule for CPD</li>
+        <li>Make the CPD GUI remember your settings</li>
         <li>Enhance the GUI to make it less hideous</li>
         <li>Improve the algorithm to make it greedier</li>
+        <li>Suggestions?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</li>
      </ul>
    </section>
   </body>
