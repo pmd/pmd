@@ -26,6 +26,7 @@ public class AvoidReassigningParametersTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST5, "qualified name same as parameter", 0, rule),
            new TestDescriptor(TEST6, "assignment to parameter public field", 0, rule),
            new TestDescriptor(TEST7, "assignment to array parameter slot", 0, rule),
+           new TestDescriptor(TEST8, "TEST8", 1, rule),
        });
     }
 
@@ -81,4 +82,15 @@ public class AvoidReassigningParametersTest extends SimpleAggregatorTst {
     "  bar[0] = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
+
+    public static final String TEST8 =
+        "public class Foo {" + PMD.EOL +
+        " void foo(int x) {" + PMD.EOL +
+        "   try {" + PMD.EOL +
+        "     x = 2;" + PMD.EOL +
+        "   } catch (Throwable t) { " + PMD.EOL +
+        "   } " + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
 }
