@@ -25,7 +25,7 @@ public class Occurrences {
     }
 
     public void addTile(Tile tile, Occurrence occ) {
-        if (!has(tile)) {
+        if (!tiles.contains(tile)) {
             List list = new ArrayList();
             list.add(occ);
             tiles.add(tile);
@@ -49,10 +49,6 @@ public class Occurrences {
                 i.remove();
             }
         }
-    }
-
-    private boolean has(Tile candidate) {
-        return tiles.contains(candidate);
     }
 
     public boolean containsAnyTokensIn(Tile tile) {
