@@ -1,12 +1,12 @@
 ????, 2004 - 1.6:
 Fixed bug 895661 - XML reports containing error elements no longer have malformed XML.
 Fixed a bug in UnconditionalIfStatement - it no longer flags things like "if (x==true)".
-Added a new renderer - SummaryHTMLRenderer.
 Applied Steve Hawkins' improvements to CPD:
 - BWT optimizations
 - fixed "single match per file" bug
 - tweaked source code slicing
 - CSV renderer
+Added two new renderers - SummaryHTMLRenderer and PapariTextRenderer.
 Moved development environment to Ant 1.6 and JavaCC 3.2.
 
 February 2, 2004 - 1.5:

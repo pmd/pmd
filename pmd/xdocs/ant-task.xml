@@ -21,7 +21,7 @@
   </tr>
   <tr>
     <td valign="top">formatter</td>
-    <td valign="top">Specifies the format of and the files to which the report is written.   Formats can be of type 'xml', 'text', or 'html', and filenames can be either relative or absolute.  See example belows.</td>
+    <td valign="top">Specifies the format of and the files to which the report is written.   Formats can be of type 'xml', 'text', 'csv', 'papari', 'summaryhtml', or 'html', and filenames can be either relative or absolute.  See example belows.</td>
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>

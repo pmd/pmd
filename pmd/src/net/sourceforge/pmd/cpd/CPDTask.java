@@ -38,6 +38,7 @@ public class CPDTask extends Task {
 
     private static final String TEXT_FORMAT = "text";
     private static final String XML_FORMAT = "xml";
+    private static final String CSV_FORMAT = "csv";
 
     private String format = TEXT_FORMAT;
 	private int minimumTokenCount;
@@ -103,8 +104,10 @@ public class CPDTask extends Task {
     private Renderer createRenderer() {
       if (format.equals(TEXT_FORMAT)) {
         return new SimpleRenderer();
-      } else
-        return new XMLRenderer();
+      } else if (format.equals(CSV_FORMAT)) {
+        return new CSVRenderer();
+      }
+      return new XMLRenderer();
     }
 
 	private void validateFields() throws BuildException{
@@ -135,7 +138,7 @@ public class CPDTask extends Task {
     }
 
     public static class FormatAttribute extends EnumeratedAttribute {
-      private String[] formats = new String[] {XML_FORMAT, TEXT_FORMAT};
+      private String[] formats = new String[] {XML_FORMAT, TEXT_FORMAT, CSV_FORMAT};
 
       public String[] getValues() {
         return formats;

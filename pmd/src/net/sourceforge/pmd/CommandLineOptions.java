@@ -12,6 +12,7 @@ import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.PapariTextRenderer;
 
 public class CommandLineOptions {
 
@@ -51,20 +52,17 @@ public class CommandLineOptions {
     public Renderer createRenderer() {
         if (reportFormat.equals("xml")) {
             return new XMLRenderer();
-        }
-        if (reportFormat.equals("ideaj")) {
+        } else if (reportFormat.equals("ideaj")) {
             return new IDEAJRenderer(args);
-        }
-        if (reportFormat.equals("text")) {
+        } else if (reportFormat.equals("papari")) {
+            return new PapariTextRenderer();
+        } else if (reportFormat.equals("text")) {
             return new TextRenderer();
-        }
-        if (reportFormat.equals("emacs")) {
+        } else if (reportFormat.equals("emacs")) {
             return new EmacsRenderer();
-        }
-        if (reportFormat.equals("csv")) {
+        } else if (reportFormat.equals("csv")) {
             return new CSVRenderer();
-        }
-        if (reportFormat.equals("html")) {
+        } else if (reportFormat.equals("html")) {
             return new HTMLRenderer();
         }
         if (reportFormat.equals("summaryhtml")) {
