@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.List;
 
 public class Designer {
 
@@ -55,8 +56,11 @@ public class Designer {
                 RuleContext ctx = new RuleContext();
                 ctx.setSourceCodeFilename("[scratchpad]");
                 new PMD().processFile(new StringReader(codeEditorPane.getText()), rs, ctx);
-                dfaPanel.resetTo(dfaGraphRule.getMethods(), codeEditorPane);
-                dfaPanel.repaint();
+                List methods = dfaGraphRule.getMethods();
+                if (!methods.isEmpty()) {
+                    dfaPanel.resetTo(methods, codeEditorPane);
+                    dfaPanel.repaint();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

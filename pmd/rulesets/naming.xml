@@ -288,8 +288,10 @@ public class Foo {
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration[@Final='false']//VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]
-
+//FieldDeclaration
+ [@Final='false']
+ [parent::ClassBodyDeclaration]
+ //VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]
 ]]>
                 </value>
             </property>

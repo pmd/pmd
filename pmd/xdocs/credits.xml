@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Matthias Kerkhoff - bug report</li>
             <li>Benoit Xhenseval - several bug reports</li>
             <li>Todd Wright - reported bug in EmptyStatementNotInLoop, XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Eric Olander - noticed missing image in Postfix nodes, ImmutableFieldRule</li>

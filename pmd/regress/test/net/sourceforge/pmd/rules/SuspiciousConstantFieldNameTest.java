@@ -19,6 +19,7 @@ public class SuspiciousConstantFieldNameTest  extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "PI not final", 1, rule),
            new TestDescriptor(TEST3, "PI and E not final", 2, rule),
            new TestDescriptor(TEST4, "ok", 0, rule),
+           new TestDescriptor(TEST5, "ignore interfaces", 0, rule),
        });
     }
 
@@ -44,6 +45,11 @@ public class SuspiciousConstantFieldNameTest  extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     " public final int e;" + PMD.EOL +
     " public final int PI;" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public interface Foo {" + PMD.EOL +
+    " public int E;" + PMD.EOL +
     "}";
 
 }
