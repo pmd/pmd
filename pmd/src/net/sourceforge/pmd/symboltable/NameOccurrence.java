@@ -29,7 +29,7 @@ public class NameOccurrence {
     }
 
     public boolean isMethodOrConstructorInvocation() {
-        return this.isMethodOrConstructorInvocation;
+        return isMethodOrConstructorInvocation;
     }
 
     public void setNameWhichThisQualifies(NameOccurrence qualifiedName) {
@@ -41,16 +41,16 @@ public class NameOccurrence {
     }
 
     public boolean isOnLeftHandSide() {
-        SimpleNode top = null;
+        SimpleNode primaryExpression = null;
         if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
-            top = (SimpleNode)location.jjtGetParent().jjtGetParent();
+            primaryExpression = (SimpleNode)location.jjtGetParent().jjtGetParent();
         } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
-            top = (SimpleNode)location.jjtGetParent().jjtGetParent().jjtGetParent();
+            primaryExpression = (SimpleNode)location.jjtGetParent().jjtGetParent().jjtGetParent();
         } else {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
 
-        return top.jjtGetNumChildren() > 1 && top.jjtGetChild(1) instanceof ASTAssignmentOperator;
+        return primaryExpression.jjtGetNumChildren() > 1 && primaryExpression.jjtGetChild(1) instanceof ASTAssignmentOperator;
     }
 
     public Scope getScope() {

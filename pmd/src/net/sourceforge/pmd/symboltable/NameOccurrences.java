@@ -29,15 +29,6 @@ public class NameOccurrences {
         return names.iterator();
     }
 
-    public String toString() {
-        String result = "";
-        for (Iterator i=names.iterator();i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence)i.next();
-            result += occ.getImage();
-        }
-        return result;
-    }
-
     private void buildOccurrences(ASTPrimaryExpression node) {
         ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)node.jjtGetChild(0);
         if (prefix.usesSuperModifier()) {
@@ -53,6 +44,7 @@ public class NameOccurrences {
     }
 
     private void checkForNameChild(SimpleNode node) {
+        // TODO when is this null?
         if (node.getImage() != null) {
             add(new NameOccurrence(node, node.getImage()));
         }
@@ -75,4 +67,13 @@ public class NameOccurrences {
         }
     }
 
+
+    public String toString() {
+        String result = "";
+        for (Iterator i=names.iterator();i.hasNext();) {
+            NameOccurrence occ = (NameOccurrence)i.next();
+            result += occ.getImage();
+        }
+        return result;
+    }
 }
