@@ -19,6 +19,7 @@ public class WhileLoopsMustUseBracesRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "with braces", 0, rule),
        });
     }
+
     private static final String TEST1 =
     "public class WhileLoopsNeedBraces1 {" + CPD.EOL +
     " public void foo() {   " + CPD.EOL +
