@@ -12,7 +12,7 @@ public class SimpleRenderer {
             rpt.append("Found a " + match.getLineCount() + " line (" + match.getTokenCount() + " tokens) duplication in the following files: " + CPD.EOL);
             for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
                 Mark mark = (Mark)occurrences.next();
-                rpt.append("Starting at line " + mark.getBeginLine() + " of " + mark.getFile() + CPD.EOL);
+                rpt.append("Starting at line " + mark.getBeginLine() + " of " + mark.getTokenSrcID() + CPD.EOL);
             }
             rpt.append(match.getSourceCodeSlice() + CPD.EOL);
         }

@@ -32,9 +32,9 @@ public class MatchCollector {
                 }
                 matchedTokens++;
             }
-            if (matchedTokens > min && !soFar.contains(mark1.getFile()) && !soFar.contains(mark2.getFile())) {
-                soFar.add(mark1.getFile());
-                soFar.add(mark2.getFile());
+            if (matchedTokens > min && !soFar.contains(mark1.getTokenSrcID()) && !soFar.contains(mark2.getTokenSrcID())) {
+                soFar.add(mark1.getTokenSrcID());
+                soFar.add(mark2.getTokenSrcID());
                 matches.add(new Match(matchedTokens, mark1, mark2));
             }
         }

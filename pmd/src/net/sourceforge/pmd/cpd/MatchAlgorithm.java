@@ -61,10 +61,12 @@ public class MatchAlgorithm {
             Match match = (Match)i.next();
             for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
                 Mark mark = (Mark)occurrences.next();
-                SourceCode sourceCode = (SourceCode)source.get(mark.getFile());
+                SourceCode sourceCode = (SourceCode)source.get(mark.getTokenSrcID());
                 match.setLineCount(tokens.getLineCount(mark, match));
                 if (!occurrences.hasNext()) {
-                    match.setSourceCodeSlice(sourceCode.getSlice(mark.getBeginLine()-1, mark.getBeginLine() + tokens.getLineCount(mark, match)));
+                    int start = mark.getBeginLine();
+                    int end = mark.getBeginLine()-1 + tokens.getLineCount(mark, match);
+                    match.setSourceCodeSlice(sourceCode.getSlice(start, end));
                 }
             }
         }

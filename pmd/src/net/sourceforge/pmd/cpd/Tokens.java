@@ -29,9 +29,6 @@ public class Tokens {
         if (endTok.equals(TokenEntry.EOF)) {
             endTok = get(mark.getIndexIntoTokenArray() + match.getTokenCount() - 1);
         }
-        if (!endTok.getTokenSrcID().equals(mark.getFile())) {
-            throw new RuntimeException("Something went wrong; CPD thinks that a match extends across two files: " + mark.getFile() + " and " + endTok.getTokenSrcID());
-        }
         return endTok.getBeginLine() - mark.getBeginLine();
     }
 

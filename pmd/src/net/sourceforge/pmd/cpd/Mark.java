@@ -4,13 +4,13 @@ public class Mark {
 
     private int indexIntoFile;
     private int indexIntoTokenArray;
-    private String file;
+    private String tokenSrcID;
     private int  beginLine;
 
-    public Mark(int offset, String file, int index, int beginLine) {
+    public Mark(int offset, String tokenSrcID, int index, int beginLine) {
         this.indexIntoTokenArray = offset;
         this.indexIntoFile = index;
-        this.file = file;
+        this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
     }
 
@@ -18,8 +18,8 @@ public class Mark {
         return this.beginLine;
     }
 
-    public String getFile() {
-        return this.file;
+    public String getTokenSrcID() {
+        return this.tokenSrcID;
     }
 
     public int getIndexIntoFile() {
