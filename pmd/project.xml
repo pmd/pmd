@@ -135,6 +135,9 @@
     <contributor>
       <name>Nanne Baars</name>
     </contributor>
+    <contributor>
+      <name>Vladimir Bossicard - http://junit-addons.sf.net/</name>
+    </contributor>
     </contributors>
 
   <!-- Need to mark these as compile-time/run-time -->
