@@ -1,9 +1,9 @@
 @echo off
-set CVSROOT=:ext:tomcopeland@cvs.pmd.sourceforge.net:/cvsroot/pmd
-set CVS_RSH=c:\bin\ssh\ssh
-set HOME=c:
+set CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd
+set CVS_RSH=c:\data\bin\ssh\ssh
+set HOME=c:\data
 set ANT_HOME=c:\ant
-set PATH=c:\j2sdk1.4.1_01\bin;%PATH%
+set PATH=c:\j2sdk1.4.2_04\bin;c:\ant\bin\;%PATH%
 set CLASSPATH=../build/
 set CLASSPATH=%CLASSPATH%;../
 set CLASSPATH=%CLASSPATH%;../lib/jaxen-core-1.0-fcs.jar
