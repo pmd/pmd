@@ -1181,22 +1181,11 @@ void TryStatement() :
  * Semantic check required here to make sure that at least one
  * finally/catch is present.
  */
-{
-  boolean hasCatch = false;
-  boolean hasFinally = false;
-}
+{}
 {
   "try" Block()
-  ( "catch" {hasCatch = true;} "(" FormalParameter() ")" Block() )*
-  [ "finally" {hasFinally = true;} Block() ]
-{
-    if (hasCatch) {
-        jjtThis.setHasCatch();
-    }
-    if (hasFinally) {
-        jjtThis.setHasFinally();
-    }
-}
+  ( "catch" {jjtThis.setHasCatch();} "(" FormalParameter() ")" Block() )*
+  [ "finally" {jjtThis.setHasFinally();} Block() ]
 }
 
 void AssertStatement() :

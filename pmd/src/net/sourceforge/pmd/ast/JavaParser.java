@@ -4366,8 +4366,7 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
  /*@bgen(jjtree) TryStatement */
   ASTTryStatement jjtn000 = new ASTTryStatement(this, JJTTRYSTATEMENT);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);boolean hasCatch = false;
-  boolean hasFinally = false;
+  jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(TRY);
       Block();
@@ -4382,7 +4381,7 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
           break label_41;
         }
         jj_consume_token(CATCH);
-             hasCatch = true;
+             jjtn000.setHasCatch();
         jj_consume_token(LPAREN);
         FormalParameter();
         jj_consume_token(RPAREN);
@@ -4391,21 +4390,13 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FINALLY:
         jj_consume_token(FINALLY);
-               hasFinally = true;
+               jjtn000.setHasFinally();
         Block();
         break;
       default:
         jj_la1[111] = jj_gen;
         ;
       }
-  jjtree.closeNodeScope(jjtn000, true);
-  jjtc000 = false;
-    if (hasCatch) {
-        jjtn000.setHasCatch();
-    }
-    if (hasFinally) {
-        jjtn000.setHasFinally();
-    }
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -6049,14 +6040,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
-  final private boolean jj_3R_390() {
-    if (jj_scan_token(COLON)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_3R_60()) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
   final private boolean jj_3R_87() {
     if (jj_scan_token(PRIVATE)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
@@ -6148,6 +6131,14 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
 
   final private boolean jj_3R_131() {
     if (jj_scan_token(PROTECTED)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3R_390() {
+    if (jj_scan_token(COLON)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_3R_60()) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
@@ -6258,20 +6249,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
 
   final private boolean jj_3_6() {
     if (jj_3R_48()) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3R_228() {
-    if (jj_scan_token(ASSERT)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_3R_60()) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_390()) jj_scanpos = xsp;
-    else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_scan_token(SEMICOLON)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
@@ -6414,6 +6391,26 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
+  final private boolean jj_3R_228() {
+    if (jj_scan_token(ASSERT)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_3R_60()) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_390()) jj_scanpos = xsp;
+    else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_scan_token(SEMICOLON)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3R_261() {
+    if (jj_3R_269()) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
   final private boolean jj_3R_389() {
     if (jj_scan_token(FINALLY)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
@@ -6436,14 +6433,14 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
-  final private boolean jj_3R_261() {
-    if (jj_3R_269()) return true;
+  final private boolean jj_3R_260() {
+    if (jj_3R_268()) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
-  final private boolean jj_3R_260() {
-    if (jj_3R_268()) return true;
+  final private boolean jj_3R_259() {
+    if (jj_3R_267()) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
@@ -6462,12 +6459,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     xsp = jj_scanpos;
     if (jj_3R_389()) jj_scanpos = xsp;
     else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3R_259() {
-    if (jj_3R_267()) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
