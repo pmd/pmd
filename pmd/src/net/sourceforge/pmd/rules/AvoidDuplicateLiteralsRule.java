@@ -30,7 +30,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         literals.clear();
 
-        if (super.hasProperty("exceptions")) {
+        if (super.hasProperty("exceptionsFile")) {
             exceptions = new HashSet();
             try {
                 LineNumberReader reader = new LineNumberReader(new BufferedReader(new FileReader(new File(getStringProperty("exceptions")))));
