@@ -18,24 +18,24 @@ Now you'll need to either check out the source code or download the latest sourc
     <pre>
         [tom@hal building]$ ls -l
         total 5716
-        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-2.1.zip
-        [tom@hal building]$ unzip -q pmd-src-2.1.zip
+        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-2.2.zip
+        [tom@hal building]$ unzip -q pmd-src-2.2.zip
         [tom@hal building]$
     </pre>
 </p>
 <p>
-    Now cd down into the <code>pmd/etc</code> directory:
+    Now cd down into the <code>pmd/bin</code> directory:
     <pre>
-        [tom@hal building]$ cd pmd-2.1/etc/
-        [tom@hal etc]$ ls -l | grep build.xml
+        [tom@hal building]$ cd pmd-2.2/bin/
+        [tom@hal bin]$ ls -l | grep build.xml
         -rw-rw-r--    1 tom      tom          5736 Jun 19 15:36 build.xml
-        [tom@hal etc]$
+        [tom@hal bin]$
     </pre>
 </p>
 <p>
     There's our Ant build file... let's compile!
     <pre>
-        [tom@hal etc]$ ant compile
+        [tom@hal bin]$ ant compile
         Buildfile: build.xml
 
         compile:
@@ -43,7 +43,7 @@ Now you'll need to either check out the source code or download the latest sourc
 
         BUILD SUCCESSFUL
         Total time: 6 seconds
-        [tom@hal etc]$
+        [tom@hal bin]$
     </pre>
 </p>
 <p>

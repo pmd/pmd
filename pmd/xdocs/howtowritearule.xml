@@ -75,7 +75,7 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     <p>
     You can generate this yourself by:
     <ul>
-    <li>Run the batch file etc/designer.bat</li>
+    <li>Run the batch file bin/designer.bat</li>
     <li>Paste the code into the left text area and click the "Go" button</li>
     <li>Note that there's another panel and a textfield to test out XPath expressions; more on that later.</li>
         <li>Here's a screenshot:<br/><img src="images/designer_screenshot.png"/></li>
@@ -215,7 +215,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     <subsection name="Run PMD using your new ruleset">
     <p>OK, let's run the new rule so we can see something work.  Like this:</p>
         <source>
-            run.bat c:\path\to\my\src xml c:\path\to\mycustomrules.xml
+            pmd.bat c:\path\to\my\src xml c:\path\to\mycustomrules.xml
         </source>
     <p>This time your "hello world" will show up right after the
     AST gets printed out.  If it doesn't, post a message to

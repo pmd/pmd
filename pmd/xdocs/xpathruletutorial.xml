@@ -32,7 +32,7 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
     
     <section name="Using Designer">
     <p> PMD comes with a handy tool that you will love if you want to write an XPath rule.
-    Designer, runnable from a script in <code>etc/</code>, is a very simple and useful utility for writing rules.
+    Designer, runnable from a script in <code>bin/</code>, is a very simple and useful utility for writing rules.
     </p>
     <p>The basic steps involved in writing XPath rules are these: 
     	<ol>

@@ -151,12 +151,12 @@
 <p>Getting verbose output</p>
 <source>
 <![CDATA[
-[tom@hal etc]$ ant -v pmd
+[tom@hal bin]$ ant -v pmd
 Apache Ant version 1.6.2 compiled on July 16 2004
 Buildfile: build.xml
 Detected Java version: 1.4 in: /usr/local/j2sdk1.4.2_03/jre
 Detected OS: Linux
-parsing buildfile build.xml with URI = file:/home/tom/data/pmd/pmd/etc/build.xml
+parsing buildfile build.xml with URI = file:/home/tom/data/pmd/pmd/bin/build.xml
 Project base dir set to: /home/tom/data/pmd/pmd
 Build sequence for target `pmd' is [pmd]
 Complete build sequence is [pmd, copy, cppjavacc, cpd, delete,
@@ -180,7 +180,7 @@ pmd:
 
 BUILD SUCCESSFUL
 Total time: 2 seconds
-[tom@hal etc]$
+[tom@hal bin]$
 ]]>
 </source>
 
