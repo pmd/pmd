@@ -19,6 +19,7 @@ public class UseSingletonRule
     }
 
     public Object visit( ASTMethodDeclaration decl, Object data ) {
+	System.err.println("Visiting Method Declaration.");
 	if (isOK) return data;
 	
 	if (!decl.isStatic()) {
@@ -29,11 +30,18 @@ public class UseSingletonRule
     }
 
     public Object visit( ASTCompilationUnit cu, Object data ) {
-	Object RC = super.visit( cu, data );
+	System.err.println("Visiting Compilation Unit.");
 
-	if (!isOK) 
+	Object RC = cu.childrenAccept( this, data );
+
+	System.err.println("Finished visiting CU.");
+
+	if (!isOK) {
+	    System.err.println("All methods are static.");
 	    (((RuleContext) data).getReport()).
 		addRuleViolation( new RuleViolation( this, cu.getBeginLine() ));
-	return data;
+	}
+
+	return RC;
     }
 }

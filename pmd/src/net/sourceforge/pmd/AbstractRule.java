@@ -6,6 +6,7 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public abstract class AbstractRule
 
     protected void visitAll( List acus, RuleContext ctx ) {
         for (Iterator i = acus.iterator(); i.hasNext();) {
-           SimpleNode node = (SimpleNode)i.next();
-           node.childrenAccept( this, ctx );
+           ASTCompilationUnit node = (ASTCompilationUnit)i.next();
+           visit( node, ctx );
         }
     }
 
