@@ -26,7 +26,7 @@
  */
 package pmd;
 
-import java.io.IOException; 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -129,12 +129,14 @@ public class RunPMDAction extends CookieAction {
 	 * @exception PMDException Description of the Exception
 	 */
 	private List checkCookies( List dataobjects )
-		 throws IOException 
+		 throws IOException
 	{
 		RuleSet set = constructRuleSets();
 		PMD pmd = new PMD();
 		ArrayList list = new ArrayList( 100 );
 		for( int i = 0; i < dataobjects.size(); i++ ) {
+			TopManager.getDefault().setStatusText( 
+				"PMD checking for rule violations, " + ( i + 1 ) + "/" + ( dataobjects.size()  ) );
 			DataObject dataobject = ( DataObject )dataobjects.get( i );
 			SourceCookie cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
 
@@ -142,8 +144,11 @@ public class RunPMDAction extends CookieAction {
 			if( cookie == null || dataobject.getCookie( LineCookie.class ) == null ) {
 				continue;
 			}
-			
+
 			Reader reader = getSourceReader( dataobject );
+			if(cookie.getSource().getClasses().length == 0){
+				continue;
+			}
 			String name = cookie.getSource().getClasses()[0].getName().getFullName();
 			RuleContext ctx = new RuleContext();
 			Report report = new Report();
@@ -157,15 +162,15 @@ public class RunPMDAction extends CookieAction {
 				list.add( fault );
 				FaultRegistry.getInstance().registerFault( fault, dataobject );
 			}
-		
+
 			Iterator iterator = ctx.getReport().iterator();
 			while( iterator.hasNext() ) {
 				RuleViolation violation = ( RuleViolation )iterator.next();
 				StringBuffer buffer = new StringBuffer();
 				buffer.append( violation.getRule().getName() ).append( ", " );
 				buffer.append( violation.getDescription() );
-				Fault fault = new Fault( violation.getLine(), 
-					violation.getFilename(), 
+				Fault fault = new Fault( violation.getLine(),
+					violation.getFilename(),
 					buffer.toString() );
 				list.add( fault );
 				FaultRegistry.getInstance().registerFault( fault, dataobject );
@@ -186,7 +191,7 @@ public class RunPMDAction extends CookieAction {
 		listener.detach();
 		FaultRegistry.getInstance().clearRegistry();
 		try {
-			
+
 			TopManager.getDefault().setStatusText( "PMD checking for rule violations" );
 			List list = getDataObjects( node );
 			List violations = checkCookies( list );

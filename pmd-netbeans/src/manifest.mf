@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Specification-Version: 0.70
+OpenIDE-Module-Specification-Version: 0.70.2
 Created-By: Ole-Martin Mørk
 Class-Path: ext/pmd-1.03.jar
 OpenIDE-Module: pmd
