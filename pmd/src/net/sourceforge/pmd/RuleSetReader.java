@@ -1,6 +1,6 @@
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.swingui.IConstants;
+import net.sourceforge.pmd.swingui.Constants;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -21,7 +21,7 @@ import java.text.MessageFormat;
  * @since August 30, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetReader implements IConstants
+public class RuleSetReader implements Constants
 {
 
     private RuleSet m_ruleSet;
@@ -338,6 +338,21 @@ public class RuleSetReader implements IConstants
             else if (qualifiedName.equalsIgnoreCase("example"))
             {
                 m_rule.setExample(trimExample(m_buffer));
+            }
+            else if (qualifiedName.equals("priority"))
+            {
+                int priority;
+
+                try
+                {
+                    priority = Integer.parseInt(trim(m_buffer));
+                }
+                catch (NumberFormatException exception)
+                {
+                    priority = Rule.LOWEST_PRIORITY;
+                }
+
+                m_rule.setPriority(priority);
             }
             else if (qualifiedName.equalsIgnoreCase("rule"))
             {

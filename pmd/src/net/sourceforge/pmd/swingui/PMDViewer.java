@@ -12,8 +12,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -86,6 +84,8 @@ public class PMDViewer extends JFrame
     private AnalyzeFileEventHandler m_analyzeFileEventHandler;
     private StatusBarEventHandler m_statusBarEventHandler;
     private SetupFilesEventHandler m_setupFilesEventHandler;
+    private JMenuItem m_copyHTMLResultsMenuItem;
+    private JMenuItem m_copyTextResultsMenuItem;
     private static PMDViewer m_pmdViewer;
 
     /**
@@ -858,21 +858,23 @@ public class PMDViewer extends JFrame
             // Copy Results menu item
             //
             icon = UIManager.getIcon("copy");
-            menuItem = new JMenuItem("Copy Results as HTML", icon);
-            menuItem.addActionListener((ActionListener) new CopyHTMLResultsActionListener());
-            menuItem.setMnemonic('C');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
-            add(menuItem);
+            m_copyHTMLResultsMenuItem = new JMenuItem("Copy Results as HTML", icon);
+            m_copyHTMLResultsMenuItem.addActionListener((ActionListener) new CopyHTMLResultsActionListener());
+            m_copyHTMLResultsMenuItem.setMnemonic('C');
+            m_copyHTMLResultsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
+            m_copyHTMLResultsMenuItem.setEnabled(false);
+            add(m_copyHTMLResultsMenuItem);
 
             //
             // Copy Results menu item
             //
             icon = UIManager.getIcon("copy");
-            menuItem = new JMenuItem("Copy Results as Text", icon);
-            menuItem.addActionListener((ActionListener) new CopyTextResultsActionListener());
-            menuItem.setMnemonic('Y');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
-            add(menuItem);
+            m_copyTextResultsMenuItem = new JMenuItem("Copy Results as Text", icon);
+            m_copyTextResultsMenuItem.addActionListener((ActionListener) new CopyTextResultsActionListener());
+            m_copyTextResultsMenuItem.setMnemonic('Y');
+            m_copyTextResultsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
+            m_copyTextResultsMenuItem.setEnabled(false);
+            add(m_copyTextResultsMenuItem);
 
             //
             // Separator
@@ -1030,9 +1032,13 @@ public class PMDViewer extends JFrame
         public void actionPerformed(ActionEvent event)
         {
             String htmlText = m_resultsViewer.getHTMLText();
-            Clipboard clipboard = PMDViewer.this.getToolkit().getSystemClipboard();
-            StringSelection contents = new StringSelection(htmlText);
-            clipboard.setContents(contents, m_clipboardOwner);
+
+            if (htmlText != null)
+            {
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                StringSelection contents = new StringSelection(htmlText);
+                clipboard.setContents(contents, m_clipboardOwner);
+            }
         }
     }
 
@@ -1047,9 +1053,13 @@ public class PMDViewer extends JFrame
         public void actionPerformed(ActionEvent event)
         {
             String text = m_resultsViewer.getPlainText();
-            Clipboard clipboard = PMDViewer.this.getToolkit().getSystemClipboard();
-            StringSelection contents = new StringSelection(text);
-            clipboard.setContents(contents, m_clipboardOwner);
+
+            if (text != null)
+            {
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                StringSelection contents = new StringSelection(text);
+                clipboard.setContents(contents, m_clipboardOwner);
+            }
         }
     }
 
@@ -1212,6 +1222,17 @@ public class PMDViewer extends JFrame
         public void stopAnalysis(AnalyzeFileEvent event)
         {
             PMDViewer.this.setEnableViewer(true);
+
+            // Enable these two menu items when the first analysis is complete.
+            if (m_copyHTMLResultsMenuItem.isEnabled() == false)
+            {
+                m_copyHTMLResultsMenuItem.setEnabled(true);
+            }
+
+            if (m_copyTextResultsMenuItem.isEnabled() == false)
+            {
+                m_copyTextResultsMenuItem.setEnabled(true);
+            }
         }
     }
 

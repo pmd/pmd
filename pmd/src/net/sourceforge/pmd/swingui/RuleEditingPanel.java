@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,6 +26,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
 import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
@@ -51,6 +53,8 @@ class RuleEditingPanel extends JPanel
     private JLabel m_exampleLabel;
     private JTextArea m_example;
     private JScrollPane m_exampleScrollPane;
+    private JLabel m_priorityLabel;
+    private JComboBox m_priority;
     private boolean m_enabled;
     private RulesTreeNode m_currentDataNode;
     private boolean m_isEditing;
@@ -79,9 +83,11 @@ class RuleEditingPanel extends JPanel
         panel.setBorder(titledBorder);
         add(panel, BorderLayout.CENTER);
 
+        Font labelFont = UIManager.getFont("labelFont");
+
         // Rule Name Label
         m_nameLabel = new JLabel("Name");
-        m_nameLabel.setFont(UIManager.getFont("labelFont"));
+        m_nameLabel.setFont(labelFont);
         m_nameLabel.setHorizontalAlignment(JLabel.RIGHT);
         m_nameLabel.setOpaque(true);
         panel.add(m_nameLabel);
@@ -96,7 +102,7 @@ class RuleEditingPanel extends JPanel
 
         // Rule Class Name Label
         m_classNameLabel = new JLabel("Class Name");
-        m_classNameLabel.setFont(UIManager.getFont("labelFont"));
+        m_classNameLabel.setFont(labelFont);
         m_classNameLabel.setHorizontalAlignment(JLabel.RIGHT);
         m_classNameLabel.setOpaque(true);
         panel.add(m_classNameLabel);
@@ -115,7 +121,7 @@ class RuleEditingPanel extends JPanel
 
         // Rule Message Label
         m_messageLabel = new JLabel("Message");
-        m_messageLabel.setFont(UIManager.getFont("labelFont"));
+        m_messageLabel.setFont(labelFont);
         m_messageLabel.setHorizontalAlignment(JLabel.RIGHT);
         m_messageLabel.setOpaque(true);
         panel.add(m_messageLabel);
@@ -129,7 +135,7 @@ class RuleEditingPanel extends JPanel
 
         // Rule Description Label
         m_descriptionLabel = new JLabel("Description");
-        m_descriptionLabel.setFont(UIManager.getFont("labelFont"));
+        m_descriptionLabel.setFont(labelFont);
         m_descriptionLabel.setHorizontalAlignment(JLabel.RIGHT);
         panel.add(m_descriptionLabel);
 
@@ -142,7 +148,7 @@ class RuleEditingPanel extends JPanel
 
         // Rule Example Label
         m_exampleLabel = new JLabel("Example");
-        m_exampleLabel.setFont(UIManager.getFont("labelFont"));
+        m_exampleLabel.setFont(labelFont);
         m_exampleLabel.setHorizontalAlignment(JLabel.RIGHT);
         panel.add(m_exampleLabel);
 
@@ -153,6 +159,16 @@ class RuleEditingPanel extends JPanel
         // Rule Example Scroll Pane;
         m_exampleScrollPane = ComponentFactory.createScrollPane(m_example);
         panel.add(m_exampleScrollPane);
+
+        // Rule Priority Label
+        m_priorityLabel = new JLabel("Priority");
+        m_priorityLabel.setFont(labelFont);
+        m_priorityLabel.setHorizontalAlignment(JLabel.RIGHT);
+        panel.add(m_priorityLabel);
+
+        // Rule Priority
+        m_priority = new JComboBox(Rule.PRIORITIES);
+        panel.add(m_priority);
 
         enableData(false);
 
@@ -213,6 +229,7 @@ class RuleEditingPanel extends JPanel
                 dataNode.setMessage(m_message.getText());
                 dataNode.setDescription(m_description.getText());
                 dataNode.setExample(m_example.getText());
+                dataNode.setPriority(m_priority.getSelectedIndex() + 1);
                 enableData(false);
             }
         }
@@ -274,6 +291,7 @@ class RuleEditingPanel extends JPanel
         m_message.setText(dataNode.getMessage());
         m_description.setText(dataNode.getDescription());
         m_example.setText(dataNode.getExample());
+        m_priority.setSelectedIndex(dataNode.getPriority() - 1);
         m_originalName = dataNode.getName();
         m_currentDataNode = dataNode;
     }
@@ -300,7 +318,7 @@ class RuleEditingPanel extends JPanel
             m_message.setEnabled(true);
             m_message.setBackground(Color.white);
 
-            m_messageLabel.setEnabled(true);
+            m_classNameLabel.setEnabled(true);
 
             m_descriptionLabel.setEnabled(true);
 
@@ -311,6 +329,11 @@ class RuleEditingPanel extends JPanel
 
             m_example.setEnabled(true);
             m_example.setBackground(Color.white);
+
+            m_priorityLabel.setEnabled(true);
+
+            m_priority.setEnabled(true);
+            m_priority.setBackground(Color.white);
         }
         else
         {
@@ -345,6 +368,12 @@ class RuleEditingPanel extends JPanel
             m_example.setText("");
             m_example.setEnabled(false);
             m_example.setBackground(background);
+
+            m_priorityLabel.setEnabled(false);
+
+            m_priority.setSelectedIndex(0);
+            m_priority.setEnabled(false);
+            m_priority.setBackground(background);
 
             m_currentDataNode = null;
         }
@@ -533,6 +562,15 @@ class RuleEditingPanel extends JPanel
             exampleLabelWidth = fontMetrics.stringWidth(m_exampleLabel.getText());
             exampleLabelHeight = fontMetrics.getHeight();
 
+            // Calculate Priority Label;
+            int priorityLabelWidth;
+            int priorityLabelHeight;
+
+            font = m_priorityLabel.getFont();
+            fontMetrics = m_priorityLabel.getFontMetrics(font);
+            priorityLabelWidth = fontMetrics.stringWidth(m_priorityLabel.getText());
+            priorityLabelHeight = fontMetrics.getHeight();
+
             // Calculate first column width.
             int firstColumnWidth = nameLabelWidth;
 
@@ -554,6 +592,11 @@ class RuleEditingPanel extends JPanel
             if (exampleLabelWidth > firstColumnWidth)
             {
                 firstColumnWidth = exampleLabelWidth;
+            }
+
+            if (priorityLabelWidth > firstColumnWidth)
+            {
+                firstColumnWidth = priorityLabelWidth;
             }
 
             //
@@ -621,6 +664,16 @@ class RuleEditingPanel extends JPanel
             exampleWidth = insets.left + insets.right;
             exampleHeight = fontMetrics.getHeight() * 20 + insets.top + insets.bottom;
 
+            // Calculate Priority ComboBox
+            int priorityWidth;
+            int priorityHeight;
+
+            font = m_priority.getFont();
+            fontMetrics = m_priority.getFontMetrics(font);
+            insets = m_priority.getBorder().getBorderInsets(m_priority);
+            priorityWidth = insets.left + insets.right;
+            priorityHeight = 20;
+
             // Calculate second column width.
             int secondColumnWidth = containerSize.width
                                   - containerInsets.left
@@ -629,19 +682,24 @@ class RuleEditingPanel extends JPanel
                                   - columnSpacing;
 
             // Calculate Line Heights
-            int firstLineHeight = (nameHeight > nameLabelHeight) ? nameHeight : nameLabelHeight;
+            int firstLineHeight = (nameHeight > nameLabelHeight)
+                                ? nameHeight
+                                : nameLabelHeight;
             int secondLineHeight = (classNameHeight > classNameHeight)
                                  ? classNameHeight
                                  : classNameLabelHeight;
             int thirdLineHeight = (messageHeight > messageLabelHeight)
-                                 ? messageHeight
-                                 : messageLabelHeight;
+                                ? messageHeight
+                                : messageLabelHeight;
             int fourthLineHeight = (descriptionHeight > descriptionLabelHeight)
-                                ? descriptionHeight
-                                : descriptionLabelHeight;
+                                 ? descriptionHeight
+                                 : descriptionLabelHeight;
             int fifthLineHeight = (exampleHeight > exampleLabelHeight)
-                                 ? exampleHeight
-                                 : exampleLabelHeight;
+                                ? exampleHeight
+                                : exampleLabelHeight;
+            int sixthLineHeight = (priorityHeight > priorityLabelHeight)
+                                ? priorityHeight
+                                : priorityLabelHeight;
 
             if (computePanelSize)
             {
@@ -660,6 +718,8 @@ class RuleEditingPanel extends JPanel
                                 + fourthLineHeight
                                 + lineSpacing
                                 + fifthLineHeight
+                                + lineSpacing
+                                + sixthLineHeight
                                 + containerInsets.bottom;
 
                 return new Dimension(panelWidth, panelHeight);
@@ -718,6 +778,15 @@ class RuleEditingPanel extends JPanel
             // Layout Example
             x = containerInsets.left + firstColumnWidth + columnSpacing;
             m_exampleScrollPane.setBounds(x, y, secondColumnWidth, exampleHeight);
+
+            // Layout Priority Label
+            x = containerInsets.left;
+            y += fifthLineHeight + lineSpacing;
+            m_priorityLabel.setBounds(x, y, firstColumnWidth, priorityLabelHeight);
+
+            // Layout Priority
+            x = containerInsets.left + firstColumnWidth + columnSpacing;
+            m_priority.setBounds(x, y, secondColumnWidth, priorityHeight);
 
             return null;
         }

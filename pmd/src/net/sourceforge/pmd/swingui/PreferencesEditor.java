@@ -1,8 +1,19 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -11,17 +22,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
 
 /**
  *
@@ -34,6 +37,7 @@ class PreferencesEditor extends JDialog
     private JTextArea m_currentPathToPMD;
     private JTextArea m_userPathToPMD;
     private JTextArea m_sharedPathToPMD;
+    private JComboBox m_lowestPriorityForAnalysis;
 
     /**
      ********************************************************************************
@@ -76,7 +80,6 @@ class PreferencesEditor extends JDialog
     private JPanel createDataPanel() throws PMDException
     {
         JPanel dataPanel;
-        String directory;
         int row;
         Preferences preferences;
 
@@ -85,21 +88,26 @@ class PreferencesEditor extends JDialog
 
         row = 0;
         createLabel("Current Path to PMD", dataPanel, row, 0);
-        directory = preferences.getCurrentPathToPMD();
-        m_currentPathToPMD = createTextArea(directory, dataPanel, row, 1);
+        String currentPath = preferences.getCurrentPathToPMD();
+        m_currentPathToPMD = createTextArea(currentPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_currentPathToPMD);
 
         row++;
         createLabel("User Path to PMD", dataPanel, row, 0);
-        directory = preferences.getUserPathToPMD();
-        m_userPathToPMD = createTextArea(directory, dataPanel, row, 1);
+        String userPath = preferences.getUserPathToPMD();
+        m_userPathToPMD = createTextArea(userPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_userPathToPMD);
 
         row++;
         createLabel("Shared Path to PMD", dataPanel, row, 0);
-        directory = preferences.getSharedPathToPMD();
-        m_sharedPathToPMD = createTextArea(directory, dataPanel, row, 1);
+        String sharedPath = preferences.getSharedPathToPMD();
+        m_sharedPathToPMD = createTextArea(sharedPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_sharedPathToPMD);
+
+        row++;
+        createLabel("Lowest Priority for Analysis", dataPanel, row, 0);
+        int priority = preferences.getLowestPriorityForAnalysis();
+        m_lowestPriorityForAnalysis = createPriorityDropDownList(priority, dataPanel, row, 1);
 
         return dataPanel;
     }
@@ -160,7 +168,7 @@ class PreferencesEditor extends JDialog
         scrollPane = ComponentFactory.createScrollPane(textArea);
         font = textArea.getFont();
         fontMetrics = textArea.getFontMetrics(font);
-        width = 500;
+        width = 400;
         height = (3 * fontMetrics.getHeight()) + 5;
         size = new Dimension(width, height);
         scrollPane.setSize(size);
@@ -194,8 +202,18 @@ class PreferencesEditor extends JDialog
         JButton button;
         GridBagLayout layout;
         GridBagConstraints constraints;
+        FontMetrics fontMetrics;
+        int width;
+        Dimension size;
 
-        button = ComponentFactory.createButton("Find File");
+        button = ComponentFactory.createButton("Find Directory");
+        fontMetrics = button.getFontMetrics(button.getFont());
+        width = fontMetrics.stringWidth(button.getText()) + 50;
+        size = new Dimension(width, button.getHeight());
+        button.setSize(size);
+        button.setPreferredSize(size);
+        button.setMinimumSize(size);
+        button.setMaximumSize(size);
         button.setBackground(UIManager.getColor("pmdBlue"));
         button.setForeground(Color.white);
         button.addActionListener(new FileButtonActionListener(textArea));
@@ -205,11 +223,39 @@ class PreferencesEditor extends JDialog
         constraints.gridy = row;
         constraints.gridwidth = 1;
         constraints.gridheight = 1;
-        constraints.anchor = constraints.NORTHWEST;
+        constraints.anchor = constraints.WEST;
         constraints.fill = constraints.NONE;
         constraints.insets = new Insets(2, 2, 2, 2);
 
         dataPanel.add(button, constraints);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     */
+    private JComboBox createPriorityDropDownList(int priority, JPanel dataPanel, int row, int column)
+    {
+        JComboBox priorityLevel;
+        GridBagLayout layout;
+        GridBagConstraints constraints;
+
+        priorityLevel = new JComboBox(Rule.PRIORITIES);
+        priorityLevel.setSelectedIndex(priority - 1);
+
+        layout = (GridBagLayout) dataPanel.getLayout();
+        constraints = layout.getConstraints(priorityLevel);
+        constraints.gridx = column;
+        constraints.gridy = row;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = constraints.WEST;
+        constraints.fill = constraints.NONE;
+        constraints.insets = new Insets(2, 2, 2, 2);
+
+        dataPanel.add(priorityLevel, constraints);
+
+        return priorityLevel;
     }
 
     /**
@@ -221,8 +267,7 @@ class PreferencesEditor extends JDialog
         ActionListener saveActionListener = new SaveButtonActionListener();
         ActionListener cancelActionListener = new CancelButtonActionListener();
 
-        return ComponentFactory.createSaveCancelButtonPanel(saveActionListener,
-                                                            cancelActionListener);
+        return ComponentFactory.createSaveCancelButtonPanel(saveActionListener, cancelActionListener);
     }
 
     /**
@@ -246,6 +291,7 @@ class PreferencesEditor extends JDialog
                 preferences.setCurrentPathToPMD(m_currentPathToPMD.getText());
                 preferences.setUserPathToPMD(m_userPathToPMD.getText());
                 preferences.setSharedPathToPMD(m_sharedPathToPMD.getText());
+                preferences.setLowestPriorityForAnalysis(m_lowestPriorityForAnalysis.getSelectedIndex() + 1);
                 preferences.save();
             }
             catch (PMDException exception)

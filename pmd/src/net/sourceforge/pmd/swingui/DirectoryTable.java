@@ -53,7 +53,6 @@ class DirectoryTable extends JTable
     {
         super(new DirectoryTableModel(directoryTree, fileExtension));
 
-        setDoubleBuffered(true);
         setShowGrid(false);
         setRowSelectionAllowed(false);
         setColumnSelectionAllowed(false);

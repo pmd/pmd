@@ -17,9 +17,7 @@ import net.sourceforge.pmd.UndefinedRule;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-public class RulesTreeNode
-    extends DefaultMutableTreeNode
-    implements Constants
+class RulesTreeNode extends DefaultMutableTreeNode implements Constants
 {
     private RuleSet m_ruleSet;
     private Rule m_rule;
@@ -30,14 +28,15 @@ public class RulesTreeNode
     private String m_example;
     private String m_propertyValue;
     private String m_propertyValueType;
-    private byte m_type;
+    private int m_type;
     private boolean m_include;
+    private int m_priority;
 
     // Constant
-    private static final byte IS_ROOT = 0x01;
-    private static final byte IS_RULE_SET = 0x02;
-    private static final byte IS_RULE = 0x04;
-    private static final byte IS_PROPERTY = 0x08;
+    private static final int IS_ROOT = 0x01;
+    private static final int IS_RULE_SET = 0x02;
+    private static final int IS_RULE = 0x04;
+    private static final int IS_PROPERTY = 0x08;
 
     /**
      ***************************************************************************
@@ -90,6 +89,7 @@ public class RulesTreeNode
         m_rule = rule;
         m_type = IS_RULE;
         m_include = rule.include();
+        m_priority = rule.getPriority();
         setDisplayName();
     }
 
@@ -122,7 +122,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public RulesTreeNode getChildNode(String childName)
+    protected RulesTreeNode getChildNode(String childName)
     {
         Enumeration children = children();
 
@@ -144,7 +144,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public String getClassName()
+    protected String getClassName()
     {
         return m_className;
     }
@@ -154,7 +154,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public String getDescription()
+    protected String getDescription()
     {
         return m_description;
     }
@@ -164,7 +164,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public String getExample()
+    protected String getExample()
     {
         return m_example;
     }
@@ -174,7 +174,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public String getMessage()
+    protected String getMessage()
     {
         return m_message;
     }
@@ -184,7 +184,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public String getName()
+    protected String getName()
     {
         return m_name;
     }
@@ -194,7 +194,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public RulesTreeNode getParentRuleData()
+    protected RulesTreeNode getParentRuleData()
     {
         if (isProperty())
         {
@@ -209,7 +209,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public RulesTreeNode getParentRuleSetData()
+    protected RulesTreeNode getParentRuleSetData()
     {
         if (isProperty())
         {
@@ -229,7 +229,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public String getPropertyValue()
+    protected String getPropertyValue()
     {
         return m_propertyValue;
     }
@@ -239,7 +239,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public String getPropertyValueType()
+    protected String getPropertyValueType()
     {
         return m_propertyValueType;
     }
@@ -249,7 +249,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public RulesTreeNode getSibling(String name)
+    protected RulesTreeNode getSibling(String name)
     {
         RulesTreeNode parentNode = (RulesTreeNode) getParent();
 
@@ -266,7 +266,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public boolean include()
+    protected boolean include()
     {
         return m_include;
     }
@@ -276,7 +276,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public boolean includeAncestor()
+    protected boolean includeAncestor()
     {
         boolean include = true;
 
@@ -311,7 +311,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public boolean isProperty()
+    protected boolean isProperty()
     {
         return m_type == IS_PROPERTY;
     }
@@ -321,7 +321,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public boolean isRule()
+    protected boolean isRule()
     {
         return m_type == IS_RULE;
     }
@@ -331,7 +331,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public boolean isRuleSet()
+    protected boolean isRuleSet()
     {
         return m_type == IS_RULE_SET;
     }
@@ -351,7 +351,7 @@ public class RulesTreeNode
      *
      * @return
      */
-    public Rule getRule()
+    protected Rule getRule()
     {
         return m_rule;
     }
@@ -361,9 +361,19 @@ public class RulesTreeNode
      *
      * @return
      */
-    public RuleSet getRuleSet()
+    protected RuleSet getRuleSet()
     {
         return m_ruleSet;
+    }
+
+    /**
+     ***************************************************************************
+     *
+     * @return
+     */
+    protected int getPriority()
+    {
+        return m_priority;
     }
 
     /**
@@ -371,7 +381,7 @@ public class RulesTreeNode
      *
      * @param newName
      */
-    public void setDisplayName()
+    protected void setDisplayName()
     {
         String displayName;
 
@@ -392,7 +402,7 @@ public class RulesTreeNode
      *
      * @param newName
      */
-    public void setName(String newName)
+    protected void setName(String newName)
     {
         m_name = trim(newName);
 
@@ -404,7 +414,7 @@ public class RulesTreeNode
      *
      * @param newName
      */
-    public void setMessage(String newMessage)
+    protected void setMessage(String newMessage)
     {
         m_message = trim(newMessage);
     }
@@ -414,7 +424,7 @@ public class RulesTreeNode
      *
      * @param newName
      */
-    public void setDescription(String newDescription)
+    protected void setDescription(String newDescription)
     {
         m_description = trim(newDescription);
     }
@@ -424,7 +434,7 @@ public class RulesTreeNode
      *
      * @param newName
      */
-    public void setExample(String newExample)
+    protected void setExample(String newExample)
     {
     }
 
@@ -433,7 +443,7 @@ public class RulesTreeNode
      *
      * @param newName
      */
-    public void setPropertyValue(String newValue)
+    protected void setPropertyValue(String newValue)
     {
         m_propertyValue = trim(newValue);
 
@@ -445,7 +455,7 @@ public class RulesTreeNode
      *
      * @param newName
      */
-    public void setPropertyValueType(String newValue)
+    protected void setPropertyValueType(String newValue)
     {
         m_propertyValueType = trim(newValue);
     }
@@ -455,9 +465,19 @@ public class RulesTreeNode
      *
      * @param newName
      */
-    public void setInclude(boolean include)
+    protected void setInclude(boolean include)
     {
         m_include = include;
+    }
+
+    /**
+     **************************************************************************
+     *
+     * @param priority
+     */
+    protected void setPriority(int priority)
+    {
+        m_priority = priority;
     }
 
     /**
@@ -465,7 +485,7 @@ public class RulesTreeNode
      *
      * @param newClass
      */
-    public void setClassName(String newClassName)
+    protected void setClassName(String newClassName)
     {
         m_className = trim(newClassName);
     }
@@ -489,6 +509,7 @@ public class RulesTreeNode
             m_rule.setDescription(m_description);
             m_rule.setExample(m_example);
             m_rule.setInclude(m_include);
+            m_rule.setPriority(m_priority);
         }
         else if (isProperty())
         {
@@ -528,7 +549,7 @@ public class RulesTreeNode
      *
      * @param event
      */
-    public void sortChildren()
+    protected void sortChildren()
     {
         int childCount = getChildCount();
         RulesTreeNode[] treeNodes = new RulesTreeNode[childCount];

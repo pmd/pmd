@@ -54,7 +54,6 @@ class ResultsViewer extends JEditorPane
     {
         super();
 
-        setDoubleBuffered(true);
         setEditorKit(new HTMLEditorKit());
         setEditable(false);
 
@@ -100,7 +99,8 @@ class ResultsViewer extends JEditorPane
     {
         if (m_loadRuleSets)
         {
-            PMDDirectoryRequestEvent.notifyRequestIncludedRules(this);
+            int priority = Preferences.getPreferences().getLowestPriorityForAnalysis();
+            PMDDirectoryRequestEvent.notifyRequestIncludedRules(this, priority);
             m_loadRuleSets = false;
         }
     }

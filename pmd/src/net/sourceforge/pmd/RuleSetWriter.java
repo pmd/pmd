@@ -133,6 +133,13 @@ public class RuleSetWriter
         writeExample(rule.getExample());
         outdent();
 
+        // <priority>
+        //   xxx
+        // </priority>
+        indent();
+        writePriority(rule.getPriority());
+        outdent();
+
         // <properties>
         //    <property name="xxxx" value="yyyyy" />
         // </properties>
@@ -204,6 +211,33 @@ public class RuleSetWriter
         // </description>
         setupNewLine();
         m_line.append("</example>");
+        outputLine();
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param priority
+     */
+    private void writePriority(int priority)
+    {
+        // <priority>
+        setupNewLine();
+        m_line.append("<priority>");
+        outputLine();
+
+        {
+            // xx
+            indent();
+            setupNewLine();
+            m_line.append(String.valueOf(priority));
+            outputLine();
+            outdent();
+        }
+
+        // </priority>
+        setupNewLine();
+        m_line.append("</priority>");
         outputLine();
     }
 

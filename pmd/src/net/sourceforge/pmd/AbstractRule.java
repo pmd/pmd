@@ -22,6 +22,7 @@ public abstract class AbstractRule
     private String description;
     private String example;
     private boolean m_include;
+    private int m_priority = LOWEST_PRIORITY;
 
     public String getDescription() {
         return description;
@@ -141,5 +142,42 @@ public abstract class AbstractRule
     public void setInclude(boolean include)
     {
         m_include = include;
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * Returns the rule's priority that is used for including the rule in reports and analysis.
+     *
+     * @return A number between 1 and LOWEST_PRIORITY.
+     */
+    public int getPriority()
+    {
+        if ((m_priority < 0) || (m_priority > LOWEST_PRIORITY))
+        {
+            m_priority = LOWEST_PRIORITY;
+        }
+
+        return m_priority;
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * A rule will specify a priority for inclusion in reports and analysis.  The default
+     * priority is "Low".
+     *
+     * @param The rule's priority of 1..LOWEST_PRIORITY.
+     */
+    public void setPriority(int priority)
+    {
+        if ((priority < 1) || (priority > LOWEST_PRIORITY))
+        {
+            m_priority = LOWEST_PRIORITY;
+        }
+        else
+        {
+            m_priority = priority;
+        }
     }
 }

@@ -1,6 +1,6 @@
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.swingui.IConstants;
+import net.sourceforge.pmd.swingui.Constants;
 
 import java.util.Enumeration;
 import java.util.Properties;
@@ -11,7 +11,7 @@ import java.util.Properties;
  * @since October 1, 2002
  * @version $Revision$, $Date$
  */
-public class RuleProperties implements IConstants
+public class RuleProperties implements Constants
 {
 
     private Properties m_properties = new Properties();

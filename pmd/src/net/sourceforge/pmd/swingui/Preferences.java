@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Properties;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
 
 /**
  *
@@ -30,8 +31,10 @@ class Preferences
     private final String USER_PATH_TO_PMD = "user_path_to_pmd";
     private final String SHARED_PATH_TO_PMD = "shared_path_to_pmd";
     private final String CURRENT_PATH_TO_PMD = "current_path_to_pmd";
+    private final String LOWEST_PRIORITY_FOR_ANALYSIS = "lowest_priority_for_analysis";
     private final String UNIVERSAL_SEPARATOR = "&US;";
     private final String PREFERENCES_FILE_NAME = "user.preferences";
+    private final int LOWEST_RULE_PRIORITY = Rule.LOWEST_PRIORITY;
 
 
     /**
@@ -305,6 +308,45 @@ class Preferences
     /**
      *******************************************************************************
      *
+     * @param priority
+     */
+    protected void setLowestPriorityForAnalysis(int priority)
+    {
+        if (priority < 0)
+        {
+            priority = 0;
+        }
+        else if (priority > LOWEST_RULE_PRIORITY)
+        {
+            priority = LOWEST_RULE_PRIORITY;
+        }
+
+        m_properties.put(LOWEST_PRIORITY_FOR_ANALYSIS, String.valueOf(priority));
+    }
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    protected int getLowestPriorityForAnalysis()
+    {
+        int priority;
+
+        try
+        {
+            priority = Integer.parseInt((String) m_properties.get(LOWEST_PRIORITY_FOR_ANALYSIS));
+        }
+        catch (NumberFormatException exception)
+        {
+            priority = 5;
+        }
+
+        return priority;
+    }
+
+    /**
+     *******************************************************************************
+     *
      * @param name
      * @param directory
      *
@@ -373,20 +415,6 @@ class Preferences
     /**
      *******************************************************************************
      *
-     * @return
-     */
-    /*
-    private boolean isDeletable(String key)
-    {
-        return (SHARED_PATH_TO_PMD.equalsIgnoreCase(key) == false) &&
-               (USER_PATH_TO_PMD.equalsIgnoreCase(key) == false) &&
-               (CURRENT_PATH_TO_PMD.equalsIgnoreCase(key) == false);
-    }
-    */
-
-    /**
-     *******************************************************************************
-     *
      * @param pathName
      *
      * @return
@@ -433,6 +461,7 @@ class Preferences
     {
         return getPathToPMD(SHARED_PATH_TO_PMD);
     }
+
 
     /**
      *******************************************************************************

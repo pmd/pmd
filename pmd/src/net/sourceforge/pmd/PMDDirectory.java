@@ -143,7 +143,7 @@ public class PMDDirectory
      *
      * @return  A rule containing only included rules.
      */
-    public RuleSet getIncludedRules()
+    public RuleSet getIncludedRules(int lowestPriorityForAnalysis)
     throws PMDException
     {
         RuleSet includedRules = new RuleSet();
@@ -164,7 +164,10 @@ public class PMDDirectory
 
                     if (rule.include())
                     {
-                        includedRules.addRule(rule);
+                        if (rule.getPriority() <= lowestPriorityForAnalysis)
+                        {
+                            includedRules.addRule(rule);
+                        }
                     }
                 }
             }
@@ -619,7 +622,8 @@ public class PMDDirectory
         {
             try
             {
-                PMDDirectoryReturnedEvent.notifyReturnedIncludedRules(this, getIncludedRules());
+                int priority = event.getLowestPriorityForAnalysis();
+                PMDDirectoryReturnedEvent.notifyReturnedIncludedRules(this, getIncludedRules(priority));
             }
             catch (PMDException exception)
             {

@@ -31,7 +31,6 @@ class DirectoryTree extends JTree
     {
         super(new DirectoryTreeModel(rootName));
 
-        setDoubleBuffered(true);
         setRootVisible(true);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         setCellRenderer(new DirectoryTreeNodeRenderer());

@@ -17,6 +17,7 @@ public class PMDDirectoryRequestEvent extends EventObject
 
     private List m_ruleSetList;
     private RuleSet m_ruleSet;
+    private int m_lowestPriorityForAnalysis;
 
     /**
      *****************************************************************************
@@ -57,6 +58,19 @@ public class PMDDirectoryRequestEvent extends EventObject
     /**
      *****************************************************************************
      *
+     * @param source
+     * @param lowestPriorityForAnalysis
+     */
+    private PMDDirectoryRequestEvent(Object source, int lowestPriorityForAnalysis)
+    {
+        super(source);
+
+        m_lowestPriorityForAnalysis = lowestPriorityForAnalysis;
+    }
+
+    /**
+     *****************************************************************************
+     *
      * @return
      */
     public List getRuleSetList()
@@ -72,6 +86,16 @@ public class PMDDirectoryRequestEvent extends EventObject
     public RuleSet getRuleSet()
     {
         return m_ruleSet;
+    }
+
+    /**
+     *****************************************************************************
+     *
+     * @return
+     */
+    public int getLowestPriorityForAnalysis()
+    {
+        return m_lowestPriorityForAnalysis;
     }
 
     /**
@@ -139,9 +163,9 @@ public class PMDDirectoryRequestEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyRequestIncludedRules(Object source)
+    public static final void notifyRequestIncludedRules(Object source, int lowestPriorityForAnalysis)
     {
-        PMDDirectoryRequestEvent event = new PMDDirectoryRequestEvent(source);
+        PMDDirectoryRequestEvent event = new PMDDirectoryRequestEvent(source, lowestPriorityForAnalysis);
         List listenerList = ListenerList.getListeners(PMDDirectoryRequestEventListener.class);
         Iterator listeners = listenerList.iterator();
 

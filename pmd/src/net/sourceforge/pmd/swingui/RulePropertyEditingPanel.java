@@ -683,28 +683,25 @@ class RulePropertyEditingPanel extends JPanel implements Constants
 
             // Layout Name
             x = containerInsets.left + firstColumnWidth + columnSpacing;
-            y = containerInsets.top;
             yOffset = (firstLineHeight - nameHeight) / 2;
             m_name.setBounds(x, y + yOffset, secondColumnWidth, nameHeight);
 
             // Layout Value Label
             x = containerInsets.left;
-            y = containerInsets.top + firstLineHeight + lineSpacing;
+            y += firstLineHeight + lineSpacing;
             m_valueLabel.setBounds(x, y, firstColumnWidth, valueLabelHeight);
 
             // Layout Value
             x = containerInsets.left + firstColumnWidth + columnSpacing;
-            y = containerInsets.top + firstLineHeight + lineSpacing;
             m_value.setBounds(x, y, secondColumnWidth, valueHeight);
 
             // Layout Value Type Label
             x = containerInsets.left;
-            y = containerInsets.top + firstLineHeight + lineSpacing + secondLineHeight + lineSpacing;
+            y += secondLineHeight + lineSpacing;
             m_valueTypeLabel.setBounds(x, y, firstColumnWidth, valueTypeLabelHeight);
 
             // Layout Value Type Popup Menu
             x = containerInsets.left + firstColumnWidth + columnSpacing;
-            y = containerInsets.top + firstLineHeight + lineSpacing + secondLineHeight + lineSpacing;
             m_valueType.setBounds(x, y, secondColumnWidth, valueTypeHeight);
 
             return null;

@@ -3,6 +3,9 @@ package net.sourceforge.pmd;
 import java.util.List;
 
 public interface Rule {
+    public static final int LOWEST_PRIORITY = 5;
+    public static final String[] PRIORITIES = {"High", "Medium High", "Medium", "Medium Low", "Low"};
+
     public String getName();
     public String getMessage();
     public String getDescription();
@@ -21,4 +24,6 @@ public interface Rule {
     public RuleProperties getProperties();
     public boolean include();
     public void setInclude(boolean include);
+    public int getPriority();
+    public void setPriority(int priority);
 }
