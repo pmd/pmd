@@ -108,7 +108,7 @@ public class RuleSetFactory {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     if (node.getNodeName().equals("description")) {
-                        parseDescriptionNode(ruleSet, node);
+                        ruleSet.setDescription(parseTextNode(node));
                     } else if (node.getNodeName().equals("rule")) {
                         parseRuleNode(ruleSet, node);
                     }
@@ -136,26 +136,6 @@ public class RuleSetFactory {
             throw new RuleSetNotFoundException("Can't find resource " + name + ".  Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: " + System.getProperty("java.class.path"));
         }
         return in;
-    }
-
-    /**
-     * Parse a ruleset description node
-     *
-     * @param ruleSet         the ruleset being constructed
-     * @param descriptionNode must be a description element node
-     */
-    private void parseDescriptionNode(RuleSet ruleSet, Node descriptionNode) {
-        NodeList nodeList = descriptionNode.getChildNodes();
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(node.getNodeValue());
-            } else if (node.getNodeType() == Node.CDATA_SECTION_NODE) {
-                buffer.append(node.getNodeValue());
-            }
-        }
-        ruleSet.setDescription(buffer.toString());
     }
 
     /**
@@ -197,16 +177,15 @@ public class RuleSetFactory {
             rule.setUsesDFA();
         }
 
-        NodeList nodeList = ruleElement.getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
+        for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
+            Node node = ruleElement.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 if (node.getNodeName().equals("description")) {
                     rule.setDescription(parseTextNode(node));
                 } else if (node.getNodeName().equals("example")) {
                     rule.setExample(parseTextNode(node));
                 } else if (node.getNodeName().equals("priority")) {
-                    parsePriorityNode(rule, node);
+                    rule.setPriority(new Integer(parseTextNode(node).trim()).intValue());
                 } else if (node.getNodeName().equals("properties")) {
                     parsePropertiesNode(rule, node);
                 }
@@ -222,7 +201,7 @@ public class RuleSetFactory {
      * Process a reference to a rule
      *
      * @param ruleSet  the ruleset being constructucted
-     * @param ruleNode must be a ruke element node
+     * @param ruleNode must be a rule element node
      */
     private void parseExternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode) throws RuleSetNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Element ruleElement = (Element) ruleNode;
@@ -278,9 +257,8 @@ public class RuleSetFactory {
         NodeList excludeNodes = ruleElement.getChildNodes();
         Set excludes = new HashSet();
         for (int i = 0; i < excludeNodes.getLength(); i++) {
-            Node node = excludeNodes.item(i);
-            if ((node.getNodeType() == Node.ELEMENT_NODE) && (node.getNodeName().equals("exclude"))) {
-                Element excludeElement = (Element) node;
+            if ((excludeNodes.item(i).getNodeType() == Node.ELEMENT_NODE) && (excludeNodes.item(i).getNodeName().equals("exclude"))) {
+                Element excludeElement = (Element) excludeNodes.item(i);
                 excludes.add(excludeElement.getAttribute("name"));
             }
         }
@@ -297,49 +275,13 @@ public class RuleSetFactory {
 
     private String parseTextNode(Node exampleNode) {
         StringBuffer buffer = new StringBuffer();
-        NodeList nodeList = exampleNode.getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
+        for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
+            Node node = exampleNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {
                 buffer.append(node.getNodeValue());
             }
         }
         return buffer.toString();
-    }
-
-    /**
-     * Parse a value node
-     *
-     * @param valueNode must be a value element node
-     */
-    private String parseValueNode(Node valueNode) {
-        StringBuffer buffer = new StringBuffer();
-        NodeList nodeList = valueNode.getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            if (nodeList.item(i).getNodeType() == Node.CDATA_SECTION_NODE || nodeList.item(i).getNodeType() == Node.TEXT_NODE) {
-                buffer.append(nodeList.item(i).getNodeValue());
-            }
-        }
-        return buffer.toString();
-    }
-
-
-    /**
-     * Parse a priority node
-     *
-     * @param rule         the rule being constructed
-     * @param priorityNode must be a priority element
-     */
-    private void parsePriorityNode(Rule rule, Node priorityNode) {
-        StringBuffer buffer = new StringBuffer();
-        NodeList nodeList = priorityNode.getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(node.getNodeValue());
-            }
-        }
-        rule.setPriority(new Integer(buffer.toString().trim()).intValue());
     }
 
     /**
@@ -349,9 +291,8 @@ public class RuleSetFactory {
      * @param propertiesNode must be a properties element node
      */
     private void parsePropertiesNode(Rule rule, Node propertiesNode) {
-        NodeList nodeList = propertiesNode.getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
+        for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
+            Node node = propertiesNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("property")) {
                 parsePropertyNode(rule, node);
             }
@@ -369,11 +310,10 @@ public class RuleSetFactory {
         String name = propertyElement.getAttribute("name");
         String value = propertyElement.getAttribute("value");
         if (value.trim().length() == 0) {
-            NodeList nodeList = propertyNode.getChildNodes();
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
+            for (int i = 0; i < propertyNode.getChildNodes().getLength(); i++) {
+                Node node = propertyNode.getChildNodes().item(i);
                 if ((node.getNodeType() == Node.ELEMENT_NODE) && node.getNodeName().equals("value")) {
-                    value = parseValueNode(node);
+                    value = parseTextNode(node);
                 }
             }
         }
@@ -382,5 +322,4 @@ public class RuleSetFactory {
         }
         rule.addProperty(name, value);
     }
-
 }
