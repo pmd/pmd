@@ -5,7 +5,17 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTForStatement;
+import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
+import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.HashSet;
 import java.util.Set;

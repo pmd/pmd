@@ -32,7 +32,7 @@ public class RuleTst
         return ctx.getReport();
     }
 
-    public void process(String fileName, Rule rule, Report report) {
+    public void process(String fileName, Rule rule, Report report) throws Throwable {
         PMD p = new PMD();
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);

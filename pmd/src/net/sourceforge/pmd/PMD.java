@@ -35,13 +35,12 @@ public class PMD {
      * @param ruleSet - the set of rules to process against the file
      * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
      */
-    public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) {
+    public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         try {
             ctx.setPackageName(null);
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
             Thread.yield();
-            //c.dump("");
             SymbolFacade stb = new SymbolFacade();
             stb.initializeWith(c);
             List acus = new ArrayList();
@@ -49,10 +48,9 @@ public class PMD {
             ruleSet.apply(acus, ctx);
             reader.close();
         } catch (ParseException pe) {
-            System.out.println("Error while parsing " + ctx.getSourceCodeFilename() + " at line " + pe.currentToken.beginLine + "; continuing...");
-        } catch (Throwable t) {
-            System.out.println("Error while processing " +  ctx.getSourceCodeFilename() + "; "+ t.getClass() + ":" +  t.getMessage() + "; continuing...");
-            t.printStackTrace();
+            throw new PMDException("Error while parsing " +  ctx.getSourceCodeFilename(), pe);
+        } catch (Exception e) {
+            throw new PMDException("Error while processing " +  ctx.getSourceCodeFilename(), e);
         }
     }
 
@@ -61,7 +59,7 @@ public class PMD {
      * @param ruleSet - the set of rules to process against the file
      * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
      */
-    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) {
+    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx)  throws PMDException {
         processFile(new InputStreamReader(fileContents), ruleSet, ctx);
     }
 
@@ -114,7 +112,11 @@ public class PMD {
             for (Iterator i = files.iterator(); i.hasNext();) {
                 File file = (File)i.next();
                 ctx.setSourceCodeFilename(file.getAbsolutePath());
-                pmd.processFile(new FileInputStream(file), rules, ctx);
+                try {
+                    pmd.processFile(new FileInputStream(file), rules, ctx);
+                } catch (PMDException pmde) {
+                    pmde.printStackTrace();
+                }
             }
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();

@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.ant;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -198,6 +199,8 @@ public class PMDTask extends Task {
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (FileNotFoundException fnfe) {
                     throw new BuildException(fnfe);
+                } catch (PMDException pmde) {
+                    throw new BuildException(pmde);
                 }
             }
         }
