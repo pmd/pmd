@@ -1,7 +1,21 @@
 package net.sourceforge.pmd;
 
+import java.util.Comparator;
+
 
 public class RuleViolation {
+
+    public static class RuleViolationComparator implements Comparator {
+
+        public int compare(Object o1, Object o2) {
+            RuleViolation r1 = (RuleViolation)o1;
+            RuleViolation r2 = (RuleViolation)o2;
+            if (!r1.getFilename().equals(r2.getFilename())) {
+                return 0;
+            }
+            return r1.getLine() - r2.getLine();
+        }
+    }
 
     private int line;
     private Rule rule;

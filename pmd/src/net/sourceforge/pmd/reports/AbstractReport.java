@@ -10,10 +10,11 @@ import net.sourceforge.pmd.RuleViolation;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Collections;
 
 public abstract class AbstractReport implements Report {
 
-    protected List violations = new ArrayList();
+    private List violations = new ArrayList();
 
     public void addRuleViolation(RuleViolation violation) {
         violations.add(violation);
@@ -26,11 +27,16 @@ public abstract class AbstractReport implements Report {
     }
 
     public Iterator iterator() {
+        sort();
         return violations.iterator();
     }
+
 
     public int size() {
         return violations.size();
     }
 
+    private void sort() {
+        Collections.sort(violations, new RuleViolation.RuleViolationComparator());
+    }
 }

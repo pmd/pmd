@@ -28,20 +28,14 @@ public class MockRule implements Rule {
         this.desc = desc;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setMessage(String description) {
-        this.desc = description;
-    }
+    public void setName(String name) {this.name = name;}
+    public String getName() {return name;}
+    public String getMessage() {return desc;}
+    public void setMessage(String description) {this.desc = description;}
 
     public void addViolation( RuleViolation violation ) {
 	violations.add( violation );
     }
-
-    public String getName() {return name;}
-    public String getMessage() {return desc;}
 
     public void apply(List astCompilationUnits, RuleContext ctx) {
 	Report report = ctx.getReport();

@@ -28,6 +28,15 @@ public class ReportTest extends TestCase {
         assertTrue(!r.isEmpty());
     }
 
+    public void testSortedReport() {
+        ReportFactory rf = new ReportFactory();
+        Report r = rf.createReport("xml");
+        r.addRuleViolation(new RuleViolation(new MockRule(), 10, "foo"));
+        r.addRuleViolation(new RuleViolation(new MockRule(), 20, "bar"));
+        String result = r.render();
+        assertTrue(result.indexOf("foo") < result.indexOf("bar"));
+    }
+
 /*
     public void testRenderXML() {
         Report r = new Report("xml");

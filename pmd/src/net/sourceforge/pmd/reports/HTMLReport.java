@@ -13,7 +13,7 @@ public class HTMLReport extends AbstractReport {
 
     public String render() {
         StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + System.getProperty("line.separator")+ "<table><tr>" + System.getProperty("line.separator")+ "<th>File</th><th>Line</th><th>Problem</th></tr>" + System.getProperty("line.separator"));
-        for (Iterator i = violations.iterator(); i.hasNext();) {
+        for (Iterator i = super.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append("<tr>" + System.getProperty("line.separator")+ "<td>" + rv.getFilename() + "</td>" + System.getProperty("line.separator"));
             buf.append("<td>" + Integer.toString(rv.getLine()) + "</td>" + System.getProperty("line.separator"));

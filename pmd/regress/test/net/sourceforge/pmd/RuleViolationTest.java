@@ -27,4 +27,31 @@ public class RuleViolationTest extends TestCase {
         assertEquals("filename", r.getFilename());
         assertEquals("description", r.getDescription());
     }
+
+    public void testComparatorWithDifferentFilenames() {
+        Rule rule = new MockRule("name", "desc");
+        RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
+        RuleViolation r1 = new RuleViolation(rule, 10, "description", "filename1");
+        RuleViolation r2 = new RuleViolation(rule, 20, "description", "filename2");
+        assertEquals(0, comp.compare(r1, r2));
+        assertEquals(0, comp.compare(r2, r1));
+    }
+
+    public void testComparatorWithSameFileDifferentLines() {
+        Rule rule = new MockRule("name", "desc");
+        RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
+        RuleViolation r1 = new RuleViolation(rule, 10, "description", "filename");
+        RuleViolation r2 = new RuleViolation(rule, 20, "description", "filename");
+        assertTrue(comp.compare(r1, r2) < 0);
+        assertTrue(comp.compare(r2, r1) > 0);
+    }
+
+    public void testComparatorWithSameFileSameLines() {
+        Rule rule = new MockRule("name", "desc");
+        RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
+        RuleViolation r1 = new RuleViolation(rule, 10, "description", "filename");
+        RuleViolation r2 = new RuleViolation(rule, 10, "description", "filename");
+        assertEquals(0, comp.compare(r1, r2));
+        assertEquals(0, comp.compare(r2, r1));
+    }
 }
