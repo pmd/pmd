@@ -128,13 +128,7 @@ public class PMDTask extends Task {
                 try {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                     printIfVerbose (file.getAbsoluteFile().toString());
-
-                    String fileName = file.getAbsolutePath();
-                    if (shortFilenames) {
-                        fileName = srcFiles[j];
-                    }
-                    ctx.setSourceCodeFilename(fileName);
-
+                    ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (FileNotFoundException fnfe) {
                     if (failOnError) {
