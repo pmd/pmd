@@ -32,7 +32,7 @@ public class TokenList implements Serializable {
     public String getLineSlice(int startTokenIndex, int tokenCount) {
         TokenEntry t = (TokenEntry)tokens.get(startTokenIndex);
         TokenEntry t2 = (TokenEntry)tokens.get(Math.min(startTokenIndex + tokenCount, tokens.size()-1));
-        return getSlice(t.getBeginLine(), t2.getBeginLine());
+        return getSlice(t.getBeginLine()-1, t2.getBeginLine());
     }
 
     public String getSlice(int startLine, int endLine) {
