@@ -17,20 +17,20 @@
         </subsection>
         <subsection name="Organizations">
         <table>
-          <tr><td><img src="images/darpa.jpg" /></td>
+          <tr><td><center><img src="images/darpa.jpg"/></center></td>
               <td><a href="http://www.darpa.mil/">DARPA</a> for funding
                   the Ultra*Log effort which spawned PMD.</td></tr>
-          <tr><td><img src="images/ultralog.jpg" /></td>
+          <tr><td><center><img src="images/ultralog.jpg"/></center></td>
               <td><a href="http://www.ultralog.net/">Ultra*Log</a> for
                   letting us build PMD to help the code get better.</td></tr>
-          <tr><td><img src="images/cougaar.jpg" /></td>
+          <tr><td><center><img src="images/cougaar.jpg"/></center></td>
               <td><a href="http://www.cougaar.org/">Cougaar</a> is an
                   agent architecture Ultra*Log is based on.  (Which needs
                   quite a bit of PMD also.)</td></tr>
-          <tr><td><img src="http://sourceforge.net/sflogo.php?group_id=56262" /></td>
+          <tr><td><center><img src="http://sourceforge.net/sflogo.php?group_id=56262"/></center></td>
               <td><a href="http://sourceforge.net/">SourceForge</a> for 
                   providing hosting services for PMD.</td></tr>
-          <tr><td><img src="images/webgain.gif" /></td>
+          <tr><td><center><img src="images/webgain.gif"/></center></td>
               <td><a href="http://www.webgain.com/">WebGain</a> for hosting
                   and maintaining JavaCC.</td></tr>
         </table>
