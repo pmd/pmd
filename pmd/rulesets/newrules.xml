@@ -6,6 +6,71 @@ These are new rules for the next release
   </description>
 
 
+   <rule name="AvoidCatchingThrowable"
+         message="A catch statement should never catch throwable since it includes errors"
+          class="net.sourceforge.pmd.rules.strictexception.AvoidCatchingThrowable">
+      <description>
+This is dangerous because if a java.lang.Error, for example OutOfMemmoryError,
+occurs then it will be caught. The container should handle java.lang.Error.
+If application code will catch them, try to log them (which will probably fail)
+and continue silently the situation will not be desirable.
+      </description>
+      <priority>3</priority>
+      <example>
+                <![CDATA[
+SimpleDateFormat sdf = null;
+try {
+    sdf = new SimpleDateFormat("yyyy-MM-dd");
+} catch (Throwable th) {  //Should not catch throwable
+    th.printStackTrace();
+}
+                ]]>
+      </example>
+    </rule>
+
+   <rule name="SignatureDeclareThrowsException"
+         message="A signature (constructor or method) shouldn't have Exception in throws declaration"
+          class="net.sourceforge.pmd.rules.strictexception.ExceptionSignatureDeclaration">
+      <description>
+It is unclear which exceptions that can be thrown from the methods.
+It might be difficult to document and understand the vague interfaces.
+Use either a class derived from RuntimeException or a checked exception.
+      </description>
+      <priority>3</priority>
+      <example>
+                <![CDATA[
+public void methodThrowingException() throws Exception {
+}
+                ]]>
+      </example>
+    </rule>
+
+        <rule name="ExceptionTypeChecking"
+         message="The catch clause shouldn't check the exception type - catch several exceptions instead"
+          class="net.sourceforge.pmd.rules.strictexception.ExceptionTypeChecking">
+      <description>
+At some places Exception is caught and then a check with instanceof is performed.
+This result in messy code. It's considered better to catch all the specific
+exceptions instead.
+      </description>
+      <priority>3</priority>
+      <example>
+                <![CDATA[
+SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+try {
+    returnString = sdf.format(value);
+} catch (Exception ex) {
+    /* BAD STUFF !!!*/
+    if (ex instanceof NumberFormatException) {
+        System.out.println("NumberFormat exception!!!");
+    }
+    if (ex instanceof IllegalArgumentException) {
+        System.out.println("illegal argument...!!!");
+    }
+}
+                ]]>
+      </example>
+    </rule>
     <rule name="VariableNamingConventionsRule"
     message="{0} variable {1} should begin with {2}"
     class="net.sourceforge.pmd.rules.VariableNamingConventionsRule">
@@ -56,6 +121,7 @@ public class Foo {}
 ]]>
       </example>
     </rule>
+
 
   </ruleset>
 
