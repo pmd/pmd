@@ -12,14 +12,6 @@
   <!-- Set default values for the build -->
   <property file="project.properties" />
 
-  <target name="test-data">
-    <javac srcdir="src/test-data"
-           destdir="test-data" />
-    <javac srcdir="src/example"
-           destdir="test-data" />
-  </target>
-
-
 <!-- maven:start -->
 
 <!-- ======================================================== -->

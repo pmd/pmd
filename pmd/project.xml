@@ -21,7 +21,6 @@ in the code.  Currently, PMD supports:
   <li>Unecessary Object Creation</li>
 </ul>
 More tests to come.
-</ul>
   ]]>
   </description>
   <shortDescription>PMD Source Checker</shortDescription>
@@ -92,7 +91,7 @@ More tests to come.
     <aspectSourceDirectory></aspectSourceDirectory>
 
     <unitTestPatterns>
-      <unitTestPattern>include=**/Test*.java</unitTestPattern>
+      <unitTestPattern>include=**/*Test.java</unitTestPattern>
     </unitTestPatterns>
 
     <integrationUnitTestPatterns />
@@ -103,8 +102,6 @@ More tests to come.
     <jarResources>
     </jarResources>
 
-    <checkstyle>
-    </checkstyle>
     <jars>
     </jars>
   </build>
