@@ -16,11 +16,11 @@ The Java Logging ruleset contains a collection of rules that find questionable u
          <property name="xpath">
              <value>
                  <![CDATA[
-//ClassBody[
-	count(//VariableDeclarator[../Type/Name[@Image='Logger']])
-	>1
-	]
-                ]]>
+//ClassOrInterfaceBody [
+ count(
+  //VariableDeclarator[../Type/ReferenceType/ClassOrInterfaceType[@Image='Logger']]
+  )>1
+]                ]]>
              </value>
          </property>
      </properties>
