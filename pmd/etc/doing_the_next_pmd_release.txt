@@ -1,8 +1,5 @@
-
-<<<<<<<<<<<<<<< BEFORE RELEASE <<<<<<<<<<<<<< update Ant task docs to reflect new 'targetjdk13' boolean
-
-update run.*, astviewer.*, cpd.jnlp, cpdgui.bat, build.xml, PMD.java to point to pmd-1.2.1.jar
-update xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-1.2.1
+update run.*, astviewer.*, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml, CommandLineOptions.java to point to pmd-1.2.2.jar
+update xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-1.2.2
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
 update release number and tag name in project.xml
@@ -22,46 +19,46 @@ cd ..
 ./docs all
 
 Prepare binary release:
-rm -rf ~/tmp/pmd-1.2.1
-mkdir -p ~/tmp/pmd-1.2.1/etc
-mkdir ~/tmp/pmd-1.2.1/lib
-cp ../LICENSE.txt run.* cygwin-run.sh build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.2.1/etc
-cp ../lib/pmd-1.2.1.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.2.1/lib/
-cp -R xslt/ ~/tmp/pmd-1.2.1/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd-1.2.1
+rm -rf ~/tmp/pmd-1.2.2
+mkdir -p ~/tmp/pmd-1.2.2/etc
+mkdir ~/tmp/pmd-1.2.2/lib
+cp ../LICENSE.txt run.* cygwin-run.sh build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.2.2/etc
+cp ../lib/pmd-1.2.2.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.2.2/lib/
+cp -R xslt/ ~/tmp/pmd-1.2.2/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd-1.2.2
 cd ~/tmp
-zip -q -r pmd-bin-1.2.1.zip pmd-1.2.1/
+zip -q -r pmd-bin-1.2.2.zip pmd-1.2.2/
 cd -
 
 Time to tag:
 
 cd ../../
-cvs -q rtag -D tomorrow "pmd_release_1_2_1" pmd
+cvs -q rtag -D tomorrow "pmd_release_1_2_2" pmd
 
 Prepare source release:
-rm -rf ~/tmp/pmd-1.2.1
+rm -rf ~/tmp/pmd-1.2.2
 mkdir tmp
-cvs -q export -d tmp/ -r pmd_release_1_2_1 pmd
+cvs -q export -d tmp/ -r pmd_release_1_2_2 pmd
 cd pmd/etc
 ant jarsrc
 cd ../../
-cp pmd/lib/pmd-src-1.2.1.jar tmp/lib/
-mv tmp ~/tmp/pmd-1.2.1
-cp pmd/lib/pmd-1.2.1.jar ~/tmp/pmd-1.2.1/lib
-cp -R pmd/target/docs ~/tmp/pmd-1.2.1/
+cp pmd/lib/pmd-src-1.2.2.jar tmp/lib/
+mv tmp ~/tmp/pmd-1.2.2
+cp pmd/lib/pmd-1.2.2.jar ~/tmp/pmd-1.2.2/lib
+cp -R pmd/target/docs ~/tmp/pmd-1.2.2/
 cd ~/tmp/
-zip -q -r pmd-src-1.2.1.zip pmd-1.2.1/
+zip -q -r pmd-src-1.2.2.zip pmd-1.2.2/
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_1_2_1 pmd
+cvs rtag -d pmd_release_1_2_2 pmd
 and then retag everything
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-1.2.1.zip pmd-bin-1.2.1.zip
+ncftpput upload.sourceforge.net incoming/ pmd-src-1.2.2.zip pmd-bin-1.2.2.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-1.2.1.zip file
-Add the pmd-src-1.2.1.zip file
+Add the pmd-bin-1.2.2.zip file
+Add the pmd-src-1.2.2.zip file
 Classify the file
 
 Redo the web site
