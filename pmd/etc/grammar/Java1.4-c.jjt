@@ -600,8 +600,7 @@ void InterfaceMemberDeclaration() :
 }
 
 void FieldDeclaration() :
-{
-}
+{}
 {
   ( "public"            { jjtThis.setPublic(); }
   | "protected"         { jjtThis.setProtected(); }
@@ -622,19 +621,15 @@ void VariableDeclarator() :
 
 void VariableDeclaratorId() :
 {
-  String s;
   Token t;
 }
 {
   t=<IDENTIFIER>
-  {
-    s = t.image;
-  }
   ( "[" "]" )*
   {
     checkForBadAssertUsage(t.image, "a variable name");
     checkForBadEnumUsage(t.image, "a variable name");
-    jjtThis.setImage( s );
+    jjtThis.setImage( t.image );
   }
 }
 
