@@ -17,12 +17,6 @@ public class DCPDResultsImpl extends TileOccurrences implements Results, Seriali
 
     public void addTile(Tile tile, TokenEntry tok) {
         super.addTile(tile, tok);
-/*
-        for (int i=orderedTiles.size()-1; i>=0; i--) {
-            Tile candidate = (Tile)orderedTiles.get(i);
-            removeDupesOf(candidate);
-        }
-*/
         if (orderedTiles.size() > 1) {
             removeDupesOf((Tile)orderedTiles.get(orderedTiles.size()-1));
         }
@@ -36,8 +30,15 @@ public class DCPDResultsImpl extends TileOccurrences implements Results, Seriali
     }
 
     private void removeDupesOf(Tile largerTile) {
+        String largeTileSrc = ((TokenEntry)largerTile.getTokens().get(0)).getTokenSrcID();
+
         for (int i=0; i<orderedTiles.size()-1; i++) {
             Tile smallerTile = (Tile)orderedTiles.get(i);
+
+            String smallTileSrc = ((TokenEntry)smallerTile.getTokens().get(0)).getTokenSrcID();
+            if (!smallTileSrc.equals(largeTileSrc)) {
+                continue;
+            }
 
             outer:
             for (int j=0; j<smallerTile.getTokens().size(); j++) {
@@ -45,9 +46,7 @@ public class DCPDResultsImpl extends TileOccurrences implements Results, Seriali
 
                 for (int k=0; k<largerTile.getTokens().size(); k++) {
                     TokenEntry largeTileToken = (TokenEntry)largerTile.getTokens().get(k);
-                    if (smallTileToken.getBeginLine() == largeTileToken.getBeginLine() &&
-                        smallTileToken.getImage().equals(largeTileToken.getImage()) &&
-                        smallTileToken.getTokenSrcID().equals(largeTileToken.getTokenSrcID())) {
+                    if (smallTileToken.getIndex() == largeTileToken.getIndex()) {
                         orderedTiles.remove(smallerTile);
                         tileToOccurrenceMap.remove(smallerTile);
                         break outer;
