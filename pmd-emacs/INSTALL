@@ -1,20 +1,27 @@
-Installing PMD For Emacs:
+;;; Commentary:
+;; Installation:
+;; 	add this line to your .emacs file:
+;; 	    (autoload 'pmd-current-buffer "pmd" "PMD Mode" t)
+;; 	once this is done, you can call the pmd-current-buffer function
+;; 	using C-x or bind it to a key sequence.
 
-1) Download PMD-0.4 from SourceForge, and unpack into a directory.
+;;   NOTE: This requies the xml parser in xml.el.  This is distributed
+;; 	with the standard Gnu Emacs 21.x release. 
 
-2) Copy src/elisp/pmd.el to a directory on your Elisp Path
-
-3) Inside your ".emacs" file, (require 'pmd)
-
-4) Set the following variables in ".emacs"
-   pmd-java - Java binary to run PMD with.
-   pmd-home - Directory where PMD was installed.
-   pmd-rulesets - Ruleset to use (must be in the PMD jar.)
-
-There is a customize group under PMD, which you can also
-use to customize PMD installation.
-
-Also, I'm sure there are others out there who know more about
-customizing Emacs than I do.  Feel free to chip in here and
-there.
+;; Configuration:
+;; 	Most user variables can be customized through standard
+;; 	customization buffers.  Type:
+;; 	    M-x pmd-customize
+;; 		--or--
+;; 	    M-x customize-group <RET>
+;; 	    pmd <RET>
+	
+;; Description:
+;; 	This mode is similar to the compilation buffer found in the
+;; 	JDE.  When you run pmd-current-buffer on a .java file, it runs
+;; 	the PMD tool (http://pmd.sourceforge.net/) on the file with
+;; 	the rulesets defined in pmd-rulesets.
+	
+;; 	Type ? in the *PMD* buffer for a list of key bindings for
+;; 	pmd-mode and usage help.
 
