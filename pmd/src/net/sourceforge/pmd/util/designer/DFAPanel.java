@@ -17,7 +17,7 @@ import java.awt.ScrollPane;
 import java.util.Iterator;
 import java.util.List;
 
-public class DFAPanel extends JPanel implements ListSelectionListener {
+public class DFAPanel extends JComponent implements ListSelectionListener {
 
     public static class DFACanvas extends Canvas {
 
