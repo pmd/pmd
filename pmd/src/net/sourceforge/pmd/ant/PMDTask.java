@@ -85,9 +85,6 @@ public class PMDTask extends Task {
         if (!ctx.getReport().isEmpty()) {
             buf.append(ctx.getReport().render());
             buf.append(System.getProperty("line.separator"));
-            if (failOnError) {
-                throw new BuildException("Stopping build since PMD found problems in the code");
-            }
         }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(reportFile)));
@@ -95,6 +92,10 @@ public class PMDTask extends Task {
             writer.close();
         } catch (IOException ioe) {
             throw new BuildException(ioe.getMessage());
+        }
+
+        if (failOnError && !ctx.getReport().isEmpty()) {
+            throw new BuildException("Stopping build since PMD found problems in the code");
         }
     }
 
