@@ -39,6 +39,7 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetList;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSetReader;
 import net.sourceforge.pmd.RuleSetWriter;
@@ -114,24 +115,51 @@ class RulesEditor extends JDialog
     private void buildTree()
         throws PMDException
     {
+        String[] includeRuleSets;
         RuleSet[] ruleSets;
         RulesTreeNode rootNode;
 
+        includeRuleSets = loadIncludeRuleSets();
         ruleSets = loadRuleSets();
         m_tree = new RulesTree();
         rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
 
-        for (int n = 0; n < ruleSets.length; n++)
+        for (int n1 = 0; n1 < ruleSets.length; n1++)
         {
-            RulesTreeNode ruleSetNode = new RulesTreeNode(ruleSets[n]);
+            RulesTreeNode ruleSetNode = new RulesTreeNode(ruleSets[n1]);
+            boolean include = false;
+
+            for (int n2 = 0; n2 < includeRuleSets.length; n2++)
+            {
+                if (ruleSets[n1].getName().equalsIgnoreCase(includeRuleSets[n2]))
+                {
+                    ruleSetNode.setInclude(true);
+                    break;
+                }
+            }
 
             rootNode.add(ruleSetNode);
             loadRuleTreeNodes(ruleSetNode);
-
-            ruleSets[n] = null;
         }
 
         m_tree.expandNode(rootNode);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    private String[] loadIncludeRuleSets()
+        throws PMDException
+    {
+        Preferences preferences;
+        String ruleSetDirectoryName;
+
+        preferences = m_pmdViewer.getPreferences();
+        ruleSetDirectoryName = preferences.getCurrentRuleSetDirectory();
+
+        return RuleSetList.getIncludedRuleSetNames(ruleSetDirectoryName);
     }
 
     /**
@@ -505,6 +533,7 @@ class RulesEditor extends JDialog
          */
         private boolean writeRuleSets(RulesTreeNode treeNode)
         {
+            List includeRuleSetNames = new ArrayList();
             Preferences preferences = m_pmdViewer.getPreferences();
             String ruleSetDirectory = preferences.getCurrentRuleSetDirectory();
             Enumeration ruleSetNodes = treeNode.children();
@@ -514,7 +543,13 @@ class RulesEditor extends JDialog
                 FileOutputStream fileOutputStream = null;
                 RulesTreeNode ruleSetNode = (RulesTreeNode) ruleSetNodes.nextElement();
                 RuleSet ruleSet = ruleSetNode.getRuleSet();
-                String fileName = ruleSetDirectory + File.separator + ruleSet.getName() + ".xml";
+                String ruleSetName = ruleSet.getName();
+                String fileName = ruleSetDirectory + File.separator + ruleSetName + ".xml";
+
+                if (ruleSetNode.include())
+                {
+                    includeRuleSetNames.add(ruleSetName);
+                }
 
                 try
                 {
@@ -560,6 +595,19 @@ class RulesEditor extends JDialog
                         }
                     }
                 }
+            }
+
+            try
+            {
+                String[] ruleSetNames = new String[includeRuleSetNames.size()];
+                includeRuleSetNames.toArray(ruleSetNames);
+                RuleSetList.saveIncludedRuleSetNames(ruleSetDirectory, ruleSetNames);
+            }
+            catch (PMDException pmdException)
+            {
+                String message = pmdException.getMessage();
+                Exception originalException = pmdException.getOriginalException();
+                MessageDialog.show(m_pmdViewer, message, originalException);
             }
 
             return true;

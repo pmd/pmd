@@ -3,12 +3,11 @@ package net.sourceforge.pmd;
 import java.io.InputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.helpers.DefaultHandler;
@@ -103,40 +102,27 @@ public class ProjectFile
      */
     public static final String[] toArray(String propertyValue)
     {
-        List values = new ArrayList();
+        String[] values = new String[0];
 
         if (propertyValue != null)
         {
-            int beginIndex = 0;
-            int offset = (VALUE_SEPARATOR).length();
+            StringTokenizer parser;
+            int valueCount;
+            int index;
 
-            while (beginIndex >= 0)
+            parser = new StringTokenizer(propertyValue, VALUE_SEPARATOR);
+            valueCount = parser.countTokens();
+            values = new String[valueCount];
+            index = 0;
+
+            while (parser.hasMoreTokens())
             {
-                int endIndex = propertyValue.indexOf(VALUE_SEPARATOR, beginIndex);
-
-                if (endIndex >= 0)
-                {
-                    values.add(propertyValue.substring(beginIndex, endIndex));
-                    beginIndex = endIndex + offset;
-                }
-                else if ((endIndex + offset) < propertyValue.length())
-                {
-                    values.add(propertyValue.substring(beginIndex));
-                    beginIndex = -1;
-                }
-                else
-                {
-                    beginIndex = -1;
-                }
+                values[index] = parser.nextToken();
+                index++;
             }
         }
 
-        String[] result = new String[values.size()];
-
-        values.toArray(result);
-        values.clear();
-
-        return result;
+        return values;
     }
 
     /**

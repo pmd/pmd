@@ -154,7 +154,7 @@ public class RuleSetEditingPanel extends JPanel
                 m_name.setBackground(Color.white);
                 m_description.setEnabled(true);
                 m_description.setBackground(Color.white);
-//                m_include.setEnabled(true);
+                m_include.setEnabled(true);
                 m_enabled = true;
             }
 
