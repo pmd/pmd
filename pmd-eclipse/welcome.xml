@@ -46,7 +46,7 @@
 	the plugin configured rules.
 	</item>
 	
-	<item><b>Quicfixes</b>
+	<item><b>Quickfixes</b>
 	This version of the plugin comes with a preview of the future quicfix feature. This
 	feature is currently implemented only for the "Duplicate Imports" rule and propose
 	to simply delete the line where the violation occurs.
