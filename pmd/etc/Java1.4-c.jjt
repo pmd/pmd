@@ -349,7 +349,7 @@ void PackageDeclaration() :
 void ImportDeclaration() :
 {}
 {
-  "import" Name() [ "." "*" ] ";"
+  "import" Name() [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
 void TypeDeclaration() :

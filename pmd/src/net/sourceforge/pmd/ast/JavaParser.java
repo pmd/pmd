@@ -55,8 +55,8 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         TypeDeclaration();
       }
       jj_consume_token(0);
-                  jjtree.closeNodeScope(jjtn000, true);
-                  jjtc000 = false;
+          jjtree.closeNodeScope(jjtn000, true);
+          jjtc000 = false;
                   {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -122,6 +122,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       case DOT:
         jj_consume_token(DOT);
         jj_consume_token(STAR);
+                             jjtn000.setImportOnDemand();
         break;
       default:
         jj_la1[3] = jj_gen;

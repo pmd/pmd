@@ -18,28 +18,43 @@ import java.text.MessageFormat;
 
 public class DuplicateImportsRule extends AbstractRule {
 
-    private Set allImports;
+    private Set singleTypeImports;
+    private Set importOnDemandImports;
 
     public Object visit(ASTCompilationUnit node, Object data) {
-        allImports = new HashSet();
+        singleTypeImports = new HashSet();
+        importOnDemandImports = new HashSet();
         super.visit(node,data);
-        allImports = new HashSet();
+        singleTypeImports = new HashSet();
+        importOnDemandImports = new HashSet();
         return data;
     }
 
+    // TODO - look for:
+    // java.lang.ref.*
+    // java.lang.ref.WeakReference
     public Object visit(ASTImportDeclaration node, Object data) {
         SimpleNode importNameNode = (SimpleNode)node.jjtGetChild(0);
-        if (allImports.contains(importNameNode.getImage())) {
-            RuleContext ctx = (RuleContext)data;
-            String msg = MessageFormat.format(getMessage(), new Object[] {importNameNode.getImage()});
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, importNameNode.getBeginLine(), msg));
+
+        // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
+        if (node.isImportOnDemand()) {
+            if (importOnDemandImports.contains(importNameNode.getImage())) {
+                createRV((RuleContext)data, importNameNode);
+            } else {
+                importOnDemandImports.add(importNameNode.getImage());
+            }
         } else {
-            // TODO - look for:
-            // java.lang.ref.*
-            // java.lang.ref.WeakReference
-            //
-            allImports.add(importNameNode.getImage());
+            if (singleTypeImports.contains(importNameNode.getImage())) {
+                createRV((RuleContext)data, importNameNode);
+            } else {
+                singleTypeImports.add(importNameNode.getImage());
+            }
         }
         return data;
+    }
+
+    private void createRV(RuleContext ctx, SimpleNode importNameNode) {
+        String msg = MessageFormat.format(getMessage(), new Object[] {importNameNode.getImage()});
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, importNameNode.getBeginLine(), msg));
     }
 }
