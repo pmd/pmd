@@ -33,7 +33,7 @@ import java.util.Stack;
  * ST     ST    ST
  * NS1    NS1   NS1
  *
- * That way the scopes work out nicely and inner classes can be arbitrarily nested.
+ * That way the scopes work out nicely and inner classes can be nested arbitrarily deep.
  */
 public class Namespace {
 

@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.reports.Report;
 import net.sourceforge.pmd.reports.ReportFactory;
+import net.sourceforge.pmd.swingui.PMDFrame;
 
 import java.io.*;
 import java.util.List;
@@ -65,6 +66,11 @@ public class PMD {
 	}
 
     public static void main(String[] args) {
+        if (args[0].equals("-g")) {
+            PMDFrame f = new PMDFrame();
+            return;
+        }
+
         if (args.length != 3) {
             throw new RuntimeException("Please pass in a java source code filename, a report format, and a rule set file name");
         }
