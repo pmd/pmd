@@ -1,6 +1,7 @@
 #!/usr/local/bin/ruby
 
 require '/home/tom/data/pmd/pmd-web/src/pmd.rb'
+require '/home/tom/data/pmd/pmd-web/src/ikko.rb'
 
 Dir.chdir(PMD::Job::ROOT)
 ENV['JAVA_HOME']="/usr/local/java"
@@ -30,3 +31,9 @@ Dir.new("jobs").each { |candidate|
 		puts "Exiting with error: #{$!}"
 	end
 }
+
+fm = Ikko::FragmentManager.new
+fm.base_path="./"
+out = fm["header.frag"]
+
+File.open("index.html", "w") {|f| f.syswrite(out)}
