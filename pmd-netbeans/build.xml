@@ -1,4 +1,7 @@
 <project basedir="." default="nbm" name="PMD netbeans module">
+
+	<property name="pmd.jar" value="pmd-1.05.jar"/>
+
 	<target description="Compiles all java files and copies property files to the classes dir" name="compile">
 		<mkdir dir="build/classes"/>
 		<javac debug="on" debuglevel="source,lines" deprecation="on" destdir="build/classes" srcdir="src">
@@ -10,7 +13,7 @@
 				<pathelement path="lib/openide-io.jar"/>
 				<pathelement path="lib/java-api.jar"/>
 				<pathelement path="lib/java-src-model.jar"/>
-				<pathelement path="lib/pmd-1.04.jar"/>
+				<pathelement path="lib/${pmd.jar}"/>
 				<pathelement path="lib/jakarta-oro-2.0.jar"/>
 			</classpath>
 		</javac>
@@ -23,18 +26,26 @@
 			</fileset>
 		</copy>
 	</target>
+
 	<target depends="compile" description="Creates the jar" name="jars">
-		<jar compress="false" jarfile="build/pmd.jar" manifest="src/manifest.mf">
+		<mkdir dir="work"/>
+		<copy file="src/manifest.mf" tofile="work/manifest-filtered.mf">
+			<filterset>
+				<filter token="pmd.jar" value="${pmd.jar}"/>
+			</filterset>
+		</copy>
+		<jar compress="false" jarfile="build/pmd.jar" manifest="work/manifest-filtered.mf">
 			<fileset dir="build/classes">
 				<include name="**/*"/>
 			</fileset>
 		</jar>
+		<delete dir="work"/>
 	</target>
 	<target depends="jars" description="Prepare the module for distribution via Auto Update." name="nbm">
 		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib/nbantext.jar" name="makenbm"/>
 		<mkdir dir="build/temp_distribution/netbeans/modules/ext"/>
 		<copy file="build/pmd.jar" tofile="build/temp_distribution/netbeans/modules/pmd.jar"/>
-		<copy file="lib/pmd-1.04.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.04.jar"/>
+		<copy file="lib/${pmd.jar}" tofile="build/temp_distribution/netbeans/modules/ext/${pmd.jar}"/>
 		<copy file="lib/saxpath-1.0-fcs.jar" tofile="build/temp_distribution/netbeans/modules/ext/saxpath-1.0-fcs.jar"/>
 		<copy file="lib/jakarta-oro-2.0.jar" tofile="build/temp_distribution/netbeans/modules/ext/jakarta-oro-2.0.jar"/>
 		<copy file="lib/jaxen-core-1.0-fcs.jar" tofile="build/temp_distribution/netbeans/modules/ext/jaxen-core-1.0-fcs.jar"/>
