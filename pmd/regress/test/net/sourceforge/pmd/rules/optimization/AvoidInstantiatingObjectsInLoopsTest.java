@@ -30,6 +30,7 @@ public class AvoidInstantiatingObjectsInLoopsTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST2, "TEST2", 1, rule),
                new TestDescriptor(TEST3, "TEST3", 1, rule),
                new TestDescriptor(TEST4, "TEST4", 2, rule),
+               new TestDescriptor(BUG_1114051, "BUG [ 1114051 ] Semi-false positive for instantiating new object in loop", 0, rule),
        });
     }
 
@@ -67,6 +68,19 @@ public class AvoidInstantiatingObjectsInLoopsTest extends SimpleAggregatorTst {
         "       String a = new String();" + PMD.EOL + 
         "       String b = new String();" + PMD.EOL + 
         "   }while(true) ;" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String BUG_1114051 =
+        "public class Foo {" + PMD.EOL +
+        " public void test1() {" + PMD.EOL +
+        "   while (true) {" +
+        "        try {" +
+        "       } catch (Exception e) {" + PMD.EOL +
+        "           url = new StringBuffer(); " + PMD.EOL +
+        "           break; " + PMD.EOL +
+        "       }" + PMD.EOL +
+        "  }" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
 
