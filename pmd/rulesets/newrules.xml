@@ -429,5 +429,26 @@ public class Foo {
     </rule>
     
 
+    <rule name="AvoidNonConstructorMethodsWithClassName"
+          message="Method {0} is not a constructor but it can be confused with one"
+          class="net.sourceforge.pmd.rules.AvoidNonConstructorMethodsWithClassName">
+      <description>
+      It is very easy to confuse methods with classname with constructors. It is preferrable 
+      to name these non-constructor methods in a different way.
+      </description>
+      <properties></properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class Foo {	
+	public void Foo() {
+		// not really a constructor...
+	}
+}
+]]>
+      </example>
+    </rule>
+    
 </ruleset>
 
