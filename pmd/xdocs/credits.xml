@@ -38,13 +38,13 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Philippe Couton - OverrideBothEqualsAndHashcodeRule bug report, UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
             <li>Brandon Franklin - many pmd-web ideas</li>
             <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
             <li>Andriy Rozeluk - Suggestions for improving UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
             <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
             <li>Pieter Bloemendaal - AvoidReassigningParametersRule bug report</li>
-            <li>Philippe Couton - UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
             <li>Vladimir Bossicard - suggested AbstractNamingRule, test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Ken Foskey - noticed bad link</li>
             <li>Stephan Janssen - promoted PMD for <a href="https://jjguidelines.dev.java.net/">JJGuidelines</a></li>

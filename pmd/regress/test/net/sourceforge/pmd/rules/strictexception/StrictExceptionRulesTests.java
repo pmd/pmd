@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+*/
 package test.net.sourceforge.pmd.rules.strictexception;
 
 import junit.framework.Test;
@@ -35,6 +38,9 @@ public class StrictExceptionRulesTests
 
 /*
  * $Log$
+ * Revision 1.2  2003/11/26 15:04:33  tomcopeland
+ * Fixed a bug in OverrideBothEqualsAndHashcodeRule; it no longer reports a false positive when equals() is passed the fully qualified name of Object; thx to Philippe Couton for the report.  Also continuing to clean up license headers.
+ *
  * Revision 1.1  2003/09/29 14:32:32  tomcopeland
  * Committed regression test suites, thanks to Boris Gruschko
  *

@@ -1,25 +1,6 @@
 /**
- * <copyright>
- *  Copyright 1997-2002 InfoEther, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency
-(DARPA).
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published
-by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- *
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
- */
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+*/
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
@@ -43,7 +24,7 @@ public class OverrideBothEqualsAndHashcodeRuleTest extends SimpleAggregatorTst {
         	") or (" +
         	"@Image='hashCode'" +
         	" and count(FormalParameters/*) = 0" +
-        	" and not(//MethodDeclarator[count(FormalParameters//Type/Name[@Image = 'Object']) = 1][@Image = 'equals'])" +
+        	" and not(//MethodDeclarator[count(FormalParameters//Type/Name[@Image = 'Object' or @Image = 'java.lang.Object']) = 1][@Image = 'equals'])" +
         	")]");
     }
 
@@ -55,6 +36,7 @@ public class OverrideBothEqualsAndHashcodeRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "overrides neither", 0, rule),
            new TestDescriptor(TEST5, "equals sig uses String, not Object", 1, rule),
            new TestDescriptor(TEST6, "interface", 0, rule),
+           new TestDescriptor(TEST7, "java.lang.Object", 0, rule),
        });
     }
 
@@ -92,4 +74,15 @@ public class OverrideBothEqualsAndHashcodeRuleTest extends SimpleAggregatorTst {
     "public interface OverrideBothEqualsAndHashcode6 {" + PMD.EOL +
     " public boolean equals(Object o);" + PMD.EOL +
     "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " public boolean equals(java.lang.Object o) {" + PMD.EOL +
+    "  return true;" + PMD.EOL +
+    " }" + PMD.EOL +
+    " public int hashCode() {" + PMD.EOL +
+    "  return 0;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
 }

@@ -297,7 +297,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       (@Image='hashCode'
           and count(FormalParameters/*) = 0
           and not(//MethodDeclarator[count(FormalParameters//Type/Name
-          [@Image = 'Object']) = 1]
+          [@Image = 'Object']) = 1 or @Image = 'java.lang.Object']
           [@Image = 'equals']))
       )]
                   ]]>
