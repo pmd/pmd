@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui.event;
 
+import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,11 +10,10 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetEvent
+public class RuleSetEvent extends EventObject
 {
 
     private List m_ruleSetList;
-    private Object m_source;
 
     /**
      *****************************************************************************
@@ -22,7 +22,7 @@ public class RuleSetEvent
      */
     private RuleSetEvent(Object source)
     {
-        m_source = source;
+        super(source);
     }
 
     /**
@@ -33,7 +33,8 @@ public class RuleSetEvent
      */
     private RuleSetEvent(Object source, List ruleSetList)
     {
-        m_source = source;
+        super(source);
+
         m_ruleSetList = ruleSetList;
     }
 
@@ -45,16 +46,6 @@ public class RuleSetEvent
     public List getRuleSetList()
     {
         return m_ruleSetList;
-    }
-
-    /**
-     *****************************************************************************
-     *
-     * @return
-     */
-    public Object getSource()
-    {
-        return m_source;
     }
 
     /**

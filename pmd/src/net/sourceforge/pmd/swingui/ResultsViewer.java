@@ -9,20 +9,23 @@ import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.text.html.HTMLEditorKit;
 
-import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
-import net.sourceforge.pmd.swingui.event.JobThreadEvent;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.RuleSetChangedEvent;
-import net.sourceforge.pmd.swingui.event.RuleSetChangedEventListener;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
+import net.sourceforge.pmd.swingui.event.RuleSetChangedEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetChangedEventListener;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
+import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
 
 /**
  *
@@ -39,7 +42,6 @@ class ResultsViewer extends JEditorPane
     private RuleSet m_ruleSet;
     private Report m_report;
     private boolean m_loadRuleSets;
-    private AnalyzeThreadInUse m_analyzeThreadInUse;
     private JScrollPane m_parentScrollPane;
     private PMDDirectoryReturnedEventHandler m_pmdDirectoryReturnedEventHandler;
     private DirectoryTableEventHandler m_directoryTableEventHandler;
@@ -59,7 +61,6 @@ class ResultsViewer extends JEditorPane
         m_pmd = new PMD();
         m_ruleSet = new RuleSet();
         m_loadRuleSets = true;
-        m_analyzeThreadInUse = new AnalyzeThreadInUse();
         ListenerList.addListener((DirectoryTableEventListener) new DirectoryTableEventHandler());
         ListenerList.addListener((PMDDirectoryReturnedEventListener) new PMDDirectoryReturnedEventHandler());
         ListenerList.addListener((RuleSetChangedEventListener) new RuleSetChangedEventHandler());
@@ -143,25 +144,33 @@ class ResultsViewer extends JEditorPane
      ********************************************************************************
      ********************************************************************************
      */
-    private class AnalyzeThread extends JobThread
+    private class AnalyzeThread extends Thread
     {
         private File m_file;
         private ResultsViewer m_resultsViewer;
-        private AnalyzeThreadInUse m_analyzeThreadInUse;
 
         /**
          ****************************************************************************
          *
          * @param threadName
          */
-        private AnalyzeThread(File file, AnalyzeThreadInUse analyzeThreadInUse)
+        private AnalyzeThread(File file)
         {
             super("Analyze");
 
             m_file = file;
-            m_analyzeThreadInUse = analyzeThreadInUse;
-            m_analyzeThreadInUse.setInUse(true);
             m_resultsViewer = ResultsViewer.this;
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
+        public void run()
+        {
+            setup();
+            process();
+            cleanup();
         }
 
         /**
@@ -170,8 +179,8 @@ class ResultsViewer extends JEditorPane
          */
         protected void setup()
         {
-            PMDViewer.getViewer().setEnableViewer(false);
-            addListener(PMDViewer.getViewer().getJobThreadEventListener());
+            AnalyzeFileEvent.notifyStartAnalysis(this, m_file);
+            StatusBarEvent.notifyStartAnimation(this);
         }
 
         /**
@@ -187,10 +196,7 @@ class ResultsViewer extends JEditorPane
 
             try
             {
-                JobThreadEvent event;
-
-                event = new JobThreadEvent(this, "Analyzing.  Please wait...");
-                notifyJobThreadStatus(event);
+                StatusBarEvent.notifyShowMessage(this, "Analyzing.  Please wait...");
 
                 loadRuleSets();
                 RuleContext ruleContext = new RuleContext();
@@ -198,21 +204,18 @@ class ResultsViewer extends JEditorPane
                 ruleContext.setReport(new Report());
                 m_pmd.processFile(new FileInputStream(m_file), m_ruleSet, ruleContext);
 
-                event = new JobThreadEvent(this, "Rendering analysis results into HTML page.  Please wait...");
-                notifyJobThreadStatus(event);
+                StatusBarEvent.notifyShowMessage(this, "Rendering analysis results into HTML page.  Please wait...");
 
                 HTMLResultRenderer renderer;
 
                 renderer = new HTMLResultRenderer();
                 m_htmlText = renderer.render(m_file.getPath(), ruleContext.getReport());
 
-                event = new JobThreadEvent(this, "Storing HTML page into viewer.  Please wait...");
-                notifyJobThreadStatus(event);
+                StatusBarEvent.notifyShowMessage(this, "Storing HTML page into viewer.  Please wait...");
                 setText(m_htmlText);
 
                 m_resultsViewer.scrollToTop();
-                event = new JobThreadEvent(this, "Finished");
-                notifyJobThreadStatus(event);
+                StatusBarEvent.notifyShowMessage(this, "Finished");
             }
             catch (FileNotFoundException exception)
             {
@@ -229,39 +232,8 @@ class ResultsViewer extends JEditorPane
          */
         protected void cleanup()
         {
-            removeListener(PMDViewer.getViewer().getJobThreadEventListener());
-            PMDViewer.getViewer().setEnableViewer(true);
-            m_analyzeThreadInUse.setInUse(false);
-        }
-    }
-
-    /**
-     ***************************************************************************
-     ***************************************************************************
-     ***************************************************************************
-     */
-    class AnalyzeThreadInUse
-    {
-        private boolean m_inUse;
-
-        /**
-         ***********************************************************************
-         *
-         * @param inUse
-         */
-        protected void setInUse(boolean inUse)
-        {
-            m_inUse = inUse;
-        }
-
-        /**
-         ***********************************************************************
-         *
-         * @return
-         */
-        protected boolean inUse()
-        {
-            return m_inUse;
+            AnalyzeFileEvent.notifyStopAnalysis(this, m_file);
+            StatusBarEvent.notifyStopAnimation(this);
         }
     }
 
@@ -335,14 +307,11 @@ class ResultsViewer extends JEditorPane
          */
         public void fileSelected(DirectoryTableEvent event)
         {
-            if (m_analyzeThreadInUse.inUse() == false)
-            {
-                File file = event.getSelectedFile();
+            File file = event.getSelectedFile();
 
-                if (file != null)
-                {
-                    (new AnalyzeThread(file, m_analyzeThreadInUse)).start();
-                }
+            if (file != null)
+            {
+                (new AnalyzeThread(file)).start();
             }
         }
     }

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.swingui;
  * @since October 12, 2002
  * @version $Revision$, $Date$
  */
-public interface IConstants
+public interface Constants
 {
     public static final String BOOLEAN = "Boolean";
     public static final String DECIMAL_NUMBER = "Decimal Number";

@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui.event;
 
+import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,11 +12,10 @@ import net.sourceforge.pmd.RuleSet;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class PMDDirectoryReturnedEvent
+public class PMDDirectoryReturnedEvent extends EventObject
 {
 
     private List m_ruleSetList;
-    private Object m_source;
     private RuleSet m_ruleSet;
     private String m_ruleSetPath;
 
@@ -26,7 +26,7 @@ public class PMDDirectoryReturnedEvent
      */
     private PMDDirectoryReturnedEvent(Object source)
     {
-        m_source = source;
+        super(source);
     }
 
     /**
@@ -37,7 +37,8 @@ public class PMDDirectoryReturnedEvent
      */
     private PMDDirectoryReturnedEvent(Object source, String ruleSetPath)
     {
-        m_source = source;
+        super(source);
+
         m_ruleSetPath = ruleSetPath;
     }
 
@@ -49,7 +50,8 @@ public class PMDDirectoryReturnedEvent
      */
     private PMDDirectoryReturnedEvent(Object source, List ruleSetList)
     {
-        m_source = source;
+        super(source);
+
         m_ruleSetList = ruleSetList;
     }
 
@@ -61,7 +63,8 @@ public class PMDDirectoryReturnedEvent
      */
     private PMDDirectoryReturnedEvent(Object source, RuleSet ruleSet)
     {
-        m_source = source;
+        super(source);
+
         m_ruleSet = ruleSet;
     }
 
@@ -93,16 +96,6 @@ public class PMDDirectoryReturnedEvent
     public RuleSet getRuleSet()
     {
         return m_ruleSet;
-    }
-
-    /**
-     *****************************************************************************
-     *
-     * @return
-     */
-    public Object getSource()
-    {
-        return m_source;
     }
 
     /**

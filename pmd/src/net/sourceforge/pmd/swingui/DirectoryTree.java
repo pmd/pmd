@@ -11,7 +11,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
-import net.sourceforge.pmd.swingui.event.JobThreadEvent;
+import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
 
 /**
  *
@@ -68,7 +69,7 @@ class DirectoryTree extends JTree
      ********************************************************************************
      ********************************************************************************
      */
-    private class SetupFilesThread extends JobThread
+    private class SetupFilesThread extends Thread
     {
         private File[] m_rootDirectories;
 
@@ -88,11 +89,21 @@ class DirectoryTree extends JTree
          ***************************************************************************
          *
          */
+        public void run()
+        {
+            setup();
+            process();
+            cleanup();
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
         protected void setup()
         {
-            PMDViewer pmdViewer = PMDViewer.getViewer();
-            pmdViewer.setEnableViewer(false);
-            addListener(pmdViewer.getJobThreadEventListener());
+            SetupFilesEvent.notifyStartSetup(this);
+            StatusBarEvent.notifyStartAnimation(this);
         }
 
         /**
@@ -101,10 +112,7 @@ class DirectoryTree extends JTree
          */
         protected void process()
         {
-            JobThreadEvent event;
-
-            event = new JobThreadEvent(this, "Locating local and network file directories.  Please wait...");
-            notifyJobThreadStatus(event);
+            StatusBarEvent.notifyShowMessage(this, "Locating local and network file directories.  Please wait...");
             DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
             treeModel.setupFiles(m_rootDirectories);
             expandRootNode();
@@ -116,9 +124,8 @@ class DirectoryTree extends JTree
          */
         protected void cleanup()
         {
-            PMDViewer pmdViewer = PMDViewer.getViewer();
-            removeListener(pmdViewer.getJobThreadEventListener());
-            pmdViewer.setEnableViewer(true);
+            StatusBarEvent.notifyStopAnimation(this);
+            SetupFilesEvent.notifyStopSetup(this);
         }
     }
 

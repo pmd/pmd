@@ -1,7 +1,23 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+import java.awt.Window;
+import java.text.MessageFormat;
+
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.Icon;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -9,22 +25,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.Window;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.text.MessageFormat;
+
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
+import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
 
 /**
  *
@@ -32,17 +36,15 @@ import java.text.MessageFormat;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetEditingPanel extends JPanel
+class RuleSetEditingPanel extends JPanel
 {
     private JLabel m_nameLabel;
     private JTextField m_name;
     private JLabel m_descriptionLabel;
     private JTextArea m_description;
     private JScrollPane m_descriptionScrollPane;
-    private JLabel m_includeLabel;
-    private JCheckBox m_include;
     private boolean m_enabled;
-    private IRulesEditingData m_currentData;
+    private RulesTreeNode m_currentDataNode;
     private boolean m_isEditing;
     private String m_originalName;
     private FocusListener m_focusListener = new RuleSetNameFocusListener();
@@ -51,7 +53,7 @@ public class RuleSetEditingPanel extends JPanel
      *******************************************************************************
      *
      */
-    public RuleSetEditingPanel()
+    protected RuleSetEditingPanel()
     {
         super(new BorderLayout());
 
@@ -94,54 +96,27 @@ public class RuleSetEditingPanel extends JPanel
         m_descriptionScrollPane = ComponentFactory.createScrollPane(m_description);
         panel.add(m_descriptionScrollPane);
 
-        // Rule Set Active Label
-        m_includeLabel = new JLabel("Include");
-        m_includeLabel.setFont(UIManager.getFont("labelFont"));
-        m_includeLabel.setHorizontalAlignment(JLabel.RIGHT);
-        m_includeLabel.setOpaque(true);
-        panel.add(m_includeLabel);
-
-        // Rule Set Active
-        m_include = new JCheckBox("");
-        m_include.setOpaque(true);
-        panel.add(m_include);
-
         enableData(false);
+
+        ListenerList.addListener(new RulesEditingEventHandler());
     }
 
     /**
      *******************************************************************************
      *
+     * @param dataNode
      */
-    public void saveData()
+    private void saveData(RulesTreeNode dataNode)
     {
-        if (m_isEditing && (m_currentData != null))
+        if ((dataNode != null) && m_isEditing)
         {
-            String ruleSetName = m_name.getText();
-
-            if (ruleSetName.length() == 0)
+            if (dataNode.isRuleSet() || dataNode.isRule() || dataNode.isProperty())
             {
-                String message = "The rule set name is missing.  The change will not be applied.";
-                boolean hasFocus = m_name.hasFocus();
+                String ruleSetName = m_name.getText();
 
-                m_name.removeFocusListener(m_focusListener);
-                MessageDialog.show(getParentWindow(), message);
-                m_name.addFocusListener(m_focusListener);
-
-                if (hasFocus)
+                if (ruleSetName.length() == 0)
                 {
-                    m_name.requestFocus();
-                }
-
-                ruleSetName = m_originalName;
-            }
-            else if (ruleSetName.equalsIgnoreCase(m_originalName) == false)
-            {
-                if (m_currentData.getSibling(ruleSetName) != null)
-                {
-                    String template = "Another rule set already has the name \"{0}\".  The change will not be applied.";
-                    String[] args = {ruleSetName};
-                    String message = MessageFormat.format(template, args);
+                    String message = "The rule set name is missing.  The change will not be applied.";
                     boolean hasFocus = m_name.hasFocus();
 
                     m_name.removeFocusListener(m_focusListener);
@@ -155,12 +130,32 @@ public class RuleSetEditingPanel extends JPanel
 
                     ruleSetName = m_originalName;
                 }
-            }
+                else if (ruleSetName.equalsIgnoreCase(m_originalName) == false)
+                {
+                    if (dataNode.getSibling(ruleSetName) != null)
+                    {
+                        String template = "Another rule set already has the name \"{0}\".  The change will not be applied.";
+                        String[] args = {ruleSetName};
+                        String message = MessageFormat.format(template, args);
+                        boolean hasFocus = m_name.hasFocus();
 
-            m_currentData.setName(ruleSetName);
-            m_currentData.setDescription(m_description.getText());
-            m_currentData.setInclude(m_include.isSelected());
-            enableData(false);
+                        m_name.removeFocusListener(m_focusListener);
+                        MessageDialog.show(getParentWindow(), message);
+                        m_name.addFocusListener(m_focusListener);
+
+                        if (hasFocus)
+                        {
+                            m_name.requestFocus();
+                        }
+
+                        ruleSetName = m_originalName;
+                    }
+                }
+
+                dataNode.setName(ruleSetName);
+                dataNode.setDescription(m_description.getText());
+                enableData(false);
+            }
         }
     }
 
@@ -177,45 +172,25 @@ public class RuleSetEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
-     * @return
+     * @param dataNode
      */
-    protected boolean isEditing()
+    private void loadData(RulesTreeNode dataNode)
     {
-        return m_isEditing;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    public IRulesEditingData getData()
-    {
-        return m_currentData;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param daa
-     */
-    public void setData(IRulesEditingData data)
-    {
-        if (data == null)
+        if (dataNode == null)
         {
             enableData(false);
         }
-        else if (data.isRuleSet())
+        else if (dataNode.isRuleSet())
         {
-            setData_(data);
+            loadData_(dataNode);
         }
-        else if (data.isRule())
+        else if (dataNode.isRule())
         {
-            setData_(data.getParentRuleSetData());
+            loadData_(dataNode.getParentRuleSetData());
         }
-        else if (data.isProperty())
+        else if (dataNode.isProperty())
         {
-            setData_(data.getParentRuleSetData());
+            loadData_(dataNode.getParentRuleSetData());
         }
         else
         {
@@ -226,23 +201,19 @@ public class RuleSetEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
-     * @param data
+     * @param dataNode
      */
-    private void setData_(IRulesEditingData data)
+    private void loadData_(RulesTreeNode dataNode)
     {
-        if (data != null)
+        if (m_enabled == false)
         {
-            if (m_enabled == false)
-            {
-                enableData(true);
-            }
-
-            m_name.setText(data.getName());
-            m_description.setText(data.getDescription());
-            m_include.setSelected(data.include());
-            m_originalName = data.getName();
-            m_currentData = data;
+            enableData(true);
         }
+
+        m_name.setText(dataNode.getName());
+        m_description.setText(dataNode.getDescription());
+        m_originalName = dataNode.getName();
+        m_currentDataNode = dataNode;
     }
 
     /**
@@ -256,11 +227,16 @@ public class RuleSetEditingPanel extends JPanel
             // Just to be sure the focus listener isn't set.
             m_name.removeFocusListener(m_focusListener);
             m_name.addFocusListener(m_focusListener);
+
+            m_nameLabel.setEnabled(true);
+
             m_name.setEnabled(true);
             m_name.setBackground(Color.white);
+
+            m_descriptionLabel.setEnabled(true);
+
             m_description.setEnabled(true);
             m_description.setBackground(Color.white);
-            m_include.setEnabled(true);
         }
         else
         {
@@ -268,18 +244,19 @@ public class RuleSetEditingPanel extends JPanel
 
             Color background = UIManager.getColor("disabledTextBackground");
 
+            m_nameLabel.setEnabled(false);
+
             m_name.setText("");
             m_name.setEnabled(false);
             m_name.setBackground(background);
+
+            m_descriptionLabel.setEnabled(false);
 
             m_description.setText("");
             m_description.setEnabled(false);
             m_description.setBackground(background);
 
-            m_include.setSelected(false);
-            m_include.setEnabled(false);
-
-            m_currentData = null;
+            m_currentDataNode = null;
         }
 
         m_enabled = enable;
@@ -439,15 +416,6 @@ public class RuleSetEditingPanel extends JPanel
             descriptionLabelWidth = fontMetrics.stringWidth(m_descriptionLabel.getText());
             descriptionLabelHeight = fontMetrics.getHeight();
 
-            // Calculate Active Label
-            int activeLabelWidth;
-            int activeLabelHeight;
-
-            font = m_includeLabel.getFont();
-            fontMetrics = m_includeLabel.getFontMetrics(font);
-            activeLabelWidth = fontMetrics.stringWidth(m_includeLabel.getText());
-            activeLabelHeight = fontMetrics.getHeight();
-
             // Calculate first column width.
             int firstColumnWidth = nameLabelWidth;
 
@@ -456,12 +424,7 @@ public class RuleSetEditingPanel extends JPanel
                 firstColumnWidth = descriptionLabelWidth;
             }
 
-            if (activeLabelWidth > firstColumnWidth)
-            {
-                firstColumnWidth = activeLabelWidth;
-            }
-
-            //
+           //
             // Set the margin between label and data.
             //
             int columnSpacing = 5;
@@ -494,24 +457,6 @@ public class RuleSetEditingPanel extends JPanel
             descriptionWidth = insets.left + insets.right;
             descriptionHeight = fontMetrics.getHeight() * 7 + insets.top + insets.bottom;
 
-            // Calculate Active CheckBox
-            Icon checkBoxIcon;
-            int activeWidth;
-            int activeHeight;
-
-            checkBoxIcon = m_include.getIcon();
-
-            if (checkBoxIcon != null)
-            {
-                activeWidth = checkBoxIcon.getIconWidth();
-                activeHeight = checkBoxIcon.getIconHeight();
-            }
-            else
-            {
-                activeWidth = 16;
-                activeHeight = 16;
-            }
-
             // Calculate second column width.
             int secondColumnWidth = containerSize.width
                                   - containerInsets.left
@@ -524,9 +469,6 @@ public class RuleSetEditingPanel extends JPanel
             int secondLineHeight = (descriptionHeight > descriptionLabelHeight)
                                  ? descriptionHeight
                                  : descriptionLabelHeight;
-            int thirdLineHeight = (activeLabelHeight > activeHeight)
-                                ? activeLabelHeight
-                                : activeHeight;
 
             if (computePanelSize)
             {
@@ -539,8 +481,6 @@ public class RuleSetEditingPanel extends JPanel
                                 + firstLineHeight
                                 + lineSpacing
                                 + secondLineHeight
-                                + lineSpacing
-                                + thirdLineHeight
                                 + containerInsets.bottom;
 
                 return new Dimension(panelWidth, panelHeight);
@@ -573,18 +513,6 @@ public class RuleSetEditingPanel extends JPanel
             y = containerInsets.top + firstLineHeight + lineSpacing;
             m_descriptionScrollPane.setBounds(x, y, secondColumnWidth, descriptionHeight);
 
-            // Layout Active Label
-            x = containerInsets.left;
-            y = containerInsets.top + firstLineHeight + secondLineHeight + (lineSpacing * 2);
-            yOffset = (thirdLineHeight - activeLabelHeight) / 2;
-            m_includeLabel.setBounds(x, y + yOffset, firstColumnWidth, activeLabelHeight);
-
-            // Layout Active Checkbox
-            x = containerInsets.left + firstColumnWidth + columnSpacing;
-            y = containerInsets.top + firstLineHeight + secondLineHeight + (lineSpacing * 2);
-            yOffset = (thirdLineHeight - activeHeight) / 2;
-            m_include.setBounds(x, y + yOffset, activeWidth, activeHeight);
-
             return null;
         }
     }
@@ -594,7 +522,6 @@ public class RuleSetEditingPanel extends JPanel
      ************************************************************************************
      ************************************************************************************
      */
-
      private class RuleSetNameFocusListener implements FocusListener
      {
 
@@ -626,7 +553,7 @@ public class RuleSetEditingPanel extends JPanel
             }
             else if (ruleSetName.equalsIgnoreCase(m_originalName) == false)
             {
-                if (m_currentData.getSibling(ruleSetName) != null)
+                if (m_currentDataNode.getSibling(ruleSetName) != null)
                 {
                     String template = "Another rule set already has the name \"{0}\".";
                     String[] args = {ruleSetName};
@@ -639,4 +566,33 @@ public class RuleSetEditingPanel extends JPanel
             }
         }
      }
+
+    /**
+     ************************************************************************************
+     ************************************************************************************
+     ************************************************************************************
+     */
+    private class RulesEditingEventHandler implements RulesEditingEventListener
+    {
+
+        /**
+         *************************************************************************
+         *
+         * @param event
+         */
+        public void loadData(RulesEditingEvent event)
+        {
+            RuleSetEditingPanel.this.loadData(event.getDataNode());
+        }
+
+        /**
+         *************************************************************************
+         *
+         * @param event
+         */
+        public void saveData(RulesEditingEvent event)
+        {
+            RuleSetEditingPanel.this.saveData(event.getDataNode());
+        }
+    }
 }

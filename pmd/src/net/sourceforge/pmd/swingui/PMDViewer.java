@@ -1,8 +1,38 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDDirectory;
-import net.sourceforge.pmd.PMDException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -18,36 +48,16 @@ import javax.swing.KeyStroke;
 import javax.swing.MenuElement;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+
+import net.sourceforge.pmd.PMDDirectory;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
+import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
+import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
 
 /**
  *
@@ -55,11 +65,10 @@ import java.util.List;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-public class PMDViewer extends JFrame implements JobThreadListener
+public class PMDViewer extends JFrame
 {
 
-    private Preferences m_preferences;
-    private PMDDirectory m_pmdDirectory;
+    private JPanel m_contentPanel;
     private DirectoryTree m_directoryTree;
     private JLabel m_message;
     private JPanel m_statusBar;
@@ -72,9 +81,12 @@ public class PMDViewer extends JFrame implements JobThreadListener
     private JSplitPane m_mainSplitPane;
     private StatusArea m_statusArea;
     private PMDClipboard m_clipboardOwner = new PMDClipboard();
-    private List m_ruleSetChangeListeners = new ArrayList();
     private int m_disabledCounter;
-    private GlassPaneMouseListener m_glassPaneMouseListener = new GlassPaneMouseListener();
+    private boolean m_firstLayout = true;
+    private AnalyzeFileEventHandler m_analyzeFileEventHandler;
+    private StatusBarEventHandler m_statusBarEventHandler;
+    private SetupFilesEventHandler m_setupFilesEventHandler;
+    private static PMDViewer m_pmdViewer;
 
     /**
      *******************************************************************************
@@ -84,26 +96,25 @@ public class PMDViewer extends JFrame implements JobThreadListener
     {
         super("PMD Viewer");
 
-        int windowWidth = 1200;
-        int windowHeight = 1000;
         int windowMargin = 10;
-        Dimension screenSize = getToolkit().getScreenSize();
+        Dimension windowSize = ComponentFactory.adjustWindowSize(1200, 1000);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        if (windowWidth >= screenSize.width)
+        if (windowSize.width >= screenSize.width)
         {
-            windowWidth = screenSize.width - 10;
+            windowSize.width = screenSize.width - 10;
         }
 
-        if (windowHeight >= screenSize.height)
+        if (windowSize.height >= screenSize.height)
         {
-            windowHeight = screenSize.height - 20;
+            windowSize.height = screenSize.height - 20;
         }
 
-        int windowLocationX = (screenSize.width - windowWidth) / 2;
-        int windowLocationY = (screenSize.height - windowHeight) / 2;
+        int windowLocationX = (screenSize.width - windowSize.width) / 2;
+        int windowLocationY = (screenSize.height - windowSize.height) / 2;
 
+        setSize(windowSize);
         setLocation(windowLocationX, windowLocationY);
-        setSize(windowWidth, windowHeight);
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         createMenuBar();
@@ -114,16 +125,15 @@ public class PMDViewer extends JFrame implements JobThreadListener
         createResultsViewer();
         createResultsViewerScrollPane();
         createMainSplitPane();
-        getContentPane().add(createContentPanel(windowMargin));
+        createContentPanel(windowMargin);
+        getContentPane().add(m_contentPanel);
 
         ImageIcon image = (ImageIcon) UIManager.get("pmdLogoImage");
         setIconImage(image.getImage());
 
         try
         {
-            m_preferences = new Preferences();
-            m_preferences.load();
-            m_pmdDirectory = new PMDDirectory(m_preferences.getCurrentPathToPMD());
+            PMDDirectory.open(Preferences.getPreferences().getCurrentPathToPMD());
         }
         catch (PMDException pmdException)
         {
@@ -132,6 +142,14 @@ public class PMDViewer extends JFrame implements JobThreadListener
 
             MessageDialog.show(this, message, exception);
         }
+
+        m_pmdViewer = this;
+        m_analyzeFileEventHandler = new AnalyzeFileEventHandler();
+        m_statusBarEventHandler = new StatusBarEventHandler();
+        m_setupFilesEventHandler = new SetupFilesEventHandler();
+        ListenerList.addListener((AnalyzeFileEventListener) m_analyzeFileEventHandler);
+        ListenerList.addListener((StatusBarEventListener) m_statusBarEventHandler);
+        ListenerList.addListener((SetupFilesEventListener) m_setupFilesEventHandler);
     }
 
     /**
@@ -246,7 +264,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
      */
     private void createResultsViewer()
     {
-        m_resultsViewer = new ResultsViewer(this, m_directoryTable);
+        m_resultsViewer = new ResultsViewer();
 
         m_resultsViewer.setSelectionColor(Color.blue);
     }
@@ -258,7 +276,6 @@ public class PMDViewer extends JFrame implements JobThreadListener
     private void createResultsViewerScrollPane()
     {
         m_resultsViewerScrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
-        m_resultsViewer.setParentScrollPane(m_resultsViewerScrollPane);
     }
 
     /**
@@ -270,7 +287,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
         m_mainSplitPane = new JSplitPane();
 
         m_mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-        m_mainSplitPane.setResizeWeight(0.2);
+        m_mainSplitPane.setResizeWeight(0.5);
         m_mainSplitPane.setDividerSize(5);
         m_mainSplitPane.setTopComponent(m_directorySplitPane);
         m_mainSplitPane.setBottomComponent(m_resultsViewerScrollPane);
@@ -280,39 +297,26 @@ public class PMDViewer extends JFrame implements JobThreadListener
      *********************************************************************************
      *
      */
-    private JPanel createContentPanel(int margin)
+    private void createContentPanel(int margin)
     {
-        JPanel contentPanel = new JPanel(new BorderLayout());
+        m_contentPanel = new JPanel(new BorderLayout());
 
         EtchedBorder outsideBorder = new EtchedBorder(EtchedBorder.RAISED);
         EmptyBorder insideBorder = new EmptyBorder(margin, margin, margin, margin);
         CompoundBorder compoundBorder = new CompoundBorder(outsideBorder, insideBorder);
 
-        contentPanel.setBorder(compoundBorder);
-        contentPanel.add(m_statusBar, BorderLayout.NORTH);
-        contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
-
-        return contentPanel;
+        m_contentPanel.setBorder(compoundBorder);
+        m_contentPanel.add(m_statusBar, BorderLayout.NORTH);
+        m_contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
     }
-
     /**
      *********************************************************************************
      *
      * @return
      */
-    protected Preferences getPreferences()
+    protected static final PMDViewer getViewer()
     {
-        return m_preferences;
-    }
-
-    /**
-     *********************************************************************************
-     *
-     * @return
-     */
-    protected PMDDirectory getPMDDirectory()
-    {
-        return m_pmdDirectory;
+        return m_pmdViewer;
     }
 
     /**
@@ -362,13 +366,12 @@ public class PMDViewer extends JFrame implements JobThreadListener
             if (m_disabledCounter == 0)
             {
                 Component glassPane = getGlassPane();
-                JMenuBar menuBar = getJMenuBar();
-                MenuElement[] menuElements = menuBar.getSubElements();
-
                 glassPane.setVisible(false);
-                glassPane.removeMouseListener(m_glassPaneMouseListener);
                 glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
+                JMenuBar menuBar = getJMenuBar();
                 menuBar.setEnabled(true);
+                MenuElement[] menuElements = menuBar.getSubElements();
 
                 for (int n = 0; n < menuElements.length; n++)
                 {
@@ -384,13 +387,12 @@ public class PMDViewer extends JFrame implements JobThreadListener
             if (m_disabledCounter == 0)
             {
                 Component glassPane = getGlassPane();
-                JMenuBar menuBar = getJMenuBar();
-                MenuElement[] menuElements = menuBar.getSubElements();
-
                 glassPane.setVisible(true);
-                glassPane.addMouseListener(m_glassPaneMouseListener);
                 glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+                JMenuBar menuBar = getJMenuBar();
                 menuBar.setEnabled(false);
+                MenuElement[] menuElements = menuBar.getSubElements();
 
                 for (int n = 0; n < menuElements.length; n++)
                 {
@@ -403,82 +405,6 @@ public class PMDViewer extends JFrame implements JobThreadListener
 
             m_disabledCounter++;
         }
-    }
-
-    /**
-     *********************************************************************************
-     *
-     * @param listener
-     */
-    protected void addRuleSetChangeListener(ChangeListener listener)
-    {
-        if ((listener != null) && (m_ruleSetChangeListeners.contains(listener) == false))
-        {
-            m_ruleSetChangeListeners.add(listener);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *
-     * @param listener
-     */
-    protected void removeRuleSetChangeListener(ChangeListener listener)
-    {
-        if (listener != null)
-        {
-            m_ruleSetChangeListeners.remove(listener);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    private void notifyRuleSetChangeListeners()
-    {
-        Iterator iterator = m_ruleSetChangeListeners.iterator();
-        ChangeEvent changeEvent = new ChangeEvent(this);
-
-        while (iterator.hasNext())
-        {
-            ((ChangeListener) iterator.next()).stateChanged(changeEvent);
-        }
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param event
-     */
-    public void jobThreadStarted(JobThreadEvent event)
-    {
-        m_statusArea.startAction();
-        m_message.setText(event.getMessage());
-        SwingUtilities.invokeLater(new Repaint(m_message));
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param event
-     */
-    public void jobThreadFinished(JobThreadEvent event)
-    {
-        setDefaultMessage();
-        SwingUtilities.invokeLater(new Repaint(m_message));
-        m_statusArea.stopAction();
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param event
-     */
-    public void jobThreadStatus(JobThreadEvent event)
-    {
-        m_message.setText(event.getMessage());
-        SwingUtilities.invokeLater(new Repaint(m_message));
     }
 
     /**
@@ -502,6 +428,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
             PMDViewer pmdViewer = new PMDViewer();
             pmdViewer.setVisible(true);
             pmdViewer.setupFiles(loadRootDirectories.getDirectories());
+
         }
         catch (Exception exception)
         {
@@ -513,6 +440,24 @@ public class PMDViewer extends JFrame implements JobThreadListener
         }
 
         return;
+    }
+
+    /**
+     *********************************************************************************
+     *
+     */
+    public void setVisible(boolean visible)
+    {
+        super.setVisible(visible);
+
+        if (visible && m_firstLayout)
+        {
+            m_mainSplitPane.setDividerLocation(0.4);
+            m_directorySplitPane.setDividerLocation(0.4);
+            validate();
+            repaint();
+            m_firstLayout = false;
+        }
     }
 
     /**
@@ -803,53 +748,6 @@ public class PMDViewer extends JFrame implements JobThreadListener
         private void stopAction()
         {
             m_stopAction = true;
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class GlassPaneMouseListener implements MouseListener
-    {
-
-        /**
-         * Invoked when the mouse has been clicked on a component.
-         */
-        public void mouseClicked(MouseEvent event)
-        {
-            event.consume();
-        }
-
-        /**
-         * Invoked when a mouse button has been pressed on a component.
-         */
-        public void mousePressed(MouseEvent event)
-        {
-            event.consume();
-        }
-
-        /**
-         * Invoked when a mouse button has been released on a component.
-         */
-        public void mouseReleased(MouseEvent event)
-        {
-            event.consume();
-        }
-
-        /**
-         * Invoked when the mouse enters a component.
-         */
-        public void mouseEntered(MouseEvent event)
-        {
-        }
-
-        /**
-         * Invoked when the mouse exits a component.
-         */
-        public void mouseExited(MouseEvent event)
-        {
         }
     }
 
@@ -1185,8 +1083,9 @@ public class PMDViewer extends JFrame implements JobThreadListener
             try
             {
                 setEnableViewer(false);
-                (new RulesEditor(PMDViewer.this)).setVisible(true);
-                notifyRuleSetChangeListeners();
+                RulesEditor rulesEditor = new RulesEditor();
+                rulesEditor.setVisible(true);
+                rulesEditor.dispose();
                 setEnableViewer(true);
             }
             catch (PMDException pmdException)
@@ -1209,9 +1108,22 @@ public class PMDViewer extends JFrame implements JobThreadListener
 
         public void actionPerformed(ActionEvent event)
         {
-            setEnableViewer(false);
-            (new PreferencesEditor(PMDViewer.this)).setVisible(true);
-            setEnableViewer(true);
+            try
+            {
+                setEnableViewer(false);
+                (new PreferencesEditor(PMDViewer.this)).setVisible(true);
+            }
+            catch (PMDException pmdException)
+            {
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+
+                MessageDialog.show(PMDViewer.this, message, exception);
+            }
+            finally
+            {
+                setEnableViewer(true);
+            }
         }
     }
 
@@ -1273,6 +1185,108 @@ public class PMDViewer extends JFrame implements JobThreadListener
             m_component.repaint();
         }
     }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class AnalyzeFileEventHandler implements AnalyzeFileEventListener
+    {
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void startAnalysis(AnalyzeFileEvent event)
+        {
+            PMDViewer.this.setEnableViewer(false);
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void stopAnalysis(AnalyzeFileEvent event)
+        {
+            PMDViewer.this.setEnableViewer(true);
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class StatusBarEventHandler implements StatusBarEventListener
+    {
+
+        /**
+         *****************************************************************************
+         *
+         * @param event
+         */
+        public void startAnimation(StatusBarEvent event)
+        {
+            m_statusArea.startAction();
+            m_message.setText("");
+            SwingUtilities.invokeLater(new Repaint(m_message));
+        }
+
+        /**
+         *****************************************************************************
+         *
+         * @param event
+         */
+        public void showMessage(StatusBarEvent event)
+        {
+            m_message.setText(event.getMessage());
+            SwingUtilities.invokeLater(new Repaint(m_message));
+        }
+
+        /**
+         *****************************************************************************
+         *
+         * @param event
+         */
+        public void stopAnimation(StatusBarEvent event)
+        {
+            setDefaultMessage();
+            SwingUtilities.invokeLater(new Repaint(m_message));
+            m_statusArea.stopAction();
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class SetupFilesEventHandler implements SetupFilesEventListener
+    {
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void startSetup(SetupFilesEvent event)
+        {
+            PMDViewer.this.setEnableViewer(false);
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void stopSetup(SetupFilesEvent event)
+        {
+            PMDViewer.this.setEnableViewer(true);
+        }
+    }
 }
 
 
@@ -1281,7 +1295,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
 *********************************************************************************
 *********************************************************************************
 */
-class LoadRootDirectories extends JobThread
+class LoadRootDirectories extends Thread
 {
     private File[] m_fileSystemRoots;
 
@@ -1292,6 +1306,17 @@ class LoadRootDirectories extends JobThread
     protected LoadRootDirectories()
     {
         super("Load Root Directories");
+    }
+
+    /**
+     ***************************************************************************
+     *
+     */
+    public void run()
+    {
+        setup();
+        process();
+        cleanup();
     }
 
     /**

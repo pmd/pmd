@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui.event;
 
+import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,10 +12,9 @@ import net.sourceforge.pmd.swingui.RulesTreeNode;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class RulesTreeModelEvent
+public class RulesTreeModelEvent extends EventObject
 {
 
-    private Object m_source;
     private RulesTreeNode m_parentNode;
 
     /**
@@ -24,7 +24,8 @@ public class RulesTreeModelEvent
      */
     private RulesTreeModelEvent(Object source, RulesTreeNode parentNode)
     {
-        m_source = source;
+        super(source);
+
         m_parentNode = parentNode;
     }
 

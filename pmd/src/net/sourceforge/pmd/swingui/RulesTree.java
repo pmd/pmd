@@ -58,7 +58,7 @@ import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesTree extends JTree implements IConstants
+class RulesTree extends JTree implements Constants
 {
 
     private RulesEditor m_rulesEditor;

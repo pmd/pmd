@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.swingui.event;
 
 import java.io.File;
+import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,11 +11,10 @@ import java.util.List;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public class DirectoryTableEvent
+public class DirectoryTableEvent extends EventObject
 {
 
     private File m_selectedFile;
-    private Object m_source;
 
     /**
      ****************************************************************************
@@ -22,7 +22,8 @@ public class DirectoryTableEvent
      */
     private DirectoryTableEvent(Object source, File selectedFile)
     {
-        m_source = source;
+        super(source);
+
         m_selectedFile = selectedFile;
     }
 
