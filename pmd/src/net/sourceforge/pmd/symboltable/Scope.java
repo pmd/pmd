@@ -53,5 +53,5 @@ public interface Scope {
      * This is handy if you're buried down in a LocalScope and need to
      * hop up to the ClassScope to find a method name.
      */
-    Scope getEnclosingClassScope();
+    ClassScope getEnclosingClassScope();
 }

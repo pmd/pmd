@@ -7,23 +7,34 @@ import java.util.List;
 
 public class ClassScope extends AbstractScope {
 
-    // TODO this is a hack, it will break given sufficiently nested classes
-    private static int anonymousCounter = 1;
-
+    // FIXME - this breaks give sufficiently nested code
+    private static int anonymousInnerClassCounter = 1;
     private String className;
 
     public ClassScope(String className) {
         this.className = className;
-        anonymousCounter = 0;
+        anonymousInnerClassCounter = 1;
     }
 
+    /**
+     * This is only for anonymous inner classes
+     *
+     * FIXME - should have name like Foo$1, not Anonymous$1
+     * to get this working right, the parent scope needs
+     * to be passed in when instantiating a ClassScope
+     */
     public ClassScope() {
-        this.className = "Anonymous$" + String.valueOf(anonymousCounter);
-        anonymousCounter++;
+        //this.className = getParent().getEnclosingClassScope().getClassName() + "$" + String.valueOf(anonymousInnerClassCounter);
+        this.className = "Anonymous$" + String.valueOf(anonymousInnerClassCounter);
+        anonymousInnerClassCounter++;
     }
 
-    public Scope getEnclosingClassScope() {
+    public ClassScope getEnclosingClassScope() {
         return this;
+    }
+
+    public String getClassName() {
+        return this.className;
     }
 
     public void addDeclaration(MethodNameDeclaration decl) {

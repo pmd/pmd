@@ -8,6 +8,7 @@ import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.ClassScope;
 
 import java.util.Iterator;
 
@@ -27,12 +28,17 @@ public class AbstractScopeTest extends TestCase {
     }
 
     // Another helper class to test the search for a class scope behavior
-    private class IsEnclosingClassScope extends AbstractScope {
+    private class IsEnclosingClassScope extends ClassScope {
+
+        public IsEnclosingClassScope(String name) {
+            super(name);
+        }
+
         protected NameDeclaration findVariableHere(NameOccurrence occ) {
             return null;
         }
 
-        public Scope getEnclosingClassScope() {
+        public ClassScope getEnclosingClassScope() {
             return this;
         }
     }
@@ -49,7 +55,7 @@ public class AbstractScopeTest extends TestCase {
 
     public void testEnclClassScopeGetsDelegatedRight() {
         Scope scope = new MyScope();
-        Scope isEncl = new IsEnclosingClassScope();
+        Scope isEncl = new IsEnclosingClassScope("Foo");
         scope.setParent(isEncl);
         assertEquals(isEncl, scope.getEnclosingClassScope());
     }

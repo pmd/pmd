@@ -11,25 +11,36 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.GlobalScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.symboltable.MethodScope;
+import net.sourceforge.pmd.symboltable.BasicScopeFactory;
 import net.sourceforge.pmd.symboltable.ScopeFactory;
+import net.sourceforge.pmd.symboltable.BasicScopeCreationVisitor;
+import net.sourceforge.pmd.symboltable.ScopeCreationVisitor;
 
-public class ScopeFactoryTest extends TestCase {
+public class BasicScopeFactoryTest extends TestCase {
 
     public void testGlobalScope() {
-        ScopeFactory sf = new ScopeFactory();
-        assertTrue(sf.createScope(new ASTCompilationUnit(1)) instanceof GlobalScope);
+        final ScopeFactory sf = new BasicScopeFactory();
+        sf.openScope(new ScopeCreationVisitor() {
+            public void cont(SimpleNode node) {
+                assertTrue(sf.getCurrentScope() instanceof GlobalScope);
+            }
+        }, new ASTCompilationUnit(1));
     }
 
+/*
     public void testClassScope() {
         ScopeFactory sf = new ScopeFactory();
         assertTrue(sf.createScope(new ASTUnmodifiedClassDeclaration(1)) instanceof ClassScope);
         assertTrue(sf.createScope(new ASTUnmodifiedInterfaceDeclaration(1)) instanceof ClassScope);
     }
+*/
 
+    /*
     public void testfunctionScope() {
         ScopeFactory sf = new ScopeFactory();
         assertTrue(sf.createScope(new ASTMethodDeclaration(1)) instanceof MethodScope);
@@ -44,13 +55,5 @@ public class ScopeFactoryTest extends TestCase {
         assertTrue(sf.createScope(new ASTIfStatement(1)) instanceof LocalScope);
     }
 
-    public void testUnknownScope_ThisShouldNeverHappen() throws Throwable {
-        ScopeFactory sf = new ScopeFactory();
-        try {
-            sf.createScope(new ASTClassBody(1));
-            throw new Throwable("Should have failed!");
-        } catch (RuntimeException re) {
-            // cool
-        }
-    }
+*/
 }

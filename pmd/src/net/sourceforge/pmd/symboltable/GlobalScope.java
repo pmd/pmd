@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class GlobalScope extends AbstractScope implements Scope {
 
-    public Scope getEnclosingClassScope() {
+    public ClassScope getEnclosingClassScope() {
         throw new RuntimeException("getEnclosingClassScope() called on GlobalScope");
     }
 

@@ -17,7 +17,7 @@ public abstract class AbstractScope implements Scope {
     protected Map variableNames = new HashMap();
     protected Map methodNames = new HashMap();
 
-    public Scope getEnclosingClassScope() {
+    public ClassScope getEnclosingClassScope() {
         return parent.getEnclosingClassScope();
     }
 

@@ -6,6 +6,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.Scope;
 
 public class ClassScopeTest extends TestCase {
 
@@ -18,7 +19,7 @@ public class ClassScopeTest extends TestCase {
     }
 
     public void testCantContainsSuperToString() {
-        ClassScope s = new ClassScope("foo");
+        ClassScope s = new ClassScope("Foo");
         SimpleNode node = new SimpleNode(1);
         node.setImage("super.toString");
         assertTrue(!s.contains(new NameOccurrence(node, node.getImage())));
@@ -34,4 +35,18 @@ public class ClassScopeTest extends TestCase {
         node2.setImage("Foo.X");
         assertTrue(s.contains(new NameOccurrence(node2, node2.getImage())));
     }
+
+    public void testClassName() {
+        ClassScope s = new ClassScope("Foo");
+        assertEquals("Foo", s.getClassName());
+    }
+
+    public void testAnonymousInnerClassName() {
+        ClassScope s = new ClassScope();
+        assertEquals("Anonymous$1", s.getClassName());
+        s = new ClassScope();
+        assertEquals("Anonymous$2", s.getClassName());
+    }
+
+
 }

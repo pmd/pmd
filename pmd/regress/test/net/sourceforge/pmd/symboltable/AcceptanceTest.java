@@ -24,6 +24,5 @@ public class AcceptanceTest extends TestCase {
         ASTCompilationUnit c = parser.CompilationUnit();
         SymbolFacade stb = new SymbolFacade();
         stb.initializeWith(c);
-
     }
 }
