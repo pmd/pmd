@@ -35,7 +35,11 @@ public class ASTPrimaryPrefix extends SimpleNode {
         if (usesSuperModifier) {
             out = "super." + getImage();
         } else if (usesThisModifier) {
-            out = "this." + getImage();
+            if (getImage() == null) {
+                out = "this";
+            } else {
+                out = "this." + getImage();
+            }
         }
         System.out.println(toString(prefix) + ":" + out);
         dumpChildren(prefix);

@@ -19,12 +19,12 @@ public class DoubleCheckedLockingRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class DoubleCheckedLockingRule1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void foo() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class DoubleCheckedLockingRule2 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     "      Object baz;" + PMD.EOL +
     "      Object bar() {" + PMD.EOL +
     "        if(baz == null) { //baz may be non-null yet not fully created" + PMD.EOL +
@@ -39,7 +39,7 @@ public class DoubleCheckedLockingRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST3 =
-    "public interface DoubleCheckedLockingRule3 {" + PMD.EOL +
+    "public interface Foo {" + PMD.EOL +
     " void foo();" + PMD.EOL +
     "}";
 }

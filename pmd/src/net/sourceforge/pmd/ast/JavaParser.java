@@ -2888,7 +2888,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           Arguments();
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               ((ASTPrimarySuffix)jjtn000).setIsArguments();
+               jjtn000.setIsArguments();
           break;
         default:
           jj_la1[81] = jj_gen;
