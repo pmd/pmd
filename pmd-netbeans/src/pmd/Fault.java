@@ -95,4 +95,8 @@ public class Fault implements Comparable
 	{
 		return Integer.parseInt( fault.substring( fault.indexOf( '[' ) + 1, fault.indexOf( ']' ) ) );
 	}
+	
+	public static String getErrorMessage( String fault ) {
+		return fault.substring( fault.indexOf( ":" ) + 2 );
+	}
 }

@@ -26,17 +26,16 @@
  */
 package pmd;
 
-import org.openide.cookies.EditorCookie;
-import org.openide.cookies.OpenCookie;
+import org.openide.cookies.LineCookie;
 import org.openide.loaders.DataObject;
 import org.openide.text.Line;
 import org.openide.text.Line.Set;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
-import org.openide.windows.WindowManager;
 
 
 /**
+ * Listens for user actions on the output pane
  * @author  Ole-Martin Mørk
  * @created  24. oktober 2002
  */
@@ -68,7 +67,6 @@ public class PMDOutputListener implements OutputListener
     
     /**
      * Removes the marking of the line. 
-     * @todo remove the marking when the line is edited
      */
     public void detach() 
     {
@@ -81,19 +79,18 @@ public class PMDOutputListener implements OutputListener
      */
 	public void outputLineAction( OutputEvent outputEvent )
 	{
+        annotation.detach();
 		DataObject object = FaultRegistry.getDataObject( outputEvent.getLine() );
-		OpenCookie openC = (OpenCookie)object.getCookie( OpenCookie.class );
-		openC.open();
-		EditorCookie cookie = (EditorCookie)WindowManager.getDefault().getRegistry().getActivatedNodes()[0].getCookie( EditorCookie.class );
-        if( cookie != null ) {
-			Set set = cookie.getLineSet();
-			int lineNum = Fault.getLineNum( outputEvent.getLine() );
-			Line line = set.getOriginal( lineNum - 1 );
-            annotation.detach();
-			annotation.attach( line );
-			line.show( Line.SHOW_GOTO );
-		}
+        LineCookie cookie = (LineCookie)object.getCookie( LineCookie.class );
+        Set set = cookie.getLineSet();
+        int lineNum = Fault.getLineNum( outputEvent.getLine() );
+        Line line = set.getOriginal( lineNum - 1 );
+		annotation.setErrorMessage( Fault.getErrorMessage( outputEvent.getLine() ) );
+        annotation.attach( line );
+        line.addPropertyChangeListener( annotation );
+        line.show( Line.SHOW_GOTO );
 	}
+    
     /**
      * Not implemented
      */

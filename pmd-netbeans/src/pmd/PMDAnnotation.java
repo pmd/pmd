@@ -26,30 +26,53 @@
  */
 package pmd;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import org.openide.text.Annotation;
+import org.openide.text.Line;
 
 /**
  * Just a class thats mission is to mark the line where the
- * error is. It's using netbeans java compiler's annotationtype to 
- * mark the line. 
- * @todo create our own annotationtype
+ * error is. It's using pmd-annotation type to mark the line
  * @author  ole martin mørk
  */
-public class PMDAnnotation extends Annotation {
+public class PMDAnnotation extends Annotation implements PropertyChangeListener {
     
+	/** The error message shown on mouseover on the pmd icon */
+	private String errormessage = null;
+	
     /**
      * The annotation type.
      * @return org-netbeans-core-compiler-error
      */
     public String getAnnotationType() {
-        return "org-netbeans-core-compiler-error";
+        return "pmd-annotation";
     }
     
+	/**
+	 * Sets the current errormessage
+	 * @param message the errormessage
+	 */
+	public void setErrorMessage( String message ) {
+		errormessage = message;
+	}
+	
     /**
      * A short description of this annotation
      * @return the short description
      */
     public String getShortDescription() {
-        return "short description?";
+        return errormessage;
+    }
+    
+	/**
+	 * Invoked when the user change the content on the line where the
+	 * annotation is attached
+	 * @param propertyChangeEvent the event fired
+	 */
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+        Line line = (Line)propertyChangeEvent.getSource();
+        line.removePropertyChangeListener( this );
+        detach();
     }
 }
