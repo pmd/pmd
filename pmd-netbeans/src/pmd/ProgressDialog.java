@@ -180,7 +180,7 @@ public class ProgressDialog extends JDialog implements RunPMDCallback {
 	 */
 	public void pmdStart(int numFiles) {
 		progressBar.setMaximum(numFiles);
-		show();
+		setVisible(true);
 	}
 
 	/**
