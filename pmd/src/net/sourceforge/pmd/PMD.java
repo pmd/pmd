@@ -68,7 +68,7 @@ public class PMD {
 
     public static void main(String[] args) {
         if (args[0].equals("-g")) {
-            PMDFrame f = new PMDFrame();
+            new PMDFrame();
             return;
         }
 

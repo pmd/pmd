@@ -36,7 +36,7 @@
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <!--<pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/ticbuild.xml,rulesets/unusedcode.xml,rulesets/design.xml" format="html">-->
-        <pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/new_for_0_4.xml,rulesets/ticbuild.xml" format="html" verbose="true">
+        <pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/new_for_0_4.xml,rulesets/ticbuild.xml,rulesets/unusedcode.xml,rulesets/design.xml" format="html" verbose="true">
             <fileset dir="c:\data\pmd\pmd\src">
             <!--<fileset dir="c:\j2sdk1.4.0\src">-->
                 <include name="**/*.java"/>
