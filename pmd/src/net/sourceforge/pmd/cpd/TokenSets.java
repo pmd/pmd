@@ -8,15 +8,7 @@ import java.util.Map;
 
 public class TokenSets extends AbstractSet implements Serializable {
 
-
     private Map tokenMap = new HashMap();
-
-    public TokenSets() {
-    }
-
-    public TokenSets(TokenList tokens) {
-        tokenMap.put(tokens.getID(), tokens);
-    }
 
     public void add(TokenList tokens) {
         tokenMap.put(tokens.getID(), tokens);

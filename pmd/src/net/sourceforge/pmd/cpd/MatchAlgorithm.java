@@ -16,11 +16,10 @@ public class MatchAlgorithm {
     private List marks = new ArrayList();
     // separate what the token is from where it is. Locator is only used if we need to see the code at that location.
 
-    private MatchListener l;
+    private List matchesList;
     private CPDListener cpdListener;
 
-    public MatchAlgorithm(MatchListener l, CPDListener cpdListener) {
-        this.l = l;
+    public MatchAlgorithm(CPDListener cpdListener) {
         this.cpdListener = cpdListener;
     }
 
@@ -102,9 +101,13 @@ public class MatchAlgorithm {
            if (matches > min && !soFar.contains(mark1.getLocator().getFile()) && !soFar.contains(mark2.getLocator().getFile())) {
                soFar.add(mark1.getLocator().getFile());
                soFar.add(mark2.getLocator().getFile());
-               l.matchFound(new Match(matches, mark1.getLocator(), mark2.getLocator()));
+               matchesList.add(new Match(matches, mark1.getLocator(), mark2.getLocator()));
            }
        }
+    }
+
+    public Iterator matches() {
+        return matchesList.iterator();
     }
 }
 

@@ -11,36 +11,35 @@ public class CPD {
     public static final String EOL = System.getProperty("line.separator", "\n");
 
     private int mts;
-    private CPDListener cpdListener;
-    private MatchListener matchListener;
     private TokenSets tokenSets = new TokenSets();
+    private MatchAlgorithm bwt;
+    private CPDListener listener;
 
     public CPD(int minimumTileSize) {
         this.mts = minimumTileSize;
     }
 
     public void setCpdListener(CPDListener cpdListener) {
-        this.cpdListener = cpdListener;
+        this.listener = cpdListener;
     }
 
     public void go() {
-        matchListener = new SimpleListener();
-        MatchAlgorithm m = new MatchAlgorithm(matchListener, cpdListener);
+        bwt = new MatchAlgorithm(listener);
         for (Iterator i = tokenSets.iterator(); i.hasNext();) {
             TokenList tl = (TokenList)i.next();
             for (Iterator j = tl.iterator();j.hasNext();) {
                 TokenEntry te = (TokenEntry)j.next();
                 char[] chars = te.getImage().toCharArray();
                 MyToken mt = new MyToken(chars, 0, chars.length, true);
-                m.add(mt, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()));
+                bwt.add(mt, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()));
             }
         }
-        m.findMatches(mts);
+        bwt.findMatches(mts);
     }
 
     public String getReport() {
         StringBuffer rpt = new StringBuffer();
-        for (Iterator i = matchListener.iterator(); i.hasNext();) {
+        for (Iterator i = bwt.matches(); i.hasNext();) {
             Match match = (Match)i.next();
             TokenList tl = tokenSets.getTokenList(match.getStart().getFile());
             rpt.append("=====================================================================");
@@ -83,7 +82,7 @@ public class CPD {
     }
 
     private void add(int fileCount, File file) throws IOException {
-        cpdListener.addedFile(fileCount, file);
+        listener.addedFile(fileCount, file);
         Tokenizer t = new JavaTokensTokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
