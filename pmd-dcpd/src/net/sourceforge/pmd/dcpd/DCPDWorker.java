@@ -17,10 +17,12 @@ import java.rmi.MarshalledObject;
 public class DCPDWorker {
 
     private Job currentJob;
+    private TokenSetsWrapper tsw;
+    private JavaSpace space;
 
     public DCPDWorker() {
         try {
-            JavaSpace space = Util.findSpace("mordor");
+            space = Util.findSpace("mordor");
             // register for future jobs
             space.notify(new Job(), null, new JobAddedListener(space, this), Lease.FOREVER, null);
             // get a job if there are any out there
@@ -34,8 +36,14 @@ public class DCPDWorker {
     }
 
     public void jobAdded(Job job) {
-        System.out.println("GOT A JOB NAMED " + job.name + " , id is " + job.id.intValue());
-        currentJob = job;
+        try {
+            currentJob = job;
+            System.out.println("Got a job " + job.name + " , id is " + job.id.intValue());
+            tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, job.id), null, 200);
+            System.out.println("Got a tokens sets with " + tsw.tss.size() + " token lists");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

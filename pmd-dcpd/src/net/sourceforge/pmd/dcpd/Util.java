@@ -28,8 +28,11 @@ public class Util {
         try {
             if (args[0].equals("clearjobs")) {
                 JavaSpace space = Util.findSpace("mordor");
-                while (space.take(new Job(), null, 100) != null) {
-                    System.out.println("take() succeeded");
+                Job job = null;
+                while ( (job = (Job)space.take(new Job(), null, 100)) != null) {
+                    System.out.println("take(Job) succeeded");
+                    space.take(new TokenSetsWrapper(null, job.id), null, 100);
+                    System.out.println("take(TokenSetsWrapper) succeeded");
                 }
             } else {
                 System.out.println("Usage: clearjobs");

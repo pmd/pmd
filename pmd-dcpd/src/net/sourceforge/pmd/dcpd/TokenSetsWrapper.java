@@ -12,11 +12,13 @@ import java.util.Iterator;
 public class TokenSetsWrapper implements Entry {
 
     public TokenSets tss;
+    public Integer jobID;
 
     public TokenSetsWrapper() {}
 
-    public TokenSetsWrapper(TokenSets tss) {
+    public TokenSetsWrapper(TokenSets tss, Integer jobID) {
         this.tss = tss;
+        this.jobID = jobID;
     }
 
 }

@@ -25,45 +25,46 @@ import java.util.Iterator;
 public class DCPD {
 
     private JavaSpace space;
-    private TokenSets tokenSets = new TokenSets();
+    private Job job;
+    private TokenSetsWrapper tsw;
 
     public DCPD(String javaSpaceURL) {
         try {
-            space = Util.findSpace("mordor");
-            space.write(new Job("test", new Integer((int)System.currentTimeMillis())), null, Lease.FOREVER);
+            System.out.println("Connecting to JavaSpace");
+            space = Util.findSpace(javaSpaceURL);
+            job = new Job("java_lang", new Integer(1));
+            System.out.println("Tokenizing");
+            tsw = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true), job.id);
+            System.out.println("Writing the Job to the space");
+            space.write(job, null, Lease.FOREVER);
+            System.out.println("Writing the TokenSetsWrapper to the space");
+            space.write(tsw, null, Lease.FOREVER);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't connect to the space on " + javaSpaceURL);
         }
-
-/*
-        try {
-            add("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-            throw new RuntimeException("Couldn't load the files");
-        }
-*/
     }
 
-    private void add(String dir, boolean recurse) throws IOException {
+    private TokenSets loadTokens(String dir, boolean recurse) throws IOException {
+        TokenSets tokenSets = new TokenSets();
         FileFinder finder = new FileFinder();
         List files = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
         for (Iterator i = files.iterator(); i.hasNext();) {
-            add(files.size(), (File)i.next());
+            tokenSets.add(add(files.size(), (File)i.next()));
         }
+        return tokenSets;
     }
 
-    private void add(int fileCount, File file) throws IOException {
+    private TokenList add(int fileCount, File file) throws IOException {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
         t.tokenize(ts, fr);
         fr.close();
-        tokenSets.add(ts);
+        return ts;
     }
 
     public static void main(String[] args) {
-        new DCPD("jini://mordor");
+        new DCPD("mordor");
     }
 }
