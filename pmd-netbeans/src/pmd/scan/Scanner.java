@@ -81,10 +81,10 @@ public class Scanner implements Runnable {
 			}
 		}
 		catch( IOException e ) {
-			e.printStackTrace();
+			ErrorManager.getDefault().notify(e);
 		}
 		catch( InterruptedException e ) {
-			e.printStackTrace();
+			ErrorManager.getDefault().notify(e);
 		}
 	}
 	

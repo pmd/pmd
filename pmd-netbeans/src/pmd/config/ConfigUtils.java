@@ -36,6 +36,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import org.openide.ErrorManager;
 import pmd.config.ui.RuleComparator;
 import pmd.custom.RuleClassLoader;
 
@@ -43,7 +44,7 @@ import pmd.custom.RuleClassLoader;
  * @author ole martin mørk
  * @created 26. november 2002
  */
-public class ConfigUtils {
+public abstract class ConfigUtils {
 
 	/**
 	 * Description of the Method
@@ -107,7 +108,7 @@ public class ConfigUtils {
 					}
 				}
 				catch( RuleSetNotFoundException e ) {
-					e.printStackTrace();
+					ErrorManager.getDefault().notify(e);
 				}	
 			}
 			Iterator rulesets = settings.getRuleSets().iterator();
@@ -120,7 +121,7 @@ public class ConfigUtils {
 					list.addAll( ruleset.getRules() );
 				}
 				catch( RuntimeException e ) {
-					e.printStackTrace();
+					ErrorManager.getDefault().notify(e);
 				}
 			}
 		}

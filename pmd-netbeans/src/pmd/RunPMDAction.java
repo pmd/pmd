@@ -74,7 +74,10 @@ import pmd.scan.EditorChangeListener;
  */
 public class RunPMDAction extends CookieAction {
 	
-	
+	/**
+	 * Overridden to log that the action is being initialized, and to register an editor change listener for
+	 * scanning.
+	 */
 	protected void initialize() {
 		ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, "Initializing RunPMDAction");
 		super.initialize();
@@ -113,7 +116,7 @@ public class RunPMDAction extends CookieAction {
 	/**
 	 * Returns the cookies that can use this action
 	 *
-	 * @return DataFolder.class and SourceCookie.class
+	 * @return an array of the two elements DataFolder.class and SourceCookie.class
 	 */
 	protected Class[] cookieClasses() {
 		return new Class[]{DataFolder.class, SourceCookie.class};
@@ -123,7 +126,7 @@ public class RunPMDAction extends CookieAction {
 	/**
 	 * Returns the mode of this action
 	 *
-	 * @return Description of the Return Value
+	 * @return the mode of this action
 	 * @see org.openide.util.actions.CookieAction#MODE_ALL
 	 */
 	protected int mode() {
@@ -132,13 +135,13 @@ public class RunPMDAction extends CookieAction {
 
 
 	/**
-	 * Runs pmd on the specified cookie
+	 * Runs PMD on the specified cookie
 	 *
-	 * @param dataobjects Description of the Parameter
-	 * @return Description of the Return Value
+	 * @param dataobjects the list of data objects to run PMD on, not null. Elements are instanceof
+	 *                    {@link DataObject}.
+	 * @return the list of rule violations found in the run, not null. Elements are instanceof {@link Fault}.
 	 * @exception IOException If the method can't read the files it should check or
 	 *      can't write to the output window
-	 * @exception PMDException Description of the Exception
 	 */
 	public static List checkCookies( List dataobjects )
 		 throws IOException

@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.openide.ErrorManager;
 import pmd.config.CustomRuleSetSettings;
 import pmd.config.PMDOptionsSettings;
 
@@ -38,7 +39,7 @@ public class RuleClassLoader extends ClassLoader {
 	 * @return Description of the Return Value
 	 */
 	protected Class findClass( String name ) {
-		System.out.println( "Loading class " + name );
+		ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, "Loading class " + name );
 
 		String className = name.replace( '.', '/' );
 		className += ".class";
@@ -50,7 +51,7 @@ public class RuleClassLoader extends ClassLoader {
 				File jar = new File( (String)iterator.next() );
 				JarFile jarFile = new JarFile( jar, false );
 				JarEntry entry = jarFile.getJarEntry( className );
-				System.out.println( entry );
+				ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, entry.toString() );
 				if( entry != null ) {
 					BufferedInputStream stream = new BufferedInputStream( jarFile.getInputStream( entry ) );
 					byte buffer[] = new byte[stream.available()];

@@ -29,9 +29,9 @@ public class CustomRuleSetSettings implements Serializable {
 	
 	/** Creates a new instance of CustomRuleSetSettings */
 	public CustomRuleSetSettings( List ruleSets, List classPath, boolean include) {
-		setRuleSets( ruleSets );
-		setClassPath( classPath );
-		setIncludeStdRules( include );
+		this.ruleSets = ruleSets;
+		this.classPath = classPath;
+		this.includeStdRules = includeStdRules;
 	}
 	
 	public CustomRuleSetSettings() {
