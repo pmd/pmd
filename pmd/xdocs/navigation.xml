@@ -25,6 +25,7 @@
       <item name="Finding copied and pasted code" href="/cpd.html" />
       <item name="Similar projects" href="/similar-projects.html" />
       <item name="Credits" href="/credits.html" />
+      <item name="License" href="/license.html" />
       <item name="What does 'PMD' mean?" href="/meaning.html" />
     </menu>
     <menu name="Customizing PMD">
