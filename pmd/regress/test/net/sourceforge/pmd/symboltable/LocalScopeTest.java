@@ -93,7 +93,4 @@ public class LocalScopeTest extends STBBaseTst {
     "  b.buz = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
-
-
-
 }

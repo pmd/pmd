@@ -3,62 +3,63 @@
 */
 package test.net.sourceforge.pmd.symboltable;
 
-import junit.framework.TestCase;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-public class VariableNameDeclarationTest extends TestCase {
+import java.util.List;
+
+public class VariableNameDeclarationTest extends STBBaseTst  {
 
     public void testConstructor() {
-        ASTVariableDeclaratorId exp = createNode("foo", 10);
-        LocalScope scope = new LocalScope();
-        exp.setScope(scope);
-        VariableNameDeclaration decl = new VariableNameDeclaration(exp);
-        assertEquals("foo", decl.getImage());
-        assertEquals(10, decl.getLine());
+        parseCode(TEST1);
+        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        Scope s = ((ASTVariableDeclaratorId)nodes.get(0)).getScope();
+        VariableNameDeclaration decl = (VariableNameDeclaration)s.getVariableDeclarations().keySet().iterator().next();
+        assertEquals("bar", decl.getImage());
+        assertEquals(3, decl.getLine());
     }
 
     public void testExceptionBlkParam() {
         ASTVariableDeclaratorId id = new ASTVariableDeclaratorId(3);
         id.testingOnly__setBeginLine(10);
         id.setImage("foo");
-
         ASTFormalParameter param = new ASTFormalParameter(2);
         id.jjtSetParent(param);
-
-        ASTTryStatement tryStmt = new ASTTryStatement(1);
-        param.jjtSetParent(tryStmt);
-
+        param.jjtSetParent(new ASTTryStatement(1));
         VariableNameDeclaration decl = new VariableNameDeclaration(id);
         assertTrue(decl.isExceptionBlockParameter());
     }
 
     public void testMethodParam() {
-        ASTVariableDeclaratorId id = new ASTVariableDeclaratorId(3);
-        id.testingOnly__setBeginLine(10);
-        id.setImage("foo");
-
-        ASTFormalParameter param = new ASTFormalParameter(2);
-        id.jjtSetParent(param);
-
-        ASTType type = new ASTType(4);
-        param.jjtAddChild(type, 0);
-
-        ASTName name = new ASTName(5);
-        type.jjtAddChild(name, 0);
-
-        assertEquals(name, id.getTypeNameNode());
+        parseCode(TEST3);
+        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId)nodes.get(0);
+        nodes = acu.findChildrenOfType(ASTName.class);
+        assertEquals((ASTName)nodes.get(0), id.getTypeNameNode());
     }
 
-    private static ASTVariableDeclaratorId createNode(String image, int line) {
-        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
-        node.setImage(image);
-        node.testingOnly__setBeginLine(line);
-        return node;
-    }
+    public static final String TEST1 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  int bar = 42;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  try {} catch(Exception e) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " void foo(String bar) {}" + PMD.EOL +
+    "}";
+
 }
