@@ -36,6 +36,15 @@ import java.io.InputStreamReader;
 
 public class CommandLineOptionsTest extends TestCase {
 
+    public void testTargetJDKVersion() {
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic"});
+        assertEquals("1.4", opt.getTargetJDK());
+        opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-targetjdk", "1.3"});
+        assertEquals("1.3", opt.getTargetJDK());
+        opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-targetjdk", "1.5"});
+        assertEquals("1.5", opt.getTargetJDK());
+    }
+
     public void testDebug() {
         CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic", "-debug"});
         assertTrue(opt.debugEnabled());
@@ -44,16 +53,6 @@ public class CommandLineOptionsTest extends TestCase {
     public void testExcludeMarker() {
         CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic", "-excludemarker", "FOOBAR"});
         assertEquals("FOOBAR", opt.getExcludeMarker());
-    }
-
-    public void testTargetJDKVersion() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic"});
-        assertFalse(opt.jdk13());
-        opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-jdk13"});
-        assertTrue(opt.jdk13());
-        opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-jdk15"});
-        assertTrue(opt.jdk15());
-        assertFalse(opt.jdk13());
     }
 
     public void testShortNames() {

@@ -133,9 +133,9 @@ public class PMD {
         }
 
         PMD pmd;
-        if (opts.jdk13()) {
+        if (opts.getTargetJDK().equals("1.3")) {
             pmd = new PMD(new TargetJDK1_3());
-        } else if (opts.jdk15()) {
+        } else if (opts.getTargetJDK().equals("1.5")) {
             pmd = new PMD(new TargetJDK1_5());
         } else {
             pmd = new PMD();
