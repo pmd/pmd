@@ -15,13 +15,16 @@ public class MatchAlgorithm {
     private List matches;
     private CPDListener cpdListener;
 
-    public void add(TokenEntry token, CPDListener cpdListener) {
+    public void setListener(CPDListener listener) {
+        this.cpdListener = listener;
+    }
+
+    public void add(TokenEntry token) {
         if (!pool.containsKey(token)) {
             pool.put(token, token);
         }
         code.add(pool.get(token));
-        marks.add(new Mark(code.size(), token.getTokenSrcID(), token.getIndex()));
-        this.cpdListener = cpdListener;
+        marks.add(new Mark(code.size(), token.getTokenSrcID(), token.getIndex(), token.getBeginLine()));
     }
 
     public void findMatches(int min) {

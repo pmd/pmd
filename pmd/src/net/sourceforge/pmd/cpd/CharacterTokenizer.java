@@ -3,7 +3,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Reader;
 
-public class CharacterTokenizer implements Tokenizer {
+public class CharacterTokenizer /*implements Tokenizer*/ {
 
     /**
      * The end of line string for this machine.
@@ -13,7 +13,7 @@ public class CharacterTokenizer implements Tokenizer {
     /**
      * You'll probably want to write a test for this before using it
      */
-    public void tokenize(TokenList tokens, Reader input) throws IOException {
+    public void tokenize(SourceCode tokens, Reader input) throws IOException {
 /*
         List lines = new ArrayList();
         StringBuffer sb = new StringBuffer();

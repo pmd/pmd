@@ -15,7 +15,7 @@ public class JavaTokensTokenizer implements Tokenizer {
 
     protected String EOL = System.getProperty("line.separator", "\n");
 
-    public void tokenize(TokenList tokens, Reader input) throws IOException {
+    public void tokenize(SourceCode tokens, Tokens tokenEntries, Reader input) throws IOException {
         // first get a snapshot of the code
         List lines = new ArrayList();
         StringBuffer sb = new StringBuffer();
@@ -39,6 +39,7 @@ public class JavaTokensTokenizer implements Tokenizer {
         JavaParserTokenManager tokenMgr = new JavaParserTokenManager(javaStream);
         Token currToken = tokenMgr.getNextToken();
         boolean discarding = false;
+        int count = 0;
         while (currToken.image != "") {
             if (currToken.image.equals("import") || currToken.image.equals("package")) {
                 discarding = true;
@@ -56,10 +57,12 @@ public class JavaTokensTokenizer implements Tokenizer {
             }
 
             if (!currToken.image.equals(";")) {
-                tokens.add(new TokenEntry(currToken.image, tokens.size(), tokens.getFileName(), currToken.beginLine));
+                count++;
+                tokenEntries.add(new TokenEntry(currToken.image, count, tokens.getFileName(), currToken.beginLine));
             }
 
             currToken = tokenMgr.getNextToken();
         }
+        tokenEntries.add(TokenEntry.EOF);
     }
 }

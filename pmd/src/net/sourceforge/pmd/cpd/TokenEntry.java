@@ -12,7 +12,10 @@ public class TokenEntry implements Comparable {
 
     private int sortCode;
 
-    private TokenEntry() {}
+    private TokenEntry() {
+        this.image = "EOF";
+        this.chars = image.toCharArray();
+    }
 
     public TokenEntry(String image, int index, String tokenSrcID, int beginLine) {
         this.image = image;

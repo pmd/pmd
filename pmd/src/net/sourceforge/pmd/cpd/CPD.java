@@ -3,17 +3,21 @@ package net.sourceforge.pmd.cpd;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class CPD {
 
     public static final String EOL = System.getProperty("line.separator", "\n");
 
     private int minimumTileSize;
-    private TokenSets tokenSets = new TokenSets();
+    private Map tokenSets = new HashMap();
     private MatchAlgorithm matchAlgorithm = new MatchAlgorithm();
     private CPDListener listener = new CPDNullListener();
+    private Tokens tokens = new Tokens();
 
     public CPD(int minimumTileSize) {
         this.minimumTileSize = minimumTileSize;
@@ -24,12 +28,9 @@ public class CPD {
     }
 
     public void go() {
-        for (Iterator i = tokenSets.values().iterator(); i.hasNext();) {
-            TokenList tl = (TokenList)i.next();
-            for (Iterator j = tl.iterator();j.hasNext();) {
-                TokenEntry te = (TokenEntry)j.next();
-                matchAlgorithm.add(te, listener);
-            }
+        matchAlgorithm.setListener(listener);
+        for (Iterator i = tokens.iterator(); i.hasNext();) {
+            matchAlgorithm.add((TokenEntry)i.next());
         }
         matchAlgorithm.findMatches(minimumTileSize);
     }
@@ -47,18 +48,18 @@ public class CPD {
             for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
                 Mark mark = (Mark)occurrences.next();
 
-                TokenList tokenList = tokenSets.getTokenList(mark.getFile());
+                SourceCode sourceCode = (SourceCode)tokenSets.get(mark.getFile());
                 if (!printedHeader) {
-                    rpt.append("Found a " + tokenList.getLineCount(mark.getIndexIntoFile(), match.getTokenCount()) + " line (" +match.getTokenCount() + " tokens) duplication in the following files: ");
+                    rpt.append("Found a " + tokens.getLineCount(mark, match) + " line (" + match.getTokenCount() + " tokens) duplication in the following files: ");
                     rpt.append(EOL);
                     printedHeader = true;
                 }
 
-                rpt.append("Starting at line " + tokenList.getLineNumber(mark.getIndexIntoFile())+ " of " + mark.getFile());
+                rpt.append("Starting at line " + mark.getBeginLine() + " of " + mark.getFile());
                 rpt.append(EOL);
 
                 if (!occurrences.hasNext()) {
-                    rpt.append(tokenList.getLineSlice(mark.getIndexIntoFile(), match.getTokenCount()));
+                    rpt.append(sourceCode.getSlice(mark.getBeginLine()-1, mark.getBeginLine() + tokens.getLineCount(mark, match)));
                     rpt.append(EOL);
                 }
             }
@@ -93,12 +94,12 @@ public class CPD {
 
     private void add(int fileCount, File file) throws IOException {
         listener.addedFile(fileCount, file);
-        Tokenizer t = new JavaTokensTokenizer();
-        TokenList ts = new TokenList(file.getAbsolutePath());
-        FileReader fr = new FileReader(file);
-        t.tokenize(ts, fr);
-        fr.close();
-        tokenSets.add(ts);
+        Tokenizer tokenizer = new JavaTokensTokenizer();
+        SourceCode sourceCode = new SourceCode(file.getAbsolutePath());
+        FileReader reader = new FileReader(file);
+        tokenizer.tokenize(sourceCode, tokens, reader);
+        reader.close();
+        tokenSets.put(sourceCode.getFileName(), sourceCode);
     }
 
     public static void main(String[] args) {

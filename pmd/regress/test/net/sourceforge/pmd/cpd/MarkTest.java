@@ -3,12 +3,13 @@ package test.net.sourceforge.pmd.cpd;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.Mark;
 
-import java.util.ArrayList;
-
 public class MarkTest extends TestCase {
 
     public void testSimple() {
-        Mark mark = new Mark(0, "/var/Foo.java", 10);
+        Mark mark = new Mark(0, "/var/Foo.java", 10, 1);
         assertEquals(mark.getIndexIntoFile(), 10);
+        assertEquals(1, mark.getBeginLine());
+        assertEquals("/var/Foo.java", mark.getFile());
+        assertEquals(0, mark.getIndexIntoTokenArray());
     }
 }

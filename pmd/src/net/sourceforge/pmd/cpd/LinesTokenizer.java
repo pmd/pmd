@@ -3,9 +3,9 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Reader;
 
-public class LinesTokenizer implements Tokenizer {
+public class LinesTokenizer /*implements Tokenizer*/ {
 
-    public void tokenize(TokenList tokens, Reader input) throws IOException {
+    public void tokenize(SourceCode tokens, Reader input) throws IOException {
 /*
         String eol = System.getProperty("line.separator", "\n");
         List lines = new ArrayList();
