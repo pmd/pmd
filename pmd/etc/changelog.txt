@@ -2,6 +2,7 @@
 Added a JEdit plugin
 Added a new rule: OverrideBothEqualsAndHashcodeRule
 Reports are now sorted by line number
+Added a simple GUI
 
 July 03 2002 - 0.3:
 Added new rules: UseSingletonRule, ShortVariableRule, LongVariableRule, ShortMethodNameRule
