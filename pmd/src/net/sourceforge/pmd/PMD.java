@@ -71,9 +71,13 @@ public class PMD {
         String ruleSets = args[2];
 
         boolean shortNames = false;
+        boolean debug = false;
         for (int i=0; i<args.length; i++) {
             if (args[i].equals("-shortnames")) {
                 shortNames = true;
+            }
+            if (args[i].equals("-debug")) {
+                debug = true;
             }
         }
 
@@ -98,6 +102,9 @@ public class PMD {
                 try {
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (PMDException pmde) {
+                    if (debug) {
+                        pmde.getReason().printStackTrace();
+                    }
                     ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), glomName(shortNames, inputFileName, file)));
                 }
             }
