@@ -184,6 +184,7 @@ public class RunPMDAction extends CookieAction {
 			List violations = checkCookies( list );
 			if( violations.isEmpty() ) {
 				TopManager.getDefault().setStatusText( "PMD found no rule violations" );
+				TopManager.getDefault().getIO( "PMD output", false ).closeInputOutput();
 			}
 			else {
 				InputOutput io = TopManager.getDefault().getIO( "PMD output", false );
