@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="dpeugh@users.sourceforge.net">David Dixon-Peugh</author>
+    <title>Demo PMD on your Java Project!</title>
+  </properties>
+
+  <body>
+    <section name="Warning">
+<p>
+This demo is not completed.  Please do not run unless you are me.
+</p>
+<p>
+Additionally, when you run the demo, the results of running PMD will
+be available for the whole world to see, as well as linked off of
+the PMD homepage for a period of time.  If you don't want this, don't
+submit to the demo.
+</p>
+    </section>
+
+    <section name="Entry">
+<form method="POST" enctype="text/plain" action="/cgi/start-demo.php">
+  <table>
+    <tr><td width="50%">SourceForge Project Unix Name</td>
+        <td width="50%"><input type="text" name="unixname" /></td></tr>
+    <tr><td>CVS Module</td>
+        <td><input type="text" name="module" /></td></tr>
+    <tr><td>Java Source Directory</td>
+        <td><input type="text" name="source" /></td></tr>
+  </table>
+  <input type="submit" name="Sign up for Demo" />
+</form>
+    </section>
+  </body>
+</document>
