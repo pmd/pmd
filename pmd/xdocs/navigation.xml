@@ -2,6 +2,7 @@
 
 <project name="PMD">
   <title>PMD</title>
+  <organizationLogo href="http://sourceforge.net/sflogo.php?group_id=56262&amp;type=5" />
   <body>
     <links>
       <item name="SF Project Page" 
