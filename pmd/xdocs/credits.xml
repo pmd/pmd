@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>David Hovemeyer - reported missing labelled stmt images, a nice patch to let PMD process code in jar/zip files</li>
             <li>Wim Deblauwe - Helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Peter 'Bruno' Kofler - reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
             <li>Zev Blut - nice patch to add Ruby support to CPD</li>
@@ -74,7 +75,6 @@
             <li>aryanto - reported a broken reference in the 'favorites' ruleset.</li>
             <li>Archimedes Trajano - suggested SimpleDateFormatNeedsLocale</li>
             <li>Joerg Kurt Wegner - bug report for UnusedLocalVariable</li>
-            <li>David Hovemeyer - a nice patch to let PMD process code in jar/zip files</li>
             <li>Bruno - SuspiciousEqualsMethodName</li>
             <li>Ernst Reissner - suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
             <li>Philippe Couton - bug report for ExceptionAsFlowControl, OverrideBothEqualsAndHashcodeRule bug report, UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>

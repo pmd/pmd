@@ -1720,9 +1720,9 @@ void Statement() :
 }
 
 void LabeledStatement() :
-{}
+{Token t;}
 {
-  <IDENTIFIER> ":" Statement()
+  t=<IDENTIFIER> {jjtThis.setImage(t.image);} ":" Statement()
 }
 
 void Block() :
