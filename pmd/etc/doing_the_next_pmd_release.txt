@@ -6,7 +6,7 @@ update release number and tag name in project.xml
 
 ant dist test
 Do all the JUnit tests run?  OK, then:
-ant dist
+ant dist                
 
 TESTS: Can you
 1) run 1 file and get a report
