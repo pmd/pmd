@@ -15,8 +15,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Shape;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
@@ -24,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -60,7 +60,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
     private Preferences m_preferences;
     private DirectoryTree m_directoryTree;
     private JLabel m_message;
-    private JPanel m_messageArea;
+    private JPanel m_statusBar;
     private JScrollPane m_directoryTreeScrollPane;
     private DirectoryTable m_directoryTable;
     private JScrollPane m_directoryTableScrollPane;
@@ -68,6 +68,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
     private ResultsViewer m_resultsViewer;
     private JScrollPane m_resultsViewerScrollPane;
     private JSplitPane m_mainSplitPane;
+    private StatusIndicator m_statusIndicator;
     private PMDClipboard m_clipboardOwner = new PMDClipboard();
     private List m_ruleSetChangeListeners = new ArrayList();
     private int m_disabledCounter;
@@ -104,7 +105,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         createMenuBar();
-        createMessageArea(windowMargin);
+        createStatusBar(windowMargin);
         createDirectoryTreeScrollPane();
         createDirectoryTableScrollPane();
         createDirectorySplitPane();
@@ -136,32 +137,47 @@ public class PMDViewer extends JFrame implements JobThreadListener
      *
      * @param windowMargin
      */
-    private void createMessageArea(int windowMargin)
+    private void createStatusBar(int windowMargin)
     {
-        EtchedBorder etchedBorder;
-        CompoundBorder compoundBorder;
+        BevelBorder bevelBorder;
         EmptyBorder emptyBorder;
 
-        m_messageArea = new JPanel(new BorderLayout());
-        emptyBorder = new EmptyBorder(2, 2, 2, 2);
-        etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
-        compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
-        compoundBorder = new CompoundBorder(etchedBorder, compoundBorder);
+        //
+        // Status Bar
+        //
+        m_statusBar = new JPanel(new BorderLayout());
         emptyBorder = new EmptyBorder(0, 0, windowMargin, 0);
-        compoundBorder = new CompoundBorder(emptyBorder, compoundBorder);
-        m_messageArea.setBorder(compoundBorder);
+        m_statusBar.setBorder(emptyBorder);
 
-        JPanel innerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        innerPanel.setOpaque(true);
-        innerPanel.setBackground(UIManager.getColor("pmdMessageAreaBackground"));
-        m_messageArea.add(innerPanel, BorderLayout.CENTER);
+        //
+        // Status Bar Components Border
+        //
+        BevelBorder componentBorder = new BevelBorder(BevelBorder.LOWERED);
 
+        //
+        // Status Indicator
+        //
+        m_statusIndicator = new StatusIndicator(componentBorder);
+        m_statusBar.add(m_statusIndicator, BorderLayout.WEST);
+
+        //
+        // Message Area
+        //
+        JPanel messageArea = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        messageArea.setOpaque(true);
+        messageArea.setBackground(UIManager.getColor("pmdMessageAreaBackground"));
+        messageArea.setBorder(componentBorder);
+        m_statusBar.add(messageArea, BorderLayout.CENTER);
+
+        //
+        // Message
+        //
         m_message = new JLabel();
         m_message.setFont(new Font("Dialog", Font.BOLD, 12));
         m_message.setBackground(UIManager.getColor("pmdMessageAreaBackground"));
         m_message.setForeground(UIManager.getColor("pmdBlue"));
         setDefaultMessage();
-        innerPanel.add(m_message);
+        messageArea.add(m_message);
     }
 
     /**
@@ -258,7 +274,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
         CompoundBorder compoundBorder = new CompoundBorder(outsideBorder, insideBorder);
 
         contentPanel.setBorder(compoundBorder);
-        contentPanel.add(m_messageArea, BorderLayout.NORTH);
+        contentPanel.add(m_statusBar, BorderLayout.NORTH);
         contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
 
         return contentPanel;
@@ -395,8 +411,9 @@ public class PMDViewer extends JFrame implements JobThreadListener
      */
     public void jobThreadStarted(JobThreadEvent event)
     {
+        m_statusIndicator.startAction();
         m_message.setText(event.getMessage());
-        SwingUtilities.invokeLater(new MessageAreaRepaint());
+        SwingUtilities.invokeLater(new Repaint(m_message));
     }
 
     /**
@@ -407,7 +424,8 @@ public class PMDViewer extends JFrame implements JobThreadListener
     public void jobThreadFinished(JobThreadEvent event)
     {
         setDefaultMessage();
-        SwingUtilities.invokeLater(new MessageAreaRepaint());
+        SwingUtilities.invokeLater(new Repaint(m_message));
+        m_statusIndicator.stopAction();
     }
 
     /**
@@ -418,7 +436,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
     public void jobThreadStatus(JobThreadEvent event)
     {
         m_message.setText(event.getMessage());
-        SwingUtilities.invokeLater(new MessageAreaRepaint());
+        SwingUtilities.invokeLater(new Repaint(m_message));
     }
 
     /**
@@ -462,6 +480,183 @@ public class PMDViewer extends JFrame implements JobThreadListener
     public static void main(String[] args)
     {
         run();
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class StatusIndicator extends JPanel
+    {
+        private StatusIndicatorAction m_actionThread;
+        private JLabel[] m_iconPositions = new JLabel[20];
+        private Color TRANSPARENT = UIManager.getColor("pmdStatusAreaBackground");
+        private final int MAX_POSITION = m_iconPositions.length - 1;
+
+        /**
+         ****************************************************************************
+         *
+         * @param border
+         */
+        private StatusIndicator(Border border)
+        {
+            super(new FlowLayout(FlowLayout.LEFT, 0, 5));
+
+            setOpaque(true);
+            setBackground(TRANSPARENT);
+            setBorder(border);
+
+            Dimension size = new Dimension(8, 16);
+
+            for (int n = 0; n <= MAX_POSITION; n++)
+            {
+                JLabel actionIcon = new JLabel();
+                actionIcon.setBackground(TRANSPARENT);
+                actionIcon.setMinimumSize(size);
+                actionIcon.setMaximumSize(size);
+                actionIcon.setSize(size);
+                actionIcon.setPreferredSize(size);
+                actionIcon.setOpaque(true);
+                m_iconPositions[n] = actionIcon;
+                add(actionIcon);
+            }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         */
+        private void startAction()
+        {
+            if (m_actionThread == null)
+            {
+                m_actionThread = new StatusIndicatorAction(m_iconPositions);
+                m_actionThread.start();
+            }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         */
+        private void stopAction()
+        {
+            if (m_actionThread != null)
+            {
+                m_actionThread.stopAction();
+                m_actionThread = null;
+            }
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class StatusIndicatorAction extends Thread
+    {
+        private JLabel[] m_iconPositions;
+        private boolean m_stopAction;
+        private int m_doNothing;
+        private int MAX_POSITION;
+        private final Color ACTION = UIManager.getColor("pmdBlue");
+        private final Color TRANSPARENT = UIManager.getColor("pmdStatusAreaBackground");
+        private final long ELAPSED_TIME = 50;
+
+        /**
+         ****************************************************************************
+         *
+         */
+        private StatusIndicatorAction(JLabel[] iconPositions)
+        {
+            super("Status Indicator Action");
+
+            m_iconPositions = iconPositions;
+            MAX_POSITION = m_iconPositions.length - 1;
+        }
+
+        /**
+         ****************************************************************************
+         *
+         */
+        public void run()
+        {
+            boolean started = false;
+            int iconPosition = 0;
+            int direction = 1;
+
+            while (true)
+            {
+                if (m_stopAction)
+                {
+                    return;
+                }
+
+                JLabel oldIcon = null;
+
+                if (started)
+                {
+                    oldIcon = m_iconPositions[iconPosition];
+                    oldIcon.setBackground(TRANSPARENT);
+                    oldIcon.repaint();
+
+                    if (direction > 0)
+                    {
+                        if (iconPosition < MAX_POSITION)
+                        {
+                            iconPosition++;
+                        }
+                        else
+                        {
+                            direction = -1;
+                        }
+                    }
+                    else
+                    {
+                        if (iconPosition > 0)
+                        {
+                            iconPosition--;
+                        }
+                        else
+                        {
+                            direction = 1;
+                        }
+                    }
+                }
+
+                JLabel newIcon = m_iconPositions[iconPosition];
+                newIcon.setBackground(ACTION);
+                newIcon.repaint();
+                started = true;
+
+                try
+                {
+                    sleep(ELAPSED_TIME);
+                }
+                catch (InterruptedException exception)
+                {
+                    m_doNothing++;
+                }
+            }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         */
+        private void stopAction()
+        {
+            m_stopAction = true;
+
+            for (int n = 0; n <= MAX_POSITION; n++)
+            {
+                m_iconPositions[n].setBackground(TRANSPARENT);
+            }
+
+            m_iconPositions[0].getParent().repaint();
+        }
     }
 
     /**
@@ -908,12 +1103,27 @@ public class PMDViewer extends JFrame implements JobThreadListener
      *********************************************************************************
      *********************************************************************************
      */
-    private class MessageAreaRepaint implements Runnable
+    private class Repaint implements Runnable
     {
+        private Component m_component;
 
+        /**
+         *****************************************************************************
+         *
+         * @param component
+         */
+        private Repaint(Component component)
+        {
+            m_component = component;
+        }
+
+        /**
+         *****************************************************************************
+         *
+         */
         public void run()
         {
-            m_message.repaint();
+            m_component.repaint();
         }
     }
 }
