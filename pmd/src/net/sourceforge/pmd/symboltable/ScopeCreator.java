@@ -7,10 +7,12 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.*;
 
+import java.util.Stack;
+
 public class ScopeCreator extends JavaParserVisitorAdapter {
 
-    private SymbolTable table = new SymbolTable();
     private ScopeFactory sf = new ScopeFactory();
+    private Stack scopes = new Stack();
 
     public Object visit(ASTCompilationUnit node, Object data){openScope(node);return data;}
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data){openScope(node);return data;}
@@ -22,11 +24,22 @@ public class ScopeCreator extends JavaParserVisitorAdapter {
     public Object visit(ASTForStatement node, Object data){openScope(node);return data;}
     public Object visit(ASTIfStatement node, Object data){openScope(node);return data;}
 
+    private void push(Scope scope) {
+        if (scopes.empty()) {
+            if (!(scope instanceof GlobalScope)) {
+                throw new RuntimeException("First scope should be a GlobalScope");
+            }
+        } else {
+            scope.setParent((Scope)scopes.peek());
+        }
+        scopes.add(scope);
+    }
+
     private void openScope(SimpleNode node) {
         Scope scope = sf.createScope(node);
-        table.push(scope);
-        node.setScope(table.peek());
+        push(scope);
+        node.setScope((Scope)scopes.peek());
         super.visit(node, null);
-        table.pop();
+        scopes.pop();
     }
 }
