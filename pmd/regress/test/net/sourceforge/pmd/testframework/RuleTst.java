@@ -13,8 +13,8 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
 import java.io.StringReader;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RuleTst extends TestCase {
 

@@ -1,10 +1,9 @@
 package test.net.sourceforge.pmd.rules.design;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.rules.design.ExceptionAsFlowControlRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
-import net.sourceforge.pmd.rules.design.NullAssignmentRule;
-import net.sourceforge.pmd.rules.design.ExceptionAsFlowControlRule;
-import net.sourceforge.pmd.PMD;
 
 public class ExceptionAsFlowControlRuleTest extends SimpleAggregatorTst {
 

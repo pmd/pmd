@@ -3,12 +3,12 @@ package test.net.sourceforge.pmd.ast;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.JavaParser;
 
-import java.util.List;
 import java.io.StringReader;
+import java.util.List;
 
 public class EncodingTest extends TestCase {
 

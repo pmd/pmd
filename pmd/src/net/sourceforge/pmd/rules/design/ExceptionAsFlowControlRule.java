@@ -1,13 +1,13 @@
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.ASTThrowStatement;
-import net.sourceforge.pmd.ast.ASTType;
-import net.sourceforge.pmd.ast.ASTCatch;
-import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTCatch;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTThrowStatement;
+import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.Node;
 
 import java.util.Iterator;
 import java.util.List;
