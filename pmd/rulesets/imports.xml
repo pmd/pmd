@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="imports">
+<ruleset name="Import Rules">
   <description>
 These rules deal with different problems that can occur with a class' import statements.
   </description>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="naming">
+<ruleset name="Naming Rules">
   <description>
 The Naming Ruleset contains a collection of rules about names - too long, too short, and so forth.
   </description>

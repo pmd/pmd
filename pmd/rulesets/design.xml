@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="design">
+<ruleset name="Design Rules">
   <description>
 The Design Ruleset contains a collection of rules that find questionable designs.
   </description>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="basic">
+<ruleset name="Basic Rules">
   <description>
 The Basic Ruleset contains a collection of good practice rules
 which everyone should follow.
