@@ -6,7 +6,33 @@
 These are new rules for the next release
   </description>
 
+    <rule name="AvoidProtectedFieldInFinalClass"
+             message="Avoid protected fields in a final class.  Change to private or package access."
+             class="net.sourceforge.pmd.rules.XPathRule">
+         <description>
+     Do not use protected fields in final classes since they cannot be subclassed.
+    Clarify your intent by using private or package access modifiers instead.
+         </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+                     <![CDATA[//ClassDeclaration[@Final='true']//FieldDeclaration[@Protected='true'] ]]>
+                 </value>
+             </property>
+         </properties>
+           <priority>3</priority>
+
+         <example>
+     <![CDATA[public final class Bar {
+      private int x;
+      protected int y;  // <-- Bar cannot be subclassed, so is y really private or package visible???
+      Bar() {}
+   }]]>
+         </example>
+       </rule>
 
     </ruleset>
+
+
 
 
