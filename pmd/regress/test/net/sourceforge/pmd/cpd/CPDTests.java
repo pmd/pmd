@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+*/
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.Test;
@@ -40,6 +43,9 @@ public class CPDTests
 
 /*
  * $Log$
+ * Revision 1.2  2003/11/20 16:01:02  tomcopeland
+ * Changing over license headers in the source code
+ *
  * Revision 1.1  2003/09/29 14:32:31  tomcopeland
  * Committed regression test suites, thanks to Boris Gruschko
  *

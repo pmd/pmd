@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+*/
 package test.net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -20,12 +23,6 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author daniels
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
- */
 public class DocumentNavigatorTest extends RuleTst {
 
    
