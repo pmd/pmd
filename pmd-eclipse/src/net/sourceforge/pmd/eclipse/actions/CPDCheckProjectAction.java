@@ -5,8 +5,8 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.eclipse.CPDReportWindow;
 import net.sourceforge.pmd.eclipse.CPDVisitor;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
@@ -34,6 +34,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2004/04/19 22:25:12  phherlin
+ * Upgrading to PMD v1.6
+ *
  * Revision 1.7  2003/11/30 22:57:37  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -115,9 +118,9 @@ public class CPDCheckProjectAction implements IObjectActionDelegate, IRunnableWi
                             + match.getTokenCount()
                             + " tokens) duplication in the following files :");
                     for (Iterator iter2 = match.iterator(); iter2.hasNext();) {
-                        Mark mark = (Mark) iter2.next();
-                        crw.addEntry("\tStarting at line " + mark.getBeginLine() + " of " + mark.getTokenSrcID() + "\n");
-                        log.debug("   Starting at line " + mark.getBeginLine() + " of " + mark.getTokenSrcID());
+                        TokenEntry tokenEntry = (TokenEntry) iter2.next();
+                        crw.addEntry("\tStarting at line " + tokenEntry.getBeginLine() + " of " + tokenEntry.getTokenSrcID() + "\n");
+                        log.debug("   Starting at line " + tokenEntry.getBeginLine() + " of " + tokenEntry.getTokenSrcID());
                     }
                     crw.addEntry("\n");
                     crw.addEntry("-------------------------------------\n");
