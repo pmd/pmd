@@ -36,6 +36,7 @@ import javax.swing.ProgressMonitor;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import com.borland.primetime.vfs.Url;
 import java.util.ArrayList;
+import com.borland.jbcl.control.MessageDialog;
 
 
 
@@ -338,7 +339,10 @@ public class PMDOpenTool {
         for (int i=0; i<nodes.length; i++ ) {
             if (nodes[i] instanceof PackageNode) {
                 PackageNode node = (PackageNode)nodes[i];
-                pmdCheckPackage(node, rules);
+                String packageName = node.getName();
+                if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
+                    pmdCheckPackage(node, rules);
+                }
             }
         }
     }
@@ -369,7 +373,10 @@ public class PMDOpenTool {
             for (int i=0; i<nodes.length; i++ ) {
                 if (nodes[i] instanceof PackageNode) {
                     PackageNode node = (PackageNode)nodes[i];
-                    pmdCPDPackage(node, cpd);
+                    String packageName = node.getName();
+                    if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
+                        pmdCPDPackage(node, cpd);
+                    }
                 }
             }
             cpd.go();
