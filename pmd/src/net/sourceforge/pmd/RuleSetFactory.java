@@ -75,57 +75,71 @@ public class RuleSetFactory {
             NodeList rules = root.getElementsByTagName("rule");
             for (int i = 0; i < rules.getLength(); i++) {
                 Node ruleNode = rules.item(i);
-                Rule rule;
                 if (ruleNode.getAttributes().getNamedItem("ref") != null) {
-                    ExternalRuleID externalRuleID = new ExternalRuleID(ruleNode.getAttributes().getNamedItem("ref").getNodeValue());
-                    RuleSetFactory rsf = new RuleSetFactory();
-                    RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
-                    rule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
+                    parseExternallyDefinedRule(ruleSet, ruleNode);
                 } else {
-                    rule = (Rule) Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue(), true, classLoader).newInstance();
-                    rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
-                    rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
+                    parseInternallyDefinedRule(ruleSet, ruleNode, classLoader);
                 }
-
-                // get the description, priority, example and properties (if any)
-                Node node = ruleNode.getFirstChild();
-                while (node != null) {
-                    if (node.getNodeName() != null && node.getNodeName().equals("description")) {
-                        rule.setDescription(node.getFirstChild().getNodeValue());
-                    }
-
-                    if (node.getNodeName() != null && node.getNodeName().equals("priority")) {
-                        rule.setPriority(Integer.parseInt(node.getFirstChild().getNodeValue().trim()));
-                    }
-
-                    if (node.getNodeName() != null && node.getNodeName().equals("example")) {
-                        rule.setExample(node.getFirstChild().getNextSibling().getNodeValue());
-                    }
-
-                    if (node.getNodeName().equals("properties")) {
-                        Node propNode = node.getFirstChild().getNextSibling();
-                        while (propNode != null && propNode.getAttributes() != null) {
-                            String propName = propNode.getAttributes().getNamedItem("name").getNodeValue();
-                            String propValue;
-                            if (propName.equals("xpath")) {
-                                Node xpathExprNode = propNode.getFirstChild().getNextSibling();
-                                propValue = xpathExprNode.getFirstChild().getNextSibling().getNodeValue();
-                            } else {
-                                propValue = propNode.getAttributes().getNamedItem("value").getNodeValue();
-                            }
-                            rule.addProperty(propName, propValue);
-                            propNode = propNode.getNextSibling().getNextSibling();
-                        }
-                    }
-
-                    node = node.getNextSibling();
-                }
-                ruleSet.addRule(rule);
             }
             return ruleSet;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't read from that source: " + e.getMessage());
+        }
+    }
+
+    private void parseInternallyDefinedRule(RuleSet ruleSet, Node ruleNode, ClassLoader classLoader) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+        Rule rule = (Rule) Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue(), true, classLoader).newInstance();
+        rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
+        rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
+        // get the description, priority, example and properties (if any)
+        Node node = ruleNode.getFirstChild();
+        while (node != null) {
+            if (node.getNodeName() != null && node.getNodeName().equals("description")) {
+                rule.setDescription(node.getFirstChild().getNodeValue());
+            }
+
+            if (node.getNodeName() != null && node.getNodeName().equals("priority")) {
+                rule.setPriority(Integer.parseInt(node.getFirstChild().getNodeValue().trim()));
+            }
+
+            if (node.getNodeName() != null && node.getNodeName().equals("example")) {
+                rule.setExample(node.getFirstChild().getNextSibling().getNodeValue());
+            }
+
+            parseProperties(node, rule);
+
+            node = node.getNextSibling();
+        }
+        ruleSet.addRule(rule);
+    }
+
+    private void parseExternallyDefinedRule(RuleSet ruleSet, Node ruleNode) throws RuleSetNotFoundException {
+        String referenceValue = ruleNode.getAttributes().getNamedItem("ref").getNodeValue();
+        if (!referenceValue.endsWith("xml")) {
+            ExternalRuleID externalRuleID = new ExternalRuleID(referenceValue);
+            RuleSetFactory rsf = new RuleSetFactory();
+            RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
+            ruleSet.addRule(externalRuleSet.getRuleByName(externalRuleID.getRuleName()));
+        }
+        throw new RuntimeException("Not impl yet!");
+    }
+
+    private void parseProperties(Node node, Rule rule) {
+        if (node.getNodeName().equals("properties")) {
+            Node propNode = node.getFirstChild().getNextSibling();
+            while (propNode != null && propNode.getAttributes() != null) {
+                String propName = propNode.getAttributes().getNamedItem("name").getNodeValue();
+                String propValue;
+                if (propName.equals("xpath")) {
+                    Node xpathExprNode = propNode.getFirstChild().getNextSibling();
+                    propValue = xpathExprNode.getFirstChild().getNextSibling().getNodeValue();
+                } else {
+                    propValue = propNode.getAttributes().getNamedItem("value").getNodeValue();
+                }
+                rule.addProperty(propName, propValue);
+                propNode = propNode.getNextSibling().getNextSibling();
+            }
         }
     }
 
