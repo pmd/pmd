@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class PMD {
+
     public static final String EOL = System.getProperty("line.separator", "\n");
 
     /**
@@ -61,31 +62,13 @@ public class PMD {
     }
 
     public static void main(String[] args) {
-        if (args.length < 3) {
-            usage();
-            System.exit(1);
-        }
-
-        String inputFileName = args[0];
-        String reportFormat = args[1];
-        String ruleSets = args[2];
-
-        boolean shortNames = false;
-        boolean debug = false;
-        for (int i=0; i<args.length; i++) {
-            if (args[i].equals("-shortnames")) {
-                shortNames = true;
-            }
-            if (args[i].equals("-debug")) {
-                debug = true;
-            }
-        }
+        CommandLineOptions opts = new CommandLineOptions(args);
 
         List files;
-        if (inputFileName.indexOf(',') != -1) {
-            files = collectFromCommaDelimitedString(inputFileName);
+        if (opts.containsCommaSeparatedFileList()) {
+            files = collectFromCommaDelimitedString(opts.getInputFileName());
         } else {
-            files = collectFilesFromOneName(inputFileName);
+            files = collectFilesFromOneName(opts.getInputFileName());
         }
 
         PMD pmd = new PMD();
@@ -95,17 +78,17 @@ public class PMD {
 
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
-            RuleSet rules = ruleSetFactory.createRuleSet(ruleSets);
+            RuleSet rules = ruleSetFactory.createRuleSet(opts.getRulesets());
             for (Iterator i = files.iterator(); i.hasNext();) {
                 File file = (File) i.next();
-                ctx.setSourceCodeFilename(glomName(shortNames, inputFileName, file));
+                ctx.setSourceCodeFilename(glomName(opts.shortNamesEnabled(), opts.getInputFileName(), file));
                 try {
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (PMDException pmde) {
-                    if (debug) {
+                    if (opts.debugEnabled()) {
                         pmde.getReason().printStackTrace();
                     }
-                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), glomName(shortNames, inputFileName, file)));
+                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), glomName(opts.shortNamesEnabled(), opts.getInputFileName(), file)));
                 }
             }
         } catch (FileNotFoundException fnfe) {
@@ -115,29 +98,25 @@ public class PMD {
         }
 
         Renderer renderer = null;
-        if (reportFormat.equals("xml")) {
+        if (opts.getReportFormat().equals("xml")) {
             renderer = new XMLRenderer();
-        } else if (reportFormat.equals("ideaj")) {
+        } else if (opts.getReportFormat().equals("ideaj")) {
             renderer = new IDEAJRenderer(args);
-        } else if (reportFormat.equals("text")) {
+        } else if (opts.getReportFormat().equals("text")) {
             renderer = new TextRenderer();
-        } else if (reportFormat.equals("emacs")) {
+        } else if (opts.getReportFormat().equals("emacs")) {
             renderer = new EmacsRenderer();
-        } else if (reportFormat.equals("csv")) {
+        } else if (opts.getReportFormat().equals("csv")) {
             renderer = new CSVRenderer();
-        } else if (reportFormat.equals("html")) {
+        } else if (opts.getReportFormat().equals("html")) {
             renderer = new HTMLRenderer();
-        } else if (!reportFormat.equals("")) {
+        } else if (!opts.getReportFormat().equals("")) {
             try {
-                renderer = (Renderer)Class.forName(reportFormat).newInstance();
+                renderer = (Renderer)Class.forName(opts.getReportFormat()).newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
             }
-        } else {
-            System.out.println("Please supply a renderer name");
-            usage();
-            return;
         }
         System.out.println(renderer.render(ctx.getReport()));
     }
@@ -182,13 +161,4 @@ public class PMD {
         return files;
     }
 
-    private static void usage() {
-        final String EOL = System.getProperty("line.separator");
-        System.err.println(EOL +
-            "Please pass in a java source code filename or directory, a report format, " + EOL +
-            "and a ruleset filename or a comma-delimited string of ruleset filenames." + EOL +
-            "For example: " + EOL +
-            "c:\\> java -jar pmd-1.2.1.jar c:\\my\\source\\code html rulesets/unusedcode.xml," +
-            "rulesets/imports.xml" + EOL);
-    }
 }
