@@ -43,14 +43,11 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
         setEditorKit(new HTMLEditorKit());
         setEditable(false);
 
-        RuleSetFactory ruleSetFactory;
-        Iterator ruleSets;
-
         m_directoryTable = directoryTable;
         m_pmd = new PMD();
         m_ruleContext = new RuleContext();
-        ruleSetFactory = new RuleSetFactory();
-        ruleSets = null;
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        Iterator ruleSets = null;
         m_ruleSet = new RuleSet();
 
         try
@@ -140,13 +137,8 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
                                   m_resultsViewer.m_ruleSet,
                                   m_resultsViewer.m_ruleContext);
 
-                HTMLResultRenderer renderer;
-                String htmlText;
-
-                renderer = new HTMLResultRenderer();
-                htmlText = renderer.render(m_file.getPath(), m_ruleContext.getReport());
-
-                setText(htmlText);
+                HTMLResultRenderer renderer = new HTMLResultRenderer();
+                setText(renderer.render(m_file.getPath(), m_ruleContext.getReport()));
             }
             catch (FileNotFoundException exception)
             {
