@@ -345,11 +345,7 @@ public class SimpleNode implements Node {
      * @return <code>true</code> if there is at lease on child of the given type and <code>false</code> in any other case
      */
     public final boolean containsChildOfType(Class type) {
-        List l = findChildrenOfType(type);
-        if (l!=null && !l.isEmpty()) {
-            return true;
-        }
-        return false;
+        return !findChildrenOfType(type).isEmpty();
     }
 }
 
