@@ -15,6 +15,8 @@ import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTReferenceType;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,9 +54,15 @@ public class CloseConnection extends AbstractRule {
             ASTLocalVariableDeclaration var = (ASTLocalVariableDeclaration) it.next();
             ASTType type = (ASTType) var.jjtGetChild(0);
 
-            if (type.jjtGetChild(0) instanceof ASTName && ((ASTName) type.jjtGetChild(0)).getImage().equals("Connection")) {
-                ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.jjtGetChild(1).jjtGetChild(0);
-                ids.add(id);
+            if (type.jjtGetChild(0) instanceof ASTReferenceType) {
+                ASTReferenceType ref = (ASTReferenceType)type.jjtGetChild(0);
+                if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
+                    ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType)ref.jjtGetChild(0);
+                    if (clazz.getImage().equals("Connection")) {
+                        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.jjtGetChild(1).jjtGetChild(0);
+                        ids.add(id);
+                    }
+                }
             }
         }
 
