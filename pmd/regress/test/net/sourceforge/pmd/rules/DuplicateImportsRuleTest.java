@@ -8,6 +8,7 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.rules.DuplicateImportsRule;
+import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import org.cougaar.util.pmd.DontCreateTimersRule;
 
 public class DuplicateImportsRuleTest extends RuleTst {
@@ -15,9 +16,16 @@ public class DuplicateImportsRuleTest extends RuleTst {
         super(name);
     }
 
+    private DuplicateImportsRule rule;
+
+    public void setUp() {
+        rule = new DuplicateImportsRule();
+        rule.setMessage("Avoid this stuff -> ''{0}''");
+    }
+
     public void test1() throws Throwable {
-        Report report = process("DuplicateImports.java", new DuplicateImportsRule());
+        Report report = process("DuplicateImports.java", rule);
         assertEquals(1, report.size());
-        assertEquals(new DuplicateImportsRule(), ((RuleViolation)report.iterator().next()).getRule());
+        assertEquals(rule, ((RuleViolation)report.iterator().next()).getRule());
     }
 }

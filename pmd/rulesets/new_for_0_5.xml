@@ -9,6 +9,7 @@ These are new ones for 0.5
         message="Avoid unnecessary casts"
         class="net.sourceforge.pmd.rules.UnnecessaryCastRule">
     <description>
+    foo
     </description>
 
     <example>

@@ -20,11 +20,15 @@ public class DuplicateImportsRule extends AbstractRule {
     private Set allImports;
     private boolean inImportCtx;
 
-    public Object visit(ASTImportDeclaration node, Object data) {
-        inImportCtx = true;
+    public Object visit(ASTCompilationUnit node, Object data) {
         allImports = new HashSet();
         super.visit(node,data);
         allImports = new HashSet();
+        return data;
+    }
+    public Object visit(ASTImportDeclaration node, Object data) {
+        inImportCtx = true;
+        super.visit(node,data);
         inImportCtx = false;
         return data;
     }
