@@ -5,22 +5,16 @@
 These are new ones for 0.7
   </description>
 
-
- <rule name="UnnecessaryCast"
-        message="Avoid unnecessary casts"
-        class="net.sourceforge.pmd.rules.UnnecessaryCastRule">
+    <rule name="UnusedPrivateMethod"
+        message="Avoid unused private methods such as ''{0}''"
+        class="net.sourceforge.pmd.rules.UnusedPrivateMethodRule">
     <description>
-A variable is casted to one of its supertypes or interfaces.  Usually
-indicates that the programmer is not clear on the class structure they
-are working with.
+Unused Private Method detects when a private method is declared but is unused.
     </description>
-
     <example>
 <![CDATA[
-public Collection doSomething() { 
-  List list = new ArrayList();
-
-  return (Collection) list; // Unnecessary Cast
+public class Something {
+ private void foo() {} // unused
 }
 ]]>
     </example>

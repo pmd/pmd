@@ -76,7 +76,6 @@ public class PMD {
         RuleContext ctx = new RuleContext();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream(ruleSetFilename));
-
         ctx.setReport(new Report());
 
         Renderer rend = null;

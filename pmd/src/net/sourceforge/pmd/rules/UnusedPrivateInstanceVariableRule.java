@@ -12,7 +12,7 @@ import java.text.MessageFormat;
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
 
-public class UnusedPrivateInstanceVariableRule extends AbstractRule implements Rule {
+public class UnusedPrivateInstanceVariableRule extends AbstractRule {
 
     private Stack nameSpaces = new Stack();
 

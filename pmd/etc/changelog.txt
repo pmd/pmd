@@ -1,5 +1,6 @@
 ???? 2002 - 0.7:
-Fixed bug 583482 - EmptyCatchBlock and EmptyFinallyBlock report the try statement line number.
+Added new rule: UnusedPrivateMethodRule
+Fixed bug 583482 - EmptyCatchBlock and EmptyFinallyBlock no longer report an incorrect line number.
 
 July 18 2002 - 0.6:
 Added new rules: ExcessiveClassLength, ExcessiveMethodLength

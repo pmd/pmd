@@ -11,6 +11,10 @@ public class ASTMethodDeclarator extends SimpleNode {
     super(p, id);
   }
 
+    public int getParameterCount() {
+        return this.jjtGetChild(0).jjtGetNumChildren();
+    }
+
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
