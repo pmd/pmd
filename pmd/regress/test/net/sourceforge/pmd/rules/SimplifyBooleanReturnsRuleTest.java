@@ -14,9 +14,8 @@ public class SimplifyBooleanReturnsRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        // TODO once this works right this test will fail
         Report report = process("SimplifyBooleanReturns1.java", new SimplifyBooleanReturnsRule());
-        assertEquals(0, report.size());
+        assertEquals(1, report.size());
     }
 
     public void test2() throws Throwable {
@@ -24,5 +23,9 @@ public class SimplifyBooleanReturnsRuleTest extends RuleTst {
         assertEquals(1, report.size());
     }
 
+    public void test3() throws Throwable {
+        Report report = process("SimplifyBooleanReturns3.java", new SimplifyBooleanReturnsRule());
+        assertTrue(report.isEmpty());
+    }
 
 }

@@ -7,16 +7,18 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTReturnStatement;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.ast.*;
 
 public class SimplifyBooleanReturnsRule extends AbstractRule {
 
     public Object visit(ASTIfStatement node, Object data) {
         // only deal with if..then..else stmts
         if (node.jjtGetNumChildren() != 3) {
+            return super.visit(node, data);
+        }
+
+        // don't bother if either the if or the else block is empty
+        if (node.jjtGetChild(1).jjtGetNumChildren() == 0 || node.jjtGetChild(2).jjtGetNumChildren() == 0) {
             return super.visit(node, data);
         }
 
@@ -38,7 +40,20 @@ public class SimplifyBooleanReturnsRule extends AbstractRule {
          && terminatesInBooleanLiteral((SimpleNode)node.jjtGetChild(2).jjtGetChild(0))) {
             RuleContext ctx = (RuleContext)data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
-        } else if (false) {
+        } else if (node.jjtGetChild(1).jjtGetChild(0) instanceof ASTBlock
+            && node.jjtGetChild(1).jjtGetChild(0).jjtGetNumChildren() == 1
+            && node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0) instanceof ASTBlockStatement
+            && node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTStatement
+            && node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTReturnStatement
+            && node.jjtGetChild(2).jjtGetChild(0) instanceof ASTBlock
+            && node.jjtGetChild(2).jjtGetChild(0).jjtGetNumChildren() == 1
+            && node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0) instanceof ASTBlockStatement
+            && node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTStatement
+            && node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTReturnStatement
+            && terminatesInBooleanLiteral((SimpleNode)node.jjtGetChild(1).jjtGetChild(0))
+            && terminatesInBooleanLiteral((SimpleNode)node.jjtGetChild(2).jjtGetChild(0))) {
+            RuleContext ctx = (RuleContext)data;
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
             // second case
             // If
             // Expr
