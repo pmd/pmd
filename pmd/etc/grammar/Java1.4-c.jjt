@@ -97,7 +97,7 @@ public class JavaParser {
 
   private boolean enumLookahead() {
     int x = 1;
-    Token tok = null;
+    Token tok;
     while (true) {
       tok = getToken(x);
       if (tok.image.equals("static") ||
@@ -449,7 +449,7 @@ void ClassDeclaration() :
 }
 
 void UnmodifiedClassDeclaration() :
-{ Token t = null; }
+{ Token t; }
 {
   "class" t=<IDENTIFIER>
   { jjtThis.setImage( t.image ); }
@@ -505,7 +505,7 @@ void ClassBodyDeclaration() :
 }
 
 void EnumDeclaration() :
-{Token t = null;}
+{Token t;}
 {
   ( "public"            { jjtThis.setPublic(); }
   | "protected"         { jjtThis.setProtected(); }
@@ -533,7 +533,7 @@ void EnumDeclaration() :
 }
 
 void EnumElement() :
-{Token t = null;}
+{Token t;}
 {
     t = <IDENTIFIER> {jjtThis.setImage(t.image);}
     [ Arguments() ][ ClassBody() ]
@@ -572,7 +572,7 @@ void NestedInterfaceDeclaration() :
 }
 
 void UnmodifiedInterfaceDeclaration() :
-{Token t = null; }
+{Token t; }
 {
   "interface" t=<IDENTIFIER>
   {
@@ -622,8 +622,8 @@ void VariableDeclarator() :
 
 void VariableDeclaratorId() :
 {
-  String s = null;
-  Token t = null;
+  String s;
+  Token t;
 }
 {
   t=<IDENTIFIER>
@@ -670,7 +670,7 @@ void MethodDeclaration() :
 
 void MethodDeclarator() :
 {
-  Token t = null;
+  Token t;
 }
 {
   t=<IDENTIFIER>
@@ -768,7 +768,7 @@ void Name() :
  */
 {
   StringBuffer s = new StringBuffer();
-  Token t = null;
+  Token t;
 }
 {
   t=<IDENTIFIER>
@@ -967,7 +967,7 @@ void PrimaryExpression() :
 
 void PrimaryPrefix() :
 {
-  Token t = null;
+  Token t;
 }
 {
   Literal()
@@ -981,8 +981,8 @@ void PrimaryPrefix() :
 
 void PrimarySuffix() :
 {
-  String s = null;
-  Token t = null;
+  String s;
+  Token t;
 }
 { LOOKAHEAD(2) "." "this"
 | LOOKAHEAD(2) "." "super"
@@ -995,7 +995,7 @@ void PrimarySuffix() :
 void Literal() :
 {}
 {
-{ Token t = null;}
+{ Token t;}
   t=<INTEGER_LITERAL> {jjtThis.setImage(t.image);}
 | t=<FLOATING_POINT_LITERAL> {jjtThis.setImage(t.image);}
 | t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image);}
