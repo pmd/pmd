@@ -16,11 +16,6 @@
       net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectory(view);
     </CODE>
 	</ACTION>
-	<ACTION NAME="pmd-check-directory-recursively">
-		<CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectoryRecursively(view);
-    </CODE>
-	</ACTION>
 	<ACTION NAME="pmd-clear-errorlist">
 		<CODE>
         net.sourceforge.pmd.jedit.PMDJEditPlugin.clearErrorList();
@@ -33,17 +28,7 @@
 	</ACTION>
 	<ACTION NAME="cpd-dir">
 		<CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.cpdDir(view,false);
-    </CODE>
-	</ACTION>
-	<ACTION NAME="cpd-dir-recursively">
-		<CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.cpdDir(view,true);
-    </CODE>
-	</ACTION>
-	<ACTION NAME="pmd-check-file">
-		<CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.checkFile(view,browser);
-    </CODE>
+			net.sourceforge.pmd.jedit.PMDJEditPlugin.cpdDir(view);
+		</CODE>
 	</ACTION>
 </ACTIONS>

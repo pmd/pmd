@@ -1,5 +1,8 @@
 ??? - 2.5
 - Updated to PMD 1.8
+- Removed Recursive Directory options and integrated them into FileChooser itself.
+- Complete redesign of the way PMD Rules and Copy/Paste Detector are used.
+- Lots of code cleanup.
 
 22 March 2004- 2.4
 - Optimized usage of ErrorSource for faster Error Highlighting.

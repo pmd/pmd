@@ -78,7 +78,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     SelectedRules rules;
     JTextArea exampleTextArea= new JTextArea(10, 50);
-    private JCheckBox directoryPopupBox, chkRunPMDOnSave, chkShowProgressBar;
+    private JCheckBox chkRunPMDOnSave, chkShowProgressBar;
 	JTextField txtMinTileSize;
 	JTextField txtCustomRules;
 	JComboBox comboRenderer;
@@ -114,11 +114,6 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         textPanel.setBorder(BorderFactory.createTitledBorder("Example"));
         textPanel.add(new JScrollPane(exampleTextArea));
 
-        if (!jEdit.getProperties().containsKey(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
-            jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP, false);
-        }
-
-        directoryPopupBox = new JCheckBox("Ask for directory?", jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP));
         chkRunPMDOnSave = new JCheckBox("Run PMD on Save", jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE));
 		chkShowProgressBar = new JCheckBox("Show PMD Progress Bar", jEdit.getBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS));
 
@@ -144,7 +139,6 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         mainPanel.add(rulesPanel, BorderLayout.NORTH);
         mainPanel.add(textPanel, BorderLayout.CENTER);
 
-		pnlSouth.add(directoryPopupBox);
 		pnlSouth.add(chkRunPMDOnSave);
 		pnlSouth.add(pnlTileSize);
         mainPanel.add(pnlSouth, BorderLayout.SOUTH);
@@ -153,9 +147,6 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     public void _save() {
         rules.save();
-        if (directoryPopupBox != null) {
-            jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP, directoryPopupBox.isSelected());
-        }
 
 		jEdit.setIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,(txtMinTileSize.getText().length() == 0)?100:Integer.parseInt(txtMinTileSize.getText()));
 		jEdit.setBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE,(chkRunPMDOnSave.isSelected()));
