@@ -30,7 +30,7 @@
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\Activation\ServerManagerImpl.java</name><ruleviolation><line>97</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>252</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>454</line><description>Found unused local variable 'serverORBAndPortList'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\Activation\ServerTableEntry.java</name><ruleviolation><line>289</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>377</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>410</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>427</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>473</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>322</line><description>Found unused local variable 'exitVal'</description></ruleviolation><ruleviolation><line>346</line><description>Found unused local variable 'exitVal'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\Activation\ServerTableEntry.java</name><ruleviolation><line>289</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>377</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>410</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>427</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>473</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>322</line><description>Found unused local variable 'exitVal'</description></ruleviolation><ruleviolation><line>346</line><description>Found unused local variable 'exitVal'</description></ruleviolation><ruleviolation><line>87</line><description>Found unused private instance variable 'orbIdFile'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\Activation\ServerTool.java</name><ruleviolation><line>200</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>320</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>321</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>372</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>455</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>640</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>724</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>45</line><description>Found unused local variable 'serverid'</description></ruleviolation></file>
@@ -45,10 +45,10 @@
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\corba\InitialNamingClient.java</name><ruleviolation><line>534</line><description>Found unused local variable 'result'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\corba\ORB.java</name><ruleviolation><line>661</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>944</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>976</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>992</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1010</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1021</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1032</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1042</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1051</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1061</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1101</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1110</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1887</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1927</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2508</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2530</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>839</line><description>Found unused local variable 'finalArg'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\corba\ORB.java</name><ruleviolation><line>661</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>944</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>976</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>992</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1010</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1021</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1032</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1042</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1051</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1061</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1101</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1110</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1887</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1927</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2508</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2530</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>839</line><description>Found unused local variable 'finalArg'</description></ruleviolation><ruleviolation><line>283</line><description>Found unused private instance variable 'savedCode'</description></ruleviolation><ruleviolation><line>282</line><description>Found unused private instance variable 'savedId'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\corba\RequestImpl.java</name><ruleviolation><line>257</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>353</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>484</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>646</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>608</line><description>Avoid empty IF statements</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\corba\RequestImpl.java</name><ruleviolation><line>257</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>353</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>484</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>646</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>608</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>69</line><description>Found unused private instance variable '_paramCodes'</description></ruleviolation><ruleviolation><line>71</line><description>Found unused private instance variable '_paramObjects'</description></ruleviolation><ruleviolation><line>70</line><description>Found unused private instance variable '_paramLongs'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\corba\ServerDelegate.java</name><ruleviolation><line>203</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>250</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>440</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>365</line><description>Found unused local variable 'is'</description></ruleviolation></file>
@@ -63,10 +63,13 @@
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\corba\TypeCodeImpl.java</name><ruleviolation><line>750</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>750</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1112</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1164</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1353</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1353</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1396</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2793</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2794</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2093</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>2121</line><description>Found unused local variable 'topPos'</description></ruleviolation></file>
 
 <file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\core\CodeSetConversion.java</name><ruleviolation><line>673</line><description>Found unused private instance variable 'cache'</description></ruleviolation></file>
+
+<file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\core\IOR.java</name><ruleviolation><line>452</line><description>Found unused local variable 'oid'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\CosNaming\BootstrapServer.java</name><ruleviolation><line>109</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>153</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>359</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\CosNaming\BootstrapServer.java</name><ruleviolation><line>109</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>153</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>359</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>159</line><description>Found unused private instance variable 'listenerThread'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\CosNaming\InterOperableNamingImpl.java</name><ruleviolation><line>368</line><description>Found unused local variable 'byteCount'</description></ruleviolation></file>
@@ -112,6 +115,12 @@
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\iiop\BufferManagerReadStream.java</name><ruleviolation><line>63</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\iiop\BufferManagerWriteGrow.java</name><ruleviolation><line>17</line><description>Found unused private instance variable '_bbwi'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\iiop\BufferManagerWriteStream.java</name><ruleviolation><line>23</line><description>Found unused private instance variable 'finalFragment'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\iiop\CDRInputStream_1_0.java</name><ruleviolation><line>2243</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1928</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>1419</line><description>Found unused local variable 'helperClass'</description></ruleviolation><ruleviolation><line>1421</line><description>Found unused local variable 'argTypes'</description></ruleviolation></file>
@@ -174,7 +183,7 @@
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\io\IIOPInputStream.java</name><ruleviolation><line>814</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>1062</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>317</line><description>Found unused local variable 'obj'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\io\IIOPOutputStream.java</name><ruleviolation><line>540</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>541</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>615</line><description>Found unused local variable 'className'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\io\IIOPOutputStream.java</name><ruleviolation><line>540</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>541</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>615</line><description>Found unused local variable 'className'</description></ruleviolation><ruleviolation><line>64</line><description>Found unused private instance variable 'writeObjectArglist'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\io\LibraryManager.java</name><ruleviolation><line>45</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -225,7 +234,7 @@
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\PCosNaming\NamingContextImpl.java</name><ruleviolation><line>469</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1039</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\PCosNaming\ServantManagerImpl.java</name><ruleviolation><line>128</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>154</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>162</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>225</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>239</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\PCosNaming\ServantManagerImpl.java</name><ruleviolation><line>128</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>154</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>162</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>225</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>239</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>71</line><description>Found unused private instance variable 'counter'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\POA\GenericPOAClientSC.java</name><ruleviolation><line>215</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>350</line><description>Avoid empty IF statements</description></ruleviolation></file>
@@ -237,13 +246,13 @@
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\POA\POACurrent.java</name><ruleviolation><line>157</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\POA\POAImpl.java</name><ruleviolation><line>238</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>248</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>652</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>663</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1083</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\POA\POAImpl.java</name><ruleviolation><line>238</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>248</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>652</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>663</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1083</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>98</line><description>Found unused private instance variable 'normalState'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\POA\POAManagerImpl.java</name><ruleviolation><line>57</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\POA\POAORB.java</name><ruleviolation><line>563</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\POA\POAORB.java</name><ruleviolation><line>563</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>77</line><description>Found unused private instance variable 'persistentServerName'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\corba\se\internal\POA\POAPolicyCombinationValidator.java</name><ruleviolation><line>125</line><description>Found unused local variable 'returnIndex'</description></ruleviolation></file>
@@ -279,7 +288,7 @@
 <name>C:\j2sdk1.4.0\src\com\sun\imageio\plugins\jpeg\DQTMarkerSegment.java</name><ruleviolation><line>257</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\imageio\plugins\jpeg\JFIFMarkerSegment.java</name><ruleviolation><line>814</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\imageio\plugins\jpeg\JFIFMarkerSegment.java</name><ruleviolation><line>814</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>72</line><description>Found unused private instance variable 'debug'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\imageio\plugins\jpeg\JPEG.java</name><ruleviolation><line>202</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -315,6 +324,9 @@
 <name>C:\j2sdk1.4.0\src\com\sun\java\swing\plaf\motif\MotifDesktopPaneUI.java</name><ruleviolation><line>232</line><description>Found unused local variable 'currentIcon'</description></ruleviolation></file>
 
 <file>
+<name>C:\j2sdk1.4.0\src\com\sun\java\swing\plaf\motif\MotifFileChooserUI.java</name><ruleviolation><line>57</line><description>Found unused private instance variable 'directoryPanel'</description></ruleviolation></file>
+
+<file>
 <name>C:\j2sdk1.4.0\src\com\sun\java\swing\plaf\motif\MotifIconFactory.java</name><ruleviolation><line>99</line><description>Found unused local variable 'isEnabled'</description></ruleviolation><ruleviolation><line>164</line><description>Found unused local variable 'controlShadow'</description></ruleviolation><ruleviolation><line>266</line><description>Found unused local variable 'h'</description></ruleviolation><ruleviolation><line>273</line><description>Found unused local variable 'isEnabled'</description></ruleviolation><ruleviolation><line>265</line><description>Found unused local variable 'w'</description></ruleviolation><ruleviolation><line>380</line><description>Found unused local variable 'w'</description></ruleviolation></file>
 
 <file>
@@ -330,7 +342,7 @@
 <name>C:\j2sdk1.4.0\src\com\sun\java\swing\plaf\windows\WindowsDesktopManager.java</name><ruleviolation><line>67</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\java\swing\plaf\windows\WindowsFileChooserUI.java</name><ruleviolation><line>826</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>829</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>1305</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>1308</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>637</line><description>Found unused local variable 'fileChooser'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\java\swing\plaf\windows\WindowsFileChooserUI.java</name><ruleviolation><line>826</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>829</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>1305</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>1308</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>637</line><description>Found unused local variable 'fileChooser'</description></ruleviolation><ruleviolation><line>160</line><description>Found unused private instance variable 'newFolderFile'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\java\swing\plaf\windows\WindowsIconFactory.java</name><ruleviolation><line>384</line><description>Found unused local variable 'model'</description></ruleviolation></file>
@@ -369,7 +381,7 @@
 <name>C:\j2sdk1.4.0\src\com\sun\security\auth\PolicyFile.java</name><ruleviolation><line>721</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>440</line><description>Avoid empty IF statements</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\com\sun\security\auth\PolicyParser.java</name><ruleviolation><line>181</line><description>Avoid empty IF statements</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\com\sun\security\auth\PolicyParser.java</name><ruleviolation><line>181</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>86</line><description>Found unused private instance variable 'linenum'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\com\sun\security\auth\SubjectCodeSource.java</name><ruleviolation><line>359</line><description>Found unused local variable 'finalSubject'</description></ruleviolation></file>
@@ -378,7 +390,22 @@
 <name>C:\j2sdk1.4.0\src\java\awt\AWTKeyStroke.java</name><ruleviolation><line>194</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\awt\color\ICC_Profile.java</name><ruleviolation><line>1664</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1678</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1694</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1706</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>753</line><description>Found unused local variable 'fileName'</description></ruleviolation><ruleviolation><line>1470</line><description>Found unused local variable 'theU8Fixed8'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\awt\Button.java</name><ruleviolation><line>406</line><description>Found unused private instance variable 'buttonSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\Checkbox.java</name><ruleviolation><line>556</line><description>Found unused private instance variable 'checkboxSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\CheckboxMenuItem.java</name><ruleviolation><line>395</line><description>Found unused private instance variable 'checkboxMenuItemSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\Choice.java</name><ruleviolation><line>642</line><description>Found unused private instance variable 'choiceSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\color\ICC_Profile.java</name><ruleviolation><line>1664</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1678</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1694</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1706</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>753</line><description>Found unused local variable 'fileName'</description></ruleviolation><ruleviolation><line>1470</line><description>Found unused local variable 'theU8Fixed8'</description></ruleviolation><ruleviolation><line>1747</line><description>Found unused private instance variable 'iccProfileSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\Color.java</name><ruleviolation><line>178</line><description>Found unused private instance variable 'pData'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\awt\ColorPaintContext.java</name><ruleviolation><line>39</line><description>Found unused local variable 'array'</description></ruleviolation></file>
@@ -390,10 +417,10 @@
 <name>C:\j2sdk1.4.0\src\java\awt\ComponentOrientation.java</name><ruleviolation><line>162</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\awt\Container.java</name><ruleviolation><line>952</line><description>Found unused local variable 'shouldinvalidate'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\awt\Container.java</name><ruleviolation><line>952</line><description>Found unused local variable 'shouldinvalidate'</description></ruleviolation><ruleviolation><line>2500</line><description>Found unused private instance variable 'containerSerializedDataVersion'</description></ruleviolation><ruleviolation><line>3253</line><description>Found unused private instance variable 'nativeCursor'</description></ruleviolation><ruleviolation><line>3230</line><description>Found unused private instance variable 'focus'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\awt\Cursor.java</name><ruleviolation><line>265</line><description>Found unused local variable 'flocalized'</description></ruleviolation><ruleviolation><line>264</line><description>Found unused local variable 'fy'</description></ruleviolation><ruleviolation><line>263</line><description>Found unused local variable 'fx'</description></ruleviolation><ruleviolation><line>235</line><description>Found unused local variable 'fileName'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\awt\Cursor.java</name><ruleviolation><line>265</line><description>Found unused local variable 'flocalized'</description></ruleviolation><ruleviolation><line>264</line><description>Found unused local variable 'fy'</description></ruleviolation><ruleviolation><line>263</line><description>Found unused local variable 'fx'</description></ruleviolation><ruleviolation><line>235</line><description>Found unused local variable 'fileName'</description></ruleviolation><ruleviolation><line>182</line><description>Found unused private instance variable 'pData'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\awt\datatransfer\MimeType.java</name><ruleviolation><line>310</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -423,13 +450,16 @@
 <name>C:\j2sdk1.4.0\src\java\awt\EventDispatchThread.java</name><ruleviolation><line>75</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
+<name>C:\j2sdk1.4.0\src\java\awt\EventQueue.java</name><ruleviolation><line>137</line><description>Found unused private instance variable 'name'</description></ruleviolation><ruleviolation><line>112</line><description>Found unused private instance variable 'classLoader'</description></ruleviolation></file>
+
+<file>
 <name>C:\j2sdk1.4.0\src\java\awt\font\NumericShaper.java</name><ruleviolation><line>824</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\awt\font\StyledParagraph.java</name><ruleviolation><line>429</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>447</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\awt\font\TextLayout.java</name><ruleviolation><line>660</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1020</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\awt\font\TextLayout.java</name><ruleviolation><line>660</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1020</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>386</line><description>Found unused private instance variable 'caretsInLigaturesAreAllowed'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\awt\font\TextLine.java</name><ruleviolation><line>601</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>618</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1107</line><description>Found unused local variable 'rangeMax'</description></ruleviolation><ruleviolation><line>1106</line><description>Found unused local variable 'rangeMin'</description></ruleviolation><ruleviolation><line>1095</line><description>Found unused local variable 'canRejustify'</description></ruleviolation><ruleviolation><line>1033</line><description>Found unused local variable 'leftHang'</description></ruleviolation></file>
@@ -438,7 +468,10 @@
 <name>C:\j2sdk1.4.0\src\java\awt\font\TextMeasurer.java</name><ruleviolation><line>205</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\awt\Font.java</name><ruleviolation><line>458</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>472</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>835</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>876</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>918</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>965</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1418</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1947</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\awt\Font.java</name><ruleviolation><line>458</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>472</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>835</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>876</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>918</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>965</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1418</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1947</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>247</line><description>Found unused private instance variable 'pData'</description></ruleviolation><ruleviolation><line>1007</line><description>Found unused private instance variable 'fontSerializedDataVersion'</description></ruleviolation><ruleviolation><line>253</line><description>Found unused private instance variable 'canRotate'</description></ruleviolation><ruleviolation><line>248</line><description>Found unused private instance variable 'pNativeFont'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\Frame.java</name><ruleviolation><line>1001</line><description>Found unused private instance variable 'frameSerializedDataVersion'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\awt\GridBagLayout.java</name><ruleviolation><line>809</line><description>Found unused local variable 'start'</description></ruleviolation><ruleviolation><line>809</line><description>Found unused local variable 'size'</description></ruleviolation><ruleviolation><line>807</line><description>Found unused local variable 'j'</description></ruleviolation></file>
@@ -451,6 +484,9 @@
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\awt\image\ColorConvertOp.java</name><ruleviolation><line>729</line><description>Found unused local variable 'list'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\image\ColorModel.java</name><ruleviolation><line>139</line><description>Found unused private instance variable 'pData'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\awt\image\ComponentColorModel.java</name><ruleviolation><line>2799</line><description>Found unused local variable 'dataSize'</description></ruleviolation></file>
@@ -471,16 +507,31 @@
 <name>C:\j2sdk1.4.0\src\java\awt\image\SampleModel.java</name><ruleviolation><line>559</line><description>Found unused local variable 'o'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\awt\MenuItem.java</name><ruleviolation><line>363</line><description>Avoid empty IF statements</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\awt\List.java</name><ruleviolation><line>1110</line><description>Found unused private instance variable 'listSerializedDataVersion'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\awt\TextComponent.java</name><ruleviolation><line>138</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>435</line><description>Found unused local variable 'text'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\awt\Menu.java</name><ruleviolation><line>489</line><description>Found unused private instance variable 'menuSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\MenuBar.java</name><ruleviolation><line>374</line><description>Found unused private instance variable 'menuBarSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\MenuItem.java</name><ruleviolation><line>363</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>618</line><description>Found unused private instance variable 'menuItemSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\Scrollbar.java</name><ruleviolation><line>1019</line><description>Found unused private instance variable 'scrollbarSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\TextComponent.java</name><ruleviolation><line>138</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>435</line><description>Found unused local variable 'text'</description></ruleviolation><ruleviolation><line>699</line><description>Found unused private instance variable 'textComponentSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\awt\TextField.java</name><ruleviolation><line>602</line><description>Found unused private instance variable 'textFieldSerializedDataVersion'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\awt\Toolkit.java</name><ruleviolation><line>622</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1412</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1433</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>604</line><description>Found unused local variable 'sep'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\awt\Window.java</name><ruleviolation><line>1782</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\awt\Window.java</name><ruleviolation><line>1782</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>126</line><description>Found unused private instance variable 'showWithParent'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\beans\beancontext\BeanContextServicesSupport.java</name><ruleviolation><line>1037</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -507,13 +558,16 @@
 <name>C:\j2sdk1.4.0\src\java\beans\MetaData.java</name><ruleviolation><line>860</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>892</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>566</line><description>Found unused local variable 'statementCount'</description></ruleviolation></file>
 
 <file>
+<name>C:\j2sdk1.4.0\src\java\beans\PropertyChangeSupport.java</name><ruleviolation><line>422</line><description>Found unused private instance variable 'propertyChangeSupportSerializedDataVersion'</description></ruleviolation></file>
+
+<file>
 <name>C:\j2sdk1.4.0\src\java\beans\PropertyEditorManager.java</name><ruleviolation><line>94</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>107</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>166</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\beans\SimpleBeanInfo.java</name><ruleviolation><line>101</line><description>Found unused local variable 'c'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\beans\VetoableChangeSupport.java</name><ruleviolation><line>312</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\beans\VetoableChangeSupport.java</name><ruleviolation><line>312</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>409</line><description>Found unused private instance variable 'vetoableChangeSupportSerializedDataVersion'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\beans\XMLDecoder.java</name><ruleviolation><line>363</line><description>Avoid empty IF statements</description></ruleviolation></file>
@@ -552,7 +606,7 @@
 <name>C:\j2sdk1.4.0\src\java\lang\Boolean.java</name><ruleviolation><line>207</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>208</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\lang\ClassLoader.java</name><ruleviolation><line>530</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>913</line><description>Found unused local variable 'e'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\lang\ClassLoader.java</name><ruleviolation><line>530</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>913</line><description>Found unused local variable 'e'</description></ruleviolation><ruleviolation><line>1321</line><description>Found unused private instance variable 'nativeLibraries'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\lang\FloatingDecimal.java</name><ruleviolation><line>1212</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -570,7 +624,7 @@
 <name>C:\j2sdk1.4.0\src\java\lang\ref\Finalizer.java</name><ruleviolation><line>88</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>118</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\lang\ref\Reference.java</name><ruleviolation><line>114</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\lang\ref\Reference.java</name><ruleviolation><line>114</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>75</line><description>Found unused private instance variable 'discovered'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\lang\reflect\Field.java</name><ruleviolation><line>837</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -594,7 +648,16 @@
 <name>C:\j2sdk1.4.0\src\java\lang\Terminator.java</name><ruleviolation><line>46</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\math\BigInteger.java</name><ruleviolation><line>2006</line><description>Found unused local variable 'done'</description></ruleviolation><ruleviolation><line>2699</line><description>Found unused local variable 'byteLength'</description></ruleviolation><ruleviolation><line>2718</line><description>Found unused local variable 'byteLength'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\lang\Thread.java</name><ruleviolation><line>119</line><description>Found unused private instance variable 'threadQ'</description></ruleviolation><ruleviolation><line>120</line><description>Found unused private instance variable 'eetop'</description></ruleviolation><ruleviolation><line>123</line><description>Found unused private instance variable 'single_step'</description></ruleviolation><ruleviolation><line>129</line><description>Found unused private instance variable 'stillborn'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\lang\ThreadLocal.java</name><ruleviolation><line>62</line><description>Found unused private instance variable 'threadLocalHashCode'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\lang\Throwable.java</name><ruleviolation><line>136</line><description>Found unused private instance variable 'backtrace'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\math\BigInteger.java</name><ruleviolation><line>2006</line><description>Found unused local variable 'done'</description></ruleviolation><ruleviolation><line>2699</line><description>Found unused local variable 'byteLength'</description></ruleviolation><ruleviolation><line>2718</line><description>Found unused local variable 'byteLength'</description></ruleviolation><ruleviolation><line>142</line><description>Found unused private instance variable 'firstNonzeroByteNum'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\math\MutableBigInteger.java</name><ruleviolation><line>999</line><description>Found unused local variable 'q'</description></ruleviolation></file>
@@ -606,10 +669,16 @@
 <name>C:\j2sdk1.4.0\src\java\net\HttpURLConnection.java</name><ruleviolation><line>253</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
+<name>C:\j2sdk1.4.0\src\java\net\Inet6Address.java</name><ruleviolation><line>120</line><description>Found unused private instance variable 'cached_scope_id'</description></ruleviolation></file>
+
+<file>
 <name>C:\j2sdk1.4.0\src\java\net\InetAddress.java</name><ruleviolation><line>1012</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\net\NetworkInterface.java</name><ruleviolation><line>89</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>175</line><description>Found unused local variable 'netifs'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\java\net\PlainDatagramSocketImpl.java</name><ruleviolation><line>37</line><description>Found unused private instance variable 'ttl'</description></ruleviolation><ruleviolation><line>36</line><description>Found unused private instance variable 'loopbackMode'</description></ruleviolation><ruleviolation><line>35</line><description>Found unused private instance variable 'multicastInterface'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\net\PlainSocketImpl.java</name><ruleviolation><line>489</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>293</line><description>Found unused local variable 'fd'</description></ruleviolation><ruleviolation><line>341</line><description>Found unused local variable 'fd'</description></ruleviolation></file>
@@ -696,7 +765,7 @@
 <name>C:\j2sdk1.4.0\src\java\security\Policy.java</name><ruleviolation><line>152</line><description>Found unused local variable 'pc'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\security\SecureRandom.java</name><ruleviolation><line>140</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>177</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\security\SecureRandom.java</name><ruleviolation><line>140</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>177</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>514</line><description>Found unused private instance variable 'counter'</description></ruleviolation><ruleviolation><line>510</line><description>Found unused private instance variable 'randomBytesUsed'</description></ruleviolation><ruleviolation><line>493</line><description>Found unused private instance variable 'state'</description></ruleviolation><ruleviolation><line>506</line><description>Found unused private instance variable 'randomBytes'</description></ruleviolation><ruleviolation><line>497</line><description>Found unused private instance variable 'digest'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\security\Security.java</name><ruleviolation><line>1283</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>271</line><description>Found unused local variable 'name'</description></ruleviolation></file>
@@ -777,7 +846,7 @@
 <name>C:\j2sdk1.4.0\src\java\util\logging\Logger.java</name><ruleviolation><line>1234</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1261</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>899</line><description>Found unused local variable 'params'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\util\logging\LogManager.java</name><ruleviolation><line>496</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>666</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>687</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>275</line><description>Found unused local variable 'plogger'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\util\logging\LogManager.java</name><ruleviolation><line>496</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>666</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>687</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>275</line><description>Found unused local variable 'plogger'</description></ruleviolation><ruleviolation><line>128</line><description>Found unused private instance variable 'rootLogger'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\util\logging\MemoryHandler.java</name><ruleviolation><line>222</line><description>Found unused local variable 'manager'</description></ruleviolation></file>
@@ -786,13 +855,13 @@
 <name>C:\j2sdk1.4.0\src\java\util\logging\SimpleFormatter.java</name><ruleviolation><line>76</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\util\logging\SocketHandler.java</name><ruleviolation><line>74</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>155</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\util\logging\SocketHandler.java</name><ruleviolation><line>74</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>155</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>54</line><description>Found unused private instance variable 'portProperty'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\util\logging\StreamHandler.java</name><ruleviolation><line>68</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\util\logging\XMLFormatter.java</name><ruleviolation><line>158</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>213</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\util\logging\XMLFormatter.java</name><ruleviolation><line>158</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>213</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>30</line><description>Found unused private instance variable 'manager'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\util\prefs\AbstractPreferences.java</name><ruleviolation><line>273</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>374</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>429</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>542</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>597</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>644</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -816,7 +885,7 @@
 <name>C:\j2sdk1.4.0\src\java\util\ResourceBundle.java</name><ruleviolation><line>864</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1026</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1027</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1049</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1057</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1030</line><description>Found unused local variable 'resName'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\java\util\Timer.java</name><ruleviolation><line>434</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\java\util\Timer.java</name><ruleviolation><line>434</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>78</line><description>Found unused private instance variable 'threadReaper'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\java\util\TimeZone.java</name><ruleviolation><line>534</line><description>Found unused local variable 'id'</description></ruleviolation></file>
@@ -829,6 +898,12 @@
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\imageio\metadata\IIOMetadataFormatImpl.java</name><ruleviolation><line>973</line><description>Found unused local variable 'element'</description></ruleviolation><ruleviolation><line>1032</line><description>Found unused local variable 'iter'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\javax\imageio\spi\ImageReaderSpi.java</name><ruleviolation><line>84</line><description>Found unused private instance variable 'readerClass'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\javax\imageio\spi\ImageWriterSpi.java</name><ruleviolation><line>86</line><description>Found unused private instance variable 'writerClass'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\imageio\stream\ImageInputStreamImpl.java</name><ruleviolation><line>761</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>852</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -846,13 +921,16 @@
 <name>C:\j2sdk1.4.0\src\javax\naming\spi\ResolveResult.java</name><ruleviolation><line>69</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>145</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>166</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\print\MimeType.java</name><ruleviolation><line>530</line><description>Found unused local variable 'theLexemeType'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\print\MimeType.java</name><ruleviolation><line>530</line><description>Found unused local variable 'theLexemeType'</description></ruleviolation><ruleviolation><line>90</line><description>Found unused private instance variable 'myEntrySet'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\print\PrintServiceLookup.java</name><ruleviolation><line>171</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>201</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>332</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>338</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>357</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>368</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>379</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>419</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>430</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\print\StreamPrintServiceFactory.java</name><ruleviolation><line>169</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>175</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\javax\rmi\CORBA\ClassDesc.java</name><ruleviolation><line>26</line><description>Found unused private instance variable 'repid'</description></ruleviolation><ruleviolation><line>31</line><description>Found unused private instance variable 'codebase'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\rmi\CORBA\Stub.java</name><ruleviolation><line>183</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -888,7 +966,10 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\colorchooser\DefaultHSBChooserPanel.java</name><ruleviolation><line>733</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>759</line><description>Avoid empty IF statements</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\colorchooser\DefaultPreviewPanel.java</name><ruleviolation><line>58</line><description>Found unused local variable 'ascent'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\colorchooser\DefaultPreviewPanel.java</name><ruleviolation><line>58</line><description>Found unused local variable 'ascent'</description></ruleviolation><ruleviolation><line>46</line><description>Found unused private instance variable 'font'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\javax\swing\colorchooser\SyntheticImage.java</name><ruleviolation><line>45</line><description>Found unused private instance variable 'runner'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\DebugGraphics.java</name><ruleviolation><line>1282</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>909</line><description>Found unused local variable 'font'</description></ruleviolation><ruleviolation><line>945</line><description>Found unused local variable 'font'</description></ruleviolation></file>
@@ -901,6 +982,12 @@
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\JEditorPane.java</name><ruleviolation><line>520</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>901</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>904</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\javax\swing\JFileChooser.java</name><ruleviolation><line>228</line><description>Found unused private instance variable 'actionListener'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\javax\swing\JFormattedTextField.java</name><ruleviolation><line>229</line><description>Found unused private instance variable 'mask'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\JInternalFrame.java</name><ruleviolation><line>1424</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1577</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1590</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1703</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1731</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>777</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>2164</line><description>Found unused local variable 'hadUI'</description></ruleviolation></file>
@@ -945,6 +1032,9 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicBorders.java</name><ruleviolation><line>109</line><description>Found unused local variable 'table'</description></ruleviolation><ruleviolation><line>443</line><description>Found unused local variable 'cBounds'</description></ruleviolation></file>
 
 <file>
+<name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicButtonUI.java</name><ruleviolation><line>69</line><description>Found unused private instance variable 'defaultBorder'</description></ruleviolation><ruleviolation><line>67</line><description>Found unused private instance variable 'defaultBackground'</description></ruleviolation><ruleviolation><line>68</line><description>Found unused private instance variable 'defaultFont'</description></ruleviolation><ruleviolation><line>66</line><description>Found unused private instance variable 'defaultForeground'</description></ruleviolation></file>
+
+<file>
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicComboBoxEditor.java</name><ruleviolation><line>74</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
@@ -954,7 +1044,7 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicDesktopIconUI.java</name><ruleviolation><line>130</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>178</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>195</line><description>Found unused local variable 'newW'</description></ruleviolation><ruleviolation><line>197</line><description>Found unused local variable 'deltaY'</description></ruleviolation><ruleviolation><line>198</line><description>Found unused local variable 'min'</description></ruleviolation><ruleviolation><line>196</line><description>Found unused local variable 'deltaX'</description></ruleviolation><ruleviolation><line>199</line><description>Found unused local variable 'max'</description></ruleviolation><ruleviolation><line>195</line><description>Found unused local variable 'newH'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicDesktopPaneUI.java</name><ruleviolation><line>246</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>264</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>384</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>405</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>410</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>444</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>455</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>487</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>497</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicDesktopPaneUI.java</name><ruleviolation><line>246</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>264</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>384</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>405</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>410</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>444</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>455</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>487</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>497</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>226</line><description>Found unused private instance variable 'moving'</description></ruleviolation><ruleviolation><line>228</line><description>Found unused private instance variable 'MOVE_RESIZE_INCREMENT'</description></ruleviolation><ruleviolation><line>227</line><description>Found unused private instance variable 'resizing'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicDirectoryModel.java</name><ruleviolation><line>62</line><description>Found unused local variable 'fls'</description></ruleviolation></file>
@@ -984,13 +1074,16 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicListUI.java</name><ruleviolation><line>598</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1718</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1997</line><description>Found unused local variable 'size'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicLookAndFeel.java</name><ruleviolation><line>204</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1575</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>272</line><description>Found unused local variable 'lightGray'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicLookAndFeel.java</name><ruleviolation><line>204</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1575</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>272</line><description>Found unused local variable 'lightGray'</description></ruleviolation><ruleviolation><line>65</line><description>Found unused private instance variable 'audioLock'</description></ruleviolation><ruleviolation><line>69</line><description>Found unused private instance variable 'clipPlaying'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicMenuBarUI.java</name><ruleviolation><line>245</line><description>Found unused local variable 'subElements'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicMenuItemUI.java</name><ruleviolation><line>987</line><description>Found unused local variable 'path'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicMenuUI.java</name><ruleviolation><line>40</line><description>Found unused private instance variable 'selectedWindowInputMap'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicOptionPaneUI.java</name><ruleviolation><line>785</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -1026,7 +1119,7 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicTextUI.java</name><ruleviolation><line>288</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1005</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1617</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2193</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2194</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2195</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2266</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2298</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicToolBarUI.java</name><ruleviolation><line>975</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1010</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicToolBarUI.java</name><ruleviolation><line>975</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1010</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>52</line><description>Found unused private instance variable 'floatingFrame'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\basic\BasicTransferable.java</name><ruleviolation><line>112</line><description>Found unused local variable 'richerFlavors'</description></ruleviolation></file>
@@ -1047,13 +1140,13 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\metal\MetalLookAndFeel.java</name><ruleviolation><line>1362</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1363</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1364</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\plaf\metal\MetalProgressBarUI.java</name><ruleviolation><line>133</line><description>Found unused local variable 'amountFull'</description></ruleviolation><ruleviolation><line>134</line><description>Found unused local variable 'isLeftToRight'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\plaf\metal\MetalProgressBarUI.java</name><ruleviolation><line>133</line><description>Found unused local variable 'amountFull'</description></ruleviolation><ruleviolation><line>134</line><description>Found unused local variable 'isLeftToRight'</description></ruleviolation><ruleviolation><line>32</line><description>Found unused private instance variable 'innards'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\metal\MetalRadioButtonUI.java</name><ruleviolation><line>110</line><description>Found unused local variable 'selectedIcon'</description></ruleviolation><ruleviolation><line>99</line><description>Found unused local variable 'h'</description></ruleviolation><ruleviolation><line>111</line><description>Found unused local variable 'disabledIcon'</description></ruleviolation><ruleviolation><line>98</line><description>Found unused local variable 'w'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\plaf\metal\MetalRootPaneUI.java</name><ruleviolation><line>620</line><description>Found unused local variable 'cpd'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\plaf\metal\MetalRootPaneUI.java</name><ruleviolation><line>620</line><description>Found unused local variable 'cpd'</description></ruleviolation><ruleviolation><line>108</line><description>Found unused private instance variable 'lastCursor'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\plaf\metal\MetalScrollButton.java</name><ruleviolation><line>72</line><description>Found unused local variable 'arrowWidth'</description></ruleviolation></file>
@@ -1140,7 +1233,7 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\text\html\HRuleView.java</name><ruleviolation><line>50</line><description>Found unused local variable 'key'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\text\html\HTMLDocument.java</name><ruleviolation><line>593</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>595</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1893</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2012</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2753</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3000</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3129</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3379</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>582</line><description>Found unused local variable 'startOffset'</description></ruleviolation><ruleviolation><line>583</line><description>Found unused local variable 'endOffset'</description></ruleviolation><ruleviolation><line>797</line><description>Found unused local variable 'insertPosition'</description></ruleviolation><ruleviolation><line>1748</line><description>Found unused local variable 'na'</description></ruleviolation><ruleviolation><line>2021</line><description>Found unused local variable 'index'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\text\html\HTMLDocument.java</name><ruleviolation><line>593</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>595</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1893</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2012</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2753</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3000</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3129</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3379</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>582</line><description>Found unused local variable 'startOffset'</description></ruleviolation><ruleviolation><line>583</line><description>Found unused local variable 'endOffset'</description></ruleviolation><ruleviolation><line>797</line><description>Found unused local variable 'insertPosition'</description></ruleviolation><ruleviolation><line>1748</line><description>Found unused local variable 'na'</description></ruleviolation><ruleviolation><line>2021</line><description>Found unused local variable 'index'</description></ruleviolation><ruleviolation><line>1341</line><description>Found unused private instance variable 'radioButtonGroup'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\text\html\HTMLEditorKit.java</name><ruleviolation><line>363</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>529</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>742</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1794</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1858</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1896</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>778</line><description>Found unused local variable 'description'</description></ruleviolation><ruleviolation><line>1999</line><description>Found unused local variable 'urlString'</description></ruleviolation><ruleviolation><line>2000</line><description>Found unused local variable 'objString'</description></ruleviolation></file>
@@ -1185,7 +1278,7 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\text\InternationalFormatter.java</name><ruleviolation><line>503</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>504</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>505</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1065</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1066</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>896</line><description>Found unused local variable 'index'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\text\JTextComponent.java</name><ruleviolation><line>2050</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2222</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2403</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2661</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2676</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2677</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3246</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3389</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3543</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3637</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>902</line><description>Found unused local variable 'm'</description></ruleviolation><ruleviolation><line>3469</line><description>Found unused local variable 'doc'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\text\JTextComponent.java</name><ruleviolation><line>2050</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2222</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2403</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2661</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2676</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>2677</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3246</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3389</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3543</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>3637</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>902</line><description>Found unused local variable 'm'</description></ruleviolation><ruleviolation><line>3469</line><description>Found unused local variable 'doc'</description></ruleviolation><ruleviolation><line>2731</line><description>Found unused private instance variable 'editor'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\text\MaskFormatter.java</name><ruleviolation><line>619</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -1227,7 +1320,7 @@
 <name>C:\j2sdk1.4.0\src\javax\swing\TimerQueue.java</name><ruleviolation><line>196</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>216</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>234</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\javax\swing\ToolTipManager.java</name><ruleviolation><line>511</line><description>Avoid empty IF statements</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\javax\swing\ToolTipManager.java</name><ruleviolation><line>511</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>61</line><description>Found unused private instance variable 'focusChangeListener'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\javax\swing\TransferHandler.java</name><ruleviolation><line>528</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -1272,6 +1365,9 @@
 <name>C:\j2sdk1.4.0\src\org\apache\crimson\parser\Parser2.java</name><ruleviolation><line>686</line><description>Found unused local variable 'savedLexicalPE'</description></ruleviolation></file>
 
 <file>
+<name>C:\j2sdk1.4.0\src\org\apache\crimson\tree\XmlDocumentBuilder.java</name><ruleviolation><line>141</line><description>Found unused private instance variable 'attrTmp'</description></ruleviolation></file>
+
+<file>
 <name>C:\j2sdk1.4.0\src\org\apache\crimson\util\MessageCatalog.java</name><ruleviolation><line>540</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
@@ -1294,6 +1390,9 @@
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xalan\processor\ProcessorLRE.java</name><ruleviolation><line>174</line><description>Avoid empty IF statements</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\org\apache\xalan\processor\StylesheetHandler.java</name><ruleviolation><line>1482</line><description>Found unused private instance variable 'warnedAboutOldXSLTNamespace'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xalan\processor\TransformerFactoryImpl.java</name><ruleviolation><line>173</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>205</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>212</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>416</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>417</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>433</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>846</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>911</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>912</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>931</line><description>Avoid empty catch blocks</description></ruleviolation></file>
@@ -1330,6 +1429,9 @@
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xalan\templates\ElemNumber.java</name><ruleviolation><line>1827</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>1849</line><description>Found unused local variable 'tableName'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\org\apache\xalan\templates\ElemTemplate.java</name><ruleviolation><line>377</line><description>Found unused private instance variable 'm_argsQNameIDs'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xalan\templates\FuncDocument.java</name><ruleviolation><line>413</line><description>Avoid empty IF statements</description></ruleviolation></file>
@@ -1380,7 +1482,7 @@
 <name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\CoroutineManager.java</name><ruleviolation><line>278</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>320</line><description>Avoid empty catch blocks</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\CoroutineSAXParser.java</name><ruleviolation><line>216</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>220</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1028</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\CoroutineSAXParser.java</name><ruleviolation><line>216</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>220</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>1028</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>104</line><description>Found unused private instance variable 'fParseInProgress'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\CoroutineSAXParser_Xerces.java</name><ruleviolation><line>176</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>180</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>296</line><description>Found unused local variable 'parserCoroutineID'</description></ruleviolation></file>
@@ -1389,16 +1491,19 @@
 <name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\dom2dtm\DOM2DTM.java</name><ruleviolation><line>290</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>1358</line><description>Avoid empty IF statements</description></ruleviolation></file>
 
 <file>
+<name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\DTMDefaultBase.java</name><ruleviolation><line>1028</line><description>Found unused private instance variable 'm_namespaceLists'</description></ruleviolation></file>
+
+<file>
 <name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\DTMDefaultBaseTraversers.java</name><ruleviolation><line>1277</line><description>Found unused local variable 'type'</description></ruleviolation><ruleviolation><line>1308</line><description>Found unused local variable 'subtreeRootIdent'</description></ruleviolation><ruleviolation><line>1342</line><description>Found unused local variable 'type'</description></ruleviolation><ruleviolation><line>1337</line><description>Found unused local variable 'subtreeRootIdent'</description></ruleviolation><ruleviolation><line>1505</line><description>Found unused local variable 'subtreeRootIdent'</description></ruleviolation><ruleviolation><line>1531</line><description>Found unused local variable 'subtreeRootIdent'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\DTMDocumentImpl.java</name><ruleviolation><line>1330</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>2089</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>2091</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>2227</line><description>Found unused local variable 'namespaceForNamespaces'</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\DTMDocumentImpl.java</name><ruleviolation><line>1330</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>2089</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>2091</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>2227</line><description>Found unused local variable 'namespaceForNamespaces'</description></ruleviolation><ruleviolation><line>183</line><description>Found unused private instance variable 'm_expandedNames'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\DTMManagerDefault.java</name><ruleviolation><line>344</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>345</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>494</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>495</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>511</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>471</line><description>Found unused local variable 'isUserReader'</description></ruleviolation></file>
 
 <file>
-<name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\DTMNodeList.java</name><ruleviolation><line>112</line><description>Avoid empty catch blocks</description></ruleviolation></file>
+<name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\DTMNodeList.java</name><ruleviolation><line>112</line><description>Avoid empty catch blocks</description></ruleviolation><ruleviolation><line>94</line><description>Found unused private instance variable 'valid'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xml\dtm\ref\DTMTreeWalker.java</name><ruleviolation><line>262</line><description>Avoid empty IF statements</description></ruleviolation><ruleviolation><line>388</line><description>Avoid empty IF statements</description></ruleviolation></file>
@@ -1423,6 +1528,12 @@
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xml\utils\synthetic\JavaUtils.java</name><ruleviolation><line>160</line><description>Found unused local variable 'args'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\org\apache\xml\utils\synthetic\reflection\Constructor.java</name><ruleviolation><line>98</line><description>Found unused private instance variable 'exceptiontypes'</description></ruleviolation><ruleviolation><line>101</line><description>Found unused private instance variable 'modifiers'</description></ruleviolation><ruleviolation><line>92</line><description>Found unused private instance variable 'parametertypes'</description></ruleviolation><ruleviolation><line>95</line><description>Found unused private instance variable 'parameternames'</description></ruleviolation></file>
+
+<file>
+<name>C:\j2sdk1.4.0\src\org\apache\xml\utils\synthetic\TestDriver.java</name><ruleviolation><line>80</line><description>Found unused private instance variable 'inTest'</description></ruleviolation></file>
 
 <file>
 <name>C:\j2sdk1.4.0\src\org\apache\xml\utils\TreeWalker.java</name><ruleviolation><line>420</line><description>Avoid empty IF statements</description></ruleviolation></file>
