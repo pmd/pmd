@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Ken Foskey - cpd.sh</li>
             <li>ehowe - a nice patch to include rule priority in the XML report</li>
             <li>aryanto - reported a broken reference in the 'favorites' ruleset.</li>
             <li>Wim Deblauwe - suggested improvements for ExceptionSignatureDeclaration</li>
