@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic Rules">
+  <description>
+The Basic Ruleset contains a collection of good practice rules
+which everyone should follow.
+  </description>
+
+
+  <rule name="EmptyCatchBlock"
+        message="Avoid empty catch blocks"
+        class="net.sourceforge.pmd.rules.EmptyCatchBlockRule">
+    <description>
+Empty Catch Block finds instances where an exception is caught,
+but nothing is done.  In most circumstances, this swallows an exception
+which should either be acted on or reported.
+    </description>
+
+    <example>
+<![CDATA[
+  public void doSomething() {
+    try {
+      FileInputStream fis = new FileInputStream("/tmp/bugger");
+    } catch (IOException ioe) {
+        // not good
+    }
+  }
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyIfStmt"
+        message="Avoid empty 'if' statements"
+        class="net.sourceforge.pmd.rules.EmptyIfStmtRule">
+    <description>
+Empty If Statement finds instances where a condition is checked but nothing is done about it.
+  </description>
+    <example>
+<![CDATA[
+  if (absValue < 1) {
+     // not good
+  }
+]]>
+     </example>
+  </rule>
+
+  <rule name="EmptyWhileStmt"
+        message="Avoid empty 'while' statements"
+        class="net.sourceforge.pmd.rules.EmptyWhileStmtRule">
+     <description>
+Empty While Statement finds all instances where a while statement
+does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
+it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+     </description>
+
+     <example>
+<![CDATA[
+while (a == b) {
+  // not good
+}
+]]>
+     </example>
+  </rule>
+
+  <rule name="IfElseStmtsMustUseBracesRule"
+        message="Avoid using 'if...else' statements without curly braces"
+        class="net.sourceforge.pmd.rules.IfElseStmtsMustUseBracesRule">
+    <description>
+    Avoid using if..else statements without using curly braces
+    </description>
+
+    <example>
+<![CDATA[
+
+  public void doSomething() {
+    // this is OK
+    if (foo) x++;
+
+    // but this is not
+    if (foo)
+        x=x+1;
+    else
+        x=x-1;
+  }
+]]>
+    </example>
+  </rule>
+
+  <rule name="UnnecessaryConversionTemporaryRule"
+        message="Avoid unnecessary temporaries when converting primitives to Strings"
+        class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporaryRule">
+    <description>
+    Avoid unnecessary temporaries when converting primitives to Strings
+    </description>
+
+    <example>
+<![CDATA[
+  public String convert(int x) {
+    // this wastes an object
+    String foo = new Integer(x).toString();
+    // this is better
+    return Integer.toString(x);
+  }
+]]>
+    </example>
+  </rule>
+
+  <rule name="OverrideBothEqualsAndHashcodeRule"
+        message="Ensure you override both equals() and hashCode()"
+        class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule">
+    <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public class Bar {
+    public boolean equals(Object o) {
+        // do some comparison
+    }
+}
+
+// and so is this
+public class Baz {
+    public int hashCode() {
+        // return some hash value
+    }
+}
+
+// this is OK
+public class Foo {
+    public boolean equals(Object other) {
+        // do some comparison
+    }
+    public int hashCode() {
+        // return some hash value
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyTryBlock"
+        message="Avoid empty try blocks"
+        class="net.sourceforge.pmd.rules.EmptyTryBlockRule">
+    <description>
+Avoid empty try blocks - what's the point?
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public void bar() {
+    try {
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyFinallyBlock"
+        message="Avoid empty finally blocks"
+        class="net.sourceforge.pmd.rules.EmptyFinallyBlockRule">
+    <description>
+Avoid empty finally blocks - these can be deleted.
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public void bar() {
+    try {
+        int x=2;
+    } finally {
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="WhileLoopsMustUseBracesRule"
+        message="Avoid using 'while' statements without curly braces"
+        class="net.sourceforge.pmd.rules.WhileLoopsMustUseBracesRule">
+    <description>
+    Avoid using 'while' statements without using curly braces
+    </description>
+
+    <example>
+<![CDATA[
+  public void doSomething() {
+    while (true)
+        x++;
+  }
+]]>
+    </example>
+  </rule>
+
+  <rule name="ForLoopsMustUseBracesRule"
+        message="Avoid using 'for' statements without curly braces"
+        class="net.sourceforge.pmd.rules.ForLoopsMustUseBracesRule">
+    <description>
+    Avoid using 'for' statements without using curly braces
+    </description>
+
+    <example>
+<![CDATA[
+  public void foo() {
+    for (int i=0; i<42;i++)
+        foo();
+  }
+]]>
+    </example>
+  </rule>
+
+  </ruleset>
+
+
+
