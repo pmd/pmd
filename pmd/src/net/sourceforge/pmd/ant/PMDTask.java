@@ -7,6 +7,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import org.apache.tools.ant.BuildException;
@@ -109,6 +110,13 @@ public class PMDTask extends Task {
             throw new BuildException(rsnfe.getMessage());
         }
 
+        if (verbose) {
+            System.out.println("Using these rulesets: " + ruleSetFiles);
+            for (Iterator i = rules.getRules().iterator();i.hasNext();) {
+                Rule rule = (Rule)i.next();
+                System.out.println("Using rule " + rule.getName());
+            }
+        }
         PMD pmd = new PMD();
         RuleContext ctx = new RuleContext();
         ctx.setReport(new Report());
