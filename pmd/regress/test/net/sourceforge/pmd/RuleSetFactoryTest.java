@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 
 import java.io.StringReader;
 import java.io.ByteArrayInputStream;
@@ -49,6 +50,16 @@ public class RuleSetFactoryTest  extends TestCase {
         assertEquals(1, rs.size());
     }
 */
+
+    public void testRuleSetNotFound() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        try {
+            rsf.createRuleSet("fooooo");
+            throw new RuntimeException("Should have thrown a RuleSetNotFoundException");
+        } catch (RuleSetNotFoundException rsnfe) {
+            // cool
+        }
+    }
 
     public void testCreateSingleRuleSet() {
         RuleSetFactory rsf = new RuleSetFactory();

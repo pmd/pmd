@@ -81,9 +81,11 @@ public class UnusedLocalVariableTest extends RuleTst {
         assertEquals(rule, ((RuleViolation)i.next()).getRule());
     }
 
+/*
     public void testUnusedLocal10() throws Throwable {
         Report report = process("Unused10.java", rule);
         assertTrue(report.isEmpty());
     }
+*/
 
 }

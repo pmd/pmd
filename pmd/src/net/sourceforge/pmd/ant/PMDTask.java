@@ -116,26 +116,19 @@ public class PMDTask extends Task {
 
     private RuleSet createRuleSets() throws RuleSetNotFoundException {
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        RuleSet ruleSet = new RuleSet();
 
         if (ruleSetFiles.indexOf(',') == -1) {
-            ruleSet = ruleSetFactory.createRuleSet(tryToGetStreamTo(ruleSetFiles));
-        } else {
-            for (StringTokenizer st = new StringTokenizer(ruleSetFiles, ","); st.hasMoreTokens();) {
-                String ruleSetName = st.nextToken();
-                RuleSet tmpRuleSet = ruleSetFactory.createRuleSet(tryToGetStreamTo(ruleSetName));
-                if (verbose) System.out.println("Adding " + tmpRuleSet.size() + " rules from ruleset " + ruleSetName);
-                ruleSet.addRuleSet(tmpRuleSet);
-            }
+           return ruleSetFactory.createRuleSet(ruleSetFiles);
+        }
+
+        RuleSet ruleSet = new RuleSet();
+        for (StringTokenizer st = new StringTokenizer(ruleSetFiles, ","); st.hasMoreTokens();) {
+            String ruleSetName = st.nextToken();
+            RuleSet tmpRuleSet = ruleSetFactory.createRuleSet(ruleSetName);
+            if (verbose) System.out.println("Adding " + tmpRuleSet.size() + " rules from ruleset " + ruleSetName);
+            ruleSet.addRuleSet(tmpRuleSet);
         }
         return ruleSet;
     }
 
-    private InputStream tryToGetStreamTo(String name) throws RuleSetNotFoundException {
-        InputStream in = getClass().getClassLoader().getResourceAsStream(name);
-        if (in == null) {
-            throw new RuleSetNotFoundException("Can't find ruleset " + name + "; make sure that path is on the CLASSPATH");
-        }
-        return in;
-    }
 }

@@ -14,9 +14,29 @@ import javax.xml.parsers.DocumentBuilder;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Enumeration;
+import java.io.IOException;
+import java.util.*;
 
 public class RuleSetFactory {
+
+    public Iterator getRegistereredRuleSets() {
+        try {
+            Properties props = new Properties();
+            props.load(getClass().getClassLoader().getResourceAsStream("rulesets/rulesets.properties"));
+            String rulesetFilenames = props.getProperty("rulesets.filenames");
+            List names = new ArrayList();
+            for (StringTokenizer st = new StringTokenizer(rulesetFilenames, ","); st.hasMoreTokens();) {
+                names.add(st.nextToken());
+            }
+            return names.iterator();
+        } catch (IOException ioe) {
+            throw new RuntimeException("Couldn't find rulesets.properties; please ensure that the rulesets directory is on the classpath.  Here's the current classpath: " + System.getProperty("java.class.path"));
+        }
+    }
+
+    public RuleSet createRuleSet(String name) throws RuleSetNotFoundException {
+        return createRuleSet(tryToGetStreamTo(name));
+    }
 
     public RuleSet createRuleSet(InputStream inputStream) {
         try {
@@ -48,5 +68,13 @@ public class RuleSetFactory {
             e.printStackTrace();
             throw new RuntimeException("Couldn't read from that source: " + e.getMessage());
         }
+    }
+
+    private InputStream tryToGetStreamTo(String name) throws RuleSetNotFoundException {
+        InputStream in = getClass().getClassLoader().getResourceAsStream(name);
+        if (in == null) {
+            throw new RuleSetNotFoundException("Can't find ruleset " + name + "; make sure that path is on the CLASSPATH");
+        }
+        return in;
     }
 }

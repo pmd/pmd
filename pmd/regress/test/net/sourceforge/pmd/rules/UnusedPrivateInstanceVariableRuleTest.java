@@ -62,11 +62,9 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
         Report report = process("UnusedPrivateInstanceVar8.java", rule);
         assertTrue(report.isEmpty());
     }
-/*
-TODO - this tests unused variables in nested classes
+
     public void testUnusedPrivateInstanceVar9() throws Throwable {
-        Report report = process("UnusedPrivateInstanceVar9.java");
-        assertEquals(1, report.violationsInCurrentFile());
+        Report report = process("UnusedPrivateInstanceVar10.java", rule);
+        assertEquals(1, report.size());
     }
-TODO - this tests unused variables in nested classes
-*/}
+}
