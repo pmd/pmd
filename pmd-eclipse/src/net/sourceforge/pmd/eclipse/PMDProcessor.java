@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * A class to process IFile resource against PMD
@@ -24,8 +25,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/03/18 23:28:36  phherlin
- * *** keyword substitution change ***
+ * Revision 1.3  2003/03/27 22:11:09  phherlin
+ * Fixing SWTException when PMD is processing a file with syntax error
+ * (Thanks to Chris Grindstaff)
  *
  */
 public class PMDProcessor {
@@ -63,16 +65,28 @@ public class PMDProcessor {
             updateMarkers(file, context, fTask);
 
         } catch (CoreException e) {
-            MessageDialog.openError(
-                null,
-                getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION) + e.toString());
+            openError(e, PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION);
         } catch (PMDException e) {
-            MessageDialog.openError(
-                null,
-                getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION) + e.toString());
+            openError(e, PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION);
         }
+    }
+
+    /**
+     * Open an error dialog on the UI thread
+     * Avoid SWT exception when processor is called from a secondary thread
+     * Thanks to Chris Grindstaff
+     * @param exception the exception to display
+     * @param messageKey the key of the message to display
+     */
+    private void openError(final Exception exception, final String messageKey) {
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                MessageDialog.openError(
+                    null,
+                    getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
+                    getMessage(messageKey) + exception.toString());
+            }
+        });
     }
 
     /**
