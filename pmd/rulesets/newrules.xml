@@ -41,6 +41,44 @@ public final class Foo {
     </rule>
 
 
+    <rule name="AbstractClassDoesNotContainAbstractMethod"
+          message="Class is defined abstract but it hasn't any abstract methods"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  Abstract classes should have abstract methods, that are to be completed by subclasses.
+  If the class is intended to not be instantiated, it should be done by providing private/protected constructors.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+    //ClassDeclaration[
+        @Abstract='true'
+        and count(//MethodDeclaration[@Abstract='true'])=0
+        ]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public abstract class Foo {
+
+    // This constructor prevents the class from being instantiated and makes 
+    // unnecessary the usage of the abstract modifier for the class
+    protected Foo() {}
+    
+	void foo() {
+	}
+	
+}
+
+]]>
+      </example>
+    </rule>
+
     </ruleset>
 
 
