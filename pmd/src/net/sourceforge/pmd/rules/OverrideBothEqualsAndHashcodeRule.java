@@ -39,7 +39,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractRule implements R
 
         if (criteria.isMet()) {
             RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, 1));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
 
         criteria = new ViolationCriteria();
