@@ -48,6 +48,7 @@
         <copy todir="${build}">
             <fileset dir="${classes}">
                 <include name="**/*.gif"/>
+                <include name="**/*.jpg"/>
             </fileset>
         </copy>
         <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF" excludes="test/**/*.class"/>
@@ -55,7 +56,7 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd reportFile="c:\pmd.html" rulesetfiles="rulesets/newrules.xml" format="html">
+        <pmd reportFile="c:\pmd.html" rulesetfiles="rulesets/newrules.xml,rulesets/imports.xml" format="html">
             <!--<fileset dir="c:\data\pmd\pmd\src\net\sourceforge\pmd\">-->
             <fileset dir="c:\j2sdk1.4.0_01\src\java\lang">
                 <include name="**/*.java"/>
