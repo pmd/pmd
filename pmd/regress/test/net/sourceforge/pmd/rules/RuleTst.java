@@ -8,6 +8,7 @@ package test.net.sourceforge.pmd.rules;
  */
 
 import java.io.InputStream;
+import java.io.FileNotFoundException;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.ast.*;
 
 public class RuleTst
@@ -50,4 +52,15 @@ public class RuleTst
 
     }
 
+    public Report process2(String file, Rule rule)  {
+        try {
+            PMD p = new PMD();
+            RuleContext ctx = new RuleContext();
+            ctx.setReport(new Report("xml", file));
+            p.processFile(file, getClass().getClassLoader().getResourceAsStream(file), rule, ctx);
+            return ctx.getReport();
+        } catch (FileNotFoundException fnfe) {
+            throw new RuntimeException("File " + file + " not found");
+        }
+    }
 }
