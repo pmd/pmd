@@ -44,10 +44,9 @@ public class UnusedLocalVariableRule extends UnusedCodeRule {
      * This collects the symbols for later reference
      */
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!(node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration)) {
-            return super.visit(node, data);
+        if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
+            nameSpace.peek().add(new Symbol(node.getImage(), node.getBeginLine()));
         }
-        nameSpace.peek().add(new Symbol(node.getImage(), node.getBeginLine()));
         return super.visit(node, data);
     }
 

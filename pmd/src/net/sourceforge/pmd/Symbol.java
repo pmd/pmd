@@ -5,10 +5,13 @@
  */
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.ast.Node;
+
 public class Symbol {
 
     private String image;
     private int line;
+    private Node node;
 
     public Symbol(String image, int line) {
         this.image = image;
@@ -21,6 +24,10 @@ public class Symbol {
 
     public String getImage() {
         return image;
+    }
+
+    public void setASTNode(Node node) {
+        this.node = node;
     }
 
     public boolean equals(Object o) {

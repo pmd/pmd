@@ -6,10 +6,14 @@
 package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.SymbolTable;
-import net.sourceforge.pmd.Symbol;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
 import java.util.HashMap;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class SymbolTableTest extends TestCase {
 
@@ -76,4 +80,5 @@ public class SymbolTableTest extends TestCase {
         child.recordPossibleUsageOf(FOO);
         assertTrue(!parent.getUnusedSymbols().hasNext());
     }
+
 }
