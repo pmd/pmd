@@ -53,11 +53,6 @@ public class NameOccurrencesTest extends STBBaseTst {
         assertEquals("x", ((NameOccurrence)occs.getNames().get(1)).getImage());
     }
 
-    public void testPostfix() {
-        parseCode(TEST5);
-        List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
-    }
-
     public static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
@@ -85,13 +80,4 @@ public class NameOccurrencesTest extends STBBaseTst {
     "  b.x = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
-
-    public static final String TEST5 =
-    "public class Foo {" + PMD.EOL +
-    " private int x;" + PMD.EOL +
-    " void foo() {" + PMD.EOL +
-    "  this.x--;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
-
 }
