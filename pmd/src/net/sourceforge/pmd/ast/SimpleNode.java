@@ -337,5 +337,19 @@ public class SimpleNode implements Node {
         return null;
     }
 
+    /**
+     * Finds if this node contains a child of the given type.
+     * This is an utility method that uses {@link #findChildrenOfType(Class)}
+     * 
+     * @param type the node type to search
+     * @return <code>true</code> if there is at lease on child of the given type and <code>false</code> in any other case
+     */
+    public final boolean containsChildOfType(Class type) {
+        List l = findChildrenOfType(type);
+        if (l!=null && !l.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
 }
 

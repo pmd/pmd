@@ -256,4 +256,14 @@ public class SimpleNodeTest extends ParserTst {
     "}";
 
 
+    public void testContainsChildOfType() {
+        ASTBlock b = new ASTBlock(0);
+        b.jjtAddChild(new ASTBlockStatement(1), 0);
+        
+        boolean hasASTBlockStatement = b.containsChildOfType(ASTBlockStatement.class);
+        assertTrue(hasASTBlockStatement);
+        
+        boolean hasASTName = b.containsChildOfType(ASTName.class);
+        assertFalse(hasASTName);
+    }
 }
