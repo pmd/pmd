@@ -54,6 +54,7 @@ public class RuleSetPropertyPage extends PropertyPage {
      * Constuctor
      */
     public RuleSetPropertyPage () {
+        int y;
         try {
             jbInit();
         } catch (Exception ex) {

@@ -56,6 +56,7 @@ public class RuleSetPropertyGroup
     * Standard Constructor
     */
     public RuleSetPropertyGroup () {
+        int k;
     }
 
     /**

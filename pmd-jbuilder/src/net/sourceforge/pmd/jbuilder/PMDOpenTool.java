@@ -28,6 +28,7 @@ import  com.borland.primetime.properties.NodeProperty;
 import  com.borland.primetime.properties.GlobalProperty;
 import  com.borland.primetime.properties.PropertyManager;
 import  com.borland.primetime.properties.PropertyDialog;
+import com.borland.jbuilder.node.PackageNode;
 
 
 
@@ -39,6 +40,7 @@ public class PMDOpenTool {
      * Default constructor
      */
     public PMDOpenTool () {
+        int j;
     }
 
     /**
@@ -52,6 +54,7 @@ public class PMDOpenTool {
             GROUP_PMD.add(ACTION_PMDConfig);
             JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
             registerWithContentManager();
+            registerWithProjectView();
             PropertyManager.registerPropertyGroup(new RuleSetPropertyGroup());
         }
     }
@@ -70,6 +73,15 @@ public class PMDOpenTool {
         ContentManager.registerContextActionProvider(cap);
     }
 
+    private static void registerWithProjectView() {
+        ContextActionProvider cap = new ContextActionProvider() {
+            public Action getContextAction (Browser browser, Node[] nodes) {
+                return  ACTION_PMDProjectCheck;
+            }
+        };
+        ProjectView.registerContextActionProvider(cap);
+    }
+
     /**
      * Create PMD Rule Sets based upon the configuration settings
      * @param ruleSetFactory PMD RuleSetFactory
@@ -82,8 +94,8 @@ public class PMDOpenTool {
         for (int i = 0; i < RuleSetPropertyGroup.PROPKEYS.length; i++) {
             if (Boolean.valueOf(RuleSetPropertyGroup.PROPKEYS[i].getValue()).booleanValue()) {
                 RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream(
-                        "rulesets/" + RuleSetPropertyGroup.RULESET_NAMES[i]
-                        + ".xml"));
+                "rulesets/" + RuleSetPropertyGroup.RULESET_NAMES[i]
+                + ".xml"));
                 if (masterRuleSet == null) {
                     masterRuleSet = rules;
                 }
@@ -122,46 +134,51 @@ public class PMDOpenTool {
 
     //create the Menu action item for initiating the PMD check
     public static BrowserAction ACTION_PMDCheck =
-    // A new action with short menu string, mnemonic, and long menu string
+            // A new action with short menu string, mnemonic, and long menu string
     new BrowserAction("PMD Checker", 'P', "Displays PMD statistics about a Java File") {
 
         // The function called when the menu is selected
         public void actionPerformed (Browser browser) {
             Node node = Browser.getActiveBrowser().getActiveNode();
             if (node instanceof JavaFileNode) {
-                TextNodeViewer viewer = (TextNodeViewer)Browser.getActiveBrowser().getViewerOfType(node,
-                        TextNodeViewer.class);
-                if (viewer != null) {
-                    Document doc = viewer.getEditor().getDocument();
-                    try {
-                        Report rpt = instanceCheck(doc.getText(0, doc.getLength()));
-                        Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
-                        if (rpt == null) {
-                            Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
-                                    "Error Processing File");
-                        }
-                        else if (rpt.size() == 0) {
-                            Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
-                                    "No violations detexted.");
-                        }
-                        else {
-                            for (Iterator i = rpt.iterator(); i.hasNext();) {
-                                RuleViolation rv = (RuleViolation)i.next();
-                                PMDMessage pmdMsg = new PMDMessage(rv.getRule().getName() + ": " + rv.getDescription()
-                                        + " at line " + rv.getLine(), rv.getLine(),
-                                        (JavaFileNode)node);
-                                pmdMsg.setForeground(Color.red);
-                                Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
-                                        pmdMsg);                //add the result message
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
+                checkNode(node);
             }
         }
-    };
+
+     };
+
+    static void checkNode(Node node) {
+         TextNodeViewer viewer = (TextNodeViewer)Browser.getActiveBrowser().getViewerOfType(node,
+                 TextNodeViewer.class);
+         if (viewer != null) {
+             Document doc = viewer.getEditor().getDocument();
+             try {
+                 Report rpt = instanceCheck(doc.getText(0, doc.getLength()));
+                 if (rpt == null) {
+                     Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
+                             "Error Processing File");
+                 }
+                 else if (rpt.size() == 0) {
+                     Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
+                             "No violations detexted.");
+                 }
+                 else {
+                     for (Iterator i = rpt.iterator(); i.hasNext();) {
+                         RuleViolation rv = (RuleViolation)i.next();
+                         PMDMessage pmdMsg = new PMDMessage(rv.getRule().getName() + ": " + rv.getDescription()
+                                 + " at line " + rv.getLine(), rv.getLine(),
+                                 (JavaFileNode)node);
+                         pmdMsg.setForeground(Color.red);
+                         Browser.getActiveBrowser().getMessageView().addMessage(msgCat,
+                                 pmdMsg);                //add the result message
+                     }
+                 }
+             } catch (Exception e) {
+                 e.printStackTrace();
+             }
+         }
+     }
 
     //Create the menu action item for configuring PMD
     public static BrowserAction ACTION_PMDConfig = new BrowserAction("Configure PMD",
@@ -172,10 +189,30 @@ public class PMDOpenTool {
         }
     };
 
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project") {
+        public void actionPerformed(Browser browser) {
+            Node[] nodes = browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+            Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
+            for (int i=0; i<nodes.length; i++ ) {
+                if (nodes[i] instanceof PackageNode) {
+                    PackageNode node = (PackageNode)nodes[i];
+                    Node[] fileNodes = node.getDisplayChildren();
+                    for (int j=0; j<fileNodes.length; j++) {
+                        if (fileNodes[j] instanceof JavaFileNode) {
+                            checkNode(fileNodes[j]);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
     /**
-     * Main method for testing purposes
-     * @param args standard arguments
-     */
+    * Main method for testing purposes
+    * @param args standard arguments
+    */
     public static void main (String[] args) {
         Report ret = PMDOpenTool.instanceCheck("package abc; \npublic class foo {\npublic void bar() {int i;}\n}");
         System.out.println("PMD: " + ret);
@@ -268,6 +305,3 @@ class HighlightMark extends LineMark {
         super(highlightStyle);
     }
 }
-
-
-
