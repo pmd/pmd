@@ -40,7 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>ereissner - several rule suggestions, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
+            <li>Ernst Reissner - several rule suggestions, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
             <li>Philippe Couton - bug report for ExceptionAsFlowControl, OverrideBothEqualsAndHashcodeRule bug report, UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
             <li>Dave Brosius - a couple of nice patches to clean up some string handling inefficiencies, non-static class usages, and unclosed streams/readers - found with Findbugs, I daresay :-)</li>
             <li>Paul Rowe - suggestion for improving MethodWithSameNameAsEnclosingClass, bug reports for SimplifyBooleanExpressions and UnusedLocalVariable</li>
