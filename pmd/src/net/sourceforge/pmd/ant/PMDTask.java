@@ -85,16 +85,7 @@ public class PMDTask extends Task {
     }
 
     public void execute() throws BuildException {
-        if (formatters.isEmpty() && !printToConsole) {
-            throw new BuildException("No formatter specified; and printToConsole was false");
-        }
-
-        for (Iterator i = formatters.iterator(); i.hasNext();) {
-            Formatter f = (Formatter) i.next();
-            if (f.isToFileNull()) {
-                throw new BuildException("Formatter toFile attribute is required");
-            }
-        }
+        validate();
 
         RuleSet rules;
         try {
@@ -110,13 +101,12 @@ public class PMDTask extends Task {
             throw new BuildException(rsnfe.getMessage());
         }
 
-        if (verbose) {
-            System.out.println("Using these rulesets: " + ruleSetFiles);
-            for (Iterator i = rules.getRules().iterator();i.hasNext();) {
-                Rule rule = (Rule)i.next();
-                System.out.println("Using rule " + rule.getName());
-            }
+        printIfVerbose("Using these rulesets: " + ruleSetFiles);
+        for (Iterator i = rules.getRules().iterator();i.hasNext();) {
+            Rule rule = (Rule)i.next();
+            printIfVerbose("Using rule " + rule.getName());
         }
+
         PMD pmd = new PMD();
         RuleContext ctx = new RuleContext();
         ctx.setReport(new Report());
@@ -163,7 +153,7 @@ public class PMDTask extends Task {
 
             if (printToConsole) {
                 Renderer r = new TextRenderer();
-                System.out.println(r.render(ctx.getReport()));
+                log(r.render(ctx.getReport()));
             }
 
             if (failOnRuleViolation) {
@@ -172,9 +162,27 @@ public class PMDTask extends Task {
         }
     }
 
+    private void validate() throws BuildException {
+        if (formatters.isEmpty() && !printToConsole) {
+            throw new BuildException("No formatter specified; and printToConsole was false");
+        }
+
+        for (Iterator i = formatters.iterator(); i.hasNext();) {
+            Formatter f = (Formatter) i.next();
+            if (f.isToFileNull()) {
+                throw new BuildException("Formatter toFile attribute is required");
+            }
+        }
+
+        if (ruleSetFiles == null) {
+            throw new BuildException("No rulesets specified");
+        }
+    }
+
     private void printIfVerbose(String in) {
-        if (verbose)
-            System.out.println(in);
+        if (verbose) {
+            log(in);
+        }
     }
 
     private Path createClasspath() {
