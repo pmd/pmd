@@ -55,12 +55,10 @@ public class PMD {
     public static void main(String[] args) {
         if (args[0].equals("-g")) {
             try {
-                /*
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 PMDViewer pmdViewer = new PMDViewer();
                 pmdViewer.setVisible(true);
                 pmdViewer.setupFiles();
-                */
                 PMDViewer.run();
             } catch (Exception e) {
                 e.printStackTrace();
