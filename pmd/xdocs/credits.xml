@@ -8,12 +8,19 @@
 
   <body>
     <section name="Credits">
+        <subsection name="Individuals">
+        <ul>
+            <li>Damian O'Neill - a patch to the Ant task for v0.3</li>
+        </ul>
+        </subsection>
+        <subsection name="Organizations">
       <ul>
         <li>Thanks to <a href="http://www.sourceforge.net/">SourceForge</a> for hosting
             <a href="http://www.sourceforge.net/projects/pmd/">this project</a></li>
-        <li>Thanks to <a href="http://www.webgain.com/">WebGain</a> for hosing 
+        <li>Thanks to <a href="http://www.webgain.com/">WebGain</a> for hosing
             <a href="http://www.webgain.com/products/java_cc">JavaCC</a></li>
       </ul>
+        </subsection>
     </section>
   </body>
 </document>
