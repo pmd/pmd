@@ -22,4 +22,8 @@ public class OnlyOneReturnRuleTest extends RuleTst {
     public void testVoidRtn() throws Throwable {
         runTest("OnlyOneReturn4.java", 0, new OnlyOneReturnRule());
     }
+    
+    public void testFinally() throws Throwable {
+    	runTest("OnlyOneReturn5.java", 0, new OnlyOneReturnRule());
+    }
 }
