@@ -34,13 +34,14 @@ public class SequenceChecker {
 	/*
 	 * Element of logical structure of brace nodes.
 	 * */
-	private class Status {
+	private static class Status {
+        public static final int ROOT = -1;
+
 		private ArrayList nextSteps = new ArrayList();
 		private int type;
-		private boolean lastStep = false;
+		private boolean lastStep;
 		
-		public static final int ROOT = -1;
-		
+
 		public Status(int type) {
 			this(type,false);
 		}
@@ -150,16 +151,13 @@ public class SequenceChecker {
 	 * is found or the list is empty the method return false.
 	 * */
 	public boolean run() throws SequenceException {
-		this.aktStatus = root;
-		this.firstIndex = 0;
-		this.lastIndex = 0;
-		IDataFlowNode node;
-		StackObject so;
+		aktStatus = root;
+		firstIndex = 0;
+		lastIndex = 0;
 		boolean lookAhead = false;
 		
 		for(int i=0;i<this.vector.size();i++) {
-		    so = (StackObject)vector.get(i);
-			node = so.getDataFlowNode();
+		    StackObject so = (StackObject)vector.get(i);
 		    aktStatus = this.aktStatus.step(so.getType());
 		    
 		    if(aktStatus == null) {
@@ -182,10 +180,7 @@ public class SequenceChecker {
 		        }
 		    }
 		}
-		if(this.firstIndex != this.lastIndex) {
-			return false;
-		}
-		return true;
+        return firstIndex == lastIndex;
 	}
 	
 	public int getFirstIndex() {
