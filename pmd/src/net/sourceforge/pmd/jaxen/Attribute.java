@@ -1,6 +1,3 @@
-/*
- * Created on 15/03/2003
- */
 package net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.ast.Node;
@@ -21,49 +18,31 @@ public class Attribute {
 	    this.value = value;
 	}
 
-    /**
-     * @return String
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * @return String
-     */
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the name.
-     * @param name The name to set
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Sets the value.
-     * @param value The value to set
-     */
     public void setValue(String value) {
         this.value = value;
     }
 
-    /**
-     * @return Node
-     */
     public Node getParent() {
         return parent;
     }
 
-    /**
-     * Sets the parent.
-     * @param parent The parent to set
-     */
     public void setParent(Node parent) {
         this.parent = parent;
     }
 
+    public String toString() {
+        return name + ":" + value + ":" + parent;
+    }
 }
