@@ -21,8 +21,57 @@ These are new rules for the next release
       </example>
     </rule>
 
+    <rule name="IdempotentOperationsRule"
+          message="Avoid idempotent operations"
+          class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
+      <description>
+      Avoid idempotent operations - they are silly.
+      </description>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  x = x;
+ }
+}
+  ]]>
+      </example>
+    </rule>
 
 
+    <rule name="FinalizeShouldBeProtected"
+          message="If you override finalize(), make it protected"
+          class="net.sourceforge.pmd.rules.XpathRule">
+      <description>
+      If you override finalize(), make it protected
+      </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[@Protected="false"]
+  /MethodDeclarator[@Image="finalize"]
+  [not(FormalParameters/*)]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  x = x;
+ }
+}
+  ]]>
+      </example>
+    </rule>
 
 
   </ruleset>
