@@ -1,7 +1,7 @@
 /*
  * Created on 14.07.2004
  */
-package net.sourceforge.pmd.dfa;
+package net.sourceforge.pmd.dfa.variableaccess;
 
 /**
  * @author raik

@@ -1,7 +1,7 @@
 /*
  * Created on 14.07.2004
  */
-package net.sourceforge.pmd.dfa;
+package net.sourceforge.pmd.dfa.variableaccess;
 
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTArguments;
@@ -26,6 +26,7 @@ import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.dfa.IDataFlowNode;
 
 import java.util.LinkedList;
 import java.util.List;

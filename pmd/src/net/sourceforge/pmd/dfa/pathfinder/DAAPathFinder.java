@@ -1,7 +1,10 @@
 /*
  * Created on 09.08.2004
  */
-package net.sourceforge.pmd.dfa;
+package net.sourceforge.pmd.dfa.pathfinder;
+
+import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.NodeType;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.LinkedList;

@@ -1,7 +1,7 @@
 /*
  * Created on 09.08.2004
  */
-package net.sourceforge.pmd.dfa;
+package net.sourceforge.pmd.dfa.pathfinder;
 
 import java.util.List;
 
