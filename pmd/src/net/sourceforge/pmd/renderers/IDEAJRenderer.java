@@ -16,7 +16,7 @@ public class IDEAJRenderer implements Renderer {
         private Set paths = new HashSet();
 
         public SourcePath(String sourcePathString) {
-            for (StringTokenizer st = new StringTokenizer(sourcePathString, ";"); st.hasMoreTokens();) {
+            for (StringTokenizer st = new StringTokenizer(sourcePathString, System.getProperty("path.separator")); st.hasMoreTokens();) {
                 paths.add(st.nextToken());
             }
         }
@@ -74,7 +74,7 @@ public class IDEAJRenderer implements Renderer {
     private String getFullyQualifiedClassName(String in, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(in);
         String className = classNameWithSlashes.replace(System.getProperty("file.separator").charAt(0), '.');
-        return className.substring(0, className.indexOf(".java"));
+        return className.substring(0, className.length()-5);
     }
 
     private String getSimpleFileName(String in) {
