@@ -212,7 +212,7 @@ public class RuleSetReader
 
                 m_rule.setName(ruleName);
                 m_rule.setMessage(message);
-                m_rule.setInclude(Boolean.getBoolean(include));
+                m_rule.setInclude(include.equalsIgnoreCase("true"));
                 m_ruleSet.addRule(m_rule);
             }
             else if (qualifiedName.equalsIgnoreCase("property"))
