@@ -35,7 +35,7 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/basic.xml,rulesets/foo.xml" format="html">
+        <pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/basic.xml, rulesets/foo.xml" format="html">
         <!--<pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/new_for_0_4.xml,rulesets/ticbuild.xml,rulesets/unusedcode.xml,rulesets/design.xml" format="html" verbose="true">-->
             <fileset dir="c:\data\pmd\pmd\src">
             <!--<fileset dir="c:\j2sdk1.4.0\src">-->
@@ -87,20 +87,9 @@
     </target>
 
     <target name="jjtree">
-        <mkdir dir="tmp"/>
-        <copy overwrite="yes" todir="tmp">
-            <fileset dir="src/net/sourceforge/pmd/ast" includes="SimpleNode.java,JavaParserVisitorAdapter.java,AccessNode.java"/>
-        </copy>
-        <delete>
-            <fileset dir="src/net/sourceforge/pmd/ast" includes="*.java,*.jj"/>
-        </delete>
         <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
         <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
-        <copy overwrite="yes" todir="src/net/sourceforge/pmd/ast">
-            <fileset dir="tmp" includes="*.java"/>
-        </copy>
         <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
-        <delete dir="tmp"/>
     </target>
 
     <target name="jjtree-2">

@@ -3,6 +3,11 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTTryStatement extends SimpleNode {
+
+    private boolean hasCatch;
+    private boolean hasFinally;
+
+
   public ASTTryStatement(int id) {
     super(id);
   }
@@ -11,6 +16,21 @@ public class ASTTryStatement extends SimpleNode {
     super(p, id);
   }
 
+    public void setHasCatch() {
+        hasCatch = true;
+    }
+
+    public void setHasFinally() {
+        hasFinally = true;
+    }
+
+    public boolean hasCatch() {
+        return hasCatch;
+    }
+
+    public boolean hasFinally() {
+        return hasFinally;
+    }
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {

@@ -16,7 +16,7 @@ public class EmptyCatchBlockRule extends AbstractRule implements Rule {
     public Object visit(ASTTryStatement node, Object data){
         RuleContext ctx = (RuleContext)data;
         // this skips try..finally constructs since they don't have catch blocks
-        if (node.jjtGetNumChildren() < 3) {
+        if (!node.hasCatch()) {
             return super.visit(node, data);
         }
         ASTBlock catchBlock = (ASTBlock)node.jjtGetChild(2);

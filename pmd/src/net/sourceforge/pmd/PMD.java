@@ -31,7 +31,7 @@ public class PMD {
             InputStreamReader reader = new InputStreamReader(fileContents);
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
-            //c.dump("");
+            c.dump("");
             List acus = new ArrayList();
             acus.add(c);
             ruleSet.apply(acus, ctx);

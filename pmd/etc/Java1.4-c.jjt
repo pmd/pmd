@@ -2,17 +2,7 @@
  * Copied over the changes made by Andrea Gini and Marco Savard to
  * support JDK 1.4 language constructs, i.e., asserts.
  * See the java1_4c.jj distributed in the javacc2.1/examples/JavaGrammers directory.
- *
- * Modified SINGLE_LINE_COMMENT to be a SPECIAL_TOKEN; see
- * http://www.engr.mun.ca/~theo/JavaCC-FAQ/javacc-faq.htm#tth_sEc3.9
- * for more details.
- *
- * Modified the following non-terminals to accumulate their identifiers:
- * Name, PrimarySuffix VariableDeclaratorId
- *
- * Added accumulation of field access modifiers
- *
- * Added a package declaration inside PARSER_BEGIN.
+ * Made numerous other modifications to support PMD.
  *
  * Tom Copeland, 6/02
  * ===================================================================
@@ -1148,11 +1138,22 @@ void TryStatement() :
  * Semantic check required here to make sure that at least one
  * finally/catch is present.
  */
-{}
+{
+  boolean hasCatch = false;
+  boolean hasFinally = false;
+}
 {
   "try" Block()
-  ( "catch" "(" FormalParameter() ")" Block() )*
-  [ "finally" Block() ]
+  ( "catch" {hasCatch = true;} "(" FormalParameter() ")" Block() )*
+  [ "finally" {hasFinally = true;} Block() ]
+{
+    if (hasCatch) {
+        jjtThis.setHasCatch();
+    }
+    if (hasFinally) {
+        jjtThis.setHasFinally();
+    }
+}
 }
 
 void AssertStatement() :

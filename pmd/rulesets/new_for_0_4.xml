@@ -50,10 +50,30 @@ Avoid empty try blocks
     <example>
 <![CDATA[
 // this is bad
-public boolean equals(Object o) {
+public void bar() {
     try {
     } catch (Exception e) {
         e.printStackTrace();
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyFinallyBlock"
+        message="Avoid empty finally blocks"
+        class="net.sourceforge.pmd.rules.EmptyFinallyBlockRule">
+    <description>
+Avoid empty finally blocks
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public void bar() {
+    try {
+        int x=2;
+    } finally {
     }
 }
 ]]>
