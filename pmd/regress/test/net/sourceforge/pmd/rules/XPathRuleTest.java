@@ -59,15 +59,8 @@ public class XPathRuleTest extends RuleTst {
 //        runTest("StringToString6.java", 1, rule);
 //        
 //    }
-	public void testShortVariable() throws Throwable {
-        rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)]");
-        runTest("ShortVariableField.java", 1, rule);
-        runTest("ShortVariableLocal.java", 1, rule);
-        runTest("ShortVariableFor.java", 0, rule);
-        runTest("ShortVariableParam.java", 1, rule);
-        runTest("ShortVariableNone.java", 0, rule);
-	}
 
+/*
     public void testLongVariableRule() throws Throwable {
         rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) > 12]");
         runTest("LongVariableField.java", 1, rule);
@@ -76,6 +69,7 @@ public class XPathRuleTest extends RuleTst {
         runTest("LongVariableParam.java", 1, rule);
         runTest("LongVariableNone.java", 0, rule);
     }
+*/
 
     public void testJUnitStaticSuiteRule() throws Throwable {
         rule.addProperty(

@@ -12,10 +12,10 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
     <description>
 Detects when a field, local or parameter has a short name.
     </description>
+      <properties>
+          <property name="xpath" value="//VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)]"/>
+      </properties>
       <priority>3</priority>
-   <properties>
-    <property name="minimumLength" value="3"/>
-   </properties>
     <example>
 <![CDATA[
 public class Something {
@@ -40,9 +40,9 @@ public class Something {
 Detects when a field, formal or local variable is declared with a big name.
     </description>
       <priority>3</priority>
-   <properties>
-    <property name="minimumLength" value="12"/>
-   </properties>
+      <properties>
+          <property name="xpath" value="//VariableDeclaratorId[string-length(@Image) > 12]"/>
+      </properties>
     <example>
 <![CDATA[
 public class Something {

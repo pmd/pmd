@@ -1,40 +1,35 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.rules.ShortVariableRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 
 public class ShortVariableRuleTest extends RuleTst {
 
-    private ShortVariableRule rule;
+    private Rule rule;
 
     public void setUp() {
-        rule = new ShortVariableRule();
-        rule.setMessage("Avoid stuff like -> ''{0}''");
-        rule.addProperty("minimumLength", "3");
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)]");
     }
 
     public void testShortVariableField() throws Throwable {
-        Report report = process("ShortVariableField.java", rule);
-        assertEquals(1, report.size());
+        runTest("ShortVariableField.java", 1, rule);
     }
 
     public void testShortVariableLocal() throws Throwable {
-        Report report = process("ShortVariableLocal.java", rule);
-        assertEquals(1, report.size());
+        runTest("ShortVariableLocal.java", 1, rule);
     }
 
     public void testShortVariableFor() throws Throwable {
-        Report report = process("ShortVariableFor.java", rule);
-        assertEquals(0, report.size());
+        runTest("ShortVariableFor.java", 0, rule);
     }
 
     public void testShortVariableParam() throws Throwable {
-        Report report = process("ShortVariableParam.java", rule);
-        assertEquals(1, report.size());
+        runTest("ShortVariableParam.java", 1, rule);
     }
 
     public void testShortVariableNone() throws Throwable {
-        Report report = process("ShortVariableNone.java", rule);
-        assertEquals(0, report.size());
+        runTest("ShortVariableNone.java", 0, rule);
     }
 }
