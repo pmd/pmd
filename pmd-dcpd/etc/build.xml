@@ -19,7 +19,7 @@
         <classpath>
             <pathelement location="${compiletimelibsdir}/jini-core.jar"/>
             <pathelement location="${compiletimelibsdir}/jini-ext.jar"/>
-            <pathelement location="${lib}/pmd-1.0rc1.jar"/>
+            <pathelement location="${lib}/pmd-1.0rc2.jar"/>
         </classpath>
     </javac>
 </target>
@@ -50,7 +50,7 @@
    <delete dir="staging"/>
    <mkdir dir="staging"/>
    <copy file="${lib}/dcpd.jar" toDir="staging"/>
-   <copy file="${lib}/pmd-1.0rc1.jar" toDir="staging"/>
+   <copy file="${lib}/pmd-1.0rc2.jar" toDir="staging"/>
    <copy file="${lib}/runtimeonly/outrigger-dl.jar" toDir="staging"/>
    <copy file="${lib}/runtimeonly/reggie.jar" toDir="staging"/>
    <copy file="etc/policy.all" toDir="staging"/>

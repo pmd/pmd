@@ -12,9 +12,10 @@ HOW TO RUN IT ON ONE MACHINE
 Download the latest release
 Start a JavaSpace
 Change the JavaSpace server name in Util.java and recompile the source code
-Change the source code directory that you want to check in DCPDManager.java
-Start a DCPD manager by running etc\go DCPDManager
-Start a DCPD worker by running etc\go DCPDWorker
+Open a console window and go to the pmd-dcpd\etc directory
+Start a manager by running "go DCPDManager c:\path\to\source\code 70"
+Start a worker by running "client_go DCPDWorker"
+
 
 
 
