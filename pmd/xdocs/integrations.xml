@@ -16,8 +16,8 @@
       <td><b>Download</b></td></tr>
   <tr><td>Eclipse</td>
       <td>pmd-eclipse</td>
-      <td>0.1</td>
-      <td>dpeugh</td>
+      <td>0.2</td>
+      <td>dpeugh, dcraine</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=100231">X</a></td></tr>
   <tr><td>Emacs</td>
       <td>pmd-emacs</td>
@@ -26,12 +26,12 @@
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=99873">X</a></td></tr>
   <tr><td>JBuilder</td>
       <td>pmd-jbuilder</td>
-      <td>0.3</td>
+      <td>0.6</td>
       <td>dcraine</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=100422">X</a></td></tr>
   <tr><td>JEdit</td>
       <td>pmd-jedit</td>
-      <td>0.7</td>
+      <td>0.8</td>
       <td>tomcopeland</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=103154">X</a></td></tr>
   <tr><td>Maven</td>
@@ -40,7 +40,7 @@
       <td>dpeugh</td>
       <td>N/A</td></tr>
   <tr><td>Ant</td>
-      <td>N/A</td>
+      <td>(located in PMD)</td>
       <td>N/A</td>
       <td>tomcopeland</td>
       <td>N/A</td></tr>
