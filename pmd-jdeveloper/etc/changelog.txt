@@ -1,3 +1,7 @@
+??? - 0.5:
+Updated to pmd-1.2.1.
+Implemented various window/tab features; thx to Ronald Kinion for the suggestions.
+
 June 20, 2003 - 0.4:
 Upgraded to pmd-1.1.
 

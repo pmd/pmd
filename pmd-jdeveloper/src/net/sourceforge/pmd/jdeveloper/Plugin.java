@@ -8,6 +8,7 @@ import net.sourceforge.pmd.RuleViolation;
 import oracle.ide.ContextMenu;
 import oracle.ide.Ide;
 import oracle.ide.IdeAction;
+import oracle.ide.log.LogPage;
 import oracle.ide.addin.Addin;
 import oracle.ide.addin.Context;
 import oracle.ide.addin.ContextMenuListener;
@@ -79,7 +80,14 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         return null;
     }
 
+    private boolean added;
+
     public boolean handleEvent(IdeAction ideAction, Context context) {
+        if (!added) {
+            Ide.getLogManager().addPage(rvPage);
+            Ide.getLogManager().showLog();
+            added = true;
+        }
         if (ideAction.getCommandId() == CHECK_CMD_ID) {
             try {
                 PMD pmd = new PMD();
@@ -126,7 +134,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         rvPage.clearAll();
         if (ctx.getReport().isEmpty()) {
             JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
-            rvPage.movePMDToBack();
+            Ide.getLogManager().getMsgPage().show();
         } else {
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                 rvPage.add((RuleViolation)i.next());

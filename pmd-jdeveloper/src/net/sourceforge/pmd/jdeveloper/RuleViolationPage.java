@@ -4,6 +4,7 @@ import net.sourceforge.pmd.RuleViolation;
 import oracle.ide.Ide;
 import oracle.ide.layout.ViewId;
 import oracle.ide.log.AbstractLogPage;
+import oracle.ide.log.LogPage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +20,6 @@ public class RuleViolationPage extends AbstractLogPage {
         list = new JList(model);
         list.setSelectionModel(new JumpingSelectionModel(model));
         scrollPane = new JScrollPane(list);
-        Ide.getLogManager().addPage(this);
     }
 
     public void add(RuleViolation ruleViolation) {
@@ -28,10 +28,6 @@ public class RuleViolationPage extends AbstractLogPage {
 
     public Component getGUI() {
         return scrollPane;
-    }
-
-    public void movePMDToBack() {
-        Ide.getLogManager().getLogWindow().getPage().show();
     }
 
     public void clearAll() {
