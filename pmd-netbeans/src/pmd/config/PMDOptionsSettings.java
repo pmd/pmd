@@ -50,6 +50,9 @@ public class PMDOptionsSettings extends SystemOption {
 	
 	public final static String PROP_ENABLE_SCAN = "EnableScan";
 	
+	/** Default interval for scanning, 10 seconds. **/
+	public static final int DEFAULT_SCAN_INTERVAL = 10;
+	
 	/** The default rules.*/
 	private static final String DEFAULT_RULES =
 		"AvoidDuplicateLiterals, StringToString, StringInstantiation, JUnitStaticSuite, " +
@@ -70,6 +73,9 @@ public class PMDOptionsSettings extends SystemOption {
 	protected void initialize() {
 		super.initialize();
 		setRules( DEFAULT_RULES );
+		setRulesets(new CustomRuleSetSettings());
+		setScanEnabled(Boolean.FALSE);
+		setScanInterval(new Integer(DEFAULT_SCAN_INTERVAL));
 	}
 
 
