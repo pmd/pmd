@@ -6,8 +6,10 @@ package net.sourceforge.pmd.rules;
 public class ImportWrapper {
     private int line;
     private String name;
+    private String fullname;
 
-    public ImportWrapper(String name, int line) {
+    public ImportWrapper(String fullname, String name, int line) {
+        this.fullname = fullname;
         this.name = name;
         this.line = line;
     }
@@ -23,6 +25,10 @@ public class ImportWrapper {
 
     public String getName() {
         return name;
+    }
+
+    public String getFullName() {
+        return fullname;
     }
 
     public int getLine() {

@@ -5,37 +5,23 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="MethodWithSameNameAsEnclosingClass"
-          message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.rules.XPathRule">
-       <description>
-       Non-constructor methods should not have the same name as the enclosing class.
-       </description>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration
- [parent::ClassBodyDeclaration
-  [parent::ClassBody
-   [parent::UnmodifiedClassDeclaration/@Image = //MethodDeclarator/@Image
-   ]]]
- ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>3</priority>
-       <example>
-    <![CDATA[
-public class MyClass {
-// this is bad because it is a method
-public void MyClass() {}
-// this is OK because it is a constructor
-public MyClass() {}
-}
-    ]]>
-       </example>
-     </rule>
+    <rule name="UnusedImports"
+          message="Avoid unused imports such as ''{0}''"
+          class="net.sourceforge.pmd.rules.UnusedImportsRule">
+      <description>
+      Avoid unused import statements.
+      </description>
+        <priority>4</priority>
+
+      <example>
+  <![CDATA[
+  // this is bad
+  import java.io.File;
+  public class Foo {}
+  ]]>
+      </example>
+      </rule>
+
 
 
 

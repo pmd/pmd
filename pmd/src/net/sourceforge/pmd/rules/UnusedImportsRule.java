@@ -26,7 +26,7 @@ public class UnusedImportsRule extends AbstractRule {
         RuleContext ctx = (RuleContext) data;
         for (Iterator i = imports.iterator(); i.hasNext();) {
             ImportWrapper wrapper = (ImportWrapper) i.next();
-            String msg = MessageFormat.format(getMessage(), new Object[]{wrapper.getName()});
+            String msg = MessageFormat.format(getMessage(), new Object[]{wrapper.getFullName()});
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, wrapper.getLine(), msg));
         }
         return data;
@@ -42,7 +42,7 @@ public class UnusedImportsRule extends AbstractRule {
             } else {
                 className = importedType.getImage();
             }
-            ImportWrapper wrapper = new ImportWrapper(className, node.getBeginLine());
+            ImportWrapper wrapper = new ImportWrapper(importedType.getImage(), className, node.getBeginLine());
             imports.add(wrapper);
         }
 
@@ -56,7 +56,7 @@ public class UnusedImportsRule extends AbstractRule {
         } else {
             name = node.getImage().substring(0, node.getImage().indexOf('.'));
         }
-        ImportWrapper candidate = new ImportWrapper(name, -1);
+        ImportWrapper candidate = new ImportWrapper(node.getImage(), name, -1);
         if (imports.contains(candidate)) {
             imports.remove(candidate);
         }
