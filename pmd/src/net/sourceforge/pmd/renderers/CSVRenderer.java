@@ -9,7 +9,12 @@ import java.util.Iterator;
 
 public class CSVRenderer implements Renderer {
     public String render(Report report) {
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(quoteAndCommify("Problem"));
+        buf.append(quoteAndCommify("File"));
+        buf.append(quoteAndCommify("Line"));
+        buf.append(quote("Description"));
+        buf.append(PMD.EOL);
+
         int violationCount = 1;
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
