@@ -1,9 +1,36 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class IfStmtsMustUseBracesRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class IfStmtsMustUseBraces1 {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  int x = 0;   " + CPD.EOL +
+    "  if (true) x=2;" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class IfStmtsMustUseBraces2 {" + CPD.EOL +
+    " public void foo() {   " + CPD.EOL +
+    "  if (true) {" + CPD.EOL +
+    "   int x=2;" + CPD.EOL +
+    "  }" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class IfStmtsMustUseBraces3 {" + CPD.EOL +
+    " public void foo() {   " + CPD.EOL +
+    "  if (true) {" + CPD.EOL +
+    "   if (true) bar();" + CPD.EOL +
+    "  }" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
 
     private Rule rule;
 
@@ -13,14 +40,14 @@ public class IfStmtsMustUseBracesRuleTest extends RuleTst {
     }
 
     public void testSimpleBad() throws Throwable {
-        runTestFromFile("IfStmtsMustUseBraces1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void testSimpleOK() throws Throwable {
-        runTestFromFile("IfStmtsMustUseBraces2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
 
     public void testNexted() throws Throwable {
-        runTestFromFile("IfStmtsMustUseBraces3.java", 1, rule);
+        runTestFromString(TEST3, 1, rule);
     }
 }

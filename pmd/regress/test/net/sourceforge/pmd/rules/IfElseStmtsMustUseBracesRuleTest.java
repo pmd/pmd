@@ -1,9 +1,36 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class IfElseStmtsMustUseBracesRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class IfElseStmtsNeedBraces1 {" + CPD.EOL +
+    "       public void foo() {     " + CPD.EOL +
+    "               int x =0;" + CPD.EOL +
+    "               if (true == true) " + CPD.EOL +
+    "                       x=2;" + CPD.EOL +
+    "                else " + CPD.EOL +
+    "                       x=4;" + CPD.EOL +
+    "               " + CPD.EOL +
+    "       }" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class IfElseStmtsNeedBraces2 {" + CPD.EOL +
+    "       public void foo() {     " + CPD.EOL +
+    "               int x =0;" + CPD.EOL +
+    "               if (true == true) {" + CPD.EOL +
+    "                       x=2;" + CPD.EOL +
+    "               } else {" + CPD.EOL +
+    "                       x=4;" + CPD.EOL +
+    "               }" + CPD.EOL +
+    "       }" + CPD.EOL +
+    "}";
+
+
 
     private Rule rule;
 
@@ -13,10 +40,10 @@ public class IfElseStmtsMustUseBracesRuleTest extends RuleTst {
     }
 
     public void testIfElseStmtsMustUseBraces1() throws Throwable {
-        runTestFromFile("IfElseStmtsNeedBraces1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void testIfElseStmtsMustUseBraces2() throws Throwable {
-        runTestFromFile("IfElseStmtsNeedBraces2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
 }

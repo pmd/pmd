@@ -1,9 +1,37 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class ForLoopShouldBeWhileLoopRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class ForLoopShouldBeWhileLoop1 {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  int x = 2;" + CPD.EOL +
+    "  for (;x<5;) { " + CPD.EOL +
+    "   x++;" + CPD.EOL +
+    "  }" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class ForLoopShouldBeWhileLoop2 {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  for (int x=2;x<5;) { " + CPD.EOL +
+    "   x++;" + CPD.EOL +
+    "  }" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class ForLoopShouldBeWhileLoop3 {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  for (;;) {}" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
 
     private Rule rule;
 
@@ -15,14 +43,14 @@ public class ForLoopShouldBeWhileLoopRuleTest extends RuleTst {
     }
 
     public void testSimple() throws Throwable {
-        runTestFromFile("ForLoopShouldBeWhileLoop1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void testOK() throws Throwable {
-        runTestFromFile("ForLoopShouldBeWhileLoop2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
 
     public void testForSemicolonSemicolon() throws Throwable {
-        runTestFromFile("ForLoopShouldBeWhileLoop3.java", 0, rule);
+        runTestFromString(TEST3, 0, rule);
     }
 }

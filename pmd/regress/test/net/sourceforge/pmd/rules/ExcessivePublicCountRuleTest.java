@@ -1,8 +1,22 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.ExcessivePublicCountRule;
+import net.sourceforge.pmd.cpd.CPD;
 
 public class ExcessivePublicCountRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class ExcessivePublicCountRule1 {" + CPD.EOL +
+    " public int foo;" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class ExcessivePublicCountRule2 {" + CPD.EOL +
+    " public int foo;" + CPD.EOL +
+    " public int bif;" + CPD.EOL +
+    " public int baz;" + CPD.EOL +
+    " public int bof;" + CPD.EOL +
+    "}";
 
     private ExcessivePublicCountRule rule;
 
@@ -12,11 +26,11 @@ public class ExcessivePublicCountRuleTest extends RuleTst {
 
     public void testSimpleOK() throws Throwable {
         rule.addProperty("minimum", "50");
-        super.runTestFromFile("ExcessivePublicCountRule1.java", 0, rule);
+        runTestFromString(TEST1, 0, rule);
     }
 
     public void testSimpleBad() throws Throwable {
         rule.addProperty("minimum", "2");
-        super.runTestFromFile("ExcessivePublicCountRule2.java", 1, rule);
+        runTestFromString(TEST2, 1, rule);
     }
 }
