@@ -19,7 +19,6 @@
       <item name="Command line usage" href="/running.html" />
       <item name="Ant task usage" href="/ant-task.html" />
       <item name="IDE plugin usage" href="/integrations.html" />
-      <item name="The PMD GUI" href="/swingui.html" />
       <item name="PMD in the press" href="/news.html" />
       <item name="Best practices" href="/bestpractices.html" />
       <item name="Finding copied and pasted code" href="/cpd.html" />
