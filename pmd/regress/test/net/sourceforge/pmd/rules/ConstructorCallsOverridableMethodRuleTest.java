@@ -12,8 +12,8 @@ public class ConstructorCallsOverridableMethodRuleTest extends SimpleAggregatorT
            new TestDescriptor(TEST3, "", 1, new ConstructorCallsOverridableMethodRule()),
            new TestDescriptor(TEST4, "", 0, new ConstructorCallsOverridableMethodRule()),
            new TestDescriptor(TEST5, "", 1, new ConstructorCallsOverridableMethodRule()),
-           // FIXME
            new TestDescriptor(TEST6, "calling method on literal bug", 0, new ConstructorCallsOverridableMethodRule()),
+           // FIXME
            //new TestDescriptor(TEST7, "method in anonymous inner class is ok", 0, new ConstructorCallsOverridableMethodRule()),
        });
     }
