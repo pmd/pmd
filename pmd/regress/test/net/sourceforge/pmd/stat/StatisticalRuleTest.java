@@ -1,5 +1,6 @@
 package test.net.sourceforge.pmd.stat;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -60,7 +61,7 @@ public class StatisticalRuleTest
 	
 		
 	public static final double MEAN = 499.5;
-	public static final double SIGMA = 288.8194;
+	public static final double SIGMA = 288.6750;
 	public static final int NUM_TESTS = 32;
 	
     public StatisticalRuleTest(String name) 
@@ -81,6 +82,30 @@ public class StatisticalRuleTest
 		}
     }
 
+	/**
+	 * This test verifies that the Stat rule creates a Metric,
+	 * with the proper values.
+	 */
+	public void testMetrics() throws Throwable
+	{
+		Report report = makeReport( IUT );
+		Iterator metrics = report.metrics();
+		
+		assertTrue( metrics.hasNext());
+		Object o = metrics.next();
+		
+		assertTrue( o instanceof Metric);
+		Metric m = (Metric) o;
+		
+		assertEquals("test.net.sourceforge.pmd.stat.MockStatisticalRule", 
+					m.getMetricName());
+		
+		assertEquals( 0.0, m.getLowValue(), 0.05 );
+		assertEquals( 999.0, m.getHighValue(), 0.05 );
+		assertEquals( MEAN, m.getAverage(), 0.05 );
+		assertEquals( SIGMA, m.getStandardDeviation(), 0.05 );
+	}
+	
 	/**
 	 * This returns a Random value for Sigma which will
 	 * return some values.

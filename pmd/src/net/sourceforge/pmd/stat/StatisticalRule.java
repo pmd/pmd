@@ -24,11 +24,14 @@ public abstract class StatisticalRule extends AbstractRule {
 
     private int count = 0;
     private double total = 0.0;
-
+	private double totalSquared = 0.0;
+	
     public void addDataPoint( DataPoint point )
     {
 		count++;
 		total += point.getScore();
+		totalSquared += point.getScore() * point.getScore();
+		
 		dataPoints.add( point );
     }
     
@@ -61,8 +64,8 @@ public abstract class StatisticalRule extends AbstractRule {
 		
 		makeViolations(ctx, newPoints);
 		
-		double low = ((DataPoint) newPoints.first()).getScore();
-		double high = ((DataPoint) newPoints.last()).getScore();
+		double low = ((DataPoint) dataPoints.first()).getScore();
+		double high = ((DataPoint) dataPoints.last()).getScore();
 	
 		ctx.getReport().addMetric( new Metric( this.getName(), low, high,
 		                                       getMean(), getStdDev()));
@@ -77,13 +80,8 @@ public abstract class StatisticalRule extends AbstractRule {
 
 		Iterator points = dataPoints.iterator();
 
-    	while (points.hasNext()) {
-		    DataPoint point = (DataPoint) points.next();
-		    varTotal += ((point.getScore() - getMean()) *
-				 		 (point.getScore() - getMean()));	
-    	}                             	
-    	
-    	double variance = varTotal / count;
+		double variance = ((totalSquared / count) -
+						   (getMean() * getMean() ));    	
 		return Math.sqrt( variance );
 	}
 	
