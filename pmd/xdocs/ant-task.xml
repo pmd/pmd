@@ -20,25 +20,15 @@
     <td align="center" valign="top"><b>Required</b></td>
   </tr>
   <tr>
-    <td valign="top">reportfile</td>
-    <td valign="top">The file to which the report is written.</td>
+    <td valign="top">formatter</td>
+    <td valign="top">Specifies formats and files to which the report is written. Can be of type 'xml', 'text', or 'html'.  See example below.</td>
     <td valign="top" align="center">Yes</td>
 
-  </tr>
-  <tr>
-    <td valign="top">verbose</td>
- 	<td valign="top">Verbose output - names of files processed, rule counts, etc.</td>
-    <td valign="top" align="center">No</td>
   </tr>
   <tr>
     <td valign="top">rulesetfiles</td>
     <td valign="top">A comma delimited list of ruleset files ('rulesets/basic.xml,rulesets/design.xml').  If you write
     your own ruleset files, you can put them on the classpath and plug them in here.</td>
-    <td valign="top" align="center">Yes</td>
-  </tr>
-  <tr>
-    <td valign="top">format</td>
-    <td valign="top">The report format (xml, html)</td>
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>
@@ -51,29 +41,41 @@
     <td valign="top">Whether or not to print any problems found to the Ant log/console</td>
     <td valign="top" align="center">No</td>
   </tr>
+    <tr>
+      <td valign="top">shortFilenames</td>
+      <td valign="top">Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">verbose</td>
+       <td valign="top">Verbose output - names of files processed, rule counts, etc.</td>
+      <td valign="top" align="center">No</td>
+    </tr>
 </table>
 
       </subsection>
       <subsection name="Examples">
 <source>
 <![CDATA[
-<target name="pmd">
-  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
-  <pmd reportFile="C:\foo.xml" rulesetfiles="rulesets/unusedcode.xml" format="xml">
-    <fileset dir="C:\j2sdk1.4.0\src\">
-      <include name="**/*.java"/>
-    </fileset>
-  </pmd>
-</target>
+    <target name="pmd">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+        <pmd rulesetfiles="rulesets/imports.xml" shortFilenames="true">
+            <formatter type="html" toFile="pmd_report.html"/>
+            <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
 
-<target name="pmd">
-  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
-  <pmd reportFile="C:\foo.xml" verbose="false" rulesetfiles="rulesets/basic.xml,rulesets/design.xml" format="xml" failonerror="no">
-    <fileset dir="C:\j2sdk1.4.0\src\">
-      <include name="**/*.java"/>
-    </fileset>
-  </pmd>
-</target>
+    <target name="pmd">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+        <pmd rulesetfiles="rulesets/imports.xml,rulesets/unusedcode.xml" failonerror="no">
+            <formatter type="xml" toFile="pmd_report.xml"/>
+            <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
 ]]>
 </source>
       </subsection>

@@ -37,7 +37,7 @@ copy ..\lib\pmd-1.02.jar c:\tmp\pmd\lib
 copy ..\lib\xmlParserAPIs-2.0.2.jar c:\tmp\pmd\lib
 copy ..\lib\xercesImpl-2.0.2.jar c:\tmp\pmd\lib
 copy the docs directory over to c:\tmp\pmd -- how to do this on cmd line?
-copy all the test classes and data into the release 
+copy the test-data directory over to c:\tmp\pmd
 Zip it up, rename it pmd-bin-1.02.zip
 
 Time to tag:
@@ -57,7 +57,7 @@ and then retag everything
 
 FTP the zip file to SF
 ftp upload.sourceforge.net
-generic userid/password: anonymous/tomcopeland@users.sourceforge.net
+generic userid/password: anonymous/tom@infoether.com
 cd incoming
 bin
 put pmd-bin-1.02.zip
