@@ -80,11 +80,9 @@ sub loadProjectList() {
    my $jobdata=<FILE>;
    close(FILE);
    my $project = PMD::Project->new($jobdata);
-   my $jobtext="";
+   my $jobtext=$project->getTitle();
    if (-e $project->getRptFile()) {
     $jobtext="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
-   } else {
-    $jobtext=$project->getTitle();
    }
    $result="${result}<tr><td>${jobtext}</td><td></td><td><a href=\"http://@{[$project->getUnixName()]}.sf.net/\">http://@{[$project->getUnixName()]}.sf.net/</a></td><td>@{[$project->getLines()]}</td>";
   }
