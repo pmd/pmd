@@ -1,43 +1,48 @@
 package net.sourceforge.pmd.swingui;
 
+
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+
 import java.util.Date;
 import java.util.Vector;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since August 17, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class DirectoryTableModel extends DefaultTableModel {
-    private DateFormat m_dateFormat;
-    private DecimalFormat m_decimalFormat;
-    private String m_fileExtension;
-
-    //Constants
+    // Constants
     protected static final int FILE_NAME_COLUMN = 0;
     protected static final int FILE_SIZE_COLUMN = 1;
     protected static final int FILE_LAST_MODIFIED_COLUMN = 2;
+    private DateFormat m_dateFormat;
+    private DecimalFormat m_decimalFormat;
+    private String m_fileExtension;
     private final int FILE_COLUMN = 3; // not a visible column
 
     /**
      *********************************************************************************
      *
      */
-    protected DirectoryTableModel(DirectoryTree directoryTree, String fileExtension) {
+    protected DirectoryTableModel(DirectoryTree directoryTree,
+            String fileExtension) {
         super(createData(), createColumnNames());
 
         DecimalFormatSymbols decimalFormatSymbols;
@@ -115,7 +120,8 @@ class DirectoryTableModel extends DefaultTableModel {
      *******************************************************************************
      *******************************************************************************
      */
-    private class DirectoryTreeSelectionListener implements TreeSelectionListener {
+    private class DirectoryTreeSelectionListener
+        implements TreeSelectionListener {
 
         /**
          *************************************************************************
@@ -201,12 +207,12 @@ class DirectoryTableModel extends DefaultTableModel {
                 lineCount = 0;
             } catch (IOException exception) {
                 lineCount = 0;
-            } finally {
+            }
+            finally {
                 if (reader != null) {
                     try {
                         reader.close();
-                    } catch (IOException exception) {
-                    }
+                    } catch (IOException exception) {}
                 }
             }
 
@@ -214,13 +220,13 @@ class DirectoryTableModel extends DefaultTableModel {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
     private class FilesFilter implements FileFilter {
-
         public boolean accept(File file) {
             if (file.isFile() && (file.isHidden() == false)) {
                 String fileName = file.getName().toLowerCase();
@@ -229,7 +235,6 @@ class DirectoryTableModel extends DefaultTableModel {
             }
 
             return false;
-
         }
     }
 }

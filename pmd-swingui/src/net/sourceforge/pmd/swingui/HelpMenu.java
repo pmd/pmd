@@ -1,20 +1,23 @@
 package net.sourceforge.pmd.swingui;
 
+
 import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since August 17, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class HelpMenu extends JMenu {
 
@@ -37,7 +40,8 @@ class HelpMenu extends JMenu {
         menuItem = new JMenuItem("Online Help", icon);
         menuItem.addActionListener(new HelpActionListener());
         menuItem.setMnemonic('H');
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK));
+        menuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK));
         add(menuItem);
 
         //
@@ -51,7 +55,8 @@ class HelpMenu extends JMenu {
         menuItem = new JMenuItem("About...");
         menuItem.addActionListener(new AboutActionListener());
         menuItem.setMnemonic('A');
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
+        menuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
         add(menuItem);
     }
 
@@ -61,11 +66,12 @@ class HelpMenu extends JMenu {
      *********************************************************************************
      */
     private class HelpActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
-            MessageDialog.show(PMDViewer.getViewer(), "Online Help not available yet.");
+            MessageDialog.show(PMDViewer.getViewer(),
+                    "Online Help not available yet.");
         }
     }
+
 
     /**
      *********************************************************************************
@@ -73,9 +79,9 @@ class HelpMenu extends JMenu {
      *********************************************************************************
      */
     private class AboutActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             PMDViewer viewer = PMDViewer.getViewer();
+
             viewer.setEnableViewer(false);
             (new AboutPMD(viewer)).setVisible(true);
             viewer.setEnableViewer(true);

@@ -1,12 +1,16 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
 import java.awt.Color;
+
 import java.io.StringWriter;
+
 import java.util.Iterator;
+
 
 /**
  *
@@ -14,10 +18,9 @@ import java.util.Iterator;
  *
  * @author Donald A. Leckie
  * @since August 27, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class HTMLResultRenderer {
-
     private boolean m_reportNoViolations;
     private StringWriter m_writer;
 
@@ -32,7 +35,8 @@ class HTMLResultRenderer {
         //
         // Write HTML header.
         //
-        m_writer.write("<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">\n");
+        m_writer.write(
+                "<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">\n");
         m_writer.write("<html>\n");
         m_writer.write("<head>\n");
         m_writer.write("<meta content=\"text/html; charset=iso-8859-1\">\n");
@@ -87,8 +91,8 @@ class HTMLResultRenderer {
         m_writer.write(fileName);
         m_writer.write("\n<br>\n");
 
-        //Color pmdGray = UIManager.getColor("pmdGray");
-        //String hexValue = Integer.toHexString(pmdGray.getRGB());
+        // Color pmdGray = UIManager.getColor("pmdGray");
+        // String hexValue = Integer.toHexString(pmdGray.getRGB());
         String hexValue = Integer.toHexString(Color.WHITE.getRGB());
 
         if (hexValue.startsWith("0x")) {
@@ -224,6 +228,7 @@ class HTMLResultRenderer {
         for (int n = 0; n < chars.length; n++) {
             if ((chars[n] != ' ') && (chars[n] != '\n')) {
                 startIndex = n;
+
                 break;
             }
         }
@@ -233,6 +238,7 @@ class HTMLResultRenderer {
         for (int n = lastIndex; n >= 0; n--) {
             if ((chars[n] != ' ') && (chars[n] != '\n')) {
                 lastIndex = n;
+
                 break;
             }
         }

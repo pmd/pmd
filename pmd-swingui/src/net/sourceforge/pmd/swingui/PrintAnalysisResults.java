@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
 import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
@@ -10,18 +11,20 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.PrintJob;
 import java.awt.Toolkit;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.StringTokenizer;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since January 5, 2003
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class PrintAnalysisResults {
     private PrintJob m_printJob;
@@ -41,15 +44,14 @@ class PrintAnalysisResults {
     private FontMetrics m_boldFontMetrics;
     private Font m_exampleFont;
     private FontMetrics m_exampleFontMetrics;
-    private List m_lineTable;
+    private java.util.List m_lineTable;
     private final String EMPTY_STRING = "";
     private boolean m_printingExample;
 
     /**
      ***********************************************************************
      */
-    protected PrintAnalysisResults() {
-    }
+    protected PrintAnalysisResults() {}
 
     /**
      ***********************************************************************
@@ -77,17 +79,19 @@ class PrintAnalysisResults {
                 TextAnalysisResultsEvent.notifyRequestText(this);
                 pageSize = m_printJob.getPageDimension();
                 resolution = m_printJob.getPageResolution();
-                margin = resolution / 2;  // 1/2 inch margin
+                margin = resolution / 2; // 1/2 inch margin
                 m_printAreaX = margin;
                 m_printAreaY = margin;
                 m_printAreaWidth = pageSize.width - margin - margin;
                 m_printAreaHeight = pageSize.height - margin - margin;
                 m_boldFont = new Font("Serif", Font.BOLD, 9);
-                m_boldFontMetrics = PMDViewer.getViewer().getFontMetrics(m_boldFont);
+                m_boldFontMetrics = PMDViewer.getViewer().getFontMetrics(
+                        m_boldFont);
                 m_font = new Font("Serif", Font.PLAIN, 9);
                 m_fontMetrics = PMDViewer.getViewer().getFontMetrics(m_font);
                 m_exampleFont = new Font("Courier", Font.PLAIN, 9);
-                m_exampleFontMetrics = PMDViewer.getViewer().getFontMetrics(m_exampleFont);
+                m_exampleFontMetrics = PMDViewer.getViewer().getFontMetrics(
+                        m_exampleFont);
 
                 Date date;
                 DateFormat dateFormat;
@@ -101,7 +105,8 @@ class PrintAnalysisResults {
                 m_lineTable.clear();
                 m_printJob = null;
             }
-        } finally {
+        }
+        finally {
             ListenerList.removeListener(textListener);
         }
     }
@@ -159,7 +164,9 @@ class PrintAnalysisResults {
         if (index >= 0) {
             index++;
             printLineInfo.m_label = textLine.substring(0, index);
-            printLineInfo.m_data = (index < textLine.length()) ? textLine.substring(index) : EMPTY_STRING;
+            printLineInfo.m_data = (index < textLine.length())
+                    ? textLine.substring(index)
+                    : EMPTY_STRING;
         }
 
         if (m_printingExample) {
@@ -169,15 +176,17 @@ class PrintAnalysisResults {
         } else {
             printLineInfo.m_dataFont = m_font;
             printLineInfo.m_dataFontMetrics = m_fontMetrics;
-
         }
 
         printLineInfo.m_labelFont = m_boldFont;
         printLineInfo.m_labelFontMetrics = m_boldFontMetrics;
-        printLineInfo.m_labelWidth = printLineInfo.m_labelFontMetrics.stringWidth(printLineInfo.m_label);
-        printLineInfo.m_dataWidth = printLineInfo.m_dataFontMetrics.stringWidth(printLineInfo.m_data);
+        printLineInfo.m_labelWidth = printLineInfo.m_labelFontMetrics.stringWidth(
+                printLineInfo.m_label);
+        printLineInfo.m_dataWidth = printLineInfo.m_dataFontMetrics.stringWidth(
+                printLineInfo.m_data);
         printLineInfo.m_labelX = m_printAreaX;
-        printLineInfo.m_dataX = printLineInfo.m_labelX + printLineInfo.m_labelWidth;
+        printLineInfo.m_dataX = printLineInfo.m_labelX
+                + printLineInfo.m_labelWidth;
 
         if (m_printingExample && (startingExample == false)) {
             printLineInfo.m_label = EMPTY_STRING;
@@ -197,7 +206,8 @@ class PrintAnalysisResults {
      **********************************************************************
      *
      */
-    private void buildPrintLineInfoForMultipleLines(PrintLineInfo basePrintLineInfo) {
+    private void buildPrintLineInfoForMultipleLines(
+            PrintLineInfo basePrintLineInfo) {
         char[] data = basePrintLineInfo.m_data.toCharArray();
         int printAreaRight = m_printAreaX + m_printAreaWidth;
         int dataAreaWidth = printAreaRight - basePrintLineInfo.m_dataX;
@@ -206,16 +216,19 @@ class PrintAnalysisResults {
 
         for (int n = 0; n < data.length; n++) {
             char theChar = data[n];
+
             buffer.append(theChar);
 
             if ((theChar == ' ') || (theChar == '\n')) {
                 String textLine = buffer.toString();
 
-                if (m_fontMetrics.stringWidth(buffer.toString()) >= dataAreaWidth) {
+                if (m_fontMetrics.stringWidth(buffer.toString())
+                        >= dataAreaWidth) {
                     for (int n1 = buffer.length() - 1; n1 >= 0; n1--) {
                         if (buffer.charAt(n1) == ' ') {
                             textLine = textLine.substring(0, n1);
                             buffer.delete(0, n1 + 1);
+
                             break;
                         }
                     }
@@ -323,6 +336,7 @@ class PrintAnalysisResults {
         //
         int fileNameX = m_printAreaX;
         int fileNameWidth = m_boldFontMetrics.stringWidth(m_filePath);
+
         m_graphics.drawString(m_filePath, fileNameX, baseline);
 
         //
@@ -335,7 +349,8 @@ class PrintAnalysisResults {
         m_pageNumber++;
         pageText = "Page " + m_pageNumber;
         pageTextWidth = m_boldFontMetrics.stringWidth(pageText);
-        pageTextX = m_printAreaX + (m_printAreaWidth / 2) - (pageTextWidth / 2);
+        pageTextX = (m_printAreaX + (m_printAreaWidth / 2))
+                - (pageTextWidth / 2);
 
         if (pageTextX <= (m_printAreaX + fileNameWidth)) {
             pageTextX = m_printAreaX + fileNameWidth + 10;
@@ -350,7 +365,7 @@ class PrintAnalysisResults {
         int printDateX;
 
         printDateWidth = m_boldFontMetrics.stringWidth(m_printDate);
-        printDateX = m_printAreaX + m_printAreaWidth - printDateWidth;
+        printDateX = (m_printAreaX + m_printAreaWidth) - printDateWidth;
         m_graphics.drawString(m_printDate, printDateX, baseline);
 
         //
@@ -359,7 +374,7 @@ class PrintAnalysisResults {
         int x1;
         int x2;
 
-        m_printLineTop += m_boldFontMetrics.getHeight() + 3;
+        m_printLineTop += (m_boldFontMetrics.getHeight() + 3);
         x1 = m_printAreaX;
         x2 = m_printAreaX + m_printAreaWidth;
         m_graphics.drawLine(x1, m_printLineTop, x2, m_printLineTop);
@@ -372,12 +387,14 @@ class PrintAnalysisResults {
      * @param printLineInfo
      */
     private void printBody(PrintLineInfo printLineInfo) {
-        if ((printLineInfo.m_label.length() > 0) || (printLineInfo.m_data.length() > 0)) {
+        if ((printLineInfo.m_label.length() > 0)
+                || (printLineInfo.m_data.length() > 0)) {
             int x;
             int y;
             int baseline;
 
-            baseline = m_printLineTop + printLineInfo.m_labelFontMetrics.getAscent();
+            baseline = m_printLineTop
+                    + printLineInfo.m_labelFontMetrics.getAscent();
 
             // Print label
             if (printLineInfo.m_label.length() > 0) {
@@ -417,8 +434,7 @@ class PrintAnalysisResults {
          *
          * @param event
          */
-        public void requestTextAnalysisResults(TextAnalysisResultsEvent event) {
-        }
+        public void requestTextAnalysisResults(TextAnalysisResultsEvent event) {}
 
         /**
          ****************************************************************************
@@ -429,6 +445,7 @@ class PrintAnalysisResults {
             m_analysisText = event.getText();
         }
     }
+
 
     /**
      ***********************************************************************

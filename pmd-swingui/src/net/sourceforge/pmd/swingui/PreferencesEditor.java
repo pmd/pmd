@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 
@@ -20,6 +21,7 @@ import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -31,16 +33,18 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+
 import java.io.File;
 
+
 /*
-*/
+ */
 
 /**
  *
  * @author Donald A. Leckie
  * @since September 8, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class PreferencesEditor extends JPanel {
     private JTextArea m_currentPathToPMD;
@@ -55,7 +59,8 @@ class PreferencesEditor extends JPanel {
      *
      * @pmdViewer
      */
-    protected PreferencesEditor() throws PMDException {
+    protected PreferencesEditor()
+        throws PMDException {
         super(new BorderLayout());
 
         add(createContentPanel(), BorderLayout.CENTER);
@@ -67,11 +72,14 @@ class PreferencesEditor extends JPanel {
      *
      * @return
      */
-    private JScrollPane createContentPanel() throws PMDException {
+    private JScrollPane createContentPanel()
+        throws PMDException {
         JPanel contentPanel = new JPanel(new BorderLayout());
         EmptyBorder emptyBorder = new EmptyBorder(100, 100, 100, 100);
         EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
-        CompoundBorder compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
+        CompoundBorder compoundBorder = new CompoundBorder(etchedBorder,
+                emptyBorder);
+
         contentPanel.setBorder(compoundBorder);
         contentPanel.add(createDataPanel(), BorderLayout.NORTH);
 
@@ -83,7 +91,8 @@ class PreferencesEditor extends JPanel {
      *
      * @return
      */
-    private JPanel createDataPanel() throws PMDException {
+    private JPanel createDataPanel()
+        throws PMDException {
         JPanel dataPanel;
         int row;
         Preferences preferences;
@@ -103,32 +112,44 @@ class PreferencesEditor extends JPanel {
 
         row = 0;
         createLabel("Current Path to PMD Directory", dataPanel, row, 0);
+
         String currentPath = preferences.getCurrentPathToPMD();
+
         m_currentPathToPMD = createTextArea(currentPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_currentPathToPMD);
 
         row++;
         createLabel("User Path to PMD Directory", dataPanel, row, 0);
+
         String userPath = preferences.getUserPathToPMD();
+
         m_userPathToPMD = createTextArea(userPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_userPathToPMD);
 
         row++;
         createLabel("Shared Path to PMD Directory", dataPanel, row, 0);
+
         String sharedPath = preferences.getSharedPathToPMD();
+
         m_sharedPathToPMD = createTextArea(sharedPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_sharedPathToPMD);
 
         row++;
         createLabel("Analysis Results Files Path", dataPanel, row, 0);
+
         String analysisResultsPath = preferences.getAnalysisResultsPath();
-        m_analysisResultsPath = createTextArea(analysisResultsPath, dataPanel, row, 1);
+
+        m_analysisResultsPath = createTextArea(analysisResultsPath, dataPanel,
+                row, 1);
         createFileButton(dataPanel, row, 2, m_analysisResultsPath);
 
         row++;
         createLabel("Lowest Priority for Analysis", dataPanel, row, 0);
+
         int priority = preferences.getLowestPriorityForAnalysis();
-        m_lowestPriorityForAnalysis = createPriorityDropDownList(priority, dataPanel, row, 1);
+
+        m_lowestPriorityForAnalysis = createPriorityDropDownList(priority,
+                dataPanel, row, 1);
 
         return dataPanel;
     }
@@ -143,6 +164,7 @@ class PreferencesEditor extends JPanel {
      */
     private void createLabel(String text, JPanel dataPanel, int row, int column) {
         JLabel label = new JLabel(text);
+
         label.setFont(UIManager.getFont("labelFont"));
         label.setHorizontalAlignment(JLabel.RIGHT);
         label.setForeground(UIManager.getColor("pmdBlue"));
@@ -171,7 +193,8 @@ class PreferencesEditor extends JPanel {
      * @param row
      * @param column
      */
-    private JTextArea createTextArea(String text, JPanel dataPanel, int row, int column) {
+    private JTextArea createTextArea(String text, JPanel dataPanel, int row,
+            int column) {
         JTextArea textArea;
         JScrollPane scrollPane;
         GridBagLayout layout;
@@ -216,7 +239,8 @@ class PreferencesEditor extends JPanel {
      * @param row
      * @param column
      */
-    private void createFileButton(JPanel dataPanel, int row, int column, JTextArea textArea) {
+    private void createFileButton(JPanel dataPanel, int row, int column,
+            JTextArea textArea) {
         JButton button;
         GridBagLayout layout;
         GridBagConstraints constraints;
@@ -228,7 +252,8 @@ class PreferencesEditor extends JPanel {
         fontMetrics = button.getFontMetrics(button.getFont());
         width = fontMetrics.stringWidth(button.getText()) + 50;
         size = new Dimension(width, button.getHeight());
-        //button.setSize(size);
+
+        // button.setSize(size);
         button.setPreferredSize(size);
         button.setMinimumSize(size);
         button.setMaximumSize(size);
@@ -252,7 +277,8 @@ class PreferencesEditor extends JPanel {
      *******************************************************************************
      *
      */
-    private JComboBox createPriorityDropDownList(int priority, JPanel dataPanel, int row, int column) {
+    private JComboBox createPriorityDropDownList(int priority,
+            JPanel dataPanel, int row, int column) {
         JComboBox priorityLevel;
         GridBagLayout layout;
         GridBagConstraints constraints;
@@ -297,8 +323,7 @@ class PreferencesEditor extends JPanel {
      *********************************************************************************
      *
      */
-    public void adjustSplitPaneDividerLocation() {
-    }
+    public void adjustSplitPaneDividerLocation() {}
 
     /**
      *******************************************************************************
@@ -315,20 +340,24 @@ class PreferencesEditor extends JPanel {
         public void actionPerformed(ActionEvent event) {
             try {
                 Preferences preferences = Preferences.getPreferences();
+
                 preferences.setCurrentPathToPMD(m_currentPathToPMD.getText());
                 preferences.setUserPathToPMD(m_userPathToPMD.getText());
                 preferences.setSharedPathToPMD(m_sharedPathToPMD.getText());
-                preferences.setLowestPriorityForAnalysis(m_lowestPriorityForAnalysis.getSelectedIndex() + 1);
+                preferences.setLowestPriorityForAnalysis(
+                        m_lowestPriorityForAnalysis.getSelectedIndex() + 1);
                 preferences.save();
             } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
+
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
 
             PreferencesEditor.this.setVisible(false);
         }
     }
+
 
     /**
      *******************************************************************************
@@ -347,13 +376,13 @@ class PreferencesEditor extends JPanel {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
     private class FileButtonActionListener implements ActionListener {
-
         private JTextArea m_textArea;
 
         /**
@@ -380,17 +409,20 @@ class PreferencesEditor extends JPanel {
             }
 
             JFileChooser fileChooser = new JFileChooser(file);
+
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileChooser.setApproveButtonText("Select");
             fileChooser.setMinimumSize(new Dimension(500, 500));
 
-            if (fileChooser.showOpenDialog(PMDViewer.getViewer()) == JFileChooser.APPROVE_OPTION) {
+            if (fileChooser.showOpenDialog(PMDViewer.getViewer())
+                    == JFileChooser.APPROVE_OPTION) {
                 file = fileChooser.getSelectedFile();
 
                 m_textArea.setText(file.getPath());
             }
         }
     }
+
 
     /**
      *********************************************************************************
@@ -419,7 +451,8 @@ class PreferencesEditor extends JPanel {
             menuItem = new JMenuItem("Save Changes", icon);
             menuItem.addActionListener((ActionListener) new SaveActionListener());
             menuItem.setMnemonic('S');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+            menuItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
             add(menuItem);
 
             //
@@ -437,13 +470,13 @@ class PreferencesEditor extends JPanel {
         }
     }
 
+
     /**
      *********************************************************************************
      *********************************************************************************
      *********************************************************************************
      */
     private class ExitActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             System.exit(0);
         }

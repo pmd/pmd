@@ -1,15 +1,18 @@
 package net.sourceforge.pmd.swingui.event;
 
+
 import java.io.File;
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since December 13, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 public class AnalyzeFileEvent extends EventObject {
     private File m_file;
@@ -49,7 +52,8 @@ public class AnalyzeFileEvent extends EventObject {
      */
     public static final void notifyStartAnalysis(Object source, File file) {
         AnalyzeFileEvent event = new AnalyzeFileEvent(source, file);
-        List listenerList = ListenerList.getListeners(AnalyzeFileEventListener.class);
+        List listenerList = ListenerList.getListeners(
+                AnalyzeFileEventListener.class);
         Iterator listeners = listenerList.iterator();
 
         while (listeners.hasNext()) {
@@ -68,7 +72,8 @@ public class AnalyzeFileEvent extends EventObject {
      */
     public static final void notifyStopAnalysis(Object source, File file) {
         AnalyzeFileEvent event = new AnalyzeFileEvent(source, file);
-        List listenerList = ListenerList.getListeners(AnalyzeFileEventListener.class);
+        List listenerList = ListenerList.getListeners(
+                AnalyzeFileEventListener.class);
         Iterator listeners = listenerList.iterator();
 
         while (listeners.hasNext()) {

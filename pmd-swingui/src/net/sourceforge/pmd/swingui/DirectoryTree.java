@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
 import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
@@ -12,14 +13,17 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
+
 import java.awt.Component;
+
 import java.io.File;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since August 17, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class DirectoryTree extends JTree {
 
@@ -35,7 +39,8 @@ class DirectoryTree extends JTree {
         setCellRenderer(new DirectoryTreeNodeRenderer());
         ((DirectoryTreeModel) getModel()).setDirectoryTree(this);
         setBackground(UIManager.getColor("pmdTreeBackground"));
-        ListenerList.addListener((SetupFilesEventListener) new SetupFilesEventHandler());
+        ListenerList.addListener(
+                (SetupFilesEventListener) new SetupFilesEventHandler());
     }
 
     /**
@@ -46,6 +51,7 @@ class DirectoryTree extends JTree {
         DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
         DirectoryTreeNode treeNode = (DirectoryTreeNode) treeModel.getRoot();
         TreePath treePath = new TreePath(treeNode.getPath());
+
         expandPath(treePath);
     }
 
@@ -71,16 +77,14 @@ class DirectoryTree extends JTree {
          *
          * @param event
          */
-        public void startSetup(SetupFilesEvent event) {
-        }
+        public void startSetup(SetupFilesEvent event) {}
 
         /**
          ****************************************************************************
          *
          * @param event
          */
-        public void stopSetup(SetupFilesEvent event) {
-        }
+        public void stopSetup(SetupFilesEvent event) {}
 
         /**
          ****************************************************************************
@@ -90,10 +94,13 @@ class DirectoryTree extends JTree {
         public void setFileList(SetupFilesEvent event) {
             File[] directories = event.getFileList();
             String name = "Locating root directories.";
-            SetupFilesThread setupFilesThread = new SetupFilesThread(name, directories);
+            SetupFilesThread setupFilesThread = new SetupFilesThread(name,
+                    directories);
+
             setupFilesThread.start();
         }
     }
+
 
     /**
      ********************************************************************************
@@ -138,8 +145,11 @@ class DirectoryTree extends JTree {
          *
          */
         protected void process() {
-            StatusBarEvent.notifyShowMessage(this, "Locating root directories.  Please wait...");
+            StatusBarEvent.notifyShowMessage(this,
+                    "Locating root directories.  Please wait...");
+
             DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
+
             treeModel.setupFiles(m_rootDirectories);
             expandRootNode();
         }
@@ -154,13 +164,13 @@ class DirectoryTree extends JTree {
         }
     }
 
+
     /**
      ********************************************************************************
      ********************************************************************************
      ********************************************************************************
      */
     private class DirectoryTreeNodeRenderer extends DefaultTreeCellRenderer {
-
         private Icon m_defaultClosedIcon;
         private Icon m_defaultLeafIcon;
         private Icon m_defaultOpenIcon;
@@ -175,7 +185,8 @@ class DirectoryTree extends JTree {
             m_defaultClosedIcon = getDefaultClosedIcon();
             m_defaultLeafIcon = getDefaultLeafIcon();
             m_defaultOpenIcon = getDefaultOpenIcon();
-            setBackgroundNonSelectionColor(UIManager.getColor("pmdTreeBackground"));
+            setBackgroundNonSelectionColor(
+                    UIManager.getColor("pmdTreeBackground"));
         }
 
         /**
@@ -191,7 +202,9 @@ class DirectoryTree extends JTree {
          *
          * @return
          */
-        public Component getTreeCellRendererComponent(JTree tree, Object object, boolean isSelected, boolean isExpanded, boolean isLeaf, int row, boolean hasFocus) {
+        public Component getTreeCellRendererComponent(JTree tree,
+                Object object, boolean isSelected, boolean isExpanded,
+                boolean isLeaf, int row, boolean hasFocus) {
             DirectoryTreeNode treeNode = (DirectoryTreeNode) object;
             Object userObject = treeNode.getUserObject();
 
@@ -208,20 +221,21 @@ class DirectoryTree extends JTree {
             } else {
                 // A directory may or may not have children.  The following conditions are used:
                 //
-                //   For a file
-                //      files are not viewed in the tree
-                //   For a directory
-                //      has no children --- use closed folder icon
-                //      has children
-                //         is expanded --- use open folder icon
-                //         is collapsed --- use closed folder icon
+                // For a file
+                // files are not viewed in the tree
+                // For a directory
+                // has no children --- use closed folder icon
+                // has children
+                // is expanded --- use open folder icon
+                // is collapsed --- use closed folder icon
                 //
                 setClosedIcon(m_defaultClosedIcon);
                 setLeafIcon(m_defaultClosedIcon);
                 setOpenIcon(m_defaultOpenIcon);
             }
 
-            return super.getTreeCellRendererComponent(tree, object, isSelected, isExpanded, isLeaf, row, hasFocus);
+            return super.getTreeCellRendererComponent(tree, object, isSelected,
+                    isExpanded, isLeaf, row, hasFocus);
         }
     }
 }

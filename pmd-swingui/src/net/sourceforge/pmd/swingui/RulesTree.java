@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -21,7 +22,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreePath;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -31,14 +34,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import java.text.MessageFormat;
+
 import java.util.EventObject;
+
 
 /**
  *
@@ -47,7 +54,6 @@ import java.util.EventObject;
  * @version $Revision$, $Date$
  */
 class RulesTree extends JTree implements IConstants {
-
     private Color m_background;
     private boolean m_disablePopupMenu;
     private boolean m_disableEditing;
@@ -64,11 +70,14 @@ class RulesTree extends JTree implements IConstants {
         setCellEditor(new TreeCellEditor());
         m_background = UIManager.getColor("pmdTreeBackground");
         expandNode(getRootNode());
+
         TreePath treePath = new TreePath(getRootNode().getPath());
+
         setSelectionPath(treePath);
         setBackground(m_background);
         addMouseListener(new RulesTreeMouseListener());
-        ListenerList.addListener((RulesEditingEventListener) new RulesEditingEventHandler());
+        ListenerList.addListener(
+                (RulesEditingEventListener) new RulesEditingEventHandler());
     }
 
     /**
@@ -108,7 +117,9 @@ class RulesTree extends JTree implements IConstants {
     protected RulesTreeNode getSelectedNode() {
         TreePath treePath = getSelectionPath();
 
-        return (treePath == null) ? null : (RulesTreeNode) treePath.getLastPathComponent();
+        return (treePath == null)
+                ? null
+                : (RulesTreeNode) treePath.getLastPathComponent();
     }
 
     /**
@@ -148,7 +159,6 @@ class RulesTree extends JTree implements IConstants {
      *******************************************************************************
      */
     private class RulesTreeMouseListener extends MouseAdapter {
-
         private JMenuItem m_addRuleSetMenuItem;
         private JMenuItem m_removeRuleSetMenuItem;
         private JMenuItem m_addRuleMenuItem;
@@ -274,11 +284,13 @@ class RulesTree extends JTree implements IConstants {
             JPopupMenu popupMenu = new JPopupMenu();
 
             m_addRuleSetMenuItem = new JMenuItem("Add Rule Set");
-            m_addRuleSetMenuItem.addActionListener(new AddRuleSetActionListener());
+            m_addRuleSetMenuItem.addActionListener(
+                    new AddRuleSetActionListener());
             popupMenu.add(m_addRuleSetMenuItem);
 
             m_removeRuleSetMenuItem = new JMenuItem("Remove Rule Set");
-            m_removeRuleSetMenuItem.addActionListener(new RemoveRuleSetActionListener());
+            m_removeRuleSetMenuItem.addActionListener(
+                    new RemoveRuleSetActionListener());
             popupMenu.add(m_removeRuleSetMenuItem);
 
             popupMenu.add(new JSeparator());
@@ -288,17 +300,20 @@ class RulesTree extends JTree implements IConstants {
             popupMenu.add(m_addRuleMenuItem);
 
             m_removeRuleMenuItem = new JMenuItem("Remove Rule");
-            m_removeRuleMenuItem.addActionListener(new RemoveRuleActionListener());
+            m_removeRuleMenuItem.addActionListener(
+                    new RemoveRuleActionListener());
             popupMenu.add(m_removeRuleMenuItem);
 
             popupMenu.add(new JSeparator());
 
             m_addPropertyMenuItem = new JMenuItem("Add Rule Property");
-            m_addPropertyMenuItem.addActionListener(new AddRulePropertyActionListener());
+            m_addPropertyMenuItem.addActionListener(
+                    new AddRulePropertyActionListener());
             popupMenu.add(m_addPropertyMenuItem);
 
             m_removePropertyMenuItem = new JMenuItem("Remove Rule Property");
-            m_removePropertyMenuItem.addActionListener(new RemoveRulePropertyActionListener());
+            m_removePropertyMenuItem.addActionListener(
+                    new RemoveRulePropertyActionListener());
             popupMenu.add(m_removePropertyMenuItem);
 
             if (addInclude) {
@@ -306,7 +321,8 @@ class RulesTree extends JTree implements IConstants {
 
                 m_includeMenuItem = new JCheckBoxMenuItem("Include");
                 m_includeMenuItem.addActionListener(new IncludeActionListener());
-                m_includeMenuItem.setSelected(RulesTree.this.getSelectedNode().include());
+                m_includeMenuItem.setSelected(
+                        RulesTree.this.getSelectedNode().include());
                 popupMenu.add(m_includeMenuItem);
             }
 
@@ -314,20 +330,23 @@ class RulesTree extends JTree implements IConstants {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
     private class IncludeActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             JCheckBoxMenuItem includeMenuItem = (JCheckBoxMenuItem) event.getSource();
-            RulesTree.this.getSelectedNode().setInclude(includeMenuItem.isSelected());
+
+            RulesTree.this.getSelectedNode().setInclude(
+                    includeMenuItem.isSelected());
             RulesTree.this.updateUI();
             RulesTree.this.repaint();
         }
     }
+
 
     /**
      *******************************************************************************
@@ -335,7 +354,6 @@ class RulesTree extends JTree implements IConstants {
      *******************************************************************************
      */
     private class AddRuleSetActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             RuleSet ruleSet = new RuleSet();
             String ruleSetName = UNTITLED;
@@ -364,29 +382,31 @@ class RulesTree extends JTree implements IConstants {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
     private class RemoveRuleSetActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             RulesTreeNode ruleSetNode = RulesTree.this.getSelectedNode();
 
             if (ruleSetNode != null) {
                 String ruleSetName = ruleSetNode.getName();
                 String template = "Do you really want to remove the rule set \"{0}\"?\nThe remove cannot be undone.";
-                String[] args = {ruleSetName};
+                String[] args = { ruleSetName };
                 String message = MessageFormat.format(template, args);
 
                 if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message)) {
                     DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
+
                     treeModel.removeNodeFromParent(ruleSetNode);
                 }
             }
         }
     }
+
 
     /**
      *******************************************************************************
@@ -408,6 +428,7 @@ class RulesTree extends JTree implements IConstants {
             } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
+
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
 
                 return;
@@ -440,7 +461,9 @@ class RulesTree extends JTree implements IConstants {
                 }
 
                 ruleSetNode.sortChildren();
+
                 TreePath treePath = new TreePath(ruleNode.getPath());
+
                 rulesTree.setSelectionPath(treePath);
             }
         }
@@ -450,8 +473,11 @@ class RulesTree extends JTree implements IConstants {
          *
          * @return
          */
-        private Rule getNewRuleFromUser() throws PMDException {
-            RulesClassSelectDialog dialog = new RulesClassSelectDialog(PMDViewer.getViewer());
+        private Rule getNewRuleFromUser()
+            throws PMDException {
+            RulesClassSelectDialog dialog = new RulesClassSelectDialog(
+                    PMDViewer.getViewer());
+
             dialog.show();
 
             if (dialog.selectWasPressed()) {
@@ -468,18 +494,21 @@ class RulesTree extends JTree implements IConstants {
 
                     String abstractRuleClassName = AbstractRule.class.getName();
                     String template = "The selected class \"{0}\" must subclass the abstract rule class \"{1}\".";
-                    String[] args = {clazz.getName(), abstractRuleClassName};
+                    String[] args = { clazz.getName(), abstractRuleClassName };
                     String message = MessageFormat.format(template, args);
+
                     MessageDialog.show(PMDViewer.getViewer(), message);
                 } catch (InstantiationException exception) {
                     String template = "Could not instantiate class \"{0}\".";
-                    String[] args = {clazz.getName()};
+                    String[] args = { clazz.getName() };
                     String message = MessageFormat.format(template, args);
+
                     MessageDialog.show(PMDViewer.getViewer(), message, exception);
                 } catch (IllegalAccessException exception) {
                     String template = "Encountered illegal access while instantiating class \"{0}\".";
-                    String[] args = {clazz.getName()};
+                    String[] args = { clazz.getName() };
                     String message = MessageFormat.format(template, args);
+
                     MessageDialog.show(PMDViewer.getViewer(), message, exception);
                 }
             }
@@ -488,12 +517,14 @@ class RulesTree extends JTree implements IConstants {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
     private class RulesFileFilter implements FileFilter {
+
         /**
          ***************************************************************************
          *
@@ -518,6 +549,7 @@ class RulesTree extends JTree implements IConstants {
             return "Rule Class Files";
         }
     }
+
 
     /**
      *******************************************************************************
@@ -571,7 +603,8 @@ class RulesTree extends JTree implements IConstants {
                 }
             } catch (FileNotFoundException exception) {
                 clazz = null;
-            } finally {
+            }
+            finally {
                 if (inputStream != null) {
                     try {
                         inputStream.close();
@@ -585,26 +618,28 @@ class RulesTree extends JTree implements IConstants {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
     private class RemoveRuleActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             RulesTreeNode ruleNode = RulesTree.this.getSelectedNode();
             String ruleName = ruleNode.getName();
             String template = "Do you really want to remove the rule \"{0}\"?\nThe remove cannot be undone.";
-            String[] args = {ruleName};
+            String[] args = { ruleName };
             String message = MessageFormat.format(template, args);
 
             if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message)) {
                 DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
+
                 treeModel.removeNodeFromParent(ruleNode);
             }
         }
     }
+
 
     /**
      *******************************************************************************
@@ -612,7 +647,6 @@ class RulesTree extends JTree implements IConstants {
      *******************************************************************************
      */
     private class AddRulePropertyActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             String propertyName = UNTITLED;
             int counter = 0;
@@ -624,7 +658,8 @@ class RulesTree extends JTree implements IConstants {
                 propertyName = UNTITLED + "-" + counter;
             }
 
-            RulesTreeNode propertyNode = new RulesTreeNode(ruleNode, propertyName, "", STRING);
+            RulesTreeNode propertyNode = new RulesTreeNode(ruleNode,
+                    propertyName, "", STRING);
             DefaultTreeModel treeModel = (DefaultTreeModel) rulesTree.getModel();
 
             ruleNode.add(propertyNode);
@@ -638,26 +673,28 @@ class RulesTree extends JTree implements IConstants {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
     private class RemoveRulePropertyActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             RulesTreeNode propertyNode = RulesTree.this.getSelectedNode();
             String propertyName = propertyNode.getName();
             String template = "Do you really want to remove the property \"{0}\"?\nThe remove cannot be undone.";
-            String[] args = {propertyName};
+            String[] args = { propertyName };
             String message = MessageFormat.format(template, args);
 
             if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message)) {
                 DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
+
                 treeModel.removeNodeFromParent(propertyNode);
             }
         }
     }
+
 
     /**
      *******************************************************************************
@@ -671,7 +708,8 @@ class RulesTree extends JTree implements IConstants {
          *
          */
         private TreeCellEditor() {
-            super(RulesTree.this, (DefaultTreeCellRenderer) RulesTree.this.getCellRenderer());
+            super(RulesTree.this,
+                    (DefaultTreeCellRenderer) RulesTree.this.getCellRenderer());
         }
 
         /**
@@ -684,13 +722,13 @@ class RulesTree extends JTree implements IConstants {
         }
     }
 
+
     /**
      ********************************************************************************
      ********************************************************************************
      ********************************************************************************
      */
     private class TreeNodeRenderer extends DefaultTreeCellRenderer {
-
         private Icon m_defaultClosedIcon;
         private Icon m_defaultLeafIcon;
         private Icon m_defaultOpenIcon;
@@ -714,7 +752,8 @@ class RulesTree extends JTree implements IConstants {
             font = RulesTree.this.getFont();
             m_plainFont = new Font(font.getName(), Font.PLAIN, font.getSize());
             m_italicFont = new Font(font.getName(), Font.ITALIC, font.getSize());
-            setBackgroundNonSelectionColor(UIManager.getColor("pmdTreeBackground"));
+            setBackgroundNonSelectionColor(
+                    UIManager.getColor("pmdTreeBackground"));
             setBackgroundSelectionColor(Color.yellow);
         }
 
@@ -731,7 +770,9 @@ class RulesTree extends JTree implements IConstants {
          *
          * @return
          */
-        public Component getTreeCellRendererComponent(JTree tree, Object object, boolean isSelected, boolean isExpanded, boolean isLeaf, int row, boolean hasFocus) {
+        public Component getTreeCellRendererComponent(JTree tree,
+                Object object, boolean isSelected, boolean isExpanded,
+                boolean isLeaf, int row, boolean hasFocus) {
             RulesTreeNode treeNode = (RulesTreeNode) object;
 
             if (treeNode.isProperty()) {
@@ -752,12 +793,12 @@ class RulesTree extends JTree implements IConstants {
                 setTextNonSelectionColor(Color.black);
                 setTextSelectionColor(Color.black);
                 setFont(m_italicFont);
-
             }
 
             this.updateUI();
 
-            return super.getTreeCellRendererComponent(tree, object, isSelected, isExpanded, isLeaf, row, hasFocus);
+            return super.getTreeCellRendererComponent(tree, object, isSelected,
+                    isExpanded, isLeaf, row, hasFocus);
         }
 
         /**
@@ -770,10 +811,12 @@ class RulesTree extends JTree implements IConstants {
             int y = getY();
             int width = getWidth();
             int height = getHeight();
+
             graphics.clearRect(x, y, width, height);
             super.paint(graphics);
         }
     }
+
 
     /**
      *******************************************************************************
@@ -796,9 +839,9 @@ class RulesTree extends JTree implements IConstants {
          *
          * @param event
          */
-        public void loadData(RulesEditingEvent event) {
-        }
+        public void loadData(RulesEditingEvent event) {}
     }
+
 
     /**
      *******************************************************************************

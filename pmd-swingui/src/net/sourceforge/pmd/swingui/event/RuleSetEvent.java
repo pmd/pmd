@@ -1,8 +1,10 @@
 package net.sourceforge.pmd.swingui.event;
 
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  *
@@ -11,7 +13,6 @@ import java.util.List;
  * @version $Revision$, $Date$
  */
 public class RuleSetEvent extends EventObject {
-
     private List m_ruleSetList;
 
     /**

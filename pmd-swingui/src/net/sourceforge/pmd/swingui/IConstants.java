@@ -1,13 +1,13 @@
 package net.sourceforge.pmd.swingui;
-//J-
+
+
 /**
  *
  * @author Donald A. Leckie
  * @since October 12, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
-public interface IConstants
-{
+public interface IConstants {
     public static final String BOOLEAN = "Boolean";
     public static final String DECIMAL_NUMBER = "Decimal Number";
     public static final String INTEGER = "Integer";

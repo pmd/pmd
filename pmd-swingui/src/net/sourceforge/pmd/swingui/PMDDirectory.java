@@ -1,16 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -23,6 +12,20 @@ import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEventListener;
 import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
 import net.sourceforge.pmd.swingui.event.RuleSetEvent;
 import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+
+import java.text.MessageFormat;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -77,17 +80,15 @@ import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
  *
  * @author Donald A. Leckie
  * @since September 19, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
-
 public class PMDDirectory {
-
+    private static PMDDirectory m_pmdDirectoryInstance;
     private String m_pmdDirectoryPath;
     private String m_ruleSetsDirectoryPath;
     private Properties m_properties;
     private PMDDirectoryRequestEventHandler m_pmdDirectoryRequestEventHandler;
     private RuleSetEventHandler m_ruleSetEventHandler;
-    private static PMDDirectory m_pmdDirectoryInstance;
 
     // Constants
     private final String PROPERTIES_FILE_NAME = "pmd.properties";
@@ -100,7 +101,8 @@ public class PMDDirectory {
      *
      * @param pathToPMD The full path to the PMD directory, but excludes the PMD directory.
      */
-    private PMDDirectory(String pathToPMD) throws PMDException {
+    private PMDDirectory(String pathToPMD)
+        throws PMDException {
         String classpath;
         String key;
 
@@ -109,7 +111,8 @@ public class PMDDirectory {
         ListenerList.addListener(m_pmdDirectoryRequestEventHandler);
         ListenerList.addListener(m_ruleSetEventHandler);
         m_pmdDirectoryPath = pathToPMD + File.separator + "PMD";
-        m_ruleSetsDirectoryPath = m_pmdDirectoryPath + File.separator + "rulesets";
+        m_ruleSetsDirectoryPath = m_pmdDirectoryPath + File.separator
+                + "rulesets";
         key = "java.class.path";
         classpath = System.getProperty(key);
         classpath = classpath + ";" + m_ruleSetsDirectoryPath;
@@ -122,7 +125,8 @@ public class PMDDirectory {
      *
      * @param pathToPMD The full path to the PMD directory, but excludes the PMD directory.
      */
-    public static final void open(String pathToPMD) throws PMDException {
+    public static final void open(String pathToPMD)
+        throws PMDException {
         m_pmdDirectoryInstance = new PMDDirectory(pathToPMD);
     }
 
@@ -143,7 +147,8 @@ public class PMDDirectory {
      *
      * @return  A rule containing only included rules.
      */
-    public RuleSet getIncludedRules(int lowestPriorityForAnalysis) throws PMDException {
+    public RuleSet getIncludedRules(int lowestPriorityForAnalysis)
+        throws PMDException {
         RuleSet includedRules = new RuleSet();
         Iterator ruleSetFiles = getRuleSetFiles().iterator();
 
@@ -181,7 +186,8 @@ public class PMDDirectory {
      *
      * @throws PMDException
      */
-    public RuleSet getRuleSet(File ruleSetFile) throws PMDException {
+    public RuleSet getRuleSet(File ruleSetFile)
+        throws PMDException {
         return getRuleSet(ruleSetFile, false);
     }
 
@@ -198,10 +204,12 @@ public class PMDDirectory {
      *
      * @throws PMDException
      */
-    public RuleSet getRuleSet(File ruleSetFile, boolean onlyIfIncluded) throws PMDException {
+    public RuleSet getRuleSet(File ruleSetFile, boolean onlyIfIncluded)
+        throws PMDException {
         if (ruleSetFile == null) {
             String message = "Rule set file parameter is missing.";
             PMDException exception = new PMDException(message);
+
             exception.fillInStackTrace();
             throw exception;
         }
@@ -211,22 +219,25 @@ public class PMDDirectory {
 
         try {
             RuleSetReader reader;
+
             inputStream = new FileInputStream(ruleSetFile);
             reader = new RuleSetReader();
-            ruleSet = reader.read(inputStream, ruleSetFile.getName(), onlyIfIncluded);
+            ruleSet = reader.read(inputStream, ruleSetFile.getName(),
+                    onlyIfIncluded);
         } catch (FileNotFoundException exception) {
             String template = "Rule set \"{0}\" was not found.";
-            String[] args = {ruleSetFile.getPath()};
+            String[] args = { ruleSetFile.getPath() };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
-        } finally {
+        }
+        finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
-                } catch (IOException exception) {
-                }
+                } catch (IOException exception) {}
             }
         }
 
@@ -283,10 +294,7 @@ public class PMDDirectory {
         } catch (RuleSetNotFoundException exception) {
             // This should not happen because the registered rule sets are resources in pmd.jar.
             System.out.println(exception.getMessage());
-        }
-        catch (Exception exception)
-        {
-        }
+        } catch (Exception exception) {}
 
         return ruleSetList;
     }
@@ -296,7 +304,8 @@ public class PMDDirectory {
      *
      * @return
      */
-    public List getRuleSets() throws PMDException {
+    public List getRuleSets()
+        throws PMDException {
         List ruleSetList;
         List ruleSetFilesList = getRuleSetFiles();
 
@@ -348,7 +357,8 @@ public class PMDDirectory {
         while (ruleSets.hasNext()) {
             RuleSet ruleSet = (RuleSet) ruleSets.next();
             String ruleSetFileName = ruleSet.getFileName();
-            String path = m_ruleSetsDirectoryPath + File.separator + ruleSetFileName;
+            String path = m_ruleSetsDirectoryPath + File.separator
+                    + ruleSetFileName;
             File file = new File(path);
             FileOutputStream outputStream = null;
 
@@ -366,7 +376,8 @@ public class PMDDirectory {
                 // Should not reach here because the rule set file has been deleted if it
                 // existed and the directories all exist.
                 exception = null;
-            } finally {
+            }
+            finally {
                 if (outputStream != null) {
                     try {
                         outputStream.close();
@@ -383,11 +394,13 @@ public class PMDDirectory {
      *
      * @param pathToPMD
      */
-    private void loadPropertiesFile() throws PMDException {
+    private void loadPropertiesFile()
+        throws PMDException {
         String propertiesFileName;
         FileInputStream inputStream;
 
-        propertiesFileName = m_pmdDirectoryPath + File.separator + PROPERTIES_FILE_NAME;
+        propertiesFileName = m_pmdDirectoryPath + File.separator
+                + PROPERTIES_FILE_NAME;
         m_properties = new Properties();
         inputStream = null;
 
@@ -405,19 +418,22 @@ public class PMDDirectory {
             m_properties.load(inputStream);
         } catch (FileNotFoundException exception) {
             String template = "Could not find the file \"{0}\".";
-            String[] args = {propertiesFileName};
+            String[] args = { propertiesFileName };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
         } catch (IOException exception) {
             String template = "Unable to read the file \"{0}\".";
-            String[] args = {propertiesFileName};
+            String[] args = { propertiesFileName };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
-        } finally {
+        }
+        finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
@@ -432,10 +448,13 @@ public class PMDDirectory {
      ********************************************************************************
      *
      */
-    public void savePropertiesFile() throws PMDException {
+    public void savePropertiesFile()
+        throws PMDException {
         FileOutputStream outputStream = null;
-        String propertiesFileName = m_pmdDirectoryPath + File.separator + PROPERTIES_FILE_NAME;
+        String propertiesFileName = m_pmdDirectoryPath + File.separator
+                + PROPERTIES_FILE_NAME;
         File file = new File(propertiesFileName);
+
         if (file.exists()) {
             file.delete();
         }
@@ -444,19 +463,22 @@ public class PMDDirectory {
             m_properties.store(outputStream, null);
         } catch (FileNotFoundException exception) {
             String template = "Could not find the file \"{0}\".";
-            String[] args = {propertiesFileName};
+            String[] args = { propertiesFileName };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
         } catch (IOException exception) {
             String template = "Unable to read the file \"{0}\".";
-            String[] args = {propertiesFileName};
+            String[] args = { propertiesFileName };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
-        } finally {
+        }
+        finally {
             if (outputStream != null) {
                 try {
                     outputStream.close();
@@ -481,16 +503,19 @@ public class PMDDirectory {
          */
         public void saveRuleSets(RuleSetEvent event) {
             List ruleSetList = event.getRuleSetList();
+
             PMDDirectory.this.saveRuleSets(ruleSetList);
         }
     }
+
 
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
-    private class PMDDirectoryRequestEventHandler implements PMDDirectoryRequestEventListener {
+    private class PMDDirectoryRequestEventHandler
+        implements PMDDirectoryRequestEventListener {
 
         /**
          ***************************************************************************
@@ -498,7 +523,8 @@ public class PMDDirectory {
          * @param event
          */
         public void requestRuleSetPath(PMDDirectoryRequestEvent event) {
-            PMDDirectoryReturnedEvent.notifyReturnedRuleSetPath(this, getRuleSetsDirectoryPath());
+            PMDDirectoryReturnedEvent.notifyReturnedRuleSetPath(this,
+                    getRuleSetsDirectoryPath());
         }
 
         /**
@@ -506,8 +532,10 @@ public class PMDDirectory {
          *
          * @param event
          */
-        public void requestAllRuleSets(PMDDirectoryRequestEvent event) throws PMDException {
-            PMDDirectoryReturnedEvent.notifyReturnedAllRuleSets(this, getRuleSets());
+        public void requestAllRuleSets(PMDDirectoryRequestEvent event)
+            throws PMDException {
+            PMDDirectoryReturnedEvent.notifyReturnedAllRuleSets(this,
+                    getRuleSets());
         }
 
         /**
@@ -516,7 +544,8 @@ public class PMDDirectory {
          * @param event
          */
         public void requestDefaultRuleSets(PMDDirectoryRequestEvent event) {
-            PMDDirectoryReturnedEvent.notifyReturnedDefaultRuleSets(this, getRegisteredRuleSets());
+            PMDDirectoryReturnedEvent.notifyReturnedDefaultRuleSets(this,
+                    getRegisteredRuleSets());
         }
 
         /**
@@ -524,11 +553,15 @@ public class PMDDirectory {
          *
          * @param event
          */
-        public void requestIncludedRules(PMDDirectoryRequestEvent event) throws PMDException {
+        public void requestIncludedRules(PMDDirectoryRequestEvent event)
+            throws PMDException {
             int priority = event.getLowestPriorityForAnalysis();
-            PMDDirectoryReturnedEvent.notifyReturnedIncludedRules(this, getIncludedRules(priority));
+
+            PMDDirectoryReturnedEvent.notifyReturnedIncludedRules(this,
+                    getIncludedRules(priority));
         }
     }
+
 
     /**
      *******************************************************************************

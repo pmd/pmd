@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 
@@ -8,24 +9,26 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.text.MessageFormat;
+
 import java.util.Properties;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since August 29, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class Preferences {
-
+    private static Preferences m_preferences;
     private Properties m_properties = new Properties();
     private String m_defaultUserPathToPMD;
     private String m_defaultSharedPathToPMD;
     private String m_defaultCurrentPathToPMD;
     private String m_defaultAnalysisResultsPath;
     private String m_preferencesPath;
-    private static Preferences m_preferences;
 
     // Constants
     private final String USER_PATH_TO_PMD = "user_path_to_pmd";
@@ -38,7 +41,6 @@ class Preferences {
     private final String PMD_DIRECTORY = "pmd";
     private final String ANALYSIS_RESULTS_DIRECTORY = "Analysis_Results";
     private final int LOWEST_RULE_PRIORITY = Rule.LOWEST_PRIORITY;
-
 
     /**
      *******************************************************************************
@@ -67,7 +69,8 @@ class Preferences {
         //
         // Default analysis results path.
         //
-        m_defaultAnalysisResultsPath = m_defaultUserPathToPMD + File.separator + PMD_DIRECTORY + File.separator + ANALYSIS_RESULTS_DIRECTORY;
+        m_defaultAnalysisResultsPath = m_defaultUserPathToPMD + File.separator
+                + PMD_DIRECTORY + File.separator + ANALYSIS_RESULTS_DIRECTORY;
         setPath(ANALYSIS_RESULTS_PATH, m_defaultAnalysisResultsPath);
 
         //
@@ -81,7 +84,8 @@ class Preferences {
      *
      * @return
      */
-    protected static final Preferences getPreferences() throws PMDException {
+    protected static final Preferences getPreferences()
+        throws PMDException {
         if (m_preferences == null) {
             m_preferences = new Preferences();
             m_preferences.load();
@@ -97,8 +101,10 @@ class Preferences {
      *
      * @throws PMDException
      */
-    protected void getPreferencesPath() throws PMDException {
-        m_preferencesPath = System.getProperty("user.home") + File.separator + PMD_DIRECTORY + File.separator + PREFERENCES_FILE_NAME;
+    protected void getPreferencesPath()
+        throws PMDException {
+        m_preferencesPath = System.getProperty("user.home") + File.separator
+                + PMD_DIRECTORY + File.separator + PREFERENCES_FILE_NAME;
 
         File file = new File(m_preferencesPath);
 
@@ -110,15 +116,15 @@ class Preferences {
                 file.createNewFile();
             } catch (IOException exception) {
                 String template = "Could not create file \"{0}\" in your home directory \"{1}\".";
-                Object[] args = {PREFERENCES_FILE_NAME, directory};
+                Object[] args = { PREFERENCES_FILE_NAME, directory };
                 String message = MessageFormat.format(template, args);
                 PMDException pmdException = new PMDException(message, exception);
+
                 pmdException.fillInStackTrace();
                 throw pmdException;
             }
         }
     }
-
 
     /**
      *******************************************************************************
@@ -135,37 +141,44 @@ class Preferences {
             m_properties.load(inputStream);
 
             if (m_properties.containsKey(USER_PATH_TO_PMD) == false) {
-                m_properties.setProperty(USER_PATH_TO_PMD, m_defaultUserPathToPMD);
+                m_properties.setProperty(USER_PATH_TO_PMD,
+                        m_defaultUserPathToPMD);
             }
 
             if (m_properties.containsKey(SHARED_PATH_TO_PMD) == false) {
-                m_properties.setProperty(SHARED_PATH_TO_PMD, m_defaultSharedPathToPMD);
+                m_properties.setProperty(SHARED_PATH_TO_PMD,
+                        m_defaultSharedPathToPMD);
             }
 
             if (m_properties.containsKey(CURRENT_PATH_TO_PMD) == false) {
-                m_properties.setProperty(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
+                m_properties.setProperty(CURRENT_PATH_TO_PMD,
+                        m_defaultCurrentPathToPMD);
             }
 
             if (m_properties.containsKey(ANALYSIS_RESULTS_PATH) == false) {
-                m_properties.setProperty(ANALYSIS_RESULTS_PATH, m_defaultAnalysisResultsPath);
+                m_properties.setProperty(ANALYSIS_RESULTS_PATH,
+                        m_defaultAnalysisResultsPath);
             }
 
             return true;
         } catch (FileNotFoundException exception) {
             String template = "Could not find file \"{0}\" in directory \"{1}\".";
-            Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
+            Object[] args = { PREFERENCES_FILE_NAME, m_preferencesPath };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
         } catch (IOException exception) {
             String template = "Could not load file \"{0}\" from directory \"{1}\".";
-            Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
+            Object[] args = { PREFERENCES_FILE_NAME, m_preferencesPath };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
-        } finally {
+        }
+        finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
@@ -195,19 +208,22 @@ class Preferences {
             m_properties.store(outputStream, null);
         } catch (FileNotFoundException exception) {
             String template = "Could not find your \"{0}\" file in your home directory \"{1}\".";
-            Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
+            Object[] args = { PREFERENCES_FILE_NAME, m_preferencesPath };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
         } catch (IOException exception) {
             String template = "Could not save your \"{0}\" file in your home directory \"{1}\".";
-            Object[] args = {PREFERENCES_FILE_NAME, m_preferencesPath};
+            Object[] args = { PREFERENCES_FILE_NAME, m_preferencesPath };
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
+
             pmdException.fillInStackTrace();
             throw pmdException;
-        } finally {
+        }
+        finally {
             if (outputStream != null) {
                 try {
                     outputStream.close();
@@ -304,7 +320,8 @@ class Preferences {
         int priority;
 
         try {
-            priority = Integer.parseInt((String) m_properties.get(LOWEST_PRIORITY_FOR_ANALYSIS));
+            priority = Integer.parseInt(
+                    (String) m_properties.get(LOWEST_PRIORITY_FOR_ANALYSIS));
         } catch (NumberFormatException exception) {
             priority = LOWEST_RULE_PRIORITY;
         }
@@ -356,7 +373,9 @@ class Preferences {
                         if (buffer.charAt(n + 1) == 'U') {
                             if (buffer.charAt(n + 2) == 'S') {
                                 if (buffer.charAt(n + 3) == ';') {
-                                    buffer.replace(n, n + universalSeparatorLength, File.separator);
+                                    buffer.replace(n,
+                                            n + universalSeparatorLength,
+                                            File.separator);
                                 }
                             }
                         }

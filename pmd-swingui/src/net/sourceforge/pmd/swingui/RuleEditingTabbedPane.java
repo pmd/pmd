@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
 
 import javax.swing.JPanel;
@@ -12,6 +13,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+
 /**
  *
  * @author Donald A. Leckie
@@ -19,7 +21,6 @@ import javax.swing.tree.TreePath;
  * @version $Revision$, $Date$
  */
 class RuleEditingTabbedPane extends JTabbedPane {
-
     private RulesTree m_rulesTree;
     private RuleAllEditingPanel m_ruleAllPanel;
     private RuleSetEditingPanel m_ruleSetPanel;
@@ -111,11 +112,13 @@ class RuleEditingTabbedPane extends JTabbedPane {
          */
         public void stateChanged(ChangeEvent event) {
             RulesTreeNode selectedTreeNode = getSelectedTreeNode();
+
             saveData();
             loadData(selectedTreeNode);
             SwingUtilities.invokeLater(new SortChildren(selectedTreeNode));
         }
     }
+
 
     /**
      *******************************************************************************
@@ -153,7 +156,8 @@ class RuleEditingTabbedPane extends JTabbedPane {
                     int pathIndex = treePath.getPathCount() - 2;
 
                     if (pathIndex >= 0) {
-                        treeNode = (RulesTreeNode) treePath.getPathComponent(pathIndex);
+                        treeNode = (RulesTreeNode) treePath.getPathComponent(
+                                pathIndex);
                     }
                 }
 
@@ -163,13 +167,13 @@ class RuleEditingTabbedPane extends JTabbedPane {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
     private class SortChildren implements Runnable {
-
         private RulesTreeNode m_parentNode;
 
         /**

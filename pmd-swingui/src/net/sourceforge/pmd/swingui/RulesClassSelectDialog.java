@@ -1,10 +1,7 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
+
+import net.sourceforge.pmd.PMDException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,7 +11,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 
-import net.sourceforge.pmd.PMDException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.io.File;
+
 
 /**
  *
@@ -23,7 +26,6 @@ import net.sourceforge.pmd.PMDException;
  * @version $Revision$, $Date$
  */
 class RulesClassSelectDialog extends JDialog {
-
     private DirectoryTree m_tree;
     private DirectoryTable m_table;
     private JSplitPane m_splitPane;
@@ -37,7 +39,8 @@ class RulesClassSelectDialog extends JDialog {
      *
      * @param parentWindow
      */
-    protected RulesClassSelectDialog(JFrame parentWindow) throws PMDException {
+    protected RulesClassSelectDialog(JFrame parentWindow)
+        throws PMDException {
         super(parentWindow, "Rules Class File Selector", true);
 
         setSize(ComponentFactory.adjustWindowSize(1200, 800));
@@ -48,8 +51,10 @@ class RulesClassSelectDialog extends JDialog {
         createDirectoryTableScrollPane();
         createDirectorySplitPane();
         buildTree();
+
         JPanel buttonPanel = createButtonPanel();
         JPanel contentPanel = new JPanel(new BorderLayout());
+
         contentPanel.add(m_splitPane, BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -89,7 +94,8 @@ class RulesClassSelectDialog extends JDialog {
      *
      */
     private void createDirectorySplitPane() {
-        m_splitPane = ComponentFactory.createHorizontalSplitPane(m_treeScrollPane, m_tableScrollPane);
+        m_splitPane = ComponentFactory.createHorizontalSplitPane(
+                m_treeScrollPane, m_tableScrollPane);
     }
 
     /**
@@ -99,7 +105,8 @@ class RulesClassSelectDialog extends JDialog {
     private void buildTree() throws PMDException {
         PMDDirectory pmdDirectory = PMDDirectory.getDirectory();
         String rulesDirectoryPath = pmdDirectory.getRuleSetsDirectoryPath();
-        File[] rulesDirectory = {new File(rulesDirectoryPath)};
+        File[] rulesDirectory = { new File(rulesDirectoryPath) };
+
         ((DirectoryTreeModel) m_tree.getModel()).setupFiles(rulesDirectory);
         m_tree.expandRootNode();
     }
@@ -112,8 +119,11 @@ class RulesClassSelectDialog extends JDialog {
         ActionListener selectActionListener = new SelectButtonActionListener();
         ActionListener cancelActionListener = new CancelButtonActionListener();
         JPanel buttonPanel = ComponentFactory.createButtonPanel();
-        JButton selectButton = ComponentFactory.createSaveButton(selectActionListener);
-        JButton cancelButton = ComponentFactory.createCancelButton(cancelActionListener);
+        JButton selectButton = ComponentFactory.createSaveButton(
+                selectActionListener);
+        JButton cancelButton = ComponentFactory.createCancelButton(
+                cancelActionListener);
+
         selectButton.setText("Select");
         buttonPanel.add(selectButton);
         buttonPanel.add(cancelButton);
@@ -157,6 +167,7 @@ class RulesClassSelectDialog extends JDialog {
             RulesClassSelectDialog.this.setVisible(false);
         }
     }
+
 
     /**
      *******************************************************************************

@@ -1,7 +1,9 @@
 package net.sourceforge.pmd.swingui;
 
+
 import java.util.Enumeration;
 import java.util.Properties;
+
 
 /**
  *
@@ -10,11 +12,9 @@ import java.util.Properties;
  * @version $Revision$, $Date$
  */
 public class RuleProperties {
-
-    private Properties m_properties = new Properties();
-
     // Constants
     private static final String SEPARATOR = "&PS;";
+    private Properties m_properties = new Properties();
 
     public RuleProperties(Properties props) {
         m_properties = props;
@@ -40,7 +40,6 @@ public class RuleProperties {
     }
 
     public String getValue(String name) {
-
         name = (name == null) ? "" : name.trim();
 
         if (name.length() > 0) {
@@ -67,6 +66,8 @@ public class RuleProperties {
                     int index = property.indexOf(SEPARATOR) + SEPARATOR.length();
 
                     if (index > 0) {
+                        System.out.println(index);
+
                         return property.substring(index);
                     }
                 }

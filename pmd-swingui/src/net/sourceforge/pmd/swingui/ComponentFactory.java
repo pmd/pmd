@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -12,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -19,11 +21,12 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 
+
 /**
  *
  * @author Donald A. Leckie
  * @since August 29, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class ComponentFactory {
 
@@ -36,9 +39,10 @@ class ComponentFactory {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         EmptyBorder emptyBorder = new EmptyBorder(3, 3, 3, 3);
         EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.RAISED);
-        CompoundBorder compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
-        buttonPanel.setBorder(compoundBorder);
+        CompoundBorder compoundBorder = new CompoundBorder(etchedBorder,
+                emptyBorder);
 
+        buttonPanel.setBorder(compoundBorder);
 
         return buttonPanel;
     }
@@ -61,7 +65,8 @@ class ComponentFactory {
      *
      * @return
      */
-    protected static final JButton createButton(String title, Color background, Color foreground) {
+    protected static final JButton createButton(String title, Color background,
+            Color foreground) {
         JButton button;
         BevelBorder bevelBorder;
         EtchedBorder etchedBorder;
@@ -101,10 +106,13 @@ class ComponentFactory {
      *******************************************************************************
      *
      */
-    protected static final JButton createSaveButton(ActionListener actionListener) {
+    protected static final JButton createSaveButton(
+            ActionListener actionListener) {
         Color background = UIManager.getColor("pmdGreen");
         Color foreground = Color.white;
-        JButton saveButton = ComponentFactory.createButton("Save", background, foreground);
+        JButton saveButton = ComponentFactory.createButton("Save", background,
+                foreground);
+
         saveButton.addActionListener(actionListener);
 
         return saveButton;
@@ -114,10 +122,13 @@ class ComponentFactory {
      *******************************************************************************
      *
      */
-    protected static final JButton createCancelButton(ActionListener actionListener) {
+    protected static final JButton createCancelButton(
+            ActionListener actionListener) {
         Color background = UIManager.getColor("pmdRed");
         Color foreground = Color.white;
-        JButton cancelButton = ComponentFactory.createButton("Cancel", background, foreground);
+        JButton cancelButton = ComponentFactory.createButton("Cancel",
+                background, foreground);
+
         cancelButton.addActionListener(actionListener);
 
         return cancelButton;
@@ -127,8 +138,10 @@ class ComponentFactory {
      *******************************************************************************
      *
      */
-    protected static final JPanel createSaveCancelButtonPanel(ActionListener saveActionListener, ActionListener cancelActionListener) {
+    protected static final JPanel createSaveCancelButtonPanel(
+            ActionListener saveActionListener, ActionListener cancelActionListener) {
         JPanel buttonPanel = createButtonPanel();
+
         buttonPanel.add(createSaveButton(saveActionListener));
         buttonPanel.add(createCancelButton(cancelActionListener));
 
@@ -165,7 +178,8 @@ class ComponentFactory {
      *
      * @return
      */
-    protected static final JSplitPane createHorizontalSplitPane(Component leftPane, Component rightPane) {
+    protected static final JSplitPane createHorizontalSplitPane(
+            Component leftPane, Component rightPane) {
         JSplitPane splitPane = new JSplitPane();
 
         splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
@@ -185,7 +199,8 @@ class ComponentFactory {
      *
      * @return
      */
-    protected static final JSplitPane createVerticalSplitPane(Component topPane, Component bottomPane) {
+    protected static final JSplitPane createVerticalSplitPane(
+            Component topPane, Component bottomPane) {
         JSplitPane splitPane = new JSplitPane();
 
         splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -208,8 +223,10 @@ class ComponentFactory {
     protected static final JScrollPane createScrollPane(Component view) {
         JScrollPane scrollPane = new JScrollPane(view);
 
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getViewport().setBackground(Color.white);
         scrollPane.setAutoscrolls(true);
         scrollPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -249,7 +266,8 @@ class ComponentFactory {
      * @param windowWidth
      * @param windowHeight
      */
-    protected static final Dimension adjustWindowSize(int windowWidth, int windowHeight) {
+    protected static final Dimension adjustWindowSize(int windowWidth,
+            int windowHeight) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         if (windowWidth >= screenSize.width) {

@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -21,6 +22,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -28,9 +30,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
 
 /**
  *
@@ -39,7 +43,6 @@ import java.util.List;
  * @version $Revision$, $Date$
  */
 class RulesEditor extends JPanel {
-
     private RulesTree m_tree;
     private JSplitPane m_splitPane;
     private RuleEditingTabbedPane m_editingTabbedPane;
@@ -60,15 +63,18 @@ class RulesEditor extends JPanel {
 
         treeScrollPane = createTreeScrollPane();
         m_editingTabbedPane = new RuleEditingTabbedPane(m_tree);
-        m_splitPane = ComponentFactory.createHorizontalSplitPane(treeScrollPane, m_editingTabbedPane);
+        m_splitPane = ComponentFactory.createHorizontalSplitPane(treeScrollPane,
+                m_editingTabbedPane);
 
         JPanel contentPanel = new JPanel(new BorderLayout());
+
         contentPanel.add(m_splitPane, BorderLayout.CENTER);
         add(contentPanel, BorderLayout.CENTER);
 
         createMenuBar();
 
-        ListenerList.addListener((RulesInMemoryEventListener) new RulesInMemoryEventHandler());
+        ListenerList.addListener(
+                (RulesInMemoryEventListener) new RulesInMemoryEventHandler());
     }
 
     /**
@@ -79,6 +85,7 @@ class RulesEditor extends JPanel {
     private JScrollPane createTreeScrollPane() {
         JScrollPane scrollPane = ComponentFactory.createScrollPane(m_tree);
         Color background = UIManager.getColor("pmdTreeBackground");
+
         scrollPane.getViewport().setBackground(background);
 
         return scrollPane;
@@ -180,6 +187,7 @@ class RulesEditor extends JPanel {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
@@ -196,6 +204,7 @@ class RulesEditor extends JPanel {
             RulesEditor.this.setVisible(false);
         }
     }
+
 
     /**
      *********************************************************************************
@@ -224,7 +233,8 @@ class RulesEditor extends JPanel {
             menuItem = new JMenuItem("Save Changes", icon);
             menuItem.addActionListener((ActionListener) new SaveActionListener());
             menuItem.setMnemonic('S');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+            menuItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
             add(menuItem);
 
             //
@@ -232,9 +242,11 @@ class RulesEditor extends JPanel {
             //
             icon = UIManager.getIcon("cancel");
             menuItem = new JMenuItem("Cancel Changes", icon);
-            menuItem.addActionListener((ActionListener) new CancelActionListener());
+            menuItem.addActionListener(
+                    (ActionListener) new CancelActionListener());
             menuItem.setMnemonic('C');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
+            menuItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
             add(menuItem);
 
             //
@@ -247,28 +259,35 @@ class RulesEditor extends JPanel {
             //
             icon = UIManager.getIcon("print");
             menuItem = new JMenuItem("Print Rules...", icon);
-            menuItem.addActionListener((ActionListener) new PrintRulesActionListener());
+            menuItem.addActionListener(
+                    (ActionListener) new PrintRulesActionListener());
             menuItem.setMnemonic('R');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
+            menuItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
             add(menuItem);
 
             //
             // Print Selected Rule menu item
             //
             icon = UIManager.getIcon("print");
-            m_printSelectedRuleMenuItem = new JMenuItem("Print Selected Rule...", icon);
-            m_printSelectedRuleMenuItem.addActionListener((ActionListener) new PrintRulesActionListener());
+            m_printSelectedRuleMenuItem = new JMenuItem("Print Selected Rule...",
+                    icon);
+            m_printSelectedRuleMenuItem.addActionListener(
+                    (ActionListener) new PrintRulesActionListener());
             m_printSelectedRuleMenuItem.setMnemonic('E');
-            m_printSelectedRuleMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
+            m_printSelectedRuleMenuItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
             add(m_printSelectedRuleMenuItem);
 
             //
             // Page Setup menu item
             //
             menuItem = new JMenuItem("Page Setup...");
-            menuItem.addActionListener((ActionListener) new PageSetupActionListener());
+            menuItem.addActionListener(
+                    (ActionListener) new PageSetupActionListener());
             menuItem.setMnemonic('A');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
+            menuItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
             add(menuItem);
 
             //
@@ -288,17 +307,19 @@ class RulesEditor extends JPanel {
         }
     }
 
+
     /**
      *********************************************************************************
      *********************************************************************************
      *********************************************************************************
      */
     private class PrintRulesActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
-            MessageDialog.show(PMDViewer.getViewer(), "Printing not available yet.");
+            MessageDialog.show(PMDViewer.getViewer(),
+                    "Printing not available yet.");
         }
     }
+
 
     /**
      *********************************************************************************
@@ -306,11 +327,12 @@ class RulesEditor extends JPanel {
      *********************************************************************************
      */
     private class PageSetupActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
-            MessageDialog.show(PMDViewer.getViewer(), "Page setup not available yet.");
+            MessageDialog.show(PMDViewer.getViewer(),
+                    "Page setup not available yet.");
         }
     }
+
 
     /**
      *********************************************************************************
@@ -318,19 +340,19 @@ class RulesEditor extends JPanel {
      *********************************************************************************
      */
     private class ExitActionListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             System.exit(0);
         }
     }
+
 
     /**
      *********************************************************************************
      *********************************************************************************
      *********************************************************************************
      */
-    private class FileMenuMouseListener extends MouseAdapter implements RulesTreeModelEventListener {
-
+    private class FileMenuMouseListener extends MouseAdapter
+        implements RulesTreeModelEventListener {
         private Rule m_rule;
 
         /**
@@ -342,9 +364,12 @@ class RulesEditor extends JPanel {
             try {
                 ListenerList.addListener((RulesTreeModelEventListener) this);
                 RulesTreeModelEvent.notifyRequestSelectedRule(this);
+
                 boolean enable = (m_rule != null);
+
                 m_printSelectedRuleMenuItem.setEnabled(enable);
-            } finally {
+            }
+            finally {
                 ListenerList.removeListener((RulesTreeModelEventListener) this);
             }
         }
@@ -354,16 +379,14 @@ class RulesEditor extends JPanel {
          *
          * @param event
          */
-        public void reload(RulesTreeModelEvent event) {
-        }
+        public void reload(RulesTreeModelEvent event) {}
 
         /**
          ****************************************************************************
          *
          * @param event
          */
-        public void requestSelectedRule(RulesTreeModelEvent event) {
-        }
+        public void requestSelectedRule(RulesTreeModelEvent event) {}
 
         /**
          ****************************************************************************
@@ -375,12 +398,14 @@ class RulesEditor extends JPanel {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
-    private class RulesInMemoryEventHandler implements RulesInMemoryEventListener {
+    private class RulesInMemoryEventHandler
+        implements RulesInMemoryEventListener {
 
         /**
          ****************************************************************************
@@ -390,6 +415,7 @@ class RulesEditor extends JPanel {
         public void requestAllRules(RulesInMemoryEvent event) {
             RuleSet rules = new RuleSet();
             RulesTreeNode rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
+
             getRules(rootNode, rules, new IncludeAllRuleFilter());
             RulesInMemoryEvent.notifyReturnedRules(this, rules);
         }
@@ -404,11 +430,14 @@ class RulesEditor extends JPanel {
                 RuleSet rules = new RuleSet();
                 RulesTreeNode rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
                 int lowestPriority = Preferences.getPreferences().getLowestPriorityForAnalysis();
-                getRules(rootNode, rules, new IncludeSelectedRuleFilter(lowestPriority));
+
+                getRules(rootNode, rules,
+                        new IncludeSelectedRuleFilter(lowestPriority));
                 RulesInMemoryEvent.notifyReturnedRules(this, rules);
             } catch (PMDException pmdException) {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
+
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
         }
@@ -418,7 +447,8 @@ class RulesEditor extends JPanel {
          *
          * @param event
          */
-        private void getRules(RulesTreeNode rootNode, RuleSet rules, RuleFilter ruleFilter) {
+        private void getRules(RulesTreeNode rootNode, RuleSet rules,
+                RuleFilter ruleFilter) {
             Enumeration ruleSetNodes = rootNode.children();
 
             while (ruleSetNodes.hasMoreElements()) {
@@ -443,9 +473,9 @@ class RulesEditor extends JPanel {
          *
          * @param event
          */
-        public void returnedRules(RulesInMemoryEvent event) {
-        }
+        public void returnedRules(RulesInMemoryEvent event) {}
     }
+
 
     /**
      *******************************************************************************
@@ -463,6 +493,7 @@ class RulesEditor extends JPanel {
          */
         protected abstract boolean include(RulesTreeNode treeNode);
     }
+
 
     /**
      *******************************************************************************
@@ -482,6 +513,7 @@ class RulesEditor extends JPanel {
             return true;
         }
     }
+
 
     /**
      *******************************************************************************
@@ -510,7 +542,8 @@ class RulesEditor extends JPanel {
          * @return
          */
         protected boolean include(RulesTreeNode treeNode) {
-            return treeNode.include() && (treeNode.getPriority() <= m_lowestPriority);
+            return treeNode.include()
+                    && (treeNode.getPriority() <= m_lowestPriority);
         }
     }
 }

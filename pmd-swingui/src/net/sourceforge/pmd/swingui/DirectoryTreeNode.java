@@ -1,13 +1,16 @@
 package net.sourceforge.pmd.swingui;
 
+
 import javax.swing.tree.DefaultMutableTreeNode;
+
 import java.io.File;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since August 17, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class DirectoryTreeNode extends DefaultMutableTreeNode {
 

@@ -1,11 +1,14 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
 import java.io.StringWriter;
+
 import java.util.Iterator;
+
 
 /**
  *
@@ -16,7 +19,6 @@ import java.util.Iterator;
  * @version $Revision$, $Date$
  */
 class TextRenderer {
-
     private boolean m_reportNoViolations;
     private StringWriter m_writer;
 

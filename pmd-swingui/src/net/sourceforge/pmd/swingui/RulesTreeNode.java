@@ -1,13 +1,16 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
+
 
 /**
  *
@@ -16,6 +19,11 @@ import java.util.Enumeration;
  * @version $Revision$, $Date$
  */
 public class RulesTreeNode extends DefaultMutableTreeNode implements IConstants {
+    // Constant
+    private static final int IS_ROOT = 0x01;
+    private static final int IS_RULE_SET = 0x02;
+    private static final int IS_RULE = 0x04;
+    private static final int IS_PROPERTY = 0x08;
     private RuleSet m_ruleSet;
     private Rule m_rule;
     private RuleProperties properties;
@@ -29,12 +37,6 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements IConstants 
     private int m_type;
     private boolean m_include;
     private int m_priority;
-
-    // Constant
-    private static final int IS_ROOT = 0x01;
-    private static final int IS_RULE_SET = 0x02;
-    private static final int IS_RULE = 0x04;
-    private static final int IS_PROPERTY = 0x08;
 
     /**
      ***************************************************************************
@@ -94,7 +96,8 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements IConstants 
      *
      * @param name
      */
-    protected RulesTreeNode(RulesTreeNode ruleNode, String propertyName, String propertyValue, String propertyValueType) {
+    protected RulesTreeNode(RulesTreeNode ruleNode, String propertyName,
+            String propertyValue, String propertyValueType) {
         super();
 
         m_name = trim(propertyName);
@@ -388,8 +391,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements IConstants 
      *
      * @param newName
      */
-    protected void setExample(String newExample) {
-    }
+    protected void setExample(String newExample) {}
 
     /**
      **************************************************************************

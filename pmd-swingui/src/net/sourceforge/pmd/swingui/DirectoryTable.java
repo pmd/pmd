@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
 import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
 import net.sourceforge.pmd.swingui.event.ListenerList;
@@ -19,6 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -26,19 +28,21 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.io.File;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since August 25, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class DirectoryTable extends JTable {
-
     private boolean m_sortAscending = true;
 
     /**
@@ -101,7 +105,8 @@ class DirectoryTable extends JTable {
         //
         // Create a cell renderer for the file last modified date column.
         //
-        column = columnModel.getColumn(DirectoryTableModel.FILE_LAST_MODIFIED_COLUMN);
+        column = columnModel.getColumn(
+                DirectoryTableModel.FILE_LAST_MODIFIED_COLUMN);
         headerRenderer = new ColumnHeaderRenderer();
         cellRenderer = new DefaultTableCellRenderer();
 
@@ -113,7 +118,8 @@ class DirectoryTable extends JTable {
         //
         // Listeners
         //
-        ListenerList.addListener((DirectoryTableEventListener) new DirectoryTableEventHandler());
+        ListenerList.addListener(
+                (DirectoryTableEventListener) new DirectoryTableEventHandler());
     }
 
     /**
@@ -135,7 +141,6 @@ class DirectoryTable extends JTable {
      ********************************************************************************
      */
     private class ColumnHeaderRenderer extends DefaultTableCellRenderer {
-
         private Font m_boldFont;
         private Border m_border;
         private Color m_background;
@@ -153,7 +158,8 @@ class DirectoryTable extends JTable {
             EtchedBorder etchedBorder;
 
             oldFont = getFont();
-            m_boldFont = new Font(oldFont.getName(), Font.BOLD, oldFont.getSize());
+            m_boldFont = new Font(oldFont.getName(), Font.BOLD,
+                    oldFont.getSize());
             bevelBorder = new BevelBorder(BevelBorder.RAISED);
             etchedBorder = new EtchedBorder(EtchedBorder.RAISED);
             m_border = new CompoundBorder(etchedBorder, bevelBorder);
@@ -173,8 +179,11 @@ class DirectoryTable extends JTable {
          *
          * @return
          */
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int column) {
+            super.getTableCellRendererComponent(table, value, isSelected,
+                    hasFocus, row, column);
 
             setFont(m_boldFont);
             setBorder(m_border);
@@ -185,6 +194,7 @@ class DirectoryTable extends JTable {
             return this;
         }
     }
+
 
     /**
      ********************************************************************************
@@ -252,13 +262,13 @@ class DirectoryTable extends JTable {
         }
     }
 
+
     /**
      ********************************************************************************
      ********************************************************************************
      ********************************************************************************
      */
     private class TableSortComparator implements Comparator {
-
         private int m_sortColumn;
         private boolean m_sortAscending;
 
@@ -302,6 +312,7 @@ class DirectoryTable extends JTable {
         }
     }
 
+
     /**
      ********************************************************************************
      ********************************************************************************
@@ -328,12 +339,14 @@ class DirectoryTable extends JTable {
         }
     }
 
+
     /**
      ********************************************************************************
      ********************************************************************************
      ********************************************************************************
      */
-    private class DirectoryTableEventHandler implements DirectoryTableEventListener {
+    private class DirectoryTableEventHandler
+        implements DirectoryTableEventListener {
 
         /**
          ******************************************************************************
@@ -353,16 +366,13 @@ class DirectoryTable extends JTable {
          *
          * @param event
          */
-        public void fileSelectionChanged(DirectoryTableEvent event) {
-
-        }
+        public void fileSelectionChanged(DirectoryTableEvent event) {}
 
         /**
          ******************************************************************************
          *
          * @param event
          */
-        public void fileSelected(DirectoryTableEvent event) {
-        }
+        public void fileSelected(DirectoryTableEvent event) {}
     }
 }

@@ -1,18 +1,19 @@
 package net.sourceforge.pmd.swingui.event;
 
+
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 
+
 /**
  *
  * @author Donald A. Leckie
  * @since December 13, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 public class ListenerList {
-
     private static List m_listeners = new ArrayList();
 
     /**

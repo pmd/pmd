@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
@@ -14,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -24,7 +26,9 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
 import java.text.MessageFormat;
+
 
 /**
  *
@@ -33,7 +37,6 @@ import java.text.MessageFormat;
  * @version $Revision$, $Date$
  */
 class RuleEditingPanel extends JPanel {
-
     private JLabel m_nameLabel;
     private JTextField m_name;
     private JLabel m_classNameLabel;
@@ -72,7 +75,7 @@ class RuleEditingPanel extends JPanel {
         GridBagLayout layout;
         GridBagConstraints constraints;
 
-        int[] columnWidths = {50, 100, 100, 100, 100, 100};
+        int[] columnWidths = { 50, 100, 100, 100, 100, 100 };
 
         layout = new GridBagLayout();
         layout.columnWidths = columnWidths;
@@ -172,7 +175,7 @@ class RuleEditingPanel extends JPanel {
         constraints.gridy = 2;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         constraints.gridheight = 1;
-        constraints.ipady = 4 * 20;  // 4 lines * 20 pixels/line
+        constraints.ipady = 4 * 20; // 4 lines * 20 pixels/line
         constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(4, 2, 4, 2);
@@ -196,13 +199,14 @@ class RuleEditingPanel extends JPanel {
         m_description = ComponentFactory.createTextArea("");
 
         // Rule Description Scroll Pane;
-        m_descriptionScrollPane = ComponentFactory.createScrollPane(m_description);
+        m_descriptionScrollPane = ComponentFactory.createScrollPane(
+                m_description);
         constraints = layout.getConstraints(m_name);
         constraints.gridx = 1;
         constraints.gridy = 3;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         constraints.gridheight = 1;
-        constraints.ipady = 4 * 20;  // 4 lines * 20 pixels/line
+        constraints.ipady = 4 * 20; // 4 lines * 20 pixels/line
         constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(4, 2, 4, 2);
@@ -233,7 +237,7 @@ class RuleEditingPanel extends JPanel {
         constraints.gridy = 4;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         constraints.gridheight = 1;
-        constraints.ipady = 6 * 20;  // 6 lines * 20 pixels/line
+        constraints.ipady = 6 * 20; // 6 lines * 20 pixels/line
         constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(4, 2, 4, 2);
@@ -295,7 +299,7 @@ class RuleEditingPanel extends JPanel {
                 } else if (ruleName.equalsIgnoreCase(m_originalName) == false) {
                     if (dataNode.getSibling(ruleName) != null) {
                         String template = "Another rule already has the name \"{0}\".  The change will not be applied.";
-                        String[] args = {ruleName};
+                        String[] args = { ruleName };
                         String message = MessageFormat.format(template, args);
 
                         m_name.removeFocusListener(m_focusListener);
@@ -469,7 +473,6 @@ class RuleEditingPanel extends JPanel {
      ************************************************************************************
      ************************************************************************************
      */
-
     private class RuleNameFocusListener implements FocusListener {
 
         /**
@@ -477,8 +480,7 @@ class RuleEditingPanel extends JPanel {
          *
          * @param event
          */
-        public void focusGained(FocusEvent event) {
-        }
+        public void focusGained(FocusEvent event) {}
 
         /**
          **************************************************************************
@@ -490,6 +492,7 @@ class RuleEditingPanel extends JPanel {
 
             if (ruleName.length() == 0) {
                 String message = "The rule name is missing.";
+
                 m_name.removeFocusListener(this);
                 MessageDialog.show(getParentWindow(), message);
                 m_name.addFocusListener(this);
@@ -497,8 +500,9 @@ class RuleEditingPanel extends JPanel {
             } else if (ruleName.equalsIgnoreCase(m_originalName) == false) {
                 if (m_currentDataNode.getSibling(ruleName) != null) {
                     String template = "Another rule already has the name \"{0}\".";
-                    String[] args = {ruleName};
+                    String[] args = { ruleName };
                     String message = MessageFormat.format(template, args);
+
                     m_name.removeFocusListener(this);
                     MessageDialog.show(getParentWindow(), message);
                     m_name.addFocusListener(this);
@@ -507,6 +511,7 @@ class RuleEditingPanel extends JPanel {
             }
         }
     }
+
 
     /**
      ************************************************************************************

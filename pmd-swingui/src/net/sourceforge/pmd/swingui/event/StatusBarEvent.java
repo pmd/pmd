@@ -1,8 +1,10 @@
 package net.sourceforge.pmd.swingui.event;
 
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  *
@@ -11,7 +13,6 @@ import java.util.List;
  * @version $Revision$, $Date$
  */
 public class StatusBarEvent extends EventObject {
-
     private String m_message;
 
     /**
@@ -49,7 +50,8 @@ public class StatusBarEvent extends EventObject {
      */
     public static final void notifyStartAnimation(Object source) {
         StatusBarEvent event = new StatusBarEvent(source);
-        List listenerList = ListenerList.getListeners(StatusBarEventListener.class);
+        List listenerList = ListenerList.getListeners(
+                StatusBarEventListener.class);
         Iterator listeners = listenerList.iterator();
 
         while (listeners.hasNext()) {
@@ -67,7 +69,8 @@ public class StatusBarEvent extends EventObject {
      */
     public static final void notifyShowMessage(Object source, String message) {
         StatusBarEvent event = new StatusBarEvent(source, message);
-        List listenerList = ListenerList.getListeners(StatusBarEventListener.class);
+        List listenerList = ListenerList.getListeners(
+                StatusBarEventListener.class);
         Iterator listeners = listenerList.iterator();
 
         while (listeners.hasNext()) {
@@ -84,7 +87,8 @@ public class StatusBarEvent extends EventObject {
      */
     public static final void notifyStopAnimation(Object source) {
         StatusBarEvent event = new StatusBarEvent(source);
-        List listenerList = ListenerList.getListeners(StatusBarEventListener.class);
+        List listenerList = ListenerList.getListeners(
+                StatusBarEventListener.class);
         Iterator listeners = listenerList.iterator();
 
         while (listeners.hasNext()) {

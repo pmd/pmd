@@ -1,5 +1,8 @@
 package net.sourceforge.pmd.swingui;
 
+
+import net.sourceforge.pmd.PMDException;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,9 +10,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.PMDException;
 
 /**
  * Reads and writes a list of included rule sets.  Used by the PMD Viewer to select the
@@ -21,7 +24,6 @@ import net.sourceforge.pmd.PMDException;
  * @version $Revision$, $Date$
  */
 public class RuleSetList {
-
     private static final String RULE_SET_LIST_FILE_NAME = "Included_Rule_Set_Names.txt";
 
     /**
@@ -31,14 +33,16 @@ public class RuleSetList {
      *
      * @return
      */
-    public static final String[] getIncludedRuleSetNames(String directoryPath) throws PMDException {
+    public static final String[] getIncludedRuleSetNames(String directoryPath)
+        throws PMDException {
         String[] ruleSetNames = new String[0];
 
         if (directoryPath != null) {
             File file;
 
             directoryPath = directoryPath.trim();
-            file = new File(directoryPath + File.separator + RULE_SET_LIST_FILE_NAME);
+            file = new File(
+                    directoryPath + File.separator + RULE_SET_LIST_FILE_NAME);
 
             if (file.exists()) {
                 BufferedReader inputStream = null;
@@ -58,13 +62,13 @@ public class RuleSetList {
                         ruleSetNames[index] = parser.nextToken().trim();
                         index++;
                     }
-
                 } catch (FileNotFoundException exception) {
                     // Should not reach here because the file was already tested for existence.
                     String message;
                     PMDException pmdException;
 
-                    message = Resources.getString("RESOURCE_RuleSetListFileNotFound");
+                    message = Resources.getString(
+                            "RESOURCE_RuleSetListFileNotFound");
                     pmdException = new PMDException(message, exception);
                     pmdException.fillInStackTrace();
                     throw pmdException;
@@ -72,11 +76,13 @@ public class RuleSetList {
                     String message;
                     PMDException pmdException;
 
-                    message = Resources.getString("RESOURCE_RuleSetListFileIOError");
+                    message = Resources.getString(
+                            "RESOURCE_RuleSetListFileIOError");
                     pmdException = new PMDException(message, exception);
                     pmdException.fillInStackTrace();
                     throw pmdException;
-                } finally {
+                }
+                finally {
                     if (inputStream != null) {
                         try {
                             inputStream.close();
@@ -99,12 +105,15 @@ public class RuleSetList {
      *
      * @return
      */
-    public static final void saveIncludedRuleSetNames(String directoryPath, String[] ruleSetNames) throws PMDException {
+    public static final void saveIncludedRuleSetNames(String directoryPath,
+            String[] ruleSetNames)
+        throws PMDException {
         if ((directoryPath != null) && (ruleSetNames != null)) {
             File file;
 
             directoryPath = directoryPath.trim();
-            file = new File(directoryPath + File.separator + RULE_SET_LIST_FILE_NAME);
+            file = new File(
+                    directoryPath + File.separator + RULE_SET_LIST_FILE_NAME);
 
             if (file.exists()) {
                 file.delete();
@@ -133,8 +142,10 @@ public class RuleSetList {
 
                 outputStream.println(buffer.toString());
             } catch (FileNotFoundException exception) {
-                String message = Resources.getString("RESOURCE_RuleSetListFileNotFound");
+                String message = Resources.getString(
+                        "RESOURCE_RuleSetListFileNotFound");
                 PMDException pmdException = new PMDException(message, exception);
+
                 pmdException.fillInStackTrace();
                 throw pmdException;
             } catch (IOException exception) {
@@ -145,7 +156,8 @@ public class RuleSetList {
                 pmdException = new PMDException(message, exception);
                 pmdException.fillInStackTrace();
                 throw pmdException;
-            } finally {
+            }
+            finally {
                 if (outputStream != null) {
                     outputStream.close();
                 }

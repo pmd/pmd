@@ -1,21 +1,25 @@
 package net.sourceforge.pmd.swingui;
 
+
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+
 import java.io.File;
 import java.io.FileFilter;
+
 import java.util.Enumeration;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since August 17, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
-class DirectoryTreeModel extends DefaultTreeModel implements TreeWillExpandListener {
-
+class DirectoryTreeModel extends DefaultTreeModel
+    implements TreeWillExpandListener {
     private DirectoryTree m_directoryTree;
 
     /**

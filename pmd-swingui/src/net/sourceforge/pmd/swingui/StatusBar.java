@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.StatusBarEvent;
 import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
@@ -10,6 +11,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -18,6 +20,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Rectangle;
+
 
 /**
  *
@@ -57,7 +60,8 @@ class StatusBar extends JPanel {
         setDefaultMessage();
         add(m_message, BorderLayout.CENTER);
 
-        ListenerList.addListener((StatusBarEventListener) new StatusBarEventHandler());
+        ListenerList.addListener(
+                (StatusBarEventListener) new StatusBarEventHandler());
     }
 
     /**
@@ -180,18 +184,21 @@ class StatusBar extends JPanel {
                     m_indicatorCurrentPosition += POSITION_INCREMENT;
 
                     if (m_indicatorCurrentPosition >= totalAreaRight) {
-                        m_indicatorCurrentPosition = totalAreaRight - POSITION_INCREMENT;
+                        m_indicatorCurrentPosition = totalAreaRight
+                                - POSITION_INCREMENT;
                         m_direction = MOVE_BACKWARD;
                     }
                 } else if (m_direction == MOVE_BACKWARD) {
                     m_indicatorCurrentPosition -= POSITION_INCREMENT;
 
                     if (m_indicatorCurrentPosition < totalArea.x) {
-                        m_indicatorCurrentPosition = totalArea.x + POSITION_INCREMENT;
+                        m_indicatorCurrentPosition = totalArea.x
+                                + POSITION_INCREMENT;
                         m_direction = MOVE_FORWARD;
                     }
                 } else {
-                    m_indicatorCurrentPosition = totalArea.x + POSITION_INCREMENT;
+                    m_indicatorCurrentPosition = totalArea.x
+                            + POSITION_INCREMENT;
                     m_direction = MOVE_FORWARD;
                 }
 
@@ -201,9 +208,12 @@ class StatusBar extends JPanel {
                 Color oldColor = graphics.getColor();
 
                 graphics.setColor(m_activeBackground);
-                graphics.setClip(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
-                graphics.clipRect(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
-                graphics.fillRect(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
+                graphics.setClip(totalArea.x, totalArea.y, totalArea.width,
+                        totalArea.height);
+                graphics.clipRect(totalArea.x, totalArea.y, totalArea.width,
+                        totalArea.height);
+                graphics.fillRect(totalArea.x, totalArea.y, totalArea.width,
+                        totalArea.height);
 
                 if (m_direction == MOVE_FORWARD) {
                     int stopX = indicatorX - indicatorWidth;
@@ -242,8 +252,10 @@ class StatusBar extends JPanel {
                 graphics.setColor(oldColor);
 
                 if (oldClip != null) {
-                    graphics.clipRect(oldClip.x, oldClip.y, oldClip.width, oldClip.height);
-                    graphics.setClip(oldClip.x, oldClip.y, oldClip.width, oldClip.height);
+                    graphics.clipRect(oldClip.x, oldClip.y, oldClip.width,
+                            oldClip.height);
+                    graphics.setClip(oldClip.x, oldClip.y, oldClip.width,
+                            oldClip.height);
                 }
             }
         }
@@ -279,6 +291,7 @@ class StatusBar extends JPanel {
             return new Color(red, green, blue);
         }
     }
+
 
     /**
      *********************************************************************************
@@ -327,6 +340,7 @@ class StatusBar extends JPanel {
         }
     }
 
+
     /**
      *********************************************************************************
      *********************************************************************************
@@ -366,6 +380,7 @@ class StatusBar extends JPanel {
             m_statusArea.stopAction();
         }
     }
+
 
     /**
      *********************************************************************************

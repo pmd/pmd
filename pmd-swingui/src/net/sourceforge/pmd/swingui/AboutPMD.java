@@ -1,21 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,11 +14,31 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.text.DecimalFormat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+
 /**
  *
  * @author Donald A. Leckie
  * @since September 6, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 class AboutPMD extends JDialog {
 
@@ -77,11 +81,13 @@ class AboutPMD extends JDialog {
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         EmptyBorder emptyBorder = new EmptyBorder(10, 10, 10, 10);
+
         contentPanel.setBorder(emptyBorder);
         contentPanel.add(createTabbedPane(), BorderLayout.CENTER);
         contentPanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
         JScrollPane scrollPane = ComponentFactory.createScrollPane(contentPanel);
+
         getContentPane().add(scrollPane);
     }
 
@@ -92,11 +98,13 @@ class AboutPMD extends JDialog {
      */
     private JPanel createButtonPanel() {
         JButton closeButton = new JButton("Close");
+
         closeButton.setForeground(Color.white);
         closeButton.setBackground(UIManager.getColor("pmdBlue"));
         closeButton.addActionListener(new CloseButtonActionListener());
 
         JPanel buttonPanel = ComponentFactory.createButtonPanel();
+
         buttonPanel.add(closeButton);
 
         return buttonPanel;
@@ -129,23 +137,29 @@ class AboutPMD extends JDialog {
         // PMD Image
         ImageIcon imageIcon = (ImageIcon) UIManager.get("pmdLogoImage");
         JLabel imageLabel = new JLabel(imageIcon);
+
         aboutPanel.add(imageLabel, BorderLayout.CENTER);
 
         // Bottom Panel
         JPanel bottomPanel = new JPanel(new GridLayout(2, 1));
+
         bottomPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
         aboutPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // Version Label
-        String versionText = Resources.getString("RESOURCEVersion") + " " + ProjectFile.getProperty("currentVersion");
+        String versionText = Resources.getString("RESOURCEVersion") + " "
+                + ProjectFile.getProperty("currentVersion");
         JLabel versionLabel = new JLabel(versionText);
+
         versionLabel.setFont(UIManager.getFont("labelFont"));
         versionLabel.setHorizontalAlignment(JLabel.CENTER);
         bottomPanel.add(versionLabel);
 
         // SourceForge PMD Project
-        String sourceForgeText = Resources.getString("RESOURCEDevelopedBySourceForgePMDTeam");
+        String sourceForgeText = Resources.getString(
+                "RESOURCEDevelopedBySourceForgePMDTeam");
         JLabel sourceForgeLabel = new JLabel(sourceForgeText);
+
         sourceForgeLabel.setFont(UIManager.getFont("labelFont"));
         sourceForgeLabel.setHorizontalAlignment(JLabel.CENTER);
         bottomPanel.add(sourceForgeLabel);
@@ -176,7 +190,8 @@ class AboutPMD extends JDialog {
 
         row++;
         addName("Java ClassPath", row, infoPanel);
-        addMultiLineValue(System.getProperty("java.class.path"), row, 5, infoPanel);
+        addMultiLineValue(System.getProperty("java.class.path"), row, 5,
+                infoPanel);
 
         row += 5;
         addName("Operating System Name", row, infoPanel);
@@ -200,20 +215,32 @@ class AboutPMD extends JDialog {
 
         row++;
         addName("VM Total Memory", row, infoPanel);
+
         long totalMemory = Runtime.getRuntime().totalMemory() / 1024;
-        String totalMemoryText = DecimalFormat.getNumberInstance().format(totalMemory) + "KB";
+        String totalMemoryText = DecimalFormat.getNumberInstance().format(
+                totalMemory)
+                        + "KB";
+
         addValue(totalMemoryText, row, infoPanel);
 
         row++;
         addName("VM Free Memory", row, infoPanel);
+
         long freeMemory = Runtime.getRuntime().freeMemory() / 1024;
-        String freeMemoryText = DecimalFormat.getNumberInstance().format(freeMemory) + "KB";
+        String freeMemoryText = DecimalFormat.getNumberInstance().format(
+                freeMemory)
+                        + "KB";
+
         addValue(freeMemoryText, row, infoPanel);
 
         row++;
         addName("VM Used Memory", row, infoPanel);
+
         long usedMemory = totalMemory - freeMemory;
-        String usedMemoryText = DecimalFormat.getNumberInstance().format(usedMemory) + "KB";
+        String usedMemoryText = DecimalFormat.getNumberInstance().format(
+                usedMemory)
+                        + "KB";
+
         addValue(usedMemoryText, row, infoPanel);
 
         return infoPanel;
@@ -276,7 +303,8 @@ class AboutPMD extends JDialog {
      *
      * @param value
      */
-    private void addMultiLineValue(String value, int row, int lines, JPanel infoPanel) {
+    private void addMultiLineValue(String value, int row, int lines,
+            JPanel infoPanel) {
         JTextArea textArea;
         JScrollPane scrollPane;
         GridBagLayout layout;
@@ -342,7 +370,9 @@ class AboutPMD extends JDialog {
         // Credits Panel
         GridBagLayout layout = new GridBagLayout();
         JPanel creditsPanel = new JPanel(layout);
+
         parentPanel.add(creditsPanel, BorderLayout.CENTER);
+
         int row = 0;
 
         addTitle("Project Administrators", row, creditsPanel);
@@ -360,7 +390,8 @@ class AboutPMD extends JDialog {
         String developerNameKey = "developers/developer/name";
         String developerSelectKey = "developers/developer/roles/role";
         String selectValue = "developer";
-        String[] developers = getPeople(developerNameKey, developerSelectKey, selectValue);
+        String[] developers = getPeople(developerNameKey, developerSelectKey,
+                selectValue);
 
         row++;
         addTitle("Developers", row, creditsPanel);
@@ -374,7 +405,8 @@ class AboutPMD extends JDialog {
         row++;
         addTitle(" ", row, creditsPanel);
 
-        String[] contributors = getPeople("contributors/contributor/name", null, null);
+        String[] contributors = getPeople("contributors/contributor/name", null,
+                null);
 
         row++;
         addTitle("Contributors", row, creditsPanel);
@@ -449,7 +481,8 @@ class AboutPMD extends JDialog {
      *
      * @return
      */
-    private String[] getPeople(String nameKey, String selectKey, String selectValue) {
+    private String[] getPeople(String nameKey, String selectKey,
+            String selectValue) {
         String nameList = ProjectFile.getProperty(nameKey);
         String[] names = ProjectFile.toArray(nameList);
 
@@ -459,7 +492,8 @@ class AboutPMD extends JDialog {
             List tempNameList = new ArrayList();
 
             for (int n = 0; n < names.length; n++) {
-                if ((n < selections.length) && selections[n].equalsIgnoreCase(selectValue)) {
+                if ((n < selections.length)
+                        && selections[n].equalsIgnoreCase(selectValue)) {
                     tempNameList.add(names[n]);
                 }
 
@@ -521,6 +555,7 @@ class AboutPMD extends JDialog {
             return object == this;
         }
     }
+
 
     /**
      *******************************************************************************

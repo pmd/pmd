@@ -1,11 +1,14 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.RuleSet;
 
 import java.io.File;
 import java.io.FileFilter;
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  *
@@ -21,7 +24,6 @@ class SearchResultsViewer extends ResultsViewer {
      */
     protected SearchResultsViewer() {
         super();
-
     }
 
     /**
@@ -51,7 +53,8 @@ class SearchResultsViewer extends ResultsViewer {
      * @param fileList
      * @param fileFilter
      */
-    private void buildFileList(File directory, List fileList, FileFilter fileFilter) {
+    private void buildFileList(File directory, List fileList,
+            FileFilter fileFilter) {
         File[] files = directory.listFiles(fileFilter);
 
         for (int n = 0; n < files.length; n++) {
@@ -71,7 +74,6 @@ class SearchResultsViewer extends ResultsViewer {
      *******************************************************************************
      */
     private class FilesFilter implements FileFilter {
-
         private String fileExtension = ".java";
 
         public boolean accept(File file) {
@@ -86,7 +88,6 @@ class SearchResultsViewer extends ResultsViewer {
             }
 
             return false;
-
         }
     }
 }

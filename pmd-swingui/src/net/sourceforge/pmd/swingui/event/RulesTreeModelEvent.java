@@ -1,11 +1,13 @@
 package net.sourceforge.pmd.swingui.event;
 
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.swingui.RulesTreeNode;
 
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  *
@@ -14,7 +16,6 @@ import java.util.List;
  * @version $Revision$, $Date$
  */
 public class RulesTreeModelEvent extends EventObject {
-
     private RulesTreeNode m_parentNode;
     private Rule m_rule;
 
@@ -75,8 +76,10 @@ public class RulesTreeModelEvent extends EventObject {
      */
     public static void notifyReload(Object source, RulesTreeNode parentNode) {
         if ((source != null) && (parentNode != null)) {
-            RulesTreeModelEvent event = new RulesTreeModelEvent(source, parentNode);
-            List listenerList = ListenerList.getListeners(RulesTreeModelEventListener.class);
+            RulesTreeModelEvent event = new RulesTreeModelEvent(source,
+                    parentNode);
+            List listenerList = ListenerList.getListeners(
+                    RulesTreeModelEventListener.class);
             Iterator listeners = listenerList.iterator();
 
             while (listeners.hasNext()) {
@@ -95,7 +98,8 @@ public class RulesTreeModelEvent extends EventObject {
     public static void notifyRequestSelectedRule(Object source) {
         if (source != null) {
             RulesTreeModelEvent event = new RulesTreeModelEvent(source);
-            List listenerList = ListenerList.getListeners(RulesTreeModelEventListener.class);
+            List listenerList = ListenerList.getListeners(
+                    RulesTreeModelEventListener.class);
             Iterator listeners = listenerList.iterator();
 
             while (listeners.hasNext()) {
@@ -111,10 +115,13 @@ public class RulesTreeModelEvent extends EventObject {
      ******************************************************************************
      *
      */
-    public static void notifyReturnedSelectedRule(Object source, Rule selectedRule) {
+    public static void notifyReturnedSelectedRule(Object source,
+            Rule selectedRule) {
         if (source != null) {
-            RulesTreeModelEvent event = new RulesTreeModelEvent(source, selectedRule);
-            List listenerList = ListenerList.getListeners(RulesTreeModelEventListener.class);
+            RulesTreeModelEvent event = new RulesTreeModelEvent(source,
+                    selectedRule);
+            List listenerList = ListenerList.getListeners(
+                    RulesTreeModelEventListener.class);
             Iterator listeners = listenerList.iterator();
 
             while (listeners.hasNext()) {

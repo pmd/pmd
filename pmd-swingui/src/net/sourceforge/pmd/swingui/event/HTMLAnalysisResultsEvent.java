@@ -1,8 +1,10 @@
 package net.sourceforge.pmd.swingui.event;
 
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+
 
 public class HTMLAnalysisResultsEvent extends EventObject {
     private String m_htmlText;
@@ -44,7 +46,8 @@ public class HTMLAnalysisResultsEvent extends EventObject {
      */
     public static final void notifyRequestHTMLText(Object source) {
         HTMLAnalysisResultsEvent event = new HTMLAnalysisResultsEvent(source);
-        List listenerList = ListenerList.getListeners(HTMLAnalysisResultsEventListener.class);
+        List listenerList = ListenerList.getListeners(
+                HTMLAnalysisResultsEventListener.class);
         Iterator listeners = listenerList.iterator();
 
         while (listeners.hasNext()) {
@@ -60,9 +63,12 @@ public class HTMLAnalysisResultsEvent extends EventObject {
      *
      * @param source
      */
-    public static final void notifyReturnedHTMLText(Object source, String htmlText) {
-        HTMLAnalysisResultsEvent event = new HTMLAnalysisResultsEvent(source, htmlText);
-        List listenerList = ListenerList.getListeners(HTMLAnalysisResultsEventListener.class);
+    public static final void notifyReturnedHTMLText(Object source,
+            String htmlText) {
+        HTMLAnalysisResultsEvent event = new HTMLAnalysisResultsEvent(source,
+                htmlText);
+        List listenerList = ListenerList.getListeners(
+                HTMLAnalysisResultsEventListener.class);
         Iterator listeners = listenerList.iterator();
 
         while (listeners.hasNext()) {

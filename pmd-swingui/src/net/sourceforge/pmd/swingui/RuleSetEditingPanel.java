@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
 import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
@@ -12,6 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -21,7 +23,9 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
 import java.text.MessageFormat;
+
 
 /**
  *
@@ -57,7 +61,8 @@ class RuleSetEditingPanel extends JPanel {
         JPanel panel;
         TitledBorder titledBorder;
 
-        int[] columnWidths = {25, 100, 100, 100, 100, 100};
+        int[] columnWidths = { 25, 100, 100, 100, 100, 100 };
+
         layout = new GridBagLayout();
         layout.columnWidths = columnWidths;
         panel = new JPanel(layout);
@@ -113,7 +118,8 @@ class RuleSetEditingPanel extends JPanel {
         m_description = ComponentFactory.createTextArea("");
 
         // Rule Set Description Scroll Pane;
-        m_descriptionScrollPane = ComponentFactory.createScrollPane(m_description);
+        m_descriptionScrollPane = ComponentFactory.createScrollPane(
+                m_description);
         constraints = layout.getConstraints(m_name);
         constraints.gridx = 1;
         constraints.gridy = 1;
@@ -122,7 +128,7 @@ class RuleSetEditingPanel extends JPanel {
         constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(4, 2, 4, 2);
-        constraints.ipady = 4 * 20;  // 4 lines * 20 pixels/line
+        constraints.ipady = 4 * 20; // 4 lines * 20 pixels/line
         panel.add(m_descriptionScrollPane, constraints);
 
         enableData(false);
@@ -137,7 +143,8 @@ class RuleSetEditingPanel extends JPanel {
      */
     private void saveData(RulesTreeNode dataNode) {
         if ((dataNode != null) && m_isEditing) {
-            if (dataNode.isRuleSet() || dataNode.isRule() || dataNode.isProperty()) {
+            if (dataNode.isRuleSet() || dataNode.isRule()
+                    || dataNode.isProperty()) {
                 String ruleSetName = m_name.getText();
 
                 if (ruleSetName.length() == 0) {
@@ -156,7 +163,7 @@ class RuleSetEditingPanel extends JPanel {
                 } else if (ruleSetName.equalsIgnoreCase(m_originalName) == false) {
                     if (dataNode.getSibling(ruleSetName) != null) {
                         String template = "Another rule set already has the name \"{0}\".  The change will not be applied.";
-                        String[] args = {ruleSetName};
+                        String[] args = { ruleSetName };
                         String message = MessageFormat.format(template, args);
                         boolean hasFocus = m_name.hasFocus();
 
@@ -291,8 +298,7 @@ class RuleSetEditingPanel extends JPanel {
          *
          * @param event
          */
-        public void focusGained(FocusEvent event) {
-        }
+        public void focusGained(FocusEvent event) {}
 
         /**
          **************************************************************************
@@ -304,6 +310,7 @@ class RuleSetEditingPanel extends JPanel {
 
             if (ruleSetName.length() == 0) {
                 String message = "The rule set name is missing.";
+
                 m_name.removeFocusListener(this);
                 MessageDialog.show(getParentWindow(), message);
                 m_name.addFocusListener(this);
@@ -311,8 +318,9 @@ class RuleSetEditingPanel extends JPanel {
             } else if (ruleSetName.equalsIgnoreCase(m_originalName) == false) {
                 if (m_currentDataNode.getSibling(ruleSetName) != null) {
                     String template = "Another rule set already has the name \"{0}\".";
-                    String[] args = {ruleSetName};
+                    String[] args = { ruleSetName };
                     String message = MessageFormat.format(template, args);
+
                     m_name.removeFocusListener(this);
                     MessageDialog.show(getParentWindow(), message);
                     m_name.addFocusListener(this);
@@ -321,6 +329,7 @@ class RuleSetEditingPanel extends JPanel {
             }
         }
     }
+
 
     /**
      ************************************************************************************

@@ -1,14 +1,16 @@
 package net.sourceforge.pmd.swingui.event;
 
+
 import net.sourceforge.pmd.PMDException;
 
 import java.util.EventListener;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since December 13, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 public interface PMDDirectoryRequestEventListener extends EventListener {
 
@@ -24,7 +26,8 @@ public interface PMDDirectoryRequestEventListener extends EventListener {
      *
      * @param event
      */
-    void requestAllRuleSets(PMDDirectoryRequestEvent event) throws PMDException;
+    void requestAllRuleSets(PMDDirectoryRequestEvent event)
+        throws PMDException;
 
     /**
      *******************************************************************************
@@ -38,5 +41,6 @@ public interface PMDDirectoryRequestEventListener extends EventListener {
      *
      * @param event
      */
-    void requestIncludedRules(PMDDirectoryRequestEvent event) throws PMDException;
+    void requestIncludedRules(PMDDirectoryRequestEvent event)
+        throws PMDException;
 }

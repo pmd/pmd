@@ -1,13 +1,16 @@
 package net.sourceforge.pmd.swingui;
-//J-
+
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+
 import java.io.OutputStream;
 import java.io.PrintStream;
+
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
 
 /**
  * Writes an XML file containing information about rule set and each rule within the rule set.
@@ -16,9 +19,7 @@ import net.sourceforge.pmd.RuleSet;
  * @since August 30, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetWriter
-{
-
+public class RuleSetWriter {
     private PrintStream m_outputStream;
     private StringBuffer m_line = new StringBuffer(500);
     private int m_indent;
@@ -28,8 +29,7 @@ public class RuleSetWriter
      *
      * @param outputStream
      */
-    public RuleSetWriter(OutputStream outputStream)
-    {
+    public RuleSetWriter(OutputStream outputStream) {
         m_outputStream = new PrintStream(outputStream);
 
         m_line.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
@@ -41,8 +41,7 @@ public class RuleSetWriter
      *
      * @param ruleSet
      */
-    public void write(RuleSet ruleSet)
-    {
+    public void write(RuleSet ruleSet) {
         // <ruleset name="xxxxxx"
         indent();
         setupNewLine();
@@ -59,7 +58,7 @@ public class RuleSetWriter
         outputLine();
 
         // <description>
-        //    xxxxxxxxx
+        // xxxxxxxxx
         // </description>
         indent();
         writeDescription(ruleSet.getDescription());
@@ -70,8 +69,7 @@ public class RuleSetWriter
         //
         Iterator rules = ruleSet.getRules().iterator();
 
-        while (rules.hasNext())
-        {
+        while (rules.hasNext()) {
             write((Rule) rules.next());
         }
 
@@ -87,8 +85,7 @@ public class RuleSetWriter
      *
      * @param rule
      */
-    private void write(Rule rule)
-    {
+    private void write(Rule rule) {
         // Write a blank line to separate rules for easier reading.
         m_outputStream.println("");
 
@@ -124,28 +121,28 @@ public class RuleSetWriter
         m_indent -= 6;
 
         // <description>
-        //    xxxxxxxxx
+        // xxxxxxxxx
         // </description>
         indent();
         writeDescription(rule.getDescription());
         outdent();
 
         // <example>
-        //    xxxxxxxxxxx
+        // xxxxxxxxxxx
         // </example>
         indent();
         writeExample(rule.getExample());
         outdent();
 
         // <priority>
-        //   xxx
+        // xxx
         // </priority>
         indent();
         writePriority(rule.getPriority());
         outdent();
 
         // <properties>
-        //    <property name="xxxx" value="yyyyy" />
+        // <property name="xxxx" value="yyyyy" />
         // </properties>
         indent();
         writeProperties(rule);
@@ -163,8 +160,7 @@ public class RuleSetWriter
      *
      * @param description
      */
-    private void writeDescription(String description)
-    {
+    private void writeDescription(String description) {
         // <description>
         setupNewLine();
         m_line.append("<description>");
@@ -188,8 +184,7 @@ public class RuleSetWriter
      *
      * @param example
      */
-    private void writeExample(String example)
-    {
+    private void writeExample(String example) {
         // <example>
         setupNewLine();
         m_line.append("<example>");
@@ -219,8 +214,7 @@ public class RuleSetWriter
      *
      * @param priority
      */
-    private void writePriority(int priority)
-    {
+    private void writePriority(int priority) {
         // <priority>
         setupNewLine();
         m_line.append("<priority>");
@@ -244,8 +238,7 @@ public class RuleSetWriter
      *
      * @param rule
      */
-    private void writeProperties(Rule rule)
-    {
+    private void writeProperties(Rule rule) {
         // <properties>
         setupNewLine();
         m_line.append("<properties>");
@@ -256,8 +249,7 @@ public class RuleSetWriter
         RuleProperties properties = new RuleProperties(props);
         Enumeration keys = properties.keys();
 
-        while (keys.hasMoreElements())
-        {
+        while (keys.hasMoreElements()) {
             String name = (String) keys.nextElement();
             String value = properties.getValue(name);
             String valueType = properties.getValueType(name);
@@ -284,18 +276,15 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void indent()
-    {
+    private void indent() {
         m_indent += 3;
     }
-
 
     /**
      *******************************************************************************
      *
      */
-    private void outdent()
-    {
+    private void outdent() {
         m_indent -= 3;
     }
 
@@ -303,12 +292,10 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void setupNewLine()
-    {
+    private void setupNewLine() {
         m_line.setLength(0);
 
-        for (int n = 0; n < m_indent; n++)
-        {
+        for (int n = 0; n < m_indent; n++) {
             m_line.append(' ');
         }
     }
@@ -317,8 +304,7 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void setupNewLineWithoutIndent()
-    {
+    private void setupNewLineWithoutIndent() {
         m_line.setLength(0);
     }
 
@@ -326,8 +312,7 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void outputLine()
-    {
+    private void outputLine() {
         m_outputStream.println(m_line.toString());
     }
 
@@ -337,38 +322,38 @@ public class RuleSetWriter
      * @param text
      * @return
      */
-    private String convertChars(String text)
-    {
-        if (text == null)
-        {
+    private String convertChars(String text) {
+        if (text == null) {
             text = "";
         }
 
         StringBuffer buffer = new StringBuffer(text);
 
-        for (int n = 0; n < buffer.length(); n++)
-        {
-            switch(buffer.charAt(n))
-            {
-                case '<':
-                    buffer.replace(n, n+1, "&lt;");
-                    n += 3;
-                    break;
+        for (int n = 0; n < buffer.length(); n++) {
+            switch (buffer.charAt(n)) {
+            case '<':
+                buffer.replace(n, n + 1, "&lt;");
+                n += 3;
 
-                case '>':
-                    buffer.replace(n, n+1, "&gt;");
-                    n += 3;
-                    break;
+                break;
 
-                case '&':
-                    buffer.replace(n, n+1, "&amp;");
-                    n += 4;
-                    break;
+            case '>':
+                buffer.replace(n, n + 1, "&gt;");
+                n += 3;
 
-                case '"':
-                    buffer.replace(n, n+1, "&quot;");
-                    n += 4;
-                    break;
+                break;
+
+            case '&':
+                buffer.replace(n, n + 1, "&amp;");
+                n += 4;
+
+                break;
+
+            case '"':
+                buffer.replace(n, n + 1, "&quot;");
+                n += 4;
+
+                break;
             }
         }
 

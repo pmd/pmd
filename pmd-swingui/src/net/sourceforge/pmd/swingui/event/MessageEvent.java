@@ -1,18 +1,18 @@
 package net.sourceforge.pmd.swingui.event;
-//J-
+
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  *
  * @author Donald A. Leckie
  * @since December 13, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
-public class MessageEvent extends EventObject
-{
-
+public class MessageEvent extends EventObject {
     private String m_message;
     private Exception m_exception;
 
@@ -23,8 +23,7 @@ public class MessageEvent extends EventObject
      * @param message
      * @param exception
      */
-    private MessageEvent(Object source, String message, Exception exception)
-    {
+    private MessageEvent(Object source, String message, Exception exception) {
         super(source);
 
         m_message = message;
@@ -36,8 +35,7 @@ public class MessageEvent extends EventObject
      *
      * @return
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         return m_message;
     }
 
@@ -46,8 +44,7 @@ public class MessageEvent extends EventObject
      *
      * @return
      */
-    public Exception getException()
-    {
+    public Exception getException() {
         return m_exception;
     }
 
@@ -58,16 +55,15 @@ public class MessageEvent extends EventObject
      * @param message
      * @param exception
      */
-    public static final void notifyDisplayMessage(Object source, String message, Exception exception)
-    {
-        if ((source != null) && (message != null))
-        {
+    public static final void notifyDisplayMessage(Object source,
+            String message, Exception exception) {
+        if ((source != null) && (message != null)) {
             MessageEvent event = new MessageEvent(source, message, exception);
-            List listenerList = ListenerList.getListeners(MessageEventListener.class);
+            List listenerList = ListenerList.getListeners(
+                    MessageEventListener.class);
             Iterator listeners = listenerList.iterator();
 
-            while (listeners.hasNext())
-            {
+            while (listeners.hasNext()) {
                 MessageEventListener listener;
 
                 listener = (MessageEventListener) listeners.next();

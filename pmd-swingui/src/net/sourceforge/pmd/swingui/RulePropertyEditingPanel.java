@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
 import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
@@ -13,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,7 +24,9 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
 import java.text.MessageFormat;
+
 
 /**
  *
@@ -31,7 +35,6 @@ import java.text.MessageFormat;
  * @version $Revision$, $Date$
  */
 class RulePropertyEditingPanel extends JPanel implements IConstants {
-
     private JLabel m_nameLabel;
     private JTextField m_name;
     private JLabel m_valueLabel;
@@ -62,7 +65,8 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
         GridBagLayout layout;
         GridBagConstraints constraints;
 
-        int[] columnWidths = {50, 100, 50, 400};
+        int[] columnWidths = { 50, 100, 50, 400 };
+
         layout = new GridBagLayout();
         layout.columnWidths = columnWidths;
         panel = new JPanel(layout);
@@ -124,9 +128,11 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
         constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(4, 2, 4, 2);
+
         JScrollPane scrollPane = new JScrollPane(m_value,
-                                                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         panel.add(scrollPane, constraints);
 
         // Property Value Type Label
@@ -143,7 +149,8 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
         panel.add(m_valueTypeLabel, constraints);
 
         // Property Value Type
-        String[] items = {STRING, BOOLEAN, DECIMAL_NUMBER, INTEGER};
+        String[] items = { STRING, BOOLEAN, DECIMAL_NUMBER, INTEGER };
+
         m_valueType = new JComboBox(items);
         m_valueType.setEditable(false);
         m_valueType.setOpaque(true);
@@ -176,7 +183,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
                 if (propertyName.equalsIgnoreCase(m_originalName) == false) {
                     if (dataNode.getSibling(propertyName) != null) {
                         String template = "Another property already has the name \"{0}\".  The change will not be applied.";
-                        String[] args = {propertyName};
+                        String[] args = { propertyName };
                         String message = MessageFormat.format(template, args);
                         boolean hasFocus = m_name.hasFocus();
 
@@ -231,7 +238,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
             valueText = String.valueOf(newValue);
         } catch (NumberFormatException exception) {
             String template = "New property of \"{0}\" is not a boolean.  The change will not be applied.";
-            String[] args = {valueText};
+            String[] args = { valueText };
             String message = MessageFormat.format(template, args);
 
             m_name.removeFocusListener(m_focusListener);
@@ -265,7 +272,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
             valueText = String.valueOf(newValue);
         } catch (NumberFormatException exception) {
             String template = "New property of \"{0}\" is not a decimal number.  The change will not be applied.";
-            String[] args = {valueText};
+            String[] args = { valueText };
             String message = MessageFormat.format(template, args);
 
             m_name.removeFocusListener(m_focusListener);
@@ -299,7 +306,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
             valueText = String.valueOf(newValue);
         } catch (NumberFormatException exception) {
             String template = "New property of \"{0}\" is not an integer.  The change will not be applied.";
-            String[] args = {valueText};
+            String[] args = { valueText };
             String message = MessageFormat.format(template, args);
 
             m_name.removeFocusListener(m_focusListener);
@@ -443,8 +450,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
          *
          * @param event
          */
-        public void focusGained(FocusEvent event) {
-        }
+        public void focusGained(FocusEvent event) {}
 
         /**
          **************************************************************************
@@ -456,6 +462,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
 
             if (propertyName.length() == 0) {
                 String message = "The property name is missing.";
+
                 m_name.removeFocusListener(this);
                 MessageDialog.show(getParentWindow(), message);
                 m_name.addFocusListener(this);
@@ -463,8 +470,9 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
             } else if (propertyName.equalsIgnoreCase(m_originalName) == false) {
                 if (m_currentDataNode.getSibling(propertyName) != null) {
                     String template = "Another property already has the name \"{0}\".";
-                    String[] args = {propertyName};
+                    String[] args = { propertyName };
                     String message = MessageFormat.format(template, args);
+
                     m_name.removeFocusListener(this);
                     MessageDialog.show(getParentWindow(), message);
                     m_name.addFocusListener(this);
@@ -473,6 +481,7 @@ class RulePropertyEditingPanel extends JPanel implements IConstants {
             }
         }
     }
+
 
     /**
      ************************************************************************************

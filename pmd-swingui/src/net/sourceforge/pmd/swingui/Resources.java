@@ -1,7 +1,10 @@
 package net.sourceforge.pmd.swingui;
 
+
 import java.text.MessageFormat;
+
 import java.util.ResourceBundle;
+
 
 /**
  *
@@ -10,7 +13,8 @@ import java.util.ResourceBundle;
  * @version $Revision$, $Date$
  */
 public class Resources {
-    private static ResourceBundle RESOURCES = ResourceBundle.getBundle("net.sourceforge.pmd.swingui.pmdViewer");
+    private static ResourceBundle RESOURCES = ResourceBundle.getBundle(
+            "net.sourceforge.pmd.swingui.pmdViewer");
 
     /**
      *********************************************************************************

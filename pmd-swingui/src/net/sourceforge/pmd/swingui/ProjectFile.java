@@ -1,14 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Stack;
-import java.util.StringTokenizer;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import net.sourceforge.pmd.util.ResourceLoader;
 
@@ -16,6 +7,18 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import java.io.InputStream;
+
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Stack;
+import java.util.StringTokenizer;
+
 
 /**
  * Loads the PMD <b>project.xml</b> file and stores the contents in a Properties object.
@@ -38,10 +41,9 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Donald A. Leckie
  * @since September 10, 2002
- * @version $Revision$, $Date$
+ * @version 0.1
  */
 public class ProjectFile {
-
     private static Properties PROPERTIES;
     private static Exception PARSE_EXCEPTION;
     private static final String VALUE_SEPARATOR = "&vs;";
@@ -140,9 +142,12 @@ public class ProjectFile {
         try {
             inputStream = ResourceLoader.loadResourceAsStream("project.xml");
             inputSource = new InputSource(inputStream);
+
             MainContentHandler mainContentHandler;
             SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+
+            factory.setFeature("http://xml.org/sax/features/namespace-prefixes",
+                    true);
             factory.setFeature("http://xml.org/sax/features/namespaces", false);
 
             SAXParser parser = factory.newSAXParser();
@@ -161,7 +166,6 @@ public class ProjectFile {
      *****************************************************************************
      */
     private class MainContentHandler extends DefaultHandler {
-
         private StringBuffer m_buffer = new StringBuffer(100);
         private Stack m_nameStack = new Stack();
         private final String PROJECT = "project";
@@ -183,7 +187,9 @@ public class ProjectFile {
          *
          * @throws SAXException
          */
-        public void startElement(String namespace, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+        public void startElement(String namespace, String localName,
+                String qualifiedName, Attributes attributes)
+            throws SAXException {
             if (qualifiedName.equalsIgnoreCase(PROJECT) == false) {
                 m_nameStack.push(qualifiedName);
             }
@@ -211,7 +217,9 @@ public class ProjectFile {
          *
          * @throws SAXException
          */
-        public void endElement(String namespace, String localName, String qualifiedName) throws SAXException {
+        public void endElement(String namespace, String localName,
+                String qualifiedName)
+            throws SAXException {
             String value = m_buffer.toString().replace('\n', ' ').trim();
             String key = buildKey();
             String existingValue = PROPERTIES.getProperty(key);

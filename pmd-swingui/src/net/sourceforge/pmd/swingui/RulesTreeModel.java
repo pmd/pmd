@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
+
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -11,13 +12,15 @@ import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
 import net.sourceforge.pmd.swingui.event.RulesTreeModelEventListener;
 
 import javax.swing.tree.DefaultTreeModel;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Set;
 import java.util.Properties;
+import java.util.Set;
+
 
 /**
  *
@@ -26,10 +29,9 @@ import java.util.Properties;
  * @version $Revision$, $Date$
  */
 class RulesTreeModel extends DefaultTreeModel {
-
+    private static RulesTreeModel m_rulesTreeModel;
     private PMDDirectoryReturnedEventHandler m_pmdDirectoryReturnedEventHandler;
     private RulesTreeModelEventHandler m_rulesTreeModelEventHandler;
-    private static RulesTreeModel m_rulesTreeModel;
 
     /**
      ****************************************************************************
@@ -41,7 +43,8 @@ class RulesTreeModel extends DefaultTreeModel {
 
         m_pmdDirectoryReturnedEventHandler = new PMDDirectoryReturnedEventHandler();
         m_rulesTreeModelEventHandler = new RulesTreeModelEventHandler();
-        ListenerList.addListener((PMDDirectoryReturnedEventListener) m_pmdDirectoryReturnedEventHandler);
+        ListenerList.addListener(
+                (PMDDirectoryReturnedEventListener) m_pmdDirectoryReturnedEventHandler);
     }
 
     /**
@@ -105,7 +108,8 @@ class RulesTreeModel extends DefaultTreeModel {
      ***************************************************************************
      * @return
      */
-    protected static final RulesTreeModel get() throws PMDException {
+    protected static final RulesTreeModel get()
+        throws PMDException {
         if (m_rulesTreeModel == null) {
             RulesTreeNode rootNode;
 
@@ -134,7 +138,6 @@ class RulesTreeModel extends DefaultTreeModel {
             rootNode.add(ruleSetNode);
             loadRuleTreeNodes(ruleSetNode);
         }
-
     }
 
     /**
@@ -142,14 +145,14 @@ class RulesTreeModel extends DefaultTreeModel {
      *
      * @return
      */
-    private RuleSet[] loadRuleSets() throws PMDException {
+    private RuleSet[] loadRuleSets()
+        throws PMDException {
         PMDDirectoryRequestEvent.notifyRequestAllRuleSets(this);
 
         // The event is processed.  The requested rule set is assembled by another class
         // that calls notifyReturnedAllRuleSets.  The list of rule sets is stored in the
         // inner class PMDDirectoryReturnedEventHandler.  Then processing will continue here.
         //
-
         List ruleSetList = m_pmdDirectoryReturnedEventHandler.getRuleSetList();
 
         if (ruleSetList == null) {
@@ -203,7 +206,7 @@ class RulesTreeModel extends DefaultTreeModel {
         Rule rule = ruleNode.getRule();
         Properties props = rule.getProperties();
         RuleProperties properties = new RuleProperties(props);
-        String[]  propertyNames = new String[properties.size()];
+        String[] propertyNames = new String[properties.size()];
         Enumeration keys = properties.keys();
         int index = 0;
 
@@ -223,7 +226,8 @@ class RulesTreeModel extends DefaultTreeModel {
             propertyName = propertyNames[n];
             propertyValue = properties.getValue(propertyName);
             propertyValueType = properties.getValueType(propertyName);
-            propertyNode = new RulesTreeNode(ruleNode, propertyName, propertyValue, propertyValueType);
+            propertyNode = new RulesTreeNode(ruleNode, propertyName,
+                    propertyValue, propertyValueType);
 
             ruleNode.add(propertyNode);
 
@@ -236,7 +240,8 @@ class RulesTreeModel extends DefaultTreeModel {
      ****************************************************************************
      ****************************************************************************
      */
-    private class RulesTreeModelEventHandler implements RulesTreeModelEventListener {
+    private class RulesTreeModelEventHandler
+        implements RulesTreeModelEventListener {
 
         /**
          ***********************************************************************
@@ -253,6 +258,7 @@ class RulesTreeModel extends DefaultTreeModel {
          */
         public void reload(RulesTreeModelEvent event) {
             RulesTreeNode parentNode = event.getParentNode();
+
             RulesTreeModel.this.reload(parentNode);
         }
 
@@ -261,17 +267,16 @@ class RulesTreeModel extends DefaultTreeModel {
          *
          * @param event
          */
-        public void requestSelectedRule(RulesTreeModelEvent event) {
-        }
+        public void requestSelectedRule(RulesTreeModelEvent event) {}
 
         /**
          ****************************************************************************
          *
          * @param event
          */
-        public void returnedSelectedRule(RulesTreeModelEvent event) {
-        }
+        public void returnedSelectedRule(RulesTreeModelEvent event) {}
     }
+
 
     /**
      *******************************************************************************
@@ -296,6 +301,7 @@ class RulesTreeModel extends DefaultTreeModel {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
@@ -318,6 +324,7 @@ class RulesTreeModel extends DefaultTreeModel {
             return ruleSetNameA.compareToIgnoreCase(ruleSetNameB);
         }
     }
+
 
     /**
      *******************************************************************************
@@ -342,13 +349,14 @@ class RulesTreeModel extends DefaultTreeModel {
         }
     }
 
+
     /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
      */
-    private class PMDDirectoryReturnedEventHandler implements PMDDirectoryReturnedEventListener {
-
+    private class PMDDirectoryReturnedEventHandler
+        implements PMDDirectoryReturnedEventListener {
         private List m_ruleSetList;
         private String m_ruleSetPath;
 

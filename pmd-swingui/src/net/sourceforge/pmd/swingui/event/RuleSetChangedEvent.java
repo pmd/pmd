@@ -1,10 +1,12 @@
 package net.sourceforge.pmd.swingui.event;
 
+
 import net.sourceforge.pmd.RuleSet;
 
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  *
@@ -13,7 +15,6 @@ import java.util.List;
  * @version $Revision$, $Date$
  */
 public class RuleSetChangedEvent extends EventObject {
-
     private RuleSet m_ruleSet;
 
     /**
@@ -53,7 +54,8 @@ public class RuleSetChangedEvent extends EventObject {
     public static void notifyRuleSetChanged(Object source, RuleSet ruleSet) {
         if ((source != null) && (ruleSet != null)) {
             RuleSetChangedEvent event = new RuleSetChangedEvent(source, ruleSet);
-            List listenerList = ListenerList.getListeners(RuleSetChangedEventListener.class);
+            List listenerList = ListenerList.getListeners(
+                    RuleSetChangedEventListener.class);
             Iterator listeners = listenerList.iterator();
 
             while (listeners.hasNext()) {
@@ -72,7 +74,8 @@ public class RuleSetChangedEvent extends EventObject {
     public static void notifyRuleSetsChanged(Object source) {
         if (source != null) {
             RuleSetChangedEvent event = new RuleSetChangedEvent(source, null);
-            List listenerList = ListenerList.getListeners(RuleSetChangedEventListener.class);
+            List listenerList = ListenerList.getListeners(
+                    RuleSetChangedEventListener.class);
             Iterator listeners = listenerList.iterator();
 
             while (listeners.hasNext()) {
