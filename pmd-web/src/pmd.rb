@@ -58,7 +58,7 @@ class Job
   end
   
   def run_pmd
-   cmd="java -jar pmd-1.0rc2.jar #{@sourceDirectory} html rulesets/unusedcode.xml > ../htdocs/reports/#{@unixName}.html"
+   cmd="java -jar pmd-1.0rc2.jar #{@sourceDirectory} html rulesets/unusedcode.xml > ../htdocs/reports/#{@unixName}_#{@moduleDirectory}.html"
    `#{cmd}`
   end
   

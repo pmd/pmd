@@ -71,8 +71,8 @@ sub loadProjectList() {
    my $jobdata=<FILE>;
    my ($title,$unixname, $mod, $src) = split(":", $jobdata);
    my $jobtext="";
-   if (-e "../htdocs/reports/${unixname}.html") {
-    $jobtext="<a href=\"http://pmd.sf.net/reports/${unixname}.html\">${title}</a>";
+   if (-e "../htdocs/reports/${unixname}_${mod}.html") {
+    $jobtext="<a href=\"http://pmd.sf.net/reports/${unixname}_${mod}.html\">${title}</a>";
    } else {
     $jobtext=$title;
    }
