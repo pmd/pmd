@@ -290,17 +290,25 @@ public class PMDOpenTool {
     //create the project menu action for running a PMD check against all the java files within the active project
     public static BrowserAction B_ACTION_PMDPackageCheck = new BrowserAction ("PMD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CHECK_SELECTED_PACKAGE) {
         public void actionPerformed(Browser browser) {
+            browser.waitMessage("PMD Status", "Please wait while PMD checks the files in this package.");
             RuleSet rules = constructRuleSets();
             PackageNode node = (PackageNode)browser.getProjectView().getSelectedNode();
             pmdCheckPackage(node, rules);
+            browser.clearWaitMessages();
         }
 
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
     public static BrowserAction B_ACTION_CPDPackageCheck = new BrowserAction ("CPD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CPD_SELECTED_PACKAGE) {
-        public void actionPerformed(Browser browser) {
-            pmdCPD((PackageNode)browser.getProjectView().getSelectedNode());
+        public void actionPerformed(final Browser browser) {
+            Runnable r = new Runnable() {
+                public void run() {
+                    pmdCPD((PackageNode)browser.getProjectView().getSelectedNode());
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
         }
 
     };
