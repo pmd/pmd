@@ -1,5 +1,6 @@
 July 16 2002 - 0.5:
 Added new rules: DontImportJavaLangRule, DuplicateImportsRule
+Added new ruleset: rulesets/imports.xml
 Changed sorting of RuleViolations to group Files together.
 Changed XML Renderer to improved format.
 Created DVSL Stylesheet for the new format.
