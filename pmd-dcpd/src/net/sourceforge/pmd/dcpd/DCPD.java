@@ -28,7 +28,7 @@ public class DCPD {
 
     public DCPD(String javaSpaceURL) {
         try {
-            space = getSpace(javaSpaceURL);
+            space = Util.findSpace("mordor");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't connect to the space on " + javaSpaceURL);
@@ -61,13 +61,6 @@ public class DCPD {
         fr.close();
         tokenSets.add(ts);
     }
-
-    private JavaSpace getSpace(String javaSpaceServerName) throws ClassNotFoundException, MalformedURLException, IOException, RemoteException {
-        ServiceRegistrar registrar = (new LookupLocator(javaSpaceServerName)).getRegistrar();
-        ServiceMatches sm = registrar.lookup(new ServiceTemplate(null, new Class[] {JavaSpace.class}, new Entry[] {}),  1);
-        return (JavaSpace)sm.items[0].service;
-    }
-
 
     public static void main(String[] args) {
         new DCPD("jini://mordor");

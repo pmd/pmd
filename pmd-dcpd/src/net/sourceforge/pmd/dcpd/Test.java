@@ -22,7 +22,7 @@ public class Test {
 
     public Test() {
         try {
-            JavaSpace space = getSpace();
+            JavaSpace space = Util.findSpace("mordor");
             add("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true);
             Entry wrapper = new TokenSetsWrapper(tokenSets);
 
@@ -57,12 +57,6 @@ public class Test {
         t.tokenize(ts, fr);
         fr.close();
         tokenSets.add(ts);
-    }
-
-    private JavaSpace getSpace() throws Exception {
-        ServiceRegistrar registrar = (new LookupLocator("jini://mordor")).getRegistrar();
-        ServiceMatches sm = registrar.lookup(new ServiceTemplate(null, new Class[] {JavaSpace.class}, new Entry[] {}),  1);
-        return (JavaSpace)sm.items[0].service;
     }
 
     public static void main(String[] args) {
