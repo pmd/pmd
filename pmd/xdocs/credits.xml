@@ -10,13 +10,13 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Ian Shef - documentation updates, bug reports on the Gel IDE plugin</li>
             <li>Astro Jetson Jr - a tweak for the ShortVariableNameRule</li>
             <li>Paul King - a complete rewrite of the Gel plugin</li>
             <li>Gael Marziou - "exclude" rule feature request, bug reports</li>
             <li>Philippe T'Seyen - refactoring and cleanup of the CPD Ant task, an XML renderer (with unit tests!) for CPD</li>
             <li>Michael Montuori - bug reports on the Gel IDE plugin</li>
             <li>Michael Hosier - bug reports on the Gel IDE plugin</li>
-            <li>Ian Shef - bug reports on the Gel IDE plugin</li>
             <li>Matthew Harrah - script bug report</li>
             <li>Richard Jenson - CPD on Win32 troubleshooting</li>
             <li>Daniel Bruguier - CPD on Win32 troubleshooting</li>

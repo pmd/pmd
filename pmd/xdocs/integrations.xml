@@ -154,10 +154,14 @@ selecting the "Ask for Directory" checkbox.</p>
   <p>Here's how to set up the PMD-Gel plugin:</p>
   <ul>
   <li>Download the pmd-gel-[version].zip file</li>
-  <li>Close Gel and remove any old plugin versions from your gel\plugins directory</li>
+  <li>Close Gel</li>
+  <li>Remove any old plugin versions from your gel\plugins directory</li>
   <li>Unzip the new zip file into your gel\plugins directory</li>
-  <li>Start Gel and go to Tools->Options->Plugin</li>
-  <li>Click add and select "net.sourceforge.pmd.gel.PMDPlugin"</li>
+  <li>Start Gel</li>
+  <li>Go to Tools->Options->Plugin</li>
+  <li>Select the PMD plugin and click "Remove"</li>
+  <li>Click "Add" and select "net.sourceforge.pmd.gel.PMDPlugin"</li>
+  <li>Restart Gel</li>
   </ul>
   <p>That's pretty much it.  Now you can open a Java project and click on Plugins->PMD and
   a configuration panel will pop up.  You can pick which ruleset you want to run and
