@@ -20,11 +20,16 @@ public class CPD {
 
     private TokenSets tokenSets = new TokenSets();
     private Occurrences occ = new Occurrences();
+    private Occurrences results;
+
 
     public void add(File file) throws IOException {
+        System.out.println("Adding file " + file);
         Tokenizer t = new Tokenizer();
         TokenSet ts = new TokenSet(file.getAbsolutePath());
-        t.tokenize(ts, new FileReader(file));
+        FileReader fr = new FileReader(file);
+        t.tokenize(ts, fr);
+        fr.close();
         tokenSets.add(ts);
     }
 
@@ -39,15 +44,11 @@ public class CPD {
         generateInitialOccurrenceTable();
         GST gst = new GST(this.tokenSets, this.occ, minimumTileSize);
         gst.crunch();
-        Occurrences occ = gst.getResults();
-        for (Iterator i = occ.getTiles(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
-            System.out.println(tile.getImage());
-            System.out.println("[Source,Location]");
-            for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
-                System.out.println(j.next());
-            }
-        }
+        results = gst.getResults();
+    }
+
+    public Occurrences getResults() {
+        return results;
     }
 
     public String toString() {
@@ -72,7 +73,12 @@ public class CPD {
             cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused2.java"));
             cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused3.java"));
 */
-            List files = findFilesRecursively("c:\\data\\pmd\\pmd\\test-data\\");
+/*
+            List files = findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity");
+            files.addAll(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\agent"));
+            files.addAll(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\blackboard"));
+*/
+            List files = findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\");
             for (Iterator i = files.iterator(); i.hasNext();) {
                 cpd.add((File)i.next());
             }
@@ -80,7 +86,15 @@ public class CPD {
             ioe.printStackTrace();
             return;
         }
-        cpd.go(40);
+        cpd.go(150);
+        for (Iterator i = cpd.getResults().getTiles(); i.hasNext();) {
+            Tile tile = (Tile)i.next();
+            System.out.println(tile.getImage());
+            System.out.println("[Source,Location]");
+            for (Iterator j = cpd.getResults().getOccurrences(tile); j.hasNext();) {
+                System.out.println(j.next());
+            }
+        }
     }
 
     private static List findFilesRecursively(String dir) {
