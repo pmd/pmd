@@ -163,7 +163,8 @@ public class RunPMDAction extends CookieAction
 	 */
 	protected void performAction( Node[] node )
 	{
-		PMDOutputListener listener = new PMDOutputListener();
+		PMDOutputListener listener = PMDOutputListener.getInstance();
+        listener.detach();
 		FaultRegistry.clearRegistry();
 		try {
 			printed = false;

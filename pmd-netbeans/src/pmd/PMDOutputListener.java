@@ -35,33 +35,72 @@ import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 import org.openide.windows.WindowManager;
 
+
 /**
  * @author  Ole-Martin Mørk
  * @created  24. oktober 2002
  */
 public class PMDOutputListener implements OutputListener
 {
-
+    /** The annotation used to mark the line where the error is */
+    private final PMDAnnotation annotation = new PMDAnnotation();
+    
+    /** The instance of this class */
+    private final static PMDOutputListener instance = new PMDOutputListener();
+    
+    /**
+     * Private constructor
+     * @see #getInstance()
+     */
+    private PMDOutputListener() 
+    {
+        //Empty constructor
+    }
+    
+    /**
+     * Returns the instance of this class
+     * @return the instance
+     */
+    public static PMDOutputListener getInstance() 
+    {
+        return instance;
+    }
+    
+    /**
+     * Removes the marking of the line. 
+     * @todo remove the marking when the line is edited
+     */
+    public void detach() 
+    {
+        annotation.detach();
+    }
+    
+    /**
+     * Fired when the user doubleclicks on a line in the outputpane
+     * @param outputEvent the event that was fired
+     */
 	public void outputLineAction( OutputEvent outputEvent )
 	{
-
 		DataObject object = FaultRegistry.getDataObject( outputEvent.getLine() );
-		OpenCookie openC = ( OpenCookie )object.getCookie( OpenCookie.class );
+		OpenCookie openC = (OpenCookie)object.getCookie( OpenCookie.class );
 		openC.open();
-		EditorCookie cookie = ( EditorCookie )WindowManager.getDefault().getRegistry().getActivatedNodes()[0].getCookie( EditorCookie.class );
-		Set set = cookie.getLineSet();
-		int lineNum = Fault.getLineNum( outputEvent.getLine() );
-		Line line = set.getOriginal( lineNum - 1 );
-		line.markError();
-		line.show( Line.SHOW_GOTO );
+		EditorCookie cookie = (EditorCookie)WindowManager.getDefault().getRegistry().getActivatedNodes()[0].getCookie( EditorCookie.class );
+        if( cookie != null ) {
+			Set set = cookie.getLineSet();
+			int lineNum = Fault.getLineNum( outputEvent.getLine() );
+			Line line = set.getOriginal( lineNum - 1 );
+            annotation.detach();
+			annotation.attach( line );
+			line.show( Line.SHOW_GOTO );
+		}
 	}
-
-	public void outputLineCleared( OutputEvent outputEvent )
-	{
-	}
-
-	public void outputLineSelected( OutputEvent outputEvent )
-	{
-	}
-
+    /**
+     * Not implemented
+     */
+	public void outputLineCleared( OutputEvent outputEvent ){}
+	
+    /**
+     * Not implemented
+     */
+    public void outputLineSelected( OutputEvent outputEvent ){}
 }
