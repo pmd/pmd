@@ -40,7 +40,7 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
         List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
         ASTVariableDeclaratorId id = (ASTVariableDeclaratorId)nodes.get(0);
         nodes = acu.findChildrenOfType(ASTName.class);
-        assertEquals((ASTName)nodes.get(0), id.getTypeNameNode());
+        assertEquals(nodes.get(0), id.getTypeNameNode());
     }
 
     public static final String TEST1 =

@@ -32,7 +32,7 @@ public class NameOccurrencesTest extends STBBaseTst {
         List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
         NameOccurrences occs = new NameOccurrences((ASTPrimaryExpression)nodes.get(0));
         NameOccurrence thisNameOccurrence = (NameOccurrence)occs.getNames().get(0);
-        assertEquals(thisNameOccurrence.getNameForWhichThisIsAQualifier(), (NameOccurrence)occs.getNames().get(1));
+        assertEquals(thisNameOccurrence.getNameForWhichThisIsAQualifier(), occs.getNames().get(1));
     }
 
     public void testSimpleVariableOccurrence() {
