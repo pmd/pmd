@@ -21,7 +21,7 @@ in the code.  Currently, PMD supports:
   <li>Unnecessary object creation</li>
   <li>Unecessary object creation</li>
 </ul>
-For example, here are the problems PMD found in the <a href="jdk14.xml">JDK 1.4 source code</a>
+For example, here are the problems PMD found in the <a href="jdk14.XML">JDK 1.4 source code</a>
   ]]>
   </description>
   <shortDescription>PMD Source Checker</shortDescription>
