@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jul 1, 2002
- * Time: 2:22:25 PM
- */
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -137,7 +132,7 @@ public class RuleSetFactory {
     private InputStream tryToGetStreamTo(String name, ClassLoader loader) throws RuleSetNotFoundException {
         InputStream in = ResourceLoader.loadResourceAsStream(name, loader);
         if (in == null) {
-            throw new RuleSetNotFoundException("Can't find resource " + name + "Make sure the resource is valid file " + "or URL or is on the CLASSPATH\n");
+            throw new RuleSetNotFoundException("Can't find resource " + name + ".  Make sure the resource is a valid file " + "or URL or is on the CLASSPATH");
         }
         return in;
     }

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jun 17, 2002
- * Time: 5:44:22 PM
- */
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.ASTCompilationUnit;

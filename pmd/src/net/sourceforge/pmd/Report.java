@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jul 2, 2002
- * Time: 12:10:00 PM
- */
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.stat.Metric;

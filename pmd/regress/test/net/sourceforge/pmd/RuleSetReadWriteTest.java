@@ -7,6 +7,7 @@ import net.sourceforge.pmd.RuleProperties;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetReader;
 import net.sourceforge.pmd.RuleSetWriter;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 import java.io.ByteArrayInputStream;
@@ -60,7 +61,11 @@ public class RuleSetReadWriteTest extends TestCase {
      *
      */
     private void loadTestFile() {
-        m_inputStream = ResourceLoader.loadResourceAsStream("test-data/RuleSetReadWriteTest.xml");
+        try {
+            m_inputStream = ResourceLoader.loadResourceAsStream("test-data/RuleSetReadWriteTest.xml");
+        } catch (RuleSetNotFoundException rsne) {
+            throw new RuntimeException("Couldn't find that ruleset!");
+        }
         assertNotNull("Could not retrieve RuleSetReadWriteTest.xml", m_inputStream);
     }
 

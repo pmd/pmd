@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.util;
 
+import net.sourceforge.pmd.RuleSetNotFoundException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,8 +21,12 @@ public class ResourceLoader {
      * a URL, and then finally seeing if it is on the classpath.
      *
      */
-    public static InputStream loadResourceAsStream(String name) {
-        return ResourceLoader.loadResourceAsStream(name, new ResourceLoader().getClass().getClassLoader());
+    public static InputStream loadResourceAsStream(String name) throws RuleSetNotFoundException {
+        InputStream stream = ResourceLoader.loadResourceAsStream(name, new ResourceLoader().getClass().getClassLoader());
+        if (stream == null) {
+            throw new RuleSetNotFoundException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
+        }
+        return stream;
     }
 
     /**
@@ -29,7 +35,7 @@ public class ResourceLoader {
      * resource if it's not a File or a URL
      *
      */
-    public static InputStream loadResourceAsStream(String name, ClassLoader loader) {
+    public static InputStream loadResourceAsStream(String name, ClassLoader loader) throws RuleSetNotFoundException {
         File file = new File(name);
         if (file.exists()) {
             try {
@@ -44,6 +50,6 @@ public class ResourceLoader {
                 return loader.getResourceAsStream(name);
             }
         }
-        return null;
+        throw new RuleSetNotFoundException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
     }
 }

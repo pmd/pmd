@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jul 9, 2002
- * Time: 2:52:07 PM
- */
 package net.sourceforge.pmd;
 
 public class ExternalRuleID {

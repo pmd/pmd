@@ -1,7 +1,5 @@
 package net.sourceforge.pmd;
 
-// import org.apache.xerces.parsers.SAXParser;
-
 import net.sourceforge.pmd.util.ResourceLoader;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -136,10 +134,10 @@ public class ProjectFile {
         InputSource inputSource;
 
         PROPERTIES = new Properties();
-        inputStream = ResourceLoader.loadResourceAsStream("project.xml");
-        inputSource = new InputSource(inputStream);
 
         try {
+            inputStream = ResourceLoader.loadResourceAsStream("project.xml");
+            inputSource = new InputSource(inputStream);
             MainContentHandler mainContentHandler;
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
