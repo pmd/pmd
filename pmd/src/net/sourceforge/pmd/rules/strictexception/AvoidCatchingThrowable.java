@@ -1,14 +1,11 @@
 package net.sourceforge.pmd.rules.strictexception;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTCatch;
-import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.ast.ASTType;
 
 /**
  * PMD rule which is going to find <code>catch</code> statements
@@ -38,35 +35,11 @@ public class AvoidCatchingThrowable extends AbstractRule {
      * @param ruleContext
      */
     private void evaluateCatch(ASTCatch aCatch, RuleContext ruleContext) {
-        ASTType type = getCatchTypeDeclaration(aCatch);
-        ASTName name = getTypeNameDeclaration(type);
+        ASTType type = (ASTType)aCatch.getFormalParameter().findChildrenOfType(ASTType.class).get(0);
+        ASTName name = (ASTName)type.findChildrenOfType(ASTName.class).get(0);
 
         if (name.getImage().equals("Throwable")) {
             ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, name.getBeginLine()));
         }
-    }
-
-    /**
-     * @param type catch statememt
-     * @return Name of the given type
-     */
-    private ASTName getTypeNameDeclaration(ASTType type) {
-        List myList = new ArrayList(1);
-        type.findChildrenOfType(ASTName.class, myList);
-
-        return (ASTName) myList.get(0);
-    }
-
-    /**
-     * Retrieves the type from the catch statement.
-     * @param theCatch statement
-     * @return the type of the catch statement
-     */
-    private ASTType getCatchTypeDeclaration(ASTCatch theCatch) {
-        List myList = new ArrayList(1);
-        theCatch.getFormalParameter().findChildrenOfType(ASTType.class, myList);
-        // Catch declaration can only have one
-        // parameter
-        return (ASTType) myList.get(0);
     }
 }

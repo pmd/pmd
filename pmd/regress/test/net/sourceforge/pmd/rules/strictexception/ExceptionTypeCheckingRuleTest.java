@@ -1,10 +1,9 @@
 package test.net.sourceforge.pmd.rules.strictexception;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.rules.strictexception.ExceptionTypeChecking;
 import test.net.sourceforge.pmd.rules.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.rules.TestDescriptor;
-import net.sourceforge.pmd.rules.strictexception.ExceptionSignatureDeclaration;
-import net.sourceforge.pmd.rules.strictexception.ExceptionTypeChecking;
-import net.sourceforge.pmd.PMD;
 
 public class ExceptionTypeCheckingRuleTest extends SimpleAggregatorTst  {
 

@@ -1,15 +1,14 @@
 package net.sourceforge.pmd.rules.strictexception;
 
-import java.util.List;
-import java.util.Iterator;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * <p>
@@ -20,7 +19,7 @@ import net.sourceforge.pmd.ast.Node;
 public class ExceptionSignatureDeclaration extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
-        List exceptionList = retrieveExceptionList(methodDeclaration);
+        List exceptionList = methodDeclaration.findChildrenOfType(ASTName.class);
         if (!hasContent(exceptionList)) {
             return super.visit(methodDeclaration, o);
         }
@@ -31,7 +30,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
 
 
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
-        List exceptionList = retrieveExceptionList(constructorDeclaration);
+        List exceptionList = constructorDeclaration.findChildrenOfType(ASTName.class);
         if (!hasContent(exceptionList)) {
             return super.visit(constructorDeclaration, o);
         }
@@ -62,10 +61,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
      * @return true if <code>Exception</code> is declared and has proper parents
      */
     private boolean hasDeclaredExceptionInSignature(ASTName exception) {
-        if (exception.getImage().equals("Exception") && isParentSignatureDeclaration(exception)) {
-            return true;
-        }
-        return false;
+        return exception.getImage().equals("Exception") && isParentSignatureDeclaration(exception);
     }
 
     /**
@@ -74,16 +70,9 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
      */
     private boolean isParentSignatureDeclaration(ASTName exception) {
         Node parent = exception.jjtGetParent().jjtGetParent();
-        if (parent instanceof ASTMethodDeclaration || parent instanceof ASTConstructorDeclaration) {
-            return true;
-        }
-        return false;
+        return parent instanceof ASTMethodDeclaration || parent instanceof ASTConstructorDeclaration;
     }
 
-
-    private List retrieveExceptionList(AccessNode methodDeclaration) {
-        return methodDeclaration.findChildrenOfType(ASTName.class);
-    }
 
     private boolean hasContent(List nameList) {
         return (nameList != null && nameList.size() > 0);

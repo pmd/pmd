@@ -1,9 +1,9 @@
 package test.net.sourceforge.pmd.rules.strictexception;
 
-import test.net.sourceforge.pmd.rules.SimpleAggregatorTst;
-import test.net.sourceforge.pmd.rules.TestDescriptor;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.strictexception.AvoidCatchingThrowable;
+import test.net.sourceforge.pmd.rules.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.rules.TestDescriptor;
 
 public class AvoidCatchingThrowableRuleTest extends SimpleAggregatorTst {
 
