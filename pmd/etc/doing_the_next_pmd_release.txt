@@ -37,7 +37,7 @@ Time to tag:
 
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ../../
-cvs -q tag -D tomorrow "pmd_release_1_9" pmd
+cvs -q tag -D tomorrow "pmd_release_2_0" pmd
 
 Prepare source release:
 rm -rf ~/tmp/pmd-2.0
@@ -48,7 +48,7 @@ cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-cvs -q export -r pmd_release_1_9 pmd
+cvs -q export -r pmd_release_2_0 pmd
 mv pmd/ pmd-2.0/
 cd ..
 cp pmd/lib/pmd-src-2.0.jar tmp/pmd-2.0/lib/
@@ -59,7 +59,7 @@ cd ~/tmp/
 zip -q -r pmd-src-2.0.zip pmd-2.0/
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_1_9 pmd
+cvs rtag -d pmd_release_2_0 pmd
 and then retag everything
 
 ncftpput upload.sourceforge.net incoming/ pmd-src-2.0.zip pmd-bin-2.0.zip
