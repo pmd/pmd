@@ -5,21 +5,34 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="UnusedImports"
-          message="Avoid unused imports such as ''{0}''"
-          class="net.sourceforge.pmd.rules.UnusedImportsRule">
+    <rule name="InstantiationToGetClass"
+          message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
+          class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      Avoid unused import statements.
+Avoid instantiating an object just to call getClass() on it; use the .class public member instead
       </description>
+        <example>
+    <![CDATA[
+class Foo {
+ Class c = new String().getClass();
+}
+    ]]>
+        </example>
         <priority>4</priority>
-
-      <example>
-  <![CDATA[
-  // this is bad
-  import java.io.File;
-  public class Foo {}
-  ]]>
-      </example>
+        <properties>
+          <property name="xpath">
+            <value>
+                <![CDATA[
+//PrimarySuffix
+ [@Image='getClass']
+ [parent::PrimaryExpression
+  [PrimaryPrefix/AllocationExpression]
+  [count(PrimarySuffix) = 2]
+ ]
+     ]]>
+            </value>
+          </property>
+        </properties>
       </rule>
 
 

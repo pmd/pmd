@@ -5,7 +5,35 @@
 These are new rules for the next release
   </description>
 
-
+    <rule name="InstantiationToGetClass"
+          message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+Avoid instantiating an object just to call getClass() on it; use the .class public member instead
+      </description>
+        <example>
+    <![CDATA[
+class Foo {
+ Class c = new String().getClass();
+}
+    ]]>
+        </example>
+        <priority>4</priority>
+        <properties>
+          <property name="xpath">
+            <value>
+                <![CDATA[
+//PrimarySuffix
+ [@Image='getClass']
+ [parent::PrimaryExpression
+  [PrimaryPrefix/AllocationExpression]
+  [count(PrimarySuffix) = 2]
+ ]
+     ]]>
+            </value>
+          </property>
+        </properties>
+      </rule>
 
 </ruleset>
 
