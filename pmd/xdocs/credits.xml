@@ -11,6 +11,7 @@
         <subsection name="Individuals">
         <ul>
             <li>Sameer Nanda - CPD Ant task bug report</li>
+            <li>Nanne Baars - grammar suggestions, rule suggestions</li>
             <li>Colin Simmonds - bug report</li>
             <li>Adam Nemeth - bug fixes for UnnecessaryConstructorRule</li>
             <li>Mike Thome - rule suggestions</li>
@@ -51,7 +52,6 @@
             <li>Peter Donald - design suggestions</li>
             <li>Liam Holohan - bug reports</li>
             <li>Rich Kilmer - logo design</li>
-            <li>Nanne Baars - rule suggestions</li>
             <li>Ralph Schaer - bug reports and verification</li>
             <li>Damian O'Neill - Ant task patches</li>
         </ul>
