@@ -157,7 +157,6 @@ if __FILE__ == $0
 		end
 	}
 
-	puts "Creating maps"
 	if ARGV.include?("-doom")
 		jobs.each {|j|
 			pmd = PMDMap.new(j.pmd_lines)

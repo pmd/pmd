@@ -14,7 +14,7 @@
 
 <p>Want to run PMD on your Java Sourceforge project?  Please post <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a> or email <a href="mailto:tom@infoether.com">tom@infoether.com</a>.  Note that you can link to your project's PMD results <a href="http://sourceforge.net/forum/message.php?msg_id=2299020">as illustrated here</a>.  
 
-<p><b>NEW! A DOOM map is now being generated for each project using <a href="http://ruby-doom.rubyforge.org/">Ruby-DOOM.</a></b>
+<p><b>NEW! A DOOM map is now being generated for each project using <a href="http://ruby-doom.rubyforge.org/?ref=pmd">Ruby-DOOM.</a></b>
 
 <br>
 <table align=center>
