@@ -76,7 +76,7 @@ public final class Foo {
 
 
     <rule name="AbstractClassDoesNotContainAbstractMethod"
-          message="Class is defined abstract but it hasn't any abstract methods"
+          message="This class is defined abstract but has no abstract methods"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
   Abstract classes should have abstract methods, that are to be completed by subclasses.
@@ -115,7 +115,7 @@ public abstract class Foo {
 
 
     <rule name="MissingStaticMethodInNonInstantiatableClass"
-          message="Class cannot be instantiated and does not provide any static method"
+          message="Class cannot be instantiated and does not provide any static methods"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
   A class that has private constructors and does not have any static method cannot be used.
@@ -156,7 +156,7 @@ public class Foo {
 
 
     <rule name="AvoidCallingFinalize"
-          message="avoid calling finalize() explicitly"
+          message="Avoid calling finalize() explicitly"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
   finalize() is called by the garbage collector on an object when garbage collection determines 
@@ -195,10 +195,11 @@ or @Image='finalize'
 
 
     <rule name="AvoidSynchronizedAtMethodLevel"
-          message="a method is marked synchronized, try using block level"
+          message="Use block level rather than method level synchronization"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  It is preferrable to use synchronized in block level rather than in method level.
+  Method level synchronization can backfire when new code is added to the method.  Block-level
+  synchronization helps to ensure that only the code that needs synchronization gets it.
       </description>
       <properties>
           <property name="xpath">
@@ -232,7 +233,7 @@ or @Image='finalize'
           message="A switch statement does not contain a break"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  A switch statement without a break inside can be totally valid, however, it is probably a bug.
+  A switch statement without an enclosed break statement may be a bug.
       </description>
       <properties>
           <property name="xpath">
@@ -262,11 +263,11 @@ switch(status) {
     
     
     <rule name="UseNotifyAllInsteadOfNotify"
-          message="avoid calling notify() prefer instead notifyAll()"
+          message="Call Thread.notifyAll() rather than Thread.notify()"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
       notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
-      one is choosen. In this case, the choice is arbitrary and occurs at the discretion of the implementation
+      one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call notifyAll() instead.
       </description>
       <properties>
           <property name="xpath">
@@ -304,7 +305,7 @@ or (  ./AllocationExpression
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
       It is a good practice to call super() in a constructor. If super() is not called
-      but another consuctor (overloaded constructor) of the class is called, this rule
+      but another constructor, such as an overloaded constructor, of the class is called, this rule
       will not report it.
       </description>
       <properties>
@@ -452,18 +453,18 @@ public class Foo {
 
 
     <rule name="AbstractClassWithoutAbstractMethod"
-          message="The abstract class does not have any abstract methods"
+          message="This abstract class does not have any abstract methods"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      The abstract class does not contain any abstract methods. An abstract class suggests 
-      an incomplete implementation, which is to be completed by subclasses implementing the 
+      The abstract class does not contain any abstract methods. An abstract class suggests
+      an incomplete implementation, which is to be completed by subclasses implementing the
       abstract methods. If the class is intended to be used as a base class only (not to be instantiated 
       direcly) a protected constructor can be provided prevent direct instantiation.
       </description>
       <properties>
           <property name="xpath">
               <value><![CDATA[
-//ClassDeclaration[@Abstract='true' and count( .//MethodDeclaration[@Abstract='true'] )=0 ]              
+//ClassDeclaration[@Abstract='true' and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
               ]]>
               </value>
           </property>
@@ -472,10 +473,10 @@ public class Foo {
 
       <example>
 <![CDATA[
-public abstract class Foo {	
+public abstract class Foo {
 	void int method1() { ... }
 	void int method2() { ... }
-	// consider using abstract methods or removing 
+	// consider using abstract methods or removing
 	// the abstract modifier and adding protected constructors
 }
 ]]>
@@ -483,10 +484,10 @@ public abstract class Foo {
     </rule>
 
     <rule name="TestClassWithoutTestCases"
-          message="Class is postfixed with Test but has not test cases in it"
+          message="This class name ends with 'Test' but contains no test cases"
           class="net.sourceforge.pmd.rules.TestClassWithoutTestCases">
       <description>
-      Test classes end with the postfix Test. Having a non test class with that name is 
+      Test classes end with the suffix Test. Having a non-test class with that name is
       not a good practice, since most people will assume it is a test case. Test 
       classes have test methods named testXXX. 
       </description>
