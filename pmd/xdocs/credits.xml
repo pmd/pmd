@@ -41,6 +41,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Raik Schroeder - data flow analyis layer</li>
             <li>Brant Langer Gurganus - project.xml patch, Javadoc patches, reported an encoding problem</li>
             <li>David Hovemeyer - a nice patch to let PMD process code in jar/zip files</li>
             <li>Bruno - SuspiciousEqualsMethodName</li>
