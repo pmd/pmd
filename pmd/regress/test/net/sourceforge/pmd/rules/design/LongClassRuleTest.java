@@ -4,55 +4,54 @@
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.design.LongClassRule;
-import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class LongClassRuleTest extends RuleTst {
+public class LongClassRuleTest extends SimpleAggregatorTst {
 
-    public LongClassRule getIUT() {
-        LongClassRule IUT = new LongClassRule();
-        IUT.addProperty("minimum", "10");
-        return IUT;
+    private Rule rule;
+
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/codesize.xml", "ExcessiveClassLength");
+        rule.addProperty("minimum", "10");
     }
 
-    public void testShortClass() throws Throwable {
-        runTestFromString(TEST0, 0, getIUT());
-    }
-
-    public void testLongClass() throws Throwable {
-        runTestFromString(TEST1, 1, getIUT());
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST0, "short", 0, rule),
+           new TestDescriptor(TEST1, "long", 1, rule),
+       });
     }
 
     public void testLongClassWithLongerTest() throws Throwable {
-        LongClassRule IUT = getIUT();
+        LongClassRule IUT = new LongClassRule();
         IUT.addProperty("minimum", "2000");
         runTestFromString(TEST1, 0, IUT);
     }
 
     private static final String TEST0 =
-    "public class LongMethod1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     "    public static void main(String args[]) {" + PMD.EOL +
-    "	System.err.println(\"This is short.\");" + PMD.EOL +
+    "	  int x;" + PMD.EOL +
     "    }" + PMD.EOL +
     "}";
 
     private static final String TEST1 =
-    "public class LongClass1" + PMD.EOL +
-    "{" + PMD.EOL +
-    "    public void method0() {" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
-    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "    public void bar() {" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
     "    }" + PMD.EOL +
     "}";
 }

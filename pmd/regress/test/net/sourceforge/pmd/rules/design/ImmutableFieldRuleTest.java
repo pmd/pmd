@@ -1,10 +1,10 @@
 package test.net.sourceforge.pmd.rules.design;
 
-import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
 
@@ -27,7 +27,7 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
     " private int x;" + PMD.EOL +
     " public Foo() {" + PMD.EOL +
     "  x = 2;" + PMD.EOL +
-    " }       " + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
@@ -40,10 +40,10 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
     " private int x;" + PMD.EOL +
     " public Foo() {" + PMD.EOL +
     "  x = 41;" + PMD.EOL +
-    " }       " + PMD.EOL +
+    " }" + PMD.EOL +
     " public void bar() {" + PMD.EOL +
     "  x = 42;" + PMD.EOL +
-    " }       " + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 }
