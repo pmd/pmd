@@ -52,14 +52,20 @@ sub loadProjectList() {
 	}
 
 	@newprojects = sort { $a->getPctg() cmp $b->getPctg() } @projects;
-
+	#my $result = $query->param("target");
 	my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>NCSS</th><th>Problems</th><th>Percentage<br>Unused Code</th><th>Duplicate<br>Code</th></tr>";
 	foreach $project (@newprojects) {
+		my $target =$query->param("target");
 		my $jobLink=$project->getTitle();
 		if (-e $project->getRptFile()) {
 			$jobLink="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
 		}
-		$result="${result}\n<tr><td>${jobLink}</td>";
+		if ($target =~ $project->getUnixName()) {
+			$result="${result}\n<tr bgcolor=\"lightgrey\">";
+		} else {
+			$result="${result}\n<tr>";
+		}
+		$result="${result}<td>${jobLink}</td>";
 		$result="${result}<td></td>";
 		$result="${result}<td><a name=\"@{[$project->getUnixName()]}\"></a>@{[$project->getHomePage()]}</td>";
 		$result="${result}<td>@{[$project->getNCSS()]}</td>";
