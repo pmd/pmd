@@ -37,16 +37,21 @@ import java.util.List;
 
 public class Designer implements ClipboardOwner {
 
-    private ASTCompilationUnit doParse() {
+    private JavaParser createParser() {
         StringReader sr = new StringReader(codeEditorPane.getText());
+        TargetJDKVersion v = getJDKVersion();
+        JavaParser parser = v.createParser(sr);
+        return parser;
+    }
+
+    private TargetJDKVersion getJDKVersion() {
         TargetJDKVersion v = null;
         if (jdk14MenuItem.isSelected()) {
             v = new TargetJDK1_4();
         } else {
             v = new TargetJDK1_5();
         }
-        JavaParser parser = v.createParser(sr);
-        return parser.CompilationUnit();        
+        return v;
     }
 
     private class ShowListener implements ActionListener {
@@ -54,7 +59,7 @@ public class Designer implements ClipboardOwner {
             MyPrintStream ps = new MyPrintStream();
             System.setOut(ps);
             try {
-                ASTCompilationUnit lastCompilationUnit = doParse();
+                ASTCompilationUnit lastCompilationUnit = createParser().CompilationUnit();
                 lastCompilationUnit.dump("");
                 astArea.setText(ps.getString());
             } catch (ParseException pe) {
@@ -71,7 +76,8 @@ public class Designer implements ClipboardOwner {
                 rs.addRule(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
                 ctx.setSourceCodeFilename("[scratchpad]");
-                new PMD().processFile(new StringReader(codeEditorPane.getText()), rs, ctx);
+                StringReader reader = new StringReader(codeEditorPane.getText());
+                new PMD(getJDKVersion()).processFile(reader, rs, ctx);
                 List methods = dfaGraphRule.getMethods();
                 if (!methods.isEmpty()) {
                     dfaPanel.resetTo(methods, codeEditorPane);
@@ -93,8 +99,7 @@ public class Designer implements ClipboardOwner {
                 codeEditorPane.requestFocus();
                 return;
             }
-            StringReader sr = new StringReader(codeEditorPane.getText());
-            JavaParser parser = (new TargetJDK1_4()).createParser(sr);
+            JavaParser parser = createParser();
             try {
                 XPath xpath = new BaseXPath(xpathQueryArea.getText(), new DocumentNavigator());
                 ASTCompilationUnit c = parser.CompilationUnit();
@@ -276,7 +281,7 @@ public class Designer implements ClipboardOwner {
     }
 
     private String getXml() {
-        ASTCompilationUnit cu = doParse();
+        ASTCompilationUnit cu = createParser().CompilationUnit();
         if (cu!=null) {
             return cu.asXml();
         }
