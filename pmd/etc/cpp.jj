@@ -81,7 +81,7 @@ public final class CPPParser {
    */
 
   /**
-   * Reads a fully qualified name (since it is used during lookahead, we 
+   * Reads a fully qualified name (since it is used during lookahead, we
    * cannot use token. We have to explicitly use getToken).
    */
   static String GetFullyScopedName() throws ParseException
@@ -100,7 +100,7 @@ public final class CPPParser {
         t = getToken(2);
         i = 3;
      }
-     else 
+     else
         i = 2;
 
      while (t.kind == SCOPE)
@@ -114,8 +114,8 @@ public final class CPPParser {
   }
 
   /**
-   * This method first tries to read a sequence of tokens of the form 
-   *             ("::")? <ID> ("::" <ID>)* 
+   * This method first tries to read a sequence of tokens of the form
+   *             ("::")? <ID> ("::" <ID>)*
    * and if it succeeds then asks the symbol table manager  if this is
    * the name of a constructor.
    */
@@ -135,6 +135,8 @@ SKIP :
 |
   "\r\n"
 |
+  "\n"
+|
   "//" : IN_LINE_COMMENT
 |
   "/*" : IN_COMMENT
@@ -144,7 +146,7 @@ SKIP :
 
 <IN_LINE_COMMENT> SKIP:
 {
-   "\r\n" : DEFAULT
+   "\n" : DEFAULT
 }
 
 <IN_LINE_COMMENT> MORE:
@@ -164,7 +166,7 @@ SKIP :
 
 <PREPROCESSOR_OUTPUT> SKIP:
 {
-   "\r\n" : DEFAULT
+   "\n" : DEFAULT
 }
 
 <PREPROCESSOR_OUTPUT> MORE:
@@ -389,7 +391,7 @@ void function_definition() :
    boolean isTypedef;
 }
 {
-  
+
     LOOKAHEAD(3) isTypedef = declaration_specifiers()
         sc = function_declarator(isTypedef) func_decl_def(sc)
    |
@@ -420,7 +422,7 @@ void linkage_specification() :
 {
    "extern" <STRING>
    (
-    "{" ( external_declaration() )* "}" 
+    "{" ( external_declaration() )* "}"
       ( LOOKAHEAD(";") ";")?
    |
     declaration()
@@ -486,7 +488,7 @@ boolean declaration_specifiers() :
      (
         class_specifier()
       |
-        enum_specifier() 
+        enum_specifier()
       |
         qualified_type()
      )
@@ -668,7 +670,7 @@ void class_specifier() :
      {
         sc = (ClassScope)sym.OpenScope(t.image, true);
      }
-     (base_clause(sc))? 
+     (base_clause(sc))?
     "{"
       (member_declaration())*
     "}"
@@ -773,14 +775,14 @@ void conversion_function_decl_or_def() :
    "operator" declaration_specifiers() ("*" | "&")?
 
    "(" (parameter_list())? ")"
-   (LOOKAHEAD(2) type_qualifier())? 
+   (LOOKAHEAD(2) type_qualifier())?
    (exception_spec())?
    func_decl_def(null)  // Temporary (fix the null)
 }
 
 void enum_specifier() :
 { Token t; }
-{  
+{
    "enum"
    (
     "{" enumerator_list() "}"
@@ -886,7 +888,7 @@ Scope function_declarator(boolean isTypedef) :
 
 Scope function_direct_declarator(boolean isTypedef) :
 {
-  String name; 
+  String name;
   Scope sc = null;
   boolean closeReqd = false;
 }
@@ -903,7 +905,7 @@ Scope function_direct_declarator(boolean isTypedef) :
      "(" (parameter_list())?  ")"
      (LOOKAHEAD(2) type_qualifier())?
      (exception_spec())?
-     (LOOKAHEAD("=") "=" <OCTALINT>)?     
+     (LOOKAHEAD("=") "=" <OCTALINT>)?
 
      {
         if (closeReqd)
@@ -945,11 +947,11 @@ void ctor_definition() :
 
    {
       if (closeReqd = (sc != null && sc != sym.GetCurScope()))
-         sym.OpenScope(sc);   
+         sym.OpenScope(sc);
    }
 
    (exception_spec())?
-   
+
    (
      ";"
     |
@@ -969,28 +971,28 @@ Scope ctor_declarator() :
 {
   String name;
   Scope sc = null;
-  boolean closeReqd = false;          
+  boolean closeReqd = false;
 }
 {
    LOOKAHEAD( { IsCtor() } )
       name = qualified_id()
- 
+
      {
         sc = sym.GetScopeOfFullyScopedName(name);
- 
+
         if (closeReqd = (sc != null && sc != sym.GetCurScope()))
-           sym.OpenScope(sc);         
+           sym.OpenScope(sc);
      }
-                                      
+
      "(" [ LOOKAHEAD(2) parameter_list() ]  ")"
 
      [ LOOKAHEAD(2) exception_spec() ]
-      
+
      {
         if (closeReqd)
-           sym.CloseScope();          
- 
-        return sc;                    
+           sym.CloseScope();
+
+        return sc;
      }
 }
 
@@ -1039,7 +1041,7 @@ void parameter_declaration() :
 {
    declaration_specifiers()
    (
-    LOOKAHEAD(declarator()) declarator() 
+    LOOKAHEAD(declarator()) declarator()
    |
     abstract_declarator()
    )
@@ -1126,7 +1128,7 @@ void template_argument() :
 
 void statement_list() :
 {}
-{  
+{
    (LOOKAHEAD(statement()) statement())+
 }
 
@@ -1310,9 +1312,9 @@ void equality_expression() :
 void relational_expression() :
 {}
 {  shift_expression()
-   ( 
+   (
      LOOKAHEAD(2)
-     ( 
+     (
          "<"
        | ">"
        | "<="
@@ -1347,16 +1349,16 @@ void pm_expression() :
 
 void cast_expression() :
 {}
-{  
+{
     LOOKAHEAD( "(" type_name() ")" )
      "(" type_name() ")" cast_expression()
    |
-     unary_expression()    
+     unary_expression()
 }
 
 void unary_expression() :
 {}
-{  
+{
      "++" unary_expression()
    |
      "--" unary_expression()
@@ -1365,7 +1367,7 @@ void unary_expression() :
      unary_operator() cast_expression()
    |
      "sizeof"
-     ( 
+     (
        LOOKAHEAD("(")
        "(" type_name()  ")"
      |
@@ -1377,17 +1379,17 @@ void unary_expression() :
 
 void new_expression() :
 {}
-{    
+{
    (LOOKAHEAD("::") ("::"))?
    "new"
    (
      LOOKAHEAD("(" type_name() ")" )
-      "(" type_name() ")" 
+      "(" type_name() ")"
     |
      (LOOKAHEAD("(" expression_list() ) "(" expression_list() ")")?
      (
        LOOKAHEAD("(" type_name() ")" )
-       "(" type_name() ")" 
+       "(" type_name() ")"
       |
        LOOKAHEAD(declaration_specifiers())
         new_type_id()
@@ -1399,13 +1401,13 @@ void new_expression() :
 void new_type_id() :
 {}
 {
-   declaration_specifiers()  
+   declaration_specifiers()
    ( LOOKAHEAD(new_declarator()) new_declarator() )?
 }
 
 void new_declarator() :
 {}
-{ 
+{
      direct_new_declarator()
    |
      ptr_operator() cv_qualifier_seq()  [ LOOKAHEAD(2) new_declarator() ]
@@ -1439,7 +1441,7 @@ void unary_operator() :
 
 void postfix_expression() :
 {}
-{  
+{
    LOOKAHEAD(3)
     primary_expression()
     ( LOOKAHEAD(2) (
@@ -1455,13 +1457,13 @@ void postfix_expression() :
     |
      "--" )
     )*
-  | 
+  |
    simple_type_specifier() "(" ( expression_list() )? ")"
 }
 
 void id_expression() :
 {}
-{   
+{
    (LOOKAHEAD(scope_override_lookahead()) scope_override())?
    (     <ID>
    | "operator" optor()
@@ -1471,7 +1473,7 @@ void id_expression() :
 
 void primary_expression() :
 {}
-{  
+{
      "this"
    | ( LOOKAHEAD(2) <STRING> )+
    | "(" expression()  ")"
@@ -1540,7 +1542,7 @@ void optor() :
    | "&="
    | "|="
    | "<<"
-   | ">>" 
+   | ">>"
    | ">>="
    | "<<="
    | "=="
