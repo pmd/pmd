@@ -15,7 +15,6 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.cpd.FileFinder;
-import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.EditPlugin;
 import org.gjt.sp.jedit.GUIUtilities;
@@ -206,7 +205,7 @@ public class PMDJEditPlugin extends EditPlugin {
 
 	private List findFiles(String dir, boolean recurse) {
 		FileFinder f  = new FileFinder();
-		return f.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
+		return f.findFilesFrom(dir, new JavaLanguage.JavaFileOrDirectoryFilter(), recurse);
 	}
 
 	public static void CPDCurrentFile(View view) throws IOException
@@ -217,8 +216,8 @@ public class PMDJEditPlugin extends EditPlugin {
 			return;
 		}
 		instance.errorSource.clear();
-		CPD cpd = new  CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100));
-		cpd.add(view.getBuffer().getFile());
+		CPD cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new JavaLanguage());
+		cpd.add(new File(view.getBuffer().getPath()));
 		System.out.println("Add successfull.Going for go.");
 		cpd.go();
 		instance.processDuplicates(cpd, view);
@@ -264,7 +263,7 @@ public class PMDJEditPlugin extends EditPlugin {
 			//Use the default.
 		}
 
-		CPD cpd = new  CPD(tilesize);
+		CPD cpd = new CPD(tilesize, new JavaLanguage());
 		if(recursive)
 		{
 			cpd.addRecursively(selectedFile.getCanonicalPath());
