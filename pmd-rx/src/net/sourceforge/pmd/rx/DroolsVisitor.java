@@ -53,7 +53,8 @@ public class DroolsVisitor
 	    String importName = importNameNode.getImage();
 	    
 	    ImportFact imp = new ImportFact( acu, importName,
-					     node.isImportOnDemand());
+					     node.isImportOnDemand(),
+					     node.getBeginLine());
 	    memory.assertObject( imp );
 	    
 	    return node.childrenAccept( this, data );

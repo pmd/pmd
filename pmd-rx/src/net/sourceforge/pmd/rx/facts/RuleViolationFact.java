@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.rx.facts;
 
-public class RuleViolation {
+public class RuleViolationFact {
     private String desc = null;
     private Object fact = null;
 
-    public RuleViolation(String desc, Object fact) {
+    public RuleViolationFact(Object fact, String desc) {
 	this.desc = desc;
 	this.fact = fact;
     }
