@@ -126,9 +126,7 @@ public class StatementExpressionEvaluator {
      * ist wird weitergesucht
      * */
     private SimpleNode getLastAccessObject(int i) {
-
         boolean isFirstLoop = true;
-
         while (i > 0) {
             i--;
             Object ret = this.varAccess.get(i);
@@ -148,8 +146,7 @@ public class StatementExpressionEvaluator {
     }
 
     private boolean isAccessObject(Object o) {
-
-        if (o instanceof ASTArguments ||
+        return o instanceof ASTArguments ||
                 o instanceof ASTAssignmentOperator ||
                 o instanceof ASTPostfixExpression ||
                 o instanceof ASTPreDecrementExpression ||
@@ -160,11 +157,7 @@ public class StatementExpressionEvaluator {
                 o instanceof ASTName ||
                 o instanceof ASTReturnStatement ||
                 o instanceof ASTFormalParameter ||
-                o instanceof ASTPrimaryPrefix) {
-
-            return true;
-        }
-        return false;
+                o instanceof ASTPrimaryPrefix;
     }
 }
 
