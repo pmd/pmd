@@ -15,6 +15,8 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 
 import java.text.MessageFormat;
 import java.util.HashSet;
@@ -29,13 +31,6 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     private boolean trollingForDeclarations;
     private int depth;
 
-/*
-FIXME
-    public Object visit(ASTInterfaceDeclaration node, Object data) {
-        return data;
-    }
-*/
-
     // Reset state when we leave an ASTCompilationUnit
     public Object visit(ASTCompilationUnit node, Object data) {
         depth = 0;
@@ -46,7 +41,13 @@ FIXME
         return data;
     }
 
-    /*public Object visit(ASTClassBody node, Object data) {
+    public Object visit(ASTClassOrInterfaceBody node, Object data) {
+        if (node.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration)  {
+            if (((ASTClassOrInterfaceDeclaration)node.jjtGetParent()).isInterface()) {
+                return data;
+            }
+        }
+
         depth++;
 
         // first troll for declarations, but only in the top level class
@@ -70,12 +71,7 @@ FIXME
         depth--;
         return data;
     }
-    FIXME
-*/
-    //ASTMethodDeclarator
-    // FormalParameters
-    //  FormalParameter
-    //  FormalParameter
+
     public Object visit(ASTMethodDeclarator node, Object data) {
         if (!trollingForDeclarations) {
             return super.visit(node, data);
@@ -93,11 +89,6 @@ FIXME
         return super.visit(node, data);
     }
 
-    //PrimarySuffix
-    // Arguments
-    //  ArgumentList
-    //   Expression
-    //   Expression
     public Object visit(ASTPrimarySuffix node, Object data) {
         if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
             if (node.jjtGetNumChildren() > 0) {
@@ -145,11 +136,6 @@ FIXME
         return super.visit(node, data);
     }
 
-    //PrimaryExpression
-    // PrimaryPrefix
-    //  Name
-    // PrimarySuffix
-    //  Arguments
     public Object visit(ASTName node, Object data) {
         if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryPrefix)) {
             ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) node.jjtGetParent().jjtGetParent();
