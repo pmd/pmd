@@ -11,6 +11,7 @@ import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
+import net.jini.core.lease.Lease;
 import net.sourceforge.pmd.cpd.*;
 
 import java.net.MalformedURLException;
@@ -29,20 +30,20 @@ public class DCPD {
     public DCPD(String javaSpaceURL) {
         try {
             space = Util.findSpace("mordor");
+            space.write(new Job("test"), null, Lease.FOREVER);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't connect to the space on " + javaSpaceURL);
         }
 
+/*
         try {
             add("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true);
         } catch (IOException ioe) {
             ioe.printStackTrace();
             throw new RuntimeException("Couldn't load the files");
         }
-
-        Entry wrapper = new TokenSetsWrapper(tokenSets);
-
+*/
     }
 
     private void add(String dir, boolean recurse) throws IOException {
