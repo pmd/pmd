@@ -34,7 +34,7 @@ public class PMD {
     private TargetJDKVersion targetJDKVersion;
 
     public PMD() {
-        targetJDKVersion = new TargetJDK1_4();
+        this(new TargetJDK1_4());
     }
 
     public PMD(TargetJDKVersion targetJDKVersion) {
