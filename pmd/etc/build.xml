@@ -29,9 +29,9 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.PMDTask"/>
-        <pmd reportFile="c:\jdk.xml" verbose="false" rulesettype="general" format="xml">
-            <!--<fileset dir="c:\data\pmd\pmd\src">-->
-            <fileset dir="c:\j2sdk1.4.0\src">
+        <pmd reportFile="c:\pmd.txt" verbose="false" rulesettype="general" format="xml">
+            <fileset dir="c:\data\pmd\pmd\src">
+            <!--<fileset dir="c:\j2sdk1.4.0\src">-->
                 <include name="**/*.java"/>
             </fileset>
         </pmd>

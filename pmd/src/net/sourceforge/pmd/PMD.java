@@ -16,8 +16,7 @@ import java.util.Iterator;
 
 public class PMD {
 		
-	public Report processFile(String filename, InputStream is, String ruleSetType, String format) throws FileNotFoundException {
-        Report report = new Report(filename, format);
+	public void processFile(String filename, InputStream is, String ruleSetType, Report report) throws FileNotFoundException {
         List rules = RuleFactory.createRules(ruleSetType);
 
         try {
@@ -36,11 +35,10 @@ public class PMD {
             System.out.println("Error while parsing " + filename + "; "+ t.getMessage() + "; continuing...");
             //t.printStackTrace();
         }
-        return report;
 	}
 
-    public Report processFile(File file, String ruleSetType, String format) throws FileNotFoundException{
-        return processFile(file.getAbsolutePath(), new FileInputStream(file), ruleSetType, format);
+    public void processFile(File file, String ruleSetType, Report report) throws FileNotFoundException{
+        processFile(file.getAbsolutePath(), new FileInputStream(file), ruleSetType, report);
     }
 
     public static void main(String[] args) {
@@ -52,8 +50,9 @@ public class PMD {
             throw new RuntimeException("File " + args[0] + " doesn't exist");
         }
         PMD pmd = new PMD();
+        Report report = new Report(args[1], input.getAbsolutePath());
         try {
-            Report report = pmd.processFile(input, RuleFactory.ALL, "xml");
+            pmd.processFile(input, RuleFactory.ALL, report);
             System.out.println(report.render());
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();

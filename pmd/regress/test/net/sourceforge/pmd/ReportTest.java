@@ -34,7 +34,7 @@ public class ReportTest extends TestCase {
         Report r = new Report("foo", "xml");
         Rule rule = (Rule) Proxy.newProxyInstance(Rule.class.getClassLoader(), new Class[] {Rule.class },  new MyInv());
         r.addRuleViolation(new RuleViolation(rule, 5));
-        assertTrue(!r.empty());
+        assertTrue(!r.currentFileHasNoViolations());
     }
 
     public void testRenderXML() {

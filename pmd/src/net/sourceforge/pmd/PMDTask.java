@@ -43,13 +43,15 @@ public class PMDTask extends Task {
             throw new BuildException("No report file specified");
         }
         if (ruleSetType == null) {
-            throw new BuildException("No rule set type specified");
+            throw new BuildException("Rule set type must be 'general', 'all', or 'cougaar'; you specified " + ruleSetType);
         }
         if (format == null || (!format.equals("text") && !format.equals("xml"))) {
             throw new BuildException("Report format must be either 'text' or 'xml'; you specified " + format);
         }
 
-        StringBuffer buf = new StringBuffer();
+        PMD pmd = new PMD();
+        Report report = new Report(format);
+
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
@@ -57,19 +59,20 @@ public class PMDTask extends Task {
             for (int j=0; j<srcFiles.length; j++) {
                 try {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
+                    report.setCurrentFile(file.getAbsolutePath());
                     if (verbose) System.out.println(file.getAbsoluteFile());
-                    PMD pmd = new PMD();
-                    Report report = pmd.processFile(file, ruleSetType, format);
-                    if (!report.empty()) {
-                        buf.append(report.render());
-                        buf.append(System.getProperty("line.separator"));
-                    }
+                    pmd.processFile(file, ruleSetType, report);
                 } catch (FileNotFoundException fnfe) {
                     throw new BuildException(fnfe);
                 }
             }
         }
 
+        StringBuffer buf = new StringBuffer();
+        if (!report.isEmpty()) {
+            buf.append(report.render());
+            buf.append(System.getProperty("line.separator"));
+        }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(reportFile)));
             writer.write(buf.toString(), 0, buf.length());
