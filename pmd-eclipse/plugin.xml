@@ -2,7 +2,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="0.6.0"
+   version="1.0.0"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
@@ -12,7 +12,7 @@
       </library>
       <library name="lib/log4j-1.2.8.jar"/>
       <library name="lib/commons-logging.jar"/>
-      <library name="lib/pmd-1.05.jar"/>
+      <library name="lib/pmd-1.1.jar"/>
       <library name="lib/jaxen-core-1.0-fcs.jar"/>
       <library name="lib/saxpath-1.0-fcs.jar"/>
    </runtime>
@@ -214,6 +214,10 @@
                id="net.sourceforge.pmd.eclipse.pmdRemoveAllMarkersAction">
          </action>
       </viewerContribution>
+   </extension>
+   
+   <extension point="org.eclipse.help.toc">
+       <toc file="toc.xml" primary="true"/>
    </extension>
 
 </plugin>
