@@ -10,7 +10,7 @@
 		<attainGoal name="pmd:ruleset-docs"/>
 	</preGoal>
 
-	<goal name="pmd:ruleset-docs">
+	<goal name="pmd:ruleset-docs" description="Generates rulesets documentation">
 		<mkdir dir="${maven.gen.docs}/rules" />
 		<ant:fileScanner var="rulesetFiles">
 			<ant:fileset dir="${rulesets.dir}/" includes="*.xml"/>
