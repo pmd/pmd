@@ -5,15 +5,67 @@
 These are new ones for 0.6
   </description>
 
+ <rule name="ExcessiveMethodLength"
+       message="Avoid really long methods."
+       class="net.sourceforge.pmd.rules.design.LongMethodRule">
+   <description>
+Excessive Method Length usually means that the method is doing
+too much.  There is usually quite a bit of Cut and Paste there
+as well.  Try to reduce the method size by creating helper methods,
+and removing cut and paste. (Current Threshold is 200 lines)
+   </description>
+   <example>
+<![CDATA[
+public void doSomething() {
+  System.out.println("I am a fish.");
+  System.out.println("I am a fish.");
+  System.out.println("I am a fish.");
+  System.out.println("I am a fish.");
+  System.out.println("I am a fish.");
+  // 495 copies omitted for brevity.
+}
+]]>
+
+ </rule>
+
+ <rule name="ExcessiveClassLength"
+       message="Avoid really long Classes."
+       class="net.sourceforge.pmd.rules.design.LongClassRule">
+   <description>
+Long Class files are indications that the class may be trying to
+do too much.  Try to break it down, and reduce the size to something
+managable.
+   </description>
+<![CDATA[
+public class Foo {
+  public void bar() {
+    // 500 lines of code
+  }
+
+  public void baz() {
+    // 500 more lines of code
+  }
+}
+]]>
+ </rule>
+
+
  <rule name="UnnecessaryCast"
         message="Avoid unnecessary casts"
         class="net.sourceforge.pmd.rules.UnnecessaryCastRule">
     <description>
-    foo
+A variable is casted to one of its supertypes or interfaces.  Usually
+indicates that the programmer is not clear on the class structure they
+are working with.
     </description>
 
     <example>
 <![CDATA[
+public Collection doSomething() { 
+  List list = new ArrayList();
+
+  return (Collection) list; // Unnecessary Cast
+}
 ]]>
     </example>
   </rule>
