@@ -39,10 +39,4 @@ public class Search {
         }
         return null;
     }
-
-    private String getClsName(Class cls) {
-        String fullName = cls.getName();
-        int lastDot = fullName.lastIndexOf('.');
-        return fullName.substring(lastDot + 1);
-    }
 }
