@@ -16,7 +16,7 @@ public class CSVRenderer implements Renderer {
             Match match = (Match) matches.next();
             rpt.append(match.getLineCount() + "," + match.getTokenCount() + "," + match.getMarkCount() + ",");
             for (Iterator marks = match.iterator(); marks.hasNext();) {
-                Mark mark = (Mark) marks.next();
+                TokenEntry mark = (TokenEntry) marks.next();
                 rpt.append(mark.getBeginLine() + "," + mark.getTokenSrcID());
                 if (marks.hasNext()) {
                     rpt.append(",");

@@ -12,7 +12,7 @@ public class Match implements Comparable {
     private int tokenCount;
     private int lineCount;
     private Set markSet = new TreeSet();
-    private Mark[] marks = new Mark[2];
+    private TokenEntry[] marks = new TokenEntry[2];
     private String code;
     private MatchCode mc;
 
@@ -23,9 +23,9 @@ public class Match implements Comparable {
 
         public MatchCode() {}
 
-        public MatchCode(Mark m1, Mark m2) {
-            first = m1.getIndexIntoTokenArray();
-            second = m2.getIndexIntoTokenArray();
+        public MatchCode(TokenEntry m1, TokenEntry m2) {
+            first = m1.getIndex();
+            second = m2.getIndex();
         }
 
         public int hashCode() {
@@ -47,7 +47,7 @@ public class Match implements Comparable {
 
     }
 
-    public Match(int tokenCount, Mark first, Mark second) {
+    public Match(int tokenCount, TokenEntry first, TokenEntry second) {
         markSet.add(first);
         markSet.add(second);
         marks[0] = first;
@@ -89,14 +89,14 @@ public class Match implements Comparable {
         if (diff != 0) {
             return diff;
         }
-        return other.getFirstMark().getIndexIntoTokenArray() - getFirstMark().getIndexIntoTokenArray();
+        return other.getFirstMark().getIndex() - getFirstMark().getIndex();
     }
     
-    public Mark getFirstMark() {
+    public TokenEntry getFirstMark() {
         return marks[0];
     }
     
-    public Mark getSecondMark() {
+    public TokenEntry getSecondMark() {
         return marks[1];
     }
 
@@ -116,7 +116,7 @@ public class Match implements Comparable {
     }
     
     public int getEndIndex() {
-        return marks[1].getIndexIntoTokenArray() + getTokenCount() -1;
+        return marks[1].getIndex() + getTokenCount() -1;
     }
 
     public void setMarkSet(Set markSet) {

@@ -338,6 +338,8 @@ public class GUI implements CPDListener {
     // CPDListener
 
     public static void main(String[] args) {
+        //this should prevent the disk not found popup
+        System.setSecurityManager(null);
         new GUI();
     }
 

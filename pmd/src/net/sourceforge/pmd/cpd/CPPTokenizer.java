@@ -8,9 +8,6 @@ import net.sourceforge.pmd.cpd.cppast.CPPParserTokenManager;
 import net.sourceforge.pmd.cpd.cppast.Token;
 import net.sourceforge.pmd.cpd.cppast.TokenMgrError;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,20 +17,9 @@ public class CPPTokenizer implements Tokenizer {
 
     private static boolean initted;
 
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries, Reader input) throws IOException {
+    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+        StringBuffer sb = sourceCode.getCodeBuffer();
         try {
-            // first get a snapshot of the code
-            List lines = new ArrayList();
-            StringBuffer sb = new StringBuffer();
-            LineNumberReader r = new LineNumberReader(input);
-            String currentLine;
-            while ((currentLine = r.readLine()) != null) {
-                lines.add(currentLine);
-                sb.append(currentLine);
-                sb.append(EOL);
-            }
-            sourceCode.setCode(lines);
-
             // now tokenize it
             if (!initted) {
                 new CPPParser(new StringReader(sb.toString()));
@@ -44,17 +30,16 @@ public class CPPTokenizer implements Tokenizer {
             int count = 0;
             while (currToken.image != "") {
                 count++;
-                tokenEntries.add(new TokenEntry(currToken.image, sourceCode.getFileName(), count, currToken.beginLine));
+                tokenEntries.add(new TokenEntry(currToken.image, sourceCode.getFileName(), currToken.beginLine));
                 currToken = CPPParserTokenManager.getNextToken();
             }
-            tokenEntries.add(TokenEntry.EOF);
+            tokenEntries.add(TokenEntry.getEOF());
             System.out.println("Added " + sourceCode.getFileName());
         } catch (TokenMgrError err) {
             System.out.println("Skipping " + sourceCode.getFileName() + " due to parse error");
             List emptyCode = new ArrayList();
             emptyCode.add("");
-            sourceCode.setCode(emptyCode);
-            tokenEntries.add(TokenEntry.EOF);
+            tokenEntries.add(TokenEntry.getEOF());
         }
     }
 }

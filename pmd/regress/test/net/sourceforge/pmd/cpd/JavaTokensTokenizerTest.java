@@ -19,7 +19,8 @@ public class JavaTokensTokenizerTest extends TestCase {
         SourceCode sourceCode = new SourceCode("1");
         String data = "public class Foo {}";
         Tokens tokens = new Tokens();
-        tokenizer.tokenize(sourceCode, tokens, new StringReader(data));
+        sourceCode.readSource(new StringReader(data));
+        tokenizer.tokenize(sourceCode, tokens);
         assertEquals(6, tokens.size());
         assertEquals("public class Foo {}", sourceCode.getSlice(1, 1));
     }
@@ -29,7 +30,8 @@ public class JavaTokensTokenizerTest extends TestCase {
         SourceCode sourceCode = new SourceCode("1");
         String data = "public class Foo {" + PMD.EOL + "public void bar() {}" + PMD.EOL + "public void buz() {}" + PMD.EOL + "}";
         Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens, new StringReader(data));
+		sourceCode.readSource(new StringReader(data));
+        t.tokenize(sourceCode, tokens);
         assertEquals("public class Foo {" + PMD.EOL + "public void bar() {}", sourceCode.getSlice(1,2));
     }
 
@@ -38,7 +40,8 @@ public class JavaTokensTokenizerTest extends TestCase {
         SourceCode sourceCode = new SourceCode("1");
         String data = "public class Foo {private int x;}";
         Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens, new StringReader(data));
+		sourceCode.readSource(new StringReader(data));
+        t.tokenize(sourceCode, tokens);
         assertEquals(9, tokens.size());
     }
 
@@ -47,7 +50,8 @@ public class JavaTokensTokenizerTest extends TestCase {
         SourceCode sourceCode = new SourceCode("1");
         String data = "import java.io.File;" + PMD.EOL + "public class Foo {}";
         Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens, new StringReader(data));
+		sourceCode.readSource(new StringReader(data));
+        t.tokenize(sourceCode, tokens);
         assertEquals(6, tokens.size());
     }
 
@@ -56,7 +60,8 @@ public class JavaTokensTokenizerTest extends TestCase {
         SourceCode sourceCode = new SourceCode("1");
         String data = "package foo.bar.baz;" + PMD.EOL + "public class Foo {}";
         Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens, new StringReader(data));
+		sourceCode.readSource(new StringReader(data));
+        t.tokenize(sourceCode, tokens);
         assertEquals(6, tokens.size());
     }
 }

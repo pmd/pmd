@@ -27,11 +27,16 @@ public class Tokens {
         return tokens.size();
     }
 
-    public int getLineCount(Mark mark, Match match) {
-        TokenEntry endTok = get(mark.getIndexIntoTokenArray() + match.getTokenCount() - 1);
-        if (endTok.equals(TokenEntry.EOF)) {
-            endTok = get(mark.getIndexIntoTokenArray() + match.getTokenCount() - 2);
+    public int getLineCount(TokenEntry mark, Match match) {
+        TokenEntry endTok = get(mark.getIndex() + match.getTokenCount() - 1);
+        if (endTok == TokenEntry.EOF) {
+            endTok = get(mark.getIndex() + match.getTokenCount() - 2);
         }
         return endTok.getBeginLine() - mark.getBeginLine() + 1;
     }
+    
+    public List getTokens() {
+        return tokens;
+    }
+
 }

@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,98 +12,59 @@ import java.util.Map;
 
 public class MatchAlgorithm {
 
-    private Map pool; 
-    private List code; 
-    private List marks;
+    private final static int MOD = 37;
+    private int lastHash;
+    private int lastMod = 1;
+    
     private List matches;
     private Map source;
     private Tokens tokens;
+    private List code;
     private CPDListener cpdListener;
     private int min;
-    private int fileCount;
-    
-	public MatchAlgorithm(Map sourceCode, Tokens tokens, int min) {
-	    this(sourceCode, tokens, min, new CPDNullListener());
-	}
+
+    public MatchAlgorithm(Map sourceCode, Tokens tokens, int min) {
+        this(sourceCode, tokens, min, new CPDNullListener());
+    }
 
     public MatchAlgorithm(Map sourceCode, Tokens tokens, int min, CPDListener listener) {
         this.source = sourceCode;
         this.tokens = tokens;
+        this.code = tokens.getTokens();
         this.min = min;
         this.cpdListener = listener;
-        code = new ArrayList(tokens.size());
-        pool = new HashMap(Math.max(16,tokens.size()/10));
-        marks = new ArrayList(tokens.size());
-        cpdListener.phaseUpdate(CPDListener.INIT);
-		for (Iterator i = tokens.iterator(); i.hasNext();) {
-			add((TokenEntry) i.next());
-		}
+        for (int i = 0; i < min; i++) {
+            lastMod *= MOD;
+        }
     }
 
     public void setListener(CPDListener listener) {
         this.cpdListener = listener;
     }
 
-    private void add(TokenEntry token) {
-        TokenEntry fw = (TokenEntry)pool.get(token);
-        if (fw == null) {
-            pool.put(token, token);
-            fw = token;
-        }
-        if (token != TokenEntry.EOF) {
-			fileCount++;
-            Mark m = new Mark(code.size(), token.getTokenSrcID(), token.getBeginLine());
-            marks.add(m);
-        } else {
-            //filter meaningless marks
-			for (int i = 0; i < min - 1 && i < fileCount && marks.size() > 0; i++) {
-                marks.remove(marks.size() - 1);
-            }
-			fileCount = 0;
-        }
-        code.add(fw);
-    }
-
     public void findMatches() {
-        int count = 0;
-        for (Iterator iter = pool.keySet().iterator(); iter.hasNext();) {
-            TokenEntry token = (TokenEntry) iter.next();
-            token.setIdentifier(count++);
-        }
         cpdListener.phaseUpdate(CPDListener.HASH);
-		//compute the rolling hash
-        Map markGroups = new HashMap(marks.size()/2);
-		RollingHash rcs = new RollingHash(min, this);
-		for (Iterator i = marks.iterator(); i.hasNext();) {
-		    Mark m = (Mark)i.next();
-		    rcs.compute(m);
-		    List l = (ArrayList)markGroups.get(m);
-		    if (l == null) {
-		        l = new ArrayList();
-		        markGroups.put(m, l);
-		    }
-		    l.add(m);
-		}
-		marks.clear();
-		
-		cpdListener.phaseUpdate(CPDListener.MATCH);
-		MatchCollector coll = new MatchCollector(this);						
-		for (Iterator i = markGroups.values().iterator(); i.hasNext();) {
-		    List l = (ArrayList)i.next();
-		    if (l.size() > 1) {
-		        coll.collect(min, l);
-		    }
-		    i.remove();
-		}
+        Map markGroups = hash();
 
-		cpdListener.phaseUpdate(CPDListener.GROUPING);
-		matches = coll.getMatches();
-		coll = null;
-		
+        cpdListener.phaseUpdate(CPDListener.MATCH);
+        MatchCollector coll = new MatchCollector(this);
+        for (Iterator i = markGroups.values().iterator(); i.hasNext();) {
+            Object o = i.next();
+            if (o instanceof List) {
+                Collections.reverse((List) o);
+                coll.collect(min, (List) o);
+            }
+            i.remove();
+        }
+
+        cpdListener.phaseUpdate(CPDListener.GROUPING);
+        matches = coll.getMatches();
+        coll = null;
+
         for (Iterator i = matches(); i.hasNext();) {
             Match match = (Match) i.next();
             for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
-                Mark mark = (Mark) occurrences.next();
+                TokenEntry mark = (TokenEntry) occurrences.next();
                 match.setLineCount(tokens.getLineCount(mark, match));
                 if (!occurrences.hasNext()) {
                     int start = mark.getBeginLine();
@@ -115,12 +77,46 @@ public class MatchAlgorithm {
         cpdListener.phaseUpdate(CPDListener.DONE);
     }
 
+    private Map hash() {
+        Map markGroups = new HashMap(tokens.size());
+        for (int i = code.size() - 1; i >= 0; i--) {
+            TokenEntry token = (TokenEntry) code.get(i);
+            if (token != TokenEntry.EOF) {
+                int last = tokenAt(min, token).getIdentifier();
+                lastHash = MOD * lastHash + token.getIdentifier() - lastMod * last;
+				token.setHashCode(lastHash);
+                Object o = markGroups.get(token);
+                if (o == null) {
+                    markGroups.put(token, token);
+                } else if (o instanceof TokenEntry) {
+                    List l = new ArrayList();
+                    l.add(o);
+                    l.add(token);
+                    markGroups.put(token, l);
+                } else {
+                    List l = (List) o;
+                    l.add(token);
+                }
+            } else {
+                lastHash = 0;
+                for (int end = Math.max(0, i - min + 1); i > end; i--) {
+                    token = (TokenEntry) code.get(i - 1);
+                    lastHash = MOD * lastHash + token.getIdentifier();
+                    if (token == TokenEntry.EOF) {
+                        break;
+                    }
+                }
+            }
+        }
+        return markGroups;
+    }
+
     public Iterator matches() {
         return matches.iterator();
     }
-    
-	public TokenEntry tokenAt(int offset, Mark m) {
-		return (TokenEntry) code.get(offset + m.getIndexIntoTokenArray());
-	}
 
+    public TokenEntry tokenAt(int offset, TokenEntry m) {
+        return (TokenEntry) code.get(offset + m.getIndex());
+    }
+    
 }

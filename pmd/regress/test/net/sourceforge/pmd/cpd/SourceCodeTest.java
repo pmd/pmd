@@ -18,7 +18,8 @@ public class SourceCodeTest extends TestCase {
         JavaTokenizer tokenizer = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode("Foo.java");
         assertEquals("Foo.java", sourceCode.getFileName());
-        tokenizer.tokenize(sourceCode, new Tokens(), new StringReader(code));
+		sourceCode.readSource(new StringReader(code));
+        tokenizer.tokenize(sourceCode, new Tokens());
 
         assertEquals(MatchAlgorithmTest.LINE_1, sourceCode.getSlice(1,1));
         assertEquals(MatchAlgorithmTest.LINE_2, sourceCode.getSlice(2,2));

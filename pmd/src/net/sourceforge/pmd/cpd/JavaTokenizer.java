@@ -3,34 +3,17 @@
 */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.JavaCharStream;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 import net.sourceforge.pmd.ast.Token;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JavaTokenizer implements Tokenizer {
 
-    public void tokenize(SourceCode tokens, Tokens tokenEntries, Reader input) throws IOException {
-        // first get a snapshot of the code
-        List lines = new ArrayList();
-        StringBuffer sb = new StringBuffer();
-        LineNumberReader r = new LineNumberReader(input);
-        String currentLine;
-        while ((currentLine = r.readLine()) != null) {
-            lines.add(currentLine);
-            sb.append(currentLine);
-            sb.append(PMD.EOL);
-        }
-        tokens.setCode(lines);
+    public void tokenize(SourceCode tokens, Tokens tokenEntries) {
+        StringBuffer sb = tokens.getCodeBuffer();
 
-        // now tokenize it
         /*
         I'm doing a sort of State pattern thing here where
         this goes into "discarding" mode when it hits an import or package
@@ -60,11 +43,11 @@ public class JavaTokenizer implements Tokenizer {
 
             if (!currToken.image.equals(";")) {
                 count++;
-                tokenEntries.add(new TokenEntry(currToken.image, tokens.getFileName(), count, currToken.beginLine));
+                tokenEntries.add(new TokenEntry(currToken.image, tokens.getFileName(), currToken.beginLine));
             }
 
             currToken = tokenMgr.getNextToken();
         }
-        tokenEntries.add(TokenEntry.EOF);
+        tokenEntries.add(TokenEntry.getEOF());
     }
 }

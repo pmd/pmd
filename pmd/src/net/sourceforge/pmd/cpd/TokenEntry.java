@@ -3,26 +3,47 @@
 */
 package net.sourceforge.pmd.cpd;
 
-public class TokenEntry implements Comparable {
+import java.util.HashMap;
+import java.util.Map;
 
+public class TokenEntry implements Comparable {
+    
     public static final TokenEntry EOF = new TokenEntry();
-    private int hash;
-    private String image;
+    
     private String tokenSrcID;
     private int beginLine;
     private int index;
     private int identifier;
+    private int hashCode;
+    
+    private final static Map Tokens = new HashMap();
+    private static int TokenCount = 0;
 
     private TokenEntry() {
-        this.image = "EOF";
+        this.identifier = 0;
         this.tokenSrcID = "EOFMarker";
     }
 
-    public TokenEntry(String image, String tokenSrcID, int index, int beginLine) {
-        this.image = image;
+    public TokenEntry(String image, String tokenSrcID, int beginLine) {
+        Integer i = (Integer)Tokens.get(image);
+        if (i == null) {
+            i = new Integer(Tokens.size() + 1);
+            Tokens.put(image, i);
+        }
+        this.identifier = i.intValue();
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
-        this.index = index;
+        this.index = TokenCount++;
+    }
+    
+    public static TokenEntry getEOF() {
+        TokenCount++;
+        return EOF;
+    }
+    
+    public static void clearImages() {
+        Tokens.clear();
+        TokenCount = 0;
     }
 
     public String getTokenSrcID() {
@@ -33,10 +54,6 @@ public class TokenEntry implements Comparable {
         return beginLine;
     }
 
-    public void setIdentifier(int code) {
-        this.identifier = code;
-    }
-
     public int getIdentifier() {
         return this.identifier;
     }
@@ -45,34 +62,21 @@ public class TokenEntry implements Comparable {
         return this.index;
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof TokenEntry) {
-            TokenEntry token = (TokenEntry)o;
-            if (this == EOF) {
-                return token == EOF;
-            }
-            return image.equals(token.image);
-        }
-        return false;
-    }
-    // calculate a hash, as done in Effective Programming in Java.
-    public int hashCode() {
-        int h = hash;
-        if (h == 0) {
-            h = image.hashCode();
-            hash = h; // single assignment = thread safe hashcode.
-        }
-        return h;
-    }
+     public int hashCode() {
+       return hashCode;
+     }
 
-    public int compareTo(Object o) {
-        TokenEntry token = (TokenEntry)o;
-        if (this == EOF) {
-            if (token == EOF) {
-                return 0;
-            }
-            return -1;
-        }
-        return image.compareTo(token.image);
+     public void setHashCode(int hashCode) {
+       this.hashCode = hashCode;
+     }
+
+     public boolean equals(Object o) {
+       TokenEntry other = (TokenEntry)o;
+       return other.hashCode == hashCode;
+     }
+
+     public int compareTo(Object o) {
+       TokenEntry other = (TokenEntry) o;
+       return getIndex() - other.getIndex();
+     }
     }
-}

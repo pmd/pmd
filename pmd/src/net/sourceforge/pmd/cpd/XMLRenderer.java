@@ -31,7 +31,7 @@ public class XMLRenderer implements Renderer
 
       for (Iterator iterator = match.iterator(); iterator.hasNext();)
       {
-        Mark mark = (Mark) iterator.next();
+        TokenEntry mark = (TokenEntry) iterator.next();
         buffer.append("<file");
         buffer.append(" line=\"");
         buffer.append(mark.getBeginLine());

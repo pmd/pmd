@@ -22,7 +22,6 @@ public class CPDTests
     suite.addTestSuite( FileReporterTest.class );
     suite.addTestSuite( JavaTokensTokenizerTest.class );
     suite.addTestSuite( LanguageFactoryTest.class );
-    suite.addTestSuite( MarkTest.class );
     suite.addTestSuite( MatchAlgorithmTest.class );
     suite.addTestSuite( MatchTest.class );
     suite.addTestSuite( SourceCodeTest.class );

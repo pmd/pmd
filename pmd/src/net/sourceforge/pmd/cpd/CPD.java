@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +29,7 @@ public class CPD {
     }
 
     public void go() {
+		TokenEntry.clearImages();
         matchAlgorithm = new MatchAlgorithm(source, tokens, minimumTileSize, listener);
         matchAlgorithm.findMatches();
     }
@@ -64,9 +64,7 @@ public class CPD {
     private void add(int fileCount, File file) throws IOException {
         listener.addedFile(fileCount, file);
         SourceCode sourceCode = new SourceCode(file.getAbsolutePath());
-        FileReader reader = new FileReader(file);
-        language.getTokenizer().tokenize(sourceCode, tokens, reader);
-        reader.close();
+        language.getTokenizer().tokenize(sourceCode, tokens);
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
