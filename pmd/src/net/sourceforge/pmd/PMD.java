@@ -42,6 +42,28 @@ public class PMD {
         }
 	}
 
+    /**
+     * @param reader - an InputStream to the Java code to analyse
+     * @param ruleSet - the set of rules to process against the file
+     * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
+     */
+    public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws FileNotFoundException {
+        try {
+            JavaParser parser = new JavaParser(reader);
+            ASTCompilationUnit c = parser.CompilationUnit();
+            //c.dump("");
+            List acus = new ArrayList();
+            acus.add(c);
+            ruleSet.apply(acus, ctx);
+            reader.close();
+        } catch (ParseException pe) {
+            System.out.println("Error while parsing " + ctx.getSourceCodeFilename() + " at line " + pe.currentToken.beginLine + "; continuing...");
+        } catch (Throwable t) {
+            System.out.println("Error while parsing " +  ctx.getSourceCodeFilename() + "; "+ t.getMessage() + "; continuing...");
+            //t.printStackTrace();
+        }
+	}
+
     public static void main(String[] args) {
         if (args.length != 3) {
             throw new RuntimeException("Please pass in a java source code filename, a report format, and a rule set file name");
