@@ -62,7 +62,7 @@ public class CommandLineOptionsTest extends TestCase {
 
     public void testInputFileName() {
         CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
-        assertEquals("file", opt.getInputFileName());
+        assertEquals("file", opt.getInputPath());
     }
 
     public void testReportFormat() {

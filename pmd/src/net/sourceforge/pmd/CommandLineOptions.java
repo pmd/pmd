@@ -22,7 +22,7 @@ public class CommandLineOptions {
     private boolean jdk13;
     private boolean shortNamesEnabled;
 
-    private String inputFileName;
+    private String inputPath;
     private String reportFormat;
     private String ruleSets;
     private String encoding = new InputStreamReader(System.in).getEncoding();
@@ -35,7 +35,7 @@ public class CommandLineOptions {
             throw new RuntimeException(usage());
         }
 
-        inputFileName = args[0];
+        inputPath = args[0];
         reportFormat = args[1];
         ruleSets = args[2];
 
@@ -88,11 +88,11 @@ public class CommandLineOptions {
     }
 
     public boolean containsCommaSeparatedFileList() {
-        return inputFileName.indexOf(',') != -1;
+        return inputPath.indexOf(',') != -1;
     }
 
-    public String getInputFileName() {
-        return this.inputFileName;
+    public String getInputPath() {
+        return this.inputPath;
     }
 
     public String getEncoding() {

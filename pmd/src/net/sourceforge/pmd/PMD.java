@@ -89,9 +89,9 @@ public class PMD {
 
         List files;
         if (opts.containsCommaSeparatedFileList()) {
-            files = collectFromCommaDelimitedString(opts.getInputFileName());
+            files = collectFromCommaDelimitedString(opts.getInputPath());
         } else {
-            files = collectFilesFromOneName(opts.getInputFileName());
+            files = collectFilesFromOneName(opts.getInputPath());
         }
 
         PMD pmd;
@@ -109,7 +109,7 @@ public class PMD {
             RuleSet rules = ruleSetFactory.createRuleSet(opts.getRulesets());
             for (Iterator i = files.iterator(); i.hasNext();) {
                 File file = (File) i.next();
-                ctx.setSourceCodeFilename(glomName(opts.shortNamesEnabled(), opts.getInputFileName(), file));
+                ctx.setSourceCodeFilename(glomName(opts.shortNamesEnabled(), opts.getInputPath(), file));
                 if (opts.debugEnabled()) {
                     System.out.println("Processing " + ctx.getSourceCodeFilename());
                 }
@@ -119,7 +119,7 @@ public class PMD {
                     if (opts.debugEnabled()) {
                         pmde.getReason().printStackTrace();
                     }
-                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), glomName(opts.shortNamesEnabled(), opts.getInputFileName(), file)));
+                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), glomName(opts.shortNamesEnabled(), opts.getInputPath(), file)));
                 }
             }
         } catch (FileNotFoundException fnfe) {
