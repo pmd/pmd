@@ -874,7 +874,9 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
      *         is found.
      */
     private static MethodInvocation findMethod(ASTPrimaryExpression node, String className) {
-        if (node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
+        if (node.jjtGetNumChildren() > 0
+	    && node.jjtGetChild(0).jjtGetNumChildren() > 0
+	    && node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
             return null;
         }
         MethodInvocation meth = MethodInvocation.getMethod(node);
