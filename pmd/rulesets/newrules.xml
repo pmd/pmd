@@ -191,7 +191,7 @@ public class Foo {
             <value>
 <![CDATA[
 //MethodDeclaration
- [MethodDeclarator[@Image="finalize"][FormalParameters/*]]
+ [MethodDeclarator[@Image='finalize'][FormalParameters/*]]
 ]]>
             </value>
         </property>
@@ -207,6 +207,40 @@ public class Foo {
 ]]>
    </example>
  </rule>
+
+    <rule name="FinalizeDoesNotCallSuperFinalize"
+          message="Last statement in finalize method should be a call to super.finalize()"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       If the finalize() is implemented, its last action should be to call super.finalize
+       </description>
+        <properties>
+            <property name="xpath">
+                <value>
+<!-- in english: a method declaration of finalize(), with no arguments, containing
+a block whose last statement is NOT a call to super.finalize -->
+<![CDATA[
+//MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
+   /Block
+      /BlockStatement[last()]
+      [not(Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image='finalize'])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+       <example>
+<![CDATA[
+public class Foo {
+   public void finalize() {
+       something();
+       // neglected to call super.finalize()
+   }
+}
+]]>
+       </example>
+     </rule>
+
 
  </ruleset>
 
