@@ -869,7 +869,7 @@ class RulesTree extends JTree implements Constants
 
             }
 
-            updateUI();
+            this.updateUI();
 
             return super.getTreeCellRendererComponent(tree,
                                                       object,
