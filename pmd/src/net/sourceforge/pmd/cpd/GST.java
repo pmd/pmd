@@ -38,7 +38,7 @@ public class GST {
                 }
             }
 
-            Occurrences newOcc = new Occurrences(new TokenSets(), listener);
+            Occurrences newOcc = new Occurrences(listener);
             for (Iterator i = occ.getTiles(); i.hasNext();) {
                 Tile tile = (Tile)i.next();
 				listener.expandingTile(tile.getImage());
@@ -52,7 +52,7 @@ public class GST {
     }
 
     public Results crunch() {
-			return crunch(new CPDNullListener());
+		return crunch(new CPDNullListener());
     }
 
     private void expandTile(Occurrences oldOcc, Occurrences newOcc, Tile tile, CPDListener listener) {

@@ -9,6 +9,10 @@ import java.util.*;
 
 public class Occurrences extends TileOccurrences {
 
+    public Occurrences(CPDListener listener) {
+        this(new TokenSets(), listener);
+    }
+
     public Occurrences(TokenSets tss) {
         this(tss, new CPDNullListener());
     }
