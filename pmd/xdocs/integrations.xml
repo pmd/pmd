@@ -259,8 +259,8 @@ selecting the "Ask for Directory" checkbox.</p>
 <p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA External Tool
 works OK.  Here's how to set it up:</p>
 <ul>
-<li>Open IDEA and go to Tools->IDE Options</li>
-<li>Select External Tools from the left side menu</li>
+<li>Open IDEA and go to File->Settings</li>
+<li>Click on the External Tools icon</li>
 <li>Click on the Add button</li>
 <li>Fill in the blocks</li>
 <ul>
