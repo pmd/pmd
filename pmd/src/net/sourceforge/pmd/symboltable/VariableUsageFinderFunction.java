@@ -3,11 +3,10 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.util.UnaryFunction;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import net.sourceforge.pmd.util.UnaryFunction;
 
 public class VariableUsageFinderFunction implements UnaryFunction {
 
@@ -19,7 +18,7 @@ public class VariableUsageFinderFunction implements UnaryFunction {
     }
 
     public void applyTo(Object o) {
-        results.put((NameDeclaration) o, (List) decls.get(o));
+        results.put(o, decls.get(o));
     }
 
     public Map getUsed() {
