@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 22, 2002
- * Time: 9:50:53 AM
- */
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.AvoidReassigningParametersRule;

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 11, 2002
- * Time: 4:41:46 PM
- */
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.UnusedFormalParameterRule;

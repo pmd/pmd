@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jun 28, 2002
- * Time: 1:43:05 PM
- */
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Sep 26, 2002
- * Time: 10:45:10 AM
- */
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.rules.design.OnlyOneReturnRule;

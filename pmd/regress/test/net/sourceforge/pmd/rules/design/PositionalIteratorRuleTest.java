@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Sep 4, 2002
- * Time: 11:44:14 AM
- */
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.rules.design.PositionalIteratorRule;

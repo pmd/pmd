@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 10, 2002
- * Time: 8:20:05 AM
- */
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;

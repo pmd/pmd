@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jun 28, 2002
- * Time: 11:05:13 AM
- */
 package test.net.sourceforge.pmd;
 
 import net.sourceforge.pmd.Report;

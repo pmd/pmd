@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jul 22, 2002
- * Time: 12:05:25 PM
- */
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.rules.design.LooseCouplingRule;

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jun 28, 2002
- * Time: 2:35:51 PM
- */
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.UnusedPrivateFieldRule;

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Sep 5, 2002
- * Time: 1:51:40 PM
- */
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;

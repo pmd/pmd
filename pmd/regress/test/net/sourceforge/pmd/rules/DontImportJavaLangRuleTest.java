@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jul 15, 2002
- * Time: 8:46:03 AM
- */
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.XPathRule;

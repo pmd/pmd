@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jun 26, 2002
- * Time: 4:30:42 PM
- */
 package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
