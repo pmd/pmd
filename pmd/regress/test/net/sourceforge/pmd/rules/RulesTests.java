@@ -7,7 +7,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import test.net.sourceforge.pmd.rules.design.DesignRulesTests;
 import test.net.sourceforge.pmd.rules.junit.JUnitRulesTests;
-import test.net.sourceforge.pmd.rules.strictexception.StrictExceptionRulesTests;
 
 
 /**
@@ -32,7 +31,6 @@ public class RulesTests
     // test suites for the sub packages
     suite.addTest( DesignRulesTests.suite(  ) );
     suite.addTest( JUnitRulesTests.suite(  ) );
-    suite.addTest( StrictExceptionRulesTests.suite(  ) );
 
     suite.addTestSuite( AccessorClassGenerationRuleTest.class );
     suite.addTestSuite( AssignmentInOperandRuleTest.class );
@@ -97,6 +95,9 @@ public class RulesTests
 
 /*
  * $Log$
+ * Revision 1.4  2004/05/18 18:06:49  tomcopeland
+ * Added two new rules from Will Sargent
+ *
  * Revision 1.3  2003/12/03 19:52:42  tomcopeland
  * [ 853409 ] VariableNamingConventionsRule false + on final instance vars
  *

@@ -17,9 +17,9 @@ likely to be logic errors.
           <property name="xpath">
               <value>
                   <![CDATA[
-//EqualityExpression
-[@Image='==']
-/PrimaryExpression/PrimaryPrefix/Name[@Image='Double.NaN' or @Image='Float.NaN']
+//EqualityExpression[@Image='==']
+ /PrimaryExpression/PrimaryPrefix
+ /Name[@Image='Double.NaN' or @Image='Float.NaN']
                   ]]>
               </value>
           </property>
@@ -63,6 +63,66 @@ int x = (y == Double.NaN);
     </rule>
 
 
- </ruleset>
+<rule name="AvoidCatchingNPERule"
+    message="Avoid catching NullPointerException; consider removing the cause of the NPE."
+    class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+      Code should never throw NPE under normal circumstances.  A catch block may hide the original error, causing other more subtle errors in its wake.
+    </description>
+    <example>  <![CDATA[
+try {
+  ...
+} catch (NullPointerException npe) {
+  ...
+}
+]]>
+         </example>
+    <priority> 3 </priority>
+    <properties>
+      <property name="xpath">
+        <value>
+            <![CDATA[
+//TryStatement/FormalParameter/Type
+ /Name[@Image='NullPointerException']
+ ]]>
+        </value>
+      </property>
+    </properties>
+  </rule>
+
+  <rule name="AvoidThrowingCertainExceptionTypesRule"
+      message="Avoid throwing certain exception types."
+      class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+ 1) Avoid throwing certain exception types.  Rather than throw a raw RuntimeException, Throwable,
+ Exception, or Error, use a subclassed exception or error instead.
+ 2) Avoid throwing a NullPointerException - it's confusing because most people will assume that the
+ VM threw NPE.  Consider using InvalidArgumentException("Null parameter") which will be clearly seen as
+a programmer initiated exception..  Use IllegalArgumentException or IllegalStateException instead.
+    </description>
+ <example>
+      <![CDATA[
+throw new Exception();
+]]>
+    </example>
+    <priority> 1 </priority>
+    <properties>
+      <property name="xpath">
+        <value>
+            <![CDATA[
+//AllocationExpression
+ /Name[
+ @Image='Throwable' |
+ @Image='Exception' |
+ @Image='Error' |
+ @Image='RuntimeException' |
+ @Image='NullPointerException']
+ ]]>
+        </value>
+      </property>
+    </properties>
+  </rule>
+
+</ruleset>
 
 
