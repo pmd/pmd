@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/06/30 22:00:53  phherlin
+ * Adding clearer monitor message when visiting files
+ *
  * Revision 1.3  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -81,5 +84,7 @@ public interface PMDConstants {
     public static final String MSGKEY_PRIORITY_WARNING_HIGH = "priority.warning_high";
     public static final String MSGKEY_PRIORITY_WARNING      = "priority.warning";
     public static final String MSGKEY_PRIORITY_INFORMATION  = "priority.information";
+    
+    public static final String MSGKEY_MONITOR_CHECKING_FILE = "monitor.checking_file";
     
 }

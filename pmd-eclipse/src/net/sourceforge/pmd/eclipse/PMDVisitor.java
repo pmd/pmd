@@ -22,6 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.14  2003/06/30 22:00:53  phherlin
+ * Adding clearer monitor message when visiting files
+ *
  * Revision 1.13  2003/06/19 20:56:59  phherlin
  * Improve progress indicator accuracy
  *
@@ -63,7 +66,10 @@ public class PMDVisitor implements IResourceVisitor {
                 && ((IFile) resource).getFileExtension().equals("java")) {
 
                 if (monitor != null) {
-                    monitor.subTask(((IFile) resource).getName());
+                    monitor.subTask(
+                        PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_CHECKING_FILE)
+                            + " "
+                            + ((IFile) resource).getName());
                 }
 
                 PMDProcessor.getInstance().run((IFile) resource, useTaskMarker, getAccumulator());
