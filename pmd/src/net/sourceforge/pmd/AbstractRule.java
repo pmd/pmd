@@ -3,18 +3,17 @@
  */
 package net.sourceforge.pmd;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
@@ -123,28 +122,28 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     /**
-     * @deprecated use @link #createRuleViolation(RuleContext, Node) instead 
+     * @deprecated use @link #createRuleViolation(RuleContext, IPositionProvider) instead 
      */
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber) {
         return new RuleViolation(this, lineNumber, ctx, packageName, className, methodName);
     }
 
-    public RuleViolation createRuleViolation(RuleContext ctx, Node node) {
+    public RuleViolation createRuleViolation(RuleContext ctx, IPositionProvider pp) {
         RuleViolation v = new RuleViolation(this, ctx, packageName, className, methodName);
-        extractNodeInfo(v, node);
+        extractNodeInfo(v, pp);
         return v;
     }
 
     /**
-     * @deprecated use @link #createRuleViolation(RuleContext, Node, String) instead
+     * @deprecated use @link #createRuleViolation(RuleContext, IPositionProvider, String) instead
      */
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, String specificDescription) {
         return new RuleViolation(this, lineNumber, specificDescription, ctx, packageName, className, methodName);
     }
 
-    public RuleViolation createRuleViolation(RuleContext ctx, Node node, String specificDescription) {
+    public RuleViolation createRuleViolation(RuleContext ctx, IPositionProvider pp, String specificDescription) {
         RuleViolation rv = new RuleViolation(this, 0, specificDescription, ctx, packageName, className, methodName);
-        extractNodeInfo(rv, node);
+        extractNodeInfo(rv, pp);
         return rv;
     }
 
@@ -214,7 +213,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * 
      * @param context the RuleContext
      * @param beginLine begin line of the violation
-     * @deprecated use @link #addViolation(RuleContext, Node) 
+     * @deprecated use @link #addViolation(RuleContext, IPositionProvider)
      */
     protected final void addViolation(RuleContext context, int beginLine) {
         context.getReport().addRuleViolation(createRuleViolation(context, beginLine));
@@ -222,14 +221,12 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 
     /**
      * Adds a violation to the report.
-     * if node is an instance of SimpleNode then the line, and begin column and 
-     * end column information is extracted from there.
      * 
      * @param context the RuleContext
-     * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
+     * @param pp the node that produces the violation, may be null, in which case all line and column info will be set to zero
      */
-    protected final void addViolation(RuleContext context, Node node) {
-        context.getReport().addRuleViolation(createRuleViolation(context, node));
+    protected final void addViolation(RuleContext context, IPositionProvider pp) {
+        context.getReport().addRuleViolation(createRuleViolation(context, pp));
     }
 
     /** 
@@ -245,11 +242,13 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 		return null;
 	}
 
-    private final void extractNodeInfo(RuleViolation v, Node node) {
-        if (node instanceof SimpleNode) {
-            SimpleNode sn = (SimpleNode)node;
-            v.setLine(sn.getBeginLine());
-            v.setColumnInfo(sn.getBeginColumn(), sn.getEndColumn());
+    private final void extractNodeInfo(RuleViolation v, IPositionProvider pp) {
+        if (pp==null) {
+            v.setLine(0);
+            v.setColumnInfo(0, 0);
+        } else {
+            v.setLine(pp.getBeginLine());
+            v.setColumnInfo(pp.getBeginColumn(), pp.getEndColumn());
         }
     }
 

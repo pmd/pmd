@@ -573,7 +573,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         if (meth.getName().equals(methName) && (meth.getArgumentCount() == count)) {
                             //bad call
                             RuleContext ctx = (RuleContext) data;
-                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, meth.getASTPrimaryExpression().getBeginLine()));
+                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, meth.getASTPrimaryExpression()));
                         }
                     }
                 }
@@ -589,7 +589,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         if (ci.getArgumentCount() == paramCount) {
                             //match name  super / this !?
                             RuleContext ctx = (RuleContext) data;
-                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, ci.getASTExplicitConstructorInvocation().getBeginLine()));
+                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, ci.getASTExplicitConstructorInvocation()));
                         }
                     }
                 }

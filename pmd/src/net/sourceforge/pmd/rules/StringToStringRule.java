@@ -34,7 +34,7 @@ public class StringToStringRule extends AbstractRule {
                 NameOccurrence occ = (NameOccurrence) j.next();
                 if (occ.getNameForWhichThisIsAQualifier() != null && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("toString") != -1) {
                     RuleContext ctx = (RuleContext) data;
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, occ.getBeginLine()));
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, occ));
                 }
             }
         }

@@ -77,7 +77,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
             Iterator iter = map.keySet().iterator();
             while (iter.hasNext()) {
                 VariableNameDeclaration vnd = (VariableNameDeclaration) iter.next();
-                this.addVariableAccess(vnd.getLine(),
+                this.addVariableAccess(vnd.getBeginLine(),
                         new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()),
                         inode.getFlow());
                 this.undefList.add(new VariableAccess(VariableAccess.UNDEFINITION,

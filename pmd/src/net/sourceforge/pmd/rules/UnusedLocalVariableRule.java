@@ -49,7 +49,7 @@ public class UnusedLocalVariableRule extends AbstractRule {
                 List usages = (List) locals.get(decl);
                 if (!actuallyUsed(usages)) {
                     RuleContext ctx = ((RuleContext) data);
-                    RuleViolation ruleViolation = createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()}));
+                    RuleViolation ruleViolation = createRuleViolation(ctx, decl, MessageFormat.format(getMessage(), new Object[]{decl.getImage()}));
                     ctx.getReport().addRuleViolation(ruleViolation);
                 }
             }

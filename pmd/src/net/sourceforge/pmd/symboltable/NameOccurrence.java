@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.IPositionProvider;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTName;
@@ -15,7 +16,7 @@ import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 
-public class NameOccurrence {
+public class NameOccurrence implements IPositionProvider {
 
     private SimpleNode location;
     private String image;
@@ -155,6 +156,27 @@ public class NameOccurrence {
 
     public String toString() {
         return getImage() + ":" + location.getBeginLine() + ":" + location.getClass();
+    }
+
+    /**
+     * @see net.sourceforge.pmd.IPositionProvider#getEndLine()
+     */
+    public int getEndLine() {
+        return location.getEndLine();
+    }
+
+    /**
+     * @see net.sourceforge.pmd.IPositionProvider#getBeginColumn()
+     */
+    public int getBeginColumn() {
+        return location.getBeginColumn();
+    }
+
+    /**
+     * @see net.sourceforge.pmd.IPositionProvider#getEndColumn()
+     */
+    public int getEndColumn() {
+        return location.getEndColumn();
     }
 
 }
