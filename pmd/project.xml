@@ -26,7 +26,7 @@
   <li>Classes which could be Singletons</li>
   <li>Short/long variable and method names</li>
 </ul>
-<p>You can get the current release, plugins for JEdit, JBuilder, and Emacs, and lots of other project information <a href="http://sf.net/projects/pmd/">here</a></p>
+<p>You can get the current release, plugins for JEdit, JBuilder, Eclipse, and Emacs, and lots of other project information <a href="http://sf.net/projects/pmd/">here</a></p>
   ]]>
   </description>
   <shortDescription>PMD Source Checker</shortDescription>
