@@ -5,6 +5,7 @@ import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.CSVRenderer;
 import org.apache.tools.ant.BuildException;
 
 import java.io.File;
@@ -17,6 +18,8 @@ public class FormatterTest extends TestCase {
         assertTrue(f.getRenderer() instanceof XMLRenderer);
         f.setType("text");
         assertTrue(f.getRenderer() instanceof TextRenderer);
+        f.setType("csv");
+        assertTrue(f.getRenderer() instanceof CSVRenderer);
         f.setType("html");
         assertTrue(f.getRenderer() instanceof HTMLRenderer);
         try {

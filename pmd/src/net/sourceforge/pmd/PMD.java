@@ -11,6 +11,7 @@ import net.sourceforge.pmd.renderers.IDEAJRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.File;
@@ -108,6 +109,8 @@ public class PMD {
             renderer = new TextRenderer();
         } else if (reportFormat.equals("emacs")) {
             renderer = new EmacsRenderer();
+        } else if (reportFormat.equals("csv")) {
+            renderer = new CSVRenderer();
         } else if (reportFormat.equals("html")) {
             renderer = new HTMLRenderer();
         } else if (!reportFormat.equals("")) {
@@ -159,7 +162,7 @@ public class PMD {
             "Please pass in a java source code filename or directory, a report format, " + EOL +
             "and a ruleset filename or a comma-delimited string of ruleset filenames." + EOL +
             "For example: " + EOL +
-            "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml," +
+            "c:\\> java -jar pmd-1.1.jar c:\\my\\source\\code html rulesets/unusedcode.xml," +
             "rulesets/imports.xml" + EOL);
     }
 }

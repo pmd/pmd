@@ -2,6 +2,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.PMD;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,7 +10,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 public class IDEAJRenderer implements Renderer {
-    protected String EOL = System.getProperty("line.separator", "\n");
 
     private static class SourcePath {
 
@@ -55,8 +55,8 @@ public class IDEAJRenderer implements Renderer {
         StringBuffer buf = new StringBuffer();
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
-            buf.append(rv.getDescription() + EOL);
-            buf.append(" at " + getFullyQualifiedClassName(rv.getFilename(), sourcePath) + ".method(" + getSimpleFileName(rv.getFilename()) + ":" + rv.getLine() + ")" + EOL);
+            buf.append(rv.getDescription() + PMD.EOL);
+            buf.append(" at " + getFullyQualifiedClassName(rv.getFilename(), sourcePath) + ".method(" + getSimpleFileName(rv.getFilename()) + ":" + rv.getLine() + ")" + PMD.EOL);
         }
         return buf.toString();
     }
@@ -65,8 +65,8 @@ public class IDEAJRenderer implements Renderer {
         StringBuffer buf = new StringBuffer();
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
-            buf.append(rv.getDescription() + EOL);
-            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getLine() + ")" + EOL);
+            buf.append(rv.getDescription() + PMD.EOL);
+            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getLine() + ")" + PMD.EOL);
         }
         return buf.toString();
     }
