@@ -39,8 +39,7 @@ Installer Tasks For Ant:instant:src:src/main
 Jagzilla:jagzilla:jagzilla:jagzilla/src/net
 JAIMBot:jaimbot:jaimbot:jaimbot/src
 Jalopy:jalopy:main:main/src/java
-Jam--Data Acquisition for Nuclear Physics:jam-daq:Jam Project:Jam Project/jam
-JasperReports:jasperreports:src:src/dori
+JasperReports:jasperreports:jasperreports:jasperreports/src
 JBCcm:jbccm:jbccm:jbccm/src
 JBidwatcher:jbidwatcher:jbidwatcher:jbidwatcher
 JBook:jbook:source:source
@@ -49,18 +48,16 @@ JChemPaint:jchempaint:JCPCDK:JCPCDK/src
 jcrontab:jcrontab:jcrontab:jcrontab/src
 Dexter:jdexter:dexter:dexter/net
 Dexter-plugins:jdexter:plugins:plugins
-jext:jext:src:src/lib/org/jext
 JFCUnit:jfcunit:main:main/src
 Java Gui Builder:jgb:jgb:jgb/src/java/core
 jgimp:jgimp:jgimp:jgimp/src/java
 jGnash:jgnash:jgnash:jgnash/src
-JGraphpad:jgraph:jgraphpad:jgraphpad/src
-JGraph:jgraph:jgraph:jgraph/dev/src
+JGraph:jgraph:jgraphpad3:jgraphpad3/src
 JHotDraw:jhotdraw:JHotDraw:JHotDraw/src
 Jmol:jmol:Jmol:Jmol/src
 jmx4ant:jmx4ant:jmx4ant:jmx4ant/src
 JOELib:joelib:joelib:joelib/src
-joeq:joeq:joeq:joeq
+joeq:joeq:joeq_core:joeq_core/joeq
 JPublish:jpublish:jpublish:jpublish/src
 jRevProxy:jrevproxy:jRevProxy:jRevProxy/src
 JRoseViewer:jroseviewer:jroseviewer:jroseviewer/src
