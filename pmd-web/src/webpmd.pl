@@ -30,12 +30,6 @@ sub default() {
  print br();
  print hr();
 
- if (param("unixname")) {
-  my $project = PMD::Project->new("Sourceforge",param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
-  addProject($project);
-  print p(), b("Added "), b($project->getTitle()), b(" to the schedule"), p();
- } 
-
  print loadProjectList();
 
  print hr(); 
@@ -88,21 +82,6 @@ sub loadProjectList() {
 	}
 	$result="${result}</tr></table>";
 	return $result;
-}
-
-sub addProject() {
-	my ($project) = @_;
-  open(SENDMAIL, "|/usr/lib/sendmail -oi -t -odq") or die "Couldn't send email: $!\n";
-  print SENDMAIL <<"EOF";
-From: PMD-WEB <tomcopeland\@users.sourceforge.net>
-To: Tom Copeland <tomcopeland\@users.sourceforge.net>
-Subject: @{[$project->getString()]}
-
-enter it
-
-EOF
-
-  close(SENDMAIL) or warn "Sendmail didn't close nicely";
 }
 
 $page=param("state") || "default";
