@@ -10,6 +10,14 @@ will update documents on the Build Site.
 -->
 
 <project name="pmd" default="pre-build">
+  <target name="load-dvsl-task">
+    <taskdef 
+       name="dvsl"
+       classname="org.apache.tools.dvsl.DVSLTask">
+       <classpath refid="maven-classpath" />
+    </taskdef>
+  </target>
+
   <target name="pre-build"
           depends="JavaCC" />
 
@@ -49,15 +57,15 @@ will update documents on the Build Site.
   </target>  
 
 <!-- Documentation Chores -->
-  <target name="pre-docs" depends="rule-docs" />
+  <target name="pre-docs" depends="load-dvsl-task,rule-docs" />
 
   <target name="rule-docs">
     <mkdir dir="${maven.gen.docs}/rules" />
     <dvsl basedir="rulesets"
           destdir="${maven.gen.docs}/rules"
           extension=".xml"
+          includes="*.xml"
           style="dvsl/rule-format.dvsl">
-      <include name="*.xml" />
     </dvsl>
   </target>
 
