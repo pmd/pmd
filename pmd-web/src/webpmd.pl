@@ -53,7 +53,7 @@ sub printStats() {
  open(FILE,"lastruntime.txt");
  my $lastruntime=<FILE>;
  print br();
- print "The last run took ", sprintf("%.0f", $lastruntime), " seconds";
+ print "The last run took ", sprintf("%.0f", $lastruntime/60), " minutes";
  print br();
 }
 
