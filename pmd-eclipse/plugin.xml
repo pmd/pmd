@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="2.0.1"
+   version="2.0.1.v3"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
@@ -101,11 +101,11 @@
          name="PMD Property Page"
          point="org.eclipse.ui.propertyPages">
       <page
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
             name="%properties.pmd"
-            class="net.sourceforge.pmd.eclipse.properties.PMDPropertyPage"
             nameFilter="*"
+            class="net.sourceforge.pmd.eclipse.properties.PMDPropertyPage"
             id="net.sourceforge.pmd.eclipse.properties.pmdPropertyPage">
       </page>
    </extension>
@@ -130,8 +130,8 @@
          name="PMD Popup Menus"
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
             nameFilter="*"
             id="net.sourceforge.pmd.eclipse.pmdProjectContribution">
          <menu
@@ -176,8 +176,8 @@
          </action>
       </objectContribution>
       <objectContribution
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IFolder"
+            adaptable="true"
             nameFilter="*"
             id="net.sourceforge.pmd.eclipse.pmdFolderContribution">
          <menu
@@ -214,8 +214,8 @@
          </action>
       </objectContribution>
       <objectContribution
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
             nameFilter="*.java"
             id="net.sourceforge.pmd.eclipse.pmdFileContribution">
          <menu

@@ -2,17 +2,17 @@
 <project name="net.sourceforge.pmd.eclipse" default="build.jars" basedir=".">
 
 	<property name="bootclasspath" value=""/>
-	<property name="ws" value="win32"/>
-	<property name="os" value="win32"/>
-	<property name="arch" value="x86"/>
+	<property name="basews" value="${ws}"/>
+	<property name="baseos" value="${os}"/>
+	<property name="basearch" value="${arch}"/>
+	<property name="basenl" value="${nl}"/>
 	<property name="javacFailOnError" value="false"/>
 	<property name="javacDebugInfo" value="on"/>
 	<property name="javacVerbose" value="true"/>
+	<property name="javacSource" value="1.3"/>
+	<property name="javacTarget" value="1.1"/>
 
 	<target name="init" depends="properties">
-		<property name="plugin" value="net.sourceforge.pmd.eclipse"/>
-		<property name="version.suffix" value="_2.0.0"/>
-		<property name="full.name" value="${plugin}${version.suffix}"/>
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
 		<property name="plugin.destination" value="${basedir}"/>
 		<property name="build.result.folder" value="${basedir}"/>
@@ -29,39 +29,40 @@
 		<antcall target="gather.bin.parts">
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
-		<zip zipfile="${plugin.destination}/${full.name}.jar" basedir="${temp.folder}/${full.name}" filesonly="false" update="no"/>
+		<zip zipfile="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.1.v3.jar" basedir="${temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3" filesonly="false" whenempty="skip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/${full.name}"/>
-		<copy file="${build.result.folder}/pmd-eclipse.jar" todir="${destination.temp.folder}/${full.name}"/>
-		<copy todir="${destination.temp.folder}/${full.name}">
-			<fileset dir="${basedir}" includes="icons/*,lib/*,nl/**/*.properties,*.txt,doc.zip,log4j.*,message.properties,plugin.properties,plugin.xml,plugin_fr.properties,toc.xml,welcome.xml,about.ini" excludes="src/,CVS/,*.classpath,*.project"/>
+		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
+		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3">
+			<fileset dir="${build.result.folder}" includes="CHANGELOG.txt,LICENSE.txt,README.txt,RELNOTES.txt,TODO.txt,about.ini,doc.zip,icons/,lib/,log4j.dtd,log4j.xml,messages.properties,nl/,plugin.properties,plugin.xml,plugin_fr.properties,toc.xml,welcome.xml,pmd-eclipse.jar"			/>
+		</copy>
+		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3">
+			<fileset dir="${basedir}" includes="CHANGELOG.txt,LICENSE.txt,README.txt,RELNOTES.txt,TODO.txt,about.ini,doc.zip,icons/,lib/,log4j.dtd,log4j.xml,messages.properties,nl/,plugin.properties,plugin.xml,plugin_fr.properties,toc.xml,welcome.xml,pmd-eclipse.jar"			/>
 		</copy>
 	</target>
 
 	<target name="pmd-eclipse.jar" depends="init" unless="pmd-eclipse.jar" description="Create jar: pmd-eclipse.jar.">
-		<property name="destdir" value="${temp.folder}/pmd-eclipse.jar.bin"/>
 		<delete dir="${temp.folder}/pmd-eclipse.jar.bin"/>
 		<mkdir dir="${temp.folder}/pmd-eclipse.jar.bin"/>
 		<!-- compile the source code -->
-		<javac destdir="${temp.folder}/pmd-eclipse.jar.bin" failonerror="${javacFailOnError}" verbose="${javacVerbose}" debug="${javacDebugInfo}" includeAntRuntime="no" bootclasspath="${bootclasspath}" classpath="../../../../../Program Files/eclipse/plugins/org.eclipse.core.boot_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.core.boot_2.1.0/boot.jar;lib/log4j-1.2.8.jar;lib/commons-logging.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.core.runtime_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.core.runtime_2.1.0/runtime.jar;../../../../../Program Files/eclipse/plugins/org.apache.xerces_4.0.7/bin;../../../../../Program Files/eclipse/plugins/org.apache.xerces_4.0.7/xmlParserAPIs.jar;../../../../../Program Files/eclipse/plugins/org.apache.xerces_4.0.7/xercesImpl.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.core.resources_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.core.resources_2.1.0/resources.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.core.resources.win32_2.1.0/resources.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.ui_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.ui_2.1.0/ui.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.update.core_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.update.core_2.1.0/updatecore.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.update.core.win32_2.1.0/updatecore.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.help_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.help_2.1.0/help.jar;../../../../../Program Files/eclipse/plugins/org.apache.lucene_1.2.1/bin;../../../../../Program Files/eclipse/plugins/org.apache.lucene_1.2.1/parser.jar;../../../../../Program Files/eclipse/plugins/org.apache.lucene_1.2.1/lucene-1.2.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.help.appserver_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.help.appserver_2.1.0/appserver.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.swt_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.swt_2.1.0/ws/${ws}/swt.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.swt.win32_2.1.0/ws/${ws}/swt.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.text_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.text_2.1.0/text.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.jface_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.jface_2.1.0/jface.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.jface.text_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.jface.text_2.1.0/jfacetext.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.views_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.views_2.1.0/views.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.workbench_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.workbench_2.1.0/workbench.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.win32_2.1.0/workbench.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.win32_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.win32_2.1.0/workbenchwin32.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.workbench.texteditor_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.workbench.texteditor_2.1.0/texteditor.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.editors_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.ui.editors_2.1.0/editors.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.jdt.core_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.jdt.core_2.1.0/jdtcore.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.ant.core_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.ant.core_2.1.0/antsupport.jar;../../../../../Program Files/eclipse/plugins/org.eclipse.team.core_2.1.0/bin;../../../../../Program Files/eclipse/plugins/org.eclipse.team.core_2.1.0/team.jar;../pmd-eclipse-pmd/bin;../pmd-eclipse-pmd/core.jar;../pmd-eclipse-pmd/lib/pmd-1.3.jar;../pmd-eclipse-pmd/lib/jaxen-core-1.0-fcs.jar;../pmd-eclipse-pmd/lib/saxpath-1.0-fcs.jar">
-			<src path="src/"/>
+		<javac destdir="${temp.folder}/pmd-eclipse.jar.bin" failonerror="${javacFailOnError}" verbose="${javacVerbose}" debug="${javacDebugInfo}" includeAntRuntime="no" bootclasspath="${bootclasspath}" classpath="../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.core.boot_3.0.0/boot.jar;lib/log4j-1.2.8.jar;lib/commons-logging.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.core.runtime_3.0.0/runtime.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ui.ide_3.0.0/ide.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ui.win32_3.0.0/ide.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ui.win32_3.0.0/workbenchwin32.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.core.resources_3.0.0/resources.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.core.resources.win32_3.0.0/resources.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.help_3.0.0/help.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ui_3.0.0/ui.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.swt_3.0.0/ws/${basews}/swt.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.swt.win32_3.0.0/ws/${basews}/swt.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.jface_3.0.0/jface.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ui.views_3.0.0/views.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.update.core_3.0.0/updatecore.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.update.core.win32_3.0.0/updatecore.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.text_3.0.0/text.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ui.editors_3.0.0/editors.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.core.filebuffers_3.0.0/filebuffers.jar;../../../../../Program Files/eclipse.3M5/plugins/org.apache.xerces_4.0.13/xmlParserAPIs.jar;../../../../../Program Files/eclipse.3M5/plugins/org.apache.xerces_4.0.13/xercesImpl.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.jdt.core_3.0.0/jdtcore.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.ant.core_3.0.0/antsupport.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.core.variables_3.0.0/variables.jar;../../../../../Program Files/eclipse.3M5/plugins/org.eclipse.team.core_3.0.0/team.jar;../pmd-eclipse-pmd/core.jar;../pmd-eclipse-pmd/lib/pmd-1.3.jar;../pmd-eclipse-pmd/lib/jaxen-core-1.0-fcs.jar;../pmd-eclipse-pmd/lib/saxpath-1.0-fcs.jar" source="${javacSource}" target="${javacTarget}"		>
+			<src path="src/"			/>
 		</javac>
 		<!-- copy necessary resources -->
 		<copy todir="${temp.folder}/pmd-eclipse.jar.bin">
-			<fileset dir="src/" excludes="**/*.java"/>
+			<fileset dir="src/" excludes="**/*.java"			/>
 		</copy>
 		<mkdir dir="${build.result.folder}"/>
 		<jar jarfile="${build.result.folder}/pmd-eclipse.jar" basedir="${temp.folder}/pmd-eclipse.jar.bin"/>
 		<delete dir="${temp.folder}/pmd-eclipse.jar.bin"/>
 	</target>
 
-	<target name="pmd-eclipsesrc.zip" depends="init" unless="pmd-eclipse.jar">
+	<target name="pmd-eclipsesrc.zip" depends="init" unless="pmd-eclipsesrc.zip">
 		<mkdir dir="${build.result.folder}"/>
-		<zip zipfile="${build.result.folder}/pmd-eclipsesrc.zip" filesonly="false" update="no">
-			<fileset dir="src/" includes="**/*.java"/>
+		<zip zipfile="${build.result.folder}/pmd-eclipsesrc.zip" filesonly="false" whenempty="skip">
+			<fileset dir="src/" includes="**/*.java"			/>
 		</zip>
 	</target>
 
@@ -75,33 +76,33 @@
 		<antcall target="pmd-eclipsesrc.zip"/>
 	</target>
 
-		<target name="build.zips" depends="init">
-		</target>
+	<target name="build.zips" depends="init">
+	</target>
 
 	<target name="gather.sources" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/${full.name}"/>
-		<copy file="${build.result.folder}/pmd-eclipsesrc.zip" todir="${destination.temp.folder}/${full.name}"/>
-		<copy todir="${destination.temp.folder}/${full.name}">
-			<fileset dir="${basedir}" includes="*" excludes="*.jar"/>
+		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
+		<copy file="${build.result.folder}/pmd-eclipsesrc.zip" todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
+		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3">
+			<fileset dir="${basedir}" includes="build.properties,build.xml,src/"			/>
 		</copy>
 	</target>
 
 	<target name="gather.logs" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/${full.name}"/>
-		<copy file="${temp.folder}/pmd-eclipse.jar.bin.log" todir="${destination.temp.folder}/${full.name}"/>
+		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
+		<copy file="${temp.folder}/pmd-eclipse.jar.bin.log" todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
 	</target>
 
 	<target name="clean" depends="init" description="Clean the plug-in: net.sourceforge.pmd.eclipse of all the zips, jars and logs created.">
 		<delete file="${build.result.folder}/pmd-eclipse.jar"/>
 		<delete file="${build.result.folder}/pmd-eclipsesrc.zip"/>
-		<delete file="${plugin.destination}/${full.name}.jar"/>
-		<delete file="${plugin.destination}/${full.name}.zip"/>
+		<delete file="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.1.v3.jar"/>
+		<delete file="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.1.v3.zip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
-	<target name="refresh" depends="init" if="eclipse.running">
-		<eclipse.convertPath fileSystemPath="c:\home\phherlin\javadev\PMD\pmd-eclipse\" property="resourcePath"/>
-		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
+	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
+		<eclipse.convertPath fileSystemPath="c:/home/phherlin/javadev/PMD_3/pmd-eclipse/" property="resourcePath"/>
+		<eclipse.refreshLocal resource="net.sourceforge.pmd.eclipse" depth="infinite"/>
 	</target>
 
 	<target name="zip.plugin" depends="init" description="Create a zip containing all the elements for the plug-in: net.sourceforge.pmd.eclipse.">
@@ -116,13 +117,10 @@
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
 		<delete>
-			<fileset dir="${temp.folder}" includes="**/*.bin.log"/>
+			<fileset dir="${temp.folder}" includes="**/*.bin.log"			/>
 		</delete>
-		<antcall target="zip.folder"/>
+		<zip zipfile="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.1.v3.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip"/>
 		<delete dir="${temp.folder}"/>
-	</target>
-	<target name="zip.folder" depends="init">
-		<zip zipfile="${plugin.destination}/${full.name}.zip" basedir="${temp.folder}" filesonly="true" update="no" excludes="**/*.bin.log"/>
 	</target>
 
 </project>

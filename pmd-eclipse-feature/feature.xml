@@ -2,12 +2,12 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="2.0.0"
+      version="2.0.1.v3"
       provider-name="%feature.provider_name"
       image="pmd_logo_small.jpg">
 
    <description url="%description.url">
-      %description.text
+      
    </description>
 
    <copyright>
@@ -19,6 +19,11 @@
    </license>
 
    <requires>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.apache.xerces"/>
@@ -30,12 +35,12 @@
          id="net.sourceforge.pmd.eclipse"
          download-size="981"
          install-size="0"
-         version="2.0.0"/>
+         version="2.0.1.v3"/>
 
    <plugin
          id="net.sourceforge.pmd.core"
          download-size="3685"
          install-size="0"
-         version="1.3.2"/>
+         version="1.3.3"/>
 
 </feature>
