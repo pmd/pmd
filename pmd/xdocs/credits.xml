@@ -40,6 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Brant Langer Gurganus - project.xml patch, Javadoc patches, reported an encoding problem</li>
             <li>David Hovemeyer - a nice patch to let PMD process code in jar/zip files</li>
             <li>Bruno - SuspiciousEqualsMethodName</li>
             <li>Ernst Reissner - suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
