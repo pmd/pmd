@@ -27,6 +27,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * @author David Dixon-Peugh
+ * @author David Craine
  *
  * This class visits all of the resources in the Eclipse
  * Workspace, and runs PMD on them if they happen to be
