@@ -19,6 +19,7 @@ public class ScopeFactoryTest extends TestCase {
     public void testClassScope() {
         ScopeFactory sf = new ScopeFactory();
         assertTrue(sf.createScope(new ASTUnmodifiedClassDeclaration(1)) instanceof ClassScope);
+        assertTrue(sf.createScope(new ASTUnmodifiedInterfaceDeclaration(1)) instanceof ClassScope);
     }
 
     public void testfunctionScope() {

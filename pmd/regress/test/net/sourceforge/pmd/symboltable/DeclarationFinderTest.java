@@ -12,10 +12,10 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class DeclarationFinderTest extends TestCase {
 
-/*
     public void testDeclarationsAreFound() {
         DeclarationFinder df = new DeclarationFinder();
 
@@ -32,9 +32,8 @@ public class DeclarationFinderTest extends TestCase {
         node.setScope(scope);
         df.visit(node, null);
 
-        assertTrue(scope.contains(new NameOccurrence(NameDeclarationTest.createNode("foo", 10))));
+        assertTrue(scope.contains(new NameOccurrence(new SimpleNode(4), "foo")));
     }
-*/
 
     public void test1() {}
 }
