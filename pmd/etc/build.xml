@@ -92,6 +92,21 @@
     </junit>
 </target>
 
+<target name="cpdtest" depends="compile">
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath>
+        <path refid="classpath.path" />
+        <pathelement location="${basedir}" />
+      </classpath>
+      <batchtest fork="no" todir="${build}">
+        <fileset dir="${regress}">
+          <include name="test/**/cpd/**/*Test.java" />
+        </fileset>
+      </batchtest>
+  <formatter type="plain" />
+    </junit>
+</target>
+
 
 <target name="jjtree">
     <jjtree target="etc/grammar/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.0/"/>
