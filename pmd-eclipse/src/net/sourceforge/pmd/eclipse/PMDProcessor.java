@@ -24,7 +24,10 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.internal.resources.MarkerInfo;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * A class to process IFile resource against PMD
@@ -33,6 +36,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.13  2003/10/30 16:59:42  phherlin
+ * Merging v1.2.1 features : refactoring JDK 1.3 compatibility feature
+ *
  * Revision 1.12  2003/10/14 21:25:04  phherlin
  * Adding and implementing "JDK13 compatibility" property.
  *
@@ -102,10 +108,11 @@ public class PMDProcessor {
             context.setSourceCodeFilename(file.getName());
             context.setReport(new Report());
 
-            if (PMDPlugin.getDefault().isJdk13Enable(file.getProject())) {
+            if (isJdk13Compliant(file.getProject())) {
                 log.debug("Running in JDK13 compatibility mode");
                 pmdEngineJdk13.processFile(input, PMDPlugin.getDefault().getRuleSetForResource(file, true), context);
             } else {
+                log.debug("Running in JDK14 compatibility mode");
                 pmdEngine.processFile(input, PMDPlugin.getDefault().getRuleSetForResource(file, true), context);
             }
 
@@ -280,6 +287,26 @@ public class PMDProcessor {
         }
 
         return reviewsList;
+    }
+    
+    /**
+     * Test if a project is JDK1.3 compliant
+     * @param project a project
+     * @return the compiancy status
+     */
+    private boolean isJdk13Compliant(IProject project) {
+        boolean compliance = false;
+        IJavaProject javaProject = JavaCore.create(project);
+        
+        if (javaProject.exists()) {
+            String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            compliance = JavaCore.VERSION_1_3.equals(compilerCompliance);
+            log.debug("compilerCompliance = " + compilerCompliance);
+        } else {
+            log.debug("The project is not a Java project !");
+        }
+        
+        return compliance;
     }
 
     /**

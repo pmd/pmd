@@ -44,6 +44,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2003/10/30 16:59:42  phherlin
+ * Merging v1.2.1 features : refactoring JDK 1.3 compatibility feature
+ *
  * Revision 1.9  2003/09/29 22:38:09  phherlin
  * Adding and implementing "JDK13 compatibility" property.
  *
@@ -70,7 +73,6 @@ import org.eclipse.ui.dialogs.PropertyPage;
 public class PMDPropertyPage extends PropertyPage {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.properties.PMDPropertyPage");
     private Button enablePMDButton;
-    private Button jdk13Button;
     private TableViewer availableRulesTableViewer;
 
     /**
@@ -95,7 +97,6 @@ public class PMDPropertyPage extends PropertyPage {
             composite.setLayout(layout);
 
             enablePMDButton = buildEnablePMDButton(composite);
-            jdk13Button = buildJdk13Button(composite);
 
             Label separator = new Label(composite, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
             GridData data = new GridData();
@@ -127,18 +128,6 @@ public class PMDPropertyPage extends PropertyPage {
         Button button = new Button(parent, SWT.CHECK);
         button.setText(getMessage(PMDConstants.MSGKEY_PROPERTY_BUTTON_ENABLE));
         button.setSelection(isEnabled());
-
-        return button;
-    }
-
-    /**
-     * Create the JDK 13 compatible checkbox
-     * @param parent the parent composite
-     */
-    private Button buildJdk13Button(Composite parent) {
-        Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(PMDConstants.MSGKEY_PROPERTY_BUTTON_JDK13));
-        button.setSelection(isJdk13Enabled());
 
         return button;
     }
@@ -231,12 +220,7 @@ public class PMDPropertyPage extends PropertyPage {
         log.info("Properties editing accepted");
         if (((IProject) getElement()).isAccessible()) {
 
-            boolean oldJdk13Enable = PMDPlugin.getDefault().isJdk13Enable((IProject) getElement());
-            PMDPlugin.getDefault().setJdk13Enable((IProject) getElement(), jdk13Button.getSelection());
-            boolean flForceRebuild = oldJdk13Enable != jdk13Button.getSelection();
-            log.info("JDK13 property = " + jdk13Button.getSelection());
-                        
-            flForceRebuild |= storeRuleSelection();
+            boolean flForceRebuild = storeRuleSelection();
             boolean fEnabled = enablePMDButton.getSelection();
             if (fEnabled) {
                 addPMDNature(flForceRebuild);
@@ -300,18 +284,6 @@ public class PMDPropertyPage extends PropertyPage {
         }
 
         return fEnabled;
-    }
-
-    /**
-     * Test if PMD should be compatible with JDK 1.3 (ignore the assert keyword)
-     */
-    private boolean isJdk13Enabled() {
-        boolean jdk13Enabled = false;
-        if (getElement() instanceof IProject) {
-            jdk13Enabled = PMDPlugin.getDefault().isJdk13Enable((IProject) getElement());
-        }
-        
-        return jdk13Enabled;
     }
 
     /**

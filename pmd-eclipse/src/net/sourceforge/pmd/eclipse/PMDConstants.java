@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2003/10/30 16:59:42  phherlin
+ * Merging v1.2.1 features : refactoring JDK 1.3 compatibility feature
+ *
  * Revision 1.9  2003/09/29 22:38:09  phherlin
  * Adding and implementing "JDK13 compatibility" property.
  *
@@ -31,7 +34,6 @@ package net.sourceforge.pmd.eclipse;
 public interface PMDConstants {
     // Message keys
     public static final String MSGKEY_PROPERTY_BUTTON_ENABLE = "property.button.enable";
-    public static final String MSGKEY_PROPERTY_BUTTON_JDK13 = "property.button.jdk13";
     public static final String MSGKEY_PROPERTY_LABEL_SELECT_RULE = "property.label.select_rule";
     
     public static final String MSGKEY_PREF_GENERAL_TITLE = "preference.pmd.title";

@@ -50,6 +50,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.16  2003/10/30 16:59:42  phherlin
+ * Merging v1.2.1 features : refactoring JDK 1.3 compatibility feature
+ *
  * Revision 1.15  2003/10/16 22:26:37  phherlin
  * Fix bug #810858.
  * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
@@ -94,6 +97,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             "rulesets/javabeans.xml",
             "rulesets/junit.xml",
             "rulesets/naming.xml",
+            "rulesets/scratchpad.xml",
             "rulesets/strictexception.xml",
             "rulesets/strings.xml",
             "rulesets/unusedcode.xml" };
@@ -112,11 +116,6 @@ public class PMDPlugin extends AbstractUIPlugin {
         new QualifiedName(PLUGIN_ID + ".sessprops", "active_rulset");
     public static final QualifiedName PERSISTENT_PROPERTY_ACTIVE_RULESET =
         new QualifiedName(PLUGIN_ID + ".persprops", "active_rulset");
-
-    public static final QualifiedName SESSION_PROPERTY_JDK13 =
-        new QualifiedName(PLUGIN_ID + ".sessprops", "jdk13");
-    public static final QualifiedName PERSISTENT_PROPERTY_JDK13 =
-        new QualifiedName(PLUGIN_ID + ".persprops", "jdk13");
 
     public static final String LIST_DELIMITER = ";";
 
@@ -575,52 +574,6 @@ public class PMDPlugin extends AbstractUIPlugin {
     public void setReviewAdditionalComment(String string) {
         reviewAdditionalComment = string;
         getPreferenceStore().setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, reviewAdditionalComment);
-    }
-
-    /**
-     * Get the jdk13 compatibility property
-     * Currently, it is the one configured for the resource's project
-     */
-    public boolean isJdk13Enable(IResource resource) {
-        boolean flNeedSave = false;
-        Boolean jdk13Enable;
-        IProject project = resource.getProject();
-        try {
-            jdk13Enable = (Boolean) project.getSessionProperty(SESSION_PROPERTY_JDK13);
-            if (jdk13Enable == null) {
-                String property = project.getPersistentProperty(PERSISTENT_PROPERTY_JDK13);
-                if (property != null) {
-                    jdk13Enable = Boolean.valueOf(property);
-                    flNeedSave = true;
-                } else {
-                    jdk13Enable = Boolean.FALSE;
-                    flNeedSave = true;
-                }
-            }
-
-            // If needed store modified ruleset
-            if (flNeedSave) {
-                setJdk13Enable(resource, jdk13Enable.booleanValue());
-            }
-        } catch (CoreException e) {
-            jdk13Enable = Boolean.FALSE;
-            logError("Error when searching for the jdk13 property ; assume false", e);
-        }
-
-        return jdk13Enable.booleanValue();
-    }
-
-    /**
-     * Store the jdk13 compatibility choice in resource property
-     */
-    public void setJdk13Enable(IResource resource, boolean jdk13Enable) {
-        try {
-            resource.setPersistentProperty(PERSISTENT_PROPERTY_JDK13, Boolean.toString(jdk13Enable));
-            resource.setSessionProperty(SESSION_PROPERTY_JDK13, Boolean.valueOf(jdk13Enable));
-
-        } catch (CoreException e) {
-            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
-        }
     }
 
 }
