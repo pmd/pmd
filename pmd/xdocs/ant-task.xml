@@ -40,6 +40,11 @@
       <td valign="top">Whether or not to fail the build if PMD finds any problems</td>
       <td valign="top" align="center">No</td>
     </tr>
+    <tr>
+      <td valign="top">A nested classpath element</td>
+       <td valign="top">Also accepts a nested classpath element so you can specify custom ruleset files more easily.  See the example below.</td>
+      <td valign="top" align="center">No</td>
+    </tr>
   <tr>
     <td valign="top">printToConsole</td>
     <td valign="top">Whether or not to print any problems found to the Ant log/console</td>
@@ -76,6 +81,18 @@
         <pmd rulesetfiles="rulesets/imports.xml,rulesets/unusedcode.xml" failonerror="no">
             <formatter type="xml" toFile="c:\pmd_report.xml"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
+
+    <target name="pmd">
+        <pmd rulesetfiles="rulesets/favorites.xml">
+            <classpath>
+                <pathelement path="/home/tom/tmp/"/>
+            </classpath>
+            <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
+            <fileset dir="/usr/local/java/src/java/lang/ref">
                 <include name="**/*.java"/>
             </fileset>
         </pmd>

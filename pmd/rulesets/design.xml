@@ -82,6 +82,36 @@ public class Foo {
     </example>
   </rule>
 
+    <rule name="SimplifyBooleanExpressions"
+          message="Avoid unnecessary comparisons in boolean expressions"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  Avoid unnecessary comparisons in boolean expressions - this makes simple code seem complicated.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//Expression/ConditionalAndExpression/PrimaryExpression[position()>1]/PrimaryPrefix/Literal/BooleanLiteral
+                  ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+public class Bar {
+ // can be simplified to
+ // bar = isFoo();
+ private boolean bar = (isFoo() == true);
+
+ public isFoo() { return false;}
+}
+  ]]>
+      </example>
+    </rule>
+
 
   <rule name="SwitchStmtsShouldHaveDefault"
         message="Switch statements should have a default label"
