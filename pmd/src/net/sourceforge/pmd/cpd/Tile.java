@@ -9,10 +9,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
+import java.io.Serializable;
 
-public class Tile {
+public class Tile implements Serializable {
 
     private List tokens = new ArrayList();
+
+    // don't use this, just for Serialization
+    protected Tile() {}
 
     public Tile(TokenEntry tok) {
         tokens.add(tok);

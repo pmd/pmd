@@ -6,8 +6,9 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.*;
+import java.io.Serializable;
 
-public abstract class TileOccurrences {
+public abstract class TileOccurrences implements Serializable {
     // as soon as we switch to JDK1.4, change
     // this to use a LinkedHashMap
     protected List orderedTiles = new ArrayList();

@@ -8,12 +8,16 @@ package net.sourceforge.pmd.cpd;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
+import java.io.Serializable;
 
-public class TokenList {
+public class TokenList implements Serializable {
 
     private String id;
     private List tokens = new ArrayList();
     private List code;
+
+    // don't use this, just for Serialization
+    protected TokenList() {}
 
     public TokenList(String id) {
         this.id = id;

@@ -6,8 +6,9 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.*;
+import java.io.Serializable;
 
-public class TokenSets extends AbstractSet {
+public class TokenSets extends AbstractSet implements Serializable {
 
     private Map tokenMap = new HashMap();
 

@@ -6,8 +6,9 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.*;
+import java.io.Serializable;
 
-public class Results extends TileOccurrences {
+public class Results extends TileOccurrences implements Serializable {
 
     public void addTile(Tile tile, TokenEntry tok) {
         super.addTile(tile, tok);

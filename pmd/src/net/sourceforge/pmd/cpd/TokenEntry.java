@@ -5,12 +5,17 @@
  */
 package net.sourceforge.pmd.cpd;
 
-public class TokenEntry {
+import java.io.Serializable;
+
+public class TokenEntry implements Serializable {
 
     private String image;
     private int index;
     private String tokenSrcID;
     private int beginLine;
+
+    // don't use this, just for Serialization
+    protected TokenEntry() {}
 
     public TokenEntry(String image, int index, String tokenSrcID, int beginLine) {
         this.image = image;

@@ -6,12 +6,16 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.*;
+import java.io.Serializable;
 
-public class Occurrences extends TileOccurrences {
+public class Occurrences extends TileOccurrences implements Serializable {
 
     public Occurrences(CPDListener listener) {
         this(new TokenSets(), listener);
     }
+
+    // don't use this, just for Serialization
+    protected Occurrences() {}
 
     public Occurrences(TokenSets tss) {
         this(tss, new CPDNullListener());
