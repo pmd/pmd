@@ -1,10 +1,9 @@
-???? ?? 2002 - 1.0.1:
+November 07 2002 - 1.0.1:
 Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.
 Fixed bug 633892: StringToStringRule false positive exposed problem in symbol table usage to declaration code.
 Fixed bug 617971: Statistical rules no longer produce tons of false positives due to accumulated results.
-Enhanced EmptyCatchBlock to flag multiple consecutive empty catch blocks.
+Enhanced EmptyCatchBlockRule to flag multiple consecutive empty catch blocks.
 Renamed AvoidStringLiteralsRule to AvoidDuplicateLiteralsRule.
-
 
 November 04 2002 - 1.0:
 Added new rules: StringToStringRule, AvoidReassigningParametersRule, UnnecessaryConstructorRule, AvoidStringLiteralsRule
