@@ -8,6 +8,7 @@
 <property name="regress" value="regress\"/>
 <property name="reports" value="reports\"/>
 <property name="version" value="0.8"/>
+<property name="jnlp_staging_area" value="c:\data\importscrubberjnlp\"/>
 <property name="build.compiler" value="jikes"/>
 
 	<target name="delete">
@@ -104,10 +105,17 @@
         <delete dir="tmp"/>
     </target>
 
+
 	<target name="clean" depends="delete,compile"/>
 
     <target name="dist" depends="clean,jar"/>
 
+    <target name="cpdjnlp" depends="dist">
+        <signjar jar="${lib}\pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+        <exec executable="pscp.exe" os="Windows 2000">
+            <arg line=" ${lib}\pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+        </exec>
+    </target>
 
 </project>
 

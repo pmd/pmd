@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp codebase="http://pmd.sourceforge.net/" href="http://pmd.sourceforge.net/cpd.jnlp">
+    <information>
+        <title>CPD</title>
+        <vendor>Tom Copeland</vendor>
+        <description>CPD - find copied and pasted code</description>
+        <description kind="short">CPD is a PMD extension that finds copied and pasted code blocks in a Java source code file.</description>
+        <homepage href="http://pmd.sourceforge.net/"/>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <offline-allowed/>
+    <resources>
+        <j2se version="1.3+"/>
+        <jar href="pmd-0.8.jar"/>
+    </resources>
+    <application-desc main-class="net.sourceforge.pmd.cpd.GUI"/>
+</jnlp>
