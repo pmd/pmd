@@ -238,7 +238,7 @@ public class CyclomaticComplexityRule extends AbstractRule {
      ***************************************************************************
      ***************************************************************************
      */
-    private class Entry {
+    private static class Entry {
         // ASTUnmodifedClassDeclaration or ASTMethodDeclarator or ASTConstructorDeclaration
         private SimpleNode m_node;
         public int m_decisionPoints = 1;

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.stat.StatisticalRule;
  * problem.
  */
 public class SwitchDensityRule extends StatisticalRule {
-    private class SwitchDensity {
+    private static class SwitchDensity {
         private int labels = 0;
         private int stmts = 0;
 

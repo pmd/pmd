@@ -375,7 +375,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
         }
     }
 
-    private final class ConstructorInvocation {
+    private static final class ConstructorInvocation {
         private ASTExplicitConstructorInvocation m_Eci;
         private String name;
         private int count = 0;
@@ -404,7 +404,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
         }
     }
 
-    private final class MethodHolder {
+    private static final class MethodHolder {
         private ASTMethodDeclarator m_Amd;
         private boolean m_Dangerous = false;
 

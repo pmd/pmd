@@ -40,8 +40,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Paul Rowe - bug report for SimplifyBooleanExpressions</li>
-            <li>Dave Brosius - a nice patch to clean up some string handling inefficiencies</li>
+            <li>Dave Brosius - a couple of nice patches to clean up some string handling inefficiencies and non-static class usages - found with Findbugs, I daresay :-)</li>
+            <li>Paul Rowe - bug reports for SimplifyBooleanExpressions and UnusedLocalVariable</li>
             <li>Enno Derksen - enhancements to VariableNamingConventionsRule</li>
             <li>Michael Haggerty - bug reports for FinalizeDoesNotCallSuperFinalize and UnusedModifier</li>
             <li>ereissner - bug report and documentation suggestions for UseSingletonRule</li>

@@ -80,7 +80,7 @@ public class AccessorClassGenerationRule extends AbstractRule {
     /**
      *
      */
-    private class ClassData {
+    private static class ClassData {
         /** The name of this class */
         private String m_ClassName;
         /** List of private constructors within this class */
