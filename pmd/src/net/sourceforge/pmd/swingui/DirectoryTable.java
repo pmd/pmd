@@ -20,7 +20,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.ListSelectionModel;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;

@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.*;
 

@@ -1,7 +1,5 @@
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.symboltable.SymbolFacade;
-
 import java.util.Set;
 import java.util.List;
 import java.util.HashSet;

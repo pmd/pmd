@@ -2,7 +2,6 @@ package net.sourceforge.pmd;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;

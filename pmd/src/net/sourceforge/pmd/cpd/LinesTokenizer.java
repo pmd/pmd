@@ -5,9 +5,6 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.ast.JavaCharStream;
-import net.sourceforge.pmd.ast.JavaParserTokenManager;
-
 import java.io.Reader;
 import java.io.IOException;
 import java.io.LineNumberReader;

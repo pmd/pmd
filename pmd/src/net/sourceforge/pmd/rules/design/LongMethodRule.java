@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.stat.*;
-import net.sourceforge.pmd.AbstractRule;
 
 import net.sourceforge.pmd.ast.*;
 

@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.border.EtchedBorder;

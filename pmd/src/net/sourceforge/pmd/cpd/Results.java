@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.*;
-import java.io.Serializable;
 
 public interface Results  {
     public void addTile(Tile tile, TokenEntry tok);

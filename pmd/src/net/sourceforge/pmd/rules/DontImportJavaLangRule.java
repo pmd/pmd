@@ -8,7 +8,6 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTName;
 
 public class DontImportJavaLangRule extends AbstractRule {

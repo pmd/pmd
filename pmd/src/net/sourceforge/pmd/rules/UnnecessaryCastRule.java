@@ -10,7 +10,6 @@ import net.sourceforge.pmd.symboltable.TypeSet;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTCastExpression;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 
 public class UnnecessaryCastRule extends AbstractRule {
 

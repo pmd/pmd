@@ -8,7 +8,6 @@ package net.sourceforge.pmd.cpd;
 import java.io.*;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
 public class CPD {
 

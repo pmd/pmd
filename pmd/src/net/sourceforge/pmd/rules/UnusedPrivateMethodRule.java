@@ -8,7 +8,6 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.ast.*;
 
-import java.util.Stack;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;

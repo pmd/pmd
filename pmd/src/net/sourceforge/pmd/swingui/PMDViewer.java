@@ -20,7 +20,6 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.InputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

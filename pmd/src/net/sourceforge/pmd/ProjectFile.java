@@ -1,13 +1,7 @@
 package net.sourceforge.pmd;
 
 import java.io.InputStream;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.helpers.DefaultHandler;

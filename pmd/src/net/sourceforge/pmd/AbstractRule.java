@@ -7,13 +7,10 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.List;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
-import java.io.File;
 
 public abstract class AbstractRule
     extends JavaParserVisitorAdapter

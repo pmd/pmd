@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.swingui.Resources;
 
 /**
  * Defines and provides access to PMD's directory structure.  The user defines the location

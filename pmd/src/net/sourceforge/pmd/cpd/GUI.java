@@ -6,14 +6,11 @@
 package net.sourceforge.pmd.cpd;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.*;
 import java.io.IOException;
 import java.io.File;
-import java.util.Iterator;
-import java.util.Calendar;
 
 public class GUI implements CPDListener {
 

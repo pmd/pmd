@@ -8,7 +8,6 @@ package net.sourceforge.pmd.cpd;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Collections;
 import java.io.Serializable;
 
 public class Tile implements Serializable {

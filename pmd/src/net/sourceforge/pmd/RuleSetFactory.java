@@ -12,11 +12,7 @@ import org.w3c.dom.Node;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.IOException;
 import java.util.*;
 

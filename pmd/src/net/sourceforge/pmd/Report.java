@@ -5,7 +5,6 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.stat.Metric;
 
 import java.util.*;

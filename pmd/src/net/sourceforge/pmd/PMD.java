@@ -7,16 +7,13 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.renderers.*;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.swingui.PMDViewer;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
-import javax.swing.*;
 import java.io.*;
 import java.util.List;
 import java.util.Iterator;
