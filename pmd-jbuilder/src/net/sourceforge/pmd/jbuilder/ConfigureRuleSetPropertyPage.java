@@ -33,8 +33,14 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
     private DefaultListModel dlmRuleSets = new DefaultListModel();
     private DefaultListModel dlmRules = new DefaultListModel();
     static ConfigureRuleSetPropertyPage currentInstance = null;
-    private JScrollPane spExamples = new JScrollPane();
+    private JTabbedPane tpInfo = new JTabbedPane();
     private JTextArea taExamples = new JTextArea();
+    private JScrollPane spExamples = new JScrollPane();
+    private JScrollPane spDescription = new JScrollPane();
+    private JTextArea taDescription = new JTextArea();
+    private Border border1;
+    private TitledBorder titledBorderDescription;
+    private TitledBorder titledBorderExample;
 
     public ConfigureRuleSetPropertyPage() {
         currentInstance = this;
@@ -102,23 +108,33 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
      * @throws Exception
      */
     private void jbInit() throws Exception {
+        border1 = BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151));
+        titledBorderDescription = new TitledBorder(border1,"Description");
+        titledBorderExample = new TitledBorder(border1, "Example Code");
         this.setLayout(borderLayout1);
         spRuleSets.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Rule Sets"));
         spRules.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Rules"));
         listRuleSets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listRules.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        spExamples.setPreferredSize(new Dimension(70,150));
+        taExamples.setEditable(false);
+        //spExamples.setPreferredSize(new Dimension(70,150));
         spExamples.setAutoscrolls(false);
-        spExamples.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Example code"));
+        spExamples.setBorder(titledBorderExample);
+        tpInfo.setTabPlacement(JTabbedPane.BOTTOM);
+        tpInfo.setPreferredSize(new Dimension(543, 180));
+        taDescription.setEditable(false);
+        spDescription.setBorder(titledBorderDescription);
+        tpInfo.add(spDescription, "Description");
+        tpInfo.add(spExamples, "Example Code");
+        spDescription.getViewport().add(taDescription, null);
+        spExamples.getViewport().add(taExamples, null);
         this.add(splitPaneConfRuleSets,  BorderLayout.CENTER);
         splitPaneConfRuleSets.add(spRuleSets, JSplitPane.TOP);
         spRuleSets.getViewport().add(listRuleSets, null);
         splitPaneConfRuleSets.add(spRules, JSplitPane.BOTTOM);
-        this.add(spExamples,  BorderLayout.SOUTH);
-        spExamples.getViewport().add(taExamples, null);
-        taExamples.setEditable(false);
         spRules.getViewport().add(listRules, null);
         splitPaneConfRuleSets.setDividerLocation(200);
+        this.add(tpInfo, BorderLayout.SOUTH);
     }
 
     /**
@@ -186,6 +202,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
             int index = list.getSelectedIndex();
             if (index < 0) return;
             RuleData rd = (RuleData)list.getModel().getElementAt(index);
+            //set the example text
             String example = rd.rsp.getOriginalRuleSet().getRuleByName(rd.ruleName).getExample();
             if (example != null) {
                 taExamples.setText(example);
@@ -194,6 +211,20 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
             else {
                 taExamples.setText("");
             }
+            //set the description text
+            String description = rd.rsp.getOriginalRuleSet().getRuleByName(rd.ruleName).getDescription();
+            if (description != null) {
+                taDescription.setText(description);
+                taDescription.setCaretPosition(0);
+            }
+            else {
+                taDescription.setText("");
+            }
+            //set the border titleds
+            titledBorderDescription.setTitle("Description: " + rd.ruleName);
+            titledBorderExample.setTitle("Example Code: " + rd.ruleName);
+            spDescription.updateUI();
+            spExamples.updateUI();
 
         }
 

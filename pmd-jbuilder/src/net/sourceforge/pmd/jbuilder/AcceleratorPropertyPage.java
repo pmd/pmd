@@ -42,9 +42,10 @@ public class AcceleratorPropertyPage extends PropertyPage {
     private JLabel jLabel2 = new JLabel();
     private JLabel jLabel3 = new JLabel();
     private int[][]keys = new int[2][2];
-    private JCheckBox jCheckBox1 = new JCheckBox();
     private JTextField jTextField1 = new JTextField();
-    private JLabel jLabel4 = new JLabel();  //data structure to hold keycode and modifier info for 2 distinct actions
+    private JLabel jLabel4 = new JLabel();
+    private JPanel jPanel4 = new JPanel();
+    private JCheckBox jCheckBox1 = new JCheckBox();//data structure to hold keycode and modifier info for 2 distinct actions
 
     /**
      * Constuctor
@@ -84,10 +85,10 @@ public class AcceleratorPropertyPage extends PropertyPage {
                 jComboBox1_itemStateChanged(e);
             }
         });
-        jCheckBox1.setHorizontalAlignment(SwingConstants.CENTER);
-        jCheckBox1.setText("Enabled");
         jLabel4.setText("enter");
         jTextField1.setPreferredSize(new Dimension(60, 21));
+        jCheckBox1.setHorizontalAlignment(SwingConstants.CENTER);
+        jCheckBox1.setText("Enabled");
         this.add(jPanel1, null);
         jPanel1.add(jLabel1, null);
         jPanel1.add(jComboBox1, null);
@@ -99,7 +100,8 @@ public class AcceleratorPropertyPage extends PropertyPage {
         jPanel2.add(jTextField3, null);
         jPanel2.add(jTextField2, null);
         jPanel2.add(jTextField1, null);
-        this.add(jCheckBox1, null);
+        this.add(jPanel4, null);
+        jPanel4.add(jCheckBox1, null);
     }
 
     private void initKeys() {
