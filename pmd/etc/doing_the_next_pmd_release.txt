@@ -22,7 +22,7 @@ Prepare binary release:
 rm -rf ~/tmp/pmd-1.1
 mkdir -p ~/tmp/pmd-1.1/etc
 mkdir ~/tmp/pmd-1.1/lib
-cp ../LICENSE.txt run.* cygwin-run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.1/etc
+cp ../LICENSE.txt run.* cygwin-run.sh build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.1/etc
 cp ../lib/pmd-1.1.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.1/lib/
 cp -R xslt/ ~/tmp/pmd-1.1/etc/xslt/
 cp -R ../target/docs ~/tmp/pmd-1.1
