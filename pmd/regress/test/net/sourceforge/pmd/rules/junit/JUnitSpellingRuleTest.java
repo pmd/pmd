@@ -3,10 +3,11 @@
  * Date: Sep 10, 2002
  * Time: 1:15:05 PM
  */
-package test.net.sourceforge.pmd.rules;
+package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.JUnitSpellingRule;
+import net.sourceforge.pmd.rules.junit.JUnitSpellingRule;
+import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class JUnitSpellingRuleTest extends RuleTst {
 
@@ -20,22 +21,22 @@ public class JUnitSpellingRuleTest extends RuleTst {
 
 
     public void testSetupMisspellings1() throws Throwable {
-        runTest("JUnitSpelling1.java", 2, rule);
+        runTest("junit/JUnitSpelling1.java", 2, rule);
     }
 
     public void testTeardownMisspellings() throws Throwable {
-        runTest("JUnitSpelling2.java", 2, rule);
+        runTest("junit/JUnitSpelling2.java", 2, rule);
     }
 
     public void testMethodsSpelledOK() throws Throwable {
-        runTest("JUnitSpelling3.java", 0, rule);
+        runTest("junit/JUnitSpelling3.java", 0, rule);
     }
 
     public void testUnrelatedMethods() throws Throwable {
-        runTest("JUnitSpelling4.java", 0, rule);
+        runTest("junit/JUnitSpelling4.java", 0, rule);
     }
 
     public void testMethodWithParams() throws Throwable {
-        runTest("JUnitSpelling5.java", 0, rule);
+        runTest("junit/JUnitSpelling5.java", 0, rule);
     }
 }

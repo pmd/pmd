@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.rules;
+package net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;

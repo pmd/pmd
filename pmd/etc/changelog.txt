@@ -1,6 +1,7 @@
 ?????? - 1.04
 Added new rules: ConstructorCallsOverridableMethodRule, AtLeastOneConstructorRule, JUnitAssertionsShouldIncludeMessageRule, DoubleCheckedLockingRule, ExcessivePublicCountRule
 The Ant task has been updated; if you set "verbose=true" full stacktraces are printed.  Thx to Paul Roebuck for the suggestion.
+Moved JUnit rules into their own package - "net.sourceforge.pmd.rules.junit".
 
 February 11, 2003 - 1.03
 Added new rules: CyclomaticComplexityRule, AssignmentInOperandRule

@@ -62,7 +62,7 @@ These are new rules for the next release
 
     <rule name="JUnitAssertionsShouldIncludeMessageRule"
           message="JUnit assertions should include a message"
-          class="net.sourceforge.pmd.rules.JUnitAssertionsShouldIncludeMessageRule">
+          class="net.sourceforge.pmd.rules.junit.JUnitAssertionsShouldIncludeMessageRule">
       <description>
       JUnit assertions should include a message - i.e., use the three argument version of
           assertEquals(), not the two argument version.

@@ -33,4 +33,5 @@ public class OnlyOneReturnRuleTest extends RuleTst {
     public void testReturnInsideAnonymousInnerClass() throws Throwable {
     	runTest("OnlyOneReturn6.java", 0, new OnlyOneReturnRule());
     }
+
 }

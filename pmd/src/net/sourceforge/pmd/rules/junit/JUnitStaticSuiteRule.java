@@ -3,7 +3,7 @@
  * Date: Sep 11, 2002
  * Time: 2:27:46 PM
  */
-package net.sourceforge.pmd.rules;
+package net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
