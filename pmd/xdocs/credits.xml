@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Philippe T'Seyen - an XML renderer (with unit tests!) for CPD</li>
             <li>Richard Jenson - CPD on Win32 troubleshooting</li>
             <li>Daniel Bruguier - CPD on Win32 troubleshooting</li>
             <li>Mario Claerhout - CPD optimizations and suggestions</li>
