@@ -38,16 +38,16 @@ public class CPD {
         StringBuffer rpt = new StringBuffer();
         for (Iterator i = matchAlgorithm.matches(); i.hasNext();) {
             Match match = (Match)i.next();
-            TokenList tl = tokenSets.getTokenList(match.getStart().getFile());
+            TokenList tl = tokenSets.getTokenList(match.getFirstOccurrence().getFile());
             rpt.append("=====================================================================");
             rpt.append(EOL);
             rpt.append("Found a " + match.getTokenCount() + " token duplication in the following files: ");
             rpt.append(EOL);
-            rpt.append(match.getStart().getFile());
+            rpt.append(match.getFirstOccurrence().getFile());
             rpt.append(EOL);
-            rpt.append(match.getEnd().getFile());
+            rpt.append(match.getSecondOccurrence().getFile());
             rpt.append(EOL);
-            rpt.append(tl.getLineSlice(match.getStart().getIndexIntoFile(), match.getTokenCount()));
+            rpt.append(tl.getLineSlice(match.getFirstOccurrence().getIndexIntoFile(), match.getTokenCount()));
             rpt.append(EOL);
         }
         return rpt.toString();

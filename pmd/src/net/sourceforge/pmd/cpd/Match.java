@@ -2,13 +2,13 @@ package net.sourceforge.pmd.cpd;
 
 public class Match {
 
-    private Mark start;
-    private Mark end;
+    private Mark firstOccurrence;
+    private Mark secondOccurrence;
     private int tokenCount;
 
-    public Match(int tokenCount, Mark start, Mark end) {
-        this.start = start;
-        this.end = end;
+    public Match(int tokenCount, Mark firstOccurrence, Mark secondOccurrence) {
+        this.firstOccurrence = firstOccurrence;
+        this.secondOccurrence = secondOccurrence;
         this.tokenCount = tokenCount;
     }
 
@@ -16,11 +16,11 @@ public class Match {
         return this.tokenCount;
     }
 
-    public Mark getStart() {
-        return this.start;
+    public Mark getFirstOccurrence() {
+        return this.firstOccurrence;
     }
 
-    public Mark getEnd() {
-        return this.end;
+    public Mark getSecondOccurrence() {
+        return this.secondOccurrence;
     }
 }
