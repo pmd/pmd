@@ -123,7 +123,7 @@ will update documents on the Build Site.
     <mkdir dir="${maven.pmd.reportsDirectory}" />
     <pmd reportFile="${maven.pmd.reportsDirectory}/${maven.final.name}.xml"
          verbose="false"
-         rulesetfiles="rulesets/basic.xml"
+         rulesetfiles="rulesets/basic.xml,rulesets/unusedcode.xml,rulesets/design.xml"
          format="xml"
          failonerror="no">
       <fileset dir="${maven.src.dir}">
@@ -138,7 +138,7 @@ will update documents on the Build Site.
     <mkdir dir="${maven.pmd.reportsDirectory}" />
     <pmd reportFile="${maven.pmd.reportsDirectory}/jdk-1.4.xml"
          verbose="false"
-         rulesetfiles="rulesets/basic.xml"
+         rulesetfiles="rulesets/basic.xml,rulesets/unusedcode.xml,rulesets/design.xml"
          format="xml"
          failonerror="no">
       <fileset dir="${jdk14.src}">
