@@ -8,6 +8,7 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.TargetJDK1_3;
@@ -117,8 +118,7 @@ public class PMDTask extends Task {
 
     public void execute() throws BuildException {
         validate();
-
-        net.sourceforge.pmd.RuleSet rules;
+        RuleSet rules;
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             if (classpath == null) {

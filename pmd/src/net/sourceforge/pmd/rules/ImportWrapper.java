@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.IPositionProvider;
 
 public class ImportWrapper {

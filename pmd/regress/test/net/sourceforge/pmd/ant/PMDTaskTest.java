@@ -61,7 +61,7 @@ public class PMDTaskTest extends TestCase {
         }
     }
 
-    public void testOnlyValidJDK() {
+    public void testInValidJDK() {
         PMDTask task = new PMDTask();
         task.setTargetJDK("1.6");
         try {

@@ -5,8 +5,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 public class MethodWithSameNameAsEnclosingClass extends AbstractRule {
 
