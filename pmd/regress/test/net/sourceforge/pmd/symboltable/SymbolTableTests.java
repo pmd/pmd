@@ -26,7 +26,6 @@ public class SymbolTableTests
       new TestSuite( "Test for test.net.sourceforge.pmd.symboltable" );
 
     //$JUnit-BEGIN$
-    suite.addTestSuite( AbstractScopeTest.class );
     suite.addTestSuite( AcceptanceTest.class );
     suite.addTestSuite( BasicScopeFactoryTest.class );
     suite.addTestSuite( ClassScopeTest.class );
@@ -47,6 +46,9 @@ public class SymbolTableTests
 
 /*
  * $Log$
+ * Revision 1.3  2004/06/18 21:43:41  tomcopeland
+ * Oops, old test pointer
+ *
  * Revision 1.2  2003/11/21 21:22:17  tomcopeland
  * Continuing to clean up license headers
  *
