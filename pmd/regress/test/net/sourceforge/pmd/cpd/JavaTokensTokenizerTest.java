@@ -49,6 +49,21 @@ public class JavaTokensTokenizerTest extends TestCase {
         assertEquals(8, tl.size());
     }
 
+    public void testDiscardImports() throws Throwable {
+        Tokenizer t = new JavaTokensTokenizer();
+        TokenList tl = new TokenList("1");
+        String data = "import java.io.File;" + SEP + "public class Foo {}";
+        t.tokenize(tl, new StringReader(data));
+        assertEquals(5, tl.size());
+    }
+
+    public void testDiscardPkgStmts() throws Throwable {
+        Tokenizer t = new JavaTokensTokenizer();
+        TokenList tl = new TokenList("1");
+        String data = "package foo.bar.baz;" + SEP + "public class Foo {}";
+        t.tokenize(tl, new StringReader(data));
+        assertEquals(5, tl.size());
+    }
  }
 
 
