@@ -49,7 +49,7 @@ public class DGST {
             occ = tg.harvest(occ.size());
             addToResults(occ);
             if (!occ.isEmpty()) {
-                System.out.println("**Season complete" + System.getProperty("line.separator") + "->Tile count: " + occ.size() + System.getProperty("line.separator") + "->Tile size: " + ((Tile)(occ.getTiles().next())).getTokenCount() + System.getProperty("line.separator") + "->First tile image: " + ((Tile)(occ.getTiles().next())).getImage());
+                System.out.println("**Season complete" + System.getProperty("line.separator") + "->Tile count: " + occ.size() + System.getProperty("line.separator") + "->Tile size: " + ((Tile)(occ.getTiles().next())).getTokenCount());
             }
             TilePlanter scatterer = new TilePlanter(space, job);
             scatterer.scatter(occ);
@@ -61,31 +61,10 @@ public class DGST {
             Tile tile = (Tile)i.next();
             if (tile.getTokenCount() >= minimumTileSize) {
                 for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
-                    TokenEntry te = (TokenEntry)j.next();
-                    results.addTile(tile, te);
+                    results.addTile(tile, (TokenEntry)j.next());
                 }
             }
         }
     }
 
-/*
-    private boolean isDuplicate(Tile candidate) {
-        for (Iterator j = results.getTiles(); j.hasNext();) {
-            Tile tile = (Tile)j.next();
-            for (int i=0;i<tile.getTokens().size(); i++) {
-                TokenEntry tok = (TokenEntry)tile.getTokens().get(i);
-                for (int k=0; k<candidate.getTokens().size(); k++) {
-                    TokenEntry candidateToken = (TokenEntry)candidate.getTokens().get(k);
-                    if (tok.getTokenSrcID().equals(candidateToken.getTokenSrcID()) &&
-                        tok.getBeginLine() == candidateToken.getBeginLine() &&
-                        tok.getImage().equals(candidateToken.getImage())) {
-                            System.out.println("DISCARD");
-                            return true;
-                        }
-                }
-            }
-        }
-        return false;
-    }
-*/
 }

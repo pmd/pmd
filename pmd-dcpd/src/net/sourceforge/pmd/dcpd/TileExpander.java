@@ -32,7 +32,7 @@ public class TileExpander {
 
         Batch batch = null;
         int total = 0;
-        while ((batch = (Batch)space.take(twQuery, null, 10)) != null) {
+        while ((batch = (Batch)space.take(twQuery, null, 100)) != null) {
             total++;
             List wrappers = new ArrayList();
             for (int j=0; j<batch.tileWrappers.size(); j++) {

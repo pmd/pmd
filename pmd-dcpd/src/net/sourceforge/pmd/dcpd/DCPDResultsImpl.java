@@ -17,9 +17,14 @@ public class DCPDResultsImpl extends TileOccurrences implements Results, Seriali
 
     public void addTile(Tile tile, TokenEntry tok) {
         super.addTile(tile, tok);
+/*
         for (int i=orderedTiles.size()-1; i>=0; i--) {
             Tile candidate = (Tile)orderedTiles.get(i);
             removeDupesOf(candidate);
+        }
+*/
+        if (orderedTiles.size() > 1) {
+            removeDupesOf((Tile)orderedTiles.get(orderedTiles.size()-1));
         }
     }
 
@@ -43,37 +48,12 @@ public class DCPDResultsImpl extends TileOccurrences implements Results, Seriali
                     if (smallTileToken.getBeginLine() == largeTileToken.getBeginLine() &&
                         smallTileToken.getImage().equals(largeTileToken.getImage()) &&
                         smallTileToken.getTokenSrcID().equals(largeTileToken.getTokenSrcID())) {
-                        super.orderedTiles.remove(smallerTile);
-                        super.tileToOccurrenceMap.remove(smallerTile);
+                        orderedTiles.remove(smallerTile);
+                        tileToOccurrenceMap.remove(smallerTile);
                         break outer;
                     }
                 }
             }
         }
     }
-
-/*
-    private void removeDupesOf(Tile tile) {
-        Set occs = new HashSet();
-        occs.addAll((List)tileToOccurrenceMap.get(tile));
-        for (Iterator i = tileToOccurrenceMap.keySet().iterator(); i.hasNext();) {
-            Tile tile2 = (Tile)i.next();
-
-            if (tile2.equals(tile)) {
-                continue;
-            }
-
-            Set possibleDupe = new HashSet();
-            possibleDupe.addAll((List)tileToOccurrenceMap.get(tile2));
-            possibleDupe.removeAll(occs);
-            if (possibleDupe.isEmpty()) {
-                System.out.println("Removing dupe " + tile.getImage());
-                tileToOccurrenceMap.remove(tile);
-                orderedTiles.remove(tile);
-                break;
-            }
-        }
-
-    }
-*/
 }

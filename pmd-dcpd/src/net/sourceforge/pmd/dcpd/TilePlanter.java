@@ -38,7 +38,7 @@ public class TilePlanter {
             //System.out.println("Scattering " + tw.tile.getImage() +  "->" + tw.occurrences.size());
             tilesSoFar++;
             if (tilesSoFar % 100 == 0) {
-                System.out.println("Written " + tilesSoFar + " tiles so far");
+                System.out.println("Planted " + tilesSoFar + " batches so far");
             }
         }
     }

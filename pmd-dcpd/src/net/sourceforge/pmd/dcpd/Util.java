@@ -39,8 +39,7 @@ public class Util {
                     if (objectCount % 100 == 0) {
                         System.out.println(objectCount + " objects taken so far");
                     }
-                    System.out.println("took " + e);
-
+                    //System.out.println("took " + e);
                 }
             } else {
                 System.out.println("Usage: clear");

@@ -33,6 +33,9 @@ public class TileHarvester {
             for (int j=0; j<batch.tileWrappers.size(); j++) {
                 addTileWrapperToOccurrences((TileWrapper)batch.tileWrappers.get(j), occ);
             }
+            if (i >0 && i % 100 == 0) {
+                System.out.println("Harvested " + i + " batches so far");
+            }
         }
         return occ;
     }
