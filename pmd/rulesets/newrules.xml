@@ -104,6 +104,39 @@ These are new rules for the next release
       </example>
     </rule>
 
+    <rule name="UseAssertEqualsInsteadOfAssertTrue"
+          message="user assertEquals(x, y) instead of assertTrue(x.equals(y))"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+
+//PrimaryExpression
+[ 
+    PrimaryPrefix/Name
+    [
+        @Image = 'assertTrue' 
+    ] 
+]
+[ 
+    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
+    [
+        ends-with(@Image, '.equals')
+    ]
+]
+                
+ ]]>
+            </value>
+        </property>
+    </properties>
+        <priority>3</priority>
+      <example>
+
+      </example>
+    </rule>
 
 </ruleset>
 
