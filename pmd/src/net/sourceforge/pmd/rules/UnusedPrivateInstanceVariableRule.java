@@ -16,13 +16,16 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
-            RuleContext ctx = (RuleContext)data;
-            for (Iterator i =  node.getScope().getUnusedDeclarations(); i.hasNext();) {
-                NameDeclaration decl = (NameDeclaration)i.next();
-                if (decl.getImage().equals("serialVersionUID")) {
-                    continue;
+            ASTFieldDeclaration field = (ASTFieldDeclaration)node.jjtGetParent().jjtGetParent();
+            if (field.isPrivate()) {
+                RuleContext ctx = (RuleContext)data;
+                for (Iterator i =  node.getScope().getUnusedDeclarations(); i.hasNext();) {
+                    NameDeclaration decl = (NameDeclaration)i.next();
+                    if (decl.getImage().equals("serialVersionUID")) {
+                        continue;
+                    }
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[] {decl.getImage()})));
                 }
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[] {decl.getImage()})));
             }
         }
         return data;
