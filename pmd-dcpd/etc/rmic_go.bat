@@ -1,0 +1,1 @@
+rmic -classpath ..\lib\compiletimeonly\jini-core.jar;..\lib\compiletimeonly\jini-ext.jar;c:\jini-1_2_1\lib\sun-util.jar;..\build -d ..\build net.sourceforge.pmd.dcpd.JobAddedListener
