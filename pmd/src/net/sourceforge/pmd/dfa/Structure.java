@@ -28,20 +28,15 @@ public class Structure implements IProcessableStructure {
         this.cbrStack = new Stack();
     }
 
-//  ----------------------------------------------------------------------------
-//	NODE FUNCTIONS
-    
     /**
      * This class capsulate the access to the DataFlowNode class. meaningfull?
      */
     public IDataFlowNode addNewNode(SimpleNode node) {
-        DataFlowNode newNode = new DataFlowNode(node, this.dataFlow);
-        return newNode;
+        return new DataFlowNode(node, this.dataFlow);
     }
 
     public IDataFlowNode addStartOrEndNode(int line) {
-        DataFlowNode newNode = new DataFlowNode(this.dataFlow, line);
-        return newNode;
+        return new DataFlowNode(this.dataFlow, line);
     }
 
     public IDataFlowNode getLast() {

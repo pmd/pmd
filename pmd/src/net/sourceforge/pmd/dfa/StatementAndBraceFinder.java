@@ -32,7 +32,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
  */
 public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
-    private Structure dataFlow = null;
+    private Structure dataFlow;
 
 //	----------------------------------------------------------------------------
 

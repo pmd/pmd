@@ -6,8 +6,8 @@ public class StackObject {
     private IDataFlowNode node;
 
     protected StackObject(int type, IDataFlowNode node) {
-        this.setType(type);
-        this.setDataFlowNode(node);
+        this.type = type;
+        this.node = node;
     }
 
     public IDataFlowNode getDataFlowNode() {
@@ -17,13 +17,4 @@ public class StackObject {
     public int getType() {
         return this.type;
     }
-
-    protected void setDataFlowNode(IDataFlowNode node) {
-        this.node = node;
-    }
-
-    protected void setType(int type) {
-        this.type = type;
-    }
-
 }

@@ -56,11 +56,9 @@ public class SequenceChecker {
 		}
 		
 		public Status step(int type) {
-		    
 		    for(int i=0;i<this.nextSteps.size();i++) {
-		        Status tmp = (Status)nextSteps.get(i);
-		        if(type == tmp.type) {
-		            return tmp;
+                if(type == ((Status)nextSteps.get(i)).type) {
+		            return (Status)nextSteps.get(i);
 		        }
 		    }
 		    return null;
@@ -73,8 +71,6 @@ public class SequenceChecker {
 		    return this.nextSteps.size() > 1;
 		}
 	}
-
-//	----------------------------------------------------------------------------
 
 	/*
 	 * Defines the logical structure.
