@@ -37,11 +37,16 @@ import org.openide.loaders.DataObject;
  * @author Ole-Martin Mørk
  * @created 24. oktober 2002
  */
-abstract class FaultRegistry {
+public class FaultRegistry {
 
 	/** The registered faults */
-	private static Map faults = new HashMap();
-
+	private Map faults = new HashMap();
+	private static FaultRegistry instance = new FaultRegistry();
+	private FaultRegistry() {}
+	
+	public static FaultRegistry getInstance() {
+		return instance;
+	}
 
 	/**
 	 * Returns the associated dataobject
@@ -50,13 +55,13 @@ abstract class FaultRegistry {
 	 * @return the associated dataobject
 	 * @see pmd.Fault#getFault()
 	 */
-	public static DataObject getDataObject( String key ) {
+	public DataObject getDataObject( String key ) {
 		return ( DataObject )faults.get( key );
 	}
 
 
 	/** Clears all entries of the registry  */
-	public static void clearRegistry() {
+	public void clearRegistry() {
 		faults.clear();
 	}
 
@@ -68,7 +73,7 @@ abstract class FaultRegistry {
 	 * @param object the object where the fault is
 	 * @see pmd.Fault#getFault()
 	 */
-	public static void registerFault( Fault fault, DataObject object ) {
+	public void registerFault( Fault fault, DataObject object ) {
 		faults.put( fault.getFault(), object );
 	}
 }

@@ -36,7 +36,6 @@ public class RuleEditor extends PropertyEditorSupport {
 		return true;
 	}
 
-
 	/**
 	 * Gets the value attribute of the RuleEditor object
 	 *
@@ -44,10 +43,9 @@ public class RuleEditor extends PropertyEditorSupport {
 	 */
 	public Object getValue() {
 		String string = getValueAsText( SelectedListModel.getSelectedListModelInstance().getData() );
+		//JOptionPane.showMessageDialog( null, string );
 		return string;
 	}
-
-
 	/**
 	 * Gets the asText attribute of the RuleEditor object
 	 *

@@ -159,7 +159,7 @@ public class RunPMDAction extends CookieAction {
 				buffer.append( violation.getDescription() );
 				Fault fault = new Fault( violation.getLine(), name, buffer.toString() );
 				list.add( fault );
-				FaultRegistry.registerFault( fault, dataobject );
+				FaultRegistry.getInstance().registerFault( fault, dataobject );
 			}
 			Collections.sort( list );
 			for( int i = 0; i < list.size(); i++ ) {
@@ -178,7 +178,7 @@ public class RunPMDAction extends CookieAction {
 	protected void performAction( Node[] node ) {
 		PMDOutputListener listener = PMDOutputListener.getInstance();
 		listener.detach();
-		FaultRegistry.clearRegistry();
+		FaultRegistry.getInstance().clearRegistry();
 		try {
 			printed = false;
 			InputOutput io = TopManager.getDefault().getIO( "PMD output", false );

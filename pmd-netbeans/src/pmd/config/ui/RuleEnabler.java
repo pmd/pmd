@@ -6,18 +6,8 @@
 
 package pmd.config.ui;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.beans.PropertyEditorSupport;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.event.ListSelectionEvent;
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -25,7 +15,7 @@ import net.sourceforge.pmd.Rule;
  * @author  ole martin mørk
  */
 public class RuleEnabler extends JPanel {
-	private ArrayList value = new ArrayList();
+
 	private final PropertyEditorSupport editor;
 	public RuleEnabler( PropertyEditorSupport editor ) {
 		this.editor = editor;
@@ -58,7 +48,10 @@ public class RuleEnabler extends JPanel {
         jScrollPane4 = new javax.swing.JScrollPane();
         information = new javax.swing.JEditorPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        example = new javax.swing.JTextPane();
+        example = new javax.swing.JEditorPane();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        properties = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -79,6 +72,12 @@ public class RuleEnabler extends JPanel {
             }
         });
 
+        availableList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                availableListMouseClicked(evt);
+            }
+        });
+
         jScrollPane1.setViewportView(availableList);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -95,6 +94,12 @@ public class RuleEnabler extends JPanel {
         chosenList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 chosenListValueChanged(evt);
+            }
+        });
+
+        chosenList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chosenListMouseClicked(evt);
             }
         });
 
@@ -201,7 +206,7 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         jPanel6.add(jLabel5, gridBagConstraints);
 
@@ -220,7 +225,7 @@ public class RuleEnabler extends JPanel {
         jPanel6.add(jScrollPane4, gridBagConstraints);
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(300, 200));
-        example.setEditable(false);
+        jScrollPane2.setMinimumSize(new java.awt.Dimension(150, 150));
         jScrollPane2.setViewportView(example);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -229,9 +234,31 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.gridheight = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         jPanel6.add(jScrollPane2, gridBagConstraints);
+
+        jScrollPane5.setPreferredSize(new java.awt.Dimension(300, 200));
+        properties.setModel(new PropertiesModel(null));
+        jScrollPane5.setViewportView(properties);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        jPanel6.add(jScrollPane5, gridBagConstraints);
+
+        jLabel7.setText("Properties");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        jPanel6.add(jLabel7, gridBagConstraints);
 
         jPanel3.add(jPanel6);
 
@@ -251,17 +278,30 @@ public class RuleEnabler extends JPanel {
 
     }//GEN-END:initComponents
 
+	private void chosenListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chosenListMouseClicked
+		if( evt.getClickCount() >= 2 ) {
+			removeOneActionPerformed( null );
+		}
+	}//GEN-LAST:event_chosenListMouseClicked
+
+	private void availableListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableListMouseClicked
+		if( evt.getClickCount() >= 2 ) {
+			chooseOneActionPerformed( null );
+		}
+	}//GEN-LAST:event_availableListMouseClicked
+
 	private void chosenListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_chosenListValueChanged
 		Rule rule =  (Rule)chosenList.getSelectedValue();
 		example.setText( rule.getExample().trim());
 		information.setText( rule.getDescription().trim() );
+		properties.setModel( new PropertiesModel( rule ) );
 	}//GEN-LAST:event_chosenListValueChanged
 
 	private void availableListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_availableListValueChanged
 		Rule rule =  (Rule)availableList.getSelectedValue();
 		example.setText( rule.getExample().trim() );
 		information.setText( rule.getDescription().trim() );
-
+		properties.setModel( new PropertiesModel( rule ) );
 	}//GEN-LAST:event_availableListValueChanged
 
 	private void removeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllActionPerformed
@@ -272,6 +312,7 @@ public class RuleEnabler extends JPanel {
 	}//GEN-LAST:event_removeAllActionPerformed
 
 	private void removeOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeOneActionPerformed
+		int index = chosenList.getSelectedIndex();
 		Object object[] = chosenList.getSelectedValues();
 		if( object != null ) {
 			for( int i = 0; i < object.length; i++ ) {
@@ -279,7 +320,15 @@ public class RuleEnabler extends JPanel {
 				AvailableListModel.getInstance().add( object[i] );
 			}
 			editor.firePropertyChange();
+			if( index >= SelectedListModel.getSelectedListModelInstance().getData().size() ) {
+				index = SelectedListModel.getSelectedListModelInstance().getData().size() - 1;
+			}
+			if( index >= 0 ) {
+				chosenList.setSelectedIndex( index );
+				chosenList.requestFocus();
+			}
 		}	
+		
 	}//GEN-LAST:event_removeOneActionPerformed
 
 	private void choseAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choseAllActionPerformed
@@ -289,6 +338,7 @@ public class RuleEnabler extends JPanel {
 	}//GEN-LAST:event_choseAllActionPerformed
 
 	private void chooseOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseOneActionPerformed
+		int index = availableList.getSelectedIndex();
 		Object object[] = availableList.getSelectedValues();
 		if( object != null ) {
 			for( int i = 0; i < object.length; i++ ) {
@@ -296,7 +346,15 @@ public class RuleEnabler extends JPanel {
 				SelectedListModel.getSelectedListModelInstance().add( object[i] );
 			}
 			editor.firePropertyChange();
-		}	
+			if( index >= AvailableListModel.getInstance().getData().size() ) {
+				index = AvailableListModel.getInstance().getData().size() - 1;
+			}
+			if( index >= 0 ) {
+				availableList.setSelectedIndex( index );			
+				availableList.requestFocus();
+			}
+		}
+		
 	}//GEN-LAST:event_chooseOneActionPerformed
 
 	
@@ -304,8 +362,11 @@ public class RuleEnabler extends JPanel {
     private javax.swing.JButton removeAll;
     private javax.swing.JList availableList;
     private javax.swing.JButton chooseOne;
+    private javax.swing.JTable properties;
     private javax.swing.JButton choseAll;
-    private javax.swing.JTextPane example;
+    private javax.swing.JEditorPane example;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel jLabel5;

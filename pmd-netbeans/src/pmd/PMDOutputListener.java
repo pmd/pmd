@@ -78,7 +78,7 @@ public class PMDOutputListener implements OutputListener {
 	 */
 	public void outputLineAction( OutputEvent outputEvent ) {
 		annotation.detach();
-		DataObject object = FaultRegistry.getDataObject( outputEvent.getLine() );
+		DataObject object = FaultRegistry.getInstance().getDataObject( outputEvent.getLine() );
 		LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
 		Set lineset = cookie.getLineSet();
 		int lineNum = Fault.getLineNum( outputEvent.getLine() );

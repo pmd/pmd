@@ -37,7 +37,6 @@ import org.openide.TopManager;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import pmd.config.ui.RuleEditor;
-import pmd.config.ui.RuleEnabler;
 
 /**
  * Description of {@link PMDOptionsSettings}.
@@ -54,17 +53,18 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors() {
 		PropertyEditorManager.registerEditor( PMDOptionsSettingsBeanInfo.class, RuleEditor.class );
+		PropertyDescriptor descriptor[] = new PropertyDescriptor[1];
 		try {
 			PropertyDescriptor rules = new PropertyDescriptor( "rules", PMDOptionsSettings.class, "getRules", "setRules" );
 			rules.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_rules" ) );
 			rules.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_rules" ) );
 			rules.setPropertyEditorClass( RuleEditor.class );
-			return new PropertyDescriptor[]{rules};
+			descriptor[0] = rules;
 		}
 		catch( IntrospectionException ie ) {
 			TopManager.getDefault().getErrorManager().notify( ie );
-			return null;
 		}
+		return descriptor;
 	}
 
 

@@ -129,6 +129,7 @@ public class AvailableListModel extends AbstractListModel {
 	}
 
 	public void refresh() {
+		list.clear();
 		try {
 			RuleSetFactory ruleSetFactory = new RuleSetFactory();
 			Iterator iterator = ruleSetFactory.getRegisteredRuleSets();

@@ -8,7 +8,6 @@ package pmd.config.ui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -33,7 +32,6 @@ public class SelectedListModel extends AvailableListModel {
 	}
 	
 	public void setData( String rules ) {
-		refresh();
 		Iterator iterator = AvailableListModel.getInstance().getData().iterator();
 		while( iterator.hasNext() ) {
 			Rule rule = (Rule)iterator.next();
