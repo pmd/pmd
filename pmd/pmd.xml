@@ -9,7 +9,7 @@ will update documents on the Build Site.
 
 -->
 
-<project name="pmd">
+<project name="pmd" default="pre-build">
   <target name="pre-build"
           depends="JavaCC" />
 
