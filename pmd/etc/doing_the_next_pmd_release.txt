@@ -1,4 +1,5 @@
 update the xdocs:
+-added new ruleset to Ant task - design
 update run.bat to point to pmd-0.3.jar
 update the changelog
 

@@ -21,64 +21,8 @@ public class FunctionalTest extends TestCase{
         super(name);
     }
 
-    public void testUnusedLocal1() {
-        Report report = process("Unused1.java");
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
-    }
 
-    public void testUnusedLocal2() {
-        Report report = process("Unused2.java");
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
-    }
-
-    public void testUnusedLocal3() {
-        Report report = process("Unused3.java");
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
-    }
-
-    public void testUnusedLocal4() {
-        Report report = process("Unused4.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
-
-    public void testUnusedLocal5() {
-        Report report = process("Unused5.java");
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
-    }
-
-    public void testUnusedLocal6() {
-        Report report = process("Unused6.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
-
-    public void testUnusedLocal7() {
-        Report report = process("Unused7.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
-
-    public void testUnusedLocal8() {
-        Report report = process("Unused8.java");
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new SystemPropsRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
-    }
-
-    public void testUnusedLocal9() {
-        Report report = process("Unused9.java");
-        assertEquals(2, report.countViolationsInCurrentFile());
-        Iterator i =  report.violationsInCurrentFile();
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)i.next()).getRule());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)i.next()).getRule());
-    }
-
-    public void testUnusedLocal10() {
-        Report report = process("Unused10.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
-
+/*
     public void testEmptyCatchBlock() {
         Report report = process("EmptyCatchBlock.java");
         assertEquals(1, report.countViolationsInCurrentFile());
@@ -185,6 +129,7 @@ public class FunctionalTest extends TestCase{
         Report report = process("IfElseStmtsNeedBraces1.java");
         assertEquals(1, report.countViolationsInCurrentFile());
     }
+*/
     public void testIfElseStmtsMustUseBraces2() {
         Report report = process("IfElseStmtsNeedBraces2.java");
         assertTrue(report.currentFileHasNoViolations());

@@ -17,8 +17,7 @@ import java.util.ArrayList;
 
 public class PMD {
 		
-	public void processFile(String filename, InputStream is, String ruleSetType, RuleContext ctx) throws FileNotFoundException {
-        List rules = RuleFactory.createRules(ruleSetType);
+    public void processFile(String filename, InputStream is, List rules, RuleContext ctx) throws FileNotFoundException {
         try {
             InputStreamReader reader = new InputStreamReader(is);
             JavaParser parser = new JavaParser(reader);
@@ -37,6 +36,17 @@ public class PMD {
             System.out.println("Error while parsing " + filename + "; "+ t.getMessage() + "; continuing...");
             //t.printStackTrace();
         }
+	}
+
+    public void processFile(String filename, InputStream is, Rule rule, RuleContext ctx) throws FileNotFoundException {
+        List rules = new ArrayList();
+        rules.add(rule);
+        processFile(filename, is, rules, ctx);
+    }
+
+	public void processFile(String filename, InputStream is, String ruleSetType, RuleContext ctx) throws FileNotFoundException {
+        List rules = RuleFactory.createRules(ruleSetType);
+        processFile(filename, is, rules, ctx);
 	}
 
     public void processFile(File file, String ruleSetType, RuleContext ctx) throws FileNotFoundException{
