@@ -122,7 +122,7 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
     public HelpTopic getHelpTopic () {
         return new ZipHelpTopic(
          null,
-         getClass().getResource("/import-ruleset-props.html").toString());
+         getClass().getResource("/html/import-ruleset-props.html").toString());
 
     }
 

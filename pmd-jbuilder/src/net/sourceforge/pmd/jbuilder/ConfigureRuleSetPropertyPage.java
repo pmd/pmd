@@ -77,7 +77,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
     public HelpTopic getHelpTopic() {
         return new ZipHelpTopic(
          null,
-         getClass().getResource("/configure-ruleset-props.html").toString());
+         getClass().getResource("/html/configure-ruleset-props.html").toString());
     }
 
     /**

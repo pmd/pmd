@@ -43,6 +43,8 @@ public class PMDOpenTool {
     public PMDOpenTool () {
     }
 
+
+
     /**
      * Required for JBuilder OpenTool support
      * @param majorVersion major version id
@@ -50,10 +52,13 @@ public class PMDOpenTool {
      */
     public static void initOpenTool (byte majorVersion, byte minorVersion) {
         if (majorVersion == PrimeTime.CURRENT_MAJOR_VERSION) {
+
+
             GROUP_PMD.add(B_ACTION_PMDCheck);
             GROUP_PMD.add(B_ACTION_PMDConfig);
             JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
-
+            JBuilderToolBar.GROUP_RunBar.add(B_ACTION_PMDCheck);
+            JBuilderToolBar.GROUP_RunBar.add(B_ACTION_PMDProjectCheck);
             registerWithContentManager();
             registerWithProjectView();
 
@@ -188,7 +193,7 @@ public class PMDOpenTool {
     //create the Menu action item for initiating the PMD check
     public static BrowserAction B_ACTION_PMDCheck =
             // A new action with short menu string, mnemonic, and long menu string
-    new BrowserAction("PMD Checker", 'P', "Displays PMD statistics about a Java File") {
+    new BrowserAction("PMD Checker", 'P', "Displays PMD statistics about a Java File", new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkFile.gif"))) {
 
         // The function called when the menu is selected
         public void actionPerformed (Browser browser) {
@@ -206,7 +211,8 @@ public class PMDOpenTool {
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project") {
+    public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project",
+            new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkProject.gif"))) {
         public void actionPerformed(Browser browser) {
             pmdCheckProject();
         }
