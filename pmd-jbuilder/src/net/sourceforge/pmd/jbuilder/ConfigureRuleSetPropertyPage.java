@@ -45,6 +45,9 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
     }
 
 
+    /**
+     * This methiod is called by JBuilder
+     */
     public void writeProperties() {
         /**
          * Go through all the ruleSetProperties objects and revalidate them to persist
@@ -55,10 +58,18 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
             rsp.revalidateRules();
         }
     }
+
+    /**
+     * This methiod is called by JBuilder
+     */
     public HelpTopic getHelpTopic() {
         /**@todo Implement this com.borland.primetime.properties.PropertyPage abstract method*/
         throw new java.lang.UnsupportedOperationException("Method getHelpTopic() not yet implemented.");
     }
+
+    /**
+     * This methiod is called by JBuilder
+     */
     public void readProperties() {
         /**
          * Go through all the ruleSetProperties objects and reset them to the
@@ -66,12 +77,15 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
          */
         for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
-            rsp.revalidateRules();
             rsp.resetRuleSelectionState();
         }
         this.listRules.updateUI();
     }
 
+    /**
+     * JBuilder-constructed initialization
+     * @throws Exception
+     */
     private void jbInit() throws Exception {
         this.setLayout(borderLayout1);
         spRuleSets.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Rule Sets"));
@@ -86,6 +100,9 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         splitPaneConfRuleSets.setDividerLocation(200);
     }
 
+    /**
+     * additional intiialzation
+     */
     private void init2() {
         listRules.setCellRenderer(new CheckCellRenderer());
         CheckListener cl = new CheckListener(listRules);
