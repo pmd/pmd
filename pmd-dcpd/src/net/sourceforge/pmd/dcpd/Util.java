@@ -23,4 +23,20 @@ public class Util {
         ServiceMatches sm = registrar.lookup(new ServiceTemplate(null, new Class[] {JavaSpace.class}, new Entry[] {}),  1);
         return (JavaSpace)sm.items[0].service;
     }
+
+    public static void main(String[] args) {
+        try {
+            if (args[0].equals("clearjobs")) {
+                JavaSpace space = Util.findSpace("mordor");
+                while (space.take(new Job(), null, 100) != null) {
+                    System.out.println("take() succeeded");
+                }
+            } else {
+                System.out.println("Usage: clearjobs");
+            }
+            System.out.println("Done");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

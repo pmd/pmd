@@ -30,7 +30,7 @@ public class DCPD {
     public DCPD(String javaSpaceURL) {
         try {
             space = Util.findSpace("mordor");
-            space.write(new Job("test"), null, Lease.FOREVER);
+            space.write(new Job("test", new Integer((int)System.currentTimeMillis())), null, Lease.FOREVER);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't connect to the space on " + javaSpaceURL);

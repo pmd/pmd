@@ -16,17 +16,26 @@ import java.rmi.MarshalledObject;
 
 public class DCPDWorker {
 
+    private Job currentJob;
+
     public DCPDWorker() {
         try {
             JavaSpace space = Util.findSpace("mordor");
+            // register for future jobs
             space.notify(new Job(), null, new JobAddedListener(space, this), Lease.FOREVER, null);
+            // get a job if there are any out there
+            Job job = (Job)space.readIfExists(new Job(), null, 200);
+            if (job != null) {
+                jobAdded(job);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void jobAdded(Job job) {
-        System.out.println("GOT A JOB NAMED " + job.name);
+        System.out.println("GOT A JOB NAMED " + job.name + " , id is " + job.id.intValue());
+        currentJob = job;
     }
 
     public static void main(String[] args) {
