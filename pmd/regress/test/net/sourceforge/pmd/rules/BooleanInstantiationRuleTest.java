@@ -14,7 +14,7 @@ public class BooleanInstantiationRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "BooleanInstantiation");
+        rule = findRule("rulesets/basic.xml", "BooleanInstantiation");
     }
 
     public void testAll() {
