@@ -135,8 +135,8 @@ public class CPDDuplicateCodeViewer  extends JPanel
 
 	public class Duplicate extends DefaultMutableTreeNode
 	{
-		private String filename;
-		private int beginLine, endLine;
+		private final String filename;
+		private final int beginLine, endLine;
 
 		public Duplicate(String filename,int beginLine, int endLine)
 		{

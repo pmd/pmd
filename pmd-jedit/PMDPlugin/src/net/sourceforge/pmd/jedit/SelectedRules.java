@@ -5,7 +5,6 @@
  */
 package net.sourceforge.pmd.jedit;
 
-import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -30,7 +29,7 @@ public class SelectedRules
 {
 
 	// Rule -> JCheckBox
-	private Map rules = new TreeMap(
+	private final Map rules = new TreeMap(
 							new Comparator()
 							{
 								public int compare(Object o1, Object o2)

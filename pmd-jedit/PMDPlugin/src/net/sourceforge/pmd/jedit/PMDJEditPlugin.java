@@ -5,26 +5,22 @@
  */
 package net.sourceforge.pmd.jedit;
 
-import errorlist.DefaultErrorSource;
-import errorlist.ErrorSource;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import javax.swing.border.EtchedBorder;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
-import javax.swing.plaf.basic.BasicProgressBarUI;
-import javax.swing.tree.DefaultMutableTreeNode;
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.plaf.basic.*;
+import javax.swing.tree.*;
+import org.gjt.sp.jedit.*;
+import org.gjt.sp.jedit.browser.*;
+import org.gjt.sp.jedit.io.*;
+import org.gjt.sp.jedit.msg.*;
+import org.gjt.sp.util.*;
+import errorlist.*;
+import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPPLanguage;
 import net.sourceforge.pmd.cpd.FileFinder;
@@ -32,29 +28,10 @@ import net.sourceforge.pmd.cpd.JavaLanguage;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.PHPLanguage;
 import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.renderers.*;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleViolation;
-import org.gjt.sp.jedit.browser.VFSBrowser;
-import org.gjt.sp.jedit.Buffer;
-import org.gjt.sp.jedit.EBMessage;
-import org.gjt.sp.jedit.EBPlugin;
-import org.gjt.sp.jedit.MiscUtilities;
-import org.gjt.sp.jedit.io.VFS;
-import org.gjt.sp.jedit.io.VFSManager;
-import org.gjt.sp.jedit.jEdit;
-import org.gjt.sp.jedit.msg.BufferUpdate;
-import org.gjt.sp.jedit.View;
-import org.gjt.sp.util.Log;
-import javax.swing.JCheckBox;
-import java.awt.GridLayout;
-import javax.swing.BoxLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import net.sourceforge.pmd.renderers.CSVRenderer;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 
 
 public class PMDJEditPlugin extends EBPlugin
@@ -336,7 +313,7 @@ public class PMDJEditPlugin extends EBPlugin
 		boolean foundProblems = false;
 
 		Iterator iter = files.iterator();
-		for (int i=0;iter.hasNext();i++)
+		while(iter.hasNext())
 		{
 			File file = (File)iter.next();
 			//ctx.setReport(new Report());
@@ -699,7 +676,7 @@ public class PMDJEditPlugin extends EBPlugin
 		//"None", "Text", "Html", "XML", "CSV"
 		if(format != null && !format.equals("None"))
 		{
-			Renderer renderer = null;
+			net.sourceforge.pmd.renderers.Renderer renderer = null;
 
 			if (format.equals("XML"))
 			{

@@ -3,12 +3,12 @@
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.name=PMD
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.author=Jiger Patel, Tom Copeland
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=2.5
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=2.6
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.3
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.02.08.00
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.3.2
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-1.9.jar jaxen-core-1.0-fcs.jar saxpath-1.0-fcs.jar pmd-swingui-0.1.jar
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-2.0.jar jaxen-core-1.0-fcs.jar saxpath-1.0-fcs.jar pmd-swingui-0.1.jar
 
 #
 # Menu properties
