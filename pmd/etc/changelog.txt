@@ -1,5 +1,4 @@
 ??? - 0.3:
-test
 
 June 27 2002 - 0.2:
 Added new rules: IfElseStmtsMustUseBracesRule, EmptyWhileStmtRule
