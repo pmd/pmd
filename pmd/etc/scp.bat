@@ -1,3 +1,4 @@
+@echo off
 set CVSROOT=:ext:tomcopeland@cvs.pmd.sourceforge.net:/cvsroot/pmd
 set HOME=c:
 set CVS_RSH=c:\bin\ssh\ssh
