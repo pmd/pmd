@@ -11,15 +11,16 @@
 	<property name="jedit.jars.dir" value="${jedit.install.dir}\jars"/>
 	<property name="install.dir"  value=".."/>
 
-
 	<path id="project.class.path">
 		<pathelement location="${jedit.install.dir}/jedit.jar"/>
 		<pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
-		<pathelement location="${lib}/${pmdjar}"/>
-		<pathelement location="${lib}/jaxen-core-1.0-fcs.jar"/>
-		<pathelement location="${lib}/pmd-swingui-0.1.jar"/>
-		<pathelement location="${lib}/saxpath-1.0-fcs.jar"/>
 		<pathelement location="${build}"/>
+		<fileset id="pmd.libs" dir="${lib}">
+			<include name="${pmdjar}"/>
+			<include name="jaxen-core-1.0-fcs.jar"/>
+			<include name="pmd-swingui-0.1.jar"/>
+			<include name="saxpath-1.0-fcs.jar"/>
+		</fileset>
 	</path>
 
     <target name="delete">
@@ -52,8 +53,9 @@
 
 	<target name="dist">
         <antcall target="jar"/>
-		<copy todir="${install.dir}">
-			<fileset casesensitive="false" dir="${lib}" includes="*.jar"></fileset>
+		<copy todir="${install.dir}" verbose="true">
+			<fileset casesensitive="false" refid="pmd.libs"></fileset>
+			<!-- <fileset casesensitive="false" dir="${lib}" includes="*.jar"></fileset> -->
 		</copy>
 	</target>
 
