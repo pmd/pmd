@@ -11,36 +11,40 @@
 <table>
   <tr><td><b>IDE</b></td>
       <td><b>Package</b></td>
-      <td><b>Maintainer</b></td>
+      <td><b>Maintainers</b></td>
       </tr>
   <tr><td>Eclipse</td>
-      <td>pmd-eclipse</td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-eclipse/">pmd-eclipse</a></td>
       <td>Tom Burke, Philippe Herlin</td>
   </tr>
   <tr><td>Emacs</td>
-      <td>pmd-emacs</td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-emacs/">pmd-emacs</a></td>
       <td>Nascif Abousalh-Neto</td>
   </tr>
   <tr><td>JBuilder</td>
-      <td>pmd-jbuilder</td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jbuilder/">pmd-jbuilder</a></td>
       <td>Dave Craine</td>
   </tr>
   <tr><td>Netbeans/Forte/Sun ONE</td>
-      <td>pmd-netbeans</td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-netbeans/">pmd-netbeans</a></td>
       <td>Ole-Martin Mork, Gunnlaugur Thor Briem</td>
   </tr>
   <tr><td>JEdit</td>
-      <td>pmd-jedit</td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jedit/">pmd-jedit</a></td>
       <td>Jiger Patel</td>
   </tr>
   <tr><td>jDeveloper</td>
-      <td>pmd-jdeveloper</td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jdeveloper/">pmd-jdeveloper</a></td>
       <td>Tom Copeland</td>
   </tr>
   <tr><td>Maven</td>
-      <td>pmd-maven</td>
-      <td>Siegfried Goeschl</td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-maven/">pmd-maven</a></td>
+      <td>Vincent Massol, Siegfried Goeschl</td>
   </tr>
+    <tr><td>Gel</td>
+        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-gel/">pmd-gel</a></td>
+        <td>Tom Copeland</td>
+    </tr>
   <tr><td>IntelliJ IDEA</td>
       <td>N/A</td>
       <td>Tom Copeland</td>
@@ -117,6 +121,49 @@ you can change the plugin to prompt you for a directory to check by going to tha
 selecting the "Ask for Directory" checkbox.</p>
 
       </subsection>
+        <subsection name="Maven">
+  <p>
+  <ul>
+  <li>Copy the downloaded plugin into the Maven plugin directory.</li>
+  <li>Run "maven -g" and look out for documented PMD goals. If you see some then the unpacking succeeded.</li>
+  <li>The PMD plugin can be started through "maven pmd" or integrated by using the following code snippet in
+  maven.xml:</li>
+      <source>
+  <![CDATA[
+  <?xml version="1.0"?>
+   <preGoal name="site:generate">
+      <attainGoal name="pmd"/>
+   </preGoal>
+  ]]>
+      </source>
+  <li>The generated report has to be added manually to the website which is usually done with navigation.xml</li>
+      <source>
+  <![CDATA[
+  <?xml version="1.0"?>
+    <menu name="Custom Reports">
+      <item name="PMD Report" href="/pmd-report.html"/>
+      <!-- Add more custom reports here -->
+    </menu>
+  ]]>
+      </source>
+      <li>Please see <a href="http://sourceforge.net/projects/maven-plugins/">the Maven plugins web site</a> for more information.</li>
+  </ul>
+  </p>
+        </subsection>
+        <subsection name="Gel">
+  <p>Here's how to set up the PMD-Gel plugin:</p>
+  <ul>
+  <li>Download the pmd-gel-[version].zip file</li>
+  <li>Close Gel and remove any old plugin versions from your gel\plugins directory</li>
+  <li>Unzip the new zip file into your gel\plugins directory</li>
+  <li>Start Gel and go to Tools->Options->Plugin</li>
+  <li>Click add and select "net.sourceforge.pmd.gel.PMDPlugin"</li>
+  </ul>
+  <p>That's pretty much it.  Now you can open a Java project and click on Plugins->PMD and
+  PMD will run several of the rulesets on the source code in your project.  Or,
+      if you don't have a project open, PMD will check the current file in the editor.</p>
+    <p>Note that the source code needs to be compilable before PMD can check it.</p>
+        </subsection>
       <subsection name="IDEA">
 <p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA External Tool
 works OK.  Here's how to set it up:</p>
@@ -138,35 +185,6 @@ works OK.  Here's how to set it up:</p>
 be displayed in a window and hyperlinked into the correct file and line of code.  I usually
 right-click on the message window title bar and unselect "autohide" so the window doesn't go
 away every time I fix something in the code window.</p>
-      </subsection>
-      <subsection name="Maven">
-<p>
-<ul>
-<li>Copy the downloaded plugin into the Maven plugin directory.</li>
-<li>Run "maven -g" and look out for documented PMD goals. If you see some then the unpacking succeeded.</li>
-<li>The PMD plugin can be started through "maven pmd" or integrated by using the following code snippet in
-maven.xml:</li>
-    <source>
-<![CDATA[
-<?xml version="1.0"?>
- <preGoal name="site:generate">
-    <attainGoal name="pmd"/>
- </preGoal>
-]]>
-    </source>
-<li>The generated report has to be added manually to the website which is usually done with navigation.xml</li>
-    <source>
-<![CDATA[
-<?xml version="1.0"?>
-  <menu name="Custom Reports">
-    <item name="PMD Report" href="/pmd-report.html"/>
-    <!-- Add more custom reports here -->
-  </menu>
-]]>
-    </source>
-    <li>Please see <a href="http://sourceforge.net/projects/maven-plugins/">the Maven plugins web site</a> for more information.</li>
-</ul>
-</p>
       </subsection>
         <subsection name="jDeveloper">
   <p>To install the jDeveloper plugin, download the binary release and unzip it
