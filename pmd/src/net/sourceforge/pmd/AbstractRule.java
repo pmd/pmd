@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.Iterator;
@@ -121,12 +122,30 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         visitAll(acus, ctx);
     }
 
+    /**
+     * @deprecated use @link #createRuleViolation(RuleContext, Node) instead 
+     */
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber) {
         return new RuleViolation(this, lineNumber, ctx, packageName, className, methodName);
     }
 
+    public RuleViolation createRuleViolation(RuleContext ctx, Node node) {
+        RuleViolation v = new RuleViolation(this, ctx, packageName, className, methodName);
+        extractNodeInfo(v, node);
+        return v;
+    }
+
+    /**
+     * @deprecated use @link #createRuleViolation(RuleContext, Node, String) instead
+     */
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, String specificDescription) {
         return new RuleViolation(this, lineNumber, specificDescription, ctx, packageName, className, methodName);
+    }
+
+    public RuleViolation createRuleViolation(RuleContext ctx, Node node, String specificDescription) {
+        RuleViolation rv = new RuleViolation(this, 0, specificDescription, ctx, packageName, className, methodName);
+        extractNodeInfo(rv, node);
+        return rv;
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, int lineNumber2, String variableName, String specificDescription) {
@@ -195,9 +214,22 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * 
      * @param context the RuleContext
      * @param beginLine begin line of the violation
+     * @deprecated use @link #addViolation(RuleContext, Node) 
      */
     protected final void addViolation(RuleContext context, int beginLine) {
         context.getReport().addRuleViolation(createRuleViolation(context, beginLine));
+    }
+
+    /**
+     * Adds a violation to the report.
+     * if node is an instance of SimpleNode then the line, and begin column and 
+     * end column information is extracted from there.
+     * 
+     * @param context the RuleContext
+     * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
+     */
+    protected final void addViolation(RuleContext context, Node node) {
+        context.getReport().addRuleViolation(createRuleViolation(context, node));
     }
 
     /** 
@@ -212,4 +244,13 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 			return c.getImage();
 		return null;
 	}
+
+    private final void extractNodeInfo(RuleViolation v, Node node) {
+        if (node instanceof SimpleNode) {
+            SimpleNode sn = (SimpleNode)node;
+            v.setLine(sn.getBeginLine());
+            v.setColumnInfo(sn.getBeginColumn(), sn.getEndColumn());
+        }
+    }
+
 }
