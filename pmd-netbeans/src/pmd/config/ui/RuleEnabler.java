@@ -30,7 +30,8 @@ public class RuleEnabler extends JPanel {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jPanel3 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         availableList = new javax.swing.JList();
@@ -49,21 +50,41 @@ public class RuleEnabler extends JPanel {
         information = new javax.swing.JEditorPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         example = new javax.swing.JEditorPane();
+        jLabel7 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
         properties = new javax.swing.JTable();
-        jLabel7 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new java.awt.GridBagLayout());
 
-        jPanel3.setLayout(new java.awt.GridLayout(2, 0, 0, 5));
+        setPreferredSize(new java.awt.Dimension(610, 510));
+        setName("null");
+        setMinimumSize(new java.awt.Dimension(300, 300));
+        jLabel1.setText("Select rules that should be used");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        add(jLabel1, gridBagConstraints);
+
+        jLabel2.setText("See http://pmd.sf.net for more information");
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        add(jLabel2, gridBagConstraints);
 
         jPanel5.setLayout(new java.awt.GridBagLayout());
 
-        jPanel5.setBorder(new javax.swing.border.EtchedBorder());
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(270, 200));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(270, 100));
         availableList.setModel(AvailableListModel.getInstance());
         availableList.setCellRenderer(new ListCell());
         availableList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -83,12 +104,12 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridheight = 4;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel5.add(jScrollPane1, gridBagConstraints);
 
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(270, 200));
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(270, 100));
         chosenList.setModel(SelectedListModel.getSelectedListModelInstance());
         chosenList.setCellRenderer(new ListCell());
         chosenList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -108,25 +129,27 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridheight = 4;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         jPanel5.add(jScrollPane3, gridBagConstraints);
 
         jLabel3.setText("Available rules");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 3);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         jPanel5.add(jLabel3, gridBagConstraints);
 
         jLabel4.setText("Chosen rules");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
         jPanel5.add(jLabel4, gridBagConstraints);
 
         chooseOne.setText(">");
@@ -183,18 +206,21 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 1, 2, 1);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        gridBagConstraints.insets = new java.awt.Insets(0, 1, 0, 1);
         jPanel5.add(removeAll, gridBagConstraints);
 
-        jPanel3.add(jPanel5);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        add(jPanel5, gridBagConstraints);
 
         jPanel6.setLayout(new java.awt.GridBagLayout());
 
-        jPanel6.setBorder(new javax.swing.border.EtchedBorder());
         jLabel6.setText("Information");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
@@ -202,9 +228,9 @@ public class RuleEnabler extends JPanel {
 
         jLabel5.setText("Example");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
@@ -217,11 +243,10 @@ public class RuleEnabler extends JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 2);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         jPanel6.add(jScrollPane4, gridBagConstraints);
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(300, 200));
@@ -229,52 +254,64 @@ public class RuleEnabler extends JPanel {
         jScrollPane2.setViewportView(example);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         jPanel6.add(jScrollPane2, gridBagConstraints);
 
-        jScrollPane5.setPreferredSize(new java.awt.Dimension(300, 200));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        add(jPanel6, gridBagConstraints);
+
+        jLabel7.setText("Properties");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        add(jLabel7, gridBagConstraints);
+
+        jScrollPane5.setPreferredSize(new java.awt.Dimension(600, 50));
+        jScrollPane5.setMinimumSize(new java.awt.Dimension(300, 50));
         properties.setModel(new PropertiesModel(null));
         jScrollPane5.setViewportView(properties);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel6.add(jScrollPane5, gridBagConstraints);
+        add(jScrollPane5, gridBagConstraints);
 
-        jLabel7.setText("Properties");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel6.add(jLabel7, gridBagConstraints);
+        add(jSeparator1, gridBagConstraints);
 
-        jPanel3.add(jPanel6);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        add(jSeparator2, gridBagConstraints);
 
-        add(jPanel3, java.awt.BorderLayout.CENTER);
-
-        jPanel1.setLayout(new java.awt.GridLayout(2, 0));
-
-        jLabel1.setText("Select rules that should be used");
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jPanel1.add(jLabel1);
-
-        jLabel2.setText("See http://pmd.sf.net for more information");
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jPanel1.add(jLabel2);
-
-        add(jPanel1, java.awt.BorderLayout.NORTH);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        add(jSeparator3, gridBagConstraints);
 
     }//GEN-END:initComponents
 
@@ -374,14 +411,15 @@ public class RuleEnabler extends JPanel {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JEditorPane information;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton removeOne;
     private javax.swing.JList chosenList;
     // End of variables declaration//GEN-END:variables
