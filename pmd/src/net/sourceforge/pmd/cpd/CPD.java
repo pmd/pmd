@@ -12,12 +12,6 @@ import java.util.ArrayList;
 
 public class CPD {
 
-    public static class JavaFileOrDirectoryFilter implements FilenameFilter {
-      public boolean accept(File dir, String filename) {
-          return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
-      }
-    }
-
     private TokenSets tokenSets = new TokenSets();
     private CPDListener listener = new CPDNullListener();
     private Results results;
