@@ -1,14 +1,16 @@
-<project name="PMDJEditPlugin" default="clean" basedir="../">
+<project name="PMDJEditPlugin" default="compile" basedir="../">
 
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
 	<property name="lib" value="lib/"/>
 	<property name="build" value="build/"/>
+	<property name="pmdjar" value="pmd-0.5.jar"/>
+	<property name="pluginversion" value="0.4"/>
 	<property name="jedit.install.dir"  value="c:\jedit\jars"/>
 
 
 	<path id="project.class.path">
-		<pathelement location="${lib}/pmd.jar"/>
+		<pathelement location="${lib}/${pmdjar}"/>
 		<pathelement location="${lib}/jedit.jar"/>
 		<pathelement location="${build}"/>
 	</path>
@@ -53,9 +55,9 @@
         <antcall target="jar"/>
         <mkdir dir="tmp/jars"/>
         <copy file="${lib}/${ant.project.name}.jar" todir="tmp/jars"/>
-        <move file="tmp/jars/${ant.project.name}.jar" tofile="tmp/jars/${ant.project.name}-0.3.jar"/>
-        <copy file="${lib}/pmd-0.4.jar" todir="tmp/jars"/>
-        <zip zipfile="pmd-jedit-bin-0.3.zip" basedir="tmp"/>
+        <move file="tmp/jars/${ant.project.name}.jar" tofile="tmp/jars/${ant.project.name}-${pluginversion}.jar"/>
+        <copy file="${lib}/${pmdjar}" todir="tmp/jars"/>
+        <zip zipfile="pmd-jedit-bin-${pluginversion}.zip" basedir="tmp"/>
         <delete dir="tmp"/>
     </target>
 

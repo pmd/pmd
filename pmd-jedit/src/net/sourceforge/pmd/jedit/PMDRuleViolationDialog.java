@@ -55,6 +55,10 @@ public class PMDRuleViolationDialog {
     private RuleViolationListModel rvListModel;
 
     public PMDRuleViolationDialog(Report report) {
+	if (report.isEmpty()) {
+		JOptionPane.showMessageDialog(jEdit.getFirstView(), "No errors found");
+		return;
+	}
         dialog = new JDialog(jEdit.getFirstView(), PMDJEditPlugin.NAME, true);
 
         rvListModel = new RuleViolationListModel(report);

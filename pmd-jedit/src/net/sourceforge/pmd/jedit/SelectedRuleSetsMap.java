@@ -9,8 +9,7 @@ import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
 import java.util.*;
-import java.util.List;
-import java.awt.*;
+import java.awt.Color;
 
 public class SelectedRuleSetsMap {
     private Map selections = new HashMap();
@@ -20,6 +19,7 @@ public class SelectedRuleSetsMap {
         selections.put("unusedcode", createCheckBox("unusedcode"));
         selections.put("design", createCheckBox("design"));
         selections.put("naming", createCheckBox("naming"));
+        selections.put("imports", createCheckBox("imports"));
     }
 
     public Iterator keys() {

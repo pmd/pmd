@@ -54,13 +54,13 @@ public class PMDJEditPlugin extends EBPlugin {
         ctx.setSourceCodeFilename("this");
         try {
             pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
-            PMDRuleViolationDialog dialog = new PMDRuleViolationDialog(ctx.getReport());
+            new PMDRuleViolationDialog(ctx.getReport());
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         }
     }
 
     public void instanceDisplayPreferencesDialog(View view) {
-        PMDOptionPane options = new PMDOptionPane();
+        new PMDOptionPane();
     }
 }
