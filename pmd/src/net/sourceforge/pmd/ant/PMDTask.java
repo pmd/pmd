@@ -187,7 +187,7 @@ public class PMDTask extends Task {
             log(r.render(ctx.getReport()), Project.MSG_INFO);
         }
 
-        if (failOnRuleViolation) {
+        if (failOnRuleViolation && ctx.getReport().size() > 0) {
             throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
         }
     }
