@@ -649,7 +649,7 @@ class Foo {
         message="When instantiating a SimpleDateFormat object, specify a Locale"
         class="net.sourceforge.pmd.rules.XPathRule">
         <description>
-            test
+            Be sure to specify a Locale when creating a new instance of SimpleDateFormat.
         </description>
         <properties>
             <property name="xpath">
@@ -712,8 +712,18 @@ When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
         <example>
     <![CDATA[
 class Foo {
- String x = y.toLowerCase(); // BAD
- String z = a.toLowerCase(Locale.EN); // GOOD
+ // BAD
+ if (x.toLowerCase().equals("list"))...
+ /*
+ This will not match "LIST" when in Turkish locale
+ The above could be
+ if (x.toLowerCase(Locale.US).equals("list")) ...
+ or simply
+ if (x.equalsIgnoreCase("list")) ...
+ */
+
+ // GOOD
+ String z = a.toLowerCase(Locale.EN);
 }
     ]]>
         </example>
