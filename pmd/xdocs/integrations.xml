@@ -194,7 +194,7 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>Double click any line to go to it.</LI>
     </OL></P>
 
-    <P><I>Because directory analysis may take a while, you may choose to cancel this operation.  Do so by closing the (black Command Results) document, and then confirming that, "yes, I do really want to exit the tool".</I></P>
+    <P><I>Because directory analysis may take a while, you may choose to cancel this operation.  Do so by closing the (blank Command Results) document, and then confirming that, "yes, I do really want to exit the tool".</I></P>
 </subsection>
 
         <subsection name="Gel">
