@@ -43,9 +43,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     private void compute(SimpleNode node, String name) {
-
         this.dataFlow = new Structure();
-
         this.dataFlow.addStartOrEndNode(node.getBeginLine()); // START
         this.dataFlow.addNewNode(node);
 
@@ -53,20 +51,16 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         this.dataFlow.addStartOrEndNode(node.getEndLine()); // END
 
+        Linker linker = new Linker(dataFlow);
         try {
-            // links all data flow nodes
-            Linker linker = new Linker(dataFlow);
             linker.computePaths();
         } catch (LinkerException e) {
             e.printStackTrace();
-            // TODO error message
         } catch (SequenceException e) {
             e.printStackTrace();
-            // TODO error message
         }
     }
 
-//  ----------------------------------------------------------------------------
 //  CREATE NODES
 
     public Object visit(ASTStatementExpression node, Object data) {
@@ -163,30 +157,22 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTSwitchStatement node, Object data) {
-
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         super.visit(node, data);
-
         dataFlow.pushOnStack(NodeType.SWITCH_END, dataFlow.getLast());
-
         return data;
     }
 
     public Object visit(ASTSwitchLabel node, Object data) {
-
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         //super.visit(node, data);
-
         if (node.jjtGetNumChildren() == 0) {
             dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
         } else {
             dataFlow.pushOnStack(NodeType.CASE_LAST_STATEMENT, dataFlow.getLast());
         }
-
         return data;
     }
 
