@@ -68,12 +68,20 @@ class Foo {
             <property name="xpath">
                 <value>
         <![CDATA[
-        //ClassDeclaration//MethodDeclarator
-          [@Image = 'equals']
-          [count(FormalParameters/*) = 1 ]
-          [ not (FormalParameters//Type/Name
-                 [@Image = 'Object' or @Image = 'java.lang.Object'])
-          ]
+//MethodDeclarator [
+(
+@Image = 'equals'
+  and count(FormalParameters/*) = 1
+  and not (FormalParameters/FormalParameter/Type/Name
+   [@Image = 'Object' or @Image = 'java.lang.Object'])
+)
+or
+@Image='equal'
+ and count(FormalParameters/*) = 1
+ and (FormalParameters/FormalParameter/Type/Name
+  [@Image = 'Object' or @Image = 'java.lang.Object'])
+         
+]
         ]]>
                     </value>
                  </property>
