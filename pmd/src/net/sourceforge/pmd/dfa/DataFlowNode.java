@@ -123,7 +123,7 @@ public class DataFlowNode implements IDataFlowNode {
         if (node == null) {
             return res + "(SimpleNode is null)";
         }
-        if (!type.isEmpty()) {
+        if (!isEmptyBitSet(type)) {
             String tmp = type.toString();
             String newTmp = "";
             for (int i=0; i<tmp.length(); i++) {
@@ -138,5 +138,21 @@ public class DataFlowNode implements IDataFlowNode {
         res += ": " + this.node.getClass().toString();
         res += (node.getImage() == null ? "" : "(" + this.node.getImage() + ")");
         return res;
+    }
+
+    // TODO Remove when minimal runtime support is >= JDK 1.4
+    private static final BitSet EMPTY_BITSET = new BitSet();
+    private static boolean isEmptyBitSet(BitSet bitSet) {
+        boolean empty = false;
+        try {
+            // Compatible with >= JDK 1.4
+            if (BitSet.class.getMethod("isEmpty", null) != null) {
+				    empty = bitSet.isEmpty();
+            }
+        } catch (NoSuchMethodException nsme) {
+            // Compatible with < JDK 1.4
+            empty = bitSet.equals(EMPTY_BITSET);
+        }
+        return empty;
     }
 }

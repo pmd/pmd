@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Ryan Gustafson - patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
             <li>Eric Olander - AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Matthias Kerkhoff - bug report</li>
             <li>Benoit Xhenseval - several bug reports</li>

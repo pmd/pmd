@@ -2,7 +2,10 @@ package net.sourceforge.pmd.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class ReportTree {
 
@@ -107,11 +110,25 @@ public class ReportTree {
      */
     public void addRuleViolation(RuleViolation violation) {
         String pack = violation.getPackageName();
-        String[] a;
+        String[] a = {};
         if (pack == null) {
             a = new String[]{""};
         } else if (pack.indexOf(".") != -1) {
-            a = pack.split("\\.");
+            // TODO Remove when minimal runtime support is >= JDK 1.4
+            try {
+                if (String.class.getMethod("split", new Class[]{String.class}) != null) {
+                    // Compatible with >= JDK 1.4
+                    a = pack.split("\\.");
+                }
+            } catch (NoSuchMethodException nsme) {
+                // Compatible with < JDK 1.4
+                StringTokenizer toker = new StringTokenizer(pack, ".");
+                List parts = new ArrayList();
+                while (toker.hasMoreTokens()) {
+                    parts.add(toker.nextToken());
+                }
+                a = (String[])parts.toArray(new String[parts.size()]);
+            }
         } else {
             a = new String[]{pack};
         }
@@ -149,7 +166,7 @@ public class ReportTree {
             this.level.add(tmp);
         }
     }
-
+    
     /**
      * Checks if node is a child of the level node.
      */

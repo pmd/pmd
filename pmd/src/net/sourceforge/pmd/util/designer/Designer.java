@@ -126,9 +126,17 @@ public class Designer {
 
         JTabbedPane tabbed = new JTabbedPane();
         tabbed.addTab("Abstract Syntax Tree / XPath", resultsSplitPane);
-        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
         tabbed.addTab("Data Flow Analysis", dfaPanel);
-        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
+        // TODO Remove when minimal runtime support is >= JDK 1.4
+        try {
+            if (JTabbedPane.class.getMethod("setMnemonicAt", new Class[]{Integer.TYPE, Integer.TYPE}) != null) {
+                // Compatible with >= JDK 1.4
+                tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+                tabbed.setMnemonicAt(1, KeyEvent.VK_D);
+            }
+        } catch (NoSuchMethodException nsme) {
+            // Ok, means we're running < JDK 1.4
+        }
 
         JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, tabbed);
 
