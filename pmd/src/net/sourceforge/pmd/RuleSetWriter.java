@@ -1,11 +1,11 @@
 package net.sourceforge.pmd;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Properties;
 
 /**
  * Writes an XML file containing information about rule set and each rule within the rule set.
@@ -17,39 +17,21 @@ import java.util.Map;
 public class RuleSetWriter
 {
 
-    private String m_fileName;
-    private PrintWriter m_writer;
+    private PrintStream m_outputStream;
     private StringBuffer m_line = new StringBuffer(500);
     private int m_indent;
 
     /**
-     ******************************************************************************
+     *******************************************************************************
      *
-     * @param fileName
-     *
-     * @throws FileNotFoundException
+     * @param outputStream
      */
-    public RuleSetWriter(String fileName)
-        throws PMDException
+    public RuleSetWriter(OutputStream outputStream)
     {
-        try
-        {
-            m_fileName = fileName;
-            m_writer = new PrintWriter(new FileOutputStream(fileName));
+        m_outputStream = new PrintStream(outputStream);
 
-            m_line.append("<?xml version=\"1.0\" ?>");
-        }
-        catch (FileNotFoundException exception)
-        {
-            String template = "Could not create file \"{0}\".  The file path may be incorrect.";
-            Object[] args = {fileName};
-            String message = MessageFormat.format(template, args);
-            PMDException pmdException = new PMDException(message, exception);
-
-            pmdException.fillInStackTrace();
-
-            throw pmdException;
-        }
+        m_line.append("<?xml version=\"1.0\" ?>");
+        outputLine();
     }
 
     /**
@@ -64,8 +46,8 @@ public class RuleSetWriter
         setupNewLine();
         m_line.append("<ruleset name=\"");
         m_line.append(ruleSet.getName());
-        m_line.append("\" >");
-        writeLine();
+        m_line.append("\">");
+        outputLine();
 
         // <description>
         //    xxxxxxxxx
@@ -74,10 +56,20 @@ public class RuleSetWriter
         writeDescription(ruleSet.getDescription());
         outdent();
 
+        //
+        // Write each rule.
+        //
+        Iterator rules = ruleSet.getRules().iterator();
+
+        while (rules.hasNext())
+        {
+            write((Rule) rules.next());
+        }
+
         // </ruleset>
         setupNewLine();
         m_line.append("</ruleset>");
-        writeLine();
+        outputLine();
         outdent();
     }
 
@@ -86,10 +78,10 @@ public class RuleSetWriter
      *
      * @param rule
      */
-    public void write(Rule rule)
+    private void write(Rule rule)
     {
         // Write a blank line to separate rules for easier reading.
-        m_writer.write("");
+        m_outputStream.println("");
 
         // <rule name="xxxxxx"
         indent();
@@ -97,7 +89,7 @@ public class RuleSetWriter
         m_line.append("<rule name=\"");
         m_line.append(rule.getName());
         m_line.append('"');
-        writeLine();
+        outputLine();
 
         // message="xxxxxx"
         m_indent += 6;
@@ -105,21 +97,21 @@ public class RuleSetWriter
         m_line.append("message=\"");
         m_line.append(rule.getMessage());
         m_line.append('"');
-        writeLine();
+        outputLine();
 
         // class="xxxx"
         setupNewLine();
         m_line.append("class=\"");
         m_line.append(rule.getClass().getName());
         m_line.append('"');
-        writeLine();
+        outputLine();
 
         // include="yes"
         setupNewLine();
         m_line.append("include=\"");
         m_line.append(rule.isInclude() ? "true" : "false");
-        m_line.append("\" >");
-        writeLine();
+        m_line.append("\">");
+        outputLine();
         m_indent -= 6;
 
         // <description>
@@ -146,7 +138,7 @@ public class RuleSetWriter
         // </ruleset>
         setupNewLine();
         m_line.append("</rule>");
-        writeLine();
+        outputLine();
         outdent();
     }
 
@@ -160,25 +152,21 @@ public class RuleSetWriter
         // <description>
         setupNewLine();
         m_line.append("<description>");
-        writeLine();
+        outputLine();
 
         {
             // xxxxxxxx
             indent();
-
-            for (int n = 0; n < description.length(); n += 50)
-            {
-                setupNewLine();
-                m_line.append(description.substring(n, n + 50));
-                writeLine();
-            }
-
+            setupNewLine();
+            m_line.append(description);
+            outputLine();
             outdent();
         }
 
         // </description>
         setupNewLine();
-        m_line.append("</description");
+        m_line.append("</description>");
+        outputLine();
     }
 
     /**
@@ -191,31 +179,27 @@ public class RuleSetWriter
         // <example>
         setupNewLine();
         m_line.append("<example>");
-        writeLine();
+        outputLine();
 
         {
             // xxxxxxxx
             indent();
-
-            int beginIndex = 0;
-            int endIndex = example.indexOf('\n');
-
-            while (beginIndex < example.length())
-            {
-                setupNewLine();
-                m_line.append(example.substring(beginIndex, endIndex));
-                writeLine();
-
-                beginIndex = endIndex + 1;
-                endIndex = example.indexOf('\n', beginIndex);
-            }
-
+            setupNewLineWithoutIndent();
+            m_line.append("<![CDATA[");
+            outputLine();
+            setupNewLineWithoutIndent();
+            m_line.append(example);
+            outputLine();
+            setupNewLineWithoutIndent();
+            m_line.append("]]>");
+            outputLine();
             outdent();
         }
 
         // </description>
         setupNewLine();
-        m_line.append("</description");
+        m_line.append("</example>");
+        outputLine();
     }
 
     /**
@@ -227,26 +211,32 @@ public class RuleSetWriter
     {
         // <properties>
         setupNewLine();
-        m_line.append("properties");
-        writeLine();
+        m_line.append("<properties>");
+        outputLine();
+        indent();
 
-        Map properties = rule.getProperties();
-        Iterator iterator = properties.keySet().iterator();
+        Properties properties = rule.getProperties();
+        Enumeration keys = properties.keys();
 
-        while (iterator.hasNext())
+        while (keys.hasMoreElements())
         {
-            String propertyName = (String) iterator.next();
-            String propertyValue = (String) properties.get(propertyName);
+            String propertyName = (String) keys.nextElement();
+            String propertyValue = properties.getProperty(propertyName);
 
             // <property name="xxxxx" value="yyyyy" />
-            indent();
             setupNewLine();
             m_line.append("<property name=\"");
             m_line.append(propertyName);
             m_line.append("\" value=\"");
             m_line.append(propertyValue);
-            m_line.append("\" >");
+            m_line.append("\"/>");
+            outputLine();
         }
+
+        outdent();
+        setupNewLine();
+        m_line.append("</properties>");
+        outputLine();
     }
 
     /**
@@ -286,18 +276,17 @@ public class RuleSetWriter
      *******************************************************************************
      *
      */
-    private void writeLine()
+    private void setupNewLineWithoutIndent()
     {
-        m_line.append('\n');
-        m_writer.write(m_line.toString());
+        m_line.setLength(0);
     }
 
     /**
      *******************************************************************************
      *
      */
-    public void finished()
+    private void outputLine()
     {
-        m_writer.close();
+        m_outputStream.println(m_line.toString());
     }
 }

@@ -1,7 +1,6 @@
 package net.sourceforge.pmd;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -20,29 +19,37 @@ import org.xml.sax.SAXException;
  * @since August 30, 2002
  * @version $Revision$, $Date$
  */
-class RuleSetReader
+public class RuleSetReader
 {
 
     private String m_fileName;
+    private RuleSet m_ruleSet;
+    private InputStream m_inputStream;
 
     /**
      *****************************************************************************
      *
-     * @param fileName
      */
-    public RuleSetReader(String fileName)
+    public RuleSetReader(InputStream inputStream)
+    {
+        m_inputStream = inputStream;
+    }
+
+    /**
+     *****************************************************************************
+     *
+     * @param inputStream
+     */
+    public RuleSet read()
         throws PMDException
     {
-        FileReader reader = null;
-
         try
         {
             InputSource inputSource;
             MainContentHandler mainContentHandler;
             SAXParser parser;
 
-            reader = new FileReader(fileName);
-            inputSource = new InputSource(reader);
+            inputSource = new InputSource(m_inputStream);
             mainContentHandler = new MainContentHandler();
             parser = new SAXParser();
 
@@ -50,16 +57,8 @@ class RuleSetReader
             parser.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
             parser.setFeature("http://xml.org/sax/features/namespaces", false);
             parser.parse(inputSource);
-        }
-        catch (FileNotFoundException exception)
-        {
-            String template = "Could not read file \"{0}\".  The file does not exist or the path may be incorrect.";
-            Object[] args = {fileName};
-            String message = MessageFormat.format(template, args);
-            PMDException pmdException = new PMDException(message, exception);
 
-            pmdException.fillInStackTrace();
-            throw pmdException;
+            return m_ruleSet;
         }
         catch (IOException exception)
         {
@@ -92,20 +91,6 @@ class RuleSetReader
 
             throw pmdException;
         }
-        finally
-        {
-            if (reader != null)
-            {
-                try
-                {
-                    reader.close();
-                }
-                catch (IOException exception)
-                {
-                    exception.printStackTrace();
-                }
-            }
-        }
     }
 
     /**
@@ -117,7 +102,6 @@ class RuleSetReader
     {
 
         private StringBuffer m_buffer = new StringBuffer(500);
-        private RuleSet m_ruleSet;
         private Rule m_rule;
 
         /**
@@ -162,7 +146,6 @@ class RuleSetReader
                 String message;
                 String className;
                 String include;
-                Rule rule;
 
                 ruleName = attributes.getValue("name");
                 message = attributes.getValue("message");
@@ -188,7 +171,7 @@ class RuleSetReader
 
                 try
                 {
-                    rule = (Rule) Class.forName(className).newInstance();
+                    m_rule = (Rule) Class.forName(className).newInstance();
                 }
                 catch (ClassNotFoundException exception)
                 {
@@ -227,10 +210,23 @@ class RuleSetReader
                     throw saxException;
                 }
 
-                rule.setName(ruleName);
-                rule.setMessage(message);
-                rule.setInclude(Boolean.getBoolean(include));
+                m_rule.setName(ruleName);
+                m_rule.setMessage(message);
+                m_rule.setInclude(Boolean.getBoolean(include));
                 m_ruleSet.addRule(m_rule);
+            }
+            else if (qualifiedName.equalsIgnoreCase("property"))
+            {
+                String name = attributes.getValue("name");
+                String value = attributes.getValue("value");
+
+                name = (name == null) ? "" : name.trim();
+                value = (value == null) ? "" : value;
+
+                if (name.length() > 0)
+                {
+                    m_rule.addProperty(name, value);
+                }
             }
         }
 
@@ -264,21 +260,99 @@ class RuleSetReader
             {
                 if (m_rule == null)
                 {
-                    m_ruleSet.setDescription(m_buffer.toString());
+                    m_ruleSet.setDescription(trim(m_buffer));
                 }
                 else
                 {
-                    m_rule.setDescription(m_buffer.toString());
+                    m_rule.setDescription(trim(m_buffer));
                 }
+            }
+            else if (qualifiedName.equalsIgnoreCase("message"))
+            {
+                m_rule.setMessage(trim(m_buffer));
             }
             else if (qualifiedName.equalsIgnoreCase("example"))
             {
-                m_rule.setExample(m_buffer.toString());
+                m_rule.setExample(trimExample(m_buffer));
             }
             else if (qualifiedName.equalsIgnoreCase("rule"))
             {
                 m_rule = null;
             }
+        }
+
+        /**
+         ***************************************************************************
+         */
+        private String trim(StringBuffer buffer)
+        {
+            if (buffer.length() > 0)
+            {
+                for (int n = 0; n < buffer.length(); n++)
+                {
+                    char theChar = buffer.charAt(n);
+
+                    if (theChar == '\n')
+                    {
+                        buffer.deleteCharAt(n);
+
+                        n--;
+                    }
+                    else if (n == 0)
+                    {
+                        if (theChar == ' ')
+                        {
+                            buffer.deleteCharAt(n);
+
+                            n--;
+                        }
+                    }
+                    else if ((theChar == ' ') && (buffer.charAt(n - 1) == ' '))
+                    {
+                        buffer.deleteCharAt(n);
+
+                        n--;
+                    }
+                }
+
+                int newLength = buffer.length();
+
+                for (int n = buffer.length() - 1; n >= 0; n--)
+                {
+                    if (buffer.charAt(n) != ' ')
+                    {
+                        break;
+                    }
+
+                    newLength--;
+                }
+
+                buffer.setLength(newLength);
+            }
+
+            return buffer.toString();
+        }
+
+        /**
+         ***************************************************************************
+         */
+        private String trimExample(StringBuffer buffer)
+        {
+            while ((buffer.length() > 0) && ((buffer.charAt(0) == '\n') || (buffer.charAt(0) == ' ')))
+            {
+                buffer.deleteCharAt(0);
+            }
+
+            for (int n = buffer.length() - 1; n >= 0; n--)
+            {
+                if ((buffer.charAt(n) != '\n') && (buffer.charAt(n) != ' '))
+                {
+                    buffer.setLength(n + 1);
+                    break;
+                }
+            }
+
+            return buffer.toString();
         }
     }
 }
