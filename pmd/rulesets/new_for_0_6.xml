@@ -25,6 +25,7 @@ public void doSomething() {
   // 495 copies omitted for brevity.
 }
 ]]>
+   </example>
 
  </rule>
 
@@ -36,6 +37,7 @@ Long Class files are indications that the class may be trying to
 do too much.  Try to break it down, and reduce the size to something
 managable.
    </description>
+   <example>
 <![CDATA[
 public class Foo {
   public void bar() {
@@ -47,6 +49,7 @@ public class Foo {
   }
 }
 ]]>
+   </example>
  </rule>
 
 
