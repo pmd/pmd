@@ -7,6 +7,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.cpd.CPD;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,51 +16,36 @@ import java.util.Set;
 
 public class SimpleNodeTest extends ParserTst {
 
+    private static final String METHOD_DIFF_LINES =
+    "public class Test {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  int x;" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
     public void testMethodDiffLines() throws Throwable {
-        String javaCode = "public class Test {\n";
-        javaCode += "  public void helloWorld() \n"; // Line 2, Col 3
-        javaCode += "  { System.err.println(\"Hello World\"); \n";
-        javaCode += " } \n"; // Line 4, Col 2
-        javaCode += "}";
-
-        Set methods = getNodes(ASTMethodDeclaration.class, javaCode);
+        Set methods = getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
         Iterator iter = methods.iterator();
-        assertTrue(iter.hasNext());
-        verifyNode((SimpleNode) iter.next(), 2, 3, 4, 2);
+        verifyNode((SimpleNode) iter.next(), 2, 2, 4, 2);
     }
 
-    public void testMethodSameColumn() throws Throwable {
-        String javaCode = "public class Test {\n";
-        javaCode += "public void helloWorld() {\n"; // Line 2, Col 1
-        javaCode += "} \n"; // Line 3, Col 1
-        javaCode += "}\n";
-
-        Set methods = getNodes(ASTMethodDeclaration.class, javaCode);
-        Iterator iter = methods.iterator();
-        assertTrue(iter.hasNext());
-        verifyNode((SimpleNode) iter.next(), 2, 1, 3, 1);
-    }
+    private static final String METHOD_SAME_LINE =
+    "public class Test {" + CPD.EOL +
+    " public void foo() {}" + CPD.EOL +
+    "}";
 
     public void testMethodSameLine() throws Throwable {
-        String javaCode = "public class Test {\n";
-        javaCode += "  public void helloWorld() {}\n"; // 2, 3 -> 2, 29
-        javaCode += "}\n";
-
-        Set methods = getNodes(ASTMethodDeclaration.class, javaCode);
+        Set methods = getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
         Iterator iter = methods.iterator();
-        assertTrue(iter.hasNext());
-        verifyNode((SimpleNode) iter.next(), 2, 3, 2, 29);
+        verifyNode((SimpleNode) iter.next(), 2, 2, 2, 21);
     }
 
 
     public void testNoLookahead() throws Throwable {
-        String javaCode = "public class Foo { }\n"; // 1, 8 -> 1, 20
-
-        Set uCD = getNodes(ASTUnmodifiedClassDeclaration.class, javaCode);
+        String code = "public class Foo { }"; // 1, 8 -> 1, 20
+        Set uCD = getNodes(ASTUnmodifiedClassDeclaration.class, code);
         Iterator iter = uCD.iterator();
-        assertTrue(iter.hasNext());
         verifyNode((SimpleNode) iter.next(), 1, 8, 1, 20);
-
     }
 
     public void testNames() throws Throwable {
@@ -71,9 +57,9 @@ public class SimpleNodeTest extends ParserTst {
         while (i.hasNext()) {
             SimpleNode node = (SimpleNode) i.next();
             if (node.getImage().equals("java.io.File")) {
+                // bug!  should begin at column 8
                 verifyNode(node, 1, 16, 1, 19);
             }
-
         }
     }
 
