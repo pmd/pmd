@@ -16,6 +16,7 @@ public class PMDTask extends Task {
     private String reportFile;
     private boolean verbose;
     private String ruleSetType;
+    private String format;
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
@@ -32,7 +33,11 @@ public class PMDTask extends Task {
     public void setReportFile(String reportFile) {
         this.reportFile = reportFile;
     }
-    
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
     public void execute() throws BuildException {
         if (reportFile == null) {
             throw new BuildException("No report file specified");
@@ -51,7 +56,13 @@ public class PMDTask extends Task {
                 PMD pmd = new PMD();
                 Report report = pmd.processFile(file, ruleSetType);
                 if (!report.empty()) {
-                    buf.append(report.renderToText());
+                    if (format.equals("xml")) {
+                        buf.append(report.renderToXML());
+                    } else if (format.equals("text")) {
+                        buf.append(report.renderToText());
+                    } else {
+                        throw new BuildException("Report format must be either 'text' or 'xml'; you specified " + format);
+                    }
                     buf.append(System.getProperty("line.separator"));
                 }
             }

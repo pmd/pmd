@@ -25,7 +25,22 @@ public class Report {
         }
         return buf.toString();
     }
-    
+
+    public String renderToXML() {
+        StringBuffer buf = new StringBuffer();
+        for (Iterator iterator = violations.iterator(); iterator.hasNext();) {
+            if (buf.length() != 0) {
+                buf.append(System.getProperty("line.separator"));
+            }
+            RuleViolation violation = (RuleViolation) iterator.next();
+            buf.append("<ruleviolation>");
+            buf.append("<file>" + filename + "</file>");
+            buf.append(violation.getXML());
+            buf.append("</ruleviolation>");
+        }
+        return "<pmd>" + System.getProperty("line.separator") + buf.toString() + System.getProperty("line.separator") + "</pmd>";
+    }
+
     public boolean empty() {
         return violations.size() == 0;
     }

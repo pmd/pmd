@@ -28,8 +28,8 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.PMDTask"/>
-        <pmd reportFile="c:\foo.txt" verbose="false" rulesettype="general">
-            <fileset dir="c:\j2sdk1.4.0\src\">
+        <pmd reportFile="c:\jdk.xml" verbose="false" rulesettype="general" format="xml">
+            <fileset dir="c:\j2sdk1.4.0\src">
                 <include name="**/*.java"/>
             </fileset>
         </pmd>

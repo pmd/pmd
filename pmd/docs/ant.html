@@ -28,13 +28,18 @@ Runs a set of PMD rules on a set of files and generates a report.
     <td valign="top">The set of rules to use (all, general, cougaar)</td>
     <td valign="top" align="center">Yes</td>
   </tr>
+  <tr>
+    <td valign="top">format</td>
+    <td valign="top">The report format (xml, text)</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
 </table>
 <br>
 <h3>Examples</h3>
 <pre>
     &lt;target name="pmd"&gt;
         &lt;taskdef name="pmd" classname="net.sourceforge.pmd.PMDTask"/&gt;
-        &lt;pmd reportFile="c:\foo.txt" verbose="false" rulesettype="general"&gt;
+        &lt;pmd reportFile="c:\foo.txt" verbose="false" rulesettype="general" format="xml"&gt;
             &lt;fileset dir="c:\j2sdk1.4.0\src\"&gt;
                 &lt;include name="**/*.java"/&gt;
             &lt;/fileset&gt;

@@ -19,11 +19,20 @@ public class RuleViolationTest extends TestCase {
         assertTrue(r.getText().indexOf("name") != -1);
     }
 
-    public void testBasic2() {
+    public void testGetText() {
         RuleViolation r = new RuleViolation(new Rule() {
             public String getName() {return "name";}
             public String getDescription()  {return "desc";}
         }, 2, "foo");
         assertTrue(r.getText().indexOf("foo") != -1);
+    }
+
+    public void testXML() {
+        RuleViolation r = new RuleViolation(new Rule() {
+            public String getName() {return "name";}
+            public String getDescription()  {return "desc";}
+        }, 2, "foo");
+        assertTrue(r.getXML().indexOf("foo") != -1);
+        assertTrue(r.getXML().indexOf("2") != -1);
     }
 }

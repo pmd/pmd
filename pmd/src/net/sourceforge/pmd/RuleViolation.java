@@ -5,7 +5,7 @@ public class RuleViolation {
 
     private int line;
     private Rule rule;
-    private String specificDescription;
+    private String description;
 
     public RuleViolation(Rule rule, int line) {
         this(rule, line, rule.getDescription());
@@ -14,14 +14,21 @@ public class RuleViolation {
     public RuleViolation(Rule rule, int line, String specificDescription) {
         this.line = line;
         this.rule = rule;
-        this.specificDescription = specificDescription;
+        this.description = specificDescription;
     }
 
     public String getText() {
-        return rule.getName() +":" + specificDescription + ":" + line;
+        return rule.getName() +":" + description + ":" + line;
     }
 
     public Rule getRule() {
         return rule;
+    }
+
+    public String getXML() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("<line>" + Integer.toString(line) + "</line>");
+        buf.append("<description>" + description + "</description>");
+        return buf.toString();
     }
 }
