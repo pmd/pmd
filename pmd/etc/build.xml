@@ -60,9 +60,9 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="rulesets/unusedcode.xml">
-            <formatter type="xml" toFile="c:\foo.xml"/>
-            <fileset dir="c:\j2sdk1.4.1_01\src\java\lang">
+        <pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
+            <formatter type="xml" toFile="foo.xml"/>
+            <fileset dir="/home/tom/data/pmd/pmd/src">
                 <include name="**/*.java"/>
             </fileset>
         </pmd>

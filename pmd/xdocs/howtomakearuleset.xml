@@ -44,7 +44,18 @@ Say you want to pick specific rules from various rule sets.  You can do this by 
     </source>
     </subsection>
     <subsection name="Reference it in your Ant task">
-    <p>Just like you would a built-in ruleset.</p>
+    <p>You can specify the full path to your custom ruleset name alongside
+        of the built-in PMD rulesets - like this:</p>
+<source>
+    <![CDATA[
+    <pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
+        <formatter type="xml" toFile="foo.xml"/>
+        <fileset dir="/home/tom/data/pmd/pmd/src">
+            <include name="**/*.java"/>
+        </fileset>
+    </pmd>
+    ]]>
+</source>
     </subsection>
     <subsection name="To see it in your IDE, add it to rulesets/rulesets.properties">
     <p>At least, that's the way some of the IDE plugins do it.  Some

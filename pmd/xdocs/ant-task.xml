@@ -52,7 +52,7 @@
     </tr>
     <tr>
       <td valign="top">verbose</td>
-       <td valign="top">Verbose output - names of files processed, rule counts, etc.</td>
+       <td valign="top">Verbose output - names of files processed, rule counts, full stacktraces, etc.</td>
       <td valign="top" align="center">No</td>
     </tr>
 </table>

@@ -17,11 +17,22 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
             <li>You'll also need an Ant 1.5.1 jar file to compile against because PMD includes an
         Ant task as part of the core distribution.  You can get Ant binary
         releases <a href="http://ant.apache.org/bindownload.cgi">here</a>.</li>
-            <li>PMD has a slew of JUnit tests, so you'll need a JUnit 3.8.1 binary release.  You
-                can get that from <a href="http://www.junit.org/">here</a>.</li>
+            <li>PMD has a slew of JUnit tests, so you'll need a JUnit 3.8.1 binary release if you want
+                to run the tests.  And of course you do, so you can get JUnit
+                from <a href="http://www.junit.org/">here</a>.</li>
         </ul>
     </p>
     </subsection>
+
+        <subsection name="Figure out what you want to look for">
+            <p>There are two way to write rules:</p>
+            <ul>
+                <li>Write a Java class</li>
+                <li>Write an XPath expression</li>
+            </ul>
+            <p>We'll cover the Java class first and the XPath second.  Most of this documentation is applicable
+ to both methods, too, so read on.</p>
+        </subsection>
     <subsection name="Figure out what you want to look for">
     <p>
     Lets's figure out what problem we want to spot.   We can use "While loops must use braces" as an example.
@@ -44,7 +55,8 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
 
     <subsection name="Write a test-data example and look at the AST">
     <p>
-    PMD doesn't use the source code directly; it uses a <code>JavaCC</code> generated parser to parse the source code and
+    PMD doesn't use the source code directly; it uses a <code>JavaCC</code>
+        generated parser to parse the source code and
     produce an AST (Abstract Syntax Tree).  The AST for the code above looks like this:
     </p>
     <source>
@@ -79,12 +91,14 @@ CompilationUnit
     <p>
     You can generate this yourself by:
     <ul>
-    <li>Run the batch file etc/astviewer.bat (note that you'll need a pmd.jar file in your CLASSPATH somewhere to use this utility)</li>
+    <li>Run the batch file etc/astviewer.bat</li>
     <li>Paste the code into the left pane and click the button at the bottom of the screen</li>
+    <li>There's another panel and a textfield to test out XPath expressions; more on that later.</li>
     </ul>
     </p>
     <p>
-    So you can see in the example above that the AST for a <code>WhileStatement</code> looks kind of like this (excluding that expression gibberish for clarity):
+    So you can see in the example above that the AST for a <code>WhileStatement</code>
+        looks kind of like this (excluding that expression gibberish for clarity):
     </p>
     <source>
 <![CDATA[
@@ -95,7 +109,8 @@ WhileStatement
 ]]>
     </source>
     <p>
-    If you were to add curly braces and run the go.bat file again, you'd see that the AST would change a bit.  It'd look like this:
+    If you were to add curly braces and click &quot;Go&quot; again, you'd see that the
+        AST would change a bit.  It'd look like this:
     </p>
     <source>
 <![CDATA[
@@ -109,8 +124,10 @@ WhileStatement
 ]]>
     </source>
     <p>
-    Ah ha!  We see that the curly braces add a couple more AST elements - a <code>Block</code> and a <code>BlockStatement</code>.  So all we have
-    to do is write a rule to detect a <code>WhileStatement</code> that has a <code>Statement</code> that's not followed by a <code>Block</code>, and we've got a rule violation.
+    Ah ha!  We see that the curly braces add a couple more AST elements - a <code>Block</code>
+        and a <code>BlockStatement</code>.  So all we have
+    to do is write a rule to detect a <code>WhileStatement</code> that
+        has a <code>Statement</code> that's not followed by a <code>Block</code>, and we've got a rule violation.
     </p>
     </subsection>
 
@@ -126,7 +143,8 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </source>
     <p>
     That was easy.  PMD works by creating the AST and then traverses it recursively so a rule can get a callback
-    for any type it's interested in.  So let's make sure our rule gets called whenever the AST traversal finds a <code>WhileStatement</code>:
+    for any type it's interested in.  So let's make sure our rule gets called whenever
+        the AST traversal finds a <code>WhileStatement</code>:
     </p>
     <source>
 <![CDATA[
@@ -148,24 +166,52 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     <p>
     Now our rule is written - at least, the shell of it is - and now we need to tell PMD about it.  We need
     to add it to a rule set XML file.  Look at <code>rulesets/basic.xml</code>; it's got lots of rule definitions in it.
-    Copy and paste one of these rules, then fill in the elements and attributes:
+    Copy and paste one of these rules into a new ruleset - call it mycustomrules.xml or something.
+        Then fill in the elements and attributes:
     </p>
     <ul>
     <li>name - WhileLoopsMustUseBracesRule</li>
     <li>message - Use braces for while loops</li>
-    <li>class - Wherever you put the rule.  Note this doesn't have to be in net.sourceforge.pmd; it can be in com.yourcompany.util.pmd or whereever you want</li>
+    <li>class - Wherever you put the rule.  Note this doesn't have to be in net.sourceforge.pmd;
+        it can be in com.yourcompany.util.pmd or whereever you want</li>
     <li>description - Use braces for while loops</li>
     <li>example - A little code snippet in CDATA tags that shows a rule violation</li>
     </ul>
+        <p>The whole ruleset file should look something like this:</p>
+        <source>
+        <![CDATA[
+        <?xml version="1.0"?>
+            <rule name="WhileLoopsMustUseBracesRule"
+                  message="Avoid using 'while' statements without curly braces"
+                  class="net.sourceforge.pmd.rules.XPathRule">
+              <description>
+              Avoid using 'while' statements without using curly braces
+              </description>
+                <priority>3</priority>
+
+              <example>
+
+            public void doSomething() {
+              while (true)
+                  x++;
+            }
+
+              </example>
+            </rule>
+        </ruleset>
+        ]]>
+        </source>
+        <p>OK, well, it won't look exactly like that - you'll need to wrap
+        the example in a CDATA tag.  But I couldn't figure out how to do that with this document getting
+        confused.  If you know how, please let me know.</p>
     </subsection>
-    <p>
-    We'll just leave this rule in the <code>rulesets/basic.xml</code> ruleset for now.  If you write rules for your own
-    project that aren't applicable to other projects (rules to catch <code>Thread</code> creation, for example, or rules to catch
-    <code>System.out.println()</code> usages) you might want to make a new ruleset <code>myproject.xml</code> and put your rules in there.
-    </p>
+
     <subsection name="Run PMD using your new ruleset">
-    <p>
-    Remember when we ran <code>go.bat</code> over the <code>Example.java</code>?  Do it again.  This time your "hello world" will show up right after the
+    <p>OK, let's run the new rule so we can see something work.  Like this:</p>
+        <source>
+            run.bat c:\path\to\my\src xml c:\path\to\mycustomrules.xml
+        </source>
+    <p>This time your "hello world" will show up right after the
     AST gets printed out.  If it doesn't, post a message to
     <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can improve this document :-)
     </p>
@@ -173,7 +219,8 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
 
     <subsection name="Write code to add rule violations where appropriate">
     <p>
-    Now that we've identified our problem, recognized the AST pattern that illustrates the problem, written a new rule, and plugged
+    Now that we've identified our problem, recognized the AST pattern that
+        illustrates the problem, written a new rule, and plugged
     it into a ruleset, we need to actually make our rule find the problem, create a <code>RuleViolation</code>,
     and put it in the <code>Report</code>, which is attached to the <code>RuleContext</code>.  Like this:
     </p>
@@ -200,6 +247,18 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can improve this document :-)
     </p>
 
+    <subsection name="Writing a rule as an XPath expression">
+        <p>Recently Dan Sheppard integrated an XPath engine into PMD, so now you can write rules as
+        XPath expressions.  The XPath expression for our WhileLoopsMustUseBracesRule looks like this:</p>
+        <source>
+            //WhileStatement[not(Statement/Block)]
+        </source>
+        <p>Concise, eh?  There'll be more documentation on this later - in the form of
+            an O'Reilly article - so for now, use the Astviewer utility
+        to experiment with how XPath expressions interact with the AST.  Now that I've said
+        &quot;XPath expression&quot; 5 times, I'll stop.  XPath expression.</p>
+    </subsection>
+
     <subsection name="Repeat as necessary">
     <p>
     I've found that my rules usually don't work the first time, and so I have to go back and tweak them a
@@ -212,7 +271,8 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </p>
     <p>
     You're rolling now.  If you think a rule would benefit the Java development community as a whole,
-    post a message to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can get the rule
+    post a message to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a>
+        so we can get the rule
     moved into one of the core rulesets.</p>
     <p>Or, if you can improve one of the existing rules, that'd be great too!  Thanks!
     </p>
