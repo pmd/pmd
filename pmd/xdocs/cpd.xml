@@ -9,9 +9,17 @@
   <body>
    <section name="Copied and pasted code is usually bad">
      <p>But it can be hard to find, especially in a large project.  So we wrote a utility - CPD - to find it for us.
-         First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
-         <a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">here</a>).  Then it was completely
-         rewritten by Brian Ewins using the <a href="http://dogma.net/markn/articles/bwt/bwt.htm">Burrows-Wheeler transform</a> - or, at least, the first part of it.</p>
+         It's been through three major incarnations:</p>
+         <ul>
+             <li>First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
+         <a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">here</a>)</li>
+             <li>Then it was completely
+         rewritten by Brian Ewins using the
+         <a href="http://dogma.net/markn/articles/bwt/bwt.htm">Burrows-Wheeler transform</a></li>
+             <li>Finally, it was rewritten by Steve Hawkins to use the
+         <a href="http://www.nist.gov/dads/HTML/karpRabin.html">Karp-Rabin</a> string matching algorithm.</li>
+         </ul>
+          <p>Each rewrite made it much faster, and now it can process the JDK java.* packages in about 4 seconds (on my Linux workstation, at least).</p>
      <p>Here's a <a href="images/screenshot_cpd.png">screenshot</a> of CPD after running on the JDK java.lang package.</p>
      <p>Note that CPD works with Java, C, C++, and PHP code.</p>
      <p>If you have <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>, you can <a href="cpd.jnlp">run CPD by clicking  here</a>.</p>
@@ -33,7 +41,8 @@
        </source>
        <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e., <code>ant -v -f mybuildfile.xml cpd</code>.</p>
        <p>There's also a JavaSpaces version available for splitting the CPD effort across a farm of machines.
-       I usually post news on that <a href="http://cpd.jini.org/">here</a> and the releases are <a href="http://sf.net/projects/pmd/">here</a>.  This project is pretty much dead, though, since Brian's rewrite is fast enough to just run it on one machine.</p>
+       I usually post news on that <a href="http://cpd.jini.org/">here</a> and the releases are <a href="http://sf.net/projects/pmd/">here</a>.
+           This project is pretty much dead, though, since the current code is  fast enough to just run it on one machine.</p>
      <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
    </section>
   </body>
