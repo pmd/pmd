@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
             <li>Benoit Xhenseval - XSLT patch, suggestion for improving XML report, several bug reports</li>
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>
             <li>Bruno Juillet - bug report on ruleset overrides</li>
@@ -53,7 +54,6 @@
             <li>Ryan Gustafson - patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
             <li>Eric Olander - nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Jörn Stampehl - bug report</li>
-            <li>Matthias Kerkhoff - several bug reports</li>
             <li>Todd Wright - reported bug in EmptyStatementNotInLoop, XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Conrad Roche - UnusedModifier bug report, other bug reports</li>
             <li>Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion</li>
