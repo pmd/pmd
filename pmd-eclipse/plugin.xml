@@ -11,6 +11,8 @@
          <export name="*"/>
       </library>
       <library name="lib/pmd-1.03.jar"/>
+      <library name="lib/log4j-1.2.8.jar"/>
+      <library name="lib/commons-logging.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
@@ -121,7 +123,7 @@
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
             nameFilter="*"
-            id="net.sourceforge.pmd.eclipse.cpdProjectContribution">
+            id="net.sourceforge.pmd.eclipse.pmdProjectContribution">
          <action
                label="%action.checkcpd"
                icon="icons/pmd-icon-16.gif"
@@ -130,6 +132,28 @@
                enablesFor="+"
                id="net.sourceforge.pmd.eclipse.cpdCheckProjectAction">
          </action>
+         <action
+               label="%action.checkpmd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDCheckAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.pmdCheckProjectAction">
+         </action>
+         <action
+               label="%action.clearpmd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFolder"
+            adaptable="true"
+            nameFilter="*"
+            id="net.sourceforge.pmd.eclipse.pmdFolderContribution">
          <action
                label="%action.checkpmd"
                icon="icons/pmd-icon-16.gif"
