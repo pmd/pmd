@@ -23,6 +23,8 @@
             <pathelement location="${lib}/pmd-1.0rc2.jar"/>
         </classpath>
     </javac>
+    <copy file="${src}net/sourceforge/pmd/dcpd/dcpd.properties" todir="${build}net/sourceforge/pmd/dcpd"/>
+
 </target>
 
 <target name="rmic">
