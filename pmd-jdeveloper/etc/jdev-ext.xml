@@ -1,0 +1,28 @@
+<?xml version = '1.0' encoding = 'windows-1252'?>
+<extensions xmlns="http://xmlns.oracle.com/jdeveloper/904/extensions">
+  <feature>
+    <group name="" nlsclass="">
+      <description>PMD static analysis plugin</description>
+      <extension>
+        <addin>net.sourceforge.pmd.jdeveloper.Plugin</addin>
+        <dependency_addin>oracle.jdeveloper.library.JLibraryManager</dependency_addin>
+       <palette>
+          <page>
+            <name>PMD</name>
+            <showForTypes>java</showForTypes>
+            <type>java</type>
+            <view>1</view>
+            <remove>1</remove>
+            <item>
+              <info>PMD</info>
+              <isPersistent>false</isPersistent>
+              <longLabel>PMD static analysis</longLabel>
+              <shortLabel>PMD</shortLabel>
+              <type>java</type>
+            </item>
+          </page>
+        </palette>
+      </extension>
+    </group>
+  </feature>
+</extensions>

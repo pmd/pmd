@@ -1,3 +1,7 @@
+????, 2004 - 0.8:
+Updated PMD version to 1.6.
+Updated to work with JDeveloper 9.0.4.
+
 Nov 17 2003 - 0.7:
 Fixed bug 765847 - PMD plugin now works on BC4J project.  Thanks to Hariolf Häfele for the report.
 

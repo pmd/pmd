@@ -20,8 +20,8 @@ rmdir tmp/
 cp pmd-jdeveloper/lib/pmd-jdeveloper-0.7.jar ~/tmp/pmd-jdeveloper/lib
 cd ~/tmp
 zip -q -r pmd-jdeveloper-src-0.7.zip pmd-jdeveloper
-
 ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-0.7.zip pmd-jdeveloper-src-0.7.zip
+rm -rf pmd-jdeveloper/
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
