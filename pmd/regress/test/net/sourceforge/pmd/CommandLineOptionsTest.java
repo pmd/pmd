@@ -30,6 +30,7 @@ import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.IDEAJRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 
 public class CommandLineOptionsTest extends TestCase {
 
@@ -99,6 +100,8 @@ public class CommandLineOptionsTest extends TestCase {
         assertTrue(opt.createRenderer() instanceof EmacsRenderer);
         opt = new CommandLineOptions(new String[] {"file", "csv", "ruleset"});
         assertTrue(opt.createRenderer() instanceof CSVRenderer);
+        opt = new CommandLineOptions(new String[] {"file", "vbhtml", "ruleset"});
+        assertTrue(opt.createRenderer() instanceof VBHTMLRenderer);
         opt = new CommandLineOptions(new String[] {"file", "ideaj", "ruleset"});
         assertTrue(opt.createRenderer() instanceof IDEAJRenderer);
 
