@@ -2,7 +2,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Iterator;
 
-public class SimpleRenderer {
+public class SimpleRenderer implements Renderer {
 
     public String render(Iterator matches) {
         StringBuffer rpt = new StringBuffer();
