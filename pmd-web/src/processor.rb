@@ -5,7 +5,6 @@ require '/home/tom/data/pmd/pmd-web/src/pmd.rb'
 Dir.chdir(PMD::Job::ROOT);
 
 jobsDir = Dir.new("jobs/")
-start=Time.now
 jobsDir.each { |candidate| 
  begin 	
   if candidate[".txt"] 
@@ -21,6 +20,7 @@ jobsDir.each { |candidate|
     job.run_pmd
     job.run_cpd
     job.ncss
+		`echo #{Time.now} > lastruntime.txt`
     job.copy_up
     job.clear
    end
@@ -29,7 +29,3 @@ jobsDir.each { |candidate|
   puts "Exiting with error: #{$!}"
  end
 }
-stop=Time.now
-
-`echo #{stop} > lastruntime.txt`
-
