@@ -7,9 +7,7 @@ package net.sourceforge.pmd.jedit;
 
 import org.gjt.sp.jedit.*;
 import org.gjt.sp.jedit.browser.VFSBrowser;
-import org.gjt.sp.jedit.io.VFSManager;
 import org.gjt.sp.jedit.gui.OptionsDialog;
-import org.gjt.sp.jedit.gui.DockableWindowManager;
 import errorlist.ErrorSource;
 import errorlist.DefaultErrorSource;
 import javax.swing.*;

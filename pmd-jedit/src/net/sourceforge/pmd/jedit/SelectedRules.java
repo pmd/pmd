@@ -9,7 +9,6 @@ import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
 import java.util.*;
-import java.awt.Color;
 
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSet;

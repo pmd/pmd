@@ -1,3 +1,6 @@
+November 07 2002 - 1.0:
+Updated to use pmd-1.01.
+
 October 4 2002 - 0.9:
 Updated to use pmd-1.0rc3
 

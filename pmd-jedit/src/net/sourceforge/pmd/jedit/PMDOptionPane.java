@@ -7,23 +7,14 @@ package net.sourceforge.pmd.jedit;
 
 import org.gjt.sp.jedit.OptionPane;
 import org.gjt.sp.jedit.AbstractOptionPane;
-import org.gjt.sp.jedit.jEdit;
-import org.gjt.sp.jedit.View;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.Rule;
 
 public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
