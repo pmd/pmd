@@ -449,6 +449,38 @@ public class Foo {
 ]]>
       </example>
     </rule>
+
+
+    <rule name="AbstractClassWithoutAbstractMethod"
+          message="The abstract class {0} does not have any abstract methods"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      The abstract class does not contain any abstract methods. An abstract class suggests 
+      an incomplete implementation, which is to be completed by subclasses implementing the 
+      abstract methods. If the class is intended to be used as a base class only (not to be instantiated 
+      direcly) a protected constructor can be provided prevent direct instantiation.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value><![CDATA[
+//ClassDeclaration[@Abstract='true' and count( .//MethodDeclaration[@Abstract='true'] )=0 ]              
+              ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public abstract class Foo {	
+	void int method1() { ... }
+	void int method2() { ... }
+	// consider using abstract methods or removing 
+	// the abstract modifier and adding protected constructors
+}
+]]>
+      </example>
+    </rule>
     
 </ruleset>
 
