@@ -24,7 +24,6 @@
 
     <target name="delete">
         <delete file="${lib}/${ant.project.name}.jar"/>
-        <delete file="${jedit.install.dir}/${ant.project.name}.jar"/>
 		<delete dir="${build}"/>
         <mkdir dir="${build}"/>
     </target>
