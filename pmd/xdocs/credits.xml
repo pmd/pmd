@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Todd Wright - reported bug in EmptyStatementNotInLoop, XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Benoit Xhenseval - bug report</li>
             <li>Eric Olander - noticed missing image in Postfix nodes, ImmutableFieldRule</li>
             <li>Elliotte Rusty Harold - UseLocaleWithCaseConversions rule suggestion</li>
@@ -63,7 +64,6 @@
             <li>Enno Derksen - enhancements to VariableNamingConventionsRule</li>
             <li>Michael Haggerty - bug reports for FinalizeDoesNotCallSuperFinalize and UnusedModifier</li>
             <li>Phil Shaw - documentation suggestions</li>
-            <li>Todd Wright - XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
             <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>
             <li>Noel Grandin - EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>

@@ -20,6 +20,7 @@ public class EmptyStatementNotInLoopRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "ok, semicolon after while", 0, rule),
            new TestDescriptor(TEST3, "bad, random semicolon", 1, rule),
            new TestDescriptor(TEST4, "bad, double semicolon", 1, rule),
+           new TestDescriptor(TEST5, "ok, nested class", 0, rule),
        });
     }
 
@@ -48,6 +49,13 @@ public class EmptyStatementNotInLoopRuleTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  int x = 2;;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  class Y {};" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }
