@@ -15,15 +15,7 @@ import net.sourceforge.pmd.*;
 public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
 
     private Stack nameSpaces = new Stack();
-
-    // TODO
-    // This helps resolve forward references by doing two passes
-    // i.e., "do the declarations first and the names second"
-    // Actually, what I need is a Visitor that does a breadth first search
-    // TODO
-    private boolean trollingForDeclarations;
-
-    private int depth;
+    private boolean foundDeclarationsAlready;
 
     /**
      * Skip interfaces because they don't have instance variables.
@@ -34,65 +26,53 @@ public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
 
     public Object visit(ASTCompilationUnit node, Object data) {
         nameSpaces.clear();
-        depth = 0;
-        trollingForDeclarations = false;
+        foundDeclarationsAlready = false;
+        super.visit(node, data);
+        if (!nameSpaces.isEmpty()) {
+            harvestUnused((RuleContext)data, ((Namespace)nameSpaces.peek()).peek());
+        }
+        return data;
+    }
+
+
+    public Object visit(ASTClassBody node, Object data) {
+        if (!foundDeclarationsAlready) {
+            foundDeclarationsAlready = true;
+            Namespace nameSpace = new Namespace();
+            nameSpace.addTable();
+            nameSpaces.push(nameSpace);
+            for (int i=0;i<node.jjtGetNumChildren(); i++) {
+                SimpleNode child = (SimpleNode)node.jjtGetChild(i);
+                if (child instanceof ASTClassBodyDeclaration) {
+                    if (child.jjtGetNumChildren() > 0 &&  child.jjtGetChild(0) instanceof ASTFieldDeclaration) {
+                        ASTFieldDeclaration field = (ASTFieldDeclaration)child.jjtGetChild(0);
+                        AccessNode access = (AccessNode)field;
+                        if (!access.isPrivate()) {
+                            continue;
+                        }
+                        SimpleNode target = (SimpleNode)field.jjtGetChild(1).jjtGetChild(0);
+                        if (target.getImage() != null && target.getImage().equals("serialVersionUID")) {
+                            continue;
+                        }
+                        Namespace group = (Namespace)nameSpaces.peek();
+                        group.peek().add(new Symbol(target.getImage(), target.getBeginLine()));
+                    }
+                }
+            }
+        }
         super.visit(node, data);
         return data;
     }
 
-    public Object visit(ASTClassBody node, Object data) {
-        depth++;
-        // first troll for declarations, but only in the top level class
-        if (depth == 1) {
-            trollingForDeclarations = true;
-            Namespace nameSpace = new Namespace();
-            nameSpace.addTable();
-            nameSpaces.push(nameSpace);
-            super.visit(node, null);
-            trollingForDeclarations = false;
-        } else {
-            trollingForDeclarations = false;
-        }
-
-        // troll for usages, regardless of depth
-        super.visit(node, null);
-
-        // if we're back at the top level class, harvest
-        if (depth == 1) {
-            RuleContext ctx = (RuleContext)data;
-            harvestUnused(ctx, ((Namespace)nameSpaces.peek()).peek());
-        }
-
-        depth--;
-        return data;
-    }
-
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!trollingForDeclarations) {
-            return super.visit(node, data);
-        }
-        SimpleNode grandparent = (SimpleNode)node.jjtGetParent().jjtGetParent();
-        if (!(grandparent instanceof ASTFieldDeclaration)) {
-            return super.visit(node, data);
-        }
-        AccessNode grandparentAccessNode = (AccessNode)grandparent;
-        if (!grandparentAccessNode.isPrivate() || (node.getImage() != null && node.getImage().equals("serialVersionUID"))) {
-            return super.visit(node, data);
-        }
-        Namespace group = (Namespace)nameSpaces.peek();
-        group.peek().add(new Symbol(node.getImage(), node.getBeginLine()));
-        return super.visit(node, data);
-    }
-
     public Object visit(ASTPrimarySuffix node, Object data) {
-        if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
+        if ((node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
             recordPossibleUsage(node);
         }
         return super.visit(node, data);
     }
 
     public Object visit(ASTName node, Object data) {
-        if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryPrefix)) {
+        if ((node.jjtGetParent() instanceof ASTPrimaryPrefix)) {
             recordPossibleUsage(node);
         }
         return super.visit(node, data);
@@ -104,5 +84,4 @@ public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
         group.peek().recordPossibleUsageOf(new Symbol(getEndName(node.getImage()), node.getBeginLine()));
         group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()));
     }
-
 }

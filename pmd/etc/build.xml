@@ -40,11 +40,11 @@
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd reportFile="c:\pmd.html" rulesetfiles="rulesets/unusedcode.xml" format="html">
-            <fileset dir="c:\data\pmd\pmd\src\net\sourceforge\pmd">
-<!--            <fileset dir="c:\j2sdk1.4.0_01\src\com\sun\corba\se">-->
+            <!--<fileset dir="c:\data\pmd\pmd\src\net\sourceforge\pmd">-->
+            <fileset dir="c:\j2sdk1.4.0_01\src\com\sun\corba\se">
             <!--<fileset dir="c:\j2sdk1.4.0_01\src\">-->
-                <include name="PMD.java"/>
-                <exclude name="**/ast**/"/>
+                <include name="**/*.java"/>
+                <!--<exclude name="**/ast**/"/>-->
             </fileset>
         </pmd>
     </target>
