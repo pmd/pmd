@@ -63,7 +63,7 @@ public class CPD {
 
     private void add(int fileCount, File file) throws IOException {
         listener.addedFile(fileCount, file);
-        SourceCode sourceCode = new SourceCode(file.getAbsolutePath());
+        SourceCode sourceCode = new SourceCode(new SourceCode.FileCodeLoader(file));
         language.getTokenizer().tokenize(sourceCode, tokens);
         source.put(sourceCode.getFileName(), sourceCode);
     }

@@ -12,8 +12,7 @@ public class CPPTokenizerTest extends TestCase{
 
     public void testMultiLineMacros() throws Throwable {
         CPPTokenizer tokenizer = new CPPTokenizer();
-        SourceCode code = new SourceCode("");
-        code.readSource(new StringReader(TEST1));
+        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(TEST1));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
         assertEquals(7, tokens.size());

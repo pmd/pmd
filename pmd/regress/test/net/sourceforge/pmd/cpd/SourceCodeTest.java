@@ -14,11 +14,9 @@ import java.io.StringReader;
 public class SourceCodeTest extends TestCase {
 
     public void testSimple() throws Throwable {
-        String code = MatchAlgorithmTest.getSampleCode();
         JavaTokenizer tokenizer = new JavaTokenizer();
-        SourceCode sourceCode = new SourceCode("Foo.java");
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(MatchAlgorithmTest.getSampleCode(), "Foo.java"));
         assertEquals("Foo.java", sourceCode.getFileName());
-		sourceCode.readSource(new StringReader(code));
         tokenizer.tokenize(sourceCode, new Tokens());
 
         assertEquals(MatchAlgorithmTest.LINE_1, sourceCode.getSlice(1,1));

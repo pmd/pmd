@@ -9,17 +9,78 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.io.File;
+import java.io.StringReader;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SourceCode {
 
-    private String fileName;
-    private SoftReference code;
+    public interface CodeLoader {
+        SoftReference getCode();
+        String getFileName();
+    }
 
-    public SourceCode(String fileName) {
-        this.fileName = fileName;
+    public static class FileCodeLoader implements CodeLoader {
+        private File file;
+        public FileCodeLoader(File file) {
+            this.file = file;
+        }
+        public SoftReference getCode() {
+            try {
+                List lines = new ArrayList();
+                LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+                String currentLine;
+                while ((currentLine = lnr.readLine()) != null) {
+                    lines.add(currentLine);
+                }
+                lnr.close();
+                return new SoftReference(lines);
+            } catch (Exception e) {
+                throw new RuntimeException("Problem while reading " + file.getAbsolutePath() + ":" + e.getMessage());
+            }
+        }
+        public String getFileName() {
+            return this.file.getAbsolutePath();
+        }
+    }
+    public static class StringCodeLoader implements CodeLoader {
+        public static final String DEFAULT_NAME = "CODE_LOADED_FROM_STRING";
+        private String code;
+        private String name;
+        public StringCodeLoader(String code) {
+            this(code, DEFAULT_NAME);
+        }
+        public StringCodeLoader(String code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+        public SoftReference getCode() {
+            try {
+                List lines = new ArrayList();
+                LineNumberReader lnr = new LineNumberReader(new StringReader(code));
+                String currentLine;
+                while ((currentLine = lnr.readLine()) != null) {
+                    lines.add(currentLine);
+                }
+                lnr.close();
+                return new SoftReference(lines);
+            } catch (Exception e) {
+                throw new RuntimeException("Problem while reading code from String: " + e.getMessage());
+            }
+        }
+        public String getFileName() {
+            return name;
+        }
+    }
+
+
+    private SoftReference code;
+    private CodeLoader cl;
+
+    public SourceCode(CodeLoader cl) {
+        this.cl = cl;
     }
 
     public List getCode() {
@@ -30,11 +91,7 @@ public class SourceCode {
         if (c != null) {
             return c;
         }
-        try {
-            readSource(new FileReader(this.fileName));
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't read " + fileName);
-        }
+        this.code = cl.getCode();
         return (List) code.get();
     }
 
@@ -52,24 +109,6 @@ public class SourceCode {
         return sb;
     }
 
-    public void readSource(Reader input) throws IOException {
-        LineNumberReader r = null;
-        try {
-            List lines = new ArrayList();
-            r = new LineNumberReader(input);
-            String currentLine;
-            while ((currentLine = r.readLine()) != null) {
-                lines.add(currentLine);
-            }
-            input.close();
-            this.code = new SoftReference(lines);
-        } finally {
-            if (r != null) {
-                r.close();
-            }
-        }
-    }
-
     public String getSlice(int startLine, int endLine) {
         StringBuffer sb = new StringBuffer();
         List lines = getCode();
@@ -83,15 +122,15 @@ public class SourceCode {
     }
 
     public String getFileName() {
-        return fileName;
+        return cl.getFileName();
     }
 
     public boolean equals(Object other) {
         SourceCode o = (SourceCode) other;
-        return o.fileName.equals(fileName);
+        return o.cl.getFileName().equals(cl.getFileName());
     }
 
     public int hashCode() {
-        return fileName.hashCode();
+        return cl.getFileName().hashCode();
     }
 }
