@@ -49,7 +49,7 @@ class Job
     @projectName = projectName
     @cvsroot = ':pserver:anonymous@cvs.' + projectName + '.sourceforge.net:/cvsroot/' + projectName
     @moduleDirectory = moduleDirectory
-    @sourceDirectory = moduleDirectory + '/' + sourceDirectory
+    @sourceDirectory = sourceDirectory
   end
   
   def checkout_code
@@ -57,7 +57,11 @@ class Job
   end
   
   def run_pmd
-  `java -jar pmd-1.0rc2.jar #{sourceDirectory} html rulesets/unusedcode.xml > reports/#{projectName}.html`
+  `java -jar pmd-1.0rc2.jar #{sourceDirectory} html rulesets/unusedcode.xml > ../htdocs/reports/#{moduleDirectory}.html`
+  end
+  
+  def clear
+  `rm -rf #{moduleDirectory}`
   end
   
   def to_s
