@@ -12,7 +12,7 @@
       </library>
       <library name="lib/log4j-1.2.8.jar"/>
       <library name="lib/commons-logging.jar"/>
-      <library name="lib/pmd-1.1.jar"/>
+      <library name="lib/pmd-1.2.jar"/>
       <library name="lib/jaxen-core-1.0-fcs.jar"/>
       <library name="lib/saxpath-1.0-fcs.jar"/>
    </runtime>
@@ -123,19 +123,19 @@
             adaptable="true"
             nameFilter="*"
             id="net.sourceforge.pmd.eclipse.pmdProjectContribution">
-         <action
-               label="%action.checkcpd"
-               icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.eclipse.actions.CPDCheckProjectAction"
-               menubarPath="additions"
-               enablesFor="+"
-               id="net.sourceforge.pmd.eclipse.cpdCheckProjectAction">
-         </action>
+         <menu
+               label="%menu.pmd"
+               path="additions"
+               id="pmd.menu">
+            <separator
+                  name="group">
+            </separator>
+         </menu>
          <action
                label="%action.checkpmd"
                icon="icons/pmd-icon-16.gif"
                class="net.sourceforge.pmd.eclipse.actions.PMDCheckAction"
-               menubarPath="additions"
+               menubarPath="pmd.menu/group"
                enablesFor="+"
                id="net.sourceforge.pmd.eclipse.pmdCheckProjectAction">
          </action>
@@ -143,9 +143,17 @@
                label="%action.clearpmd"
                icon="icons/pmd-icon-16.gif"
                class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
-               menubarPath="additions"
+               menubarPath="pmd.menu/group"
                enablesFor="+"
                id="net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction">
+         </action>
+         <action
+               label="%action.checkcpd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.CPDCheckProjectAction"
+               menubarPath="pmd.menu/group"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.cpdCheckProjectAction">
          </action>
       </objectContribution>
       <objectContribution
@@ -153,11 +161,19 @@
             adaptable="true"
             nameFilter="*"
             id="net.sourceforge.pmd.eclipse.pmdFolderContribution">
+         <menu
+               label="%menu.pmd"
+               path="additions"
+               id="pmd.menu">
+            <separator
+                  name="group">
+            </separator>
+         </menu>
          <action
                label="%action.checkpmd"
                icon="icons/pmd-icon-16.gif"
                class="net.sourceforge.pmd.eclipse.actions.PMDCheckAction"
-               menubarPath="additions"
+               menubarPath="pmd.menu/group"
                enablesFor="+"
                id="net.sourceforge.pmd.eclipse.pmdCheckProjectAction">
          </action>
@@ -165,7 +181,7 @@
                label="%action.clearpmd"
                icon="icons/pmd-icon-16.gif"
                class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
-               menubarPath="additions"
+               menubarPath="pmd.menu/group"
                enablesFor="+"
                id="net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction">
          </action>
@@ -175,19 +191,19 @@
             adaptable="true"
             nameFilter="*.java"
             id="net.sourceforge.pmd.eclipse.pmdFileContribution">
-         <action
-               label="%action.ast"
-               icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.eclipse.actions.PMDGenerateASTAction"
-               menubarPath="additions"
-               enablesFor="+"
-               id="net.sourceforge.pmd.eclipse.pmdGenerateAstAction">
-         </action>
+         <menu
+               label="%menu.pmd"
+               path="additions"
+               id="pmd.menu">
+            <separator
+                  name="group">
+            </separator>
+         </menu>
          <action
                label="%action.checkpmd"
                icon="icons/pmd-icon-16.gif"
                class="net.sourceforge.pmd.eclipse.actions.PMDCheckAction"
-               menubarPath="additions"
+               menubarPath="pmd.menu/group"
                enablesFor="+"
                id="net.sourceforge.pmd.eclipse.pmdCheckFileAction">
          </action>
@@ -195,9 +211,17 @@
                label="%action.clearpmd"
                icon="icons/pmd-icon-16.gif"
                class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
-               menubarPath="additions"
+               menubarPath="pmd.menu/group"
                enablesFor="+"
                id="net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction">
+         </action>
+         <action
+               label="%action.ast"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDGenerateASTAction"
+               menubarPath="pmd.menu/group"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.pmdGenerateAstAction">
          </action>
       </objectContribution>
       <viewerContribution
@@ -230,15 +254,19 @@
             primary="true">
       </toc>
    </extension>
-   <extension point="org.eclipse.ui.views">
-      <category id="net.sourceforge.pmd.eclipse.views" name="%view.category"></category>
-      <view id="net.sourceforge.pmd.eclipse.views.ViolationView"
-         name="%view.violation"
-         icon="icons/pmd-icon-16.gif"
-	     category="net.sourceforge.pmd.eclipse.views"
-         class="net.sourceforge.pmd.eclipse.views.ViolationView">
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="%view.category"
+            id="net.sourceforge.pmd.eclipse.views">
+      </category>
+      <view
+            name="%view.violation"
+            icon="icons/pmd-icon-16.gif"
+            category="net.sourceforge.pmd.eclipse.views"
+            class="net.sourceforge.pmd.eclipse.views.ViolationView"
+            id="net.sourceforge.pmd.eclipse.views.ViolationView">
       </view>
    </extension>
-
 
 </plugin>
