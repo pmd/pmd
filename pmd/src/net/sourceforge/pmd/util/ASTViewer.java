@@ -135,7 +135,7 @@ public class ASTViewer {
     private JTextPane codeEditorPane = new JTextPane();
     private JTextArea astArea = new JTextArea();
     private JTextArea xpathResultArea = new JTextArea();
-    private JTextArea xpathQueryArea = new JTextArea(8, 40);
+    private JTextArea xpathQueryArea = new JTextArea(15, 70);
     private JFrame frame = new JFrame("AST Viewer");
 
     public ASTViewer() {
@@ -173,7 +173,7 @@ public class ASTViewer {
 
         frame.getContentPane().add(containerSplitPane);
 
-        frame.setSize(1000, 500);
+        frame.setSize(1000, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -181,7 +181,7 @@ public class ASTViewer {
         frame.setVisible(true);
         frame.show();
 
-        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
+        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/3));
         upperSplitPane.setDividerLocation(upperSplitPane.getMaximumDividerLocation() / 3);
         codeEditorPane.setText(loadText());
         codeEditorPane.setSize(upperSplitPane.getMaximumDividerLocation() / 3, containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
