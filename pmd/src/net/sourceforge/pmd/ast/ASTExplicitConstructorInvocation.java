@@ -21,22 +21,21 @@ public class ASTExplicitConstructorInvocation extends SimpleNode {
         return ((ASTArguments)this.jjtGetChild(0)).getArgumentCount();
     }
 
-    private boolean isThis;
-    private boolean isSuper;
+    private String thisOrSuper;
 
     public void setIsThis() {
-        this.isThis = true;
+        this.thisOrSuper = "this";
     }
 
     public void setIsSuper() {
-        this.isSuper = true;
+        this.thisOrSuper = "super";
     }
 
     public boolean isThis() {
-        return this.isThis;
+        return thisOrSuper.equals("this");
     }
 
     public boolean isSuper() {
-        return this.isSuper;
+        return thisOrSuper.equals("super");
     }
 }
