@@ -1,4 +1,14 @@
-UPDATE THE ANT XDOCS WITH isReportFilePathAbsolute ATTRIBUTE!
+
+
+
+>>>>>>>>>>>>> UPDATE THE ANT XDOCS WITH isReportFilePathAbsolute ATTRIBUTE!
+
+
+
+>>>>>>>>>>>>> UPDATE THE ANT XDOCS WITH failOnRuleViolation ATTRIBUTE!
+
+
+
 
 Move rulesets/tmp.xml somewhere else
 

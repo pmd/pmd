@@ -22,6 +22,7 @@ public class XMLRenderer implements Renderer {
         String filename = "*start*";
         String lineSep = EOL;
 
+        // rule violations
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             if (!rv.getFilename().equals(filename)) { // New File
@@ -51,6 +52,23 @@ public class XMLRenderer implements Renderer {
         if (!filename.equals("*start*")) {
             buf.append("</file>");
         }
+
+        // errors
+        for (Iterator i = report.errors(); i.hasNext();) {
+            Report.ProcessingError pe = (Report.ProcessingError)i.next();
+            buf.append(lineSep);
+            buf.append("<error ");
+            buf.append(lineSep);
+            String attrs = "filename=\"" + pe.getFile() +"\" msg=\"" + pe.getMsg() + "\"";
+            attrs = replaceString(attrs, '&', "&amp;");
+            attrs = replaceString(attrs, '<', "&lt;");
+            attrs = replaceString(attrs, '>', "&gt;");
+            buf.append(attrs);
+            buf.append(lineSep);
+            buf.append("/>");
+            buf.append(lineSep);
+        }
+
         buf.append("</pmd>");
         return buf.toString();
     }

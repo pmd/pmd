@@ -66,6 +66,7 @@ public class PMDTask extends Task {
     private boolean printToConsole;
     private String ruleSetFiles;
     private boolean failOnError;
+    private boolean failOnRuleViolation;
 
     /**
      * The end of line string for this machine.
@@ -76,8 +77,12 @@ public class PMDTask extends Task {
         this.shortFilenames = value;
     }
 
-    public void setFailOnError(boolean failOnError) {
-        this.failOnError = failOnError;
+    public void setFailOnError(boolean fail) {
+        this.failOnError = fail;
+    }
+
+    public void setFailOnRuleViolation(boolean fail) {
+        this.failOnRuleViolation = fail;
     }
 
     public void setVerbose(boolean verbose) {
@@ -125,10 +130,10 @@ public class PMDTask extends Task {
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             String[] srcFiles = ds.getIncludedFiles();
             for (int j=0; j<srcFiles.length; j++) {
+                File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
+                printIfVerbose (file.getAbsoluteFile().toString());
+                ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
                 try {
-                    File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
-                    printIfVerbose (file.getAbsoluteFile().toString());
-                    ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (FileNotFoundException fnfe) {
                     if (failOnError) {
@@ -138,6 +143,7 @@ public class PMDTask extends Task {
                     if (failOnError) {
                         throw new BuildException(pmde);
                     }
+                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
                 }
             }
         }
@@ -161,8 +167,8 @@ public class PMDTask extends Task {
             System.out.println(r.render(report));
         }
 
-        if (failOnError && !ctx.getReport().isEmpty()) {
-            throw new BuildException("Stopping build since PMD found problems in the code");
+        if (failOnRuleViolation && !ctx.getReport().isEmpty()) {
+            throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
         }
     }
 

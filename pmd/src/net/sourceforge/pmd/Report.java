@@ -16,9 +16,21 @@ import java.util.TreeSet;
 
 public class Report {
 
+    public static class ProcessingError {
+        private String msg;
+        private String file;
+        public ProcessingError(String msg, String file) {
+            this.msg = msg;
+            this.file = file;
+        }
+        public String getMsg() {return msg;}
+        public String getFile() {return file;}
+    }
+
     private Set violations = new TreeSet(new RuleViolation.RuleViolationComparator());
 	private Set metrics = new HashSet();
     private List listeners = new ArrayList();
+    private List errors = new ArrayList();
 
     public void addListener(ReportListener listener) {
         listeners.add(listener);
@@ -39,7 +51,11 @@ public class Report {
 			listener.metricAdded( metric );	
 		}	
 	}
-	
+
+    public void addError(ProcessingError error) {
+        errors.add(error);
+    }
+
 	public boolean hasMetrics() {
 		return !metrics.isEmpty();
 	}
@@ -54,6 +70,10 @@ public class Report {
 
     public Iterator iterator() {
         return violations.iterator();
+    }
+
+    public Iterator errors() {
+        return errors.iterator();
     }
 
     public int size() {
