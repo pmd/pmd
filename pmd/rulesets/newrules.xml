@@ -6,6 +6,36 @@ These are new rules for the next release
   </description>
 
 
+    <rule name="BadComparisonRule"
+          message="Avoid equality comparisons with Double.NaN"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  Avoid equality comparisons with Double.NaN - these are
+likely to be logic errors.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//EqualityExpression
+[@Image='==']
+/PrimaryExpression/PrimaryPrefix/Name[@Image='Double.NaN' or @Image='Float.NaN']
+                  ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+public class Bar {
+int x = (y == Double.NaN);
+}
+  ]]>
+      </example>
+    </rule>
+
+
     <rule name="ExceptionAsFlowControlRule"
           message="Avoid using exceptions as flow control"
           class="net.sourceforge.pmd.rules.design.ExceptionAsFlowControlRule">

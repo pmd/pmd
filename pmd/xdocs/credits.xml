@@ -39,6 +39,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Mike Thome - BadComparisonRule suggestion</li>
             <li>Will Sargent - ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
             <li>Choi Ki Soo - Found bug in XMLRenderer</li>
@@ -111,7 +112,6 @@
             <li>Sameer Nanda - CPD Ant task bug report</li>
             <li>Nanne Baars - grammar suggestions, rule suggestions</li>
             <li>Adam Nemeth - bug fixes for UnnecessaryConstructorRule</li>
-            <li>Mike Thome - rule suggestions</li>
             <li>Andrew Glover - the CPDTask, ExcessivePublicCountRule, CouplingBetweenObjectsRule, ExcessiveImportsRule, documentation tweaks</li>
             <li>Robert Leland - bug report</li>
             <li>Carl Gilbert - AccessorClassGenerationRule, DoubleCheckedLockingRule, ConstructorCallsOverridableMethodRule, bug reports, feature requests, and documentation improvements</li>
