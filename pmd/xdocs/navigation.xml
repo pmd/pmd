@@ -15,6 +15,7 @@
             href="http://www.darpa.mil/" />
     </links>
     <menu name="Overview">
+      <item name="Installation" href="/installing.html" />
       <item name="Command line usage" href="/running.html" />
       <item name="Ant task usage" href="/ant-task.html" />
       <item name="IDE plugin usage" href="/integrations.html" />

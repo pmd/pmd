@@ -14,11 +14,11 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
         <ul>
             <li>In order to do rules, it'll help if you can modify the PMD source.
     So download the latest PMD source release and unzip it somewhere on your computer.</li>
-            <li>You'll also need an Ant 1.5 jar file to compile against because PMD includes an
-        Ant task as part of the core distribution.  You can get Ant binary
-        releases <a href="http://ant.apache.org/bindownload.cgi">here</a>.</li>
+            <li>You'll also need an <a href="http://ant.apache.org/bindownload.cgi">Ant</a> 1.5 jar file to compile against because PMD includes an
+        Ant task as part of the core distribution.</li>
             <li>PMD has a slew of JUnit tests, so you'll need a <a href="http://www.junit.org/">JUnit 3.8.1 binary release</a>
                 if you want to run the tests.</li>
+            <li>The rules that have already been written are specified in the rulesets/ directory in the source distribution.</li>
         </ul>
     </p>
     </subsection>
@@ -253,6 +253,12 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
             //WhileStatement[not(Statement/Block)]
         </source>
         <p>Concise, eh?  Here's an <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">article</a> with a lot more detail.</p>
+    </subsection>
+
+    <subsection name="Bundle it up">
+        <p>To use your rules as part of a nightly build or whatever, it's helpful to bundle up both
+        the rule and the ruleset.xml file in a jar file.  Then you can put that jar file on the CLASSPATH of
+        your build.  Setting up a script or an Ant task to do this can save you some tedious typing.</p>
     </subsection>
 
     <subsection name="Repeat as necessary">

@@ -10,9 +10,9 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Vladimir Bossicard - VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Pablo Casado - Bug report for UseSingletonRule</li>
-            <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Nicolai Czempin - Various rule suggestions, additional PMD backronyms</li>
             <li>Frank Hardisty - BeanMembersShouldSerializeRule</li>
             <li>Randall Schulz - bug report for LooseCouplingRule</li>
