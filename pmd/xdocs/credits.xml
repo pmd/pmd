@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jeff Epstein - put together the TextPad integration </li>
             <li>Trevor Harmon - rewrote XSLT script</li>
             <li>Boris Gruschko - nifty AST/XPath viewer</li>
             <li>Andriy Rozeluk - bug report, feature suggestions</li>

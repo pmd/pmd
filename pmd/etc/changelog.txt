@@ -13,6 +13,7 @@ Made CPD text fields uneditable
 Added more error checking to CPD GUI input
 Added "dialog cancelled" check to CPD "Save" function
 Added Boris Gruschko's AST viewer.
+Added Jeff Epstein's TextPad integration.
 ASTType now has an isArray() method.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 

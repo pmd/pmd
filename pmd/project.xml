@@ -28,7 +28,7 @@
   <li>Classes which could be Singletons</li>
   <li>Short/long variable and method names</li>
 </ul>
-<p>PMD has plugins for JEdit, JBuilder, NetBeans/Sun ONE Studio, IntelliJ IDEA, Maven, Ant, Eclipse,
+<p>PMD has plugins for JEdit, JBuilder, NetBeans/Sun ONE Studio, IntelliJ IDEA, TextPad, Maven, Ant, Eclipse,
 Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a>.</p>
 <p>Thanks to the <a href="http://cougaar.org/index.php?referrer=pmd">Cougaar</a> program for sponsoring PMD!</p>
   ]]>

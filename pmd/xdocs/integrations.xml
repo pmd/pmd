@@ -39,11 +39,15 @@
   </tr>
   <tr><td>Maven</td>
       <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-maven/">pmd-maven</a></td>
-      <td>Vincent Massol, Siegfried Goeschl</td>
+      <td>Vincent Massol</td>
   </tr>
     <tr><td>Gel</td>
         <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-gel/">pmd-gel</a></td>
         <td>Tom Copeland</td>
+    </tr>
+    <tr><td>TextPad</td>
+        <td>N/A</td>
+        <td>Jeff Epstein</td>
     </tr>
   <tr><td>IntelliJ IDEA</td>
       <td>N/A</td>
