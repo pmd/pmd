@@ -28,13 +28,18 @@ public class RuleViolationTest extends TestCase {
         assertEquals("description", r.getDescription());
     }
 
+    //
+    // Changed logic of Comparator so that rules in the same file
+    // get grouped together in the output report.
+    // DDP 7/11/2002
+    //
     public void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleViolation r1 = new RuleViolation(rule, 10, "description", "filename1");
         RuleViolation r2 = new RuleViolation(rule, 20, "description", "filename2");
-        assertEquals(0, comp.compare(r1, r2));
-        assertEquals(0, comp.compare(r2, r1));
+        assertEquals(-1, comp.compare(r1, r2));
+        assertEquals(1, comp.compare(r2, r1));
     }
 
     public void testComparatorWithSameFileDifferentLines() {

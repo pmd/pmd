@@ -28,13 +28,25 @@ public class ReportTest extends TestCase {
         assertTrue(!r.isEmpty());
     }
 
-    public void testSortedReport() {
+    // Files are grouped together now.
+    public void testSortedReport_File() {
         Report r = new Report();
         r.addRuleViolation(new RuleViolation(new MockRule(), 10, "foo"));
         r.addRuleViolation(new RuleViolation(new MockRule(), 20, "bar"));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
-        assertTrue(result.indexOf("foo") < result.indexOf("bar"));
+        assertTrue(result.indexOf("bar") < result.indexOf("foo"));
+    }
+
+    public void testSortedReport_Line() {
+        Report r = new Report();
+        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2"), 
+					     10, "foo"));
+        r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1"), 
+					     20, "foo"));
+        Renderer rend = new XMLRenderer();
+        String result = rend.render(r);
+        assertTrue(result.indexOf("rule2") < result.indexOf("rule1"));
     }
 
 /*
