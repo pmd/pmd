@@ -90,7 +90,7 @@ CompilationUnit
     <li>Put the example file in the pmd/test-data directory in a file called "Example.java"</li>
     <li>Edit the class <code>net.sourceforge.pmd.PMD</code> and uncomment the line that says <code>c.dump();</code></li>
     <li>Open a command prompt and cd into the pmd/etc directory</li>
-    <li>Recompile the project using the Ant task; i.e., <code>ant compile</ant></li>
+    <li>Recompile the project using the Ant task; i.e., <code>ant compile</code></li>
     <li>Run the <code>go</code> batch file to run PMD on one file, like this: <code>go Example xml rulesets/basic.xml</code>.  The go.bat file
     will fill in the directories and main class and whatnot.
     You'll probably have to edit this batch file to match where you unzipped PMD.</li>
