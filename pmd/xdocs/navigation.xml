@@ -18,6 +18,7 @@
       <item name="Installation" href="/installing.html" />
       <item name="Command line usage" href="/running.html" />
       <item name="Ant task usage" href="/ant-task.html" />
+      <item name="Maven plugin usage" href="/maven-plugin.html" />
       <item name="IDE plugin usage" href="/integrations.html" />
       <item name="PMD in the press" href="/news.html" />
       <item name="Best practices" href="/bestpractices.html" />

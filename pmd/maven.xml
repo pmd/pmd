@@ -66,7 +66,7 @@
         <ant:zip basedir="${dist.bin.dir}" destfile="${dist.bin.dir}.zip"/>
         <echo>******************************************************************</echo>
         <echo>* </echo>
-        <echo>* Binary distribuition built in ${dist.bin.dir}</echo>
+        <echo>* Binary distribution built in ${dist.bin.dir}</echo>
         <echo>* </echo>
         <echo>* packaged into ${dist.bin.dir}.zip </echo>
         <echo>* </echo>

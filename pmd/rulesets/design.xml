@@ -714,7 +714,6 @@ When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
 class Foo {
  String x = y.toLowerCase(); // BAD
  String z = a.toLowerCase(Locale.EN); // GOOD
-
 }
     ]]>
         </example>
