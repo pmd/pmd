@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Peter 'Bruno' Kofler - found and reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
             <li>Zev Blut - nice patch to add Ruby support to CPD</li>
             <li>Eric Olander - AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Benoit Xhenseval - many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
