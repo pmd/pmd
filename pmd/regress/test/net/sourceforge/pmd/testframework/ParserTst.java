@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 */
-package test.net.sourceforge.pmd.ast;
+package test.net.sourceforge.pmd.testframework;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.TargetJDK1_4;
@@ -13,20 +13,28 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ParserTst extends TestCase {
 
     private class Collector implements InvocationHandler {
         private Class clazz = null;
-        private Set collection = new HashSet();
+        private Collection collection;
 
         public Collector(Class clazz) {
-            this.clazz = clazz;
+            this(clazz, new HashSet());
         }
 
-        public Set getCollection() {
+        public Collector(Class clazz, Collection coll) {
+            this.clazz = clazz;
+            this.collection = coll;
+        }
+
+        public Collection getCollection() {
             return collection;
         }
 
@@ -49,6 +57,15 @@ public class ParserTst extends TestCase {
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
-        return coll.getCollection();
+        return (Set)coll.getCollection();
+    }
+
+    public List getOrderedNodes(Class clazz, String javaCode) throws Throwable {
+        Collector coll = new Collector(clazz, new ArrayList());
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
+        ASTCompilationUnit cu = parser.CompilationUnit();
+        JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
+        jpv.visit(cu, null);
+        return (List)coll.getCollection();
     }
 }

@@ -6,6 +6,7 @@ package test.net.sourceforge.pmd.ast;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class ASTVariableDeclaratorIdTest extends ParserTst {
 

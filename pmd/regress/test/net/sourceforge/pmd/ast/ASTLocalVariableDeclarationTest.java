@@ -5,6 +5,7 @@ import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.JavaParser;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.io.StringReader;
 

@@ -16,6 +16,7 @@ import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.SimpleNode;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.Iterator;
 import java.util.Set;

@@ -6,6 +6,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.Dimensionable;
 import net.sourceforge.pmd.ast.JavaParser;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.io.StringReader;
 
