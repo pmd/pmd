@@ -23,7 +23,11 @@ by
 package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;

@@ -3,7 +3,11 @@
 */
 package net.sourceforge.pmd.cpd;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 
 /**
  * @author  Philippe T'Seyen

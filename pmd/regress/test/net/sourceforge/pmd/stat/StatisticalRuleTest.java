@@ -31,7 +31,11 @@ import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.stat.StatisticalRule;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 /**
  * This class tests the Statistical Rules in PMD.

@@ -23,12 +23,22 @@ by
 package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.JavaParser;
 import test.net.sourceforge.pmd.testframework.MockRule;
 
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class RuleSetTest extends TestCase {
     private String javaCode = "public class Test { }";

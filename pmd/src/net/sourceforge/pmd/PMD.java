@@ -11,7 +11,13 @@ import net.sourceforge.pmd.cpd.JavaLanguage;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

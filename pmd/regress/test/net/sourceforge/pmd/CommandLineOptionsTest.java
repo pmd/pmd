@@ -24,7 +24,13 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.CommandLineOptions;
-import net.sourceforge.pmd.renderers.*;
+import net.sourceforge.pmd.renderers.CSVRenderer;
+import net.sourceforge.pmd.renderers.EmacsRenderer;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.renderers.IDEAJRenderer;
+import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.renderers.VBHTMLRenderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 
 import java.io.InputStreamReader;
 
