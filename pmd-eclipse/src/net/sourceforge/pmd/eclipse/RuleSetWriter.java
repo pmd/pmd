@@ -4,9 +4,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleProperties;
 import net.sourceforge.pmd.RuleSet;
 
 /**
@@ -18,6 +18,9 @@ import net.sourceforge.pmd.RuleSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/10/14 21:26:32  phherlin
+ * Upgrading to PMD 1.2.2
+ *
  * Revision 1.1  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -161,12 +164,11 @@ public class RuleSetWriter {
         m_line.append("<properties>");
         outputLine();
         indent();
-        RuleProperties properties = rule.getProperties();
+        Properties properties = rule.getProperties();
         for(Enumeration keys = properties.keys(); keys.hasMoreElements(); outputLine())
         {
             String name = (String)keys.nextElement();
-            String value = properties.getValue(name);
-            String valueType = properties.getValueType(name);
+            String value = properties.getProperty(name);
             setupNewLine();
             m_line.append("<property name=\"");
             m_line.append(name);
@@ -184,8 +186,6 @@ public class RuleSetWriter {
             } else {
                 m_line.append(" value=\"");
                 m_line.append(value);
-                m_line.append("\" type=\"");
-                m_line.append(valueType);
                 m_line.append("\"/>");
             }
             

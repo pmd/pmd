@@ -9,6 +9,9 @@ import net.sourceforge.pmd.Rule;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/10/14 21:26:32  phherlin
+ * Upgrading to PMD 1.2.2
+ *
  * Revision 1.1  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -59,14 +62,6 @@ public class RuleProperty {
     }
 
     /**
-     * Returns the type.
-     * @return String
-     */
-    public String getType() {
-        return rule.getProperties().getValueType(property);
-    }
-
-    /**
      * Returns the value.
      * @return String
      */
@@ -79,7 +74,7 @@ public class RuleProperty {
      * @param booleanValue The booleanValue to set
      */
     public void setBooleanValue(boolean booleanValue) {
-        rule.getProperties().setValue(property, String.valueOf(booleanValue));
+        rule.getProperties().setProperty(property, String.valueOf(booleanValue));
     }
 
     /**
@@ -87,7 +82,7 @@ public class RuleProperty {
      * @param doubleValue The doubleValue to set
      */
     public void setDoubleValue(double doubleValue) {
-        rule.getProperties().setValue(property, String.valueOf(doubleValue));
+        rule.getProperties().setProperty(property, String.valueOf(doubleValue));
     }
 
     /**
@@ -95,15 +90,7 @@ public class RuleProperty {
      * @param integerValue The integerValue to set
      */
     public void setIntegerValue(int integerValue) {
-        rule.getProperties().setValue(property, String.valueOf(integerValue));
-    }
-
-    /**
-     * Sets the type.
-     * @param type The type to set
-     */
-    public void setType(String type) {
-        rule.getProperties().setValueType(property, type);
+        rule.getProperties().setProperty(property, String.valueOf(integerValue));
     }
 
     /**
@@ -111,7 +98,7 @@ public class RuleProperty {
      * @param value The value to set
      */
     public void setValue(String value) {
-        rule.getProperties().setValue(property, value);
+        rule.getProperties().setProperty(property, value);
     }
 
 }
