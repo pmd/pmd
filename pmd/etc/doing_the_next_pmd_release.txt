@@ -1,4 +1,4 @@
-update the xdocs to reflect the new release
+update the xdocs to reflect any new release changes
 update the changelog.txt
 update the readme.txt (when we get one)
 
@@ -14,14 +14,14 @@ unzip it into c:\tmp2
 clear classpath, put pmd.jar in classpath
 TESTS: Can you
 1) run 1 file and get a report
-run c:\data\pmd\pmd\test-data\Unused1.java xml
-run c:\data\pmd\pmd\test-data\Unused1.java text
+run c:\data\pmd\pmd\test-data\Unused1.java xml all
+run c:\data\pmd\pmd\test-data\Unused1.java text  all
 2) run the Ant 'pmd' task and get a report
 ant pmd
 
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_0_1_pmd
+cvs rtag -d pmd_release_0_2_pmd
 and then retag everything
 
 
