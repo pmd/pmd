@@ -1,8 +1,11 @@
 ????? - 2.1:
 Fixed bug 1050173 - ImmutableFieldRule no longer reports false positives for static fields.
+Fixed bug 1050286 - ImmutableFieldRule no longer reports false positives for classes which have multiple constructors only a subset of which set certain fields. 
+Fixed bug 1050295 - ImmutableFieldRule no longer reports false positives for fields which are incremented by postfix operators. 
 Fixed bug 1041739 - EmptyStatementNotInLoop no longer reports false positives for nested class declarations in methods.
 Fixed bug 1039963 - CPD no longer fails to parse C++ files with multi-line macros.
 Modified the AST to correctly include PostfixExpression nodes.  Previously a statement like "x++;" was embedded in the parent StatementExpression node.
+
 
 October 19, 2004 - 2.0:
 New rules: InstantiationToGetClass, IdempotentOperationsRule, SuspiciousEqualsMethodName, SimpleDateFormatNeedsLocale, JUnitTestsShouldContainAssertsRule, SuspiciousConstantFieldName, ImmutableFieldRule, MoreThanOneLoggerRule, LoggerIsNotStaticFinalRule, UseLocaleWithCaseConversions

@@ -36,8 +36,8 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
                 decl = search.getResult();
                 if (decl == null) {
                     // we can't find it, so just give up
-                    // when we decide searches across compilation units like a compiler would, we'll
-                    // force this to either find a symbol or throw a "cannot resolve symbol" Exception
+                    // when we decide to do searches across compilation units like a compiler would, we'll
+                    // force this to either find a symbol or throw a SymbolNotFoundException
                     break;
                 }
             } else {

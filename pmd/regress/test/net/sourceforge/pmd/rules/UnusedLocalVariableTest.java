@@ -28,14 +28,14 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST7, "loop indexes are not unused locals", 0, rule),
            new TestDescriptor(TEST8, "local used in anonymous inner class", 0, rule),
            new TestDescriptor(TEST9, "two unused locals of same name, one in nested class", 2, rule),
-           new TestDescriptor(TEST10, "local variable in initializer of for loop", 0, rule),
-           new TestDescriptor(TEST11, "two locals declared on same line", 2, rule),
-           new TestDescriptor(TEST12, "an assignment does not a usage make", 1, rule),
-           new TestDescriptor(TEST13, "a compound assignment operator doth a usage make", 0, rule),
-           new TestDescriptor(TEST14, "assignment to a member field means used", 0, rule),
-           new TestDescriptor(TEST15, "make sure scopes are working", 3, rule),
-           new TestDescriptor(TEST16, "another scope test", 1, rule),
-           new TestDescriptor(TEST17, "assignment to an array member will be treated as a usage", 0, rule),
+           new TestDescriptor(TEST10, "two locals declared on same line", 2, rule),
+           new TestDescriptor(TEST11, "an assignment does not a usage make", 1, rule),
+           new TestDescriptor(TEST12, "a compound assignment operator doth a usage make", 0, rule),
+           new TestDescriptor(TEST13, "assignment to a member field means used", 0, rule),
+           new TestDescriptor(TEST14, "make sure scopes are working", 3, rule),
+           new TestDescriptor(TEST15, "another scope test", 1, rule),
+           new TestDescriptor(TEST16, "assignment to an array member will be treated as a usage", 0, rule),
+           new TestDescriptor(TEST17, "local variable used in postfix expression but otherwise unused", 1, rule),
        });
     }
 
@@ -72,8 +72,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     "               a.size();" + PMD.EOL +
     "       }" + PMD.EOL +
     "    }" + PMD.EOL +
-    "}" + PMD.EOL +
-    "";
+    "}";
 
     private static final String TEST5 =
     "import java.util.*;" + PMD.EOL +
@@ -81,8 +80,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     " static {" + PMD.EOL +
     "  String x;" + PMD.EOL +
     " }" + PMD.EOL +
-    "}" + PMD.EOL +
-    "";
+    "}";
 
     private static final String TEST6 =
     "public class Foo {" + PMD.EOL +
@@ -125,20 +123,11 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     private static final String TEST10 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
-    "  for (int x = 0; ; ) { // USED" + PMD.EOL +
-    "   x++;" + PMD.EOL +
-    "  }" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
-
-    private static final String TEST11 =
-    "public class Foo {" + PMD.EOL +
-    " void foo() {" + PMD.EOL +
     "  int x,y=0;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
-    private static final String TEST12 =
+    private static final String TEST11 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "   int x;" + PMD.EOL +
@@ -146,7 +135,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
-    private static final String TEST13 =
+    private static final String TEST12 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "   int x = 0;" + PMD.EOL +
@@ -154,7 +143,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
-    private static final String TEST14 =
+    private static final String TEST13 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "   Bar b = new Bar();" + PMD.EOL +
@@ -162,7 +151,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
-    private static final String TEST15 =
+    private static final String TEST14 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "   int x = 2;" + PMD.EOL +
@@ -170,7 +159,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
-    private static final String TEST16 =
+    private static final String TEST15 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "   int x = 2;" + PMD.EOL +
@@ -182,11 +171,19 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
-    private static final String TEST17 =
+    private static final String TEST16 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "   int[] x = {2};" + PMD.EOL +
     "   x[1] = 2; " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST17 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "   int x = 2;" + PMD.EOL +
+    "   x++; " + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }

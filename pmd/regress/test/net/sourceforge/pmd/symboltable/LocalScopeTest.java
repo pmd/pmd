@@ -76,7 +76,18 @@ public class LocalScopeTest extends STBBaseTst {
         Map vars = node.getScope().getVariableDeclarations();
         NameDeclaration decl = (NameDeclaration)vars.keySet().iterator().next();
         NameOccurrence occ = (NameOccurrence)((List)vars.get(decl)).get(0);
-        System.out.println("occ = " + occ);
+        assertEquals("b", occ.getImage());
+    }
+
+    public void testPostfixUsageIsRecorded() {
+        parseCode(TEST3);
+        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId node = (ASTVariableDeclaratorId)nodes.get(0);
+        Map vars = node.getScope().getVariableDeclarations();
+        NameDeclaration decl = (NameDeclaration)vars.keySet().iterator().next();
+        List usages = (List)vars.get(decl);
+        NameOccurrence occ = (NameOccurrence)usages.get(0);
+        assertEquals(4, occ.getBeginLine());
     }
 
     public static final String TEST1 =
@@ -91,6 +102,14 @@ public class LocalScopeTest extends STBBaseTst {
     " void foo() {" + PMD.EOL +
     "  Bar b = new Bar();" + PMD.EOL +
     "  b.buz = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
+    "  x++;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }

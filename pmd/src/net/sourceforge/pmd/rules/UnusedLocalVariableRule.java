@@ -58,11 +58,14 @@ public class UnusedLocalVariableRule extends AbstractRule {
     }
 
     private boolean actuallyUsed(List usages) {
-        boolean used = false;
-        for (Iterator j = usages.iterator(); j.hasNext() && !used;) {
+        for (Iterator j = usages.iterator(); j.hasNext();) {
             NameOccurrence occ = (NameOccurrence) j.next();
-            used = !occ.isOnLeftHandSide();
+            if (occ.isOnLeftHandSide()) {
+                continue;
+            } else {
+                return true;
+            }
         }
-        return used;
+        return false;
     }
 }

@@ -16,11 +16,15 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
+/*
            new TestDescriptor(TEST1, "could be immutable, only assigned in constructor", 1, rule),
            new TestDescriptor(TEST2, "could be immutable, only assigned in decl", 1, rule),
            new TestDescriptor(TEST3, "ok, assigned twice", 0, rule),
            new TestDescriptor(TEST4, "ok, static field ", 0, rule), // TODO - probably should check these, not just discard them
-           new TestDescriptor(TEST5, "one constructor assigns, one doesn't, OK", 0, rule),
+           new TestDescriptor(TEST5, "ok, one constructor assigns, one doesn't", 0, rule),
+           new TestDescriptor(TEST6, "ok, assignment via postfix expression", 0, rule),
+*/
+           new TestDescriptor(TEST7, "buggy?", 0, rule),
        });
     }
 
@@ -65,6 +69,21 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
     "  x = y;" + PMD.EOL +
     " }" + PMD.EOL +
     " public Foo() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo {" + PMD.EOL +
+    " private int x;" + PMD.EOL +
+    " public Foo() {}" + PMD.EOL +
+    " private void bar() {x++;}" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " private int x = 0;" + PMD.EOL +
+    " private void bar() {" + PMD.EOL +
+    "  x++;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 }

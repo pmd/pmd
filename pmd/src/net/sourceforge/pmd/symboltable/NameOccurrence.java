@@ -7,6 +7,7 @@ import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTPostfixExpression;
 
 public class NameOccurrence {
 
@@ -59,6 +60,10 @@ public class NameOccurrence {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
 
+        if (primaryExpression instanceof ASTPostfixExpression)  {
+            return true;
+        }
+
         if (primaryExpression.jjtGetNumChildren() <= 1) {
             return false;
         }
@@ -106,4 +111,5 @@ public class NameOccurrence {
     public String toString() {
         return getImage() + ":" + location.getBeginLine() + ":" + location.getClass();
     }
+
 }
