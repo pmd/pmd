@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.eclipse.properties;
 
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Set;
@@ -63,6 +63,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2003/12/18 23:58:37  phherlin
+ * Fixing malformed UTF-8 characters in generated xml files
+ *
  * Revision 1.11  2003/11/30 22:57:44  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -176,7 +179,7 @@ public class PMDPropertyPage extends PropertyPage {
             data.verticalAlignment = GridData.FILL;
             data.heightHint = 50;
             availableRulesTable.setLayoutData(data);
-            
+
             ruleSetStoredInProjectButton = buildStoreRuleSetInProjectButton(composite);
         } else {
             setValid(false);
@@ -205,7 +208,7 @@ public class PMDPropertyPage extends PropertyPage {
         Button button = new Button(parent, SWT.CHECK);
         button.setText(getMessage(PMDConstants.MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT));
         button.setSelection(isRuleSetStoredInProject());
-        
+
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 Table ruleTable = availableRulesTableViewer.getTable();
@@ -404,7 +407,7 @@ public class PMDPropertyPage extends PropertyPage {
                     }
                 }
             }
-            
+
             log.debug("Ask to store the rule selection for resource " + resource.getName());
             PMDPlugin.getDefault().storeRuleSetForResource(resource, selectedRuleSet);
 
@@ -450,7 +453,7 @@ public class PMDPropertyPage extends PropertyPage {
             }
         }
     }
-    
+
     /**
      * Store the store_ruleset_project property
      *
@@ -458,15 +461,17 @@ public class PMDPropertyPage extends PropertyPage {
     private boolean storeRuleSetStoredInProject() {
         boolean needRebuild = false;
         IResource resource = (IResource) getElement().getAdapter(IResource.class);
-        if (resource != null){
+        if (resource != null) {
             IProject project = resource.getProject();
             boolean configuredProperty = PMDPlugin.getDefault().isRuleSetStoredInProject(project);
 
             if (configuredProperty != this.ruleSetStoredInProjectButton.getSelection()) {
-                PMDPlugin.getDefault().setRuleSetStoredInProject(project, new Boolean(this.ruleSetStoredInProjectButton.getSelection()));
+                PMDPlugin.getDefault().setRuleSetStoredInProject(
+                    project,
+                    new Boolean(this.ruleSetStoredInProjectButton.getSelection()));
                 needRebuild = true;
             }
-            
+
             if (this.ruleSetStoredInProjectButton.getSelection()) {
                 checkProjectRuleSetFile(project);
                 try {
@@ -477,7 +482,7 @@ public class PMDPropertyPage extends PropertyPage {
                 }
             }
         }
-        
+
         return needRebuild;
     }
 
@@ -498,7 +503,7 @@ public class PMDPropertyPage extends PropertyPage {
 
         return fEnabled;
     }
-    
+
     /**
      * Test if the configured ruleset should be store in a project file
      * @return
@@ -509,7 +514,7 @@ public class PMDPropertyPage extends PropertyPage {
         if (resource != null) {
             ruleSetStoredInProject = PMDPlugin.getDefault().isRuleSetStoredInProject(resource.getProject());
         }
-        
+
         return ruleSetStoredInProject;
     }
 
@@ -542,7 +547,7 @@ public class PMDPropertyPage extends PropertyPage {
 
         return natureAdded;
     }
-    
+
     /**
      * Perform a full rebuild of the project
      *
@@ -570,7 +575,7 @@ public class PMDPropertyPage extends PropertyPage {
             PMDPlugin.getDefault().logError("Rebuilding project interrupted", e);
         }
     }
-    
+
     /**
      * Remove a PMD Nature from the project
      */
@@ -650,7 +655,7 @@ public class PMDPropertyPage extends PropertyPage {
             }
         }
     }
-    
+
     /**
      * Help user to deselect a working set for PMD
      *
@@ -660,14 +665,14 @@ public class PMDPropertyPage extends PropertyPage {
         log.info("Deselect working set");
         deselectWorkingSetButton.setEnabled(false);
     }
-    
+
     /**
      * @return
      */
     public IWorkingSet getSelectedWorkingSet() {
         return selectedWorkingSet;
     }
-    
+
     /**
      * @param string
      */
@@ -679,7 +684,7 @@ public class PMDPropertyPage extends PropertyPage {
                 : (getMessage(PMDConstants.MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET) + selectedWorkingSet.getName()));
         deselectWorkingSetButton.setEnabled(workingSet != null);
     }
-    
+
     /**
      * Check if the project has a ruleset file. If not propose to create a default one
      * @param project
@@ -691,14 +696,14 @@ public class PMDPropertyPage extends PropertyPage {
             if (MessageDialog
                 .openQuestion(
                     shell,
-                    getMessage(PMDConstants.MSGKEY_QUESTION_TITLE), 
+                    getMessage(PMDConstants.MSGKEY_QUESTION_TITLE),
                     getMessage(PMDConstants.MSGKEY_QUESTION_CREATE_RULESET_FILE))) {
                 storeRuleSelection();
                 RuleSet ruleSet = PMDPlugin.getDefault().getRuleSetForResourceFromProperties(project, false);
                 ruleSet.setName("project rulset");
                 ruleSet.setDescription("Generated by PMD Plugin for Eclipse");
                 try {
-                    Writer out = new FileWriter(ruleSetFile.getLocation().toOSString());
+                    OutputStream out = new FileOutputStream(ruleSetFile.getLocation().toOSString());
                     RuleSetWriter writer = WriterAbstractFactory.getFactory().getRuleSetWriter();
                     writer.write(out, ruleSet);
                     out.flush();
@@ -714,7 +719,7 @@ public class PMDPropertyPage extends PropertyPage {
             }
         }
     }
-    
+
     /**
      * Private inner class to add nature to project
      */
@@ -741,7 +746,7 @@ public class PMDPropertyPage extends PropertyPage {
             }
         }
     };
-    
+
     /**
      * Inner class to rebuild the project
      */
@@ -760,7 +765,7 @@ public class PMDPropertyPage extends PropertyPage {
             }
         }
     };
-    
+
     /**
      * Private inner class to remove nature from project
      */

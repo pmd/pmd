@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.eclipse.preferences;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.pmd.Rule;
@@ -62,6 +62,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.13  2003/12/18 23:58:37  phherlin
+ * Fixing malformed UTF-8 characters in generated xml files
+ *
  * Revision 1.12  2003/11/30 22:57:44  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -503,7 +506,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                         if (flContinue) {
                             ruleSet.setName(getFileNameWithoutExtension(file.getName()));
                             ruleSet.setDescription(input.getValue());
-                            Writer out = new FileWriter(fileName);
+                            OutputStream out = new FileOutputStream(fileName);
                             RuleSetWriter writer = WriterAbstractFactory.getFactory().getRuleSetWriter();
                             writer.write(out, ruleSet);
                             out.close();
@@ -707,7 +710,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
             }
         }
     }
-    
+
     /**
      * Select and show a particular rule in the table
      */

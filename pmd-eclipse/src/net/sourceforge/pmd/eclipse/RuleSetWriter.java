@@ -22,17 +22,21 @@
  */
 package net.sourceforge.pmd.eclipse;
 
-import java.io.Writer;
+import java.io.OutputStream;
 
 import net.sourceforge.pmd.RuleSet;
 
 /**
- * Interface for a rule set writer
+ * Interface for a rule set writer. A rule set writer is an object used to "serialize"
+ * a rule set.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2003/12/18 23:58:37  phherlin
+ * Fixing malformed UTF-8 characters in generated xml files
+ *
  * Revision 1.4  2003/10/16 22:29:23  phherlin
  * Oops. Writing comments.
  *
@@ -45,10 +49,11 @@ import net.sourceforge.pmd.RuleSet;
  *
  */
 public interface RuleSetWriter {
+
     /**
      * Write a ruleset as an XML stream
-     * @param writer the output writer
+     * @param outputStream the output target
      * @param ruleSet the ruleset to serialize
      */
-    void write(Writer writer, RuleSet ruleSet) throws PMDEclipseException;
+    void write(OutputStream outputStream, RuleSet ruleSet) throws PMDEclipseException;
 }

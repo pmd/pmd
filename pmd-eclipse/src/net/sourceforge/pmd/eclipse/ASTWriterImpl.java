@@ -26,7 +26,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -54,6 +54,9 @@ import org.w3c.dom.Element;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/12/18 23:58:37  phherlin
+ * Fixing malformed UTF-8 characters in generated xml files
+ *
  * Revision 1.3  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -72,7 +75,7 @@ public class ASTWriterImpl implements ASTWriter {
     /**
      * @see net.sourceforge.pmd.eclipse.ASTWriter#write(java.io.Writer, net.sourceforge.pmd.ast.ASTCompilationUnit)
      */
-    public void write(Writer writer, ASTCompilationUnit compilationUnit) throws PMDEclipseException {
+    public void write(OutputStream outputStream, ASTCompilationUnit compilationUnit) throws PMDEclipseException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = factory.newDocumentBuilder();
@@ -82,7 +85,8 @@ public class ASTWriterImpl implements ASTWriter {
             doc.appendChild(compilationUnitElement);
 
             OutputFormat outputFormat = new OutputFormat(doc, "UTF-8", true);
-            DOMSerializer serializer = new XMLSerializer(writer, outputFormat);
+            outputFormat.setLineWidth(0);
+            DOMSerializer serializer = new XMLSerializer(outputStream, outputFormat);
             serializer.serialize(doc);
 
         } catch (DOMException e) {

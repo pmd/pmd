@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
@@ -34,6 +34,9 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2003/12/18 23:58:37  phherlin
+ * Fixing malformed UTF-8 characters in generated xml files
+ *
  * Revision 1.2  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -63,7 +66,7 @@ public class RuleSetWriterImpl implements RuleSetWriter {
      * @param writer the output writer
      * @param ruleSet the ruleset to serialize
      */
-    public void write(Writer writer, RuleSet ruleSet) throws PMDEclipseException {
+    public void write(OutputStream outputStream, RuleSet ruleSet) throws PMDEclipseException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = factory.newDocumentBuilder();
@@ -72,10 +75,9 @@ public class RuleSetWriterImpl implements RuleSetWriter {
             Element ruleSetElement = getRuleSetElement(doc, ruleSet);
             doc.appendChild(ruleSetElement);
 
-            OutputFormat outputFormat = new OutputFormat(doc);
-            outputFormat.setEncoding("UTF-8");
-            outputFormat.setIndenting(true);
-            DOMSerializer serializer = new XMLSerializer(writer, outputFormat);
+            OutputFormat outputFormat = new OutputFormat(doc, "UTF-8", true);
+            outputFormat.setLineWidth(0);
+            DOMSerializer serializer = new XMLSerializer(outputStream, outputFormat);
             serializer.serialize(doc);
 
         } catch (DOMException e) {
@@ -193,7 +195,7 @@ public class RuleSetWriterImpl implements RuleSetWriter {
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             Element propertyElement = getPropertyElement(doc, (String) key, (String) properties.get(key));
-            propertiesElement.appendChild(propertyElement);        
+            propertiesElement.appendChild(propertyElement);
         }
         return propertiesElement;
     }

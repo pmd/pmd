@@ -1,7 +1,8 @@
 package net.sourceforge.pmd.eclipse.actions;
 
 import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
@@ -41,6 +42,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2003/12/18 23:58:37  phherlin
+ * Fixing malformed UTF-8 characters in generated xml files
+ *
  * Revision 1.7  2003/11/30 22:57:37  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -81,13 +85,18 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
         ISelection sel = targetPart.getSite().getSelectionProvider().getSelection();
         if (sel instanceof IStructuredSelection) {
             this.structuredSelection = (IStructuredSelection) sel;
-            ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+            ProgressMonitorDialog dialog =
+                new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
             try {
                 dialog.run(false, false, this);
             } catch (InvocationTargetException e) {
-                PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+                PMDPlugin.getDefault().showError(
+                    PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION),
+                    e);
             } catch (InterruptedException e) {
-                PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
+                PMDPlugin.getDefault().showError(
+                    PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_INTERRUPTED_EXCEPTION),
+                    e);
             }
         }
     }
@@ -107,10 +116,10 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
         try {
             JavaParser parser = new JavaParser(file.getContents());
             ASTCompilationUnit compilationUnit = parser.CompilationUnit();
-            StringWriter stringWriter = new StringWriter();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ASTWriter astWriter = WriterAbstractFactory.getFactory().getASTWriter();
-            astWriter.write(stringWriter, compilationUnit);
-            stringWriter.flush();
+            astWriter.write(byteArrayOutputStream, compilationUnit);
+            byteArrayOutputStream.flush();
 
             String name = file.getName();
             int dotPosition = name.indexOf('.');
@@ -128,7 +137,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
                 if (astFile.exists()) {
                     astFile.delete(false, null);
                 }
-                ByteArrayInputStream astInputStream = new ByteArrayInputStream(stringWriter.toString().getBytes());
+                ByteArrayInputStream astInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
                 astFile.create(astInputStream, false, null);
             }
 
@@ -138,6 +147,8 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
             PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
         } catch (PMDEclipseException e) {
             PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
+        } catch (IOException e) {
+            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_IO_EXCEPTION), e);
         }
     }
 

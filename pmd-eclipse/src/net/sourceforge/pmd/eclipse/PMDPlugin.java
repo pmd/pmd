@@ -4,10 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -54,6 +54,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.20  2003/12/18 23:58:37  phherlin
+ * Fixing malformed UTF-8 characters in generated xml files
+ *
  * Revision 1.19  2003/12/09 00:15:00  phherlin
  * Merging from v2 development
  *
@@ -138,10 +141,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     public static final QualifiedName PERSISTENT_PROPERTY_ACTIVE_RULESET =
         new QualifiedName(PLUGIN_ID + ".persprops", "active_rulset");
 
-    public static final QualifiedName SESSION_PROPERTY_WORKINGSET =
-        new QualifiedName(PLUGIN_ID + ".sessprops", "workingset");
-    public static final QualifiedName PERSISTENT_PROPERTY_WORKINGSET =
-        new QualifiedName(PLUGIN_ID + ".persprops", "workingset");
+    public static final QualifiedName SESSION_PROPERTY_WORKINGSET = new QualifiedName(PLUGIN_ID + ".sessprops", "workingset");
+    public static final QualifiedName PERSISTENT_PROPERTY_WORKINGSET = new QualifiedName(PLUGIN_ID + ".persprops", "workingset");
 
     public static final QualifiedName SESSION_PROPERTY_STORE_RULESET_PROJECT =
         new QualifiedName(PLUGIN_ID + ".sessprops", "store_ruleset_project");
@@ -174,7 +175,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     public static final String SETTINGS_VIEW_WARNINGHIGH_FILTER = "view.warninghigh_filter";
     public static final String SETTINGS_VIEW_WARNING_FILTER = "view.warning_filter";
     public static final String SETTINGS_VIEW_INFORMATION_FILTER = "view.information_filter";
-    
+
     public static final String REVIEW_MARKER = "// @PMD:REVIEWED:";
     public static final String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     public static final String REVIEW_ADDITIONAL_COMMENT_PREFERENCE = PLUGIN_ID + ".review_additional_comment";
@@ -299,7 +300,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         return subRuleSet;
     }
-    
+
     /**
      * Get the rulset configured for the resouce.
      * Currently, it is the one configured for the resource's project
@@ -314,10 +315,10 @@ public class PMDPlugin extends AbstractUIPlugin {
         } else {
             projectRuleSet = getRuleSetForResourceFromProperties(resource, flCreateProperty);
         }
-        
+
         return projectRuleSet;
     }
-    
+
     /**
      * Get the rulset configured for the resouce.
      * Currently, it is the one configured for the resource's project
@@ -369,7 +370,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         return projectRuleSet;
     }
-    
+
     /**
      * Retrieve a project ruleset from a ruleset file in the project
      * instead of the plugin properties/preferences
@@ -403,7 +404,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             log.debug("The project does not have a correct ruleset. Return a ruleset from the plugin properties");
             projectRuleSet = getRuleSetForResourceFromProperties(project, false);
         }
-        
+
         return projectRuleSet;
     }
 
@@ -434,7 +435,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     private RuleSet getRuleSetFromStateLocation() {
         RuleSet preferedRuleSet = null;
         RuleSetFactory factory = new RuleSetFactory();
-        
+
         // First find the ruleset file in the state location
         IPath ruleSetLocation = getStateLocation().append(RULESET_FILE);
         log.debug("ruleset state location : " + ruleSetLocation.toOSString());
@@ -450,17 +451,17 @@ public class PMDPlugin extends AbstractUIPlugin {
                 showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
             }
         }
-        
+
         // For compatibility test the preference store
         if (preferedRuleSet == null) {
             preferedRuleSet = getRuleSetFromPreference();
             if (preferedRuleSet != null) {
                 storeRuleSetInStateLocation(preferedRuleSet);
                 getPreferenceStore().setValue(RULESET_PREFERENCE, RULESET_DEFAULT);
-                
+
             }
         }
-        
+
         // Finally, build a default ruleset
         if (preferedRuleSet == null) {
             preferedRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(RULESET_DEFAULTLIST[0]));
@@ -505,7 +506,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     private void storeRuleSetInStateLocation(RuleSet ruleSet) {
         try {
             IPath ruleSetLocation = getStateLocation().append(RULESET_FILE);
-            Writer out = new FileWriter(ruleSetLocation.toOSString());
+            OutputStream out = new FileOutputStream(ruleSetLocation.toOSString());
             RuleSetWriter writer = WriterAbstractFactory.getFactory().getRuleSetWriter();
             writer.write(out, ruleSet);
             out.flush();
@@ -657,7 +658,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
         }
     }
-    
+
     /**
      * Get the additional text for review comment
      * @return
@@ -667,7 +668,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             getPreferenceStore().setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
             reviewAdditionalComment = getPreferenceStore().getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
         }
-        
+
         return reviewAdditionalComment;
     }
 
@@ -724,7 +725,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         }
     }
-    
+
     /**
      * Search the store_ruleset_project property
      * @param project
@@ -748,7 +749,9 @@ public class PMDPlugin extends AbstractUIPlugin {
                 setRuleSetStoredInProject(project, ruleSetStoredInProject);
             }
         } catch (CoreException e) {
-            logError("Error when searching for the store_ruleset_project property. Assuming the project doesn't store it's own ruleset", e);
+            logError(
+                "Error when searching for the store_ruleset_project property. Assuming the project doesn't store it's own ruleset",
+                e);
         }
 
         return ruleSetStoredInProject == null ? false : ruleSetStoredInProject.booleanValue();
@@ -758,10 +761,12 @@ public class PMDPlugin extends AbstractUIPlugin {
      * Set the store_ruleset_project property
      * @param project
      * @param ruleSetStoredInProject
-     */    
+     */
     public void setRuleSetStoredInProject(IProject project, Boolean ruleSetStoredInProject) {
         try {
-            project.setPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject == null ? null : ruleSetStoredInProject.toString());
+            project.setPersistentProperty(
+                PERSISTENT_PROPERTY_STORE_RULESET_PROJECT,
+                ruleSetStoredInProject == null ? null : ruleSetStoredInProject.toString());
             project.setSessionProperty(SESSION_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject);
 
         } catch (CoreException e) {
