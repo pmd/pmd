@@ -68,7 +68,7 @@ public class Tile implements Serializable {
     public boolean contains(TokenEntry candidate) {
         for (Iterator i = tokens.iterator(); i.hasNext();) {
             TokenEntry token = (TokenEntry)i.next();
-            if (candidate.getImage().equals(token.getImage()) && candidate.getIndex() == token.getIndex() && candidate.getTokenSrcID() == token.getTokenSrcID()) {
+            if (candidate.getIndex() == token.getIndex() && candidate.getTokenSrcID() == token.getTokenSrcID()) {
                 return true;
             }
         }
