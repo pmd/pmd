@@ -139,15 +139,16 @@ public class PMDJEditPlugin extends EBPlugin {
 			while (buffer != null) {
 				//System.out.println("file = " + buffer.getFile());
 				if (buffer.getName().endsWith(".java")) {
-					fileSet.add(buffer.getFile());
+					//fileSet.add(buffer.getFile());
+					instanceCheck(buffer,view);
 				}
 				buffer = buffer.getNext();
 			}
 		}
 
-		List files = new ArrayList();
-		files.addAll(fileSet);
-		process(files);
+		//List files = new ArrayList();
+		//files.addAll(fileSet);
+		//process(files);
 	}
 	// check all open buffers
 
