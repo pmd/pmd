@@ -12,7 +12,7 @@ Version 0.8
 - Enabled custom rulesets
 - Some new status messages
 - Fixed bug 706318 Performance Improvement from C. Lamont Gilbert
-- Fixed bug 706319 Netbeans plugin uses deprecated method from C. Lamont Gilbert
+- Fixed bug 706319 NetBeans plugin uses deprecated method from C. Lamont Gilbert
 - Fixed feature request 669810 Support for custom rulesets from Juergen Ebert
 - Fixed feature request 687122 Information formatting in Rules Display from C. Lamont Gilbert
 
