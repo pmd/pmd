@@ -109,7 +109,11 @@ public class PMD {
             RuleSet rules = ruleSetFactory.createRuleSet(opts.getRulesets());
             for (Iterator i = files.iterator(); i.hasNext();) {
                 File file = (File) i.next();
-                ctx.setSourceCodeFilename(glomName(opts.shortNamesEnabled(), opts.getInputFileName(), file));
+                String filename = glomName(opts.shortNamesEnabled(), opts.getInputFileName(), file);
+                if (opts.debugEnabled()) {
+                    System.out.println("Processing " + filename);                
+                }
+                ctx.setSourceCodeFilename(filename);
                 try {
                     pmd.processFile(new BufferedInputStream(new FileInputStream(file)), opts.getEncoding(), rules, ctx);
                 } catch (PMDException pmde) {
