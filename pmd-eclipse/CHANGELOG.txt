@@ -1,6 +1,17 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
+v1.1.2 - 11/08/2003
+
+Runtime
+-------
+. Fixing exception in violations view when display violations of a class in the default package
+. Refactoring ruleset preferences. Moving the prefered ruleset from preference store to state location
+
+
+
+
+----------------------------------------------------------------------------------------
 v1.1.1 - 05/08/2003
 
 Runtime
