@@ -30,7 +30,7 @@ public class RuleContextTest extends TestCase {
 
     public void testReport() {
         RuleContext ctx = new RuleContext();
-        assertNull("Report should be null", ctx.getReport());
+        assertEquals(0, ctx.getReport().size());
         Report r = new Report();
         ctx.setReport(r);
         Report r2 = ctx.getReport();

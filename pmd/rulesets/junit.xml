@@ -92,6 +92,29 @@ public class Foo extends TestCase {
       </example>
     </rule>
 
+    <rule name="JUnitTestsShouldIncludeAssertRule"
+          message="JUnit tests should include assert()"
+          class="net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAssertsRule">
+        <description>
+        JUnit assertions should include an assertion - This makes the tests more robust
+            and assert() with messages provide the developer a clearer idea of what
+        the test does.
+        </description>
+          <priority>3</priority>
+
+        <example>
+    <![CDATA[
+    public class Foo extends TestCase {
+      public void testSomething() {
+          Bar b = findBar();
+      // This is better than having a NullPointerException
+      // assertNotNull("bar not found", b);
+      b.work();
+      }
+    }
+    ]]>
+        </example>
+      </rule>
 
 </ruleset>
 

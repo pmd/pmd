@@ -53,6 +53,7 @@ public class Designer {
                 RuleSet rs = new RuleSet();
                 rs.addRule(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
+                ctx.setSourceCodeFilename("[scratchpad]");
                 new PMD().processFile(new StringReader(codeEditorPane.getText()), rs, ctx);
                 dfaPanel.resetTo(dfaGraphRule.getMethods(), codeEditorPane);
                 dfaPanel.repaint();

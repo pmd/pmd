@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class RuleContext {
 
-    private Report report;
+    private Report report = new Report();
     private String sourceCodeFilename;
 
     public Report getReport() {
@@ -28,6 +28,5 @@ public class RuleContext {
 
     public void excludeLines(Set lines) {
         report.exclude(lines);
-
     }
 }
