@@ -107,4 +107,9 @@ public class Fault implements Comparable {
 	public static String getErrorMessage( String fault ) {
 		return fault.substring( fault.indexOf( ":" ) + 2 );
 	}
+	
+	public int getLine() {
+		return line;
+	}
+	
 }

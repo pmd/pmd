@@ -26,7 +26,7 @@
  */
 package pmd;
 
-import java.io.IOException;
+import java.io.IOException; 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -47,6 +47,7 @@ import net.sourceforge.pmd.RuleViolation;
 import org.openide.ErrorManager;
 import org.openide.TopManager;
 import org.openide.cookies.EditorCookie;
+import org.openide.cookies.LineCookie;
 import org.openide.cookies.SourceCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
@@ -128,29 +129,34 @@ public class RunPMDAction extends CookieAction {
 	 * @exception PMDException Description of the Exception
 	 */
 	private List checkCookies( List dataobjects )
-		 throws IOException, PMDException 
+		 throws IOException 
 	{
 		RuleSet set = constructRuleSets();
 		PMD pmd = new PMD();
-		
 		ArrayList list = new ArrayList( 100 );
 		for( int i = 0; i < dataobjects.size(); i++ ) {
 			DataObject dataobject = ( DataObject )dataobjects.get( i );
 			SourceCookie cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
 
 			//The file is not a java file
-			if( cookie == null ) {
+			if( cookie == null || dataobject.getCookie( LineCookie.class ) == null ) {
 				continue;
 			}
 			
 			Reader reader = getSourceReader( dataobject );
 			String name = cookie.getSource().getClasses()[0].getName().getFullName();
-			
 			RuleContext ctx = new RuleContext();
 			Report report = new Report();
 			ctx.setReport( report );
 			ctx.setSourceCodeFilename( name );
-			pmd.processFile( reader, set, ctx );
+			try {
+				pmd.processFile( reader, set, ctx );
+			}
+			catch( PMDException e ) {
+				Fault fault = new Fault( 1, name, e.getMessage() );
+				list.add( fault );
+				FaultRegistry.getInstance().registerFault( fault, dataobject );
+			}
 		
 			Iterator iterator = ctx.getReport().iterator();
 			while( iterator.hasNext() ) {
@@ -158,7 +164,9 @@ public class RunPMDAction extends CookieAction {
 				StringBuffer buffer = new StringBuffer();
 				buffer.append( violation.getRule().getName() ).append( ", " );
 				buffer.append( violation.getDescription() );
-				Fault fault = new Fault( violation.getLine(), violation.getPackageName()+"."+violation.getClassName(), buffer.toString() );
+				Fault fault = new Fault( violation.getLine(), 
+					violation.getFilename(), 
+					buffer.toString() );
 				list.add( fault );
 				FaultRegistry.getInstance().registerFault( fault, dataobject );
 			}
@@ -191,7 +199,13 @@ public class RunPMDAction extends CookieAction {
 				io.select();
 				io.getOut().reset();
 				for( int i = 0; i < violations.size(); i++ ) {
-					io.getOut().println( String.valueOf( violations.get( i ) ), listener );
+					Fault fault = (Fault)violations.get( i );
+					if( fault.getLine() == -1 ) {
+						io.getOut().println( String.valueOf( fault ) );
+					}
+					else {
+						io.getOut().println( String.valueOf( fault ), listener );
+					}
 				}
 				TopManager.getDefault().setStatusText( "PMD found rule violations" );
 			}
@@ -200,10 +214,6 @@ public class RunPMDAction extends CookieAction {
 		catch( IOException e ) {
 			ErrorManager.getDefault().notify( e );
 		}
-		catch( PMDException e ) {
-			ErrorManager.getDefault().notify( e );
-		}
-
 	}
 
 
