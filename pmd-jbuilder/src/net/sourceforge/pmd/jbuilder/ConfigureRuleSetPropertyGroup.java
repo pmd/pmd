@@ -21,7 +21,7 @@ public class ConfigureRuleSetPropertyGroup implements PropertyGroup {
     }
 
     public PropertyPageFactory getPageFactory(Object topic) {
-        if (topic == ActiveRuleSetPropertyGroup.RULESETS_TOPIC) {
+        if (topic == Constants.RULESETS_TOPIC) {
            return  new PropertyPageFactory("PMD RuleSet Properties", "Configure the PMD RuleSets") {
 
                public PropertyPage createPropertyPage () {

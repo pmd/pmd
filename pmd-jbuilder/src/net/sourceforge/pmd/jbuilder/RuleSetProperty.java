@@ -21,7 +21,6 @@ public class RuleSetProperty {
     private  GlobalProperty globalRuleSetProp;
     private RuleSet originalRuleSet;
     private RuleSet activeRuleSet;
-    private static MessageCategory msgCat = new MessageCategory("test");
 
     /**
      * These values show the selection state of the rules as contained in the GlobalProperties

@@ -54,8 +54,20 @@ public class PMDOpenTool {
             JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
             registerWithContentManager();
             registerWithProjectView();
-            PropertyManager.registerPropertyGroup(new ActiveRuleSetPropertyGroup());
-            PropertyManager.registerPropertyGroup(new ConfigureRuleSetPropertyGroup());
+
+            /**
+             * Unfortunately for now, the order in which these are instantiated is important
+             * The ActiveRuleSetPropertyGroup relies upon the ImportedRuleSetPropertyGroup already
+             * being construted before it builds itself.  It's ugly but it works.
+             */
+            ImportedRuleSetPropertyGroup ipropGrp = new ImportedRuleSetPropertyGroup();
+            ActiveRuleSetPropertyGroup apropGrp = new ActiveRuleSetPropertyGroup();
+            ConfigureRuleSetPropertyGroup cpropGrp = new ConfigureRuleSetPropertyGroup();
+
+            PropertyManager.registerPropertyGroup(apropGrp);
+            PropertyManager.registerPropertyGroup(cpropGrp);
+            PropertyManager.registerPropertyGroup(ipropGrp);
+
         }
     }
 
@@ -199,7 +211,7 @@ public class PMDOpenTool {
     public static BrowserAction ACTION_PMDConfig = new BrowserAction("Configure PMD",
             'C', "Configure the PMD Settings") {
         public void actionPerformed (Browser browser) {
-            PropertyManager.showPropertyDialog(browser, "PMD Options", ActiveRuleSetPropertyGroup.RULESETS_TOPIC,
+            PropertyManager.showPropertyDialog(browser, "PMD Options", Constants.RULESETS_TOPIC,
                     PropertyDialog.getLastSelectedPage());
         }
     };

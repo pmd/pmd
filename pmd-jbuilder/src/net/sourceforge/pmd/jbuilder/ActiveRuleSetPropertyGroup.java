@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.HashMap;
 import com.borland.primetime.ide.MessageCategory;
 import com.borland.primetime.ide.Browser;
+import java.util.Enumeration;
 
 
 
@@ -32,16 +33,28 @@ public class ActiveRuleSetPropertyGroup
         implements PropertyGroup {
 
     public static ActiveRuleSetPropertyGroup currentInstance = null;
-    public static final String RULESETS = "RuleSets";
-    public static final Object RULESETS_TOPIC = new Object();
     public HashMap ruleSets = new HashMap();
-    private MessageCategory msgCat = new MessageCategory("test");
 
     /**
     * Standard Constructor
     */
     public ActiveRuleSetPropertyGroup () {
         currentInstance = this;
+    }
+
+    private void getImportedRuleSets() {
+        for (Iterator e = ImportedRuleSetPropertyGroup.currentInstance.getRuleSets().iterator(); e.hasNext(); ) {
+            RuleSet rs = (RuleSet)e.next();
+            GlobalProperty gp = new GlobalProperty(Constants.RULESETS, rs.getName(), "true");
+            RuleSetProperty rsp = new RuleSetProperty(gp, rs);
+            ruleSets.put(rs.getName(), rsp);
+        }
+    }
+
+    protected void addImportedRuleSet(RuleSet rs) {
+        GlobalProperty gp = new GlobalProperty(Constants.RULESETS, rs.getName(), "true");
+        RuleSetProperty rsp = new RuleSetProperty(gp, rs);
+        ruleSets.put(rs.getName(), rsp);
     }
 
     /**
@@ -59,10 +72,11 @@ public class ActiveRuleSetPropertyGroup
 
             while (iter.hasNext()) {
                 RuleSet rs = (RuleSet)iter.next();
-                GlobalProperty gp = new GlobalProperty("RuleSets", rs.getName(), "true");
+                GlobalProperty gp = new GlobalProperty(Constants.RULESETS, rs.getName(), "true");
                 RuleSetProperty rsp = new RuleSetProperty(gp, rs);
                 ruleSets.put(rs.getName(), rsp);
             }
+            getImportedRuleSets();
         }
         catch (Exception e) {
         e.printStackTrace();
@@ -76,7 +90,7 @@ public class ActiveRuleSetPropertyGroup
      * @return Factory for creating property pages - this factory will create RuleSetPropertyPages
      */
     public PropertyPageFactory getPageFactory (Object topic) {
-        if (topic == RULESETS_TOPIC) {
+        if (topic == Constants.RULESETS_TOPIC) {
             return  new PropertyPageFactory("Active PMD RuleSets", "Set the Active PMD RuleSets") {
 
                 public PropertyPage createPropertyPage () {

@@ -24,7 +24,6 @@ import net.sourceforge.pmd.*;
  */
 
 public class ConfigureRuleSetPropertyPage extends PropertyPage {
-    private static MessageCategory msgCat = new MessageCategory("test");
     private BorderLayout borderLayout1 = new BorderLayout();
     private JSplitPane splitPaneConfRuleSets = new JSplitPane();
     private JScrollPane spRuleSets = new JScrollPane();
@@ -33,8 +32,10 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
     private JList listRules = new JList();
     private DefaultListModel dlmRuleSets = new DefaultListModel();
     private DefaultListModel dlmRules = new DefaultListModel();
+    static ConfigureRuleSetPropertyPage currentInstance = null;
 
     public ConfigureRuleSetPropertyPage() {
+        currentInstance = this;
         try {
             jbInit();
             init2();
@@ -44,6 +45,17 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         }
     }
 
+
+    void reinit() {
+        //get the list if rule sets and populate the listRuleSets model
+        dlmRuleSets.clear();
+        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext();) {
+            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+            dlmRuleSets.addElement(rsp.getActiveRuleSet().getName());
+            listRuleSets.updateUI();
+        }
+        this.updateUI();
+    }
 
     /**
      * This methiod is called by JBuilder

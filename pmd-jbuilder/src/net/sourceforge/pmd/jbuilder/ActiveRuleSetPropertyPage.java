@@ -26,7 +26,6 @@ import com.borland.primetime.properties.*;
 
 
 public class ActiveRuleSetPropertyPage extends PropertyPage {
-    //static MessageCategory msgCat = new MessageCategory("test");
     private BorderLayout borderLayout1 = new BorderLayout();
     private JSplitPane jSplitPane1 = new JSplitPane();
     private Border border1;
@@ -47,17 +46,27 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
     private JButton jbDeselectRuleSets = new JButton();
     private Border border3;
     private Border border4;
+    static ActiveRuleSetPropertyPage currentInstance = null;
 
     /**
      * Constuctor
      */
     public ActiveRuleSetPropertyPage () {
+        currentInstance = this;
         try {
             jbInit();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
+    void reinit() {
+        dlmSelectedRuleSets.clear();
+        dlmAvailableRuleSets.clear();
+        initRuleSplitPanes();
+        this.updateUI();
+    }
+
 
     /**
      * Initialize the splitpanes that are used in this interface
