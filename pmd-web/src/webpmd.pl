@@ -26,13 +26,13 @@ sub default() {
   print p(), b("Added "), b($project->getTitle()), b(" to the schedule"), p();
  } 
 
- print "PMD is run hourly (at 10 minutes past the hour) on these projects:";
+ print "PMD is run every two hours (at 10 minutes past the hour) on these projects:";
  print loadProjectList();
 
  printStats();
 
  print hr(); 
- print "Want to run PMD every hour on your Java Sourceforge/Jakarta project?  Fill in the blanks and hit go:";
+ print "Want to run PMD on your Java Sourceforge/Jakarta project?  Fill in the blanks and hit go:";
  print start_form();
  print "Project title (i.e., PMD): ", textfield(-name=>'title',-default=>'',-override=>1);
  print br(), "Project location: ", radio_group(-name=>'location',-values=>['Sourceforge','Jakarta'],-default=>'Sourceforge',-override=>1);
@@ -69,7 +69,12 @@ sub printStats() {
 sub getTimeUntil() {
  # we're starting each build at 10 past the hour, so...
  my $offset = 10;
- return ((60 + $offset) - localtime()->min) % 60;
+ my $everyXHours = 2;
+ my $minutes = ((60 + $offset) - localtime()->min) % 60;
+ if (localtime()->hour % $everyXHours != 0) {
+  $minutes += 60;
+ }
+ return $minutes;
 }
 
 sub loadProjectList() {
@@ -95,7 +100,10 @@ sub loadProjectList() {
 sub addProject() {
  my ($project) = @_;
  my $cmd = "echo \"@{[$project->getString()]}\" > @{[$project->getJobsFile()]}";
- `${cmd}`;
+ eval {
+  # for some reason this succeeds, but the CGI script fails.  Very odd.
+  `${cmd}`;
+ }
 }
 
 $page=param("state") || "default";
