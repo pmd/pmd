@@ -267,17 +267,18 @@ public class PMDJEditPlugin extends EditPlugin {
 		CPD cpd = null;
 		//Log.log(Log.DEBUG, PMDJEditPlugin.class , "See mode " + view.getBuffer().getMode().getName());
 
-		if (view.getBuffer().getMode().getName().equals("java"))
+		String modeName = view.getBuffer().getMode().getName();
+		if (modeName.equals("java"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing java");
 			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new JavaLanguage());
 		}
-		else if (view.getBuffer().getMode().getName().equals("php"))
+		else if (modeName.equals("php"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing PHP");
 			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new PHPLanguage());
 		}
-		else if (view.getBuffer().getMode().getName().equals("c") || view.getBuffer().getMode().getName().equals("c++"))
+		else if (modeName.equals("c") || modeName.equals("c++"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing C/C++");
 			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new CPPLanguage());
