@@ -180,7 +180,8 @@ return 3;
             <property name="xpath">
                 <value>
 <![CDATA[
-//UnmodifiedClassDeclaration[not(ClassBody/ClassBodyDeclaration/ConstructorDeclaration)]
+//ClassOrInterfaceDeclaration
+ [not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)]
 ]]>
                 </value>
             </property>

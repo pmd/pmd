@@ -15,7 +15,10 @@ import java.util.List;
 public class AvoidFieldNameMatchingMethodName extends AbstractRule {
 	
 	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-		return data;
+        if (node.isInterface()) {
+		    return data;
+        }
+        return super.visit(node,data);
 	}
 
 	/* (non-Javadoc)
@@ -23,7 +26,7 @@ public class AvoidFieldNameMatchingMethodName extends AbstractRule {
 	 */
 	public Object visit(ASTFieldDeclaration node, Object data) {
 		String varName = node.getVariableName();
-		String fieldDeclaringType = getDeclaringType (node);
+		String fieldDeclaringType = getDeclaringType(node);
 		if (varName!=null) {
 			varName = varName.toLowerCase();
 			ASTClassOrInterfaceDeclaration cl = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);

@@ -517,9 +517,9 @@ not
 <![CDATA[
 //AllocationExpression[not (ArrayDimsAndInits)
                        and
-                       (Name/@Image='Boolean'
+                       (ClassOrInterfaceType/@Image='Boolean'
                        or
-                       Name/@Image='java.lang.Boolean')]
+                       ClassOrInterfaceType/@Image='java.lang.Boolean')]
 ]]>
               </value>
           </property>

@@ -166,8 +166,9 @@ public class Foo {}
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ClassDeclaration[@Abstract='true']
- /UnmodifiedClassDeclaration[starts-with(@Image,'Abstract') = 0]
+//ClassOrInterfaceDeclaration
+ [@Abstract='true' and @Interface='false']
+ [starts-with(@Image,'Abstract') = 0]
                     ]]>
                 </value>
             </property>
@@ -190,11 +191,9 @@ public abstract class Foo { // should be AbstractFoo
              <property name="xpath">
                  <value>
 <![CDATA[
-//UnmodifiedClassDeclaration[contains(@Image, '$')]
+//ClassOrInterfaceDeclaration[contains(@Image, '$')]
 |
 //VariableDeclaratorId[contains(@Image, '$')]
-|
-//UnmodifiedInterfaceDeclaration[contains(@Image, '$')]
 |
 //MethodDeclarator[contains(@Image, '$')]
  ]]>

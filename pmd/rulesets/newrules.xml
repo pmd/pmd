@@ -84,10 +84,10 @@ public final class Foo {
           <property name="xpath">
               <value>
     <![CDATA[
-    //ClassDeclaration[
-        @Abstract='true'
-        and count(//MethodDeclaration[@Abstract='true'])=0
-        ]
+    //ClassOrInterfaceDeclaration
+      [@Abstract='true']
+      [@Interface='false']
+      [count(//MethodDeclaration[@Abstract='true'])=0]
     ]]>
               </value>
           </property>
@@ -463,7 +463,10 @@ public class Foo {
       <properties>
           <property name="xpath">
               <value><![CDATA[
-//ClassDeclaration[@Abstract='true' and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
+//ClassOrInterfaceDeclaration
+ [@Abstract='true'
+  and
+  count( .//MethodDeclaration[@Abstract='true'] )=0 ]
               ]]>
               </value>
           </property>
