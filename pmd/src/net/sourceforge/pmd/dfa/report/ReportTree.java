@@ -201,7 +201,7 @@ public class ReportTree {
                 return false;
             }
 
-            if (str.equals(tmp)) {
+            if (tmp.equals(str)) {
                 // goto level
                 this.level = child;
                 return true;

@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Olaf Heimburger - reported a possible NPE in ReportTree</li>
             <li>Ryan Gustafson - patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
             <li>Elliotte Rusty Harold - script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Eric Olander - nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>

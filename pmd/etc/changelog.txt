@@ -8,6 +8,7 @@ Fixed bug 1039963 - CPD no longer fails to parse C++ files with multi-line macro
 Fixed bug 1053663 - SuspiciousConstantFieldName no longer reports false positives for interface members.
 Fixed bug 1055346 - ImmutableFieldRule no longer reports false positive on preinc/predecrement expressions.
 Fixed bug 1055930 - CouplingBetweenObjectsRule no longer throws a NPE on interfaces
+Fixed a possible NPE in dfa.report.ReportTree.
 Implemented RFE 1058033 - Renamed run.[sh|bat] to pmd.[sh|bat].
 Implemented RFE 1058042 - XML output is more readable now.
 Applied patch 1051956 - Rulesets that reference rules using "ref" can now override various properties.
