@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Gel-Plugin: net.sourceforge.pmd.gel.PMDPlugin
