@@ -1,4 +1,5 @@
 ??? - 0.6:
+Added rule name to LogWindow; thx to Roman Legat for the suggestion.
 
 August 27 2003 - 0.5:
 Updated to pmd-1.2.1.
