@@ -14,8 +14,6 @@
     <source>
     <![CDATA[
     C:\data\pmd\pmd\etc>run c:\data\pmd\pmd\test-data\Unused1.java
-    C:\data\pmd\pmd\etc>set CLASSPATH=../build/
-    C:\data\pmd\pmd\etc>java net.sourceforge.pmd.PMD c:\data\pmd\pmd\test-data\Unused1.java
     <pmd>
     <file>
     <name>c:\data\pmd\pmd\test-data\Unused1.java</name><ruleviolation><line>5</line>
