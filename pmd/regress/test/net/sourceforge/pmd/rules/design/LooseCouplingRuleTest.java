@@ -50,4 +50,8 @@ public class LooseCouplingRuleTest extends RuleTst {
         Report report = process("LooseCoupling6.java", rule);
         assertEquals(2, report.size());
     }
+    public void test7() throws Throwable {
+        Report report = process("LooseCoupling7.java", rule);
+        assertEquals(2, report.size());
+    }
 }

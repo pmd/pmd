@@ -29,6 +29,14 @@ public class LooseCouplingRule extends AbstractRule {
         implClassNames.add("LinkedHashSet");
         implClassNames.add("TreeSet");
         implClassNames.add("TreeMap");
+        implClassNames.add("java.util.HashSet");
+        implClassNames.add("java.util.HashMap");
+        implClassNames.add("java.util.ArrayList");
+        implClassNames.add("java.util.LinkedList");
+        implClassNames.add("java.util.LinkedHashMap");
+        implClassNames.add("java.util.LinkedHashSet");
+        implClassNames.add("java.util.TreeSet");
+        implClassNames.add("java.util.TreeMap");
     }
 
     public Object visit(ASTResultType node, Object data) {
