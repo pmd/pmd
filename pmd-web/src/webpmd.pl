@@ -104,7 +104,7 @@ sub loadProjectList() {
   $result="${result}<tr><td>${jobLink}</td><td></td><td>@{[$project->getHomePage()]}</td>";
   my $color="red";
   if ($project->getLines < 11) {
-   $color="ltgreen";
+   $color="#00ff00";
   } elsif ($project->getLines < 31) {
    $color="yellow";
   }
