@@ -23,6 +23,7 @@ public class SimplifyBooleanExpressionsRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "in method body", 1, rule),
            new TestDescriptor(TEST3, "ok", 0, rule),
            new TestDescriptor(TEST4, "two cases in an && expression", 2, rule),
+           new TestDescriptor(TEST5, "simple use of BooleanLiteral, should not be flagged", 0, rule),
        });
     }
 
@@ -48,6 +49,14 @@ public class SimplifyBooleanExpressionsRuleTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  if (getFoo() == false && isBar() == true) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  if (true) {}" + PMD.EOL +
+    "  if (false) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }
