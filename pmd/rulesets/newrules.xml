@@ -55,6 +55,43 @@ class Foo {
       </example>
     </rule>
 
+    <rule
+        name="SuspiciousEqualsMethodName"
+        message="The method name and parameter number are suspiciously close to equals(Object)"
+        class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+              The method name and parameter number are suspiciously close to
+     equals(Object), which may mean you are trying (and failing) to override the equals(Object)
+        method.
+        </description>
+        <properties>
+            <property name="xpath">
+                <value>
+        <![CDATA[
+        //ClassDeclaration//MethodDeclarator
+          [@Image = 'equals']
+          [count(FormalParameters/*) = 1 ]
+          [ not (FormalParameters//Type/Name
+                 [@Image = 'Object' or @Image = 'java.lang.Object'])
+          ]
+        ]]>
+                    </value>
+                 </property>
+              </properties>
+        <priority>2</priority>
+        <example>
+        <![CDATA[
+    public class Foo {
+         public int equals(Object o) {
+         // oops, this probably was supposed to be boolean equals
+         }
+         public boolean equals(String s) {
+         // oops, this probably was supposed to be equals(Object)
+         }
+    }
+        ]]>
+        </example>
+    </rule>
 
 
 </ruleset>
