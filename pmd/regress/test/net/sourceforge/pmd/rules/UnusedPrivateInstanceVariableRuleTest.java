@@ -29,8 +29,6 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
     public void testUnusedPrivateInstanceVar1() throws Throwable {
         Report report = process("UnusedPrivateInstanceVar1.java", rule);
         assertEquals(1, report.size());
-        Iterator i =  report.iterator();
-        assertEquals(rule, ((RuleViolation)i.next()).getRule());
     }
 
     public void testUnusedPrivateInstanceVar2() throws Throwable {
@@ -41,8 +39,6 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
     public void testUnusedPrivateInstanceVar3() throws Throwable {
         Report report = process("UnusedPrivateInstanceVar3.java", rule);
         assertEquals(1, report.size());
-        Iterator i =  report.iterator();
-        assertEquals(rule, ((RuleViolation)i.next()).getRule());
     }
 
     public void testUnusedPrivateInstanceVar4() throws Throwable {
@@ -58,6 +54,7 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
         Report report = process("UnusedPrivateInstanceVar7.java", rule);
         assertTrue(report.isEmpty());
     }
+
     public void testUnusedPrivateInstanceVar8() throws Throwable {
         Report report = process("UnusedPrivateInstanceVar8.java", rule);
         assertTrue(report.isEmpty());

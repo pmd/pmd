@@ -33,28 +33,31 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
         return data;
     }
 
-    // these AST types trigger creation of a new symbol table scope
+    // these AST types trigger a new scope
     public Object visit(ASTBlock node, Object data){return addTable(node, data);}
     public Object visit(ASTConstructorDeclaration node, Object data){return addTable(node, data);}
     public Object visit(ASTMethodDeclaration node, Object data){return addTable(node, data);}
     public Object visit(ASTFieldDeclaration node, Object data){return addTable(node, data);}
     public Object visit(ASTTryStatement node, Object data){return addTable(node, data);}
     public Object visit(ASTForStatement node, Object data){return addTable(node, data);}
-    // these AST types trigger creation of a new symbol table
+    // these AST types trigger a new scope
 
-    // these AST types are variable/name usages
+    /**
+     * This collects the symbols for later reference
+     */
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        //System.out.println("ASTVariableDeclaratorId.getImage() = " + node.getImage());
         if (!(node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration)) {
             return super.visit(node, data);
         }
-        Namespace group = (Namespace)nameSpaces.peek();
-        group.peek().add(new Symbol(node.getImage(), node.getBeginLine()));
+        Namespace nameSpace = (Namespace)nameSpaces.peek();
+        nameSpace.peek().add(new Symbol(node.getImage(), node.getBeginLine()));
         return super.visit(node, data);
     }
 
+    /**
+     * This records usage of a symbol
+     */
     public Object visit(ASTName node, Object data) {
-        //System.out.println("ASTName.getImage() = " + node.getImage() + "; " + node.getBeginLine());
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
             String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
             Namespace group = (Namespace)nameSpaces.peek();
@@ -62,7 +65,6 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
         }
         return super.visit(node, data);
     }
-    // these AST types are variable/name usages
 
     private void reportUnusedLocals(RuleContext ctx, SymbolTable table) {
         for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
@@ -72,9 +74,9 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
     }
 
     private Object addTable(SimpleNode node, Object data) {
-        RuleContext ctx = (RuleContext)data;
         Namespace group = (Namespace)nameSpaces.peek();
         group.addTable();
+        RuleContext ctx = (RuleContext)data;
         super.visit(node, ctx);
         reportUnusedLocals(ctx, group.peek());
         group.removeTable();

@@ -78,11 +78,22 @@ public class UnusedLocalVariableTest extends RuleTst {
         assertTrue(report.isEmpty());
     }
 
-/*
     public void testUnusedLocal10() throws Throwable {
         Report report = process("Unused10.java", rule);
         assertTrue(report.isEmpty());
     }
-*/
 
+    public void testUnusedLocal11() throws Throwable {
+        Report report = process("Unused11.java", rule);
+        assertEquals(2, report.size());
+    }
+    public void testUnusedLocal12() throws Throwable {
+        Report report = process("Unused12.java", rule);
+        assertTrue(report.isEmpty());
+    }
+
+    public void testUnusedLocal13() throws Throwable {
+        Report report = process("Unused13.java", rule);
+        assertTrue(report.isEmpty());
+    }
 }

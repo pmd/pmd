@@ -31,9 +31,6 @@ public class SymbolTable {
         if (usageCounts.containsKey(symbol)) {
             throw new RuntimeException(symbol + " is already in the symbol table");
         }
-        if (parent != null && parent.contains(symbol)) {
-            throw new RuntimeException(symbol + " is already in the parent symbol table");
-        }
         usageCounts.put(symbol, ZERO);
     }
 

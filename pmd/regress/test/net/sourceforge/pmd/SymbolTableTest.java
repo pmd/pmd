@@ -36,18 +36,6 @@ public class SymbolTableTest extends TestCase {
         assertEquals(child.getParent(), parent);
     }
 
-    public void testAddSameSymbol() {
-        SymbolTable parent = new SymbolTable();
-        parent.add(FOO);
-        SymbolTable child = new SymbolTable(parent);
-        try {
-            child.add(FOO);
-        } catch (RuntimeException e) {
-            return; // cool
-        }
-        throw new RuntimeException("Should have thrown RuntimeException");
-    }
-
     public void testParentContains2() {
         SymbolTable parent = new SymbolTable();
         SymbolTable child = new SymbolTable(parent);
