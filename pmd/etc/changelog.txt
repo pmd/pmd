@@ -1,9 +1,9 @@
-????, 2004 - 1.9:
+July 14, 2004 - 1.9:
 New rules: CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException, EqualsNull, ConfusingTernary
 Created new "clone" ruleset and moved ProperCloneImplementationRule over from the design ruleset.
 Some minor performance optimizations - removed some unnecessary casts from the grammar, simplified some XPath rules.
 Postfix expressions (i.e., x++) are now available in the grammar.  To access them, search for StatementExpressions with an image of "++" or "--" - i.e., in XPath, //StatementExpression[@Image="++"].  This is an odd hack and hopefully will get cleared up later.
-Ant task and CLI now used BufferedInputStreams - which only made about a 2% difference, but, hey.
+Ant task and CLI now used BufferedInputStreams.
 Converted AtLeastOneConstructor rule from Java code to XPath.
 Implemented RFE 743460: The XML report now contains the ruleset name.
 Implemented RFE 958714: Private field and local variables that are assigned but not used are now flagged as unused.
