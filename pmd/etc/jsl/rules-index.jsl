@@ -19,31 +19,33 @@
 			<title>PMD Rulesets index</title>
 		</properties>
 		<body>
-			<section name="Index">
-				<p>This document contians different indexes to all PMD 
-				rulesets and rules.</p>
-				<p>NOTE: this page is still under development.</p>
-			</section>
 			<section name="Rules by ruleset">
 			    <p>List of rulesets and rules contained in each ruleset.</p>
     		    <x:set var="ruleset" select="/rulesets/ruleset"/>
                 <ul>
                 <j:forEach var="rs" items="${ruleset}">
-                    <li>${rs.attributeValue("name")} (${rs.element("description").getText()})
-                    </li>
+                    <j:set var="rulesetName" value='${rs.attributeValue("name")}'/>
+                    <j:set var="rulesetDesc" value='${rs.element("description").getText()}'/>
+                    <li><a href="#${rulesetName}">${rulesetName}</a> (${rulesetDesc})</li>
                 </j:forEach>
                 </ul>
+
+                <j:forEach var="rs" items="${ruleset}">
+                    <j:set var="rn" value="${rs.attributeValue('name')}"/>
+                    <subsection name="${rn}">
+                        <!--x:set var="rules" select="/rulesets/rules[@name='${rn}'"/-->
+                        <j:forEach var="r" items="${rs.elements('rule')}">
+                            <li> ${r.attributeValue("name")} (${r.element("description").getText()})</li>
+                        </j:forEach>
+                    </subsection>
+                </j:forEach>
+
 			</section>
+			<!-- 
 			<section name="Rules by name">
 			    <p>List of rules sorted alphabetically.</p>
-    		    <x:set var="rules" select="/rulesets/ruleset/rule"/>
-                <j:forEach var="r" items="${rules}">
-                    <p>name: ${r.attributeValue("name")} </p>
-                </j:forEach>
-                <!--x:forEach var="r" sort="true" select="/rulesets/ruleset/rule">
-                    <p>name: ${r} / <x:expr select="@name"/> </p>
-                </x:forEach-->
 			</section>
+			-->
 		</body>
 	</document>
 </jsl:template>

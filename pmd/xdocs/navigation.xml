@@ -42,6 +42,7 @@
       <item name="Run PMD on a Sourceforge project" href="/scoreboard.html" />
     </menu>
     <menu name="Rule Sets">
+      <item name="Index"  href="/rules/index.html"/>
       <item name="Basic" href="/rules/basic.html" />
       <item name="Naming" href="/rules/naming.html" />
       <item name="Unused Code" href="/rules/unusedcode.html" />

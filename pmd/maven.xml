@@ -9,6 +9,7 @@
 	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">  
 
 	<preGoal name="site">
+		<attainGoal name="pmd:rulesets-index"/>
 		<attainGoal name="pmd:ruleset-docs"/>
 	</preGoal>
 
