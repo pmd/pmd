@@ -12,6 +12,7 @@ import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
 import net.sourceforge.pmd.swingui.event.RulesTreeModelEventListener;
 
 import javax.swing.tree.DefaultTreeModel;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -168,6 +169,11 @@ class RulesTreeModel
         //
 
         List ruleSetList = m_pmdDirectoryReturnedEventHandler.getRuleSetList();
+
+        if (ruleSetList == null)
+        {
+            ruleSetList = new ArrayList();
+        }
 
         //
         // Sort the rule sets by name in ascending order.
