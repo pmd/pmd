@@ -4,7 +4,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>2.0</currentVersion>
+  <currentVersion>2.1</currentVersion>
   <organization>
     <name>InfoEther</name>
     <url>http://pmd.sourceforge.net/</url>
@@ -43,9 +43,9 @@ Gel, and Emacs.  You can <b><a href="http://sourceforge.net/project/showfiles.ph
 
   <versions>
     <version>
-      <id>2.0</id>
-      <name>2.0</name>
-      <tag>pmd_release_2_0</tag>
+      <id>2.1</id>
+      <name>2.1</name>
+      <tag>pmd_release_2_1</tag>
     </version>
     <version>
       <id>dev</id>
@@ -152,6 +152,7 @@ Gel, and Emacs.  You can <b><a href="http://sourceforge.net/project/showfiles.ph
       <version>1.6</version>
     </dependency>
 		<!--
+        Hm, why can't Maven find this dependency?
     <dependency>
       <id>xml-apis</id>
       <version>2.6.2</version>

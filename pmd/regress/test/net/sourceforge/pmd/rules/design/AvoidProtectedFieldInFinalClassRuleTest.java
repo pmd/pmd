@@ -11,7 +11,7 @@ public class AvoidProtectedFieldInFinalClassRuleTest extends SimpleAggregatorTst
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "AvoidProtectedFieldInFinalClass");
+        rule = findRule("rulesets/design.xml", "AvoidProtectedFieldInFinalClass");
     }
 
     public void testAll() {
