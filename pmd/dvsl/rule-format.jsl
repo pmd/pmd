@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+
+<jsl:stylesheet
+  select="$doc"
+  xmlns:j="jelly:core"
+  xmlns:jsl="jelly:jsl"
+  xmlns:util="jelly:util"
+  xmlns:x="jelly:xml"
+  xmlns:doc="doc"
+  xmlns="dummy" trim="false">
+
+<jsl:template match="ruleset">
+<document>
+
+    <j:set trim="true" var="rulesetname">
+             <x:expr select="@name"/>
+    </j:set>
+
+  <properties>
+    <author email="tom@infoether.org">Tom Copeland</author>
+    <title>Rule Set: ${rulesetname}</title>
+  </properties>
+
+  <body>
+    <section name="${rulesetname}">
+       <p>
+       <x:expr select="./description"/>
+       </p>
+        <jsl:applyTemplates/>
+    </section>
+  </body>
+</document>
+</jsl:template>
+
+<jsl:template match="rule">
+
+    <j:set trim="true" var="rulename">
+             <x:expr select="@name"/>
+    </j:set>
+
+    <subsection name="${rulename}">
+
+    <p>
+      <x:expr select="./description"/>
+    </p>
+
+    <j:set trim="true" var="isxpath">
+             <x:expr select="./properties/property/value"/>
+    </j:set>
+
+    <j:if test="${isxpath}">
+        <p>
+            This rule is defined by the following XPath expression:
+        </p>
+        <j:set trim="true" var="value">
+                 <x:expr select="./properties/property/value"/>
+        </j:set>
+        <source>
+        ${value}
+        </source>
+    </j:if>
+
+    <p>
+        Here's an example of code that would trigger this rule:
+    </p>
+    <source>
+        <j:set trim="true" var="examplecode">
+                 <x:expr select="./example"/>
+        </j:set>
+        <![CDATA[ ${examplecode} ]]>
+    </source>
+    </subsection>
+</jsl:template>
+
+
+</jsl:stylesheet>
