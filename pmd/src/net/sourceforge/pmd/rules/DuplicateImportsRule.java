@@ -17,12 +17,14 @@ import java.text.MessageFormat;
 
 public class DuplicateImportsRule extends AbstractRule {
 
-    private Set allImports = new HashSet();
+    private Set allImports;
     private boolean inImportCtx;
 
     public Object visit(ASTImportDeclaration node, Object data) {
         inImportCtx = true;
+        allImports = new HashSet();
         super.visit(node,data);
+        allImports = new HashSet();
         inImportCtx = false;
         return data;
     }
