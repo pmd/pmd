@@ -163,7 +163,6 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
      */
     private static class MethodInvocation {
         private String m_Name;
-        private ASTArguments m_Args;
         private ASTPrimaryExpression m_Ape;
         private List m_ReferenceNames;
         private List m_QualifierNames;
@@ -197,10 +196,6 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 
         public List getQualifierNames() {
             return m_QualifierNames;
-        }
-
-        public net.sourceforge.pmd.ast.ASTArguments getArguments() {
-            return m_Args;
         }
 
         public ASTPrimaryExpression getASTPrimaryExpression() {
@@ -843,7 +838,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 
     private static void addCalledMethodsOfNode(AccessNode node, List calledMethods, String className) {
         List expressions = new ArrayList();
-        node.findChildrenOfType(ASTPrimaryExpression.class, expressions);
+        node.findChildrenOfType(ASTPrimaryExpression.class, expressions, false);
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
 
