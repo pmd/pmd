@@ -71,6 +71,12 @@ public class JavaParser {
    this.usingAssertAsIdentifier = true;
   }
 
+  private void checkForBadAssertUsage(String in, String usage) {
+    if (!usingAssertAsIdentifier && in.equals("assert")) {
+      throw new ParseException("Can't use 'assert' as " + usage + " when running in JDK 1.4 mode!");
+    }
+  }
+
   private boolean assertLookahead() {
     return getToken(1).image.equals("assert");
   }
@@ -532,9 +538,7 @@ void VariableDeclaratorId() :
   }
   ( "[" "]" )*
   {
-    if (!usingAssertAsIdentifier && s.equals("assert")) {
-      throw new ParseException("Can't use 'assert' as an identifier when running in JDK 1.4 mode!");
-    }
+    checkForBadAssertUsage(t.image, "a variable name");
     jjtThis.setImage( s );
   }
 }
@@ -575,7 +579,10 @@ void MethodDeclarator() :
   Token t = null;
 }
 {
-  t=<IDENTIFIER> { jjtThis.setImage( t.image ); }
+  t=<IDENTIFIER> {
+    checkForBadAssertUsage(t.image, "a method name");
+    jjtThis.setImage( t.image );
+  }
   FormalParameters() ( "[" "]" )*
 }
 
