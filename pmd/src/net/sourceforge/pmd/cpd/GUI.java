@@ -41,12 +41,25 @@ public class GUI implements CPDListener {
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JProgressBar addingTokensBar = new JProgressBar();
 
+    private JTextArea resultsTextArea = new JTextArea(20,50);
+
     private JTextField expandingTileField = new JTextField(50);
     private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
     public GUI() {
         JFrame f = new JFrame("PMD Cut and Paste Detector");
+
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic('f');
+        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.setMnemonic('x');
+        exitItem.addActionListener(new CancelListener());
+        fileMenu.add(exitItem);
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(fileMenu);
+        f.setJMenuBar(menuBar);
+
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(4,2));
+        inputPanel.setLayout(new GridLayout(3,2));
         inputPanel.add(new JLabel("Enter a root src directory"));
         inputPanel.add(rootDirectoryField);
         inputPanel.add(new JLabel("Enter a minimum tile size"));
@@ -60,6 +73,7 @@ public class GUI implements CPDListener {
         cxButton.addActionListener(new CancelListener());
         buttonsPanel.add(cxButton);
         inputPanel.add(buttonsPanel);
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
 
         JPanel progressPanel = new JPanel();
         progressPanel.setLayout(new BorderLayout());
@@ -72,14 +86,23 @@ public class GUI implements CPDListener {
         panel2.add(addingTokensBar);
         progressPanel.add(panel2, BorderLayout.CENTER);
         JPanel panel3 = new JPanel();
-        panel3.add(new JLabel("Expanding tile"));
+        panel3.add(new JLabel("Current tile"));
         panel3.add(expandingTileField);
         progressPanel.add(panel3, BorderLayout.SOUTH);
+        progressPanel.setBorder(BorderFactory.createTitledBorder("Progress"));
+
+        JPanel resultsPanel = new JPanel();
+        resultsPanel.add(new JScrollPane(resultsTextArea));
+        resultsPanel.setBorder(BorderFactory.createTitledBorder("Results"));
+
 
         f.getContentPane().setLayout(new BorderLayout());
-        f.getContentPane().add(inputPanel, BorderLayout.NORTH);
-        f.getContentPane().add(progressPanel, BorderLayout.CENTER);
-        f.getContentPane().setSize(600,400);
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+        topPanel.add(inputPanel, BorderLayout.NORTH);
+        topPanel.add(progressPanel, BorderLayout.SOUTH);
+        f.getContentPane().add(topPanel, BorderLayout.NORTH);
+        f.getContentPane().add(resultsPanel, BorderLayout.SOUTH);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.pack();
         f.show();
@@ -98,7 +121,7 @@ public class GUI implements CPDListener {
             }
             cpd.go();
             CPDRenderer renderer = new TextRenderer();
-            System.out.println(renderer.render(cpd));
+            resultsTextArea.setText(renderer.render(cpd));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

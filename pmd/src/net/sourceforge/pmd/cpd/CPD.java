@@ -119,19 +119,6 @@ public class CPD {
         cpd.setListener(new CPDNullListener());
         cpd.setMinimumTileSize(26);
         try {
-/*
-            cpd.add("1", "public class Foo {}");
-            cpd.add("2", "public class Bar {}");
-*/
-/*
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused1.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused2.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused3.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused4.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused5.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused6.java"));
-            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused7.java"));
-*/
             //cpd.add(findFilesRecursively("c:\\data\\pmd\\pmd-cpd\\src\\net\\sourceforge\\pmd\\cpd"));
             //cpd.add(new File("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\PlayHelper.java"));
             cpd.addRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\");
