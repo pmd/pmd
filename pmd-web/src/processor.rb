@@ -1,6 +1,7 @@
 #!/usr/local/bin/ruby
 
 require '/home/tom/data/pmd/pmd-web/src/ikko.rb'
+require '/home/tom/data/ruby-doom/src/ruby/doom.rb'
 
 # add timeout thingy to the Thread class, thx to Rich Kilmer for the code
 class MyThread < Thread
@@ -12,6 +13,22 @@ class MyThread < Thread
    end
   end
  end
+end
+
+class PMDMap
+	MIN_NOOKS = 2
+	MAX_NOOKS = 12
+	def initialize(problems)
+		@problems = problems
+	end
+	def nooks()
+		if @problems < MIN_NOOKS
+			return MIN_NOOKS
+		elsif @problems > 100
+			return MAX_NOOKS
+		end
+		return (@problems/10).to_i + MIN_NOOKS
+	end
 end
 
 class Job
@@ -55,10 +72,13 @@ class Job
    `#{cmd}`
   end
 	def copy_up
-		`scp #{report} #{cpd_file} #{ncss_report} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
+		`scp #{wad} #{report} #{cpd_file} #{ncss_report} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
 	end
 	def report 
 		"reports/" + @unix_name + "_" + @mod.sub(/ /, '') + ".html"
+	end
+	def wad 
+		"reports/" + @unix_name + "_" + @mod.sub(/ /, '') + ".wad"
 	end
 	def cpd_file 
 		"reports/cpd_" + @unix_name + "_" + @mod.sub(/ /, '') + ".txt"
@@ -115,7 +135,7 @@ if __FILE__ == $0
 	if ARGV.include?("-build") 
 		jobs.each {|job|
 			if ARGV.include?("-job") && job.mod != ARGV.at(ARGV.index("-job")+1)
-				puts "skipping " + job.mod
+				puts "Skipping " + job.mod
 			end
 			puts "Processing #{job}"
 			job.checkout_code
@@ -137,6 +157,34 @@ if __FILE__ == $0
 		end
 	}
 
+	puts "Creating maps"
+	if ARGV.include?("-doom")
+		jobs.each {|j|
+			pmd = PMDMap.new(j.pmd_lines)
+			w = Wad.new
+			w.lumps << UndecodedLump.new("MAP01")
+			t = Things.new
+			t.add_player Point.new(50,900)
+			w.lumps << t
+			p = Path.new(0, 1000)
+			p.add("e200/n200/e200/s200/e200/", pmd.nooks)
+			p.add("s400/")
+			p.add("w200/s200/w200/n200/w200/", pmd.nooks)
+			p.add("n400/")
+			0.upto(pmd.nooks-1) {|x|
+	     t.add_barrel Point.new((x*600)+300, 1100)
+	     t.add_barrel Point.new((x*600)+300, 500)
+			}
+			w.lumps << p.vertexes
+			w.lumps << p.sectors
+			w.lumps << p.sidedefs
+			w.lumps << p.linedefs
+			w.write(j.wad + ".tmp")
+			cmd = "./bsp " + j.wad + ".tmp -o " + j.wad + " && rm -f " + j.wad + ".tmp"
+			`#{cmd}`
+		}
+	end
+	
 	fm = Ikko::FragmentManager.new
 	fm.base_path="./"
 	out = fm["header.frag", {"lastruntime"=>Time.now}]
@@ -147,7 +195,8 @@ if __FILE__ == $0
 			"ncss"=>j.ncss, 
 			"pmd"=>j.pmd_lines.to_s,
 			"pctg"=>fm["pctg.frag", {"color"=>j.color, "pctg"=>j.pctg.to_s}], 
-			"dupe"=>fm["cpd.frag", {"file"=>j.cpd_file, "dupes"=>j.cpd_lines.to_s}]
+			"dupe"=>fm["cpd.frag", {"file"=>j.cpd_file, "dupes"=>j.cpd_lines.to_s}],
+			"doom"=>fm["doom.frag", {"file"=>j.wad}]
 		}] unless !File.exists?(j.report) || !File.exists?(j.ncss_report) || j.ncss == 0
 	}
 	File.open("scoreboard.html", "w") {|f| f.syswrite(out)}
