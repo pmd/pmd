@@ -33,6 +33,8 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
     private DefaultListModel dlmRuleSets = new DefaultListModel();
     private DefaultListModel dlmRules = new DefaultListModel();
     static ConfigureRuleSetPropertyPage currentInstance = null;
+    private JScrollPane spExamples = new JScrollPane();
+    private JTextArea taExamples = new JTextArea();
 
     public ConfigureRuleSetPropertyPage() {
         currentInstance = this;
@@ -76,8 +78,8 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
      */
     public HelpTopic getHelpTopic() {
         return new ZipHelpTopic(
-         null,
-         getClass().getResource("/html/configure-ruleset-props.html").toString());
+                null,
+                getClass().getResource("/html/configure-ruleset-props.html").toString());
     }
 
     /**
@@ -105,10 +107,16 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         spRules.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Rules"));
         listRuleSets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listRules.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        spExamples.setPreferredSize(new Dimension(70,150));
+        spExamples.setAutoscrolls(false);
+        spExamples.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Example code"));
         this.add(splitPaneConfRuleSets,  BorderLayout.CENTER);
         splitPaneConfRuleSets.add(spRuleSets, JSplitPane.TOP);
         spRuleSets.getViewport().add(listRuleSets, null);
         splitPaneConfRuleSets.add(spRules, JSplitPane.BOTTOM);
+        this.add(spExamples,  BorderLayout.SOUTH);
+        spExamples.getViewport().add(taExamples, null);
+        taExamples.setEditable(false);
         spRules.getViewport().add(listRules, null);
         splitPaneConfRuleSets.setDividerLocation(200);
     }
@@ -155,70 +163,85 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         for (Iterator iter = rsp.getOriginalRuleSet().getRules().iterator(); iter.hasNext(); ) {
             Rule rule = (Rule)iter.next();
             String ruleName = rule.getName();
-            dlmRules.addElement(new RuleData(ruleName, rsp.isRuleSelected(ruleName)));
+            dlmRules.addElement(new RuleData(ruleName, rsp));
         }
+        taExamples.setText("");
 
     }
 
     class CheckListener implements MouseListener, KeyListener
     {
-            protected JList list;
+        protected JList list;
 
-            public CheckListener(JList list)
-            {
-                    this.list = list;
+        public CheckListener(JList list)
+        {
+            this.list = list;
+        }
+
+        public void mouseClicked(MouseEvent e)
+        {
+            if (e.getX() < 20)
+                doCheck();
+            //display the example
+            int index = list.getSelectedIndex();
+            if (index < 0) return;
+            RuleData rd = (RuleData)list.getModel().getElementAt(index);
+            String example = rd.rsp.getOriginalRuleSet().getRuleByName(rd.ruleName).getExample();
+            if (example != null) {
+                taExamples.setText(example);
+                taExamples.setCaretPosition(0);
+            }
+            else {
+                taExamples.setText("");
             }
 
-            public void mouseClicked(MouseEvent e)
-            {
-                    if (e.getX() < 20)
-                            doCheck();
-            }
+        }
 
-            public void mousePressed(MouseEvent e) {}
+        public void mousePressed(MouseEvent e) {
+        }
 
-            public void mouseReleased(MouseEvent e) {}
+        public void mouseReleased(MouseEvent e) {}
 
-            public void mouseEntered(MouseEvent e) {}
+        public void mouseEntered(MouseEvent e) {}
 
-            public void mouseExited(MouseEvent e) {}
+        public void mouseExited(MouseEvent e) {}
 
-            public void keyPressed(KeyEvent e)
-            {
-                    if (e.getKeyChar() == ' ')
-                            doCheck();
-            }
+        public void keyPressed(KeyEvent e)
+        {
+            if (e.getKeyChar() == ' ')
+                doCheck();
+        }
 
-            public void keyTyped(KeyEvent e) {}
-            public void keyReleased(KeyEvent e) {}
+        public void keyTyped(KeyEvent e) {}
+        public void keyReleased(KeyEvent e) {}
 
-            protected void doCheck()
-            {
-                    int index = list.getSelectedIndex();
-                    if (index < 0)
-                            return;
-                    RuleData rd = (RuleData)list.getModel().getElementAt(index);
-                    rd.invertSelected();
+        protected void doCheck()
+        {
+            int index = list.getSelectedIndex();
+            if (index < 0)
+                return;
+            RuleData rd = (RuleData)list.getModel().getElementAt(index);
+            rd.invertSelected();
 
-                    //get the currently selected rule set
-                    String ruleSetName = listRuleSets.getSelectedValue().toString();
-                    //get the RuleSetProperty object
-                    RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(ruleSetName);
-                    //update the selection setting for this rule in the rule set property
-                    rsp.setRuleSelected(rd.getName(), rd.isSelected());
+            //get the currently selected rule set
+            String ruleSetName = listRuleSets.getSelectedValue().toString();
+            //get the RuleSetProperty object
+            RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(ruleSetName);
+            //update the selection setting for this rule in the rule set property
+            rsp.setRuleSelected(rd.getName(), rd.isSelected());
 
-                    list.repaint();
-            }
+            list.repaint();
+        }
     }
 
-}
 
 
-class CheckCellRenderer extends JPanel
+
+    class CheckCellRenderer extends JPanel
             implements ListCellRenderer
     {
         protected JCheckBox check;
-        protected static Border m_noFocusBorder = new EmptyBorder(1, 1, 1, 1);
+        protected Border m_noFocusBorder = new EmptyBorder(1, 1, 1, 1);
 
 
         public CheckCellRenderer()
@@ -246,32 +269,34 @@ class CheckCellRenderer extends JPanel
 
             return c;
         }
+
     }
+}
 
+class RuleData
+{
+    protected String ruleName;
+    protected boolean selected;
+    protected RuleSetProperty rsp;
 
-    class RuleData
+    public RuleData(String ruleName)
     {
-        protected String ruleName;
-        protected boolean selected;
-
-        public RuleData(String ruleName)
-        {
-            this.ruleName = ruleName;
-            selected = true;
-        }
-        public RuleData(String ruleName, boolean isSelected) {
-            this(ruleName);
-            this.selected = isSelected;
-        }
-
-        public String getName() { return ruleName; }
-
-        public void setSelected(boolean selected) { this.selected = selected;}
-
-        public void invertSelected() { this.selected = !this.selected; }
-
-        public boolean isSelected() { return this.selected; }
-
-        public String toString() { return this.ruleName;}
+        this.ruleName = ruleName;
+        selected = true;
+    }
+    public RuleData(String ruleName, RuleSetProperty rsp) {
+        this(ruleName);
+        this.rsp = rsp;
+        this.selected = rsp.isRuleSelected(ruleName);
     }
 
+    public String getName() { return ruleName; }
+
+    public void setSelected(boolean selected) { this.selected = selected;}
+
+    public void invertSelected() { this.selected = !this.selected; }
+
+    public boolean isSelected() { return this.selected; }
+
+    public String toString() { return this.ruleName;}
+}
