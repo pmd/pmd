@@ -21,8 +21,8 @@ public class ExceptionAsFlowControl extends AbstractRule {
     public Object visit(ASTThrowStatement node, Object data) {
         
         String throwName = node.getFirstASTNameImage();
-        
-        for (ASTTryStatement parent = (ASTTryStatement) node.getFirstParentOfType(ASTTryStatement.class)
+        ASTTryStatement parent = (ASTTryStatement) node.getFirstParentOfType(ASTTryStatement.class);
+        for (parent = (ASTTryStatement) parent.getFirstParentOfType(ASTTryStatement.class)
                 ; parent != null
                 ; parent = (ASTTryStatement) parent.getFirstParentOfType(ASTTryStatement.class)) {
             
@@ -31,6 +31,7 @@ public class ExceptionAsFlowControl extends AbstractRule {
                 ASTCatch catchStmt = (ASTCatch) iter.next();
                 ASTType type = (ASTType) catchStmt.getFormalParameter().findChildrenOfType(ASTType.class).get(0);
                 ASTName name = (ASTName) type.findChildrenOfType(ASTName.class).get(0);
+                
                 if (throwName != null && throwName.equals(name.getImage())) {
                     addViolation((RuleContext) data, name.getBeginLine());
                 }
