@@ -14,7 +14,7 @@ public class UnnecessaryBooleanAssertionTest extends SimpleAggregatorTst{
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "UnnecessaryBooleanAssertion");
+        rule = findRule("rulesets/junit.xml", "UnnecessaryBooleanAssertion");
     }
 
     public void testAll() {

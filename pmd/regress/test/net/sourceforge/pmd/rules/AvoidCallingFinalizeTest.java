@@ -11,7 +11,7 @@ public class AvoidCallingFinalizeTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "AvoidCallingFinalize");
+        rule = findRule("rulesets/design.xml", "AvoidCallingFinalize");
     }
 
     public void testAll() {

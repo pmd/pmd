@@ -64,6 +64,38 @@ public class Something {
     </example>
   </rule>
   
+
+
+    <rule name="UseArrayListInsteadOfVector"
+          message="Use ArrayList instead of Vector"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+          ArrayList is a much better Collection implementation than Vector.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//AllocationExpression/ClassOrInterfaceType[@Image='Vector' or @Image='java.util.Vector']
+]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class SimpleTest extends TestCase {
+    public void testX() {
+    Collection c = new Vector();
+    // This achieves the same with much better performance
+    // Collection c = new ArrayList();
+    }
+}
+]]>
+          </example>
+    </rule>
+
     <!-- 
     other optimization shuold be like avoiding 
     "" + int

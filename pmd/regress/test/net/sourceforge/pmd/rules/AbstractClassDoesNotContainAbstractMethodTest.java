@@ -10,7 +10,7 @@ public class AbstractClassDoesNotContainAbstractMethodTest extends SimpleAggrega
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "AbstractClassDoesNotContainAbstractMethod");
+        rule = findRule("rulesets/design.xml", "AbstractClassDoesNotContainAbstractMethod");
     }
 
     public void testAll() {

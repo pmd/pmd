@@ -14,7 +14,7 @@ public class AvoidFieldNameMatchingMethodNameTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "AvoidFieldNameMatchingMethodName");
+        rule = findRule("rulesets/naming.xml", "AvoidFieldNameMatchingMethodName");
     }
     
     public void testAll() {

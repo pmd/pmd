@@ -13,7 +13,7 @@ public class MissingSerialVersionUIDTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/newrules.xml", "MissingSerialVersionUID");
+        rule = findRule("rulesets/javabeans.xml", "MissingSerialVersionUID");
     }
 
     public void testAll() {

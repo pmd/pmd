@@ -536,5 +536,37 @@ public class Foo {
    </example>
    </rule>
 
+    <rule name="UnnecessaryFinalModifier"
+          message="Unnecessary final modifier in final class"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  When a class has the final modifier, all the methods are marked finally.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//ClassOrInterfaceDeclaration[@Final='true' and @Interface='false']
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public final class Foo {
+
+    // This final modifier is not necessary, since the class is final
+    // and thus, all methods are final
+	private final void foo() {
+	}
+
+}
+
+]]>
+      </example>
+    </rule>
 
 </ruleset>

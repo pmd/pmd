@@ -13,7 +13,7 @@ public class TestClassWithoutTestCasesTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() {
-        rule = findRule("rulesets/newrules.xml", "TestClassWithoutTestCases");
+        rule = findRule("rulesets/junit.xml", "TestClassWithoutTestCases");
     }
 
     public void testAll() {

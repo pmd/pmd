@@ -795,4 +795,308 @@ class Foo {
        </example>
      </rule>
 
+    <rule name="AbstractClassDoesNotContainAbstractMethod"
+          message="This class is defined abstract but has no abstract methods"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  Abstract classes should have abstract methods, that are to be completed by subclasses.
+  If the class is intended to not be instantiated, it should be done by providing private/protected constructors.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+    //ClassOrInterfaceDeclaration
+      [@Abstract='true']
+      [@Interface='false']
+      [count(//MethodDeclaration[@Abstract='true'])=0]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public abstract class Foo {
+
+    // This constructor prevents the class from being instantiated and makes
+    // unnecessary the usage of the abstract modifier for the class
+    protected Foo() {}
+
+	void foo() {
+	}
+
+}
+
+]]>
+      </example>
+    </rule>
+
+
+    <rule name="MissingStaticMethodInNonInstantiatableClass"
+          message="Class cannot be instantiated and does not provide any static methods"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  A class that has private constructors and does not have any static method cannot be used.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//ClassOrInterfaceDeclaration[
+( count(.//ConstructorDeclaration)>0
+  and count(.//ConstructorDeclaration) = count(.//ConstructorDeclaration[@Private='true']) )
+and
+count(.//MethodDeclaration[@Static='true'])=0
+]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+/* This class is unusable, since it cannot be
+ instantiated (private constructor),
+ and no static method can be called.
+ */
+public class Foo {
+
+    private Foo() {}
+
+	void foo() {
+	}
+
+}
+
+]]>
+      </example>
+    </rule>
+
+
+    <rule name="AvoidCallingFinalize"
+          message="Avoid calling finalize() explicitly"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  finalize() is called by the garbage collector on an object when garbage collection determines
+  that there are no more references to the object.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix
+[
+./Name[
+	@Image='finalize'
+	or ends-with(@Image,'.finalize')
+	]
+or @Image='finalize'
+]
+
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+
+	void foo() {
+	    Bar b = new Bar();
+	    b.finalize();
+	}
+
+]]>
+      </example>
+    </rule>
+
+
+    <rule name="AvoidSynchronizedAtMethodLevel"
+          message="Use block level rather than method level synchronization"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  Method level synchronization can backfire when new code is added to the method.  Block-level
+  synchronization helps to ensure that only the code that needs synchronization gets it.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//MethodDeclaration[@Synchronized='true']
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+
+    // Try to avoid this
+	synchronized void foo() {
+	}
+
+	// Prefer this:
+	void bar() {
+	    synchronized(mutex) {
+	    }
+	}
+
+]]>
+      </example>
+    </rule>
+
+    <rule name="MissingBreakInSwitch"
+          message="A switch statement does not contain a break"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  A switch statement without an enclosed break statement may be a bug.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//SwitchStatement[count(.//BreakStatement)=0]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+switch(status) {
+	case CANCELLED:
+		doCancelled();
+		// uncomment the next line if doNew() and doRemoved() should not be executed when status is cancelled
+		// break;
+	case NEW:
+		doNew();
+	case REMOVED:
+		doRemoved();
+	}
+]]>
+      </example>
+    </rule>
+
+
+    <rule name="UseNotifyAllInsteadOfNotify"
+          message="Call Thread.notifyAll() rather than Thread.notify()"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
+      one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call notifyAll() instead.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix
+[
+./Name[
+	@Image='notify'
+	or ends-with(@Image,'.notify')
+	]
+or @Image='notify'
+or (  ./AllocationExpression
+    and ../PrimarySuffix[@Image='notify'] )
+]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+	x.notify();
+	// If many threads are monitoring x, only one (and you won't know which) will be notified.
+	// use instead:
+	x.notifyAll();
+]]>
+      </example>
+    </rule>
+
+    <rule name="AvoidInstanceofChecksInCatchClause"
+          message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
+          class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+  Each caught exception type should be handled in its own catch clause.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//TryStatement/FormalParameter
+ /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
+  /Name[
+   @Image = ./ancestor::Block/preceding-sibling::FormalParameter
+    /VariableDeclaratorId/@Image
+  ]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+    // Avoid this
+      try {
+            ...something...
+      }
+      catch (Exception ee) {
+            if (ee instanceof IOException) {
+                cleanup();
+            }
+      }
+
+      // Prefer this:
+      try {
+          ...something...
+      }
+      catch (IOException ee) {
+            cleanup();
+      }
+]]>
+      </example>
+    </rule>
+
+    <rule name="AbstractClassWithoutAbstractMethod"
+          message="This abstract class does not have any abstract methods"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      The abstract class does not contain any abstract methods. An abstract class suggests
+      an incomplete implementation, which is to be completed by subclasses implementing the
+      abstract methods. If the class is intended to be used as a base class only (not to be instantiated
+      direcly) a protected constructor can be provided prevent direct instantiation.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value><![CDATA[
+//ClassOrInterfaceDeclaration
+ [@Abstract='true'
+  and
+  count( .//MethodDeclaration[@Abstract='true'] )=0 ]
+              ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public abstract class Foo {
+	void int method1() { ... }
+	void int method2() { ... }
+	// consider using abstract methods or removing
+	// the abstract modifier and adding protected constructors
+}
+]]>
+      </example>
+    </rule>
+
+
 </ruleset>

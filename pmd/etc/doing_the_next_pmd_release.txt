@@ -1,9 +1,5 @@
-
-UPDATE ANT TASK DOCS TO INCLUDE EXCLUDEMARKER ATTRIBUTE
-
-
-update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-2.3.jar
-update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-2.3
+update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.0.jar
+update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-3.0
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file, change unit tests to reflect new location
 update rulesets/rulesets.properties - add any new ruleset file names
@@ -28,55 +24,55 @@ cd ..
 cd etc
 
 Prepare binary release:
-rm -rf ~/tmp/pmd-2.3
-mkdir -p ~/tmp/pmd-2.3/etc
-mkdir -p ~/tmp/pmd-2.3/bin
-mkdir ~/tmp/pmd-2.3/lib
-cp ../LICENSE.txt changelog.txt ~/tmp/pmd-2.3/etc
+rm -rf ~/tmp/pmd-3.0
+mkdir -p ~/tmp/pmd-3.0/etc
+mkdir -p ~/tmp/pmd-3.0/bin
+mkdir ~/tmp/pmd-3.0/lib
+cp ../LICENSE.txt changelog.txt ~/tmp/pmd-3.0/etc
 cd ../bin/
-cp pmd.* cygwin-run.sh build.xml cpdgui.bat designer.* ~/tmp/pmd-2.3/bin
+cp pmd.* cygwin-run.sh build.xml cpdgui.bat designer.* ~/tmp/pmd-3.0/bin
 cd ../etc/
-cp ../lib/pmd-2.3.jar ../lib/xmlParserAPIs-2.6.2.jar ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-2.3/lib/
-cp -R xslt/ ~/tmp/pmd-2.3/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd-2.3
+cp ../lib/pmd-3.0.jar ../lib/xmlParserAPIs-2.6.2.jar ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-3.0/lib/
+cp -R xslt/ ~/tmp/pmd-3.0/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd-3.0
 cd ~/tmp
-zip -q -r pmd-bin-2.3.zip pmd-2.3/
+zip -q -r pmd-bin-3.0.zip pmd-3.0/
 cd -
 
 Time to tag:
 
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ../../
-cvs -q tag -D tomorrow "pmd_release_2_3" pmd
+cvs -q tag -D tomorrow "pmd_release_3_0" pmd
 
 Prepare source release:
-rm -rf ~/tmp/pmd-2.3
-rm -rf ~/tmp/pmd-src-2.3.zip
+rm -rf ~/tmp/pmd-3.0
+rm -rf ~/tmp/pmd-src-3.0.zip
 cd pmd/bin/
 ant jarsrc
 cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-cvs -q export -r pmd_release_2_3 pmd
-mv pmd/ pmd-2.3/
+cvs -q export -r pmd_release_3_0 pmd
+mv pmd/ pmd-3.0/
 cd ..
-cp pmd/lib/pmd-src-2.3.jar tmp/pmd-2.3/lib/
-mv tmp/pmd-2.3/ ~/tmp/
-cp pmd/lib/pmd-2.3.jar ~/tmp/pmd-2.3/lib
-cp -R pmd/target/docs ~/tmp/pmd-2.3/
+cp pmd/lib/pmd-src-3.0.jar tmp/pmd-3.0/lib/
+mv tmp/pmd-3.0/ ~/tmp/
+cp pmd/lib/pmd-3.0.jar ~/tmp/pmd-3.0/lib
+cp -R pmd/target/docs ~/tmp/pmd-3.0/
 cd ~/tmp/
-zip -q -r pmd-src-2.3.zip pmd-2.3/
+zip -q -r pmd-src-3.0.zip pmd-3.0/
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_2_3 pmd
+cvs rtag -d pmd_release_3_0 pmd
 and then retag everything
 
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-2.3.zip file
-Add the pmd-src-2.3.zip file
+Add the pmd-bin-3.0.zip file
+Add the pmd-src-3.0.zip file
 Classify the file
 
 Redo the web site

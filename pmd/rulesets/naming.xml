@@ -343,6 +343,72 @@ or
         </example>
     </rule>
 
+    <rule name="AvoidFieldNameMatchingTypeName"
+          message="It is somewhat confusing to have a field name matching the declaring class name"
+          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingTypeName">
+      <description>
+      It is somewhat confusing to have a field name matching the declaring class name.
+      This proabably means that type and or field names could be more precise.
+      </description>
+      <properties></properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class Foo extends Bar {
+	// There's probably a better name for foo
+	int foo;
+}
+]]>
+      </example>
+    </rule>
+
+
+    <rule name="AvoidFieldNameMatchingMethodName"
+          message="It is somewhat confusing to have a field name with the same name as a method"
+          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingMethodName">
+      <description>
+      It is somewhat confusing to have a field name with the same name as a method.
+      While this is totally legal, having information (field) and actions (method) is
+      not clear naming.
+      </description>
+      <properties></properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class Foo {
+	Object bar;
+	// bar is data or an action or both?
+	void bar() {
+	}
+}
+]]>
+      </example>
+    </rule>
+
+
+    <rule name="AvoidNonConstructorMethodsWithClassName"
+          message="Method {0} is not a constructor but it can be confused with one"
+          class="net.sourceforge.pmd.rules.AvoidNonConstructorMethodsWithClassName">
+      <description>
+      It is very easy to confuse methods with classname with constructors. It is preferrable
+      to name these non-constructor methods in a different way.
+      </description>
+      <properties></properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class Foo {
+	public void Foo() {
+		// not really a constructor...
+	}
+}
+]]>
+      </example>
+    </rule>
+
 </ruleset>
 
 

@@ -70,6 +70,11 @@
       <td valign="top">The character set encoding (i.e., UTF-8) to use when reading the source code files</td>
       <td valign="top" align="center">No</td>
     </tr>
+    <tr>
+      <td valign="top">excludemarker</td>
+      <td valign="top">The series of characters to use to tell PMD to skip lines - the default is NOPMD.</td>
+      <td valign="top" align="center">No</td>
+    </tr>
 </table>
 
       </subsection>

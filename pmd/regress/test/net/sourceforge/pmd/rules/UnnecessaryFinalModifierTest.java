@@ -10,7 +10,7 @@ public class UnnecessaryFinalModifierTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "UnnecessaryFinalModifier");
+        rule = findRule("rulesets/basic.xml", "UnnecessaryFinalModifier");
     }
 
     public void testAll() {

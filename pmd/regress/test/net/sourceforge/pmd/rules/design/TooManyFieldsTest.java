@@ -13,7 +13,7 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
     private Rule rule;
 
     public void setUp() {
-        rule = findRule("rulesets/newrules.xml", "TooManyFields");
+        rule = findRule("rulesets/codesize.xml", "TooManyFields");
     }
     public void testAll() {
        runTests(new TestDescriptor[] {

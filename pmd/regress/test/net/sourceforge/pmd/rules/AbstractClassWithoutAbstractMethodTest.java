@@ -11,7 +11,7 @@ public class AbstractClassWithoutAbstractMethodTest extends SimpleAggregatorTst 
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "AbstractClassWithoutAbstractMethod");
+        rule = findRule("rulesets/design.xml", "AbstractClassWithoutAbstractMethod");
     }
 
     public void testAll() {

@@ -13,7 +13,7 @@ public class MissingStaticMethodInNonInstantiatableClassTest extends SimpleAggre
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "MissingStaticMethodInNonInstantiatableClass");
+        rule = findRule("rulesets/design.xml", "MissingStaticMethodInNonInstantiatableClass");
     }
     
     public void testAll() {
