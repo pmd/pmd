@@ -25,5 +25,6 @@ public interface Rule {
     public boolean include();
     public void setInclude(boolean include);
     public int getPriority();
+    public String getPriorityName();
     public void setPriority(int priority);
 }

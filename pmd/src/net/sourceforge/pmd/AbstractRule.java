@@ -164,6 +164,18 @@ public abstract class AbstractRule
     /**
      *********************************************************************************
      *
+     * Returns the rule's priority name that is used for including the rule in reports and analysis.
+     *
+     * @return A member of PRIORITIES.
+     */
+    public String getPriorityName()
+    {
+        return PRIORITIES[getPriority() - 1];
+    }
+
+    /**
+     *********************************************************************************
+     *
      * A rule will specify a priority for inclusion in reports and analysis.  The default
      * priority is "Low".
      *
