@@ -15,6 +15,7 @@ import java.util.List;
 public class SymbolFacade extends JavaParserVisitorAdapter {
 
     private Set localScopeTriggers = new HashSet();
+    private Set classScopeTriggers = new HashSet();
     private ContextManager contextManager;
     private LookupController lookupController;
 
@@ -23,7 +24,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         SymbolTable symbolTable = new SymbolTable();
         contextManager = new ContextManagerImpl(symbolTable);
         lookupController = new LookupController(symbolTable);
-        contextManager.openScope(new LocalScope()); // TODO this should be ClassScope, probably
+        contextManager.openScope(new GlobalScope());
     }
 
     private void initScopeTriggers() {
@@ -34,12 +35,15 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         localScopeTriggers.add(ASTTryStatement.class);
         localScopeTriggers.add(ASTForStatement.class);
         localScopeTriggers.add(ASTIfStatement.class);
+
+        classScopeTriggers.add(ASTClassBody.class);
     }
 
     public void initializeWith(ASTCompilationUnit node) {
         node.jjtAccept(this, null);
     }
 
+    public Object visit(ASTClassBody node, Object data){openScope(node);return data;}
     public Object visit(ASTBlock node, Object data){openScope(node);return data;}
     public Object visit(ASTConstructorDeclaration node, Object data){openScope(node);return data;}
     public Object visit(ASTMethodDeclaration node, Object data){openScope(node);return data;}
@@ -51,11 +55,18 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
     /**
      * Collect LocalScope NameDeclarations
      */
+/*
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
             node.setScope(contextManager.getCurrentScope());
             contextManager.getCurrentScope().addDeclaration(new NameDeclaration(node, Kind.LOCAL_VARIABLE));
         }
+        return super.visit(node, data);
+    }
+*/
+    public Object visit(ASTVariableDeclaratorId node, Object data) {
+        node.setScope(contextManager.getCurrentScope());
+        contextManager.getCurrentScope().addDeclaration(new NameDeclaration(node, Kind.UNKNOWN));
         return super.visit(node, data);
     }
 
@@ -72,6 +83,10 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
     private void openScope(SimpleNode node) {
         if (localScopeTriggers.contains(node.getClass())) {
             contextManager.openScope(new LocalScope());
+            super.visit(node, null);
+            contextManager.leaveScope();
+        } else if (classScopeTriggers.contains(node.getClass())) {
+            contextManager.openScope(new ClassScope());
             super.visit(node, null);
             contextManager.leaveScope();
         } else {

@@ -10,7 +10,6 @@ public class Kind {
     // see JLS 6.1 for all declaration entities
     public static final Kind LOCAL_VARIABLE = new Kind("Local variable");
     public static final Kind FIELD = new Kind("Field");
-
     public static final Kind UNKNOWN = new Kind("Unknown");
 
     private String name;
