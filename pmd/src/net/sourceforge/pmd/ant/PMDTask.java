@@ -8,7 +8,6 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.TargetJDK1_3;
@@ -30,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,6 +46,7 @@ public class PMDTask extends Task {
     private boolean failOnRuleViolation;
     private boolean targetJDK13;
     private String failuresPropertyName;
+    private final Collection nestedRules = new ArrayList();
 
     public void setShortFilenames(boolean value) {
         this.shortFilenames = value;
@@ -109,7 +110,7 @@ public class PMDTask extends Task {
     public void execute() throws BuildException {
         validate();
 
-        RuleSet rules;
+        net.sourceforge.pmd.RuleSet rules;
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             if (classpath == null) {
@@ -191,7 +192,7 @@ public class PMDTask extends Task {
         }
     }
 
-    private void logRulesUsed(RuleSet rules) {
+    private void logRulesUsed(net.sourceforge.pmd.RuleSet rules) {
         log("Using these rulesets: " + ruleSetFiles, Project.MSG_VERBOSE);
         for (Iterator i = rules.getRules().iterator(); i.hasNext();) {
             Rule rule = (Rule) i.next();
@@ -212,8 +213,23 @@ public class PMDTask extends Task {
         }
 
         if (ruleSetFiles == null) {
-            throw new BuildException("No rulesets specified");
+            if (nestedRules.isEmpty()) {
+                throw new BuildException("No rulesets specified");
+            }
+            ruleSetFiles = getNestedRuleSetFiles();            
         }
+    }
+
+    private String getNestedRuleSetFiles() {
+        final StringBuffer sb = new StringBuffer();
+        for (Iterator it = nestedRules.iterator() ; it.hasNext() ; ) {
+            RuleSet rs = (RuleSet) it.next();
+            sb.append(rs.getFile());
+            if (it.hasNext()) {
+                sb.append(',');
+            }
+        }
+        return sb.toString();
     }
 
     private Path createLongClasspath() {
@@ -223,4 +239,8 @@ public class PMDTask extends Task {
         return classpath.createPath();
     }
 
+    public void addRuleset(RuleSet r) {
+        nestedRules.add(r);
+    }
+    
 }
