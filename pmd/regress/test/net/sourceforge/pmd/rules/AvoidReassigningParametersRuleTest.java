@@ -5,19 +5,19 @@ import net.sourceforge.pmd.cpd.CPD;
 
 public class AvoidReassigningParametersRuleTest extends RuleTst {
 
-    private static final String TEST1 =
+    public static final String TEST1 =
     "public class AvoidReassigningParameters1 {" + CPD.EOL +
     " private void foo(String bar) {" + CPD.EOL +
     "  bar = \"something else\";" + CPD.EOL +
     " }" + CPD.EOL +
     "}";
 
-    private static final String TEST2 =
+    public static final String TEST2 =
     "public class AvoidReassigningParameters2 {" + CPD.EOL +
     " private void foo(String bar) {}" + CPD.EOL +
     "}";
 
-    private static final String TEST3 =
+    public static final String TEST3 =
     "public class AvoidReassigningParameters3 {" + CPD.EOL +
     " private int bar;" + CPD.EOL +
     " private void foo(String bar) {" + CPD.EOL +
@@ -25,7 +25,7 @@ public class AvoidReassigningParametersRuleTest extends RuleTst {
     " }" + CPD.EOL +
     "}";
 
-    private static final String TEST4 =
+    public static final String TEST4 =
     "public class AvoidReassigningParameters4 {" + CPD.EOL +
     " private int bar;" + CPD.EOL +
     " private void foo(String bar) {" + CPD.EOL +
@@ -33,7 +33,7 @@ public class AvoidReassigningParametersRuleTest extends RuleTst {
     " }" + CPD.EOL +
     "}";
 
-    private static final String TEST5 =
+    public static final String TEST5 =
     "public class AvoidReassigningParameters5 {" + CPD.EOL +
     "" + CPD.EOL +
     " private class Foo {" + CPD.EOL +
@@ -46,7 +46,7 @@ public class AvoidReassigningParametersRuleTest extends RuleTst {
     " }" + CPD.EOL +
     "}";
 
-    private static final String TEST6 =
+    public static final String TEST6 =
     "import java.awt.*;" + CPD.EOL +
     "" + CPD.EOL +
     "public class AvoidReassigningParameters6 {" + CPD.EOL +

@@ -5,7 +5,7 @@ import net.sourceforge.pmd.cpd.CPD;
 
 public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
 
-    private static final String TEST1 =
+    public static final String TEST1 =
     "public class AvoidDuplicateLiterals1 {" + CPD.EOL +
     " private void bar() {" + CPD.EOL +
     "    buz(\"Howdy\");" + CPD.EOL +
@@ -16,7 +16,7 @@ public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
     " private void buz(String x) {}" + CPD.EOL +
     "}";
 
-    private static final String TEST2 =
+    public static final String TEST2 =
     "public class AvoidDuplicateLiterals2 {" + CPD.EOL +
     " private void bar() {" + CPD.EOL +
     "    buz(2);" + CPD.EOL +
@@ -24,7 +24,7 @@ public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
     " private void buz(int x) {}" + CPD.EOL +
     "}";
 
-    private static final String TEST3 =
+    public static final String TEST3 =
     "public class AvoidDuplicateLiterals3 {" + CPD.EOL +
     " private static final String FOO = \"foo\";" + CPD.EOL +
     "}";

@@ -6,7 +6,7 @@ import net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule;
 
 public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
 
-    private static final String TEST1 =
+    public static final String TEST1 =
     "public class AvoidDeeplyNestedIfStmtsRule1 {" + CPD.EOL +
     " public void bar() { " + CPD.EOL +
     "  int x=2; " + CPD.EOL +
@@ -22,7 +22,7 @@ public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
     " }" + CPD.EOL +
     "}";
 
-    private static final String TEST2 =
+    public static final String TEST2 =
     "public class AvoidDeeplyNestedIfStmtsRule2 {" + CPD.EOL +
     " public void bar() { " + CPD.EOL +
     "  if (true) {" + CPD.EOL +

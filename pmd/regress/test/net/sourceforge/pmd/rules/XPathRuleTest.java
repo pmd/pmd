@@ -62,8 +62,8 @@ public class XPathRuleTest extends RuleTst {
             "xpath",
             "//IfStatement[count(ancestor::IfStatement[not(Statement[2])]) > {0}]");
         rule.addProperty("subst", "1");
-        runTestFromFile("AvoidDeeplyNestedIfStmtsRule1.java", 1, rule);
-        runTestFromFile("AvoidDeeplyNestedIfStmtsRule2.java", 0, rule);
+        runTestFromString(AvoidDeeplyNestedIfStmtsRuleTest.TEST1, 1, rule);
+        runTestFromString(AvoidDeeplyNestedIfStmtsRuleTest.TEST2, 0, rule);
     }
 
     /**
@@ -75,9 +75,9 @@ public class XPathRuleTest extends RuleTst {
         rule.addProperty(
             "xpath",
             "//Literal[@Image = preceding::Literal/@Image or @Image = following::Literal/@Image]");
-        runTestFromFile("AvoidDuplicateLiterals1.java", 4, rule);
-        runTestFromFile("AvoidDuplicateLiterals2.java", 0, rule);
-        runTestFromFile("AvoidDuplicateLiterals3.java", 0, rule);
+        runTestFromString(AvoidDuplicateLiteralsRuleTest.TEST1, 4, rule);
+        runTestFromString(AvoidDuplicateLiteralsRuleTest.TEST2, 0, rule);
+        runTestFromString(AvoidDuplicateLiteralsRuleTest.TEST3, 0, rule);
     }
 
     /**
@@ -88,11 +88,11 @@ public class XPathRuleTest extends RuleTst {
         rule.addProperty(
             "xpath",
             "//PrimaryExpression[following-sibling::AssignmentOperator][PrimaryPrefix/Name/@Image = ancestor::MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId/@Image]");
-        runTestFromFile("AvoidReassigningParameters1.java", 1, rule);
-        runTestFromFile("AvoidReassigningParameters2.java", 0, rule);
-        runTestFromFile("AvoidReassigningParameters3.java", 1, rule);
-        runTestFromFile("AvoidReassigningParameters4.java", 0, rule);
-        runTestFromFile("AvoidReassigningParameters5.java", 0, rule);
-        runTestFromFile("AvoidReassigningParameters6.java", 0, rule);
+        runTestFromString(AvoidReassigningParametersRuleTest.TEST1, 1, rule);
+        runTestFromString(AvoidReassigningParametersRuleTest.TEST2, 0, rule);
+        runTestFromString(AvoidReassigningParametersRuleTest.TEST3, 1, rule);
+        runTestFromString(AvoidReassigningParametersRuleTest.TEST4, 0, rule);
+        runTestFromString(AvoidReassigningParametersRuleTest.TEST5, 0, rule);
+        runTestFromString(AvoidReassigningParametersRuleTest.TEST6, 0, rule);
     }
 }
