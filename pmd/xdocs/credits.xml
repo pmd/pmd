@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Robert Leland - bug report</li>
             <li>Dan Sheppard - added ability to write rules as XPath expressions - very, very cool stuff</li>
             <li>Carl Gilbert - AccessorClassGenerationRule, DoubleCheckedLockingRule, ConstructorCallsOverridableMethodRule, bug reports, feature requests, and documentation improvements</li>
             <li>Dave Fuller - improved resource loading code (packaged in a nice diff, too!)</li>
