@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Specification-Version: 0.80
-Created-By: Ole-Martin Mørk
+OpenIDE-Module-Specification-Version: 0.90
+Created-By: Ole-Martin Mørk and Gunnlaugur Þór Briem
 Class-Path: ext/@pmd.jar@ ext/jaxen-core-1.0-fcs.jar ext/saxpath-1.0-fcs.jar ext/jakarta-oro-2.0.jar
 OpenIDE-Module: pmd
 OpenIDE-Module-Layer: pmd/mf-layer.xml
