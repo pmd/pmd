@@ -38,6 +38,7 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST17, "instantiate self and reference private field on other object", 0, rule),
            new TestDescriptor(TEST18, "don't count Serialization fields as being unused", 0, rule),
            new TestDescriptor(TEST19, "an assignment does not a usage make", 1, rule),
+          // new TestDescriptor(TEST20, "private field of inner class used by outer class", 0, rule),
        });
     }
     private static final String TEST1 =
@@ -161,7 +162,7 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST16 =
     "public class Foo {" + PMD.EOL +
-    " public static final String FOO = \"foo\";" + PMD.EOL +
+    " public static final int FOO = 1;" + PMD.EOL +
     "}";
 
     private static final String TEST17 =
@@ -183,6 +184,16 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
     " private int x;" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  x = 4;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST20 =
+    "public class Foo {" + PMD.EOL +
+    " private class Buz {" + PMD.EOL +
+    "  private Biz x;" + PMD.EOL +
+    " }" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  foo(x);" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
