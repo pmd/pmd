@@ -17,26 +17,34 @@ import java.util.List;
 
 public class SourceCode {
 
-    public interface CodeLoader {
-        SoftReference getCode();
-        String getFileName();
-    }
+    public static abstract class CodeLoader {
+        public abstract SoftReference getCode();
+        public abstract String getFileName();
 
-    public static class FileCodeLoader implements CodeLoader {
-        private File file;
-        public FileCodeLoader(File file) {
-            this.file = file;
-        }
-        public SoftReference getCode() {
+        protected SoftReference load(Reader r, String name) {
             try {
                 List lines = new ArrayList();
-                LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+                LineNumberReader lnr = new LineNumberReader(r);
                 String currentLine;
                 while ((currentLine = lnr.readLine()) != null) {
                     lines.add(currentLine);
                 }
                 lnr.close();
                 return new SoftReference(lines);
+            } catch (Exception e) {
+                throw new RuntimeException("Problem while reading " + name + ":" + e.getMessage());
+            }
+        }
+    }
+
+    public static class FileCodeLoader extends CodeLoader {
+        private File file;
+        public FileCodeLoader(File file) {
+            this.file = file;
+        }
+        public SoftReference getCode() {
+            try {
+                return load(new FileReader(file), file.getAbsolutePath());
             } catch (Exception e) {
                 throw new RuntimeException("Problem while reading " + file.getAbsolutePath() + ":" + e.getMessage());
             }
@@ -45,7 +53,8 @@ public class SourceCode {
             return this.file.getAbsolutePath();
         }
     }
-    public static class StringCodeLoader implements CodeLoader {
+
+    public static class StringCodeLoader extends CodeLoader {
         public static final String DEFAULT_NAME = "CODE_LOADED_FROM_STRING";
         private String code;
         private String name;
@@ -57,18 +66,7 @@ public class SourceCode {
             this.name = name;
         }
         public SoftReference getCode() {
-            try {
-                List lines = new ArrayList();
-                LineNumberReader lnr = new LineNumberReader(new StringReader(code));
-                String currentLine;
-                while ((currentLine = lnr.readLine()) != null) {
-                    lines.add(currentLine);
-                }
-                lnr.close();
-                return new SoftReference(lines);
-            } catch (Exception e) {
-                throw new RuntimeException("Problem while reading code from String: " + e.getMessage());
-            }
+            return load(new StringReader(code), name);
         }
         public String getFileName() {
             return name;
