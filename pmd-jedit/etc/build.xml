@@ -53,9 +53,9 @@
         <antcall target="jar"/>
         <mkdir dir="tmp/jars"/>
         <copy file="${lib}/${ant.project.name}.jar" todir="tmp/jars"/>
-        <move file="tmp/jars/${ant.project.name}.jar" tofile="tmp/jars/${ant.project.name}-0.2.jar"/>
-        <copy file="${lib}/pmd-0.3.jar" todir="tmp/jars"/>
-        <zip zipfile="pmd-jedit-bin-0.2.zip" basedir="tmp"/>
+        <move file="tmp/jars/${ant.project.name}.jar" tofile="tmp/jars/${ant.project.name}-0.3.jar"/>
+        <copy file="${lib}/pmd-0.4.jar" todir="tmp/jars"/>
+        <zip zipfile="pmd-jedit-bin-0.3.zip" basedir="tmp"/>
         <delete dir="tmp"/>
     </target>
 

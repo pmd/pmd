@@ -10,16 +10,21 @@ PMD JEdit Plug-in Users' Guide
 <h3>System requirements</h3>
 <p>PMD is a Java source code analyzer.  The PMD JEdit Plugin requires at least JEdit 4.0final. <a href="http://pmd.sf.net/" target="_blank">Here's</a> the PMD web site.</p>
 <h3>Installation</h3>
-<p>The Plugin comes as a single .zip file.
+<p>First, you may have to delete old version of the PMD plugin from your jars directory... you can pretty much just delete any jar file starting with "pmd" to be on the safe side.  Then, unzip the PMD-Jedit .zip file.
 Just unzip it into your JEdit directory and it'll put a couple of jar files into your jars directory, restart JEdit,
-and you'll be ready to go.</p>
+and you'll be ready to go.  </p>
 <h2>Integration</h2>
-<p>The software adds a new menu item group into the <b>Plugins</b> menu of the editor view.  There's one new menu item:</p>
+<p>The software adds a new menu item group into the <b>Plugins</b> menu of the editor view.  There are several menu items:</p>
 <ul>
+
 <li>
-<b>Plugins</b>-&gt;<b>PMD</b>-&gt;<b>Check active buffer</b> (<b>Ctrl-Shift-F11</b>).
-Runs the currently displayed Java file through the PMD code checking rules and displays a pop up window with the results.</p>
+<b>Plugins</b>-&gt;<b>PMD</b>-&gt;<b>Check code</b> - checks your currently displayed Java code pops up a window with the results.</p>
 </li>
+
+<li>
+<b>Plugins</b>-&gt;<b>PMD</b>-&gt;<b>Options</b> - here's where you can choose what rulesets you want to use to check your code.</p>
+</li>
+
 </ul>
 <h2>License</h2>
 <p>The JEdit Plug-in is free software, released under the Apache license.</p>

@@ -44,8 +44,6 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         return PMDJEditPlugin.NAME;
     }
 
-
-
     public void _init() {
         super._init();
 

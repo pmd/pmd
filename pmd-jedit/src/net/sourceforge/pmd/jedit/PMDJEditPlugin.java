@@ -42,30 +42,19 @@ public class PMDJEditPlugin extends EBPlugin {
     // boilerplate JEdit code
 
     public void instanceCheck(View view) {
-        PMD pmd = new PMD();
         RuleContext ctx = new RuleContext();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
         RuleSet rules = new RuleSet();
+        PMD pmd = new PMD();
         for (Iterator i = selectedRuleSets.getSelectedRuleSetFileNames(); i.hasNext();) {
             rules.addRuleSet(ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream((String)i.next())));
         }
-
         ctx.setReport(new Report());
         ctx.setSourceCodeFilename("this");
         try {
             pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
-
-            // TODO put this in a list box or something
-            StringBuffer msg = new StringBuffer();
-            for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                RuleViolation rv = (RuleViolation)i.next();
-                msg.append(rv.getDescription() + System.getProperty("line.separator"));
-            }
-            if (msg.length() == 0) {
-                msg.append("No errors found");
-            }
-            JOptionPane.showMessageDialog(view, msg.toString(), "PMD Results", JOptionPane.INFORMATION_MESSAGE);
+            PMDRuleViolationDialog dialog = new PMDRuleViolationDialog(ctx.getReport());
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         }

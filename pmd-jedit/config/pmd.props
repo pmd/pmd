@@ -7,14 +7,14 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=0.1
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.3
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.00.99.00
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-0.3.jar
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-0.4.jar
 
 #
 # Menu properties
 #
 pmd-menu=pmd.check - pmd.options
 pmd-menu.label=PMD
-pmd.check.label=$Check active buffer
+pmd.check.label=$Check code
 pmd.options.label=$Options
 
 options.pmd.label=PMD

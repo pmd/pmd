@@ -1,5 +1,6 @@
-July ?? 2002 - 0.3:
+July 12 2002 - 0.3:
 Updated to use pmd-0.4.
+Messages are displayed in a list.
 
 July 9 2002 - 0.2:
 Fixed bug - a message, not an empty box, is now displayed if no errors are found.
