@@ -1,2 +1,6 @@
+????? - 0.2:
+TODO add in the basic ruleset
+TODO update to pmd-1.05
+
 April 17 - 0.1:
 Initial release
