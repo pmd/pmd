@@ -9,7 +9,6 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
-import org.cougaar.util.pmd.SystemPropsRule;
 
 import java.util.Iterator;
 import java.util.ArrayList;

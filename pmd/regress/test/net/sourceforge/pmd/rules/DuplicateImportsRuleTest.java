@@ -9,7 +9,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.rules.DuplicateImportsRule;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
-import org.cougaar.util.pmd.DontCreateTimersRule;
 
 public class DuplicateImportsRuleTest extends RuleTst {
     public DuplicateImportsRuleTest(String name) {
