@@ -5,19 +5,6 @@ import net.sourceforge.pmd.cpd.CPD;
 
 public class ExcessivePublicCountRuleTest extends RuleTst {
 
-    private static final String TEST1 =
-    "public class ExcessivePublicCountRule1 {" + CPD.EOL +
-    " public int foo;" + CPD.EOL +
-    "}";
-
-    private static final String TEST2 =
-    "public class ExcessivePublicCountRule2 {" + CPD.EOL +
-    " public int foo;" + CPD.EOL +
-    " public int bif;" + CPD.EOL +
-    " public int baz;" + CPD.EOL +
-    " public int bof;" + CPD.EOL +
-    "}";
-
     private ExcessivePublicCountRule rule;
 
     public void setUp() {
@@ -33,4 +20,18 @@ public class ExcessivePublicCountRuleTest extends RuleTst {
         rule.addProperty("minimum", "2");
         runTestFromString(TEST2, 1, rule);
     }
+
+    private static final String TEST1 =
+    "public class ExcessivePublicCountRule1 {" + CPD.EOL +
+    " public int foo;" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class ExcessivePublicCountRule2 {" + CPD.EOL +
+    " public int foo;" + CPD.EOL +
+    " public int bif;" + CPD.EOL +
+    " public int baz;" + CPD.EOL +
+    " public int bof;" + CPD.EOL +
+    "}";
+
 }

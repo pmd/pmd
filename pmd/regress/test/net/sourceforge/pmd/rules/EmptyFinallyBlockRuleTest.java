@@ -4,7 +4,25 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class EmptyFinallyBlockRuleTest extends RuleTst {
+public class EmptyFinallyBlockRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty(
+            "xpath",
+            "//TryStatement[@Finally='true']/Block[position() = last()][count(*) = 0]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "", 1, rule),
+           new TestDescriptor(TEST2, "", 1, rule),
+           new TestDescriptor(TEST3, "", 0, rule),
+           new TestDescriptor(TEST4, "multiple catch blocks with finally", 1, rule),
+       });
+    }
 
     private static final String TEST1 =
     "public class EmptyFinallyBlock1 {" + CPD.EOL +
@@ -42,24 +60,4 @@ public class EmptyFinallyBlockRuleTest extends RuleTst {
     " }" + CPD.EOL +
     "}";
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty(
-            "xpath",
-            "//TryStatement[@Finally='true']/Block[position() = last()][count(*) = 0]");
-    }
-    public void testEmptyFinallyBlock1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void testEmptyFinallyBlock2() throws Throwable {
-        runTestFromString(TEST2, 1, rule);
-    }
-    public void testEmptyFinallyBlock3() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
-    public void testMultipleCatchBlocksWithFinally() throws Throwable {
-        runTestFromString(TEST4, 1, rule);
-    }
 }

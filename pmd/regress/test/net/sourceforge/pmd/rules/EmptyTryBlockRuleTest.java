@@ -4,7 +4,22 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class EmptyTryBlockRuleTest extends RuleTst {
+public class EmptyTryBlockRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//TryStatement/Block[1][count(*) = 0]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "bad", 1, rule),
+           new TestDescriptor(TEST2, "bad", 1, rule),
+           new TestDescriptor(TEST3, "ok", 0, rule)
+       });
+    }
 
     private static final String TEST1 =
     "public class EmptyTryBlock1 {" + CPD.EOL +
@@ -36,22 +51,5 @@ public class EmptyTryBlockRuleTest extends RuleTst {
     "               }" + CPD.EOL +
     "       }" + CPD.EOL +
     "}";
-
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//TryStatement/Block[1][count(*) = 0]");
-    }
-
-    public void testEmptyTryBlock1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void testEmptyTryBlock2() throws Throwable {
-        runTestFromString(TEST2, 1, rule);
-    }
-    public void testEmptyTryBlock3() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
 
 }
