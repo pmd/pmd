@@ -34,9 +34,6 @@ class Job
 		}
 		t.join  
 	end
-	def checked_out
-		File.exists?(@src)
-	end
   def run_ncss
    cmd="#{JAVANCSS_BINARY} -ncss -recursive \"#{@src}\" > \"#{ncss_report}\""
    `#{cmd}`
@@ -122,7 +119,7 @@ if __FILE__ == $0
 			end
 			puts "Processing #{job}"
 			job.checkout_code
-			if job.checked_out
+			if File.exists?(job.src)
 				job.run_pmd
 				job.run_cpd
 				job.run_ncss
@@ -155,6 +152,6 @@ if __FILE__ == $0
 	}
 	File.open("scoreboard.html", "w") {|f| f.syswrite(out)}
 
-	#`scp scoreboard.html tomcopeland@pmd.sf.net:/home/groups/p/pm/pmd/htdocs/`
+	`scp scoreboard.html tomcopeland@pmd.sf.net:/home/groups/p/pm/pmd/htdocs/`
 end
 
