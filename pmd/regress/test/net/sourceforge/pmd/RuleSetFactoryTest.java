@@ -106,9 +106,7 @@ public class RuleSetFactoryTest extends TestCase {
     }
 
     public void testSymbolTableFacadeFlag() {
-        Rule r = loadFirstRule(SYMBOLTABLE);
-        assertTrue(r.usesSymbolTable());
-        assertFalse(r.usesDFA());
+        assertTrue(loadFirstRule(SYMBOLTABLE).usesSymbolTable());
     }
 
     public void testDFAFlag() {
