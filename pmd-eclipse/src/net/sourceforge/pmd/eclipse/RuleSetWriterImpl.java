@@ -34,6 +34,9 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/01/16 22:53:03  phherlin
+ * Upgrade to PMD 2.1: take into account new rules attributes symboltable and dfa
+ *
  * Revision 1.3  2003/12/18 23:58:37  phherlin
  * Fixing malformed UTF-8 characters in generated xml files
  *
@@ -140,7 +143,15 @@ public class RuleSetWriterImpl implements RuleSetWriter {
         ruleElement.setAttribute("name", rule.getName());
         ruleElement.setAttribute("message", rule.getMessage());
         ruleElement.setAttribute("class", rule.getClass().getName());
-        ruleElement.setAttribute("include", rule.include() ? "true" : "false");
+        if (rule.usesSymbolTable()) {
+            ruleElement.setAttribute("symboltable", "true");
+        }
+        if (rule.usesDFA()) {
+            ruleElement.setAttribute("dfa", "true");
+        }
+        if (rule.include()) {
+            ruleElement.setAttribute("include", "true");
+        }
 
         Element descriptionElement = getDescriptionElement(doc, rule.getDescription());
         ruleElement.appendChild(descriptionElement);
