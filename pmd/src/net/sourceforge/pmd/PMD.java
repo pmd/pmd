@@ -15,6 +15,7 @@ import net.sourceforge.pmd.renderers.IDEAJRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.swingui.PMDViewer;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
@@ -141,6 +142,9 @@ public class PMD {
             }
         } else if (reportFormat.equals("text")) {
             Renderer rend = new TextRenderer();
+            System.out.println(rend.render(ctx.getReport()));
+        } else if (reportFormat.equals("emacs")) {
+            Renderer rend = new EmacsRenderer();
             System.out.println(rend.render(ctx.getReport()));
         } else {
             Renderer rend = new HTMLRenderer();
