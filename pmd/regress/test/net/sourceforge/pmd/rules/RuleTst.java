@@ -15,12 +15,18 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.util.ResourceLoader;
 
+import java.io.StringReader;
+
 public class RuleTst extends TestCase {
 
     private static final String TEST_FILE_DIR = "test-data/";
 
     public void runTest(String filename, int expectedResults, Rule rule) throws Throwable {
         assertEquals(expectedResults, process(filename, rule).size());
+    }
+
+    public void runTestString(String filename, int expectedResults, Rule rule) throws Throwable {
+        assertEquals(expectedResults, processWithStringReader(filename, rule).size());
     }
 
     public Report process(String fileName, Rule rule) throws Throwable {
@@ -42,5 +48,18 @@ public class RuleTst extends TestCase {
         rules.addRule(rule);
         p.processFile(ResourceLoader.loadResourceAsStream(fullFileName), rules, ctx);
     }
+
+    public Report processWithStringReader(String code, Rule rule) throws Throwable {
+        PMD p = new PMD();
+        RuleContext ctx = new RuleContext();
+        Report report = new Report();
+        ctx.setReport(report);
+        ctx.setSourceCodeFilename("n/a");
+        RuleSet rules = new RuleSet();
+        rules.addRule(rule);
+        p.processFile(new StringReader(code), rules, ctx);
+        return report;
+    }
+
 
 }
