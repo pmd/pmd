@@ -61,9 +61,19 @@ Excessive Method Length usually means that the method is doing
 too much.  There is usually quite a bit of Cut and Paste there
 as well.  Try to reduce the method size by creating helper methods,
 and removing cut and paste.
+
+Default value is 2.5 sigma greater than the mean.
+
+NOTE:  In version 0.9 and higher, their are three parameters available:
+minimum - Minimum Length before reporting.
+sigma - Std Deviations away from the mean before reporting.
+topscore - The Maximum Number of reports to generate.
+
+At this time, only one can be used at a time.
+
    </description>
    <properties>
-    <property name="minimumLength" value="200"/>
+    <property name="sigma" value="2.5"/>
    </properties>
    <example>
 <![CDATA[
@@ -81,6 +91,43 @@ public void doSomething() {
  </rule>
 
 
+ <rule name="ExcessiveParameterList"
+       message="Avoid really long parameter list."
+       class="net.sourceforge.pmd.rules.design.LongParameterListRule">
+   <description>
+This checks to make sure that the Parameter Lists in the project aren't
+getting too long.  If there are long parameter lists, then that is 
+generally indicative that another object is hiding around there.
+
+Basically, try to group the parameters together.
+
+Default value is 2.5 sigma greater than the mean.
+
+NOTE:  In version 0.9 and higher, their are three parameters available:
+minimum - Minimum Length before reporting.
+sigma - Std Deviations away from the mean before reporting.
+topscore - The Maximum Number of reports to generate.
+
+At this time, only one can be used at a time.
+
+   </description>
+   <properties>
+    <property name="sigma" value="2.5"/>
+   </properties>
+   <example>
+<![CDATA[
+public void addData( 
+  int p00, int p01, int p02, int p03, int p04, int p05, 
+  int p05, int p06, int p07, int p08, int p09, int p10) {
+
+  }
+}
+]]>
+   </example>
+
+ </rule>
+
+
  <rule name="ExcessiveClassLength"
        message="Avoid really long Classes."
        class="net.sourceforge.pmd.rules.design.LongClassRule">
@@ -88,9 +135,19 @@ public void doSomething() {
 Long Class files are indications that the class may be trying to
 do too much.  Try to break it down, and reduce the size to something
 managable.
+
+Default value is 2.5 sigma greater than the mean.
+
+NOTE:  In version 0.9 and higher, their are three parameters available:
+minimum - Minimum Length before reporting.
+sigma - Std Deviations away from the mean before reporting.
+topscore - The Maximum Number of reports to generate.
+
+At this time, only one can be used at a time.
+
    </description>
    <properties>
-    <property name="minimumLength" value="1000"/>
+    <property name="sigma" value="2.5"/>
    </properties>
    <example>
 <![CDATA[

@@ -23,9 +23,7 @@ public class ExcessiveLengthRule
     }
 
     public Object visit( SimpleNode node, Object data ) {
-	System.err.println( node );
 	if (nodeClass.isInstance( node )) {
-	    System.err.println("OK");
 	    DataPoint point = new DataPoint();
 	    point.setLineNumber( node.getBeginLine() );
 	    point.setScore( 1.0 * (node.getEndLine() - node.getBeginLine() ));

@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.stat;
 
+import java.util.Random;
+
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -9,22 +11,39 @@ import net.sourceforge.pmd.Rule;
 public class DataPoint 
 	implements java.lang.Comparable
 {
-	private int lineNumber;
-	private double score;
-	private String message;
-	private Rule rule;
-	/**
-	 * Constructor for DataPoint.
-	 */
-	public DataPoint() {
-		super();
+    private int lineNumber;
+    private int random;
+    private double score;
+    private String message;
+    private Rule rule;
+    /**
+     * Constructor for DataPoint.
+     */
+    public DataPoint() {
+	super();
+	// Random number is so that the TreeSet doesn't
+	// whack things with the same score.
+	Random rand = new Random();
+	random = rand.nextInt(11061973);
+    }
+    
+    public int compareTo( Object object) {
+	
+	DataPoint rhs = (DataPoint) object;
+	
+	Double lhsScore = new Double( score );
+	Double rhsScore = new Double( rhs.getScore());
+	
+	if (lhsScore.doubleValue() != rhsScore.doubleValue() ) {
+	    return lhsScore.compareTo(rhsScore);
 	}
 	
-	public int compareTo( Object object) {
-		Double lhs = new Double( score );
-		Double rhs = new Double( ((DataPoint) object).getScore());
-		return lhs.compareTo(rhs);
-	}
+	Integer lhsRand = new Integer( random );
+	Integer rhsRand = new Integer( rhs.random );
+
+	return lhsRand.compareTo(rhsRand);
+    }
+
 	/**
 	 * Returns the lineNumber.
 	 * @return int
