@@ -1,7 +1,9 @@
-1.  DONE.  Clear out task list of previously entered PMD tasks when re-running PMD  ** Fixed
-2.  DONE.  Modify to allow allow ruleset selection from a drop-down list that is populated from
-the ruleset.properties file.  The user should still be allowed to type in a rule set as well.
-3.  DONE.  Update to use PMD 1.03
-4.  DONE.  Limit PMD to current project, instead of all.
-5.  DONE.  Add progress monitor 
-6.  DONE.  Update TODO.txt 
+Plan for v1.2.0
+done - implementing Review feature (RFE#787086)
+- writing doc for Review feature
+- implementing working set feature
+- writing doc for working set feature
+- improving CPD support (develop a cpd view for cpd reports)
+- updating doc for CPD support
+- implementing lazy check feature
+- writing doc for lazy check feature
