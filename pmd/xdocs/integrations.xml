@@ -298,7 +298,7 @@ it is.  You can read more about the PMD Ant task <a href="running.html">here</a>
       </subsection>
       <subsection name="JCreator">
 <p>
-    <ul>
+    <ol>
         <li>Open Configure > Options</li>
         <li>Go to the Tools panel</li>
         <li>Click New > Program</li>
@@ -307,7 +307,7 @@ it is.  You can read more about the PMD Ant task <a href="running.html">here</a>
         <li>Set the initial directory to PMD's \etc directory</li>
         <li>Check capture output</li>
         <li>Put '"$[PrjDir]" emacs' followed by desired rulesets in the arguments</li>
-    </ul>
+    </ol>
     <p>To  run PMD on a project, just pick pmd from the Tools menu.</p>
 </p>
       </subsection>
