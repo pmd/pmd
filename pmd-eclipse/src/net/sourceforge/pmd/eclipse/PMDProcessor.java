@@ -32,6 +32,10 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2003/09/29 22:38:49  phherlin
+ * Adding and implementing "JDK13 compatibility" property.
+ * Desactivated, waiting for PMD 1.2.2 to be released
+ *
  * Revision 1.10  2003/08/14 16:10:41  phherlin
  * Implementing Review feature (RFE#787086)
  *
@@ -64,6 +68,7 @@ public class PMDProcessor {
     private static final PMDProcessor SELF = new PMDProcessor();
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDProcessor");
     private PMD pmdEngine;
+    private PMD pmdEngineJdk13;
 
     /**
      * Default construtor
@@ -93,7 +98,12 @@ public class PMDProcessor {
             context.setSourceCodeFilename(file.getName());
             context.setReport(new Report());
 
-            pmdEngine.processFile(input, PMDPlugin.getDefault().getRuleSetForResource(file, true), context);
+            if (PMDPlugin.getDefault().isJdk13Enable(file.getProject())) {
+                log.debug("Running in JDK13 compatibility mode");
+                pmdEngineJdk13.processFile(input, PMDPlugin.getDefault().getRuleSetForResource(file, true), context);
+            } else {
+                pmdEngine.processFile(input, PMDPlugin.getDefault().getRuleSetForResource(file, true), context);
+            }
 
             updateMarkers(file, context, fTask, accumulator);
 
@@ -148,6 +158,7 @@ public class PMDProcessor {
      */
     private void initialize() {
         pmdEngine = new PMD();
+        pmdEngineJdk13 = new PMD( /* new TargetJDK1_3() */ );
     }
 
     /**
