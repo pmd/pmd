@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -12,10 +13,10 @@ import java.util.Set;
 
 public class AvoidDuplicateLiteralsRuleTest extends SimpleAggregatorTst {
 
-    private AvoidDuplicateLiteralsRule rule;
+    private Rule rule;
 
-    public void setUp() {
-        rule = new AvoidDuplicateLiteralsRule();
+    public void setUp() throws Exception {
+        rule = findRule("rulesets/strings.xml", "AvoidDuplicateLiterals");
         rule.setMessage("avoid ''{0}'' and ''{1}'' and ''{2}''");
         rule.addProperty("threshold", "2");
     }

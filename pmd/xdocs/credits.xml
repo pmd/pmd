@@ -43,10 +43,10 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Benoit Xhenseval - more bug reports (with good failure cases!), Ant task patch, XSLT patch, suggestion for improving XML report, several bug reports</li>
             <li>George Sexton - Suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>John Heintz - Added "any language" support to CPD.</li>
             <li>Eric Olander - AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
-            <li>Benoit Xhenseval - Ant task patch, XSLT patch, suggestion for improving XML report, several bug reports</li>
             <li>Harald Gurres - cleaned up the symbol table code with a very nice patch</li>
             <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>
