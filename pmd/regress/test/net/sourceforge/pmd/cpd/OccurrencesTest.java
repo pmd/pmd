@@ -62,7 +62,7 @@ public class OccurrencesTest  extends TestCase {
 
     public void testConsolidate() {
         Occurrences occs = new Occurrences();
-        TokenSet ts = GSTTest.createHelloTokenSet("foo");
+        TokenList ts = GSTTest.createHelloTokenSet("foo");
 
     }
 

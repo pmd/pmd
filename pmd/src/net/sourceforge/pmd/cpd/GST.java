@@ -56,7 +56,7 @@ public class GST {
     private void expandTile(Occurrences newOcc, Tile tile) {
         for (Iterator i = occurrences.getOccurrences(tile); i.hasNext();) {
             Occurrence occ = (Occurrence)i.next();
-            TokenSet tokenSet = tokenSets.getTokenSet(occ);
+            TokenList tokenSet = tokenSets.getTokenSet(occ);
             if (tokenSet.hasTokenAfter(tile, occ)) {
                 Token token = (Token)tokenSet.get(occ.getIndex() + tile.getTokenCount());
                 // make sure the next token hasn't already been used in an occurrence

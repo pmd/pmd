@@ -6,7 +6,7 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.TokenSet;
+import net.sourceforge.pmd.cpd.TokenList;
 import net.sourceforge.pmd.cpd.Token;
 import net.sourceforge.pmd.cpd.Tile;
 import net.sourceforge.pmd.cpd.Occurrence;
@@ -17,13 +17,13 @@ public class TokenSetTest extends TestCase{
     }
 
     public void testBasic() {
-        TokenSet ts = new TokenSet("foo");
+        TokenList ts = new TokenList("foo");
         assertEquals("foo", ts.getID());
     }
 
     public void testAdd() {
         Token tok = new Token('l', 9, "foo");
-        TokenSet ts = new TokenSet("foo");
+        TokenList ts = new TokenList("foo");
         ts.add(tok);
         assertEquals(tok, ts.get(0));
         assertTrue(ts.iterator().hasNext());

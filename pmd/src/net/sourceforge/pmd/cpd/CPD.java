@@ -24,7 +24,7 @@ public class CPD {
 
     public void add(File file) throws IOException {
         Tokenizer t = new Tokenizer();
-        TokenSet ts = new TokenSet(file.getAbsolutePath());
+        TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
         t.tokenize(ts, fr);
         fr.close();
@@ -33,7 +33,7 @@ public class CPD {
 
     public void add(String id, String input) throws IOException {
         Tokenizer t = new Tokenizer();
-        TokenSet ts = new TokenSet(id);
+        TokenList ts = new TokenList(id);
         t.tokenize(ts, new StringReader(input));
         tokenSets.add(ts);
     }

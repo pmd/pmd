@@ -16,8 +16,8 @@ public class GSTTest extends TestCase {
     }
 
     public void test1() {
-        TokenSet ts1 = GSTTest.createHelloTokenSet("foo");
-        TokenSet ts2 = GSTTest.createHelloTokenSet("bar");
+        TokenList ts1 = GSTTest.createHelloTokenSet("foo");
+        TokenList ts2 = GSTTest.createHelloTokenSet("bar");
         TokenSets tss = new TokenSets();
         tss.add(ts1);
         tss.add(ts2);
@@ -44,8 +44,8 @@ public class GSTTest extends TestCase {
 
     }
 
-    public static TokenSet createHelloTokenSet(String id) {
-        TokenSet ts = new TokenSet(id);
+    public static TokenList createHelloTokenSet(String id) {
+        TokenList ts = new TokenList(id);
         ts.add(new Token('h', 0, id));
         ts.add(new Token('e', 1, id));
         ts.add(new Token('l', 2, id));

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Tokenizer {
 
-    public void tokenize(TokenSet tokens, Reader input) throws IOException {
+    public void tokenize(TokenList tokens, Reader input) throws IOException {
         int c = 0;
         int position = 0;
         while ((c = input.read()) != -1) {

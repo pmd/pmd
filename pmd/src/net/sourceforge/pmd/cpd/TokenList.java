@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-public class TokenSet {
+public class TokenList {
 
     private String id;
     private List tokens = new ArrayList();
 
-    public TokenSet(String id) {
+    public TokenList(String id) {
         this.id = id;
     }
 
@@ -31,7 +31,7 @@ public class TokenSet {
     }
 
     public boolean equals(Object other) {
-        TokenSet o = (TokenSet)other;
+        TokenList o = (TokenList)other;
         return o.getID().equals(id);
     }
 

@@ -13,18 +13,18 @@ public class TokenSets {
 
     public TokenSets() {}
 
-    public TokenSets(TokenSet ts) {
+    public TokenSets(TokenList ts) {
         tokenSets.add(ts);
     }
 
-    public void add(TokenSet ts) {
+    public void add(TokenList ts) {
         tokenSets.add(ts);
     }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
         for (Iterator i = tokenSets.iterator(); i.hasNext();) {
-            TokenSet ts = (TokenSet)i.next();
+            TokenList ts = (TokenList)i.next();
             sb.append(ts.toString());
             sb.append(System.getProperty("line.separator"));
         }
@@ -35,9 +35,9 @@ public class TokenSets {
         return tokenSets.iterator();
     }
 
-    public TokenSet getTokenSet(Occurrence occ) {
+    public TokenList getTokenSet(Occurrence occ) {
         for (Iterator i = iterator(); i.hasNext();) {
-            TokenSet ts = (TokenSet)i.next();
+            TokenList ts = (TokenList)i.next();
             if (ts.getID().equals(occ.getTokenSetID())) {
                 return ts;
             }

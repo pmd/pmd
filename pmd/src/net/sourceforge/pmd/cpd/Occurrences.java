@@ -14,7 +14,7 @@ public class Occurrences {
 
     public void addInitial(TokenSets tss) {
         for (Iterator j = tss.iterator();j.hasNext();) {
-            TokenSet ts = (TokenSet)j.next();
+            TokenList ts = (TokenList)j.next();
             for (Iterator i = ts.iterator(); i.hasNext();) {
                 Token tok = (Token)i.next();
                 Tile tile = new Tile(tok);
