@@ -9,19 +9,30 @@
   <body>
    <section name="Copied and pasted code is usually bad">
      <p>But it can be hard to find, especially in a large project.  So we wrote a utility - CPD - to find it for us.
-     CPD uses (more or less) Michael Wise's Greedy String Tiling algorithm to find duplicate code.</p>
-     <p>Here's a <a href="images/screenshot_cpd.jpg">screenshot</a> of CPD after running on the JDK java.lang package.</p>
+         First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
+         <a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">here</a>).  Then it was completely
+         rewritten by Brian Ewins using the <a href="http://dogma.net/markn/articles/bwt/bwt.htm">Burrows-Wheeler transform</a> - or, at least, the first part of it.</p>
+     <p>Here's a <a href="images/screenshot_cpd.png">screenshot</a> of CPD after running on the JDK java.lang package.</p>
      <p>To run CPD as a JNLP application, click <a href="cpd.jnlp">here</a>.</p>
-     <p>As a reference point, running the CPD GUI against the JDK 1.4 java packages  (1178 files, 13.4 MB of data)on a
-     Celeron 1.13 GHz machine with 256 MB of RAM took 19 hours and 59 minutes.  It found some nice duplicates which
+     <p>As a reference point, running the CPD GUI against the JDK 1.4 java packages
+         (1178 files, 13.4 MB of data) on a Pentium III 1.2 GHz machine with 512 MB of
+         RAM took 48 seconds.  It found some nice duplicates which
      you can see <a href="cpdresults.txt">here</a> - the largest ones are at the bottom of the page.</p>
      <p>There's also a JavaSpaces version available for splitting the CPD effort across a farm of machines.
      I usually post news on that <a href="http://cpd.jini.org/">here</a> and the releases are <a href="http://sf.net/projects/pmd/">here</a></p>
+       <p>Andy Glover wrote an Ant task for CPD; here's how to use it:</p>
+       <source>
+<![CDATA[
+<target name="cpd">
+   <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+   <cpd tileSize="100" codeLocation="/home/tom/tmp/ant/src/main/org/apache/tools/ant/filters/" outputFile="/home/tom/cpd.txt"/>
+</target>
+]]>
+       </source>
      <p>Future plans</p>
      <ul>
         <li>Make a PMD rule for CPD</li>
         <li>Make the GUI remember your settings</li>
-        <li>Improve the algorithm to make it greedier</li>
         <li>Suggestions?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</li>
      </ul>
    </section>
