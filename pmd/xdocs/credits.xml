@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>David Whitmore - parser bug report</li>
             <li>David Campbell - detailed bugs reports, Ant task refactoring, documentation tweaks</li>
             <li>Michael Sutherland - bug report in IfStmtMustUseBracesRule</li>
             <li>Andrew Glover - ExcessivePublicCountRule, CouplingBetweenObjectsRule, ExcessiveImportsRule, documentation tweaks</li>
