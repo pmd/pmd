@@ -182,8 +182,8 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>Expand the <B>Tools</B> branch (if not already) by clicking on the '<CODE>+</CODE>' directly to its left.</LI>
         <LI>In the expanded list, select <B>PMD directory</B>.  This changes the right side of this dialog to the "tool" form.</LI>
         <LI>In the "tool" form, enter these parameters:<UL>
-            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-2.0\lib\pmd-2.0.jar;D:\java\pmd-2.0\lib\jaxen-core-1.0-fcs.jar; D:\java\pmd-2.0\lib\saxpath-1.0-fcs.jar;D:\java\pmd-2.0\lib\xmlParserAPIs-2.0.2.jar; D:\java\pmd-2.0\lib\xercesImpl-2.0.2.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
-            <BR/>(<I>Eliminate the spaces following both '<CODE>jaxen-core-1.0-fcs.jar;</CODE>' and '<CODE>xmlParserAPIs-2.0.2.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
+            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-2.0\lib\pmd-2.0.jar;D:\java\pmd-2.0\lib\jaxen-core-1.0-fcs.jar; D:\java\pmd-2.0\lib\saxpath-1.0-fcs.jar;D:\java\pmd-2.0\lib\xmlParserAPIs-2.6.2.jar; D:\java\pmd-2.0\lib\xercesImpl-2.6.2.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
+            <BR/>(<I>Eliminate the spaces following both '<CODE>jaxen-core-1.0-fcs.jar;</CODE>' and '<CODE>xmlParserAPIs-2.6.2.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
             <LI><B>Initial Folder:</B>  <CODE>$FileDir</CODE></LI>
             <LI><B>Save all documents first:</B>  <CODE>Checked</CODE></LI>
             <LI><B>Capture output:</B>  <CODE>Checked</CODE></LI>

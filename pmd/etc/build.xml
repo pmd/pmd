@@ -14,8 +14,8 @@
     <fileset dir="${lib}">
         <include name="jaxen-core-1.0-fcs.jar"/>
         <include name="saxpath-1.0-fcs.jar"/>
-        <include name="xercesImpl-2.0.2.jar"/>
-        <include name="xmlParserAPIs-2.0.2.jar"/>
+        <include name="xercesImpl-2.6.2.jar"/>
+        <include name="xmlParserAPIs-2.6.2.jar"/>
     </fileset>
 </path>
 
