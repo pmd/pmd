@@ -55,18 +55,10 @@ sub loadProjectList() {
  return $result;
 }
 
-
 sub addProject() {
  my ($title, $unixname,$moduleDirectory,$srcdir) = @_;
  my $cmd="echo \"${title}:${unixname}:${moduleDirectory}:${srcdir}\" > jobs/${moduleDirectory}.txt";
  `${cmd}`;
-}
-
-sub refreshReport() {
- print start_html(-title=>'PMD Results', -head=>meta({-http_equiv=>'Refresh',-content=>'10;URL=http://pmd.sf.net/cgi-bin/webpmd.pl?state=refreshreport'}));
- $query->p("This page will refresh with more information every 10 seconds or so");
- open(FILE,"results.html");
- print $query->p(<FILE>);
 }
 
 $page=param("state") || "default";
