@@ -29,6 +29,7 @@ import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.MarkerResolutionSelectionDialog;
+import org.eclipse.ui.ide.IDE;
 
 /**
  * Implements the quick fix menu item from the violations view
@@ -37,6 +38,9 @@ import org.eclipse.ui.dialogs.MarkerResolutionSelectionDialog;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2003/12/02 22:30:54  phherlin
+ * Adapting to Eclipse v3M5
+ *
  * Revision 1.2  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -65,8 +69,7 @@ public class QuickFixAction extends Action {
         IMarker[] selectedMarkers = violationView.getSelectedViolations();
 
         if ((selectedMarkers != null) && (selectedMarkers.length == 1)) {
-            IWorkbench workbench = PlatformUI.getWorkbench();
-            hasQuickFix = workbench.getMarkerHelpRegistry().hasResolutions(selectedMarkers[0]);
+            hasQuickFix = IDE.getMarkerHelpRegistry().hasResolutions(selectedMarkers[0]);
         }
         
         return hasQuickFix;
@@ -78,7 +81,7 @@ public class QuickFixAction extends Action {
     public void run() {
         IMarker[] selectedMarkers = violationView.getSelectedViolations();
         IWorkbench workbench = PlatformUI.getWorkbench();
-        IMarkerResolution resolutions[] = workbench.getMarkerHelpRegistry().getResolutions(selectedMarkers[0]);
+        IMarkerResolution resolutions[] = IDE.getMarkerHelpRegistry().getResolutions(selectedMarkers[0]);
         if (resolutions.length != 0) {
             MarkerResolutionSelectionDialog dialog = new MarkerResolutionSelectionDialog(workbench.getActiveWorkbenchWindow().getShell(), resolutions);
             if (dialog.open() == Dialog.OK) {

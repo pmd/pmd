@@ -6,7 +6,8 @@ v2.0.1 - ../12/2003
 
 Runtime
 -------
-.Fixing bug #852522 : PreferencesPage doesn't show up
+. Fixing bug #852522 : PreferencesPage doesn't show up
+. Adapting to Eclipse v3M5
 
 
 

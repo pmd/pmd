@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="2.0.0"
+   version="2.0.1"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
@@ -14,6 +15,11 @@
       <library name="lib/commons-logging.jar"/>
    </runtime>
    <requires>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.apache.xerces"/>
@@ -60,7 +66,7 @@
       </attribute>
    </extension>
    <extension
-         point="org.eclipse.ui.markerResolution">
+         point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
             markerType="net.sourceforge.pmd.eclipse.pmdMarker"
             class="net.sourceforge.pmd.eclipse.PMDResolutionGenerator">
@@ -95,11 +101,11 @@
          name="PMD Property Page"
          point="org.eclipse.ui.propertyPages">
       <page
-            objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
             name="%properties.pmd"
-            nameFilter="*"
             class="net.sourceforge.pmd.eclipse.properties.PMDPropertyPage"
+            nameFilter="*"
             id="net.sourceforge.pmd.eclipse.properties.pmdPropertyPage">
       </page>
    </extension>
@@ -124,8 +130,8 @@
          name="PMD Popup Menus"
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
             nameFilter="*"
             id="net.sourceforge.pmd.eclipse.pmdProjectContribution">
          <menu
@@ -170,8 +176,8 @@
          </action>
       </objectContribution>
       <objectContribution
-            objectClass="org.eclipse.core.resources.IFolder"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IFolder"
             nameFilter="*"
             id="net.sourceforge.pmd.eclipse.pmdFolderContribution">
          <menu
@@ -208,8 +214,8 @@
          </action>
       </objectContribution>
       <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IFile"
             nameFilter="*.java"
             id="net.sourceforge.pmd.eclipse.pmdFileContribution">
          <menu

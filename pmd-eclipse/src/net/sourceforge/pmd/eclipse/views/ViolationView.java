@@ -42,6 +42,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -52,6 +53,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2003/12/02 22:30:54  phherlin
+ * Adapting to Eclipse v3M5
+ *
  * Revision 1.6  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -134,7 +138,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
             if (resource instanceof IFile) {
                 IWorkbenchPage page = getSite().getPage();
                 try {
-                    page.openEditor(marker, OpenStrategy.activateOnOpen());
+                    IDE.openEditor(page, marker, OpenStrategy.activateOnOpen());
                 } catch (PartInitException e) {
                     PMDPlugin.getDefault().logError("Ignoring exception when trying to open an editor", e);
                 }
@@ -155,7 +159,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
                 if (input instanceof IFileEditorInput) {
                     IFile file = ((IFileEditorInput) input).getFile();
                     if (marker.getResource().equals(file)) {
-                        editor.gotoMarker(marker);
+                        IDE.gotoMarker(editor, marker);
                     }
                 }
             }

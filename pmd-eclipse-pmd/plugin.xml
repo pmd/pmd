@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="1.3.2"
+   version="1.3.3"
    provider-name="%plugin.provider">
 
    <runtime>
@@ -17,8 +18,6 @@
    </runtime>
    <requires>
       <import plugin="org.apache.xerces"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui"/>
    </requires>
 
 
