@@ -33,6 +33,7 @@
         <item name="How to write a rule" href="/howtowritearule.html" />
         <item name="How to make a rule set" href="/howtomakearuleset.html" />
         <item name="How it works" href="/howitworks.html" />
+        <item name="Writing XPath rules" href="/xpathruletutorial.html" />
     </menu>
     <menu name="For example">
       <item name="Run PMD on a Sourceforge project" href="/scoreboard.html" />
