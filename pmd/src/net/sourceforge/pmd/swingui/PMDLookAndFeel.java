@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.swingui;
 
 import java.awt.Color;
+import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
@@ -13,9 +14,6 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
  */
 public class PMDLookAndFeel extends WindowsLookAndFeel
 {
-
-    public static final Color TABLE_BACKGROUND_COLOR = new Color(0xFFFFD9);
-    public static final Color TREE_BACKGROUND_COLOR = new Color(0xFFFFD9);
 
     /**************************************************************
      *
@@ -110,5 +108,17 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
     protected void initComponentDefaults(UIDefaults table)
     {
         super.initComponentDefaults(table);
+
+        Class wlafClass = WindowsLookAndFeel.class;
+        Object[] defaults =
+        {
+//J-
+        "Tree.openIcon",               LookAndFeel.makeIcon(wlafClass, "icons/TreeOpen.gif"),
+        "Tree.closedIcon",             LookAndFeel.makeIcon(wlafClass, "icons/TreeClosed.gif"),
+        "Tree.leafIcon",               LookAndFeel.makeIcon(wlafClass, "icons/TreeLeaf.gif"),
+//J
+        };
+
+        table.putDefaults(defaults);
     }
 }

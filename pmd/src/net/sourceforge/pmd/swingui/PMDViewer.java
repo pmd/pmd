@@ -38,10 +38,21 @@ public class PMDViewer extends JFrame
 
         m_pmdViewer = this;
 
-        int windowWidth = 900;
-        int windowHeight = 900;
-        int windowMargin = 20;
+        int windowWidth = 1000;
+        int windowHeight = 1000;
+        int windowMargin = 10;
         Dimension screenSize = getToolkit().getScreenSize();
+
+        if (windowWidth >= screenSize.width)
+        {
+            windowWidth = screenSize.width - 10;
+        }
+
+        if (windowHeight >= screenSize.height)
+        {
+            windowHeight = screenSize.height - 20;
+        }
+
         int windowLocationX = (screenSize.width - windowWidth) / 2;
         int windowLocationY = (screenSize.height - windowHeight) / 2;
 
@@ -72,7 +83,7 @@ public class PMDViewer extends JFrame
         JScrollPane directoryTreeScrollPane = new JScrollPane(m_directoryTree);
 
         {
-            Color background = PMDLookAndFeel.TREE_BACKGROUND_COLOR;
+            Color background = UIManager.getColor("pmdTreeBackground");
             directoryTreeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             directoryTreeScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             directoryTreeScrollPane.getViewport().setBackground(background);
@@ -91,7 +102,7 @@ public class PMDViewer extends JFrame
         JScrollPane directoryTableScrollPane = new JScrollPane(directoryTable);
 
         {
-            Color background = PMDLookAndFeel.TABLE_BACKGROUND_COLOR;
+            Color background = UIManager.getColor("pmdTableBackground");
             directoryTableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             directoryTableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             directoryTableScrollPane.getViewport().setBackground(background);
@@ -142,7 +153,7 @@ public class PMDViewer extends JFrame
 
         {
             mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-            mainSplitPane.setResizeWeight(0.5);
+            mainSplitPane.setResizeWeight(0.2);
             mainSplitPane.setDividerSize(5);
             mainSplitPane.setTopComponent(directorySplitPane);
             mainSplitPane.setBottomComponent(resultsScrollPane);
@@ -154,7 +165,7 @@ public class PMDViewer extends JFrame
         JPanel contentPanel = new JPanel(new BorderLayout());
 
         {
-            Border outsideBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+            Border outsideBorder = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
             Border insideBorder = BorderFactory.createEmptyBorder(windowMargin,windowMargin,windowMargin,windowMargin);
             Border compoundBorder = BorderFactory.createCompoundBorder(outsideBorder, insideBorder);
 
@@ -199,8 +210,8 @@ public class PMDViewer extends JFrame
         {
             // Setup the User Interface based on this computer's operating system.
             // This must be done before calling Java and Swing classes that call the GUI.
-            String useLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-            //String useLookAndFeel = "net.sourceforge.pmd.swingui.PMDLookAndFeel";
+            //String useLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+            String useLookAndFeel = "net.sourceforge.pmd.swingui.PMDLookAndFeel";
 
             UIManager.setLookAndFeel(useLookAndFeel);
 

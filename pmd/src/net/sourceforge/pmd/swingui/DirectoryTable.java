@@ -24,6 +24,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.UIManager;
 
 /**
  *
@@ -49,7 +50,7 @@ class DirectoryTable extends JTable
         setRowSelectionAllowed(false);
         setColumnSelectionAllowed(false);
         setCellSelectionEnabled(true);
-        setBackground(PMDLookAndFeel.TABLE_BACKGROUND_COLOR);
+        setBackground(UIManager.getColor("pmdTableBackground"));
 
         TableColumnModel columnModel = getColumnModel();
         JTableHeader tableHeader = getTableHeader();

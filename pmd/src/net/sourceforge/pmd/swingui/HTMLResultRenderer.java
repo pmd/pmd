@@ -48,12 +48,9 @@ class HTMLResultRenderer
         //
         // Write the name of the file that was analyzed.
         //
-        writer.write("<h3><font color=\"blue\">PMD Analysis Results</font></h3>");
-        writer.write("<font face=\"arial\">");
+        writer.write("<h3><center><font color=\"blue\">PMD Analysis Results</font></center></h3>");
         writer.write("<b>Source File:</b> ");
         writer.write(fileName);
-        writer.write("</font>");
-        writer.write("<p><p>");
 
         //
         // Create a table.
@@ -64,15 +61,13 @@ class HTMLResultRenderer
         }
         else
         {
-            writer.write("<font face=\"arial\">");
             writer.write("<table bgcolor=\"#FFFFD9\" border>");
 
             //
             // Create the column headings.
             //
             writer.write("<tr>");
-            writer.write("<th><b>Line No.</b></th>");
-            writer.write("<th><b>Rule Name</b></th>");
+            writer.write("<th><b>Line<br>No.</b></th>");
             writer.write("<th><b>Rule</b></th>");
             writer.write("<th><b>Description</b></th>");
             writer.write("<th><b>Example</b></th>");
@@ -91,15 +86,8 @@ class HTMLResultRenderer
                 //
                 // Line Number
                 //
-                writer.write("<td align=\"left\">");
+                writer.write("<td align=\"center\" valign=\"top\">");
                 writer.write(String.valueOf(ruleViolation.getLine()));
-                writer.write("</td>");
-
-                //
-                // Rule Name
-                //
-                writer.write("<td align=\"left\">");
-                writer.write(rule.getName());
                 writer.write("</td>");
 
                 //
@@ -116,7 +104,7 @@ class HTMLResultRenderer
                     ruleMessage = ruleMessage.replace('\n', ' ').trim();
                 }
 
-                writer.write("<td align=\"left\">");
+                writer.write("<td align=\"left\" valign=\"top\">");
                 writer.write(ruleMessage);
                 writer.write("</td>");
 
@@ -134,7 +122,7 @@ class HTMLResultRenderer
                     description = description.replace('\n', ' ').trim();
                 }
 
-                writer.write("<td align=\"left\">");
+                writer.write("<td align=\"left\" valign=\"top\">");
                 writer.write(description);
                 writer.write("</td>");
 
@@ -145,7 +133,7 @@ class HTMLResultRenderer
 
                 if ((example != null) && (example.length() > 0))
                 {
-                    writer.write("<td align=\"left\">");
+                    writer.write("<td align=\"left\" valign=\"top\">");
                     writer.write("<pre>");
                     writer.write(example);
                     writer.write("</pre>");
@@ -159,7 +147,6 @@ class HTMLResultRenderer
             }
 
             writer.write("</table>");
-            writer.write("/font");
         }
 
         //

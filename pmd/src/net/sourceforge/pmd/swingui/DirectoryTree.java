@@ -9,6 +9,7 @@ import javax.swing.Icon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
+import javax.swing.UIManager;
 
 /**
  *
@@ -31,7 +32,7 @@ class DirectoryTree extends JTree
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         setCellRenderer(new DirectoryTreeNodeRenderer());
         ((DirectoryTreeModel) getModel()).setDirectoryTree(this);
-        setBackground(PMDLookAndFeel.TREE_BACKGROUND_COLOR);
+        setBackground(UIManager.getColor("pmdTableBackground"));
     }
 
     /**
@@ -104,7 +105,7 @@ class DirectoryTree extends JTree
             m_defaultClosedIcon = getDefaultClosedIcon();
             m_defaultLeafIcon = getDefaultLeafIcon();
             m_defaultOpenIcon = getDefaultOpenIcon();
-            setBackgroundNonSelectionColor(PMDLookAndFeel.TREE_BACKGROUND_COLOR);
+            setBackgroundNonSelectionColor(UIManager.getColor("pmdTreeBackground"));
         }
 
         /**
