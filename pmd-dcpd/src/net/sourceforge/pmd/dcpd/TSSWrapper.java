@@ -1,8 +1,4 @@
-/*
- * User: tom
- * Date: Aug 21, 2002
- * Time: 4:36:49 PM
- */
+package net.sourceforge.pmd.dcpd;
 
 import net.jini.core.entry.Entry;
 import net.sourceforge.pmd.cpd.TokenSets;

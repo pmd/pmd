@@ -1,3 +1,5 @@
+package net.sourceforge.pmd.dcpd;
+
 import net.jini.space.JavaSpace;
 import net.jini.core.lease.Lease;
 import net.jini.core.discovery.LookupLocator;
