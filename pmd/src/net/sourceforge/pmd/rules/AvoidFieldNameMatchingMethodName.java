@@ -50,10 +50,4 @@ public class AvoidFieldNameMatchingMethodName extends AbstractRule {
 		}
 		return data;
 	}
-	private String getDeclaringType(SimpleNode  node) {
-		ASTUnmodifiedClassDeclaration c = (ASTUnmodifiedClassDeclaration) node.getFirstParentOfType(ASTUnmodifiedClassDeclaration.class);
-		if (c!=null)
-			return c.getImage();
-		return null;
-	}
 }

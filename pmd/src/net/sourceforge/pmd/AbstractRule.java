@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.Iterator;
 import java.util.List;
@@ -199,4 +200,16 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         context.getReport().addRuleViolation(createRuleViolation(context, beginLine));
     }
 
+    /** 
+     * Gets the Image of the first parent node of type ASTUnmodifiedClassDeclaration or <code>null</code>
+     *  
+     * @param node the node which will be searched
+     * @return
+     */
+    protected final String getDeclaringType(SimpleNode  node) {
+		ASTUnmodifiedClassDeclaration c = (ASTUnmodifiedClassDeclaration) node.getFirstParentOfType(ASTUnmodifiedClassDeclaration.class);
+		if (c!=null)
+			return c.getImage();
+		return null;
+	}
 }
