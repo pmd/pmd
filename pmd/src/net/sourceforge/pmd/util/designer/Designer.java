@@ -5,8 +5,6 @@ package net.sourceforge.pmd.util.designer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -170,7 +168,7 @@ public class Designer implements ClipboardOwner {
         controlPanel.add(createCodeEditPanel());
         controlPanel.add(createXPathQueryPanel());
 
-        JSmartPanel astPanel = createASTPanel();
+        JComponent astPanel = createASTPanel();
         JPanel xpathResultPanel = createXPathResultPanel();
 
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
@@ -221,13 +219,13 @@ public class Designer implements ClipboardOwner {
         resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 2));
     }
 
-    private JSmartPanel createASTPanel() {
-        JSmartPanel astPanel = new JSmartPanel();
+    private JComponent createASTPanel() {
+        //JSmartPanel astPanel = new JSmartPanel();
         astArea.setRows(20);
         astArea.setColumns(20);
         JScrollPane astScrollPane = new JScrollPane(astArea);
-        astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
-        return astPanel;
+        //astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
+        return astScrollPane; //astPanel;
     }
 
     private JPanel createXPathResultPanel() {
