@@ -23,12 +23,16 @@ Prepare binary release:
 rmdir /q /s c:\tmp\pmd
 mkdir -p c:\tmp\pmd\etc
 mkdir c:\tmp\pmd\lib
+mkdir -p c:\tmp\pmd\docs\javadoc
 copy run.bat c:\tmp\pmd\etc
 copy build.xml c:\tmp\pmd\etc
 copy cpdgui.bat c:\tmp\pmd\etc
+copy readme.txt c:\tmp\pmd\etc
+copy changelog.txt c:\tmp\pmd\etc
 copy ..\lib\pmd-1.0rc2.jar c:\tmp\pmd\lib
 copy ..\lib\xmlParserAPIs-2.0.2.jar c:\tmp\pmd\lib
 copy ..\lib\xercesImpl-2.0.2.jar c:\tmp\pmd\lib
+generate the web site and copy the javadoc into c:\tmp\pmd\docs\javadoc
 Zip it up, rename it pmd-bin-1.0rc2.zip
 
 All is well, so time to tag:
