@@ -168,6 +168,16 @@
       <version>2.0.2</version>
     </dependency>
 
+      <dependency>
+        <id>jaxen-core</id>
+        <version>1.0-fcs</version>
+      </dependency>
+
+      <dependency>
+        <id>saxpath</id>
+        <version>1.0-fcs</version>
+      </dependency>
+
   </dependencies>
 
   <build>
