@@ -160,6 +160,43 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </subsection>
 
     <subsection name="Put the WhileLoopsMustUseBracesRule rule in a ruleset file">
+    <p>
+    Now our rule is written - at least, the shell of it is - and now we need to tell PMD about it.  We need
+    to add it to a rule set XML file.  Look at rulesets/basic.xml; it's got lots of rule definitions that look like this:
+    </p>
+    <source>
+<![CDATA[
+  <rule name="EmptyCatchBlock"
+        message="Avoid empty catch blocks"
+        class="net.sourceforge.pmd.rules.EmptyCatchBlockRule">
+    <description>
+Empty Catch Block finds instances where an exception is caught,
+but nothing is done.  In most circumstances, this swallows an exception
+which should either be acted on or reported.
+    </description>
+
+    <example>
+  public void doSomething() {
+    try {
+      FileInputStream fis = new FileInputStream("/tmp/bugger");
+    } catch (IOException ioe) {
+        // not good
+    }
+  }
+    </example>
+  </rule>
+ ]]>
+    </source>
+    <p>
+    Copy and paste one of these rules, then fill in the elements and attributes:
+    </p>
+    <ul>
+    <li>name - WhileLoopsMustUseBracesRule</li>
+    <li>message - Use braces for while loops</li>
+    <li>class - Whereever you put the rule.  Note this doesn't have to be in net.sourceforge.pmd; it can be in com.yourcompany.util.pmd or whereever you want</li>
+    <li>description - Use braces for while loops</li>
+    <li>example - A little code snippet in CDATA tags that shows a rule violation</li>
+    </ul>
     </subsection>
 
     <subsection name="Run PMD using your new ruleset">
