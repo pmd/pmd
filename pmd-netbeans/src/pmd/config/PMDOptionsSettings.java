@@ -46,6 +46,10 @@ public class PMDOptionsSettings extends SystemOption {
 
 	public final static String PROP_RULESETS = "rulesetz";
 	
+	public final static String PROP_SCAN_INTERVAL = "interval";
+	
+	public final static String PROP_ENABLE_SCAN = "EnableScan";
+	
 	/** The default rules.*/
 	private static final String DEFAULT_RULES =
 		"AvoidDuplicateLiterals, StringToString, StringInstantiation, JUnitStaticSuite, " +
@@ -59,6 +63,7 @@ public class PMDOptionsSettings extends SystemOption {
 		"AvoidReassigningParametersRule, OnlyOneReturn, UseSingletonRule, " +
 		"DontImportJavaLang, UnusedImports, DuplicateImports, ";
 
+	
 	// No constructor please!
 
 	/** Sets the default rulesets and initializes the option */
@@ -132,6 +137,38 @@ public class PMDOptionsSettings extends SystemOption {
 	 */
 	public void setRulesets(CustomRuleSetSettings rulesets) {
 		putProperty( PROP_RULESETS, rulesets, true );
+	}
+	
+	/** Getter for property scanEnabled.
+	 * @return Value of property scanEnabled.
+	 *
+	 */
+	public Boolean isScanEnabled() {
+		return (Boolean)getProperty( PROP_ENABLE_SCAN );
+	}
+	
+	/** Setter for property scanEnabled.
+	 * @param scanEnabled New value of property scanEnabled.
+	 *
+	 */
+	public void setScanEnabled(Boolean scanEnabled) {
+		putProperty( PROP_ENABLE_SCAN, scanEnabled );
+	}
+	
+	/** Getter for property scanInterval.
+	 * @return Value of property scanInterval.
+	 *
+	 */
+	public Integer getScanInterval() {
+		return (Integer)getProperty( PROP_SCAN_INTERVAL);
+	}
+	
+	/** Setter for property scanInterval.
+	 * @param scanInterval New value of property scanInterval.
+	 *
+	 */
+	public void setScanInterval(Integer scanInterval) {
+		putProperty( PROP_SCAN_INTERVAL, scanInterval );
 	}
 	
 }

@@ -38,6 +38,8 @@ import org.openide.text.Line.Set;
 import pmd.Fault;
 import pmd.PMDAnnotation;
 import pmd.RunPMDAction;
+import pmd.config.PMDOptionsSettings;
+import pmd.scan.PMDScanAnnotation;
 
 /**
  *
@@ -60,11 +62,8 @@ public class Scanner implements Runnable {
 				list.add( object );
 				List faults = RunPMDAction.checkCookies(list );
 				ErrorManager.getDefault().log(ErrorManager.ERROR, ""+faults);
-
-
+				PMDScanAnnotation.clearAll();
 				LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
-				
-				
 				Set lineset = cookie.getLineSet();
 				for( int i = 0; i < faults.size(); i++ ) {
 					Fault fault = (Fault)faults.get( i );
@@ -72,7 +71,7 @@ public class Scanner implements Runnable {
 					Line line = lineset.getOriginal( lineNum - 1 );
 					ErrorManager.getDefault().log( ErrorManager.ERROR, "count: " + line.getAnnotationCount() );
 					if( line.getAnnotationCount() <= 0 ) {
-						PMDAnnotation annotation = PMDAnnotation.getNewInstance();
+						PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
 						String msg = fault.getMessage();
 						annotation.setErrorMessage( msg );
 						annotation.attach( line );
@@ -80,7 +79,7 @@ public class Scanner implements Runnable {
 						line.addPropertyChangeListener( annotation );
 					}
 				}
-				Thread.sleep( 3000 );
+				Thread.sleep( PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000 );
 			}
 		}
 		catch( IOException e ) {

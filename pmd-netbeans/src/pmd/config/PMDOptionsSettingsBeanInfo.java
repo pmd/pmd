@@ -27,6 +27,7 @@
 package pmd.config;
 
 import java.awt.Image;
+import java.awt.*;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -52,8 +53,9 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 	 * @return the description of the rulesets property
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor descriptor[] = new PropertyDescriptor[2];
+		PropertyDescriptor descriptor[] = new PropertyDescriptor[4];
 		try {
+			
 			PropertyDescriptor rules = new PropertyDescriptor( "rules", PMDOptionsSettings.class, "getRules", "setRules" );
 			rules.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_rules" ) );
 			rules.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_rules" ) );
@@ -66,6 +68,17 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 			rulesets.setPropertyEditorClass( RuleSetChooserEditor.class );
 			rulesets.setExpert(true);
 			descriptor[1] = rulesets;
+			
+			PropertyDescriptor enableScan = new PropertyDescriptor( "scanEnabled", PMDOptionsSettings.class, "isScanEnabled", "setScanEnabled" );
+			enableScan.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_enablescan" ) );
+			enableScan.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_enablescan" ) );
+			descriptor[2] = enableScan;			
+			
+			PropertyDescriptor scanInterval = new PropertyDescriptor( "scanInterval", PMDOptionsSettings.class, "getScanInterval", "setScanInterval" );
+			scanInterval.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_scanInterval" ) );
+			scanInterval.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_scanInterval" ) );
+			descriptor[3] = scanInterval;		
+			
 		}
 		catch( IntrospectionException ie ) {
 			ErrorManager.getDefault().notify( ie );

@@ -277,11 +277,11 @@ public class RunPMDAction extends CookieAction {
 	private List getDataObjects( Node[] node ) {
 		ArrayList list = new ArrayList();
 		for( int i = 0; i < node.length; i++ ) {
-			SourceCookie cookie = ( SourceCookie )node[i].getCookie( SourceCookie.class );
-
+			DataObject data = (DataObject)node[i].getCookie( DataObject.class );
+			
 			//Checks to see if it's a java source file
-			if( cookie != null ) {
-				list.add( ( DataObject )node[i].getCookie( DataObject.class ) );
+			if( data.getPrimaryFile().hasExt( "java" ) ) {
+				list.add( data );
 			}
 			//Or if it's a folder
 			else {
@@ -289,8 +289,7 @@ public class RunPMDAction extends CookieAction {
 				Enumeration enumeration = folder.children( true );
 				while( enumeration.hasMoreElements() ) {
 					DataObject dataobject = ( DataObject )enumeration.nextElement();
-					cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
-					if( cookie != null ) {
+					if( dataobject.getPrimaryFile().hasExt( "java" ) ) {
 						list.add( dataobject );
 					}
 				}

@@ -26,11 +26,13 @@
  */
 package pmd.scan;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.openide.ErrorManager;
-import org.openide.cookies.SourceCookie;
+import org.openide.cookies.EditorCookie;
 import org.openide.nodes.Node;
 import org.openide.windows.TopComponent.Registry;
+import pmd.config.PMDOptionsSettings;
 
 /**
  *
@@ -45,20 +47,22 @@ public class EditorChangeListener implements PropertyChangeListener {
 	
 	}
  	
- 	public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
-		Node node[] = registry.getActivatedNodes();
-		SourceCookie cookie = null;
-		int i = 0;
-		for( i = 0; i < node.length; i++ ) {
-			ErrorManager.getDefault().log(ErrorManager.ERROR, "checking cookie " + node[i]);			
-			cookie = (SourceCookie)node[i].getCookie( SourceCookie.class );
-			if( cookie != null ) {
-				break;
+ 	public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+		if( PMDOptionsSettings.getDefault().isScanEnabled().equals( Boolean.TRUE ) ) {
+			Node node[] = registry.getActivatedNodes();
+			EditorCookie cookie = null;
+			int i = 0;
+			for( i = 0; i < node.length; i++ ) {
+				ErrorManager.getDefault().log(ErrorManager.ERROR, "checking cookie " + node[i]);			
+				cookie = (EditorCookie)node[i].getCookie( EditorCookie.class );
+				if( cookie != null ) {
+					break;
+				}
 			}
-		}
-		if( cookie != null ) {
-			ErrorManager.getDefault().log(ErrorManager.ERROR, "starting scan");
-			startScan( node[i] );
+			if( cookie != null ) {
+				ErrorManager.getDefault().log(ErrorManager.ERROR, "starting scan");
+				startScan( node[i] );
+			}
 		}
 	}
 	
@@ -71,7 +75,6 @@ public class EditorChangeListener implements PropertyChangeListener {
 		Thread thread = new Thread( scanner );
 		thread.setPriority( Thread.MIN_PRIORITY );
 		thread.start();
-		int i;
 	}
 	
 }

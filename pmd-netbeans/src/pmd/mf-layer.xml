@@ -26,6 +26,7 @@
       <folder name="Editors">
     <folder name="AnnotationTypes">
       <file name="pmd-annotation.xml" url="resources/annotation.xml"/>
+      <file name="pmd-scan-annotation.xml" url="resources/annotation-scan.xml"/>
     </folder>
   </folder>
       <folder name="Shortcuts">
