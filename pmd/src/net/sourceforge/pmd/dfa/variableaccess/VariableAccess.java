@@ -17,7 +17,11 @@ public class VariableAccess {
 
     public VariableAccess(int accessType, String varName) {
         this.accessType = accessType;
-        this.variableName = varName.split("\\.")[0];
+        if (varName.indexOf(".") == -1) {
+            this.variableName = varName;
+        } else {
+            this.variableName = varName.substring(0, varName.indexOf("."));
+        }
     }
 
     public int getAccessType() {
