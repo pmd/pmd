@@ -49,11 +49,9 @@ public class DCPDWorker {
             System.out.println("Read a TokenSetsWrapper with " + tsw.tokenSets.size() + " token lists");
 
             while (true) {
-                System.out.println("Starting expansion");
                 TileExpander te = new TileExpander(space, tsw);
                 te.expandAvailableTiles();
-                System.out.println("Done, sleeping");
-                Thread.currentThread().sleep(1000);
+                Thread.currentThread().yield();
             }
 
         } catch (Exception e) {

@@ -31,7 +31,9 @@ public class TileExpander {
         Entry twQuery = space.snapshot(new TileWrapper(null, null, tsw.jobID, TileWrapper.NOT_DONE, null, null, null));
 
         TileWrapper tileWrapperToExpand = null;
+        int total = 0;
         while ((tileWrapperToExpand = (TileWrapper)space.take(twQuery, null, 10)) != null) {
+            total++;
             //System.out.println("Expanding " + tileWrapperToExpand.tile.getImage());
             Occurrences results = expand(tileWrapperToExpand);
             int expansionIndex = 0;
@@ -45,10 +47,11 @@ public class TileExpander {
                                                     new Integer(expansionIndex),
                                                     new Integer(results.size()));
                 space.write(tileWrapperToWrite, null, Lease.FOREVER);
-                System.out.println("Wrote " + tileWrapperToWrite + "; occurrences = " + tileWrapperToWrite.occurrences.size());
+                //System.out.println("Wrote " + tileWrapperToWrite + "; occurrences = " + tileWrapperToWrite.occurrences.size());
                 expansionIndex++;
             }
         }
+        if (total>0) System.out.println("Expanded " + total + " tiles");
     }
 
 

@@ -32,7 +32,7 @@ public class DGST {
     public Results crunch(CPDListener listener) {
         Occurrences occ = new Occurrences(tokenSets, listener);
         try {
-            TileScatterer scatterer = new TileScatterer(space, job);
+            TilePlanter scatterer = new TilePlanter(space, job);
             scatterer.scatter(occ);
             space.write(job, null, Lease.FOREVER);
             expand(occ);
@@ -45,11 +45,11 @@ public class DGST {
 
     private void expand(Occurrences occ)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
         while (!occ.isEmpty()) {
-            TileGatherer tg = new TileGatherer(space, job);
+            TileHarvester tg = new TileHarvester(space, job);
             occ = tg.gather(occ.size());
             addToResults(occ);
             System.out.println("************* Scatter..gather complete; tile count now " + occ.size());
-            TileScatterer scatterer = new TileScatterer(space, job);
+            TilePlanter scatterer = new TilePlanter(space, job);
             scatterer.scatter(occ);
         }
     }
@@ -58,6 +58,7 @@ public class DGST {
         for (Iterator i = occ.getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
             if (tile.getTokenCount() > this.minimumTileSize) {
+                //System.out.println("Adding " + tile.getImage());
                 for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
                     TokenEntry te = (TokenEntry)j.next();
                     results.addTile(tile, te);

@@ -16,12 +16,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
-public class TileScatterer {
+public class TilePlanter {
 
     private Job job;
     private JavaSpace space;
 
-    public TileScatterer(JavaSpace space, Job job) {
+    public TilePlanter(JavaSpace space, Job job) {
         this.job = job;
         this.space = space;
     }
@@ -37,7 +37,7 @@ public class TileScatterer {
                     new Integer(tilesSoFar),
                     null, null);
             space.write(tw, null, Lease.FOREVER);
-            System.out.println("Scattering " + tw.tile.getImage() +  "->" + tw.occurrences.size());
+            //System.out.println("Scattering " + tw.tile.getImage() +  "->" + tw.occurrences.size());
             if (tilesSoFar++ % 25 == 0) {
                 System.out.println("Written " + tilesSoFar + " tiles so far");
             }

@@ -41,7 +41,7 @@ public class DCPD {
             space.write(tokenSetWrapper, null, Lease.FOREVER);
 
             System.out.println("Crunching");
-            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 2);
+            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 30);
             Results results = dgst.crunch(new CPDListenerImpl());
 
             System.out.println("Cleaning up");

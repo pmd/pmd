@@ -16,12 +16,12 @@ import net.jini.space.JavaSpace;
 
 import java.rmi.RemoteException;
 
-public class TileGatherer {
+public class TileHarvester {
 
     private JavaSpace space;
     private Job job;
 
-    public TileGatherer(JavaSpace space, Job job) {
+    public TileHarvester(JavaSpace space, Job job) {
         this.space = space;
         this.job = job;
     }
@@ -39,17 +39,17 @@ public class TileGatherer {
         return occ;
     }
 
-    private void addAllExpansions(int originalPosition, TileWrapper firstTileWrapper, Occurrences occ) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
-        TileWrapper nextExpansion = firstTileWrapper;
-        for (int i=0; i<firstTileWrapper.expansionsTotal.intValue(); i++) {
+    private void addAllExpansions(int originalPosition, TileWrapper firstExpansion, Occurrences occ) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+        TileWrapper nextExpansion = firstExpansion;
+        for (int i=0; i<firstExpansion.expansionsTotal.intValue(); i++) {
             if (i>0) {
                 nextExpansion = (TileWrapper)space.take(new TileWrapper(null,
                     null,
-                    firstTileWrapper.jobID,
+                    firstExpansion.jobID,
                     TileWrapper.DONE,
                     new Integer(originalPosition),
                     new Integer(i),
-                    firstTileWrapper.expansionsTotal), null, Lease.FOREVER);
+                    firstExpansion.expansionsTotal), null, Lease.FOREVER);
             }
             //System.out.println("Gathered " + nextExpansion + "; occurrences = " + nextExpansion.occurrences.size());
             // here's where we discard solo tiles
@@ -60,8 +60,8 @@ public class TileGatherer {
     }
 
     private void addTileWrapperToOccurrences(TileWrapper tw, Occurrences occ) {
-        for (int i=0; i<tw.occurrences.size(); i++) {
-            if (!occ.containsAnyTokensIn(tw.tile)) {
+        if (!occ.containsAnyTokensIn(tw.tile)) {
+            for (int i=0; i<tw.occurrences.size(); i++) {
                 occ.addTile(tw.tile, (TokenEntry)tw.occurrences.get(i));
             }
         }
