@@ -6,6 +6,9 @@ import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDDeltaVisitor;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDVisitor;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -21,27 +24,35 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2003/03/18 23:28:37  phherlin
- * *** keyword substitution change ***
+ * Revision 1.4  2003/03/30 20:51:08  phherlin
+ * Adding logging
  *
  */
 public class PMDBuilder extends IncrementalProjectBuilder {
     public static final String PMD_BUILDER = "net.sourceforge.pmd.eclipse.pmdBuilder";
+    public static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.builder.PMDBuilder");
 
     /**
      * @see org.eclipse.core.internal.events.InternalBuilder#build(int, Map, IProgressMonitor)
      */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+        log.info("Incremental builder activated");
         IProject[] result = null;
 
         if (kind == AUTO_BUILD) {
+            log.debug("Auto build requested.");
             result = buildAuto(args, monitor);
         } else if (kind == FULL_BUILD) {
+            log.debug("Full build requested.");
             result = buildFull(args, monitor);
         } else if (kind == INCREMENTAL_BUILD) {
+            log.debug("Incremental build requested.");
             result = buildIncremental(args, monitor);
+        } else {
+            log.warn("This kind of build is not supported : " + kind);
         }
 
+        log.info("Build done.");
         return result;
     }
 
@@ -91,6 +102,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
                 resourceDelta.accept(visitor);
                 monitor.done();
             } else {
+                log.info("No change reported. Performing a full build");
                 result = buildFull(args, monitor);
             }
         }

@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -18,11 +20,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2003/03/30 20:47:03  phherlin
+ * Adding logging
+ *
  * Revision 1.10  2003/03/17 23:34:53  phherlin
  * refactoring
  *
  */
 public class PMDVisitor implements IResourceVisitor {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDVisitor");
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
 
@@ -38,6 +44,7 @@ public class PMDVisitor implements IResourceVisitor {
      * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource)
      */
     public boolean visit(IResource resource) {
+        log.debug("Visiting resource " + resource.getName());
         boolean fVisitChildren = true;
 
         if ((monitor == null) || ((monitor != null) && (!monitor.isCanceled()))) {

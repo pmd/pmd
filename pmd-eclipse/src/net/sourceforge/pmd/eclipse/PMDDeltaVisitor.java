@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -13,11 +15,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Philippe Herlin
  * @version $Revision$
  * $Log$
- * Revision 1.2  2003/03/18 23:28:36  phherlin
- * *** keyword substitution change ***
+ * Revision 1.3  2003/03/30 20:44:27  phherlin
+ * Adding logging
  *
  */
 public class PMDDeltaVisitor implements IResourceDeltaVisitor {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDDeltaVisitor");
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
 
@@ -42,10 +45,14 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
 
         if ((monitor == null) || ((monitor != null) && (!monitor.isCanceled()))) {
             if (delta.getKind() == IResourceDelta.ADDED) {
+                log.debug("Visiting added resource " + delta.getResource().getName());
                 visitAdded(delta.getResource());
             } else if (delta.getKind() == IResourceDelta.CHANGED) {
+                log.debug("Visiting changed resource " + delta.getResource().getName());
                 visitChanged(delta.getResource());
-            } // other kinds are not visited            
+            } else { // other kinds are not visited            
+                log.debug("Resource " + delta.getResource().getName() + " not visited.");
+            }
         } else {
             fProcessChildren = false;
         }
