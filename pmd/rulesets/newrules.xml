@@ -103,6 +103,36 @@ public class Foo {
       </example>
     </rule>
 
+    <rule name="UnnecessaryParameters"
+          message="Unnecessary parameters are a bit noisy"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Unnecessary parameters are a bit noisy
+      </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ReturnStatement
+ [count(//Expression) >1]
+ [count(//PrimarySuffix)<2]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+public class Foo {
+ public int bar() {
+  return (42);
+ }
+}
+  ]]>
+      </example>
+    </rule>
+
   </ruleset>
 
 

@@ -42,6 +42,7 @@ Prepare source release:
 rm -rf ~/tmp/pmd-1.05
 mkdir tmp
 cvs -q export -d /home/tom/tmp/pmd-1.05 -r pmd_release_1_05 pmd
+<<<<Run a new Ant target that creates a src jar>>>
 mv tmp ~/tmp/pmd-1.05
 cp pmd/lib/pmd-1.05.jar ~/tmp/pmd-1.05/lib
 cp -R pmd/target/docs ~/tmp/pmd-1.05/

@@ -28,16 +28,16 @@
 
   	<!--<goal name="pmd:ruleset-docs" prereqs="init-dvsl-tag">-->
   	<goal name="pmd:ruleset-docs">
-  		<mkdir dir="target/xdocs/rules" />
+          <echo message="hi"/>
           <doc:jsl
-            input="${rulesets.dir}/basic.xml"
-            output="target/xdocs/rules/basic.xml"
-            stylesheet=".etc/dvsl/rule-format.jsl"
+            input="rulesets/basic.xml"
+            output="rules/basic.xml"
+            stylesheet="etc/dvsl/rule-format.jsl"
             omitXmlDeclaration="true"
             outputMode="xml"
             prettyPrint="true"
           />
-
+          <echo message="bye"/>
   	</goal>
   	
   	

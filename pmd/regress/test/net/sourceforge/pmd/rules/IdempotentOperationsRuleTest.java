@@ -5,6 +5,14 @@ import net.sourceforge.pmd.rules.IdempotentOperationsRule;
 
 public class IdempotentOperationsRuleTest extends SimpleAggregatorTst {
 
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "assignment of a local to itself", 1, new IdempotentOperationsRule()),
+           // FIXME
+           new TestDescriptor(TEST2, "assignment of one array element to another ", 1, new IdempotentOperationsRule())
+       });
+    }
+
     private static final String TEST1 =
     "public class Foo {" + CPD.EOL +
     " private void bar() { " + CPD.EOL +
@@ -21,11 +29,4 @@ public class IdempotentOperationsRuleTest extends SimpleAggregatorTst {
     " }" + CPD.EOL +
     "}";
 
-    public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "assignment of a local to itself", 1, new IdempotentOperationsRule()),
-           // FIXME
-           new TestDescriptor(TEST2, "assignment of one array element to another ", 1, new IdempotentOperationsRule())
-       });
-    }
 }
