@@ -35,9 +35,8 @@ class Job
 	JAVANCSS_BINARY="/usr/local/javancss/bin/javancss"
 	ROOT="/home/tom/data/pmd/pmd-web/src"
 	REMOTE_REPORT_DIR="/home/groups/p/pm/pmd/htdocs/reports/"
-	attr_reader :unix_name, :mod, :title
-	def initialize(location, title, unix_name, mod, src )
-		@location = location
+	attr_reader :unix_name, :mod, :title, :src
+	def initialize(title, unix_name, mod, src )
 		@title = title
 		@unix_name = unix_name
 		@cvsroot = ':pserver:anonymous@cvs.sourceforge.net:/cvsroot/' + unix_name
@@ -121,7 +120,7 @@ class Job
 		end
 	end
 	def to_s_
-		@location + ":" + @title + ":" + @unix_name +":"+@mod+":"+@srco
+		@title + ":" + @unix_name +":"+@mod+":"+@srco
 	end
 end
 

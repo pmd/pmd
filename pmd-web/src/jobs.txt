@@ -1,117 +1,117 @@
-Sourceforge:Abbot Java GUI Test Framework:abbot:abbot:abbot/src
-Sourceforge:Active JMS:active-jms:core:core/src
-Sourceforge:AJTools Configuration:ajtools:configuration:configuration/src/java
-Sourceforge:attrib4j:attrib4j:attrib4j:attrib4j/src
-Sourceforge:Bookmark Sync:bookmarksyncro:bookmarksyncro:bookmarksyncro/src
-Sourceforge:Breath:breath:breath:breath/src/
-Sourceforge:Calliope:calliope:calliope:calliope/src
-Sourceforge:Cañamo:canyamo:canyamo:canyamo/src
-Sourceforge:Cayenne:cayenne:cayenne:cayenne/src/cayenne/java
-Sourceforge:Chemical Development Kit:cdk:cdk:cdk/src
-Sourceforge:CGLIB:cglib:cglib:cglib/src/proxy
-Sourceforge:Chaperon:chaperon:chaperon:chaperon/src
-Sourceforge:Checkstyle:checkstyle:checkstyle:checkstyle/src/checkstyle
-Sourceforge:Chiba:chiba:chiba1:chiba1/src
-Sourceforge:ChemicalMarkupLanguge:cml:jumbo:jumbo/src
-Sourceforge:Columba:columba:columba:columba/src
-Sourceforge:Thought River Commons:commons:commons:commons/src
-Sourceforge:CSVJdbc:csvjdbc:csvjdbc:csvjdbc/src/java
-Sourceforge:Database Manager Java UI:dbmjui:dbmjui:dbmjui/forms-lib-common
-Sourceforge:DbUnit:dbunit:dbunit:dbunit/src/java
-Sourceforge:Easy Explore Eclipse version:easystruts:easyexplore-plugin:easyexplore-plugin/src
-Sourceforge:Easy Struts:easystruts:easystruts-core:easystruts-core/src
-Sourceforge:Easy Struts Eclipse version:easystruts:easystruts-plugin:easystruts-plugin/src
-Sourceforge:EJP:ejp:ejp:ejp/presenter/src/
-Sourceforge:eXist XML database:exist:eXist-1.0:eXist-1.0/src
-Sourceforge:e-xml:e-xml:e-xml:e-xml/src
-Sourceforge:Foedus Mail:foedus:foedus:foedus/src/java
-Sourceforge:Foundry:foundry:foundry:foundry/foundry
-Sourceforge:FreeMarker:freemarker:freemarker:freemarker/src
-Sourceforge:Freenet:freenet:freenet:freenet/src
-Sourceforge:FreeTTS:freetts:FreeTTS:FreeTTS
-Sourceforge:SUSHI - Universal Student Help Interface:fugu:sushi:sushi/WEB-INF/src
-Sourceforge:Geotools:geotools:geotools2:geotools2/geotools-src
-Sourceforge:Hermes JMS:hermesjms:Hermes2:Hermes2/src/java
-Sourceforge:Hibernate:hibernate:Hibernate:Hibernate/cirrus/
-Sourceforge:htmlparser:htmlparser:htmlparser:htmlparser/src
-Sourceforge:Import Scrubber:importscrubber:importscrubber:importscrubber/src/net
-Sourceforge:Installer Tasks For Ant:instant:src:src/main
-Sourceforge:Jagzilla:jagzilla:jagzilla:jagzilla/src/net
-Sourceforge:JAIMBot:jaimbot:jaimbot:jaimbot/src
-Sourceforge:Jalopy:jalopy:main:main/src/java
-Sourceforge:Jam--Data Acquisition for Nuclear Physics:jam-daq:Jam Project:Jam Project/jam
-Sourceforge:JasperReports:jasperreports:src:src/dori
-Sourceforge:JBCcm:jbccm:jbccm:jbccm/src
-Sourceforge:JBidwatcher:jbidwatcher:jbidwatcher:jbidwatcher
-Sourceforge:JBook:jbook:source:source
-Sourceforge:JBoss-Common:jboss:jboss-common:jboss-common/src
-Sourceforge:JChemPaint:jchempaint:JCPCDK:JCPCDK/src
-Sourceforge:jcrontab:jcrontab:jcrontab:jcrontab/src
-Sourceforge:Dexter:jdexter:dexter:dexter/net
-Sourceforge:Dexter-plugins:jdexter:plugins:plugins
-Sourceforge:jext:jext:src:src/lib/org/jext
-Sourceforge:JFCUnit:jfcunit:main:main/src
-Sourceforge:Java Gui Builder:jgb:jgb:jgb/src/java/core
-Sourceforge:jgimp:jgimp:jgimp:jgimp/src/java
-Sourceforge:jGnash:jgnash:jgnash:jgnash/src
-Sourceforge:JGraphpad:jgraph:jgraphpad:jgraphpad/src
-Sourceforge:JGraph:jgraph:jgraph:jgraph/dev/src
-Sourceforge:JHotDraw:jhotdraw:JHotDraw:JHotDraw/src
-Sourceforge:Jmol:jmol:Jmol:Jmol/src
-Sourceforge:jmx4ant:jmx4ant:jmx4ant:jmx4ant/src
-Sourceforge:JOELib:joelib:joelib:joelib/src
-Sourceforge:joeq:joeq:joeq:joeq
-Sourceforge:JPublish:jpublish:jpublish:jpublish/src
-Sourceforge:jRevProxy:jrevproxy:jRevProxy:jRevProxy/src
-Sourceforge:JRoseViewer:jroseviewer:jroseviewer:jroseviewer/src
-Sourceforge:JUnit Addons PMD rules:junit-addons:junit-addons-pmd:junit-addons-pmd/src
-Sourceforge:JUnit addons Runner:junit-addons:junit-addons-runner:junit-addons-runner/src
-Sourceforge:JUnit addons:junit-addons:junit-addons:junit-addons/src/main
-Sourceforge:JUnit:junit:junit:junit
-Sourceforge:Maverick:mav:maverick:maverick/src/java
-Sourceforge:MC4J:mc4j:mc4j:mc4j/src
-Sourceforge:Megamek.NET:megameknet:MegaMekNET:MegaMekNET/src
-Sourceforge:Merkwelt:merkwelt:merkwelt:merkwelt/src
-Sourceforge:Metrics:metrics:net.sourceforge.metrics:net.sourceforge.metrics/src
-Sourceforge:MFlow:mflow:mflow:mflow/src
-Sourceforge:Middlegen:middlegen:middlegen:middlegen/src
-Sourceforge:Milkbox:milkbox:netty:netty/src
-Sourceforge:Mirage:blijf:mirage:mirage/src
-Sourceforge:MP3 Tagmaster:mp3tagmaster:mp3tagmaster:mp3tagmaster/src
-Sourceforge:MyPod:mypod:myPod:myPod/src
-Sourceforge:OneBook:onebook:devel:devel/onebook
-Sourceforge:P6spy:p6spy:p6spy:p6spy/com
-Sourceforge:pcgen:pcgen:pcgen:pcgen/src/java
-Sourceforge:PMD-DCPD:pmd:pmd-dcpd:pmd-dcpd/src
-Sourceforge:PMD-Eclipse:pmd:pmd-eclipse:pmd-eclipse/src
-Sourceforge:PMD-JBuilder:pmd:pmd-jbuilder:pmd-jbuilder/src
-Sourceforge:PMD-JDeveloper:pmd:pmd-jdeveloper:pmd-jdeveloper/src
-Sourceforge:PMD-JEdit:pmd:pmd-jedit:pmd-jedit/src
-Sourceforge:PMD-Netbeans:pmd:pmd-netbeans:pmd-netbeans/src
-Sourceforge:PMD:pmd:pmd:pmd/src
-Sourceforge:Polonius:polonius:polonius:polonius/src
-Sourceforge:Prevayler:prevayler:prevayler:prevayler/src
-Sourceforge:Quizzer:quizzer:Source:Source
-Sourceforge:Robugs3d:robugs3d:src:src
-Sourceforge:Roller Weblogger:roller:roller:roller/src
-Sourceforge:Scope:scope:scopemvc2:scopemvc2/src
-Sourceforge:Sorched Earth 2000:scorch:src:src
-Sourceforge:Secure Data Manager:sdm:sdm:sdm/src
-Sourceforge:The Singularity System:singularity-sys:singularity:singularity/src
-Sourceforge:SkinLF:skinlf:skinlf2:skinlf2/src
-Sourceforge:Semionic Network Toolkit:sntool:sntool-dev:sntool-dev/src
-Sourceforge:Spring Framework:springframework:spring:spring/src
-Sourceforge:Tapestry:tapestry:Tapestry:Tapestry/framework/src
-Sourceforge:tftp4java:tftp4java:tftp4java:tftp4java
-Sourceforge:Time Track:timetrack:timetrack:timetrack/src
-Sourceforge:tn5250j:tn5250j:tn5250j:tn5250j/src
-Sourceforge:ToscanaJ:toscanaj:source:source
-Sourceforge:Tyrant:tyrant:tyrant:tyrant/mikera/
-Sourceforge:UML 2 EJB:uml2ejb:uml2ejb:uml2ejb/simple2ejb/src
-Sourceforge:Vector Visuals:vectors:vectors:vectors/src
-Sourceforge:Woodward:woodward:source:source/com
-Sourceforge:Wrapper:wrapper:wrapper:wrapper/src/java
-Sourceforge:Writer's Forge:writersforge:writersforge:writersforge/src
-Sourceforge:XDoclet:xdoclet:xdocletgui:xdocletgui/src
-Sourceforge:XmlWriter:xmlwriter:xmlwriter:xmlwriter/src/java
-Sourceforge:WebOS:xtremesuite:WebOS:WebOS/src/java
+Abbot Java GUI Test Framework:abbot:abbot:abbot/src
+Active JMS:active-jms:core:core/src
+AJTools Configuration:ajtools:configuration:configuration/src/java
+attrib4j:attrib4j:attrib4j:attrib4j/src
+Bookmark Sync:bookmarksyncro:bookmarksyncro:bookmarksyncro/src
+Breath:breath:breath:breath/src/
+Calliope:calliope:calliope:calliope/src
+Cañamo:canyamo:canyamo:canyamo/src
+Cayenne:cayenne:cayenne:cayenne/src/cayenne/java
+Chemical Development Kit:cdk:cdk:cdk/src
+CGLIB:cglib:cglib:cglib/src/proxy
+Chaperon:chaperon:chaperon:chaperon/src
+Checkstyle:checkstyle:checkstyle:checkstyle/src/checkstyle
+Chiba:chiba:chiba1:chiba1/src
+ChemicalMarkupLanguge:cml:jumbo:jumbo/src
+Columba:columba:columba:columba/src
+Thought River Commons:commons:commons:commons/src
+CSVJdbc:csvjdbc:csvjdbc:csvjdbc/src/java
+Database Manager Java UI:dbmjui:dbmjui:dbmjui/forms-lib-common
+DbUnit:dbunit:dbunit:dbunit/src/java
+Easy Explore Eclipse version:easystruts:easyexplore-plugin:easyexplore-plugin/src
+Easy Struts:easystruts:easystruts-core:easystruts-core/src
+Easy Struts Eclipse version:easystruts:easystruts-plugin:easystruts-plugin/src
+EJP:ejp:ejp:ejp/presenter/src/
+eXist XML database:exist:eXist-1.0:eXist-1.0/src
+e-xml:e-xml:e-xml:e-xml/src
+Foedus Mail:foedus:foedus:foedus/src/java
+Foundry:foundry:foundry:foundry/foundry
+FreeMarker:freemarker:freemarker:freemarker/src
+Freenet:freenet:freenet:freenet/src
+FreeTTS:freetts:FreeTTS:FreeTTS
+SUSHI - Universal Student Help Interface:fugu:sushi:sushi/WEB-INF/src
+Geotools:geotools:geotools2:geotools2/geotools-src
+Hermes JMS:hermesjms:Hermes2:Hermes2/src/java
+Hibernate:hibernate:Hibernate:Hibernate/cirrus/
+htmlparser:htmlparser:htmlparser:htmlparser/src
+Import Scrubber:importscrubber:importscrubber:importscrubber/src/net
+Installer Tasks For Ant:instant:src:src/main
+Jagzilla:jagzilla:jagzilla:jagzilla/src/net
+JAIMBot:jaimbot:jaimbot:jaimbot/src
+Jalopy:jalopy:main:main/src/java
+Jam--Data Acquisition for Nuclear Physics:jam-daq:Jam Project:Jam Project/jam
+JasperReports:jasperreports:src:src/dori
+JBCcm:jbccm:jbccm:jbccm/src
+JBidwatcher:jbidwatcher:jbidwatcher:jbidwatcher
+JBook:jbook:source:source
+JBoss-Common:jboss:jboss-common:jboss-common/src
+JChemPaint:jchempaint:JCPCDK:JCPCDK/src
+jcrontab:jcrontab:jcrontab:jcrontab/src
+Dexter:jdexter:dexter:dexter/net
+Dexter-plugins:jdexter:plugins:plugins
+jext:jext:src:src/lib/org/jext
+JFCUnit:jfcunit:main:main/src
+Java Gui Builder:jgb:jgb:jgb/src/java/core
+jgimp:jgimp:jgimp:jgimp/src/java
+jGnash:jgnash:jgnash:jgnash/src
+JGraphpad:jgraph:jgraphpad:jgraphpad/src
+JGraph:jgraph:jgraph:jgraph/dev/src
+JHotDraw:jhotdraw:JHotDraw:JHotDraw/src
+Jmol:jmol:Jmol:Jmol/src
+jmx4ant:jmx4ant:jmx4ant:jmx4ant/src
+JOELib:joelib:joelib:joelib/src
+joeq:joeq:joeq:joeq
+JPublish:jpublish:jpublish:jpublish/src
+jRevProxy:jrevproxy:jRevProxy:jRevProxy/src
+JRoseViewer:jroseviewer:jroseviewer:jroseviewer/src
+JUnit Addons PMD rules:junit-addons:junit-addons-pmd:junit-addons-pmd/src
+JUnit addons Runner:junit-addons:junit-addons-runner:junit-addons-runner/src
+JUnit addons:junit-addons:junit-addons:junit-addons/src/main
+JUnit:junit:junit:junit
+Maverick:mav:maverick:maverick/src/java
+MC4J:mc4j:mc4j:mc4j/src
+Megamek.NET:megameknet:MegaMekNET:MegaMekNET/src
+Merkwelt:merkwelt:merkwelt:merkwelt/src
+Metrics:metrics:net.sourceforge.metrics:net.sourceforge.metrics/src
+MFlow:mflow:mflow:mflow/src
+Middlegen:middlegen:middlegen:middlegen/src
+Milkbox:milkbox:netty:netty/src
+Mirage:blijf:mirage:mirage/src
+MP3 Tagmaster:mp3tagmaster:mp3tagmaster:mp3tagmaster/src
+MyPod:mypod:myPod:myPod/src
+OneBook:onebook:devel:devel/onebook
+P6spy:p6spy:p6spy:p6spy/com
+pcgen:pcgen:pcgen:pcgen/src/java
+PMD-DCPD:pmd:pmd-dcpd:pmd-dcpd/src
+PMD-Eclipse:pmd:pmd-eclipse:pmd-eclipse/src
+PMD-JBuilder:pmd:pmd-jbuilder:pmd-jbuilder/src
+PMD-JDeveloper:pmd:pmd-jdeveloper:pmd-jdeveloper/src
+PMD-JEdit:pmd:pmd-jedit:pmd-jedit/src
+PMD-Netbeans:pmd:pmd-netbeans:pmd-netbeans/src
+PMD:pmd:pmd:pmd/src
+Polonius:polonius:polonius:polonius/src
+Prevayler:prevayler:prevayler:prevayler/src
+Quizzer:quizzer:Source:Source
+Robugs3d:robugs3d:src:src
+Roller Weblogger:roller:roller:roller/src
+Scope:scope:scopemvc2:scopemvc2/src
+Sorched Earth 2000:scorch:src:src
+Secure Data Manager:sdm:sdm:sdm/src
+The Singularity System:singularity-sys:singularity:singularity/src
+SkinLF:skinlf:skinlf2:skinlf2/src
+Semionic Network Toolkit:sntool:sntool-dev:sntool-dev/src
+Spring Framework:springframework:spring:spring/src
+Tapestry:tapestry:Tapestry:Tapestry/framework/src
+tftp4java:tftp4java:tftp4java:tftp4java
+Time Track:timetrack:timetrack:timetrack/src
+tn5250j:tn5250j:tn5250j:tn5250j/src
+ToscanaJ:toscanaj:source:source
+Tyrant:tyrant:tyrant:tyrant/mikera/
+UML 2 EJB:uml2ejb:uml2ejb:uml2ejb/simple2ejb/src
+Vector Visuals:vectors:vectors:vectors/src
+Woodward:woodward:source:source/com
+Wrapper:wrapper:wrapper:wrapper/src/java
+Writer's Forge:writersforge:writersforge:writersforge/src
+XDoclet:xdoclet:xdocletgui:xdocletgui/src
+XmlWriter:xmlwriter:xmlwriter:xmlwriter/src/java
+WebOS:xtremesuite:WebOS:WebOS/src/java
