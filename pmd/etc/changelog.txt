@@ -9,6 +9,7 @@ Fixed bug 1053663 - SuspiciousConstantFieldName no longer reports false positive
 Fixed bug 1055346 - ImmutableFieldRule no longer reports false positive on preinc/predecrement expressions.
 Fixed bug 1055930 - CouplingBetweenObjectsRule no longer throws a NPE on interfaces
 Implemented RFE 1058033 - Renamed run.[sh|bat] to pmd.[sh|bat].
+Implemented RFE 1058042 - XML output is more readable now.
 YAHTMLRenderer no longer has dependence on Ant packages.
 Modified the AST to correctly include PostfixExpression nodes.  Previously a statement like "x++;" was embedded in the parent StatementExpression node.
 

@@ -13,20 +13,20 @@ import java.util.Iterator;
 public class XMLRenderer implements Renderer {
 
     public String render(Report report) {
-        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?><pmd>" + PMD.EOL);
+        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?>" + PMD.EOL + "<pmd>" + PMD.EOL);
         String filename = null;
 
         // rule violations
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             if (!rv.getFilename().equals(filename)) { // New File
-                if (filename != null) // Not first file ?
-                    buf.append("</file>");
+                if (filename != null) {// Not first file ?
+                    buf.append("</file>"+PMD.EOL);
+                }
                 filename = rv.getFilename();
                 buf.append("<file name=\"");
                 StringUtil.appendXmlEscaped(buf, filename);
-                buf.append("\">")
-                        .append(PMD.EOL);
+                buf.append("\">").append(PMD.EOL);
             }
 
             buf.append("<violation line=\"").append(rv.getLine()).append("\"");
@@ -47,19 +47,17 @@ public class XMLRenderer implements Renderer {
             buf.append(PMD.EOL);
         }
         if (filename != null) { // Not first file ?
-            buf.append("</file>");
+            buf.append("</file>"+PMD.EOL);
         }
 
         // errors
         for (Iterator i = report.errors(); i.hasNext();) {
             Report.ProcessingError pe = (Report.ProcessingError) i.next();
-            buf.append("<error ")
-                    .append("filename=\"");
+            buf.append("<error ").append("filename=\"");
             StringUtil.appendXmlEscaped(buf, pe.getFile());
             buf.append("\" msg=\"");
             StringUtil.appendXmlEscaped(buf, pe.getMsg());
-            buf.append("\"/>")
-                    .append(PMD.EOL);
+            buf.append("\"/>").append(PMD.EOL);
         }
 
         buf.append("</pmd>");

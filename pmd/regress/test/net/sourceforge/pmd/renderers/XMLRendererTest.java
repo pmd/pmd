@@ -58,6 +58,7 @@ public class XMLRendererTest extends TestCase {
         assertEquals("RULE1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
         assertEquals("RULE2", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
     }
+
     public void testTwoFiles() throws Throwable {
         Report report = new Report();
         ctx.setSourceCodeFilename("testTwoFiles_0");
@@ -66,7 +67,7 @@ public class XMLRendererTest extends TestCase {
         report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
         Element root = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(new XMLRenderer().render(report)))).getDocumentElement();
         assertEquals("testTwoFiles_0", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("testTwoFiles_1", root.getFirstChild().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("testTwoFiles_1", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
     }
 
     public void testUnorderedFiles() throws Throwable {
@@ -82,10 +83,10 @@ public class XMLRendererTest extends TestCase {
 
         Element root = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(new XMLRenderer().render(report)))).getDocumentElement();
         assertEquals("testTwoFiles_0", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("testTwoFiles_1", root.getFirstChild().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("testTwoFiles_1", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("RULE1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
         assertEquals("RULE2", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
-        assertEquals("RULE1", root.getFirstChild().getNextSibling().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
+        assertEquals("RULE1", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
     }
 
 
