@@ -6,6 +6,7 @@ cvs add new_for_0_5.xml
 update dist task to reflect pmd-0.4
 update docs to mention GUI if it's in a presentable state
 
+set ANT_HOME=c:\ant
 ant dist
 ant test
 Do all the tests run?  OK, then:
