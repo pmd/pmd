@@ -1,18 +1,18 @@
 ????, 2005 - 2.4:
-New rules: MissingSerialVersionUID, UnnecessaryFinalModifier, AbstractClassDoesNotContainAbstractMethod, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, AvoidCallingFinalize, UseNotifyAllInsteadOfNotify, MissingBreakInSwitch, AvoidInstanceofChecksInCatchClause, AvoidFieldNamesMatchingTypeName, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingMethodName, AvoidNonConstructorMethodsWithClassName, TestClassWithoutTestCases, TooManyFields
+New rules: MissingSerialVersionUID, UnnecessaryFinalModifier, AbstractClassDoesNotContainAbstractMethod, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, AvoidCallingFinalize, UseNotifyAllInsteadOfNotify, MissingBreakInSwitch, AvoidInstanceofChecksInCatchClause, AvoidFieldNamesMatchingTypeName, AvoidFieldNameMatchingMethodName, AvoidNonConstructorMethodsWithClassName, TestClassWithoutTestCases, TooManyFields
 Fixed bug 994400 - False +: ConstructorCallsOverridableMethodRule, thanks ereissner for reporting it
 Fixed bug 1146116 - JUnitTestsShouldIncludeAssert crashes on inner Interface
 Fixed bug 1114625 - UnusedPrivateField no longer throws an NPE on standalone postfix expressions which are prefixed with 'this'.
 Fixed bug 1114020 - The Ant task now reports a complete stack trace when run with the -verbose flag.
 Fixed bug 1117983 - MethodArgumentCouldBeFinal no longer reports false positives on try..catch blocks.
 Fixed bug 797742 - PMD now parses JDK 1.5 source code.  Note that it's not perfect yet; more testing/bug reports are welcome!  
-Implemented RFE 1058039 - PMD's command line interface now accepts abbreviated names for the standard rulesets; for example 'java net.sourceforge.pmd.PMD /my/source/code/ text basic,unusedcode' would run the rulesets/basic.xml and the rulesets/unusedcode.xml rulesets on the source in /my/source/code and produce a text report.
-Implemented RFE 1119851 - PMD's Ant task now supports an 'excludeMarker' attribute.
-Added Ruby support to CPD.
 Fixed a bug - the StatisticalRule no longer 'merges' data points when using the 'topscore' property.
 Fixed a bug - the PMD Ant task's failOnRuleViolation attribute no longer causes a BuildException in the case when no rule violations occur.
+Implemented RFE 1058039 - PMD's command line interface now accepts abbreviated names for the standard rulesets; for example 'java net.sourceforge.pmd.PMD /my/source/code/ text basic,unusedcode' would run the rulesets/basic.xml and the rulesets/unusedcode.xml rulesets on the source in /my/source/code and produce a text report.
+Implemented RFE 1119851 - PMD's Ant task now supports an 'excludeMarker' attribute.
 Modified the XSLT to add a summary section.
 Optimized the SystemOutPrintln rule; now it runs about an order of magnitude faster.
+Added Ruby support to CPD.
 
 February 1, 2005 - 2.3:
 Fixed bug 1113927 - ExceptionAsFlowControl no longer throws NPEs on code where a throw statement exists without a try statement wrapping it.
