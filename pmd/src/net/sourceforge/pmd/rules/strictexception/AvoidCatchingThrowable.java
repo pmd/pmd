@@ -6,6 +6,7 @@ import net.sourceforge.pmd.ast.ASTCatch;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 
 /**
  * PMD rule which is going to find <code>catch</code> statements
@@ -17,17 +18,17 @@ import net.sourceforge.pmd.ast.ASTType;
 public class AvoidCatchingThrowable extends AbstractRule {
 
 
-    public Object visit(ASTTryStatement astTryStatement, Object o) {
+    public Object visit(ASTTryStatement tryStmt, Object o) {
         // Requires a catch statement
-        if (!astTryStatement.hasCatch()) {
-            return super.visit(astTryStatement, o);
+        if (!tryStmt.hasCatch()) {
+            return super.visit(tryStmt, o);
         }
 
         /* Checking all catch statements */
-        for (int i = 0; i < astTryStatement.getCatchBlocks().size(); i++) {
-            evaluateCatch((ASTCatch) astTryStatement.getCatchBlocks().get(i), (RuleContext) o);
+        for (int i = 0; i < tryStmt.getCatchBlocks().size(); i++) {
+            evaluateCatch((ASTCatch) tryStmt.getCatchBlocks().get(i), (RuleContext) o);
         }
-        return super.visit(astTryStatement, o);
+        return super.visit(tryStmt, o);
     }
 
     /**
@@ -38,7 +39,7 @@ public class AvoidCatchingThrowable extends AbstractRule {
      */
     private void evaluateCatch(ASTCatch aCatch, RuleContext ruleContext) {
         ASTType type = (ASTType) aCatch.getFormalParameter().findChildrenOfType(ASTType.class).get(0);
-        ASTName name = (ASTName) type.findChildrenOfType(ASTName.class).get(0);
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) type.findChildrenOfType(ASTClassOrInterfaceType.class).get(0);
 
         if (name.getImage().equals("Throwable")) {
             ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, name));
