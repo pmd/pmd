@@ -17,17 +17,15 @@ import java.util.ArrayList;
 
 public class PMD {
 		
-	public void processFile(String filename, InputStream is, String ruleSetType, RuleContext ctx)
-            throws FileNotFoundException {
+	public void processFile(String filename, InputStream is, String ruleSetType, RuleContext ctx) throws FileNotFoundException {
         List rules = RuleFactory.createRules(ruleSetType);
-
         try {
             InputStreamReader reader = new InputStreamReader(is);
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
+            //c.dump("");
             List acus = new ArrayList();
             acus.add(c);
-            //c.dump("");
             for (Iterator iterator = rules.iterator(); iterator.hasNext();) {
                 Rule rule = (Rule)iterator.next();
                 rule.apply(acus, ctx);
