@@ -623,4 +623,146 @@ int x = (y == Double.NaN);
         </example>
       </rule>
 
+    <rule name="InstantiationToGetClass"
+          message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+Avoid instantiating an object just to call getClass() on it; use the .class public member instead
+      </description>
+        <example>
+    <![CDATA[
+class Foo {
+ Class c = new String().getClass();
+}
+    ]]>
+        </example>
+        <priority>4</priority>
+        <properties>
+          <property name="xpath">
+            <value>
+                <![CDATA[
+//PrimarySuffix
+ [@Image='getClass']
+ [parent::PrimaryExpression
+  [PrimaryPrefix/AllocationExpression]
+  [count(PrimarySuffix) = 2]
+ ]
+     ]]>
+            </value>
+          </property>
+        </properties>
+      </rule>
+
+    <rule name="IdempotentOperationsRule"
+          message="Avoid idempotent operations (like assigning a variable to itself)"
+          class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
+      <description>
+      Avoid idempotent operations - they are silly.
+      </description>
+        <priority>3</priority>
+
+      <example>
+      <![CDATA[
+    public class Foo {
+     public void bar() {
+      int x = 2;
+      x = x;
+     }
+    }
+      ]]>
+      </example>
+    </rule>
+
+    <rule
+        name="SimpleDateFormatNeedsLocale"
+        message="When instantiating a SimpleDateFormat object, specify a Locale"
+        class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+            test
+        </description>
+        <properties>
+            <property name="xpath">
+                <value>
+        <![CDATA[
+    //AllocationExpression
+     [Name[@Image='SimpleDateFormat']]
+     [Arguments[@ArgumentCount=1]]
+        ]]>
+                    </value>
+                 </property>
+              </properties>
+        <priority>3</priority>
+        <example>
+        <![CDATA[
+    public class Foo {
+     // Should specify Locale.US (or whatever)
+     private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
+    }
+        ]]>
+        </example>
+    </rule>
+
+    <rule name="ImmutableFieldRule"
+          symboltable="true"
+          message="Private field could be made final.  It is only initialized in the declaration or constructor."
+          class="net.sourceforge.pmd.rules.design.ImmutableFieldRule">
+      <description>
+      Identifies private fields whose values never change once they are initialized either in the declaration of the field or by
+      a constructor.  This aids in converting existing classes to immutable classes.
+      </description>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+  public class FinalFields {
+      private int x;
+
+      public FinalFields() {
+          x = 7;
+      }
+
+      public void foo() {
+         int a = x + 2;
+      }
+
+  }
+  Identifies x as being eligible for making final.
+  ]]>
+      </example>
+    </rule>
+
+    <rule name="UseLocaleWithCaseConversions"
+          message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
+          problems with certain locales, i.e. Turkish.
+      </description>
+        <example>
+    <![CDATA[
+class Foo {
+ String x = y.toLowerCase(); // BAD
+ String z = a.toLowerCase(Locale.EN); // GOOD
+
+}
+    ]]>
+        </example>
+        <priority>3</priority>
+        <properties>
+          <property name="xpath">
+            <value>
+                <![CDATA[
+//PrimaryExpression
+[PrimaryPrefix/Name
+ [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
+'toUpperCase')]
+ ]
+[PrimarySuffix/Arguments[@ArgumentCount=0]]
+     ]]>
+            </value>
+          </property>
+        </properties>
+      </rule>
+
+
 </ruleset>

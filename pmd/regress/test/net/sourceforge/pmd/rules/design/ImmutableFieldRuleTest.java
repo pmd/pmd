@@ -11,7 +11,7 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "ImmutableFieldRule");
+        rule = findRule("rulesets/design.xml", "ImmutableFieldRule");
     }
 
     public void testAll() {

@@ -11,7 +11,7 @@ public class InstantiationToGetClassRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "InstantiationToGetClass");
+        rule = findRule("rulesets/design.xml", "InstantiationToGetClass");
     }
 
     public void testAll() {
