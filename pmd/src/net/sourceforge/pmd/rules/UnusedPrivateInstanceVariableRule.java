@@ -62,7 +62,11 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
         }
         //System.out.println("ASTVariableDeclaratorId.getImage() = " + node.getImage() + "; " + node.getBeginLine());
         SimpleNode grandparent = (SimpleNode)node.jjtGetParent().jjtGetParent();
-        if (!(grandparent instanceof ASTFieldDeclaration) || grandparent.getImage().indexOf("private") == -1 || grandparent.getImage().indexOf("static") != -1) {
+        if (!(grandparent instanceof ASTFieldDeclaration)) {
+            return super.visit(node, data);
+        }
+        AccessNode grandparentAccessNode = (AccessNode)grandparent;
+        if (grandparentAccessNode.isPublic() || grandparentAccessNode.isStatic()) {
             return super.visit(node, data);
         }
         Namespace group = (Namespace)nameSpaces.peek();
