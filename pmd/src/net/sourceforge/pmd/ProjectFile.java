@@ -3,8 +3,10 @@ package net.sourceforge.pmd;
 import java.io.InputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
 
@@ -16,8 +18,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Loads the PMD <b>project.xml</b> file and stores the contents in a Properties object.
- * The property keys are the path starting below the root <project> down to the element.
- * For example:
+ * The property keys are the case-insensitive path starting below the root <project> down
+ * to the element.  For example:
  * <ul>
  * <li>currentVersion</li>
  * <li>organization/name</li>
@@ -42,6 +44,7 @@ public class ProjectFile
 
     private static Properties PROPERTIES;
     private static Exception PARSE_EXCEPTION;
+    private static final String VALUE_SEPARATOR = "&vs;";
 
     /**
      *****************************************************************************
@@ -52,7 +55,7 @@ public class ProjectFile
      */
     public static final String getProperty(String key)
     {
-        key = (key == null) ? "" : key.trim();
+        key = (key == null) ? "" : key.trim().toLowerCase();
 
         if (PROPERTIES == null)
         {
@@ -91,6 +94,49 @@ public class ProjectFile
         }
 
         return count;
+    }
+
+    /**
+     *****************************************************************************
+     *
+     * @return
+     */
+    public static final String[] toArray(String propertyValue)
+    {
+        List values = new ArrayList();
+
+        if (propertyValue != null)
+        {
+            int beginIndex = 0;
+            int offset = (VALUE_SEPARATOR).length();
+
+            while (beginIndex >= 0)
+            {
+                int endIndex = propertyValue.indexOf(VALUE_SEPARATOR);
+
+                if (endIndex >= 0)
+                {
+                    values.add(propertyValue.substring(beginIndex, endIndex));
+                    beginIndex = endIndex + offset;
+                }
+                else if ((endIndex + offset) < propertyValue.length())
+                {
+                    values.add(propertyValue.substring(beginIndex));
+                    beginIndex = -1;
+                }
+                else
+                {
+                    beginIndex = -1;
+                }
+            }
+        }
+
+        String[] result = new String[values.size()];
+
+        values.toArray(result);
+        values.clear();
+
+        return result;
     }
 
     /**
@@ -210,7 +256,7 @@ public class ProjectFile
 
             if (existingValue != null)
             {
-                value = existingValue + "&vs;" + value;
+                value = existingValue + VALUE_SEPARATOR + value;
             }
 
             PROPERTIES.setProperty(key, value);
@@ -239,7 +285,7 @@ public class ProjectFile
                 name.setLength(name.length() - 1);
             }
 
-            return name.toString();
+            return name.toString().toLowerCase();
         }
     }
 }
