@@ -40,6 +40,7 @@ public class RuleProperties {
     }
 
     public String getValue(String name) {
+
         name = (name == null) ? "" : name.trim();
 
         if (name.length() > 0) {
@@ -56,18 +57,22 @@ public class RuleProperties {
     }
 
     public String getValueType(String name) {
-        name = (name == null) ? "" : name.trim();
+        try {
+            name = (name == null) ? "" : name.trim();
 
-        if (name.length() > 0) {
-            String property = m_properties.getProperty(name);
+            if (name.length() > 0) {
+                String property = m_properties.getProperty(name);
 
-            if (property != null) {
-                int index = property.indexOf(SEPARATOR) + SEPARATOR.length();
+                if (property != null) {
+                    int index = property.indexOf(SEPARATOR) + SEPARATOR.length();
 
-                if (index > 0) {
-                    return property.substring(index);
+                    if (index > 0) {
+                        return property.substring(index);
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return "";
