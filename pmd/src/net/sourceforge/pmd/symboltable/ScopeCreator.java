@@ -23,13 +23,9 @@ public class ScopeCreator extends JavaParserVisitorAdapter {
 
     private void openScope(SimpleNode node) {
         Scope scope = sf.createScope(node);
-        if (scope instanceof NullScope) {
-            super.visit(node, null);
-        } else {
-            table.push(scope);
-            node.setScope(table.peek());
-            super.visit(node, null);
-            table.pop();
-        }
+        table.push(scope);
+        node.setScope(table.peek());
+        super.visit(node, null);
+        table.pop();
     }
 }

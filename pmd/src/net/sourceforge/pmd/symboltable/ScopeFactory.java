@@ -22,21 +22,20 @@ public class ScopeFactory {
     }
 
     public Scope createScope(Node node) {
-        Scope result = new NullScope();
         if (localTriggers.contains(node.getClass())) {
-            result = new LocalScope();
+            return new LocalScope();
         } else if (functionTriggers.contains(node.getClass())) {
-            result = new FunctionScope();
+            return new FunctionScope();
         } else if (classTriggers.contains(node.getClass())) {
             if (node instanceof ASTUnmodifiedClassDeclaration) {
-                result = new ClassScope(((ASTUnmodifiedClassDeclaration)node).getClassName());
+                return new ClassScope(((ASTUnmodifiedClassDeclaration)node).getClassName());
             } else {
-                result = new ClassScope("UNKNOWN");
+                return new ClassScope("UNKNOWN");
             }
         } else if (globalTriggers.contains(node.getClass())) {
-            result = new GlobalScope();
+            return new GlobalScope();
         }
-        return result;
+        throw new RuntimeException("Can't find an appropriate scope for node of class " + node.getClass());
     }
 
     private void initScopeTriggers() {
