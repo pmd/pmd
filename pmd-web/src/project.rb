@@ -15,8 +15,7 @@ class Project
   end
 
   def runAnt
-    output = `/usr/local/bin/ant -f pmd-web.xml -Dproject.name=#{@name} -Dproject.source=#{@source} -Dlib.repo=/home/dpeugh/projects/lib-repo`
-    puts output
+    `/usr/local/bin/ant -f pmd-web.xml -Dproject.name=#{@name} -Dproject.source=#{@source} -Dlib.repo=/home/dpeugh/projects/lib-repo`
   end
 end
 
@@ -31,7 +30,7 @@ class CVSProject < Project
   def updateSource
     `rm -rf #{@name}`
     `mkdir #{@name}`
-    `cd #{@name}; cvs -r -d#{@cvsroot} co #{@mod}`
+    `cd #{@name}; cvs -Q -r -d#{@cvsroot} co #{@mod}`
   end
 end
 
