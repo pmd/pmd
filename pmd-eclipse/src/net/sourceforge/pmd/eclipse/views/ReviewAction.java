@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.views;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Date;
@@ -10,6 +11,7 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
@@ -28,24 +30,26 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2003/08/14 16:10:42  phherlin
+ * Revision 1.2  2003/10/30 16:29:16  phherlin
+ * Adapting to Eclipse v3 M4
+ * Revision 1.1 2003/08/14 16:10:42 phherlin
  * Implementing Review feature (RFE#787086)
- *
+ *  
  */
 public class ReviewAction extends Action {
     private IProgressMonitor monitor;
     private ViolationView violationView;
 
     /**
-     * Constructor
-     */
+	 * Constructor
+	 */
     public ReviewAction(ViolationView violationView) {
         this.violationView = violationView;
     }
 
     /**
-     * @see org.eclipse.jface.action.IAction#run()
-     */
+	 * @see org.eclipse.jface.action.IAction#run()
+	 */
     public void run() {
         final IMarker[] markers = violationView.getSelectedViolations();
         if (markers != null) {
@@ -59,7 +63,8 @@ public class ReviewAction extends Action {
                 go = MessageDialog.openConfirm(shell, title, message);
             }
 
-            // If only one marker selected or user has confirmed, review violation
+            // If only one marker selected or user has confirmed, review
+			// violation
             if (go) {
                 try {
                     ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
@@ -81,14 +86,16 @@ public class ReviewAction extends Action {
     }
 
     /**
-     * Do the insertion of the review comment
-     * @param marker
-     */
+	 * Do the insertion of the review comment
+	 * 
+	 * @param marker
+	 */
     protected void insertReview(IMarker marker) {
         try {
             IResource resource = marker.getResource();
             if (resource instanceof IFile) {
-                ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom((IFile) resource);
+                IFile file = (IFile) resource;
+                ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(file);
 
                 monitorWorked();
 
@@ -101,35 +108,38 @@ public class ReviewAction extends Action {
 
                 monitorWorked();
 
-                compilationUnit.getBuffer().setContents(sourceCode);
-                compilationUnit.save(getMonitor(), false);
+                file.setContents(new ByteArrayInputStream(sourceCode.getBytes()), false, true, getMonitor());
 
                 monitorWorked();
             }
         } catch (JavaModelException e) {
             PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_JAVAMODEL_EXCEPTION, e);
+        } catch (CoreException e) {
+            PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION, e);
         }
     }
 
     /**
-     * Get the monitor
-     * @return
-     */
+	 * Get the monitor
+	 * 
+	 * @return
+	 */
     protected IProgressMonitor getMonitor() {
         return monitor;
     }
 
     /**
-     * Set the monitor
-     * @param monitor
-     */
+	 * Set the monitor
+	 * 
+	 * @param monitor
+	 */
     protected void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
     }
-    
+
     /**
-     * Progress monitor
-     */
+	 * Progress monitor
+	 */
     private void monitorWorked() {
         if (getMonitor() != null) {
             getMonitor().worked(1);
@@ -137,8 +147,8 @@ public class ReviewAction extends Action {
     }
 
     /**
-     * Renvoie la position dans le code source du début de la ligne du marqueur
-     */
+	 * Renvoie la position dans le code source du début de la ligne du marqueur
+	 */
     private int getMarkerLineStart(String sourceCode, int lineNumber) {
         int lineStart = 0;
         int currentLine = 1;
@@ -160,8 +170,8 @@ public class ReviewAction extends Action {
     }
 
     /**
-     * Insère un commentaire de révision juste au dessus de la ligne du marker
-     */
+	 * Insère un commentaire de révision juste au dessus de la ligne du marker
+	 */
     private String addReviewComment(String sourceCode, int offset, IMarker marker) {
         String additionalCommentPattern = PMDPlugin.getDefault().getReviewAdditionalComment();
         String additionalComment =
@@ -173,15 +183,15 @@ public class ReviewAction extends Action {
         sb.append(marker.getAttribute(PMDPlugin.KEY_MARKERATT_RULENAME, ""));
         sb.append(": ");
         sb.append(additionalComment);
-        sb.append('\n');
+        sb.append(System.getProperty("line.separator"));
         sb.append(sourceCode.substring(offset));
 
         return sb.toString();
     }
 
     /**
-     * Calcul l'indentation employée sur la ligne du marker
-     */
+	 * Calcul l'indentation employée sur la ligne du marker
+	 */
     private String computeIndent(String sourceCode, int offset) {
         StringBuffer indent = new StringBuffer();
         int i = 0;

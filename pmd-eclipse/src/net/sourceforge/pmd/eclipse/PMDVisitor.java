@@ -22,6 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.15  2003/10/30 16:29:16  phherlin
+ * Adapting to Eclipse v3 M4
+ *
  * Revision 1.14  2003/06/30 22:00:53  phherlin
  * Adding clearer monitor message when visiting files
  *
@@ -120,6 +123,20 @@ public class PMDVisitor implements IResourceVisitor {
     public void setAccumulator(Map accumulator) {
         this.accumulator = accumulator;
         log.debug("Setting accumulator " + accumulator);
+    }
+
+    /**
+     * @return Returns the monitor.
+     */
+    public IProgressMonitor getMonitor() {
+        return monitor;
+    }
+
+    /**
+     * @param monitor The monitor to set.
+     */
+    public void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
     }
 
 }

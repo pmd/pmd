@@ -5,13 +5,16 @@ import java.util.Iterator;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
-import org.eclipse.core.internal.resources.Workspace;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -49,6 +52,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2003/10/30 16:29:42  phherlin
+ * Adapting to Eclipse v3 M4
+ *
  * Revision 1.4  2003/08/14 16:10:41  phherlin
  * Implementing Review feature (RFE#787086)
  *
@@ -304,16 +310,17 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
      * Remove the selected violation
      */
     public void removeSelectedViolation() {
-        IMarker[] markers = getSelectedViolations();
+        final IMarker[] markers = getSelectedViolations();
         if (markers != null) {
             try {
-                Workspace workspace = (Workspace) ResourcesPlugin.getWorkspace();
-                workspace.prepareOperation();
-                workspace.beginOperation(true);
-                for (int i = 0; i < markers.length; i++) {
-                    markers[i].delete();
-                }
-                workspace.endOperation(false, null);
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                workspace.run(new IWorkspaceRunnable() {
+                    public void run(IProgressMonitor monitor) throws CoreException {
+						for (int i = 0; i < markers.length; i++) {
+							markers[i].delete();
+						}
+                    }
+                }, null);
             } catch (CoreException e) {
                 PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION, e);
             }
