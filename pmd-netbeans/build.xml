@@ -1,7 +1,7 @@
 <project basedir="." default="nbm" name="PMD netbeans module">
 
-	<property name="pmd.jar" value="pmd-1.1.jar"/>
-	<property name="keystore" value="${user.home}/.keystore"/>
+	<property name="pmd.jar" value="pmd-1.2.1.jar"/>
+	<property name="keystore" value="${user.home}/.pmdkeystore"/>
 	<property name="storepass" value="?"/>
 
 	<target description="Compiles all java files and copies property files to the classes dir" name="compile">
@@ -68,7 +68,7 @@
 				<include name="*.txt"/>
 				<include name="build.xml"/>
 				<include name="src/**/*"/>
-				<include name="lib/pmd*.jar"/>
+				<include name="lib/${pmd.jar}"/>
 				<include name="lib/nbantext.jar"/>
 				<include name="lib/saxpath-1.0-fcs.jar"/>
 				<include name="lib/jaxen-core-1.0-fcs.jar"/>
