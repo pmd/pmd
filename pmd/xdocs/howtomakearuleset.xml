@@ -41,15 +41,10 @@ Say you want to pick specific rules from various rule sets and customize them.  
   <rule ref="rulesets/imports.xml/DuplicateImports"/>
   <rule ref="rulesets/basic.xml/UnnecessaryConversionTemporaryRule"/>
 
-  <!-- We want to customize this rule a bit, change the message and raise the priority
-   ### NOTE: Having to explicitly list the class name to do an override is not nice;
-   there's a bug filed on this here:
-   http://sourceforge.net/tracker/index.php?func=detail&aid=1089313&group_id=56262&atid=479921
-  -->
+  <!-- We want to customize this rule a bit, change the message and raise the priority  -->
   <rule
    ref="rulesets/basic.xml/EmptyCatchBlock"
-   message="Must handle exceptions"
-   class="net.sourceforge.pmd.rules.XPathRule">
+   message="Must handle exceptions">
      <priority>2</priority>
   </rule>
 

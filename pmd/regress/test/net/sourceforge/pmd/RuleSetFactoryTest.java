@@ -140,25 +140,10 @@ public class RuleSetFactoryTest extends TestCase {
         assertEquals("new property", r.getStringProperty("test4"));
     }
 
-    public void testExternalReferenceOverrideXPath() {
-        Rule r = loadFirstRule(REF_OVERRIDE_XPATH);
-        assertEquals("EmptyCatchBlock", r.getName());
-    }
-
     public void testOverrideMessage() {
         Rule r = loadFirstRule(REF_OVERRIDE_ORIGINAL_NAME);
         assertEquals("TestMessageOverride", r.getMessage());
     }
-
-    private static final String REF_OVERRIDE_XPATH =
-            "<?xml version=\"1.0\"?>" + PMD.EOL +
-            "<ruleset name=\"test\">" + PMD.EOL +
-            " <description>testdesc</description>" + PMD.EOL +
-            " <rule " + PMD.EOL +
-            "  ref=\"rulesets/basic.xml/EmptyCatchBlock\" " + PMD.EOL +
-            "  class=\"net.sourceforge.pmd.rules.XPathRule\">" +
-            " </rule>" + PMD.EOL +
-            "</ruleset>";
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
@@ -177,8 +162,7 @@ public class RuleSetFactoryTest extends TestCase {
             " <rule " + PMD.EOL +
             "  ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" " + PMD.EOL +
             "  name=\"TestNameOverride\" " + PMD.EOL +
-            "  message=\"Test message override\" " + PMD.EOL +
-            "  class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
+            "  message=\"Test message override\"> " + PMD.EOL +
             "  <description>Test description override</description>" + PMD.EOL +
             "  <example>Test example override</example>" + PMD.EOL +
             "  <priority>3</priority>" + PMD.EOL +
