@@ -43,7 +43,7 @@ public class UnusedFormalParameterRule extends AbstractRule {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (node.isPrivate()) {
+        if (node.isPrivate() && ! node.isNative()) {  //make sure it's a private method and not a native method
             SimpleNode md = (SimpleNode)node.jjtGetChild(1);
             SimpleNode formalParams = (SimpleNode)md.jjtGetChild(0);
             int paramCount = formalParams.jjtGetNumChildren();
