@@ -7,7 +7,7 @@
 <body>
     <section name="How to make a new rule set">
 <p>
-Say you want to pick specific rules from various rule sets.  You can do this by making your own rule set.
+Say you want to pick specific rules from various rule sets and customize them.  You can do this by making your own rule set.
 </p>
     <subsection name="Create a new ruleset.xml file">
     <p>Use one of the current rulesets as an example.  Copy and paste
@@ -38,12 +38,19 @@ Say you want to pick specific rules from various rule sets.  You can do this by 
   <rule ref="rulesets/imports.xml/DuplicateImports"/>
   <rule ref="rulesets/basic.xml/UnnecessaryConversionTemporaryRule"/>
 
+  <!-- We want to customize this rule a bit, change the message and raise the priority -->
+  <rule ref="rulesets/basic.xml/EmptyCatchBlock" message="Must handle exceptions">
+     <priority>2</priority>
+  </rule>
+
   <!-- Note we want everything from braces.xml except the WhileLoopsMustUseBracesRule -->
   <rule ref="rulesets/braces.xml">
     <exclude name="WhileLoopsMustUseBracesRule"/>
   </rule>
 </ruleset>]]>
     </source>
+    <p>Notice that you can customize individual referenced rules.  Everything but the
+       class of the rule can be overriden in your custom ruleset.</p>
     </subsection>
         <subsection name="Excluding rules from a ruleset">
             <p>You can also make a custom ruleset that excludes rules, like this:</p>

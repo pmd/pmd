@@ -36,6 +36,8 @@ public interface Rule {
     boolean hasProperty(String name);
 
     void addProperty(String name, String property);
+    
+    void addProperties(Properties properties);
 
     int getIntProperty(String name);
 

@@ -28,6 +28,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
@@ -113,6 +114,21 @@ public class RuleSetFactoryTest extends TestCase {
         assertTrue(loadFirstRule(DFA).usesDFA());
     }
 
+    public void testExternalReferenceOverride() {
+        Rule r = loadFirstRule(REF_OVERRIDE);
+        assertEquals("TestNameOverride", r.getName());
+        assertEquals("Test message override", r.getMessage());
+        assertEquals("Test description override", r.getDescription());
+        assertEquals("Test example override", r.getExample());
+        assertEquals(3, r.getPriority());
+        assertTrue(r.hasProperty("test2"));
+        assertEquals("override2", r.getStringProperty("test2"));
+        assertTrue(r.hasProperty("test3"));
+        assertEquals("override3", r.getStringProperty("test3"));
+        assertTrue(r.hasProperty("test4"));
+        assertEquals("new property", r.getStringProperty("test4"));
+    }
+
     private Rule loadFirstRule(String ruleSetName) {
         return ((Rule)(loadRuleSet(ruleSetName).getRules().iterator().next()));
     }
@@ -121,6 +137,26 @@ public class RuleSetFactoryTest extends TestCase {
         RuleSetFactory rsf = new RuleSetFactory();
         return rsf.createRuleSet(new ByteArrayInputStream(ruleSetName.getBytes()));
     }
+
+    private static final String REF_OVERRIDE =
+            "<?xml version=\"1.0\"?>" + PMD.EOL +
+            "<ruleset name=\"test\">" + PMD.EOL +
+            " <description>testdesc</description>" + PMD.EOL +
+            " <rule " + PMD.EOL +
+            "  ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" " + PMD.EOL +
+            "  name=\"TestNameOverride\" " + PMD.EOL +
+            "  message=\"Test message override\" " + PMD.EOL +
+            "  class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
+            "  <description>Test description override</description>" + PMD.EOL +
+            "  <example>Test example override</example>" + PMD.EOL +
+            "  <priority>3</priority>" + PMD.EOL +
+            "  <properties>" + PMD.EOL +
+            "   <property name=\"test2\" value=\"override2\"/>" + PMD.EOL +
+            "   <property name=\"test3\"><value>override3</value></property>" + PMD.EOL +
+            "   <property name=\"test4\" value=\"new property\"/>" + PMD.EOL +
+            "  </properties>" + PMD.EOL +
+            " </rule>" + PMD.EOL +
+            "</ruleset>";
 
     private static final String EMPTY_RULESET =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
@@ -239,18 +275,22 @@ public class RuleSetFactoryTest extends TestCase {
             "<priority>3</priority>" + PMD.EOL +
             "</rule></ruleset>";
 
-    /*
-        public void testExternalReferences() {
-            RuleSetFactory rsf = new RuleSetFactory();
-            RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(EXTERNAL_REFERENCE_RULE_SET.getBytes()));
-            assertEquals(1, rs.size());
-        }
-        private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>" +
-                             "<ruleset name=\"test\">\r\n<description>testdesc</description><rule ref=\"rulesets/basic.xml/EmptyCatchBlock\"/></ruleset>";
-        private static final String SINGLE_RULE_NO_PROPS = "<?xml version=\"1.0\"?>" +
-                             "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
-                             "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
-                             "<properties></properties>" +
-                             "</rule></ruleset>";
-    */
+
+/*
+    public void testExternalReferences() {
+        RuleSet rs = loadRuleSet(EXTERNAL_REFERENCE_RULE_SET);
+        assertEquals(1, rs.size());
+        assertEquals(UnusedLocalVariableRule.class, rs.getRuleByName("UnusedLocalVariable").getClass());
+    }
+*/
+
+/*
+
+        private static final String EXTERNAL_REFERENCE_RULE_SET =
+                "<?xml version=\"1.0\"?>" + PMD.EOL +
+                "<ruleset name=\"test\">" + PMD.EOL +
+                "<description>testdesc</description>" + PMD.EOL +
+                "<rule ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL +
+                "</ruleset>";
+*/
 }

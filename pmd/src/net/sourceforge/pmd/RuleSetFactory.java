@@ -187,7 +187,7 @@ public class RuleSetFactory {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
         if (ref.trim().length() == 0) {
-            parseInternallyDefinedRuleNode(ruleSet, ruleNode);
+            parseInternallyDefinedRuleNode(ruleSet, ruleNode, true);
         } else {
             parseExternallyDefinedRuleNode(ruleSet, ruleNode);
         }
@@ -199,7 +199,7 @@ public class RuleSetFactory {
      * @param ruleSet  the ruleset being constructed
      * @param ruleNode must be a rule element node
      */
-    private void parseInternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private Rule parseInternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode, boolean addRule) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         Element ruleElement = (Element) ruleNode;
 
         Rule rule = (Rule) getClassLoader().loadClass(ruleElement.getAttribute("class")).newInstance();
@@ -231,8 +231,10 @@ public class RuleSetFactory {
                 }
             }
         }
-
-        ruleSet.addRule(rule);
+        if (addRule) {
+            ruleSet.addRule(rule);
+        }
+        return rule;
     }
 
     /**
@@ -241,13 +243,13 @@ public class RuleSetFactory {
      * @param ruleSet  the ruleset being constructucted
      * @param ruleNode must be a ruke element node
      */
-    private void parseExternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode) throws RuleSetNotFoundException {
+    private void parseExternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode) throws RuleSetNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
         if (ref.endsWith("xml")) {
             parseRuleNodeWithExclude(ruleSet, ruleElement, ref);
         } else {
-            parseRuleNodeWithSimpleReference(ruleSet, ref);
+            parseRuleNodeWithSimpleReference(ruleSet, ruleNode, ref);
         }
     }
 
@@ -257,11 +259,31 @@ public class RuleSetFactory {
      * @param ruleSet the ruleset being constructed
      * @param ref     a reference to a rule
      */
-    private void parseRuleNodeWithSimpleReference(RuleSet ruleSet, String ref) throws RuleSetNotFoundException {
+    private void parseRuleNodeWithSimpleReference(RuleSet ruleSet, Node ruleNode, String ref) throws RuleSetNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         RuleSetFactory rsf = new RuleSetFactory();
         ExternalRuleID externalRuleID = new ExternalRuleID(ref);
         RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
-        ruleSet.addRule(externalRuleSet.getRuleByName(externalRuleID.getRuleName()));
+        Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
+        Rule overrideRule = parseInternallyDefinedRuleNode(ruleSet, ruleNode, false);
+        if (overrideRule.getName() != null) {
+            externalRule.setName(overrideRule.getName());
+        }
+        if (overrideRule.getMessage() != null) {
+            externalRule.setMessage(overrideRule.getMessage());
+        }
+        if (overrideRule.getDescription() != null) {
+            externalRule.setDescription(overrideRule.getDescription());
+        }
+        if (overrideRule.getExample() != null) {
+            externalRule.setExample(overrideRule.getExample());
+        }
+        if (overrideRule.getPriority() != 0) {
+            externalRule.setPriority(overrideRule.getPriority());
+        }
+        if (overrideRule.getProperties() != null) {
+            externalRule.addProperties(overrideRule.getProperties());
+        }
+        ruleSet.addRule(externalRule);
     }
 
     /**

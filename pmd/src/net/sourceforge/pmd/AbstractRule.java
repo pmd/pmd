@@ -62,6 +62,10 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         properties.setProperty(name, value);
     }
 
+    public void addProperties(Properties properties) {
+        this.properties.putAll(properties);
+    }
+
     public double getDoubleProperty(String name) {
         return Double.parseDouble(properties.getProperty(name));
     }
