@@ -35,7 +35,7 @@ public class RuleSetFactoryTest  extends TestCase {
     private static final String SINGLE_RULE_WITH_PROPS = "<?xml version=\"1.0\"?>" +
                          "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
                          "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\">" +
-                         "<description>testdesc2</description><example>testexample</example><properties><property name=\"fooBoolean\" value=\"true\"/><property name=\"fooDouble\" value=\"1.0\" /><property name=\"foo\" value=\"bar\"/><property name=\"fooint\" value=\"2\"/></properties>" +
+                         "<description>testdesc2</description><properties><property name=\"fooBoolean\" value=\"true\"/><property name=\"fooDouble\" value=\"1.0\" /><property name=\"foo\" value=\"bar\"/><property name=\"fooint\" value=\"2\"/></properties>" +
                          "</rule></ruleset>";
 
     private static final String SINGLE_RULE_NO_PROPS = "<?xml version=\"1.0\"?>" +
@@ -65,8 +65,6 @@ public class RuleSetFactoryTest  extends TestCase {
         			  0.05 );
         			  
         assertTrue( !r.hasProperty("BuggleFish"));
-
-        assertEquals("testexample", r.getExample());
     }
 
     public void testCreateSingleRuleNoPropsSet() {

@@ -66,15 +66,17 @@ public class RuleSetFactory {
                     rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
                 }
 
-                // get the description and properties (if any)
+                // get the description, example and properties (if any)
                 Node node = ruleNode.getFirstChild();
                 while (node != null) {
                     if (node.getNodeName() != null && node.getNodeName().equals("description")) {
-                        rule.setDescription(node.getFirstChild().getNodeValue());
+                        String description = node.getFirstChild().getNodeValue();
+                        rule.setDescription(description);
                     }
 
                     if (node.getNodeName() != null && node.getNodeName().equals("example")) {
-                        rule.setExample(node.getFirstChild().getNodeValue());
+                        String example =node.getFirstChild().getNextSibling().getNodeValue();
+                        rule.setExample(example);
                     }
 
                     if (node.getNodeName().equals("properties")) {
