@@ -1,0 +1,30 @@
+create the JBuilder plugin jar file
+cvs add -kb pmd-jbuilder-0.1.jar
+cvs ci -m "adding new jar, removing old one"
+cd c:\data\pmd
+cvs rtag -D tomorrow "pmd_jbuilder_release_0_1" pmd-jbuilder
+rmdir /q /s c:\tmp\pmd-jbuilder
+mkdir c:\tmp\pmd-jbuilder
+cvs export -d c:\tmp\pmd -r pmd_jbuilder_release_0_1 pmd-jbuilder
+zip it up, rename it to pmd-jbuilder-0.1.zip
+unzip it into c:\tmp\pmd-jbuilder-0.1
+TESTS:
+1) does it work when dropped in the JBuilder plugin directory?
+
+if you see a bug and fix it, you can delete the release using:
+cvs rtag -d pmd_jbuilder_release_0_1 pmd-jbuilder
+and then retag everything
+
+FTP the zip file to SF
+ftp upload.sourceforge.net
+generic userid/password: anonymous/dcraine@users.sourceforge.net
+cd incoming
+bin
+put pmd-jbuilder-0.1.zip
+
+Go to Admin, Edit/Release Files, click on Add new release
+Paste stuff into the changelog/readme boxes
+Add the pmd-jbuilder-0.1.zip file
+Classify the file
+
+Submit some news saying "hey, new release of pmd-jbuilder!"
