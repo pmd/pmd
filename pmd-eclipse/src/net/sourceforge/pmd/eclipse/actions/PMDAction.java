@@ -30,7 +30,7 @@ public class PMDAction implements IWorkbenchWindowActionDelegate {
 	 */
 	public void run(IAction action)  {
 		String[] rulesetFiles = PMDPlugin.getDefault().getRuleSetsPreference();
-		
+
 		PMDVisitor visitor = null;
 		try {
 			visitor = new PMDVisitor(rulesetFiles);
