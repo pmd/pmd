@@ -48,16 +48,19 @@ sub default() {
 }
 
 sub printStats() {
- # we're starting each build at 10 past the hour, so...
- my $offset = 10;
  print hr(); 
- print b("Stats:"), br(), "There are ", ((60 + $offset) - localtime()->min) % 60, " minutes until the next run";
+ print b("Stats:"), br(), "There are ", getTimeUntil(), " minutes until the next run";
  open(FILE,"lastruntime.txt");
  my $lastruntime=<FILE>;
  print br();
- print "The last run took ${lastruntime} seconds";
+ print "The last run took ", sprintf("%.0f", $lastruntime), " seconds";
  print br();
- 
+}
+
+sub getTimeUntil() {
+ # we're starting each build at 10 past the hour, so...
+ my $offset = 10;
+ return ((60 + $offset) - localtime()->min) % 60;
 }
 
 sub loadProjectList() {

@@ -60,6 +60,14 @@ class Job
   def run_pmd
    cmd="java -jar pmd-1.0rc2.jar #{@sourceDirectory} html rulesets/unusedcode.xml > ../htdocs/reports/#{@unixName}_#{@moduleDirectory}.html"
    `#{cmd}`
+   arr = IO.readlines("../htdocs/reports/#{@unixName}_#{@moduleDirectory}.html")
+   newFile=File.open("../htdocs/reports/#{@unixName}_#{@moduleDirectory}.html", "w")
+   arr.each do | line | 
+    if (line["Error while parsing"] == nil) 
+     newFile << line
+    end
+   end
+   newFile.close
   end
   
   def clear
