@@ -812,8 +812,10 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
             AccessNode parent = (AccessNode) node.jjtGetParent();
             MethodHolder h = new MethodHolder(node);
-            if (!parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) {
-                h.setDangerous(true);//this method is overridable
+            if (!parent.isAbstract()) { //Skip abstract methods, have a separate rule for that
+            	if (!parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) {
+            		h.setDangerous(true);//this method is overridable
+            	}
             }
             List l = new ArrayList();
             addCalledMethodsOfNode((SimpleNode) parent, l, getCurrentEvalPackage().m_ClassName);

@@ -23,6 +23,7 @@ public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST6, "calling method on literal bug", 0, rule),
            new TestDescriptor(TEST7, "method in anonymous inner class is ok", 0, rule),
            new TestDescriptor(TEST8, "bug report 975407", 0, rule),
+		   new TestDescriptor(BUG_994400, "bug report 994400, reports violation on abstract method", 0, rule),
        });
     }
 
@@ -94,4 +95,13 @@ public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     " private void bar() {}" + PMD.EOL +
     "}";
+
+    private static final String BUG_994400 =
+        "public class Foo {" + PMD.EOL +
+        " public Foo() {" + PMD.EOL +
+        "  bar();" + PMD.EOL +
+        " }" + PMD.EOL +
+        " abstract void bar() {}" + PMD.EOL +
+        "}";
+    
 }
