@@ -32,7 +32,7 @@ public class UnnecessaryCastRule extends AbstractRule {
         try {
             if (inCastCtx) {
                 TypeSet t = new TypeSet();
-                System.out.println(t.findClass(node.getImage()));
+                //System.out.println(t.findClass(node.getImage()));
             }
         } catch (Exception e) {}
         return super.visit(node, data);
@@ -42,7 +42,7 @@ public class UnnecessaryCastRule extends AbstractRule {
         try {
             if (inCastCtx) {
                 TypeSet t = new TypeSet();
-                System.out.println(t.findClass(node.getImage()));
+                //System.out.println(t.findClass(node.getImage()));
             }
         } catch (Exception e) {}
         return super.visit(node, data);

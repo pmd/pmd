@@ -34,6 +34,10 @@ public class DuplicateImportsRule extends AbstractRule {
                 String msg = MessageFormat.format(getMessage(), new Object[] {node.getImage()});
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), msg));
             } else {
+                // TODO - look for:
+                // java.lang.ref.*
+                // java.lang.ref.WeakReference
+                //
                 allImports.add(node.getImage());
             }
         }
