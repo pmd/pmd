@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.UnusedPrivateMethodRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -13,9 +14,8 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new UnusedPrivateMethodRule();
-        rule.setMessage("Avoid this stuff -> ''{0}''");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/unusedcode.xml", "UnusedPrivateMethod");
     }
 
     public void testAll() {
@@ -28,7 +28,7 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST6, "calling private method using 'this' modifier", 0, rule),
            new TestDescriptor(TEST7, "simple unused private static method", 1, rule),
            new TestDescriptor(TEST8, "readResolve/writeReplace/etc are OK", 0, rule),
-           new TestDescriptor(BUG_1038229, "BUG 1038229", 1, rule)
+           new TestDescriptor(BUG_1038229, "Private methods called only by themselves, BUG 1038229", 1, rule)
        });
     }
 
@@ -103,5 +103,4 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
         " bar(); " + PMD.EOL +
         " }" + PMD.EOL +
         "}";
-
 }
