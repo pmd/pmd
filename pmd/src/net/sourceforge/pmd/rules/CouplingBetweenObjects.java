@@ -14,6 +14,8 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTReferenceType;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,13 +35,6 @@ public class CouplingBetweenObjects extends AbstractRule {
     private int couplingCount;
     private Set typesFoundSoFar;
 
-    /**
-     * handles the source file
-     *
-     * @param ASTCompilationUnit cu
-     * @param Object             data
-     * @return Object
-     */
     public Object visit(ASTCompilationUnit cu, Object data) {
         this.typesFoundSoFar = new HashSet();
         this.couplingCount = 0;
@@ -61,58 +56,33 @@ public class CouplingBetweenObjects extends AbstractRule {
         return super.visit(node, data);
     }
 
-    /**
-     * handles a return type of a method
-     *
-     * @param ASTResultType node
-     * @param Object        data
-     * @return Object
-     */
     public Object visit(ASTResultType node, Object data) {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
             SimpleNode tNode = (SimpleNode) node.jjtGetChild(x);
             if (tNode instanceof ASTType) {
-                SimpleNode nameNode = (SimpleNode) tNode.jjtGetChild(0);
-                if (nameNode instanceof ASTName) {
-                    this.checkVariableType(nameNode, nameNode.getImage());
+                SimpleNode reftypeNode = (SimpleNode) tNode.jjtGetChild(0);
+                if (reftypeNode instanceof ASTReferenceType) {
+                    SimpleNode classOrIntType = (SimpleNode)reftypeNode.jjtGetChild(0);
+                    if (classOrIntType instanceof ASTClassOrInterfaceType) {
+                        SimpleNode nameNode = (ASTClassOrInterfaceType)classOrIntType;
+                        this.checkVariableType(nameNode, nameNode.getImage());
+                    }
                 }
             }
         }
         return super.visit(node, data);
     }
 
-    /**
-     * handles a local variable found in a method block
-     *
-     * @param ASTLocalVariableDeclaration node
-     * @param Object                      data
-     * @return Object
-     */
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         this.handleASTTypeChildren(node);
         return super.visit(node, data);
     }
 
-    /**
-     * handles a method parameter
-     *
-     * @param ASTFormalParameter node
-     * @param Object             data
-     * @return Object
-     */
     public Object visit(ASTFormalParameter node, Object data) {
         this.handleASTTypeChildren(node);
         return super.visit(node, data);
     }
 
-    /**
-     * handles a field declaration - i.e. an instance variable. Method doesn't care if variable
-     * is public/private/etc
-     *
-     * @param ASTFieldDeclaration node
-     * @param Object              data
-     * @return Object
-     */
     public Object visit(ASTFieldDeclaration node, Object data) {
         for (int x = 0; x < node.jjtGetNumChildren(); ++x) {
             SimpleNode firstStmt = (SimpleNode) node.jjtGetChild(x);
@@ -127,7 +97,7 @@ public class CouplingBetweenObjects extends AbstractRule {
     }
 
     /**
-     * convience method to handle hiearchy. This is probably too much
+     * convience method to handle hierarchy. This is probably too much
      * work and will go away once I figure out the framework
      */
     private void handleASTTypeChildren(SimpleNode node) {
