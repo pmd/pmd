@@ -16,4 +16,23 @@ public class ASTExplicitConstructorInvocation extends SimpleNode {
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
+
+    private boolean isThis;
+    private boolean isSuper;
+
+    public void setIsThis() {
+        this.isThis = true;
+    }
+
+    public void setIsSuper() {
+        this.isSuper = true;
+    }
+
+    public boolean isThis() {
+        return this.isThis;
+    }
+
+    public boolean isSuper() {
+        return this.isSuper;
+    }
 }

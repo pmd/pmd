@@ -82,21 +82,6 @@ public class Foo
    </example>
 </rule>
 
-  <rule name="SymbolTableTestRule"
-        message="test"
-        class="net.sourceforge.pmd.rules.SymbolTableTestRule">
-    <description>
-    asdsad
-    </description>
-      <priority>3</priority>
-
-    <example>
-<![CDATA[
-// asdadas
-]]>
-    </example>
-  </rule>
-
       <rule name="AssignmentInOperandRule"
         message="Avoid assigments in operands"
         class="net.sourceforge.pmd.rules.AssignmentInOperandRule">

@@ -5,21 +5,14 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTExplicitConstructorInvocation;
 
 public class SymbolTableTestRule extends AbstractRule implements Rule {
 
-    public Object visit(ASTPrimarySuffix node, Object data) {
-        System.out.println("ASTPrimarySuffix: image: " + node.getImage());
+    public Object visit(ASTExplicitConstructorInvocation node, Object data) {
+        System.out.println("ASTExplicitConstructorInvocation: isSuper: " + node.isSuper());
+        System.out.println("ASTExplicitConstructorInvocation: isThis: " + node.isThis());
         return super.visit(node,data);
     }
 
-    public Object visit(ASTPrimaryPrefix node, Object data) {
-        System.out.println("ASTPrimaryPrefix: image: " + node.getImage());
-        return super.visit(node,data);
-    }
-
-    public Object visit(ASTName node, Object data) {
-        System.out.println("ASTName: image: " + node.getImage());
-        return super.visit(node,data);
-    }
 }
