@@ -5,9 +5,6 @@
  */
 package net.sourceforge.pmd.rules.sunsecure;
 
-import java.util.Iterator;
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
@@ -16,6 +13,9 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Implementation note: this rule currently ignores return types of y.x.z, 

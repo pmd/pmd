@@ -6,11 +6,6 @@
 
 package net.sourceforge.pmd.rules.design;
 
-import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
@@ -18,6 +13,11 @@ import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**

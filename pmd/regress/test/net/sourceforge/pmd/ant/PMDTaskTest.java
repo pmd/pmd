@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.RuleSet;
-
 import org.apache.tools.ant.BuildException;
 
 public class PMDTaskTest extends TestCase {

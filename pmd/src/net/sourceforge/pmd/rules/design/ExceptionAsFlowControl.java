@@ -1,8 +1,5 @@
 package net.sourceforge.pmd.rules.design;
 
-import java.util.Iterator;
-import java.util.List;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCatch;
@@ -10,6 +7,9 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTType;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Catches the use of exception statements as a flow control device.

@@ -5,21 +5,19 @@
  */
 package net.sourceforge.pmd.rules.sunsecure;
 
-import java.util.Iterator;
-import java.util.List;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
-import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Utility methods for the package

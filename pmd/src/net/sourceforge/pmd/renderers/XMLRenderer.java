@@ -8,9 +8,9 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
-import java.util.Iterator;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
 
 public class XMLRenderer implements Renderer {
 

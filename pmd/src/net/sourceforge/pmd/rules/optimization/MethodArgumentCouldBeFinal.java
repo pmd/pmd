@@ -3,15 +3,15 @@
  */
 package net.sourceforge.pmd.rules.optimization;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
 

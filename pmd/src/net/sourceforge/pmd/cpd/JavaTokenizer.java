@@ -3,13 +3,13 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.io.StringReader;
-import java.util.Properties;
-
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.JavaParserConstants;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 import net.sourceforge.pmd.ast.Token;
+
+import java.io.StringReader;
+import java.util.Properties;
 
 public class JavaTokenizer implements Tokenizer {
     

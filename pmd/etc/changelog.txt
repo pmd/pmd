@@ -1,9 +1,9 @@
-????, 2005 - 2.3:
+February 1, 2005 - 2.3:
 Fixed bug 1113927 - ExceptionAsFlowControl no longer throws NPEs on code where a throw statement exists without a try statement wrapping it.
 Fixed bug 1113981 - AvoidConcatenatingNonLiteralsInStringBuffer no longer throws NPEs on code where an append appears as a child of an ExplicitConstructorInvocation node.
 Fixed bug 1114039 - AvoidInstantiatingObjectsInLoops's message no longer contains a spelling error.
 Fixed bug 1114029 - The 'optimization' rules no longer throw NPEs at various points.
-Fixed bug 1114251 - The 'sunsecure' rules no longer throw NPEs at various points. 
+Fixed bug 1114251 - The 'sunsecure' rules no longer throw NPEs at various points.
 
 January 31, 2005 - 2.2:
 New rules: LocalVariableCouldBeFinal, MethodArgumentCouldBeFinal, AvoidInstantiatingObjectsInLoops, ArrayIsStoredDirectly, MethodReturnsInternalArray, AssignmentToNonFinalStatic, AvoidConcatenatingNonLiteralsInStringBuffer

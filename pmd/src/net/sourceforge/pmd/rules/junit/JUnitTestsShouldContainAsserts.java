@@ -7,6 +7,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
@@ -15,7 +16,6 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 
 public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule {
 

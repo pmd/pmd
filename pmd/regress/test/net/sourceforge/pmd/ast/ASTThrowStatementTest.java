@@ -5,11 +5,11 @@
  */
 package test.net.sourceforge.pmd.ast;
 
+import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
-import junit.framework.TestCase;
 
 /**
  * 

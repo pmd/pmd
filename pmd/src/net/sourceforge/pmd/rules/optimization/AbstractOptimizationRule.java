@@ -5,12 +5,8 @@
  */
 package net.sourceforge.pmd.rules.optimization;
 
-import java.util.Iterator;
-import java.util.List;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
@@ -20,6 +16,9 @@ import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Base class with utility methods for optimization rules

@@ -5,10 +5,6 @@
  */
 package net.sourceforge.pmd.rules.sunsecure;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
@@ -22,6 +18,10 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * 
