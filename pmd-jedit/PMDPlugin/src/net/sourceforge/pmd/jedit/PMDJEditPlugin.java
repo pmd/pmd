@@ -5,7 +5,9 @@
  */
 package net.sourceforge.pmd.jedit;
 
-import javax.swing.JWindow;
+import errorlist.DefaultErrorSource;
+import errorlist.ErrorList;
+import errorlist.ErrorSource;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -16,47 +18,42 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleViolation;
+import javax.swing.JWindow;
+import javax.swing.plaf.basic.BasicProgressBarUI;
+import javax.swing.tree.DefaultMutableTreeNode;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPPLanguage;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaLanguage;
-import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.PHPLanguage;
+import net.sourceforge.pmd.cpd.TokenEntry;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.renderers.*;
-
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleViolation;
+import org.gjt.sp.jedit.browser.VFSBrowser;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.EBMessage;
 import org.gjt.sp.jedit.EBPlugin;
-import org.gjt.sp.jedit.View;
-import org.gjt.sp.jedit.jEdit;
-import org.gjt.sp.jedit.browser.VFSBrowser;
 import org.gjt.sp.jedit.io.VFS;
 import org.gjt.sp.jedit.io.VFSManager;
+import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.msg.BufferUpdate;
+import org.gjt.sp.jedit.View;
 import org.gjt.sp.util.Log;
-
-import errorlist.DefaultErrorSource;
-import errorlist.ErrorList;
-import errorlist.ErrorSource;
-import javax.swing.JDialog;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.plaf.basic.BasicProgressBarUI;
 
 
 public class PMDJEditPlugin extends EBPlugin {
@@ -473,26 +470,37 @@ public class PMDJEditPlugin extends EBPlugin {
 		CPDDuplicateCodeViewer dv = getCPDDuplicateCodeViewer(view);
 
 		dv.clearDuplicates();
+		boolean foundDuplicates = false;
 		for (Iterator i = cpd.getMatches(); i.hasNext();)
 		{
+			if(!foundDuplicates) //Set foundDuplicates to true and that too only once.
+			{
+				foundDuplicates = true;
+			}
 			Match match = (Match)i.next();
 
 			CPDDuplicateCodeViewer.Duplicates duplicates = dv.new Duplicates(match.getLineCount() + " duplicate lines", match.getSourceCodeSlice());
 
 			for (Iterator occurrences = match.iterator(); occurrences.hasNext();)
 			{
-				Mark mark = (Mark)occurrences.next();
+				TokenEntry mark = (TokenEntry)occurrences.next();
 
-				//System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount());
+				System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount());
 				int lastLine = mark.getBeginLine()+match.getLineCount();
 
 				CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getTokenSrcID(),mark.getBeginLine(),lastLine);
 
 				//System.out.println("Adding Duplicate " + duplicate +" to Duplicates "+ duplicates);
 				duplicates.addDuplicate(duplicate);
-			}
+			}//End of inner for
 			dv.addDuplicates(duplicates);
+		}//End of outer for
+
+		if(!foundDuplicates)
+		{
+			dv.getRoot().add(new DefaultMutableTreeNode("No Duplicates found.",false));
 		}
+
 		dv.refreshTree();
 		dv.expandAll();
 	}//End of processDuplicates
