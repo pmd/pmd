@@ -46,10 +46,10 @@ public class DGST {
     private void expand(Occurrences occ)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
         while (!occ.isEmpty()) {
             TileHarvester tg = new TileHarvester(space, job);
-            occ = tg.gather(occ.size());
+            occ = tg.harvest(occ.size());
             addToResults(occ);
             if (!occ.isEmpty()) {
-                System.out.println("Season complete; tile count now " + occ.size() + "; tile size is " + ((Tile)(occ.getTiles().next())).getTokenCount() + "; " + ((Tile)(occ.getTiles().next())).getImage());
+                System.out.println("**Season complete" + System.getProperty("line.separator") + "->Tile count: " + occ.size() + System.getProperty("line.separator") + "->Tile size: " + ((Tile)(occ.getTiles().next())).getTokenCount() + System.getProperty("line.separator") + "->First tile image: " + ((Tile)(occ.getTiles().next())).getImage());
             }
             TilePlanter scatterer = new TilePlanter(space, job);
             scatterer.scatter(occ);
@@ -60,13 +60,30 @@ public class DGST {
         for (Iterator i = occ.getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
             if (tile.getTokenCount() > this.minimumTileSize) {
-                //System.out.println("Adding " + tile.getImage());
-                for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
-                    TokenEntry te = (TokenEntry)j.next();
-                    results.addTile(tile, te);
+                // why is this necessary?  Seems like Results.clearDupes() or whatever it's called
+                // should take care of it...
+                if (!isDuplicate(tile)) {
+                    for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
+                        TokenEntry te = (TokenEntry)j.next();
+                        results.addTile(tile, te);
+                    }
                 }
             }
         }
+    }
+
+    private boolean isDuplicate(Tile tile) {
+        for (Iterator j = results.getTiles(); j.hasNext();) {
+            Tile tile2 = (Tile)j.next();
+            TokenEntry first = (TokenEntry)tile2.getTokens().get(0);
+            TokenEntry second = (TokenEntry)tile.getTokens().get(0);
+            if (first.getTokenSrcID().equals(second.getTokenSrcID()) &&
+                first.getBeginLine() == second.getBeginLine() &&
+                first.getImage().equals(second.getImage())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List marshal(Iterator i) {

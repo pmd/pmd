@@ -26,7 +26,7 @@ public class TileHarvester {
         this.job = job;
     }
 
-    public Occurrences gather(int originalOccurrencesCount) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+    public Occurrences harvest(int originalOccurrencesCount) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
         Occurrences occ = new Occurrences(new CPDNullListener());
         for (int i=0;i<originalOccurrencesCount; i++) {
             TileWrapper tw = (TileWrapper)space.take(new TileWrapper(null,

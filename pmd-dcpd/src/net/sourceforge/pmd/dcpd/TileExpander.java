@@ -87,7 +87,7 @@ public class TileExpander {
                                                     TileWrapper.DISCARD_DUE_TO_EOF,
                                                     tileWrapper.originalTilePosition,
                                                     new Integer(0),
-                                                    new Integer(1));
+                                                    null);
                 space.write(tileWrapperToWrite, null, Lease.FOREVER);
             }
         }

@@ -50,7 +50,7 @@ public class TileHarvesterTest extends TestCase {
 
         // now the test
         TileHarvester tileGatherer = new TileHarvester(space, job);
-        Occurrences newOcc = tileGatherer.gather(occ.size());
+        Occurrences newOcc = tileGatherer.harvest(occ.size());
         assertEquals(2, newOcc.size());
     }
 }
