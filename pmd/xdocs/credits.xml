@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
             <li>Andriy Rozeluk - Suggestions for improving UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
             <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
@@ -127,7 +128,6 @@
             <li>Liam Holohan - bug reports</li>
             <li>Ralph Schaer - bug reports and verification</li>
             <li>Damian O'Neill - Ant task patches</li>
-            <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
