@@ -19,6 +19,7 @@
             <li>Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
             <li>Ole-Martin Mork - NetBeans plugin</li>
             <li>Andrei Lumianski - Gel plugin</li>
+            <li> Brant Langer Gurganus - Working on the Swing GUI</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">
