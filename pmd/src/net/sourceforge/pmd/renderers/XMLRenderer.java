@@ -18,7 +18,7 @@ public class XMLRenderer implements Renderer {
         return "<pmd version=\"" + PMD.VERSION + "\"";
     }
     private String createTimestampAttr() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         return " timestamp=\"" + sdf.format(new Date()) + "\"";
     }
     public String render(Report report) {
