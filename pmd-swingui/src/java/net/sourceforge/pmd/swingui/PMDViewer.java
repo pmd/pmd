@@ -213,6 +213,7 @@ class PMDViewer extends JFrame {
      * Runs the application.
      *
      * @param args command-line arguments
+     * @todo handle commmand-line argument to set logging level
      */
     public static void main(final String[] args) {
         LOGGER.entering(PMDViewer.class.getName(), "main", args);

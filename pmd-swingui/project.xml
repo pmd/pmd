@@ -107,6 +107,8 @@
         <report>maven-checkstyle-plugin</report>
         <report>maven-javadoc-plugin</report>
         <report>maven-pmd-plugin</report>
+        <report>maven-tasklist-plugin</report>
         <report>maven-jxr-plugin</report>
+        <report>maven-linkcheck-plugin</report>
     </reports>
 </project>
