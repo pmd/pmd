@@ -80,7 +80,7 @@ public class ASTViewer {
 
     private class XPathListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
-            if (xpathQueryField.getText().length() == 0) {
+            if (xpathQueryArea.getText().length() == 0) {
                 xpathResultArea.setText("XPath query field is empty");
                 codeEditorPane.requestFocus();
                 return;
@@ -88,7 +88,7 @@ public class ASTViewer {
             StringReader sr = new StringReader(codeEditorPane.getText());
             JavaParser parser = new JavaParser(sr);
             try {
-                XPath xpath = new BaseXPath(xpathQueryField.getText(), new DocumentNavigator());
+                XPath xpath = new BaseXPath(xpathQueryArea.getText(), new DocumentNavigator());
                 ASTCompilationUnit c = parser.CompilationUnit();
                 StringBuffer sb = new StringBuffer();
                 for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
@@ -106,14 +106,14 @@ public class ASTViewer {
             } catch (JaxenException je) {
                 xpathResultArea.setText(je.fillInStackTrace().getMessage());
             }
-            xpathQueryField.requestFocus();
+            xpathQueryArea.requestFocus();
         }
     }
 
     private JTextPane codeEditorPane = new JTextPane();
     private JTextArea astArea = new JTextArea();
     private JTextArea xpathResultArea = new JTextArea();
-    private JTextField xpathQueryField = new JTextField(40);
+    private JTextArea xpathQueryArea = new JTextArea(8, 40);
     private JFrame frame = new JFrame("AST Viewer");
 
     public ASTViewer() {
@@ -140,7 +140,8 @@ public class ASTViewer {
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(new JLabel("XPath Query (if any) ->"));
-        controlPanel.add(xpathQueryField);
+        xpathQueryArea.setBorder(BorderFactory.createLineBorder(Color.black));
+        controlPanel.add(new JScrollPane(xpathQueryArea));
         controlPanel.add(goButton);
 
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
