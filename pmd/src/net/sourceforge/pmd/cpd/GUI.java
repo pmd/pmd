@@ -41,7 +41,7 @@ public class GUI implements CPDListener {
         }
     }
 
-    private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home")/* + "/tmp/ant"*/);
+    private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     private JTextField minimumLengthField = new JTextField("75");
     private JTextField timeField = new JTextField(6);
     private JTextField comparisonsField = new JTextField(8);
