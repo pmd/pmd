@@ -62,22 +62,10 @@ public class Test {
         tokenSets.add(ts);
     }
 
-    private void add(File file) throws IOException {
-        add(1, file);
-    }
-
     private void add(String dir, boolean recurse) throws IOException {
         FileFinder finder = new FileFinder();
         add(finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse));
     }
-
-    public void add(String id, String input) throws IOException {
-        Tokenizer t = new JavaTokensTokenizer();
-        TokenList ts = new TokenList(id);
-        t.tokenize(ts, new StringReader(input));
-        tokenSets.add(ts);
-    }
-
 
     private JavaSpace getSpace() throws Exception {
         ServiceRegistrar registrar = (new LookupLocator("jini://mordor")).getRegistrar();
