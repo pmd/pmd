@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ClassScope extends AbstractScope {
 
+    // TODO this is a hack, it will break given sufficiently nested classes
     private static int anonymousCounter = 1;
 
     private String className;
