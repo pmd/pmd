@@ -6,6 +6,31 @@ IMPORTANT : SINCE v2.0 THE INSTALLATION PROCEDURE HAS BEEN CHANGED.
             FOR INSTRUCTIONS.
             
 
+v2.1RC1 (alias v2.1.0) - 22/11/2004
+-----------------------------------
+
+Nothing very special in this release, but the confirmation of the new way of
+downloading the plugin.
+
+PMD core engine has been upgraded to v2.0.
+
+This release is a candidate, because a refactoring of the plugin has begun.
+The project property page is used as a test for this refactoring.
+Do not hesitate to open bug if something goes wrong.
+
+IMPORTANT: Lots of things have changed in PMD. There are  some rules that are now
+XPath rules and have no more an implementation class. Because ruleset is cached,
+upgrading may cause trouble. To correct this try first to delete the file
+ruleset.xml in the .metadata\.plugins\net.sourceforge.pmd.eclipse directory of your
+workspace.
+
+Also, some new rules causes exception in some circumstances. Just unselect them.
+We are already working on this.
+
+
+
+
+----------------------------------------------------------------------------------------
 v2.0RC1 (alias v2.0.0) - 01/12/2003
 -----------------------------------
 

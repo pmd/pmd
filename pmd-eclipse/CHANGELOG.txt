@@ -3,7 +3,19 @@ Change log for the PMD Eclipse plugin
 
 
 
-v2.0.7 - xx/xx/2004
+v2.1.1 - 03/12/2004
+
+Runtime
+-------
+. implements the "NOPMD" feature
+
+Development
+-----------
+. refining the refactoring of the property page
+. implementing a Command framework
+
+----------------------------------------------------------------------------------------
+v2.1.0 - 22/11/2004
 
 Runtime
 -------
