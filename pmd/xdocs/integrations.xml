@@ -31,7 +31,7 @@
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=99301">X</a></td></tr>
   <tr><td>JEdit</td>
       <td>pmd-jedit</td>
-      <td>0.3</td>
+      <td>0.4</td>
       <td>tomcopeland</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=99325">X</a></td></tr>
   <tr><td>Maven</td>
@@ -81,15 +81,15 @@ code which caused it.
       </subsection>
       <subsection name="Borland JBuilder">
 <p>
-To enable this OpenTool in JBuilder, place the PMDOpenTool.jar file AND the pmd-x.x.jar file (where 
+To enable this OpenTool in JBuilder, place the PMDOpenTool.jar file AND the pmd-x.x.jar file (where
 x.x is the version id) into JBuilder's lib/ext directory.  Once JBuilder is restart, the PMD OpenTool
-will be enabled.  
+will be enabled.
 What you can do:
-<li>Check a single file by bringing up the context menu from the file tab and selecting PMDCheck</li> 
+<li>Check a single file by bringing up the context menu from the file tab and selecting PMDCheck</li>
 <li>Configure the rulesets that the PMD OpenTool will use by selecting Tools->PMD->Configure PMD</li>
 <li>Check all the files in a project by brining up the context menu for the project node and selecting PMD Check Project</li>
 </p>
-<p>When running PMD, the results will be displayed in the MessageView under a tab called PMD Results.  If you click on a 
+<p>When running PMD, the results will be displayed in the MessageView under a tab called PMD Results.  If you click on a
 violation message within this view, you will be taken to the line in the source code where the violation was detected.
 </p>
 <p>Things still to do:
@@ -102,12 +102,11 @@ violation message within this view, you will be taken to the line in the source 
       <subsection name="JEdit">
 <p>
 This is more or less the standard JEdit plugin - open a file, select Plugins->PMD->Check code and
-you get a popup list of problems.  Things to do:
+you get a popup list of problems.  It uses the ErrorList plugin which provides the "jump to the correct line"
+and syntax highlighting functionality.  Things to do:
 <ul>
-<li>Make the popup window dockable</li>
-<li>Make it so you can click on the warning msg and jump to the line of code</li>
-<li>Investigate colorizing</li>
 <li>Enable it to run on a whole directory tree</li>
+<li>Move the configuration stuff into the JEdit Global Options menu</li>
 </ul>
 
 </p>

@@ -10,21 +10,17 @@
    <section name="Running PMD via command line">
    <ul>
     <li>Type run &lt;filename&gt; &lt;report format&gt;, &lt;rule set file&gt;i.e.:</li>
-    <subsection>
-<source>
-<![CDATA[
-C:\data\pmd\pmd\etc>run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
-<?xml version="1.0"?><pmd>
-<ruleviolation>
-<file>c:\data\pmd\pmd\test-data\Unused1.java</file>
-<line>5</line>
-<description>Found unused local variable 'fr'</description>
-</ruleviolation>
-</pmd>
-C:\data\pmd\pmd\etc>
-]]>
-</source>
-    </subsection>
+    <br>
+C:\data\pmd\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+&lt;?xml version="1.0"?&gt;&lt;pmd&gt;
+&lt;ruleviolation&gt;
+&lt;file&gt;c:\data\pmd\pmd\test-data\Unused1.java&lt;/file&gt;
+&lt;line&gt;5&lt;/line&gt;
+&lt;description&gt;Found unused local variable 'fr'&lt;/description&gt;
+&lt;/ruleviolation&gt;
+&lt;/pmd&gt;
+C:\data\pmd\pmd\etc&gt;
+<br>
     <li>Notice that in this case the output is in XML, so you can redirect it to a file and XSLT it or whatever</li>
    </ul>
    </section>
