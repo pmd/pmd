@@ -39,7 +39,7 @@ import org.apache.oro.text.perl.Perl5Util;
 import pmd.config.PMDOptionsSettings;
 
 /**
- * The UI for editing the Rule and RuleProperties properties.
+ * The UI for editing the Rule and Properties properties.
  *
  * @author ole martin mørk
  * @author Gunnlaugur Þór Briem

@@ -1,6 +1,6 @@
 <project basedir="." default="nbm" name="PMD netbeans module">
 
-	<property name="pmd.jar" value="pmd-1.2.1.jar"/>
+	<property name="pmd.jar" value="pmd-1.3.jar"/>
 	<property name="keystore" value="${user.home}/.pmdkeystore"/>
 	<property name="storepass" value="?"/>
 

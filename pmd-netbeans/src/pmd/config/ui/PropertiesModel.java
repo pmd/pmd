@@ -29,10 +29,10 @@ package pmd.config.ui;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Properties;
 import javax.swing.table.AbstractTableModel;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleProperties;
 import pmd.config.PMDOptionsSettings;
 
 /** The datamodel for the properties table
@@ -53,7 +53,7 @@ public class PropertiesModel extends AbstractTableModel {
 			values = new String[0][0];
 			return;
 		}
-		RuleProperties properties = rule.getProperties();
+		Properties properties = rule.getProperties();
 		Map propertyOverrides = (Map)PMDOptionsSettings.getDefault().getRuleProperties().get(rule.getName());
 		if(propertyOverrides == null) {
 			propertyOverrides = Collections.EMPTY_MAP;
