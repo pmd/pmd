@@ -17,10 +17,6 @@ public class JavaTokensTokenizerTest extends TestCase {
 
     private static final String EOL = System.getProperty("line.separator", "\n");
 
-    public JavaTokensTokenizerTest(String name) {
-        super(name);
-    }
-
     public void test1() throws Throwable {
         Tokenizer tokenizer = new JavaTokensTokenizer();
         TokenList tl = new TokenList("1");

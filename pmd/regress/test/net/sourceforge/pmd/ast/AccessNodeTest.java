@@ -7,8 +7,6 @@ import junit.framework.*;
 public class AccessNodeTest
     extends TestCase
 {
-    public AccessNodeTest( String name ) { super( name ); }
-
     public void testStatic() {
 	AccessNode node = new AccessNode( 1 );
 	

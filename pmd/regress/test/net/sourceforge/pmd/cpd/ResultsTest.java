@@ -14,9 +14,6 @@ import net.sourceforge.pmd.cpd.ResultsImpl;
 import java.util.Iterator;
 
 public class ResultsTest extends TestCase {
-    public ResultsTest(String name) {
-        super(name);
-    }
 
     public void testBasic() {
         Results r = new ResultsImpl();

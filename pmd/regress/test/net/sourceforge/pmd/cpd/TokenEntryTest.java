@@ -9,9 +9,6 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.TokenEntry;
 
 public class TokenEntryTest extends TestCase {
-    public TokenEntryTest(String name) {
-        super(name);
-    }
 
     public void testBasic() {
         TokenEntry t = new TokenEntry("a", 2, "foo", 5);

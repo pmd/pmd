@@ -8,10 +8,6 @@ import net.sourceforge.pmd.ast.*;
 public class FieldDeclTest
     extends ParserTst
 {
-    public FieldDeclTest( String name ) {
-	super( name );
-    }
-
     public String makeAccessJavaCode( String access[] ) {
 	String RC = 
 	    "public class Test { ";

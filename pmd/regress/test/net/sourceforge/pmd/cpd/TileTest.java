@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TileTest extends TestCase {
-    public TileTest(String name) {
-        super(name);
-    }
 
     public void testConstructors() {
         TokenEntry tok = new TokenEntry("a", 2,"foo", 5);

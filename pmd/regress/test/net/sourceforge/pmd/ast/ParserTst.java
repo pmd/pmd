@@ -49,10 +49,6 @@ public class ParserTst
 	}
     }
 
-    public ParserTst( String testName ) {
-	super( testName );
-    }
-
     public Set getNodes( Class clazz,
 			 String javaCode )
 	throws Throwable

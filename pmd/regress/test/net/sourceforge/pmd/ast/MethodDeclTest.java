@@ -14,11 +14,7 @@ import net.sourceforge.pmd.ast.*;
 public class MethodDeclTest
     extends ParserTst
 {
-    public MethodDeclTest( String name ) {
-	super( name );
-    }
-
-    public void testPublic() 
+    public void testPublic()
 	throws Throwable
     {
 	String access[] = { "public" };

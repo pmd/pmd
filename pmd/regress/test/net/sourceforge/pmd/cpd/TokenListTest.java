@@ -20,10 +20,6 @@ public class TokenListTest extends TestCase {
      */
     protected String EOL = System.getProperty("line.separator", "\n");
 
-    public TokenListTest(String name) {
-        super(name);
-    }
-
     public void testBasic() {
         TokenList ts = new TokenList("foo");
         assertEquals("foo", ts.getID());

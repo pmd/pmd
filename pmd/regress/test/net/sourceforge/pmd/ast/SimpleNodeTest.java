@@ -8,9 +8,6 @@ import java.util.Iterator;
 public class SimpleNodeTest
     extends ParserTst
 {
-    public SimpleNodeTest( String name ) {
-	super( name );
-    }
 
     public void testMethodDiffLines() 
 	throws Throwable

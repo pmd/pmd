@@ -11,9 +11,6 @@ import net.sourceforge.pmd.cpd.*;
 import java.util.Iterator;
 
 public class GSTTest extends TestCase {
-    public GSTTest(String name) {
-        super(name);
-    }
 
     public void test1() {
         TokenList ts1 = GSTTest.createHelloTokenSet("foo");

@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class CPDTest extends TestCase{
-    public CPDTest(String name) {
-        super(name);
-    }
 
     public void testBasic() throws Throwable {
         CPD cpd = new CPD();

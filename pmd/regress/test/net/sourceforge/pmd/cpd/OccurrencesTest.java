@@ -11,9 +11,6 @@ import net.sourceforge.pmd.cpd.*;
 import java.util.Iterator;
 
 public class OccurrencesTest  extends TestCase {
-    public OccurrencesTest(String name) {
-        super(name);
-    }
 
     public void testBasic1() {
         Occurrences occs = new Occurrences(new TokenSets());

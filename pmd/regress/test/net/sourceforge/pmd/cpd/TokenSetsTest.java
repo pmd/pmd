@@ -11,9 +11,6 @@ import net.sourceforge.pmd.cpd.TokenList;
 import net.sourceforge.pmd.cpd.TokenEntry;
 
 public class TokenSetsTest extends TestCase {
-    public TokenSetsTest(String name) {
-        super(name);
-    }
 
     public void testBasic() {
         TokenEntry tok = new TokenEntry("H", 0, "foo", 5);

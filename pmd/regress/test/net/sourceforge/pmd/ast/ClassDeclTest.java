@@ -8,9 +8,6 @@ import net.sourceforge.pmd.ast.*;
 public class ClassDeclTest
     extends ParserTst
 {
-    public ClassDeclTest( String name ) {
-	super( name );
-    }
 
     public void testPublic() 
 	throws Throwable 
