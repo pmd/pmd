@@ -85,6 +85,14 @@
         <role>Developer</role>
       </roles>
     </developer>
+
+    <developer>
+      <name>David Craine</name>
+      <id>dcraine</id>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <contributors>
