@@ -1,13 +1,13 @@
 package net.sourceforge.pmd.swingui.event;
 
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.MessageDialog;
+import net.sourceforge.pmd.swingui.PMDViewer;
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
-
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.swingui.MessageDialog;
-import net.sourceforge.pmd.swingui.PMDViewer;
 
 /**
  *

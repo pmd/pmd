@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.swingui.event;
 
-import java.util.EventListener;
-
 import net.sourceforge.pmd.PMDException;
+
+import java.util.EventListener;
 
 /**
  *
