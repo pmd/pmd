@@ -226,7 +226,7 @@ public class Designer implements ClipboardOwner {
         astArea.setRows(20);        
         astArea.setColumns(20);
         JScrollPane astScrollPane = new JScrollPane(astArea);
-        return astScrollPane; ;
+        return astScrollPane;
     }
 
     private JComponent createXPathResultPanel() {
