@@ -45,8 +45,8 @@ public class GUI implements CPDListener {
         }
     }
 
-    //private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
-    private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
+    private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
+    //private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     //private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
     private JTextField minimumLengthField= new JTextField("30");
 
@@ -165,11 +165,9 @@ public class GUI implements CPDListener {
         addingTokensBar.setMinimum(0);
         addingTokensBar.setMaximum(tokenSetCount);
         if (tokenSrcID.indexOf("/") != -1) {
-            int lastSlash = tokenSrcID.lastIndexOf("/")+1;
-            addingTokensBar.setString(tokenSrcID.substring(lastSlash));
+            addingTokensBar.setString(findName(tokenSrcID, "/"));
         } else if (tokenSrcID.indexOf("\\") != -1) {
-            int lastSlash = tokenSrcID.lastIndexOf("\\")+1;
-            addingTokensBar.setString(tokenSrcID.substring(lastSlash));
+            addingTokensBar.setString(findName(tokenSrcID, "\\"));
         } else if (tokenSrcID.length() > 10) {
             addingTokensBar.setString(tokenSrcID.substring(tokenSrcID.length()-10));
         } else {
@@ -182,6 +180,11 @@ public class GUI implements CPDListener {
         addingTokensBar.setValue(addingTokensBar.getMaximum());
         addingTokensBar.setString("");
         expandingTileField.setText(tileImage);
+    }
+
+    private String findName(String name, String slash) {
+        int lastSlash = name.lastIndexOf(slash)+1;
+        return name.substring(lastSlash);
     }
 
 }

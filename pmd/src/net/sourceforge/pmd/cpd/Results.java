@@ -7,24 +7,10 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.*;
 
-public class Results {
-
-    // as soon as we switch to JDK1.4, change
-    // this to use a LinkedHashMap
-    private List orderedTiles = new ArrayList();
-    private Map tileToOccurrenceMap = new HashMap();
+public class Results extends TileOccurrences {
 
     public void addTile(Tile tile, TokenEntry tok) {
-        if (!orderedTiles.contains(tile)) {
-            List list = new ArrayList();
-            list.add(tok);
-            orderedTiles.add(tile);
-            tileToOccurrenceMap.put(tile, list);
-        } else {
-            List list = (List)tileToOccurrenceMap.get(tile);
-            list.add(tok);
-        }
-
+        super.addTile(tile, tok);
         for (int i=orderedTiles.size()-1; i>=0; i--) {
             Tile candidate = (Tile)orderedTiles.get(i);
             removeDupesOf(candidate);
@@ -38,18 +24,6 @@ public class Results {
         int lastTokenIndex = firstToken.getIndex() + tile.getTokenCount();
         TokenEntry lastToken = (TokenEntry)tl.get(lastTokenIndex);
         return (lastToken.getBeginLine()+1) - firstToken.getBeginLine();
-    }
-
-    public int size() {
-        return orderedTiles.size();
-    }
-
-    public Iterator getTiles() {
-        return orderedTiles.iterator();
-    }
-
-    public Iterator getOccurrences(Tile tile) {
-        return ((List)tileToOccurrenceMap.get(tile)).iterator();
     }
 
     private void removeDupesOf(Tile tile) {

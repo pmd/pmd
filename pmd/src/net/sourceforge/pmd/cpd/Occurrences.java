@@ -7,12 +7,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.*;
 
-public class Occurrences {
-
-    // as soon as we switch to JDK1.4, change
-    // this to use a LinkedHashMap
-    private List orderedTiles = new ArrayList();
-    private Map tileToOccurrenceMap = new HashMap();
+public class Occurrences extends TileOccurrences {
 
     public Occurrences(TokenSets tss) {
         this(tss, new CPDNullListener());
@@ -30,22 +25,6 @@ public class Occurrences {
                 addTile(new Tile(tok), tok);
             }
         }
-    }
-
-    public void addTile(Tile tile, TokenEntry tok) {
-        if (!orderedTiles.contains(tile)) {
-            List list = new ArrayList();
-            list.add(tok);
-            orderedTiles.add(tile);
-            tileToOccurrenceMap.put(tile, list);
-        } else {
-            List list = (List)tileToOccurrenceMap.get(tile);
-            list.add(tok);
-        }
-    }
-
-    public int size() {
-        return orderedTiles.size();
     }
 
     public void deleteSoloTiles() {
@@ -79,10 +58,6 @@ public class Occurrences {
 
     public boolean isEmpty() {
         return orderedTiles.isEmpty();
-    }
-
-    public Iterator getTiles() {
-        return orderedTiles.iterator();
     }
 
     public Iterator getOccurrences(Tile tile) {
