@@ -5,22 +5,28 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.VariableNamingConventions;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class VariableNamingConventionsTest extends SimpleAggregatorTst {
+    private Rule rule;
 
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/naming.xml", "VariableNamingConventions");
+    }
+    
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "final statics should be all caps", 1, new VariableNamingConventions()),
-           new TestDescriptor(TEST2, "non-finals shouldn't have underscores", 1, new VariableNamingConventions()),
-           new TestDescriptor(TEST3, "variables names should start with lowercase character", 1, new VariableNamingConventions()),
-           new TestDescriptor(TEST4, "all is well", 0, new VariableNamingConventions()),
-           new TestDescriptor(TEST5, "local finals are ok", 0, new VariableNamingConventions()),
-           new TestDescriptor(TEST6, "serialVersionUID is OK", 0, new VariableNamingConventions()),
-           new TestDescriptor(TEST7, "interface fields are tested", 1, new VariableNamingConventions()),
-           new TestDescriptor(TEST8, "final non-statics need not be all caps", 0, new VariableNamingConventions()),
+           new TestDescriptor(TEST1, "final statics should be all caps", 1, rule),
+           new TestDescriptor(TEST2, "non-finals shouldn't have underscores", 1, rule),
+           new TestDescriptor(TEST3, "variables names should start with lowercase character", 1,  rule),
+           new TestDescriptor(TEST4, "all is well", 0,  rule),
+           new TestDescriptor(TEST5, "local finals are ok", 0, rule),
+           new TestDescriptor(TEST6, "serialVersionUID is OK", 0,  rule),
+           new TestDescriptor(TEST7, "interface fields are tested", 1,  rule),
+           new TestDescriptor(TEST8, "final non-statics need not be all caps", 0,  rule),
        });
     }
 
