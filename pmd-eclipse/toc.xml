@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="PMD Plugin Documentation">
+	<topic label="PMD Documentation" href="pmd/index.html"/>
+	<topic label="How to...">
+		<topic label="use custom rulesets" href="howto/fragment.html"/>
+	</topic>
+</toc>
