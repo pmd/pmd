@@ -1,6 +1,10 @@
 package net.sourceforge.pmd.gel;
 
-import java.util.*;
+import java.awt.Color;
+import java.awt.BorderLayout;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Vector;
 import java.io.*;
 import javax.swing.*;
 import com.gexperts.gel.*;
@@ -17,6 +21,10 @@ public class PMDPlugin implements GelAction {
     public void perform(Gel p0) {
         try {
             int x =2;
+            int y =2;
+            int z =2;
+            int ssdsa =2;
+            int xasdsa =2;
             PMD pmd = new PMD();
             RuleContext ctx = new RuleContext();
             RuleSetFactory rsf = new RuleSetFactory();
@@ -37,8 +45,7 @@ public class PMDPlugin implements GelAction {
            if (ctx.getReport().isEmpty()) {
              JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
            } else {
-             JFrame newFrame = createProblemFrame(ctx.getReport());
-             newFrame.show();
+             createProblemFrame(ctx.getReport());
            }
         } catch (Exception rsne) {
              JOptionPane.showMessageDialog(null, "ERROR" + rsne.getMessage());
@@ -52,8 +59,8 @@ public class PMDPlugin implements GelAction {
     // GelAction
 
     private JFrame createProblemFrame(Report report) {
-            JFrame newFrame = new JFrame("Problems found");
-            JDialog dialog = new JDialog(newFrame, "Modal dialog", true);
+            JFrame newFrame = new JFrame();
+            JDialog dialog = new JDialog(newFrame, report.size() +  " problems found");
             dialog.setContentPane(createProblemListPanel(report));
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.pack();
@@ -63,14 +70,20 @@ public class PMDPlugin implements GelAction {
     }
 
     private JPanel createProblemListPanel(Report report) {
-            JPanel container = new JPanel();
-            container.add(new JLabel(report.size() + " problems"));
-            /*
-             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+            Vector v = new Vector();
+             for (Iterator i = report.iterator(); i.hasNext();) {
                  RuleViolation rv = (RuleViolation)i.next();
-                 p0.showMessage("File: " + rv.getFilename() + "\r\nLine: " + (rv.getLine()-1) + "\r\nProblem: " + rv.getDescription());
+                 String msg = rv.getFilename() + " - line " + (rv.getLine()-1) + " - " + rv.getDescription();
+                 v.add(msg);
+
               }
-              */
+            JList list = new JList(v);
+            list.setForeground(Color.RED);
+            list.setBackground(Color.WHITE);
+            list.setVisibleRowCount(20);
+
+            JPanel container = new JPanel(new BorderLayout());
+            container.add(list, BorderLayout.CENTER);
             return container;
     }
 }

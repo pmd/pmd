@@ -8,13 +8,28 @@
     <PROPERTY Name="SmartFolder">0</PROPERTY>
     <PROPERTY Name="OpenFiles">
         <CLASS Type="TFiles">
-            <PROPERTY Name="CurrentIndex">0</PROPERTY>
+            <PROPERTY Name="CurrentIndex">3</PROPERTY>
+            <PROPERTY Name="LastFileName">C:\pmd\pmd-gel\src\net\sourceforge\pmd\gel\PMDPlugin.java</PROPERTY>
                 <CLASS Type="TFile">
-                    <PROPERTY Name="CaretLeft">68</PROPERTY>
-                    <PROPERTY Name="CaretTop">43</PROPERTY>
+                    <PROPERTY Name="CaretLeft">1</PROPERTY>
+                    <PROPERTY Name="CaretTop">457</PROPERTY>
+                    <PROPERTY Name="FileName">C:\Documents and Settings\CLOUDY PIG\Local Settings\Temporary Internet Files\Content.IE5\ZE1TCD1O\DialogDemo[1].java</PROPERTY>
+                    <PROPERTY Name="WindowLeft">1</PROPERTY>
+                    <PROPERTY Name="WindowTop">192</PROPERTY>
+                </CLASS>
+                <CLASS Type="TFile">
+                    <PROPERTY Name="CaretLeft">1</PROPERTY>
+                    <PROPERTY Name="CaretTop">115</PROPERTY>
+                    <PROPERTY Name="FileName">C:\Documents and Settings\CLOUDY PIG\Local Settings\Temporary Internet Files\Content.IE5\91KU4EO7\CustomDialog[1].java</PROPERTY>
+                    <PROPERTY Name="WindowLeft">1</PROPERTY>
+                    <PROPERTY Name="WindowTop">106</PROPERTY>
+                </CLASS>
+                <CLASS Type="TFile">
+                    <PROPERTY Name="CaretLeft">23</PROPERTY>
+                    <PROPERTY Name="CaretTop">27</PROPERTY>
                     <PROPERTY Name="FileName">$(PROJECT)\src\net\sourceforge\pmd\gel\PMDPlugin.java</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">25</PROPERTY>
+                    <PROPERTY Name="WindowTop">1</PROPERTY>
                 </CLASS>
                 <CLASS Type="TFile">
                     <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
@@ -22,7 +37,7 @@
                     <PROPERTY Name="CaretTop">40</PROPERTY>
                     <PROPERTY Name="FileName">$(PROJECT)\etc\build.xml</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">4</PROPERTY>
+                    <PROPERTY Name="WindowTop">1</PROPERTY>
                 </CLASS>
                 <CLASS Type="TFile">
                     <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
