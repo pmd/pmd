@@ -5,7 +5,7 @@ Added ability to specify a class name as a renderer on the command line or in th
 Brian Ewins completely rewrote CPD using a portion of the Burrows-Wheeler Transform - it's much, much, much faster now.
 Rebuilt parser with JavaCC 3.0; made several parser optimizations.
 The Ant task now accepts a <classpath> element to aid in loading custom rulesets.  Thanks to Luke Francl for the suggestion.
-Fixed several bugs in UnnecessaryConstructorRule; thanks to Adam Nemeth for the reoort and fixes.
+Fixed several bugs in UnnecessaryConstructorRule; thanks to Adam Nemeth for the reports and fixes.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 March 21, 2003 - 1.04
