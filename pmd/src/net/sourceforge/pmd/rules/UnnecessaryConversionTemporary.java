@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,14 +38,14 @@ public class UnnecessaryConversionTemporary extends AbstractRule implements Rule
         }
         // TODO... hmmm... is this inPrimaryExpressionContext gibberish necessary?
         inPrimaryExpressionContext = true;
-        Object report = super.visit(node, data);
+        super.visit(node, data);
         inPrimaryExpressionContext = false;
         usingPrimitiveWrapperAllocation = false;
-        return report;
+        return data;
     }
 
     public Object visit(ASTAllocationExpression node, Object data) {
-        if (!inPrimaryExpressionContext || !(node.jjtGetChild(0) instanceof ASTName)) {
+        if (!inPrimaryExpressionContext || !(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
             return super.visit(node, data);
         }
         if (!primitiveWrappers.contains(((SimpleNode) node.jjtGetChild(0)).getImage())) {

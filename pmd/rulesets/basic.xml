@@ -254,7 +254,8 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-<![CDATA[//ClassDeclaration//MethodDeclarator
+<![CDATA[
+//ClassDeclaration//MethodDeclarator
 [(@Image = 'equals' and count(FormalParameters/*) = 1
 and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode']))
 or
@@ -265,7 +266,8 @@ not
  [count(
    FormalParameters//Type/Name
     [@Image = 'Object' or @Image = 'java.lang.Object']) = 1]
-    [@Image = 'equals']))]]]>
+    [@Image = 'equals']))]
+ ]]>
               </value>
           </property>
       </properties>
