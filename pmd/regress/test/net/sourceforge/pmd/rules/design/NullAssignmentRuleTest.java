@@ -1,8 +1,7 @@
 package test.net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.rules.design.NullAssignmentRule;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.rules.design.NullAssignmentRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class NullAssignmentRuleTest extends RuleTst {

@@ -1,8 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.rules.IdempotentOperationsRule;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.rules.IdempotentOperationsRule;
 
 public class IdempotentOperationsRuleTest extends SimpleAggregatorTst {
 

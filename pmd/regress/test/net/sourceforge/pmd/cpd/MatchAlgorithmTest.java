@@ -1,14 +1,13 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.JavaTokenizer;
 import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.MatchAlgorithm;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
-import net.sourceforge.pmd.PMD;
 
 import java.io.StringReader;
 import java.util.HashMap;

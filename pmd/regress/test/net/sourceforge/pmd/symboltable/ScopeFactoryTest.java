@@ -11,8 +11,6 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.GlobalScope;
 import net.sourceforge.pmd.symboltable.LocalScope;

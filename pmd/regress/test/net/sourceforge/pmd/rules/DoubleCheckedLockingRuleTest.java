@@ -1,8 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.rules.DoubleCheckedLockingRule;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.rules.DoubleCheckedLockingRule;
 
 public class DoubleCheckedLockingRuleTest extends SimpleAggregatorTst {
 

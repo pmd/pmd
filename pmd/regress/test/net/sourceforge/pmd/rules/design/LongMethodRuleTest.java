@@ -2,9 +2,8 @@
 
 package test.net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.rules.design.LongMethodRule;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.rules.design.LongMethodRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class LongMethodRuleTest extends RuleTst {

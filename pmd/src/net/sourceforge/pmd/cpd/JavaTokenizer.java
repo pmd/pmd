@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.JavaCharStream;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 import net.sourceforge.pmd.ast.Token;
-import net.sourceforge.pmd.PMD;
 
 import java.io.IOException;
 import java.io.LineNumberReader;

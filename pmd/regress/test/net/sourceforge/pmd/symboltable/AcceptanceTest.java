@@ -2,9 +2,9 @@ package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
-import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.StringReader;
 
