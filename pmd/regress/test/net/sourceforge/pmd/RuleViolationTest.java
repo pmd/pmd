@@ -11,32 +11,16 @@ public class RuleViolationTest extends TestCase {
         super(name);
     }
 
-    public void testStub() {
-    }
-/*
     public void testBasic() {
-        RuleViolation r = new RuleViolation(new Rule() {
-            public String getName() {return "name";}
-            public String getDescription()  {return "desc";}
-        }, 2);
+        Rule rule = new MockRule("name", "desc");
+        RuleViolation r = new RuleViolation(rule, 2);
         assertTrue(r.getText().indexOf("name") != -1);
-    }
-
-    public void testGetText() {
-        RuleViolation r = new RuleViolation(new Rule() {
-            public String getName() {return "name";}
-            public String getDescription()  {return "desc";}
-        }, 2, "foo");
-        assertTrue(r.getText().indexOf("foo") != -1);
-    }
-
-    public void testXML() {
-        RuleViolation r = new RuleViolation(new Rule() {
-            public String getName() {return "name";}
-            public String getDescription()  {return "desc";}
-        }, 2, "foo");
-        assertTrue(r.getXML().indexOf("foo") != -1);
+        assertTrue(r.getText().indexOf("desc") != -1);
+        assertTrue(r.getText().indexOf("2") != -1);
+        System.out.println("r.getXML() = " + r.getXML());
+        assertTrue(r.getXML().indexOf("desc") != -1);
         assertTrue(r.getXML().indexOf("2") != -1);
+        assertTrue(r.getHTML().indexOf("desc") != -1);
+        assertTrue(r.getHTML().indexOf("2") != -1);
     }
-*/
 }
