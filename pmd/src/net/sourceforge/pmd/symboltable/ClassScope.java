@@ -18,9 +18,7 @@ public class ClassScope extends AbstractScope {
     protected NameDeclaration findHere(NameOccurrence occurrence) {
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
             NameDeclaration decl = (NameDeclaration)i.next();
-            if (decl.getImage().equals(occurrence.getObjectName())
-             || (className + "." + decl.getImage()).equals(occurrence.getImage())
-            ) {
+            if (decl.getImage().equals(occurrence.getObjectName()) || (className + "." + decl.getImage()).equals(occurrence.getImage())) {
                 return decl;
             }
         }
