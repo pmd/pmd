@@ -24,7 +24,7 @@ import java.util.List;
  * <project name="CPDProj" default="main" basedir=".">
  *  <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  *	 <target name="main">
- * 		<cpd minimumTokenCount="100" outputFile="c:\cpdrun.txt" verbose=true>
+ * 		<cpd minimumTokenCount="100" outputFile="c:\cpdrun.txt">
  *          <fileset dir="/path/to/my/src">
  *              <include name="*.java"/>
  *          </fileset>
@@ -33,7 +33,6 @@ import java.util.List;
  *</project>
  *
  * Required: minimumTokenCount, outputFile, and at least one file
- * Optional: verbose
  */
 public class CPDTask extends Task {
 
