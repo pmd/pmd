@@ -42,6 +42,18 @@ sub getLines() {
  return sprintf("%0.f", $lines/4);
 }
 
+sub getCPDLines() {
+ my $self = shift;
+ open(FILE,getCPDRptFile($self));
+ my @x = <FILE>;
+ close(FILE);
+ my $lines;
+ foreach (@x) {
+  $lines = $lines + 1 if $_ =~ "=================================";
+ }
+ return sprintf("%0.f", $lines);
+}
+
 sub getNCSS() {
  my $self=shift;
  if (! -e getNCSSFile($self)) {
@@ -95,9 +107,21 @@ sub getRptURL() {
  return "http://pmd.sf.net/reports/${name}";
 }
 
+sub getCPDRptURL() {
+ my $self = shift;
+ my $name = $self->getCPDReportName();
+ return "http://pmd.sf.net/reports/${name}";
+}
+
 sub getRptFile() {
  my $self = shift;
  my $name = $self->getReportName();
+ return "../htdocs/reports/${name}";
+}
+
+sub getCPDRptFile() {
+ my $self = shift;
+ my $name = $self->getCPDReportName();
  return "../htdocs/reports/${name}";
 }
 
@@ -114,6 +138,13 @@ sub getReportName() {
  my $modwithoutspaces = $self->{MODULEDIR};
  $modwithoutspaces=~s/\s+//g;
  return "$self->{UNIXNAME}_${modwithoutspaces}.html";
+}
+
+sub getCPDReportName() {
+ my $self = shift;
+ my $modwithoutspaces = $self->{MODULEDIR};
+ $modwithoutspaces=~s/\s+//g;
+ return "cpd_$self->{UNIXNAME}_${modwithoutspaces}.txt";
 }
 
 sub getHomePage() {

@@ -54,48 +54,53 @@ sub default() {
 }
 
 sub loadProjectList() {
- my @projects = ();
- opendir(DIR, "jobs/") or return "can't open jobs directory!";
- while (defined($file=readdir(DIR))) {
-  if ($file =~ /txt/) {
-   open(FILE,"jobs/${file}");
-   my $jobdata=<FILE>;
-   close(FILE);
-   my $project = PMD::Project->new($jobdata);
-   push(@projects, $project);
-  }
- }
+	my @projects = ();
+	opendir(DIR, "jobs/") or return "can't open jobs directory!";
+	while (defined($file=readdir(DIR))) {
+		if ($file =~ /txt/) {
+			open(FILE,"jobs/${file}");
+ 			my $jobdata=<FILE>;
+			close(FILE);
+			my $project = PMD::Project->new($jobdata);
+			push(@projects, $project);
+		}
+	}
 
- @newprojects = sort { $b->getLocation() cmp $a->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
+	@newprojects = sort { $b->getLocation() cmp $a->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
 
- my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>NCSS</th><th>Problems</th><th>Percentage Unused Code</th></tr>";
- foreach $project (@newprojects) {
-  my $jobLink=$project->getTitle();
-  if (-e $project->getRptFile()) {
-   $jobLink="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
-  }
-  $result="${result}<tr><td>${jobLink}</td><td></td><td>@{[$project->getHomePage()]}</td>";
-  $result="${result}<td>@{[$project->getNCSS()]}</td>";
-  my $ncss = $project->getNCSS();
-  if ($ncss == 0) {	
-   $ncss = 1;
-  }
-  my $rounded = (int(($project->getLines()/$ncss)*10000))/100;
-  my $color="red";
-  if ($rounded < .2) {
-   $color="#00ff00";
-  } elsif ($rounded < .8 ) {
-   $color="yellow";
-  }
-  $rounded = sprintf("%0.2f", $rounded);
-  if ($project->getNCSS() == "TBD") {
-   $rounded = "N/A";
-   $color = "white";
-  }
-  $result="${result}<td align=center>@{[$project->getLines()]}</td><td bgcolor=$color align=center>$rounded</td></tr>";
- }
- $result = "${result}</table>";
- return $result;
+	my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>NCSS</th><th>Problems</th><th>Percentage Unused Code</th><th>Duplicate Code</th></tr>";
+	foreach $project (@newprojects) {
+		my $jobLink=$project->getTitle();
+		if (-e $project->getRptFile()) {
+			$jobLink="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
+		}
+		$result="${result}<tr><td>${jobLink}</td><td></td><td>@{[$project->getHomePage()]}</td>";
+		$result="${result}<td>@{[$project->getNCSS()]}</td>";
+		my $ncss = $project->getNCSS();
+		if ($ncss == 0) {	
+			$ncss = 1;
+		}
+		my $rounded = (int(($project->getLines()/$ncss)*10000))/100;
+		my $color="red";
+		if ($rounded < .2) {
+			$color="#00ff00";
+		} elsif ($rounded < .8 ) {
+			$color="yellow";
+		}
+		$rounded = sprintf("%0.2f", $rounded);
+		if ($project->getNCSS() == "TBD") {
+			$rounded = "N/A";
+			$color = "white";
+		}
+		$result="${result}<td align=center>@{[$project->getLines()]}</td><td bgcolor=$color align=center>$rounded</td>";
+		my $cpdLink="TBD";
+		if (-e $project->getCPDRptFile()) {
+			$cpdLink="<a href=\"@{[$project->getCPDRptURL]}\">@{[$project->getCPDLines()]}</a>";
+		}
+		$result = "${result}<td bgcolor=$color>$cpdLink</td></tr>";
+	}
+	$result="${result}</tr></table>";
+	return $result;
 }
 
 sub addProject() {
