@@ -42,10 +42,13 @@ public class PMD {
     }
 
     /**
-     * @param reader - a Reader to the Java code to analyse
-     * @param ruleSet - the set of rules to process against the file
-     * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
-     */
+    * Processes the file read by the reader agains the rule set.
+    *
+    * @param reader input stream reader
+    * @param ruleSet set of rules to process against the file
+    * @param ctx context in which PMD is operating.  This contains the Renderer and whatnot
+    * @throws PMDException if the input could not be parsed or processed
+    */
     public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         try {
             JavaParser parser = targetJDKVersion.createParser(reader);
@@ -65,11 +68,16 @@ public class PMD {
     }
 
     /**
-     * @param fileContents - an InputStream to the Java code to analyse
-     * @param encoding - the source code's character set encoding
-     * @param ruleSet - the set of rules to process against the file
-     * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
-     */
+    * Processes the input stream agains a rule set using the given input
+    * encoding.
+    * @param fileContents an input stream to analyze
+    * @param encoding input stream's encoding
+    * @param ruleSet set of rules to process against the file
+    * @param ctx context in which PMD is operating.  This contains the Report and whatnot
+    * @throws PMDException if the input encoding is unsupported or the input
+    *     stream could not be parsed
+    * @see #processFile(Reader, RuleSet, RuleContext)
+    */
     public void processFile(InputStream fileContents, String encoding, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         try {
             processFile(new InputStreamReader(fileContents, encoding), ruleSet, ctx);
@@ -79,10 +87,16 @@ public class PMD {
     }
 
     /**
-     * @param fileContents - an InputStream to the Java code to analyse
-     * @param ruleSet - the set of rules to process against the source code
-     * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
-     */
+    * Processes the input stream against a rule set assuming the platform
+    * character set.
+    *
+    * @param fileContents input stream to check
+    * @param ruleSet the set of rules to process against the source code
+    * @param ctx the context in which PMD is operating.  This contains the Report and whatnot
+    * @throws PMDException if the input encoding is unsupported or the input
+    *     input stream could not be parsed
+    * @see #processFile(InputStream, String, RuleSet, RuleContext)
+    */
     public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         processFile(fileContents, System.getProperty("file.encoding"), ruleSet, ctx);
     }
@@ -149,10 +163,23 @@ public class PMD {
         }
     }
 
+    /**
+    * Collects the given file into a list.
+    *
+    * @param inputFileName a file name
+    * @return the list of files collected from the <code>inputFileName</code>
+    * @see #collect(String)
+    */
     private static List collectFilesFromOneName(String inputFileName) {
         return collect(inputFileName);
     }
 
+    /**
+    * Collects the files from the given comma-separated list.
+    *
+    * @param fileList comma-separated list of filenames
+    * @return list of files collected from the <code>fileList</code>
+    */
     private static List collectFromCommaDelimitedString(String fileList) {
         List files = new ArrayList();
         for (StringTokenizer st = new StringTokenizer(fileList, ","); st.hasMoreTokens();) {
@@ -161,6 +188,13 @@ public class PMD {
         return files;
     }
 
+    /**
+    * Collects the files from the given <code>filename</code>.
+    *
+    * @param filename the source from which to collect files
+    * @throws RuntimeException if <code>filename</code> is not found
+    * @return a list of files found at the given <code>filename</code>
+    */
     private static List collect(String filename) {
         File inputFile = new File(filename);
         if (!inputFile.exists()) {
