@@ -26,6 +26,7 @@ public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST9, "inner and outer, both ok", 0, rule),
            new TestDescriptor(TEST10, "inner ok, outer bad", 1, rule),
            new TestDescriptor(TEST11, "inner ok due to nonpublic constructor", 0, rule),
+           new TestDescriptor(TEST12, "constructor calls super", 1, rule),
        });
     }
 
@@ -97,6 +98,11 @@ public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
     " public class Inner {" + PMD.EOL +
     "  private Inner() {}" + PMD.EOL +
     " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST12 =
+    "public class Foo {" + PMD.EOL +
+    "  public Foo() {super(7);}" + PMD.EOL +
     "}";
 
 
