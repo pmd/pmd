@@ -25,6 +25,7 @@ public abstract class AbstractRule
     private String message;
     private String description;
     private String example;
+    private boolean m_include;
 
     public String getDescription() {
         return description;
@@ -111,6 +112,8 @@ public abstract class AbstractRule
     }
 
     /**
+     ********************************************************************************
+     *
      * Gets an enumeration to enumerate through this rule's property names.
      *
      * @return An enumeration of property names
@@ -118,5 +121,29 @@ public abstract class AbstractRule
     public Map getProperties()
     {
         return properties;
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * When the rule is to be included in the analysis, returns true; otherwise, returns false.
+     *
+     * @return True when the rule is included in analysis.
+     */
+    public boolean isInclude()
+    {
+        return m_include;
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * When the rule is to be included in the analysis, set to true; otherwise, set to false.
+     *
+     * @param include True when the rule is included in analysis.
+     */
+    public void setInclude(boolean include)
+    {
+        m_include = include;
     }
 }
