@@ -28,9 +28,9 @@ rm -rf ~/tmp/pmd-2.2
 mkdir -p ~/tmp/pmd-2.2/etc
 mkdir -p ~/tmp/pmd-2.2/bin
 mkdir ~/tmp/pmd-2.2/lib
-cp ../LICENSE.txt build.xml changelog.txt ~/tmp/pmd-2.2/etc
+cp ../LICENSE.txt changelog.txt ~/tmp/pmd-2.2/etc
 cd ../bin/
-cp pmd.* cygwin-run.sh cpdgui.bat designer.* ~/tmp/pmd-2.2/bin
+cp pmd.* cygwin-run.sh build.xml cpdgui.bat designer.* ~/tmp/pmd-2.2/bin
 cd ../etc/
 cp ../lib/pmd-2.2.jar ../lib/xmlParserAPIs-2.6.2.jar ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-2.2/lib/
 cp -R xslt/ ~/tmp/pmd-2.2/etc/xslt/
