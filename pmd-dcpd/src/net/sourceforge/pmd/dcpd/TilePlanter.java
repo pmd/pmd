@@ -26,20 +26,14 @@ public class TilePlanter {
         this.space = space;
     }
 
-    public void scatter(Occurrences occ) throws TransactionException, RemoteException {
-        int tilesSoFar=0;
-        for (Iterator i = occ.getTiles(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
-            TileWrapper tw = new TileWrapper(tile, occ.getOccurrencesList(tile), null, null);
-            List wrappers = new ArrayList();
-            wrappers.add(tw);
-            Batch batch = new Batch(job.id, wrappers, Batch.NOT_DONE, new Integer(tilesSoFar));
+    public void plant(List batches) throws TransactionException, RemoteException {
+        for (Iterator i = batches.iterator(); i.hasNext();) {
+            Batch batch = (Batch)i.next();
             space.write(batch, null, Lease.FOREVER);
-            //System.out.println("Scattering " + tw.tile.getImage() +  "->" + tw.occurrences.size());
-            tilesSoFar++;
-            if (tilesSoFar % 100 == 0) {
-                System.out.println("Planted " + tilesSoFar + " batches so far");
+            if (batch.sequenceID.intValue()+1 % 100 == 0) {
+                System.out.println("Planted " + batch.sequenceID.intValue() + " batches so far");
             }
         }
+
     }
 }

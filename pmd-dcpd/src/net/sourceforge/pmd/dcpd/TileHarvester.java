@@ -26,9 +26,9 @@ public class TileHarvester {
         this.job = job;
     }
 
-    public Occurrences harvest(int originalOccurrencesCount) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+    public Occurrences harvest(int batchesToHarvest) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
         Occurrences occ = new Occurrences(new CPDNullListener());
-        for (int i=0;i<originalOccurrencesCount; i++) {
+        for (int i=0;i<batchesToHarvest; i++) {
             Batch batch = (Batch)space.take(new Batch(job.id,  null, Batch.DONE, new Integer(i)), null, Lease.FOREVER);
             for (int j=0; j<batch.tileWrappers.size(); j++) {
                 addTileWrapperToOccurrences((TileWrapper)batch.tileWrappers.get(j), occ);

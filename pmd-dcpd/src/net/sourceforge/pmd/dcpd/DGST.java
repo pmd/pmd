@@ -32,8 +32,10 @@ public class DGST {
     public Results crunch(CPDListener listener) {
         Occurrences occ = new Occurrences(tokenSets, listener);
         try {
-            TilePlanter scatterer = new TilePlanter(space, job);
-            scatterer.scatter(occ);
+            BatchBuilder builder = new BatchBuilder(occ, job);
+            List batches = builder.buildBatches();
+            TilePlanter planter = new TilePlanter(space, job);
+            planter.plant(batches);
             space.write(job, null, Lease.FOREVER);
             expand(occ);
             System.out.println("Done");
@@ -51,8 +53,10 @@ public class DGST {
             if (!occ.isEmpty()) {
                 System.out.println("**Season complete" + System.getProperty("line.separator") + "->Tile count: " + occ.size() + System.getProperty("line.separator") + "->Tile size: " + ((Tile)(occ.getTiles().next())).getTokenCount());
             }
-            TilePlanter scatterer = new TilePlanter(space, job);
-            scatterer.scatter(occ);
+            BatchBuilder builder = new BatchBuilder(occ, job);
+            List batches = builder.buildBatches();
+            TilePlanter planter = new TilePlanter(space, job);
+            planter.plant(batches);
         }
     }
 
