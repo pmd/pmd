@@ -8,10 +8,10 @@ import java.io.Reader;
 public class JLS1_1 implements JLSVersion {
 
     public JavaParser createParser(InputStream in) {
-        return new JavaParser(in);
+        throw new RuntimeException("Not yet implemented");
     }
 
     public JavaParser createParser(Reader in) {
-        return new JavaParser(in);
+        throw new RuntimeException("Not yet implemented");
     }
 }
