@@ -610,27 +610,20 @@ void Initializer() :
 void Type() :
 {}
 {
-  ( PrimitiveType() | Name() ) ( "[" "]" )*
+  ( PrimitiveType() | Name() ) ( "[" "]" {jjtThis.setIsArray();} )*
 }
 
 void PrimitiveType() :
 {}
 {
   "boolean" {jjtThis.setImage("boolean");}
-|
-  "char" {jjtThis.setImage("char");}
-|
-  "byte" {jjtThis.setImage("byte");}
-|
-  "short" {jjtThis.setImage("short");}
-|
-  "int" {jjtThis.setImage("int");}
-|
-  "long" {jjtThis.setImage("long");}
-|
-  "float" {jjtThis.setImage("float");}
-|
-  "double" {jjtThis.setImage("double");}
+| "char" {jjtThis.setImage("char");}
+| "byte" {jjtThis.setImage("byte");}
+| "short" {jjtThis.setImage("short");}
+| "int" {jjtThis.setImage("int");}
+| "long" {jjtThis.setImage("long");}
+| "float" {jjtThis.setImage("float");}
+| "double" {jjtThis.setImage("double");}
 }
 
 
@@ -638,8 +631,7 @@ void ResultType() :
 {}
 {
   "void"
-|
-  Type()
+| Type()
 }
 
 void Name() :

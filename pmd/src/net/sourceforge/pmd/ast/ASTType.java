@@ -11,9 +11,26 @@ public class ASTType extends SimpleNode {
         super(p, id);
     }
 
+    private boolean isArray;
+
+    public boolean isArray() {
+        return this.isArray;
+    }
+
+    public void setIsArray() {
+        this.isArray = true;
+    }
 
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public void dump(String prefix) {
+        String out = toString(prefix) + ":";
+        if (isArray()) {out += "(array)";}
+        System.out.println(out);
+        dumpChildren(prefix);
+    }
+
 }
