@@ -6,14 +6,18 @@ These are new ones for the next release
   </description>
 
   <rule name="UnusedFormalParameter"
-        message="Avoid unused formal paramters such as ''{0}''"
+        message="Avoid unused formal parameters such as ''{0}''"
         class="net.sourceforge.pmd.rules.UnusedFormalParameterRule">
     <description>
-Complete this description
+Avoid passing parameters to methods and then not using those parameters.
     </description>
 
     <example>
 <![CDATA[
+public class Foo {
+ private void bar(String howdy) {
+  // howdy is not used
+ }
 ]]>
     </example>
   </rule>
