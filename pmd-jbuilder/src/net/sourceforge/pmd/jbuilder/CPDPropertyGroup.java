@@ -18,8 +18,6 @@ import com.borland.primetime.properties.GlobalIntegerProperty;
 public class CPDPropertyGroup implements PropertyGroup {
     static GlobalIntegerProperty PROP_MIN_TOKEN_COUNT = new GlobalIntegerProperty(Constants.RULESETS, "mintokencount", 30);
 
-    public CPDPropertyGroup() {
-    }
     public void initializeProperties() {
     }
 

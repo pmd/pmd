@@ -15,8 +15,6 @@ import com.borland.primetime.ide.MessageCategory;
  */
 
 public class ConfigureRuleSetPropertyGroup implements PropertyGroup {
-    public ConfigureRuleSetPropertyGroup() {
-    }
     public void initializeProperties() {
     }
 
