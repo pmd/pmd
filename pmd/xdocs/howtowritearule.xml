@@ -136,7 +136,7 @@ WhileStatement
     </p>
     <source>
 <![CDATA[
-public class WhileLoopsMustUseBracesRule extends BracesRule {
+public class WhileLoopsMustUseBracesRule extends AbstractRule {
 }
 ]]>
     </source>
@@ -146,7 +146,7 @@ public class WhileLoopsMustUseBracesRule extends BracesRule {
     </p>
     <source>
 <![CDATA[
-public class WhileLoopsMustUseBracesRule extends BracesRule {
+public class WhileLoopsMustUseBracesRule extends AbstractRule {
     public Object visit(ASTWhileStatement node, Object data) {
         System.out.println("hello world");
     }
