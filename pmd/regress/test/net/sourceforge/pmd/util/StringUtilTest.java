@@ -24,4 +24,7 @@ public class StringUtilTest extends TestCase {
         assertEquals("foobar", StringUtil.replaceString("foobar", "]]>", "]]&gt;"));
     }
 
+    public void testReplaceWithNull() {
+        assertEquals("f", StringUtil.replaceString("foo", 'o', null));
+    }
 }

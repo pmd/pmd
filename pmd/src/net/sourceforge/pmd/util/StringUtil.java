@@ -6,12 +6,16 @@ package net.sourceforge.pmd.util;
 public class StringUtil {
 
     public static String replaceString(String d, char oldChar, String newString) {
+        String fixedNew = newString;
+        if (fixedNew == null) {
+            fixedNew = "";
+        }
         StringBuffer desc = new StringBuffer();
         int index = d.indexOf(oldChar);
         int last = 0;
         while (index != -1) {
             desc.append(d.substring(last, index));
-            desc.append(newString);
+            desc.append(fixedNew);
             last = index + 1;
             index = d.indexOf(oldChar, last);
         }
@@ -20,12 +24,16 @@ public class StringUtil {
     }
 
     public static String replaceString(String inputString, String oldString, String newString) {
+        String fixedNew = newString;
+        if (fixedNew == null) {
+            fixedNew = "";
+        }
         StringBuffer desc = new StringBuffer();
         int index = inputString.indexOf(oldString);
         int last = 0;
         while (index != -1) {
             desc.append(inputString.substring(last, index));
-            desc.append(newString);
+            desc.append(fixedNew);
             last = index + oldString.length();
             index = inputString.indexOf(oldString, last);
         }
