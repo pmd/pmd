@@ -23,13 +23,16 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/08/13 20:09:06  phherlin
+ * Refactoring private->protected to remove warning about non accessible member access in enclosing types
+ *
  * Revision 1.1  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
  *
  */
 public class RuleSetSelectionDialog extends Dialog {
-    private Combo inputCombo;
+    protected Combo inputCombo;
     private String importedRuleSetName;
 
     /**

@@ -59,6 +59,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2003/08/13 20:09:06  phherlin
+ * Refactoring private->protected to remove warning about non accessible member access in enclosing types
+ *
  * Revision 1.9  2003/07/07 19:27:10  phherlin
  * Making rules selectable from projects
  * Various refactoring and cleaning
@@ -81,12 +84,12 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
     public static PMDPreferencePage activeInstance = null;
 
-    private TableViewer ruleTableViewer;
-    private TableViewer rulePropertiesTableViewer;
-    private Button removeRuleButton;
-    private Button editRuleButton;
-    private Button addPropertyButton;
-    private RuleSet ruleSet;
+    protected TableViewer ruleTableViewer;
+    protected TableViewer rulePropertiesTableViewer;
+    protected Button removeRuleButton;
+    protected Button editRuleButton;
+    protected Button addPropertyButton;
+    protected RuleSet ruleSet;
     private boolean modified = false;
 
     /**
@@ -580,14 +583,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      * @param key a message key
      * @return requested message
      */
-    private String getMessage(String key) {
+    protected String getMessage(String key) {
         return PMDPlugin.getDefault().getMessage(key);
     }
 
     /**
      * Helper method to get a filename without its extension
      */
-    private String getFileNameWithoutExtension(String fileName) {
+    protected String getFileNameWithoutExtension(String fileName) {
         String name = fileName;
 
         int index = fileName.lastIndexOf('.');
@@ -632,7 +635,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     /**
      * Refresh the list
      */
-    private void refresh() {
+    protected void refresh() {
         try {
             ruleTableViewer.getControl().setRedraw(false);
             ruleTableViewer.refresh();
@@ -693,7 +696,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     /**
      * Select and show a particular rule in the table
      */
-    private void selectAndShowRule(Rule rule) {
+    protected void selectAndShowRule(Rule rule) {
         Table table = ruleTableViewer.getTable();
         TableItem[] items = table.getItems();
         for (int i = 0; i < items.length; i++) {

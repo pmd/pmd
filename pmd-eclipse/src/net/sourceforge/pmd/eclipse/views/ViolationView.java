@@ -49,6 +49,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2003/08/13 20:10:20  phherlin
+ * Refactoring private->protected to remove warning about non accessible member access in enclosing types
+ *
  * Revision 1.2  2003/08/05 19:27:41  phherlin
  * Fixing CoreException when refreshing (Eclipse v3)
  *
@@ -65,16 +68,16 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
 
     private TableViewer violationTableViewer;
     private IResource focusResource;
-    private int sorterFlag = SORTER_PRIORITY;
-    private IAction projectSelectAction;
-    private IAction fileSelectAction;
-    private IAction errorHighFilterAction;
-    private IAction errorFilterAction;
-    private IAction warningHighFilterAction;
-    private IAction warningFilterAction;
-    private IAction informationFilterAction;
-    private IAction showRuleAction;
-    private IAction removeViolationAction;
+    protected int sorterFlag = SORTER_PRIORITY;
+    protected IAction projectSelectAction;
+    protected IAction fileSelectAction;
+    protected IAction errorHighFilterAction;
+    protected IAction errorFilterAction;
+    protected IAction warningHighFilterAction;
+    protected IAction warningFilterAction;
+    protected IAction informationFilterAction;
+    protected IAction showRuleAction;
+    protected IAction removeViolationAction;
 
     /**
      * @see org.eclipse.ui.IWorkbenchPart#createPartControl(Composite)
@@ -312,7 +315,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
      * @param key a message key
      * @return requested message
      */
-    private String getMessage(String key) {
+    protected String getMessage(String key) {
         return PMDPlugin.getDefault().getMessage(key);
     }
 

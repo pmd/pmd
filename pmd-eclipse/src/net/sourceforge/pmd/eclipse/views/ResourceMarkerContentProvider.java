@@ -23,6 +23,9 @@ import org.eclipse.jface.viewers.Viewer;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/08/13 20:10:20  phherlin
+ * Refactoring private->protected to remove warning about non accessible member access in enclosing types
+ *
  * Revision 1.1  2003/07/07 19:24:54  phherlin
  * Adding PMD violations view
  *
@@ -114,7 +117,7 @@ public class ResourceMarkerContentProvider implements IStructuredContentProvider
     /**
      * Apply found updates on the table
      */
-    private void updateViewer(List additions, List removals, List changes) {
+    protected void updateViewer(List additions, List removals, List changes) {
         // perform removals
         if (removals.size() > 0) {
             tableViewer.cancelEditing();

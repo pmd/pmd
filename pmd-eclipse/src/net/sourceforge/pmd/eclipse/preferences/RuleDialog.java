@@ -28,6 +28,9 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2003/08/13 20:09:06  phherlin
+ * Refactoring private->protected to remove warning about non accessible member access in enclosing types
+ *
  * Revision 1.2  2003/07/07 19:25:36  phherlin
  * Adding PMD violations view
  *
@@ -41,12 +44,12 @@ public class RuleDialog extends Dialog {
     private static final int MODE_EDIT = 2;
     private static final int MODE_VIEW = 3;
 
+    protected Text implementationClassText;
     private int mode = MODE_ADD;
     private Rule editedRule;
     private Rule rule;
     private Text nameText;
     private Button xpathRuleButton;
-    private Text implementationClassText;
     private Text messageText;
     private Text descriptionText;
     private Text exampleText;

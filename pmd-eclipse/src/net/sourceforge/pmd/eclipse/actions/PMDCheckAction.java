@@ -34,6 +34,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2003/08/13 20:08:40  phherlin
+ * Refactoring private->protected to remove warning about non accessible member access in enclosing types
+ *
  * Revision 1.7  2003/07/01 20:21:37  phherlin
  * Correcting some PMD violations ! (empty if stmt)
  *
@@ -50,7 +53,7 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class PMDCheckAction implements IObjectActionDelegate {
-    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDCheckAction");
+    protected static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDCheckAction");
     private IWorkbenchPart targetPart;
 
     /**

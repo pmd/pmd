@@ -44,6 +44,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2003/08/13 20:09:40  phherlin
+ * Refactoring private->protected to remove warning about non accessible member access in enclosing types
+ *
  * Revision 1.7  2003/07/07 19:27:52  phherlin
  * Making rules selectable from projects
  *
@@ -404,7 +407,7 @@ public class PMDPropertyPage extends PropertyPage {
      * @param key a message key
      * @return requested message
      */
-    private String getMessage(String key) {
+    protected String getMessage(String key) {
         return PMDPlugin.getDefault().getMessage(key);
     }
 
