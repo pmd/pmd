@@ -49,12 +49,14 @@ public class JumbledIncrementerRule1 {
     </rule>
 		
    <rule name="AvoidDeeplyNestedIfStmts"
-        message="Deeply nested if..then statements lead to madness"
+        message="Deeply nested if..then statements are hard to read"
         class="net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule">
     <description>
-    Deeply nested if..then statements lead to madness.
+    Deeply nested if..then statements are hard to read.
     </description>
-
+   <properties>
+    <property name="problemDepth" value="3"/>
+   </properties>
     <example>
 <![CDATA[
 public class Foo { 
