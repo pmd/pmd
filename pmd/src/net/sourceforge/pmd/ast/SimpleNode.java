@@ -99,18 +99,26 @@ public class SimpleNode implements Node {
     public int getEndColumn() {
         return endColumn;
     }
+
     public void findChildrenOfType(Class targetType, List results) {
-        findChildrenOfType(this, targetType, results);
+        findChildrenOfType(this, targetType, results, true);
     }
 
-    private void findChildrenOfType(Node node, Class targetType, List results) {
+    public void findChildrenOfType(Class targetType, List results, boolean descendIntoNestedClasses) {
+        this.findChildrenOfType(this, targetType, results, descendIntoNestedClasses);
+    }
+
+    private void findChildrenOfType(Node node, Class targetType, List results, boolean descendIntoNestedClasses) {
         if (node.getClass().equals(targetType)) {
             results.add(node);
         }
+        if (node.getClass().equals(ASTClassBody.class) && !descendIntoNestedClasses) {
+            return;
+        }
         for (int i=0; i<node.jjtGetNumChildren(); i++) {
-            Node child = (Node)node.jjtGetChild(i);
+            Node child = node.jjtGetChild(i);
             if (child.jjtGetNumChildren()>0) {
-                findChildrenOfType(child, targetType, results);
+                findChildrenOfType(child, targetType, results, descendIntoNestedClasses);
             } else {
                 if (child.getClass().equals(targetType)) {
                     results.add(child);

@@ -1,6 +1,8 @@
 ???????? - 1.03
-Added numbering to the HTMLRenderer
+Added numbering to the HTMLRenderer; thx to Luke Francl for the code.
 Fixed bug 672742 - grammar typo was hosing up ASTConstructorDeclaration which was hosing up UseSingletonRule
+Fixed bug 674393 - OnlyOneReturn rule no longer counts returns that are inside anonymous inner classes as being inside the containing method.  Thx to C. Lamont Gilbert for the bug report.
+Fixed bug 674420 - AvoidReassigningParametersRule no longer counts parameter field reassignment as a violation.  Thx to C. Lamont Gilbert for the bug report.
 
 January 22, 2003 - 1.02:
 Added new rules: ImportFromSamePackageRule, SwitchDensityRule, NullAssignmentRule, UnusedModifierRule, ForLoopShouldBeWhileLoopRule

@@ -30,4 +30,7 @@ public class AvoidReassigningParametersRuleTest extends RuleTst {
     public void testQualifiedNameSameAsParam()  throws Throwable {
         runTest("AvoidReassigningParameters5.java", 0, rule);
     }
+    public void testAssignmentToParametersField()  throws Throwable {
+        runTest("AvoidReassigningParameters6.java", 0, rule);
+    }
 }

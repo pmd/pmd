@@ -28,7 +28,7 @@ public class OnlyOneReturnRule extends AbstractRule {
         }
 
         List returnNodes = new ArrayList();
-        node.findChildrenOfType(ASTReturnStatement.class, returnNodes);
+        node.findChildrenOfType(ASTReturnStatement.class, returnNodes, false);
         if (returnNodes.size() > 1) {
             RuleContext ctx = (RuleContext)data;
             for (Iterator i = returnNodes.iterator(); i.hasNext();) {

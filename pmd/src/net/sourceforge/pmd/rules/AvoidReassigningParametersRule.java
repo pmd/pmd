@@ -27,7 +27,7 @@ public class AvoidReassigningParametersRule extends AbstractRule {
             List usages = (List)params.get(decl);
             for (Iterator j = usages.iterator();j.hasNext();) {
                 NameOccurrence occ = (NameOccurrence)j.next();
-                if (occ.isOnLeftHandSide()) {
+                if (occ.isOnLeftHandSide() && (occ.getNameForWhichThisIsAQualifier() == null)) {
                     RuleContext ctx = (RuleContext)data;
                     String msg = MessageFormat.format(getMessage(), new Object[] {decl.getImage()});
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), msg));

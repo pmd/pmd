@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+
             <li>Damian O'Neill - Ant task patches</li>
             <li>Ralph Schaer - bug reports and verification</li>
             <li>Nanne Baars - rule suggestions</li>
@@ -31,6 +32,8 @@
             <li>mcclain looney - bug report</li>
             <li>Martin Cooper - feature suggestions</li>
             <li>Luke Francl - several feature suggestions</li>
+            <li>Bruce Mayhew - feedback on the jEdit plugin</li>
+            <li>C. Lamont Gilbert - several bug reports</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
