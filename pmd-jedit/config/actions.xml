@@ -28,17 +28,22 @@
     </ACTION>
   <ACTION NAME="cpd-currentfile">
     <CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.CPDCurrentFile(view);
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.cpdCurrentFile(view);
     </CODE>
   </ACTION>
     <ACTION NAME="cpd-dir">
     <CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.CPDDir(view,false);
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.cpdDir(view,false);
     </CODE>
   </ACTION>
   <ACTION NAME="cpd-dir-recursively">
     <CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.CPDDir(view,true);
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.cpdDir(view,true);
+    </CODE>
+  </ACTION>
+  <ACTION NAME="pmd-check-file">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.checkFile(view,browser);
     </CODE>
   </ACTION>
 </ACTIONS>

@@ -16,7 +16,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.BorderLayout;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 //End of Imports
 
 /**
@@ -54,10 +55,6 @@ public class CPDDuplicateCodeViewer  extends JPanel
 													  gotoDuplicate(duplicate);
 													  //System.out.println("Got!! " + duplicate);
 												  }
-												  else
-												  {
-													  //System.out.println("Something else. Please check ");
-												  }
 											  }
 										  }
 									  });
@@ -78,13 +75,13 @@ public class CPDDuplicateCodeViewer  extends JPanel
 		if(duplicate != null)
 		{
 			final Buffer buffer = jEdit.openFile(view,duplicate.getFilename());
-	
+
 			VFSManager.runInAWTThread(new Runnable()
 			{
 				public void run()
 				{
 					view.setBuffer(buffer);
-	
+
 					int start = buffer.getLineStartOffset(duplicate.getBeginLine());
 					int end = buffer.getLineEndOffset(duplicate.getEndLine()-2);
 					//Log.log(Log.DEBUG, this.getClass(), "Start Line "+ duplicate.getBeginLine() + " End Line "+ duplicate.getEndLine() + " Start " + start + " End "+ end);
@@ -110,7 +107,7 @@ public class CPDDuplicateCodeViewer  extends JPanel
 
 	public class Duplicates extends DefaultMutableTreeNode
 	{
-		Vector vecduplicate = new Vector();
+		List vecduplicate = new ArrayList();
 		String message, sourcecode;
 
 		public Duplicates(String message, String sourcecode)

@@ -21,12 +21,11 @@ import net.sourceforge.pmd.cpd.CPPLanguage;
 import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import org.gjt.sp.jedit.Buffer;
-import org.gjt.sp.jedit.EditPlugin;
-import org.gjt.sp.jedit.GUIUtilities;
 import org.gjt.sp.jedit.View;
-import org.gjt.sp.jedit.browser.VFSBrowser;
-import org.gjt.sp.jedit.gui.OptionsDialog;
+import org.gjt.sp.jedit.EditPlugin;
 import org.gjt.sp.jedit.jEdit;
+import org.gjt.sp.jedit.browser.*;
+import org.gjt.sp.jedit.io.*;
 
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -43,7 +42,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 
 public class PMDJEditPlugin extends EditPlugin {
@@ -85,7 +83,7 @@ public class PMDJEditPlugin extends EditPlugin {
 	public void instanceCheckDirectory(View view) {
 		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP))
 		{
-			final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE);
+			String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE);
 			if (dir != null)
 			{
 				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() )
@@ -98,7 +96,7 @@ public class PMDJEditPlugin extends EditPlugin {
 		}
 		else
 		{
-			final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
+			VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
 			if(browser == null) {
 				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
@@ -143,7 +141,7 @@ public class PMDJEditPlugin extends EditPlugin {
 	public void instanceCheckDirectoryRecursively(View view) {
 		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP))
 		{
-			final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
+			String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
 			if (dir != null && dir.trim() != null)
 			{
 				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
@@ -156,7 +154,7 @@ public class PMDJEditPlugin extends EditPlugin {
 		}
 		else
 		{
-			final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
+			VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
 			if(browser == null) {
 				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
@@ -264,7 +262,7 @@ public class PMDJEditPlugin extends EditPlugin {
 		return f.findFilesFrom(dir, new JavaLanguage.JavaFileOrDirectoryFilter(), recurse);
 	}
 
-	public static void CPDCurrentFile(View view) throws IOException
+	public static void cpdCurrentFile(View view) throws IOException
 	{
 		/* if(!view.getBuffer().getMode().getName().equals("java"))
 	{
@@ -302,7 +300,7 @@ public class PMDJEditPlugin extends EditPlugin {
 		instance.processDuplicates(cpd, view);
 	}
 
-	public static void CPDDir(View view, boolean recursive) throws IOException
+	public static void cpdDir(View view, boolean recursive) throws IOException
 	{
 		JFileChooser chooser = new JFileChooser(jEdit.getProperty("pmd.cpd.lastDirectory"));
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -394,4 +392,44 @@ public class PMDJEditPlugin extends EditPlugin {
 		return (CPDDuplicateCodeViewer)view.getDockableWindowManager().getDockableWindow("cpd-viewer");
 
 	}
+
+	public static void checkFile(View view, VFSBrowser browser)
+	{
+		instance.checkFile(view, browser.getSelectedFiles());
+	}
+
+	public void checkFile(View view,  VFS.DirectoryEntry de[])
+	{
+		if(view != null && de != null)
+		{
+			List files = new ArrayList();
+			for(int i=0;i<de.length;i++)
+			{
+				if(de[i].type == VFS.DirectoryEntry.FILE)
+				{
+					files.add(new File(de[i].path));
+				}
+			}
+
+			System.out.println("See final files to process " + files);
+		}
+	}
+
+	public static void checkDirectory(View view, VFSBrowser browser, boolean recursive)
+	{
+		VFS.DirectoryEntry de[] = browser.getSelectedFiles();
+		if(de == null || de.length == 0 || de[0].type != VFS.DirectoryEntry.DIRECTORY)
+		{
+			JOptionPane.showMessageDialog(view, "Selection must be a directory",NAME, JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		instance.process(instance.findFiles(de[0].path, recursive));
+	}
 }
+
+
+
+
+
+
+
