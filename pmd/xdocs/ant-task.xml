@@ -46,6 +46,11 @@
     <td valign="top">Whether or not to fail the build if PMD finds any problems</td>
     <td valign="top" align="center">No</td>
   </tr>
+  <tr>
+    <td valign="top">printToConsole</td>
+    <td valign="top">Whether or not to print any problems found to the Ant log/console</td>
+    <td valign="top" align="center">No</td>
+  </tr>
 </table>
 
       </subsection>

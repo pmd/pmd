@@ -35,6 +35,8 @@
       <item name="Unused Code" href="/rules/unusedcode.html" />
       <item name="Design Patterns" href="/rules/design.html" />
       <item name="Import Statements" href="/rules/imports.html" />
+      <item name="JUnit Tests" href="/rules/junit.html" />
+      <item name="Strings" href="/rules/strings.html" />
     </menu>
   </body>
 </project>
