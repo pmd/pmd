@@ -51,8 +51,7 @@ public class AtLeastOneConstructorRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST5 =
     "public class Foo {" + PMD.EOL +
-    " public class Bar { " + PMD.EOL +
-    " }" + PMD.EOL +
+    " public class Bar {} " + PMD.EOL +
     "}";
 
     private static final String TEST6 =
