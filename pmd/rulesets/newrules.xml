@@ -122,11 +122,12 @@ public abstract class Foo {
           <property name="xpath">
               <value>
     <![CDATA[
-    //ClassDeclaration[
-        ( count(.//ConstructorDeclaration)>0 and count(.//ConstructorDeclaration) = count(.//ConstructorDeclaration[@Private='true']) )
-        and 
-        count(.//MethodDeclaration[@Static='true'])=0
-        ]
+//ClassOrInterfaceDeclaration[
+( count(.//ConstructorDeclaration)>0
+  and count(.//ConstructorDeclaration) = count(.//ConstructorDeclaration[@Private='true']) )
+and
+count(.//MethodDeclaration[@Static='true'])=0
+]
     ]]>
               </value>
           </property>
