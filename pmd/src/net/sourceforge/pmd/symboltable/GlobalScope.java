@@ -7,8 +7,6 @@ package net.sourceforge.pmd.symboltable;
 
 import java.util.Iterator;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GlobalScope extends AbstractScope implements Scope {
 

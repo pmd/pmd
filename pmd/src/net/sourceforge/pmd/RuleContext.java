@@ -5,8 +5,6 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.symboltable.SymbolFacade;
-
 public class RuleContext {
 
     private Report report;

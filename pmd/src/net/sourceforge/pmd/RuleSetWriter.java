@@ -4,7 +4,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Properties;
 
 /**
  * Writes an XML file containing information about rule set and each rule within the rule set.

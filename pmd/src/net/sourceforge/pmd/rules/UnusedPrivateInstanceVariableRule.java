@@ -6,9 +6,6 @@
 package net.sourceforge.pmd.rules;
 
 import java.util.Iterator;
-import java.util.Stack;
-import java.util.HashSet;
-import java.util.Set;
 import java.text.MessageFormat;
 
 import net.sourceforge.pmd.ast.*;

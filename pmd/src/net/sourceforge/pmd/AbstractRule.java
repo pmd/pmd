@@ -10,8 +10,6 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
 import java.util.List;
 import java.util.Iterator;
-import java.util.Map;
-import java.io.File;
 
 public abstract class AbstractRule
     extends JavaParserVisitorAdapter
