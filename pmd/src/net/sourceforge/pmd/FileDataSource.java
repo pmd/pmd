@@ -46,7 +46,7 @@ public class FileDataSource implements DataSource {
 
     private String trimAnyPathSep(String name) {
         if (name.startsWith(System.getProperty("file.separator"))) {
-            name = name.substring(1);
+            return name.substring(1);
         }
         return name;
     }
