@@ -15,14 +15,14 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     First, figure out what you're looking for.  Let's use "While loops must use braces" as an example.
     You've seen this before a thousand times so you know what it looks like:
     </p>
-    <pre>
+    <code>
        public class Foo {
         public void bar() {
          while (baz)
             Buz.doSomething();
         }
        }
-    </pre>
+    </code>
     </subsection>
 
     <subsection name="Write a test-data example and look at the AST">
@@ -30,8 +30,6 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     PMD uses a JJTree/JavaCC generated parser to parse the source code and produce an AST (Abstract Syntax Tree).
     This means that the code above looks like this:
     </p>
-    <pre>
-    </pre>
     </subsection>
 
     <subsection name="Write a rule class">
