@@ -701,79 +701,79 @@ void AssignmentOperator() :
   "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
 }
 
-void ConditionalExpression() :
+void ConditionalExpression()  #void :
 {}
 {
   ConditionalOrExpression() [ "?" Expression() ":" ConditionalExpression() ]
 }
 
-void ConditionalOrExpression() :
+void ConditionalOrExpression() #void :
 {}
 {
   ConditionalAndExpression() ( "||" ConditionalAndExpression() )*
 }
 
-void ConditionalAndExpression() :
+void ConditionalAndExpression() #void :
 {}
 {
   InclusiveOrExpression() ( "&&" InclusiveOrExpression() )*
 }
 
-void InclusiveOrExpression() :
+void InclusiveOrExpression() #void :
 {}
 {
   ExclusiveOrExpression() ( "|" ExclusiveOrExpression() )*
 }
 
-void ExclusiveOrExpression() :
+void ExclusiveOrExpression() #void :
 {}
 {
   AndExpression() ( "^" AndExpression() )*
 }
 
-void AndExpression() :
+void AndExpression() #void :
 {}
 {
   EqualityExpression() ( "&" EqualityExpression() )*
 }
 
-void EqualityExpression() :
+void EqualityExpression() #void :
 {}
 {
   InstanceOfExpression() ( ( "==" | "!=" ) InstanceOfExpression() )*
 }
 
-void InstanceOfExpression() :
+void InstanceOfExpression() #void :
 {}
 {
   RelationalExpression() [ "instanceof" Type() ]
 }
 
-void RelationalExpression() :
+void RelationalExpression() #void :
 {}
 {
   ShiftExpression() ( ( "<" | ">" | "<=" | ">=" ) ShiftExpression() )*
 }
 
-void ShiftExpression() :
+void ShiftExpression() #void :
 {}
 {
   AdditiveExpression() ( ( "<<" | ">>" | ">>>" ) AdditiveExpression() )*
 }
 
-void AdditiveExpression() :
+void AdditiveExpression() #void :
 {}
 {
   MultiplicativeExpression() ( ( "+" | "-" ) MultiplicativeExpression() )*
 }
 
-void MultiplicativeExpression() :
+void MultiplicativeExpression() #void :
 {}
 {
   UnaryExpression() ( ( "*" | "/" | "%" ) UnaryExpression() )*
 }
 
-void UnaryExpression() :
+void UnaryExpression() #void :
 {}
 {
   ( "+" | "-" ) UnaryExpression()
@@ -797,7 +797,7 @@ void PreDecrementExpression() :
   "--" PrimaryExpression()
 }
 
-void UnaryExpressionNotPlusMinus() :
+void UnaryExpressionNotPlusMinus()  #void :
 {}
 {
   ( "~" | "!" ) UnaryExpression()
@@ -823,7 +823,7 @@ void CastLookahead() :
   "(" Name() ")" ( "~" | "!" | "(" | <IDENTIFIER> | "this" | "super" | "new" | Literal() )
 }
 
-void PostfixExpression() :
+void PostfixExpression()  #void :
 {}
 {
   PrimaryExpression() [ "++" | "--" ]
