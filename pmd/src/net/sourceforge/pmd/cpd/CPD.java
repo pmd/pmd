@@ -117,6 +117,7 @@ public class CPD {
         CPD cpd = new CPD();
         //cpd.addListener(new ListenerImpl());
         cpd.setListener(new CPDNullListener());
+        cpd.setMinimumTileSize(26);
         try {
 /*
             cpd.add("1", "public class Foo {}");
@@ -139,10 +140,7 @@ public class CPD {
             ioe.printStackTrace();
             return;
         }
-        long start = System.currentTimeMillis();
-        cpd.setMinimumTileSize(26);
         cpd.go();
-        System.out.println((System.currentTimeMillis() - start));
         CPDRenderer renderer = new TextRenderer();
         System.out.println(renderer.render(cpd));
     }
