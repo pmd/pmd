@@ -16,15 +16,16 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-/*
            new TestDescriptor(TEST1, "could be immutable, only assigned in constructor", 1, rule),
            new TestDescriptor(TEST2, "could be immutable, only assigned in decl", 1, rule),
            new TestDescriptor(TEST3, "ok, assigned twice", 0, rule),
            new TestDescriptor(TEST4, "ok, static field ", 0, rule), // TODO - probably should check these, not just discard them
            new TestDescriptor(TEST5, "ok, one constructor assigns, one doesn't", 0, rule),
            new TestDescriptor(TEST6, "ok, assignment via postfix expression", 0, rule),
-*/
-           new TestDescriptor(TEST7, "buggy?", 0, rule),
+           new TestDescriptor(TEST7, "postfix expressions imply mutability", 0, rule),
+           new TestDescriptor(TEST8, "compound assignment", 0, rule),
+           new TestDescriptor(TEST9, "preincrement", 0, rule),
+           new TestDescriptor(TEST10, "predecrement", 0, rule),
        });
     }
 
@@ -83,6 +84,35 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
     " private int x = 0;" + PMD.EOL +
     " private void bar() {" + PMD.EOL +
     "  x++;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST8 =
+    "public class Foo {" + PMD.EOL +
+    " private int w;" + PMD.EOL +
+    " private int z;" + PMD.EOL +
+    " private void bar() {" + PMD.EOL +
+    "  w = 2;" + PMD.EOL +
+    "  z = 4;" + PMD.EOL +
+    " }" + PMD.EOL +
+    " private void gaz() {" + PMD.EOL +
+    "  w += z++;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST9 =
+    "public class Foo {" + PMD.EOL +
+    " private int x = 0;" + PMD.EOL +
+    " public void bar() {" + PMD.EOL +
+    "  ++x;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST10 =
+    "public class Foo {" + PMD.EOL +
+    " private int x = 0;" + PMD.EOL +
+    " public void bar() {" + PMD.EOL +
+    "  --x;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

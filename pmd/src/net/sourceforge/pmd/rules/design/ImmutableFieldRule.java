@@ -10,6 +10,8 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -19,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 /**
  * @author Olander
@@ -50,24 +51,15 @@ public class ImmutableFieldRule extends AbstractRule {
         return super.visit(node, data);
     }
     
-    /** construct a set containing all ASTConstructorDeclaration nodes for this class
-     */
-    private Set findAllConstructors(ASTUnmodifiedClassDeclaration node) {
-        List results = node.findChildrenOfType(ASTConstructorDeclaration.class);
-        HashSet set = new HashSet();
-        set.addAll(results);
-        return set;
-    }
-    
     private int initializedInConstructor(List usages, Set allConstructors) {
         int rc = MUTABLE, methodInitCount = 0;
         boolean foundUsage = false;
         Set consSet = new HashSet();
-        
+
         for (Iterator j = usages.iterator(); j.hasNext();) {
             foundUsage = true;
             NameOccurrence occ = (NameOccurrence)j.next();
-            if (occ.isOnLeftHandSide()) {
+            if (occ.isOnLeftHandSide() || occ.getLocation().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreDecrementExpression || occ.getLocation().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreIncrementExpression) {
                 SimpleNode node = occ.getLocation();
                 SimpleNode constructor = (SimpleNode)node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
@@ -91,13 +83,14 @@ public class ImmutableFieldRule extends AbstractRule {
     }
     
     private boolean initializedInDeclaration(SimpleNode node) {
-        boolean setInInitializer = false;
-        List results = new Vector();
-        
-        node.findChildrenOfType(ASTVariableInitializer.class, results, true);
-        if (results.size()>0) {
-            setInInitializer = true;
-        }
-        return setInInitializer;
+        return node.findChildrenOfType(ASTVariableInitializer.class).size() > 0;
+    }
+
+    /** construct a set containing all ASTConstructorDeclaration nodes for this class
+     */
+    private Set findAllConstructors(ASTUnmodifiedClassDeclaration node) {
+        Set set = new HashSet();
+        set.addAll(node.findChildrenOfType(ASTConstructorDeclaration.class));
+        return set;
     }
 }

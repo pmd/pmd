@@ -42,8 +42,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Benoit Xhenseval - several bug reports</li>
             <li>Todd Wright - reported bug in EmptyStatementNotInLoop, XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
-            <li>Benoit Xhenseval - bug report</li>
             <li>Eric Olander - noticed missing image in Postfix nodes, ImmutableFieldRule</li>
             <li>Elliotte Rusty Harold - UseLocaleWithCaseConversions rule suggestion</li>
             <li>Miguel Griffa - LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
