@@ -206,12 +206,12 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
     <report>maven-javadoc-plugin</report>
     <report>maven-jxr-plugin</report>
     <report>maven-junit-report-plugin</report>
+    <report>maven-simian-plugin</report>
+    <report>maven-clover-plugin</report>
     <!-- interesing to add later
     <report>maven-faq-plugin</report>
     <report>maven-pmd-plugin</report>
     <report>maven-changes-plugin</report>
-    <report>maven-clover-plugin</report>
-    <report>maven-simian-plugin</report>
     <report>maven-jdepend-plugin</report>
     <report>maven-findbugs-plugin</report>
     <report>maven-linkcheck-plugin</report>
