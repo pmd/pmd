@@ -12,6 +12,7 @@ These rules deal with different problems that can occur with String manipulation
     <description>
     Avoid instantiating String objects; this is usually unnecessary.
     </description>
+       <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -28,6 +29,7 @@ public class Foo {
     <description>
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
     </description>
+        <priority>3</priority>
    <properties>
     <property name="threshold" value="4"/>
    </properties>
@@ -52,6 +54,7 @@ public class Foo {
     <description>
     Avoid calling toString() on String objects; this is unnecessary
     </description>
+       <priority>3</priority>
 
     <example>
 <![CDATA[

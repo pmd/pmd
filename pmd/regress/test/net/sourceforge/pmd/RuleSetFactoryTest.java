@@ -32,6 +32,7 @@ public class RuleSetFactoryTest  extends TestCase {
                         "<description>" + EOL +
                         "testdesc" + EOL +
                         "</description>" + EOL +
+                        "<priority>3</priority>" + EOL +
                         "<rule " + EOL +
                         "name=\"MockRuleName\" " + EOL +
                         "message=\"avoid the mock rule\" " + EOL +
@@ -45,6 +46,7 @@ public class RuleSetFactoryTest  extends TestCase {
                         "<description>" + EOL +
                         "testdesc" + EOL +
                         "</description>" + EOL +
+                        "<priority>3</priority>" + EOL +
                         "<rule name=\"MockRuleName1\" "  + EOL +
                         "message=\"avoid the mock rule\" " + EOL +
                         "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL +
@@ -60,12 +62,14 @@ public class RuleSetFactoryTest  extends TestCase {
                         "<description>" + EOL +
                         "testdesc" + EOL +
                         "</description>" + EOL +
+                        "<priority>3</priority>" + EOL +
                         "<rule name=\"MockRuleName\" " + EOL +
                         "message=\"avoid the mock rule\" " + EOL +
                         "class=\"test.net.sourceforge.pmd.MockRule\">" +  EOL +
                         "<description>" + EOL +
                         "testdesc2" + EOL +
                         "</description>" + EOL +
+                        "<priority>3</priority>" + EOL +
                         "<properties>" + EOL +
                         "<property name=\"fooBoolean\" value=\"true\"/>" + EOL +
                         "<property name=\"fooDouble\" value=\"1.0\" />" + EOL +

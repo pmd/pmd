@@ -25,6 +25,7 @@ topscore - The Maximum Number of reports to generate.
 At this time, only one can be used at a time.
 
    </description>
+     <priority>3</priority>
    <properties>
     <property name="minimum" value="100"/>
    </properties>
@@ -64,6 +65,7 @@ topscore - The Maximum Number of reports to generate.
 At this time, only one can be used at a time.
 
    </description>
+     <priority>3</priority>
    <properties>
     <property name="minimum" value="10"/>
    </properties>
@@ -99,6 +101,7 @@ topscore - The Maximum Number of reports to generate.
 At this time, only one can be used at a time.
 
    </description>
+     <priority>3</priority>
    <properties>
     <property name="minimum" value="1000"/>
    </properties>

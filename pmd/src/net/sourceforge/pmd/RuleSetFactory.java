@@ -66,7 +66,7 @@ public class RuleSetFactory {
 
             NodeList rules = root.getElementsByTagName("rule");
             for (int i =0; i<rules.getLength(); i++) {
-                Node ruleNode = (Node)rules.item(i);
+                Node ruleNode = rules.item(i);
                 Rule rule = null;
                 if (ruleNode.getAttributes().getNamedItem("ref") != null) {
                     ExternalRuleID externalRuleID = new ExternalRuleID(ruleNode.getAttributes().getNamedItem("ref").getNodeValue());
@@ -79,11 +79,15 @@ public class RuleSetFactory {
                     rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
                 }
 
-                // get the description, example and properties (if any)
+                // get the description, priority, example and properties (if any)
                 Node node = ruleNode.getFirstChild();
                 while (node != null) {
                     if (node.getNodeName() != null && node.getNodeName().equals("description")) {
                         rule.setDescription(node.getFirstChild().getNodeValue());
+                    }
+
+                    if (node.getNodeName() != null && node.getNodeName().equals("priority")) {
+                        rule.setPriority(Integer.parseInt(node.getFirstChild().getNodeValue()));
                     }
 
                     if (node.getNodeName() != null && node.getNodeName().equals("example")) {

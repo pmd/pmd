@@ -13,6 +13,7 @@ A high ratio of statements to labels in a switch statement implies that the swit
 statement is doing too much work.  Consider moving the statements either into new
 methods, or creating subclasses based on the switch variable.
      </description>
+       <priority>3</priority>
        <properties>
         <property name="minimum" value="10"/>
        </properties>
@@ -52,6 +53,7 @@ Assigning a "null" to a variable (outside of its declaration) is usually in
 bad form.  Some times, the assignment is an indication that the programmer doesn't
 completely understand what is going on in the code.
      </description>
+       <priority>3</priority>
      <example>
 <![CDATA[
 public class Foo {
@@ -74,7 +76,7 @@ public class Foo {
     <description>
     No need to import a type that's in the same package.
     </description>
-
+       <priority>3</priority>
     <example>
 <![CDATA[
 package foo;
@@ -90,7 +92,7 @@ public class Bar{}
      <description>
      Unused modifiers are, well, unused.
      </description>
-
+        <priority>3</priority>
      <example>
  <![CDATA[
 public interface Foo {
@@ -106,7 +108,7 @@ public abstract void bar(); // abstract compiles, but is useless
     <description>
     Some for loops can be simplified to while loops - this makes them more concise.
     </description>
-
+      <priority>3</priority>
     <example>
 <![CDATA[
 public class Foo {

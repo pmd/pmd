@@ -15,6 +15,7 @@ Empty Catch Block finds instances where an exception is caught,
 but nothing is done.  In most circumstances, this swallows an exception
 which should either be acted on or reported.
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -35,6 +36,7 @@ which should either be acted on or reported.
     <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
   </description>
+      <priority>3</priority>
     <example>
 <![CDATA[
   if (absValue < 1) {
@@ -52,6 +54,7 @@ Empty While Statement finds all instances where a while statement
 does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
 it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
      </description>
+      <priority>3</priority>
 
      <example>
 <![CDATA[
@@ -68,6 +71,7 @@ while (a == b) {
     <description>
     Avoid unnecessary temporaries when converting primitives to Strings
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -89,6 +93,7 @@ while (a == b) {
     <description>
 Avoid empty try blocks - what's the point?
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -109,6 +114,7 @@ public void bar() {
     <description>
 Avoid empty finally blocks - these can be deleted.
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -129,6 +135,7 @@ public void bar() {
     <description>
     Avoid empty switch statements.
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -151,6 +158,7 @@ public class Foo {
     <description>
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -188,6 +196,7 @@ public class Foo {
     <description>
     Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
     </description>
+       <priority>3</priority>
 
     <example>
 <![CDATA[

@@ -11,6 +11,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassBody;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractRule implements Rule {
 
@@ -49,13 +51,14 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractRule implements R
 
     public Object visit(ASTMethodDeclarator node, Object data) {
         AccessNode parent = (AccessNode)node.jjtGetParent();
-        // hashcode has no params
-        // TODO hashCode returns an int
+        // hashcode has no params & (TODO) returns an int
         if (node.getImage().equals("hashCode") && parent.isPublic() && !parent.isStatic() && node.jjtGetChild(0).jjtGetNumChildren() == 0) {
             criteria.overridesEquals();
-        } else if (node.getImage().equals("equals") && parent.isPublic()  && !parent.isStatic()) {
-            // TODO equals has 1 param of type Object
-            criteria.overridesHashcode();
+        } else if (node.getImage().equals("equals") && parent.isPublic()  && !parent.isStatic() && node.getParameterCount() ==1) {
+            SimpleNode paramNode = (SimpleNode)node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+            if (paramNode.getImage().equals("Object")) {
+                criteria.overridesHashcode();
+            }
         }
         return super.visit(node, data);
     }

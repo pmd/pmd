@@ -11,6 +11,7 @@ These rules deal with different problems that can occur with JUnit tests.
     <description>
     Some JUnit framework methods are easy to misspell.
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -30,6 +31,7 @@ public class Foo extends TestCase {
     <description>
     The suite() method in a JUnit test needs to be both public and static.
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[

@@ -5,7 +5,6 @@
 The Unused Code Ruleset contains a collection of rules that find unused code.
   </description>
 
-
   <rule name="UnusedPrivateField"
         message="Avoid unused private fields such as ''{0}''"
         class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule">
@@ -13,6 +12,7 @@ The Unused Code Ruleset contains a collection of rules that find unused code.
 Unused Private Field detects when a private field is declared
 that is not used by the class.
     </description>
+      <priority>3</priority>
     <example>
 <![CDATA[
 public class Something {
@@ -35,6 +35,7 @@ public class Something {
 Unused Local Variables detects when a variable is declared, but not
 used (except for possibly initial assignment)
     </description>
+    <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -56,6 +57,7 @@ public int doSomething() {
     <description>
 Unused Private Method detects when a private method is declared but is unused.
     </description>
+        <priority>3</priority>
     <example>
 <![CDATA[
 public class Something {
@@ -72,6 +74,7 @@ public class Something {
     <description>
 Avoid passing parameters to methods and then not using those parameters.
     </description>
+      <priority>3</priority>
 
     <example>
 <![CDATA[
@@ -90,6 +93,7 @@ public class Foo {
 Unnecessary constructor detects when a constructor is not necessary; i.e., when there's only one constructor,
 it's public, has an empty body, and takes no arguments.
     </description>
+      <priority>3</priority>
     <example>
 <![CDATA[
 public class Foo {
