@@ -34,6 +34,23 @@ public class CPDTest extends TestCase{
         }
     }
 
+    public void testBasic2() throws Throwable {
+        CPD cpd = new CPD();
+        cpd.add("1", "helloworld");
+        cpd.add("2", "hellothere");
+        cpd.go(4);
+        Occurrences occs = cpd.getResults();
+        Iterator i = occs.getOccurrences(new Tile(getHelloTokens()));
+        assertTrue(i.hasNext());
+        Occurrence occ = (Occurrence)i.next();
+        if (occ.getTokenSetID().equals("1")) {
+            assertEquals(0, occ.getIndex());
+        } else {
+            assertEquals("2", occ.getTokenSetID());
+            assertEquals(0, occ.getIndex());
+        }
+    }
+
     private List getHelloTokens() {
         List tokens = new ArrayList();
         Token tok = new Token('h', 0, "1");
