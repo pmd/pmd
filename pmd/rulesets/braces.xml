@@ -84,7 +84,7 @@ public class Foo {
     </example>
     </rule>
 
-   <rule name="AvoidDeeplyNestedIfStmts"
+  <rule name="AvoidDeeplyNestedIfStmts"
         message="Deeply nested if..then statements are hard to read"
         class="net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule">
     <description>
