@@ -10,7 +10,7 @@
       <library name="pmd-eclipse.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-dev.jar"/>
+      <library name="lib/pmd-0.9.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
@@ -116,6 +116,36 @@
                id="net.sourceforge.pmd.eclipse.CPDCheckProjectActionItem">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         id="mymarker"
+         point="org.eclipse.core.resources.markers">
+   </extension>
+   <extension
+         id="PMDMarker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <super
+            type="net.sourceforge,pmd.eclipse.mymarker">
+      </super>
+      <persistent
+            value="false">
+      </persistent>
+   </extension>
+   <extension
+         id="CPDMarker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <super
+            type="net.sourceforge,pmd.eclipse.mymarker">
+      </super>
+      <persistent
+            value="false">
+      </persistent>
    </extension>
 
 </plugin>

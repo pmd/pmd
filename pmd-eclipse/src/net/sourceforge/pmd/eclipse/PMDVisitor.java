@@ -81,7 +81,7 @@ public class PMDVisitor implements IResourceVisitor {
 		while (iter.hasNext()) {
 			RuleViolation violation = (RuleViolation) iter.next();
 			
-			IMarker marker = file.createMarker(IMarker.TASK);
+			IMarker marker = file.createMarker(PMDPlugin.PMD_MARKER);
 			marker.setAttribute( IMarker.MESSAGE, 
 								 violation.getDescription() );
 			marker.setAttribute( IMarker.LINE_NUMBER,

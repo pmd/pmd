@@ -16,10 +16,15 @@ public class PMDPlugin extends AbstractUIPlugin {
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
 
+	//preference constants
 	public static final String RULESETS_PREFERENCE = "net.sourceforge.pmd.eclipse.rulesets";
 	public static final String DEFAULT_RULESETS = "rulesets/basic.xml;rulesets/design.xml;rulesets/imports.xml;rulesets/unusedcode.xml";
 	public static String MIN_TILE_SIZE_PREFERENCE = "net.sourceforge.pmd.eclipse.CPDPreference.mintilesize";
 	public static int DEFAULT_MIN_TILE_SIZE = 25;
+	
+	//marker constants
+	public static String PMD_MARKER = "net.sourceforge.pmd.eclipse.PMDMarker";
+	public static String CPD_MARKER = "net.sourceforge.pmd.eclipse.CPDMarker";
 	
 	private static final String PREFERENCE_DELIMITER = ";";
 	
