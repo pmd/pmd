@@ -22,6 +22,8 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     protected String example;
     protected String ruleSetName;
     protected boolean include;
+    protected boolean usesDFA;
+    protected boolean usesSymbolTable;
     protected int priority = LOWEST_PRIORITY;
     private String packageName;
     private String className;
@@ -156,5 +158,21 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         className = node.getImage();
         return super.visit(node, data);
+    }
+
+    public void setUsesSymbolTable() {
+        this.usesSymbolTable = true;
+    }
+
+    public boolean usesSymbolTable() {
+        return this.usesSymbolTable;
+    }
+
+    public void setUsesDFA() {
+        this.usesDFA = true;
+    }
+
+    public boolean usesDFA() {
+        return this.usesDFA;
     }
 }

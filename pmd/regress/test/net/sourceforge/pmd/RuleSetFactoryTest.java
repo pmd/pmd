@@ -38,7 +38,7 @@ public class RuleSetFactoryTest extends TestCase {
 
     public void testSingleRuleWithPriority() {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE_SET_WITH_PRIORITY.getBytes()));
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(PRIORITY.getBytes()));
         Rule r = (Rule)rs.getRules().iterator().next();
         assertEquals(3, r.getPriority());
     }
@@ -55,14 +55,14 @@ public class RuleSetFactoryTest extends TestCase {
 
     public void testCreateEmptyRuleSet() {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(EMPTY_RULE_SET.getBytes()));
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(EMPTY_RULESET.getBytes()));
         assertEquals("test", rs.getName());
         assertEquals(0, rs.size());
     }
 
     public void testSingleRule() {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE_SET.getBytes()));
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes()));
         assertEquals(1, rs.size());
         Rule r = (Rule)rs.getRules().iterator().next();
         assertEquals("MockRuleName", r.getName());
@@ -71,7 +71,7 @@ public class RuleSetFactoryTest extends TestCase {
 
     public void testMultipleRules() {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(MULTIPLE_RULE_SET.getBytes()));
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(MULTIPLE_RULES.getBytes()));
         assertEquals(2, rs.size());
         Set expected = new HashSet();
         expected.add("MockRuleName1");
@@ -83,7 +83,7 @@ public class RuleSetFactoryTest extends TestCase {
 
     public void testProps() {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(RULE_WITH_PROPERTIES.getBytes()));
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(PROPERTIES.getBytes()));
         Rule r = (Rule) rs.getRules().iterator().next();
         assertTrue(r.hasProperty("foo"));
         assertEquals("bar", r.getStringProperty("foo"));
@@ -98,26 +98,49 @@ public class RuleSetFactoryTest extends TestCase {
 
     public void testXPathPluginnameProperty() {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(RULE_WITH_XPATH_AND_PLUGINNAME.getBytes()));
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(XPATH_PLUGINNAME.getBytes()));
         Rule r = (Rule) rs.getRules().iterator().next();
         assertTrue(r.hasProperty("pluginname"));
     }
 
     public void testXPath() {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(RULE_WITH_XPATH.getBytes()));
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(XPATH.getBytes()));
         Rule r = (Rule) rs.getRules().iterator().next();
         assertTrue(r.hasProperty("xpath"));
         assertTrue(r.getStringProperty("xpath").indexOf(" //Block ") != -1);
     }
 
-    private static final String EMPTY_RULE_SET =
+    public void testFacadesOffByDefault() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(XPATH.getBytes()));
+        Rule r = (Rule) rs.getRules().iterator().next();
+        assertFalse(r.usesDFA());
+        assertFalse(r.usesSymbolTable());
+    }
+
+    public void testSymbolTableFacadeFlag() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SYMBOLTABLE.getBytes()));
+        Rule r = (Rule) rs.getRules().iterator().next();
+        assertTrue(r.usesSymbolTable());
+        assertFalse(r.usesDFA());
+    }
+
+    public void testDFAFlag() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(DFA.getBytes()));
+        Rule r = (Rule) rs.getRules().iterator().next();
+        assertTrue(r.usesDFA());
+    }
+
+    private static final String EMPTY_RULESET =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             "<description>testdesc</description>" + PMD.EOL +
             "</ruleset>";
 
-    private static final String SINGLE_RULE_SET =
+    private static final String SINGLE_RULE =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             "<description>testdesc</description>" + PMD.EOL +
@@ -127,7 +150,7 @@ public class RuleSetFactoryTest extends TestCase {
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
             "</rule></ruleset>";
 
-    private static final String MULTIPLE_RULE_SET =
+    private static final String MULTIPLE_RULES =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             "<description>testdesc</description>" + PMD.EOL +
@@ -140,7 +163,7 @@ public class RuleSetFactoryTest extends TestCase {
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL +
             "</rule></ruleset>";
 
-    private static final String RULE_WITH_PROPERTIES =
+    private static final String PROPERTIES =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             "<description>testdesc</description>" + PMD.EOL +
@@ -156,7 +179,7 @@ public class RuleSetFactoryTest extends TestCase {
             "</properties>" + PMD.EOL +
             "</rule></ruleset>";
 
-    private static final String RULE_WITH_XPATH =
+    private static final String XPATH =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             "<description>testdesc</description>" + PMD.EOL +
@@ -174,7 +197,7 @@ public class RuleSetFactoryTest extends TestCase {
             "</properties>" + PMD.EOL +
             "</rule></ruleset>";
 
-    private static final String RULE_WITH_XPATH_AND_PLUGINNAME =
+    private static final String XPATH_PLUGINNAME =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             "<description>testdesc</description>" + PMD.EOL +
@@ -193,13 +216,37 @@ public class RuleSetFactoryTest extends TestCase {
             "</rule></ruleset>";
 
 
-    private static final String SINGLE_RULE_SET_WITH_PRIORITY =
+    private static final String PRIORITY =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             "<description>testdesc</description>" + PMD.EOL +
             "<rule " + PMD.EOL +
             "name=\"MockRuleName\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +
+            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
+            "<priority>3</priority>" + PMD.EOL +
+            "</rule></ruleset>";
+
+    private static final String SYMBOLTABLE =
+            "<?xml version=\"1.0\"?>" + PMD.EOL +
+            "<ruleset name=\"test\">" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
+            "<rule " + PMD.EOL +
+            "name=\"MockRuleName\" " + PMD.EOL +
+            "message=\"avoid the mock rule\" " + PMD.EOL +
+            "symboltable=\"true\" " + PMD.EOL +
+            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
+            "<priority>3</priority>" + PMD.EOL +
+            "</rule></ruleset>";
+
+    private static final String DFA =
+            "<?xml version=\"1.0\"?>" + PMD.EOL +
+            "<ruleset name=\"test\">" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
+            "<rule " + PMD.EOL +
+            "name=\"MockRuleName\" " + PMD.EOL +
+            "message=\"avoid the mock rule\" " + PMD.EOL +
+            "dfa=\"true\" " + PMD.EOL +
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
             "<priority>3</priority>" + PMD.EOL +
             "</rule></ruleset>";

@@ -55,10 +55,18 @@ public class PMD {
             JavaParser parser = targetJDKVersion.createParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
             Thread.yield();
-            SymbolFacade stb = new SymbolFacade();
-            stb.initializeWith(c);
-            //DataFlowFacade dff = new DataFlowFacade();
-            //dff.initializeWith(c);
+
+            if (ruleSet.usesSymbolTable()) {
+                SymbolFacade stb = new SymbolFacade();
+                stb.initializeWith(c);
+            }
+
+
+            if (ruleSet.usesDFA()) {
+                DataFlowFacade dff = new DataFlowFacade();
+                dff.initializeWith(c);
+            }
+
             List acus = new ArrayList();
             acus.add(c);
             ruleSet.apply(acus, ctx);

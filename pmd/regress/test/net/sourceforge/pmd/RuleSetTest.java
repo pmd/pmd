@@ -39,10 +39,32 @@ import java.util.List;
 import java.util.Set;
 
 public class RuleSetTest extends TestCase {
+
     private String javaCode = "public class Test { }";
 
-    public void testConstructor() {
-        new RuleSet();
+    public void testNeitherSymbolTableNorDFA() {
+        RuleSet rs = new RuleSet();
+        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
+        rs.addRule(mock);
+        assertFalse(rs.usesSymbolTable());
+        assertFalse(rs.usesDFA());
+    }
+
+
+    public void testIncludesRuleWithSymbolTable() {
+        RuleSet rs = new RuleSet();
+        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
+        mock.setUsesSymbolTable();
+        rs.addRule(mock);
+        assertTrue(rs.usesSymbolTable());
+    }
+
+    public void testIncludesRuleWithDFA() {
+        RuleSet rs = new RuleSet();
+        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
+        mock.setUsesDFA();
+        rs.addRule(mock);
+        assertTrue(rs.usesDFA());
     }
 
     public void testAccessors() {

@@ -192,13 +192,19 @@ public class RuleSetFactory {
     private void parseInternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         Element ruleElement = (Element) ruleNode;
 
-        String className = ruleElement.getAttribute("class");
-        String name = ruleElement.getAttribute("name");
-        String message = ruleElement.getAttribute("message");
-        Rule rule = (Rule) getClassLoader().loadClass(className).newInstance();
-        rule.setName(name);
-        rule.setMessage(message);
+        Rule rule = (Rule) getClassLoader().loadClass(ruleElement.getAttribute("class")).newInstance();
+
+        rule.setName(ruleElement.getAttribute("name"));
+        rule.setMessage(ruleElement.getAttribute("message"));
         rule.setRuleSetName(ruleSet.getName());
+
+        if (ruleElement.hasAttribute("symboltable") && ruleElement.getAttribute("symboltable").equals("true")) {
+            rule.setUsesSymbolTable();
+        }
+
+        if (ruleElement.hasAttribute("dfa") && ruleElement.getAttribute("dfa").equals("true")) {
+            rule.setUsesDFA();
+        }
 
         NodeList nodeList = ruleElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {

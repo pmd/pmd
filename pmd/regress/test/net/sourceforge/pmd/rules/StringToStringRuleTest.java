@@ -4,20 +4,27 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.StringToStringRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class StringToStringRuleTest extends SimpleAggregatorTst {
 
+    private Rule rule;
+
+    public void setUp() throws Exception {
+        rule = findRule("rulesets/strings.xml", "StringToString");
+    }
+
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "local var", 1, new StringToStringRule()),
-           new TestDescriptor(TEST2, "parameter", 1, new StringToStringRule()),
-           new TestDescriptor(TEST3, "field", 1, new StringToStringRule()),
-           new TestDescriptor(TEST4, "primitive", 0, new StringToStringRule()),
-           new TestDescriptor(TEST5, "multiple similar params", 0, new StringToStringRule()),
-           new TestDescriptor(TEST6, "string array", 1, new StringToStringRule())
+           new TestDescriptor(TEST1, "local var", 1, rule),
+           new TestDescriptor(TEST2, "parameter", 1, rule),
+           new TestDescriptor(TEST3, "field", 1, rule),
+           new TestDescriptor(TEST4, "primitive", 0, rule),
+           new TestDescriptor(TEST5, "multiple similar params", 0, rule),
+           new TestDescriptor(TEST6, "string array", 1, rule)
        });
     }
 

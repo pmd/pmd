@@ -56,4 +56,12 @@ public interface Rule {
     String getPriorityName();
 
     void setPriority(int priority);
+
+    void setUsesSymbolTable();
+
+    boolean usesSymbolTable();
+
+    void setUsesDFA();
+    
+    boolean usesDFA();
 }

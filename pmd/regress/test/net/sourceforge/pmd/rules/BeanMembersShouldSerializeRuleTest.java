@@ -5,7 +5,6 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.BeanMembersShouldSerializeRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -13,8 +12,8 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new BeanMembersShouldSerializeRule();
+    public void setUp() throws Exception {
+        rule = findRule("rulesets/javabeans.xml", "BeanMembersShouldSerialize");
         rule.setMessage("Don't {0} !");
     }
 

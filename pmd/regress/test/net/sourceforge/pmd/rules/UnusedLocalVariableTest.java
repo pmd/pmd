@@ -4,16 +4,17 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class UnusedLocalVariableTest extends SimpleAggregatorTst {
 
-    private UnusedLocalVariableRule rule;
+    private Rule rule;
 
-    public void setUp() {
-        rule = new UnusedLocalVariableRule();
+    public void setUp() throws Exception {
+        rule = findRule("rulesets/unusedcode.xml", "UnusedLocalVariable");
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 

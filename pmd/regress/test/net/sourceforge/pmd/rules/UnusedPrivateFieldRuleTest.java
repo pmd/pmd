@@ -4,16 +4,17 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.UnusedPrivateFieldRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
 
-    private UnusedPrivateFieldRule rule;
+    private Rule rule;
 
-    public void setUp() {
-        rule = new UnusedPrivateFieldRule();
+    public void setUp() throws Exception {
+        rule = findRule("rulesets/unusedcode.xml", "UnusedPrivateField");
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 

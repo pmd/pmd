@@ -38,6 +38,34 @@ public class RuleSet {
         return rules;
     }
 
+    /**
+     *
+     * @return true if any rule in the RuleSet needs the symbol table
+     */
+    public boolean usesSymbolTable() {
+        for (Iterator i = rules.iterator(); i.hasNext();) {
+            Rule r = (Rule) i.next();
+            if (r.usesSymbolTable()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return true if any rule in the RuleSet needs the DFA layer
+     */
+    public boolean usesDFA() {
+        for (Iterator i = rules.iterator(); i.hasNext();) {
+            Rule r = (Rule) i.next();
+            if (r.usesDFA()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Rule getRuleByName(String ruleName) {
         for (Iterator i = rules.iterator(); i.hasNext();) {
             Rule r = (Rule) i.next();

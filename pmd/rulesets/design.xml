@@ -155,6 +155,7 @@ public class Foo {
 
     <rule name="AvoidReassigningParametersRule"
         message="Avoid reassigning parameters such as ''{0}''"
+        symboltable="true"
         class="net.sourceforge.pmd.rules.AvoidReassigningParametersRule">
     <description>
 Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
