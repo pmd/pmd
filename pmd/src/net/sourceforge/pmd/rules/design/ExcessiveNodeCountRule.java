@@ -22,34 +22,29 @@ import net.sourceforge.pmd.stat.StatisticalRule;
 public class ExcessiveNodeCountRule
     extends StatisticalRule
 {
-    private Class nodeClass = null;
+    private Class nodeClass;
 
     public ExcessiveNodeCountRule( Class nodeClass ) {
-	this.nodeClass = nodeClass;
+	    this.nodeClass = nodeClass;
     }
 
     public Object visit( SimpleNode node, Object data ) {
-	int numNodes = 0;
-	
-	int numChildren = node.jjtGetNumChildren();
-	for (int i = 0; i < numChildren; i++) {
-	    Integer treeSize =
-		(Integer) ((SimpleNode) node.jjtGetChild(i))
-		.jjtAccept( this, data );
-	    
-	    numNodes += treeSize.intValue();
-	}
-	
-	if (nodeClass.isInstance( node )) {
-	    DataPoint point = new DataPoint();
-	    point.setLineNumber( node.getBeginLine() );
-	    point.setScore( 1.0 * numNodes );
-	    point.setRule( this );
-	    point.setMessage( getMessage() );
-	    
-	    addDataPoint( point );
-	}
+        int numNodes = 0;
 
-	return new Integer( numNodes );
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            Integer treeSize = (Integer) (node.jjtGetChild(i)).jjtAccept( this, data );
+            numNodes += treeSize.intValue();
+        }
+
+        if (nodeClass.isInstance( node )) {
+            DataPoint point = new DataPoint();
+            point.setLineNumber( node.getBeginLine() );
+            point.setScore( 1.0 * numNodes );
+            point.setRule( this );
+            point.setMessage( getMessage() );
+            addDataPoint( point );
+        }
+
+        return new Integer( numNodes );
     }
 }
