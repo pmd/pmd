@@ -73,7 +73,7 @@
       <name>Tom Copeland</name>
       <id>tomcopeland</id>
       <email>tom@infoether.com</email>
-      <roles><role>foo</role></roles>
+      <roles><role>Developer</role></roles>
     </developer>
 
     <developer>
@@ -81,14 +81,14 @@
       <id>dpeugh</id>
       <email>ddp@apache.org</email>
       <organization>Lockheed Martin Corporation</organization>
-      <roles><role>foo</role></roles>
+      <roles><role>Developer</role></roles>
     </developer>
 
     <developer>
       <name>David Craine</name>
       <id>dcraine</id>
       <email>dave@infoether.com</email>
-      <roles><role>foo</role></roles>
+      <roles><role>Developer</role></roles>
     </developer>
   </developers>
 
