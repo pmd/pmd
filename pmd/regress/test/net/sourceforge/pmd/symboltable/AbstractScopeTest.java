@@ -11,6 +11,8 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Collections;
 
 public class AbstractScopeTest extends TestCase {
 
@@ -41,8 +43,8 @@ public class AbstractScopeTest extends TestCase {
         scope.setParent(parent);
         assertEquals(parent, scope.getParent());
 
-        assertTrue(!scope.getUnusedVariableDeclarations().hasNext());
-        assertTrue(scope.getUsedVariableDeclarations().isEmpty());
+        assertTrue(!scope.getVariableDeclarations(false).keySet().iterator().hasNext());
+        assertTrue(scope.getVariableDeclarations(true).isEmpty());
     }
 
     public void testEnclClassScopeGetsDelegatedRight() {

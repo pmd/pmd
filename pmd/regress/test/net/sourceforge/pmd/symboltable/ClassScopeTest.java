@@ -20,7 +20,7 @@ public class ClassScopeTest extends TestCase {
         ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage("bar");
         s.addDeclaration(new VariableNameDeclaration(node));
-        assertTrue(s.getUnusedVariableDeclarations().hasNext());
+        assertTrue(s.getVariableDeclarations(false).keySet().iterator().hasNext());
     }
 
     public void testCantContainsSuperToString() {

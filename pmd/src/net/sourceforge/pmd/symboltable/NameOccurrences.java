@@ -14,7 +14,6 @@ import java.util.StringTokenizer;
 
 public class NameOccurrences {
 
-    // TODO could this be a Stack?
     private List names = new ArrayList();
 
     public NameOccurrences(ASTPrimaryExpression node) {

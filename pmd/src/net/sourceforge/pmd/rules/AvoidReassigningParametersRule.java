@@ -21,7 +21,7 @@ public class AvoidReassigningParametersRule extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
         Scope scope = node.getScope();
-        Map params = scope.getUsedVariableDeclarations();
+        Map params = scope.getVariableDeclarations(true);
         for (Iterator i = params.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
             List usages = (List)params.get(decl);

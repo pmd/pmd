@@ -16,15 +16,10 @@ import java.util.Map;
 public interface Scope {
 
     /**
-     * Returns an Iterator over a collection of unused declarations that exist at this scope
-     */
-    public Iterator getUnusedVariableDeclarations();
-
-    /**
      * Returns a Map (VariableNameDeclaration->List(NameOccurrence,NameOccurrence)) of declarations that
-     * exist and are used at the scope
+     * exist and are either used or not used at this scope
      */
-    public Map getUsedVariableDeclarations();
+    public Map getVariableDeclarations(boolean lookingForUsed);
 
     /**
      * Add a variable declaration to this scope

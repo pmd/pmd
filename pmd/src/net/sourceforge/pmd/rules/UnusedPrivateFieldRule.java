@@ -15,7 +15,7 @@ import net.sourceforge.pmd.symboltable.*;
 public class UnusedPrivateFieldRule extends AbstractRule {
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
-        for (Iterator i = node.getScope().getUnusedVariableDeclarations();i.hasNext();) {
+        for (Iterator i = node.getScope().getVariableDeclarations(false).keySet().iterator();i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
             if (decl.getAccessNodeParent().isPrivate() && !decl.getImage().equals("serialVersionUID") && !decl.getImage().equals("serialPersistentFields")) {
                 RuleContext ctx = (RuleContext)data;

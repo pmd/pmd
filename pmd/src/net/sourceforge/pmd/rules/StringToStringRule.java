@@ -23,7 +23,7 @@ public class StringToStringRule extends AbstractRule {
             return data;
         }
         // now we know we're at a node of type String
-        Map decls = node.getScope().getUsedVariableDeclarations();
+        Map decls = node.getScope().getVariableDeclarations(true);
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
             if (!decl.getImage().equals(node.getImage())) {

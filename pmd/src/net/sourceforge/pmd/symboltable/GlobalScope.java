@@ -7,6 +7,7 @@ package net.sourceforge.pmd.symboltable;
 
 import java.util.Iterator;
 import java.util.Collections;
+import java.util.Map;
 
 public class GlobalScope extends AbstractScope implements Scope {
 
@@ -18,8 +19,8 @@ public class GlobalScope extends AbstractScope implements Scope {
         throw new RuntimeException("addMethodDeclaration() called on GlobalScope");
     }
 
-    public Iterator getUnusedVariableDeclarations() {
-        return Collections.EMPTY_LIST.iterator();
+    public Map getUnusedVariableDeclarations() {
+        return Collections.EMPTY_MAP;
     }
 
     public void addDeclaration(VariableNameDeclaration decl) {}

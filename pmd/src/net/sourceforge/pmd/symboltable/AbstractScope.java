@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.util.Applier;
+
 import java.util.*;
 
 /**
@@ -43,27 +45,10 @@ public abstract class AbstractScope implements Scope {
         return findVariableHere(occurrence) != null;
     }
 
-    public Map getUsedVariableDeclarations() {
-        Map used = new HashMap();
-        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
-            List usages = (List)variableNames.get(nameDeclaration);
-            if (!usages.isEmpty()) {
-                used.put(nameDeclaration, usages);
-            }
-        }
-        return used;
-    }
-
-    public Iterator getUnusedVariableDeclarations() {
-        List unused = new ArrayList();
-        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
-            if (((List)variableNames.get(nameDeclaration)).isEmpty()) {
-                unused.add(nameDeclaration);
-            }
-        }
-        return unused.iterator();
+    public Map getVariableDeclarations(boolean lookingForUsed) {
+        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames, lookingForUsed);
+        Applier.apply(f, variableNames.keySet().iterator());
+        return f.getUsed();
     }
 
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
