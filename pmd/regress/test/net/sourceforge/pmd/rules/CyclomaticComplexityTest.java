@@ -7,16 +7,17 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.rules.CyclomaticComplexity;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import java.util.Iterator;
 
 public class CyclomaticComplexityTest extends RuleTst {
 
-    private Rule rule = new CyclomaticComplexity();
+    private Rule rule;
 
-    public void setUp() {
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/codesize.xml", "CyclomaticComplexity");
         rule.setMessage("The {0} ''{1}'' has a Cyclomatic Complexity of {2}.");
     }
 
