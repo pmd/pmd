@@ -58,20 +58,6 @@ public class PMD {
     }
 
     public static void main(String[] args) {
-        if (args.length == 0) {
-            usage();
-            System.exit(1);
-        }
-
-        if (args[0].equals("-g")) {
-            try {
-                PMDViewer.run();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-
         if (args.length < 3) {
             usage();
             System.exit(1);
