@@ -27,8 +27,3 @@ OPTIONS
 Go to Options/IDE Configuration/Server And External Tool Settings/PMD Settings
 to choose which rulesets to use. Go to the PMD documentation to learn more about
 rulesets.
-
-------------------------
-KNOWN BUGS
-------------------------
-633432 - pmd-netbeans can't change settings in Sun ONE Studio 4

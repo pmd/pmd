@@ -32,7 +32,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 
-import org.openide.ErrorManager;
+import org.openide.TopManager;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
@@ -57,7 +57,7 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 			return new PropertyDescriptor[]{rulesets};
 		}
 		catch( IntrospectionException ie ) {
-			ErrorManager.getDefault().notify( ie );
+			TopManager.getDefault().getErrorManager().notify( ie );
 			return null;
 		}
 	}

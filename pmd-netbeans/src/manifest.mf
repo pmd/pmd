@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Specification-Version: 0.40
+OpenIDE-Module-Specification-Version: 0.50
 Created-By: NetBeans
-Class-Path: ext/pmd-1.0.jar
+Class-Path: ext/pmd-1.01.jar
 OpenIDE-Module: pmd
 OpenIDE-Module-Layer: pmd/mf-layer.xml
 

@@ -43,7 +43,6 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
 
-import org.openide.ErrorManager;
 import org.openide.TopManager;
 import org.openide.cookies.EditorCookie;
 import org.openide.cookies.SourceCookie;
@@ -66,7 +65,7 @@ import pmd.config.PMDOptionsSettings;
  * @created 17. oktober 2002
  */
 public class RunPMDAction extends CookieAction {
-
+	
 	/** Indicates if any violations has been printed */
 	private boolean printed = false;
 
@@ -210,7 +209,7 @@ public class RunPMDAction extends CookieAction {
 
 		}
 		catch( IOException e ) {
-			ErrorManager.getDefault().notify( e );
+			TopManager.getDefault().getErrorManager().notify( e );
 		}
 
 	}
@@ -230,7 +229,7 @@ public class RunPMDAction extends CookieAction {
 				PMDOptionsSettings.getDefault().getRulesets() );
 		}
 		catch( RuleSetNotFoundException rsnfe ) {
-			ErrorManager.getDefault().notify( rsnfe );
+			TopManager.getDefault().getErrorManager().notify( rsnfe );
 		}
 		return rules;
 	}

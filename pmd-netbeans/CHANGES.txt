@@ -1,5 +1,10 @@
+Version 0.5
+- Fixed bug 633432 pmd-netbeans can't change settings (netbeans) 
+- Fixed bug 634463 Problem with UnusedPrivateField (netbeans) 
+- Updated pmd to version 1.01
+
 Version 0.4
-Fixed bug in manifest.mf, so now people are able to upgrade the currently installed version
+- Fixed bug in manifest.mf, so now people are able to upgrade the currently installed version
 
 Version 0.3
 - Changed default rulesets
@@ -15,4 +20,4 @@ Version 0.3
 - Made it possible to select several folders or javafiles and run pmd
 
 Version 0.2
-Fixed bug in manifest.mf to make it work on unix plattform.
+- Fixed bug in manifest.mf to make it work on unix plattform.
