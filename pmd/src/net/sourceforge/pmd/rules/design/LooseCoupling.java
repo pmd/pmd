@@ -15,11 +15,11 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LooseCouplingRule extends AbstractRule {
+public class LooseCoupling extends AbstractRule {
 
     private Set implClassNames = new HashSet();
 
-    public LooseCouplingRule() {
+    public LooseCoupling() {
         super();
         implClassNames.add("HashSet");
         implClassNames.add("HashMap");

@@ -8,7 +8,7 @@ import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
 
 /**
- * ExcessiveImportsRule attempts to count all unique imports a class
+ * ExcessiveImports attempts to count all unique imports a class
  * contains. This rule will count a "import com.something.*;" as a single
  * import. This is a unqiue situation and I'd like to create an audit type
  * rule that captures those.
@@ -16,12 +16,9 @@ import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
  * @author aglover
  * @since Feb 21, 2003
  */
-public class ExcessiveImportsRule extends ExcessiveNodeCountRule {
+public class ExcessiveImports extends ExcessiveNodeCountRule {
 
-    /**
-     * Hook constructor to pass in parent type
-     */
-    public ExcessiveImportsRule() {
+    public ExcessiveImports() {
         super(ASTCompilationUnit.class);
     }
 

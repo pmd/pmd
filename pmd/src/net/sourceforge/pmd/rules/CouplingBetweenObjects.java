@@ -20,7 +20,7 @@ import java.util.Set;
 
 
 /**
- * CouplingBetweenObjectsRule attempts to capture all unique Class attributes,
+ * CouplingBetweenObjects attempts to capture all unique Class attributes,
  * local variables, and return types to determine how many objects a class is
  * coupled to. This is only a guage and isn't a hard and fast rule. The threshold
  * value is configurable and should be determined accordingly
@@ -28,7 +28,7 @@ import java.util.Set;
  * @author aglover
  * @since Feb 20, 2003
  */
-public class CouplingBetweenObjectsRule extends AbstractRule {
+public class CouplingBetweenObjects extends AbstractRule {
 
     private int couplingCount;
     private Set typesFoundSoFar;

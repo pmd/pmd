@@ -5,16 +5,16 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.ExcessiveImportsRule;
+import net.sourceforge.pmd.rules.ExcessiveImports;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class ExcessiveImportsRuleTest extends SimpleAggregatorTst {
+public class ExcessiveImportsTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
     public void setUp() {
-        rule = new ExcessiveImportsRule();
+        rule = new ExcessiveImports();
         rule.addProperty("minimum", "3");
     }
 

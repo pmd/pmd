@@ -4,16 +4,17 @@
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.design.LooseCouplingRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.design.LooseCoupling;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class LooseCouplingRuleTest extends SimpleAggregatorTst {
+public class LooseCouplingTest extends SimpleAggregatorTst {
 
-    private LooseCouplingRule rule;
+    private Rule rule;
 
     public void setUp() {
-        rule = new LooseCouplingRule();
+        rule = new LooseCoupling();
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 

@@ -6,10 +6,10 @@
     These are rules which find instances of high or inappropriate coupling between objects and packages.
   </description>
 
-    <rule name="CouplingBetweenObjectsRule"
+    <rule name="CouplingBetweenObjects"
         symboltable="true"
         message="High amount of different objects as memebers donotes a high coupling"
-        class="net.sourceforge.pmd.rules.CouplingBetweenObjectsRule">
+        class="net.sourceforge.pmd.rules.CouplingBetweenObjects">
     <description>
         Rule counts unique attributes, local variables and return types within an object. An amount
         higher than specified threshold can indicate a high degree of couping with in an object
@@ -41,9 +41,9 @@
     </example>
   </rule>
 
-  <rule name="ExcessiveImportsRule"
+  <rule name="ExcessiveImports"
      message="A high number of imports can indicate a high degree of coupling within an object."
-     class="net.sourceforge.pmd.rules.ExcessiveImportsRule">
+     class="net.sourceforge.pmd.rules.ExcessiveImports">
      <description>
       A high number of imports can indicate a high degree of coupling within
       an object. Rule counts the number of unique imports and reports a violation
@@ -68,9 +68,9 @@
 
    </rule>
 
-    <rule name="LooseCouplingRule"
+    <rule name="LooseCoupling"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
-          class="net.sourceforge.pmd.rules.design.LooseCouplingRule">
+          class="net.sourceforge.pmd.rules.design.LooseCoupling">
       <description>
       Avoid using implementation types (i.e., HashSet); use the interface (i.e, Set) instead
       </description>
