@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="net.sourceforge.pmd.eclipse" default="build.update.jar" basedir=".">
+
+	<target name="init">
+		<property name="feature" value="net.sourceforge.pmd.eclipse"/>
+		<property name="feature.version.suffix" value="_2.0.0"/>
+		<property name="feature.full.name" value="${feature}${feature.version.suffix}"/>
+		<property name="feature.temp.folder" value="${basedir}/feature.temp.folder"/>
+		<property name="feature.destination" value="${basedir}"/>
+	</target>
+
+	<target name="all.plugins" depends="init">
+		<ant antfile="build.xml" dir="../pmd-eclipse-pmd/" target="${target}"/>
+		<ant antfile="build.xml" dir="../pmd-eclipse/" target="${target}"/>
+		<ant antfile="build.xml" dir="../pmd-eclipse-pmd/" target="${target}"/>
+		<ant antfile="build.xml" dir="../pmd-eclipse/" target="${target}"/>
+	</target>
+
+	<target name="all.children" depends="init,all.plugins">
+	</target>
+
+	<target name="children" if="include.children">
+		<antcall target="all.children"/>
+	</target>
+
+	<target name="build.jars" depends="init" description="Build all the jars for the feature: net.sourceforge.pmd.eclipse.">
+		<antcall target="all.children">
+			<param name="target" value="build.jars"/>
+		</antcall>
+	</target>
+
+	<target name="build.sources" depends="init">
+		<antcall target="all.children">
+			<param name="target" value="build.sources"/>
+		</antcall>
+	</target>
+
+	<target name="build.zips" depends="init">
+		<antcall target="all.children">
+			<param name="target" value="build.zips"/>
+		</antcall>
+	</target>
+
+	<target name="build.update.jar" depends="init" description="Build the feature jar of: net.sourceforge.pmd.eclipse for an update site.">
+		<antcall target="all.children">
+			<param name="target" value="build.update.jar"/>
+		</antcall>
+		<property name="feature.base" value="${feature.temp.folder}"/>
+		<delete dir="${feature.temp.folder}"/>
+		<mkdir dir="${feature.temp.folder}"/>
+		<antcall target="gather.bin.parts" inheritAll="false">
+			<param name="feature.base" value="${feature.temp.folder}"/>
+		</antcall>
+		<jar jarfile="${feature.destination}/${feature.full.name}.jar" basedir="${feature.temp.folder}/features/${feature.full.name}"/>
+		<delete dir="${feature.temp.folder}"/>
+	</target>
+
+	<target name="gather.bin.parts" depends="init" if="feature.base">
+		<antcall target="children">
+			<param name="destination.temp.folder" value="${feature.base}/plugins"/>
+			<param name="target" value="gather.bin.parts"/>
+		</antcall>
+		<mkdir dir="${feature.base}/features/${feature.full.name}"/>
+		<copy todir="${feature.base}/features/${feature.full.name}">
+			<fileset dir="${basedir}" includes="feature.xml,feature.properties,pmd_logo_small.jpg"/>
+		</copy>
+	</target>
+
+	<target name="zip.distribution" depends="init" description="Create a zip containing all the plug-ins and features for the feature: net.sourceforge.pmd.eclipse.">
+		<delete dir="${feature.temp.folder}"/>
+		<mkdir dir="${feature.temp.folder}"/>
+		<antcall target="gather.bin.parts">
+			<param name="include.children" value="true"/>
+			<param name="feature.base" value="${feature.temp.folder}"/>
+		</antcall>
+		<antcall target="zip.folder">
+			<param name="zipname" value="${feature.full.name}.bin.dist.zip"/>
+		</antcall>
+		<delete dir="${feature.temp.folder}"/>
+	</target>
+
+	<target name="zip.sources" depends="init">
+		<delete dir="${feature.temp.folder}"/>
+		<mkdir dir="${feature.temp.folder}"/>
+		<antcall target="all.children">
+			<param name="destination.temp.folder" value="${feature.temp.folder}/plugins/${feature}.source${feature.version.suffix}/src"/>
+			<param name="target" value="gather.sources"/>
+		</antcall>
+		<antcall target="zip.folder">
+			<param name="zipname" value="${feature.full.name}.src.zip"/>
+		</antcall>
+		<delete dir="${feature.temp.folder}"/>
+	</target>
+
+	<target name="zip.logs" depends="init">
+		<delete dir="${feature.temp.folder}"/>
+		<mkdir dir="${feature.temp.folder}"/>
+		<antcall target="all.children" inheritAll="false">
+			<param name="destination.temp.folder" value="${feature.temp.folder}/plugins"/>
+			<param name="target" value="gather.logs"/>
+		</antcall>
+		<antcall target="zip.folder">
+			<param name="zipname" value="${feature.full.name}.log.zip"/>
+		</antcall>
+		<delete dir="${feature.temp.folder}"/>
+	</target>
+
+	<target name="zip.folder" depends="init">
+		<zip zipfile="${zipname}" basedir="${feature.temp.folder}" filesonly="true" update="yes"/>
+	</target>
+
+	<target name="clean" depends="init" description="Clean the feature: net.sourceforge.pmd.eclipse of all the zips, jars and logs created.">
+		<delete file="${feature.destination}/${feature.full.name}.jar"/>
+		<delete file="${feature.destination}/${feature.full.name}.bin.dist.zip"/>
+		<delete file="${feature.destination}/${feature.full.name}.log.zip"/>
+		<delete file="${feature.destination}/${feature.full.name}.src.zip"/>
+		<delete dir="${feature.temp.folder}"/>
+		<antcall target="all.children">
+			<param name="target" value="clean"/>
+		</antcall>
+	</target>
+
+	<target name="refresh" depends="init" if="eclipse.running">
+		<eclipse.convertPath fileSystemPath="c:\home\phherlin\javadev\PMD\pmd-eclipse-feature" property="resourcePath"/>
+		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
+		<antcall target="all.children">
+			<param name="target" value="refresh"/>
+		</antcall>
+	</target>
+
+</project>
