@@ -4,17 +4,25 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.CloseConnection;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class CloseConnectionTest extends SimpleAggregatorTst  {
 
+    private Rule rule;
+
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/design.xml", "CloseConnection");
+    }
+
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "connection is closed, ok", 0, new CloseConnection()),
-           new TestDescriptor(TEST2, "connection not closed, should have failed", 1, new CloseConnection()),
-           new TestDescriptor(TEST3, "java.sql.* not imported, ignore", 0, new CloseConnection()),
+           new TestDescriptor(TEST1, "connection is closed, ok", 0, rule),
+           new TestDescriptor(TEST2, "connection not closed, should have failed", 1, rule),
+           new TestDescriptor(TEST3, "java.sql.* not imported, ignore", 0, rule),
        });
     }
 

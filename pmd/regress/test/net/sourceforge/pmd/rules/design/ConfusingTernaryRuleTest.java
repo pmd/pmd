@@ -1,16 +1,24 @@
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.design.ConfusingTernary;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class ConfusingTernaryRuleTest extends SimpleAggregatorTst {
 
+    private Rule rule;
+
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/design.xml", "ConfusingTernary");
+    }
+
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "!=, bad", 1, new ConfusingTernary()),
-           new TestDescriptor(TEST2, "==, good", 0, new ConfusingTernary()),
+           new TestDescriptor(TEST1, "!=, bad", 1, rule),
+           new TestDescriptor(TEST2, "==, good", 0, rule),
        });
     }
 

@@ -4,23 +4,31 @@
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.design.NullAssignmentRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class NullAssignmentRuleTest extends SimpleAggregatorTst {
 
+    private Rule rule;
+
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/controversial.xml", "NullAssignment");
+    }
+
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "initial assignment", 0, new NullAssignmentRule()),
-           new TestDescriptor(TEST2, "bad assignment", 1, new NullAssignmentRule()),
-           new TestDescriptor(TEST3, "check test", 0, new NullAssignmentRule()),
-           new TestDescriptor(TEST4, "null param on right hand sidel", 0, new NullAssignmentRule()),
+           new TestDescriptor(TEST1, "initial assignment", 0, rule),
+           new TestDescriptor(TEST2, "bad assignment", 1, rule),
+           new TestDescriptor(TEST3, "check test", 0, rule),
+           new TestDescriptor(TEST4, "null param on right hand sidel", 0, rule),
        });
     }
 
     private static final String TEST1 =
-    "public class NullAssignment1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public Object foo() {" + PMD.EOL +
     "  Object x = null; // OK" + PMD.EOL +
     "  return x;" + PMD.EOL +
@@ -28,7 +36,7 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST2 =
-    "public class NullAssignment2 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void foo() {" + PMD.EOL +
     "  Object x;" + PMD.EOL +
     "  x = new Object();" + PMD.EOL +
@@ -40,7 +48,7 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST3 =
-    "public class NullAssignment3 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     "       public void foo() {" + PMD.EOL +
     "               Object x;" + PMD.EOL +
     "               if (x == null) { // This is OK" + PMD.EOL +
@@ -50,7 +58,7 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST4 =
-    "public class NullAssignment4 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void foo() {" + PMD.EOL +
     "  String x = null;" + PMD.EOL +
     "  x = new String(null);" + PMD.EOL +

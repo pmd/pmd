@@ -4,25 +4,28 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.AccessorClassGeneration;
 import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class AccessorClassGenerationTest extends RuleTst {
+public class AccessorClassGenerationTest extends SimpleAggregatorTst {
 
-    public void testInnerClassHasPrivateConstructor() throws Throwable {
-        runTestFromString(TEST1, 1, new AccessorClassGeneration());
+    private Rule rule;
+
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/design.xml", "AccessorClassGeneration");
     }
 
-    public void testInnerClassHasPublicConstructor() throws Throwable {
-        runTestFromString(TEST2, 0, new AccessorClassGeneration());
-    }
-
-    public void testOuterClassHasPrivateConstructor() throws Throwable {
-        runTestFromString(TEST3, 1, new AccessorClassGeneration());
-    }
-
-    public void testFinalInnerClass() throws Throwable {
-        runTestFromString(TEST4, 0, new AccessorClassGeneration());
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "inner class has private constructor", 1, rule),
+           new TestDescriptor(TEST2, "inner class has public constructor", 0, rule),
+           new TestDescriptor(TEST3, "outer class has public constructor", 1, rule),
+           new TestDescriptor(TEST4, "final inner class", 0, rule),
+       });
     }
 
     private static final String TEST1 =
