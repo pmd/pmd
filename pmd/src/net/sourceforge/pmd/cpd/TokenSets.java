@@ -52,6 +52,9 @@ public class TokenSets extends AbstractSet implements Serializable {
         return (TokenList) tokenMap.get(tok.getTokenSrcID());
     }
 
+    public TokenList getTokenList(String file) {
+        return (TokenList) tokenMap.get(file);
+    }
     public String toString() {
         StringBuffer sb = new StringBuffer();
         for (Iterator i = tokenMap.values().iterator(); i.hasNext();) {

@@ -33,10 +33,16 @@ public class TokenList implements Serializable {
         code = newCode;
     }
 
+    public String getLineSlice(int startTokenIndex, int tokenCount) {
+        TokenEntry t = (TokenEntry)tokens.get(startTokenIndex);
+        TokenEntry t2 = (TokenEntry)tokens.get(Math.min(startTokenIndex + tokenCount, tokens.size()-1));
+        return getSlice(t.getBeginLine(), t2.getBeginLine());
+    }
+
     public String getSlice(int startLine, int endLine) {
         StringBuffer sb = new StringBuffer();
         // TODO this check for i<code.size() should not be necessary
-        for (int i = startLine; (i <= endLine) && (i < code.size()); i++) {
+        for (int i = startLine; i <= endLine && i < code.size(); i++) {
             if (sb.length() != 0) {
                 sb.append(EOL);
             }
@@ -72,11 +78,6 @@ public class TokenList implements Serializable {
 
     public Iterator iterator() {
         return tokens.iterator();
-    }
-
-    public boolean hasTokenAfter(Tile tile, TokenEntry tok) {
-        int nextTokenIndex = tok.getIndex() + tile.getTokenCount();
-        return nextTokenIndex < tokens.size();
     }
 
     public TokenEntry get(int index) {

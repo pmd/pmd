@@ -25,6 +25,16 @@ public class TokenEntry implements Serializable {
         this.beginLine = beginLine;
     }
 
+    private int pos;
+
+    public void setBigListPos(int x) {
+        this.pos = x;
+    }
+
+    public int getBigListPos() {
+        return pos;
+    }
+
     public String getImage() {
         return image;
     }

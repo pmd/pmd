@@ -1,39 +1,60 @@
-/*
-* User: tom
-* Date: Jul 30, 2002
-* Time: 9:53:14 AM
- */
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 
 public class CPD {
 
+    private int mts;
+    private CPDListener listener;
+    private MatchListener matchListener;
     private TokenSets tokenSets = new TokenSets();
-    private CPDListener listener = new CPDNullListener();
-    private Results results;
-    private int minimumTileSize;
-
 
     public void setListener(CPDListener listener) {
         this.listener = listener;
     }
 
+    public void setMinimumTileSize(int mts) {
+        this.mts = mts;
+    }
 
-    public void add(List files) throws IOException {
-        for (Iterator i = files.iterator(); i.hasNext();) {
-            add(files.size(), (File) i.next());
+    public void go() {
+        matchListener = new SimpleListener();
+        MatchAlgorithm m = new MatchAlgorithm(matchListener);
+        for (Iterator i = tokenSets.iterator(); i.hasNext();) {
+            TokenList tl = (TokenList)i.next();
+            for (Iterator j = tl.iterator();j.hasNext();) {
+                TokenEntry te = (TokenEntry)j.next();
+                char[] chars = te.getImage().toCharArray();
+                MyToken mt = new MyToken(chars, 0, chars.length, true);
+                m.add(mt, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()));
+            }
         }
+        m.findMatches(mts);
     }
 
-    public void setMinimumTileSize(int tileSize) {
-        minimumTileSize = tileSize;
+    public String getReport() {
+        StringBuffer rpt = new StringBuffer();
+        for (Iterator i = matchListener.iterator(); i.hasNext();) {
+            Match match = (Match)i.next();
+            TokenList tl = tokenSets.getTokenList(match.getStart().getFile());
+            rpt.append("=====================================================================");
+            rpt.append(System.getProperty("line.separator"));
+            rpt.append("Found a " + match.getTokenCount() + " token duplication in the following files: ");
+            rpt.append(System.getProperty("line.separator"));
+            rpt.append(match.getStart().getFile());
+            rpt.append(System.getProperty("line.separator"));
+            rpt.append(match.getEnd().getFile());
+            rpt.append(System.getProperty("line.separator"));
+            rpt.append(tl.getLineSlice(match.getStart().getLoc(), match.getTokenCount()));
+            rpt.append(System.getProperty("line.separator"));
+        }
+        return rpt.toString();
     }
+
 
     public void add(File file) throws IOException {
         add(1, file);
@@ -47,33 +68,10 @@ public class CPD {
         addDirectory(dir, true);
     }
 
-    public void go() {
-        if (!listener.update("Starting to process " + tokenSets.size() + " files; " + tokenSets.tokenCount() + " tokens"))
-            return;
-        GST gst = new GST(tokenSets, minimumTileSize);
-        results = gst.crunch(listener);
-        if (results == null)
-            results = new ResultsImpl();  //just to make sure we don't pass back a null Results
-    }
-
-    public Results getResults() {
-        return results;
-    }
-
-    public int getLineCountFor(Tile tile) {
-        return results.getTileLineCount(tile, tokenSets);
-    }
-
-    public String getImage(Tile tile) {
-        try {
-            TokenEntry firstToken = (TokenEntry) results.getOccurrences(tile).next();
-            TokenList tl = tokenSets.getTokenList(firstToken);
-            int endLine = firstToken.getBeginLine() + results.getTileLineCount(tile, tokenSets) - 1;
-            return tl.getSlice(firstToken.getBeginLine() - 1, endLine - 1);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public void add(List files) throws IOException {
+        for (Iterator i = files.iterator(); i.hasNext();) {
+            add(files.size(), (File) i.next());
         }
-        return "";
     }
 
     private void addDirectory(String dir, boolean recurse) throws IOException {
@@ -82,17 +80,9 @@ public class CPD {
         add(list);
     }
 
-    public void add(String id, String input) throws IOException {
-        Tokenizer t = new JavaTokensTokenizer();
-        TokenList ts = new TokenList(id);
-        t.tokenize(ts, new StringReader(input));
-        tokenSets.add(ts);
-    }
-
     private void add(int fileCount, File file) throws IOException {
         listener.addedFile(fileCount, file);
         Tokenizer t = new JavaTokensTokenizer();
-        //Tokenizer t = new LinesTokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
         t.tokenize(ts, fr);
@@ -107,18 +97,19 @@ public class CPD {
         }
         CPD cpd = new CPD();
         cpd.setListener(new CPDNullListener());
-        cpd.setMinimumTileSize(Integer.parseInt(args[0]));
-
         try {
+            cpd.setMinimumTileSize(Integer.parseInt(args[0]));
             cpd.addRecursively(args[1]);
-            long start = System.currentTimeMillis();
-            cpd.go();
-            long total = System.currentTimeMillis() - start;
-            System.out.println("Time elapsed in milliseconds: " + total);
-            System.out.println((new TextRenderer()).render(cpd));
         } catch (Exception e) {
-            usage();
+            e.printStackTrace();
+            System.exit(1);
         }
+
+        long start = System.currentTimeMillis();
+        cpd.go();
+        long total = System.currentTimeMillis() - start;
+        System.out.println(cpd.getReport());
+        System.out.println("That took " + total + " milliseconds");
     }
 
     private static void usage() {
@@ -127,4 +118,5 @@ public class CPD {
         System.out.println("i.e: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java");
     }
+
 }

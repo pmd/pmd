@@ -22,12 +22,8 @@ public class GUI implements CPDListener {
         public void actionPerformed(ActionEvent e) {
             new Thread(new Runnable() {
                 public void run() {
-                    addingTokensBar.setValue(0);
                     tokenizingFilesBar.setValue(0);
-                    tilesOnThisPassBar.setValue(0);
-                    addingTokensBar.setString("");
                     tokenizingFilesBar.setString("");
-                    tilesOnThisPassBar.setString("");
                     resultsTextArea.setText("");
                     go();
                 }
@@ -55,16 +51,9 @@ public class GUI implements CPDListener {
     private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     private JTextField minimumLengthField = new JTextField("75");
     private JTextField timeField = new JTextField(6);
-
     private JProgressBar tokenizingFilesBar = new JProgressBar();
-    private JProgressBar addingTokensBar = new JProgressBar();
-
-    private JTextField currentTileField = new JTextField(20);
-    private JProgressBar tilesOnThisPassBar = new JProgressBar();
-
     private JTextArea resultsTextArea = new JTextArea();
-
-    private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
+    private JCheckBox recurseCheckbox = new JCheckBox("", true);
 
     private JFrame frame;
 
@@ -132,12 +121,7 @@ public class GUI implements CPDListener {
         helper.addLabel("Tokenizing files:");
         helper.add(tokenizingFilesBar, 3);
         helper.nextRow();
-        helper.addLabel("Adding tokens:");
-        helper.add(addingTokensBar, 3);
-        helper.nextRow();
-        helper.addLabel("Current tile:");
-        helper.add(currentTileField);
-        helper.add(tilesOnThisPassBar);
+        helper.addLabel("Time elapsed:");
         helper.add(timeField);
         helper.nextRow();
         progressPanel.setBorder(BorderFactory.createTitledBorder("Progress"));
@@ -160,11 +144,7 @@ public class GUI implements CPDListener {
             CPD cpd = new CPD();
             cpd.setListener(this);
             cpd.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
-            tilesOnThisPassBar.setMinimum(0);
-            tilesOnThisPassBar.setStringPainted(true);
-            addingTokensBar.setMinimum(0);
             tokenizingFilesBar.setMinimum(0);
-            addingTokensBar.setStringPainted(true);
             if (rootDirectoryField.getText().endsWith(".java")) {
                 cpd.add(new File(rootDirectoryField.getText()));
             } else {
@@ -175,7 +155,7 @@ public class GUI implements CPDListener {
                 }
             }
             final long start = System.currentTimeMillis();
-            javax.swing.Timer t = new javax.swing.Timer(1000, new ActionListener() {
+            Timer t = new Timer(1000, new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     long now = System.currentTimeMillis();
                     long elapsedMillis = now - start;
@@ -187,12 +167,9 @@ public class GUI implements CPDListener {
                 }
             });
             t.start();
-
             cpd.go();
             t.stop();
-            currentTileField.setText("");
-            CPDRenderer renderer = new TextRenderer();
-            String report = renderer.render(cpd);
+            String report = cpd.getReport();
             if (report.length() == 0) {
                 JOptionPane.showMessageDialog(frame, "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
             } else {
@@ -204,49 +181,8 @@ public class GUI implements CPDListener {
         }
     }
 
-    public boolean update(String msg) {
-        //System.out.println(msg);
-        return true;
-    }
-
-    public boolean addedFile(int fileCount, File file) {
+    public void addedFile(int fileCount, File file) {
         tokenizingFilesBar.setMaximum(fileCount);
         tokenizingFilesBar.setValue(tokenizingFilesBar.getValue() + 1);
-        return true;
     }
-
-    public boolean addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
-        addingTokensBar.setMaximum(tokenSetCount);
-        if (tokenSrcID.indexOf("/") != -1) {
-            addingTokensBar.setString(findName(tokenSrcID, "/"));
-        } else if (tokenSrcID.indexOf("\\") != -1) {
-            addingTokensBar.setString(findName(tokenSrcID, "\\"));
-        } else if (tokenSrcID.length() > 10) {
-            addingTokensBar.setString(tokenSrcID.substring(tokenSrcID.length() - 10));
-        } else {
-            addingTokensBar.setString(tokenSrcID);
-        }
-        addingTokensBar.setValue(doneSoFar);
-        return true;
-    }
-
-    public boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
-        addingTokensBar.setValue(addingTokensBar.getMaximum());
-        addingTokensBar.setString("");
-        if (tile.getImage().length() <= 20) {
-            currentTileField.setText(tile.getImage());
-        } else {
-            currentTileField.setText(tile.getImage().substring(0, 20));
-        }
-        tilesOnThisPassBar.setMaximum(totalTiles);
-        tilesOnThisPassBar.setValue(tilesSoFar);
-        tilesOnThisPassBar.setString(tilesSoFar + "/" + totalTiles);
-        return true;
-    }
-
-    private String findName(String name, String slash) {
-        int lastSlash = name.lastIndexOf(slash) + 1;
-        return name.substring(lastSlash);
-    }
-
 }

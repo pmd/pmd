@@ -6,7 +6,6 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.Tile;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.TokenList;
 
@@ -43,9 +42,5 @@ public class TokenListTest extends TestCase {
         tl.setCode(list);
         assertEquals(" public void bar() {}", tl.getSlice(1, 1));
         assertEquals(" public void bar() {}" + EOL + " public void baz() {}", tl.getSlice(1, 2));
-    }
-
-    public void testHasTokenAfter() {
-        assertTrue(GSTTest.createHelloTokenSet("foo").hasTokenAfter(new Tile(new TokenEntry("H", 0, "foo", 5)), new TokenEntry("H", 0, "foo", 5)));
     }
 }
