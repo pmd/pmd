@@ -27,7 +27,7 @@ public class JobAddedListener extends UnicastRemoteObject implements RemoteEvent
 
     public void notify(RemoteEvent event) throws UnknownEventException, RemoteException {
         try {
-            Job job = (Job)space.take(new Job("test"), null, 1000);
+            Job job = (Job)space.take(new Job(), null, 1000);
             worker.jobAdded(job);
         } catch (Exception e) {
             e.printStackTrace();

@@ -16,12 +16,10 @@ import java.rmi.MarshalledObject;
 
 public class DCPDWorker {
 
-    private JavaSpace space;
-
     public DCPDWorker() {
         try {
-            space = Util.findSpace("mordor");
-            space.notify(new Job("test"), null, new JobAddedListener(space, this), Lease.FOREVER, null);
+            JavaSpace space = Util.findSpace("mordor");
+            space.notify(new Job(), null, new JobAddedListener(space, this), Lease.FOREVER, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
