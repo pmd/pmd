@@ -7,6 +7,7 @@ package net.sourceforge.pmd.rules;
 
 import java.util.Iterator;
 import java.util.Stack;
+import java.text.MessageFormat;
 
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
@@ -70,7 +71,7 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
     private void reportUnusedLocals(RuleContext ctx, SymbolTable table) {
         for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
             Symbol symbol = (Symbol)i.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), "Found unused local variable '" + symbol.getImage() + "'"));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
         }
     }
 

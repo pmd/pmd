@@ -20,7 +20,6 @@ public class RuleSetFactory {
 
     public RuleSet createRuleSet(InputStream inputStream) {
         try {
-
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(inputStream);
             Element root = doc.getDocumentElement();
@@ -31,15 +30,11 @@ public class RuleSetFactory {
             NodeList rules = root.getElementsByTagName("rule");
             for (int i =0; i<rules.getLength(); i++) {
                 Node ruleNode = (Node)rules.item(i);
-                String ruleName = ruleNode.getAttributes().getNamedItem("name").getNodeValue();
-                String className = ruleNode.getAttributes().getNamedItem("class").getNodeValue();
-                String message = ruleNode.getAttributes().getNamedItem("message").getNodeValue();
-                Rule rule = (Rule)Class.forName(className).newInstance();
-                rule.setName(ruleName);
-                rule.setMessage(message);
+                Rule rule = (Rule)Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue()).newInstance();
+                rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
+                rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
                 ruleSet.addRule(rule);
             }
-
 
             return ruleSet;
         } catch (Exception e) {

@@ -94,7 +94,7 @@ public class PMD {
         ctx.setReport(new Report());
 
         Renderer rend = null;
-        if (rend.equals("xml")) {
+        if (reportFormat.equals("xml")) {
             rend = new XMLRenderer();
         } else {
             rend = new HTMLRenderer();

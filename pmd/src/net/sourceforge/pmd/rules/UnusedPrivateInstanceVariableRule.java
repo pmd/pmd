@@ -7,6 +7,7 @@ package net.sourceforge.pmd.rules;
 
 import java.util.Iterator;
 import java.util.Stack;
+import java.text.MessageFormat;
 
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
@@ -97,7 +98,7 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     private void reportUnusedInstanceVars(RuleContext ctx, SymbolTable table) {
         for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
             Symbol symbol = (Symbol)i.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), "Found unused private instance variable '" + symbol.getImage() + "'"));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
         }
     }
 }
