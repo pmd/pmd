@@ -22,17 +22,11 @@ public class GST {
 		
 		public Results crunch(CPD.Listener listener) {
         Results results = new Results();
-
-				listener.update("Building initial frequency table");
         Occurrences occ =new Occurrences(tokenSets, listener);
-				listener.update("Done building initial frequency table");
 
         while (!occ.isEmpty()) {
 						listener.update("Deleting solo tiles");
             occ.deleteSoloTiles();
-//						if (occ.getTiles().hasNext()) {
-							//listener.update("Current tile size " + ((Tile)occ.getTiles().next()).getTokenCount() + " tokens");
-						//}
 						listener.update("Tiles left to be crunched " + occ.size());
 
             // add any tiles over the minimum size to the results

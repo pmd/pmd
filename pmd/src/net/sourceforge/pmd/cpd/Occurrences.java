@@ -18,7 +18,7 @@ public class Occurrences {
     public Occurrences(TokenSets tss, CPD.Listener listener) {
         for (Iterator j = tss.iterator();j.hasNext();) {
             TokenList ts = (TokenList)j.next();
-						listener.update("Processing token set " + ts.getID());
+						listener.update("Adding token set " + ts.getID() + " to the initial frequency table");
             for (Iterator i = ts.iterator(); i.hasNext();) {
                 Token tok = (Token)i.next();
                 addTile(new Tile(tok), tok);
