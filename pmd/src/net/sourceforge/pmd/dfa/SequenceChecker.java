@@ -22,22 +22,13 @@ import java.util.List;
  */
 public class SequenceChecker {
 
-    private Status root;
-    private Status aktStatus;
-    private List vector;
-
-    private int firstIndex = -1;
-    private int lastIndex = -1;
-
-//	----------------------------------------------------------------------------
-
     /*
      * Element of logical structure of brace nodes.
      * */
     private static class Status {
         public static final int ROOT = -1;
 
-        private ArrayList nextSteps = new ArrayList();
+        private List nextSteps = new ArrayList();
         private int type;
         private boolean lastStep;
 
@@ -73,13 +64,20 @@ public class SequenceChecker {
         }
     }
 
+    private Status root;
+    private Status aktStatus;
+    private List bracesList;
+
+    private int firstIndex = -1;
+    private int lastIndex = -1;
+
     /*
      * Defines the logical structure.
      * */
-    public SequenceChecker(List v) {
+    public SequenceChecker(List bracesList) {
         root = new Status(Status.ROOT);
         this.aktStatus = root;
-        this.vector = v;
+        this.bracesList = bracesList;
 
         Status ifNode = new Status(NodeType.IF_EXPR);
         Status ifSt = new Status(NodeType.IF_LAST_STATEMENT);
@@ -145,7 +143,7 @@ public class SequenceChecker {
 
     /**
      * Finds the first most inner sequence e.g IFStart & IFEnd. If no sequence
-     * is found or the list is empty the method return false.
+     * is found or the list is empty the method returns false.
      */
     public boolean run() {
         this.aktStatus = root;
@@ -153,8 +151,8 @@ public class SequenceChecker {
         this.lastIndex = 0;
         boolean lookAhead = false;
 
-        for (int i = 0; i < this.vector.size(); i++) {
-            StackObject so = (StackObject) vector.get(i);
+        for (int i = 0; i < this.bracesList.size(); i++) {
+            StackObject so = (StackObject) bracesList.get(i);
             aktStatus = this.aktStatus.step(so.getType());
 
             if (aktStatus == null) {
@@ -176,10 +174,7 @@ public class SequenceChecker {
                 }
             }
         }
-        if (this.firstIndex != this.lastIndex) {
-            return false;
-        }
-        return true;
+        return this.firstIndex == this.lastIndex;
     }
 
     public int getFirstIndex() {
