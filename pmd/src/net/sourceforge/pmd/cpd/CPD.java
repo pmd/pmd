@@ -24,6 +24,10 @@ public class CPD {
         this.language = language;
     }
 
+    public int getFileCount() {
+        return source.size();
+    }
+
     public void setCpdListener(CPDListener cpdListener) {
         this.listener = cpdListener;
     }

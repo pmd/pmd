@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
 public class GUI implements CPDListener {
 
@@ -156,7 +155,7 @@ public class GUI implements CPDListener {
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             comparisonsField.setText("");
-            if (rootDirectoryField.getText().endsWith(".java")) {
+            if (rootDirectoryField.getText().endsWith(".java") || rootDirectoryField.getText().endsWith(".cpp") || rootDirectoryField.getText().endsWith(".c")) {
                 cpd.add(new File(rootDirectoryField.getText()));
             } else {
                 if (recurseCheckbox.isSelected()) {
@@ -186,9 +185,9 @@ public class GUI implements CPDListener {
             } else {
                 resultsTextArea.setText(report);
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Halted due to " + ioe.getClass().getName() + "; " + ioe.getMessage());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Halted due to " + t.getClass().getName() + "; " + t.getMessage());
         }
     }
 
