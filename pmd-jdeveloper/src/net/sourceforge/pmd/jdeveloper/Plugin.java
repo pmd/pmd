@@ -4,6 +4,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.PMDException;
 import oracle.ide.AddinManager;
 import oracle.ide.ContextMenu;
 import oracle.ide.Ide;
@@ -18,6 +19,8 @@ import oracle.ide.model.Element;
 import oracle.ide.model.PackageFolder;
 import oracle.ide.model.Workspace;
 import oracle.ide.model.Workspaces;
+import oracle.ide.model.Project;
+import oracle.ide.model.Document;
 import oracle.ide.panels.Navigable;
 import oracle.jdeveloper.model.BusinessComponents;
 import oracle.jdeveloper.model.EnterpriseJavaBeans;
@@ -28,6 +31,7 @@ import oracle.jdeveloper.model.JavaSources;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import java.util.Iterator;
+import java.util.List;
 
 public class Plugin implements Addin, Controller, ContextMenuListener {
 
@@ -96,7 +100,34 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         if (ideAction.getCommandId() == CHECK_CMD_ID) {
             try {
                 if (resolveType(context.getDocument()) == PROJECT) {
-
+                   Project proj = (Project)context.getDocument();
+                    List foo = proj.getListOfChildren();
+                    PMD pmd = new PMD();
+                    SelectedRules rs = new SelectedRules();
+                    RuleContext ctx = new RuleContext();
+                    ctx.setReport(new Report());
+                    for (Iterator i = foo.iterator(); i.hasNext();) {
+                        Document d = (Document)i.next();
+                        if (d.getLongLabel().endsWith(".java")) {
+                            ctx.setSourceCodeFilename(d.getLongLabel());
+                            System.out.println("processing " + d.getLongLabel());
+                            pmd.processFile(context.getDocument().getInputStream(), rs.getSelectedRules(), ctx);
+                        }
+                    }
+                    if (rvPage == null) {
+                        rvPage = new RuleViolationPage();
+                    }
+                    if (!rvPage.isVisible()) {
+                        rvPage.show();
+                    }
+                    rvPage.clearAll();
+                    if (ctx.getReport().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+                            rvPage.add((RuleViolation)i.next());
+                        }
+                    }
                 } else {
                     PMD pmd = new PMD();
                     RuleContext ctx = new RuleContext();
@@ -120,6 +151,9 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                     }
                 }
                 return true;
+            } catch (PMDException e) {
+                e.printStackTrace();
+                e.getOriginalException().printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -11,6 +11,10 @@ import javax.swing.DefaultListSelectionModel;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * This class was inspired by a class on Sun's web site in the JList tutorial section.  It's
+ * been twiddled somewhat since then, though.
+ */
 public class JumpingSelectionModel extends DefaultListSelectionModel {
 
     private DefaultListModel model;
@@ -34,7 +38,10 @@ public class JumpingSelectionModel extends DefaultListSelectionModel {
                 Editor editor = (Editor)i.next();
                 Document doc = editor.getContext().getDocument();
                 if (doc.getLongLabel().equals(rv.getFilename()) && editor instanceof CodeEditor) {
-                    Ide.getEditorManager().openDefaultEditorInFrame(editor.getContext());
+                    System.out.println("GOING THERE");
+                    Ide.getEditorManager().openDefaultEditorInFrame(editor.getContext().getDocument().getURL());
+                    editor.activate();
+                    editor.open();
                     ((CodeEditor)editor).gotoLine(rv.getLine(), 0, false);
                     break;
                 }
