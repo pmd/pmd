@@ -76,7 +76,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     private SelectedRules rules;
     private JTextArea exampleTextArea= new JTextArea(10, 50);
-    private JCheckBox directoryPopupBox;
+    private JCheckBox directoryPopupBox, chkRunPMDOnSave;
 	JTextField txtMinTileSize;
 	JTextField txtCustomRules;
 
@@ -103,7 +103,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 		//Custom Rule Panel Defination.
 		JPanel pnlCustomRules = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		pnlCustomRules.add(new JLabel("Path to custom rules.xml files(seperated by comma)"));
-		pnlCustomRules.add((txtCustomRules = new JTextField(jEdit.getProperty("pmd.customRulesPath",""),30)));
+		pnlCustomRules.add((txtCustomRules = new JTextField(jEdit.getProperty(PMDJEditPlugin.CUSTOM_RULES_PATH_KEY,""),30)));
 
 		rulesPanel.add(pnlCustomRules, BorderLayout.CENTER);
 
@@ -116,13 +116,14 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         }
 
         directoryPopupBox = new JCheckBox("Ask for directory?", jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP));
+        chkRunPMDOnSave = new JCheckBox("Run PMD on Save", jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE));
 
 		JPanel pnlSouth = new JPanel(new GridLayout(0,1));
 
 		JPanel pnlTileSize = new JPanel();
 		((FlowLayout)pnlTileSize.getLayout()).setAlignment(FlowLayout.LEFT);
 		JLabel lblMinTileSize = new JLabel("Minimum Tile Size :");
-		txtMinTileSize = new JTextField(jEdit.getProperty("pmd.cpd.defMinTileSize","100"),5);
+		txtMinTileSize = new JTextField(jEdit.getProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,"100"),5);
 		pnlTileSize.add(lblMinTileSize);
 		pnlTileSize.add(txtMinTileSize);
 
@@ -133,6 +134,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         mainPanel.add(textPanel, BorderLayout.CENTER);
 
 		pnlSouth.add(directoryPopupBox);
+		pnlSouth.add(chkRunPMDOnSave);
 		pnlSouth.add(pnlTileSize);
         mainPanel.add(pnlSouth, BorderLayout.SOUTH);
         addComponent(mainPanel);
@@ -144,11 +146,12 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
             jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP, directoryPopupBox.isSelected());
         }
 
-		jEdit.setIntegerProperty("pmd.cpd.defMinTileSize",(txtMinTileSize.getText().length() == 0)?100:Integer.parseInt(txtMinTileSize.getText()));
+		jEdit.setIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,(txtMinTileSize.getText().length() == 0)?100:Integer.parseInt(txtMinTileSize.getText()));
+		jEdit.setBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE,(chkRunPMDOnSave.isSelected()));
 
 		if(txtCustomRules != null)
 		{
-			jEdit.setProperty("pmd.customRulesPath",txtCustomRules.getText());
+			jEdit.setProperty(PMDJEditPlugin.CUSTOM_RULES_PATH_KEY,txtCustomRules.getText());
 		}
     }
 }

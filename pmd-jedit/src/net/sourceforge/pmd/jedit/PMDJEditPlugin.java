@@ -22,7 +22,6 @@ import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.View;
-import org.gjt.sp.jedit.EditPlugin;
 import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.browser.*;
 import org.gjt.sp.jedit.io.*;
@@ -42,14 +41,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.gjt.sp.jedit.EBPlugin;
+import org.gjt.sp.jedit.EBMessage;
+import org.gjt.sp.jedit.msg.BufferUpdate;
 
 
-public class PMDJEditPlugin extends EditPlugin {
+public class PMDJEditPlugin extends EBPlugin {
 
 	public static final String NAME = "PMD";
 	public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
 	public static final String OPTION_UI_DIRECTORY_POPUP = "options.pmd.ui.directorypopup";
 	public static final String DEFAULT_TILE_MINSIZE_PROPERTY = "pmd.cpd.defMinTileSize";
+	public static final String RUN_PMD_ON_SAVE = "pmd.runPMDOnSave";
+	public static final String CUSTOM_RULES_PATH_KEY = "pmd.customRulesPath";
 	//private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
 
 	private static PMDJEditPlugin instance;
@@ -102,6 +106,21 @@ public class PMDJEditPlugin extends EditPlugin {
 				return;
 			}
 			process(findFiles(browser.getDirectory(), false));
+		}
+	}
+
+	public void handleMessage(EBMessage ebmess)
+	{
+		if (ebmess instanceof BufferUpdate)
+		{
+			if(jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE))
+			{
+				BufferUpdate bu = (BufferUpdate)ebmess;
+				if (bu.getWhat() == BufferUpdate.SAVED)
+				{
+					instance.check(bu.getBuffer(),bu.getView());
+				}
+			}
 		}
 	}
 
@@ -426,10 +445,5 @@ public class PMDJEditPlugin extends EditPlugin {
 		instance.process(instance.findFiles(de[0].path, recursive));
 	}
 }
-
-
-
-
-
 
 
