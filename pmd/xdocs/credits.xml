@@ -10,7 +10,6 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
-            <li>Nascif Abousalh Neto - fixes and updates for the pmd-emacs plugin</li>
             <li>Robert Leland - bug report</li>
             <li>Dan Sheppard - added ability to write rules as XPath expressions - very, very cool stuff</li>
             <li>Carl Gilbert - AccessorClassGenerationRule, DoubleCheckedLockingRule, ConstructorCallsOverridableMethodRule, bug reports, feature requests, and documentation improvements</li>
