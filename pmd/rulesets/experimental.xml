@@ -5,7 +5,7 @@
 This is the sandbox.
   </description>
 
- <rule name="UnnecessaryCast"
+ <!--<rule name="UnnecessaryCast"
         message="Avoid unnecessary casts"
         class="net.sourceforge.pmd.rules.UnnecessaryCastRule">
     <description>
@@ -83,6 +83,7 @@ public class Bar {
 ]]>
     </example>
     </rule>
+    -->
 </ruleset>
 
 
