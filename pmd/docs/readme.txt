@@ -7,4 +7,4 @@ Here's how to use PMD:
 4) Run the Ant build file - "ant clean"
 5) write a small Ant target that uses PMD (see etc/build.xml for an example)
 6) Run the Ant target - "ant pmd"
-7) This generates a text file contained problem names and line numbers
+7) This generates a text file containing problem names and line numbers
