@@ -7,8 +7,10 @@
   </properties>
 
   <body>
-    <section name="Articles about PMD">
+    <section name="Sites/Articles about PMD">
     <ul>
+        <br/>
+        <li><a href="https://jjguidelines.dev.java.net/index.html">JJGuidelines - Java and J2EE Conventions, Guidelines and Best Practices</a> - a project sponsored by the Belgian government to codify coding practices; uses PMD as the compliance checking utility</li>
         <br/>
         <li>6/15/2003 - <a href="http://www.sdtimes.com/news/080/story15.htm">Software Development Times</a> - PMD is embedded in QStudio.</li>
         <br/>
