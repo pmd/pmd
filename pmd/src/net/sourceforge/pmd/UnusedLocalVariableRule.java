@@ -25,12 +25,21 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
         return report;
     }
 
-    // these AST types trigger creation of a new symbol table group
-    public Object visit(ASTClassBody node, Object data) {return createGroup(node, data);}
-    public Object visit(ASTInterfaceDeclaration node, Object data) {return createGroup(node, data);}
-    // these AST types trigger creation of a new symbol table group
+    /**
+     * Skip interfaces because they don't have local variables.
+     */
+    public Object visit(ASTInterfaceDeclaration node, Object data) {
+        return data;
+    }
 
-    // these AST types trigger creation of a new symbol table
+    /**
+     * A new ClassBody triggers a new namespace
+     */
+    public Object visit(ASTClassBody node, Object data) {
+        return createGroup(node, data);
+    }
+
+    // these AST types trigger creation of a new symbol table scope
     public Object visit(ASTBlock node, Object data){return addTable(node, data);}
     public Object visit(ASTConstructorDeclaration node, Object data){return addTable(node, data);}
     public Object visit(ASTMethodDeclaration node, Object data){return addTable(node, data);}
@@ -71,10 +80,10 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
     private Object addTable(SimpleNode node, Object data) {
         Namespace group = (Namespace)tableGroups.peek();
         group.addTable();
-        Object RC = super.visit(node, data);
+        super.visit(node, data);
         reportUnusedLocals((Report)data, group.peek());
         group.removeTable();
-        return RC;
+        return data;
     }
 
 }

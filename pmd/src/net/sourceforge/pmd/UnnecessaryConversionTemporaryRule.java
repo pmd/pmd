@@ -7,10 +7,24 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.*;
 
+import java.util.Set;
+import java.util.HashSet;
+
 public class UnnecessaryConversionTemporaryRule extends AbstractRule implements Rule{
 
     private boolean inPrimaryExpressionContext;
     private boolean usingPrimitiveWrapperAllocation;
+    private Set primitiveTypes = new HashSet();
+
+    public UnnecessaryConversionTemporaryRule() {
+        primitiveTypes.add("Integer");
+        primitiveTypes.add("Boolean");
+        primitiveTypes.add("Double");
+        primitiveTypes.add("Long");
+        primitiveTypes.add("Short");
+        primitiveTypes.add("Byte");
+        primitiveTypes.add("Float");
+    }
 
     public String getDescription() {
         return "Avoid unnecessay temporaries when converting primitives to Strings";
@@ -35,7 +49,8 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
             return super.visit(node, data);
         }
         SimpleNode child = (SimpleNode)node.jjtGetChild(0);
-        if (!isPrimitiveWrapperType(child.getImage())) {
+        String name = child.getImage();
+        if (!primitiveTypes.contains(name)) {
             return super.visit(node, data);
         }
         usingPrimitiveWrapperAllocation = true;
@@ -52,7 +67,4 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
         return super.visit(node, data);
     }
 
-    private boolean isPrimitiveWrapperType(String name) {
-        return name.equals("Integer") || name.equals("Boolean") || name.equals("Double") || name.equals("Long") || name.equals("Short") || name.equals("Byte") || name.equals("Float");
-    }
 }

@@ -5,10 +5,7 @@
  */
 package net.sourceforge.pmd;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class RuleFactory {
 
@@ -16,15 +13,25 @@ public class RuleFactory {
     public static final String GENERAL = "general";
     public static final String COUGAAR = "cougaar";
 
+    private static Set ruleSets = new HashSet();
+
+    static {
+        ruleSets.add(ALL);
+        ruleSets.add(GENERAL);
+        ruleSets.add(COUGAAR);
+    }
+
     public static List createRules(String ruleSetType) {
+        if (!ruleSets.contains(ruleSetType)) {
+            throw new RuntimeException("Unknown rule set type " + ruleSetType);
+        }
+
         if (ruleSetType.equals(ALL)) {
             return createAllRules();
         } else if (ruleSetType.equals(GENERAL)) {
             return createGeneralRules();
-        } else if (ruleSetType.equals(COUGAAR)) {
-            return createCougaarRules();
         }
-        throw new RuntimeException("Unknown rule set type " + ruleSetType);
+        return createCougaarRules();
     }
 
     private static List createAllRules() {

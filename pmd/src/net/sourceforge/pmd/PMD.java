@@ -16,7 +16,8 @@ import java.util.Iterator;
 
 public class PMD {
 		
-	public void processFile(String filename, InputStream is, String ruleSetType, Report report) throws FileNotFoundException {
+	public void processFile(String filename, InputStream is, String ruleSetType, Report report)
+            throws FileNotFoundException {
         List rules = RuleFactory.createRules(ruleSetType);
 
         try {
