@@ -34,14 +34,14 @@
 			<echo message="Processing ${file}"/>
 			<doc:jslFile
 				input="${file}"
-				stylesheet="etc/dvsl/rule-format.jsl"
+				stylesheet="etc/jsl/rule-format.jsl"
 				output="${maven.gen.docs}/rules/${file.name}"/>
 		</j:forEach>
 	</goal>
 
 	<postGoal name="xdoc:register-reports"> 
 		<attainGoal name="maven-linkcheck-plugin:deregister"/> 
-		<echo>******************linkcheck is disabled.</echo>
+		<attainGoal name="maven-checkstyle-plugin:deregister"/> 
 	</postGoal>
 
 </project>
