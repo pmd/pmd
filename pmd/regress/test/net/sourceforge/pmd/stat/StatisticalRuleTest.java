@@ -66,7 +66,7 @@ public class StatisticalRuleTest extends TestCase {
 
 
     public static final double MEAN = 49.5;
-    public static final double SIGMA = 28.86750;
+    public static final double SIGMA = 29.0115;
     public static final int NUM_TESTS = 1;
 
     public static final double DELTA = 0.005;

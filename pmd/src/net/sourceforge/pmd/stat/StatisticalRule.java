@@ -77,7 +77,20 @@ public abstract class StatisticalRule extends AbstractRule {
     }
 
     protected double getStdDev() {
-        return Math.sqrt(((totalSquared / count) - (getMean() * getMean())));
+    	Iterator points = dataPoints.iterator();
+    	double mean = getMean();
+    	double deltaSq = 0.0;
+    	
+    	if (dataPoints.size() < 2) {
+    		return Double.NaN;
+    	}
+    	
+    	while (points.hasNext()) {
+    		DataPoint point = (DataPoint) points.next();	
+    		deltaSq += ((point.getScore() - mean) * (point.getScore() - mean));
+    	}
+    	
+    	return Math.sqrt( deltaSq / (dataPoints.size() - 1));
     }
 
     protected SortedSet applyMinimumValue(SortedSet pointSet, double minValue) {
