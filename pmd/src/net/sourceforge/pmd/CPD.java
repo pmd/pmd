@@ -91,7 +91,7 @@ public class CPD {
                         }
                         if (newImage.length() > minimumTokenSize) {
                             List list = (List)newTokenPtrs.get(newImage);
-                            if (list.size() > 1) {
+                            //if (list.size() > 1) {
 
                                 boolean already = false;
                                 for (Iterator p = this.tokensFound.iterator(); p.hasNext();) {
@@ -104,7 +104,7 @@ public class CPD {
                                     tokensFound.add(newImage);
                                     System.out.println("newImage = " + newImage);
                                 }
-                            }
+                            //}
                         }
                     }
                 }
