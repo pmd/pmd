@@ -70,6 +70,7 @@ will update documents on the Build Site.
 
 <!-- Documentation Chores -->
   <target name="pre-docs" depends="rule-docs" />
+  <target name="post-docs" depends="move-php" />
 
   <target name="rule-docs" depends="load-tasks">
     <mkdir dir="${maven.gen.docs}/rules" />
@@ -79,6 +80,13 @@ will update documents on the Build Site.
           includes="*.xml"
           style="dvsl/rule-format.dvsl">
     </dvsl>
+  </target>
+
+  <target name="move-php">
+    <move todir="${pmd.cgi.dest}">
+      <fileset dir="${pmd.cgi.dest}" />
+      <mapper type="glob" from="*.html" to="*.php" />
+    </move>
   </target>
 
   <target name="quilt" depends="load-tasks">
