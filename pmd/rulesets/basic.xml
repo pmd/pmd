@@ -106,7 +106,83 @@ while (a == b) {
     </example>
   </rule>
 
-</ruleset>
+  <rule name="OverrideBothEqualsAndHashcodeRule"
+        message="Ensure you override both equals() and hashCode()"
+        class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule">
+    <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public class Bar {
+    public boolean equals(Object o) {
+        // do some comparison
+    }
+}
+
+// and so is this
+public class Baz {
+    public int hashCode() {
+        // return some hash value
+    }
+}
+
+// this is OK
+public class Foo {
+    public boolean equals(Object other) {
+        // do some comparison
+    }
+    public int hashCode() {
+        // return some hash value
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyTryBlock"
+        message="Avoid empty try blocks"
+        class="net.sourceforge.pmd.rules.EmptyTryBlockRule">
+    <description>
+Avoid empty try blocks
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public void bar() {
+    try {
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyFinallyBlock"
+        message="Avoid empty finally blocks"
+        class="net.sourceforge.pmd.rules.EmptyFinallyBlockRule">
+    <description>
+Avoid empty finally blocks
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public void bar() {
+    try {
+        int x=2;
+    } finally {
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  </ruleset>
 
 
 

@@ -29,7 +29,7 @@ C:\data\pmd\pmd\etc>
    <section name="Running PMD via Ant">
    <ul>
     <li>Add a new Ant target to your build file - <a href="ant-task.html">here's</a> some examples.</li>
-    <li>Make sure the pmd-0.3.jar file is on your classpath.</li>
+    <li>Make sure the pmd-0.4.jar file is on your classpath.</li>
     <li>Run Ant like you normally do.</li>
    </ul>
    </section>

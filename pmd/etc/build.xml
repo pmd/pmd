@@ -30,7 +30,7 @@
                 <include name="*.xml"/>
             </fileset>
         </copy>
-        <jar jarfile="${lib}\pmd-0.3.jar" basedir="${build}" excludes="test/**/*.class"/>
+        <jar jarfile="${lib}\pmd-0.4.jar" basedir="${build}" excludes="test/**/*.class"/>
     </target>
 
     <target name="pmd">

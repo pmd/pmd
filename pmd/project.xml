@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>0.3</currentVersion>
+  <currentVersion>0.4</currentVersion>
   <organization>
     <name>Tom Copeland/David Dixon-Peugh</name>
     <url>http://pmd.sourceforge.net/</url>
@@ -43,9 +43,9 @@
 
   <versions>
     <version>
-      <id>0.3</id>
-      <name>0.3</name>
-      <tag>pmd_release_0_3</tag>
+      <id>0.4</id>
+      <name>0.4</name>
+      <tag>pmd_release_0_4</tag>
     </version>
     <version>
       <id>dev</id>
