@@ -57,22 +57,6 @@ public class XPathRuleTest extends RuleTst {
 //        
 //    }
 
-
-/*
-    public void testDontImportJavaLang() throws Throwable {
-        rule.addProperty(
-            "xpath",
-            "//ImportDeclaration"
-                + "[starts-with(Name/@Image, 'java.lang')]"
-                + "[not(starts-with(Name/@Image, 'java.lang.ref'))]"
-                + "[not(starts-with(Name/@Image, 'java.lang.reflect'))]");
-        runTest("DontImportJavaLang1.java", 1, rule);
-        runTest("DontImportJavaLang2.java", 1, rule);
-        runTest("DontImportJavaLang3.java", 0, rule);
-    }
-
-*/
-
     public void testDeeplyNestedIfStmtsRule() throws Throwable {
         rule.addProperty(
             "xpath",
