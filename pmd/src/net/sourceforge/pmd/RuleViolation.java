@@ -98,6 +98,10 @@ public class RuleViolation {
         this.filename = ctx.getSourceCodeFilename();
     }
 
+    public RuleViolation(AbstractRule rule, RuleContext ctx, String packageName, String className, String methodName) {
+        this(rule, 0, ctx, packageName, className, methodName);
+    }
+    
     public Rule getRule() {
         return rule;
     }
@@ -136,5 +140,8 @@ public class RuleViolation {
 
     public String toString() {
         return getFilename() + ":" + getRule() + ":" + getDescription() + ":" + getLine();
+    }
+    public final void setLine(int line) {
+        this.line = line;
     }
 }
