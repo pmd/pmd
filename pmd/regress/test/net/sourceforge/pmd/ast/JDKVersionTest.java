@@ -104,6 +104,11 @@ public class JDKVersionTest extends TestCase  {
         p.CompilationUnit();
     }
 
+    public void testJDK15ForLoopSyntaxWithModifiers() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_FORLOOP_WITH_MODIFIER));
+        p.CompilationUnit();
+    }
+
     public void testJDK15ForLoopShouldFailWith14() throws Throwable {
         try {
             JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_FORLOOP));
@@ -186,6 +191,13 @@ public class JDKVersionTest extends TestCase  {
     "public class Test {" + PMD.EOL +
     " void foo(List list) {" + PMD.EOL +
     "  for (Integer i : list) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String JDK15_FORLOOP_WITH_MODIFIER =
+    "public class Test {" + PMD.EOL +
+    " void foo(List list) {" + PMD.EOL +
+    "  for (final Integer i : list) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
