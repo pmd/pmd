@@ -64,10 +64,6 @@ public class JavaTokenizer implements Tokenizer {
         tokenEntries.add(TokenEntry.getEOF());
     }
 
-    public boolean isIgnoreLiterals() {
-        return ignoreLiterals;
-    }
-    
     public void setIgnoreLiterals(boolean ignoreLiterals) {
         this.ignoreLiterals = ignoreLiterals;
     }
