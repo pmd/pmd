@@ -20,6 +20,7 @@
             <li>Ole-Martin Mork - NetBeans plugin</li>
             <li>Andrei Lumianski - Gel plugin</li>
             <li>Brant Langer Gurganus - JCreator integration, Swing GUI work</li>
+            <li>Miguel Griffa - over a dozen rules, lots of documentation, and other improvements all over the place</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">
@@ -48,7 +49,6 @@
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>
             <li>Bruno Juillet - bug report on ruleset overrides</li>
             <li>Jörn Stampehl - bug report on JUnitTestsShouldContainAsserts</li>
-            <li>Miguel Griffa - patch to add a status bar to Boris Gruschko's ASTViewer, documentation page for Maven, SystemPrintln rule, patch to improve JUnitTestsShouldContainAsserts, new Maven pmd:dist-bin goal, LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
             <li>Elliotte Rusty Harold - suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
             <li>Olaf Heimburger - reported a possible NPE in ReportTree</li>
