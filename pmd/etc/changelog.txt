@@ -1,4 +1,5 @@
 ????? - 1.06:
+Removed "verbose" attribute from CPD Ant task; now it uses built in logging so you can do a "ant -verbose cpd".  Thanks to Philippe T'Seyen for the code.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 April 17 - 1.05:

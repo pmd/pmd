@@ -137,8 +137,8 @@
 
 <target name="cpd">
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
-    <cpd minimumTokenCount="100" outputFile="cpd.txt" verbose="false">
-        <fileset dir="/home/tom/data/pmd/pmd/src">
+    <cpd format="xml" minimumTokenCount="30" outputFile="cpd.xml">
+        <fileset dir="/usr/local/java/src/java/lang/ref">
             <include name="**/*.java"/>
         </fileset>
     </cpd>

@@ -2,19 +2,16 @@ package net.sourceforge.pmd.cpd;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.types.FileSet;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import net.sourceforge.pmd.ant.PathChecker;
 
 /**
  * CPDTask
@@ -34,65 +31,78 @@ import net.sourceforge.pmd.ant.PathChecker;
  *
  * Required: minimumTokenCount, outputFile, and at least one file
  * Optional: verbose
- *
- * TODO Perhaps come up with another renderer such as XML and
- *      allow user to plug that render in via ant...
- *   
- * @since Mar 26, 2003  
- * @author aglover
  */
 public class CPDTask extends Task {
 
-    private boolean verbose;
+    private static final String TEXT_FORMAT = "text";
+    private static final String XML_FORMAT = "xml";
+
+    private String format = TEXT_FORMAT;
 	private int minimumTokenCount;
-	private String outputFile;
+	private File outputFile;
     private List filesets = new ArrayList();
 
-	public void execute() throws BuildException{
-    	try{	
-    		validateFields();
-	    	CPD cpd = new CPD(minimumTokenCount, new JavaLanguage());
-            for (Iterator i = filesets.iterator(); i.hasNext();) {
-                FileSet fs = (FileSet) i.next();
-                DirectoryScanner ds = fs.getDirectoryScanner(project);
-                String[] srcFiles = ds.getIncludedFiles();
-                for (int j = 0; j < srcFiles.length; j++) {
-                    File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
-                    printIfVerbose("Tokenizing " + file.getAbsoluteFile().toString());
-                    cpd.add(file);
-                }
-            }
-            printIfVerbose("Starting to analyze code ");
-            long start = System.currentTimeMillis();
-	        cpd.go();
-            long stop = System.currentTimeMillis();
-            printIfVerbose("That took " + (stop-start) + " milliseconds");
-            if (!cpd.getMatches().hasNext()) {
-                printIfVerbose("No duplicates over " + minimumTokenCount + " tokens found");
-                write("No problems found");
-            } else {
-                printIfVerbose("Duplicates found; putting a report in " + outputFile);
-                write(new SimpleRenderer().render(cpd.getMatches()));
-            }
-    	} catch(IOException ex){
-    		ex.printStackTrace();
-    		throw new BuildException("IOException in task", ex);
-    	}        
-	}
+    public void execute() throws BuildException {
+      try {
+        validateFields();
 
-    private void write(String content) throws IOException {
-        Writer writer = getToFileWriter(project.getBaseDir().toString());
-        writer.write(content);
-        writer.close();
+        log("Tokenizing files", Project.MSG_INFO);
+        CPD cpd = new CPD(minimumTokenCount, new JavaLanguage());
+        tokenizeFiles(cpd);
+
+        log("Starting to analyze code", Project.MSG_INFO);
+        long timeTaken = analyzeCode(cpd);
+        log("Done analyzing code; that took " + timeTaken + " milliseconds");
+
+        log("Generating report", Project.MSG_INFO);
+        report(cpd);
+      } catch (IOException ioe) {
+        log(ioe.toString(), Project.MSG_ERR);
+        throw new BuildException("IOException during task execution", ioe);
+      } catch (ReportException re) {
+        log(re.toString(), Project.MSG_ERR);
+        throw new BuildException("ReportException during task execution", re);
+      }
     }
 
-    private Writer getToFileWriter(String baseDir) throws IOException {
-        String outFile = outputFile;
-        PathChecker pc = new PathChecker(System.getProperty("os.name"));
-        if (!pc.isAbsolute(outputFile)) {
-            outFile = baseDir + System.getProperty("file.separator") + outputFile;
+    private void report(CPD cpd) throws ReportException {
+      if (!cpd.getMatches().hasNext()) {
+        log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
+      }
+      Renderer renderer = createRenderer();
+      if (outputFile.isAbsolute()) {
+        new FileReporter(outputFile).report(renderer.render(cpd.getMatches()));
+      } else {
+        new FileReporter(new File(project.getBaseDir(), outputFile.toString()));
+      }
+    }
+
+
+    private void tokenizeFiles(CPD cpd) throws IOException {
+      for (Iterator iterator = filesets.iterator(); iterator.hasNext();) {
+        FileSet fileSet = (FileSet) iterator.next();
+        DirectoryScanner directoryScanner = fileSet.getDirectoryScanner(project);
+        String[] includedFiles = directoryScanner.getIncludedFiles();
+        for (int i = 0; i < includedFiles.length; i++) {
+          File file = new File(directoryScanner.getBasedir() + System.getProperty("file.separator") + includedFiles[i]);
+          log("Tokenizing " + file.getAbsolutePath(), Project.MSG_VERBOSE);
+          cpd.add(file);
         }
-        return new BufferedWriter(new FileWriter(new File(outFile)));
+      }
+    }
+
+    private long analyzeCode(CPD cpd) {
+      long start = System.currentTimeMillis();
+      cpd.go();
+      long stop = System.currentTimeMillis();
+      return stop - start;
+    }
+
+    private Renderer createRenderer() {
+      if (format.equals(TEXT_FORMAT)) {
+        return new SimpleRenderer();
+      } else
+        return new XMLRenderer();
     }
 
 	private void validateFields() throws BuildException{
@@ -114,16 +124,19 @@ public class CPDTask extends Task {
 		this.minimumTokenCount = minimumTokenCount;
 	}
 
-	public void setOutputFile(String outputFile) {
+	public void setOutputFile(File outputFile) {
 		this.outputFile = outputFile;
 	}
 
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
+    public void setFormat(FormatAttribute formatAttribute) {
+      format = formatAttribute.getValue();
     }
 
-    private void printIfVerbose(String in) {
-        if (verbose)
-            System.out.println(in);
+    public static class FormatAttribute extends EnumeratedAttribute {
+      private String[] formats = new String[] {XML_FORMAT, TEXT_FORMAT};
+
+      public String[] getValues() {
+        return formats;
+      }
     }
 }

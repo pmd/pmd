@@ -1,16 +1,16 @@
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.cpd.cppast.TokenMgrError;
+import net.sourceforge.pmd.cpd.cppast.CPPParser;
 import net.sourceforge.pmd.cpd.cppast.CPPParserTokenManager;
 import net.sourceforge.pmd.cpd.cppast.Token;
-import net.sourceforge.pmd.cpd.cppast.CPPParser;
+import net.sourceforge.pmd.cpd.cppast.TokenMgrError;
 
-import java.io.Reader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.io.StringReader;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CPPTokenizer implements Tokenizer {
     protected String EOL = System.getProperty("line.separator", "\n");
