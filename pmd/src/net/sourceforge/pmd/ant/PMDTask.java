@@ -60,13 +60,13 @@ public class PMDTask extends Task {
             throw new BuildException("No report file specified");
         }
 
-        if (format == null || (!format.equals("xml") && !format.equals("html"))) {
-            throw new BuildException("Report format must be either 'xml', or 'html'; you specified " + format);
+        ReportFactory rf = new ReportFactory();
+        if (format == null || !rf.contains(format)) {
+            throw new BuildException("Report format must be one of " + rf.getConcatenatedString() + "; you specified " + format);
         }
 
         PMD pmd = new PMD();
 
-        ReportFactory rf = new ReportFactory();
         RuleContext ctx = new RuleContext();
         RuleSet rules = createRuleSets();
         ctx.setReport(rf.createReport(format));
