@@ -53,6 +53,7 @@ public class ActiveRuleSetPropertyGroup
      * global properties.
      */
         try {
+            GlobalProperty.readProperties();
             RuleSetFactory rsf = new RuleSetFactory();
             Iterator iter = rsf.getRegisteredRuleSets();
 

@@ -18,7 +18,7 @@ import com.borland.primetime.ide.MessageCategory;
  */
 
 public class RuleSetProperty {
-    private  GlobalProperty prop;
+    private  GlobalProperty globalRuleSetProp;
     private RuleSet originalRuleSet;
     private RuleSet activeRuleSet;
     private static MessageCategory msgCat = new MessageCategory("test");
@@ -27,7 +27,7 @@ public class RuleSetProperty {
      * These values show the selection state of the rules as contained in the GlobalProperties
      * objects
      */
-    private HashMap props = new HashMap();
+    private HashMap globalRuleProps = new HashMap();
 
     /**
      * these values represent the current selection state of the rules as shown in the interface
@@ -37,7 +37,7 @@ public class RuleSetProperty {
 
 
     public RuleSetProperty(GlobalProperty prop, RuleSet ruleSet) {
-        this.prop = prop;
+        this.globalRuleSetProp = prop;
         this.originalRuleSet = ruleSet;
         validateRules();
     }
@@ -56,7 +56,7 @@ public class RuleSetProperty {
             Rule rule = (Rule)iter.next();
             String propName = buildPropName(originalRuleSet.getName(), rule.getName());
             GlobalProperty gp = new GlobalProperty("Rules", propName, "true");  //get the global property
-            props.put(propName, gp);
+            globalRuleProps.put(propName, gp);
             if (Boolean.valueOf(gp.getValue()).booleanValue()) {     //if the rule is enabled
                 activeRuleSet.addRule(rule);  //then add the rule to the active ruleset
             }
@@ -76,11 +76,26 @@ public class RuleSetProperty {
             Rule rule = (Rule)iter.next();
             String propName = buildPropName(originalRuleSet.getName(), rule.getName());
             boolean selectionState = ((Boolean)ruleSelectionState.get(propName)).booleanValue();
-            GlobalProperty gp = (GlobalProperty)props.get(propName);
+            GlobalProperty gp = (GlobalProperty)globalRuleProps.get(propName);
             gp.setValue(String.valueOf(selectionState));  //update the global properties value
             if (selectionState) {     //if the rule is enabled
                 activeRuleSet.addRule(rule);
             }
+        }
+    }
+
+    /**
+     * Reset the rule selections to the values in the Global properties
+     */
+    public void resetRuleSelectionState() {
+        GlobalProperty.readProperties();
+        ruleSelectionState = new HashMap();
+        for (Iterator iter = originalRuleSet.getRules().iterator(); iter.hasNext(); ) {
+            Rule rule = (Rule)iter.next();
+            String propName = buildPropName(originalRuleSet.getName(), rule.getName());
+            GlobalProperty gp = (GlobalProperty)globalRuleProps.get(propName);
+            Boolean selectionState = Boolean.valueOf(gp.getValue());
+            ruleSelectionState.put(propName, selectionState);
         }
     }
 
@@ -93,7 +108,7 @@ public class RuleSetProperty {
     }
 
     public GlobalProperty getGlobalProperty() {
-        return prop;
+        return globalRuleSetProp;
     }
 
     /**

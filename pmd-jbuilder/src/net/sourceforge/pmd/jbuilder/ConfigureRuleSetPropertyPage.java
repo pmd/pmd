@@ -32,7 +32,7 @@ import com.borland.primetime.ide.Browser;
  */
 
 public class ConfigureRuleSetPropertyPage extends PropertyPage {
-    private MessageCategory msgCat = new MessageCategory("test");
+    private static MessageCategory msgCat = new MessageCategory("test");
     private BorderLayout borderLayout1 = new BorderLayout();
     private JSplitPane splitPaneConfRuleSets = new JSplitPane();
     private JScrollPane spRuleSets = new JScrollPane();
@@ -52,6 +52,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         }
     }
 
+
     public void writeProperties() {
         /**
          * Go through all the ruleSetProperties objects and revalidate them to persist
@@ -67,8 +68,18 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         throw new java.lang.UnsupportedOperationException("Method getHelpTopic() not yet implemented.");
     }
     public void readProperties() {
-        /**@todo Implement this com.borland.primetime.properties.PropertyPage abstract method*/
+        /**
+         * Go through all the ruleSetProperties objects and reset them to the
+         * GlobalProeprty values
+         */
+        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
+            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+            rsp.revalidateRules();
+            rsp.resetRuleSelectionState();
+        }
+        this.listRules.updateUI();
     }
+
     private void jbInit() throws Exception {
         this.setLayout(borderLayout1);
         spRuleSets.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Rule Sets"));
@@ -89,13 +100,6 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         listRules.addMouseListener(cl);
         listRules.addKeyListener(cl);
         listRules.setModel(dlmRules);
-        /*listRules.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                listRules_valueChanged(e);
-            }
-        }
-        );*/
-
 
         listRuleSets.setModel(dlmRuleSets);
         listRuleSets.addListSelectionListener(new ListSelectionListener() {
@@ -113,24 +117,6 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
 
     }
 
-    /**
-     * When a rule is selected we need to update the RuleSetProperty
-     * @param e selection event
-     */
-/*    private void listRules_valueChanged(ListSelectionEvent e) {
-        //get the selected rule data object
-        RuleData selectedRule = (RuleData)((JList)e.getSource()).getSelectedValue();
-        //get the currently selected rule set
-        String ruleSetName = listRuleSets.getSelectedValue().toString();
-        //get the RuleSetProperty object
-        RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.ruleSets.get(ruleSetName);
-        //update the selection setting for this rule in the rule set property
-        rsp.setRuleSelected(selectedRule.getName(), selectedRule.isSelected());
-        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, ruleSetName+" : " + selectedRule.getName() + " : " + selectedRule.isSelected());
-
-
-    }
-*/
 
     /**
      * When a ruleset is selected we need to update the listRules list
