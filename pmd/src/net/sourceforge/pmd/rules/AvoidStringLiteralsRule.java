@@ -27,8 +27,7 @@ public class AvoidStringLiteralsRule extends AbstractRule {
         }
 
         RuleContext ctx = (RuleContext)data;
-        String msg = MessageFormat.format(getMessage(), new Object[] {node.getImage()});
-        ctx.getReport().addRuleViolation(super.createRuleViolation(ctx, node.getBeginLine(), msg));
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
 
         return data;
     }

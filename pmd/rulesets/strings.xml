@@ -23,7 +23,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidStringLiterals"
-        message="Avoid embedding String literals such as ''{0}'' in your code"
+        message="Avoid embedding String literals in your code"
         class="net.sourceforge.pmd.rules.AvoidStringLiteralsRule">
     <description>
 Avoid String Literals detects when a literal String is embedded within your code.  Code like this can usually be
