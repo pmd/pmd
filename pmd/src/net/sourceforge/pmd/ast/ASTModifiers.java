@@ -17,13 +17,18 @@ public class ASTModifiers extends SimpleNode {
 
     public void discardIfNecessary() {
         SimpleNode node = (SimpleNode)jjtGetParent();
-        if (node.jjtGetNumChildren() > 2) {
-            throw new RuntimeException("Hm, expected only two children when trimming out Modifiers node, found " + jjtGetNumChildren() + " instead.");
-        }
         if (!(node.jjtGetChild(0) instanceof ASTModifiers)) {
             throw new RuntimeException("removeASTModifiersChild called but first child is not an ASTModifiers");
         }
-        node.children = new Node[] {node.children[1]};
+        // TODO - can we just always discard the first node?
+        if (node.jjtGetNumChildren() == 2) {
+            // conventional forloop syntax
+            node.children = new Node[] {node.children[1]};
+        }
+        if (node.jjtGetNumChildren() == 4) {
+            // JDK 1.5 forloop syntax
+            node.children = new Node[] {node.children[1], node.children[2], node.children[3]};
+        }
     }
 
   /** Accept the visitor. **/

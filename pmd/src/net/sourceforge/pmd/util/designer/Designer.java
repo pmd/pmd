@@ -7,6 +7,8 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
@@ -39,9 +41,16 @@ public class Designer implements ClipboardOwner {
 
     private ASTCompilationUnit doParse() {
         StringReader sr = new StringReader(codeEditorPane.getText());
-        JavaParser parser = (new TargetJDK1_4()).createParser(sr);
+        TargetJDKVersion v = null;
+        if (jdk14MenuItem.isSelected()) {
+            v = new TargetJDK1_4();
+        } else {
+            v = new TargetJDK1_5();
+        }
+        JavaParser parser = v.createParser(sr);
         return parser.CompilationUnit();        
     }
+
     private class ShowListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
             MyPrintStream ps = new MyPrintStream();
@@ -120,6 +129,9 @@ public class Designer implements ClipboardOwner {
     private JTextArea xpathQueryArea = new JTextArea(10, 30);
     private JFrame frame = new JFrame("PMD Rule Designer");
     private DFAPanel dfaPanel;
+    private JRadioButtonMenuItem jdk14MenuItem;
+    private JRadioButtonMenuItem jdk15MenuItem;
+
     private final MouseListener codeEditPanelMouseListener = new MouseListener() {
         public void mouseClicked(MouseEvent e) {}
         public void mousePressed(MouseEvent e) {
@@ -161,6 +173,20 @@ public class Designer implements ClipboardOwner {
 
         JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, tabbed);
 
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("JDK");
+        ButtonGroup group = new ButtonGroup();
+        jdk14MenuItem = new JRadioButtonMenuItem("JDK 1.4");
+        jdk14MenuItem.setSelected(true);
+        group.add(jdk14MenuItem);
+        menu.add(jdk14MenuItem);
+        jdk15MenuItem = new JRadioButtonMenuItem("JDK 1.5");
+        jdk15MenuItem.setSelected(true);
+        group.add(jdk15MenuItem);
+        menu.add(jdk15MenuItem);
+        menuBar.add(menu);
+
+        frame.setJMenuBar(menuBar);
         frame.getContentPane().add(containerSplitPane);
 
         frame.setSize(1000, 750);

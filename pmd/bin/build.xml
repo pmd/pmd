@@ -11,6 +11,7 @@
 
 <path id="classpath.path">
     <pathelement location="${build}"/>
+    <pathelement location="${build}"/>
     <fileset dir="${lib}">
         <include name="jaxen-core-1.0-fcs.jar"/>
         <include name="saxpath-1.0-fcs.jar"/>
@@ -125,7 +126,7 @@
 </target>
 
 <target name="jjtree">
-    <jjtree target="../etc/grammar/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
+    <jjtree target="etc/grammar/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
     <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
     <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>

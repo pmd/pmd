@@ -1170,8 +1170,9 @@ void ForStatement() :
 {
   "for" "("
 (
-  LOOKAHEAD(Type() <IDENTIFIER> ":")
-  {checkForBadJDK15ForLoopSyntaxArgumentsUsage();} Type() <IDENTIFIER> ":" Expression()
+      LOOKAHEAD(Modifiers() Type() <IDENTIFIER> ":")
+      {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
+      Modifiers() Type() <IDENTIFIER> ":" Expression()
 |
   [ ForInit() ] ";"
   [ Expression() ] ";"
