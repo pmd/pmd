@@ -11,6 +11,7 @@ Fixed a possible NPE in dfa.report.ReportTree.
 Implemented RFE 1058033 - Renamed run.[sh|bat] to pmd.[sh|bat].
 Implemented RFE 1058042 - XML output is more readable now.
 Applied patch 1051956 - Rulesets that reference rules using "ref" can now override various properties.
+Applied patch 1070733 - CPD's Java checker now has an option to ignore both literals and identifiers - this can help find large duplicate code blocks, but can also result in false positives.
 YAHTMLRenderer no longer has dependence on Ant packages.
 Modified the AST to correctly include PostfixExpression nodes.  Previously a statement like "x++;" was embedded in the parent StatementExpression node.
 Continued working on JDK 1.5 compatibility - added support for static import statements, varargs, and the new for loop syntax

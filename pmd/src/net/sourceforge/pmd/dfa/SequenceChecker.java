@@ -64,21 +64,10 @@ public class SequenceChecker {
         }
     }
 
-    private Status root;
-    private Status aktStatus;
-    private List bracesList;
-
-    private int firstIndex = -1;
-    private int lastIndex = -1;
-
-    /*
-     * Defines the logical structure.
-     * */
-    public SequenceChecker(List bracesList) {
+    private static Status root;
+    
+    static {
         root = new Status(Status.ROOT);
-        this.aktStatus = root;
-        this.bracesList = bracesList;
-
         Status ifNode = new Status(NodeType.IF_EXPR);
         Status ifSt = new Status(NodeType.IF_LAST_STATEMENT);
         Status ifStWithoutElse = new Status(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, true);
@@ -138,7 +127,20 @@ public class SequenceChecker {
 
         doSt.addStep(doExpr);
         doExpr.addStep(root);
+    }
+    
+    private Status aktStatus;
+    private List bracesList;
 
+    private int firstIndex = -1;
+    private int lastIndex = -1;
+
+    /*
+     * Defines the logical structure.
+     * */
+    public SequenceChecker(List bracesList) {
+        this.aktStatus = root;
+        this.bracesList = bracesList;
     }
 
     /**

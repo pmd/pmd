@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 public class GUI implements CPDListener {
 
@@ -98,6 +99,7 @@ public class GUI implements CPDListener {
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JTextArea resultsTextArea = new JTextArea();
     private JCheckBox recurseCheckbox = new JCheckBox("", true);
+    private JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
     private JComboBox languageBox = new JComboBox();
     private JFileChooser fcSave = new JFileChooser();
 
@@ -173,10 +175,18 @@ public class GUI implements CPDListener {
         languageBox.addItem("Java");
         languageBox.addItem("C++");
         languageBox.addItem("PHP");
+        languageBox.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                ignoreLiteralsCheckbox.setEnabled(languageBox.getSelectedItem().equals("Java"));
+            }}
+        );
         helper.add(languageBox);
         helper.nextRow();
         helper.addLabel("Also scan subdirectories?");
         helper.add(recurseCheckbox);
+        helper.nextRow();
+        helper.addLabel("Ignore literals and identifiers?");
+        helper.add(ignoreLiteralsCheckbox);
         helper.add(goButton);
         helper.add(cxButton);
         helper.nextRow();
@@ -223,14 +233,15 @@ public class GUI implements CPDListener {
 
             Language language = null;
             LanguageFactory lf = new LanguageFactory();
+            Properties p = new Properties();
+            p.setProperty(JavaTokenizer.IGNORE_LITERALS, String.valueOf(ignoreLiteralsCheckbox.isSelected()));
             if (languageBox.getSelectedItem().equals("Java")) {
-                language = lf.createLanguage(LanguageFactory.JAVA_KEY);
+                language = lf.createLanguage(LanguageFactory.JAVA_KEY, p);
             } else if (languageBox.getSelectedItem().equals("C++")) {
                 language = lf.createLanguage(LanguageFactory.CPP_KEY);
             } else if (languageBox.getSelectedItem().equals("PHP")) {
                 language = lf.createLanguage(LanguageFactory.PHP_KEY);
             }
-
             CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()), language);
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);

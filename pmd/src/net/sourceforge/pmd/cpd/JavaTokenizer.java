@@ -3,13 +3,23 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.io.StringReader;
+import java.util.Properties;
+
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.ast.JavaParserConstants;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 import net.sourceforge.pmd.ast.Token;
 
-import java.io.StringReader;
-
 public class JavaTokenizer implements Tokenizer {
+    
+    public static final String IGNORE_LITERALS = "ignore_literals";
+    
+    private boolean ignoreLiterals;
+    
+    public void setProperties(Properties properties) {
+        ignoreLiterals = Boolean.valueOf(properties.getProperty(IGNORE_LITERALS, "false")).booleanValue();
+    }
 
     public void tokenize(SourceCode tokens, Tokens tokenEntries) {
         StringBuffer sb = tokens.getCodeBuffer();
@@ -24,13 +34,13 @@ public class JavaTokenizer implements Tokenizer {
         Token currToken = tokenMgr.getNextToken();
         boolean discarding = false;
         while (currToken.image.length() > 0) {
-            if (currToken.image.equals("import") || currToken.image.equals("package")) {
+            if (currToken.kind == JavaParserConstants.IMPORT || currToken.kind == JavaParserConstants.PACKAGE) {
                 discarding = true;
                 currToken = tokenMgr.getNextToken();
                 continue;
             }
 
-            if (discarding && currToken.image.equals(";")) {
+            if (discarding && currToken.kind == JavaParserConstants.SEMICOLON) {
                 discarding = false;
             }
 
@@ -39,12 +49,26 @@ public class JavaTokenizer implements Tokenizer {
                 continue;
             }
 
-            if (!currToken.image.equals(";")) {
-                tokenEntries.add(new TokenEntry(currToken.image, tokens.getFileName(), currToken.beginLine));
+            if (currToken.kind != JavaParserConstants.SEMICOLON) {
+                String image = currToken.image;
+                if (ignoreLiterals && (currToken.kind == JavaParserConstants.STRING_LITERAL || currToken.kind == JavaParserConstants.CHARACTER_LITERAL 
+                        || currToken.kind == JavaParserConstants.DECIMAL_LITERAL || currToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL
+                        || currToken.kind == JavaParserConstants.IDENTIFIER)) {
+                    image = String.valueOf(currToken.kind);
+                }
+                tokenEntries.add(new TokenEntry(image, tokens.getFileName(), currToken.beginLine));
             }
 
             currToken = tokenMgr.getNextToken();
         }
         tokenEntries.add(TokenEntry.getEOF());
+    }
+
+    public boolean isIgnoreLiterals() {
+        return ignoreLiterals;
+    }
+    
+    public void setIgnoreLiterals(boolean ignoreLiterals) {
+        this.ignoreLiterals = ignoreLiterals;
     }
 }

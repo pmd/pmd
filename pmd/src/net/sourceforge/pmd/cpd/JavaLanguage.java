@@ -5,6 +5,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Properties;
 
 public class JavaLanguage implements Language {
 
@@ -14,8 +15,19 @@ public class JavaLanguage implements Language {
         }
     }
 
+    private JavaTokenizer tokenizer;
+    
+    public JavaLanguage() {
+        this(new Properties());
+    }
+    
+    public JavaLanguage(Properties properties) {
+        tokenizer = new JavaTokenizer();
+        tokenizer.setProperties(properties);
+    }
+    
     public Tokenizer getTokenizer() {
-        return new JavaTokenizer();
+        return tokenizer;
     }
 
     public FilenameFilter getFileFilter() {

@@ -22,8 +22,10 @@ public class MatchAlgorithmTest extends TestCase {
     public static final String LINE_2 = " public void bar() {";
     public static final String LINE_3 = "  System.out.println(\"hello\");";
     public static final String LINE_4 = "  System.out.println(\"hello\");";
-    public static final String LINE_5 = " }";
-    public static final String LINE_6 = "}";
+    public static final String LINE_5 = "  int i = 5";
+    public static final String LINE_6 = "  System.out.print(\"hello\");";
+    public static final String LINE_7 = " }";
+    public static final String LINE_8 = "}";
 
     public static String getSampleCode() {
         return
@@ -32,7 +34,9 @@ public class MatchAlgorithmTest extends TestCase {
             LINE_3 + PMD.EOL +
             LINE_4 + PMD.EOL +
             LINE_5 + PMD.EOL +
-            LINE_6;
+            LINE_6 + PMD.EOL +
+            LINE_7 + PMD.EOL +
+            LINE_8;
     }
 
     public void testSimple() throws Throwable {
@@ -41,7 +45,7 @@ public class MatchAlgorithmTest extends TestCase {
         Tokens tokens = new Tokens();
         TokenEntry.clearImages();
         tokenizer.tokenize(sourceCode, tokens);
-        assertEquals(29, tokens.size());
+        assertEquals(41, tokens.size());
         Map codeMap = new HashMap();
         codeMap.put("Foo.java", sourceCode);
 
@@ -60,5 +64,28 @@ public class MatchAlgorithmTest extends TestCase {
         assertEquals(4, mark2.getBeginLine());
         assertTrue("Foo.java" == mark1.getTokenSrcID() && "Foo.java" == mark2.getTokenSrcID());
         assertEquals(LINE_3, match.getSourceCodeSlice());
+    }
+    
+    public void testIgnore() throws Throwable {
+        JavaTokenizer tokenizer = new JavaTokenizer();
+        tokenizer.setIgnoreLiterals(true);
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
+        Tokens tokens = new Tokens();
+        TokenEntry.clearImages();
+        tokenizer.tokenize(sourceCode, tokens);
+        Map codeMap = new HashMap();
+        codeMap.put("Foo.java", sourceCode);
+
+        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
+        matchAlgorithm.findMatches();
+        Iterator matches = matchAlgorithm.matches();
+        Match match = (Match)matches.next();
+        assertFalse(matches.hasNext());
+
+        Iterator marks = match.iterator();
+        marks.next();
+        marks.next();
+        marks.next();
+        assertTrue(!marks.hasNext());
     }
 }
