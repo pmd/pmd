@@ -13,8 +13,8 @@ sub nopage() {
 
 sub default() {
  print start_html("Run PMD on your Sourceforge project");
- if (param("projectname")) {
-  addProject(param("projectname"), param("moduledirectory"), param("srcdir"));
+ if (param("unixname")) {
+  addProject(param("unixname"), param("moduledirectory"), param("srcdir"));
   print p();
   print b("Added that project to the schedule");
  } 
@@ -23,9 +23,10 @@ sub default() {
  #print p("Stats:");
  print p("Want to run PMD on your Sourceforge project?  Fill in the blanks and hit go");
  print start_form();
- print p(), "Project name (i.e., PMD): ", textfield(-name=>'projectname',-default=>'',-override=>1);
- print p(), "Module directory (i.e., pmd): ", textfield(-name=>'moduledirectory',-default=>'',-override=>1);
- print p(), "Source directory (i.e., pmd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
+ print p(), "Project title (i.e., PMD): ", textfield(-name=>'unixname',-default=>'',-override=>1);
+ print p(), "Project name (i.e., pmd): ", textfield(-name=>'unixname',-default=>'',-override=>1);
+ print p(), "Module directory (i.e., pmd-dcpd): ", textfield(-name=>'moduledirectory',-default=>'',-override=>1);
+ print p(), "Source directory (i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
  my $cachebuster=`date`;
  print $query->hidden(-name=>'cachebuster', -value=>${cachebuster});
  print p(), submit(-value=>'Go');
@@ -39,12 +40,12 @@ sub loadProjectList() {
   if ($file =~ /txt/) {
    open(FILE,"jobs/${file}");
    my $jobdata=<FILE>;
-   my ($name, $mod, $src) = split(":", $jobdata);
+   my ($title,$unixname, $mod, $src) = split(":", $jobdata);
    my $jobtext="";
-   if (-e "../htdocs/reports/${mod}.html") {
-    $jobtext="<a href=\"http://pmd.sf.net/reports/${mod}.html\">${name}</a>";
+   if (-e "../htdocs/reports/${unixname}.html") {
+    $jobtext="<a href=\"http://pmd.sf.net/reports/${unixname}.html\">${title}</a>";
    } else {
-    $jobtext=$name;
+    $jobtext=$title;
    }
    $result="${result}<tr><td>${jobtext}</td>";
   }

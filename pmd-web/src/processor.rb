@@ -1,14 +1,16 @@
+#!/usr/bin/ruby
 
-require 'c:\data\pmd\pmd-web\src\pmd.rb'
+require 'pmd.rb'
 
 jobsDir = Dir.new("jobs")
 jobsDir.each { |candidate| 
  begin 	
   if candidate[".txt"] 
-   name,moduleDir,srcDir = File.new("jobs/#{candidate}").read.split(":") 
-   job = PMD::Job.new(name,moduleDir,srcDir)
+   title,unixname,moduleDir,srcDir = File.new("jobs/#{candidate}").read.split(":") 
+   job = PMD::Job.new(title,unixname,moduleDir,srcDir)
    job.checkout_code
    job.run_pmd
+   job.clear
   end
  rescue
   puts "Exiting with error: #{$!}"

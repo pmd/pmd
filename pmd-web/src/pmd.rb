@@ -45,27 +45,30 @@ end
 
 
 class Job
-  def initialize( projectName, moduleDirectory, sourceDirectory )
-    @projectName = projectName
-    @cvsroot = ':pserver:anonymous@cvs.' + projectName + '.sourceforge.net:/cvsroot/' + projectName
+  def initialize(title, unixName, moduleDirectory, sourceDirectory )
+    @title = title
+    @unixName = unixName
+    @cvsroot = ':pserver:anonymous@cvs.' + unixName + '.sourceforge.net:/cvsroot/' + unixName
     @moduleDirectory = moduleDirectory
     @sourceDirectory = sourceDirectory
   end
   
   def checkout_code
-  `cvs -d:#{cvsroot} co #{moduleDirectory}`
+  `cvs -d#{@cvsroot} co #{@moduleDirectory}`
   end
   
   def run_pmd
-  `java -jar pmd-1.0rc2.jar #{sourceDirectory} html rulesets/unusedcode.xml > ../htdocs/reports/#{moduleDirectory}.html`
+   cmd="java -jar pmd-1.0rc2.jar #{@sourceDirectory} html rulesets/unusedcode.xml > ../htdocs/reports/#{@unixName}.html"
+   puts cmd
+   `#{cmd}`
   end
   
   def clear
-  `rm -rf #{moduleDirectory}`
+  `rm -rf #{@moduleDirectory}`
   end
   
   def to_s
-   return @projectName +":"+@moduleDirectory+":"+@sourceDirectory
+   return @unixName +":"+@moduleDirectory+":"+@sourceDirectory
   end
 end
 
