@@ -7,8 +7,7 @@ Running PMD from the command-line on Unix
 
 
 OVERVIEW
-PMD is a Java source code analysis tool.  It finds unused variables, empty catch blocks,
-unnecessary object creation, and so forth.
+PMD is a Java source code analysis tool.  It finds unused variables, empty catch blocks, and so forth.
 
 
 HOW TO RUN PMD FROM THE COMMAND LINE (WIN32)
