@@ -19,6 +19,7 @@ public class CloneThrowsCloneNotSupportedExceptionRuleTest  extends SimpleAggreg
          new TestDescriptor(TEST1, "ok, throws CloneNotSupportedException", 0, rule),
          new TestDescriptor(TEST2, "bad", 1, rule),
          new TestDescriptor(TEST3, "final class, rule does not apply", 0, rule),
+         new TestDescriptor(TEST4, "testing with multiple methods", 1, rule),
      });
   }
 
@@ -38,5 +39,12 @@ public class CloneThrowsCloneNotSupportedExceptionRuleTest  extends SimpleAggreg
     "public final class Foo {" + PMD.EOL +
     " void clone() {" + PMD.EOL +
     " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void clone() {}" + PMD.EOL +
+    " void foo() {}" + PMD.EOL +
+    " void bar() {}" + PMD.EOL +
     "}";
 }

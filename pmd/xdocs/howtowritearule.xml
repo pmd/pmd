@@ -148,6 +148,7 @@ void Statement() :
     </p>
     <source>
 <![CDATA[
+import net.sourceforge.pmd.*;
 public class WhileLoopsMustUseBracesRule extends AbstractRule {
 }
 ]]>
@@ -159,6 +160,8 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </p>
     <source>
 <![CDATA[
+import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.ast.*;
 public class WhileLoopsMustUseBracesRule extends AbstractRule {
     public Object visit(ASTWhileStatement node, Object data) {
         System.out.println("hello world");

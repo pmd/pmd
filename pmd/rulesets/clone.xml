@@ -51,11 +51,13 @@ class Foo{
              <property name="xpath">
                  <value>
                      <![CDATA[
- //ClassDeclaration
-  [@Final = 'false']
-  [.//MethodDeclaration/MethodDeclarator/@Image = 'clone']
-  [count(.//MethodDeclaration/MethodDeclarator/FormalParameters/*) = 0]
-  [not(contains(.//MethodDeclaration/NameList/Name/@Image,'CloneNotSupportedException'))]
+//ClassDeclaration
+[@Final = 'false']
+[.//MethodDeclaration[
+MethodDeclarator/@Image = 'clone'
+and count(MethodDeclarator/FormalParameters/*) = 0
+and count(NameList/Name[contains
+(@Image,'CloneNotSupportedException')]) = 0]]
                      ]]>
                  </value>
              </property>
@@ -85,11 +87,10 @@ class Foo{
                 <value>
                     <![CDATA[
 //ClassDeclaration
- [not(contains(./UnmodifiedClassDeclaration/NameList/Name/@Image, 'Cloneable'))]
- [.//MethodDeclaration/MethodDeclarator
-  [@Image = 'clone']
-  [count(/FormalParameters/*)=0]
- ]
+[not(./UnmodifiedClassDeclaration/NameList/Name
+[contains(@Image, 'Cloneable')])]
+[.//MethodDeclaration/MethodDeclarator[@Image
+= 'clone' and count(FormatParameters/*) = 0]]
                     ]]>
                 </value>
             </property>
