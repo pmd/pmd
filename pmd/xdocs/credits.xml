@@ -10,6 +10,8 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Brian Ewins - a complete rewrite of CPD based on the Burrows-Wheeler transform</li>
+            <li>Andrew Glover - the CPDTask, ExcessivePublicCountRule, CouplingBetweenObjectsRule, ExcessiveImportsRule, documentation tweaks</li>
             <li>Robert Leland - bug report</li>
             <li>Dan Sheppard - added ability to write rules as XPath expressions - very, very cool stuff</li>
             <li>Carl Gilbert - AccessorClassGenerationRule, DoubleCheckedLockingRule, ConstructorCallsOverridableMethodRule, bug reports, feature requests, and documentation improvements</li>
@@ -17,7 +19,6 @@
             <li>David Whitmore - parser bug report</li>
             <li>David Campbell - detailed bugs reports, Ant task refactoring, documentation tweaks</li>
             <li>Michael Sutherland - bug report in IfStmtMustUseBracesRule</li>
-            <li>Andrew Glover - ExcessivePublicCountRule, CouplingBetweenObjectsRule, ExcessiveImportsRule, documentation tweaks</li>
             <li>Egon Willighagen - pmd-web suggestion</li>
             <li>Vladimir Bossicard - numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Didier Duquennoy - pmd-netbeans feedback</li>

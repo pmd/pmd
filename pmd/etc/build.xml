@@ -108,12 +108,9 @@
     </exec>
 </target>
 
-<target name="run-cpd" depends="compile">
- <java classname="net.sourceforge.pmd.cpd.GUI" fork="yes">
-	<classpath>
- 	    <path refid="classpath.path"/>
-	</classpath>
- </java>
+<target name="cpd">
+    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+    <cpd tileSize="100" codeLocation="/home/tom/tmp/ant/src/main/org/apache/tools/ant/filters/" outputFile="/home/tom/cpd.txt"/>
 </target>
 
 </project>

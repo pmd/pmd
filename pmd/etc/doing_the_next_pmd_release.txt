@@ -1,3 +1,5 @@
+TODO--------------- update docs to include new CPD task
+
 Move rulesets/tmp.xml somewhere else
 update run.bat to point to pmd-1.04.jar
 update run.sh to point to pmd-1.04.jar
