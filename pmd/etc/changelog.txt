@@ -1,4 +1,6 @@
-January 31, 2005: 2.2:
+????, 2005 - 2.3:
+
+January 31, 2005 - 2.2:
 New rules: LocalVariableCouldBeFinal, MethodArgumentCouldBeFinal, AvoidInstantiatingObjectsInLoops, ArrayIsStoredDirectly, MethodReturnsInternalArray, AssignmentToNonFinalStatic, AvoidConcatenatingNonLiteralsInStringBuffer
 Fixed bug 1088459 - JUnitTestsShouldContainAsserts no longer throws ClassCastException on interface, native, and abstract method declarations.
 Fixed bug 1100059 - The Ant task now generates a small empty-ish report if there are no violations.
