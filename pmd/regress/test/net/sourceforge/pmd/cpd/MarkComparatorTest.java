@@ -25,32 +25,32 @@ public class MarkComparatorTest extends TestCase {
 
     public void testEqualMarksAreEqual() {
         List code = getCode();
-        MarkComparator comp = new MarkComparator(new CPDNullListener(), code.size());
-        Mark mark1 = new Mark(code, code.size(), "/var/Foo.java", 0);
-        Mark mark6 = new Mark(code, code.size(), "/var/Foo.java", 5);
+        MarkComparator comp = new MarkComparator(new CPDNullListener(), code);
+        Mark mark1 = new Mark(code.size(), "/var/Foo.java", 0);
+        Mark mark6 = new Mark(code.size(), "/var/Foo.java", 5);
         assertEquals(0, comp.compare(mark1, mark6));
     }
 
     public void testSameMarkIsEqual() {
         List code = getCode();
-        MarkComparator comp = new MarkComparator(new CPDNullListener(), code.size());
-        Mark mark1 = new Mark(code, code.size(), "/var/Foo.java", 0);
+        MarkComparator comp = new MarkComparator(new CPDNullListener(), code);
+        Mark mark1 = new Mark(code.size(), "/var/Foo.java", 0);
         assertEquals(0, comp.compare(mark1, mark1));
     }
     public void testUnuequalMarksAreUnequal() {
         List code = getCode();
-        MarkComparator comp = new MarkComparator(new CPDNullListener(), code.size());
-        Mark mark1 = new Mark(code, 0, "/var/Foo.java", 0);
-        Mark mark5 = new Mark(code, 4, "/var/Foo.java", 4);
+        MarkComparator comp = new MarkComparator(new CPDNullListener(), code);
+        Mark mark1 = new Mark(0, "/var/Foo.java", 0);
+        Mark mark5 = new Mark(4, "/var/Foo.java", 4);
         assertFalse(0 == comp.compare(mark1, mark5));
     }
 
     public void testcomparisonCountCallback() {
         gotCallback = false;
         List code = getCode();
-        MarkComparator comp = new MarkComparator(new MyListener(), code.size(), 3);
-        Mark mark1 = new Mark(code, code.size(), "/var/Foo.java", 0);
-        Mark mark2 = new Mark(code, code.size(), "/var/Foo.java", 1);
+        MarkComparator comp = new MarkComparator(new MyListener(), code, 3);
+        Mark mark1 = new Mark(code.size(), "/var/Foo.java", 0);
+        Mark mark2 = new Mark(code.size(), "/var/Foo.java", 1);
         comp.compare(mark1, mark2);
         comp.compare(mark1, mark2);
         comp.compare(mark1, mark2);

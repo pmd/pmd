@@ -6,11 +6,9 @@ public class Mark {
 
     private int indexIntoFile;
     private int indexIntoTokenArray;
-    private List code;
     private String file;
 
-    public Mark(List code, int offset, String file, int index) {
-        this.code = code;
+    public Mark(int offset, String file, int index) {
         this.indexIntoTokenArray = offset;
         this.indexIntoFile = index;
         this.file = file;
@@ -27,9 +25,4 @@ public class Mark {
     public int getIndexIntoTokenArray() {
         return indexIntoTokenArray;
     }
-
-    public TokenEntry tokenAt(int index) {
-        return (TokenEntry)code.get((index + indexIntoTokenArray) % code.size());
-    }
-
 }

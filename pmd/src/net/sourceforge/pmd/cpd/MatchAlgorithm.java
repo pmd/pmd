@@ -22,7 +22,7 @@ public class MatchAlgorithm {
             pool.put(token, token);
         }
         code.add(pool.get(token));
-        marks.add(new Mark(code, code.size(), token.getTokenSrcID(), token.getIndex()));
+        marks.add(new Mark(code.size(), token.getTokenSrcID(), token.getIndex()));
         this.cpdListener = cpdListener;
     }
 
@@ -37,7 +37,8 @@ public class MatchAlgorithm {
            token.setSortCode(count++);
        }
 
-       Collections.sort(marks, new MarkComparator(cpdListener, code.size()));
+       MarkComparator mc = new MarkComparator(cpdListener, code);
+       Collections.sort(marks, mc);
 
        Set soFar = new HashSet();
        for (int i = 1; i < marks.size();  i++) {
@@ -45,8 +46,8 @@ public class MatchAlgorithm {
            Mark mark1 = (Mark)marks.get(i);
            Mark mark2 = (Mark)marks.get(i - 1);
            for (int j = 0; j < code.size(); j++) {
-               TokenEntry token1 = mark1.tokenAt(j);
-               TokenEntry token2 = mark2.tokenAt(j);
+               TokenEntry token1 = mc.tokenAt(j, mark1);
+               TokenEntry token2 = mc.tokenAt(j, mark2);
                if (!token1.equals(token2) || token1 == TokenEntry.EOF || token2 == TokenEntry.EOF) {
                    break;
                }
