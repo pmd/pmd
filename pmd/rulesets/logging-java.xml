@@ -48,7 +48,11 @@ class Foo{
          <property name="xpath">
              <value>
                  <![CDATA[
-//VariableDeclarator[../Type/Name[@Image='Logger'] and (..[@Final='false'] or ..[@Static = 'false'] ) ]
+//VariableDeclarator
+ [../Type/ReferenceType
+  /ClassOrInterfaceType[@Image='Logger']
+   and
+  (..[@Final='false'] or ..[@Static = 'false'] ) ]
                 ]]>
              </value>
          </property>
