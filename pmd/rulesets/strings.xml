@@ -43,7 +43,7 @@ public class Foo {
            <property name="xpath">
                <value>
                    <![CDATA[
-    //AllocationExpression[Name/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]
+    //AllocationExpression[ClassOrInterfaceType/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]
                     ]]>
                </value>
            </property>
