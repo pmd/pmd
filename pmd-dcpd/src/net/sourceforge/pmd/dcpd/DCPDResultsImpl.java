@@ -30,13 +30,13 @@ public class DCPDResultsImpl extends TileOccurrences implements Results, Seriali
     }
 
     private void removeDupesOf(Tile largerTile) {
-        String largeTileSrc = ((TokenEntry)largerTile.getTokens().get(0)).getTokenSrcID();
+        String largeTileTokenSrcID = ((TokenEntry)largerTile.getTokens().get(0)).getTokenSrcID();
 
         for (int i=0; i<orderedTiles.size()-1; i++) {
             Tile smallerTile = (Tile)orderedTiles.get(i);
 
-            String smallTileSrc = ((TokenEntry)smallerTile.getTokens().get(0)).getTokenSrcID();
-            if (!smallTileSrc.equals(largeTileSrc)) {
+            String smallTileTokenSrcID = ((TokenEntry)smallerTile.getTokens().get(0)).getTokenSrcID();
+            if (!smallTileTokenSrcID.equals(largeTileTokenSrcID)) {
                 continue;
             }
 

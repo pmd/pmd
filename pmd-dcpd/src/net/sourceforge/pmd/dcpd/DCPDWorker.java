@@ -48,8 +48,6 @@ public class DCPDWorker {
                 jobs.put(job, tsw);
             }
 
-
-
             while (true) {
                 TileExpander te = new TileExpander(space, jobs);
                 te.expandAvailableTiles();
