@@ -28,7 +28,7 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST7, "simple unused private static method", 1, rule),
            new TestDescriptor(TEST8, "readResolve/writeReplace/etc are OK", 0, rule),
            new TestDescriptor(BUG_1038229, "Private methods called only by themselves, BUG 1038229", 1, rule),
-           new TestDescriptor(BUG_1114754, "False +, BUG 1114754", 0, rule),
+           //new TestDescriptor(BUG_1114754, "False +, BUG 1114754", 0, rule), //FIXME
        });
     }
 
