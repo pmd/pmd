@@ -215,8 +215,10 @@ public class RuleSetChooser extends JPanel {
 
 	private void removejarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removejarActionPerformed
 		int index = jarList.getSelectedIndex();
-		getJarListModel().removeElementAt( index );
-		editor.firePropertyChange();
+		if( index >= 0 ) {
+			getJarListModel().removeElementAt( index );
+			editor.firePropertyChange();
+		}
 	}//GEN-LAST:event_removejarActionPerformed
 
 	private void addjarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addjarActionPerformed
@@ -237,8 +239,10 @@ public class RuleSetChooser extends JPanel {
 
 	private void removeRuleSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeRuleSetActionPerformed
 		int index = rulesetList.getSelectedIndex();
-		getRuleSetListModel().removeElementAt( index );
-		editor.firePropertyChange();
+		if( index >= 0 ) {
+			getRuleSetListModel().removeElementAt( index );
+			editor.firePropertyChange();
+		}
 	}//GEN-LAST:event_removeRuleSetActionPerformed
 
 	private void addRuleSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRuleSetActionPerformed

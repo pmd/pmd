@@ -83,7 +83,7 @@ public class RunPMDAction extends CookieAction {
 	 * @return the name of the icon
 	 */
 	protected String iconResource() {
-		return "/pmd/resources/PMDOptionsSettingsIcon.gif";
+		return "pmd/resources/PMDOptionsSettingsIcon.gif";
 	}
 
 
@@ -137,18 +137,14 @@ public class RunPMDAction extends CookieAction {
 			TopManager.getDefault().setStatusText( 
 				"PMD checking for rule violations, " + ( i + 1 ) + "/" + ( dataobjects.size()  ) );
 			DataObject dataobject = ( DataObject )dataobjects.get( i );
-			SourceCookie cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
-
+			String name = dataobject.getPrimaryFile().getPackageName( '.' );
+			
 			//The file is not a java file
-			if( cookie == null || dataobject.getCookie( LineCookie.class ) == null ) {
+			if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
 				continue;
 			}
-
 			Reader reader = getSourceReader( dataobject );
-			if(cookie.getSource().getClasses().length == 0){
-				continue;
-			}
-			String name = cookie.getSource().getClasses()[0].getName().getFullName();
+			
 			RuleContext ctx = new RuleContext();
 			Report report = new Report();
 			ctx.setReport( report );
@@ -190,7 +186,6 @@ public class RunPMDAction extends CookieAction {
 		listener.detach();
 		FaultRegistry.getInstance().clearRegistry();
 		try {
-
 			TopManager.getDefault().setStatusText( "PMD checking for rule violations" );
 			List list = getDataObjects( node );
 			List violations = checkCookies( list );

@@ -6,7 +6,7 @@
 			<classpath>
 				<!-- Copy this from the netbeans installation directory -->
 				<pathelement path="lib/openide.jar"/>
-				<pathelement path="lib/pmd-1.03.jar"/>
+				<pathelement path="lib/pmd-1.04.jar"/>
 			</classpath>
 		</javac>
 		<copy todir="build/classes">
@@ -29,7 +29,9 @@
 		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib\nbantext.jar" name="makenbm"/>
 		<mkdir dir="build/temp_distribution/netbeans/modules/ext"/>
 		<copy file="build/pmd.jar" tofile="build/temp_distribution/netbeans/modules/pmd.jar"/>
-		<copy file="lib/pmd-1.03.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.03.jar"/>
+		<copy file="lib/pmd-1.04.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.04.jar"/>
+		<copy file="lib/saxpath-1.0-fcs.jar" tofile="build/temp_distribution/netbeans/modules/ext/saxpath-1.0-fcs.jar"/>
+		<copy file="lib/jaxen-core-1.0-fcs.jar" tofile="build/temp_distribution/netbeans/modules/ext/jaxen-core-1.0-fcs.jar"/>
 		<makenbm file="build/pmd.nbm" homepage="http://pmd.sourceforge.net/" module="build/pmd.jar" topdir="build/temp_distribution" needsrestart="false">
 			<license file="LICENSE.txt"/>
 			<!-- todo: better to include online help (JavaHelp) than put this here: -->
@@ -48,6 +50,8 @@
 				<include name="src/**/*"/>
 				<include name="lib/pmd*.jar"/>
 				<include name="lib/nbantext.jar"/>
+				<include name="lib/saxpath-1.0-fcs.jar"/>
+				<include name="lib/jaxen-core-1.0-fcs.jar"/>
 				<exclude name="**/.nbattrs"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build\pmd.nbm"/>
