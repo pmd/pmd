@@ -46,6 +46,95 @@ public class JDKVersionTest extends TestCase  {
     }
     // enum keyword/identifier
 
+    // assert keyword/identifier
+    public void testAssertAsKeywordVariantsSucceedWith1_4() {
+        new JavaParser(new StringReader(ASSERT_TEST1)).CompilationUnit();
+        new JavaParser(new StringReader(ASSERT_TEST2)).CompilationUnit();
+        new JavaParser(new StringReader(ASSERT_TEST3)).CompilationUnit();
+        new JavaParser(new StringReader(ASSERT_TEST4)).CompilationUnit();
+    }
+
+    public void testAssertAsVariableDeclIdentifierFailsWith1_4() {
+        try {
+            new JavaParser(new StringReader(ASSERT_TEST5)).CompilationUnit();
+            throw new RuntimeException("Usage of assert as identifier should have failed with 1.4");
+        } catch (ParseException pe) {
+            // cool
+        }
+    }
+
+    public void testAssertAsMethodNameIdentifierFailsWith1_4() {
+        try {
+            new JavaParser(new StringReader(ASSERT_TEST7)).CompilationUnit();
+            throw new RuntimeException("Usage of assert as identifier should have failed with 1.4");
+        } catch (ParseException pe) {
+            // cool
+        }
+    }
+
+    public void testAssertAsIdentifierSucceedsWith1_3() {
+        JavaParser jp = new JavaParser(new StringReader(ASSERT_TEST5));
+        jp.setAssertAsIdentifier();
+        jp.CompilationUnit();
+    }
+
+    public void testAssertAsKeywordFailsWith1_3() {
+        try {
+            JavaParser jp = new JavaParser(new StringReader(ASSERT_TEST6));
+            jp.setAssertAsIdentifier();
+            jp.CompilationUnit();
+            throw new RuntimeException("Usage of assert as keyword should have failed with 1.3");
+        } catch (ParseException pe) {
+            // cool
+        }
+    }
+    // assert keyword/identifier
+
+    private static final String ASSERT_TEST1 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  assert x>2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String ASSERT_TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  assert (x>2);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String ASSERT_TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  assert x>2 : \"hi!\";" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String ASSERT_TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  assert (x>2) : \"hi!\";" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String ASSERT_TEST5 =
+    "public class Foo {" + PMD.EOL +
+    "  int assert = 2;" + PMD.EOL +
+    "}";
+
+    private static final String ASSERT_TEST6 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  assert (x>2) : \"hi!\";" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String ASSERT_TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " void assert() {}" + PMD.EOL +
+    "}";
+
     private static final String JDK15_ENUM =
     "public class Test {" + PMD.EOL +
     " enum Season { winter, spring, summer, fall };" + PMD.EOL +
