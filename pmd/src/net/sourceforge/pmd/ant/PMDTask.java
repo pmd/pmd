@@ -29,38 +29,8 @@ import java.util.List;
 
 public class PMDTask extends Task {
 
-    public static class Formatter {
-        private Renderer renderer;
-        private String toFile;
-        private boolean isReportFilePathAbsolute;
-
-        public void setType(String type) {
-            if (type.equals("xml")) {
-                renderer = new XMLRenderer();
-            } else if (type.equals("html")) {
-                renderer = new HTMLRenderer();
-            } else if (type.equals("text")) {
-                renderer = new TextRenderer();
-            } else {
-                throw new BuildException("Formatter type must be 'xml', 'text', or 'html'; you specified " + type);
-            }
-        }
-        public void setToFile(String toFile) {this.toFile = toFile;}
-        public void setIsReportFilePathAbsolute(boolean value) {this.isReportFilePathAbsolute = value;}
-        public Renderer getRenderer() {return renderer;}
-
-        public Writer getToFileWriter(String baseDir) throws IOException {
-            String outFile = toFile;
-            if (!isReportFilePathAbsolute) {
-                outFile = baseDir + System.getProperty("file.separator") + toFile;
-            }
-            return new BufferedWriter(new FileWriter(new File(outFile)));
-        }
-    }
-
     private List formatters = new ArrayList();
     private List filesets  = new ArrayList();
-
     private boolean shortFilenames;
     private boolean verbose;
     private boolean printToConsole;

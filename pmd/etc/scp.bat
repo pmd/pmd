@@ -9,4 +9,5 @@ set CLASSPATH=%CLASSPATH%;../
 set CLASSPATH=%CLASSPATH%;../lib/xercesImpl-2.0.2.jar
 set CLASSPATH=%CLASSPATH%;../lib/xmlParserAPIs-2.0.2.jar
 set CLASSPATH=%CLASSPATH%;c:\javacc2.1\bin\lib\JavaCC.zip
+set CLASSPATH=%CLASSPATH%;c:\ant\lib\ant.jar
 set CLASSPATH=%CLASSPATH%;c:\ant\lib\junit.jar

@@ -6,6 +6,22 @@ These are new rules for the next release
   </description>
 
 
+    <rule name="SymbolTableTestRule"
+          message="test"
+          class="net.sourceforge.pmd.rules.SymbolTableTestRule">
+      <description>
+      asdsad
+      </description>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+  // asdadas
+  ]]>
+      </example>
+    </rule>
+
+
     <rule name="CyclomaticComplexityRule"
       message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
       class="net.sourceforge.pmd.rules.CyclomaticComplexityRule">

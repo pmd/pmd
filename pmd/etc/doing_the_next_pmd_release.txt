@@ -1,7 +1,7 @@
 
 
 
->>>>>>>>>>>>> UPDATE THE ANT XDOCS WITH isReportFilePathAbsolute ATTRIBUTE!
+>>>>>>>>>>>>> UPDATE THE ANT XDOCS WITH toFile can be either rel or abs ATTRIBUTE!
 
 
 
