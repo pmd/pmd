@@ -1,3 +1,5 @@
+???? 2002 - 0.7:
+
 July 18 2002 - 0.6:
 Added new rules: ExcessiveClassLength, ExcessiveMethodLength
 DuplicateImportsRule now reports the correct line number.
@@ -5,7 +7,7 @@ Fixed bug 582639 - Rule violations are now reported on the proper line
 Fixed bug 582509 - Removed unneeded throws clause
 Fixed bug 583009 - Now rulesets.properties is in the jar file
 
-July 16 2002 - 0.5:
+July 15 2002 - 0.5:
 Added new rules: DontImportJavaLangRule, DuplicateImportsRule
 Added new ruleset: rulesets/imports.xml
 Changed sorting of RuleViolations to group Files together.

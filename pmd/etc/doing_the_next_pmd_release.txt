@@ -12,16 +12,16 @@ ant dist
 ant test
 Do all the tests run?  OK, then:
 ant dist
-cvs add -kb pmd-0.6.jar
-cvs rm pmd-0.5.jar
+cvs add -kb pmd-0.7.jar
+cvs rm pmd-0.6.jar
 cvs ci -m "adding new jar, removing old one"
 cd c:\data\pmd
-cvs rtag -D tomorrow "pmd_release_0_6" pmd
+cvs rtag -D tomorrow "pmd_release_0_7" pmd
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
-cvs export -d c:\tmp\pmd -r pmd_release_0_6 pmd
-zip it up, rename it to pmd-0.6.zip
-unzip it into c:\tmp\pmd-0.6
+cvs export -d c:\tmp\pmd -r pmd_release_0_7 pmd
+zip it up, rename it to pmd-0.7.zip
+unzip it into c:\tmp\pmd-0.7
 clear classpath
 TESTS: Can you
 1) run 1 file and get a report
@@ -31,7 +31,7 @@ run c:\data\pmd\pmd\test-data\Unused1.java html rulesets/unusedcode.xml
 ant pmd
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_0_6 pmd
+cvs rtag -d pmd_release_0_7 pmd
 and then retag everything
 
 FTP the zip file to SF
@@ -39,11 +39,11 @@ ftp upload.sourceforge.net
 generic userid/password: anonymous/tomcopeland@users.sourceforge.net
 cd incoming
 bin
-put pmd-0.6.zip
+put pmd-0.7.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-0.6.zip file
+Add the pmd-0.7.zip file
 Classify the file
 
 SSH in to shell.sourceforge.net
