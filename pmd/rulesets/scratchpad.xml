@@ -7,24 +7,21 @@ These are new rules that are still in progress
   </description>
 
 <rule
-    name="SuspiciousEqualsMethodName"
-    message="The method name and parameter number are suspiciously close to equals(Object)"
+    name="Foo"
+    message="problem"
     class="net.sourceforge.pmd.rules.XPathRule">
     <description>
-          The method name and parameter number are suspiciously close to
- equals(Object), which may mean you are trying (and failing) to override the equals(Object)
-    method.
+        test
     </description>
     <properties>
         <property name="xpath">
             <value>
     <![CDATA[
-    //ClassDeclaration//MethodDeclarator
-      [@Image = 'equals']
-      [count(FormalParameters/*) = 1 ]
-      [ not (FormalParameters//Type/Name
-             [@Image = 'Object' or @Image = 'java.lang.Object'])
-      ]
+//MethodDeclaration
+ [@private = 'false']
+ [count(descendant::PrimaryExpression/PrimaryPrefix/Name[contains (@image, 'log')])<2]
+ [not (contains(/MethodDeclarator/@image, 'set'))]
+
     ]]>
                 </value>
              </property>
@@ -33,12 +30,6 @@ These are new rules that are still in progress
     <example>
     <![CDATA[
 public class Foo {
-     public int equals(Object o) {
-     // oops, this probably was supposed to be boolean equals
-     }
-     public boolean equals(String s) {
-     // oops, this probably was supposed to be equals(Object)
-     }
 }
     ]]>
     </example>
