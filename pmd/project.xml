@@ -29,7 +29,7 @@
   <li>Short/long variable and method names</li>
 </ul>
 <p>PMD has plugins for JEdit, JBuilder, Netbeans/Forte/Sun ONE, IntelliJ IDEA, Maven, Ant, Eclipse,
-and Emacs.  You can <a href="http://sf.net/projects/pmd/">download everything from here</a>.</p>
+and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a>.</p>
 <p>Thanks to the <a href="http://www.cougaar.org/index.html?referrer=pmd">Cougaar</a> program for sponsoring PMD!</p>
   ]]>
   </description>
