@@ -10,12 +10,15 @@ package net.sourceforge.pmd.stat;
  */
 public class Metric {
 	private String metricName = null;
+	private int count = 0;
+	private double total = 0.0;
 	private double low = -1.0;
 	private double high = -1.0;
 	private double mean = -1.0;
 	private double stddev = -1.0;
 	
-	public Metric(String name, double low, double high,
+	public Metric(String name, int count, double total,
+				  double low, double high,
 				  double mean, double stddev ) 
 	{
 		this.metricName = name;
@@ -23,6 +26,8 @@ public class Metric {
 		this.high = high;
 		this.mean = mean;
 		this.stddev = stddev;			  	
+		this.count = count;
+		this.total = total;
 	}
 	
 	public String getMetricName() {
@@ -44,4 +49,12 @@ public class Metric {
 	public double getStandardDeviation() {
 		return stddev;
 	}	
+	
+	public int getCount() {
+		return count;
+	}
+	
+	public double getTotal() {
+		return total;
+	}
 }

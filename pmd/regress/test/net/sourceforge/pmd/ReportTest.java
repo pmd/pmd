@@ -38,7 +38,7 @@ public class ReportTest extends TestCase implements ReportListener {
 		Report r = new Report();
 		assertTrue( !r.hasMetrics() );
 		
-		r.addMetric( new Metric("m1", 1.0, 2.0, 3.0, 4.0));
+		r.addMetric( new Metric("m1", 0, 0.0, 1.0, 2.0, 3.0, 4.0));
 		assertTrue( r.hasMetrics() );
 		
 		Iterator ms = r.metrics();
@@ -93,7 +93,7 @@ public class ReportTest extends TestCase implements ReportListener {
         assertTrue(violationSemaphore);
         
         metricSemaphore = false;
-        rpt.addMetric( new Metric("test", 0.0, 0.0, 0.0, 0.0 ));
+        rpt.addMetric( new Metric("test", 0, 0.0, 0.0, 0.0, 0.0, 0.0 ));
         
         assertTrue(metricSemaphore);
     }

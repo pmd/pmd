@@ -23,7 +23,7 @@ public abstract class StatisticalRule extends AbstractRule {
 	private double totalSquared = 0.0;
 	
     public void addDataPoint( DataPoint point )
-    {
+    { 
 		count++;
 		total += point.getScore();
 		totalSquared += point.getScore() * point.getScore();
@@ -69,7 +69,7 @@ public abstract class StatisticalRule extends AbstractRule {
             high = ((DataPoint) dataPoints.last()).getScore();
         }
 
-		ctx.getReport().addMetric( new Metric( this.getName(), low, high, getMean(), getStdDev()));
+		ctx.getReport().addMetric( new Metric( this.getName(), count, total, low, high, getMean(), getStdDev()));
 
         dataPoints.clear();
     }

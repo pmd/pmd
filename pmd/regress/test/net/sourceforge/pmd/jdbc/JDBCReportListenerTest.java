@@ -198,7 +198,7 @@ public class JDBCReportListenerTest extends TestCase {
 
 	JDBCReportListener IUT = getIUT( 18 );
 
-	IUT.metricAdded( new Metric("single", 1.0, 6.0, 3.0, 1.5) );
+	IUT.metricAdded( new Metric("single", 5, 30, 1.0, 6.0, 3.0, 1.5) );
     }
 
     public void testMultiMetric() throws Throwable {
@@ -214,7 +214,7 @@ public class JDBCReportListenerTest extends TestCase {
 	metInsert.addExpectedSetParameter( 5, new Double( 3.0 ));
 	metInsert.addExpectedSetParameter( 6, new Double( 1.5 ));
 
-	IUT.metricAdded( new Metric("first", 1.0, 6.0, 3.0, 1.5) );
+	IUT.metricAdded( new Metric("first", 5, 30, 1.0, 6.0, 3.0, 1.5) );
 
 	metInsert.addExpectedSetParameter( 1, 378 );
 	metInsert.addExpectedSetParameter( 2, "second" );
@@ -223,7 +223,7 @@ public class JDBCReportListenerTest extends TestCase {
 	metInsert.addExpectedSetParameter( 5, new Double( 3.01 ));
 	metInsert.addExpectedSetParameter( 6, new Double( 1.51 ));
 
-	IUT.metricAdded( new Metric("second", 1.01, 6.01, 3.01, 1.51) );
+	IUT.metricAdded( new Metric("second", 7, 32.5, 1.01, 6.01, 3.01, 1.51) );
     }
 
 }
