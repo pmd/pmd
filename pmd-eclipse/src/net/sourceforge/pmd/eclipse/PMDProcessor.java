@@ -11,12 +11,12 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleViolation;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * A class to process IFile resource against PMD
@@ -25,6 +25,10 @@ import org.eclipse.swt.widgets.Display;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/03/30 20:46:21  phherlin
+ * Adding logging
+ * Display error dialog in a thread safe way
+ *
  * Revision 1.3  2003/03/27 22:11:09  phherlin
  * Fixing SWTException when PMD is processing a file with syntax error
  * (Thanks to Chris Grindstaff)
@@ -32,6 +36,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PMDProcessor {
     private static final PMDProcessor SELF = new PMDProcessor();
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDProcessor");
     private PMD pmdEngine;
 
     /**
@@ -54,6 +59,7 @@ public class PMDProcessor {
      * @param fTask indicate if a task marker should be created
      */
     public void run(IFile file, boolean fTask) {
+        log.info("Processing file " + file.getName());
         try {
             Reader input = new InputStreamReader(file.getContents());
             RuleContext context = new RuleContext();
@@ -65,28 +71,12 @@ public class PMDProcessor {
             updateMarkers(file, context, fTask);
 
         } catch (CoreException e) {
-            openError(e, PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION);
+            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         } catch (PMDException e) {
-            openError(e, PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION);
+            log.warn(getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
+        } finally {
+            log.info("Processing done");
         }
-    }
-
-    /**
-     * Open an error dialog on the UI thread
-     * Avoid SWT exception when processor is called from a secondary thread
-     * Thanks to Chris Grindstaff
-     * @param exception the exception to display
-     * @param messageKey the key of the message to display
-     */
-    private void openError(final Exception exception, final String messageKey) {
-        Display.getDefault().syncExec(new Runnable() {
-            public void run() {
-                MessageDialog.openError(
-                    null,
-                    getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                    getMessage(messageKey) + exception.toString());
-            }
-        });
     }
 
     /**
