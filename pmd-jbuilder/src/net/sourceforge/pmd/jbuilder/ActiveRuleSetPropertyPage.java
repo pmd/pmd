@@ -188,11 +188,13 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
      * the selected list
      */
     private void selectRules() {
-        //get the selected elements in the selected list and move to the available list
+        //get the selected elements in the available list and move to the selected list
         int selectedIndex = jlistAvailableRuleSets.getSelectedIndex();
         while (selectedIndex != -1) {
             ListEntry le = (ListEntry)dlmAvailableRuleSets.get(selectedIndex);
             dlmSelectedRuleSets.addElement(le);
+            RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(le.getDisplayName());
+            rsp.getGlobalProperty().setValue("true");   //set the global property value to true
             dlmAvailableRuleSets.remove(selectedIndex);
             selectedIndex = jlistAvailableRuleSets.getSelectedIndex();
         }
@@ -213,11 +215,13 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
      * available list
      */
     private void deselectRules() {
-        //get the selected elements in the available list and move to the selected list
+        //get the selected elements in the selected list and move to the available list
         int selectedIndex = jlistSelectedRuleSets.getSelectedIndex();
         while (selectedIndex != -1) {
             ListEntry le = (ListEntry)dlmSelectedRuleSets.get(selectedIndex);
             dlmAvailableRuleSets.addElement(le);
+            RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(le.getDisplayName());
+            rsp.getGlobalProperty().setValue("false");   //set the global property value to false
             dlmSelectedRuleSets.remove(selectedIndex);
             selectedIndex = jlistSelectedRuleSets.getSelectedIndex();
         }

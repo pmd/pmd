@@ -32,9 +32,6 @@ import com.borland.primetime.properties.PropertyDialog;
 
 
 
-/**
- * put your documentation comment here
- */
 public class ImportedRuleSetPropertyGroup
         implements PropertyGroup {
 
@@ -47,11 +44,6 @@ public class ImportedRuleSetPropertyGroup
 
 
     /**
-     * We need to initialize the imported rule sets statically so that they
-     * are available to the other property groups
-     */
-
-    /**
     * Standard Constructor
     */
     public ImportedRuleSetPropertyGroup () {
@@ -59,31 +51,49 @@ public class ImportedRuleSetPropertyGroup
         getImportedRuleSets();
     }
 
+    /**
+     * Get a collection of the currently imported rule sets
+     * This is used by the ActiveRuleSetPropertyGroup when constructing it's list
+     * of rulesets to display
+     * @return Collection of rule sets
+     */
     public  Collection getRuleSets() {
         return importedRuleSets.values();
     }
 
-
+    /**
+     * Add a new imported rule set
+     * @param ruleSetFileName The file name of the new rule set
+     * @param rs The rule set object
+     */
     protected void addRuleSet(String ruleSetFileName, RuleSet rs) {
         if (!importedRuleSets.containsKey(rs.getName())) {
-            importedRuleSets.put(rs.getName(), rs);
-            importedRuleSetFileNames.put(rs.getName(), ruleSetFileName);
-            updateImportedRuleSets();
-            updateActiveRuleSets(rs);
-            updatePropertyPages();
+            importedRuleSets.put(rs.getName(), rs);  //register the new ruleset object
+            importedRuleSetFileNames.put(rs.getName(), ruleSetFileName);  //register the ruleset file name
+            updateImportedRuleSets();  //update the global property that stores the imported ruleset info
+            ActiveRuleSetPropertyGroup.currentInstance.addImportedRuleSet(rs);  //notify the ActiveRuleSetPropertyGroup of the new imported rule set
+            updatePropertyPages();  //update the other property pages
         }
     }
 
+    /**
+     * Remove a currently imported rule set
+     * @param ruleSetName  the name of the rule set to remove
+     */
     protected void removeRuleSet(String ruleSetName) {
         importedRuleSets.remove(ruleSetName);  //remove the rule set from the importedRuleSets map
         importedRuleSetFileNames.remove(ruleSetName);  //remove the rule set file name from the importedRuleSetFileNames map
 
         ActiveRuleSetPropertyGroup.currentInstance.ruleSets.remove(ruleSetName);   //update the ActiveRuleSetPropertyGroup
-        updatePropertyPages();
+        updatePropertyPages();  //update the other property pages
         updateImportedRuleSets();  //update the imported Rule Sets global property
 
     }
 
+    /**
+     * Update the ActiveRUleSetPropertyPage and the ConfigureRuleSetPropertyPage so they
+     * reflect the current state of the imported ruleset list
+     */
     protected void updatePropertyPages() {
         if (ActiveRuleSetPropertyPage.currentInstance != null)
             ActiveRuleSetPropertyPage.currentInstance.reinit();
@@ -92,10 +102,6 @@ public class ImportedRuleSetPropertyGroup
             ConfigureRuleSetPropertyPage.currentInstance.reinit();
     }
 
-    private  void updateActiveRuleSets(RuleSet rs) {
-        //update the active rule sets
-        ActiveRuleSetPropertyGroup.currentInstance.addImportedRuleSet(rs);
-    }
 
     /**
      * Update the imported rule sets global property by create a delimited string out of

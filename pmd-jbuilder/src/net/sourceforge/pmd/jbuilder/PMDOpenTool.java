@@ -104,19 +104,13 @@ public class PMDOpenTool {
      * @param pmd PMD object
      * @return A Ruleset and any embedded rulesets
      */
-    private static RuleSet constructRuleSets (RuleSetFactory ruleSetFactory,
-            PMD pmd) {
-        RuleSet masterRuleSet = null;
+    private static RuleSet constructRuleSets () {
+        RuleSet masterRuleSet = new RuleSet();
         for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
             if (Boolean.valueOf(rsp.getGlobalProperty().getValue()).booleanValue()) {
                 RuleSet rules = rsp.getActiveRuleSet();
-                if (masterRuleSet == null) {
-                    masterRuleSet = rules;
-                }
-                else {
-                    masterRuleSet.addRuleSet(rules);
-                }
+                masterRuleSet.addRuleSet(rules);
             }
         }
         return  masterRuleSet;
@@ -131,14 +125,12 @@ public class PMDOpenTool {
         PMD pmd = new PMD();
 
         RuleContext ctx = new RuleContext();
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        RuleSet rules = constructRuleSets(ruleSetFactory, pmd);
+        RuleSet rules = constructRuleSets();
         if (rules == null)
             return  new Report();
         ctx.setReport(new Report());
         ctx.setSourceCodeFilename("this");
         try {
-            // TODO switch to use StringReader once PMD 0.4 gets released
             pmd.processFile(new StringReader(text), rules, ctx);
             return  ctx.getReport();
         } catch (Exception e) {

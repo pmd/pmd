@@ -95,6 +95,9 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
     }
 
 
+    /**
+     * non-Jbuilder specific initialization stuff
+     */
     private void init2() {
         listImportedRuleSets.setModel(dlmImportedRuleSets);
         //update the list with the
@@ -129,16 +132,21 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
      */
     public void readProperties () {}
 
+    /**
+     * Called when the ImportRuleSet button is pressed
+     * @param e action event
+     */
     void btnImportRuleSet_actionPerformed(ActionEvent e) {
         String fileName = tfRuleSetFileName.getText();
-        if (fileName != null && !fileName.trim().equals("")) {
-            if (!fileName.toLowerCase().startsWith("rulesets/")) {
+        if (fileName != null && !fileName.trim().equals("")) {  //make sure we have a file name
+            if (!fileName.toLowerCase().startsWith("rulesets/")) {   //normalize the file path and name
                 fileName = "rulesets/"+fileName;
             }
             if (!fileName.toLowerCase().endsWith(".xml")) {
                 fileName += ".xml";
             }
             try {
+                //construct the rule set
                 InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
                 RuleSetFactory rsf = new RuleSetFactory();
                 RuleSet rs = rsf.createRuleSet(is);
@@ -147,15 +155,17 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
                 if (!dlmImportedRuleSets.contains(rs.getName())) {
                     dlmImportedRuleSets.addElement(rs.getName());
                     ImportedRuleSetPropertyGroup.currentInstance.addRuleSet(fileName, rs);
-                    tfRuleSetFileName.setText("");
+                    tfRuleSetFileName.setText("");   //clear out the text field
                 }
                 else {
+                    //display error message
                     Message msg = new Message("Rule Set: " + fileName + " already exists");
                     msg.setForeground(Color.red);
                     Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg);
                 }
             }
             catch (Exception ex) {
+                //display error message
                 Message msg = new Message("Error importing: " + fileName);
                 msg.setForeground(Color.red);
                 Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg);
@@ -163,11 +173,15 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
         }
     }
 
+    /**
+     * Remove the rule set
+     * @param e action event
+     */
     void btnRemoveRuleSet_actionPerformed(ActionEvent e) {
         int index = listImportedRuleSets.getSelectedIndex();
         String ruleSetName = (String)dlmImportedRuleSets.elementAt(index);
-        dlmImportedRuleSets.remove(index);
-        ImportedRuleSetPropertyGroup.currentInstance.removeRuleSet(ruleSetName);
+        dlmImportedRuleSets.remove(index);   //remove the ruleset from the list model
+        ImportedRuleSetPropertyGroup.currentInstance.removeRuleSet(ruleSetName);  //remove the rule set from the property group
 
     }
 }
