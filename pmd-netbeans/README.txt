@@ -1,14 +1,21 @@
 PMD for netbeans.
-
 ------------------------
 INSTALL
 ------------------------
 
-Start netbeans and goto Tools\Update Center and choose 
-"Install Manually Downloaded Modules(.nbm Files). Press Next, Add... and go to 
-the directory where you downloaded pmd-netbeans and choose the file pmd.nbm. 
-Press Next, accept the license and choose to include the pmd module. Press 
-Finish, restart the IDE and you're done :)
+ 1) Start netbeans 
+ 2) Goto Tools --> Update Center
+ 3) Choose "Install Manually Downloaded Modules(.nbm Files).". 
+ 4) Press Next
+ 5) Chosse Add
+ 6) Goto the directory where you downloaded pmd-netbeans and choose the file "pmd.nbm".
+ 7) Press OK
+ 8) Press Next
+ 9) Press Next
+10) Press Accept
+11) Choose Include 
+12) Press Finish
+13) Choose OK to restart
 
 ------------------------
 USE
@@ -22,6 +29,11 @@ java-file to correct the problem PMD discovered.
 ------------------------
 OPTIONS
 ------------------------
-
-Go to Options/IDE Configuration/Server And External Tool Settings/PMD Settings
-to choose which rules to use. 
+1) Start netbeans 
+2) Goto Tools --> Options
+3) Navigate to Options/IDE Configuration/Server And External Tool Settings/PMD Settings
+4) Click on "Rules"
+5) Click on the [...] button
+6) Select the different rules to see information and examples of the rule
+7) Use the <, <<, >, >>, buttons to choose which rules to use.
+8) Press OK to save the configuration

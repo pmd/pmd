@@ -388,9 +388,11 @@ public class RuleEnabler extends JPanel {
 	 */	
 	private void chosenListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_chosenListValueChanged
 		Rule rule =  (Rule)chosenList.getSelectedValue();
-		example.setText( rule.getExample().trim());
-		information.setText( rule.getDescription().trim() );
-		properties.setModel( new PropertiesModel( rule ) );
+		if( rule != null ) {
+			example.setText( rule.getExample().trim());
+			information.setText( rule.getDescription().trim() );
+			properties.setModel( new PropertiesModel( rule ) );
+		}
 	}//GEN-LAST:event_chosenListValueChanged
 
 	/** Called when the user selects a value in the availableList
@@ -398,9 +400,11 @@ public class RuleEnabler extends JPanel {
 	 */	
 	private void availableListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_availableListValueChanged
 		Rule rule =  (Rule)availableList.getSelectedValue();
-		example.setText( rule.getExample().trim() );
-		information.setText( rule.getDescription().trim() );
-		properties.setModel( new PropertiesModel( rule ) );
+		if( rule != null ) {
+			example.setText( rule.getExample().trim() );
+			information.setText( rule.getDescription().trim() );
+			properties.setModel( new PropertiesModel( rule ) );
+		}
 	}//GEN-LAST:event_availableListValueChanged
 
 	/** Called when the user clicks on the removeAll button

@@ -1,5 +1,7 @@
 Version 0.6
-- New properties dialog. Makes it possible to select individual rules
+- Fixed feature request 638427
+  - New properties dialog. Makes it possible to select individual rules. D
+- Shortcut added, ctrl-shift-p to launch pmd.
 
 Version 0.5
 - Fixed bug 633432 pmd-netbeans can't change settings (netbeans) 

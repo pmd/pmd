@@ -65,7 +65,4 @@
 	<target description="Clean all build products." name="clean">
 		<delete dir="build"/>
 	</target>
-	<target name="deploy" depends="jars" description="Deploys the jar to netbeans">
-		<copy file="build/pmd.jar" tofile="E:/Documents and Settings/ole martin mørk/netbeans/3.4/modules/pmd.jar"/>
-	</target>
 </project>
