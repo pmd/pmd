@@ -1,16 +1,24 @@
 package test.net.sourceforge.pmd.rules.strictexception;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.design.ExceptionAsFlowControl;
+import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class ExceptionAsFlowControlTest extends SimpleAggregatorTst {
 
+    private Rule rule;
+
+    public void setUp() throws Exception {
+        rule = findRule("rulesets/strictexception.xml", "ExceptionAsFlowControl");
+        rule.setMessage("Avoid this stuff -> ''{0}''");
+    }
+    
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "failure case", 1, new ExceptionAsFlowControl()),
-           new TestDescriptor(TEST2, "normal throw catch", 0, new ExceptionAsFlowControl())
+           new TestDescriptor(TEST1, "failure case", 1, rule),
+           new TestDescriptor(TEST2, "normal throw catch", 0, rule),
+           new TestDescriptor(TEST3, "BUG 996007", 0, rule)
        });
     }
 
@@ -35,4 +43,18 @@ public class ExceptionAsFlowControlTest extends SimpleAggregatorTst {
     "  try {} catch (Exception e) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
+    
+    private static final String TEST3 =
+        "public class Foo {" + PMD.EOL +
+        " void bar() {" + PMD.EOL +
+        "  try {} catch (IOException e) {" + PMD.EOL +
+        "  if (foo!=null) " + PMD.EOL +
+        "       throw new IOExpception(foo.getResponseMessage()); " + PMD.EOL +
+        "  else  " + PMD.EOL +
+        "       throw e; " + PMD.EOL +
+        "  " + PMD.EOL +
+        "  }" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
 }
