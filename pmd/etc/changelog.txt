@@ -1,3 +1,6 @@
+???, 2003 - 1.3:
+TODO - fix it so tests and rules don't duplicate the xpath expressions
+
 July 30, 2003 - 1.2:
 Added new rules: VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule, AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking, BooleanInstantiation
 Fixed bug 583047 - ASTName column numbers are now correct
@@ -13,7 +16,6 @@ ASTViewer now shows node images and modifiers
 ASTViewer now saves last edited text to ~/.pmd_astviewer
 Moved the PMD Swing UI into a separate module - pmd-swingui.
 Updated license.txt to point to new location.
-TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 June 19, 2003 - 1.1:
 Added new rules: FinalizeShouldBeProtected, FinalFieldCouldBeStatic, BeanMembersShouldSerializeRule
