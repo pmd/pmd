@@ -4,25 +4,32 @@
 package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.junit.JUnitAssertionsShouldIncludeMessage;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class JUnitAssertionsShouldIncludeMessageTest extends SimpleAggregatorTst {
 
+    private Rule rule;
+
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/junit.xml", "JUnitAssertionsShouldIncludeMessage");
+    }
+
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "assertEquals ok", 0, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST2, "assertEquals bad", 1, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST3, "assertTrue ok", 0, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST4, "assertTrue bad", 1, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST5, "assertNull OK", 0, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST6, "assertNull bad", 1, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST7, "assertSame OK", 0, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST8, "assertSame badd", 1, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST9, "assertNotNull OK", 0, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST10, "assertNotNull bad", 1, new JUnitAssertionsShouldIncludeMessage()),
-           new TestDescriptor(TEST11, "find that pesky bug", 0, new JUnitAssertionsShouldIncludeMessage()),
+           new TestDescriptor(TEST1, "assertEquals ok", 0, rule),
+           new TestDescriptor(TEST2, "assertEquals bad", 1, rule),
+           new TestDescriptor(TEST3, "assertTrue ok", 0, rule),
+           new TestDescriptor(TEST4, "assertTrue bad", 1, rule),
+           new TestDescriptor(TEST5, "assertNull OK", 0, rule),
+           new TestDescriptor(TEST6, "assertNull bad", 1, rule),
+           new TestDescriptor(TEST7, "assertSame OK", 0, rule),
+           new TestDescriptor(TEST8, "assertSame badd", 1, rule),
+           new TestDescriptor(TEST9, "assertNotNull OK", 0, rule),
+           new TestDescriptor(TEST10, "assertNotNull bad", 1, rule),
+           new TestDescriptor(TEST11, "find that pesky bug", 0, rule),
        });
     }
 

@@ -4,23 +4,30 @@
 package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAsserts;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
 
-    public void testAll() throws Throwable {
+    private Rule rule;
 
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/junit.xml", "JUnitTestsShouldIncludeAssert");
+    }
+
+    public void testAll() throws Throwable {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "Contains assert", 0, new JUnitTestsShouldContainAsserts()),
-           new TestDescriptor(TEST2, "Missing assert", 1, new JUnitTestsShouldContainAsserts()),
-           new TestDescriptor(TEST3, "All ok", 0, new JUnitTestsShouldContainAsserts()),
-           new TestDescriptor(TEST4, "Two wrong", 2, new JUnitTestsShouldContainAsserts()),
-           new TestDescriptor(TEST5, "Contains fail", 0, new JUnitTestsShouldContainAsserts()),
-           new TestDescriptor(TEST6, "One wrong", 1, new JUnitTestsShouldContainAsserts()),
-           new TestDescriptor(TEST7, "Skip interfaces", 0, new JUnitTestsShouldContainAsserts()),
-           new TestDescriptor(TEST8, "Skip abstract methods", 0, new JUnitTestsShouldContainAsserts()),
+           new TestDescriptor(TEST1, "Contains assert", 0, rule),
+           new TestDescriptor(TEST2, "Missing assert", 1, rule),
+           new TestDescriptor(TEST3, "All ok", 0, rule),
+           new TestDescriptor(TEST4, "Two wrong", 2, rule),
+           new TestDescriptor(TEST5, "Contains fail", 0, rule),
+           new TestDescriptor(TEST6, "One wrong", 1, rule),
+           new TestDescriptor(TEST7, "Skip interfaces", 0, rule),
+           new TestDescriptor(TEST8, "Skip abstract methods", 0, rule),
        });
     }
 
