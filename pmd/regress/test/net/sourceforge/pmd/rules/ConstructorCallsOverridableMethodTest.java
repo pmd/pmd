@@ -5,18 +5,13 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
 	private Rule rule = null;
 	public void setUp() {
-		try {
-			rule = findRule("rulesets/design.xml", "ConstructorCallsOverridableMethod");
-		} catch (RuleSetNotFoundException e) {
-			fail(e.toString());
-		}
+		rule = findRule("rulesets/design.xml", "ConstructorCallsOverridableMethod");
 	}
     public void testAll() {
        runTests(new TestDescriptor[] {
