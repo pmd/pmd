@@ -18,4 +18,8 @@ public class JumbledIncrementerRuleTest extends RuleTst {
     public void test2() throws Throwable {
         runTest("JumbledIncrementerRule2.java", 0, new JumbledIncrementerRule());
     }
+
+    public void test3() throws Throwable {
+        runTest("JumbledIncrementerRule3.java", 0, new JumbledIncrementerRule());
+    }
 }
