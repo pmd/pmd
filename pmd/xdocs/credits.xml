@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Harald Gurres - cleaned up the symbol table code with a very nice patch</li>
             <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
             <li>Benoit Xhenseval - XSLT patch, suggestion for improving XML report, several bug reports</li>
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>

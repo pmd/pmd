@@ -3,6 +3,7 @@ Fixed bug 1088459 - JUnitTestsShouldContainAsserts no longer throws ClassCastExc
 Implemented RFE 1086168 - PMD XML reports now contain a version and timestamp attribute in the <pmd> element.
 Fixed a bug in the rule override logic; it no longer requires the "class" attribute of a rule be listed in the overrides section.
 Added 'ignoreLiterals' and 'ignoreIdentifiers' boolean options to the CPD task.
+Cleaned up a good bit of the symbol table code; thanks much to Harald Gurres for the patch.
 
 December 15, 2004 - 2.1:
 New rules: AvoidProtectedFieldInFinalClass, SystemPrintln

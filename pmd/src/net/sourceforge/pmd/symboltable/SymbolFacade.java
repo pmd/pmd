@@ -13,7 +13,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
 
     public void initializeWith(ASTCompilationUnit node) {
         // first, traverse the AST and create all the scopes
-        BasicScopeCreationVisitor sc = new BasicScopeCreationVisitor(new BasicScopeFactory());
+        BasicScopeCreationVisitor sc = new BasicScopeCreationVisitor();
         node.jjtAccept(sc, null);
 
         // traverse the AST and pick up all the declarations

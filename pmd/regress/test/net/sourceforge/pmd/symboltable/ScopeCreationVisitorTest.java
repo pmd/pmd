@@ -10,11 +10,10 @@ import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.BasicScopeCreationVisitor;
-import net.sourceforge.pmd.symboltable.BasicScopeFactory;
 import net.sourceforge.pmd.symboltable.GlobalScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
-import net.sourceforge.pmd.symboltable.ScopeFactory;
 
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class ScopeCreationVisitorTest extends TestCase {
@@ -28,16 +27,8 @@ public class ScopeCreationVisitorTest extends TestCase {
         }
     }
 
-    private class MySF implements ScopeFactory {
-        public boolean gotCalled;
-        public void openScope(Stack scopes, SimpleNode node) {
-            this.gotCalled = true;
-            scopes.add(new Object());
-        }
-    }
-
     public void testScopesAreCreated() {
-        BasicScopeCreationVisitor sc = new BasicScopeCreationVisitor(new BasicScopeFactory());
+        BasicScopeCreationVisitor sc = new BasicScopeCreationVisitor();
 
         ASTCompilationUnit acu = new ASTCompilationUnit(1);
         acu.setScope(new GlobalScope());
@@ -55,17 +46,29 @@ public class ScopeCreationVisitorTest extends TestCase {
     }
 
     public void testAnonymousInnerClassIsCreated() {
-        MySF sf = new MySF();
-        BasicScopeCreationVisitor sc = new BasicScopeCreationVisitor(sf);
+        BasicScopeCreationVisitor sc = new BasicScopeCreationVisitor();
         ASTClassBodyDeclaration cb = new MyCB();
-        sc.visit(cb, null);
-        assertTrue(sf.gotCalled);
-    }
+        try {
+            sc.visit(cb, null);
+            fail();
+        }
+        catch (EmptyStackException ex) {
+            // OK - this means, the method for scope creation has been called
+        }
+     }
 
     public void testAnonymousInnerClassIsNotCreated() {
-        MySF sf = new MySF();
-        new BasicScopeCreationVisitor(sf).visit(new ASTClassBodyDeclaration(1), null);
-        assertFalse(sf.gotCalled);
+        BasicScopeCreationVisitor sc = new BasicScopeCreationVisitor();
+        ASTClassBodyDeclaration cb = new ASTClassBodyDeclaration(1);
+        sc.visit(cb, null);
+        try {
+            cb.getScope();
+            fail();
+        }
+        catch (NullPointerException ex) {
+            // OK - this means no scope exists and there is no parent node the
+            // scope of which might be referred to.
+        }
     }
 
 }
