@@ -41,6 +41,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
     {
         super();
 
+        setDoubleBuffered(true);
         setEditorKit(new HTMLEditorKit());
         setEditable(false);
 

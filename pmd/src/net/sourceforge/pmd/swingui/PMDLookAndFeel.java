@@ -2,6 +2,7 @@ package net.sourceforge.pmd.swingui;
 
 import java.awt.Color;
 import java.awt.Font;
+import javax.swing.ImageIcon;
 import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
 
@@ -16,7 +17,8 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 public class PMDLookAndFeel extends WindowsLookAndFeel
 {
 
-    /**************************************************************
+    /**
+     ****************************************************************************
      *
      * @return
      */
@@ -25,7 +27,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         return "Source Forge PMD look and feel";
     }
 
-    /**************************************************************
+    /**
+     ****************************************************************************
      *
      * @return
      */
@@ -34,7 +37,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         return "SourceForgePMD";
     }
 
-    /**************************************************************
+    /**
+     ****************************************************************************
      *
      * @return
      */
@@ -43,7 +47,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         return "SourceForgePMD";
     }
 
-    /**************************************************************
+    /**
+     ****************************************************************************
      *
      * @return
      */
@@ -52,7 +57,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         return false;
     }
 
-    /**************************************************************
+    /**
+     ****************************************************************************
      *
      * @return
      */
@@ -61,7 +67,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         return true;
     }
 
-    /**************************************************************
+    /**
+     ****************************************************************************
      *
      * @param table
      */
@@ -74,7 +81,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
 
 
 
-    /**************************************************************
+    /**
+     ****************************************************************************
      *
      * @param table
      */
@@ -105,7 +113,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
 
 
 
-    /**************************************************************
+    /**
+     ****************************************************************************
      *
      * @param table
      */
@@ -132,6 +141,10 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
             "titleFont",        new Font("SansSerif", Font.BOLD, 14),
             "buttonFont",       new Font("SansSerif", Font.BOLD, 12),
             "messageFont",      new Font("Dialog", Font.PLAIN, 12),
+            "serif12Font",      new Font("Serif", Font.PLAIN, 12),
+            "serif14Font",      new Font("Serif", Font.PLAIN, 14),
+            "label14Font",      new Font("Dialog", Font.BOLD, 14),
+            "label16Font",      new Font("Dialog", Font.BOLD, 16),
         };
 
         table.putDefaults(defaults);

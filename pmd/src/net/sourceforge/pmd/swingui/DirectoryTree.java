@@ -28,6 +28,7 @@ class DirectoryTree extends JTree
     {
         super(new DirectoryTreeModel());
 
+        setDoubleBuffered(true);
         setRootVisible(true);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         setCellRenderer(new DirectoryTreeNodeRenderer());
@@ -39,10 +40,10 @@ class DirectoryTree extends JTree
      *******************************************************************************
      *
      */
-    protected void setupFiles(PMDViewer pmdViewer)
+    protected void setupFiles(PMDViewer pmdViewer, File[] rootDirectories)
     {
         String message = "Locating file directories.  Please wait...";
-        SetupFilesThread setupFilesThread = new SetupFilesThread(message);
+        SetupFilesThread setupFilesThread = new SetupFilesThread(message, rootDirectories);
 
         MessageDialog.show(pmdViewer, message, setupFilesThread);
     }
@@ -54,15 +55,18 @@ class DirectoryTree extends JTree
      */
     private class SetupFilesThread extends JobThread
     {
+        File[] m_rootDirectories;
 
         /**
          ****************************************************************************
          *
          * @param name
          */
-        private SetupFilesThread(String threadName)
+        private SetupFilesThread(String threadName, File[] rootDirectories)
         {
             super(threadName);
+
+            m_rootDirectories = rootDirectories;
         }
 
         /**
@@ -73,7 +77,7 @@ class DirectoryTree extends JTree
         {
             DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
 
-            treeModel.setupFiles();
+            treeModel.setupFiles(m_rootDirectories);
 
             DirectoryTreeNode treeNode = (DirectoryTreeNode) treeModel.getRoot();
             TreePath treePath = new TreePath(treeNode.getPath());

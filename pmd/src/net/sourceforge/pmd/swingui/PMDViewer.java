@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.Font;
+import java.io.File;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -249,9 +250,9 @@ public class PMDViewer extends JFrame
      *********************************************************************************
      *
      */
-    private void setupFiles()
+    private void setupFiles(File[] rootDirectories)
     {
-        m_directoryTree.setupFiles(this);
+        m_directoryTree.setupFiles(this, rootDirectories);
     }
 
     /**
@@ -270,9 +271,10 @@ public class PMDViewer extends JFrame
             UIManager.setLookAndFeel(useLookAndFeel);
 
             PMDViewer pmdViewer = new PMDViewer();
-
+            LoadRootDirectories loadRootDirectories = new LoadRootDirectories();
+            loadRootDirectories.start();
             pmdViewer.setVisible(true);
-            pmdViewer.setupFiles();
+            pmdViewer.setupFiles(loadRootDirectories.getDirectories());
         }
         catch (Exception exception)
         {
@@ -671,6 +673,46 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            (new AboutPMD(PMDViewer.this)).setVisible(true);
         }
+    }
+}
+
+
+/**
+*********************************************************************************
+*********************************************************************************
+*********************************************************************************
+*/
+class LoadRootDirectories extends JobThread
+{
+    private File[] m_fileSystemRoots;
+
+    /**
+     ************************************************************************
+     *
+     */
+    protected LoadRootDirectories()
+    {
+        super("Load Root Directories");
+    }
+
+    /**
+     ************************************************************************
+     *
+     */
+    protected void process()
+    {
+        m_fileSystemRoots = File.listRoots();
+    }
+
+    /**
+     ************************************************************************
+     *
+     * @return
+     */
+    protected File[] getDirectories()
+    {
+        return m_fileSystemRoots;
     }
 }

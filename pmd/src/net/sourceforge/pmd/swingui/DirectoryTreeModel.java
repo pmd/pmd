@@ -3,10 +3,10 @@ package net.sourceforge.pmd.swingui;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Enumeration;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -31,10 +31,9 @@ class DirectoryTreeModel extends DefaultTreeModel implements TreeWillExpandListe
      ********************************************************************************
      *
      */
-    protected void setupFiles()
+    protected void setupFiles(File[] fileSystemRoots)
     {
         DirectoryTreeNode rootNode = (DirectoryTreeNode) getRoot();
-        File[] fileSystemRoots = File.listRoots();
 
         if (fileSystemRoots != null)
         {
