@@ -16,10 +16,12 @@ import net.sourceforge.pmd.dfa.variableaccess.VariableAccessVisitor;
  */
 public class DataFlowFacade extends JavaParserVisitorAdapter {
 
-    private StatementAndBraceFinder sbf = new StatementAndBraceFinder();
-    private VariableAccessVisitor vav = new VariableAccessVisitor();
+    private StatementAndBraceFinder sbf;
+    private VariableAccessVisitor vav;
 
     public void initializeWith(ASTCompilationUnit node) {
+        sbf = new StatementAndBraceFinder();
+        vav = new VariableAccessVisitor();
         node.jjtAccept(this, null);
     }
 
