@@ -1,6 +1,5 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.XPathRule;
 

@@ -12,6 +12,9 @@ The Braces Ruleset contains a collection of braces rules.
     <description>
     Avoid using if..else statements without using curly braces
     </description>
+      <properties>
+          <property name="xpath" value="//IfStatement[count(*) > 2][not(Statement/Block)]"/>
+      </properties>
       <priority>3</priority>
 
     <example>
@@ -37,6 +40,9 @@ The Braces Ruleset contains a collection of braces rules.
     <description>
     Avoid using 'while' statements without using curly braces
     </description>
+      <properties>
+          <property name="xpath" value="//WhileStatement[not(Statement/Block)]"/>
+      </properties>
       <priority>3</priority>
 
     <example>
@@ -55,6 +61,9 @@ The Braces Ruleset contains a collection of braces rules.
     <description>
     Avoid using 'for' statements without using curly braces
     </description>
+      <properties>
+          <property name="xpath" value="//ForStatement[not(Statement/Block)]"/>
+      </properties>
       <priority>3</priority>
 
     <example>
@@ -74,6 +83,9 @@ The Braces Ruleset contains a collection of braces rules.
     <description>
     Avoid using if statements without using curly braces
     </description>
+      <properties>
+          <property name="xpath" value="//IfStatement[count(*) < 3][not(Statement/Block)]"/>
+      </properties>
       <priority>3</priority>
 
     <example>

@@ -60,17 +60,6 @@ public class XPathRuleTest extends RuleTst {
 //        
 //    }
 
-/*
-    public void testLongVariableRule() throws Throwable {
-        rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) > 12]");
-        runTest("LongVariableField.java", 1, rule);
-        runTest("LongVariableLocal.java", 1, rule);
-        runTest("LongVariableFor.java", 1, rule);
-        runTest("LongVariableParam.java", 1, rule);
-        runTest("LongVariableNone.java", 0, rule);
-    }
-*/
-
     public void testJUnitStaticSuiteRule() throws Throwable {
         rule.addProperty(
             "xpath",
@@ -89,33 +78,6 @@ public class XPathRuleTest extends RuleTst {
         runTest("junit/JUnitSpelling3.java", 0, rule);
         runTest("junit/JUnitSpelling4.java", 0, rule);
         runTest("junit/JUnitSpelling5.java", 0, rule);
-    }
-
-    public void testIfStmtsMustUseBraces() throws Throwable {
-        rule.addProperty("xpath", "//IfStatement[count(*) < 3][not(Statement/Block)]");
-        runTest("IfStmtsMustUseBraces1.java", 1, rule);
-        runTest("IfStmtsMustUseBraces2.java", 0, rule);
-    }
-
-    public void testIfElseStmtsMustUseBraces() throws Throwable {
-        rule.addProperty("xpath", "//IfStatement[count(*) > 2][not(Statement/Block)]");
-        runTest("IfElseStmtsNeedBraces1.java", 1, rule);
-        runTest("IfElseStmtsNeedBraces2.java", 0, rule);
-    }
-
-    public void testForLoopsMustUseBracesRule() throws Throwable {
-        rule.addProperty("xpath", "//ForStatement[not(Statement/Block)]");
-        runTest("ForLoopsNeedBraces1.java", 1, rule);
-        runTest("ForLoopsNeedBraces2.java", 0, rule);
-        runTest("ForLoopsNeedBraces3.java", 1, rule);
-        runTest("ForLoopsNeedBraces4.java", 1, rule);
-        runTest("ForLoopsNeedBraces5.java", 1, rule);
-    }
-
-    public void testWhileLoopsMustUseBraces() throws Throwable {
-        rule.addProperty("xpath", "//WhileStatement[not(Statement/Block)]");
-        runTest("WhileLoopsNeedBraces1.java", 1, rule);
-        runTest("WhileLoopsNeedBraces2.java", 0, rule);
     }
 
     public void testAssignmentInOperand() throws Throwable {

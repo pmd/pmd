@@ -5,34 +5,35 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.rules.ForLoopsMustUseBracesRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 
 public class ForLoopsMustUseBracesRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//ForStatement[not(Statement/Block)]");
+    }
+
     public void test1() throws Throwable {
-        Report report = process("ForLoopsNeedBraces1.java", new ForLoopsMustUseBracesRule());
-        assertEquals(1, report.size());
+        runTest("ForLoopsNeedBraces1.java",1, rule);
     }
 
     public void test2() throws Throwable {
-        Report report = process("ForLoopsNeedBraces2.java", new ForLoopsMustUseBracesRule());
-        assertTrue(report.isEmpty());
+        runTest("ForLoopsNeedBraces2.java",0, rule);
     }
 
     public void test3() throws Throwable {
-        Report report = process("ForLoopsNeedBraces3.java", new ForLoopsMustUseBracesRule());
-        assertEquals(1, report.size());
+        runTest("ForLoopsNeedBraces3.java",1, rule);
     }
 
     public void test4() throws Throwable {
-        Report report = process("ForLoopsNeedBraces4.java", new ForLoopsMustUseBracesRule());
-        assertEquals(1, report.size());
+        runTest("ForLoopsNeedBraces4.java",1, rule);
     }
 
     public void test5() throws Throwable {
-        Report report = process("ForLoopsNeedBraces5.java", new ForLoopsMustUseBracesRule());
-        assertEquals(1, report.size());
+        runTest("ForLoopsNeedBraces5.java",1, rule);
     }
-
 }

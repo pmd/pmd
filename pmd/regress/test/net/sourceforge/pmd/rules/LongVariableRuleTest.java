@@ -1,6 +1,5 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -12,7 +11,6 @@ public class LongVariableRuleTest extends RuleTst {
         rule = new XPathRule();
         rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) > 12]");
     }
-
 
     public void testLongVariableField() throws Throwable {
         runTest("LongVariableField.java", 1, rule);

@@ -5,20 +5,23 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.rules.IfElseStmtsMustUseBracesRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.XPathRule;
 
 public class IfElseStmtsMustUseBracesRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//IfStatement[count(*) > 2][not(Statement/Block)]");
+    }
+
     public void testIfElseStmtsMustUseBraces1() throws Throwable {
-        Report report = process("IfElseStmtsNeedBraces1.java", new IfElseStmtsMustUseBracesRule());
-        assertEquals(1, report.size());
+        runTest("IfElseStmtsNeedBraces1.java", 1, rule);
     }
 
     public void testIfElseStmtsMustUseBraces2() throws Throwable {
-        Report report = process("IfElseStmtsNeedBraces2.java", new IfElseStmtsMustUseBracesRule());
-        assertTrue(report.isEmpty());
+        runTest("IfElseStmtsNeedBraces2.java", 0, rule);
     }
-
-
 }
