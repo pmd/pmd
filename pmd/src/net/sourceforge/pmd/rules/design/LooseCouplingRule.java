@@ -20,7 +20,6 @@ public class LooseCouplingRule extends AbstractRule {
         super();
         implClassNames.add("HashSet");
         implClassNames.add("HashMap");
-        implClassNames.add("ArrayList");
         implClassNames.add("LinkedHashMap");
         implClassNames.add("LinkedHashSet");
         implClassNames.add("TreeSet");
@@ -28,7 +27,6 @@ public class LooseCouplingRule extends AbstractRule {
         implClassNames.add("Vector");
         implClassNames.add("java.util.HashSet");
         implClassNames.add("java.util.HashMap");
-        implClassNames.add("java.util.ArrayList");
         implClassNames.add("java.util.LinkedHashMap");
         implClassNames.add("java.util.LinkedHashSet");
         implClassNames.add("java.util.TreeSet");
