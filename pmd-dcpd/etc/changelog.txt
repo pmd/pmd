@@ -1,0 +1,2 @@
+September 9 2002 - 0.1
+An initial release just in case anyone's interested.  It works, but it's even slower than the single machine version.
