@@ -7,7 +7,6 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.*;
 
-
 public class SymbolFacade extends JavaParserVisitorAdapter {
 
     public void initializeWith(ASTCompilationUnit node) {
@@ -27,7 +26,8 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         LookupController lookupController = new LookupController();
         if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTName) {
             SimpleNode child = (SimpleNode)node.jjtGetChild(0);
-            lookupController.lookup(new NameOccurrence(child), child.getScope());
+            NameOccurrence occ = new NameOccurrence(child);
+            lookupController.lookup(occ);
         } else {
             if (node.jjtGetParent() instanceof ASTPrimaryExpression) {
                 SimpleNode parent = (SimpleNode)node.jjtGetParent();
@@ -42,7 +42,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
                         occ.setQualifier(Qualifier.THIS);
                     }
 
-                    lookupController.lookup(occ, suffix.getScope());
+                    lookupController.lookup(occ);
                 }
             }
         }

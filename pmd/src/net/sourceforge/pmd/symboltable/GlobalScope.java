@@ -21,7 +21,8 @@ public class GlobalScope extends AbstractScope implements Scope {
         return false;
     }
 
-    public void addOccurrence(NameOccurrence occ) {
+    public NameDeclaration addOccurrence(NameOccurrence occ) {
+        return null;
     }
 
     public String toString() {

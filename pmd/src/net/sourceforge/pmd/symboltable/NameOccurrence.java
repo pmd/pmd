@@ -7,6 +7,11 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.SimpleNode;
 
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import java.util.ArrayList;
+import java.util.List;
+
 public class NameOccurrence {
 
     private SimpleNode node;
@@ -14,6 +19,25 @@ public class NameOccurrence {
 
     public NameOccurrence(SimpleNode node) {
         this.node = node;
+    }
+
+    public Scope getScope() {
+        return node.getScope();
+    }
+
+    /**
+     * TODO - this method needs to be unified with the Qualifier.THIS and SUPER thing
+     */
+    public boolean isQualified() {
+        return node.getImage().indexOf('.') != -1;
+    }
+
+    public List getQualifiers() {
+        List names = new ArrayList();
+        for (StringTokenizer st = new StringTokenizer(node.getImage(), "."); st.hasMoreTokens();) {
+            names.add(st.nextToken());
+        }
+        return names;
     }
 
     public void setQualifier(Qualifier qualifier) {

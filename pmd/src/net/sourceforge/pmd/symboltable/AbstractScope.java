@@ -54,12 +54,13 @@ public abstract class AbstractScope implements Scope {
         return unused.iterator();
     }
 
-    public void addOccurrence(NameOccurrence occurrence) {
+    public NameDeclaration addOccurrence(NameOccurrence occurrence) {
         NameDeclaration decl = findHere(occurrence);
         if (decl != null) {
             List nameOccurrences = (List)names.get(decl);
             nameOccurrences.add(occurrence);
         }
+        return decl;
     }
 
     protected abstract NameDeclaration findHere(NameOccurrence occurrence);

@@ -5,18 +5,32 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import java.util.List;
+import java.util.Iterator;
+
 public class LookupController {
 
-    public void lookup(NameOccurrence nameOccurrence, Scope startingScope) {
-        lookupRecurse(nameOccurrence, startingScope);
+    public NameDeclaration lookup(NameOccurrence nameOccurrence) {
+/*
+        if (nameOccurrence.isQualified())  {
+            List qualifiers = nameOccurrence.getQualifiers();
+            for (Iterator i = qualifiers.iterator(); i.hasNext();) {
+                NameDeclaration decl = lookupRecurse();
+            }
+        } else {
+            return lookupRecurse(nameOccurrence, startingScope);
+        }
+*/
+        return lookup(nameOccurrence, nameOccurrence.getScope());
     }
 
-    private void lookupRecurse(NameOccurrence nameOccurrence, Scope scope) {
+    private NameDeclaration lookup(NameOccurrence nameOccurrence, Scope scope) {
         if (!scope.contains(nameOccurrence) && scope.getParent() != null) {
-            lookupRecurse(nameOccurrence, scope.getParent());
+            return lookup(nameOccurrence, scope.getParent());
         }
         if (scope.contains(nameOccurrence)) {
-            scope.addOccurrence(nameOccurrence);
+            return scope.addOccurrence(nameOccurrence);
         }
+        return null;
     }
 }

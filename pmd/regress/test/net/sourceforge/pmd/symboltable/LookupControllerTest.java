@@ -7,6 +7,7 @@ package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.symboltable.*;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class LookupControllerTest extends TestCase {
 
@@ -14,7 +15,10 @@ public class LookupControllerTest extends TestCase {
         Scope scope = new LocalScope();
         scope.addDeclaration(NameDeclarationTest.FOO);
         LookupController lc = new LookupController();
-        lc.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE), scope);
+        SimpleNode declNode = NameDeclarationTest.createNode("foo", 5);
+        declNode.setScope(scope);
+        NameOccurrence occ = new NameOccurrence(declNode);
+        lc.lookup(occ);
         assertTrue(!scope.getUnusedDeclarations().hasNext());
     }
 
@@ -22,7 +26,10 @@ public class LookupControllerTest extends TestCase {
         Scope scope = new LocalScope();
         scope.addDeclaration(NameDeclarationTest.FOO);
         LookupController lc = new LookupController();
-        lc.lookup(new NameOccurrence(NameDeclarationTest.createNode("bar", 10)), scope);
+        SimpleNode declNode = NameDeclarationTest.createNode("bar", 5);
+        declNode.setScope(scope);
+        NameOccurrence occ = new NameOccurrence(declNode);
+        lc.lookup(occ);
         assertTrue(scope.getUnusedDeclarations().hasNext());
     }
 }
