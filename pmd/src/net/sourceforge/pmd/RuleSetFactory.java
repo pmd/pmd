@@ -60,6 +60,10 @@ public class RuleSetFactory {
     }
 
     public RuleSet createRuleSet(InputStream inputStream) {
+        return createRuleSet(inputStream, getClass().getClassLoader());
+    }
+
+    public RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(inputStream);
