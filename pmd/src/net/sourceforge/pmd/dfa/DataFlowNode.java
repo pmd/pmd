@@ -119,11 +119,23 @@ public class DataFlowNode implements IDataFlowNode {
     }
 
     public String toString() {
-        String res = "DataFlowNode: ";
+        String res = "DataFlowNode ";
         if (node == null) {
             return res + "(SimpleNode is null)";
         }
-        res += this.node.getClass().toString();
+        if (!type.isEmpty()) {
+            String tmp = type.toString();
+            String newTmp = "";
+            for (int i=0; i<tmp.length(); i++) {
+                if (tmp.charAt(i) != '{' && tmp.charAt(i) != '}') {
+                    newTmp += tmp.charAt(i);
+                }
+            }
+            res += "(" + newTmp + ")";
+        } else {
+            res += "(no type)";
+        }
+        res += ": " + this.node.getClass().toString();
         res += (node.getImage() == null ? "" : "(" + this.node.getImage() + ")");
         return res;
     }

@@ -1,24 +1,19 @@
 package test.net.sourceforge.pmd.dfa;
 
-import junit.framework.TestCase;
-import net.sourceforge.pmd.dfa.StatementAndBraceFinder;
-import net.sourceforge.pmd.dfa.Structure;
-import net.sourceforge.pmd.dfa.NodeType;
-import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTExpression;
+import net.sourceforge.pmd.dfa.DataFlowNode;
+import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.NodeType;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.List;
 
 public class StatementAndBraceFinderTest extends ParserTst {
 
-/*
     public void testStatementExpressionParentChildLinks() throws Throwable {
         List nodes = getOrderedNodes(ASTStatementExpression.class, TEST1);
         ASTStatementExpression se = (ASTStatementExpression)nodes.get(0);
@@ -34,21 +29,21 @@ public class StatementAndBraceFinderTest extends ParserTst {
         assertEquals(vd, ((IDataFlowNode)vdParent.getDataFlowNode().getChildren().get(0)).getSimpleNode());
         assertEquals(vdParent, ((IDataFlowNode)vd.getDataFlowNode().getParents().get(0)).getSimpleNode());
     }
-*/
 
-    public void testIfStmtGoesOnStack() throws Throwable {
-        List nodes = getOrderedNodes(ASTIfStatement.class, TEST3);
-        ASTIfStatement ifstmt = (ASTIfStatement)nodes.get(0);
-        IDataFlowNode dfn = (IDataFlowNode)ifstmt.getDataFlowNode().getFlow().get(0);
-        System.out.println(dfn);
-        dfn = (IDataFlowNode)ifstmt.getDataFlowNode().getFlow().get(1);
-        System.out.println(dfn);
-        dfn = (IDataFlowNode)ifstmt.getDataFlowNode().getFlow().get(2);
-        System.out.println(dfn);
-        System.out.println(dfn.getChildren().get(0));
-        System.out.println(dfn.getChildren().get(1));
+    public void testIfStmtHasCorrectTypes() throws Throwable {
+        List nodes = getOrderedNodes(ASTExpression.class, TEST3);
+        ASTExpression exp = (ASTExpression)nodes.get(0);
+        IDataFlowNode dfn = (IDataFlowNode)exp.getDataFlowNode().getFlow().get(2);
+        assertTrue(dfn.isType(NodeType.IF_EXPR));
+        assertTrue(dfn.isType(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE));
+    }
 
-        System.out.println(dfn.getChildren().get(0));
+    public void testWhileStmtHasCorrectTypes() throws Throwable {
+        List nodes = getOrderedNodes(ASTExpression.class, TEST4);
+        ASTExpression exp = (ASTExpression)nodes.get(0);
+        IDataFlowNode dfn = (IDataFlowNode)exp.getDataFlowNode().getFlow().get(2);
+        assertTrue(dfn.isType(NodeType.WHILE_EXPR));
+        assertTrue(dfn.isType(NodeType.WHILE_LAST_STATEMENT));
     }
 
     private static final String TEST1 =
@@ -68,12 +63,14 @@ public class StatementAndBraceFinderTest extends ParserTst {
     private static final String TEST3 =
         "class Foo {" + PMD.EOL +
         " void bar() {" + PMD.EOL +
-        "  if (x>2) {" + PMD.EOL +
-        "   bar();" + PMD.EOL +
-        "  }" + PMD.EOL +
+        "  if (x) {}" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
 
-
-
+    private static final String TEST4 =
+        "class Foo {" + PMD.EOL +
+        " void bar() {" + PMD.EOL +
+        "  while (x) {}" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
 }

@@ -16,7 +16,7 @@ public class Linker {
 
     public Linker(IProcessableStructure dataFlow) {
         this.braceStack = dataFlow.getBraceStack();
-        this.cbrStack = dataFlow.getCBRStack();
+        this.cbrStack = dataFlow.getContinueBreakReturnStack();
     }
 
 //     ----------------------------------------------------------------------------

@@ -5,5 +5,5 @@ import java.util.List;
 public interface IProcessableStructure {
     List getBraceStack();
 
-    List getCBRStack();
+    List getContinueBreakReturnStack();
 }

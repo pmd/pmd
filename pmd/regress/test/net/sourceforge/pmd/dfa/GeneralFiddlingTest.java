@@ -1,23 +1,26 @@
 package test.net.sourceforge.pmd.dfa;
 
-import test.net.sourceforge.pmd.testframework.ParserTst;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.dfa.DataFlowFacade;
+import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Iterator;
 
 public class GeneralFiddlingTest extends ParserTst {
 
     public void test1() throws Throwable {
-        ASTCompilationUnit acu =  (ASTCompilationUnit)(getOrderedNodes(ASTCompilationUnit.class, TEST1).get(0));
-        SymbolFacade sf = new SymbolFacade();
-        sf.initializeWith(acu);
-        DataFlowFacade df = new DataFlowFacade();
-        df.initializeWith(acu);
+        ASTMethodDeclaration meth =  (ASTMethodDeclaration)(getOrderedNodes(ASTMethodDeclaration.class, TEST1).get(0));
+        IDataFlowNode flow = meth.getDataFlowNode();
+        for (Iterator i = flow.getFlow().iterator(); i.hasNext();) {
+            System.out.println(i.next());
+        }
+
+
 /*
         ASTMethodDeclarator d = (ASTMethodDeclarator)nodes.get(0);
         ASTMethodDeclaration p = (ASTMethodDeclaration)d.jjtGetParent();
@@ -28,8 +31,8 @@ public class GeneralFiddlingTest extends ParserTst {
     private static final String TEST1 =
         "class Foo {" + PMD.EOL +
         " void bar() {" + PMD.EOL +
-        "  if (x == 0) {" + PMD.EOL +
-        "   x++;" + PMD.EOL +
+        "  while (x == 0) {" + PMD.EOL +
+        "  int y;" + PMD.EOL +
         "  }" + PMD.EOL +
         " }"  + PMD.EOL +
         "}";

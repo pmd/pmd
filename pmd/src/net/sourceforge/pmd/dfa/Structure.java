@@ -20,12 +20,16 @@ public class Structure implements IProcessableStructure {
 
     private LinkedList dataFlow;
     private Stack braceStack;
-    private Stack cbrStack;
+    private Stack continueBreakReturnStack;
 
     public Structure() {
         this.dataFlow = new LinkedList();
         this.braceStack = new Stack();
-        this.cbrStack = new Stack();
+        this.continueBreakReturnStack = new Stack();
+    }
+
+    public int getDataFlowSize() {
+        return dataFlow.size();
     }
 
     /**
@@ -61,7 +65,7 @@ public class Structure implements IProcessableStructure {
                 type == NodeType.CONTINUE_STATEMENT) {
 
             // ugly solution - stores the type information in two ways
-            this.cbrStack.push(new StackObject(type, node));
+            this.continueBreakReturnStack.push(new StackObject(type, node));
             ((DataFlowNode) node).setType(type);
         } else {
             this.braceStack.push(new StackObject(type, node));
@@ -73,8 +77,8 @@ public class Structure implements IProcessableStructure {
         return this.braceStack;
     }
 
-    public List getCBRStack() {
-        return this.cbrStack;
+    public List getContinueBreakReturnStack() {
+        return this.continueBreakReturnStack;
     }
 
 }

@@ -12,7 +12,7 @@ public class LinkerTest extends TestCase {
 
     private static class NullProcessableStructure implements IProcessableStructure {
         public List getBraceStack() {return null;}
-        public List getCBRStack() {return null;}
+        public List getContinueBreakReturnStack() {return null;}
     }
 
     public void testComputePaths() {
