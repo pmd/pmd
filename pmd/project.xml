@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>0.6</currentVersion>
+  <currentVersion>0.7</currentVersion>
   <logo>images/pmd_logo_small.jpg</logo>
   <organization>
     <name>Tom Copeland/David Dixon-Peugh/Dave Craine</name>
@@ -23,6 +23,7 @@
   <li>Unnecessary object creation</li>
   <li>Empty 'if' statements</li>
   <li>Duplicate import statements</li>
+  <li>Unused private methods</li>
   <li>Classes which could be Singletons</li>
   <li>Short/long variable and method names</li>
 </ul>
@@ -44,9 +45,9 @@
 
   <versions>
     <version>
-      <id>0.6</id>
-      <name>0.6</name>
-      <tag>pmd_release_0_6</tag>
+      <id>0.7</id>
+      <name>0.7</name>
+      <tag>pmd_release_0_7</tag>
     </version>
     <version>
       <id>dev</id>

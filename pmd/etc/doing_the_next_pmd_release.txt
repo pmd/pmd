@@ -9,11 +9,29 @@ update release number in project.xml
 set ANT_HOME=c:\ant
 ant dist
 ant test
-Do all the tests run?  OK, then:
+Do all the JUnit tests run?  OK, then:
 ant dist
+
+TESTS: Can you
+1) run 1 file and get a report
+run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+run c:\data\pmd\pmd\test-data\Unused1.java html rulesets/unusedcode.xml
+2) run the Ant 'pmd' task and get a report
+ant pmd
+
+Jar is built, so prepare binary release:
+rmdir /q /s c:\tmp\pmd
+mkdir c:\tmp\pmd
+mkdir c:\tmp\pmd\etc
+mkdir c:\tmp\pmd\lib
+copy build.xml c:\tmp\pmd\etc
+copy run.bat c:\tmp\pmd\etc
+copy ..\lib\pmd-0.7.jar c:\tmp\pmd\lib
+Zip it up, rename it pmd-bin-0.7.zip
+
 cvs add -kb pmd-0.7.jar
 cvs rm pmd-0.6.jar
-cvs ci -m "adding new jar, removing old one"
+cvs ci -m ""
 cd c:\data\pmd
 cvs rtag -D tomorrow "pmd_release_0_7" pmd
 rmdir /q /s c:\tmp\pmd
@@ -22,12 +40,6 @@ cvs export -d c:\tmp\pmd -r pmd_release_0_7 pmd
 zip it up, rename it to pmd-0.7.zip
 unzip it into c:\tmp\pmd-0.7
 clear classpath
-TESTS: Can you
-1) run 1 file and get a report
-run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
-run c:\data\pmd\pmd\test-data\Unused1.java html rulesets/unusedcode.xml
-2) run the Ant 'pmd' task and get a report
-ant pmd
 
 if you see a bug and fix it, you can delete the release using:
 cvs rtag -d pmd_release_0_7 pmd
