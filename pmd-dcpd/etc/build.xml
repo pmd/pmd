@@ -4,7 +4,7 @@
 <property name="compiletimelibsdir" value="${lib}/compiletimeonly"/>
 <property name="src" value="src\"/>
 <property name="build" value="build\"/>
-<property name="jar" value="pmd-dcpd-0.1.jar"/>
+<property name="jar" value="dcpd.jar"/>
 <property name="build.compiler" value="jikes"/>
 
 <target name="delete">
@@ -32,7 +32,17 @@
     </rmic>
 </target>
 
+<target name="jar">
+    <jar jarfile="${lib}/${jar}" basedir="${build}" excludes="test/**/*.class"/>
+</target>
+
 <target name="clean" depends="delete,compile,rmic"/>
+
+<target name="copytomordor" depends="clean,jar">
+    <exec executable="pscp.exe" os="Windows 2000">
+        <arg line=" ${lib}\${jar} tom@mordor:/home/tom/projects/jini/sdk/lib/"/>
+    </exec>
+</target>
 
 
 
