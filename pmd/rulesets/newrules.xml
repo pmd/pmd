@@ -32,6 +32,37 @@ These are new rules for the next release
       </example>
     </rule>
 
+    <rule name="UnnecessaryReturn"
+          message="Avoid unnecessary return statements"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  Avoid unnecessary return statements
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //ResultType[
+    parent::MethodDeclaration[Block/BlockStatement/Statement/ReturnStatement] and
+    @Void='true'
+    ]
+                  ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+  // this is bad
+  public void bar() {
+      int x = 42;
+      return;
+  }
+  ]]>
+      </example>
+    </rule>
+
 
 
 </ruleset>
