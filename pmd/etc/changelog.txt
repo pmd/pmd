@@ -6,6 +6,7 @@ Fixed bug 763529 - AccessorClassGenerationRule no longer crashes when given a fi
 Fixed bug 771943 - AtLeastOneConstructorRule and UnnecessaryConstructorRule no longer reports false positives on inner classes.
 Added ability to accept a comma-delimited string of files and directories on the command line.
 Added a CSVRenderer.
+Added a "-shotfilenames" argument to the PMD command line interface.
 Modified grammer to provide information on whether an initializer block is static.
 ASTViewer now shows node images and modifiers
 ASTViewer now saves last edited text to ~/.pmd_astviewer
