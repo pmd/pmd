@@ -2,11 +2,14 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 
 public class UseSingletonRule extends AbstractRule {
+
     private boolean isOK;
     private int methodCount;
 
@@ -15,6 +18,13 @@ public class UseSingletonRule extends AbstractRule {
             isOK = true;
         }
         return data;
+    }
+
+    public Object visit(ASTUnmodifiedClassDeclaration decl, Object data) {
+        if (decl.jjtGetParent() instanceof ASTClassDeclaration && ((ASTClassDeclaration)decl.jjtGetParent()).isAbstract()) {
+            isOK = true;
+        }
+        return super.visit(decl, data);
     }
 
     public Object visit(ASTMethodDeclaration decl, Object data) {

@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Pablo Casado - Bug report for UseSingletonRule</li>
             <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Nicolai Czempin - Various rule suggestions, additional PMD backronyms</li>
             <li>Frank Hardisty - BeanMembersShouldSerializeRule</li>

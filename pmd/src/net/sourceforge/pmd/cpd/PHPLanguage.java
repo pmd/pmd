@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.cpd;
 
-import java.io.FilenameFilter;
 import java.io.File;
+import java.io.FilenameFilter;
 
 public class PHPLanguage implements Language {
 

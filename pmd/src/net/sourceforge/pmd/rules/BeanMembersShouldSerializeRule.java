@@ -5,14 +5,16 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.util.Iterator;
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.text.MessageFormat;
-
-import net.sourceforge.pmd.ast.*;
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.symboltable.*;
+import java.util.Iterator;
 
 public class BeanMembersShouldSerializeRule extends AbstractRule {
 

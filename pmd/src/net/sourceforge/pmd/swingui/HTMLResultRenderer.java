@@ -4,8 +4,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
 import java.io.StringWriter;
 import java.util.Iterator;
 

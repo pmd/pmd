@@ -12,9 +12,11 @@ import net.sourceforge.pmd.swingui.event.StatusBarEvent;
 import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
 import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
 
-import javax.swing.*;
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import javax.swing.text.html.HTMLEditorKit;
-import java.awt.*;
+import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

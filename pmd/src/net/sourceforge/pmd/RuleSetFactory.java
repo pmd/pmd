@@ -11,12 +11,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.StringTokenizer;
 
 public class RuleSetFactory {
 
