@@ -69,7 +69,7 @@
 
 <target name="sign-all">
     <signjar jar="${lib}/pmd-swingui-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
-    <signjar jar="${lib}/pmd-1.1.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${lib}/pmd-1.2.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <signjar jar="${lib}/jaxen-core-1.0-fcs.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <signjar jar="${lib}/saxpath-1.0-fcs.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <signjar jar="${lib}/xercesImpl-2.0.2.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
@@ -84,7 +84,7 @@
     </exec>
     <echo message="Uploading pmd jar file"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/pmd-1.1.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/pmd-1.2.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
     </exec>
     <echo message="Uploading jaxen-core-1.0-fcs.jar"/>
     <exec executable="scp" os="Linux">
