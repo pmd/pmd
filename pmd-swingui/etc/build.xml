@@ -45,22 +45,66 @@
 </target>
 
 <target name="jar" depends="copy,compile">
-    <jar jarfile="${lib}\pmd-swingui-${version}.jar" basedir="${build}"/>
+    <jar jarfile="${lib}\pmd-swingui-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF"/>
 </target>
 
 <target name="clean" depends="delete,compile"/>
 
 <target name="dist" depends="clean,jar"/>
 
-<target name="pmdswinguinlp" depends="dist">
+<target name="sign-quick">
     <signjar jar="${lib}/pmd-swingui-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
-    <echo message="Uploading jar file"/>
+</target>
+
+<target name="jnlp-quick">
+    <echo message="Uploading pmd-swing jar file"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/data/pmd/pmd/lib/pmd-swingui-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/pmd-swingui-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
     </exec>
-    <echo message="Uploading cpd.jnlp"/>
+    <echo message="Uploading swingui.jnlp"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/data/pmd/pmd/etc/cpd.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+        <arg line=" /home/tom/data/pmd/pmd-swingui/etc/swingui.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+    </exec>
+</target>
+
+<target name="sign-all">
+    <signjar jar="${lib}/pmd-swingui-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${lib}/pmd-1.1.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${lib}/jaxen-core-1.0-fcs.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${lib}/saxpath-1.0-fcs.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${lib}/xercesImpl-2.0.2.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${lib}/xmlParserAPIs-2.0.2.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+</target>
+
+
+<target name="jnlp-all" depends="dist,sign-all">
+    <echo message="Uploading pmd-swing jar file"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/pmd-swingui-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+    </exec>
+    <echo message="Uploading pmd jar file"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/pmd-1.1.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+    </exec>
+    <echo message="Uploading jaxen-core-1.0-fcs.jar"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/jaxen-core-1.0-fcs.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+    </exec>
+    <echo message="Uploading saxpath-1.0-fcs.jar"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/saxpath-1.0-fcs.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+    </exec>
+    <echo message="Uploading xercesImpl-2.0.2.jar"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/xercesImpl-2.0.2.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+    </exec>
+    <echo message="Uploading xmlParserAPIs-2.0.2.jar"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/xmlParserAPIs-2.0.2.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+    </exec>
+    <echo message="Uploading swingui.jnlp"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd-swingui/etc/swingui.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
     </exec>
 </target>
 

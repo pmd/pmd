@@ -116,7 +116,12 @@ public class PMDViewer extends JFrame {
 
             // Setup the User Interface based on this computer's operating system.
             // This must be done before calling Java and Swing classes that call the GUI.
-            UIManager.setLookAndFeel("net.sourceforge.pmd.swingui.PMDLookAndFeel");
+            if (System.getProperty("os.name").startsWith("Win")) {
+                UIManager.setLookAndFeel("net.sourceforge.pmd.swingui.PMDLookAndFeel");
+            } else {
+                UIManager.setLookAndFeel("net.sourceforge.pmd.swingui.MotifPMDLookAndFeel");
+            }
+
 
             PMDViewer pmdViewer = new PMDViewer();
             pmdViewer.setVisible(true);

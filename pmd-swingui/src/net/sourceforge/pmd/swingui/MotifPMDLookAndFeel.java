@@ -1,25 +1,19 @@
 package net.sourceforge.pmd.swingui;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
+import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
 
-import javax.swing.ImageIcon;
-import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
+import javax.swing.LookAndFeel;
+import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Properties;
+import java.io.InputStream;
+import java.io.IOException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
-/**
- *
- * @author Donald A. Leckie
- * @since August 27, 2002
- * @version $Revision$, $Date$
- */
-public class PMDLookAndFeel extends WindowsLookAndFeel {
+public class MotifPMDLookAndFeel extends MotifLookAndFeel {
 
     /**
      ****************************************************************************
@@ -100,9 +94,31 @@ public class PMDLookAndFeel extends WindowsLookAndFeel {
     protected void initComponentDefaults(UIDefaults table) {
         super.initComponentDefaults(table);
 
-        Class lafClass = WindowsLookAndFeel.class;
-        Class plafClass = PMDLookAndFeel.class;
-        Object[] defaults = {"document", LookAndFeel.makeIcon(plafClass, "icons/document.gif"), "cancel", LookAndFeel.makeIcon(plafClass, "icons/cancel.gif"), "save", LookAndFeel.makeIcon(plafClass, "icons/save.gif"), "saveAs", LookAndFeel.makeIcon(plafClass, "icons/saveAs.gif"), "print", LookAndFeel.makeIcon(plafClass, "icons/print.gif"), "copy", LookAndFeel.makeIcon(plafClass, "icons/copy.gif"), "edit", LookAndFeel.makeIcon(plafClass, "icons/edit.gif"), "view", LookAndFeel.makeIcon(plafClass, "icons/view.gif"), "help", LookAndFeel.makeIcon(plafClass, "icons/help.gif"), "pmdLogo", LookAndFeel.makeIcon(plafClass, "icons/pmdLogo.gif"), "pmdLogoImage", getImageIcon("icons/pmdLogo.jpg"), "labelFont", new Font("Dialog", Font.BOLD, 12), "label14Font", new Font("Dialog", Font.BOLD, 14), "label16Font", new Font("Dialog", Font.BOLD, 16), "dataFont", new Font("Dialog", Font.PLAIN, 12), "codeFont", new Font("Monospaced", Font.PLAIN, 12), "tabFont", new Font("SansSerif", Font.BOLD, 12), "titleFont", new Font("SansSerif", Font.BOLD, 14), "buttonFont", new Font("SansSerif", Font.BOLD, 12), "messageFont", new Font("Dialog", Font.PLAIN, 12), "serif12Font", new Font("Serif", Font.PLAIN, 12), "serif14Font", new Font("Serif", Font.PLAIN, 14), "viewerProperties", loadViewerProperties(),
+        Class lafClass = MotifLookAndFeel.class;
+        Class plafClass = MotifPMDLookAndFeel.class;
+        Object[] defaults = {"document", LookAndFeel.makeIcon(plafClass, "icons/document.gif"),
+                             "cancel", LookAndFeel.makeIcon(plafClass, "icons/cancel.gif"),
+                             "save", LookAndFeel.makeIcon(plafClass, "icons/save.gif"),
+                             "saveAs", LookAndFeel.makeIcon(plafClass, "icons/saveAs.gif"),
+                             "print", LookAndFeel.makeIcon(plafClass, "icons/print.gif"),
+                             "copy", LookAndFeel.makeIcon(plafClass, "icons/copy.gif"),
+                             "edit", LookAndFeel.makeIcon(plafClass, "icons/edit.gif"),
+                             "view", LookAndFeel.makeIcon(plafClass, "icons/view.gif"),
+                             "help", LookAndFeel.makeIcon(plafClass, "icons/help.gif"),
+                             "pmdLogo", LookAndFeel.makeIcon(plafClass, "icons/pmdLogo.gif"),
+                             "pmdLogoImage", getImageIcon("icons/pmdLogo.jpg"),
+                             "labelFont", new Font("Dialog", Font.BOLD, 12),
+                             "label14Font", new Font("Dialog", Font.BOLD, 14),
+                             "label16Font", new Font("Dialog", Font.BOLD, 16),
+                             "dataFont", new Font("Dialog", Font.PLAIN, 12),
+                             "codeFont", new Font("Monospaced", Font.PLAIN, 12),
+                             "tabFont", new Font("SansSerif", Font.BOLD, 12),
+                             "titleFont", new Font("SansSerif", Font.BOLD, 14),
+                             "buttonFont", new Font("SansSerif", Font.BOLD, 12),
+                             "messageFont", new Font("Dialog", Font.PLAIN, 12),
+                             "serif12Font", new Font("Serif", Font.PLAIN, 12),
+                             "serif14Font", new Font("Serif", Font.PLAIN, 14),
+                             "viewerProperties", loadViewerProperties(),
 
                              // These are all the icons defined in the WindowsLookAndFeel.  We redefine them
                              // here because of the way they are defined in that class: in terms of the return
@@ -188,4 +204,5 @@ public class PMDLookAndFeel extends WindowsLookAndFeel {
 
         return new ImageIcon(buffer[0]);
     }
+
 }

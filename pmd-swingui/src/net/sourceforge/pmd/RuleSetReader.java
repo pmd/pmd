@@ -199,20 +199,13 @@ public class RuleSetReader implements Constants {
                     ruleClass = Class.forName(className);
                     m_rule = (Rule) ruleClass.newInstance();
                 } catch (ClassNotFoundException classNotFoundException) {
-                    try {
-                        Class ruleClass;
-                        className = "net.sourceforge.pmd.UndefinedRule";
-                        ruleClass = Class.forName(className);
-                        m_rule = (Rule) ruleClass.newInstance();
-                    } catch (Exception exception) {
-                        String template = "Cannot find class \"{0}\" on the classpath.";
-                        Object[] args = {className};
-                        String msg = MessageFormat.format(template, args);
-                        PMDException pmdException = new PMDException(msg, exception);
-                        SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
-                        pmdException.fillInStackTrace();
-                        throw saxException;
-                    }
+                    String template = "Cannot find class \"{0}\" on the classpath.";
+                    Object[] args = {className};
+                    String msg = MessageFormat.format(template, args);
+                    PMDException pmdException = new PMDException(msg, classNotFoundException);
+                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
+                    pmdException.fillInStackTrace();
+                    throw saxException;
                 } catch (IllegalAccessException exception) {
                     String template = "Illegal access to class \"{0}\" for rule \"{1}\" in rule set \"{2}\".";
                     Object[] args = {className, ruleName, m_ruleSet.getName()};
