@@ -21,7 +21,9 @@ which should either be acted on or reported.
   public void doSomething() {
     try {
       FileInputStream fis = new FileInputStream("/tmp/bugger");
-    } catch (IOException ioe) { }
+    } catch (IOException ioe) {
+        // not good
+    }
   }
 ]]>
     </example>
@@ -37,7 +39,7 @@ but nothing is done about it.
     <example>
 <![CDATA[
   if (absValue < 1) {
-     // Do Nothing
+     // not good
   }
 ]]>
      </example>
@@ -55,7 +57,7 @@ it's a while loop that does a lot in the exit expression, rewrite it to make it 
      <example>
 <![CDATA[
 while (a == b) {
-  // Do Nothing.
+  // not good
 }
 ]]>
      </example>
@@ -137,7 +139,12 @@ public class ShortMethod {
 
     <example>
 <![CDATA[
+
   public void doSomething() {
+    // this is OK
+    if (foo) x++;
+
+    // but this is not
     if (foo)
         x=x+1;
     else
@@ -157,7 +164,10 @@ public class ShortMethod {
     <example>
 <![CDATA[
   public String convert(int x) {
-    return new Integer(x).toString();
+    // this wastes an object
+    String foo = new Integer(x).toString();
+    // this is better
+    return Integer.toString(x);
   }
 ]]>
     </example>

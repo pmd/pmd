@@ -18,7 +18,6 @@ used (except for possibly initial assignment)
 public int doSomething() {
   int i = 5; // Unused
   int j = 6;
-
   j += 3;
   return j;
 }
@@ -42,7 +41,6 @@ public class Something {
   public int addOne() {
     return j++;
   }
-
 }
 ]]>
     </example>
