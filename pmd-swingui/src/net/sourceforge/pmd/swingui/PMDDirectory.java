@@ -1,4 +1,4 @@
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.swingui;
 
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;

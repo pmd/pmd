@@ -1,6 +1,4 @@
-package net.sourceforge.pmd;
-
-import net.sourceforge.pmd.swingui.Resources;
+package net.sourceforge.pmd.swingui;
 
 import java.io.BufferedReader;
 import java.io.File;

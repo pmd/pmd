@@ -1,16 +1,16 @@
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.swingui.Constants;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.MessageFormat;
 
 /**
  * Reads an XML file containing information about a rule set and each rule within the rule set.
