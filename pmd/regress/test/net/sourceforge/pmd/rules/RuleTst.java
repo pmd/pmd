@@ -8,7 +8,6 @@ package test.net.sourceforge.pmd.rules;
  */
 
 import java.io.InputStream;
-import java.io.FileNotFoundException;
 
 import java.util.List;
 import java.util.ArrayList;

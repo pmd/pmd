@@ -26,7 +26,7 @@ public class PMD {
      * @param ruleSet - the set of rules to process against the file
      * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
      */
-    public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws FileNotFoundException {
+    public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) {
         try {
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
@@ -48,7 +48,7 @@ public class PMD {
      * @param ruleSet - the set of rules to process against the file
      * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
      */
-    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws FileNotFoundException {
+    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) {
         processFile(new InputStreamReader(fileContents), ruleSet, ctx);
 	}
 

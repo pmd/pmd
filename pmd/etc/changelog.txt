@@ -1,4 +1,6 @@
 ????? 2002 - 0.6:
+Fixed bug 582639 - Rule violations are now reported on the proper line
+Fixed bug 582509 - Removed unneeded throws clause
 
 July 16 2002 - 0.5:
 Added new rules: DontImportJavaLangRule, DuplicateImportsRule
