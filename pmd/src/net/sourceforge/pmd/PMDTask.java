@@ -45,16 +45,11 @@ public class PMDTask extends Task {
         if (ruleSetType == null) {
             throw new BuildException("No rule set type specified");
         }
-        if (format == null) {
-            throw new BuildException("No report format specified");
+        if (format == null || (!format.equals("text") && !format.equals("xml"))) {
+            throw new BuildException("Report format must be either 'text' or 'xml'; you specified " + format);
         }
 
         StringBuffer buf = new StringBuffer();
-
-        if (format.equals("xml")) {
-            buf.append("<pmd>" + System.getProperty("line.separator"));
-        }
-
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
@@ -64,25 +59,15 @@ public class PMDTask extends Task {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                     if (verbose) System.out.println(file.getAbsoluteFile());
                     PMD pmd = new PMD();
-                    Report report = pmd.processFile(file, ruleSetType);
+                    Report report = pmd.processFile(file, ruleSetType, format);
                     if (!report.empty()) {
-                        if (format.equals("xml")) {
-                            buf.append(report.renderToXML());
-                        } else if (format.equals("text")) {
-                            buf.append(report.renderToText());
-                        } else {
-                            throw new BuildException("Report format must be either 'text' or 'xml'; you specified " + format);
-                        }
+                        buf.append(report.render());
                         buf.append(System.getProperty("line.separator"));
                     }
                 } catch (FileNotFoundException fnfe) {
                     throw new BuildException(fnfe);
                 }
             }
-        }
-
-        if (format.equals("xml")) {
-            buf.append("</pmd>");
         }
 
         try {

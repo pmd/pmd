@@ -6,16 +6,25 @@ public class Report {
     
     private List violations = new ArrayList();
     private String filename;
-    
-    public Report(String filename) {
+    private String format;
+
+    public Report(String filename, String format) {
         this.filename = filename;
+        this.format = format;
     }
     
     public void addRuleViolation(RuleViolation violation) {
        violations.add(violation); 
     }
-    
-    public String renderToText() {
+
+    public String render() {
+        if (format.equals("text")) {
+            return renderToText();
+        }
+        return renderToXML();
+    }
+
+    private String renderToText() {
         StringBuffer buf = new StringBuffer();
         for (Iterator i = violations.iterator(); i.hasNext();) {
             if (buf.length() != 0) {
@@ -26,12 +35,13 @@ public class Report {
         return buf.toString();
     }
 
-    public String renderToXML() {
-        StringBuffer buf = new StringBuffer("<file>" + System.getProperty("line.separator") + "<name>" + filename + "</name>");
+    private String renderToXML() {
+        StringBuffer buf = new StringBuffer("<pmd>" + System.getProperty("line.separator") + "<file>" + System.getProperty("line.separator") + "<name>" + filename + "</name>" + System.getProperty("line.separator"));
         for (Iterator iterator = violations.iterator(); iterator.hasNext();) {
             buf.append(((RuleViolation) iterator.next()).getXML());
         }
-        buf.append("</file>" + System.getProperty("line.separator"));
+        buf.append(System.getProperty("line.separator") + "</file>" + System.getProperty("line.separator"));
+        buf.append("</pmd>");
         return buf.toString();
     }
 

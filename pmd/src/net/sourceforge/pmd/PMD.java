@@ -16,8 +16,8 @@ import java.util.Iterator;
 
 public class PMD {
 		
-	public Report processFile(String filename, InputStream is, String ruleSetType) throws FileNotFoundException {
-        Report report = new Report(filename);
+	public Report processFile(String filename, InputStream is, String ruleSetType, String format) throws FileNotFoundException {
+        Report report = new Report(filename, format);
         List rules = RuleFactory.createRules(ruleSetType);
 
         try {
@@ -39,8 +39,8 @@ public class PMD {
         return report;
 	}
 
-    public Report processFile(File file, String ruleSetType) throws FileNotFoundException{
-        return processFile(file.getAbsolutePath(), new FileInputStream(file), ruleSetType);
+    public Report processFile(File file, String ruleSetType, String format) throws FileNotFoundException{
+        return processFile(file.getAbsolutePath(), new FileInputStream(file), ruleSetType, format);
     }
 
     public static void main(String[] args) {
@@ -53,8 +53,8 @@ public class PMD {
         }
         PMD pmd = new PMD();
         try {
-            Report report = pmd.processFile(input, RuleFactory.ALL);
-            System.out.println("<pmd>" + report.renderToXML() + "</pmd>");
+            Report report = pmd.processFile(input, RuleFactory.ALL, "xml");
+            System.out.println(report.render());
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         }

@@ -174,7 +174,7 @@ TODO - this tests unused variables in nested classes
     private Report process(String file) {
         try {
             PMD p = new PMD();
-            return p.processFile(file, getClass().getClassLoader().getResourceAsStream(file), RuleFactory.ALL);
+            return p.processFile(file, getClass().getClassLoader().getResourceAsStream(file), RuleFactory.ALL, "xml");
         } catch (FileNotFoundException fnfe) {
             throw new RuntimeException("File " + file + " not found");
         }

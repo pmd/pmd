@@ -27,9 +27,9 @@ public class RuleViolation {
 
     public String getXML() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<ruleviolation>");
-        buf.append("<line>" + Integer.toString(line) + "</line>");
-        buf.append("<description>" + description + "</description>");
+        buf.append("<ruleviolation>" + System.getProperty("line.separator"));
+        buf.append("<line>" + Integer.toString(line) + "</line>" + System.getProperty("line.separator"));
+        buf.append("<description>" + description + "</description>" + System.getProperty("line.separator"));
         buf.append("</ruleviolation>");
         return buf.toString();
     }
