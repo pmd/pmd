@@ -60,7 +60,7 @@ public class JUnitTestsShouldContainAssertsRule extends AbstractRule implements 
     private boolean containsAssert(Node n, boolean assertFound) {
         if (!assertFound) {
             if (n instanceof ASTStatementExpression) {
-                if (isAssertStatement((ASTStatementExpression)n)) {
+                if (isAssertOrFailStatement((ASTStatementExpression)n)) {
                     return true;
                 }
             }
@@ -78,7 +78,7 @@ public class JUnitTestsShouldContainAssertsRule extends AbstractRule implements 
     /**
      * Tells if the expression is an assert statement or not.
      */
-    private boolean isAssertStatement(ASTStatementExpression expression) {
+    private boolean isAssertOrFailStatement(ASTStatementExpression expression) {
         if (expression!=null 
                 && expression.jjtGetNumChildren()>0
                 && expression.jjtGetChild(0) instanceof ASTPrimaryExpression
@@ -89,7 +89,7 @@ public class JUnitTestsShouldContainAssertsRule extends AbstractRule implements 
                 ASTPrimaryPrefix pp = (ASTPrimaryPrefix) pe.jjtGetChild(0);
                 if (pp.jjtGetNumChildren()>0 && pp.jjtGetChild(0) instanceof ASTName) {
                     ASTName n = (ASTName) pp.jjtGetChild(0);
-                    if (n.getImage()!=null && n.getImage().startsWith("assert")) {
+                    if (n.getImage()!=null && (n.getImage().startsWith("assert") || n.getImage().startsWith("fail") )) {
                         return true;
                     }
                 }

@@ -93,7 +93,7 @@ public class Foo extends TestCase {
     </rule>
 
     <rule name="JUnitTestsShouldIncludeAssertRule"
-          message="JUnit tests should include assert()"
+          message="JUnit tests should include assert() or fail()"
           class="net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAssertsRule">
         <description>
         JUnit assertions should include an assertion - This makes the tests more robust

@@ -17,6 +17,8 @@ public class JUnitTestsShouldContainAssertsRuleTest extends SimpleAggregatorTst 
            new TestDescriptor(TEST2, "Missing assert", 1, new JUnitTestsShouldContainAssertsRule()),
            new TestDescriptor(TEST3, "All ok", 0, new JUnitTestsShouldContainAssertsRule()),
            new TestDescriptor(TEST4, "Two wrong", 2, new JUnitTestsShouldContainAssertsRule()),
+           new TestDescriptor(TEST5, "Contains fail", 0, new JUnitTestsShouldContainAssertsRule()),
+           new TestDescriptor(TEST6, "One wrong", 1, new JUnitTestsShouldContainAssertsRule()),
        });
     }
 
@@ -56,4 +58,27 @@ public class JUnitTestsShouldContainAssertsRuleTest extends SimpleAggregatorTst 
         " public void test2() {" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
+
+
+    private static final String TEST5 =
+        "public class Foo {" + PMD.EOL +
+        " public void test1() {" + PMD.EOL +
+        "  fail(\"1 == 1\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+
+    private static final String TEST6 =
+        "public class Foo {" + PMD.EOL +
+        " public void setUp() {" + PMD.EOL +
+        " }" + PMD.EOL +
+        " public void test1() {" + PMD.EOL +
+        " 	int a;" + PMD.EOL +
+        " 	callMethod(a);" + PMD.EOL +
+        " }" + PMD.EOL +
+        " public void test2() {" + PMD.EOL +
+        " 	fail();" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
 }
