@@ -33,6 +33,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2003/06/19 20:59:45  phherlin
+ * In the generated XML AST, put the image information on an image attribute instead of the tag body
+ *
  * Revision 1.4  2003/05/19 22:27:33  phherlin
  * Refactoring to improve performance
  *
@@ -136,34 +139,31 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
      */
     private void dump(SimpleNode node, PrintWriter out, String prefix) {
         StringBuffer sb = new StringBuffer(prefix);
-        sb.append(TAG_BEGIN).append(node.toString());
+        sb
+            .append(TAG_BEGIN)
+            .append(node.toString())
+            .append(" beginLine=" + QUOTE)
+            .append(node.getBeginLine())
+            .append(QUOTE)
+            .append(" beginColumn=" + QUOTE)
+            .append(node.getBeginColumn())
+            .append(QUOTE)
+            .append(" endLine=" + QUOTE)
+            .append(node.getEndLine())
+            .append(QUOTE)
+            .append(" endColumn=" + QUOTE)
+            .append(node.getEndColumn())
+            .append(QUOTE);
+
+        if (node.getImage() != null) {
+            sb.append(" image=").append(QUOTE).append(node.getImage()).append(QUOTE);
+        }
 
         if (node.jjtGetNumChildren() == 0) {
-            if (node.getImage() != null) {
-                sb.append(TAG_END).append(node.getImage()).append(ENDTAG_BEGIN).append(node.toString()).append(ENDTAG_END);
-            } else {
-                sb.append(TAG_ENDEND);
-            }
+            sb.append(TAG_ENDEND);
             out.println(sb.toString());
         } else {
-            sb
-                .append(" beginLine=" + QUOTE)
-                .append(node.getBeginLine())
-                .append(QUOTE)
-                .append(" beginColumn=" + QUOTE)
-                .append(node.getBeginColumn())
-                .append(QUOTE)
-                .append(" endLine=" + QUOTE)
-                .append(node.getEndLine())
-                .append(QUOTE)
-                .append(" endColumn=" + QUOTE)
-                .append(node.getEndColumn())
-                .append(QUOTE)
-                .append(">");
-
-            if (node.getImage() != null) {
-                sb.append(System.getProperty("line.separator")).append(prefix).append(INDENT).append(node.getImage());
-            }
+            sb.append(">");
             out.println(sb.toString());
 
             for (int i = 0; i < node.jjtGetNumChildren(); i++) {
