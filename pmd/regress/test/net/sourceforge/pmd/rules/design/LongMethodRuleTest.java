@@ -16,7 +16,7 @@ public class LongMethodRuleTest
 
     public LongMethodRule getIUT() {
         LongMethodRule IUT = new LongMethodRule();
-        IUT.addProperty("minimumLength", "200");
+        IUT.addProperty("minimum", "200");
         return IUT;
     }
     public void testShortMethod() throws Throwable {
@@ -31,7 +31,7 @@ public class LongMethodRuleTest
 
     public void testReallyLongMethodWithLongerRange() throws Throwable {
         LongMethodRule IUT = getIUT();
-        IUT.addProperty("minimumLength", "1000");
+        IUT.addProperty("minimum", "1000");
 	Report report = process("LongMethod2.java", IUT );
 	assertEquals( 0, report.size() );
     }
