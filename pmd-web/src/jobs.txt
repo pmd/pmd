@@ -120,3 +120,5 @@ MX4J:mx4j:mx4j:mx4j/src/core
 JGraphT:jgrapht:src:src
 Multi-Lingual Crosswords:mlcrosswords:mlcrosswords:mlcrosswords/src
 MTAC:mtac:mtac:mtac/net
+Octet:octet:octet:octet/src/
+Structure:structure:structure:structure/src/
