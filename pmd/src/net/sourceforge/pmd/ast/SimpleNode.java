@@ -96,6 +96,41 @@ public class SimpleNode implements Node {
         return endColumn;
     }
 
+    /**
+     * Traverses up the tree to find the first parent instance of type parentType
+     * @param parentType class which you want to find.
+     * @return Node of type parentType.  Returns null if none found.
+     */
+    public Node getFirstParentOfType(Class parentType) {
+      Node parentNode = jjtGetParent();
+
+      while (parentNode != null && parentNode.getClass() != parentType) {
+        parentNode = parentNode.jjtGetParent();
+      }
+
+      return parentNode;
+    }
+
+    /**
+     * Traverses up the tree to find all of the parent instances of type parentType
+     * @param parentType classes which you want to find.
+     * @return List of parentType instances found.
+     */
+    public List getParentsOfType(Class parentType) {
+      List parents = new ArrayList();
+      Node parentNode = jjtGetParent();
+
+      while (parentNode != null) {
+        if (parentNode.getClass() == parentType) {
+          parents.add(parentNode);
+        }
+
+        parentNode = parentNode.jjtGetParent();
+      }
+
+      return parents;
+    }
+
     public List findChildrenOfType(Class targetType) {
         List list = new ArrayList();
         findChildrenOfType(targetType, list);
