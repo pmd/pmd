@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Astro Jetson Jr - a tweak for the ShortVariableNameRule</li>
             <li>Paul King - a complete rewrite of the Gel plugin</li>
             <li>Gael Marziou - "exclude" rule feature request, bug reports</li>
             <li>Philippe T'Seyen - refactoring and cleanup of the CPD Ant task, an XML renderer (with unit tests!) for CPD</li>
