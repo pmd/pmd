@@ -327,13 +327,13 @@ public class Foo {
 (
 @Image = 'equals'
   and count(FormalParameters/*) = 1
-  and not (FormalParameters/FormalParameter/Type/Name
+  and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
    [@Image = 'Object' or @Image = 'java.lang.Object'])
 )
 or
 @Image='equal'
  and count(FormalParameters/*) = 1
- and (FormalParameters/FormalParameter/Type/Name
+ and (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
   [@Image = 'Object' or @Image = 'java.lang.Object'])
 
 ]
