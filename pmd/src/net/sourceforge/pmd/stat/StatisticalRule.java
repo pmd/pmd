@@ -70,6 +70,8 @@ public abstract class StatisticalRule extends AbstractRule {
         }
 
 		ctx.getReport().addMetric( new Metric( this.getName(), low, high, getMean(), getStdDev()));
+
+        dataPoints.clear();
     }
 
     protected double getMean() {
