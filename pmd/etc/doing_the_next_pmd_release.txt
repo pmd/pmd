@@ -34,7 +34,7 @@ cd -
 Time to tag:
 
 cd ../../
-cvs -q rtag -D tomorrow "pmd_release_1_6" pmd
+cvs -q tag -D tomorrow "pmd_release_1_6" pmd
 
 Prepare source release:
 rm -rf ~/tmp/pmd-1.6
