@@ -48,7 +48,8 @@ class Job
 	def checkout_code
 		t = MyThread.new {
 			MyThread.ttl = 120 
-			`cvs -Q -d#{@cvsroot} export -D tomorrow "#{@src}"`
+			cmd = "cvs -Q -d#{@cvsroot} export -D tomorrow \"#{@src}\""
+			`#{cmd}`
 		}
 		t.join  
 	end
@@ -57,10 +58,10 @@ class Job
    `#{cmd}`
   end
   def run_pmd
-   cmd="java -Xmx512m -jar pmd-1.2.2.jar \"#{ROOT}/#{@src}\" html rulesets/unusedcode.xml -shortnames > #{report}"
+		cmd="java -Xmx512m -jar pmd-1.2.2.jar \"#{ROOT}/#{@src}\" html rulesets/unusedcode.xml -shortnames > #{report}"
    `#{cmd}`
    arr = IO.readlines(report)
-   File.open(report, "w") {|f|
+   File.read(report) {|f|
 	   arr.each {|x| f << x if x =~ /Error while parsing/ }
 		}
   end
@@ -149,7 +150,7 @@ if __FILE__ == $0
 	if ARGV.include?("-build") 
 		jobs.each {|job|
 			if ARGV.include?("-job") && job.mod != ARGV.at(ARGV.index("-job")+1)
-				puts "Skipping " + job.mod
+				#puts "Skipping " + job.mod
 				next
 			end
 			puts "Processing " + job.to_s
