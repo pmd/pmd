@@ -56,6 +56,12 @@
    <copy file="etc/policy.all" toDir="staging"/>
    <copy file="etc/linuxclient_go.sh" toDir="staging"/>
    <zip zipfile="${workerzipfile}" basedir="staging"/>
+    <exec executable="pscp.exe" os="Windows 2000">
+        <arg line=" ${workerzipfile} tom@mordor:/home/tom/"/>
+    </exec>
+    <exec executable="pscp.exe" os="Windows 2000">
+        <arg line=" ${workerzipfile} tom@shire:/home/tom/"/>
+    </exec>
 </target>
 
 </project>

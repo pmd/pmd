@@ -35,8 +35,8 @@ public class DCPD {
             space = Util.findSpace(javaSpaceURL);
 
             System.out.println("Tokenizing");
-            job = new Job("java_lang", new Integer(1));
-            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\ref", true), job);
+            job = new Job("java_lang", new Integer((int)System.currentTimeMillis()));
+            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang", true), job);
             System.out.println("Tokenizing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Writing the TokenSetsWrapper to the space");

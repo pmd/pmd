@@ -34,7 +34,7 @@ public class Util {
             if (args[0].equals("clear")) {
                 JavaSpace space = Util.findSpace(SPACE_SERVER);
                 Entry e = null;
-                while ( (e = space.take(null, null, 100)) != null) {
+                while ((e = space.take(null, null, 100)) != null) {
                     objectCount++;
                     if (objectCount % 100 == 0) {
                         System.out.println(objectCount + " objects taken so far");
