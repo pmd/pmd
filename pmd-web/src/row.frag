@@ -1,5 +1,5 @@
 <tr>
-<td><!--Fragment key="project"--></td>
+<td><!--Fragment key="title"--></td>
 <td><!--Fragment key="homepage"--></td>
 <td><!--Fragment key="ncss"--></td>
 <td><!--Fragment key="problems"--></td>

@@ -17,7 +17,6 @@
 <table align=center>
 <tr>
 <th>Project</th>
-<th></th>
 <th>Home page</th>
 <th>NCSS</th>
 <th>Problems</th>
