@@ -6,9 +6,16 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.rules.JumbledIncrementerRule;
 import net.sourceforge.pmd.ast.ASTForStatement;
 
 public class JumbledIncrementerRuleTest extends RuleTst {
 
-     public void test1() {}
+    public void test1() throws Throwable {
+        runTest("JumbledIncrementerRule1.java", 1, new JumbledIncrementerRule());
+    }
+
+    public void test2() throws Throwable {
+        runTest("JumbledIncrementerRule2.java", 0, new JumbledIncrementerRule());
+    }
 }
