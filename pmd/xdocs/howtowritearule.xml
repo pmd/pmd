@@ -126,14 +126,40 @@ WhileStatement
     </source>
     <p>
     Ah ha!  We see that the curly braces add a couple more AST elements - a Block and a BlockStatement.  So all we have
-    to do is write a rule to detect a WhileStatement that's not followed by a Block, and we've got it.
+    to do is write a rule to detect a WhileStatement that has a Statement that's not followed by a Block, and we've got a rule violation.
     </p>
     </subsection>
 
     <subsection name="Write a rule class">
+    <p>
+    Create a new Java class that extends <code>net.sourceforge.pmd.AbstractRule</code>:
+    </p>
+    <source>
+<![CDATA[
+public class WhileLoopsMustUseBracesRule extends BracesRule {
+}
+]]>
+    </source>
+    <p>
+    That was easy.  PMD works by creating the AST and then traverses it recursively so a rule can get a callback
+    for any type it's interested in.  So let's make sure our rule gets called whenever the AST traversal finds a WhileStatement:
+    </p>
+    <source>
+<![CDATA[
+public class WhileLoopsMustUseBracesRule extends BracesRule {
+    public Object visit(ASTWhileStatement node, Object data) {
+        System.out.println("hello world");
+    }
+}
+]]>
+    </source>
+    <p>
+    We stuck a <code>println()</code> in there for now so we can see when our rule gets hit.
+    </p>
+
     </subsection>
 
-    <subsection name="Put the EmptyWhileLoop rule in a ruleset file">
+    <subsection name="Put the WhileLoopsMustUseBracesRule rule in a ruleset file">
     </subsection>
 
     <subsection name="Run PMD using your new ruleset">
