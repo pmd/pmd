@@ -144,6 +144,20 @@
     </cpd>
 </target>
 
+<target name="javadoc">
+	<mkdir dir="docs/api"/>
+
+	<javadoc packagenames="com.*, net.*, org.*"
+		sourcepath="src"
+		destdir="docs/api"
+		doctitle="PMD API">
+		<classpath>
+			<fileset dir="lib">
+				<include name="*.jar"/>
+			</fileset>
+		</classpath>
+	</javadoc>
+</target>
 </project>
 
 
