@@ -6,6 +6,31 @@ These are new rules for the next release
   </description>
 
 
+    <rule name="ExceptionAsFlowControlRule"
+          message="Avoid using exceptions as flow control"
+          class="net.sourceforge.pmd.rules.design.ExceptionAsFlowControlRule">
+      <description>
+          Using Exceptions as flow control leads to GOTOish code.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+  public class Foo {
+   void bar() {
+    try {
+     try {
+     } catch (Exception e) {
+      throw new WrapperException(e);
+      // this is essentially a GOTO to the WrapperException catch block
+     }
+    } catch (WrapperException e) {
+     // do some more stuff
+    }
+   }
+  }
+  ]]>
+      </example>
+    </rule>
 
 
  </ruleset>

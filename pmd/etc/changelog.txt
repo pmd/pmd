@@ -1,3 +1,6 @@
+????, 2004 - 1.8:
+New rule: ExceptionAsFlowControlRule
+
 April 22, 2004 - 1.7:
 Moved development environment to Maven 1.0-RC2.
 Fixed bug 925840 - Messages were no longer getting variable names plugged in correctly
@@ -7,7 +10,7 @@ Implemented RFE 925839 - Added some more detail to the UseSingletonRule.
 Added an optional 'failuresPropertyName' attribute to the Ant task.
 Refactored away duplicate copies of XPath rule definitions in regress/, yay!
 Removed manifest from jar file; it was only there for the Main-class attribute, and it's not very useful now since PMD has several dependencies.
-                
+
 March 15, 2004 - 1.6:
 Fixed bug 895661 - XML reports containing error elements no longer have malformed XML.
 Fixed a bug in UnconditionalIfStatement - it no longer flags things like "if (x==true)".
