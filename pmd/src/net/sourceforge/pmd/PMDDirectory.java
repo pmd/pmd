@@ -1,12 +1,5 @@
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEventListener;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
-import net.sourceforge.pmd.swingui.event.RuleSetEvent;
-import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,6 +11,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEventListener;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
 
 
 /**
@@ -324,7 +324,7 @@ public class PMDDirectory
      *
      * @return
      */
-    public List getRuleSets()
+    public List getRuleSets() throws PMDException
     {
         List ruleSetList = null;
         List ruleSetFilesList = getRuleSetFiles();
@@ -342,17 +342,10 @@ public class PMDDirectory
 
             while (ruleSetFiles.hasNext())
             {
-                try
-                {
-                    File ruleSetFile = (File) ruleSetFiles.next();
-                    RuleSet ruleSet = getRuleSet(ruleSetFile);
+                File ruleSetFile = (File) ruleSetFiles.next();
+                RuleSet ruleSet = getRuleSet(ruleSetFile);
 
-                    ruleSetList.add(ruleSet);
-                }
-                catch (PMDException exception)
-                {
-                    exception.printStackTrace();
-                }
+                ruleSetList.add(ruleSet);
             }
         }
 
@@ -597,7 +590,7 @@ public class PMDDirectory
          *
          * @param event
          */
-        public void requestAllRuleSets(PMDDirectoryRequestEvent event)
+        public void requestAllRuleSets(PMDDirectoryRequestEvent event) throws PMDException
         {
             PMDDirectoryReturnedEvent.notifyReturnedAllRuleSets(this, getRuleSets());
         }
@@ -617,16 +610,10 @@ public class PMDDirectory
          *
          * @param event
          */
-        public void requestIncludedRules(PMDDirectoryRequestEvent event)
+        public void requestIncludedRules(PMDDirectoryRequestEvent event) throws PMDException
         {
-            try
-            {
-                int priority = event.getLowestPriorityForAnalysis();
-                PMDDirectoryReturnedEvent.notifyReturnedIncludedRules(this, getIncludedRules(priority));
-            }
-            catch (PMDException exception)
-            {
-            }
+            int priority = event.getLowestPriorityForAnalysis();
+            PMDDirectoryReturnedEvent.notifyReturnedIncludedRules(this, getIncludedRules(priority));
         }
     }
 

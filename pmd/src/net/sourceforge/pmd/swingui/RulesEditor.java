@@ -446,6 +446,9 @@ class RulesEditor extends JPanel
             }
             catch (PMDException pmdException)
             {
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+                MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
         }
 

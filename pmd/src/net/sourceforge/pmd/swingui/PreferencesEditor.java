@@ -335,9 +335,11 @@ class PreferencesEditor extends JPanel
                 preferences.setLowestPriorityForAnalysis(m_lowestPriorityForAnalysis.getSelectedIndex() + 1);
                 preferences.save();
             }
-            catch (PMDException exception)
+            catch (PMDException pmdException)
             {
-                MessageDialog.show(PMDViewer.getViewer(), exception.getMessage(), exception);
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+                MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
 
             PreferencesEditor.this.setVisible(false);

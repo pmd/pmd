@@ -26,10 +26,11 @@ import java.io.PrintStream;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class MessageDialog extends JDialog
+public class MessageDialog extends JDialog
 {
 
     private JTextArea m_messageArea;
+    private Exception m_exception;
     private boolean m_yesButtonWasPressed;
 
     /**
@@ -103,18 +104,15 @@ class MessageDialog extends JDialog
      */
     private void addCloseButton()
     {
-        JButton closeButton;
-        JPanel buttonPanel;
+        JButton closeButton = ComponentFactory.createButton("Close");
+        JPanel buttonPanel = new JPanel(new FlowLayout());
 
         closeButton = ComponentFactory.createButton("Close");
-        buttonPanel = new JPanel(new FlowLayout());
-
         closeButton.setForeground(Color.white);
         closeButton.setBackground(Color.blue);
         closeButton.addActionListener(new CloseButtonActionListener());
 
         buttonPanel.add(closeButton);
-        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
     }
 
     /**
@@ -151,7 +149,7 @@ class MessageDialog extends JDialog
      * @param message
      * @param exception
      */
-    protected static void show(Window parentWindow, String message, Exception exception)
+    public static void show(Window parentWindow, String message, Exception exception)
     {
         if (exception == null)
         {
@@ -159,7 +157,7 @@ class MessageDialog extends JDialog
         }
         else
         {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream(1000);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream(5000);
             PrintStream printStream = new PrintStream(stream);
 
             exception.printStackTrace(printStream);
@@ -213,10 +211,11 @@ class MessageDialog extends JDialog
      * @param parentWindow
      * @param message
      */
-    protected static void show(Window parentWindow, String message)
+    public static void show(Window parentWindow, String message)
     {
-        MessageDialog dialog = setup(parentWindow, message);
+        MessageDialog dialog;
 
+        dialog = setup(parentWindow, message);
         dialog.addCloseButton();
         dialog.setVisible(true);
     }

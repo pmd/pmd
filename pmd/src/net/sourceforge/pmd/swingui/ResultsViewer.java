@@ -136,9 +136,11 @@ abstract class ResultsViewer extends JEditorPane
                 {
                     MessageDialog.show(PMDViewer.getViewer(), null, exception);
                 }
-                catch (PMDException exception)
+                catch (PMDException pmdException)
                 {
-                    MessageDialog.show(PMDViewer.getViewer(), exception.getMessage());
+                    String message = pmdException.getMessage();
+                    Exception exception = pmdException.getOriginalException();
+                    MessageDialog.show(PMDViewer.getViewer(), message, exception);
                 }
             }
         }
@@ -262,9 +264,11 @@ abstract class ResultsViewer extends JEditorPane
             {
                 MessageDialog.show(PMDViewer.getViewer(), null, exception);
             }
-            catch (PMDException exception)
+            catch (PMDException pmdException)
             {
-                MessageDialog.show(PMDViewer.getViewer(), exception.getMessage());
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+                MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
             catch (OutOfMemoryError error)
             {

@@ -1,10 +1,13 @@
 package net.sourceforge.pmd.swingui.event;
 
-import net.sourceforge.pmd.RuleSet;
-
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.swingui.MessageDialog;
+import net.sourceforge.pmd.swingui.PMDViewer;
 
 /**
  *
@@ -131,10 +134,19 @@ public class PMDDirectoryRequestEvent extends EventObject
 
         while (listeners.hasNext())
         {
-            PMDDirectoryRequestEventListener listener;
+            try
+            {
+                PMDDirectoryRequestEventListener listener;
 
-            listener = (PMDDirectoryRequestEventListener) listeners.next();
-            listener.requestAllRuleSets(event);
+                listener = (PMDDirectoryRequestEventListener) listeners.next();
+                listener.requestAllRuleSets(event);
+            }
+            catch (PMDException pmdException)
+            {
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+                MessageDialog.show(PMDViewer.getViewer(), message, exception);
+            }
         }
     }
 
@@ -151,10 +163,10 @@ public class PMDDirectoryRequestEvent extends EventObject
 
         while (listeners.hasNext())
         {
-            PMDDirectoryRequestEventListener listener;
+                PMDDirectoryRequestEventListener listener;
 
-            listener = (PMDDirectoryRequestEventListener) listeners.next();
-            listener.requestDefaultRuleSets(event);
+                listener = (PMDDirectoryRequestEventListener) listeners.next();
+                listener.requestDefaultRuleSets(event);
         }
     }
 
@@ -171,10 +183,19 @@ public class PMDDirectoryRequestEvent extends EventObject
 
         while (listeners.hasNext())
         {
-            PMDDirectoryRequestEventListener listener;
+            try
+            {
+                PMDDirectoryRequestEventListener listener;
 
-            listener = (PMDDirectoryRequestEventListener) listeners.next();
-            listener.requestIncludedRules(event);
+                listener = (PMDDirectoryRequestEventListener) listeners.next();
+                listener.requestIncludedRules(event);
+            }
+            catch (PMDException pmdException)
+            {
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+                MessageDialog.show(PMDViewer.getViewer(), message, exception);
+            }
         }
     }
 }

@@ -450,11 +450,11 @@ class RulesTree extends JTree implements Constants
             {
                 rule = getNewRuleFromUser();
             }
-            catch (PMDException exception)
+            catch (PMDException pmdException)
             {
-                String message = exception.getMessage();
-                Exception originalException = exception.getOriginalException();
-                MessageDialog.show(PMDViewer.getViewer(), message, originalException);
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+                MessageDialog.show(PMDViewer.getViewer(), message, exception);
 
                 return;
             }

@@ -66,9 +66,11 @@ class AnalysisResultsViewer extends ResultsViewer
                 RulesInMemoryEvent.notifyRequestIncludedRules(this, priority);
                 AnalysisResultsViewer.this.analyze(file, m_ruleSet);
             }
-            catch (PMDException exception)
+            catch (PMDException pmdException)
             {
-                MessageDialog.show(PMDViewer.getViewer(), exception.getMessage(), exception);
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+                MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
         }
 

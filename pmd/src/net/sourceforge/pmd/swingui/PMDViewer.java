@@ -77,7 +77,6 @@ public class PMDViewer extends JFrame
         {
             String message = pmdException.getMessage();
             Exception exception = pmdException.getOriginalException();
-
             MessageDialog.show(this, message, exception);
         }
 
@@ -111,7 +110,7 @@ public class PMDViewer extends JFrame
      *
      * @return
      */
-    protected static final PMDViewer getViewer()
+    public static final PMDViewer getViewer()
     {
         return m_pmdViewer;
     }
@@ -324,6 +323,9 @@ public class PMDViewer extends JFrame
             }
             catch (PMDException pmdException)
             {
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+                MessageDialog.show(m_pmdViewer, message, exception);
             }
         }
 
