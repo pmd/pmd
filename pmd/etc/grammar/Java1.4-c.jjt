@@ -77,7 +77,9 @@ public class JavaParser {
     }
   }
 
-  private boolean assertLookahead() {
+  // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
+  // Note that this can't be replaced with a syntactic lookahead since "assert" isn't a string literal token
+  private boolean isNextTokenAnAssert() {
     return getToken(1).image.equals("assert");
   }
 
@@ -963,12 +965,8 @@ void ArrayDimsAndInits() :
 void Statement() :
 {}
 {
-  LOOKAHEAD( {
-  assertLookahead()
-  } )
-  AssertStatement()
-| LOOKAHEAD(2)
-  LabeledStatement()
+  LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
+| LOOKAHEAD(2) LabeledStatement()
 | Block()
 | EmptyStatement()
 | StatementExpression() ";"
@@ -1000,11 +998,8 @@ void Block() :
 void BlockStatement() :
 {}
 {
-  LOOKAHEAD( { assertLookahead() } )
-  Statement()
-|
-  LOOKAHEAD([ "final" ] Type() <IDENTIFIER>)
-  LocalVariableDeclaration() ";"
+  LOOKAHEAD( { isNextTokenAnAssert() } ) Statement()
+| LOOKAHEAD([ "final" ] Type() <IDENTIFIER>) LocalVariableDeclaration() ";"
 | "final" TypeDeclaration()
 | Statement()
 | UnmodifiedClassDeclaration()
