@@ -105,7 +105,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
             String key = (String) i.next();
             List occurrences = (List) literals.get(key);
             if (occurrences.size() >= threshold) {
-                Object[] args = new Object[]{new Integer(occurrences.size()), new Integer(((SimpleNode) occurrences.get(0)).getBeginLine())};
+                Object[] args = new Object[]{key, new Integer(occurrences.size()), new Integer(((SimpleNode) occurrences.get(0)).getBeginLine())};
                 String msg = MessageFormat.format(getMessage(), args);
                 RuleContext ctx = (RuleContext) data;
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, ((SimpleNode) occurrences.get(0)).getBeginLine(), msg));
@@ -115,12 +115,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     }
 
     public Object visit(ASTLiteral node, Object data) {
-        if (!hasAtLeast4Parents(node) || (!fourthParentIsAnArgList(node) && !fourthParentIsAVariableInitializer(node))) {
-            return data;
-        }
-
-        // just catching strings of 3 chars or more for now - no numbers
-        if (node.getImage() == null || node.getImage().indexOf('\"') == -1 || node.getImage().length() < 3) {
+        // just catching strings of 3 chars or more (including the enclosing quotes) for now - no numbers
+        if (node.getImage() == null || node.getImage().indexOf('\"') == -1 || node.getImage().length() < 5) {
             return data;
         }
 
@@ -139,25 +135,6 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         }
 
         return data;
-    }
-
-    private boolean fourthParentIsAVariableInitializer(ASTLiteral node) {
-        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTVariableInitializer;
-    }
-
-    private boolean fourthParentIsAnArgList(ASTLiteral node) {
-        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList;
-    }
-
-    private boolean hasAtLeast4Parents(Node node) {
-        Node currentNode = node;
-        for (int i = 0; i < 4; i++) {
-            if (currentNode instanceof ASTCompilationUnit) {
-                return false;
-            }
-            currentNode = currentNode.jjtGetParent();
-        }
-        return true;
     }
 }
 

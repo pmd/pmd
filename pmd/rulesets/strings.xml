@@ -7,7 +7,7 @@ These rules deal with different problems that can occur with String manipulation
 
 
     <rule name="AvoidDuplicateLiterals"
-        message="The same String literal appears {0} times in this file; the first occurrence is on line {1}"
+        message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
         class="net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule">
     <description>
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.

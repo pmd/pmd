@@ -16,7 +16,7 @@ public class AvoidDuplicateLiteralsRuleTest extends SimpleAggregatorTst {
 
     public void setUp() {
         rule = new AvoidDuplicateLiteralsRule();
-        rule.setMessage("avoid ''{0}'' and ''{1}''");
+        rule.setMessage("avoid ''{0}'' and ''{1}'' and ''{2}''");
         rule.addProperty("threshold", "2");
     }
 

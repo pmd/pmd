@@ -5,43 +5,30 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="ConstructorCallsOverridableMethodRule"
-          message="Avoid calls to overridable methods during construction"
-          class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethodRule">
-      <description>
-      Calling overridable methods during construction poses a risk of invoking methods on an
-          incompletely constructed object.  This situation can be difficult to discern.
-      It may leave the sub-class unable to construct its superclass or forced to
-          replicate the construction process completely within itself, losing the ability to call
-      super().  If the default constructor contains a call to an overridable method,
-          the subclass may be completely uninstantiable.   Note that this includes method calls
-          throughout the control flow graph - i.e., if a constructor Foo() calls a private method
-            bar() that calls a public method buz(), there's a problem.
-      </description>
-        <priority>1</priority>
-      <example>
-  <![CDATA[
-    public class SeniorClass {
-      public SeniorClass(){
-          toString(); //may throw NullPointerException if overridden
-      }
-      public String toString(){
-        return "IAmSeniorClass";
-      }
-    }
-    public class JuniorClass extends SeniorClass {
-      private String name;
-      public JuniorClass(){
-        super(); //Automatic call leads to NullPointerException
-        name = "JuniorClass";
-      }
-      public String toString(){
-        return name.toUpperCase();
-      }
-    }
-  ]]>
-      </example>
-    </rule>
+    <rule name="AvoidDuplicateLiterals"
+        message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
+        class="net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule">
+    <description>
+Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
+    </description>
+        <priority>3</priority>
+   <properties>
+    <property name="threshold" value="4"/>
+   </properties>
+    <example>
+<![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+ }
+ private void buz(String x) {}
+}
+]]>
+    </example>
+  </rule>
 
 
 
