@@ -1,6 +1,6 @@
 update the release date in the changelog
-change the build.xml to reflect pmd-jdeveloper release 1.2
-Update Plugin.version() to reflect release 1.2.
+change the build.xml to reflect pmd-jdeveloper release 1.3
+Update Plugin.version() to reflect release 1.3.
 
 Create the binary release:
 ant release
@@ -14,22 +14,22 @@ Check everything in
 Create the src release:
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ~/data/pmd/
-cvs -q tag -D tomorrow "pmd_jdeveloper_release_1_2" pmd-jdeveloper
+cvs -q tag -D tomorrow "pmd_jdeveloper_release_1_3" pmd-jdeveloper
 rm -rf ~/tmp/pmd-jdeveloper
 mkdir -p ~/tmp/pmd-jdeveloper
-cvs -q export -d tmp -r pmd_jdeveloper_release_1_2 pmd-jdeveloper
+cvs -q export -d tmp -r pmd_jdeveloper_release_1_3 pmd-jdeveloper
 mv tmp/* ~/tmp/pmd-jdeveloper
 rmdir tmp/
-cp pmd-jdeveloper/lib/pmd-jdeveloper-1.2.jar ~/tmp/pmd-jdeveloper/lib
+cp pmd-jdeveloper/lib/pmd-jdeveloper-1.3.jar ~/tmp/pmd-jdeveloper/lib
 cd ~/tmp
-zip -q -r pmd-jdeveloper-src-1.2.zip pmd-jdeveloper
-ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-1.2.zip pmd-jdeveloper-src-1.2.zip
+zip -q -r pmd-jdeveloper-src-1.3.zip pmd-jdeveloper
+ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-1.3.zip pmd-jdeveloper-src-1.3.zip
 rm -rf pmd-jdeveloper/
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jdeveloper-src-1.2.zip file
-Add the pmd-jdeveloper-bin-1.2.zip file
+Add the pmd-jdeveloper-src-1.3.zip file
+Add the pmd-jdeveloper-bin-1.3.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the jdeveloper plugin!"

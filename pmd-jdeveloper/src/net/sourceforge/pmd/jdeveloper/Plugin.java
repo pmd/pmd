@@ -58,7 +58,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         NavigatorManager.getWorkspaceNavigatorManager().addContextMenuListener(this, null);
         EditorManager.getEditorManager().getContextMenu().addContextMenuListener(this, null);
         IdeSettings.registerUI(new Navigable(TITLE, SettingsPanel.class, new Navigable[] {}));
-        Ide.getVersionInfo().addComponent(TITLE, " JDeveloper Extension " + getVersion());
+        Ide.getVersionInfo().addComponent(TITLE, " JDeveloper Extension " + version());
         rvPage = new RuleViolationPage();
     }
 
@@ -68,7 +68,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     }
 
     public float version() {
-        return 1.2f;
+        return 1.3f;
     }
 
     public float ideVersion() {
