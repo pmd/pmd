@@ -1,4 +1,5 @@
 ???????? - 1.03
+Added numbering to the HTMLRenderer
 Fixed bug 672742 - grammar typo was hosing up ASTConstructorDeclaration which was hosing up UseSingletonRule
 
 January 22, 2003 - 1.02:
