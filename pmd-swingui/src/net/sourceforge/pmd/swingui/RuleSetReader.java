@@ -1,11 +1,16 @@
 package net.sourceforge.pmd.swingui;
-
+//J-
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.MessageEvent;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -21,7 +26,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * @since August 30, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetReader implements Constants {
+class RuleSetReader implements IConstants
+{
 
     private RuleSet m_ruleSet;
     private boolean m_onlyIfIncluded;
@@ -33,7 +39,8 @@ public class RuleSetReader implements Constants {
      *****************************************************************************
      *
      */
-    public RuleSetReader() {
+    public RuleSetReader()
+    {
     }
 
     /**
@@ -44,7 +51,9 @@ public class RuleSetReader implements Constants {
      *
      * @return
      */
-    public RuleSet read(InputStream inputStream, String ruleSetFileName) throws PMDException {
+    public RuleSet read(InputStream inputStream, String ruleSetFileName)
+    throws PMDException
+    {
         return read(inputStream, ruleSetFileName, false);
     }
 
@@ -57,15 +66,19 @@ public class RuleSetReader implements Constants {
      *
      * @return
      */
-    public RuleSet read(InputStream inputStream, String ruleSetFileName, boolean onlyIfIncluded) throws PMDException {
-        if (inputStream == null) {
+    public RuleSet read(InputStream inputStream, String ruleSetFileName, boolean onlyIfIncluded)
+    throws PMDException
+    {
+        if (inputStream == null)
+        {
             String message = "Missing input stream.";
             PMDException pmdException = new PMDException(message);
             pmdException.fillInStackTrace();
             throw pmdException;
         }
 
-        if (ruleSetFileName == null) {
+        if (ruleSetFileName == null)
+        {
             String message = "Missing rule set file name.";
             PMDException pmdException = new PMDException(message);
             pmdException.fillInStackTrace();
@@ -74,7 +87,8 @@ public class RuleSetReader implements Constants {
 
         m_onlyIfIncluded = onlyIfIncluded;
 
-        try {
+        try
+        {
             InputSource inputSource;
             MainContentHandler mainContentHandler;
             SAXParser parser;
@@ -83,8 +97,8 @@ public class RuleSetReader implements Constants {
             mainContentHandler = new MainContentHandler();
 
             SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-            factory.setFeature("http://xml.org/sax/features/namespaces", false);
+            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
+            factory.setFeature("http://xml.org/sax/features/namespaces", true);
 
             parser = factory.newSAXParser();
 
@@ -92,19 +106,25 @@ public class RuleSetReader implements Constants {
             m_ruleSet.setFileName(ruleSetFileName);
 
             return m_ruleSet;
-        } catch (IOException exception) {
+        }
+        catch (IOException exception)
+        {
             PMDException pmdException = new PMDException("IOException was thrown.", exception);
             pmdException.fillInStackTrace();
             throw pmdException;
-        } catch (SAXException exception) {
-            if (exception.getMessage() == REJECT_NOT_INCLUDED) {
+        }
+        catch (SAXException exception)
+        {
+            if (exception.getMessage() == REJECT_NOT_INCLUDED)
+            {
                 // Return a null rule set to indicate that it should not be included.
                 return null;
             }
 
             Throwable originalException = exception.getException();
 
-            if (originalException instanceof PMDException) {
+            if (originalException instanceof PMDException)
+            {
                 throw (PMDException) originalException;
             }
 
@@ -112,7 +132,9 @@ public class RuleSetReader implements Constants {
             PMDException pmdException = new PMDException(message, exception);
             pmdException.fillInStackTrace();
             throw pmdException;
-        } catch (Exception exception) {
+        }
+        catch (Exception exception)
+        {
             PMDException pmdException = new PMDException("Uncaught exception was thrown.", exception);
             pmdException.fillInStackTrace();
             throw pmdException;
@@ -124,15 +146,19 @@ public class RuleSetReader implements Constants {
      *****************************************************************************
      *****************************************************************************
      */
-    private class MainContentHandler extends DefaultHandler {
+    private class MainContentHandler extends DefaultHandler
+    {
 
         private StringBuffer m_buffer = new StringBuffer(500);
         private Rule m_rule;
+        private boolean m_doingRuleSet;
+        private boolean m_doingRule;
 
         /**
          *************************************************************************
          */
-        private MainContentHandler() {
+        private MainContentHandler()
+        {
             super();
         }
 
@@ -146,13 +172,17 @@ public class RuleSetReader implements Constants {
          *
          * @throws SAXException
          */
-        public void startElement(String namespace, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+        public void startElement(String namespace, String localName, String qualifiedName, Attributes attributes)
+        throws SAXException
+        {
             m_buffer.setLength(0);
 
-            if (qualifiedName.equalsIgnoreCase("ruleset")) {
+            if (localName.equalsIgnoreCase("ruleset"))
+            {
                 String name;
                 String include;
 
+                m_doingRuleSet = true;
                 m_ruleSet = new RuleSet();
                 name = attributes.getValue("name");
                 name = (name == null) ? "Unknown" : name.trim();
@@ -161,13 +191,17 @@ public class RuleSetReader implements Constants {
 
                 m_ruleSet.setName(name);
                 m_ruleSet.setInclude(include.equalsIgnoreCase("true"));
-            } else if (qualifiedName.equalsIgnoreCase("rule")) {
+            }
+            else if (localName.equalsIgnoreCase("rule"))
+            {
                 String ruleName;
                 String message;
                 String className;
                 String includeText;
                 boolean include;
 
+                m_doingRule = true;
+                m_rule = null;
                 ruleName = attributes.getValue("name");
                 message = attributes.getValue("message");
                 className = attributes.getValue("class");
@@ -178,57 +212,59 @@ public class RuleSetReader implements Constants {
                 includeText = (includeText == null) ? "true" : includeText.trim();
                 include = includeText.equalsIgnoreCase("true");
 
-                if (m_onlyIfIncluded && (include == false)) {
+                if (m_onlyIfIncluded && (include == false))
+                {
                     SAXException exception = new SAXException(REJECT_NOT_INCLUDED);
                     throw exception;
                 }
 
-                if (className.length() == 0) {
+                if (className.length() == 0)
+                {
                     String template = "Missing class name for rule \"{0}\" in rule set \"{1}\".";
                     Object[] args = {ruleName, m_ruleSet.getName()};
                     String msg = MessageFormat.format(template, args);
-                    PMDException pmdException = new PMDException(msg);
-                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException.getReason());
-                    pmdException.fillInStackTrace();
-                    throw saxException;
+                    MessageEvent.notifyDisplayMessage(this, msg, null);
                 }
 
-                try {
+                try
+                {
                     Class ruleClass;
 
                     ruleClass = Class.forName(className);
                     m_rule = (Rule) ruleClass.newInstance();
-                } catch (ClassNotFoundException classNotFoundException) {
+                }
+                catch (ClassNotFoundException classNotFoundException)
+                {
                     String template = "Cannot find class \"{0}\" on the classpath.";
                     Object[] args = {className};
                     String msg = MessageFormat.format(template, args);
-                    PMDException pmdException = new PMDException(msg, classNotFoundException);
-                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
-                    pmdException.fillInStackTrace();
-                    throw saxException;
-                } catch (IllegalAccessException exception) {
+                    MessageEvent.notifyDisplayMessage(this, msg, null);
+                }
+                catch (IllegalAccessException exception)
+                {
                     String template = "Illegal access to class \"{0}\" for rule \"{1}\" in rule set \"{2}\".";
                     Object[] args = {className, ruleName, m_ruleSet.getName()};
                     String msg = MessageFormat.format(template, args);
-                    PMDException pmdException = new PMDException(msg, exception);
-                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
-                    pmdException.fillInStackTrace();
-                    throw saxException;
-                } catch (InstantiationException exception) {
+                    MessageEvent.notifyDisplayMessage(this, msg, null);
+                }
+                catch (InstantiationException exception)
+                {
                     String template = "Cannot instantiate class \"{0}\" for rule \"{1}\" in rule set \"{2}\".";
                     Object[] args = {className, ruleName, m_ruleSet.getName()};
                     String msg = MessageFormat.format(template, args);
-                    PMDException pmdException = new PMDException(msg, exception);
-                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
-                    pmdException.fillInStackTrace();
-                    throw saxException;
+                    MessageEvent.notifyDisplayMessage(this, msg, null);
                 }
 
-                m_rule.setName(ruleName);
-                m_rule.setMessage(message);
-                m_rule.setInclude(include);
-                m_ruleSet.addRule(m_rule);
-            } else if (qualifiedName.equalsIgnoreCase("property")) {
+                if (m_rule != null)
+                {
+                    m_rule.setName(ruleName);
+                    m_rule.setMessage(message);
+                    m_rule.setInclude(include);
+                    m_ruleSet.addRule(m_rule);
+                }
+            }
+            else if (localName.equalsIgnoreCase("property"))
+            {
                 String name = attributes.getValue("name");
                 String value = attributes.getValue("value");
                 String type = attributes.getValue("type");
@@ -237,9 +273,13 @@ public class RuleSetReader implements Constants {
                 value = (value == null) ? EMPTY_STRING : value;
                 type = (type == null) ? EMPTY_STRING : type;
 
-                if (name.length() > 0) {
-                    m_rule.getProperties().setValue(name, value);
-                    m_rule.getProperties().setValueType(name, type);
+                if (name.length() > 0)
+                {
+                    if (m_rule != null)
+                    {
+                        m_rule.getProperties().setValue(name, value);
+                        m_rule.getProperties().setValueType(name, type);
+                    }
                 }
             }
         }
@@ -253,7 +293,8 @@ public class RuleSetReader implements Constants {
          *
          * @throws PMDException
          */
-        public void characters(char[] chars, int beginIndex, int length) {
+        public void characters(char[] chars, int beginIndex, int length)
+        {
             m_buffer.append(chars, beginIndex, length);
         }
 
@@ -266,50 +307,94 @@ public class RuleSetReader implements Constants {
          *
          * @throws SAXException
          */
-        public void endElement(String namespace, String localName, String qualifiedName) throws SAXException {
-            if (qualifiedName.equalsIgnoreCase("description")) {
-                if (m_rule == null) {
-                    m_ruleSet.setDescription(trim(m_buffer));
-                } else {
-                    m_rule.setDescription(trim(m_buffer));
+        public void endElement(String namespace, String localName, String qualifiedName)
+        throws SAXException
+        {
+            if (localName.equalsIgnoreCase("description"))
+            {
+                if (m_doingRule)
+                {
+                    if (m_rule != null)
+                    {
+                        m_rule.setDescription(trim(m_buffer));
+                    }
                 }
-            } else if (qualifiedName.equalsIgnoreCase("message")) {
-                m_rule.setMessage(trim(m_buffer));
-            } else if (qualifiedName.equalsIgnoreCase("example")) {
-                m_rule.setExample(trimExample(m_buffer));
-            } else if (qualifiedName.equals("priority")) {
+                else if (m_doingRuleSet)
+                {
+                    m_ruleSet.setDescription(trim(m_buffer));
+                }
+            }
+            else if (localName.equalsIgnoreCase("message"))
+            {
+                if (m_rule != null)
+                {
+                    m_rule.setMessage(trim(m_buffer));
+                }
+            }
+            else if (localName.equalsIgnoreCase("example"))
+            {
+                if (m_rule != null)
+                {
+                    m_rule.setExample(trimExample(m_buffer));
+                }
+            }
+            else if (localName.equals("priority"))
+            {
                 int priority;
 
-                try {
+                try
+                {
                     priority = Integer.parseInt(trim(m_buffer));
-                } catch (NumberFormatException exception) {
+                }
+                catch (NumberFormatException exception)
+                {
                     priority = Rule.LOWEST_PRIORITY;
                 }
 
-                m_rule.setPriority(priority);
-            } else if (qualifiedName.equalsIgnoreCase("rule")) {
+                if (m_rule != null)
+                {
+                    m_rule.setPriority(priority);
+                }
+            }
+            else if (localName.equalsIgnoreCase("ruleset"))
+            {
+                m_doingRuleSet = false;
+            }
+            else if (localName.equalsIgnoreCase("rule"))
+            {
                 m_rule = null;
+                m_doingRule = false;
             }
         }
 
         /**
          ***************************************************************************
          */
-        private String trim(StringBuffer buffer) {
-            if (buffer.length() > 0) {
-                for (int n = buffer.length() - 1; n >= 0; n--) {
-                    if (buffer.charAt(n) == '\n') {
+        private String trim(StringBuffer buffer)
+        {
+            if (buffer.length() > 0)
+            {
+                for (int n = buffer.length() - 1; n >= 0; n--)
+                {
+                    if (buffer.charAt(n) == '\n')
+                    {
                         buffer.setCharAt(n, ' ');
                     }
 
                     char theChar = buffer.charAt(n);
 
-                    if (theChar == ' ') {
-                        if (n == buffer.length() - 1) {
+                    if (theChar == ' ')
+                    {
+                        if (n == buffer.length() - 1)
+                        {
                             buffer.deleteCharAt(n);
-                        } else if (buffer.charAt(n + 1) == ' ') {
+                        }
+                        else if (buffer.charAt(n + 1) == ' ')
+                        {
                             buffer.deleteCharAt(n);
-                        } else if (n == 0) {
+                        }
+                        else if (n == 0)
+                        {
                             buffer.deleteCharAt(n);
                         }
                     }
@@ -322,13 +407,17 @@ public class RuleSetReader implements Constants {
         /**
          ***************************************************************************
          */
-        private String trimExample(StringBuffer buffer) {
-            while ((buffer.length() > 0) && ((buffer.charAt(0) == '\n') || (buffer.charAt(0) == ' '))) {
+        private String trimExample(StringBuffer buffer)
+        {
+            while ((buffer.length() > 0) && ((buffer.charAt(0) == '\n') || (buffer.charAt(0) == ' ')))
+            {
                 buffer.deleteCharAt(0);
             }
 
-            for (int n = buffer.length() - 1; n >= 0; n--) {
-                if ((buffer.charAt(n) != '\n') && (buffer.charAt(n) != ' ')) {
+            for (int n = buffer.length() - 1; n >= 0; n--)
+            {
+                if ((buffer.charAt(n) != '\n') && (buffer.charAt(n) != ' '))
+                {
                     buffer.setLength(n + 1);
                     break;
                 }

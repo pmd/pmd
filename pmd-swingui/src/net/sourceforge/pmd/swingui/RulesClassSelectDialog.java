@@ -1,7 +1,10 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDDirectory;
-import net.sourceforge.pmd.PMDException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -10,11 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
+
+import net.sourceforge.pmd.PMDException;
 
 /**
  *

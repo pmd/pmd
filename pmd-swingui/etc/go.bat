@@ -1,3 +1,3 @@
 @echo off
-set MAIN=net.sourceforge.pmd.PMD
-java %MAIN% -g
+set MAIN=net.sourceforge.pmd.swingui.PMDViewer
+java %MAIN%

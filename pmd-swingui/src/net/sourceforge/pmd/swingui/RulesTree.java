@@ -46,7 +46,7 @@ import java.util.EventObject;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesTree extends JTree implements Constants {
+class RulesTree extends JTree implements IConstants {
 
     private Color m_background;
     private boolean m_disablePopupMenu;

@@ -32,7 +32,7 @@ public class RuleSetWriter
     {
         m_outputStream = new PrintStream(outputStream);
 
-        m_line.append("<?xml version=\"1.0\" ?>");
+        m_line.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
         outputLine();
     }
 

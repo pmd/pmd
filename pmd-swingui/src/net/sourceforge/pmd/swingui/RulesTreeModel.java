@@ -147,7 +147,7 @@ class RulesTreeModel extends DefaultTreeModel {
 
         // The event is processed.  The requested rule set is assembled by another class
         // that calls notifyReturnedAllRuleSets.  The list of rule sets is stored in the
-        // inner class PMDDirectoryReturnedEventHandler.  Then processing will then continue here.
+        // inner class PMDDirectoryReturnedEventHandler.  Then processing will continue here.
         //
 
         List ruleSetList = m_pmdDirectoryReturnedEventHandler.getRuleSetList();

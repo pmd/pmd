@@ -15,7 +15,7 @@ import java.util.Enumeration;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-public class RulesTreeNode extends DefaultMutableTreeNode implements Constants {
+public class RulesTreeNode extends DefaultMutableTreeNode implements IConstants {
     private RuleSet m_ruleSet;
     private Rule m_rule;
     private String m_className;

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.PMDException;
+
 /**
  * Reads and writes a list of included rule sets.  Used by the PMD Viewer to select the
  * rule sets to be used during analysis.  The PMD Viewer provides the editing capability

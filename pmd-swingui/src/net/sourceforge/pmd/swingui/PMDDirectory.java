@@ -1,12 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEventListener;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
-import net.sourceforge.pmd.swingui.event.RuleSetEvent;
-import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,6 +11,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEventListener;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
 
 
 /**
@@ -278,6 +283,9 @@ public class PMDDirectory {
         } catch (RuleSetNotFoundException exception) {
             // This should not happen because the registered rule sets are resources in pmd.jar.
             System.out.println(exception.getMessage());
+        }
+        catch (Exception exception)
+        {
         }
 
         return ruleSetList;

@@ -28,7 +28,7 @@ import java.text.MessageFormat;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulePropertyEditingPanel extends JPanel implements Constants {
+class RulePropertyEditingPanel extends JPanel implements IConstants {
 
     private JLabel m_nameLabel;
     private JTextField m_name;

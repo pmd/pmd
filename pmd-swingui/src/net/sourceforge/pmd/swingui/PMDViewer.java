@@ -1,18 +1,5 @@
 package net.sourceforge.pmd.swingui;
-
-import net.sourceforge.pmd.PMDDirectory;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
-import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+//J-
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -21,13 +8,27 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
+import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
+
 /**
  *
  * @author Donald A. Leckie
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-public class PMDViewer extends JFrame {
+public class PMDViewer extends JFrame
+{
 
     private int m_disabledCounter;
     private boolean m_firstLayout = true;
@@ -39,7 +40,8 @@ public class PMDViewer extends JFrame {
      *******************************************************************************
      *
      */
-    private PMDViewer() {
+    private PMDViewer()
+    {
         super("PMD Java Source Code Analyzer");
 
         Dimension windowSize;
@@ -49,11 +51,13 @@ public class PMDViewer extends JFrame {
         windowSize = ComponentFactory.adjustWindowSize(1200, 1000);
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        if (windowSize.width >= screenSize.width) {
+        if (windowSize.width >= screenSize.width)
+        {
             windowSize.width = screenSize.width - 10;
         }
 
-        if (windowSize.height >= screenSize.height) {
+        if (windowSize.height >= screenSize.height)
+        {
             windowSize.height = screenSize.height - 20;
         }
 
@@ -65,9 +69,12 @@ public class PMDViewer extends JFrame {
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        try {
+        try
+        {
             PMDDirectory.open(Preferences.getPreferences().getCurrentPathToPMD());
-        } catch (PMDException pmdException) {
+        }
+        catch (PMDException pmdException)
+        {
             String message = pmdException.getMessage();
             Exception exception = pmdException.getReason();
             MessageDialog.show(this, message, exception);
@@ -87,10 +94,12 @@ public class PMDViewer extends JFrame {
      *********************************************************************************
      *
      */
-    public void setVisible(boolean visible) {
+    public void setVisible(boolean visible)
+    {
         super.setVisible(visible);
 
-        if (visible && m_firstLayout) {
+        if (visible && m_firstLayout)
+        {
             m_tabbedPane.adjustSplitPaneDividerLocation();
             m_firstLayout = false;
         }
@@ -101,39 +110,9 @@ public class PMDViewer extends JFrame {
      *
      * @return
      */
-    public static final PMDViewer getViewer() {
+    public static final PMDViewer getViewer()
+    {
         return m_pmdViewer;
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    public static final void run() {
-        try {
-            LoadRootDirectories loadRootDirectories = new LoadRootDirectories();
-            loadRootDirectories.start();
-
-            // Setup the User Interface based on this computer's operating system.
-            // This must be done before calling Java and Swing classes that call the GUI.
-            if (System.getProperty("os.name").startsWith("Win")) {
-                UIManager.setLookAndFeel("net.sourceforge.pmd.swingui.PMDLookAndFeel");
-            } else {
-                UIManager.setLookAndFeel("net.sourceforge.pmd.swingui.MotifPMDLookAndFeel");
-            }
-
-
-            PMDViewer pmdViewer = new PMDViewer();
-            pmdViewer.setVisible(true);
-            SetupFilesEvent.notifySetFileList(pmdViewer, loadRootDirectories.getDirectories());
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        } catch (Error error) {
-            error.printStackTrace();
-        }
-
-        return;
     }
 
     /**
@@ -141,11 +120,14 @@ public class PMDViewer extends JFrame {
      *
      * @param enable
      */
-    protected void setEnableViewer(boolean enable) {
-        if (enable) {
+    protected void setEnableViewer(boolean enable)
+    {
+        if (enable)
+        {
             m_disabledCounter--;
 
-            if (m_disabledCounter == 0) {
+            if (m_disabledCounter == 0)
+            {
                 Component glassPane = getGlassPane();
                 glassPane.setVisible(false);
                 glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -154,12 +136,16 @@ public class PMDViewer extends JFrame {
                 JMenuBar menuBar = getJMenuBar();
                 int menuCount = menuBar.getMenuCount();
 
-                for (int n = 0; n < menuCount; n++) {
+                for (int n = 0; n < menuCount; n++)
+                {
                     menuBar.getMenu(n).setEnabled(true);
                 }
             }
-        } else {
-            if (m_disabledCounter == 0) {
+        }
+        else
+        {
+            if (m_disabledCounter == 0)
+            {
                 Component glassPane = getGlassPane();
                 glassPane.setVisible(true);
                 glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -168,7 +154,8 @@ public class PMDViewer extends JFrame {
                 JMenuBar menuBar = getJMenuBar();
                 int menuCount = menuBar.getMenuCount();
 
-                for (int n = 0; n < menuCount; n++) {
+                for (int n = 0; n < menuCount; n++)
+                {
                     menuBar.getMenu(n).setEnabled(false);
                 }
             }
@@ -182,8 +169,38 @@ public class PMDViewer extends JFrame {
      *
      * @param args
      */
-    public static void main(String[] args) {
-        run();
+    public static void main(String[] args)
+    {
+        try
+        {
+            LoadRootDirectories loadRootDirectories = new LoadRootDirectories();
+            loadRootDirectories.start();
+
+            // Setup the User Interface based on this computer's operating system.
+            // This must be done before calling Java and Swing classes that call the GUI.
+            if (System.getProperty("os.name").startsWith("Win"))
+            {
+                UIManager.setLookAndFeel("net.sourceforge.pmd.swingui.PMDLookAndFeel");
+            }
+            else
+            {
+                UIManager.setLookAndFeel("net.sourceforge.pmd.swingui.MotifPMDLookAndFeel");
+            }
+
+            Class.forName("net.sourceforge.pmd.swingui.MessageDialog");
+            PMDViewer pmdViewer = new PMDViewer();
+            pmdViewer.setVisible(true);
+            SetupFilesEvent.notifySetFileList(pmdViewer, loadRootDirectories.getDirectories());
+
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
+        catch (Error error)
+        {
+            error.printStackTrace();
+        }
     }
 
     /**
@@ -191,7 +208,8 @@ public class PMDViewer extends JFrame {
      *********************************************************************************
      *********************************************************************************
      */
-    private class GlassPaneMouseListener extends MouseAdapter {
+    private class GlassPaneMouseListener extends MouseAdapter
+    {
 
         /**
          *****************************************************************************
@@ -199,7 +217,8 @@ public class PMDViewer extends JFrame {
          * Invoked when the mouse button has been clicked (pressed
          * and released) on a component.
          */
-        public void mouseClicked(MouseEvent event) {
+        public void mouseClicked(MouseEvent event)
+        {
             event.consume();
         }
 
@@ -208,7 +227,8 @@ public class PMDViewer extends JFrame {
          *
          * Invoked when a mouse button has been pressed on a component.
          */
-        public void mousePressed(MouseEvent event) {
+        public void mousePressed(MouseEvent event)
+        {
             event.consume();
         }
 
@@ -217,7 +237,8 @@ public class PMDViewer extends JFrame {
          *
          * Invoked when a mouse button has been released on a component.
          */
-        public void mouseReleased(MouseEvent event) {
+        public void mouseReleased(MouseEvent event)
+        {
             event.consume();
         }
     }
@@ -227,14 +248,16 @@ public class PMDViewer extends JFrame {
      *********************************************************************************
      *********************************************************************************
      */
-    private class SetupFilesEventHandler implements SetupFilesEventListener {
+    private class SetupFilesEventHandler implements SetupFilesEventListener
+    {
 
         /**
          ****************************************************************************
          *
          * @param event
          */
-        public void startSetup(SetupFilesEvent event) {
+        public void startSetup(SetupFilesEvent event)
+        {
             PMDViewer.this.setEnableViewer(false);
         }
 
@@ -243,7 +266,8 @@ public class PMDViewer extends JFrame {
          *
          * @param event
          */
-        public void stopSetup(SetupFilesEvent event) {
+        public void stopSetup(SetupFilesEvent event)
+        {
             PMDViewer.this.setEnableViewer(true);
         }
 
@@ -252,7 +276,8 @@ public class PMDViewer extends JFrame {
          *
          * @param event
          */
-        public void setFileList(SetupFilesEvent event) {
+        public void setFileList(SetupFilesEvent event)
+        {
         }
     }
 
@@ -261,7 +286,8 @@ public class PMDViewer extends JFrame {
      *********************************************************************************
      *********************************************************************************
      */
-    private class TabbedPane extends JTabbedPane implements ChangeListener {
+    private class TabbedPane extends JTabbedPane implements ChangeListener
+    {
         private AnalysisViewer m_analysisViewer;
         private SearchViewer m_searchViewer;
         private RulesEditor m_rulesEditor;
@@ -272,10 +298,12 @@ public class PMDViewer extends JFrame {
          *****************************************************************************
          *
          */
-        private TabbedPane() {
+        private TabbedPane()
+        {
             super();
 
-            try {
+            try
+            {
                 m_analysisViewer = new AnalysisViewer();
                 m_searchViewer = new SearchViewer();
                 m_rulesEditor = new RulesEditor();
@@ -287,7 +315,9 @@ public class PMDViewer extends JFrame {
                 addTab("Rules Editor", m_rulesEditor);
                 addTab("Preferences Editor", m_preferencesEditor);
                 addChangeListener(this);
-            } catch (PMDException pmdException) {
+            }
+            catch (PMDException pmdException)
+            {
                 String message = pmdException.getMessage();
                 Exception exception = pmdException.getReason();
                 MessageDialog.show(m_pmdViewer, message, exception);
@@ -298,7 +328,8 @@ public class PMDViewer extends JFrame {
          *****************************************************************************
          *
          */
-        private void adjustSplitPaneDividerLocation() {
+        private void adjustSplitPaneDividerLocation()
+        {
             m_analysisViewer.adjustSplitPaneDividerLocation();
             m_searchViewer.adjustSplitPaneDividerLocation();
             m_rulesEditor.adjustSplitPaneDividerLocation();
@@ -310,22 +341,31 @@ public class PMDViewer extends JFrame {
          *
          * @param event
          */
-        public void stateChanged(ChangeEvent event) {
-            if (m_currentTab == m_rulesEditor) {
+        public void stateChanged(ChangeEvent event)
+        {
+            if (m_currentTab == m_rulesEditor)
+            {
                 m_rulesEditor.saveData();
             }
 
             m_currentTab = getSelectedComponent();
 
-            if (m_currentTab == m_analysisViewer) {
+            if (m_currentTab == m_analysisViewer)
+            {
                 m_analysisViewer.setMenuBar();
                 m_analysisViewer.analyze();
-            } else if (m_currentTab == m_searchViewer) {
+            }
+            else if (m_currentTab == m_searchViewer)
+            {
                 m_searchViewer.setMenuBar();
                 m_searchViewer.analyze();
-            } else if (m_currentTab == m_rulesEditor) {
+            }
+            else if (m_currentTab == m_rulesEditor)
+            {
                 m_rulesEditor.setMenuBar();
-            } else if (m_currentTab == m_preferencesEditor) {
+            }
+            else if (m_currentTab == m_preferencesEditor)
+            {
                 m_preferencesEditor.setMenuBar();
             }
         }
@@ -338,14 +378,16 @@ public class PMDViewer extends JFrame {
  *********************************************************************************
  *********************************************************************************
  */
-class LoadRootDirectories extends Thread {
+class LoadRootDirectories extends Thread
+{
     private File[] m_fileSystemRoots;
 
     /**
      ************************************************************************
      *
      */
-    protected LoadRootDirectories() {
+    protected LoadRootDirectories()
+    {
         super("Load Root Directories");
     }
 
@@ -353,7 +395,8 @@ class LoadRootDirectories extends Thread {
      ***************************************************************************
      *
      */
-    public void run() {
+    public void run()
+    {
         setup();
         process();
         cleanup();
@@ -363,14 +406,16 @@ class LoadRootDirectories extends Thread {
      ************************************************************************
      *
      */
-    protected void setup() {
+    protected void setup()
+    {
     }
 
     /**
      ************************************************************************
      *
      */
-    protected void process() {
+    protected void process()
+    {
         m_fileSystemRoots = File.listRoots();
     }
 
@@ -378,7 +423,8 @@ class LoadRootDirectories extends Thread {
      ************************************************************************
      *
      */
-    protected void cleanup() {
+    protected void cleanup()
+    {
     }
 
     /**
@@ -386,7 +432,8 @@ class LoadRootDirectories extends Thread {
      *
      * @return
      */
-    protected File[] getDirectories() {
+    protected File[] getDirectories()
+    {
         return m_fileSystemRoots;
     }
 }
