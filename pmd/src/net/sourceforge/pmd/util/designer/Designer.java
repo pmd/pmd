@@ -136,7 +136,7 @@ public class Designer {
             }
         } catch (NoSuchMethodException nsme) {
             // Ok, means we're running < JDK 1.4
-        }
+        } 
 
         JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, tabbed);
 

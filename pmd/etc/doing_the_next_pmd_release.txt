@@ -1,4 +1,6 @@
-update run.bat, designer.*, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-2.0.jar
+UPDATE DOCS TO REFLECT RUN.BAT -> PMD.BAT
+
+update pmd.*, designer.*, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-2.0.jar
 update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-2.0
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file, change unit tests to reflect new location

@@ -7,7 +7,8 @@ Fixed bug 1041739 - EmptyStatementNotInLoop no longer reports false positives fo
 Fixed bug 1039963 - CPD no longer fails to parse C++ files with multi-line macros.
 Fixed bug 1053663 - SuspiciousConstantFieldName no longer reports false positives for interface members.
 Fixed bug 1055346 - ImmutableFieldRule no longer reports false positive on preinc/predecrement expressions.
-Fixed bug 1055930 - CouplingBetweenObjectsRule no longer throws a NPE on interfaces 
+Fixed bug 1055930 - CouplingBetweenObjectsRule no longer throws a NPE on interfaces
+Implemented RFE 1058033 - Renamed run.[sh|bat] to pmd.[sh|bat].
 YAHTMLRenderer no longer has dependence on Ant packages.
 Modified the AST to correctly include PostfixExpression nodes.  Previously a statement like "x++;" was embedded in the parent StatementExpression node.
 

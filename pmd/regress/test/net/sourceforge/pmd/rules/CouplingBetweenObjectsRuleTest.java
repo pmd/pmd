@@ -6,10 +6,8 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.rules.CouplingBetweenObjectsRule;
-import test.net.sourceforge.pmd.testframework.RuleTst;
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class CouplingBetweenObjectsRuleTest extends SimpleAggregatorTst {
 

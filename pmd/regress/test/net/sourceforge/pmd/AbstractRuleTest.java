@@ -24,12 +24,12 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.Report;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 public class AbstractRuleTest extends TestCase {
 

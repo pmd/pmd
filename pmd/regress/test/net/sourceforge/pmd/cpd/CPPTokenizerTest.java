@@ -6,8 +6,6 @@ import net.sourceforge.pmd.cpd.CPPTokenizer;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
 
-import java.io.StringReader;
-
 public class CPPTokenizerTest extends TestCase{
 
     public void testMultiLineMacros() throws Throwable {

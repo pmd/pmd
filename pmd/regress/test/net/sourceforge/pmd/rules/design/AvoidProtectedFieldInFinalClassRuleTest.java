@@ -1,11 +1,10 @@
 package test.net.sourceforge.pmd.rules.design;
 
-import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
-import net.sourceforge.pmd.rules.design.ConfusingTernary;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class AvoidProtectedFieldInFinalClassRuleTest extends SimpleAggregatorTst {
 

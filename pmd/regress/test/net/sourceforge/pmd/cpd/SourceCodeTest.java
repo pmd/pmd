@@ -9,8 +9,6 @@ import net.sourceforge.pmd.cpd.JavaTokenizer;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
 
-import java.io.StringReader;
-
 public class SourceCodeTest extends TestCase {
 
     public void testSimple() throws Throwable {

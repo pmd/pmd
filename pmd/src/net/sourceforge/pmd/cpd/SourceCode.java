@@ -5,11 +5,10 @@ package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.PMD;
 
+import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
-import java.io.File;
 import java.io.StringReader;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
