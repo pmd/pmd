@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src"/>
+    <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+    <classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.core.runtime_2.0.0/runtime.jar"/>
+    <classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.pde.core_2.0.0/pdecore.jar"/>
+    <classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.swt.win32_2.0.0/ws/win32/swt.jar"/>
+    <classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui_2.0.0/workbench.jar"/>
+    <classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.win32_2.0.0/workbenchwin32.jar"/>
+    <classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.core.resources_2.0.0/resources.jar"/>
+    <classpathentry kind="lib" path="C:/eclipse/workspace/pmd-eclipse/lib/pmd-0.8.jar"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>
