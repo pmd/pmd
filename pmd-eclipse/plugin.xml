@@ -14,8 +14,6 @@
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.apache.xerces"/>
    </requires>
@@ -58,9 +56,39 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="PMD"
+            class="net.sourceforge.pmd.eclipse.preferences.GeneralPreferencesPage"
+            id="net.sourceforge.pmd.eclipse.preferences.GeneralPreferencesPage">
+      </page>
+      <page
+            name="RuleSet Preferences"
+            category="net.sourceforge.pmd.eclipse.preferences.GeneralPreferencesPage"
             class="net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage"
             id="net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.java"
+            id="net.sourceforge.pmd.eclipse.PMDCheckFileContribution">
+         <menu
+               label="&amp;PMD"
+               path="additions"
+               id="net.sourceforge.pmd.eclipse.PMDCheckFileMenu">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="PMD Check File"
+               state="false"
+               class="net.sourceforge.pmd.eclipse.actions.PMDCheckFileAction"
+               menubarPath="net.sourceforge.pmd.eclipse.PMDCheckFileMenu/group1"
+               enablesFor="*"
+               id="net.sourceforge.pmd.eclipse.PMDCheckFileActionItem">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>
