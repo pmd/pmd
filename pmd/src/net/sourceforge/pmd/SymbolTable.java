@@ -10,7 +10,7 @@ import java.util.*;
 public class SymbolTable {
 
     private SymbolTable parent;
-    private Map symbols = new HashMap();
+    private Set symbols = new HashSet();
 
     public SymbolTable() {}
 
@@ -23,42 +23,25 @@ public class SymbolTable {
     }
 
     public void add(Symbol symbol) {
-        if (symbols.containsKey(symbol)) {
+        if (symbols.contains(symbol)) {
             throw new RuntimeException(symbol + " is already in the symbol table");
         }
-        symbols.put(symbol, Boolean.FALSE);
+        symbols.add(symbol);
     }
 
     public void recordPossibleUsageOf(Symbol symbol) {
-        if (!symbols.containsKey(symbol) && parent != null) {
+        if (!symbols.contains(symbol) && parent != null) {
             parent.recordPossibleUsageOf(symbol);
             return;
         }
-        if (!symbols.containsKey(symbol) ) {
+        if (!symbols.contains(symbol) ) {
             return;
         }
-        symbols.put(symbol, Boolean.TRUE);
+        symbols.remove(symbol);
     }
 
     public Iterator getUnusedSymbols() {
-        List list = new ArrayList();
-        for (Iterator i = symbols.keySet().iterator(); i.hasNext();) {
-            Symbol symbol = (Symbol)i.next();
-            if (((Boolean)symbols.get(symbol)).equals(Boolean.FALSE)) {
-                list.add(symbol);
-            }
-        }
-        return list.iterator();
-    }
-
-    public String toString() {
-        StringBuffer buf = new StringBuffer();
-        for (Iterator i = symbols.keySet().iterator(); i.hasNext();) {
-            Symbol symbol = (Symbol)i.next();
-            int usageCount = ((Integer)(symbols.get(symbol))).intValue();
-            buf.append(symbol + "," + usageCount +":");
-        }
-        return buf.toString();
+        return symbols.iterator();
     }
 
 }
