@@ -1,3 +1,6 @@
+October 4 2002 - 0.9:
+Updated to use pmd-1.0rc3
+
 Augst 16 2002 - 0.8:
 Fixed GUI lockup problem
 Added example text to option pane
