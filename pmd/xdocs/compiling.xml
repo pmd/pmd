@@ -53,8 +53,8 @@ Now you'll need to either check out the source code or download the latest sourc
 <p>
     Notes:
     <ul>
-        <li>The build.xml in the top-level directory is for Maven.  It's been renamed to maven-build.xml
- in CVS to reduce confusion - so it won't be there when 1.11 comes is released.</li>
+        <li>The build.xml in the top-level directory is for Maven.  Renaming it makes Maven
+            do odd things; still investigating that.</li>
         <li>The rules that have already been written are specified in the rulesets/ directory in the
             source distribution.  They're also in the jar file that's included with both the
             source and binary distributions.</li>
