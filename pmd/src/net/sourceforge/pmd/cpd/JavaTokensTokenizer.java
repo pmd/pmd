@@ -13,7 +13,6 @@ import java.util.List;
 
 public class JavaTokensTokenizer implements Tokenizer {
 
-    private boolean discarding;
     protected String EOL = System.getProperty("line.separator", "\n");
 
     public void tokenize(TokenList tokens, Reader input) throws IOException {
@@ -34,11 +33,12 @@ public class JavaTokensTokenizer implements Tokenizer {
         I'm doing a sort of State pattern thing here where
         this goes into "discarding" mode when it hits an import or package
         keyword and goes back into "accumulate mode when it hits a semicolon.
-        This could probably be turned into some objects and such.
+        This could probably be turned into some objects.
         */
         JavaCharStream javaStream = new JavaCharStream(new StringReader(sb.toString()));
         JavaParserTokenManager tokenMgr = new JavaParserTokenManager(javaStream);
         Token currToken = tokenMgr.getNextToken();
+        boolean discarding = false;
         while (currToken.image != "") {
             if (currToken.image.equals("import") || currToken.image.equals("package")) {
                 discarding = true;
@@ -58,6 +58,7 @@ public class JavaTokensTokenizer implements Tokenizer {
             if (!currToken.image.equals(";")) {
                 tokens.add(new TokenEntry(currToken.image, tokens.size(), tokens.getID(), currToken.beginLine));
             }
+
             currToken = tokenMgr.getNextToken();
         }
     }
