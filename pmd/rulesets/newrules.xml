@@ -60,6 +60,30 @@ These are new rules for the next release
       </example>
     </rule>
 
+    <rule name="JUnitAssertionsShouldIncludeMessageRule"
+          message="JUnit assertions should include a message"
+          class="net.sourceforge.pmd.rules.JUnitAssertionsShouldIncludeMessageRule">
+      <description>
+      JUnit assertions should include a message - i.e., use the three argument version of
+          assertEquals(), not the two argument version.
+      </description>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+  public class Foo extends TestCase {
+    public void testSomething() {
+        assertEquals("foo", "bar");
+        // not good!  use the form:
+        // assertEquals("Foo does not equals bar", "foo", "bar");
+        // instead
+    }
+  }
+  ]]>
+      </example>
+    </rule>
+
+
     <rule name="SymbolTableTestRule"
           message="test"
           class="net.sourceforge.pmd.rules.SymbolTableTestRule">
