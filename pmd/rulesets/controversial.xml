@@ -155,9 +155,7 @@ return 3;
       message="Each class should declare at least one constructor"
       class="net.sourceforge.pmd.rules.AtLeastOneConstructorRule">
   <description>
-  Each class should declare at least one constructor.  Note that this rule is the
-      opposite of UnnecessaryConstructorRule, so running them at the same time will
-      result on a rule violation on every class.
+  Each class should declare at least one constructor.
   </description>
     <priority>3</priority>
 
