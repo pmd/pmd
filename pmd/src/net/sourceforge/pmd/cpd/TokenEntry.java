@@ -41,7 +41,7 @@ public class TokenEntry implements Serializable {
     }
 
     public String toString() {
-        return "[" + tokenSrcID + "," + index +"," + image + "]";
+        return "[" + tokenSrcID + "," + index +"," + image + "," + beginLine +"]";
     }
 
 }

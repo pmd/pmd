@@ -24,7 +24,7 @@ public class GST {
     }
 
     public Results crunch(CPDListener listener) {
-        Results results = new Results();
+        Results results = new ResultsImpl();
         Occurrences occ =new Occurrences(tokenSets, listener);
 
         while (!occ.isEmpty()) {

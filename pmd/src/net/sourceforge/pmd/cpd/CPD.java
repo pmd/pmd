@@ -73,7 +73,7 @@ public class CPD {
         if (!listener.update("Starting to process " + tokenSets.size() + " files")) return;
         GST gst = new GST(tokenSets, minimumTileSize);
         results = gst.crunch(listener);
-        if (results == null) results = new Results();  //just ot make sure we don't pass back a null Results
+        if (results == null) results = new ResultsImpl();  //just ot make sure we don't pass back a null Results
     }
 
     public Results getResults() {
@@ -91,8 +91,10 @@ public class CPD {
             TokenList tl = tokenSets.getTokenList(firstToken);
             int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets);
             return tl.getSlice(firstToken.getBeginLine()-1, endLine-1);
-            } catch (Exception ex) {ex.printStackTrace(); }
-            return "";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "";
     }
 
     public static void main(String[] args) {
