@@ -8,38 +8,42 @@ import net.sourceforge.pmd.util.HasLines;
 import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Canvas;
 import java.util.List;
 import java.util.Iterator;
 
 public class DFAPanel extends JPanel {
 
-    public static class GraphPanel extends JPanel {
+    public static class DFACanvas extends Canvas {
+
+        private static final int NODE_RADIUS = 10;
+        private static final int NODE_DIAMETER = 2 * NODE_RADIUS;
+
         private SimpleNode node;
+
         private int x = 150;
         private int y = 50;
-        private int radius = 10;
-        private int d = 2 * radius;
-        private int height;
         private HasLines lines;
+
         public void paint(Graphics g) {
             super.paint(g);
             if (node == null) {
                 return;
             }
-            java.util.List flow = node.getDataFlowNode().getFlow();
+            List flow = node.getDataFlowNode().getFlow();
             for (int i = 0; i < flow.size(); i++) {
                 IDataFlowNode inode = (IDataFlowNode) flow.get(i);
 
                 y = computeDrawPos(inode.getIndex());
 
-                g.drawArc(x, y, d, d, 0, 360);
-                if (height < y) height = y;
+                g.drawArc(x, y, NODE_DIAMETER, NODE_DIAMETER, 0, 360);
 
                 g.drawString(lines.getLine(inode.getLine()), x + 200, y + 15);
-                g.drawString(String.valueOf(inode.getIndex()), x + radius-2, y + radius+4);
+                g.drawString(String.valueOf(inode.getIndex()), x + NODE_RADIUS-2, y + NODE_RADIUS+4);
 
                 String exp = "";
-                java.util.List access = inode.getVariableAccess();
+                List access = inode.getVariableAccess();
                 if (access != null) {
                     for (int k = 0; k < access.size(); k++) {
                         VariableAccess va = (VariableAccess) access.get(k);
@@ -65,18 +69,18 @@ public class DFAPanel extends JPanel {
                     IDataFlowNode n = (IDataFlowNode) inode.getChildren().get(j);
                     this.drawMyLine(inode.getIndex(), n.getIndex(), g);
                     String output = (j==0 ? "" : "," ) + String.valueOf(n.getIndex());
-                    g.drawString(output, x - 3 * d + (j * 20), y + radius - 2);
+                    g.drawString(output, x - 3 * NODE_DIAMETER + (j * 20), y + NODE_RADIUS - 2);
                 }
             }
         }
 
-        public void resetTo(SimpleNode node, HasLines lines) {
+        public void setMethod(SimpleNode node, HasLines lines) {
             this.lines = lines;
             this.node = node;
         }
 
         private int computeDrawPos(int index) {
-            int z = radius * 4;
+            int z = NODE_RADIUS * 4;
             return z + index * z;
         }
 
@@ -88,13 +92,13 @@ public class DFAPanel extends JPanel {
 
             if (index1 < index2) {
                 if (index2 - index1 == 1) {
-                    x += radius;
-                    g.drawLine(x, y1 + d, x, y2);
+                    x += NODE_RADIUS;
+                    g.drawLine(x, y1 + NODE_DIAMETER, x, y2);
                     g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
-                    x -= radius;
+                    x -= NODE_RADIUS;
                 } else if (index2 - index1 > 1) {
-                    y1 = y1 + radius;
-                    y2 = y2 + radius;
+                    y1 = y1 + NODE_RADIUS;
+                    y2 = y2 + NODE_RADIUS;
                     int n = ((index2 - index1 - 2) * 10) + 10;
                     g.drawLine(x, y1, x - n, y1);
                     g.drawLine(x - n, y1, x - n, y2);
@@ -104,25 +108,25 @@ public class DFAPanel extends JPanel {
 
             } else {
                 if (index1 - index2 > 1) {
-                    y1 = y1 + radius;
-                    y2 = y2 + radius;
-                    x = x + this.d;
+                    y1 = y1 + NODE_RADIUS;
+                    y2 = y2 + NODE_RADIUS;
+                    x = x + NODE_DIAMETER;
                     int n = ((index1 - index2 - 2) * 10) + 10;
                     g.drawLine(x, y1, x + n, y1);
                     g.drawLine(x + n, y1, x + n, y2);
                     g.drawLine(x + n, y2, x, y2);
                     g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
-                    x = x - this.d;
+                    x = x - NODE_DIAMETER;
                 } else if (index1 - index2 == 1) {
-                    y2 = y2 + this.d;
-                    g.drawLine(x + radius, y2, x + radius, y1);
-                    g.fillRect(x + radius - arrow, y2 - arrow, arrow * 2, arrow * 2);
+                    y2 = y2 + NODE_DIAMETER;
+                    g.drawLine(x + NODE_RADIUS, y2, x + NODE_RADIUS, y1);
+                    g.fillRect(x + NODE_RADIUS - arrow, y2 - arrow, arrow * 2, arrow * 2);
                 }
             }
         }
     }
 
-    private GraphPanel graphPanel;
+    private DFACanvas dfaCanvas;
     private DefaultListModel nodes = new DefaultListModel();
 
     public DFAPanel() {
@@ -130,13 +134,20 @@ public class DFAPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JPanel leftPanel = new JPanel();
+        nodes.addElement("FOOO");
+        nodes.addElement("FOOO");
+        nodes.addElement("FOOO");
+        nodes.addElement("FOOO");
         JList nodeList = new JList(nodes);
         nodeList.setFixedCellWidth(300);
+        nodeList.setBorder(BorderFactory.createLineBorder(Color.black));
         leftPanel.add(nodeList);
-        add(leftPanel, BorderLayout.CENTER);
+        add(leftPanel, BorderLayout.WEST);
 
-        graphPanel = new GraphPanel();
-        add(graphPanel, BorderLayout.EAST);
+        dfaCanvas = new DFACanvas();
+        JScrollPane scrollPane = new JScrollPane(dfaCanvas);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.black));
+        add(scrollPane, BorderLayout.EAST);
     }
 
     public void resetTo(List nodes, HasLines lines) {
@@ -144,12 +155,12 @@ public class DFAPanel extends JPanel {
             SimpleNode n = (SimpleNode)i.next();
             System.out.println("image = " + ((SimpleNode)n.jjtGetChild(1)).getImage());
         }
-        graphPanel.resetTo((SimpleNode)nodes.get(0), lines);
+        dfaCanvas.setMethod((SimpleNode)nodes.get(0), lines);
     }
 
     public void paint(Graphics g) {
         super.paint(g);
-        graphPanel.paint(g);
+        dfaCanvas.paint(g);
     }
 }
 
