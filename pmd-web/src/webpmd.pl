@@ -15,6 +15,8 @@ sub nopage() {
 sub default() {
  print start_html("Run PMD on your Sourceforge project");
  
+ print "<center><a href=\"http://pmd.sourceforge.net/\"><img src=\"http://sourceforge.net/sflogo.php?group_id=56262&type=5\" alt=\"Project Ultra*Log @ DARPA\" border=\"0\" /></a></center>";
+
  print h3("<center>PMD-WEB</center>");
 
  if (param("title")) {
@@ -23,15 +25,12 @@ sub default() {
   my $title = param("title");
   print b("Added ${title} to the schedule");
  } 
- print p("PMD is run hourly on these projects:");
+
+ print p("PMD is run hourly (at 10 minutes past the hour) on these projects:");
  print p(loadProjectList());
 
  print hr(); 
- print b("Stats:");
- print br(), br(); 
- my $tm = localtime;
- my $timeuntil = 60 - $tm->min; 
- print "There are ${timeuntil} minutes until the next hourly run";
+ print b("Stats:"), br(), "There are ", getTimeUntil(), " minutes until the next hourly run";
  open(FILE,"lastruntime.txt");
  my $lastruntime=<FILE>;
  print br();
@@ -54,6 +53,15 @@ sub default() {
  print p("Comments?  Questions?  Please post them <a href=\"http://sourceforge.net/forum/forum.php?forum_id=188192\">here</a>");
 }
 
+sub getTimeUntil() {
+ my $tm = localtime;
+ my $timeuntil = 70 - $tm->min;
+ if ($tm->min<=10) {
+  $timeuntil = 10 - $tm->min; 
+ }
+ return $timeuntil;
+}
+
 sub loadProjectList() {
  my $result="<table>";
  opendir(DIR, "jobs/") or return "can't open jobs directory!";
@@ -68,7 +76,7 @@ sub loadProjectList() {
    } else {
     $jobtext=$title;
    }
-   $result="${result}<tr><td>${jobtext}</td>";
+   $result="${result}<tr><td>${jobtext}</td><td>-</td><td><a href=\"http://${unixname}.sf.net/\">http://${unixname}.sf.net/</a></td>";
   }
  }
  $result = "${result}</table>";
@@ -77,7 +85,7 @@ sub loadProjectList() {
 
 sub addProject() {
  my ($title, $unixname,$moduleDirectory,$srcdir) = @_;
- my $cmd="echo \"${title}:${unixname}:${moduleDirectory}:${srcdir}\" > jobs/${moduleDirectory}.txt";
+ my $cmd="echo \"${title}:${unixname}:${moduleDirectory}:${srcdir}\" > jobs/${unixname}_${moduleDirectory}.txt";
  `${cmd}`;
 }
 
