@@ -10,8 +10,11 @@ jobsDir.each { |candidate|
   if candidate[".txt"] 
    title,unixname,moduleDir,srcDir = File.new("jobs/#{candidate}").read.split(":") 
    job = PMD::Job.new(title,unixname,moduleDir,srcDir)
+   puts "Checking out code"
    job.checkout_code
+   puts "Running PMD"
    job.run_pmd
+   puts "Cleaning up"
    job.clear
   end
  rescue

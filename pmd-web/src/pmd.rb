@@ -54,12 +54,11 @@ class Job
   end
   
   def checkout_code
-  `cvs -d#{@cvsroot} co #{@moduleDirectory}`
+  `cvs -Q -d#{@cvsroot} co #{@moduleDirectory}`
   end
   
   def run_pmd
    cmd="java -jar pmd-1.0rc2.jar #{@sourceDirectory} html rulesets/unusedcode.xml > ../htdocs/reports/#{@unixName}.html"
-   puts cmd
    `#{cmd}`
   end
   
