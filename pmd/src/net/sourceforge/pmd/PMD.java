@@ -146,6 +146,12 @@ public class PMD {
     }
 
     private static void usage() {
-        System.err.println(System.getProperty("line.separator") + "Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml" + System.getProperty("line.separator"));
+        final String EOL = System.getProperty("line.separator");
+        System.err.println(EOL +
+            "Please pass in a java source code filename or directory, a report format, " + EOL +
+            "and a ruleset filename or a comma-delimited string of ruleset filenames." + EOL +
+            "For example: " + EOL +
+            "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml," +
+            "rulesets/imports.xml" + EOL);
     }
 }
