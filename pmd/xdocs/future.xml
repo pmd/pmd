@@ -15,9 +15,11 @@
      because it'll require parsing of class files.  Lots of work here.</p>
    </subsection>
       <subsection name="Data flow analysis (DFA)">
-          <p>A good DFA layer would let us write more complicated rules - stuff like
+          <p>Raik Schroeder is working on a DFA layer so we can write some more complicated rules - stuff like
  common subexpression elimination, loop invariant code motion (and code hoisting), shrink wrapping, and partial redundancy elimination.
-  The buzzword potential alone is astounding.  This is also a lot of work.  Good thesis material, though!</p>
+              He's going to do something similar to the SymbolFacade - i.e., several visitors
+              which will add DataFlow nodes to the AST.  More on this as he makes further progress; seems
+              like things are moving forward nicely though.</p>
       </subsection>
       <subsection name="Control Flow Graph (CFG)">
           <p>Access to a CFG would let us detect some algebraic simplications.  We could also
