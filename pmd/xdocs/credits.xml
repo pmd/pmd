@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Bruno Juillet - patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Benoit Xhenseval - many bug reports (with good failure cases!), Ant task patch, XSLT patch, suggestion for improving XML report</li>
             <li>Elliotte Rusty Harold - suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>John Austin - patch to fix mispeling in Eclipse plugin message</li>
@@ -55,7 +56,6 @@
             <li>Harald Gurres - cleaned up the symbol table code with a very nice patch</li>
             <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>
-            <li>Bruno Juillet - bug report on ruleset overrides</li>
             <li>Jörn Stampehl - bug report on JUnitTestsShouldContainAsserts</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
             <li>Olaf Heimburger - reported a possible NPE in ReportTree</li>

@@ -46,6 +46,7 @@ public class PMDTask extends Task {
     private boolean failOnRuleViolation;
     private boolean targetJDK13;
     private String failuresPropertyName;
+    private String excludeMarker;
     private final Collection nestedRules = new ArrayList();
 
     public void setShortFilenames(boolean value) {
@@ -54,6 +55,10 @@ public class PMDTask extends Task {
 
     public void setTargetJDK13(boolean value) {
         this.targetJDK13 = value;
+    }
+
+    public void setExcludeMarker(String value) {
+        this.excludeMarker = value;
     }
 
     public void setFailOnError(boolean fail) {
@@ -143,6 +148,10 @@ public class PMDTask extends Task {
                 File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                 log("Processing file " + file.getAbsoluteFile().toString(), Project.MSG_VERBOSE);
                 ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
+                if (excludeMarker != null) {
+                    log("Setting exclude marker to be " + excludeMarker, Project.MSG_VERBOSE);
+                    pmd.setExcludeMarker(excludeMarker);
+                }
                 try {
                     pmd.processFile(new BufferedInputStream(new FileInputStream(file)), encoding, rules, ctx);
                 } catch (FileNotFoundException fnfe) {

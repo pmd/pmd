@@ -1,6 +1,7 @@
 ????, 2005 - 2.4:
 Fixed bug 1114625 - UnusedPrivateField no longer throws an NPE on standalone postfix expressions which are prefixed with 'this'.
 Implemented RFE 1058039 - PMD's command line interface now accepts abbreviated names for the standard rulesets; for example 'java net.sourceforge.pmd.PMD /my/source/code/ text basic,unusedcode' would run the rulesets/basic.xml and the rulesets/unusedcode.xml rulesets on the source in /my/source/code and produce a text report.
+Implemented RFE 1119851 - PMD's Ant task now supports an 'excludeMarker' attribute.
 Fixed a bug - the StatisticalRule no longer 'merges' data points when using the 'topscore' property.
 Fixed a bug - the PMD Ant task's failOnRuleViolation attribute no longer causes a BuildException in the case when no rule violations occur.
 Optimized the SystemOutPrintln rule; now it runs about an order of magnitude faster.
