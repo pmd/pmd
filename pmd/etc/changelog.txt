@@ -14,6 +14,7 @@ Applied patch 1051956 - Rulesets that reference rules using "ref" can now overri
 YAHTMLRenderer no longer has dependence on Ant packages.
 Modified the AST to correctly include PostfixExpression nodes.  Previously a statement like "x++;" was embedded in the parent StatementExpression node.
 Continued working on JDK 1.5 compatibility - added support for static import statements.
+- still TODO: generics, annotations
 
 October 19, 2004 - 2.0:
 New rules: InstantiationToGetClass, IdempotentOperationsRule, SuspiciousEqualsMethodName, SimpleDateFormatNeedsLocale, JUnitTestsShouldContainAssertsRule, SuspiciousConstantFieldName, ImmutableFieldRule, MoreThanOneLoggerRule, LoggerIsNotStaticFinalRule, UseLocaleWithCaseConversions
