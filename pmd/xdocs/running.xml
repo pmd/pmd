@@ -22,7 +22,7 @@
     <description>Found unused local variable 'fr'</description></ruleviolation>
     </file>
     </pmd>
-    !>
+    ]]>
     </source>
     <li>Notice that the output is in an XML format, so you can redirect it to a file and process it later or whatever</li>
    </ul>
