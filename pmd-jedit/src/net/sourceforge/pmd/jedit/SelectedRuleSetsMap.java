@@ -8,9 +8,7 @@ package net.sourceforge.pmd.jedit;
 import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 public class SelectedRuleSetsMap {
     private Map selections = new HashMap();
@@ -38,6 +36,17 @@ public class SelectedRuleSetsMap {
             String key = (String)i.next();
             jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_RULESETS_PREFIX + key, get(key).isSelected());
         }
+    }
+
+    public Iterator getSelectedRuleSetFileNames() {
+        List selected = new ArrayList();
+        for (Iterator i = keys(); i.hasNext();) {
+            String key = (String)i.next();
+            if (get(key).isSelected()) {
+                selected.add("rulesets/" + key + ".xml");
+            }
+        }
+        return selected.iterator();
     }
 
     private JCheckBox createCheckBox(String name) {

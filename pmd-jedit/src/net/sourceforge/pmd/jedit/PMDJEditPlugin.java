@@ -46,18 +46,25 @@ public class PMDJEditPlugin extends EBPlugin {
         PMD pmd = new PMD();
         ReportFactory rf = new ReportFactory();
         RuleContext ctx = new RuleContext();
+
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream("rulesets/unusedcode.xml"));
+        SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
+        RuleSet rules = new RuleSet();
+        for (Iterator i = selectedRuleSets.getSelectedRuleSetFileNames(); i.hasNext();) {
+            rules.addRuleSet(ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream((String)i.next())));
+        }
+
         ctx.setReport(rf.createReport("xml"));
         ctx.setSourceCodeFilename("this");
         try {
             // TODO switch to use StringReader once PMD 0.4 gets released
             pmd.processFile(new StringBufferInputStream(view.getTextArea().getText()), rules, ctx);
 
+            // TODO put this in a list box or something
             StringBuffer msg = new StringBuffer();
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                 RuleViolation rv = (RuleViolation)i.next();
-                msg.append(rv.getDescription() + " at line " + rv.getLine() + System.getProperty("line.separator"));
+                msg.append(rv.getDescription() + System.getProperty("line.separator"));
             }
             if (msg.length() == 0) {
                 msg.append("No errors found");
