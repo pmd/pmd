@@ -43,6 +43,7 @@ public class PMDTask extends Task {
     private boolean failOnError;
     private boolean failOnRuleViolation;
     private boolean targetJDK13;
+    private String failuresPropertyName;
 
     /**
      * The end of line string for this machine.
@@ -71,6 +72,10 @@ public class PMDTask extends Task {
 
     public void setRuleSetFiles(String ruleSetFiles) {
         this.ruleSetFiles = ruleSetFiles;
+    }
+
+    public void setFailuresPropertyName(String failuresPropertyName) {
+        this.failuresPropertyName = failuresPropertyName;
     }
 
     public void addFileset(FileSet set) {
@@ -169,6 +174,11 @@ public class PMDTask extends Task {
                 } catch (IOException ioe) {
                     throw new BuildException(ioe.getMessage());
                 }
+            }
+
+            if (failuresPropertyName != null && ctx.getReport().size() > 0) {
+                getProject().setProperty(failuresPropertyName, String.valueOf(ctx.getReport().size()));
+                log("Setting property " + failuresPropertyName + " to " + String.valueOf(ctx.getReport().size()), Project.MSG_VERBOSE);
             }
 
             if (printToConsole) {
