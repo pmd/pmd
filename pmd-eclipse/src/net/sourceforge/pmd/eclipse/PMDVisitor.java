@@ -1,130 +1,74 @@
 package net.sourceforge.pmd.eclipse;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.util.Iterator;
-
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage;
-import net.sourceforge.pmd.eclipse.util.Common;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * @author David Dixon-Peugh
- * @author David Craine
- *
  * This class visits all of the resources in the Eclipse
  * Workspace, and runs PMD on them if they happen to be
  * Java files.
  * 
- * Any violations get tagged onto the file as notes.
+ * Any violations get tagged onto the file as problems in the tasks list.
+
+ * @author David Dixon-Peugh
+ * @author David Craine
+ * @author Philippe Herlin
+ * @version $Revision$
+ * 
+ * $Log$
+ * Revision 1.10  2003/03/17 23:34:53  phherlin
+ * refactoring
+ *
  */
 public class PMDVisitor implements IResourceVisitor {
-	private PMD pmd = null;
-	private RuleSet ruleSet = null;
+    private IProgressMonitor monitor;
+    private boolean useTaskMarker = false;
 
-	public static final String PMD_VIOLATION =
-		"net.sourceforge.pmd.eclipse.violation";
-		
-	/**
-	 * No Argument Constructor
-	 */
-	public PMDVisitor(String[] ruleSetFiles) 
-		throws IOException
-	{
-		try {
-			pmd = new PMD();
- 			RuleSetFactory factory = new RuleSetFactory();
- 			
-			ruleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(ruleSetFiles[0]));
-			for (int i=1; i<ruleSetFiles.length; i++) {
-				RuleSet tmpRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(ruleSetFiles[i]));
-				ruleSet.addRuleSet(tmpRuleSet);
-			}
-		} catch (Throwable e) {
-			e.printStackTrace();
-			MessageDialog.openError(null, "PMD Error", "RuleSet construction problem: " + e.toString());
-			StringWriter sw = new StringWriter();
-			e.printStackTrace(new PrintWriter(sw));
-			MessageDialog.openInformation(null, "PMD Error", sw.toString());
+    /**
+     * Construct with a progress monitor
+     * @param monitor a progress indicator
+     */
+    public PMDVisitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
+    }
 
+    /**
+     * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource)
+     */
+    public boolean visit(IResource resource) {
+        boolean fVisitChildren = true;
 
-		}
-				
-	}
+        if ((monitor == null) || ((monitor != null) && (!monitor.isCanceled()))) {
+            if ((resource instanceof IFile)
+                && (((IFile) resource).getFileExtension() != null)
+                && ((IFile) resource).getFileExtension().equals("java")) {
+                if (monitor != null) monitor.subTask(((IFile) resource).getName());
+                PMDProcessor.getInstance().run((IFile) resource, useTaskMarker);
+                if (monitor != null) monitor.worked(1);
+                fVisitChildren = false;
+            }
+        } else {
+            fVisitChildren = false;
+        }
 
-	private void runPMD( IFile file ) throws CoreException
-	{
-		Reader input = 
-			new InputStreamReader( file.getContents() );
-		RuleContext context = new RuleContext();
-		context.setSourceCodeFilename( file.getName() );
-		context.setReport( new Report() );
-		if (Common.PMD_DIALOG != null) {
-			Common.PMD_DIALOG.worked(1);
-			Common.PMD_DIALOG.setMessage(file.getName());
-		}
+        return fVisitChildren;
+    }
+    /**
+     * Returns the useTaskMarker.
+     * @return boolean
+     */
+    public boolean isUseTaskMarker() {
+        return useTaskMarker;
+    }
 
-		try {
-			pmd.processFile( input, ruleSet, context);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		
+    /**
+     * Sets the useTaskMarker.
+     * @param useTaskMarker The useTaskMarker to set
+     */
+    public void setUseTaskMarker(boolean useTaskMarker) {
+        this.useTaskMarker = useTaskMarker;
+    }
 
-		Iterator iter = context.getReport().iterator();
-		
-		file.deleteMarkers(PMDPlugin.PMD_MARKER, true, 
-							IResource.DEPTH_INFINITE);
-							
-		while (iter.hasNext()) {
-			RuleViolation violation = (RuleViolation) iter.next();
-			
-			IMarker marker = file.createMarker(PMDPlugin.PMD_MARKER);
-			marker.setAttribute( IMarker.MESSAGE, 
-								 violation.getDescription() );
-			marker.setAttribute( IMarker.LINE_NUMBER,
-								 violation.getLine() );
-			marker.setAttribute(IMarker.TEXT,violation.getRule().getName());
-			
-		}
-	}
-	
-	/**
-	 * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource)
-	 */
-	public boolean visit(IResource resource) throws CoreException {
-
-		try {
-			if ((resource instanceof IFile) &&
-				(((IFile) resource).getFileExtension() != null) &&
-				((IFile) resource).getFileExtension().equals("java")) {	
-					runPMD( (IFile) resource );
-					return false;
-			} 
-			else {
-				return true;
-			}
-		} catch (CoreException e) {
-			System.err.println(e);
-			return false;
-		} 
-	}
 }
