@@ -28,6 +28,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2003/07/07 19:27:52  phherlin
+ * Making rules selectable from projects
+ *
  * Revision 1.8  2003/07/01 20:22:16  phherlin
  * Make rules selectable from projects
  *
@@ -83,7 +86,7 @@ public class PMDProcessor {
             context.setSourceCodeFilename(file.getName());
             context.setReport(new Report());
 
-            pmdEngine.processFile(input, PMDPlugin.getDefault().getRuleSetForResource(file), context);
+            pmdEngine.processFile(input, PMDPlugin.getDefault().getRuleSetForResource(file, true), context);
 
             updateMarkers(file, context, fTask, accumulator);
 
@@ -157,11 +160,8 @@ public class PMDProcessor {
         attributeNames.add(IMarker.LINE_NUMBER);
         values.add(new Integer(violation.getLine()));
 
-        attributeNames.add("description");
-        values.add(violation.getRule().getMessage());
-
-        attributeNames.add("example");
-        values.add(violation.getRule().getExample());
+        attributeNames.add(PMDPlugin.KEY_MARKERATT_RULENAME);
+        values.add(violation.getRule().getName());
 
         switch (violation.getRule().getPriority()) {
             case 1 :

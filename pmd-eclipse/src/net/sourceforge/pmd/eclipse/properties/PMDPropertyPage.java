@@ -44,6 +44,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2003/07/07 19:27:52  phherlin
+ * Making rules selectable from projects
+ *
  * Revision 1.6  2003/07/01 20:22:16  phherlin
  * Make rules selectable from projects
  *
@@ -75,23 +78,29 @@ public class PMDPropertyPage extends PropertyPage {
      */
     protected Control createContents(Composite parent) {
         log.info("PMD properties editing requested");
+        Composite composite = null;
         noDefaultAndApplyButton();
-        Composite composite = new Composite(parent, SWT.NONE);
+        
+        if (((IProject) getElement()).isAccessible()) {
+            composite = new Composite(parent, SWT.NONE);
 
-        GridLayout layout = new GridLayout();
-        composite.setLayout(layout);
+            GridLayout layout = new GridLayout();
+            composite.setLayout(layout);
 
-        enablePMDButton = buildEnablePMDButton(composite);
-        buildLabel(composite, PMDConstants.MSGKEY_PROPERTY_LABEL_SELECT_RULE);
+            enablePMDButton = buildEnablePMDButton(composite);
 
-        Table availableRulesTable = buildAvailableRulesTableViewer(composite);
-        GridData data = new GridData();
-        data.grabExcessHorizontalSpace = true;
-        data.grabExcessVerticalSpace = true;
-        data.horizontalAlignment = GridData.FILL;
-        data.verticalAlignment = GridData.FILL;
-        data.heightHint = 50;
-        availableRulesTable.setLayoutData(data);
+            buildLabel(composite, PMDConstants.MSGKEY_PROPERTY_LABEL_SELECT_RULE);
+            Table availableRulesTable = buildAvailableRulesTableViewer(composite);
+            GridData data = new GridData();
+            data.grabExcessHorizontalSpace = true;
+            data.grabExcessVerticalSpace = true;
+            data.horizontalAlignment = GridData.FILL;
+            data.verticalAlignment = GridData.FILL;
+            data.heightHint = 50;
+            availableRulesTable.setLayoutData(data);
+        } else {
+            setValid(false);
+        }
 
         return composite;
     }
@@ -177,7 +186,7 @@ public class PMDPropertyPage extends PropertyPage {
         RuleSet configuredRuleSet = PMDPlugin.getDefault().getRuleSet();
         availableRulesTableViewer.setInput(configuredRuleSet);
 
-        RuleSet activeRuleSet = PMDPlugin.getDefault().getRuleSetForResource((IResource) getElement());
+        RuleSet activeRuleSet = PMDPlugin.getDefault().getRuleSetForResource((IResource) getElement(), true);
         Set activeRules = activeRuleSet.getRules();
 
         TableItem[] itemList = availableRulesTableViewer.getTable().getItems();
@@ -194,13 +203,15 @@ public class PMDPropertyPage extends PropertyPage {
      */
     public boolean performOk() {
         log.info("Properties editing accepted");
+        if (((IProject) getElement()).isAccessible()) {
 
-        boolean flForceRebuild = storeRuleSelection();
-        boolean fEnabled = enablePMDButton.getSelection();
-        if (fEnabled) {
-            addPMDNature(flForceRebuild);
-        } else {
-            removePMDNature();
+            boolean flForceRebuild = storeRuleSelection();
+            boolean fEnabled = enablePMDButton.getSelection();
+            if (fEnabled) {
+                addPMDNature(flForceRebuild);
+            } else {
+                removePMDNature();
+            }
         }
 
         return true;
@@ -211,7 +222,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private boolean storeRuleSelection() {
         boolean flNeedRebuild = false;
-        RuleSet activeRuleSet = PMDPlugin.getDefault().getRuleSetForResource((IResource) getElement());
+        RuleSet activeRuleSet = PMDPlugin.getDefault().getRuleSetForResource((IResource) getElement(), true);
         Set activeRules = null;
         activeRules = activeRuleSet.getRules();
 
