@@ -2,7 +2,7 @@
 
 <ruleset name="ticbuild">
   <description>
-  These are rules which apply to the build at https://cvs.ultralog.net
+  These are rules which apply to the build at https://cvs.ultralog.net.  Actually, that build contains this ruleset as well as unusedcode.xml, design.xml, and cougaar.xml
   </description>
 
   <rule name="EmptyCatchBlock"
@@ -94,27 +94,6 @@ while (a == b) {
     </example>
   </rule>
 
-
-  <rule name="UseSingletonRule"
-        message="All methods are static.  Consider using Singleton instead."
-        class="net.sourceforge.pmd.rules.design.UseSingletonRule">
-    <description>
-    If you have a class that has nothing but static methods, consider making it a Singleton
-    </description>
-
-    <example>
-<![CDATA[
-public class MaybeASingleton {
-    public static void foo() {
-     // etc
-    }
-    public static void bar() {
-     // etc
-    }
-}
-]]>
-    </example>
-  </rule>
 </ruleset>
 
 

@@ -29,9 +29,9 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd reportFile="c:\foo.html" verbose="true" rulesetfiles="rulesets/basic.xml,rulesets/cougaar.xml" format="html">
-            <fileset dir="c:\data\pmd\pmd\src">
-            <!--<fileset dir="c:\j2sdk1.4.0\src">-->
+        <pmd reportFile="c:\jdk14.HTML" verbose="false" rulesetfiles="rulesets/unusedcode.xml" format="html">
+            <!--<fileset dir="c:\data\pmd\pmd\src">-->
+            <fileset dir="c:\j2sdk1.4.0\src">
                 <include name="**/*.java"/>
             </fileset>
         </pmd>
