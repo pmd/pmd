@@ -9,15 +9,14 @@ import net.sourceforge.pmd.cpd.CPDListener;
 import net.sourceforge.pmd.cpd.CPD;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
+import net.sourceforge.pmd.cpd.Tile;
 
 public class CPDDialog  extends JFrame implements CPDListener  {
     private CPD cpd;
     int progress = 0;
-    boolean firstUpdate = true;
     boolean firstToken = true;
     boolean firstFile = true;
-    boolean firstExpansion = true;
-    private static final int PROG_MAX = 100;
+    boolean firstNewTile = true;
     private VerticalFlowLayout verticalFlowLayout1 = new VerticalFlowLayout();
     private JLabel jLabel1 = new JLabel();
     private JProgressBar jProgressBar1 = new JProgressBar();
@@ -35,12 +34,6 @@ public class CPDDialog  extends JFrame implements CPDListener  {
     }
 
     public void update(String msg) {
-        if (firstUpdate) {
-            firstUpdate = false;
-            jLabel1.setText("Updating...");
-            jProgressBar1.setString(msg);
-        }
-        jProgressBar1.setValue(progress++ % PROG_MAX);
     }
 
     public void addedFile(int fileCount, File file) {
@@ -48,8 +41,10 @@ public class CPDDialog  extends JFrame implements CPDListener  {
             firstFile = false;
             jLabel1.setText("Adding Files...");
             jProgressBar1.setString(file.getName());
+            jProgressBar1.setMaximum(fileCount);
+            progress = 0;
         }
-        jProgressBar1.setValue(progress++ % PROG_MAX);
+        jProgressBar1.setValue(++progress);
     }
 
 
@@ -62,14 +57,17 @@ public class CPDDialog  extends JFrame implements CPDListener  {
         jProgressBar1.setValue(doneSoFar);
     }
 
-    public void expandingTile(String tileImage) {
-        if (firstExpansion) {
-            firstExpansion = false;
-            jLabel1.setText("Expanding Tokens...");
-            jProgressBar1.setMaximum(PROG_MAX*4);
-            progress = 0;
+
+    public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
+        if (firstNewTile) {
+            firstNewTile = false;
+            jLabel1.setText("Adding Tiles... ");
+            jProgressBar1.setMaximum(totalTiles);
         }
-        jProgressBar1.setValue(progress++ % (PROG_MAX*4));
+        if (jProgressBar1.getMaximum() != totalTiles)
+            jProgressBar1.setMaximum(totalTiles);
+
+        jProgressBar1.setValue(tilesSoFar);
     }
 
     public void close() {

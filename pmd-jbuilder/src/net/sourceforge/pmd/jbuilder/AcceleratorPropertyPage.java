@@ -86,11 +86,6 @@ public class AcceleratorPropertyPage extends PropertyPage {
         });
         jCheckBox1.setHorizontalAlignment(SwingConstants.CENTER);
         jCheckBox1.setText("Enabled");
-        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                jCheckBox1_itemStateChanged(e);
-            }
-        });
         jLabel4.setText("enter");
         jTextField1.setPreferredSize(new Dimension(60, 21));
         this.add(jPanel1, null);
@@ -194,10 +189,6 @@ public class AcceleratorPropertyPage extends PropertyPage {
         int selectedItem = jComboBox1.getSelectedIndex();
         jTextField2.setText(KeyEvent.getKeyText(keys[selectedItem][0]));
         jTextField3.setText(KeyEvent.getKeyModifiersText(keys[selectedItem][1]));
-
-    }
-
-    void jCheckBox1_itemStateChanged(ItemEvent e) {
 
     }
 
