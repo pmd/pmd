@@ -39,6 +39,10 @@ C:\data\pmd\pmd>java -cp lib\pmd-2.3.jar;lib\xercesImpl-2.6.2.jar;
        </source>
 <br></br>
     <li>Notice that in this case the output is in XML, so you can redirect it to a file and XSLT it or whatever</li>
+       <li>You can also use shortened names to refer to the built-in rulesets, like this:</li>
+       <source>
+java net.sourceforge.pmd.PMD /path/to/source text basic,imports,unusedcode
+       </source>
        <li>The command line interface also accepts the following optional arguments:</li>
          <ul>
              <li><code>-debug</code> - prints a stacktrace if an error is encountered</li>

@@ -3,8 +3,6 @@
  */
 package net.sourceforge.pmd.stat;
 
-import net.sourceforge.pmd.Rule;
-
 import java.util.Random;
 
 /**

@@ -43,9 +43,11 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Leszek Migdal - noted documentation mistake for Eclipse plugin</li>
+            <li>Elliotte Rusty Harold - suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
+            <li>John Austin - patch to fix mispeling in Eclipse plugin message</li>
+            <li>Paddy Fagan - reported bug in StatisticalRule</li>
+            <li>Leszek Migdal - reported documentation mistake for Eclipse plugin</li>
             <li>Hakan Civelek - an order-of-magnitude optimization to the SystemOutPrintln rule</li>
-            <li>Elliotte Rusty Harold - mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Benoit Xhenseval - more bug reports (with good failure cases!), Ant task patch, XSLT patch, suggestion for improving XML report, several bug reports</li>
             <li>George Sexton - Suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>John Heintz - Added "any language" support to CPD.</li>

@@ -37,51 +37,51 @@ import java.io.InputStreamReader;
 public class CommandLineOptionsTest extends TestCase {
 
     public void testDebug() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-debug"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic", "-debug"});
         assertTrue(opt.debugEnabled());
     }
 
     public void testExcludeMarker() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-excludemarker", "FOOBAR"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic", "-excludemarker", "FOOBAR"});
         assertEquals("FOOBAR", opt.getExcludeMarker());
     }
 
     public void testTargetJDKVersion() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic"});
         assertFalse(opt.jdk13());
         opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-jdk13"});
         assertTrue(opt.jdk13());
     }
 
     public void testShortNames() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-shortnames"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic", "-shortnames"});
         assertTrue(opt.shortNamesEnabled());
     }
 
     public void testEncoding() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic"});
         assertTrue(opt.getEncoding().equals((new InputStreamReader(System.in)).getEncoding()));
         opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-encoding", "UTF-8"});
         assertTrue(opt.getEncoding().equals("UTF-8"));
     }
 
     public void testInputFileName() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic"});
         assertEquals("file", opt.getInputPath());
     }
 
     public void testReportFormat() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic"});
         assertEquals("format", opt.getReportFormat());
     }
 
     public void testRulesets() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
-        assertEquals("ruleset", opt.getRulesets());
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "basic"});
+        assertEquals("rulesets/basic.xml", opt.getRulesets());
     }
 
     public void testCommaSeparatedFiles() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file1,file2,file3", "format", "ruleset"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file1,file2,file3", "format", "basic"});
         assertTrue(opt.containsCommaSeparatedFileList());
     }
 
@@ -104,30 +104,30 @@ public class CommandLineOptionsTest extends TestCase {
     }
 
     public void testRenderer() {
-        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "xml", "ruleset"});
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "xml", "basic"});
         assertTrue(opt.createRenderer() instanceof XMLRenderer);
-        opt = new CommandLineOptions(new String[] {"file", "html", "ruleset"});
+        opt = new CommandLineOptions(new String[] {"file", "html", "basic"});
         assertTrue(opt.createRenderer() instanceof HTMLRenderer);
-        opt = new CommandLineOptions(new String[] {"file", "text", "ruleset"});
+        opt = new CommandLineOptions(new String[] {"file", "text", "basic"});
         assertTrue(opt.createRenderer() instanceof TextRenderer);
-        opt = new CommandLineOptions(new String[] {"file", "emacs", "ruleset"});
+        opt = new CommandLineOptions(new String[] {"file", "emacs", "basic"});
         assertTrue(opt.createRenderer() instanceof EmacsRenderer);
-        opt = new CommandLineOptions(new String[] {"file", "csv", "ruleset"});
+        opt = new CommandLineOptions(new String[] {"file", "csv", "basic"});
         assertTrue(opt.createRenderer() instanceof CSVRenderer);
-        opt = new CommandLineOptions(new String[] {"file", "vbhtml", "ruleset"});
+        opt = new CommandLineOptions(new String[] {"file", "vbhtml", "basic"});
         assertTrue(opt.createRenderer() instanceof VBHTMLRenderer);
-        opt = new CommandLineOptions(new String[] {"file", "ideaj", "ruleset"});
+        opt = new CommandLineOptions(new String[] {"file", "ideaj", "basic"});
         assertTrue(opt.createRenderer() instanceof IDEAJRenderer);
 
         try {
-            opt = new CommandLineOptions(new String[] {"file", "fiddlefaddle", "ruleset"});
+            opt = new CommandLineOptions(new String[] {"file", "fiddlefaddle", "basic"});
             opt.createRenderer();
         } catch (IllegalArgumentException iae) {
             // cool
         }
 
         try {
-            opt = new CommandLineOptions(new String[] {"file", "", "ruleset"});
+            opt = new CommandLineOptions(new String[] {"file", "", "basic"});
             opt.createRenderer();
         } catch (IllegalArgumentException iae) {
             // cool

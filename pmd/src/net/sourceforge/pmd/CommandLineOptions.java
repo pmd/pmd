@@ -16,6 +16,7 @@ import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class CommandLineOptions {
 
@@ -39,7 +40,7 @@ public class CommandLineOptions {
 
         inputPath = args[0];
         reportFormat = args[1];
-        ruleSets = args[2];
+        ruleSets = new SimpleRuleSetNameMapper(args[2]).getRuleSets();
 
         this.args = args;
 
