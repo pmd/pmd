@@ -3,24 +3,20 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.util.Iterator;
-import java.util.List;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
-
+import java.util.List;
+import java.util.Iterator;
 
 public class AvoidFieldNameMatchingMethodName extends AbstractRule {
 	
 	public Object visit(ASTInterfaceDeclaration node, Object data) {
-		// Skip interfaces
-		return super.visit(node, data);
+		return data;
 	}
 	
 	/* (non-Javadoc)
@@ -31,9 +27,8 @@ public class AvoidFieldNameMatchingMethodName extends AbstractRule {
 		String fieldDeclaringType = getDeclaringType (node);
 		if (varName!=null) {
 			varName = varName.toLowerCase();
-			//Get parent type
 			ASTUnmodifiedClassDeclaration cl = (ASTUnmodifiedClassDeclaration) node.getFirstParentOfType(ASTUnmodifiedClassDeclaration.class);
-			
+
 			List methods = cl.findChildrenOfType(ASTMethodDeclaration.class);
 			if (methods!=null && !methods.isEmpty()) {
 				for (Iterator it = methods.iterator() ; it.hasNext() ; ) {

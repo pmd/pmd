@@ -23,6 +23,7 @@ public class AvoidFieldNameMatchingMethodNameTest extends SimpleAggregatorTst {
 				new TestDescriptor(TEST2, "TEST2", 1, rule),
 				new TestDescriptor(TEST3, "TEST3", 0, rule),
 				new TestDescriptor(TEST4, "TEST4", 0, rule),
+				new TestDescriptor(TEST5, "Just skip interfaces", 0, rule),
     	});
     }
     
@@ -54,6 +55,11 @@ public class AvoidFieldNameMatchingMethodNameTest extends SimpleAggregatorTst {
 		"   class Dummy {" + PMD.EOL +
 		"      Foo foo;" + PMD.EOL +
 		"   }" + PMD.EOL +
+		"} ";
+
+    private static final String TEST5 =
+    	"public interface Bar {" + PMD.EOL +
+		"  public static final int FOO = 5;" + PMD.EOL +
 		"} ";
 
 }
