@@ -58,8 +58,7 @@
     <jar
         jarfile="${lib}\pmd-${version}.jar"
         includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**"
-        basedir="${build}"
-        manifest="etc/MANIFEST.MF"/>
+        basedir="${build}"/>
 </target>
 
 <target name="jarsrc" depends="copy,compile">
@@ -198,12 +197,6 @@
 			</fileset>
 		</classpath>
 	</javadoc>
-</target>
-
-<target name="standalone-jar" depends="copy,compile">
-    <jar jarfile="${etc}/pmd.jar" basedir="${build}" manifest="etc/MANIFEST.MF">
-        <zipgroupfileset dir="${lib}" includes="jaxen*.jar,saxpath*.jar,xerces*.jar,xmlParserAPIs*.jar"/>
-    </jar>
 </target>
 
 </project>
