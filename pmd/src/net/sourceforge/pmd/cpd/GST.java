@@ -19,10 +19,11 @@ public class GST {
     public GST(TokenSets tokenSets, int minimumTileSize) {
         this.minimumTileSize = minimumTileSize;
         this.tokenSets = tokenSets;
-        occurrences.addInitial(tokenSets);
     }
 
     public void crunch() {
+        occurrences.addInitial(tokenSets);
+
         while (!occurrences.isEmpty()) {
             occurrences.deleteSoloTiles();
 

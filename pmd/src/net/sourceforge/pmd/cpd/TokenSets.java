@@ -7,9 +7,9 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.*;
 
-public class TokenSets {
+public class TokenSets extends AbstractSet {
 
-    Set tokenSets = new HashSet();
+    private Set tokenSets = new HashSet();
 
     public TokenSets() {}
 
@@ -19,6 +19,10 @@ public class TokenSets {
 
     public void add(TokenList ts) {
         tokenSets.add(ts);
+    }
+
+    public int size() {
+        return tokenSets.size();
     }
 
     public String toString() {
