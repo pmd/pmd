@@ -31,14 +31,12 @@ public class JavaTokensTokenizer implements Tokenizer {
         tokens.setCode(lines);
 
         // now tokenize it
-        JavaCharStream javaStream = new JavaCharStream(new StringReader(sb.toString()));
+	       JavaCharStream javaStream = new JavaCharStream(new StringReader(sb.toString()));
         JavaParserTokenManager tokenMgr = new JavaParserTokenManager( javaStream );
         net.sourceforge.pmd.ast.Token currToken = tokenMgr.getNextToken();
-        int position = 0;
         while (currToken.image != "") {
 						if (!currToken.image.equals(";")) {
-							tokens.add(new TokenEntry(currToken.image, position, tokens.getID(), currToken.beginLine));
-							position++;
+							tokens.add(new TokenEntry(currToken.image, tokens.size(), tokens.getID(), currToken.beginLine));
 						}
             currToken = tokenMgr.getNextToken();
         }
