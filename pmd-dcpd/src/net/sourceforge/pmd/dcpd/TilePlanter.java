@@ -30,7 +30,7 @@ public class TilePlanter {
         for (Iterator i = batches.iterator(); i.hasNext();) {
             Batch batch = (Batch)i.next();
             space.write(batch, null, Lease.FOREVER);
-            if (batch.sequenceID.intValue()+1 % 100 == 0) {
+            if (batch.sequenceID.intValue()+1 % 10 == 0) {
                 System.out.println("Planted " + batch.sequenceID.intValue() + " batches so far");
             }
         }
