@@ -20,7 +20,7 @@ public class JUnitStaticSuiteRule extends AbstractRule {
         AccessNode parent = (AccessNode)node.jjtGetParent();
         if (!parent.isPublic() || !parent.isStatic()) {
             RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginColumn()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
 
         return data;

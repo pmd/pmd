@@ -70,9 +70,9 @@ public class ReportTest extends TestCase implements ReportListener {
     public void testSortedReport_Line() {
         Report r = new Report();
         r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2"), 
-					     10, "foo"));
+					     10, "foo1"));
         r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1"), 
-					     20, "foo"));
+					     20, "foo2"));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue(result.indexOf("rule2") < result.indexOf("rule1"));

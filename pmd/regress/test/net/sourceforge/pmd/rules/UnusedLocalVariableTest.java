@@ -42,8 +42,7 @@ public class UnusedLocalVariableTest extends RuleTst {
     }
 
     public void test4() throws Throwable {
-        Report report = process("Unused4.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("Unused4.java", 0, rule);
     }
 
     public void test5() throws Throwable {
@@ -53,41 +52,37 @@ public class UnusedLocalVariableTest extends RuleTst {
     }
 
     public void test6() throws Throwable {
-        Report report = process("Unused6.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("Unused6.java", 0, rule);
     }
 
     public void test7() throws Throwable {
-        Report report = process("Unused7.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("Unused7.java", 0, rule);
     }
 
     public void test8() throws Throwable {
-        Report report = process("Unused8.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("Unused8.java", 0, rule);
     }
 
     public void test9() throws Throwable {
-        Report report = process("Unused9.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("Unused9.java", 0, rule);
     }
 
     public void test10() throws Throwable {
-        Report report = process("Unused10.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("Unused10.java", 0, rule);
     }
 
     public void test11() throws Throwable {
-        Report report = process("Unused11.java", rule);
-        assertEquals(2, report.size());
+        runTest("Unused11.java", 2, rule);
     }
     public void test12() throws Throwable {
-        Report report = process("Unused12.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("Unused12.java", 0, rule);
     }
 
     public void test13() throws Throwable {
-        Report report = process("Unused13.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("Unused13.java", 0, rule);
+    }
+
+    public void test14() throws Throwable {
+        runTest("Unused14.java", 2, rule);
     }
 }
