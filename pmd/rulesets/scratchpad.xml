@@ -6,7 +6,32 @@
 These are new rules that are still in progress
   </description>
 
+    <rule name="AvoidDuplicateLiterals"
+        message="The same String literal appears {0} times in this file; the first occurrence is on line {1}"
+        class="net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule">
+    <description>
+Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
+    </description>
+        <priority>3</priority>
+   <properties>
+    <property name="threshold" value="4"/>
+   </properties>
+    <example>
+<![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+ }
+ private void buz(String x) {}
+}
+]]>
+    </example>
+  </rule>
 
+    <!--
 <rule name="SymbolTableTestRule"
       message="NOT FULLY IMPLEMENTED - test"
       class="net.sourceforge.pmd.rules.SymbolTableTestRule">
@@ -21,6 +46,7 @@ These are new rules that are still in progress
   ]]>
   </example>
 </rule>
+-->
 
     <!--
 <rule name="IdempotentOperationsRule"

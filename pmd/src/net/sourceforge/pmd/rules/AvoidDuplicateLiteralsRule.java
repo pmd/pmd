@@ -29,6 +29,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTVariableInitializer;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -141,15 +142,11 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     }
 
     public Object visit(ASTLiteral node, Object data) {
-        if (!hasAtLeastSixParents(node)) {
+        if (!hasAtLeastSixParents(node) || (!sixthParentIsAnArgList(node) && !sixthParentIsAVariableInitializer(node))) {
             return data;
         }
 
-        if (!(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList)) {
-            return data;
-        }
-
-        // just catching strings for now
+        // just catching strings of 3 chars or more for now - no numbers
         if (node.getImage() == null || node.getImage().indexOf('\"') == -1 || node.getImage().length() < 3) {
             return data;
         }
@@ -169,6 +166,14 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         }
 
         return data;
+    }
+
+    private boolean sixthParentIsAVariableInitializer(ASTLiteral node) {
+        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTVariableInitializer;
+    }
+
+    private boolean sixthParentIsAnArgList(ASTLiteral node) {
+        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList;
     }
 
     private boolean hasAtLeastSixParents(Node node) {

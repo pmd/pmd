@@ -3,6 +3,7 @@ New rule: AbstractNamingRule
 Fixed bug 840926 - AvoidReassigningParametersRule no longer reports a false positive when assigning a value to an array slot when the array is passed as a parameter to a method
 Fixed bug 760520 - RuleSetFactory is less strict about whitespace in ruleset.xml files.
 Fixed bug 826805 - JumbledIncrementorRule no longer reports a false positive when a outer loop incrementor is used as an array index
+Fixed bug 845343 - AvoidDuplicateLiterals now picks up cases when a duplicate literal appears in field declarations.
 Added a ruleset DTD and a ruleset XML Schema.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
