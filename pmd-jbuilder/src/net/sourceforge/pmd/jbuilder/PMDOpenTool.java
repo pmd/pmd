@@ -364,7 +364,8 @@ public class PMDOpenTool {
                      Tile t = (Tile)iter.next();
                      resultCount++;
                      int tileLineCount = cpd.getLineCountFor(t);
-                     CPDMessage msg = CPDMessage.createMessage("Duplicate code set: " + resultCount, t.getImage());
+                     int dupCount = results.getOccurrenceCountFor(t);
+                     CPDMessage msg = CPDMessage.createMessage(String.valueOf(dupCount)+" duplicates in code set: " + resultCount, cpd.getImage(t));
                      for (Iterator iter2 = results.getOccurrences(t); iter2.hasNext(); ) {
                          TokenEntry te = (TokenEntry)iter2.next();
                          msg.addChildMessage(te.getBeginLine(), tileLineCount, te.getTokenSrcID());
@@ -373,7 +374,6 @@ public class PMDOpenTool {
                  }
              }
              cpdd.close();
-
          }
          catch (Exception e) {
              Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, e.toString());
@@ -459,6 +459,8 @@ class PMDMessage extends Message {
  */
 class CPDMessage extends Message {
     final static LineMark MARK = new HighlightMark(true);
+    static Font PARENT_FONT = new Font("SansSerif", Font.BOLD, 12);
+    static Font CHILD_FONT = new Font("SansSerif", Font.PLAIN, 12);
     String filename;
     FileNode javaNode = null;
     int startline = 0;
@@ -498,6 +500,7 @@ class CPDMessage extends Message {
     public static CPDMessage createMessage(String msg, String codeBlock) {
         CPDMessage cpdm = new CPDMessage(msg, codeBlock);
         cpdm.isParent = true;
+        cpdm.setFont(PARENT_FONT);
         return cpdm;
     }
 
@@ -508,6 +511,7 @@ class CPDMessage extends Message {
         String msg = fileName.substring(fileName.lastIndexOf(sep.charAt(0))+1)+": line: " + String.valueOf(startline);
         CPDMessage cpdmsg =  new CPDMessage(msg, startline, endline, fileName);
         cpdmsg.isParent = false;
+        cpdmsg.setFont(CHILD_FONT);
         childMessages.add(cpdmsg);
 
     }
@@ -572,6 +576,7 @@ class CPDMessage extends Message {
 
 class CodeFragmentMessage extends Message {
     String codeFragment = null;
+    static Font CODE_FONT = new Font("Monospaced", Font.ITALIC, 12);
     public CodeFragmentMessage(String codeFragment) {
         super("View Code");
         this.setLazyFetchChildren(true);
@@ -579,8 +584,19 @@ class CodeFragmentMessage extends Message {
 
     }
     public void fetchChildren(Browser browser) {
-            browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, new Message(codeFragment));
-    }
+        BufferedReader reader = new BufferedReader(new StringReader(codeFragment));
+        try {
+            String line = reader.readLine();
+            while (line != null) {
+                Message msg = new Message(line);
+                msg.setFont(CODE_FONT);
+                browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, msg);
+                line = reader.readLine();
+            }
+        }
+        catch (Exception e){}
+
+     }
 
 }
 
