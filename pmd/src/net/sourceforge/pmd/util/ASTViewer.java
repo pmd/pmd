@@ -88,13 +88,16 @@ public class ASTViewer {
         showButton.addActionListener(new ShowListener());
 
         frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, astPanel), BorderLayout.NORTH); 
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, astPanel);
+        frame.getContentPane().add(splitPane, BorderLayout.NORTH);
         frame.getContentPane().add(showButton, BorderLayout.SOUTH);
 
         frame.setSize(1000, 800);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.show();
+
+        splitPane.setDividerLocation(splitPane.getMaximumDividerLocation()/2);
     }
 
     public static void main(String[] args) {
