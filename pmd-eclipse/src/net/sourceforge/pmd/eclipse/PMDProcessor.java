@@ -30,6 +30,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2003/06/19 20:56:59  phherlin
+ * Improve progress indicator accuracy
+ *
  * Revision 1.5  2003/05/19 22:26:58  phherlin
  * Updating PMD engine to v1.05
  * Refactoring to improve performance
@@ -83,7 +86,8 @@ public class PMDProcessor {
         } catch (CoreException e) {
             PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         } catch (PMDException e) {
-            log.warn(getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            log.warn(getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION));
+            log.debug("", e);
         } finally {
             log.info("Processing done");
         }

@@ -17,6 +17,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Philippe Herlin
  * @version $Revision$
  * $Log$
+ * Revision 1.5  2003/06/19 20:56:59  phherlin
+ * Improve progress indicator accuracy
+ *
  * Revision 1.4  2003/05/19 22:27:32  phherlin
  * Refactoring to improve performance
  *
@@ -59,6 +62,11 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
             } else { // other kinds are not visited            
                 log.debug("Resource " + delta.getResource().getName() + " not visited.");
             }
+            
+            if (monitor != null) {
+                monitor.worked(1);
+                log.debug("Monitor worked");
+            }
         } else {
             fProcessChildren = false;
         }
@@ -96,10 +104,6 @@ public class PMDDeltaVisitor implements IResourceDeltaVisitor {
             }
             
             PMDProcessor.getInstance().run((IFile) resource, useTaskMarker, getAccumulator());
-            
-            if (monitor != null) {
-                monitor.worked(1);
-            }
         }
     }
 

@@ -7,10 +7,11 @@ import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDVisitor;
 import net.sourceforge.pmd.eclipse.PMDVisitorRunner;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -33,6 +34,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2003/06/19 20:58:13  phherlin
+ * Improve progress indicator accuracy
+ *
  * Revision 1.5  2003/05/19 22:27:33  phherlin
  * Refactoring to improve performance
  *
@@ -95,9 +99,9 @@ public class PMDCheckAction implements IObjectActionDelegate {
 
             if (sel instanceof IStructuredSelection) {
                 IStructuredSelection structuredSel = (IStructuredSelection) sel;
-                monitor.beginTask(
-                    PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING),
-                    structuredSel.toArray().length);
+                int elementCount = countElement(structuredSel);
+                monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), elementCount);
+                log.debug("Monitor beginTask(" + elementCount + ")");
 
                 for (Iterator i = structuredSel.iterator(); i.hasNext();) {
                     Object element = i.next();
@@ -119,7 +123,6 @@ public class PMDCheckAction implements IObjectActionDelegate {
                             new PMDVisitorRunner().run(resource, visitor);
                         } else { // else no processing for other types
                             log.info(element.getClass().getName() + " : PMD check on this resource's type is not supported");
-                            monitor.worked(1);
                         }
                     } catch (CoreException e) {
                         PMDPlugin.getDefault().showError(
@@ -129,7 +132,62 @@ public class PMDCheckAction implements IObjectActionDelegate {
                 }
 
                 monitor.done();
+                log.debug("Monitor done");
             }
+
+        }
+
+        /**
+         * Count the number of resources of a selection
+         * @param selection a selection
+         * @return the element count
+         */
+        private int countElement(IStructuredSelection selection) {
+           final class CountVisitor implements IResourceVisitor {
+                public int count = 0;
+                public boolean visit(IResource resource) {
+                    boolean fVisitChildren = true;
+                    count++;
+
+                    if ((resource instanceof IFile)
+                        && (((IFile) resource).getFileExtension() != null)
+                        && ((IFile) resource).getFileExtension().equals("java")) {
+
+                        fVisitChildren = false;
+                    }
+
+                    return fVisitChildren;
+                }
+            };
+            
+            CountVisitor visitor = new CountVisitor();
+            
+            for (Iterator i = selection.iterator(); i.hasNext();) {
+                Object element = i.next();
+
+                try {
+                    if (element instanceof IResource) {
+                        ((IResource) element).accept(visitor);
+                    } else if (element instanceof ICompilationUnit) {
+                        IResource resource = ((ICompilationUnit) element).getResource();
+                        resource.accept(visitor);
+                    } else if (element instanceof IJavaProject) {
+                        IResource resource = ((IJavaProject) element).getResource();
+                        resource.accept(visitor);
+                    } else if (element instanceof IPackageFragment) {
+                        IResource resource = ((IPackageFragment) element).getResource();
+                        resource.accept(visitor);
+                    } else if (element instanceof PackageFragmentRoot) {
+                        IResource resource = ((PackageFragmentRoot) element).getResource();
+                        resource.accept(visitor);
+                    } else { // else no processing for other types
+                    }
+                } catch (CoreException e) {
+                    // Ignore any exception
+                }
+            }
+
+            return visitor.count;
         }
     }
 }

@@ -22,6 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.13  2003/06/19 20:56:59  phherlin
+ * Improve progress indicator accuracy
+ *
  * Revision 1.12  2003/05/19 22:27:32  phherlin
  * Refactoring to improve performance
  *
@@ -58,19 +61,21 @@ public class PMDVisitor implements IResourceVisitor {
             if ((resource instanceof IFile)
                 && (((IFile) resource).getFileExtension() != null)
                 && ((IFile) resource).getFileExtension().equals("java")) {
-                    
+
                 if (monitor != null) {
                     monitor.subTask(((IFile) resource).getName());
                 }
-                
+
                 PMDProcessor.getInstance().run((IFile) resource, useTaskMarker, getAccumulator());
-                
-                if (monitor != null) {
-                    monitor.worked(1);
-                }
-                
+
                 fVisitChildren = false;
             }
+
+            if (monitor != null) {
+                monitor.worked(1);
+                log.debug("Monitor worked");
+            }
+
         } else {
             fVisitChildren = false;
         }

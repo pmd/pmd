@@ -9,8 +9,12 @@ import net.sourceforge.pmd.eclipse.PMDVisitor;
 import net.sourceforge.pmd.eclipse.PMDVisitorRunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,6 +27,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2003/06/19 20:58:33  phherlin
+ * Improve progress indicator accuracy
+ *
  * Revision 1.5  2003/05/19 22:27:33  phherlin
  * Refactoring to improve performance
  *
@@ -99,10 +106,13 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         if (currentProject != null) {
             IResourceDelta resourceDelta = getDelta(currentProject);
             if ((resourceDelta != null) && (resourceDelta.getAffectedChildren().length != 0)) {
-                monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), IProgressMonitor.UNKNOWN);
+                int elementCount = countDeltaElement(resourceDelta);
+                monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), elementCount);
+                log.debug("Monitor beginTask(" + elementCount + ")");
                 PMDDeltaVisitor visitor = new PMDDeltaVisitor(monitor);
                 new PMDVisitorRunner().run(resourceDelta, visitor);
                 monitor.done();
+                log.debug("Monitor done");
             } else {
                 log.info("No change reported. Performing a full build");
                 result = buildFull(args, monitor);
@@ -118,10 +128,72 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      * @param monitor a progress indicator
      */
     private void processProjectFiles(IProject project, IProgressMonitor monitor) throws CoreException {
-        monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), IProgressMonitor.UNKNOWN);
+        int elementCount = countProjectElement(project);
+        monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), elementCount);
+        log.debug("Monitor beginTask(" + elementCount + ")");
         PMDVisitor visitor = new PMDVisitor(monitor);
         new PMDVisitorRunner().run(project, visitor);
         monitor.done();
+        log.debug("Monitor done");
+    }
+
+    /**
+     * Count the number of sub-resources of a project
+     * @param project a project
+     * @return the element count
+     */
+    private int countProjectElement(IProject project) {
+        final class CountVisitor implements IResourceVisitor {
+            public int count = 0;
+            public boolean visit(IResource resource) {
+                boolean fVisitChildren = true;
+                count++;
+
+                if ((resource instanceof IFile)
+                    && (((IFile) resource).getFileExtension() != null)
+                    && ((IFile) resource).getFileExtension().equals("java")) {
+
+                    fVisitChildren = false;
+                }
+
+                return fVisitChildren;
+            }
+        };
+
+        CountVisitor visitor = new CountVisitor();
+
+        try {
+            project.accept(visitor);
+        } catch (CoreException e) {
+            // no exception processing
+        }
+
+        return visitor.count;
+    }
+
+    /**
+     * Count the number of sub-resources of a delta
+     * @param delta a resource delta
+     * @return the element count
+     */
+    private int countDeltaElement(IResourceDelta delta) {
+        final class CountVisitor implements IResourceDeltaVisitor {
+            public int count = 0;
+            public boolean visit(IResourceDelta delta) {
+                count++;
+                return true;
+            }
+        };
+
+        CountVisitor visitor = new CountVisitor();
+
+        try {
+            delta.accept(visitor);
+        } catch (CoreException e) {
+            // no exception processing
+        }
+
+        return visitor.count;
     }
 
 }
