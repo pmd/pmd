@@ -1,9 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.AtLeastOneConstructorRule;
-import net.sourceforge.pmd.rules.XPathRule;
 
 public class AtLeastOneConstructorRuleTest extends SimpleAggregatorTst {
 

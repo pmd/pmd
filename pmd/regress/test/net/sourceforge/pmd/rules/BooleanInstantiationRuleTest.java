@@ -1,8 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.BeanMembersShouldSerializeRule;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class BooleanInstantiationRuleTest extends SimpleAggregatorTst {
