@@ -74,14 +74,10 @@ class SourceFileList extends JList implements TreeSelectionListener
 
         if ((userObject instanceof File) && (userObject != m_lastDirectory))
         {
-            File directory;
-            File[] files;
-            Vector fileNames;
-
-            directory = (File) userObject;
+            File directory = (File) userObject;
             m_lastDirectory = directory;
-            files = directory.listFiles(new FilesFilter());
-            fileNames = new Vector();
+            File[]  files = directory.listFiles(new FilesFilter());
+            Vector fileNames = new Vector();
 
             if (files != null)
             {
@@ -105,11 +101,9 @@ class SourceFileList extends JList implements TreeSelectionListener
 
         public boolean accept(File file)
         {
-            if (file.isFile() && (file.isHidden() == false))
+            if (file.isFile() && !file.isHidden())
             {
-                String fileName = file.getName().toLowerCase();
-
-                return (fileName.endsWith(JAVA));
+                return file.getName().toLowerCase().endsWith(JAVA);
             }
 
             return false;
