@@ -10,7 +10,6 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import net.sourceforge.pmd.RuleContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +24,29 @@ import org.jaxen.XPath;
 import org.jaxen.JaxenException;
 
 public class ASTViewer {
+
+    private static class JSmartPanel extends JPanel {
+
+        private GridBagConstraints constraints = new GridBagConstraints();
+
+        public JSmartPanel() {
+            super(new GridBagLayout());
+        }
+
+        public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, double weightx, double weighty, int anchor, int fill, Insets insets) {
+            constraints.gridx = gridx;
+            constraints.gridy = gridy;
+            constraints.gridwidth = gridwidth;
+            constraints.gridheight = gridheight;
+            constraints.weightx = weightx;
+            constraints.weighty = weighty;
+            constraints.anchor = anchor;
+            constraints.fill = fill;
+            constraints.insets = insets;
+
+            add(comp, constraints);
+        }
+    }
 
     private static class MyPrintStream extends PrintStream {
 
@@ -58,20 +80,19 @@ public class ASTViewer {
             } catch (ParseException pe) {
                 astArea.setText(pe.fillInStackTrace().getMessage());
             }
-            codeEditorPane.requestFocus();
         }
     }
 
     private class XPathListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
+            if (xpathQueryField.getText().length() == 0) {
+                xpathResultArea.setText("XPath query field is empty");
+                codeEditorPane.requestFocus();
+                return;
+            }
             StringReader sr = new StringReader(codeEditorPane.getText());
             JavaParser parser = new JavaParser(sr);
             try {
-                if (xpathQueryField.getText().length() == 0) {
-                    xpathResultArea.setText("XPath query field is empty");
-                    xpathQueryField.requestFocus();
-                    return;
-                }
                 XPath xpath = new BaseXPath(xpathQueryField.getText(), new DocumentNavigator());
                 ASTCompilationUnit c = parser.CompilationUnit();
                 StringBuffer sb = new StringBuffer();
@@ -97,8 +118,8 @@ public class ASTViewer {
     private JTextPane codeEditorPane = new JTextPane();
     private JTextArea astArea = new JTextArea();
     private JTextArea xpathResultArea = new JTextArea();
-    private JFrame frame = new JFrame("AST Viewer");
     private JTextField xpathQueryField = new JTextField(40);
+    private JFrame frame = new JFrame("AST Viewer");
 
     public ASTViewer() {
         JSmartPanel codePanel = new JSmartPanel();
@@ -112,25 +133,26 @@ public class ASTViewer {
         astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
 
         JSmartPanel xpathResultPanel = new JSmartPanel();
-        xpathResultArea.setRows(10);
+        xpathResultArea.setRows(20);
         xpathResultArea.setColumns(20);
         JScrollPane xpathResultScrollPane = new JScrollPane(xpathResultArea);
         xpathResultPanel.add(xpathResultScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
 
-        JButton showButton = new JButton("Go");
-        showButton.setMnemonic('g');
-        showButton.addActionListener(new ShowListener());
-        showButton.addActionListener(new XPathListener());
+        JButton goButton = new JButton("Go");
+        goButton.setMnemonic('g');
+        goButton.addActionListener(new ShowListener());
+        goButton.addActionListener(new XPathListener());
 
         JPanel controlPanel = new JPanel();
+        controlPanel.add(new JLabel("XPath Query (if any) ->"));
         controlPanel.add(xpathQueryField);
-        controlPanel.add(showButton);
+        controlPanel.add(goButton);
 
-        JSplitPane otherSP = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, otherSP);
-        JSplitPane yetAnotherSP = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitPane, controlPanel);
+        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
+        JSplitPane upperSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, resultsSplitPane);
+        JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperSplitPane, controlPanel);
 
-        frame.getContentPane().add(yetAnotherSP);
+        frame.getContentPane().add(containerSplitPane);
 
         frame.setSize(1000, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,36 +162,12 @@ public class ASTViewer {
         frame.setVisible(true);
         frame.show();
 
-        yetAnotherSP.setDividerLocation(yetAnotherSP.getMaximumDividerLocation() - (yetAnotherSP.getMaximumDividerLocation()/4));
-        splitPane.setDividerLocation(splitPane.getMaximumDividerLocation() / 3);
-        codeEditorPane.setSize(splitPane.getMaximumDividerLocation() / 3, yetAnotherSP.getMaximumDividerLocation() - (yetAnotherSP.getMaximumDividerLocation()/4));
+        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
+        upperSplitPane.setDividerLocation(upperSplitPane.getMaximumDividerLocation() / 3);
+        codeEditorPane.setSize(upperSplitPane.getMaximumDividerLocation() / 3, containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
     }
 
     public static void main(String[] args) {
         new ASTViewer();
     }
-
-    public class JSmartPanel extends JPanel {
-
-        private GridBagConstraints constraints = new GridBagConstraints();
-
-        public JSmartPanel() {
-            super(new GridBagLayout());
-        }
-
-        public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, double weightx, double weighty, int anchor, int fill, Insets insets) {
-            constraints.gridx = gridx;
-            constraints.gridy = gridy;
-            constraints.gridwidth = gridwidth;
-            constraints.gridheight = gridheight;
-            constraints.weightx = weightx;
-            constraints.weighty = weighty;
-            constraints.anchor = anchor;
-            constraints.fill = fill;
-            constraints.insets = insets;
-
-            add(comp, constraints);
-        }
-    }
-
 }
