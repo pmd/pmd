@@ -19,6 +19,8 @@ sub default() {
  print "<center><a href=\"http://pmd.sourceforge.net/\"><img src=\"http://sourceforge.net/sflogo.php?group_id=56262&type=5\" alt=\"Project Ultra*Log @ DARPA\" border=\"0\" /></a></center>";
 
  print h3("<center>PMD-WEB</center>");
+ print "PMD is a Java source code analysis tool - it checks your code for unused fields, empty try/catch/finally/if/while blocks, unused method parameters, and stuff like that.  There's much more info <a href=\"http://pmd.sf.net/\">here</a>.<p>This table contains the results of running PMD's <a href=\"http://pmd.sourceforge.net/rules/unusedcode.html\">unused code ruleset</a> against a bunch of Sourceforge and Jakarta projects."; 
+ print hr();
 
  if (param("location")) {
   my $project = PMD::Project->new(param("location"),param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
@@ -26,7 +28,6 @@ sub default() {
   print p(), b("Added "), b($project->getTitle()), b(" to the schedule"), p();
  } 
 
- print "PMD is run every two hours (at 10 minutes past the hour) on these projects:";
  print loadProjectList();
 
  printStats();
@@ -64,6 +65,8 @@ sub printStats() {
  print br();
  print "The last run took ", sprintf("%.0f", $lastruntime/60), " minutes";
  print br();
+ print "This report is regenerated every two hours at 10 minutes past the hour";
+ print br();
 }
 
 sub getTimeUntil() {
@@ -90,15 +93,22 @@ sub loadProjectList() {
   }
  }
 
- @newprojects = sort { $a->getLocation() cmp $b->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
+ @newprojects = sort { $b->getLocation() cmp $a->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
 
- my $result="<table><tr><th>Project</th><th></th><th>Home page</th><th>Problems found</th></tr>";
+ my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>Problems found</th></tr>";
  foreach $project (@newprojects) {
-  my $jobtext=$project->getTitle();
+  my $jobLink=$project->getTitle();
   if (-e $project->getRptFile()) {
-   $jobtext="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
+   $jobLink="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
   }
-  $result="${result}<tr><td>${jobtext}</td><td></td><td>@{[$project->getHomePage()]}</td><td>@{[$project->getLines()]}</td>";
+  $result="${result}<tr><td>${jobLink}</td><td></td><td>@{[$project->getHomePage()]}</td>";
+  my $color="red";
+  if ($project->getLines < 11) {
+   $color="ltgreen";
+  } elsif ($project->getLines < 31) {
+   $color="yellow";
+  }
+  $result="${result}<td bgcolor=$color>@{[$project->getLines()]}</td>";
  }
  $result = "${result}</table>";
  return $result;
