@@ -7,7 +7,10 @@
 <head>
     <title>PMD report</title>
     <style type="text/css">
-        body { margin-left: 2%; margin-right: 2% }
+        body { margin-left: 2%; margin-right: 2%; font:normal 68% verdana,arial,helvetica; color:#000000; }
+        table tr td, tr th { font-size: 68%; }
+        table.details tr th { font-weight: bold; text-align:left; background:#a6caf0; }
+        table.details tr td { background:#eeeee0; }
     </style>
 </head>
 <body>
@@ -16,14 +19,14 @@
     <xsl:for-each select="file">
         <xsl:sort data-type="number" order="descending" select="count(violation)"/>
         <H3><xsl:value-of disable-output-escaping="yes" select="@name"/></H3>
-        <table border="1" cellpadding="7" cellspacing="1" width="100%">
-            <tr bgcolor="#87CEEB">
-                <th>Line</th>
+        <table border="0" width="100%" class="details">
+            <tr>
+                <th width="50">Line</th>
                 <th align="left">Description</th>
             </tr>
             <xsl:apply-templates select="violation"/>
         </table>
-        <br/><br/><br/>
+        <br/>
     </xsl:for-each>
 </body>
 </html>
@@ -31,8 +34,8 @@
 
 <xsl:template match="violation">
     <tr>
-        <th><xsl:value-of disable-output-escaping="yes" select="@line"/></th>
-        <th align="left"><xsl:value-of disable-output-escaping="yes" select="."/></th>
+        <td><xsl:value-of disable-output-escaping="yes" select="@line"/></td>
+        <td align="left"><xsl:value-of disable-output-escaping="yes" select="."/></td>
     </tr>
 </xsl:template>
 
