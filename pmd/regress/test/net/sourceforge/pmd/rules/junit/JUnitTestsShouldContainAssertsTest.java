@@ -26,7 +26,7 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST6, "One wrong", 1, rule),
            new TestDescriptor(TEST7, "Skip interfaces", 0, rule),
            new TestDescriptor(TEST8, "Skip abstract methods", 0, rule),
-           new TestDescriptor(TEST9, "", 0, rule),
+           new TestDescriptor(TEST9, "Another fail() case", 0, rule),
            new TestDescriptor(TEST10, "BUG 1105633 - False +: JUnit testcases could have fail() instead of assert", 0, rule),
        });
     }

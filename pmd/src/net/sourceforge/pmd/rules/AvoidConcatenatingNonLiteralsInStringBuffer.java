@@ -47,17 +47,13 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
     private final boolean isInStringBufferAppend(final ASTAdditiveExpression node) {
         final ASTStatement s = (ASTStatement) node.getFirstParentOfType(ASTStatement.class);
         final ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
-        if (n.getImage()!=null && n.getImage().endsWith("append"))
-            return true;
-        return false;
+        return n.getImage()!=null && n.getImage().endsWith("append");
     }
     
     private final boolean isAllocatedStringBuffer(final ASTAdditiveExpression node) {
         final ASTAllocationExpression ao = (ASTAllocationExpression) node.getFirstParentOfType(ASTAllocationExpression.class);
         final ASTName an = (ASTName) ao.getFirstChildOfType(ASTName.class);
-        if (an.getImage().endsWith("StringBuffer"))
-            return true;
-        return false;
+        return an.getImage().endsWith("StringBuffer");
     }
 }
 
