@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<ruleset name="JUnit Rules">
+  <description>
+These rules deal with different problems that can occur with String manipulation.
+  </description>
+
+
+   <rule name="StringInstantiation"
+        message="Avoid instantiating String objects; this is usually unnecessary."
+        class="net.sourceforge.pmd.rules.StringInstantiationRule">
+    <description>
+    Avoid instantiating String objects; this is usually unnecessary.
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo {
+ private String bar = new String("bar"); // just do a String bar = "bar";
+}
+]]>
+    </example>
+    </rule>
+
+</ruleset>
+
+
+
