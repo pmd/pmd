@@ -60,5 +60,17 @@ public class PMDTaskTest extends TestCase {
             //fail(be.toString());
         }
     }
+
+    public void testOnlyOneJDK() {
+        PMDTask task = new PMDTask();
+        task.setTargetJDK13(true);
+        task.setTargetJDK15(true);
+        try {
+            task.execute();
+            throw new RuntimeException("Should have thrown a BuildException - 2 JDKs targeted");
+        } catch (BuildException be) {
+            // cool
+        }
+    }
 }
 

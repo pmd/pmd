@@ -11,6 +11,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.TargetJDK1_3;
+import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import org.apache.tools.ant.AntClassLoader;
@@ -47,6 +48,7 @@ public class PMDTask extends Task {
     private boolean failOnError;
     private boolean failOnRuleViolation;
     private boolean targetJDK13;
+    private boolean targetJDK15;
     private String failuresPropertyName;
     private String excludeMarker;
     private final Collection nestedRules = new ArrayList();
@@ -57,6 +59,10 @@ public class PMDTask extends Task {
 
     public void setTargetJDK13(boolean value) {
         this.targetJDK13 = value;
+    }
+
+    public void setTargetJDK15(boolean value) {
+        this.targetJDK15 = value;
     }
 
     public void setExcludeMarker(String value) {
@@ -136,6 +142,8 @@ public class PMDTask extends Task {
         PMD pmd;
         if (targetJDK13) {
             pmd = new PMD(new TargetJDK1_3());
+        } else if (targetJDK15) {
+            pmd = new PMD(new TargetJDK1_5());
         } else {
             pmd = new PMD();
         }
@@ -234,6 +242,10 @@ public class PMDTask extends Task {
                 throw new BuildException("No rulesets specified");
             }
             ruleSetFiles = getNestedRuleSetFiles();            
+        }
+
+        if (targetJDK13 && targetJDK15) {
+            throw new BuildException("It doesn't make sense to target both JDK 1.3 and JDK 1.5");
         }
     }
 

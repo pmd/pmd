@@ -1,3 +1,5 @@
+ADD DOC NOTE ABOUT ANT 'targetjdk15' ATTRIBUTE
+
 update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.0.jar
 update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-3.0
 update the release date in the changelog

@@ -1,5 +1,6 @@
 ????, 2005 - 3.1:
-Fixed bug 1169731 - UnusedImports no longer reports false positives on types used inside generics. 
+Fixed bug 1169731 - UnusedImports no longer reports false positives on types used inside generics.
+Fixed bug 1170109 - The Ant task now supports a 'targetjdk15' attribute. 
 Optimized rules: FinalFieldCouldBeStatic (115 seconds to 7 seconds), SuspiciousConstantFieldName (48 seconds to 14 seconds)
 
 March 23, 2005 - 3.0:
