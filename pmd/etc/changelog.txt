@@ -8,6 +8,7 @@ Fixed bug in SimplifyBooleanExpressions - now it catches more cases.
 Fixed bugs in AvoidDuplicateLiterals - now it ignores small duplicate literals, its message is more helpful, and it catches more cases.
 Fixed bug 997893 - UnusedPrivateField now detects assignments to members of private fields as a usage.
 Partially fixed bug 998122 - CloseConnectionRule now checks for imports of java.sql before reporting a rule violation.
+Applied patch 1001694 - Now PMD can process zip/jar files of source code.
 
 July 14, 2004 - 1.9:
 New rules: CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException, EqualsNull, ConfusingTernary

@@ -12,7 +12,6 @@
 <path id="classpath.path">
     <pathelement location="${build}"/>
     <fileset dir="${lib}">
-        <include name="ant.jar"/>
         <include name="jaxen-core-1.0-fcs.jar"/>
         <include name="saxpath-1.0-fcs.jar"/>
         <include name="xercesImpl-2.0.2.jar"/>

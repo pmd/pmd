@@ -19,10 +19,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Enumeration;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipEntry;
 
 public class PMD {
 
@@ -108,18 +112,19 @@ public class PMD {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             RuleSet rules = ruleSetFactory.createRuleSet(opts.getRulesets());
             for (Iterator i = files.iterator(); i.hasNext();) {
-                File file = (File) i.next();
-                ctx.setSourceCodeFilename(glomName(opts.shortNamesEnabled(), opts.getInputPath(), file));
+                DataSource dataSource = (DataSource) i.next();
+                String niceFileName = dataSource.getNiceFileName(opts.shortNamesEnabled(), opts.getInputPath());
+                ctx.setSourceCodeFilename(niceFileName);
                 if (opts.debugEnabled()) {
                     System.out.println("Processing " + ctx.getSourceCodeFilename());
                 }
                 try {
-                    pmd.processFile(new BufferedInputStream(new FileInputStream(file)), opts.getEncoding(), rules, ctx);
+                    pmd.processFile(new BufferedInputStream(dataSource.getInputStream()), opts.getEncoding(), rules, ctx);
                 } catch (PMDException pmde) {
                     if (opts.debugEnabled()) {
                         pmde.getReason().printStackTrace();
                     }
-                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), glomName(opts.shortNamesEnabled(), opts.getInputPath(), file)));
+                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), niceFileName));
                 }
             }
         } catch (FileNotFoundException fnfe) {
@@ -128,6 +133,9 @@ public class PMD {
         } catch (RuleSetNotFoundException rsnfe) {
             System.out.println(opts.usage());
             rsnfe.printStackTrace();
+        } catch (IOException ioe) {
+            System.out.println(opts.usage());
+            ioe.printStackTrace();
         }
 
         try {
@@ -142,7 +150,7 @@ public class PMD {
         }
     }
 
-    private static String glomName(boolean shortNames, String inputFileName, File file) {
+    static String glomName(boolean shortNames, String inputFileName, File file) {
         if (shortNames && inputFileName.indexOf(',') == -1) {
             if ((new File(inputFileName)).isDirectory()) {
                 return trimAnyPathSep(file.getAbsolutePath().substring(inputFileName.length()));
@@ -181,15 +189,33 @@ public class PMD {
         if (!inputFile.exists()) {
             throw new RuntimeException("File " + inputFile.getName() + " doesn't exist");
         }
-        List files;
+        List dataSources = new ArrayList();
         if (!inputFile.isDirectory()) {
-            files = new ArrayList();
-            files.add(inputFile);
+            if (filename.endsWith(".zip") || filename.endsWith(".jar")) {
+                ZipFile zipFile;
+                try {
+                    zipFile = new ZipFile(inputFile);
+                    Enumeration e = zipFile.entries();
+                    while (e.hasMoreElements()) {
+                        ZipEntry zipEntry = (ZipEntry) e.nextElement();
+                        if (zipEntry.getName().endsWith(".java")) {
+                            dataSources.add(new ZipDataSource(zipFile, zipEntry));
+                        }
+                    }
+                } catch (IOException ze) {
+                    throw new RuntimeException("Zip file " + inputFile.getName() + " can't be opened");
+                }
+            } else {
+                dataSources.add(new FileDataSource(inputFile));
+            }
         } else {
             FileFinder finder = new FileFinder();
-            files = finder.findFilesFrom(inputFile.getAbsolutePath(), new JavaLanguage.JavaFileOrDirectoryFilter(), true);
+            List files = finder.findFilesFrom(inputFile.getAbsolutePath(), new JavaLanguage.JavaFileOrDirectoryFilter(), true);
+            for (Iterator i = files.iterator(); i.hasNext(); ) {
+                dataSources.add(new FileDataSource((File) i.next()));
+            }
         }
-        return files;
+        return dataSources;
     }
 
 }
