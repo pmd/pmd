@@ -49,29 +49,42 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
     public void _init() {
         super._init();
 
+        JPanel textPanel = new JPanel();
+        textPanel.setBackground(Color.white);
+        textPanel.setLayout(new BorderLayout());
+        textPanel.add(new JLabel("Select the rulesets you want to use and click 'Save'."), BorderLayout.NORTH);
+        textPanel.add(new JLabel("Please see http://pmd.sourceforge.net/ for more information on what's in each rule set."), BorderLayout.SOUTH);
+
         JPanel checkBoxPanel = new JPanel();
+        checkBoxPanel.setBackground(Color.white);
         checkBoxPanel.setBackground(Color.white);
         checkBoxPanel.setLayout(new GridLayout(selectedRuleSets.size(), 2));
         for (Iterator i = selectedRuleSets.keys(); i.hasNext();) {
             String key = (String)i.next();
             JPanel oneBoxPanel = new JPanel();
+            oneBoxPanel.setBackground(Color.white);
             oneBoxPanel.add(new JLabel(key, JLabel.LEFT));
             oneBoxPanel.add((JCheckBox)selectedRuleSets.get(key));
             checkBoxPanel.add(oneBoxPanel);
         }
 
         JButton saveButton = new JButton("Save");
+        saveButton.setMnemonic('s');
         saveButton.addActionListener(new SaveAL());
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(saveButton);
 
         JButton closeButton = new JButton("Close");
+        closeButton.setMnemonic('c');
         closeButton.addActionListener(new CloseAL());
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.white);
+        buttonPanel.add(saveButton);
         buttonPanel.add(closeButton);
 
         dialog = new JDialog(jEdit.getFirstView(), PMDJEditPlugin.NAME, true);
         dialog.setTitle(PMDJEditPlugin.NAME);
         dialog.getContentPane().setLayout(new BorderLayout());
+        dialog.getContentPane().add(textPanel, BorderLayout.NORTH);
         dialog.getContentPane().add(checkBoxPanel, BorderLayout.CENTER);
         dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         dialog.setSize(new Dimension(500,300));

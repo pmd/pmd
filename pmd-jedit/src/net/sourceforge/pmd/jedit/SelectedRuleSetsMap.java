@@ -9,6 +9,8 @@ import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.List;
+import java.awt.*;
 
 public class SelectedRuleSetsMap {
     private Map selections = new HashMap();
@@ -51,6 +53,7 @@ public class SelectedRuleSetsMap {
 
     private JCheckBox createCheckBox(String name) {
         JCheckBox box = new JCheckBox();
+        box.setBackground(Color.white);
         box.setSelected(jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_RULESETS_PREFIX + name, true));
         return box;
     }
