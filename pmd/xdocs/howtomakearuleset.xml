@@ -10,12 +10,49 @@
 Say you want to pick specific rules from various rule sets.  You can do this by making your own rule set.
 </p>
     <subsection name="Create a new ruleset.xml file">
+    <p>Use one of the current rulesets as an example.  Copy and paste
+    it into your new file, delete all the old rules from it, and change
+    the name and description.  Like this:</p>
+    <source>
+<![CDATA[
+<?xml version="1.0"?>
+
+<ruleset name="customruleset">
+  <description>
+  This ruleset checks my code for bad stuff
+  </description>
+</ruleset>
+]]>
+    </source>
     </subsection>
     <subsection name="Add some rule references to it">
+    <p>After you add these references it'll look something like this:</p>
+    <source>
+<![CDATA[
+<?xml version="1.0"?>
+
+<ruleset name="customruleset">
+  <description>
+  This ruleset checks my code for bad stuff
+  </description>
+  <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
+  <rule ref="rulesets/unusedcode.xml/UnusedPrivateInstanceVariable"/>
+  <rule ref="rulesets/imports.xml/DuplicateImports"/>
+  <rule ref="rulesets/basic.xml/UnnecessaryConversionTemporaryRule"/>
+</ruleset>
+]]>
+    </source>
     </subsection>
     <subsection name="Reference it in your Ant task">
+    <p>Just like you would a built-in ruleset.</p>
     </subsection>
     <subsection name="To see it in your IDE, add it to rulesets/rulesets.properties">
+    <p>At least, that's the way some of the IDE plugins do it.  Some
+    have other ways of adding custom rulesets.</p>
+    </subsection>
+    <subsection name="Send us feedback">
+    <p>If you have suggestions on clarifying this document, please post
+    them to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a>.  Thanks!</p>
     </subsection>
     </section>
 </body>

@@ -12,12 +12,12 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     <subsection name="Get a development environment set up first">
     <p>
     In order to do rules, it'll help if you can modify the PMD source.
-    So download the latest source release (i.e., pmd-src-0.7.zip or something) and unzip it somewhere on your computer.
+    So download the latest PMD source release and unzip it somewhere on your computer.
     </p>
     </subsection>
     <subsection name="Figure out what you want to look for">
     <p>
-    Lets's figure out what problem you want to spot; we'll use "While loops must use braces" as an example.
+    Lets's figure out what problem we want to spot.   We can use "While loops must use braces" as an example.
     In the source code below, it's easy to get lost visually - it's kind of hard to tell what the curly braces belong to.
     </p>
     <source>
@@ -89,7 +89,7 @@ CompilationUnit
     <ul>
     <li>Put the example file in the <code>pmd/test-data</code> directory in a file called <code>Example.java</code></li>
     <li>Edit the class <code>net.sourceforge.pmd.PMD</code> and uncomment the line that
-    says <code>c.dump();</code> and the line that says <code>t.printStackTrace();</code></li>
+    says <code>c.dump();</code></li>
     <li>Open a command prompt and cd into the pmd/etc directory</li>
     <li>Recompile the project using the Ant task; i.e., <code>ant compile</code></li>
     <li>Run the <code>go</code> batch file to run PMD on one file, like this: <code>go Example xml rulesets/basic.xml</code>.  The go.bat file
@@ -163,38 +163,13 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     <subsection name="Put the WhileLoopsMustUseBracesRule rule in a ruleset file">
     <p>
     Now our rule is written - at least, the shell of it is - and now we need to tell PMD about it.  We need
-    to add it to a rule set XML file.  Look at <code>rulesets/basic.xml</code>; it's got lots of rule definitions that look like this:
-    </p>
-    <source>
-<![CDATA[
-  <rule name="EmptyCatchBlock"
-        message="Avoid empty catch blocks"
-        class="net.sourceforge.pmd.rules.EmptyCatchBlockRule">
-    <description>
-Empty Catch Block finds instances where an exception is caught,
-but nothing is done.  In most circumstances, this swallows an exception
-which should either be acted on or reported.
-    </description>
-
-    <example>
-  public void doSomething() {
-    try {
-      FileInputStream fis = new FileInputStream("/tmp/bugger");
-    } catch (IOException ioe) {
-        // not good
-    }
-  }
-    </example>
-  </rule>
- ]]>
-    </source>
-    <p>
+    to add it to a rule set XML file.  Look at <code>rulesets/basic.xml</code>; it's got lots of rule definitions in it.
     Copy and paste one of these rules, then fill in the elements and attributes:
     </p>
     <ul>
     <li>name - WhileLoopsMustUseBracesRule</li>
     <li>message - Use braces for while loops</li>
-    <li>class - Whereever you put the rule.  Note this doesn't have to be in net.sourceforge.pmd; it can be in com.yourcompany.util.pmd or whereever you want</li>
+    <li>class - Wherever you put the rule.  Note this doesn't have to be in net.sourceforge.pmd; it can be in com.yourcompany.util.pmd or whereever you want</li>
     <li>description - Use braces for while loops</li>
     <li>example - A little code snippet in CDATA tags that shows a rule violation</li>
     </ul>
@@ -215,7 +190,8 @@ which should either be acted on or reported.
     <subsection name="Write code to add rule violations where appropriate">
     <p>
     Now that we've identified our problem, recognized the AST pattern that illustrates the problem, written a new rule, and plugged
-    it into a ruleset, we need to actually make our rule find the problem.  Like this:
+    it into a ruleset, we need to actually make our rule find the problem, create a <code>RuleViolation</code>,
+    and put it in the <code>Report</code>, which is attached to the <code>RuleContext</code>.  Like this:
     </p>
     <source>
 <![CDATA[
@@ -253,7 +229,8 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     <p>
     You're rolling now.  If you think a rule would benefit the Java development community as a whole,
     post a message to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can get the rule
-    moved into one of the core rulesets.  Thanks!
+    moved into one of the core rulesets.</p>
+    <p>Or, if you can improve one of the existing rules, that'd be great too!  Thanks!
     </p>
     </subsection>
     </section>
