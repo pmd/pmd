@@ -36,18 +36,29 @@ public class OnlyOneReturnRule extends AbstractRule {
                 }
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, problem.getBeginLine()));
             }
+        } else if (returnNodes.size() == 1) {
+            // if there's only one return, make sure it's the last statement
+            RuleContext ctx = (RuleContext)data;
+            SimpleNode returnNode = (SimpleNode)returnNodes.get(0);
+            if (returnNode.getBeginLine() != (node.getEndLine() -1)) {
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, returnNode.getBeginLine()));
+            }
         }
         return data;
     }
 
     private void findReturns(Node node, List returnNodes) {
+        if (node instanceof ASTReturnStatement) {
+            returnNodes.add(node);
+        }
         for (int i=0; i<node.jjtGetNumChildren(); i++) {
             Node child = (Node)node.jjtGetChild(i);
             if (child.jjtGetNumChildren()>0) {
                 findReturns(child, returnNodes);
-            }
-            if (node instanceof ASTReturnStatement) {
-                returnNodes.add(node);
+            } else {
+                if (child instanceof ASTReturnStatement) {
+                    returnNodes.add(child);
+                }
             }
         }
     }

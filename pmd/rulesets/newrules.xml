@@ -7,10 +7,10 @@ These are new rules for the next release
 
 
    <rule name="OnlyOneReturn"
-        message="Avoid multiple exit points from a method"
+        message="A method should have only one exit point, and that should be the last statement in the method"
         class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule">
     <description>
-    Avoid multiple exit points from a method.
+    A method should have only one exit point, and that should be the last statement in the method.
     </description>
 
     <example>
