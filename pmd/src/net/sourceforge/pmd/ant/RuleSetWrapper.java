@@ -5,7 +5,7 @@
  */
 package net.sourceforge.pmd.ant;
 
-public class RuleSet {
+public class RuleSetWrapper {
     private String file;
        
     public final String getFile() {

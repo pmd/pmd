@@ -240,7 +240,7 @@ public class PMDTask extends Task {
     private String getNestedRuleSetFiles() {
         final StringBuffer sb = new StringBuffer();
         for (Iterator it = nestedRules.iterator() ; it.hasNext() ; ) {
-            RuleSet rs = (RuleSet) it.next();
+            RuleSetWrapper rs = (RuleSetWrapper) it.next();
             sb.append(rs.getFile());
             if (it.hasNext()) {
                 sb.append(',');
@@ -256,7 +256,7 @@ public class PMDTask extends Task {
         return classpath.createPath();
     }
 
-    public void addRuleset(RuleSet r) {
+    public void addRuleset(RuleSetWrapper r) {
         nestedRules.add(r);
     }
     
