@@ -6,11 +6,7 @@
 	xmlns:doc="doc"
 	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">  
 
-	<goal name="pmd-site" prereqs="pmd:ruleset-docs">
-		<attainGoal name="site:generate" />
-	</goal>
-
-	<preGoal name="site:generate">
+	<preGoal name="site">
 		<attainGoal name="pmd:ruleset-docs"/>
 	</preGoal>
 
