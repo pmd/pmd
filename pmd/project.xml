@@ -2,7 +2,7 @@
 <project>
   <pomVersion>3</pomVersion>
   <id>pmd</id>
-  <name>P. M. D.</name>
+  <name>PMD</name>
   <currentVersion>0.4</currentVersion>
   <organization>
     <name>InfoEther</name>
@@ -10,7 +10,7 @@
   </organization>
 
   <inceptionYear>2002</inceptionYear>
-  <package>com.infoether.pmd</package>
+  <package>net.sourceforge.pmd</package>
 
   <description>
   <![CDATA[
