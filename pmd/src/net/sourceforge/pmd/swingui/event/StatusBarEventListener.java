@@ -16,19 +16,19 @@ public interface StatusBarEventListener extends EventListener
      *
      * @param event
      */
-    public void startAnimation(StatusBarEvent event);
+    void startAnimation(StatusBarEvent event);
 
     /**
      **************************************************************************
      *
      * @param event
      */
-    public void showMessage(StatusBarEvent event);
+    void showMessage(StatusBarEvent event);
 
     /**
      **************************************************************************
      *
      * @param event
      */
-    public void stopAnimation(StatusBarEvent event);
+    void stopAnimation(StatusBarEvent event);
 }

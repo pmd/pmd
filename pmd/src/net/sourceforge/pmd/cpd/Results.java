@@ -9,11 +9,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public interface Results  {
-    public void addTile(Tile tile, TokenEntry tok);
-    public int getTileLineCount(Tile tile, TokenSets tokenSets);
-    public Iterator getOccurrences(Tile tile);
-    public List getOccurrencesList(Tile tile);
-    public int size();
-    public Iterator getTiles();
-    public int getOccurrenceCountFor(Tile tile);
+    void addTile(Tile tile, TokenEntry tok);
+    int getTileLineCount(Tile tile, TokenSets tokenSets);
+    Iterator getOccurrences(Tile tile);
+    List getOccurrencesList(Tile tile);
+    int size();
+    Iterator getTiles();
+    int getOccurrenceCountFor(Tile tile);
 }

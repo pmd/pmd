@@ -16,19 +16,19 @@ public interface RulesTreeModelEventListener extends EventListener
      *
      * @param event
      */
-    public void reload(RulesTreeModelEvent event);
+    void reload(RulesTreeModelEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void requestSelectedRule(RulesTreeModelEvent event);
+    void requestSelectedRule(RulesTreeModelEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void returnedSelectedRule(RulesTreeModelEvent event);
+    void returnedSelectedRule(RulesTreeModelEvent event);
 }

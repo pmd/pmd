@@ -16,12 +16,12 @@ public interface TextAnalysisResultsEventListener extends EventListener
      *
      * @param event
      */
-    public void requestTextAnalysisResults(TextAnalysisResultsEvent event);
+    void requestTextAnalysisResults(TextAnalysisResultsEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void returnedTextAnalysisResults(TextAnalysisResultsEvent event);
+    void returnedTextAnalysisResults(TextAnalysisResultsEvent event);
 }

@@ -6,5 +6,5 @@
 package net.sourceforge.pmd.cpd;
 
 public interface CPDRenderer {
-    public String render(CPD cpd);
+    String render(CPD cpd);
 }

@@ -15,12 +15,12 @@ public interface HTMLAnalysisResultsEventListener extends EventListener
      *
      * @param event
      */
-    public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event);
+    void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event);
+    void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event);
 }

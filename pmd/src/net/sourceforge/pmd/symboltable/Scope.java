@@ -18,45 +18,45 @@ public interface Scope {
      * Returns a Map (VariableNameDeclaration->List(NameOccurrence,NameOccurrence)) of declarations that
      * exist and are either used or not used at this scope
      */
-    public Map getVariableDeclarations(boolean lookingForUsed);
+    Map getVariableDeclarations(boolean lookingForUsed);
 
     /**
      * Add a variable declaration to this scope
      */
-    public void addDeclaration(VariableNameDeclaration decl);
+    void addDeclaration(VariableNameDeclaration decl);
 
     /**
      * Add a method declaration to this scope
      */
-    public void addDeclaration(MethodNameDeclaration decl);
+    void addDeclaration(MethodNameDeclaration decl);
 
     /**
      * Tests whether or not a NameOccurrence is directly contained in the scope
      * Note that if this search is just in this scope - it doesn't go diving into any
      * contained scopes.
      */
-    public boolean contains(NameOccurrence occ);
+    boolean contains(NameOccurrence occ);
 
     /**
      * Adds a NameOccurrence to this scope - only call this after getting
      * a true back from contains()
      */
-    public NameDeclaration addVariableNameOccurrence(NameOccurrence occ);
+    NameDeclaration addVariableNameOccurrence(NameOccurrence occ);
 
     /**
      * Points this scope to its parent
      */
-    public void setParent(Scope parent);
+    void setParent(Scope parent);
 
     /**
      * Retrieves this scope's parent
      */
-    public Scope getParent();
+    Scope getParent();
 
     /**
      * Goes searching up the tree for this scope's enclosing ClassScope
      * This is handy if you're buried down in a LocalScope and need to
      * hop up to the ClassScope to find a method name.
      */
-    public Scope getEnclosingClassScope();
+    Scope getEnclosingClassScope();
 }

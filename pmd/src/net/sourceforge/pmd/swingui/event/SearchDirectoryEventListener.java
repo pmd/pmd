@@ -15,5 +15,5 @@ public interface SearchDirectoryEventListener extends EventListener
      *
      * @param event
      */
-    public void setSearchDirectory(SearchDirectoryEvent event);
+    void setSearchDirectory(SearchDirectoryEvent event);
 }

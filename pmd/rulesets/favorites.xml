@@ -9,13 +9,14 @@ This ruleset also serves as an example of how to reference one ruleset from anot
 
   <rule ref="rulesets/braces.xml/WhileLoopsMustUseBracesRule"/>
   <rule ref="rulesets/braces.xml/ForLoopsMustUseBracesRule"/>
-  <rule ref="rulesets/design.xml/UseSingletonRule"/>
   <rule ref="rulesets/design.xml/LooseCouplingRule"/>
   <rule ref="rulesets/design.xml/SimplifyBooleanReturnsRule"/>
   <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
-  <rule ref="rulesets/design.xml/AvoidDeeplyNestedIfStmts"/>
   <rule ref="rulesets/strings.xml/StringToString"/>
   <rule ref="rulesets/strings.xml/StringInstantiation"/>
+  <rule ref="rulesets/controversial.xml/UnnecessaryConstructorRule"/>
+  <rule ref="rulesets/controversial.xml/NullAssignment"/>
+  <rule ref="rulesets/controversial.xml/UnusedModifier"/>
 
 </ruleset>
 

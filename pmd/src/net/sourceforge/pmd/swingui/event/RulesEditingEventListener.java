@@ -16,12 +16,12 @@ public interface RulesEditingEventListener extends EventListener
      *
      * @param event
      */
-    public void saveData(RulesEditingEvent event);
+    void saveData(RulesEditingEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void loadData(RulesEditingEvent event);
+    void loadData(RulesEditingEvent event);
 }

@@ -16,26 +16,26 @@ public interface PMDDirectoryReturnedEventListener extends EventListener
      *
      * @param event
      */
-    public void returnedRuleSetPath(PMDDirectoryReturnedEvent event);
+    void returnedRuleSetPath(PMDDirectoryReturnedEvent event);
 
     /**
      *******************************************************************************
      *
      * @param event
      */
-    public void returnedAllRuleSets(PMDDirectoryReturnedEvent event);
+    void returnedAllRuleSets(PMDDirectoryReturnedEvent event);
 
     /**
      *******************************************************************************
      *
      * @param event
      */
-    public void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event);
+    void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event);
 
     /**
      *******************************************************************************
      *
      * @param event
      */
-    public void returnedIncludedRules(PMDDirectoryReturnedEvent event);
+    void returnedIncludedRules(PMDDirectoryReturnedEvent event);
 }

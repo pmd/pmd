@@ -16,5 +16,5 @@ public interface RuleSetEventListener extends EventListener
      *
      * @param event
      */
-    public void saveRuleSets(RuleSetEvent event);
+    void saveRuleSets(RuleSetEvent event);
 }

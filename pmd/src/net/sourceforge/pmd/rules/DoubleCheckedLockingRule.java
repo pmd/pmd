@@ -119,7 +119,6 @@ public class DoubleCheckedLockingRule extends net.sourceforge.pmd.AbstractRule {
 	}
 
 	private boolean ifVerify(ASTIfStatement is, String varname){
-		boolean success = true;
 		List finder = new ArrayList();
 		is.findChildrenOfType(ASTPrimaryExpression.class,finder,true);
 		if(finder.size() >1){

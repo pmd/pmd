@@ -10,19 +10,19 @@ public interface RulesInMemoryEventListener extends EventListener
      *
      * @param event
      */
-    public void requestAllRules(RulesInMemoryEvent event);
+    void requestAllRules(RulesInMemoryEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void requestIncludedRules(RulesInMemoryEvent event);
+    void requestIncludedRules(RulesInMemoryEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void returnedRules(RulesInMemoryEvent event);
+    void returnedRules(RulesInMemoryEvent event);
 }

@@ -18,26 +18,26 @@ public interface PMDDirectoryRequestEventListener extends EventListener
      *
      * @param event
      */
-    public void requestRuleSetPath(PMDDirectoryRequestEvent event);
+    void requestRuleSetPath(PMDDirectoryRequestEvent event);
 
     /**
      *******************************************************************************
      *
      * @param event
      */
-    public void requestAllRuleSets(PMDDirectoryRequestEvent event) throws PMDException;
+    void requestAllRuleSets(PMDDirectoryRequestEvent event) throws PMDException;
 
     /**
      *******************************************************************************
      *
      * @param event
      */
-    public void requestDefaultRuleSets(PMDDirectoryRequestEvent event);
+    void requestDefaultRuleSets(PMDDirectoryRequestEvent event);
 
     /**
      *******************************************************************************
      *
      * @param event
      */
-    public void requestIncludedRules(PMDDirectoryRequestEvent event) throws PMDException;
+    void requestIncludedRules(PMDDirectoryRequestEvent event) throws PMDException;
 }

@@ -6,5 +6,5 @@
 package net.sourceforge.pmd.util;
 
 public interface UnaryFunction {
-    public void applyTo(Object o);
+    void applyTo(Object o);
 }

@@ -10,12 +10,12 @@ public interface AnalyzeFileEventListener extends EventListener
      *
      * @param event
      */
-    public void startAnalysis(AnalyzeFileEvent event);
+    void startAnalysis(AnalyzeFileEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void stopAnalysis(AnalyzeFileEvent event);
+    void stopAnalysis(AnalyzeFileEvent event);
 }

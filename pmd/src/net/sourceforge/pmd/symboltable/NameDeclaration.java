@@ -6,6 +6,6 @@
 package net.sourceforge.pmd.symboltable;
 
 public interface NameDeclaration {
-    public String getImage();
-    public Scope getScope();
+    String getImage();
+    Scope getScope();
 }

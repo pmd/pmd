@@ -15,5 +15,5 @@ public interface SearchRuleEventListener extends EventListener
      *
      * @param event
      */
-    public void setSearchRule(SearchRuleEvent event);
+    void setSearchRule(SearchRuleEvent event);
 }

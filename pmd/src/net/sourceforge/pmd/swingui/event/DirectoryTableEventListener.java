@@ -10,19 +10,19 @@ public interface DirectoryTableEventListener extends EventListener
      *
      * @param event
      */
-    public void requestSelectedFile(DirectoryTableEvent event);
+    void requestSelectedFile(DirectoryTableEvent event);
 
     /**
      ******************************************************************************
      *
      * @param event
      */
-    public void fileSelectionChanged(DirectoryTableEvent event);
+    void fileSelectionChanged(DirectoryTableEvent event);
 
     /**
      ******************************************************************************
      *
      * @param event
      */
-    public void fileSelected(DirectoryTableEvent event);
+    void fileSelected(DirectoryTableEvent event);
 }

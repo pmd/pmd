@@ -16,11 +16,11 @@ public interface RuleSetChangedEventListener extends EventListener
      *
      * @param ruleSet
      */
-    public void ruleSetChanged(RuleSetChangedEvent event);
+    void ruleSetChanged(RuleSetChangedEvent event);
 
     /**
      *********************************************************************************
      *
      */
-    public void ruleSetsChanged(RuleSetChangedEvent event);
+    void ruleSetsChanged(RuleSetChangedEvent event);
 }

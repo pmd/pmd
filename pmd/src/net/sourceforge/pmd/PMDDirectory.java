@@ -223,7 +223,6 @@ public class PMDDirectory
         try
         {
             RuleSetReader reader;
-
             inputStream = new FileInputStream(ruleSetFile);
             reader = new RuleSetReader();
             ruleSet = reader.read(inputStream, ruleSetFile.getName(), onlyIfIncluded);

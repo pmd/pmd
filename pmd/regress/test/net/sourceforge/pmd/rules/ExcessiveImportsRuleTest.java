@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.ExcessiveImportsRule;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.ExcessiveImportsRule;
 
 public class ExcessiveImportsRuleTest extends RuleTst {
 
