@@ -23,12 +23,10 @@ public abstract class StatisticalRule extends AbstractRule {
 
     private int count = 0;
     private double total = 0.0;
-    private double totalSquared = 0.0;
 
     public void addDataPoint(DataPoint point) {
         count++;
         total += point.getScore();
-        totalSquared += point.getScore() * point.getScore();
         dataPoints.add(point);
     }
 
