@@ -10,6 +10,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -18,7 +19,6 @@ import java.text.MessageFormat;
 public class DuplicateImportsRule extends AbstractRule {
 
     private Set allImports;
-    private boolean inImportCtx;
 
     public Object visit(ASTCompilationUnit node, Object data) {
         allImports = new HashSet();
@@ -26,26 +26,19 @@ public class DuplicateImportsRule extends AbstractRule {
         allImports = new HashSet();
         return data;
     }
-    public Object visit(ASTImportDeclaration node, Object data) {
-        inImportCtx = true;
-        super.visit(node,data);
-        inImportCtx = false;
-        return data;
-    }
 
-    public Object visit(ASTName node, Object data) {
-        if (inImportCtx) {
-            if (allImports.contains(node.getImage())) {
-                RuleContext ctx = (RuleContext)data;
-                String msg = MessageFormat.format(getMessage(), new Object[] {node.getImage()});
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), msg));
-            } else {
-                // TODO - look for:
-                // java.lang.ref.*
-                // java.lang.ref.WeakReference
-                //
-                allImports.add(node.getImage());
-            }
+    public Object visit(ASTImportDeclaration node, Object data) {
+        SimpleNode importNameNode = (SimpleNode)node.jjtGetChild(0);
+        if (allImports.contains(importNameNode.getImage())) {
+            RuleContext ctx = (RuleContext)data;
+            String msg = MessageFormat.format(getMessage(), new Object[] {importNameNode.getImage()});
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, importNameNode.getBeginLine(), msg));
+        } else {
+            // TODO - look for:
+            // java.lang.ref.*
+            // java.lang.ref.WeakReference
+            //
+            allImports.add(importNameNode.getImage());
         }
         return data;
     }
