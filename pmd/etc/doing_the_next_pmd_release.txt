@@ -32,7 +32,7 @@ cp ../lib/pmd-1.04.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.ja
 cp -R ../target/docs ~/tmp/pmd/
 cp -R ../test-data ~/tmp/pmd/
 cp -R ../xslt ~/tmp/pmd/
-zip -q -r ~/tmp/pmd-bin-1.04.zip ~/tmp/pmd/
+zip -q -r ~/tmp/pmd-bin-1.04.zip ~/tmp/pmd/  // TODO need to add a -b in here
 
 Time to tag:
 cvs -q rtag -D tomorrow "pmd_release_1_04" pmd
@@ -40,17 +40,17 @@ cvs -q rtag -D tomorrow "pmd_release_1_04" pmd
 Prepare source release:
 rm -rf ~/tmp/pmd
 mkdir -p ~/tmp/pmd
-cvs -q export -d ~/tmp/pmd -r pmd_release_1_04 pmd
-copy pmd/lib/pmd-1.04.jar ~/tmp/pmd/lib
-cp -R ../target/docs ~/tmp/pmd/
-zip -b ~/tmp/pmd pmd-src-1.04.zip
+cvs -q export -d /home/tom/tmp/pmd -r pmd_release_1_04 pmd
+cp pmd/lib/pmd-1.04.jar ~/tmp/pmd/lib
+cp -R pmd/target/docs ~/tmp/pmd/
+zip -q -r ~/tmp/pmd-src-1.04.zip ~/tmp/pmd // TODO need to add a -b in here
 
 if you see a bug and fix it, you can delete the release using:
 cvs rtag -d pmd_release_1_04 pmd
 and then retag everything
 
 FTP the zip file to SF
-ftp upload.sourceforge.net
+ncftp upload.sourceforge.net
 generic userid/password: anonymous/tom@infoether.com
 cd incoming
 bin

@@ -1,3 +1,6 @@
+????? - 1.05:
+TODO - update grammar - can we change setPublic(true) to setPublic()?
+
 March 21, 2003 - 1.04
 Added new rules: ConstructorCallsOverridableMethodRule, AtLeastOneConstructorRule, JUnitAssertionsShouldIncludeMessageRule, DoubleCheckedLockingRule, ExcessivePublicCountRule, AccessorClassGenerationRule
 The Ant task has been updated; if you set "verbose=true" full stacktraces are printed.  Thx to Paul Roebuck for the suggestion.
