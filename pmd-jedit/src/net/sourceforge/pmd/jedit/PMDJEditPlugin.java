@@ -62,13 +62,16 @@ public class PMDJEditPlugin extends EditPlugin {
     }
 
     public void instanceCheckDirectory(View view) {
-        DockableWindowManager wm = view.getDockableWindowManager();
-        VFSBrowser browser = (VFSBrowser)wm.getDockable("vfs.browser");
+        final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
         if(browser == null) {
             JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
             return;
         }
-        processFiles(findFilesInDirectory(browser.getDirectory()));
+        new Thread(new Runnable () {
+            public void run() {
+                processFiles(findFilesInDirectory(browser.getDirectory()));
+            }
+        }).start();
     }
 
     public static void checkDirectoryRecursively(View view) {
@@ -76,13 +79,16 @@ public class PMDJEditPlugin extends EditPlugin {
     }
 
     public void instanceCheckDirectoryRecursively(View view) {
-        DockableWindowManager wm = view.getDockableWindowManager();
-        VFSBrowser browser = (VFSBrowser)wm.getDockable("vfs.browser");
+        final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
         if(browser == null) {
             JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
             return;
         }
-        processFiles(findFilesRecursively(browser.getDirectory()));
+        new Thread(new Runnable () {
+            public void run() {
+                processFiles(findFilesRecursively(browser.getDirectory()));
+            }
+        }).start();
     }
 
     public static void check(Buffer buffer, View view) {
