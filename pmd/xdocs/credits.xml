@@ -34,13 +34,13 @@
         <ul>
             <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform</li>
             <li>Dan Sheppard - XPath engine integration concept and implementation</li>
+            <li>Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching</li>
         </ul>
         </subsection>
         <subsection name="Contributors">
         <ul>
             <li>Lori Olson - Caught copy/paste bug in rule descriptions</li>
             <li>Adrian Papari - Wrote the PapariTextRenderer</li>
-            <li>Steve Hawkins - improvements and optimizations to CPD - now it runs about 4 times faster!  CPD CSVRenderer</li>
             <li>Curt Cox - some additions to the 'Similar Projects' page</li>
             <li>Michael Griffel - bug fix for XMLRenderer</li>
             <li>Doug Tillman - correction to finalizers.xml examples</li>
