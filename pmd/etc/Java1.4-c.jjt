@@ -384,7 +384,7 @@ void UnmodifiedClassDeclaration() :
 {
   "class" t=<IDENTIFIER>
   {
-     ((ASTUnmodifiedClassDeclaration) jjtThis).setClassName( t.image );
+     jjtThis.setImage( t.image );
   }
   [ "extends" Name() ] [ "implements" NameList() ]
   ClassBody()
@@ -456,9 +456,13 @@ void NestedInterfaceDeclaration() :
 }
 
 void UnmodifiedInterfaceDeclaration() :
-{}
+{Token t = null; }
 {
-  "interface" <IDENTIFIER> [ "extends" NameList() ]
+  "interface" t=<IDENTIFIER>
+  {
+     jjtThis.setImage( t.image );
+  }
+  [ "extends" NameList() ]
   "{" ( InterfaceMemberDeclaration() )* "}"
 }
 

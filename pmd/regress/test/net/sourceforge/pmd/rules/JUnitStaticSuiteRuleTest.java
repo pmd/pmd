@@ -9,11 +9,15 @@ import net.sourceforge.pmd.rules.JUnitStaticSuiteRule;
 
 public class JUnitStaticSuiteRuleTest extends RuleTst {
 
-    public void test1() throws Throwable {
-        runTest("JUnitStaticSuite1.java", 2, new JUnitStaticSuiteRule());
+    public void testNonstatic() throws Throwable {
+        runTest("JUnitStaticSuite1.java", 1, new JUnitStaticSuiteRule());
     }
 
-    public void test2() throws Throwable {
+    public void testGoodOK() throws Throwable {
         runTest("JUnitStaticSuite2.java", 0, new JUnitStaticSuiteRule());
+    }
+
+    public void testPrivateSuite() throws Throwable {
+        runTest("JUnitStaticSuite3.java", 1, new JUnitStaticSuiteRule());
     }
 }

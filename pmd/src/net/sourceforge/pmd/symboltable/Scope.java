@@ -15,8 +15,10 @@ public interface Scope {
     public Iterator getUnusedDeclarations();
     public Map getUsedDeclarations();
     public void addDeclaration(NameDeclaration decl);
+    public void addMethodDeclaration(MethodNameDeclaration decl);
     public boolean contains(NameOccurrence occ);
     public NameDeclaration addOccurrence(NameOccurrence occ);
     public void setParent(Scope parent);
     public Scope getParent();
+    public Scope getEnclosingClassScope();
 }

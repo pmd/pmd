@@ -6,11 +6,13 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.ast.*;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
 import java.text.MessageFormat;
 
 public class UnusedPrivateMethodRule extends AbstractRule {
@@ -174,4 +176,23 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {node.getImage()})));
         }
     }
+
+/*
+TODO this uses the symbol table
+    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+        for (Iterator i = node.getScope().getUnusedMethodDeclarations();i.hasNext();) {
+            NameDeclaration decl = (NameDeclaration)i.next();
+            AccessNode accessNode = (AccessNode)decl.getNode().jjtGetParent();
+
+            // exclude non-private methods and serializable methods
+            if (!accessNode.isPrivate() || decl.getImage().equals("readObject") || decl.getImage().equals("writeObject")|| decl.getImage().equals("readResolve")) {
+                continue;
+            }
+
+            RuleContext ctx = (RuleContext)data;
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getNode().getBeginLine(), MessageFormat.format(getMessage(), new Object[] {decl.getNode().getImage()})));
+        }
+        return super.visit(node, data);
+    }
+*/
 }

@@ -10,7 +10,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 public class NameDeclaration {
 
-    private SimpleNode node;
+    protected SimpleNode node;
 
     public NameDeclaration(SimpleNode node) {
         this.node = node;
@@ -45,6 +45,6 @@ public class NameDeclaration {
     }
 
     public String toString() {
-        return node.getImage() + ":" + node.getBeginLine();
+        return "Variable " + node.getImage() + ":" + node.getBeginLine();
     }
 }

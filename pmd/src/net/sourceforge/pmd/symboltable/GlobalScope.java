@@ -10,6 +10,14 @@ import java.util.Collections;
 
 public class GlobalScope extends AbstractScope implements Scope {
 
+    public Scope getEnclosingClassScope() {
+        throw new RuntimeException("getEnclosingClassScope() called on GlobalScope");
+    }
+
+    public void addMethodDeclaration(MethodNameDeclaration decl) {
+        throw new RuntimeException("addMethodDeclaration() called on GlobalScope");
+    }
+
     public Iterator getUnusedDeclarations() {
         return Collections.EMPTY_LIST.iterator();
     }

@@ -15,9 +15,20 @@ public class ClassScope extends AbstractScope {
         this.className = className;
     }
 
+    public Scope getEnclosingClassScope() {
+        return this;
+    }
+
+    public void addMethodDeclaration(MethodNameDeclaration decl) {
+        if (methodNames.containsKey(decl)) {
+            return;
+            //throw new RuntimeException("Method " + decl + " is already in the symbol table");
+        }
+        methodNames.put(decl, new ArrayList());
+    }
+
     protected NameDeclaration findHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
-
             if (names.isEmpty()) {
                 // this could happen if you do this:
                 // public class Foo {
@@ -35,6 +46,7 @@ public class ClassScope extends AbstractScope {
             // and then we'll look up X.
             return (NameDeclaration)names.keySet().iterator().next();
         }
+
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
             NameDeclaration decl = (NameDeclaration)i.next();
             if (decl.getImage().equals(occurrence.getImage()) || (className + "." + decl.getImage()).equals(occurrence.getImage())) {

@@ -28,7 +28,7 @@ public class NameOccurrence {
     }
 
     public NameOccurrence getNameForWhichThisIsAQualifier() {
-        return this.qualifiedName;
+        return qualifiedName;
     }
 
     // do these two methods justify keeping a node as an instance var?

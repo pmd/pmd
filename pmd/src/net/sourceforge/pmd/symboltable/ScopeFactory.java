@@ -13,7 +13,7 @@ import java.util.HashSet;
 public class ScopeFactory {
 
     private Set localTriggers = new HashSet();
-    private Set functionTriggers = new HashSet();
+    private Set methodTriggers = new HashSet();
     private Set classTriggers = new HashSet();
     private Set globalTriggers = new HashSet();
 
@@ -24,14 +24,10 @@ public class ScopeFactory {
     public Scope createScope(Node node) {
         if (localTriggers.contains(node.getClass())) {
             return new LocalScope();
-        } else if (functionTriggers.contains(node.getClass())) {
+        } else if (methodTriggers.contains(node.getClass())) {
             return new MethodScope();
         } else if (classTriggers.contains(node.getClass())) {
-            if (node instanceof ASTUnmodifiedClassDeclaration) {
-                return new ClassScope(((ASTUnmodifiedClassDeclaration)node).getClassName());
-            } else {
-                return new ClassScope("UNKNOWN");
-            }
+            return new ClassScope(((SimpleNode)node).getImage());
         } else if (globalTriggers.contains(node.getClass())) {
             return new GlobalScope();
         }
@@ -43,9 +39,10 @@ public class ScopeFactory {
         localTriggers.add(ASTTryStatement.class);
         localTriggers.add(ASTForStatement.class);
         localTriggers.add(ASTIfStatement.class);
-        functionTriggers.add(ASTConstructorDeclaration.class);
-        functionTriggers.add(ASTMethodDeclaration.class);
+        methodTriggers.add(ASTConstructorDeclaration.class);
+        methodTriggers.add(ASTMethodDeclaration.class);
         classTriggers.add(ASTUnmodifiedClassDeclaration.class);
+        classTriggers.add(ASTUnmodifiedInterfaceDeclaration.class);
         globalTriggers.add(ASTCompilationUnit.class);
     }
 }

@@ -13,17 +13,8 @@ public class ASTUnmodifiedClassDeclaration extends SimpleNode {
     super(p, id);
   }
 
-
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
-
-    public String getClassName() {
-	return className;
-    }
-
-    public void setClassName(String className) {
-	this.className = className;
-    }
 }

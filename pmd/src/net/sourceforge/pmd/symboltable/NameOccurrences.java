@@ -32,6 +32,15 @@ public class NameOccurrences {
         return names.iterator();
     }
 
+    public String toString() {
+        String result = "";
+        for (Iterator i=names.iterator();i.hasNext();) {
+            NameOccurrence occ = (NameOccurrence)i.next();
+            result += occ.getImage();
+        }
+        return result;
+    }
+
     private void buildOccurrences(ASTPrimaryExpression node) {
         for (int i=0; i<node.jjtGetNumChildren(); i++) {
             SimpleNode child = (SimpleNode)node.jjtGetChild(i);

@@ -14,6 +14,7 @@ public class ScopeCreator extends JavaParserVisitorAdapter {
 
     public Object visit(ASTCompilationUnit node, Object data){openScope(node);return data;}
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data){openScope(node);return data;}
+    public Object visit(ASTUnmodifiedInterfaceDeclaration node, Object data){openScope(node);return data;}
     public Object visit(ASTBlock node, Object data){openScope(node);return data;}
     public Object visit(ASTConstructorDeclaration node, Object data){openScope(node);return data;}
     public Object visit(ASTMethodDeclaration node, Object data){openScope(node);return data;}

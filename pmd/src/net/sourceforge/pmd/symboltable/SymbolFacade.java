@@ -34,5 +34,4 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-
 }

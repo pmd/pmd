@@ -11,6 +11,11 @@ public abstract class AbstractScope implements Scope {
 
     private Scope parent;
     protected Map names = new HashMap();
+    protected Map methodNames = new HashMap();
+
+    public Scope getEnclosingClassScope() {
+        return parent.getEnclosingClassScope();
+    }
 
     public void setParent(Scope parent) {
         this.parent = parent;
@@ -22,10 +27,11 @@ public abstract class AbstractScope implements Scope {
 
     public void addDeclaration(NameDeclaration nameDecl) {
         if (names.containsKey(nameDecl)) {
-            throw new RuntimeException(nameDecl + " is already in the symbol table");
+            throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
         }
         names.put(nameDecl, new ArrayList());
     }
+
 
     public boolean contains(NameOccurrence occurrence) {
         return findHere(occurrence) != null;
@@ -61,6 +67,10 @@ public abstract class AbstractScope implements Scope {
             nameOccurrences.add(occurrence);
         }
         return decl;
+    }
+
+    public void addMethodDeclaration(MethodNameDeclaration decl) {
+        parent.addMethodDeclaration(decl);
     }
 
     protected abstract NameDeclaration findHere(NameOccurrence occurrence);
