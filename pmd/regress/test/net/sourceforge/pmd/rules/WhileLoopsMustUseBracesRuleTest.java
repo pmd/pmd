@@ -4,7 +4,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class WhileLoopsMustUseBracesRuleTest extends RuleTst {
+public class WhileLoopsMustUseBracesRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST1 =
     "public class WhileLoopsNeedBraces1 {" + CPD.EOL +
@@ -33,10 +33,10 @@ public class WhileLoopsMustUseBracesRuleTest extends RuleTst {
         rule.addProperty("xpath", "//WhileStatement[not(Statement/Block)]");
     }
 
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "no braces", 1, rule),
+           new TestDescriptor(TEST2, "with braces", 0, rule),
+       });
     }
 }

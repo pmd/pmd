@@ -4,7 +4,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class ShortVariableRuleTest extends RuleTst {
+public class ShortVariableRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST1 =
     "public class ShortVariableParam {" + CPD.EOL +
@@ -47,19 +47,13 @@ public class ShortVariableRuleTest extends RuleTst {
         rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)]");
     }
 
-    public void testShortVariableParam() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void testShortVariableNone() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void testShortVariableLocal() throws Throwable {
-        runTestFromString(TEST3, 1, rule);
-    }
-    public void testShortVariableFor() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
-    public void testShortVariableField() throws Throwable {
-        runTestFromString(TEST5, 1, rule);
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "param", 1, rule),
+           new TestDescriptor(TEST2, "none", 0, rule),
+           new TestDescriptor(TEST3, "local", 1, rule),
+           new TestDescriptor(TEST4, "for", 0, rule),
+           new TestDescriptor(TEST5, "field", 1, rule),
+       });
     }
 }
