@@ -17,6 +17,10 @@ public class ASTExplicitConstructorInvocation extends SimpleNode {
     return visitor.visit(this, data);
   }
 
+    public int getArgumentCount() {
+        return ((ASTArguments)this.jjtGetChild(0)).getArgumentCount();
+    }
+
     private boolean isThis;
     private boolean isSuper;
 
