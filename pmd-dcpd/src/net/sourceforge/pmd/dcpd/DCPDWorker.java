@@ -10,9 +10,12 @@ import net.jini.core.lease.Lease;
 import net.jini.core.event.RemoteEventListener;
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.UnknownEventException;
+import net.jini.core.entry.Entry;
+import net.sourceforge.pmd.cpd.*;
 
 import java.rmi.RemoteException;
 import java.rmi.MarshalledObject;
+import java.util.*;
 
 public class DCPDWorker {
 
@@ -44,14 +47,47 @@ public class DCPDWorker {
             tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, job.id), null, 100);
             System.out.println("Read a TokenSetsWrapper with " + tsw.tokenSets.size() + " token lists");
 
-            TileWrapper tw = null;
-            while ( (tw = (TileWrapper)space.take(new TileWrapper(null ,null, job.id), null, 100)) != null) {
-                System.out.println("tw = " + tw);
+            Entry tileWrapperQuery = space.snapshot(new TileWrapper(null, null, job.id));
+            TileWrapper tileWrapper = null;
+            while ((tileWrapper = (TileWrapper)space.take(tileWrapperQuery, null, 100)) != null) {
+                Occurrences results = expand(tileWrapper);
+                for (Iterator i = results.getTiles();i.hasNext();) {
+                    Tile tile = (Tile)i.next();
+                    TileWrapper newTW = new TileWrapper(tile, marshal(results.getOccurrences(tile)), job.id);
+                    System.out.println("Writing " + newTW.tile.getImage());
+                    space.write(newTW, null, Lease.FOREVER);
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private List marshal(Iterator i) {
+        List list = new ArrayList();
+        while (i.hasNext()) {
+            list.add(i.next());
+        }
+        return list;
+    }
+
+    private Occurrences expand(TileWrapper tileWrapper) {
+        Occurrences newOcc = new Occurrences(new CPDNullListener());
+        for (Iterator i = tileWrapper.occurrences.iterator(); i.hasNext();) {
+            TokenEntry tok = (TokenEntry)i.next();
+            TokenList tokenSet = tsw.tokenSets.getTokenList(tok);
+            if (tokenSet.hasTokenAfter(tileWrapper.tile, tok)) {
+                TokenEntry token = (TokenEntry)tokenSet.get(tok.getIndex() + tileWrapper.tile.getTokenCount());
+                // make sure the next token hasn't already been used in an occurrence
+                if (!newOcc.contains(token)) {
+                    Tile newTile = tileWrapper.tile.copy();
+                    newTile.add(token);
+                    newOcc.addTile(newTile, tok);
+                }
+            }
+        }
+        newOcc.deleteSoloTiles();
+        return newOcc;
     }
 
     public static void main(String[] args) {
