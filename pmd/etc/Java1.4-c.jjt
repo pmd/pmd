@@ -543,10 +543,14 @@ void MethodDeclaration() :
 }
 
 void MethodDeclarator() :
-{}
 {
-  <IDENTIFIER> FormalParameters() ( "[" "]" )*
+  Token t = null;
 }
+{
+  t=<IDENTIFIER> { jjtThis.setImage( t.image ); }
+  FormalParameters() ( "[" "]" )*
+}
+
 
 void FormalParameters() :
 {}
