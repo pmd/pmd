@@ -1,8 +1,3 @@
-/*
- * Created on Jan 19, 2005 
- *
- * $Id$
- */
 package net.sourceforge.pmd.ant;
 
 public class RuleSetWrapper {
