@@ -1,3 +1,7 @@
+
+UPDATE ANT TASK DOCS TO INCLUDE EXCLUDEMARKER ATTRIBUTE
+
+
 update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-2.3.jar
 update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-2.3
 update the release date in the changelog
@@ -68,7 +72,7 @@ if you see a bug and fix it, you can delete the release using:
 cvs rtag -d pmd_release_2_3 pmd
 and then retag everything
 
- 
+
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
 Add the pmd-bin-2.3.zip file
