@@ -27,7 +27,8 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST6, "calling private method using 'this' modifier", 0, rule),
            new TestDescriptor(TEST7, "simple unused private static method", 1, rule),
            new TestDescriptor(TEST8, "readResolve/writeReplace/etc are OK", 0, rule),
-           new TestDescriptor(BUG_1038229, "Private methods called only by themselves, BUG 1038229", 1, rule)
+           new TestDescriptor(BUG_1038229, "Private methods called only by themselves, BUG 1038229", 1, rule),
+           new TestDescriptor(BUG_1114754, "False +, BUG 1114754", 0, rule),
        });
     }
 
@@ -102,4 +103,18 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
         " bar(); " + PMD.EOL +
         " }" + PMD.EOL +
         "}";
+
+    private static final String BUG_1114754 =
+        "public class Foo {" + PMD.EOL +
+        "   public void methodFlagged(Object[] arrayObj) {" + PMD.EOL + 
+        "       for(int i=0; i<arrayObj.length; i++) {" + PMD.EOL + 
+        "           methodFlagged(arrayObj[i]);" + PMD.EOL + 
+        "       }" + PMD.EOL + 
+        "   }" + PMD.EOL + 
+        "   private void methodFlagged(Object a) {" + PMD.EOL + 
+        "       // bla bla bla" + PMD.EOL + 
+        "       a.toString();" + PMD.EOL + 
+        "   }" + PMD.EOL + 
+        "}";
+
 }
