@@ -78,6 +78,4 @@ public class PMDJEditPlugin extends EBPlugin {
     public void instanceDisplayPreferencesDialog(View view) {
         PMDOptionPane options = new PMDOptionPane();
     }
-
-
 }

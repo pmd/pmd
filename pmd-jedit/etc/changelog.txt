@@ -1,6 +1,6 @@
-???? 2002 - 0.2:
+July 9 2002 - 0.2:
 Fixed bug - a message, not an empty box, is now displayed if no errors are found.
-Added options pane so rulesets are selectable and selctions are persistant.
+Added options pane so rulesets are selectable and selections are persistant.
 
 July 8 2002 - 0.1:
 Initial release
