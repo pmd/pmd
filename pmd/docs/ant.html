@@ -33,7 +33,7 @@ Runs a set of PMD rules on a set of files and generates a report.
 <h3>Examples</h3>
 <pre>
     &lt;target name="pmd"&gt;
-        &lt;taskdef name="pmd" classname="com.infoether.pmd.PMDTask"/&gt;
+        &lt;taskdef name="pmd" classname="net.sourceforge.pmd.PMDTask"/&gt;
         &lt;pmd reportFile="c:\foo.txt" verbose="false" rulesettype="general"&gt;
             &lt;fileset dir="c:\j2sdk1.4.0\src\"&gt;
                 &lt;include name="**/*.java"/&gt;
