@@ -7,6 +7,11 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.TypeSet;
+import net.sourceforge.pmd.PMD;
+
+import java.io.File;
+import java.util.Set;
+import java.util.HashSet;
 
 public class TypeSetTest extends TestCase {
     public TypeSetTest(String name) {
@@ -22,12 +27,47 @@ public class TypeSetTest extends TestCase {
     public void testAddImport() {
         TypeSet t = new TypeSet();
         t.addImport("java.io.File");
+        assertEquals(1, t.getImportsCount());
     }
 
-    public void testFindClass() throws Throwable {
+
+    public void testFindClassImplicitImport() throws Throwable {
         TypeSet t = new TypeSet();
-        t.setASTCompilationUnitPackage("net.sourceforge.pmd.");
         Class clazz = t.findClass("String");
         assertEquals(String.class, clazz);
     }
+
+    public void testFindClassSamePackage() throws Throwable {
+        TypeSet t = new TypeSet();
+        t.setASTCompilationUnitPackage("net.sourceforge.pmd.");
+        Class clazz = t.findClass("PMD");
+        assertEquals(PMD.class, clazz);
+    }
+
+    public void testFindClassExplicitImport() throws Throwable {
+        TypeSet t = new TypeSet();
+        t.addImport("java.io.File");
+        Class clazz = t.findClass("File");
+        assertEquals(File.class, clazz);
+    }
+
+    // inner class tests
+    public void testExplicitImportResolver() throws Throwable {
+        Set imports = new HashSet();
+        imports.add("java.io.File");
+        TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(imports);
+        assertEquals(File.class,  r.resolve("File"));
+    }
+
+    public void testImplicitImportResolver() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        assertEquals(String.class, r.resolve("String"));
+    }
+
+    public void testCurrentPackageResolver() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.CurrentPackageResolver("net.sourceforge.pmd.");
+        assertEquals(PMD.class,  r.resolve("PMD"));
+    }
 }
+
+

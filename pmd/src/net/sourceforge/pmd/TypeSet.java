@@ -14,6 +14,49 @@ import java.util.Iterator;
  */
 public class TypeSet {
 
+
+    /**
+     * TODO should Resolver provide a canResolve() and a resolve()?
+     * Requiring 2 calls seems clunky... but so does this
+     * throwing an exception for flow control...
+     */
+    public interface Resolver {
+        Class resolve(String name) throws ClassNotFoundException;
+    }
+
+    public static class ExplicitImportResolver implements Resolver {
+        private Set imports;
+        public ExplicitImportResolver(Set imports) {
+            this.imports = imports;
+        }
+        public Class resolve(String name) throws ClassNotFoundException {
+            for (Iterator i = imports.iterator(); i.hasNext();) {
+                String importStmt = (String)i.next();
+                if (importStmt.endsWith(name)) {
+                    return Class.forName(importStmt);
+                }
+            }
+            throw new ClassNotFoundException("Type " + name + " not found");
+        }
+    }
+
+    public static class CurrentPackageResolver implements Resolver {
+        private String pkg;
+        public CurrentPackageResolver(String pkg) {
+            this.pkg = pkg;
+        }
+        public Class resolve(String name) throws ClassNotFoundException {
+            return Class.forName(pkg + name);
+        }
+    }
+
+    // TODO reference the relevant JLS section
+    public static class ImplicitImportResolver implements Resolver {
+        public Class resolve(String name) throws ClassNotFoundException {
+            return Class.forName("java.lang." + name);
+        }
+    }
+
     private String pkg;
     private Set imports = new HashSet();
 
@@ -29,25 +72,26 @@ public class TypeSet {
         imports.add(importString);
     }
 
+    public int getImportsCount() {
+        return imports.size();
+    }
+
     public Class findClass(String name) throws ClassNotFoundException {
-        // is it explicitly imported?
-        for (Iterator i = imports.iterator(); i.hasNext();) {
-            String importStmt = (String)i.next();
-            if (importStmt.endsWith(name)) {
-                return Class.forName(name);
-            }
-        }
-        // is it in the current package?
+
+        Resolver resolver = new ExplicitImportResolver(imports);
         try {
-            return Class.forName(pkg + name);
-        } catch (ClassNotFoundException cnfe) {
-        }
-        // is it in an implicity imported package - i.e., java.lang?
-        // TODO reference the relevant JLS section
+            return resolver.resolve(name);
+        } catch (ClassNotFoundException cnfe) {}
+
+        resolver = new CurrentPackageResolver(pkg);
         try {
-            return Class.forName("java.lang." + name);
-        } catch (ClassNotFoundException cnfe) {
-        }
+            return resolver.resolve(name);
+        } catch (ClassNotFoundException cnfe) {}
+
+        resolver = new ImplicitImportResolver();
+        try {
+            return resolver.resolve(name);
+        } catch (ClassNotFoundException cnfe) {}
         throw new ClassNotFoundException("Type " + name + " not found");
     }
 
