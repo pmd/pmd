@@ -40,11 +40,11 @@ public class XMLRenderer implements Renderer
       String codeFragment = match.getSourceCodeSlice();
       if (codeFragment != null)
       {
-        buffer.append("<codefragment><![CDATA[" + PMD.EOL + codeFragment + PMD.EOL + "]]></codefragment>");
+        buffer.append("<codefragment><![CDATA[" + PMD.EOL + StringUtil.replaceString(codeFragment, "]]>", "]]&gt;") + PMD.EOL + "]]></codefragment>");
       }
       buffer.append("</duplication>");
     }
     buffer.append("</pmd-cpd>");
-    return StringUtil.replaceString(buffer.toString(), "]]>", "]]&gt;");
+    return buffer.toString();
   }
 }
