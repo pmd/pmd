@@ -5,7 +5,6 @@ change config/jedit.html to reflect pmd-jedit release 2.0
 change the build.xml to reflect pmd-jedit release 2.0
 
 Create the binary release - 'ant release'
-mv pmd-jedit-bin-2.0.zip ~/tmp/
 Unzip it into jedit.home/jars
 TESTS:
 1) Can you run jedit ok?
