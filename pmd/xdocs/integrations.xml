@@ -31,9 +31,9 @@
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=100422">X</a></td></tr>
   <tr><td>JEdit</td>
       <td>pmd-jedit</td>
-      <td>0.6</td>
+      <td>0.7</td>
       <td>tomcopeland</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=101841">X</a></td></tr>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=103154">X</a></td></tr>
   <tr><td>Maven</td>
       <td>pmd-maven</td>
       <td>N/A</td>
@@ -115,8 +115,8 @@ you get a popup list of problems.  It uses the ErrorList plugin which provides t
 and syntax highlighting functionality.  Things to do:
 </p>
 <ul>
-<li>Add some stuff to the configuration thing so you can turn on/off individual rules.</li>
 <li>Clean up the threading so the GUI doesn't freeze while PMD is working</li>
+<li>Modify PMD so that it can stream new RuleViolations to the plugin
 </ul>
       </subsection>
       <subsection name="Maven">
