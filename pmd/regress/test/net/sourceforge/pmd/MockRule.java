@@ -20,6 +20,15 @@ public class MockRule implements Rule {
     private Set violations = new HashSet();
     private Properties properties = new Properties();
     private String description;
+    private String example;
+
+    public String getExample() {
+        return example;
+    }
+
+    public void setExample(String example) {
+        this.example = example;
+    }
 
     public String getDescription() {
         return description;

@@ -96,7 +96,7 @@ public void doSomething() {
        class="net.sourceforge.pmd.rules.design.LongParameterListRule">
    <description>
 This checks to make sure that the Parameter Lists in the project aren't
-getting too long.  If there are long parameter lists, then that is 
+getting too long.  If there are long parameter lists, then that is
 generally indicative that another object is hiding around there.
 
 Basically, try to group the parameters together.
@@ -116,8 +116,8 @@ At this time, only one can be used at a time.
    </properties>
    <example>
 <![CDATA[
-public void addData( 
-  int p00, int p01, int p02, int p03, int p04, int p05, 
+public void addData(
+  int p00, int p01, int p02, int p03, int p04, int p05,
   int p05, int p06, int p07, int p08, int p09, int p10) {
 
   }

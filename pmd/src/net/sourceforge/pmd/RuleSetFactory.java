@@ -73,6 +73,10 @@ public class RuleSetFactory {
                         rule.setDescription(node.getFirstChild().getNodeValue());
                     }
 
+                    if (node.getNodeName() != null && node.getNodeName().equals("example")) {
+                        rule.setExample(node.getFirstChild().getNodeValue());
+                    }
+
                     if (node.getNodeName().equals("properties")) {
                         Node propNode = node.getFirstChild();
                         while (propNode != null && propNode.getAttributes() != null) {

@@ -23,6 +23,7 @@ public abstract class AbstractRule
     private Properties properties = new Properties();
     private String message;
     private String description;
+    private String example;
 
     public String getDescription() {
         return description;
@@ -30,6 +31,14 @@ public abstract class AbstractRule
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getExample() {
+        return example;
+    }
+
+    public void setExample(String example) {
+        this.example = example;
     }
 
 	public boolean hasProperty( String name ) {
