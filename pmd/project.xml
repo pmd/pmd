@@ -4,7 +4,6 @@
   <id>pmd</id>
   <name>PMD</name>
   <currentVersion>0.9</currentVersion>
-  <logo>images/pmd_logo_small.jpg</logo>
   <organization>
     <name>Project Ultra*Log @ DARPA</name>
     <url>http://pmd.sourceforge.net/</url>
@@ -74,9 +73,7 @@
       <name>Tom Copeland</name>
       <id>tomcopeland</id>
       <email>tom@infoether.com</email>
-      <roles>
-        <role>Admin</role>
-      </roles>
+      <roles><role>foo</role></roles>
     </developer>
 
     <developer>
@@ -84,17 +81,14 @@
       <id>dpeugh</id>
       <email>ddp@apache.org</email>
       <organization>Lockheed Martin Corporation</organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
+      <roles><role>foo</role></roles>
     </developer>
 
     <developer>
       <name>David Craine</name>
       <id>dcraine</id>
-      <roles>
-        <role>Developer</role>
-      </roles>
+      <email>dave@infoether.com</email>
+      <roles><role>foo</role></roles>
     </developer>
   </developers>
 
@@ -117,13 +111,11 @@
 
   <dependencies>
     <dependency>
-      <name>JUnit</name>
       <id>junit</id>
       <version>3.7</version>
     </dependency>
 
     <dependency>
-      <name>Ant</name>
       <id>ant</id>
       <version>1.5</version>
     </dependency>
@@ -145,7 +137,7 @@
         <include>**/*Test.java</include>
       </includes>
     </unitTest>
- 
+
     <resources>
       <includes>
         <include>*.java</include>
@@ -154,5 +146,5 @@
 
     <jars>
     </jars>
-  </build> 
+  </build>
 </project>
