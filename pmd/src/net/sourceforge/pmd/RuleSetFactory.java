@@ -40,6 +40,10 @@ public class RuleSetFactory {
         }
     }
 
+    /**
+     * Creates a ruleset.  If passed a comma-delimited string (rulesets/basic.xml,rulesets/unusedcode.xml)
+     * it will parse that string and create a new ruleset for each item in the list.
+     */
     public RuleSet createRuleSet(String name) throws RuleSetNotFoundException {
         if (name.indexOf(',') == -1) {
            return createRuleSet(tryToGetStreamTo(name));
