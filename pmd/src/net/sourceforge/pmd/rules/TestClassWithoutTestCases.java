@@ -40,17 +40,7 @@ public class TestClassWithoutTestCases extends AbstractRule {
         return data;
 	}
 	private boolean isInInnerClassOrInterface(ASTMethodDeclarator md) {
-        return true;
-/*
-FIXME
-		Object p;
-		p = md.getFirstParentOfType(ASTNestedClassDeclaration.class);
-		if (p!=null)
-			return true;
-		p = md.getFirstParentOfType(ASTNestedInterfaceDeclaration.class);
-		if (p!=null)
-			return true;
-		return false;
-*/
+		ASTClassOrInterfaceDeclaration p = (ASTClassOrInterfaceDeclaration)md.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        return p != null && p.isNested();
 	}
 }
