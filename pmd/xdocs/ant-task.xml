@@ -33,7 +33,7 @@
   <tr>
     <td valign="top">rulesetfiles</td>
     <td valign="top">A comma delimited list of ruleset files ('rulesets/basic.xml,rulesets/design.xml').  If you write
-    your own ruleset files, they must be on the classpath.</td>
+    your own ruleset files, you can put them on the classpath and plug them in here.</td>
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>
