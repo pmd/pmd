@@ -1,9 +1,25 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class UnusedModifierRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public interface UnusedModifier1 {" + CPD.EOL +
+    " public void bar();" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public abstract class UnusedModifier2 {" + CPD.EOL +
+    " public abstract void bar();" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public interface UnusedModifier3 {" + CPD.EOL +
+    " abstract void bar();" + CPD.EOL +
+    "}";
 
     private Rule rule;
 
@@ -13,14 +29,12 @@ public class UnusedModifierRuleTest extends RuleTst {
     }
 
     public void testAbstract() throws Throwable {
-        runTestFromFile("UnusedModifier1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
-
     public void testAbstractClass() throws Throwable {
-        runTestFromFile("UnusedModifier2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
-
     public void testPublicAndAbstract() throws Throwable {
-        runTestFromFile("UnusedModifier3.java", 1, rule);
+        runTestFromString(TEST3, 1, rule);
     }
 }
