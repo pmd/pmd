@@ -16,7 +16,6 @@ import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class CommandLineOptions {
 
