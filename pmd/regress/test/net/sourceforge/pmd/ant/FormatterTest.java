@@ -11,6 +11,8 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import org.apache.tools.ant.BuildException;
 
+import java.io.File;
+
 public class FormatterTest extends TestCase {
 
     public void testType() {
@@ -31,12 +33,10 @@ public class FormatterTest extends TestCase {
         }
     }
 
-/*
     public void testNull() {
         Formatter f = new Formatter();
         assertTrue("Formatter toFile should start off null!", f.isToFileNull());
         f.setToFile(new File("foo"));
         assertFalse("Formatter toFile should not be null!", f.isToFileNull());
     }
-*/
 }

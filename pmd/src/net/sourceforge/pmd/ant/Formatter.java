@@ -40,7 +40,6 @@ public class Formatter {
             try {
                 renderer = (Renderer)Class.forName(type).newInstance();
             } catch (Exception e) {
-                e.printStackTrace();
                 throw new BuildException("Unable to instantiate custom formatter: " + type);
             }
         } else {
