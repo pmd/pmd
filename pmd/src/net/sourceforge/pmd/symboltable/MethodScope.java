@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.Applier;
 
 public class MethodScope extends AbstractScope {
 
-    protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
+    public NameDeclaration findVariableHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper()) {
             return null;
         }

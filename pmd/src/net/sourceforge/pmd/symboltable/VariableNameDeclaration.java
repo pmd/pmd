@@ -36,6 +36,10 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return node.getScope().getEnclosingClassScope();
     }
 
+    public boolean isArray() {
+        return ((ASTVariableDeclaratorId)node).getTypeNode().isArray();
+    }
+
     public boolean isExceptionBlockParameter() {
         return ((ASTVariableDeclaratorId) node).isExceptionBlockParameter();
     }

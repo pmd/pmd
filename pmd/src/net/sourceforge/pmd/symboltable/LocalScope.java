@@ -35,7 +35,7 @@ public class LocalScope extends AbstractScope {
         super.addDeclaration(nameDecl);
     }
 
-    protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
+    public NameDeclaration findVariableHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper()) {
             return null;
         }

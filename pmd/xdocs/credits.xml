@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Pieter Bloemendaal - AvoidReassigningParametersRule bug report</li>
             <li>Philippe Couton - UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
             <li>Vladimir Bossicard - suggested AbstractNamingRule, test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Ken Foskey - noticed bad link</li>
