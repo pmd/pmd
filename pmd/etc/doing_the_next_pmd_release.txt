@@ -65,3 +65,4 @@ Classify the file
 Redo the web site
 
 Submit some news saying "hey, new release!"
+Go to http://freshmeat.net/, say "hey, new release!"

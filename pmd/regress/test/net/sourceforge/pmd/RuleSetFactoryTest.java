@@ -189,7 +189,7 @@ public class RuleSetFactoryTest extends TestCase {
         RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(RULE_WITH_XPATH.getBytes()));
         Rule r = (Rule) rs.getRules().iterator().next();
         assertTrue(r.hasProperty("xpath"));
-        assertEquals(" //Block ", r.getStringProperty("xpath"));
+        assertTrue(r.getStringProperty("xpath").indexOf(" //Block ") != -1);
     }
 
     /*

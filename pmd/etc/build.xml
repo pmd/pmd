@@ -31,7 +31,7 @@
     <javac  deprecation="false"
             debug="true"
             optimize="false"
-            srcdir="${src}"
+            srcdir="${src}:${regress}"
             destdir="${build}">
 <classpath>
     <path refid="classpath.path"/>

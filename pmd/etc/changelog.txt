@@ -1,4 +1,5 @@
 ????, 2003 - 1.4:
+Fixed bug 760520 - RuleSetFactory is less strict about whitespace in ruleset.xml files.
 Fixed bug 826805 - JumbledIncrementorRule no longer reports a false positive when a outer loop incrementor is used as an array index
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 

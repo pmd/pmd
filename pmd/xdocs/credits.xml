@@ -12,7 +12,7 @@
         <ul>
             <li>David Dixon-Peugh - much of the early work on the grammar, initial Emacs plugin</li>
             <li>David Craine - JBuilder plugin</li>
-            <li>Philippe Herlin - Eclipse plugin</li>
+            <li>Philippe Herlin - Eclipse plugin, fixed bugs in RuleSetFactory</li>
             <li>Tom Burke - Eclipse plugin</li>
             <li>Tom Copeland - lead developer, JDeveloper plugin, Gel plugin, initial jEdit plugin, IDEAJ integration</li>
             <li>Don Leckie - The PMD GUI</li>
