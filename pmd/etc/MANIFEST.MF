@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Created-By: Ant 1.5.2
+Created-By: Ant 1.6.0
 Main-class: net.sourceforge.pmd.PMD
 
