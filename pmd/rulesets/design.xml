@@ -768,5 +768,29 @@ class Foo {
    }]]>
          </example>
        </rule>
+       
+     <rule name="AssignmentToNonFinalStatic"
+           symboltable="true"
+           message="Possible unsafe assignment to a non-final static field in a constructor."
+           class="net.sourceforge.pmd.rules.design.AssignmentToNonFinalStatic">
+       <description>
+       Identifies a possible unsafe usage of a static field.
+       </description>
+         <priority>3</priority>
+ 
+       <example>
+   <![CDATA[
+   public class StaticField {
+       static int x;
+ 
+       public FinalFields(int y) {
+           x = y;
+       }
+ 
+   }
+   Identifies the unasignment to x as possibly unsafe.
+   ]]>
+       </example>
+     </rule>
 
 </ruleset>
