@@ -35,6 +35,9 @@ public class XMLRenderer implements Renderer {
             buf.append("\"");
             buf.append(" ruleset=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName());
+            buf.append("\"");
+            buf.append(" priority=\"");
+            buf.append(rv.getRule().getPriority());
             buf.append("\">");
             buf.append(PMD.EOL);
             StringUtil.appendXmlEscaped(buf, rv.getDescription());

@@ -25,11 +25,11 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.StringReader;
 import java.util.Iterator;
 
 public class Designer {
-
 
     private class ShowListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
@@ -54,9 +54,8 @@ public class Designer {
                 RuleSet rs = new RuleSet();
                 rs.addRule(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
-                ctx.setSourceCodeFilename("");
                 new PMD().processFile(new StringReader(codeEditorPane.getText()), rs, ctx);
-                dfaPanel.resetTo((ASTMethodDeclaration)dfaGraphRule.getMethods().get(0), codeEditorPane);
+                dfaPanel.resetTo(dfaGraphRule.getMethods(), codeEditorPane);
                 dfaPanel.repaint();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -119,11 +118,13 @@ public class Designer {
 
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
 
-        dfaPanel = new DFAPanel(null, codeEditorPane);
+        dfaPanel = new DFAPanel();
 
         JTabbedPane tabbed = new JTabbedPane();
         tabbed.addTab("Abstract Syntax Tree / XPath", resultsSplitPane);
+        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
         tabbed.addTab("Data Flow Analysis", dfaPanel);
+        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
 
         JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, tabbed);
 
