@@ -33,7 +33,7 @@ public class Test {
 
     public Test() {
         try {
-            JavaSpace space = Util.findSpace("mordor");
+            JavaSpace space = Util.findSpace(Util.SPACE_SERVER);
 
             long start = System.currentTimeMillis();
             System.out.println("WRITING");

@@ -26,23 +26,67 @@ public class DCPD {
 
     private JavaSpace space;
     private Job job;
-    private TokenSetsWrapper tsw;
+    private TokenSetsWrapper tokenSetWrapper;
+    private Results results;
 
     public DCPD(String javaSpaceURL) {
         try {
             System.out.println("Connecting to JavaSpace");
             space = Util.findSpace(javaSpaceURL);
-            job = new Job("java_lang", new Integer(1));
+
             System.out.println("Tokenizing");
-            tsw = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true), job.id);
-            System.out.println("Writing the Job to the space");
-            space.write(job, null, Lease.FOREVER);
+            job = new Job("java_lang", new Integer(1));
+            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\ref\\", true), job.id);
+
             System.out.println("Writing the TokenSetsWrapper to the space");
-            space.write(tsw, null, Lease.FOREVER);
+            space.write(tokenSetWrapper, null, Lease.FOREVER);
+
+            System.out.println("Crunching");
+            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 50);
+            results = dgst.crunch(new CPDListenerImpl());
+
+
+
+/*
+            System.out.println(render());
+*/
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't connect to the space on " + javaSpaceURL);
         }
+    }
+
+    public String getImage(Tile tile) {
+        try {
+            Iterator i = results.getOccurrences(tile);
+            TokenEntry firstToken = (TokenEntry)i.next();
+            TokenList tl = tokenSetWrapper.tokenSets.getTokenList(firstToken);
+            int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSetWrapper.tokenSets);
+            return tl.getSlice(firstToken.getBeginLine()-1, endLine-1);
+        } catch (Exception ex) {ex.printStackTrace(); }
+        return "";
+    }
+
+    protected String EOL = System.getProperty("line.separator", "\n");
+
+    private String render() {
+        StringBuffer sb = new StringBuffer();
+        for (Iterator i = results.getTiles(); i.hasNext();) {
+            Tile tile = (Tile)i.next();
+            sb.append("=============================================================");
+            sb.append(EOL);
+            sb.append("A " + results.getTileLineCount(tile, tokenSetWrapper.tokenSets) + " line (" + tile.getTokenCount() + " tokens) duplication:");
+            sb.append(EOL);
+            for (Iterator j = results.getOccurrences(tile); j.hasNext();) {
+                TokenEntry tok = (TokenEntry)j.next();
+                sb.append("Starting at line " + tok.getBeginLine() + " in " + tok.getTokenSrcID());
+                sb.append(EOL);
+            }
+            sb.append(getImage(tile));
+            sb.append(EOL);
+        }
+        return sb.toString();
     }
 
     private TokenSets loadTokens(String dir, boolean recurse) throws IOException {
@@ -50,12 +94,12 @@ public class DCPD {
         FileFinder finder = new FileFinder();
         List files = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
         for (Iterator i = files.iterator(); i.hasNext();) {
-            tokenSets.add(add(files.size(), (File)i.next()));
+            tokenSets.add(tokenizeFile(files.size(), (File)i.next()));
         }
         return tokenSets;
     }
 
-    private TokenList add(int fileCount, File file) throws IOException {
+    private TokenList tokenizeFile(int fileCount, File file) throws IOException {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
@@ -65,6 +109,6 @@ public class DCPD {
     }
 
     public static void main(String[] args) {
-        new DCPD("mordor");
+        new DCPD(Util.SPACE_SERVER);
     }
 }

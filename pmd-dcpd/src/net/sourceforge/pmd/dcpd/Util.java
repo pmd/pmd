@@ -18,24 +18,25 @@ import java.net.MalformedURLException;
 
 public class Util {
 
+    public static final String SPACE_SERVER = "mordor";
+
     public static JavaSpace findSpace(String serverName) throws ClassNotFoundException, MalformedURLException, IOException, RemoteException {
         ServiceRegistrar registrar = (new LookupLocator("jini://" + serverName)).getRegistrar();
         ServiceMatches sm = registrar.lookup(new ServiceTemplate(null, new Class[] {JavaSpace.class}, new Entry[] {}),  1);
         return (JavaSpace)sm.items[0].service;
     }
 
+
     public static void main(String[] args) {
         try {
-            if (args[0].equals("clearjobs")) {
-                JavaSpace space = Util.findSpace("mordor");
-                Job job = null;
-                while ( (job = (Job)space.take(new Job(), null, 100)) != null) {
-                    System.out.println("take(Job) succeeded");
-                    space.take(new TokenSetsWrapper(null, job.id), null, 100);
-                    System.out.println("take(TokenSetsWrapper) succeeded");
+            if (args[0].equals("clear")) {
+                JavaSpace space = Util.findSpace(SPACE_SERVER);
+                Entry e = null;
+                while ( (e = space.take(null, null, 100)) != null) {
+                    System.out.println("took " + e);
                 }
             } else {
-                System.out.println("Usage: clearjobs");
+                System.out.println("Usage: clear");
             }
             System.out.println("Done");
         } catch (Exception e) {
