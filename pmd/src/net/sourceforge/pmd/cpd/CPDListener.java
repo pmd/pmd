@@ -11,5 +11,5 @@ public interface CPDListener {
     public void update(String msg);
     public void addedFile(int fileCount, File file);
     public void addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID);
-    public void expandingTile(String tileImage);
+    public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles);
 }

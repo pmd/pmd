@@ -24,6 +24,13 @@ public class GUI implements CPDListener {
         public void actionPerformed(ActionEvent e) {
             new Thread(new Runnable() {
                 public void run() {
+									  addingTokensBar.setValue(0);
+									  tokenizingFilesBar.setValue(0);
+										tilesOnThisPassBar.setValue(0);
+									  addingTokensBar.setString("");
+									  tokenizingFilesBar.setString("");
+										tilesOnThisPassBar.setString("");
+										resultsTextArea.setText("");
                     go();
                 }
             }).start();
@@ -49,15 +56,17 @@ public class GUI implements CPDListener {
 
     //private JTextField rootDirectoryField= new JTextField("C:\\data\\datagrabber\\datagrabber\\src\\org\\cougaar\\mlm\\ui\\newtpfdd\\transit\\");
     //private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
-    private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
+    private JTextField rootDirectoryField= new JTextField("C:\\j2sdk1.4.0_01\\src\\java\\lang\\reflect");
     private JTextField minimumLengthField= new JTextField("30");
 
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JProgressBar addingTokensBar = new JProgressBar();
 
+    private JTextField currentTileField = new JTextField(20);
+    private JProgressBar tilesOnThisPassBar = new JProgressBar();
+
     private JTextArea resultsTextArea = new JTextArea();
 
-    private JTextField expandingTileField = new JTextField(50);
     private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
 
     private JFrame frame;
@@ -85,6 +94,7 @@ public class GUI implements CPDListener {
         littlePanel.add(browseButton);
         inputPanel.add(littlePanel);
         inputPanel.add(new JLabel("Enter a minimum tile size"));
+				minimumLengthField.setColumns(4);
         inputPanel.add(minimumLengthField);
         inputPanel.add(recurseCheckbox);
 
@@ -110,7 +120,8 @@ public class GUI implements CPDListener {
         progressPanel.add(panel2, BorderLayout.CENTER);
         JPanel panel3 = new JPanel();
         panel3.add(new JLabel("Current tile"));
-        panel3.add(expandingTileField);
+        panel3.add(currentTileField);
+				panel3.add(tilesOnThisPassBar);
         progressPanel.add(panel3, BorderLayout.SOUTH);
         progressPanel.setBorder(BorderFactory.createTitledBorder("Progress"));
 
@@ -138,6 +149,10 @@ public class GUI implements CPDListener {
             CPD cpd = new CPD();
             cpd.setListener(this);
             cpd.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
+						tilesOnThisPassBar.setMinimum(0);
+            tilesOnThisPassBar.setStringPainted(true);
+						addingTokensBar.setMinimum(0);
+						tokenizingFilesBar.setMinimum(0);
             addingTokensBar.setStringPainted(true);
             if (rootDirectoryField.getText().endsWith(".java")) {
                 cpd.add(new File(rootDirectoryField.getText()));
@@ -149,9 +164,9 @@ public class GUI implements CPDListener {
                 }
             }
             cpd.go();
+						currentTileField.setText("");
             CPDRenderer renderer = new TextRenderer();
-            resultsTextArea.setText("");
-            resultsTextArea.append(renderer.render(cpd));
+            resultsTextArea.setText(renderer.render(cpd));
         } catch (IOException ioe) {
             ioe.printStackTrace();
             JOptionPane.showMessageDialog(null, "Halted due to " + ioe.getClass().getName() + "; " + ioe.getMessage());
@@ -163,13 +178,11 @@ public class GUI implements CPDListener {
     }
 
     public void addedFile(int fileCount, File file) {
-        tokenizingFilesBar.setMinimum(0);
         tokenizingFilesBar.setMaximum(fileCount);
         tokenizingFilesBar.setValue(tokenizingFilesBar.getValue()+1);
     }
 
     public void addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
-        addingTokensBar.setMinimum(0);
         addingTokensBar.setMaximum(tokenSetCount);
         if (tokenSrcID.indexOf("/") != -1) {
             addingTokensBar.setString(findName(tokenSrcID, "/"));
@@ -183,12 +196,19 @@ public class GUI implements CPDListener {
         addingTokensBar.setValue(doneSoFar);
     }
 
-    public void expandingTile(String tileImage) {
-        addingTokensBar.setValue(addingTokensBar.getMaximum());
-        addingTokensBar.setString("");
-        expandingTileField.setText(tileImage);
-    }
-
+    public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
+			addingTokensBar.setValue(addingTokensBar.getMaximum());
+			addingTokensBar.setString("");
+			if (tile.getImage().length() <= 20) {
+				currentTileField.setText(tile.getImage());
+			} else {
+				currentTileField.setText(tile.getImage().substring(0,20));
+			}
+			tilesOnThisPassBar.setMaximum(totalTiles);
+      tilesOnThisPassBar.setValue(tilesSoFar);
+			tilesOnThisPassBar.setString(tilesSoFar + "/" + totalTiles);
+		}
+		
     private String findName(String name, String slash) {
         int lastSlash = name.lastIndexOf(slash)+1;
         return name.substring(lastSlash);

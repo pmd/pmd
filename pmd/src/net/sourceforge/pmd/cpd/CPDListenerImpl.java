@@ -20,9 +20,10 @@ public class CPDListenerImpl implements CPDListener{
         update("Adding token set " +  tokenSrcID);
     }
 
-    public void expandingTile(String tileImage) {
-        update("Expanding tile " +  tileImage);
-    }
+    public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
+			  update("Added new tile " + tile.getImage());
+		}
+		
 
 
 }
