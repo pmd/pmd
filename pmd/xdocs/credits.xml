@@ -40,7 +40,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many pmd-web ideas</li>
+            <li>Morgan Schweers - Javascript highlighter for the PMD scoreboard</li>
+            <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many PMD scoreboard ideas</li>
             <li>Radim Kubacki - OptimizableToArrayCallRule suggestion, bug reports, pmd-netbeans feedback</li>
             <li>Will Sargent - AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Mike Thome - BadComparisonRule suggestion</li>
@@ -83,7 +84,7 @@
             <li>Paul Roebuck - Ant build improvement, several bug reports</li>
             <li>Jon A. Maxwell - Bug report</li>
             <li>Erik Lee - Bug report</li>
-            <li>Joerg K. Wegner - pmd-web suggestions</li>
+            <li>Joerg K. Wegner - PMD scoreboard suggestions</li>
             <li>Chris Webster - fix (and test) for UnnecessaryConstructorRule, BooleanInstantiation rule</li>
             <li>Colin Simmonds - detailed bug reports</li>
             <li>Trond Andersen - AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking</li>
@@ -121,7 +122,7 @@
             <li>David Whitmore - parser bug report</li>
             <li>David Campbell - detailed bugs reports, Ant task refactoring, documentation tweaks</li>
             <li>Michael Sutherland - bug report in IfStmtMustUseBracesRule</li>
-            <li>Egon Willighagen - pmd-web suggestion</li>
+            <li>Egon Willighagen - PMD scoreboard suggestion</li>
             <li>Didier Duquennoy - pmd-netbeans feedback</li>
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Frederic Harper - bug report and subsequent troubleshooting</li>
@@ -137,7 +138,7 @@
             <li>Paul Kendall - enhanced EmptyCatchBlock rule</li>
             <li>Sean Sullivan - rule suggestions</li>
             <li>Dale Vissar - rule suggestions</li>
-            <li>Alina Copeland - pmd-web formulas, pmd-dcpd optimizations</li>
+            <li>Alina Copeland - PMD scoreboard formulas, pmd-dcpd optimizations</li>
             <li>Vincent Massol - bug reports, design suggestions, feature suggestions, Maven guidance</li>
             <li>Peter Donald - design suggestions</li>
             <li>Liam Holohan - bug reports</li>
