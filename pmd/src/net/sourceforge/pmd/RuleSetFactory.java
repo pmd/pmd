@@ -1,6 +1,7 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.rules.XPathRule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -116,15 +117,6 @@ public class RuleSetFactory {
         ruleSet.addRule(rule);
     }
 
-    /**
-     * Here's how to exclude rules:
-     *
-     * <rule ref="rulesets/braces.xml">
-     * <exclude name="WhileLoopsMustUseBracesRule"/>
-     * <exclude name="IfElseStmtsMustUseBracesRule"/>
-     * </rule>
-     *
-     */
     private void parseExternallyDefinedRule(RuleSet ruleSet, Node ruleNode) throws RuleSetNotFoundException {
         String referenceValue = ruleNode.getAttributes().getNamedItem("ref").getNodeValue();
         if (referenceValue.endsWith("xml")) {
@@ -175,6 +167,9 @@ public class RuleSetFactory {
         if (propName.equals("xpath")) {
             Node xpathExprNode = propNode.getFirstChild().getNextSibling();
             propValue = xpathExprNode.getFirstChild().getNextSibling().getNodeValue();
+            if (propNode.getAttributes().getNamedItem("pluginname") != null) {
+                rule.addProperty("pluginname", propNode.getAttributes().getNamedItem("pluginname").getNodeValue());
+            }
         } else {
             propValue = propNode.getAttributes().getNamedItem("value").getNodeValue();
         }

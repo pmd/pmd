@@ -5,6 +5,7 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Enumeration;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
@@ -36,8 +37,8 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         return properties.containsKey(name);
     }
 
-    public void addProperty(String name, String property) {
-        properties.setProperty(name, property);
+    public void addProperty(String name, String value) {
+        properties.setValue(name, value);
     }
 
     public double getDoubleProperty(String name) {

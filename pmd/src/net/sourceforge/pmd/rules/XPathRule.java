@@ -10,6 +10,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -36,7 +37,11 @@ public class XPathRule extends AbstractRule {
             for (Iterator iter = xpath.selectNodes(node).iterator(); iter.hasNext();) {
                 SimpleNode actualNode = (SimpleNode) iter.next();
                 RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, actualNode.getBeginLine(), getMessage()));
+                String msg = getMessage();
+                if (actualNode instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
+                    msg = MessageFormat.format(msg, new Object[]{actualNode.getImage()});
+                }
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, actualNode.getBeginLine(), msg));
             }
         } catch (JaxenException ex) {
             throwJaxenAsRuntime(ex);

@@ -11,66 +11,50 @@ import java.util.Properties;
  */
 public class RuleProperties {
 
-    private Properties m_properties = new Properties();
+    private Properties properties = new Properties();
 
     // Constants
     private static final String SEPARATOR = "&PS;";
 
     public boolean containsKey(String name) {
-        return m_properties.containsKey(name);
+        return properties.containsKey(name);
     }
 
-    /**
-     ******************************************************************************
-     *
-     * Returns an enumeration of the property names in this properties table.
-     *
-     * @return An enumeration of the property names in this properties table.
-     */
     public Enumeration keys() {
-        return m_properties.keys();
+        return properties.keys();
     }
 
     public int size() {
-        return m_properties.size();
+        return properties.size();
     }
 
     public String getValue(String name) {
-        name = (name == null) ? "" : name.trim();
-
-        if (name.length() > 0) {
-            String property = m_properties.getProperty(name);
-
-            if (property != null) {
-                int index = property.indexOf(SEPARATOR);
-
-                return (index < 0) ? property : property.substring(0, index);
-            }
+        String property = properties.getProperty(name);
+        if (property == null) {
+            return null;
         }
-
-        return "";
+        int index = property.indexOf(SEPARATOR);
+        if (index == -1) {
+            return property;
+        }
+        return property.substring(0, index);
     }
 
     public String getValueType(String name) {
-        name = (name == null) ? "" : name.trim();
-
         if (name.length() > 0) {
-            String property = m_properties.getProperty(name);
-
+            String property = properties.getProperty(name);
             if (property != null) {
                 int index = property.indexOf(SEPARATOR) + SEPARATOR.length();
-
                 if (index > 0) {
                     return property.substring(index);
                 }
             }
         }
-
         return "";
     }
 
     public boolean getBooleanValue(String name) {
-        return Boolean.getBoolean(getValue(name));
+        return Boolean.valueOf(getValue(name)).booleanValue();
     }
 
     public double getDoubleValue(String name) {
@@ -93,25 +77,10 @@ public class RuleProperties {
         return getValue(name);
     }
 
-    public Object setProperty(String name, String value) {
-        setValue(name, value);
-
-        return null;
-    }
-
     public void setValue(String name, String value) {
-        name = (name == null) ? "" : name.trim();
-
-        if (name.length() > 0) {
-            if (value == null) {
-                value = "";
-            }
-
-            String valueType = getValueType(name);
-            String property = value + SEPARATOR + valueType;
-
-            m_properties.setProperty(name, property);
-        }
+        String valueType = getValueType(name);
+        String property = value + SEPARATOR + valueType;
+        properties.setProperty(name, property);
     }
 
     public void setValueType(String name, String valueType) {
@@ -125,7 +94,7 @@ public class RuleProperties {
             String value = getValue(name);
             String property = value + SEPARATOR + valueType;
 
-            m_properties.setProperty(name, property);
+            properties.setProperty(name, property);
         }
     }
 }

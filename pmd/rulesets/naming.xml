@@ -7,13 +7,13 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
 
 
   <rule name="ShortVariable"
-        message="Avoid variables with short names"
+        message="Avoid variables with short names like {0}"
         class="net.sourceforge.pmd.rules.XPathRule">
     <description>
 Detects when a field, local or parameter has a short name.
     </description>
       <properties>
-          <property name="xpath">
+          <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
     //VariableDeclaratorId[string-length(@Image) < 3]
@@ -42,14 +42,14 @@ public class Something {
   </rule>
 
   <rule name="LongVariable"
-        message="Avoid excessively long variable names"
+        message="Avoid excessively long variable names like {0}"
         class="net.sourceforge.pmd.rules.XPathRule">
     <description>
-Detects when a field, formal or local variable is declared with a big name.
+Detects when a field, formal or local variable is declared with a long name.
     </description>
       <priority>3</priority>
       <properties>
-          <property name="xpath">
+          <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
     //VariableDeclaratorId[string-length(@Image) > 12]
