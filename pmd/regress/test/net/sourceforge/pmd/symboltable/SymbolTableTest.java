@@ -13,27 +13,27 @@ public class SymbolTableTest extends TestCase {
 
     public void testPush() {
         SymbolTable s = new SymbolTable();
-        s.push(new LocalScope());
-        assertEquals(2,s.depth());
+        s.push(new GlobalScope());
+        assertEquals(1,s.depth());
     }
 
     public void testPop() {
         SymbolTable s = new SymbolTable();
-        s.push(new LocalScope());
+        s.push(new GlobalScope());
         s.pop();
-        assertEquals(1,s.depth());
+        assertEquals(0,s.depth());
     }
 
     public void testPeek() {
         SymbolTable s = new SymbolTable();
-        Scope scope = new LocalScope();
+        Scope scope = new GlobalScope();
         s.push(scope);
         assertEquals(scope, s.peek());
     }
 
     public void testParentLinkage() {
         SymbolTable s = new SymbolTable();
-        Scope scope = new LocalScope();
+        Scope scope = new GlobalScope();
         s.push(scope);
         Scope scope2 = new LocalScope();
         s.push(scope2);

@@ -14,10 +14,6 @@ public class SymbolTable {
     // and the individual scopes provide the other part
     private Stack scopes = new Stack();
 
-    public SymbolTable() {
-        scopes.add(new LocalScope());
-    }
-
     public Scope peek() {
         return (Scope)scopes.peek();
     }
@@ -27,7 +23,13 @@ public class SymbolTable {
     }
 
     public void push(Scope scope) {
-        scope.setParent(peek());
+        if (scopes.empty()) {
+            if (!(scope instanceof GlobalScope)) {
+                throw new RuntimeException("First scope should be a GlobalScope");
+            }
+        } else {
+            scope.setParent(peek());
+        }
         scopes.add(scope);
     }
 
