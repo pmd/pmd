@@ -31,6 +31,19 @@ public class NameOccurrence {
         return qualifiedName;
     }
 
+    public boolean isOnLeftHandSide() {
+        SimpleNode top = null;
+        if (occurrenceLocation.jjtGetParent() instanceof ASTPrimaryExpression) {
+            top = (SimpleNode)occurrenceLocation.jjtGetParent().jjtGetParent();
+        } else if (occurrenceLocation.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
+            top = (SimpleNode)occurrenceLocation.jjtGetParent().jjtGetParent().jjtGetParent();
+        } else {
+            throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + occurrenceLocation.jjtGetParent() + " and grandparent = " + occurrenceLocation.jjtGetParent().jjtGetParent());
+        }
+
+        return top.jjtGetNumChildren() > 1 && top.jjtGetChild(1) instanceof ASTAssignmentOperator;
+    }
+
     // do these two methods justify keeping a node as an instance var?
     public Scope getScope() {
         return occurrenceLocation.getScope();
@@ -59,6 +72,6 @@ public class NameOccurrence {
     }
 
     public String toString() {
-        return getImage() + ":" + occurrenceLocation.getBeginLine();
+        return getImage() + ":" + occurrenceLocation.getBeginLine() + ":" + occurrenceLocation.getClass();
     }
 }

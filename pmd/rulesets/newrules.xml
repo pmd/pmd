@@ -23,6 +23,25 @@ public class Foo {
 ]]>
     </example>
     </rule>
+
+
+    <rule name="AvoidReassigningParametersRule"
+        message="Avoid reassigning parameters such as ''{0}''"
+        class="net.sourceforge.pmd.rules.AvoidReassigningParametersRule">
+    <description>
+Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
+    </description>
+    <example>
+<![CDATA[
+public class Foo {
+ private void foo(String bar) {
+  bar = "something else";
+ }
+}
+]]>
+    </example>
+  </rule>
+
   </ruleset>
 
 
