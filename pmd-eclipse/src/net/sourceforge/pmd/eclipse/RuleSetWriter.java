@@ -27,15 +27,21 @@ import java.io.Writer;
 import net.sourceforge.pmd.RuleSet;
 
 /**
- * Description goes here
+ * Interface for a rule set writer
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/10/16 22:29:23  phherlin
+ * Oops. Writing comments.
+ *
  * Revision 1.3  2003/10/16 22:26:37  phherlin
  * Fix bug #810858.
  * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
+ * 
+ * -- Old version renamed to RuleSetWriterImpl --
+ * -- Now RuleSetWriter is an interface        --
  *
  */
 public interface RuleSetWriter {
