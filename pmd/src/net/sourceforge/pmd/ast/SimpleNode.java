@@ -3,8 +3,8 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.symboltable.Scope;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleNode implements Node {
   protected Node parent;

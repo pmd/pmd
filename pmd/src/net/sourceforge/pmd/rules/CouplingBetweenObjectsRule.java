@@ -1,8 +1,5 @@
 package net.sourceforge.pmd.rules;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassDeclaration;
@@ -14,6 +11,9 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.SimpleNode;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -29,19 +29,9 @@ import net.sourceforge.pmd.ast.SimpleNode;
 public class CouplingBetweenObjectsRule extends AbstractRule {
 
 	private String className;
-	private int coupledCount;
-	private Set varSet;
+	private int couplingCount;
+	private Set typesFoundSoFar;
 
-	/**
-	 * returns the threshold value found in the xml descriptor
-	 */
-	private int getThreshold(){
-		int threshold = 0;
-		if(this.hasProperty("threshold") ) {
-			threshold = (int)getDoubleProperty("threshold");
-		}
-		return threshold;
-	}
 	/**
 	 * handles the source file
 	 *
@@ -50,15 +40,14 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
 	 * @param Object data
 	 */
 	public Object visit(ASTCompilationUnit cu, Object data){
-        this.varSet = new HashSet();
-        this.coupledCount = 0;
-        int thresh = this.getThreshold();
+        this.typesFoundSoFar = new HashSet();
+        this.couplingCount = 0;
 
         Object returnObj = cu.childrenAccept(this, data);
 
-        if (this.coupledCount > thresh) {
+        if (this.couplingCount > getIntProperty("threshold")) {
           	RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, cu.getBeginLine(), "A value of " + this.coupledCount + " may denote a high amount of coupling within the class" ));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, cu.getBeginLine(), "A value of " + this.couplingCount + " may denote a high amount of coupling within the class" ));
         }
 
         return returnObj;
@@ -161,9 +150,9 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
 	private void checkVariableType(String variableType){
 		//if the field is of any type other than the class type
 		//increment the count
-		if(!this.className.equals(variableType) && (!this.filterTypes(variableType)) && !this.varSet.contains(variableType)){
-            this.coupledCount++;
-            this.varSet.add(variableType);
+		if(!this.className.equals(variableType) && (!this.filterTypes(variableType)) && !this.typesFoundSoFar.contains(variableType)){
+            this.couplingCount++;
+            this.typesFoundSoFar.add(variableType);
 		}
 	}
 

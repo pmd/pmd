@@ -8,7 +8,6 @@ import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AssignmentInOperandRule extends AbstractRule implements Rule {
