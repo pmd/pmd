@@ -45,12 +45,6 @@
               </ul>
           </ul>
       </subsection>
-
-      <subsection name="Utilities">
-          <ul>
-              <li>It'd be nice to have a utility that would run each PMD rule on, say, the JDK, and time it.  Then we could see where our bottlenecks are.</li>
-          </ul>
-      </subsection>
       </section>
   </body>
 </document>

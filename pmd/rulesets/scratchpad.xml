@@ -6,8 +6,6 @@
 These are new rules that are still in progress
   </description>
 
-
-
     <rule name="FooRule"
           message="foo?" symboltable="true"
           class="net.sourceforge.pmd.rules.FooRule">
@@ -30,8 +28,32 @@ These are new rules that are still in progress
       </example>
       </rule>
 
+    <rule name="AvoidConcatenatingNonLiteralsInStringBuffer"
+        message="Avoid concatenating non literals in a StringBuffer constructor or append()"
+        class="net.sourceforge.pmd.rules.AvoidConcatenatingNonLiteralsInStringBuffer">
+    <description>
+    Avoid concatenating non literals in a StringBuffer constructor or append().
+    </description>
+       <priority>2</priority>
 
-<!--
+    <example>
+<![CDATA[
+
+// Avoid this
+StringBuffer sb=new
+StringBuffer("AAAAAAAAAA"+System.getProperty("java.io.tmpdir"));
+
+// use instead something like this
+StringBuffer sb = new StringBuffer("AAAAAAAAAA");
+sb.append(System.getProperty("java.io.tmpdir"));
+
+]]>
+    </example>
+    </rule>
+
+    <!--
+
+
 <rule
  ref="rulesets/codesize.xml/ExcessiveMethodLength"
  message="This is one of the 6 longest methods">
