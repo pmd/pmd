@@ -23,4 +23,15 @@ public class ASTMethodDeclaration extends AccessNode {
         System.out.println(collectDumpedModifiers(prefix));
         dumpChildren(prefix);
     }
+
+	/**
+	 * Gets the name of the method.
+	 * @return
+	 */
+	public String getMethodName() {
+		ASTMethodDeclarator md = (ASTMethodDeclarator) getFirstChildOfType(ASTMethodDeclarator.class);
+		if (md!=null)
+			return md.getImage();
+		return null;
+	}
 }
