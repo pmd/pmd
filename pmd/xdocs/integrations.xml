@@ -10,50 +10,45 @@
       <subsection name="Summary">
 <table>
   <tr><td><b>IDE</b></td>
-      <td><b>File Release</b></td>
-      <td><b>Current Version</b></td>
-      <td><b>Author</b></td>
-      <td><b>Download</b></td></tr>
+      <td><b>Package</b></td>
+      <td><b>Maintainer</b></td>
+      </tr>
   <tr><td>Eclipse</td>
       <td>pmd-eclipse</td>
-      <td>0.3</td>
-      <td>DDP, Dave Craine</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
+      <td>Tom Burke, Philippe Herlin</td>
+  </tr>
   <tr><td>Emacs</td>
       <td>pmd-emacs</td>
-      <td>0.1</td>
-      <td>DDP</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
+      <td>John Russell</td>
+  </tr>
   <tr><td>JBuilder</td>
       <td>pmd-jbuilder</td>
-      <td>0.9</td>
       <td>Dave Craine</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
+  </tr>
   <tr><td>Netbeans/Forte/Sun ONE</td>
       <td>pmd-netbeans</td>
-      <td>0.5</td>
-      <td>Ole Martin Mork</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
+      <td>Ole-Martin Mork</td>
+  </tr>
   <tr><td>JEdit</td>
       <td>pmd-jedit</td>
-      <td>1.1</td>
       <td>Tom Copeland</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
+  </tr>
+  <tr><td>jDeveloper</td>
+      <td>pmd-jdeveloper</td>
+      <td>Tom Copeland</td>
+  </tr>
   <tr><td>Maven</td>
       <td>pmd-maven</td>
-      <td>0.4</td>
       <td>Siegfried Goeschl</td>
-      <td><a href="http://sourceforge.net/projects/maven-plugins/">X</a></td></tr>
+  </tr>
   <tr><td>IntelliJ IDEA</td>
       <td>N/A</td>
-      <td>N/A</td>
       <td>Tom Copeland</td>
-      <td>N/A</td></tr>
+  </tr>
   <tr><td>Ant</td>
       <td>N/A</td>
-      <td>N/A</td>
       <td>Tom Copeland</td>
-      <td>N/A</td></tr>
+  </tr>
   </table>
       </subsection>
       <subsection name="Eclipse">
@@ -86,11 +81,6 @@ There is only one command "pmd-current-buffer" which will execute
 PMD on the Java code in the current buffer.  It will generate an
 XML report in the *PMD* buffer.
 </p>
-<ul>
-<li>Enable jumping to the rule violation in the source code</li>
-<li>Generally, make it nicer to work with</li>
-</ul>
-
       </subsection>
       <subsection name="Borland JBuilder">
 <p>
@@ -180,6 +170,15 @@ maven.xml:</li>
 </ul>
 </p>
       </subsection>
+        <subsection name="jDeveloper">
+  <p>To install the jDeveloper plugin, download the binary release and unzip it
+      into your jdev/lib/ext directory.  Then restart jDeveloper.  To use it, open the
+Tools-&amp;Preferences menu, click on the PMD option, and select
+a couple of rules to try.  To run it, right click on either
+a Java source file or a .jpr file (i.e., a project file) and
+select PMD.  Any rule violations should show up in a
+LogWindow at the bottom of the screen.              </p>
+        </subsection>
       <subsection name="Ant">
 <p>
 Using PMD with Ant is such a standard usage that we hardly think of it as an integration point.  But, I guess
