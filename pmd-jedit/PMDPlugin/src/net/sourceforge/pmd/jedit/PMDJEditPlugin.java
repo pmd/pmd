@@ -38,10 +38,17 @@ public class PMDJEditPlugin extends EBPlugin {
 	private DefaultErrorSource errorSource;
 
 	// boilerplate JEdit code
-	public void start() {
+	public void start()
+	{
 		errorSource = new DefaultErrorSource(NAME);
 		ErrorSource.registerErrorSource(errorSource);
 	}
+
+	public void stop()
+	{
+		ErrorSource.unregisterErrorSource(errorSource);
+ 	}
+
 
 /* 	public void createMenuItems(Vector menuItems) {
 		menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
