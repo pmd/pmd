@@ -2,24 +2,13 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTLocalVariableDeclaration extends SimpleNode {
+public class ASTLocalVariableDeclaration extends AccessNode {
     public ASTLocalVariableDeclaration(int id) {
         super(id);
     }
 
     public ASTLocalVariableDeclaration(JavaParser p, int id) {
         super(p, id);
-    }
-
-
-    private boolean isFinal;
-
-    public void setIsFinal() {
-        this.isFinal = true;
-    }
-
-    public boolean isFinal() {
-        return this.isFinal;
     }
 
     /** Accept the visitor. **/

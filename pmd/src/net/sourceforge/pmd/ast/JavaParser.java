@@ -3518,7 +3518,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FINAL:
         jj_consume_token(FINAL);
-             ((ASTLocalVariableDeclaration)jjtn000).setIsFinal();
+             ((ASTLocalVariableDeclaration)jjtn000).setFinal();
         break;
       default:
         jj_la1[93] = jj_gen;
@@ -6784,14 +6784,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
-  final private boolean jj_3R_372() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_3R_294()) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
   final private boolean jj_3_30() {
     Token xsp;
     xsp = jj_scanpos;
@@ -6836,6 +6828,14 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
       if (jj_3R_414()) { jj_scanpos = xsp; break; }
       if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     }
+    return false;
+  }
+
+  final private boolean jj_3R_372() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_3R_294()) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 

@@ -1044,7 +1044,7 @@ void BlockStatement() :
 void LocalVariableDeclaration() :
 {}
 {
-  [ "final" {((ASTLocalVariableDeclaration)jjtThis).setIsFinal();} ] Type() VariableDeclarator() ( "," VariableDeclarator() )*
+  [ "final" {((ASTLocalVariableDeclaration)jjtThis).setFinal();} ] Type() VariableDeclarator() ( "," VariableDeclarator() )*
 }
 
 void EmptyStatement() :
