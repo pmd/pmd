@@ -52,11 +52,11 @@
 
 <target name="dist" depends="clean,jar"/>
 
-<target name="sign-quick">
+<target name="sign-quick" depends="jar">
     <signjar jar="${lib}/pmd-swingui-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
 </target>
 
-<target name="jnlp-quick">
+<target name="jnlp-quick" depends="jar,sign-quick">
     <echo message="Uploading pmd-swing jar file"/>
     <exec executable="scp" os="Linux">
         <arg line=" /home/tom/data/pmd/pmd-swingui/lib/pmd-swingui-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
