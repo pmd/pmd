@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+
+<ruleset name="basic">
+  <description>
+The Naming Ruleset contains a collection of rules about names - too long, too short, and so forth.
+  </description>
+
+
+  <rule name="ShortVariable"
+        message="Avoid variables with short names such as ''{0}''"
+        class="net.sourceforge.pmd.rules.ShortVariableRule">
+    <description>
+Short Variable: detects when a field, local or parameter has a
+length of less than 3 characters.
+    </description>
+    <example>
+<![CDATA[
+public class Something {
+  private int q = 15; // VIOLATION - Field
+
+  public static void main( String as[] ) {  // VIOLATION - Formal
+    int r = 20 + q; // VIOLATION - Local
+
+    for (int i = 0; i < 10; i++) { // Not a Violation (inside FOR)
+      r += q;
+    }
+  }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="LongVariable"
+        message="Avoid excessively long variable names such as ''{0}''"
+        class="net.sourceforge.pmd.rules.LongVariableRule">
+    <description>
+Long Variable: detects when a field, formal or local variable is declared
+with a name larger than 12 characters.
+    </description>
+    <example>
+<![CDATA[
+public class Something {
+  int reallyLongIntName = -3;  // VIOLATION - Field
+
+  public static void main( String argumentsList[] ) { // VIOLATION - Formal
+    int otherReallyLongName = -5; // VIOLATION - Local
+
+    for (int interestingIntIndex = 0;  // VIOLATION - For
+             interestingIntIndex < 10;
+             interestingIntIndex ++ ) {
+
+    }
+}
+
+]]>
+    </example>
+  </rule>
+
+  <rule name="ShortMethodNameRule"
+        message="Avoid using short method names such as ''{0}''"
+        class="net.sourceforge.pmd.rules.ShortMethodNameRule">
+     <description>
+Short Method Names: Detects when method names less than 4 characters
+long are used.
+     </description>
+     <example>
+<![CDATA[
+public class ShortMethod {
+  public void a( int i ) { // Violation
+  }
+}
+]]>
+     </example>
+  </rule>
+
+</ruleset>
+
+
+
