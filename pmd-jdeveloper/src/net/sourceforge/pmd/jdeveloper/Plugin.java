@@ -95,24 +95,28 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     public boolean handleEvent(IdeAction ideAction, Context context) {
         if (ideAction.getCommandId() == CHECK_CMD_ID) {
             try {
-                PMD pmd = new PMD();
-                RuleContext ctx = new RuleContext();
-                ctx.setReport(new Report());
-                ctx.setSourceCodeFilename(context.getDocument().getLongLabel());
-                SelectedRules rs = new SelectedRules();
-                pmd.processFile(context.getDocument().getInputStream(), rs.getSelectedRules(), ctx);
-                if (rvPage == null) {
-                    rvPage = new RuleViolationPage();
-                }
-                if (!rvPage.isVisible()) {
-                    rvPage.show();
-                }
-                rvPage.clearAll();
-                if (ctx.getReport().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
+                if (resolveType(context.getDocument()) == PROJECT) {
+
                 } else {
-                    for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                        rvPage.add((RuleViolation)i.next());
+                    PMD pmd = new PMD();
+                    RuleContext ctx = new RuleContext();
+                    ctx.setReport(new Report());
+                    ctx.setSourceCodeFilename(context.getDocument().getLongLabel());
+                    SelectedRules rs = new SelectedRules();
+                    pmd.processFile(context.getDocument().getInputStream(), rs.getSelectedRules(), ctx);
+                    if (rvPage == null) {
+                        rvPage = new RuleViolationPage();
+                    }
+                    if (!rvPage.isVisible()) {
+                        rvPage.show();
+                    }
+                    rvPage.clearAll();
+                    if (ctx.getReport().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+                            rvPage.add((RuleViolation)i.next());
+                        }
                     }
                 }
                 return true;
