@@ -331,22 +331,30 @@ public class PMDJEditPlugin extends EBPlugin
 
 		RuleContext ctx = new RuleContext();
 
-
+		List reports = new ArrayList();
 		boolean foundProblems = false;
-		Report reports[] = new Report[files.size()];
 
 		Iterator iter = files.iterator();
 		for (int i=0;iter.hasNext();i++)
 		{
 			File file = (File)iter.next();
 			//ctx.setReport(new Report());
-			reports[i] = new Report(); //Store the reference to Reports generated since we will need it for Rendering output.
-			ctx.setReport(reports[i]);
+			ctx.setReport(new Report());
 			ctx.setSourceCodeFilename(file.getAbsolutePath());
 
 			try
 			{
 				pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRules(), ctx);
+				for (Iterator j = ctx.getReport().iterator(); j.hasNext();)
+				{
+					foundProblems = true;
+					RuleViolation rv = (RuleViolation)j.next();
+					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
+				}
+				if(!ctx.getReport().isEmpty())//That means Report contains some violations, so only cache such reports.
+				{
+					reports.add(ctx.getReport());
+				}
 			}
 			catch (FileNotFoundException fnfe)
 			{
@@ -363,14 +371,6 @@ public class PMDJEditPlugin extends EBPlugin
 			{
 				pbd.increment(1);
 			}
-
-			for (Iterator j = ctx.getReport().iterator(); j.hasNext();)
-			{
-				foundProblems = true;
-				RuleViolation rv = (RuleViolation)j.next();
-				errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
-			}
-
 		}//End of for
 
 		if (!foundProblems)
@@ -381,7 +381,7 @@ public class PMDJEditPlugin extends EBPlugin
 		else
 		{
 			registerErrorSource();
-			exportErrorAsReport(view, reports);
+			exportErrorAsReport(view, (Report[])reports.toArray(new Report[reports.size()]));
 		}
 
 		endProgressBarDisplay(pbd);
