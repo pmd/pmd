@@ -138,6 +138,13 @@
         <roles><role>Developer</role></roles>
       </developer>
 
+      <developer>
+        <name>Philippe Herlin</name>
+        <id>phherlin</id>
+        <email>phherlin@users.sourceforge.net</email>
+        <roles><role>Developer</role></roles>
+      </developer>
+
    </developers>
 
   <contributors>
