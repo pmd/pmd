@@ -109,7 +109,7 @@
 		</antcall>
 		<makenbm file="build/pmd.nbm" homepage="http://pmd.sourceforge.net/" 
 		         module="build/${pmdmodule.jar}" topdir="${tempdist.dir}" 
-		         needsrestart="false" distribution="http://www.netbeans.org/example/pmd.nbm">
+		         needsrestart="true" distribution="http://www.netbeans.org/example/pmd.nbm">
 			<license file="LICENSE.txt"/>
 			<signature keystore="${keystore}" storepass="${storepass}" alias="pmdkey"/>
 		</makenbm>
