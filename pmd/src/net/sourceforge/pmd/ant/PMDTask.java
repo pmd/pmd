@@ -51,8 +51,8 @@ public class PMDTask extends Task {
         if (ruleSetType == null || !ruleFactory.containsRuleSet(ruleSetType)) {
             throw new BuildException("Rule set type must be one of: " + ruleFactory.getConcatenatedRuleSetList() + "; you specified " + ruleSetType);
         }
-        if (format == null || (!format.equals("text") && !format.equals("xml") && !format.equals("html"))) {
-            throw new BuildException("Report format must be either 'text', 'xml', or 'html'; you specified " + format);
+        if (format == null || (!format.equals("xml") && !format.equals("html"))) {
+            throw new BuildException("Report format must be either 'xml', or 'html'; you specified " + format);
         }
 
         PMD pmd = new PMD();

@@ -41,10 +41,4 @@ public class ReportTest extends TestCase {
         assertTrue(rpt.indexOf("foo") != -1);
         assertTrue(rpt.indexOf("<table>") != -1);
     }
-
-    public void testRenderText() {
-        Report r = new Report("text", "foo");
-        r.addRuleViolation(new RuleViolation(new MockRule(), 5));
-        assertTrue(r.render().indexOf("foo") != -1);
-    }
 }

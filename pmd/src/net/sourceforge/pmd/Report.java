@@ -29,31 +29,10 @@ public class Report {
     }
 
     public String render() {
-        if (format.equals("text")) {
-            return renderToText();
-        } else if (format.equals("xml")) {
+        if (format.equals("xml")) {
             return renderToXML();
         }
         return renderToHTML();
-    }
-
-    private String renderToText() {
-        StringBuffer buf = new StringBuffer();
-        for (Iterator i = fileToViolationsMap.keySet().iterator(); i.hasNext();) {
-            String filename = (String)i.next();
-            List violations = (List)fileToViolationsMap.get(filename);
-            if (violations.isEmpty()) {
-                continue;
-            }
-            for (Iterator iterator = violations.iterator(); iterator.hasNext();) {
-                RuleViolation rv = (RuleViolation) iterator.next();
-                if (buf.length() != 0) {
-                    buf.append(System.getProperty("line.separator"));
-                }
-                buf.append(filename + ":" + rv.getText());
-            }
-        }
-        return buf.toString();
     }
 
     private String renderToXML() {
