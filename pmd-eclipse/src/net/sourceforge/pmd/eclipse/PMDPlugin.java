@@ -4,9 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import java.util.StringTokenizer;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -48,6 +50,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.15  2003/10/16 22:26:37  phherlin
+ * Fix bug #810858.
+ * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
+ *
  * Revision 1.14  2003/09/29 22:38:09  phherlin
  * Adding and implementing "JDK13 compatibility" property.
  *
@@ -407,12 +413,14 @@ public class PMDPlugin extends AbstractUIPlugin {
     private void storeRuleSetInStateLocation(RuleSet ruleSet) {
         try {
             IPath ruleSetLocation = getStateLocation().append(RULESET_FILE);
-            FileOutputStream out = new FileOutputStream(ruleSetLocation.toOSString());
-            RuleSetWriter writer = new RuleSetWriter(out);
-            writer.write(ruleSet);
+            Writer out = new FileWriter(ruleSetLocation.toOSString());
+            RuleSetWriter writer = WriterAbstractFactory.getFactory().getRuleSetWriter();
+            writer.write(out, ruleSet);
             out.flush();
             out.close();
         } catch (IOException e) {
+            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_WRITING_PREFERENCE), e);
+        } catch (PMDEclipseException e) {
             PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_WRITING_PREFERENCE), e);
         }
     }

@@ -22,27 +22,35 @@
  */
 package net.sourceforge.pmd.eclipse;
 
-import java.io.Writer;
-
-import net.sourceforge.pmd.RuleSet;
-
 /**
- * Description goes here
+ * The writer factory produces writers such as the one for the ruleset file.
+ * This class is the abstract base class for writer factories.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2003/10/16 22:26:37  phherlin
+ * Revision 1.1  2003/10/16 22:26:37  phherlin
  * Fix bug #810858.
  * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
  *
  */
-public interface RuleSetWriter {
+public abstract class WriterAbstractFactory implements WriterFactory {
+    private static WriterAbstractFactory defaultWriterFactory = new DefaultWriterFactory();
+
     /**
-     * Write a ruleset as an XML stream
-     * @param writer the output writer
-     * @param ruleSet the ruleset to serialize
+     * Return a writer factory. The current implementation return the default writer
+     * factory
+     * @return a default writer factory
      */
-    void write(Writer writer, RuleSet ruleSet) throws PMDEclipseException;
+    public static WriterAbstractFactory getFactory() {
+        return defaultWriterFactory;
+    }
+    
+    /**
+     * Return a ruleset writer
+     * @return a ruleset writer
+     */
+    public abstract RuleSetWriter getRuleSetWriter();
+
 }

@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.eclipse.preferences;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.pmd.Rule;
@@ -11,8 +11,11 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.PMDConstants;
+import net.sourceforge.pmd.eclipse.PMDEclipseException;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.RuleSetWriter;
+import net.sourceforge.pmd.eclipse.WriterAbstractFactory;
+
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -59,6 +62,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2003/10/16 22:26:37  phherlin
+ * Fix bug #810858.
+ * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
+ *
  * Revision 1.10  2003/08/13 20:09:06  phherlin
  * Refactoring private->protected to remove warning about non accessible member access in enclosing types
  *
@@ -490,9 +497,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                         if (flContinue) {
                             ruleSet.setName(getFileNameWithoutExtension(file.getName()));
                             ruleSet.setDescription(input.getValue());
-                            OutputStream out = new FileOutputStream(fileName);
-                            RuleSetWriter writer = new RuleSetWriter(out);
-                            writer.write(ruleSet);
+                            Writer out = new FileWriter(fileName);
+                            RuleSetWriter writer = WriterAbstractFactory.getFactory().getRuleSetWriter();
+                            writer.write(out, ruleSet);
                             out.close();
                             MessageDialog.openInformation(
                                 getShell(),
@@ -500,6 +507,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                                 getMessage(PMDConstants.MSGKEY_INFORMATION_RULESET_EXPORTED));
                         }
                     } catch (IOException e) {
+                        PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_EXPORTING_RULESET), e);
+                    } catch (PMDEclipseException e) {
                         PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_EXPORTING_RULESET), e);
                     }
                 }

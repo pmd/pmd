@@ -19,30 +19,30 @@
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.   
  *   
  * </copyright>
- */
+ */ 
 package net.sourceforge.pmd.eclipse;
 
-import java.io.Writer;
-
-import net.sourceforge.pmd.RuleSet;
-
 /**
- * Description goes here
+ * This is the default implementation of a writer factory.
+ * The current implementation returns an instance of RuleSetWriterImpl for a ruleset
+ * writer. 
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2003/10/16 22:26:37  phherlin
+ * Revision 1.1  2003/10/16 22:26:37  phherlin
  * Fix bug #810858.
  * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
  *
  */
-public interface RuleSetWriter {
+public class DefaultWriterFactory extends WriterAbstractFactory {
+
     /**
-     * Write a ruleset as an XML stream
-     * @param writer the output writer
-     * @param ruleSet the ruleset to serialize
+     * @see net.sourceforge.pmd.eclipse.WriterAbstractFactory#getRuleSetWriter()
      */
-    void write(Writer writer, RuleSet ruleSet) throws PMDEclipseException;
+    public RuleSetWriter getRuleSetWriter() {
+        return new RuleSetWriterImpl();
+    }
+
 }
