@@ -5,14 +5,7 @@ package test.net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTStatement;
-import net.sourceforge.pmd.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;

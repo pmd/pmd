@@ -5,13 +5,10 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.util.Vector;
 
 
@@ -92,6 +89,9 @@ public class EvaluationResultsPanel
 
 /*
  * $Log$
+ * Revision 1.3  2004/04/15 18:21:58  tomcopeland
+ * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
+ *
  * Revision 1.2  2003/09/23 20:51:06  tomcopeland
  * Cleaned up imports
  *

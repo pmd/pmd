@@ -9,16 +9,12 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -133,6 +129,9 @@ public class ASTPanel
 
 /*
  * $Log$
+ * Revision 1.3  2004/04/15 18:21:58  tomcopeland
+ * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
+ *
  * Revision 1.2  2003/09/23 20:51:06  tomcopeland
  * Cleaned up imports
  *

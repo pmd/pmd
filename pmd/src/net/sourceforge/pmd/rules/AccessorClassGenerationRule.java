@@ -5,18 +5,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTArguments;
-import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNestedClassDeclaration;
-import net.sourceforge.pmd.ast.ASTNestedInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
+import net.sourceforge.pmd.ast.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;

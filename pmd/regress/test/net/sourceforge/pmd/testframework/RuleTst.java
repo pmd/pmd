@@ -4,11 +4,7 @@
 package test.net.sourceforge.pmd.testframework;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.*;
 
 import java.io.StringReader;
 

@@ -5,11 +5,7 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTResultType;
-import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.*;
 
 import java.text.MessageFormat;
 import java.util.HashSet;

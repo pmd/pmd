@@ -5,7 +5,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import javax.swing.JMenu;
+import javax.swing.*;
 import java.text.MessageFormat;
 
 
@@ -62,6 +62,9 @@ public class SimpleNodeSubMenu
 
 /*
  * $Log$
+ * Revision 1.3  2004/04/15 18:21:58  tomcopeland
+ * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
+ *
  * Revision 1.2  2003/09/23 20:51:06  tomcopeland
  * Cleaned up imports
  *

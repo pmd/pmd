@@ -3,7 +3,7 @@ package net.sourceforge.pmd.util.viewer.gui.menu;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
 
 /**
@@ -39,6 +39,9 @@ public class ASTNodePopupMenu
 
 /*
  * $Log$
+ * Revision 1.4  2004/04/15 18:21:58  tomcopeland
+ * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
+ *
  * Revision 1.3  2003/09/23 20:51:06  tomcopeland
  * Cleaned up imports
  *

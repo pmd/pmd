@@ -3,12 +3,7 @@
 */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTForStatement;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.*;
 
 public class LocalScopeEvaluator extends AbstractScopeEvaluator {
          public LocalScopeEvaluator() {

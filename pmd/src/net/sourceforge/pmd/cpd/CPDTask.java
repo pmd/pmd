@@ -76,7 +76,7 @@ public class CPDTask extends Task {
       if (outputFile.isAbsolute()) {
         new FileReporter(outputFile).report(renderer.render(cpd.getMatches()));
       } else {
-        new FileReporter(new File(project.getBaseDir(), outputFile.toString()));
+        new FileReporter(new File(getProject().getBaseDir(), outputFile.toString()));
       }
     }
 
@@ -84,7 +84,7 @@ public class CPDTask extends Task {
     private void tokenizeFiles(CPD cpd) throws IOException {
       for (Iterator iterator = filesets.iterator(); iterator.hasNext();) {
         FileSet fileSet = (FileSet) iterator.next();
-        DirectoryScanner directoryScanner = fileSet.getDirectoryScanner(project);
+        DirectoryScanner directoryScanner = fileSet.getDirectoryScanner(getProject());
         String[] includedFiles = directoryScanner.getIncludedFiles();
         for (int i = 0; i < includedFiles.length; i++) {
           File file = new File(directoryScanner.getBasedir() + System.getProperty("file.separator") + includedFiles[i]);

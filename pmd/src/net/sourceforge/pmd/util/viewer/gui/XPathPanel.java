@@ -5,11 +5,8 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import javax.swing.BorderFactory;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**
@@ -94,6 +91,9 @@ public class XPathPanel
 
 /*
  * $Log$
+ * Revision 1.3  2004/04/15 18:21:58  tomcopeland
+ * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
+ *
  * Revision 1.2  2003/09/23 20:51:06  tomcopeland
  * Cleaned up imports
  *

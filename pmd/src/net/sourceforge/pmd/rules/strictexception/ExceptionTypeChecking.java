@@ -2,14 +2,7 @@ package net.sourceforge.pmd.rules.strictexception;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTCastExpression;
-import net.sourceforge.pmd.ast.ASTCatch;
-import net.sourceforge.pmd.ast.ASTInstanceOfExpression;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.ASTType;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.*;
 
 import java.util.Iterator;
 import java.util.List;

@@ -3,31 +3,15 @@
 */
 package net.sourceforge.pmd.ant;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.TargetJDK1_3;
+import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
-import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
+import org.apache.tools.ant.*;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -121,7 +105,7 @@ public class PMDTask extends Task {
                 rules = ruleSetFactory.createRuleSet(ruleSetFiles);
             } else {
                 log("Using the AntClassLoader", Project.MSG_VERBOSE);
-                rules = ruleSetFactory.createRuleSet(ruleSetFiles, new AntClassLoader(project, classpath));
+                rules = ruleSetFactory.createRuleSet(ruleSetFiles, new AntClassLoader(getProject(), classpath));
             }
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage());
@@ -140,7 +124,7 @@ public class PMDTask extends Task {
         ctx.setReport(new Report());
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
-            DirectoryScanner ds = fs.getDirectoryScanner(project);
+            DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             String[] srcFiles = ds.getIncludedFiles();
             for (int j = 0; j < srcFiles.length; j++) {
                 File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
@@ -173,7 +157,7 @@ public class PMDTask extends Task {
                 log("Sending a report to " + formatter, Project.MSG_VERBOSE);
                 String buffer = formatter.getRenderer().render(ctx.getReport()) + EOL;
                 try {
-                    Writer writer = formatter.getToFileWriter(project.getBaseDir().toString());
+                    Writer writer = formatter.getToFileWriter(getProject().getBaseDir().toString());
                     writer.write(buffer, 0, buffer.length());
                     writer.close();
                 } catch (IOException ioe) {
@@ -224,7 +208,7 @@ public class PMDTask extends Task {
 
     private Path createLongClasspath() {
         if (classpath == null) {
-            classpath = new Path(project);
+            classpath = new Path(getProject());
         }
         return classpath.createPath();
     }
