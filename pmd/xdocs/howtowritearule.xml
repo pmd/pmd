@@ -54,12 +54,12 @@ class Example {
 CompilationUnit
  TypeDeclaration
   ClassDeclaration:(package private)
-   UnmodifiedClassDeclaration:Example
+   UnmodifiedClassDeclaration(Example)
     ClassBody
      ClassBodyDeclaration
       MethodDeclaration:(package private)
        ResultType
-       MethodDeclarator:bar
+       MethodDeclarator(bar)
         FormalParameters
        Block
         BlockStatement
@@ -70,7 +70,7 @@ CompilationUnit
              PrimaryPrefix
               Name:baz
            Statement
-            StatementExpression
+            StatementExpression:null
              PrimaryExpression
               PrimaryPrefix
                Name:buz.doSomething
@@ -81,9 +81,9 @@ CompilationUnit
     <p>
     You can generate this yourself by:
     <ul>
-    <li>Run the batch file etc/astviewer.bat</li>
-    <li>Paste the code into the left pane and click the button at the bottom of the screen</li>
-    <li>There's another panel and a textfield to test out XPath expressions; more on that later.</li>
+    <li>Run the batch file etc/designer.bat</li>
+    <li>Paste the code into the left text area and click the "Go" button</li>
+    <li>Note that there's another panel and a textfield to test out XPath expressions; more on that later.</li>
     </ul>
     </p>
     <p>
@@ -129,12 +129,22 @@ WhileStatement
 void Statement() :
 {}
 {
-  LOOKAHEAD(2)
-  LabeledStatement()
-| Block() | EmptyStatement() | StatementExpression() ";" | SwitchStatement() | IfStatement()
-| WhileStatement() | DoStatement() | ForStatement()
-| BreakStatement() | ContinueStatement() | ReturnStatement() | ThrowStatement()
-| SynchronizedStatement() | TryStatement() | AssertStatement()
+  LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
+| LOOKAHEAD(2) LabeledStatement()
+| Block()
+| EmptyStatement()
+| StatementExpression() ";"
+| SwitchStatement()
+| IfStatement()
+| WhileStatement()
+| DoStatement()
+| ForStatement()
+| BreakStatement()
+| ContinueStatement()
+| ReturnStatement()
+| ThrowStatement()
+| SynchronizedStatement()
+| TryStatement()
 }
 ]]>
 </source>
