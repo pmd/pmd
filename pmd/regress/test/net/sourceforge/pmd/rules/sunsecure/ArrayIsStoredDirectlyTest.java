@@ -21,8 +21,10 @@ public class ArrayIsStoredDirectlyTest extends SimpleAggregatorTst {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "Clear violation", 1, rule),
            new TestDescriptor(TEST2, "Clear violation with this.", 1, rule),
-           new TestDescriptor(TEST3, "TEST3", 1, rule),
-           new TestDescriptor(TEST4, "TEST4", 0, rule),
+           new TestDescriptor(TEST3, "assignment to an internal array", 1, rule),
+           new TestDescriptor(TEST4, "assignment of param to local", 0, rule),
+           new TestDescriptor(TEST5, "skip interfaces", 0, rule),
+           new TestDescriptor(TEST6, "skip abstract, native", 0, rule),
        });
     }
 
@@ -48,6 +50,17 @@ public class ArrayIsStoredDirectlyTest extends SimpleAggregatorTst {
         "public class Foo {" + PMD.EOL +
         " String [] arr;" + PMD.EOL +
         " void getArr(String[] arr) {String[] foo; foo = arr;} ;" + PMD.EOL +
+        "}";
+
+    private static final String TEST5 =
+        "public interface Foo {" + PMD.EOL +
+        " void getArr(String[] arr);" + PMD.EOL +
+        "}";
+
+    private static final String TEST6 =
+        "public class Foo {" + PMD.EOL +
+        " abstract void getArr(String[] arr);" + PMD.EOL +
+        " native void getArr2(String[] arr);" + PMD.EOL +
         "}";
 
 
