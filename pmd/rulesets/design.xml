@@ -265,7 +265,7 @@ public class Foo {
         name = "JuniorClass";
       }
       public String toString(){
-        return name;
+        return name.toUpperCase();
       }
     }
   ]]>
