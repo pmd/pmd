@@ -1,15 +1,14 @@
 package net.sourceforge.pmd.swingui;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.UndefinedRule;
+import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
-import net.sourceforge.pmd.UndefinedRule;
 
 /**
  *

@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.Component;
-import java.io.File;
+import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -10,9 +10,8 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-
-import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
-import net.sourceforge.pmd.swingui.event.StatusBarEvent;
+import java.awt.Component;
+import java.io.File;
 
 /**
  *

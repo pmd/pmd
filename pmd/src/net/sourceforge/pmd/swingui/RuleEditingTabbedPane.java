@@ -1,16 +1,16 @@
 package net.sourceforge.pmd.swingui;
 
+import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
+
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
-import javax.swing.UIManager;
-
-import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
 
 /**
  *

@@ -1,10 +1,9 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.BorderLayout;
-
-import javax.swing.border.EmptyBorder;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
+import java.awt.BorderLayout;
 
 /**
  *

@@ -1,24 +1,23 @@
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEventListener;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEventListener;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
-import net.sourceforge.pmd.swingui.event.RuleSetEvent;
-import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
 
 
 /**

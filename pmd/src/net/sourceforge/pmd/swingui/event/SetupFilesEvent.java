@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.swingui.event;
 
-import java.io.File;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;

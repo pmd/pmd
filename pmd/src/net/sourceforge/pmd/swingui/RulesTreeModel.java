@@ -1,13 +1,11 @@
 package net.sourceforge.pmd.swingui;
 
-import java.util.Comparator;
-import java.util.Enumeration;
-
-import javax.swing.tree.DefaultTreeModel;
-
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
 import net.sourceforge.pmd.swingui.event.RulesTreeModelEventListener;
+
+import javax.swing.tree.DefaultTreeModel;
+import java.util.Enumeration;
 
 /**
  *

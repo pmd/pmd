@@ -1,5 +1,24 @@
 package net.sourceforge.pmd.swingui;
 
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -11,26 +30,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
-
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.UIManager;
-
-import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
-import net.sourceforge.pmd.swingui.event.ListenerList;
 
 /**
  *
