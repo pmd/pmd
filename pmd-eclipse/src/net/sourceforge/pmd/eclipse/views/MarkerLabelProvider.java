@@ -4,6 +4,7 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageDeclaration;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -18,6 +19,9 @@ import org.eclipse.swt.graphics.Image;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/08/11 21:14:21  phherlin
+ * Fixing exception when refreshing violations table
+ *
  * Revision 1.1  2003/07/07 19:24:54  phherlin
  * Adding PMD violations view
  *
@@ -81,10 +85,14 @@ public class MarkerLabelProvider implements ITableLabelProvider {
                     result =
                         compilationUnit == null ? marker.getResource().getName() : compilationUnit.getTypes()[0].getElementName();
                 } else if (columnIndex == 4) {
-                    result =
-                        compilationUnit == null
-                            ? marker.getResource().getProjectRelativePath().removeLastSegments(1).toString()
-                            : compilationUnit.getPackageDeclarations()[0].getElementName();
+                    if (compilationUnit == null) {
+                        result = marker.getResource().getProjectRelativePath().removeLastSegments(1).toString();
+                    } else {
+                        IPackageDeclaration[] packageDeclarations = compilationUnit.getPackageDeclarations();
+                        if (packageDeclarations.length > 0) {
+                            result = packageDeclarations[0].getElementName();
+                        }
+                    }
                 } else if (columnIndex == 5) {
                     result = marker.getResource().getProject().getName();
                 } else if (columnIndex == 6) {
