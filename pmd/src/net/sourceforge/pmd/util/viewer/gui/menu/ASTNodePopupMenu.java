@@ -18,7 +18,6 @@ public class ASTNodePopupMenu
 {
   private ViewerModel model;
   private SimpleNode  node;
-  private JMenu       attributesMenu;
 
   public ASTNodePopupMenu( ViewerModel model, SimpleNode node )
   {
@@ -41,6 +40,9 @@ public class ASTNodePopupMenu
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:34:33  tomcopeland
+ * Fixed some stuff PMD found
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

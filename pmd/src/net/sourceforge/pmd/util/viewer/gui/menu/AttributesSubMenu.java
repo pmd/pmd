@@ -40,7 +40,7 @@ public class AttributesSubMenu
   {
     AttributeAxisIterator i = new AttributeAxisIterator( node );
 
-    for ( ; i.hasNext(  ); )
+    while (i.hasNext())
     {
       Attribute attribute = (Attribute)i.next(  );
 
@@ -55,6 +55,9 @@ public class AttributesSubMenu
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:34:34  tomcopeland
+ * Fixed some stuff PMD found
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *
