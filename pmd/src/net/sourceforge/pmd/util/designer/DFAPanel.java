@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.ScrollPane;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,31 +42,35 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
                 y = computeDrawPos(inode.getIndex());
 
                 g.drawArc(x, y, NODE_DIAMETER, NODE_DIAMETER, 0, 360);
-
                 g.drawString(lines.getLine(inode.getLine()), x + 200, y + 15);
-                g.drawString(String.valueOf(inode.getIndex()), x + NODE_RADIUS - 2, y + NODE_RADIUS + 4);
+                
+                // draw index number centered inside of node
+                String idx = String.valueOf(inode.getIndex());
+                int hack = 4*(idx.length() / 2); // eo - hack to get one and two digit numbers centered
+                g.drawString(idx, x + NODE_RADIUS - 2 - hack, y + NODE_RADIUS + 4);
 
-                String exp = "";
                 List access = inode.getVariableAccess();
                 if (access != null) {
+                    StringBuffer exp = new StringBuffer();
                     for (int k = 0; k < access.size(); k++) {
                         VariableAccess va = (VariableAccess) access.get(k);
                         switch (va.getAccessType()) {
                             case VariableAccess.DEFINITION:
-                                exp += "d(";
+                                exp.append("d(");
                                 break;
                             case VariableAccess.REFERENCING:
-                                exp += "r(";
+                                exp.append("r(");
                                 break;
                             case VariableAccess.UNDEFINITION:
-                                exp += "u(";
-                                break;
+//                                exp.append("u(");
+                                continue;  // eo - the u() entries add a lot of clutter to the report
+//                                break;
                             default:
-                                exp += "?(";
+                                exp.append("?(");
                         }
-                        exp += va.getVariableName() + "), ";
+                        exp.append(va.getVariableName() + "), ");
                     }
-                    g.drawString(exp, x + 70, y + 15);
+                    g.drawString(exp.toString(), x + 70, y + 15);
                 }
 
                 for (int j = 0; j < inode.getChildren().size(); j++) {
@@ -159,20 +164,25 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
 
         setLayout(new BorderLayout());
         JPanel leftPanel = new JPanel();
-        nodes.addElement("Hit 'Go'");
+   //     nodes.addElement("Hit 'Go'");  // eo - causes a ClassCast exception @ line 191
         nodeList = new JList(nodes);
         nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        nodeList.setFixedCellWidth(100);
+        nodeList.setFixedCellWidth(150);
         nodeList.setBorder(BorderFactory.createLineBorder(Color.black));
         nodeList.addListSelectionListener(this);
         leftPanel.add(nodeList);
         add(leftPanel, BorderLayout.WEST);
 
         dfaCanvas = new DFACanvas();
-        JScrollPane scrollPane = new JScrollPane(dfaCanvas);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setSize(800, 450);  // eo - it would be better to calculate the size based on the containing object's size
+        dfaCanvas.setSize(2000,4000);  // eo - these seem to give a big enough canvas
+        scrollPane.add(dfaCanvas);
         wrapperPanel = new JPanel();
         wrapperPanel.add(scrollPane);
+        wrapperPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         add(wrapperPanel, BorderLayout.EAST);
+        
     }
 
     public void valueChanged(ListSelectionEvent event) {
@@ -187,7 +197,7 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
             wrapper = (ElementWrapper) nodeList.getSelectedValue();
         }
         dfaCanvas.setMethod(wrapper.getNode());
-        repaint();
+        dfaCanvas.repaint();
     }
 
     public void resetTo(List newNodes, HasLines lines) {
@@ -199,11 +209,6 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         nodeList.setSelectedIndex(0);
         dfaCanvas.setMethod((SimpleNode) newNodes.get(0));
         repaint();
-    }
-
-    public void paint(Graphics g) {
-        super.paint(g);
-        dfaCanvas.paint(g);
     }
 }
 

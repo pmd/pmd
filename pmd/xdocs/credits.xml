@@ -42,10 +42,10 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Eric Olander - nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Jörn Stampehl - bug report</li>
             <li>Matthias Kerkhoff - several bug reports</li>
             <li>Ryan Gustafson - patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
-            <li>Eric Olander - AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Benoit Xhenseval - several bug reports</li>
             <li>Todd Wright - reported bug in EmptyStatementNotInLoop, XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Elliotte Rusty Harold - UseLocaleWithCaseConversions rule suggestion</li>
