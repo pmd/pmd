@@ -50,8 +50,8 @@ public class Foo implements java.io.Serializable {
           <property name="xpath">
               <value>
     <![CDATA[
-    //ClassDeclaration[@Final='true']
-    //MethodDeclaration[@Final='true']
+//ClassDeclaration[@Final='true'] 
+/*/*/*/MethodDeclaration[@Final='true']
     ]]>
               </value>
           </property>
