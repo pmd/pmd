@@ -18,15 +18,13 @@ public class VBHTMLRenderer implements Renderer {
             return "";
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer(header());
         String filename = null;
         String lineSep = CPD.EOL;
 
-        sb.append(header());
-
-        Iterator iter = report.iterator();
         boolean colorize = false;
-        while (iter.hasNext()) {
+
+        for (Iterator iter = report.iterator(); iter.hasNext();) {
             RuleViolation rv = (RuleViolation) iter.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {
@@ -57,7 +55,7 @@ public class VBHTMLRenderer implements Renderer {
         sb.append("<br>");
 
         // output the problems
-        iter = report.errors();
+        Iterator iter = report.errors();
         if (iter.hasNext()) {
             sb.append("<table border=\"0\" width=\"80%\">");
             sb.append("<tr id=TableHeader><td><font class=title>&nbsp;Problems found</font></td></tr>");
