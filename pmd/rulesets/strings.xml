@@ -22,11 +22,11 @@ public class Foo {
     </example>
     </rule>
 
-    <rule name="AvoidStringLiterals"
-        message="Avoid embedding String literals in your code"
-        class="net.sourceforge.pmd.rules.AvoidStringLiteralsRule">
+    <rule name="AvoidDuplicateLiterals"
+        message="A String appears {0} times in this file; the first occurrence is on line {1}"
+        class="net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule">
     <description>
-Avoid String Literals detects when a literal String is embedded within your code.  Code like this can usually be
+Avoid Duplicate Literals detects when a duplicate literal Strings are embedded within your code.  Code like this can usually be
 improved by declaring the String as a constant field.
     </description>
     <example>
@@ -35,7 +35,9 @@ public class Foo {
  private void bar() {
     buz("Howdy");
  }
- private void buz(String x) {}
+ private void buz(String x) {
+    String x = "Howdy";
+ }
 }
 ]]>
     </example>

@@ -1,4 +1,4 @@
-public class AvoidStringLiterals2 {
+public class AvoidDuplicateLiterals2 {
  private void bar() {
     buz(2);
  }
