@@ -36,7 +36,7 @@ import java.util.Stack;
  * That way the scopes work out nicely and inner classes can be nested arbitrarily deep.
  */
 public class Namespace {
-
+private int x;
     private Stack tables = new Stack();
 
     public void addTable() {
