@@ -52,9 +52,15 @@ sub loadProjectList() {
 	}
 
 	@newprojects = sort { $a->getPctg() cmp $b->getPctg() } @projects;
-	#my $result = $query->param("target");
+
+	my $prev2name = "header";
+	my $count = 0;
 	my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>NCSS</th><th>Problems</th><th>Percentage<br>Unused Code</th><th>Duplicate<br>Code</th></tr>";
+	$result="${result}<a name=\"header\"";
 	foreach $project (@newprojects) {
+		if ($count+2 < scalar(@newprojects)) {
+			$prev2name = $newprojects[$count+2]->getUnixName();
+		}
 		my $target =$query->param("target");
 		my $jobLink=$project->getTitle();
 		if (-e $project->getRptFile()) {
@@ -67,7 +73,10 @@ sub loadProjectList() {
 		}
 		$result="${result}<td>${jobLink}</td>";
 		$result="${result}<td></td>";
-		$result="${result}<td><a name=\"@{[$project->getUnixName()]}\"></a>@{[$project->getHomePage()]}</td>";
+		$result="${result}<td>";
+		$result="${result}<a name=\"prev2-${prev2name}\"></a>";
+		$result="${result}<a name=\"@{[$project->getUnixName()]}\"></a>";
+		$result="${result}@{[$project->getHomePage()]}</td>";
 		$result="${result}<td>@{[$project->getNCSS()]}</td>";
 		my $pctg = $project->getPctg();
 		my $color="red";
@@ -88,6 +97,7 @@ sub loadProjectList() {
 			$cpdLink="<a href=\"@{[$project->getCPDRptURL]}\">@{[$project->getCPDLines()]}</a>";
 		}
 		$result = "${result}<td align=center>$cpdLink</td></tr>\n";
+		$count += 1;
 	}
 	$result="${result}</tr></table>";
 	return $result;
