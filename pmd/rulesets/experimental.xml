@@ -5,26 +5,7 @@
 This is the sandbox.
   </description>
 
- <!--<rule name="UnnecessaryCast"
-        message="Avoid unnecessary casts"
-        class="net.sourceforge.pmd.rules.UnnecessaryCastRule">
-    <description>
-A variable is cast to itself, one of its supertypes or one of its interfaces.  Usually
-indicates that the programmer is not clear on the class structure they
-are working with.
-    </description>
-
-    <example>
-<![CDATA[
-public Collection doSomething() {
-  List list = new ArrayList();
-
-  return (Collection) list; // Unnecessary Cast
-}
-]]>
-    </example>
-  </rule>
-
+ <!--
   <rule name="PositionalIterator"
         message="Avoid positional iterators"
         class="net.sourceforge.pmd.rules.design.PositionalIteratorRule">
