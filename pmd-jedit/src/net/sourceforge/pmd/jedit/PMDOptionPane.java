@@ -20,41 +20,6 @@ import java.util.Iterator;
 
 public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
-    private static class SelectedRuleSetsMap {
-        private Map selections = new HashMap();
-
-        public SelectedRuleSetsMap() {
-            selections.put("basic", createCheckBox("basic"));
-            selections.put("unusedcode", createCheckBox("unusedcode"));
-            selections.put("design", createCheckBox("design"));
-        }
-
-        public Iterator keys() {
-            return selections.keySet().iterator();
-        }
-
-        public int size() {
-            return selections.size();
-        }
-
-        public JCheckBox get(Object key) {
-            return (JCheckBox)selections.get(key);
-        }
-
-        public void save() {
-            for (Iterator i = keys(); i.hasNext();) {
-                String key = (String)i.next();
-                jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_RULESETS_PREFIX + key, get(key).isSelected());
-            }
-        }
-
-        private JCheckBox createCheckBox(String name) {
-            JCheckBox box = new JCheckBox();
-            box.setSelected(jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_RULESETS_PREFIX + name, true));
-            return box;
-        }
-    }
-
     private class SaveAL implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             selectedRuleSets.save();
@@ -67,8 +32,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         }
     }
 
-   private static final String NAME = "PMD Options";
-
+    private static final String NAME = "PMD Options";
     private SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
 
     public PMDOptionPane() {
