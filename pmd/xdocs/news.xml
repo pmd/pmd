@@ -3,11 +3,11 @@
 <document>
   <properties>
     <author email="tom@infoether.org">Tom Copeland</author>
-    <title>PMD in the news</title>
+    <title>PMD in the press</title>
   </properties>
 
   <body>
-    <section name="Articles">
+    <section name="Articles about PMD">
     <ul>
         <br/>
         <li>6/15/2003 - <a href="http://www.sdtimes.com/news/080/story15.htm">Software Development Times</a> - PMD is embedded in QStudio.</li>
@@ -23,6 +23,12 @@
         <li>1/07/2003 - <a href="http://www.netbeans.org/newsletter/sprout/2003-01-07.html">Sprout</a> - interview with Ole-Martin and Tom</li>
     </ul>
     </section>
+      <section name="Books that mention PMD">
+          <ul>
+              <br/>
+          <li><a href="http://www.amazon.com/exec/obidos/tg/detail/-/0672325624/ref=ase_interncom-20/103-5706126-6692649?v=glance&amp;s=book">Extreme Programming With Ant</a></li>
+          </ul>
+      </section>
   </body>
 </document>
 
