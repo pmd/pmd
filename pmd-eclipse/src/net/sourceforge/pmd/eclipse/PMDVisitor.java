@@ -16,6 +16,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage;
+import net.sourceforge.pmd.eclipse.util.Common;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -76,6 +77,10 @@ public class PMDVisitor implements IResourceVisitor {
 		RuleContext context = new RuleContext();
 		context.setSourceCodeFilename( file.getName() );
 		context.setReport( new Report() );
+		if (Common.PMD_DIALOG != null) {
+			Common.PMD_DIALOG.worked(1);
+			Common.PMD_DIALOG.setMessage(file.getName());
+		}
 
 		pmd.processFile( input, ruleSet, context);
 
