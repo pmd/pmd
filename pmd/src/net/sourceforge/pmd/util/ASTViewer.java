@@ -191,7 +191,7 @@ public class ASTViewer {
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(SETTINGS_FILE_NAME)));
             StringBuffer text = new StringBuffer();
-            String hold = null;
+            String hold;
             while ( (hold = br.readLine()) != null) {
                 text.append(hold);
                 text.append(System.getProperty("line.separator"));

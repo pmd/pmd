@@ -173,7 +173,7 @@ public class PapariTextRenderer implements Renderer
      */
     private String getRelativePath( String fileName )
     {
-        String relativePath = null;
+        String relativePath;
 
         // check if working directory need to be assigned
         if (pwd == null)

@@ -45,7 +45,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
      * @param context
      */
     private void evaluateExceptions(List exceptionList, RuleContext context) {
-        ASTName exception = null;
+        ASTName exception;
         for (Iterator iter = exceptionList.iterator(); iter.hasNext();) {
             exception = (ASTName)iter.next();
             if (hasDeclaredExceptionInSignature(exception)) {

@@ -34,7 +34,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
 
   private boolean enumLookahead() {
     int x = 1;
-    Token tok = null;
+    Token tok;
     while (true) {
       tok = getToken(x);
       if (tok.image.equals("static") ||
@@ -335,7 +335,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  /*@bgen(jjtree) UnmodifiedClassDeclaration */
   ASTUnmodifiedClassDeclaration jjtn000 = new ASTUnmodifiedClassDeclaration(this, JJTUNMODIFIEDCLASSDECLARATION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token t = null;
+  jjtree.openNodeScope(jjtn000);Token t;
     try {
       jj_consume_token(CLASS);
       t = jj_consume_token(IDENTIFIER);
@@ -571,7 +571,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  /*@bgen(jjtree) EnumDeclaration */
  ASTEnumDeclaration jjtn000 = new ASTEnumDeclaration(this, JJTENUMDECLARATION);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);Token t = null;
+ jjtree.openNodeScope(jjtn000);Token t;
     try {
       label_6:
       while (true) {
@@ -673,7 +673,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  /*@bgen(jjtree) EnumElement */
  ASTEnumElement jjtn000 = new ASTEnumElement(this, JJTENUMELEMENT);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);Token t = null;
+ jjtree.openNodeScope(jjtn000);Token t;
     try {
       t = jj_consume_token(IDENTIFIER);
                       jjtn000.setImage(t.image);
@@ -939,7 +939,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  /*@bgen(jjtree) UnmodifiedInterfaceDeclaration */
  ASTUnmodifiedInterfaceDeclaration jjtn000 = new ASTUnmodifiedInterfaceDeclaration(this, JJTUNMODIFIEDINTERFACEDECLARATION);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);Token t = null;
+ jjtree.openNodeScope(jjtn000);Token t;
     try {
       jj_consume_token(INTERFACE);
       t = jj_consume_token(IDENTIFIER);
@@ -1208,8 +1208,8 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  /*@bgen(jjtree) VariableDeclaratorId */
   ASTVariableDeclaratorId jjtn000 = new ASTVariableDeclaratorId(this, JJTVARIABLEDECLARATORID);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);String s = null;
-  Token t = null;
+  jjtree.openNodeScope(jjtn000);String s;
+  Token t;
     try {
       t = jj_consume_token(IDENTIFIER);
     s = t.image;
@@ -1500,7 +1500,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  /*@bgen(jjtree) MethodDeclarator */
   ASTMethodDeclarator jjtn000 = new ASTMethodDeclarator(this, JJTMETHODDECLARATOR);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token t = null;
+  jjtree.openNodeScope(jjtn000);Token t;
     try {
       t = jj_consume_token(IDENTIFIER);
     checkForBadAssertUsage(t.image, "a method name");
@@ -2011,7 +2011,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   ASTName jjtn000 = new ASTName(this, JJTNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);StringBuffer s = new StringBuffer();
-  Token t = null;
+  Token t;
     try {
       t = jj_consume_token(IDENTIFIER);
     jjtn000.testingOnly__setBeginLine( t.beginLine);
@@ -3265,7 +3265,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  /*@bgen(jjtree) PrimaryPrefix */
   ASTPrimaryPrefix jjtn000 = new ASTPrimaryPrefix(this, JJTPRIMARYPREFIX);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token t = null;
+  jjtree.openNodeScope(jjtn000);Token t;
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FALSE:
@@ -3343,8 +3343,8 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  /*@bgen(jjtree) PrimarySuffix */
   ASTPrimarySuffix jjtn000 = new ASTPrimarySuffix(this, JJTPRIMARYSUFFIX);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);String s = null;
-  Token t = null;
+  jjtree.openNodeScope(jjtn000);String s;
+  Token t;
     try {
       if (jj_2_24(2)) {
         jj_consume_token(DOT);
@@ -3411,7 +3411,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTEGER_LITERAL:
-  Token t = null;
+  Token t;
         t = jj_consume_token(INTEGER_LITERAL);
                         jjtree.closeNodeScope(jjtn000, true);
                         jjtc000 = false;

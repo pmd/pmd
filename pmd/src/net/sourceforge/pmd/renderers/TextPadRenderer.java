@@ -35,7 +35,7 @@ public class TextPadRenderer implements Renderer {
 
 		StringBuffer buf = new StringBuffer();
 
-		Iterator i = null;
+		Iterator i;
 		try  {
 			i = report.iterator();
 		}  catch(NullPointerException npx)  {
