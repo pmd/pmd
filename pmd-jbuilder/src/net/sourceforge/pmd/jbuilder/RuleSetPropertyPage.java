@@ -70,10 +70,12 @@ public class RuleSetPropertyPage extends PropertyPage {
         //loop through the sets of rules and place them in the appropriate pane based upon their setting
         for (int i = 0; i < RuleSetPropertyGroup.RULESET_NAMES.length; i++) {
             ListEntry le = new ListEntry(RuleSetPropertyGroup.RULESET_NAMES[i], RuleSetPropertyGroup.PROPKEYS[i]);
-            if (Boolean.valueOf(RuleSetPropertyGroup.PROPKEYS[i].getValue()).booleanValue())
+            if (Boolean.valueOf(RuleSetPropertyGroup.PROPKEYS[i].getValue()).booleanValue()) {
                 dlmSelectedRuleSets.addElement(le);
-            else
+            }
+            else {
                 dlmAvailableRuleSets.addElement(le);
+            }
         }
     }
 

@@ -39,7 +39,6 @@ public class PMDOpenTool {
      * Default constructor
      */
     public PMDOpenTool () {
-        int i;
     }
 
     /**
@@ -108,7 +107,7 @@ public class PMDOpenTool {
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         RuleSet rules = constructRuleSets(ruleSetFactory, pmd);
         if (rules == null)
-            return  null;
+            return  new Report();
         ctx.setReport(new Report());
         ctx.setSourceCodeFilename("this");
         try {
@@ -235,10 +234,12 @@ class PMDMessage extends Message {
                 browser.setActiveViewer(javaNode, viewer, requestFocus);
                 EditorPane editor = viewer.getEditor();
                 editor.gotoPosition(line, column, false, EditorPane.CENTER_IF_NEAR_EDGE);
-                if (requestFocus)
+                if (requestFocus) {
                     editor.requestFocus();
-                else
+                }
+                else {
                     editor.setTemporaryMark(line, MARK);
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
