@@ -12,15 +12,15 @@ public class Results {
     private List tiles = new ArrayList();
     private Map occurrences = new HashMap();
 
-    public void addTile(Tile tile, Occurrence occ) {
+    public void addTile(Tile tile, Token tok) {
         if (!has(tile)) {
             List list = new ArrayList();
-            list.add(occ);
+            list.add(tok);
             tiles.add(tile);
             occurrences.put(tile, list);
         } else {
             List list = (List)occurrences.get(tile);
-            list.add(occ);
+            list.add(tok);
         }
     }
 

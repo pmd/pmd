@@ -43,8 +43,8 @@ public class TokenList {
         return tokens.iterator();
     }
 
-    public boolean hasTokenAfter(Tile tile, Occurrence occ) {
-        int nextTokenIndex = occ.getIndex() + tile.getTokenCount();
+    public boolean hasTokenAfter(Tile tile, Token tok) {
+        int nextTokenIndex = tok.getIndex() + tile.getTokenCount();
         return nextTokenIndex < tokens.size();
     }
 

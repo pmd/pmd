@@ -8,7 +8,6 @@ package test.net.sourceforge.pmd.cpd;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.TokenSets;
 import net.sourceforge.pmd.cpd.TokenList;
-import net.sourceforge.pmd.cpd.Occurrence;
 import net.sourceforge.pmd.cpd.Token;
 
 public class TokenSetsTest extends TestCase {
@@ -22,7 +21,7 @@ public class TokenSetsTest extends TestCase {
         TokenList ts = new TokenList("foo");
         ts.add(tok);
         tss.add(ts);
-        assertEquals(ts, tss.getTokenSet(new Occurrence(tok)));
+        assertEquals(ts, tss.getTokenSet(tok));
         assertTrue(tss.iterator().hasNext());
     }
 }

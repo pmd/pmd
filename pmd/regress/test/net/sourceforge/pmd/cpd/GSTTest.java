@@ -29,11 +29,11 @@ public class GSTTest extends TestCase {
         Iterator occs = results.getOccurrences(tile);
         assertTrue(occs.hasNext());
         while (occs.hasNext()) {
-            Occurrence oc = (Occurrence)occs.next();
-            if (oc.getTokenSetID().equals("foo")) {
-                assertEquals(0, oc.getIndex());
+            Token tok = (Token)occs.next();
+            if (tok.getTokenSrcID().equals("foo")) {
+                assertEquals(0, tok.getIndex());
             } else {
-                assertEquals("bar", oc.getTokenSetID());
+                assertEquals("bar", tok.getTokenSrcID());
             }
         }
 

@@ -25,12 +25,12 @@ public class CPDTest extends TestCase{
         Results occs = cpd.getResults();
         Iterator i = occs.getOccurrences(new Tile(getHelloTokens()));
         assertTrue(i.hasNext());
-        Occurrence occ = (Occurrence)i.next();
-        if (occ.getTokenSetID().equals("1")) {
-            assertEquals(0, occ.getIndex());
+        Token tok = (Token)i.next();
+        if (tok.getTokenSrcID().equals("1")) {
+            assertEquals(0, tok.getIndex());
         } else {
-            assertEquals("2", occ.getTokenSetID());
-            assertEquals(0, occ.getIndex());
+            assertEquals("2", tok.getTokenSrcID());
+            assertEquals(0, tok.getIndex());
         }
     }
 
@@ -42,12 +42,12 @@ public class CPDTest extends TestCase{
         Results results = cpd.getResults();
         Iterator i = results.getOccurrences(new Tile(getHelloTokens()));
         assertTrue(i.hasNext());
-        Occurrence occ = (Occurrence)i.next();
-        if (occ.getTokenSetID().equals("1")) {
-            assertEquals(0, occ.getIndex());
+        Token tok = (Token)i.next();
+        if (tok.getTokenSrcID().equals("1")) {
+            assertEquals(0, tok.getIndex());
         } else {
-            assertEquals("2", occ.getTokenSetID());
-            assertEquals(0, occ.getIndex());
+            assertEquals("2", tok.getTokenSrcID());
+            assertEquals(0, tok.getIndex());
         }
     }
 

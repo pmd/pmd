@@ -17,20 +17,20 @@ public class Occurrences {
             TokenList ts = (TokenList)j.next();
             for (Iterator i = ts.iterator(); i.hasNext();) {
                 Token tok = (Token)i.next();
-                addTile(new Tile(tok), new Occurrence(tok));
+                addTile(new Tile(tok), tok);
             }
         }
     }
 
-    public void addTile(Tile tile, Occurrence occ) {
+    public void addTile(Tile tile, Token tok) {
         if (!tiles.contains(tile)) {
             List list = new ArrayList();
-            list.add(occ);
+            list.add(tok);
             tiles.add(tile);
             occurrences.put(tile, list);
         } else {
             List list = (List)occurrences.get(tile);
-            list.add(occ);
+            list.add(tok);
         }
     }
 
@@ -86,8 +86,8 @@ public class Occurrences {
             sb.append(tile + ":");
             List list = (List)occurrences.get(tile);
             for (Iterator j = list.iterator(); j.hasNext();) {
-                Occurrence occ = (Occurrence)j.next();
-                sb.append(occ+",");
+                Token tok = (Token)j.next();
+                sb.append(tok+",");
             }
             if (sb.toString().endsWith(",")) {
                 sb = new StringBuffer(sb.substring(0, sb.length()-1));

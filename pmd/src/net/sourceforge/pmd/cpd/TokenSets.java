@@ -39,14 +39,14 @@ public class TokenSets extends AbstractSet {
         return tokenSets.iterator();
     }
 
-    public TokenList getTokenSet(Occurrence occ) {
+    public TokenList getTokenSet(Token tok) {
         for (Iterator i = iterator(); i.hasNext();) {
             TokenList ts = (TokenList)i.next();
-            if (ts.getID().equals(occ.getTokenSetID())) {
+            if (ts.getID().equals(tok.getTokenSrcID())) {
                 return ts;
             }
         }
-        throw new RuntimeException("Couldn't find token set " + occ.getTokenSetID());
+        throw new RuntimeException("Couldn't find token set " + tok.getTokenSrcID());
     }
 
 }

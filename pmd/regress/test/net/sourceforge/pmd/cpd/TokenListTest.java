@@ -9,7 +9,6 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.TokenList;
 import net.sourceforge.pmd.cpd.Token;
 import net.sourceforge.pmd.cpd.Tile;
-import net.sourceforge.pmd.cpd.Occurrence;
 
 public class TokenListTest extends TestCase{
     public TokenListTest(String name) {
@@ -30,7 +29,7 @@ public class TokenListTest extends TestCase{
     }
 
     public void testHasTokenAfter() {
-        assertTrue(GSTTest.createHelloTokenSet("foo").hasTokenAfter(new Tile(new Token('h', 0, "foo")), new Occurrence(new Token('h', 0, "foo"))));
+        assertTrue(GSTTest.createHelloTokenSet("foo").hasTokenAfter(new Tile(new Token('h', 0, "foo")), new Token('h', 0, "foo")));
     }
 
 

@@ -40,9 +40,9 @@ public class OccurrencesTest  extends TestCase {
         Occurrences occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
 
         Iterator i = occs.getOccurrences(new Tile(new Token('h', 0, "foo")));
-        Occurrence occ = (Occurrence)i.next();
-        assertEquals("foo", occ.getTokenSetID());
-        assertEquals(0,occ.getIndex());
+        Token tok = (Token)i.next();
+        assertEquals("foo", tok.getTokenSrcID());
+        assertEquals(0,tok.getIndex());
     }
 
     public void testContains() {
