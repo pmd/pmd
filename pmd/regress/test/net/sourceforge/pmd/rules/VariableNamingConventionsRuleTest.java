@@ -12,6 +12,7 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST3, "variables names should start with lowercase character", 1, new VariableNamingConventionsRule()),
            new TestDescriptor(TEST4, "all is well", 0, new VariableNamingConventionsRule()),
            new TestDescriptor(TEST5, "local finals are ok", 0, new VariableNamingConventionsRule()),
+           new TestDescriptor(TEST6, "serialVersionUID is OK", 0, new VariableNamingConventionsRule()),
        });
     }
 
@@ -41,5 +42,10 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
     " private void bar() {" + PMD.EOL +
     "  final int STATE_READING = 0;" + PMD.EOL +
     " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo {" + PMD.EOL +
+    "  static final long serialVersionUID = 423343L;" + PMD.EOL +
     "}";
 }

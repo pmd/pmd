@@ -42,6 +42,9 @@ public class VariableNamingConventionsRule extends AbstractRule {
         ASTVariableDeclaratorId childNodeId = (ASTVariableDeclaratorId)childNodeName.jjtGetChild(0);
         String varName = childNodeId.getImage();
 
+          if (varName.equals("serialVersionUID")) {
+              return data;
+          }
 
         if (isFinal) {
           if (!varName.equals(varName.toUpperCase())) {

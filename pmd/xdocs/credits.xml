@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Andriy Rozeluk - bug report, feature suggestions</li>
             <li>Vadim Nasardinov - xdocs cleanup, run.sh cleanup</li>
             <li>Sreenivasa Viswanadha - grammar cleanup for Ctrl-Z problem</li>
             <li>Sigiswald Madou - bug report</li>
@@ -98,7 +99,6 @@
             <li>Martin Cooper - feature suggestions</li>
             <li>Bruce Mayhew - feedback on the jEdit plugin</li>
             <li>Juergen Ebert - feature suggestions and pmd-netbeans feedback</li>
-            <li>Andriy Rozeluk - feature suggestions</li>
             <li>J.D. Fagan - feature suggestions</li>
             <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
             <li>Ales Bukovsky - pmd-netbeans feedback</li>
