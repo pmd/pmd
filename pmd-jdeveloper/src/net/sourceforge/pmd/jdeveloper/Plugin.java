@@ -68,7 +68,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     }
 
     public float version() {
-        return 1.1f;
+        return 1.2f;
     }
 
     public float ideVersion() {
