@@ -28,12 +28,26 @@ You can read much more about PMD here - http://pmd.sf.net/.</p>
 </ul>
 </ul>
 <p>"Current directory" means "the directory which is displayed in the file system browser".  So, for
-example, if you wanted to run PMD on your whole source tree, and your top level 
-source directory is named "src", you would 1) double-click on the "src" directory and 
+example, if you wanted to run PMD on your whole source tree, and your top level
+source directory is named "src", you would 1) double-click on the "src" directory and
 then 2) select the "PMD->Check directory recursively" menu option.</p>
 <p>All those options put any errors into the ErrorList so you can then go jumping around your project fixing stuff.
 <p>There's a section in the Utilities->Global Options->Plugins configuration panel that lets you pick which rule sets you want to use.</p>
 <p>Note that the configuration panel also contains the minimum tile size for CPD to turn up a duplicate chunk.
+
+<p>Starting 2.1, you can now add Custom Defined Rulesets with PMD plugin. Previously, if you want to use your own rulesets with the PMD plugin, you had to unjar the pmd.jar file & add your ruleset defination in the jar file & re-jar it & use it. But this procedure had to be repeated whenever a new PMD is out. But not anymore. Now you can simply point PMD plugin to your custom rulesets.xml file & drop your custom ruleset jars in either of jEdit jars directory(either system or user). Once this is done, you will be able to manipulate your Custom Rulesets just the way like the built-in ones.</p>
+
+<h2>Release Notes</h2>
+		<h3>2.1</h3>
+		<ol>
+			<li>Added support to define Custom RuleSets thereby facilitating integration of Custom Rulesets with built-in rulesets & their independent development.</li>
+		</ol>
+	<h3>2.0</h3>
+		<ol>
+			<li>Integrated Copy/Paste Detector(CPD) in jEdit.</li>
+			<li>Updated to use pmd-1.05</li>
+		</ol>
+
 <h3>License</h3>
 <p>The PMD-JEdit plugin is free software released under the Apache license.</p>
 </body>
