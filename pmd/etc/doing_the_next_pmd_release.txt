@@ -3,6 +3,9 @@ update xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to ref
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file, change unit tests to reflect new location
 update release number and tag name in project.xml
+
+UPDATE DOCS TO REFLECT ASTVIEWER->DESIGNER
+
 Check in everything
 
 ant dist test
