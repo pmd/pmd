@@ -114,7 +114,7 @@ public class PMD {
             try {
                 renderer = (Renderer)Class.forName(opts.getReportFormat()).newInstance();
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Unable to load format type of " + opts.getReportFormat());
                 return;
             }
         }
