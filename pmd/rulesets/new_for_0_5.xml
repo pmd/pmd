@@ -42,6 +42,31 @@ public class Foo {}
 ]]>
     </example>
     </rule>
+
+  <rule name="DontImportJavaLang"
+        message="Avoid importing anything from the package 'java.lang'"
+        class="net.sourceforge.pmd.rules.DontImportJavaLangRule">
+    <description>
+    Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+import java.lang.String;
+public class Foo {}
+
+// --- in another source code file...
+
+// this is bad
+import java.lang.*;
+
+public class Foo {}
+]]>
+    </example>
+    </rule>
+
+
 </ruleset>
 
 

@@ -7,10 +7,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.*;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -49,7 +46,7 @@ public class DuplicateImportsRule extends AbstractRule {
     }
 
     public Object visit(ASTImportDeclaration node, Object data) {
-        SimpleNode importNameNode = (SimpleNode)node.jjtGetChild(0);
+        ASTName importNameNode = (ASTName)node.jjtGetChild(0);
 
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {
