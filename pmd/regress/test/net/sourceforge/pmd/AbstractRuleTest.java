@@ -26,6 +26,10 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.Report;
+
+import java.util.Set;
+import java.util.HashSet;
 
 public class AbstractRuleTest extends TestCase {
 
@@ -61,6 +65,19 @@ public class AbstractRuleTest extends TestCase {
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
         assertEquals("Rule description mismatch!", "specificdescription", rv.getDescription());
+    }
+
+    public void testRuleExclusion() {
+        MyRule r = new MyRule();
+        RuleContext ctx = new RuleContext();
+        Set s = new HashSet();
+        s.add(new Integer(5));
+        ctx.setReport(new Report());
+        ctx.excludeLines(s);
+        ctx.setSourceCodeFilename("filename");
+        r.createRuleViolation(ctx, 5, "specificdescription");
+        assertTrue(ctx.getReport().isEmpty());
+
     }
 
 }

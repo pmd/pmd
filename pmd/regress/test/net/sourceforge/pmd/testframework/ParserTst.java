@@ -5,11 +5,11 @@ package test.net.sourceforge.pmd.testframework;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
-import net.sourceforge.pmd.dfa.DataFlowFacade;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
+import net.sourceforge.pmd.dfa.DataFlowFacade;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;

@@ -48,6 +48,11 @@ public class Report {
     private Set metrics = new HashSet();
     private List listeners = new ArrayList();
     private List errors = new ArrayList();
+    private Set linesToExclude = new HashSet();
+
+    public void exclude(Set lines) {
+        linesToExclude = lines;
+    }
 
 
     public Map getCountSummary() {
@@ -94,6 +99,9 @@ public class Report {
     }
 
     public void addRuleViolation(RuleViolation violation) {
+        if (linesToExclude.contains(new Integer(violation.getLine()))) {
+            return;
+        }
         violations.add(violation);
         violationTree.addRuleViolation(violation);
         for (Iterator i = listeners.iterator(); i.hasNext();) {

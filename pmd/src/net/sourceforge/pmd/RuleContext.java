@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd;
 
+import java.util.Set;
+
 public class RuleContext {
 
     private Report report;
@@ -22,5 +24,10 @@ public class RuleContext {
 
     public void setSourceCodeFilename(String filename) {
         this.sourceCodeFilename = filename;
+    }
+
+    public void excludeLines(Set lines) {
+        report.exclude(lines);
+
     }
 }

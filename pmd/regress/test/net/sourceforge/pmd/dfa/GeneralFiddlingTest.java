@@ -1,15 +1,10 @@
 package test.net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.dfa.DataFlowFacade;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
-import java.util.LinkedList;
 import java.util.Iterator;
 
 public class GeneralFiddlingTest extends ParserTst {

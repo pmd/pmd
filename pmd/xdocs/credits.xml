@@ -42,7 +42,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Ken Foskey - cpd.sh</li>
+            <li>Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion</li>
+            <li>Ken Foskey - C++ parser bug report, cpd.sh</li>
             <li>ehowe - a nice patch to include rule priority in the XML report</li>
             <li>aryanto - reported a broken reference in the 'favorites' ruleset.</li>
             <li>Wim Deblauwe - suggested improvements for ExceptionSignatureDeclaration</li>
@@ -66,7 +67,6 @@
             <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many PMD scoreboard ideas</li>
             <li>Radim Kubacki - OptimizableToArrayCallRule suggestion, bug reports, pmd-netbeans feedback</li>
             <li>Will Sargent - AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
-            <li>Mike Thome - BadComparisonRule suggestion</li>
             <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
             <li>Choi Ki Soo - Found bug in XMLRenderer</li>
             <li>wedemann - Found bug in RuleSetFactory XPath message variable plugging</li>

@@ -52,7 +52,10 @@ public class PMD {
      */
     public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         try {
-            JavaParser parser = targetJDKVersion.createParser(reader);
+            ExcludeLines excluder = new ExcludeLines(reader);
+            ctx.excludeLines(excluder.getLinesToExclude());
+
+            JavaParser parser = targetJDKVersion.createParser(excluder.getCopyReader());
             ASTCompilationUnit c = parser.CompilationUnit();
             Thread.yield();
 
@@ -60,7 +63,6 @@ public class PMD {
                 SymbolFacade stb = new SymbolFacade();
                 stb.initializeWith(c);
             }
-
 
             if (ruleSet.usesDFA()) {
                 DataFlowFacade dff = new DataFlowFacade();
