@@ -606,7 +606,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
                 totalArea.width -= (insets.left + insets.right);
                 totalArea.height -= (insets.top + insets.bottom);
                 totalAreaRight = totalArea.x + totalArea.width;
-                indicatorWidth = totalArea.width / 5;
+                indicatorWidth = totalArea.width / 3;
                 indicatorHeight = totalArea.height;
                 indicatorY = totalArea.y;
 
@@ -710,9 +710,9 @@ public class PMDViewer extends JFrame implements JobThreadListener
             int green;
             int blue;
 
-            red = color.getRed() + 7;
-            green = color.getGreen() + 7;
-            blue = color.getBlue() + 7;
+            red = color.getRed() + 5;
+            green = color.getGreen() + 5;
+            blue = color.getBlue() + 5;
 
             if (red > 255)
             {
