@@ -36,7 +36,9 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         node.setScope(contextManager.getCurrentScope());
-        contextManager.getCurrentScope().addDeclaration(new NameDeclaration(node));
+        NameDeclaration nameDeclaration = new NameDeclaration(node);
+        nameDeclaration.setExceptionBlockParameter(node.jjtGetParent().jjtGetParent() instanceof ASTTryStatement);
+        contextManager.getCurrentScope().addDeclaration(nameDeclaration);
         return super.visit(node, data);
     }
 

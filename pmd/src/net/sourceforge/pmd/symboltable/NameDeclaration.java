@@ -10,13 +10,18 @@ import net.sourceforge.pmd.ast.SimpleNode;
 public class NameDeclaration {
 
     private SimpleNode node;
+    private boolean isExceptionBlockParameter;
 
     public NameDeclaration(SimpleNode node) {
         this.node = node;
     }
 
-    public SimpleNode getNode() {
-        return node;
+    public void setExceptionBlockParameter(boolean isExceptionBlockParameter) {
+        this.isExceptionBlockParameter = isExceptionBlockParameter;
+    }
+
+    public boolean isExceptionBlockParameter() {
+        return isExceptionBlockParameter;
     }
 
     public int getLine() {

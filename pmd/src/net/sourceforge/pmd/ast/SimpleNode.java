@@ -42,9 +42,8 @@ public class SimpleNode implements Node {
         if (scope == null) {
             throw new RuntimeException("No scope set on " + this);
         }
-        return this.scope;
+        return scope;
     }
-
 
     public void jjtClose() {
       if ((children == null) || (children.length == 0)){
