@@ -2,6 +2,7 @@
 Added new rules: VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule
 Fixed bug 583047 - ASTName column numbers are now correct
 Fixed bug 761048 - Symbol table now creates a scope level for anonymous inner classes
+Fixed bug 763529 - AccessorClassGenerationRule no longer crashes when given a final inner class
 ASTViewer now shows node images and modifiers
 ASTViewer now saves last edited text to ~/.pmd_astviewer
 Moved the PMD Swing UI into a separate module - pmd-swingui.

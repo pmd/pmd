@@ -201,7 +201,6 @@ public class AccessorClassGenerationRule extends AbstractRule {
     }
 
     private void processRule(RuleContext ctx) {
-        //		try {
         //check constructors of outerIterator
         //against allocations of innerIterator
         for (Iterator outerIterator = classDataList.iterator(); outerIterator.hasNext();) {
@@ -227,10 +226,6 @@ public class AccessorClassGenerationRule extends AbstractRule {
                 }
             }
         }
-        //		}
-        //		catch(Exception e){
-        //			e.printStackTrace();
-        //		}
     }
 
     /**
@@ -324,6 +319,13 @@ public class AccessorClassGenerationRule extends AbstractRule {
     }
 
     public Object visit(ASTAllocationExpression node, Object data) {
+        // TODO
+        // this is a hack to bail out here
+        // but I'm not sure why this is happening
+        // TODO
+        if (classID == -1) {
+            return data;
+        }
         AllocData ad = new AllocData(node, getPackageName(), getCurrentClassData().getClassQualifyingNamesList());
         if (ad.isArray() == false) {
             getCurrentClassData().addInstantiation(ad);

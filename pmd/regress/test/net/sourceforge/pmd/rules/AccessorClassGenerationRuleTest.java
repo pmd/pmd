@@ -5,6 +5,22 @@ import net.sourceforge.pmd.rules.AccessorClassGenerationRule;
 
 public class AccessorClassGenerationRuleTest extends RuleTst {
 
+    public void testInnerClassHasPrivateConstructor() throws Throwable {
+        runTestFromString(TEST1, 1, new AccessorClassGenerationRule());
+    }
+
+    public void testInnerClassHasPublicConstructor() throws Throwable {
+        runTestFromString(TEST2, 0, new AccessorClassGenerationRule());
+    }
+
+    public void testOuterClassHasPrivateConstructor() throws Throwable {
+        runTestFromString(TEST3, 1, new AccessorClassGenerationRule());
+    }
+
+    public void testFinalInnerClass() throws Throwable {
+        runTestFromString(TEST4, 0, new AccessorClassGenerationRule());
+    }
+
     private static final String TEST1 =
     "public class Foo1 {" + PMD.EOL +
     " public class InnerClass {" + PMD.EOL +
@@ -38,15 +54,11 @@ public class AccessorClassGenerationRuleTest extends RuleTst {
     "    }" + PMD.EOL +
     "}";
 
-    public void testInnerClassHasPrivateConstructor() throws Throwable {
-        runTestFromString(TEST1, 1, new AccessorClassGenerationRule());
-    }
-
-    public void testInnerClassHasPublicConstructor() throws Throwable {
-        runTestFromString(TEST2, 0, new AccessorClassGenerationRule());
-    }
-
-    public void testOuterClassHasPrivateConstructor() throws Throwable {
-        runTestFromString(TEST3, 1, new AccessorClassGenerationRule());
-    }
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void method() {" + PMD.EOL +
+    "   final class Inner {}; " + PMD.EOL +
+    "   Inner i = new Inner();" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 }
