@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.eclipse.preferences;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.PMDPlugin;
+
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
@@ -13,6 +15,9 @@ import org.eclipse.swt.widgets.TableItem;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2003/07/01 20:20:30  phherlin
+ * Correcting some PMD violations ! (empty catch stmt)
+ *
  * Revision 1.1  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -80,6 +85,9 @@ public class RuleCellModifier implements ICellModifier {
         } catch (Throwable t) {
             // Bug in JFace for Eclipse 2.0x
             // Ignore exception
+            PMDPlugin.getDefault().logError(
+                "Exception when notifying a modification in a cell of the rule table in the preference page",
+                t);
         }
     }
 

@@ -58,6 +58,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2003/07/01 20:20:30  phherlin
+ * Correcting some PMD violations ! (empty catch stmt)
+ *
  * Revision 1.7  2003/06/30 20:16:06  phherlin
  * Redesigning plugin configuration
  *
@@ -119,11 +122,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                             try {
                                 ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
                             } catch (CoreException e) {
+                                PMDPlugin.getDefault().logError("Exception building all projects after a preference change", e);
                             }
                         }
                     });
                 } catch (InterruptedException e) {
+                    PMDPlugin.getDefault().logError("Exception building all projects after a preference change", e);
                 } catch (InvocationTargetException e) {
+                    PMDPlugin.getDefault().logError("Exception building all projects after a preference change", e);
                 }
             }
         }
@@ -301,13 +307,13 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
         ruleTableViewer.setSorter(new ViewerSorter() {
             public int compare(Viewer viewer, Object e1, Object e2) {
-                int result = 0;                
+                int result = 0;
                 if ((e1 instanceof Rule) && (e2 instanceof Rule)) {
                     result = ((Rule) e1).getName().compareTo(((Rule) e2).getName());
                 }
                 return result;
             }
-            
+
             public boolean isSorterProperty(Object element, String property) {
                 return property.equals(PROPERTY_NAME);
             }
@@ -369,6 +375,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                     try {
                         ruleTableViewer.refresh();
                     } catch (Throwable t) {
+                        PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
                     }
                 }
             }
@@ -438,6 +445,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                     try {
                         ruleTableViewer.refresh();
                     } catch (Throwable t) {
+                        PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
                     }
                 }
             }
@@ -472,6 +480,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                         try {
                             ruleTableViewer.refresh();
                         } catch (Throwable t) {
+                            PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
                         }
                     } catch (RuleSetNotFoundException e) {
                         PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_RULESET_NOT_FOUND), e);
@@ -567,6 +576,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                     try {
                         ruleTableViewer.refresh();
                     } catch (Throwable t) {
+                        PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
                     }
                 }
             }
