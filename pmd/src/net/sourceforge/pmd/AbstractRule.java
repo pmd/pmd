@@ -11,7 +11,10 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import java.util.List;
 import java.util.Iterator;
 
-public abstract class AbstractRule extends JavaParserVisitorAdapter {
+public abstract class AbstractRule 
+    extends JavaParserVisitorAdapter
+    implements Rule
+{
 
     public String getName() {
         return getClass().getName();

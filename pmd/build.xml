@@ -12,6 +12,13 @@
   <!-- Set default values for the build -->
   <property file="project.properties" />
 
+
+<target name="jjt">
+  <jjtree target="src/Java1.4-c.jjt"
+          outputdirectory="src"
+          javacchome="lib/javacc" />
+</target>
+
 <!-- maven:start -->
 
 <!-- ======================================================== -->

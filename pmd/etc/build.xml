@@ -82,13 +82,24 @@
     <target name="jjtree">
         <mkdir dir="tmp"/>
         <copy overwrite="yes" todir="tmp">
-            <fileset dir="src/net/sourceforge/pmd/ast" includes="SimpleNode.java,JavaParserVisitorAdapter.java"/>
+            <fileset dir="src/net/sourceforge/pmd/ast" includes="SimpleNode.java,JavaParserVisitorAdapter.java,AccessNode.java"/>
         </copy>
         <delete>
             <fileset dir="src/net/sourceforge/pmd/ast" includes="*.java,*.jj"/>
         </delete>
         <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
         <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
+        <copy overwrite="yes" todir="src/net/sourceforge/pmd/ast">
+            <fileset dir="tmp" includes="*.java"/>
+        </copy>
+        <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
+        <delete dir="tmp"/>
+    </target>
+
+    <target name="jjtree-2">
+        <mkdir dir="tmp"/>
+        <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/home/dpeugh/software/javacc2.1"/>
+        <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/home/dpeugh/software/javacc2.1"/>
         <copy overwrite="yes" todir="src/net/sourceforge/pmd/ast">
             <fileset dir="tmp" includes="*.java"/>
         </copy>
