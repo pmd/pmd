@@ -48,7 +48,7 @@ public class PMDPreferencePage
 
 	public void init(IWorkbench workbench) {
 		setPreferenceStore(PMDPlugin.getDefault().getPreferenceStore());
-		setDescription("PMD Configuration Options");
+		setDescription("PMD RuleSet Configuration Options");
 	}
 	
 

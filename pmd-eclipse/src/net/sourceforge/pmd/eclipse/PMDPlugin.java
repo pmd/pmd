@@ -12,6 +12,7 @@ import java.util.*;
 public class PMDPlugin extends AbstractUIPlugin {
 	//The shared instance.
 	private static PMDPlugin plugin;
+
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
 	
