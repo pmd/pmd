@@ -14,12 +14,11 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
         <ul>
             <li>In order to do rules, it'll help if you can modify the PMD source.
     So download the latest PMD source release and unzip it somewhere on your computer.</li>
-            <li>You'll also need an Ant 1.5.1 jar file to compile against because PMD includes an
+            <li>You'll also need an Ant 1.5 jar file to compile against because PMD includes an
         Ant task as part of the core distribution.  You can get Ant binary
         releases <a href="http://ant.apache.org/bindownload.cgi">here</a>.</li>
-            <li>PMD has a slew of JUnit tests, so you'll need a JUnit 3.8.1 binary release if you want
-                to run the tests.  And of course you do, so you can get JUnit
-                from <a href="http://www.junit.org/">here</a>.</li>
+            <li>PMD has a slew of JUnit tests, so you'll need a <a href="http://www.junit.org/">JUnit 3.8.1 binary release</a>
+                if you want to run the tests.</li>
         </ul>
     </p>
     </subsection>
@@ -124,7 +123,7 @@ WhileStatement
 ]]>
     </source>
     <p>
-    Ah ha!  We see that the curly braces add a couple more AST elements - a <code>Block</code>
+    Ah ha!  We see that the curly braces add a couple more AST nodes - a <code>Block</code>
         and a <code>BlockStatement</code>.  So all we have
     to do is write a rule to detect a <code>WhileStatement</code> that
         has a <code>Statement</code> that's not followed by a <code>Block</code>, and we've got a rule violation.
@@ -202,8 +201,8 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
         ]]>
         </source>
         <p>OK, well, it won't look exactly like that - you'll need to wrap
-        the example in a CDATA tag.  But I couldn't figure out how to do that with this document getting
-        confused.  If you know how, please let me know.</p>
+        the example in a CDATA tag.  But I couldn't figure out how to do that without Maven getting confused.
+            If you know how to do this, please let me know.</p>
     </subsection>
 
     <subsection name="Run PMD using your new ruleset">
@@ -253,10 +252,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
         <source>
             //WhileStatement[not(Statement/Block)]
         </source>
-        <p>Concise, eh?  There'll be more documentation on this later - in the form of
-            an O'Reilly article - so for now, use the Astviewer utility
-        to experiment with how XPath expressions interact with the AST.  Now that I've said
-        &quot;XPath expression&quot; 5 times, I'll stop.  XPath expression.</p>
+        <p>Concise, eh?  Here's an <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">article</a> with a lot more detail.</p>
     </subsection>
 
     <subsection name="Repeat as necessary">
