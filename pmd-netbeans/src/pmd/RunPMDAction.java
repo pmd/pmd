@@ -75,9 +75,8 @@ import pmd.scan.EditorChangeListener;
 public class RunPMDAction extends CookieAction {
 	
 	
-	protected void initialize()
-	{
-		ErrorManager.getDefault().log(ErrorManager.ERROR, "2initialize");
+	protected void initialize() {
+		ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, "Initializing RunPMDAction");
 		super.initialize();
 		TopComponent.getRegistry().addPropertyChangeListener( new EditorChangeListener(TopComponent.getRegistry()) );
 	}
