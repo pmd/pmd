@@ -4,8 +4,20 @@
   	xmlns:j="jelly:core"
   	xmlns:m="maven"
   	xmlns:dvsl="dvsl"
-  	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">
-         
+  	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">  
+             
+
+	<goal name="init-pmd-tag">
+	    <taskdef
+    	   	name="pmd"
+			classname="net.sourceforge.pmd.ant.PMDTask">
+       		<classpath>
+         		<pathelement location="target/classes" />
+         		<pathelement location="." />
+       		</classpath>
+    	</taskdef>
+    </goal>
+    
     <goal name="pmd-site" prereqs="pmd:ruleset-docs">
       <attainGoal name="site:generate" />
     </goal>
@@ -20,5 +32,21 @@
 		      destdir="${maven.gen.docs}/rules">
     	</dvsl:dvsl>
   	</goal>
+  	
+  	
+   <goal name="pmd:jdk" prereqs="init-pmd-tag">
+          if="jdk14.src">
+    	<mkdir dir="${maven.pmd.reportsDirectory}" />
+    	<pmd reportFile="${maven.pmd.reportsDirectory}/jdk-1.4.xml"
+        	 verbose="false"
+         	rulesetfiles="rulesets/basic.xml,rulesets/unusedcode.xml,rulesets/design.xml"
+         	format="xml"
+         	failonerror="no">
+      		<fileset dir="${jdk14.src}">
+        		<include name="**/*.java" />
+      		</fileset>
+    	</pmd>
+    </goal>
+
  </project>
  
