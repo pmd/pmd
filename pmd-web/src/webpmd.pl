@@ -68,7 +68,7 @@ sub loadProjectList() {
 
 	@newprojects = sort { $b->getLocation() cmp $a->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
 
-	my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>NCSS</th><th>Problems</th><th>Percentage Unused Code</th><th>Duplicate Code</th></tr>";
+	my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>NCSS</th><th>Problems</th><th>Percentage<br>Unused Code</th><th>Duplicate<br>Code</th></tr>";
 	foreach $project (@newprojects) {
 		my $jobLink=$project->getTitle();
 		if (-e $project->getRptFile()) {
@@ -93,8 +93,8 @@ sub loadProjectList() {
 			$color = "white";
 		}
 		$result="${result}<td align=center>@{[$project->getLines()]}</td><td bgcolor=$color align=center>$rounded</td>";
-		my $cpdLink="TBD";
-		if (-e $project->getCPDRptFile()) {
+		my $cpdLink="0";
+		if (-e $project->getCPDRptFile() && $project->getCPDLines() > 0) {
 			$cpdLink="<a href=\"@{[$project->getCPDRptURL]}\">@{[$project->getCPDLines()]}</a>";
 		}
 		$result = "${result}<td bgcolor=$color>$cpdLink</td></tr>";
