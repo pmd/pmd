@@ -1,7 +1,8 @@
+???? 2002 - 0.5:
+
 July 10 2002 - 0.4:
 Added new rules: OverrideBothEqualsAndHashcodeRule, EmptyTryBlock, EmptyFinallyBlock
 Reports are now sorted by line number
-Added a simple GUI
 RuleSets can now reference rules in other RuleSets
 Fixed bug 579718 - made 'ruleset not found' error message clearer.
 
