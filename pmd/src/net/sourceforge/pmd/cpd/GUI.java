@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.cpd;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.*;
@@ -33,11 +34,21 @@ public class GUI implements CPDListener {
             System.exit(0);
         }
     }
+    private class BrowseListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fc = new JFileChooser(System.getProperty("user.home"));
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fc.showDialog(frame, "Select");
+            if (fc.getSelectedFile() != null) {
+                rootDirectoryField.setText(fc.getSelectedFile().getAbsolutePath());
+            }
+        }
+    }
 
-    private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
-    //private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
+    //private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
+    private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     //private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
-    private JTextField minimumLengthField= new JTextField("20");
+    private JTextField minimumLengthField= new JTextField("30");
 
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JProgressBar addingTokensBar = new JProgressBar();
@@ -47,8 +58,10 @@ public class GUI implements CPDListener {
     private JTextField expandingTileField = new JTextField(50);
     private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
 
+    private JFrame frame;
+
     public GUI() {
-        JFrame frame = new JFrame("PMD Cut and Paste Detector");
+        frame = new JFrame("PMD Cut and Paste Detector");
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
@@ -63,10 +76,16 @@ public class GUI implements CPDListener {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(3,2));
         inputPanel.add(new JLabel("Enter a root src directory"));
-        inputPanel.add(rootDirectoryField);
+        JPanel littlePanel = new JPanel();
+        littlePanel.add(rootDirectoryField);
+        JButton browseButton = new JButton("Browse");
+        browseButton.addActionListener(new BrowseListener());
+        littlePanel.add(browseButton);
+        inputPanel.add(littlePanel);
         inputPanel.add(new JLabel("Enter a minimum tile size"));
         inputPanel.add(minimumLengthField);
         inputPanel.add(recurseCheckbox);
+
         JPanel buttonsPanel = new JPanel();
         JButton goButton = new JButton("Go");
         goButton.addActionListener(new GoListener());
@@ -166,3 +185,4 @@ public class GUI implements CPDListener {
     }
 
 }
+
