@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Andrew Glover - documentation tweaks</li>
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Gunnlaugur Thor Briem - bug report on JavaCC parser's use of java.lang.Error</li>
             <li>Carl Gilbert - ConstructorCallsOverridableMethodRule, bug reports, feature requests, and documentation improvements</li>

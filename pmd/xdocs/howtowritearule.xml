@@ -116,11 +116,11 @@ WhileStatement
 
     <subsection name="Write a rule class">
     <p>
-    Create a new Java class that extends <code>net.sourceforge.pmd.AbstractRule</code>:
+    Create a new Java class that extends <code>net.sourceforge.pmd.AbstractRule</code> and implements <code>net.sourceforge.pmd.Rule</code>:
     </p>
     <source>
 <![CDATA[
-public class WhileLoopsMustUseBracesRule extends AbstractRule {
+public class WhileLoopsMustUseBracesRule extends AbstractRule implements Rule {
 }
 ]]>
     </source>
@@ -130,9 +130,10 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </p>
     <source>
 <![CDATA[
-public class WhileLoopsMustUseBracesRule extends AbstractRule {
+public class WhileLoopsMustUseBracesRule extends AbstractRule implements Rule {
     public Object visit(ASTWhileStatement node, Object data) {
         System.out.println("hello world");
+        return data;
     }
 }
 ]]>
@@ -178,7 +179,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </p>
     <source>
 <![CDATA[
-public class WhileLoopsMustUseBracesRule extends AbstractRule {
+public class WhileLoopsMustUseBracesRule extends AbstractRule implements Rule {
     public Object visit(ASTWhileStatement node, Object data) {
         SimpleNode firstStmt = (SimpleNode)node.jjtGetChild(1);
         if (!hasBlockAsFirstChild(firstStmt)) {
