@@ -321,8 +321,8 @@ public class Foo {
                 <value>
                     <![CDATA[
 //FieldDeclaration
+ [@Final='true' and @Static='false']
  [not (../../../../ClassOrInterfaceDeclaration[@Interface='true'])]
-  [@Final='true' and @Static='false']
    /VariableDeclarator/VariableInitializer/Expression
     /PrimaryExpression/PrimaryPrefix/Literal
                     ]]>
