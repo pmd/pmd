@@ -26,6 +26,7 @@ import com.borland.primetime.node.*;
 import com.borland.primetime.properties.*;
 import com.borland.primetime.viewer.*;
 import net.sourceforge.pmd.*;
+import java.awt.event.ActionEvent;
 
 
 
@@ -49,9 +50,10 @@ public class PMDOpenTool {
      */
     public static void initOpenTool (byte majorVersion, byte minorVersion) {
         if (majorVersion == PrimeTime.CURRENT_MAJOR_VERSION) {
-            GROUP_PMD.add(ACTION_PMDCheck);
-            GROUP_PMD.add(ACTION_PMDConfig);
+            GROUP_PMD.add(B_ACTION_PMDCheck);
+            GROUP_PMD.add(B_ACTION_PMDConfig);
             JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
+
             registerWithContentManager();
             registerWithProjectView();
 
@@ -63,10 +65,19 @@ public class PMDOpenTool {
             ImportedRuleSetPropertyGroup ipropGrp = new ImportedRuleSetPropertyGroup();
             ActiveRuleSetPropertyGroup apropGrp = new ActiveRuleSetPropertyGroup();
             ConfigureRuleSetPropertyGroup cpropGrp = new ConfigureRuleSetPropertyGroup();
+            AcceleratorPropertyGroup accpropGrp = new AcceleratorPropertyGroup();
+
+            //register the Keymap shortcuts
+            EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke('P', Event.CTRL_MASK | Event.SHIFT_MASK),
+                   E_ACTION_PMDCheck);
+
+            EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke('J', Event.CTRL_MASK | Event.SHIFT_MASK),
+                   E_ACTION_PMDCheckProject);
 
             PropertyManager.registerPropertyGroup(apropGrp);
             PropertyManager.registerPropertyGroup(cpropGrp);
             PropertyManager.registerPropertyGroup(ipropGrp);
+            PropertyManager.registerPropertyGroup(accpropGrp);
 
         }
     }
@@ -79,7 +90,7 @@ public class PMDOpenTool {
         ContextActionProvider cap = new ContextActionProvider() {
 
             public Action getContextAction (Browser browser, Node[] nodes) {
-                return  ACTION_PMDCheck;
+                return  B_ACTION_PMDCheck;
             }
         };
         ContentManager.registerContextActionProvider(cap);
@@ -88,10 +99,9 @@ public class PMDOpenTool {
     private static void registerWithProjectView() {
         ContextActionProvider cap = new ContextActionProvider() {
             public Action getContextAction (Browser browser, Node[] nodes) {
-                //Browser.getActiveBrowser().getMessageView().addMessage(msgCat, browser.getProjectView().getSelectedNode().toString());
                 Node node = browser.getProjectView().getSelectedNode();
                 if (node instanceof JBProject || node instanceof PackageNode)
-                    return  ACTION_PMDProjectCheck;
+                    return  B_ACTION_PMDProjectCheck;
                 return null;
             }
         };
@@ -105,7 +115,6 @@ public class PMDOpenTool {
      * @return A Ruleset and any embedded rulesets
      */
     private static RuleSet constructRuleSets () {
-    Browser.getActiveBrowser().getMessageView().addMessage(Constants.MSGCAT_TEST, "building ruleset");
         RuleSet masterRuleSet = new RuleSet();
         for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
@@ -142,28 +151,47 @@ public class PMDOpenTool {
         return  null;
     }
 
+
+    //create EditorAction for performing a PMD Check
+    public static EditorAction E_ACTION_PMDCheck =
+    new EditorAction("Displays PMD statistics about a Java File") {
+        public void actionPerformed(ActionEvent e) {
+            pmdCheck();
+        }
+    };
+
+    //create EditorAction for performing a PMD Check on a project
+    public static EditorAction E_ACTION_PMDCheckProject =
+    new EditorAction("Displays PMD statistics about a Java File") {
+        public void actionPerformed(ActionEvent e) {
+            pmdCheckProject();
+        }
+    };
+
     //create the Menu action item for initiating the PMD check
-    public static BrowserAction ACTION_PMDCheck =
+    public static BrowserAction B_ACTION_PMDCheck =
             // A new action with short menu string, mnemonic, and long menu string
     new BrowserAction("PMD Checker", 'P', "Displays PMD statistics about a Java File") {
 
         // The function called when the menu is selected
         public void actionPerformed (Browser browser) {
-            Node node = Browser.getActiveBrowser().getActiveNode();
-            if (node instanceof JavaFileNode) {
-                Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
-                TextNodeViewer viewer = (TextNodeViewer)Browser.getActiveBrowser().getViewerOfType(node,
-                        TextNodeViewer.class);
-                if (viewer != null) {
-                    Document doc = viewer.getEditor().getDocument();
-                    try {
-                        checkCode(doc.getText(0, doc.getLength()), (JavaFileNode)node, null);
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
+            pmdCheck();
+        }
+    };
+
+    //Create the menu action item for configuring PMD
+    public static BrowserAction B_ACTION_PMDConfig = new BrowserAction("Configure PMD",
+            'C', "Configure the PMD Settings") {
+        public void actionPerformed (Browser browser) {
+            PropertyManager.showPropertyDialog(browser, "PMD Options", Constants.RULESETS_TOPIC,
+                    PropertyDialog.getLastSelectedPage());
+        }
+    };
+
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project") {
+        public void actionPerformed(Browser browser) {
+            pmdCheckProject();
         }
 
     };
@@ -202,51 +230,56 @@ public class PMDOpenTool {
 
     }
 
-    //Create the menu action item for configuring PMD
-    public static BrowserAction ACTION_PMDConfig = new BrowserAction("Configure PMD",
-            'C', "Configure the PMD Settings") {
-        public void actionPerformed (Browser browser) {
-            PropertyManager.showPropertyDialog(browser, "PMD Options", Constants.RULESETS_TOPIC,
-                    PropertyDialog.getLastSelectedPage());
-        }
-    };
-
-    //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project") {
-        public void actionPerformed(Browser browser) {
-            Node[] nodes = browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+    private static void pmdCheck() {
+        Node node = Browser.getActiveBrowser().getActiveNode();
+        if (node instanceof JavaFileNode) {
             Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
-            RuleSet rules = constructRuleSets();
-            for (int i=0; i<nodes.length; i++ ) {
-                if (nodes[i] instanceof PackageNode) {
-                    PackageNode node = (PackageNode)nodes[i];
-                    Node[] fileNodes = node.getDisplayChildren();
-                    for (int j=0; j<fileNodes.length; j++) {
-                        if (fileNodes[j] instanceof JavaFileNode) {
-                            Message fileNameMsg = new Message(fileNodes[j].getDisplayName());
-                            fileNameMsg.setFont(fileNameMsgFont);
-                            Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg);
-                            JavaFileNode javaNode = (JavaFileNode)fileNodes[j];
-                            StringBuffer code = new StringBuffer();
-                            try {
-                                byte[] buffer = new byte[1024];
-                                InputStream is = javaNode.getInputStream();
-                                int charCount;
-                                while ((charCount = is.read(buffer)) != -1) {
-                                    code.append(new String(buffer, 0, charCount));
-                                }
-                                checkCode(code.toString(), javaNode, rules);
+            TextNodeViewer viewer = (TextNodeViewer)Browser.getActiveBrowser().getViewerOfType(node,
+                    TextNodeViewer.class);
+            if (viewer != null) {
+                Document doc = viewer.getEditor().getDocument();
+                try {
+                    checkCode(doc.getText(0, doc.getLength()), (JavaFileNode)node, null);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static void pmdCheckProject() {
+        Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+        Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
+        RuleSet rules = constructRuleSets();
+        for (int i=0; i<nodes.length; i++ ) {
+            if (nodes[i] instanceof PackageNode) {
+                PackageNode node = (PackageNode)nodes[i];
+                Node[] fileNodes = node.getDisplayChildren();
+                for (int j=0; j<fileNodes.length; j++) {
+                    if (fileNodes[j] instanceof JavaFileNode) {
+                        Message fileNameMsg = new Message(fileNodes[j].getDisplayName());
+                        fileNameMsg.setFont(fileNameMsgFont);
+                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg);
+                        JavaFileNode javaNode = (JavaFileNode)fileNodes[j];
+                        StringBuffer code = new StringBuffer();
+                        try {
+                            byte[] buffer = new byte[1024];
+                            InputStream is = javaNode.getInputStream();
+                            int charCount;
+                            while ((charCount = is.read(buffer)) != -1) {
+                                code.append(new String(buffer, 0, charCount));
                             }
-                            catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
+                            checkCode(code.toString(), javaNode, rules);
+                        }
+                        catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
                 }
             }
         }
-    };
-
+    }
 
     /**
     * Main method for testing purposes
