@@ -1,7 +1,7 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
-v0.5.1 - release date
+v1.0.0 - 19/06/2003
 
 NEW : Adding a logging facility
 -------------------------------
@@ -18,10 +18,20 @@ NEW : PMD actions from folder and package popups
 Now, PMD actions (check code and remove markers) are available from the popup menus of
 a folder (resource navigator view) and package (package explorer view).
 
+NEW : On-line help
+------------------
+PMD documentation is now shipped with the plugin. Open the help contents and select
+'PMD Plugin documentation'. The topic 'PMD Documentation' points to the PMD official
+documentation. The chapter 'How to...' contains pages about some usual tasks with the
+plugin.
+
 UPDATED :
 ---------
+Lastest PMD Engine (v1.1).
 Now, no more error message is displayed when PMD is executed against a file with syntax
 errors.
+The progress indicators are more accurate.
+Violations are batch processed to speed up manual PMD invocation.
 
 
 

@@ -1,7 +1,7 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
-v0.6.0 - release date
+v1.0.0 - 19/06/2003
 
 Runtime
 -------
@@ -12,10 +12,16 @@ Runtime
 . Removing error dialog when PMD is executed on a file with syntax error
   (the PMD exception is logged as a warning)
 . Adding PMD actions on folder and package popup menus
-  (request nnnnnn from Vladimir Bossica)
+  (request from Vladimir Bossica)
 . Processing markers changes as batch operations so that performances are improved.
-. Updating PMD engine to v1.05
+. Updating PMD engine to v1.1
 . Fixing CPD usage to conform to new engine implementation
+. Improving progress indicators accurracy
+. Adding online help that points to official PMD help and a howto section
+. When generating an AST :
+     . place image information as an attribute instead of the tag body
+     . add other attributes (lines and cols) to all tags even those without children
+
 
 
 
