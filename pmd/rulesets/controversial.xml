@@ -116,7 +116,15 @@ most people really dislike :-)
          ]
         ]
        )]
-|   //UnmodifiedInterfaceDeclaration//FieldDeclaration[@Public = 'true' or @Static = 'true' or @Final = 'true']
+|   //UnmodifiedInterfaceDeclaration//FieldDeclaration
+    [@Public = 'true' or @Static = 'true' or @Final = 'true']
+    [not (parent::ClassBodyDeclaration
+     [parent::ClassBody
+      [parent::UnmodifiedClassDeclaration
+       [parent::NestedClassDeclaration]
+      ]
+     ]
+    )]
 |   //UnmodifiedInterfaceDeclaration//NestedClassDeclaration[@Public = 'true' or @Static = 'true']
 |   //UnmodifiedInterfaceDeclaration//NestedInterfaceDeclaration[@Public = 'true' or @Static = 'true']
 |   //UnmodifiedClassDeclaration//NestedInterfaceDeclaration[@Static = 'true']
