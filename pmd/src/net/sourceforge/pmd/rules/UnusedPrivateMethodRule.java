@@ -179,10 +179,9 @@ TODO this uses the symbol table
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         for (Iterator i = node.getScope().getUnusedMethodDeclarations();i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
-            AccessNode accessNode = (AccessNode)decl.getNode().jjtGetParent();
 
             // exclude non-private methods and serializable methods
-            if (!accessNode.isPrivate() || decl.getImage().equals("readObject") || decl.getImage().equals("writeObject")|| decl.getImage().equals("readResolve")) {
+            if (!decl.getAccessNodeParent().isPrivate() || decl.getImage().equals("readObject") || decl.getImage().equals("writeObject")|| decl.getImage().equals("readResolve")) {
                 continue;
             }
 
@@ -191,5 +190,6 @@ TODO this uses the symbol table
         }
         return super.visit(node, data);
     }
+
 */
 }

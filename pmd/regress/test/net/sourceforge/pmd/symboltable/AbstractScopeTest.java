@@ -16,9 +16,9 @@ public class AbstractScopeTest extends TestCase {
 
     // A helper class to stub out AbstractScope's abstract stuff
     private class MyScope extends AbstractScope {
-        protected VariableNameDeclaration findVariableHere(NameOccurrence occ) {
+        protected NameDeclaration findVariableHere(NameOccurrence occ) {
             for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-                VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
+                NameDeclaration decl = (NameDeclaration)i.next();
                 if (decl.getImage().equals(occ.getImage())) {
                     return decl;
                 }
@@ -29,7 +29,7 @@ public class AbstractScopeTest extends TestCase {
 
     // Another helper class to test the search for a class scope behavior
     private class IsEnclosingClassScope extends AbstractScope {
-        protected VariableNameDeclaration findVariableHere(NameOccurrence occ) {return null;}
+        protected NameDeclaration findVariableHere(NameOccurrence occ) {return null;}
         public Scope getEnclosingClassScope() {
             return this;
         }

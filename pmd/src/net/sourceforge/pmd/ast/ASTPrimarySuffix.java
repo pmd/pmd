@@ -11,6 +11,15 @@ public class ASTPrimarySuffix extends SimpleNode {
     super(p, id);
   }
 
+  private boolean isArguments;
+
+    public void setIsArguments() {
+        this.isArguments = true;
+    }
+
+    public boolean isArguments() {
+        return this.isArguments;
+    }
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {

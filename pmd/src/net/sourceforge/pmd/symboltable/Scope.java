@@ -47,7 +47,7 @@ public interface Scope {
      * Adds a NameOccurrence to this scope - only call this after getting
      * a true back from contains()
      */
-    public VariableNameDeclaration addVariableNameOccurrence(NameOccurrence occ);
+    public NameDeclaration addVariableNameOccurrence(NameOccurrence occ);
 
     /**
      * Points this scope to its parent

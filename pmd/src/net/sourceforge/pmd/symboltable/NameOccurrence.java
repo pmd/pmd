@@ -14,13 +14,22 @@ import java.util.List;
 
 public class NameOccurrence {
 
-    private SimpleNode occurrenceLocation;
+    private SimpleNode location;
     private String image;
     private NameOccurrence qualifiedName;
+    private boolean isMethodOrConstructorInvocation;
 
-    public NameOccurrence(SimpleNode occurrenceLocation, String image) {
-        this.occurrenceLocation = occurrenceLocation;
+    public NameOccurrence(SimpleNode location, String image) {
+        this.location = location;
         this.image = image;
+    }
+
+    public void setIsMethodOrConstructorInvocation() {
+        isMethodOrConstructorInvocation = true;
+    }
+
+    public boolean isMethodOrConstructorInvocation() {
+        return this.isMethodOrConstructorInvocation;
     }
 
     public void setNameWhichThisQualifies(NameOccurrence qualifiedName) {
@@ -33,24 +42,24 @@ public class NameOccurrence {
 
     public boolean isOnLeftHandSide() {
         SimpleNode top = null;
-        if (occurrenceLocation.jjtGetParent() instanceof ASTPrimaryExpression) {
-            top = (SimpleNode)occurrenceLocation.jjtGetParent().jjtGetParent();
-        } else if (occurrenceLocation.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
-            top = (SimpleNode)occurrenceLocation.jjtGetParent().jjtGetParent().jjtGetParent();
+        if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
+            top = (SimpleNode)location.jjtGetParent().jjtGetParent();
+        } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
+            top = (SimpleNode)location.jjtGetParent().jjtGetParent().jjtGetParent();
         } else {
-            throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + occurrenceLocation.jjtGetParent() + " and grandparent = " + occurrenceLocation.jjtGetParent().jjtGetParent());
+            throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
 
         return top.jjtGetNumChildren() > 1 && top.jjtGetChild(1) instanceof ASTAssignmentOperator;
     }
 
     public Scope getScope() {
-        return occurrenceLocation.getScope();
+        return location.getScope();
     }
 
 
     public int getBeginLine() {
-        return occurrenceLocation.getBeginLine();
+        return location.getBeginLine();
     }
 
     public boolean isThisOrSuper() {
@@ -71,6 +80,6 @@ public class NameOccurrence {
     }
 
     public String toString() {
-        return getImage() + ":" + occurrenceLocation.getBeginLine() + ":" + occurrenceLocation.getClass();
+        return getImage() + ":" + location.getBeginLine() + ":" + location.getClass();
     }
 }

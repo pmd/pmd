@@ -10,7 +10,7 @@ import java.util.Iterator;
 public class UnusedFormalParameterRule extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (node.isPrivate() && ! node.isNative()) {  // make sure it's both private and not native
+        if (node.isPrivate() && !node.isNative()) {  // make sure it's both private and not native
             RuleContext ctx = (RuleContext)data;
             for (Iterator i = node.getScope().getUnusedVariableDeclarations(); i.hasNext();) {
                 VariableNameDeclaration nameDecl = (VariableNameDeclaration)i.next();

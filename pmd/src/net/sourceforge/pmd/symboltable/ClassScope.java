@@ -22,12 +22,13 @@ public class ClassScope extends AbstractScope {
     public void addDeclaration(MethodNameDeclaration decl) {
         if (methodNames.containsKey(decl)) {
             return;
+            // TODO - can this be uncommented now?
             //throw new RuntimeException("Method " + decl + " is already in the symbol table");
         }
         methodNames.put(decl, new ArrayList());
     }
 
-    protected VariableNameDeclaration findVariableHere(NameOccurrence occurrence) {
+    protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
             if (variableNames.isEmpty()) {
                 // this could happen if you do this:
@@ -47,8 +48,9 @@ public class ClassScope extends AbstractScope {
             return (VariableNameDeclaration)variableNames.keySet().iterator().next();
         }
 
+
         for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
+            NameDeclaration decl = (VariableNameDeclaration)i.next();
             if (decl.getImage().equals(occurrence.getImage()) || (className + "." + decl.getImage()).equals(occurrence.getImage())) {
                 return decl;
             }

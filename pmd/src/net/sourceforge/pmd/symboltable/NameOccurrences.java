@@ -5,10 +5,7 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -42,17 +39,16 @@ public class NameOccurrences {
     }
 
     private void buildOccurrences(ASTPrimaryExpression node) {
-        for (int i=0; i<node.jjtGetNumChildren(); i++) {
-            SimpleNode child = (SimpleNode)node.jjtGetChild(i);
-            if (child instanceof ASTPrimaryPrefix) {
-                ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)child;
-                if (prefix.usesSuperModifier()) {
-                    add(new NameOccurrence(prefix, "super"));
-                } else if (prefix.usesThisModifier()) {
-                    add(new NameOccurrence(prefix, "this"));
-                }
-            }
-            checkForNameChild(child);
+        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)node.jjtGetChild(0);
+        if (prefix.usesSuperModifier()) {
+            add(new NameOccurrence(prefix, "super"));
+        } else if (prefix.usesThisModifier()) {
+            add(new NameOccurrence(prefix, "this"));
+        }
+        checkForNameChild(prefix);
+
+        for (int i=1; i<node.jjtGetNumChildren(); i++) {
+            checkForNameChild((ASTPrimarySuffix)node.jjtGetChild(i));
         }
     }
 
@@ -65,6 +61,9 @@ public class NameOccurrences {
             for (StringTokenizer st = new StringTokenizer(grandchild.getImage(), "."); st.hasMoreTokens();) {
                 add(new NameOccurrence(grandchild, st.nextToken()));
             }
+        }
+        if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix)node).isArguments()) {
+            ((NameOccurrence)names.get(names.size()-1)).setIsMethodOrConstructorInvocation();
         }
     }
 

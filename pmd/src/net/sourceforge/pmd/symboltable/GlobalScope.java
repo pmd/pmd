@@ -28,20 +28,20 @@ public class GlobalScope extends AbstractScope implements Scope {
         return false;
     }
 
-    public VariableNameDeclaration addVariableNameOccurrence(NameOccurrence occ) {
+    public NameDeclaration addVariableNameOccurrence(NameOccurrence occ) {
         return null;
     }
 
     public String toString() {
         String result = "GlobalScope:";
         for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
+            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
             result += nameDeclaration.getImage() +",";
         }
         return result;
     }
 
-    protected VariableNameDeclaration findVariableHere(NameOccurrence occ) {
+    protected NameDeclaration findVariableHere(NameOccurrence occ) {
         return null;
     }
 

@@ -886,7 +886,7 @@ void PrimarySuffix() :
 |
   "." t=<IDENTIFIER> {s = t.image;} {jjtThis.setImage(s);}
 |
-  Arguments()
+  Arguments() {((ASTPrimarySuffix)jjtThis).setIsArguments();}
 }
 
 void Literal() :

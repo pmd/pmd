@@ -7,12 +7,10 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.*;
 
-public class MethodNameDeclaration {
-
-    private ASTMethodDeclarator node;
+public class MethodNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
 
     public MethodNameDeclaration(ASTMethodDeclarator node) {
-        this.node = node;
+        super(node);
     }
 
     public boolean equals(Object o) {
@@ -24,14 +22,14 @@ public class MethodNameDeclaration {
         }
 
         // compare parameter count - this catches the case where there are no params, too
-        if (otherMethodDecl.node.getParameterCount() != node.getParameterCount()) {
+        if (((ASTMethodDeclarator)(otherMethodDecl.node)).getParameterCount() != ((ASTMethodDeclarator)node).getParameterCount()) {
             return false;
         }
 
         // compare parameter types
         ASTFormalParameters myParams = (ASTFormalParameters)node.jjtGetChild(0);
         ASTFormalParameters otherParams = (ASTFormalParameters)otherMethodDecl.node.jjtGetChild(0);
-        for (int i=0;i<node.getParameterCount();i++) {
+        for (int i=0;i<((ASTMethodDeclarator)node).getParameterCount();i++) {
             ASTFormalParameter myParam = (ASTFormalParameter)myParams.jjtGetChild(i);
             ASTFormalParameter otherParam = (ASTFormalParameter)otherParams.jjtGetChild(i);
             SimpleNode myTypeNode = (SimpleNode)myParam.jjtGetChild(0).jjtGetChild(0);
@@ -50,16 +48,8 @@ public class MethodNameDeclaration {
         return true;
     }
 
-    public int getLine() {
-        return node.getBeginLine();
-    }
-
-    public String getImage() {
-        return node.getImage();
-    }
-
     public int hashCode() {
-        return node.getImage().hashCode() + node.getParameterCount();
+        return node.getImage().hashCode() + ((ASTMethodDeclarator)node).getParameterCount();
     }
 
     public String toString() {

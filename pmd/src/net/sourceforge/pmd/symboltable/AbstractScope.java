@@ -66,8 +66,8 @@ public abstract class AbstractScope implements Scope {
         return unused.iterator();
     }
 
-    public VariableNameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
-        VariableNameDeclaration decl = findVariableHere(occurrence);
+    public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
+        NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null) {
             List nameOccurrences = (List)variableNames.get(decl);
             nameOccurrences.add(occurrence);
@@ -75,7 +75,7 @@ public abstract class AbstractScope implements Scope {
         return decl;
     }
 
-    protected abstract VariableNameDeclaration findVariableHere(NameOccurrence occurrence);
+    protected abstract NameDeclaration findVariableHere(NameOccurrence occurrence);
 
     protected String glomNames() {
         String result = "";
