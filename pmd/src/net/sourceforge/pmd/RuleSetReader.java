@@ -91,13 +91,13 @@ public class RuleSetReader implements Constants
             inputSource = new InputSource(inputStream);
             mainContentHandler = new MainContentHandler();
 
-	    SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
             factory.setFeature("http://xml.org/sax/features/namespaces", false);
 
             parser = factory.newSAXParser();
 
-	    parser.parse(inputSource, mainContentHandler);
+        parser.parse(inputSource, mainContentHandler);
             m_ruleSet.setFileName(ruleSetFileName);
 
             return m_ruleSet;
@@ -367,46 +367,31 @@ public class RuleSetReader implements Constants
         {
             if (buffer.length() > 0)
             {
-                for (int n = 0; n < buffer.length(); n++)
-                {
-                    char theChar = buffer.charAt(n);
-
-                    if (theChar == '\n')
-                    {
-                        buffer.deleteCharAt(n);
-
-                        n--;
-                    }
-                    else if (n == 0)
-                    {
-                        if (theChar == ' ')
-                        {
-                            buffer.deleteCharAt(n);
-
-                            n--;
-                        }
-                    }
-                    else if ((theChar == ' ') && (buffer.charAt(n - 1) == ' '))
-                    {
-                        buffer.deleteCharAt(n);
-
-                        n--;
-                    }
-                }
-
-                int newLength = buffer.length();
-
                 for (int n = buffer.length() - 1; n >= 0; n--)
                 {
-                    if (buffer.charAt(n) != ' ')
+                    if (buffer.charAt(n) == '\n')
                     {
-                        break;
+                        buffer.setCharAt(n, ' ');
                     }
 
-                    newLength--;
-                }
+                    char theChar = buffer.charAt(n);
 
-                buffer.setLength(newLength);
+                    if (theChar == ' ')
+                    {
+                        if (n == buffer.length() - 1)
+                        {
+                            buffer.deleteCharAt(n);
+                        }
+                        else if (buffer.charAt(n + 1) == ' ')
+                        {
+                            buffer.deleteCharAt(n);
+                        }
+                        else if (n == 0)
+                        {
+                            buffer.deleteCharAt(n);
+                        }
+                    }
+                }
             }
 
             return buffer.toString();

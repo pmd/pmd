@@ -51,7 +51,6 @@ class HTMLResultRenderer
         //
         // Write the name of the file that was analyzed.
         //
-        writer.write("<h3><center><font color=\"blue\">PMD Analysis Results</font></center></h3>\n");
         writer.write("<b>Source File:</b> ");
         writer.write(fileName);
         writer.write("\n<br>\n");
@@ -104,7 +103,9 @@ class HTMLResultRenderer
                 // Line Number
                 //
                 writer.write("<td align=\"center\" valign=\"top\">\n");
+                writer.write("<font size=\"3\">");
                 writer.write(String.valueOf(ruleViolation.getLine()));
+                writer.write("</font>");
                 writer.write("\n</td>\n");
 
                 //
@@ -122,7 +123,9 @@ class HTMLResultRenderer
                 }
 
                 writer.write("<td align=\"left\" valign=\"top\">\n");
+                writer.write("<font size=\"3\">");
                 writer.write(ruleMessage);
+                writer.write("</font>");
                 writer.write("\n</td>\n");
 
                 //
@@ -140,7 +143,9 @@ class HTMLResultRenderer
                 }
 
                 writer.write("<td align=\"left\" valign=\"top\">\n");
+                writer.write("<font size=\"3\">");
                 writer.write(description);
+                writer.write("</font>");
                 writer.write("\n</td>\n");
 
                 //
@@ -150,6 +155,22 @@ class HTMLResultRenderer
 
                 if ((example != null) && (example.length() > 0))
                 {
+                    StringBuffer buffer = new StringBuffer(example);
+
+                    for (int n = buffer.length() - 1; n >= 0; n--)
+                    {
+                        if (buffer.charAt(n) == '\n')
+                        {
+                            buffer.deleteCharAt(n);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    example = buffer.toString();
+
                     writer.write("<td align=\"left\" valign=\"top\">\n");
                     writer.write("<pre>\n");
                     writer.write(example);
@@ -185,12 +206,15 @@ class HTMLResultRenderer
     private String removeNewLineCharacters(String text)
     {
         char[] chars = text.toCharArray();
+        /*
         int lastIndex = chars.length - 1;
 
         for (int n = 0; n < chars.length; n++)
         {
             if (chars[n] == '\n')
             {
+                chars[n] = ' ';
+                / *
                 if (n == lastIndex)
                 {
                     chars[n] = ' ';
@@ -202,8 +226,10 @@ class HTMLResultRenderer
                         chars[n] = ' ';
                     }
                 }
+                * /
             }
         }
+        */
 
         return String.valueOf(chars).trim();
     }

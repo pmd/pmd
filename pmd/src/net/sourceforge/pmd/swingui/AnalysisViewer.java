@@ -29,6 +29,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
@@ -72,12 +73,12 @@ class AnalysisViewer extends JPanel
     private DirectoryTree m_directoryTree;
     private JLabel m_message;
     private JPanel m_statusBar;
-    private JScrollPane m_directoryTreeScrollPane;
+    private JPanel m_directoryTreePanel;
     private DirectoryTable m_directoryTable;
-    private JScrollPane m_directoryTableScrollPane;
+    private JPanel m_directoryTablePanel;
     private JSplitPane m_directorySplitPane;
     private ResultsViewer m_resultsViewer;
-    private JScrollPane m_resultsViewerScrollPane;
+    private JPanel m_resultsViewerPanel;
     private JSplitPane m_mainSplitPane;
     private StatusArea m_statusArea;
     private JMenuBar m_menuBar;
@@ -97,8 +98,8 @@ class AnalysisViewer extends JPanel
         super(new BorderLayout());
 
         createStatusBar(10);
-        createDirectoryTreeScrollPane();
-        createDirectoryTableScrollPane();
+        createDirectoryTreePanel();
+        createDirectoryTablePanel();
         createDirectorySplitPane();
         createResultsViewer();
         createResultsViewerScrollPane();
@@ -160,30 +161,36 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *
      */
-    private void createDirectoryTreeScrollPane()
+    private void createDirectoryTreePanel()
     {
         Color background;
+        JScrollPane scrollPane;
 
         m_directoryTree = new DirectoryTree("File Directories");
-        m_directoryTreeScrollPane = ComponentFactory.createScrollPane(m_directoryTree);
+        scrollPane = ComponentFactory.createScrollPane(m_directoryTree);
         background = UIManager.getColor("pmdTreeBackground");
-
-        m_directoryTreeScrollPane.getViewport().setBackground(background);
+        scrollPane.getViewport().setBackground(background);
+        m_directoryTreePanel = new JPanel(new BorderLayout());
+        m_directoryTreePanel.setBorder(createTitledBorder(" Directory "));
+        m_directoryTreePanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     /**
      *********************************************************************************
      *
      */
-    private void createDirectoryTableScrollPane()
+    private void createDirectoryTablePanel()
     {
         Color background;
+        JScrollPane scrollPane;
 
         m_directoryTable = new DirectoryTable(m_directoryTree, ".java");
-        m_directoryTableScrollPane = ComponentFactory.createScrollPane(m_directoryTable);
+        scrollPane = ComponentFactory.createScrollPane(m_directoryTable);
         background = UIManager.getColor("pmdTableBackground");
-
-        m_directoryTableScrollPane.getViewport().setBackground(background);
+        scrollPane.getViewport().setBackground(background);
+        m_directoryTablePanel = new JPanel(new BorderLayout());
+        m_directoryTablePanel.setBorder(createTitledBorder(" Java Source Code "));
+        m_directoryTablePanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     /**
@@ -197,8 +204,8 @@ class AnalysisViewer extends JPanel
         m_directorySplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         m_directorySplitPane.setResizeWeight(0.5);
         m_directorySplitPane.setDividerSize(5);
-        m_directorySplitPane.setLeftComponent(m_directoryTreeScrollPane);
-        m_directorySplitPane.setRightComponent(m_directoryTableScrollPane);
+        m_directorySplitPane.setLeftComponent(m_directoryTreePanel);
+        m_directorySplitPane.setRightComponent(m_directoryTablePanel);
     }
 
     /**
@@ -218,7 +225,12 @@ class AnalysisViewer extends JPanel
      */
     private void createResultsViewerScrollPane()
     {
-        m_resultsViewerScrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
+        JScrollPane scrollPane;
+
+        scrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
+        m_resultsViewerPanel = new JPanel(new BorderLayout());
+        m_resultsViewerPanel.setBorder(createTitledBorder(" Analysis Results "));
+        m_resultsViewerPanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     /**
@@ -233,7 +245,7 @@ class AnalysisViewer extends JPanel
         m_mainSplitPane.setResizeWeight(0.5);
         m_mainSplitPane.setDividerSize(5);
         m_mainSplitPane.setTopComponent(m_directorySplitPane);
-        m_mainSplitPane.setBottomComponent(m_resultsViewerScrollPane);
+        m_mainSplitPane.setBottomComponent(m_resultsViewerPanel);
     }
 
     /**
@@ -254,6 +266,26 @@ class AnalysisViewer extends JPanel
         contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
 
         return contentPanel;
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * @param title
+     */
+    private TitledBorder createTitledBorder(String title)
+    {
+        EtchedBorder etchedBorder;
+        TitledBorder titledBorder;
+        Font font;
+
+        etchedBorder = new EtchedBorder(EtchedBorder.RAISED);
+        titledBorder = new TitledBorder(etchedBorder, title);
+        font = titledBorder.getTitleFont();
+        font = new Font(font.getName(), Font.BOLD, font.getSize());
+        titledBorder.setTitleFont(font);
+
+        return titledBorder;
     }
 
     /**
@@ -934,7 +966,7 @@ class AnalysisViewer extends JPanel
             // Save menu item
             //
             icon = UIManager.getIcon("save");
-            m_saveMenuItem = new JMenuItem("Save", icon);
+            m_saveMenuItem = new JMenuItem("Save Analysis Results", icon);
             m_saveMenuItem.addActionListener((ActionListener) new SaveActionListener());
             m_saveMenuItem.setMnemonic('S');
             m_saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
@@ -944,7 +976,7 @@ class AnalysisViewer extends JPanel
             // Save As menu item
             //
             icon = UIManager.getIcon("saveAs");
-            m_saveAsMenuItem = new JMenuItem("Save As...", icon);
+            m_saveAsMenuItem = new JMenuItem("Save Analysis Results As...", icon);
             m_saveAsMenuItem.addActionListener((ActionListener) new SaveAsActionListener());
             m_saveAsMenuItem.setMnemonic('A');
             m_saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
@@ -1220,22 +1252,40 @@ class AnalysisViewer extends JPanel
      *********************************************************************************
      *********************************************************************************
      */
-    private class SaveAsActionListener implements ActionListener
+    private class SaveAsActionListener implements ActionListener, DirectoryTableEventListener
     {
+
+        private File m_selectedFile;
 
         public void actionPerformed(ActionEvent event)
         {
             try
             {
-                String path = Preferences.getPreferences().getAnalysisResultsPath();
-                File lastSavedDirectory = new File(path);
-                JFileChooser fileChooser = new JFileChooser(lastSavedDirectory);
-                fileChooser.addChoosableFileFilter(new HTMLFileFilter());
-                int result = fileChooser.showSaveDialog(PMDViewer.getViewer());
+                ListenerList.addListener((DirectoryTableEventListener) this);
+                DirectoryTableEvent.notifyRequestFileSelected(this);
 
-                if (result == JFileChooser.APPROVE_OPTION)
+                if (m_selectedFile != null)
                 {
-                    (new SaveSaveAs()).perform(fileChooser.getSelectedFile());
+                    String fileName = m_selectedFile.getName();
+                    int index = fileName.lastIndexOf('.');
+
+                    if (index >= 0)
+                    {
+                        fileName = fileName.substring(0, index);
+                    }
+
+                    String path = Preferences.getPreferences().getAnalysisResultsPath();
+                    File lastSavedDirectory = new File(path);
+                    File selectedFile = new File(path + File.separator + fileName + ".html");
+                    JFileChooser fileChooser = new JFileChooser(lastSavedDirectory);
+                    fileChooser.addChoosableFileFilter(new HTMLFileFilter());
+                    fileChooser.setSelectedFile(selectedFile);
+                    int result = fileChooser.showSaveDialog(PMDViewer.getViewer());
+
+                    if (result == JFileChooser.APPROVE_OPTION)
+                    {
+                        (new SaveSaveAs()).perform(fileChooser.getSelectedFile());
+                    }
                 }
             }
             catch (PMDException pmdException)
@@ -1244,6 +1294,44 @@ class AnalysisViewer extends JPanel
                 Exception exception = pmdException.getOriginalException();
                 MessageDialog.show(PMDViewer.getViewer(), message, exception);
             }
+            finally
+            {
+                ListenerList.removeListener((DirectoryTableEventListener) this);
+            }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * Implements DirectoryTableEventListener
+         *
+         * @param event
+         */
+        public void requestSelectedFile(DirectoryTableEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * Implements DirectoryTableEventListener
+         *
+         * @param event
+         */
+        public void fileSelectionChanged(DirectoryTableEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * Implements DirectoryTableEventListener
+         *
+         * @param event
+         */
+        public void fileSelected(DirectoryTableEvent event)
+        {
+            m_selectedFile = event.getSelectedFile();
         }
     }
 

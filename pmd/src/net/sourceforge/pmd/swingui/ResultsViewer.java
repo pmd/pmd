@@ -56,6 +56,10 @@ class ResultsViewer extends JEditorPane
 
         m_pmd = new PMD();
         m_ruleSet = new RuleSet();
+
+        //
+        // Add listeners
+        //
         ListenerList.addListener((DirectoryTableEventListener) new DirectoryTableEventHandler());
         ListenerList.addListener((RulesInMemoryEventListener) new RulesInMemoryEventHandler());
         ListenerList.addListener((AnalyzeFileEventListener) new AnalyzeFileEventHandler());
