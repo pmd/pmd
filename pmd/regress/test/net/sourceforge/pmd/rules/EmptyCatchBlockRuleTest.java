@@ -13,21 +13,17 @@ import net.sourceforge.pmd.rules.EmptyCatchBlockRule;
 public class EmptyCatchBlockRuleTest extends RuleTst {
 
     public void testEmptyCatchBlock() throws Throwable {
-        Report report = process("EmptyCatchBlock.java", new EmptyCatchBlockRule());
-        assertEquals(1, report.size());
-        assertEquals(new EmptyCatchBlockRule(), ((RuleViolation)report.iterator().next()).getRule());
+        runTest("EmptyCatchBlock.java", 1, new EmptyCatchBlockRule());
     }
 
     public void testEmptyCatchBlock2() throws Throwable {
-        Report report = process("EmptyCatchBlock2.java", new EmptyCatchBlockRule());
-        assertTrue(report.isEmpty());
+        runTest("EmptyCatchBlock2.java", 0, new EmptyCatchBlockRule());
     }
 
     public void testEmptyCatchBlock3() throws Throwable {
-        Report report = process("EmptyCatchBlock3.java", new EmptyCatchBlockRule());
-        assertEquals(1, report.size());
-        assertEquals(new EmptyCatchBlockRule(), ((RuleViolation)report.iterator().next()).getRule());
+        runTest("EmptyCatchBlock3.java", 1, new EmptyCatchBlockRule());
     }
 
 
 }
+
