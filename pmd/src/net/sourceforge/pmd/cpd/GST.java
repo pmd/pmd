@@ -41,7 +41,9 @@ public class GST {
             Occurrences newOccurrences = new Occurrences();
             for (Iterator i = occurrences.getTiles(); i.hasNext();) {
                 Tile tile = (Tile)i.next();
-                expandTile(newOccurrences, tile );
+                if (!newOccurrences.containsAnyTokensIn(tile)) {
+                    expandTile(newOccurrences, tile );
+                }
             }
             occurrences = newOccurrences;
         }
@@ -52,13 +54,6 @@ public class GST {
     }
 
     private void expandTile(Occurrences newOcc, Tile tile) {
-        // make sure the tile doesn't have anything that's used already
-        for (Iterator i = tile.getTokens().iterator(); i.hasNext();) {
-            if (newOcc.contains((Token)i.next())) {
-                return;
-            }
-        }
-
         for (Iterator i = occurrences.getOccurrences(tile); i.hasNext();) {
             Occurrence occ = (Occurrence)i.next();
             TokenSet tokenSet = tokenSets.getTokenSet(occ);

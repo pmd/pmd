@@ -61,6 +61,15 @@ public class Occurrences {
         return false;
     }
 
+    public boolean containsAnyTokensIn(Tile tile) {
+        for (Iterator i = tile.getTokens().iterator(); i.hasNext();) {
+            if (contains((Token)i.next())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean contains(Token tok) {
         for (Iterator i = occurrences.keySet().iterator(); i.hasNext();) {
             Tile tile = (Tile)i.next();
