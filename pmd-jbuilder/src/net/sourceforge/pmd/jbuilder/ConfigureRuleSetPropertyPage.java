@@ -14,6 +14,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
+import net.sourceforge.pmd.Rule;
+import com.borland.primetime.ide.MessageCategory;
+import com.borland.primetime.ide.MessageView;
+import com.borland.primetime.ide.Browser;
 
 
 /**
@@ -26,6 +32,7 @@ import javax.swing.border.EmptyBorder;
  */
 
 public class ConfigureRuleSetPropertyPage extends PropertyPage {
+    private MessageCategory msgCat = new MessageCategory("test");
     private BorderLayout borderLayout1 = new BorderLayout();
     private JSplitPane splitPaneConfRuleSets = new JSplitPane();
     private JScrollPane spRuleSets = new JScrollPane();
@@ -44,8 +51,16 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
             e.printStackTrace();
         }
     }
+
     public void writeProperties() {
-        /**@todo Implement this com.borland.primetime.properties.PropertyPage abstract method*/
+        /**
+         * Go through all the ruleSetProperties objects and revalidate them to persist
+         * their global properties
+         */
+        for (Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator(); iter.hasNext(); ) {
+            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+            rsp.revalidateRules();
+        }
     }
     public HelpTopic getHelpTopic() {
         /**@todo Implement this com.borland.primetime.properties.PropertyPage abstract method*/
@@ -74,44 +89,65 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         listRules.addMouseListener(cl);
         listRules.addKeyListener(cl);
         listRules.setModel(dlmRules);
-        dlmRules.addElement(new RuleData("rule 1"));
-        dlmRules.addElement(new RuleData("Rule 2"));
+        /*listRules.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                listRules_valueChanged(e);
+            }
+        }
+        );*/
 
+
+        listRuleSets.setModel(dlmRuleSets);
+        listRuleSets.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                listRuleSets_valueChanged(e);
+            }
+        }
+        );
+        //get the list if rule sets and populate the listRuleSets model
+        for (Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator(); iter.hasNext();) {
+            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+            dlmRuleSets.addElement(rsp.getActiveRuleSet().getName());
+            listRuleSets.updateUI();
+        }
 
     }
 
-}
-class CheckCellRenderer extends JPanel
-            implements ListCellRenderer
-    {
-        protected JCheckBox check;
-        protected static Border m_noFocusBorder = new EmptyBorder(1, 1, 1, 1);
+    /**
+     * When a rule is selected we need to update the RuleSetProperty
+     * @param e selection event
+     */
+/*    private void listRules_valueChanged(ListSelectionEvent e) {
+        //get the selected rule data object
+        RuleData selectedRule = (RuleData)((JList)e.getSource()).getSelectedValue();
+        //get the currently selected rule set
+        String ruleSetName = listRuleSets.getSelectedValue().toString();
+        //get the RuleSetProperty object
+        RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.ruleSets.get(ruleSetName);
+        //update the selection setting for this rule in the rule set property
+        rsp.setRuleSelected(selectedRule.getName(), selectedRule.isSelected());
+        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, ruleSetName+" : " + selectedRule.getName() + " : " + selectedRule.isSelected());
 
 
-        public CheckCellRenderer()
-        {
-            super();
-            setOpaque(true);
-            setBorder(m_noFocusBorder);
+    }
+*/
+
+    /**
+     * When a ruleset is selected we need to update the listRules list
+     * @param e selection event
+     */
+    private void listRuleSets_valueChanged(ListSelectionEvent e) {
+        this.dlmRules.clear();
+        String selectedRuleSet = ((JList)e.getSource()).getSelectedValue().toString();
+        //get the RuleSetProperty for this ruleset
+        RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.ruleSets.get(selectedRuleSet);
+        //iterate over the rules from of the rule set
+        for (Iterator iter = rsp.getOriginalRuleSet().getRules().iterator(); iter.hasNext(); ) {
+            Rule rule = (Rule)iter.next();
+            String ruleName = rule.getName();
+            dlmRules.addElement(new RuleData(ruleName, rsp.isRuleSelected(ruleName)));
         }
 
-        // This is the only method defined by ListCellRenderer.
-        // We just reconfigure the JLabel each time we're called.
-        public Component getListCellRendererComponent (
-                JList list,
-                Object value,                    // value to display
-                int index,                  // cell index
-                boolean isSelected,         // is the cell selected
-                boolean cellHasFocus)       // the list and the cell have the focus
-        {
-            RuleData rd = (RuleData)value;
-            JCheckBox c = new JCheckBox(rd.getName(), rd.isSelected());
-            c.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
-            c.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-            c.setFont(list.getFont());
-
-            return c;
-        }
     }
 
     class CheckListener implements MouseListener, KeyListener
@@ -153,9 +189,55 @@ class CheckCellRenderer extends JPanel
                             return;
                     RuleData rd = (RuleData)list.getModel().getElementAt(index);
                     rd.invertSelected();
+
+                    //get the currently selected rule set
+                    String ruleSetName = listRuleSets.getSelectedValue().toString();
+                    //get the RuleSetProperty object
+                    RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.ruleSets.get(ruleSetName);
+                    //update the selection setting for this rule in the rule set property
+                    rsp.setRuleSelected(rd.getName(), rd.isSelected());
+
                     list.repaint();
             }
     }
+
+}
+
+
+class CheckCellRenderer extends JPanel
+            implements ListCellRenderer
+    {
+        protected JCheckBox check;
+        protected static Border m_noFocusBorder = new EmptyBorder(1, 1, 1, 1);
+
+
+        public CheckCellRenderer()
+        {
+            super();
+            setOpaque(true);
+            setBorder(m_noFocusBorder);
+        }
+
+        // This is the only method defined by ListCellRenderer.
+        // We just reconfigure the JLabel each time we're called.
+        public Component getListCellRendererComponent (
+                JList list,
+                Object value,                    // value to display
+                int index,                  // cell index
+                boolean isSelected,         // is the cell selected
+                boolean cellHasFocus)       // the list and the cell have the focus
+        {
+            RuleData rd = (RuleData)value;
+            JCheckBox c = new JCheckBox(rd.getName(), rd.isSelected());
+            //c.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+            //c.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
+            c.setBackground(Color.white);
+            c.setFont(list.getFont());
+
+            return c;
+        }
+    }
+
 
     class RuleData
     {
@@ -165,7 +247,11 @@ class CheckCellRenderer extends JPanel
         public RuleData(String ruleName)
         {
             this.ruleName = ruleName;
-            selected = false;
+            selected = true;
+        }
+        public RuleData(String ruleName, boolean isSelected) {
+            this(ruleName);
+            this.selected = isSelected;
         }
 
         public String getName() { return ruleName; }

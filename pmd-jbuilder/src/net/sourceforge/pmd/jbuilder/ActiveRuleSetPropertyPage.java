@@ -69,7 +69,7 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
         Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator();
         while (iter.hasNext()) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
-            ListEntry le = new ListEntry(rsp.getRuleSet().getName(), rsp.getGlobalProperty());
+            ListEntry le = new ListEntry(rsp.getActiveRuleSet().getName(), rsp.getGlobalProperty());
             if (Boolean.valueOf(rsp.getGlobalProperty().getValue()).booleanValue()) {
                 dlmSelectedRuleSets.addElement(le);
             }

@@ -98,7 +98,7 @@ public class PMDOpenTool {
         for (Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator(); iter.hasNext(); ) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
             if (Boolean.valueOf(rsp.getGlobalProperty().getValue()).booleanValue()) {
-                RuleSet rules = rsp.getRuleSet();
+                RuleSet rules = rsp.getActiveRuleSet();
                 if (masterRuleSet == null) {
                     masterRuleSet = rules;
                 }
