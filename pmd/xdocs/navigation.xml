@@ -24,11 +24,11 @@
       <item name="JDK 1.4" href="/demo/jdk-1.4.html" />
     </menu>
     <menu name="Rule Sets">
-      <item name="Basic Rules" href="/rules/basic.html" />
-      <item name="Naming Rules" href="/rules/naming.html" />
+      <item name="Basic" href="/rules/basic.html" />
+      <item name="Naming" href="/rules/naming.html" />
       <item name="Unused Code" href="/rules/unusedcode.html" />
       <item name="Design Patterns" href="/rules/design.html" />
-      <item name="Import statements" href="/rules/imports.html" />
+      <item name="Import Statements" href="/rules/imports.html" />
     </menu>
   </body>
 </project>

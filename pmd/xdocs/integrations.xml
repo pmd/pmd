@@ -33,7 +33,7 @@
       <td>pmd-jedit</td>
       <td>0.4</td>
       <td>tomcopeland</td>
-      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=99325">X</a></td></tr>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&release_id=100427">X</a></td></tr>
   <tr><td>Maven</td>
       <td>pmd-maven</td>
       <td>N/A</td>
@@ -85,6 +85,7 @@ To enable this OpenTool in JBuilder, place the PMDOpenTool.jar file AND the pmd-
 x.x is the version id) into JBuilder's lib/ext directory.  Once JBuilder is restart, the PMD OpenTool
 will be enabled.
 What you can do:
+<ul>
 <li>Check a single file by bringing up the context menu from the file tab and selecting PMDCheck</li>
 <li>Configure the rulesets that the PMD OpenTool will use by selecting Tools->PMD->Configure PMD</li>
 <li>Check all the files in a project by brining up the context menu for the project node and selecting PMD Check Project</li>
@@ -96,6 +97,7 @@ violation message within this view, you will be taken to the line in the source 
 <li>Enable selection of individual rules within a rule set (maybe)</li>
 <li>Optional insertion of @todo comments at the point of a violation</li>
 <li>Possibly provide configurable ability to limit the number of violations per rule per file</li>
+</ul>
 </p>
       </subsection>
 
