@@ -8,6 +8,7 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.util.*;
 
 // this class will go away as soon
@@ -16,6 +17,12 @@ import java.util.*;
 // since i'm not sure if this will work out
 
 public class CPD {
+
+    public static class JavaFileOrDirectoryFilter implements FilenameFilter {
+      public boolean accept(File dir, String filename) {
+          return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+      }
+    }
 
     public static class TokenPtr {
 
@@ -46,6 +53,9 @@ public class CPD {
         private int minimumTokenSize;
         private Set tokensFound = new HashSet();
 
+        private boolean stopAnyway = false;
+        private int lastTokenCount;
+
         public TokenTable(int minimumTokenSize) {
             this.minimumTokenSize = minimumTokenSize;
         }
@@ -66,13 +76,14 @@ public class CPD {
         }
 
         public void frobnicate() {
-            while (true) {
+            while (!tokens.isEmpty() && !stopAnyway) {
                 deleteSoloTokens();
                 combineTokens();
             }
         }
 
         private void combineTokens() {
+            System.out.println("tokens.size() = " + tokens.size());
             Map newTokenPtrs = new HashMap();
             for (Iterator i=tokens.keySet().iterator(); i.hasNext();) {
                 String image = (String)i.next();
@@ -92,24 +103,21 @@ public class CPD {
                         if (newImage.length() > minimumTokenSize) {
                             List list = (List)newTokenPtrs.get(newImage);
                             if (list.size() > 1) {
-
-                                boolean already = false;
-                                for (Iterator p = this.tokensFound.iterator(); p.hasNext();) {
-                                    String alreadyIn = (String)p.next();
-                                    if (newImage.indexOf(alreadyIn) != -1) {
-                                        already = true;
-                                    }
-                                }
-                                if (!already) {
-                                    tokensFound.add(newImage);
-                                    System.out.println("newImage = " + newImage);
-                                }
+                                tokensFound.add(newImage);
                             }
                         }
                     }
                 }
+
+
             }
             tokens = newTokenPtrs;
+
+            // there must be a better way to halt
+            if (lastTokenCount == tokens.size()) {
+                stopAnyway = true;
+            }
+            lastTokenCount = tokens.size();
         }
 
         private void deleteSoloTokens() {
@@ -142,6 +150,13 @@ public class CPD {
         files.put(file, null);
     }
 
+    public void addFiles(List newFiles) {
+        System.out.println("Adding " + newFiles.size() + " files");
+        for (Iterator i = newFiles.iterator(); i.hasNext();) {
+            files.put(i.next(), null);
+        }
+    }
+
     public void loadFiles() throws IOException {
         for (Iterator i = files.keySet().iterator(); i.hasNext();) {
             File file = (File)i.next();
@@ -153,7 +168,6 @@ public class CPD {
         for (Iterator i = files.keySet().iterator(); i.hasNext();) {
             File file = (File)i.next();
             StringBuffer contents = (StringBuffer)files.get(file);
-            System.out.println(contents);
             tokenTable.add(file, contents);
         }
     }
@@ -161,7 +175,7 @@ public class CPD {
     public void frobnicate() {
         tokenTable.frobnicate();
         for (Iterator i = tokenTable.getTokensFound().iterator(); i.hasNext();) {
-            System.out.println("found dupe = " + i.next());
+            System.out.println(i.next());
 
         }
     }
@@ -179,8 +193,7 @@ public class CPD {
 
     public static void main(String[] args) {
         CPD cpd = new CPD(15);
-        cpd.addFile(new File("C:\\data\\pmd\\pmd\\test-data\\Unused1.java"));
-        cpd.addFile(new File("C:\\data\\pmd\\pmd\\test-data\\Unused2.java"));
+        cpd.addFiles(findFilesRecursively("C:\\data\\pmd\\pmd\\test-data\\"));
         try {
             cpd.loadFiles();
         } catch (IOException ioe) {
@@ -190,4 +203,23 @@ public class CPD {
         cpd.buildTokenTable();
         cpd.frobnicate();
     }
+    private static List findFilesRecursively(String dir) {
+     File root = new File(dir);
+     List list = new ArrayList();
+     scanDirectory(root, list, true);
+     return list;
+   }
+
+   private static void scanDirectory(File dir, List list, boolean recurse) {
+     FilenameFilter filter = new JavaFileOrDirectoryFilter();
+     String[] possibles = dir.list(filter);
+     for (int i=0; i<possibles.length; i++) {
+        File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
+        if (recurse && tmp.isDirectory()) {
+           scanDirectory(tmp, list, true);
+        } else {
+           list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
+        }
+     }
+   }
 }
