@@ -23,6 +23,25 @@ public class Foo extends TestCase {
     </example>
     </rule>
 
+
+  <rule name="JUnitStaticSuite"
+        message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
+        class="net.sourceforge.pmd.rules.JUnitStaticSuiteRule">
+    <description>
+    The suite() method needs to be both public and static.
+    </description>
+
+    <example>
+<![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+ public void suite() {} // oops, should be static
+ private static void suite() {} // oops, should be public
+}
+]]>
+    </example>
+    </rule>
+
   </ruleset>
 
 

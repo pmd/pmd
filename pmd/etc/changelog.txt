@@ -1,5 +1,5 @@
 ???? 2002 - 1.0rc2:
-Added new rule: JUnitSpellingRule
+Added new rules: JUnitSpellingRule, JUnitStaticSuiteRule
 Added new ruleset - junit.
 Fixed bug in PMD GUI - rules are now saved correctly.
 
