@@ -36,8 +36,10 @@ public class PMDTask extends Task {
                 renderer = new XMLRenderer();
             } else if (type.equals("html")) {
                 renderer = new HTMLRenderer();
+            } else if (type.equals("text")) {
+                renderer = new TextRenderer();
             } else {
-                throw new BuildException("Formatter type must be either 'xml' or 'html'; you specified " + type);
+                throw new BuildException("Formatter type must be 'xml', 'text', or 'html'; you specified " + type);
             }
         }
         public void setToFile(String toFile) {this.toFile = toFile;}
