@@ -40,6 +40,12 @@ public class UnusedLocalVariableRule extends AbstractRule {
             Map locals = scope.getVariableDeclarations();
             for (Iterator i = locals.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
+                // TODO this misses some cases
+                // need to add DFAish code to determine if an array
+                // is initialized locally or gotten from somewhere else
+                if (decl.isArray()) {
+                    continue;
+                }
                 List usages = (List)locals.get(decl);
                 if (!actuallyUsed(usages)) {
                     RuleContext ctx = ((RuleContext) data);
@@ -54,7 +60,8 @@ public class UnusedLocalVariableRule extends AbstractRule {
     private boolean actuallyUsed(List usages) {
         boolean used = false;
         for (Iterator j = usages.iterator(); j.hasNext() && !used;) {
-            used = !((NameOccurrence)j.next()).isOnLeftHandSide();
+            NameOccurrence occ = (NameOccurrence)j.next();
+            used = !occ.isOnLeftHandSide();
         }
         return used;
     }

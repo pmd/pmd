@@ -35,7 +35,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST14, "assignment to a member field means used", 0, rule),
            new TestDescriptor(TEST15, "make sure scopes are working", 3, rule),
            new TestDescriptor(TEST16, "another scope test", 1, rule),
-//           new TestDescriptor(TEST17, "assignment to an array member will be treated as a usage", 0, rule),
+           new TestDescriptor(TEST17, "assignment to an array member will be treated as a usage", 0, rule),
        });
     }
 
