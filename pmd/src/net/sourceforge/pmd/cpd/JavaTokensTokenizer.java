@@ -36,8 +36,10 @@ public class JavaTokensTokenizer implements Tokenizer {
         net.sourceforge.pmd.ast.Token currToken = tokenMgr.getNextToken();
         int position = 0;
         while (currToken.image != "") {
-            tokens.add(new TokenEntry(currToken.image, position, tokens.getID(), currToken.beginLine));
-            position++;
+						if (!currToken.image.equals(";")) {
+							tokens.add(new TokenEntry(currToken.image, position, tokens.getID(), currToken.beginLine));
+							position++;
+						}
             currToken = tokenMgr.getNextToken();
         }
     }
