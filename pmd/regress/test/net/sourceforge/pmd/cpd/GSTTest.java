@@ -22,14 +22,11 @@ public class GSTTest extends TestCase {
         tss.add(ts1);
         tss.add(ts2);
         GST gst = new GST(tss, 5);
-        gst.crunch();
-        Occurrences occ = gst.getResults();
-        assertEquals(1, occ.size());
-        Iterator tiles = occ.getTiles();
-        assertTrue(tiles.hasNext());
-        Tile tile = (Tile)tiles.next();
+        Results results = gst.crunch();
+        assertEquals(1, results.size());
+        Tile tile = (Tile)results.getTiles().next();
         assertEquals("hello", tile.getImage());
-        Iterator occs = occ.getOccurrences(tile);
+        Iterator occs = results.getOccurrences(tile);
         assertTrue(occs.hasNext());
         while (occs.hasNext()) {
             Occurrence oc = (Occurrence)occs.next();

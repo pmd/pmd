@@ -22,7 +22,7 @@ public class CPDTest extends TestCase{
         cpd.add("1", "helloworld");
         cpd.add("2", "hellothere");
         cpd.go(5);
-        Occurrences occs = cpd.getResults();
+        Results occs = cpd.getResults();
         Iterator i = occs.getOccurrences(new Tile(getHelloTokens()));
         assertTrue(i.hasNext());
         Occurrence occ = (Occurrence)i.next();
@@ -39,8 +39,8 @@ public class CPDTest extends TestCase{
         cpd.add("1", "helloworld");
         cpd.add("2", "hellothere");
         cpd.go(4);
-        Occurrences occs = cpd.getResults();
-        Iterator i = occs.getOccurrences(new Tile(getHelloTokens()));
+        Results results = cpd.getResults();
+        Iterator i = results.getOccurrences(new Tile(getHelloTokens()));
         assertTrue(i.hasNext());
         Occurrence occ = (Occurrence)i.next();
         if (occ.getTokenSetID().equals("1")) {

@@ -16,13 +16,13 @@ public class OccurrencesTest  extends TestCase {
     }
 
     public void testBasic() {
-        Occurrences occs = new Occurrences();
+        Occurrences occs = new Occurrences(new TokenSets());
         assertTrue(!occs.contains(new Token('h', 0, "foo")));
         assertTrue(!occs.getTiles().hasNext());
         assertTrue(occs.isEmpty());
         assertEquals(0, occs.size());
 
-        occs.addInitial(new TokenSets(GSTTest.createHelloTokenSet("foo")));
+        occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
         assertEquals(4, occs.size());
         assertTrue(occs.contains(new Token('h', 0, "foo")));
         Iterator i = occs.getOccurrences(new Tile(new Token('h', 0, "foo")));
@@ -37,8 +37,8 @@ public class OccurrencesTest  extends TestCase {
     }
 
     public void testInitialFrequencyCount() {
-        Occurrences occs = new Occurrences();
-        occs.addInitial(new TokenSets(GSTTest.createHelloTokenSet("foo")));
+        Occurrences occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
+
         Iterator i = occs.getOccurrences(new Tile(new Token('h', 0, "foo")));
         Occurrence occ = (Occurrence)i.next();
         assertEquals("foo", occ.getTokenSetID());
@@ -46,24 +46,15 @@ public class OccurrencesTest  extends TestCase {
     }
 
     public void testContains() {
-        Occurrences occs = new Occurrences();
-        occs.addInitial(new TokenSets(GSTTest.createHelloTokenSet("foo")));
+        Occurrences occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
         assertTrue(occs.contains(new Token('h', 0, "foo")));
     }
 
     public void testDeleteSolo() {
-        Occurrences occs = new Occurrences();
-        occs.addInitial(new TokenSets(GSTTest.createHelloTokenSet("foo")));
+        Occurrences occs = new Occurrences((new TokenSets(GSTTest.createHelloTokenSet("foo"))));
         occs.deleteSoloTiles();
         assertEquals(1, occs.size());
         assertTrue(!occs.contains(new Token('h', 0, "foo")));
         assertTrue(occs.contains(new Token('l', 2, "foo")));
     }
-
-    public void testConsolidate() {
-        Occurrences occs = new Occurrences();
-        TokenList ts = GSTTest.createHelloTokenSet("foo");
-
-    }
-
 }

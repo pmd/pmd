@@ -7,22 +7,23 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GST {
 
     private int minimumTileSize;
-    private Occurrences occurrences =new Occurrences();
     private TokenSets tokenSets;
-
-    private Occurrences results = new Occurrences();
 
     public GST(TokenSets tokenSets, int minimumTileSize) {
         this.minimumTileSize = minimumTileSize;
         this.tokenSets = tokenSets;
     }
 
-    public void crunch() {
-        occurrences.addInitial(tokenSets);
+    public Results crunch() {
+        Results results = new Results();
+
+        Occurrences occurrences =new Occurrences(tokenSets);
 
         while (!occurrences.isEmpty()) {
             occurrences.deleteSoloTiles();
@@ -39,23 +40,21 @@ public class GST {
                 }
             }
 
-            Occurrences newOccurrences = new Occurrences();
+            Occurrences newOccurrences = new Occurrences(new TokenSets());
             for (Iterator i = occurrences.getTiles(); i.hasNext();) {
                 Tile tile = (Tile)i.next();
                 if (!newOccurrences.containsAnyTokensIn(tile)) {
-                    expandTile(newOccurrences, tile );
+                    expandTile(occurrences, newOccurrences, tile );
                 }
             }
             occurrences = newOccurrences;
         }
-    }
 
-    public Occurrences getResults() {
         return results;
     }
 
-    private void expandTile(Occurrences newOcc, Tile tile) {
-        for (Iterator i = occurrences.getOccurrences(tile); i.hasNext();) {
+    private void expandTile(Occurrences oldOcc, Occurrences newOcc, Tile tile) {
+        for (Iterator i = oldOcc.getOccurrences(tile); i.hasNext();) {
             Occurrence occ = (Occurrence)i.next();
             TokenList tokenSet = tokenSets.getTokenSet(occ);
             if (tokenSet.hasTokenAfter(tile, occ)) {

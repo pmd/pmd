@@ -19,7 +19,7 @@ public class CPD {
     }
 
     private TokenSets tokenSets = new TokenSets();
-    private Occurrences results;
+    private Results results;
 
     public void add(File file) throws IOException {
         Tokenizer t = new Tokenizer();
@@ -37,13 +37,18 @@ public class CPD {
         tokenSets.add(ts);
     }
 
-    public void go(int minimumTileSize) {
-        GST gst = new GST(this.tokenSets, minimumTileSize);
-        gst.crunch();
-        results = gst.getResults();
+    public void add(List files) throws IOException {
+        for (Iterator i = files.iterator(); i.hasNext();) {
+            add((File)i.next());
+        }
     }
 
-    public Occurrences getResults() {
+    public void go(int minimumTileSize) {
+        GST gst = new GST(this.tokenSets, minimumTileSize);
+        results = gst.crunch();
+    }
+
+    public Results getResults() {
         return results;
     }
 
@@ -52,31 +57,38 @@ public class CPD {
     }
 
     public static void main(String[] args) {
+        boolean timing = Boolean.valueOf(args[0]).booleanValue();
+        long start = System.currentTimeMillis();
+
+
         CPD cpd = new CPD();
         try {
 /*
             cpd.add("1", "helloworld");
             cpd.add("2", "hellothere");
 */
-/*
             cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused1.java"));
             cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused2.java"));
             cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused3.java"));
-*/
+            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused4.java"));
+            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused5.java"));
+            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused6.java"));
+            cpd.add(new File("c:\\data\\pmd\\pmd\\test-data\\Unused7.java"));
 /*
             List files = findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity");
             files.addAll(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\agent"));
             files.addAll(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\blackboard"));
 */
-            List files = findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\");
-            for (Iterator i = files.iterator(); i.hasNext();) {
-                cpd.add((File)i.next());
-            }
+            //cpd.add(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\"));
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return;
         }
         cpd.go(150);
+        long stop = System.currentTimeMillis();
+        if (timing) {
+            System.out.println("Elapsed time = " + (stop-start) + " ms");
+        }
         for (Iterator i = cpd.getResults().getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
             System.out.println(tile.getImage());
