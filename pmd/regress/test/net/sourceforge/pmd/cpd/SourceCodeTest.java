@@ -2,7 +2,7 @@ package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.cpd.JavaTokensTokenizer;
+import net.sourceforge.pmd.cpd.JavaTokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.CPD;
 
@@ -12,7 +12,7 @@ public class SourceCodeTest extends TestCase {
 
     public void testSimple() throws Throwable {
         String code = MatchAlgorithmTest.getSampleCode();
-        JavaTokensTokenizer tokenizer = new JavaTokensTokenizer();
+        JavaTokenizer tokenizer = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode("Foo.java");
         assertEquals("Foo.java", sourceCode.getFileName());
         tokenizer.tokenize(sourceCode, new Tokens(), new StringReader(code));

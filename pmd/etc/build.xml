@@ -60,7 +60,7 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="rulesets/favorites.xml">
+    <pmd rulesetfiles="rulesets/favorites.xml" verbose="true">
         <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
         <fileset dir="/usr/local/java/src/java/lang/ref">
             <include name="**/*.java"/>
@@ -95,6 +95,20 @@
     <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
     <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException"/>
     <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
+</target>
+
+<target name="cppjavacc">
+    <delete>
+        <fileset dir="src/net/sourceforge/pmd/cpd/cppast">
+            <include name="*.java"/>
+            <exclude name="ClassScope.java"/>
+            <exclude name="Declaration.java"/>
+            <exclude name="Scope.java"/>
+            <exclude name="SymtabManager.java"/>
+        </fileset>
+    </delete>
+    <javacc target="etc/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="/usr/local/javacc-3.0/"/>
+    <replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException"/>
 </target>
 
 <target name="clean" depends="delete,compile"/>

@@ -52,7 +52,7 @@ public class CPDTask extends Task {
 	public void execute() throws BuildException{
     	try{	
     		validateFields();
-	    	CPD cpd = new CPD(minimumTokenCount);
+	    	CPD cpd = new CPD(minimumTokenCount, new JavaLanguage());
             for (Iterator i = filesets.iterator(); i.hasNext();) {
                 FileSet fs = (FileSet) i.next();
                 DirectoryScanner ds = fs.getDirectoryScanner(project);

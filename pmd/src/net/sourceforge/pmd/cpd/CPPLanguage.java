@@ -1,0 +1,21 @@
+package net.sourceforge.pmd.cpd;
+
+import java.io.FilenameFilter;
+import java.io.File;
+
+public class CPPLanguage implements Language{
+
+    public static class CPPFileOrDirectoryFilter implements FilenameFilter {
+        public boolean accept(File dir, String filename) {
+            return filename.endsWith(".c") || filename.endsWith(".cpp") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+        }
+    }
+
+    public Tokenizer getTokenizer() {
+        return new CPPTokenizer();
+    }
+
+    public FilenameFilter getFileFilter() {
+        return new CPPFileOrDirectoryFilter();
+    }
+}

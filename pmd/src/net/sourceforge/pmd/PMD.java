@@ -4,7 +4,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.cpd.FileFinder;
-import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
+import net.sourceforge.pmd.cpd.JavaLanguage;
 import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.IDEAJRenderer;
@@ -93,7 +93,7 @@ public class PMD {
             files.add(inputFile);
         } else {
             FileFinder finder = new FileFinder();
-            files = finder.findFilesFrom(inputFile.getAbsolutePath(), new JavaFileOrDirectoryFilter(), true);
+            files = finder.findFilesFrom(inputFile.getAbsolutePath(), new JavaLanguage.JavaFileOrDirectoryFilter(), true);
         }
 
         PMD pmd = new PMD();

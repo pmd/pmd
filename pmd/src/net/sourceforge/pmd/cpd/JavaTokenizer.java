@@ -11,7 +11,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaTokensTokenizer implements Tokenizer {
+public class JavaTokenizer implements Tokenizer {
 
     protected String EOL = System.getProperty("line.separator", "\n");
 

@@ -17,9 +17,11 @@ public class CPD {
     private Tokens tokens = new Tokens();
     private int minimumTileSize;
     private MatchAlgorithm matchAlgorithm;
+    private Language language;
 
-    public CPD(int minimumTileSize) {
+    public CPD(int minimumTileSize, Language language) {
         this.minimumTileSize = minimumTileSize;
+        this.language = language;
     }
 
     public void setCpdListener(CPDListener cpdListener) {
@@ -56,28 +58,32 @@ public class CPD {
 
     private void addDirectory(String dir, boolean recurse) throws IOException {
         FileFinder finder = new FileFinder();
-        List list = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
-        add(list);
+        add(finder.findFilesFrom(dir, language.getFileFilter(), recurse));
     }
 
     private void add(int fileCount, File file) throws IOException {
         listener.addedFile(fileCount, file);
-        Tokenizer tokenizer = new JavaTokensTokenizer();
         SourceCode sourceCode = new SourceCode(file.getAbsolutePath());
         FileReader reader = new FileReader(file);
-        tokenizer.tokenize(sourceCode, tokens, reader);
+        language.getTokenizer().tokenize(sourceCode, tokens, reader);
         reader.close();
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
     public static void main(String[] args) {
-        if (args.length != 2) {
+        if (args.length >3 || args.length < 2) {
             usage();
             System.exit(1);
         }
 
         try {
-            CPD cpd = new CPD(Integer.parseInt(args[0]));
+            String lang = LanguageFactory.JAVA_KEY;
+            if (args.length == 3) {
+                lang = args[2];
+            }
+            LanguageFactory f = new LanguageFactory();
+            Language language = f.createLanguage(lang);
+            CPD cpd = new CPD(Integer.parseInt(args[0]), language);
             cpd.addRecursively(args[1]);
             long start = System.currentTimeMillis();
             cpd.go();
@@ -91,9 +97,11 @@ public class CPD {
 
     private static void usage() {
         System.out.println("Usage:");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD <tile size> <directory>");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD <tile size> <directory> [<language>]");
         System.out.println("i.e: ");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java ");
+        System.out.println("or: ");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\apache\\src\\ cpp");
     }
 
 }

@@ -139,7 +139,7 @@ public class GUI implements CPDListener {
 
     private void go() {
         try {
-            CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()));
+            CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()), new JavaLanguage());
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             comparisonsField.setText("");
