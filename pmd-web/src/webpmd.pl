@@ -20,6 +20,7 @@ sub default() {
 
  print h3("<center>PMD-WEB</center>");
  print "PMD is a Java source code analysis tool - it checks your code for unused fields, empty try/catch/finally/if/while blocks, unused method parameters, and stuff like that.  There's much more info <a href=\"http://pmd.sf.net/\">here</a>.<p>This table contains the results of running PMD's <a href=\"http://pmd.sourceforge.net/rules/unusedcode.html\">unused code ruleset</a> against a bunch of Sourceforge and Jakarta projects."; 
+ print "<p><b>1/21/03: This page has been down for a few days due to Sourceforge CVS migrations, but it's back on the hourly cycle now</b>";
  print hr();
 
  if (param("location")) {
