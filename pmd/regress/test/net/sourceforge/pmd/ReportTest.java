@@ -22,15 +22,13 @@ public class ReportTest extends TestCase {
 
     public void testBasic() {
         Report r = new Report("xml", "foo");
-        Rule rule = new MockRule();
-        r.addRuleViolation(new RuleViolation(rule, 5));
+        r.addRuleViolation(new RuleViolation(new MockRule(), 5));
         assertTrue(!r.currentFileHasNoViolations());
     }
 
     public void testRenderXML() {
         Report r = new Report("xml", "foo");
-        Rule rule = new MockRule();
-        r.addRuleViolation(new RuleViolation(rule, 5));
+        r.addRuleViolation(new RuleViolation(new MockRule(), 5));
         String rpt = r.render();
         assertTrue(rpt.indexOf("foo") != -1);
         assertTrue(rpt.indexOf("<pmd>") != -1);
@@ -38,8 +36,7 @@ public class ReportTest extends TestCase {
 
     public void testRenderHTML() {
         Report r = new Report("html", "foo");
-        Rule rule = new MockRule();
-        r.addRuleViolation(new RuleViolation(rule, 5));
+        r.addRuleViolation(new RuleViolation(new MockRule(), 5));
         String rpt = r.render();
         assertTrue(rpt.indexOf("foo") != -1);
         assertTrue(rpt.indexOf("<table>") != -1);
@@ -47,8 +44,7 @@ public class ReportTest extends TestCase {
 
     public void testRenderText() {
         Report r = new Report("text", "foo");
-        Rule rule = new MockRule();
-        r.addRuleViolation(new RuleViolation(rule, 5));
+        r.addRuleViolation(new RuleViolation(new MockRule(), 5));
         assertTrue(r.render().indexOf("foo") != -1);
     }
 }
