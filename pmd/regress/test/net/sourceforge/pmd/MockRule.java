@@ -29,6 +29,10 @@ public class MockRule implements Rule {
         this.description = description;
     }
 
+	public boolean hasProperty( String name ) {
+		return properties.containsKey( name );
+	}
+	
     public void addProperty(String name, String value) {
         properties.put(name, value);
     }
@@ -37,6 +41,10 @@ public class MockRule implements Rule {
         return Integer.parseInt(properties.getProperty(name));
     }
 
+	public double getDoubleProperty(String name) {
+		return Double.parseDouble(properties.getProperty(name));
+	}
+	
     public boolean getBooleanProperty(String name) {
         return Boolean.valueOf(properties.getProperty(name)).booleanValue();
     }

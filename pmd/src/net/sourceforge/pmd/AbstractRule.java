@@ -31,11 +31,18 @@ public abstract class AbstractRule
         this.description = description;
     }
 
+	public boolean hasProperty( String name ) {
+		return properties.containsKey( name );	
+	}
 
     public void addProperty(String name, String value) {
         properties.put(name, value);
     }
 
+	public double getDoubleProperty(String name) {
+		return Double.parseDouble(properties.getProperty(name));
+	}
+	
     public int getIntProperty(String name) {
         return Integer.parseInt(properties.getProperty(name));
     }

@@ -35,7 +35,7 @@ public class RuleSetFactoryTest  extends TestCase {
     private static final String SINGLE_RULE_WITH_PROPS = "<?xml version=\"1.0\"?>" +
                          "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
                          "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\">" +
-                         "<description>testdesc2</description><properties><property name=\"fooBoolean\" value=\"true\"/><property name=\"foo\" value=\"bar\"/><property name=\"fooint\" value=\"2\"/></properties>" +
+                         "<description>testdesc2</description><properties><property name=\"fooBoolean\" value=\"true\"/><property name=\"fooDouble\" value=\"1.0\" /><property name=\"foo\" value=\"bar\"/><property name=\"fooint\" value=\"2\"/></properties>" +
                          "</rule></ruleset>";
 
     private static final String SINGLE_RULE_NO_PROPS = "<?xml version=\"1.0\"?>" +
@@ -51,10 +51,20 @@ public class RuleSetFactoryTest  extends TestCase {
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE_WITH_PROPS.getBytes()));
         Rule r = (Rule)rs.getRules().iterator().next();
+
+		assertTrue( r.hasProperty("foo"));
         assertEquals("bar", r.getStringProperty("foo"));
         assertEquals(2, r.getIntProperty("fooint"));
+        
+        assertTrue( r.hasProperty("fooBoolean"));
         assertTrue(r.getBooleanProperty("fooBoolean"));
         assertEquals("testdesc2", r.getDescription());
+        
+        assertTrue( r.hasProperty("fooDouble"));
+        assertEquals( 1.0, r.getDoubleProperty("fooDouble"),
+        			  0.05 );
+        			  
+        assertTrue( !r.hasProperty("BuggleFish"));
     }
 
     public void testCreateSingleRuleNoPropsSet() {
