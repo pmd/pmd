@@ -115,7 +115,7 @@ public class PMD {
                 try {
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (PMDException pmde) {
-                    pmde.printStackTrace();
+                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), file.getAbsolutePath()));
                 }
             }
         } catch (FileNotFoundException fnfe) {
