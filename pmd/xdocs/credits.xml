@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Luke Francl - suggested UnnecessaryParentheses rule, numerous <b>high quality</b> feature suggestions and bug reports</li>
             <li>David Hovemeyer - reported missing labelled stmt images, a nice patch to let PMD process code in jar/zip files</li>
             <li>Wim Deblauwe - Helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Peter 'Bruno' Kofler - reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
@@ -170,7 +171,6 @@
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Frederic Harper - bug report and subsequent troubleshooting</li>
             <li>Mats Henricson - an XSLT script and several bug reports</li>
-            <li>Luke Francl - numerous <b>high quality</b> feature suggestions and bug reports</li>
             <li>Martin Cooper - feature suggestions</li>
             <li>Bruce Mayhew - feedback on the jEdit plugin</li>
             <li>Juergen Ebert - feature suggestions and pmd-netbeans feedback</li>

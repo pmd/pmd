@@ -41,5 +41,37 @@ These are new rules for the next release
       </example>
     </rule>
 
+    <rule name="UnnecessaryParentheses"
+          message="This return statement may have some unnecessary parentheses"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Sometimes return statement expressions are wrapped in unnecessary parentheses,
+ making them look like a function call.
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+//ReturnStatement
+          /Expression
+           /PrimaryExpression
+            /PrimaryPrefix
+             /Expression[count(*)=1]
+              /PrimaryExpression
+              /PrimaryPrefix]]>
+            </value>
+        </property>
+    </properties>
+        <priority>3</priority>
+      <example>
+  <![CDATA[public class Foo {
+      boolean bar() {
+          return (true);
+      }
+  }]]>
+      </example>
+    </rule>
+
+
 </ruleset>
 

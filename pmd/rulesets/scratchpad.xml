@@ -28,38 +28,6 @@ These are new rules that are still in progress
       </example>
       </rule>
 
-    <rule name="SuspiciousConstantFieldName"
-          message="The field name indicates a constants but its modifiers don't"
-          class="net.sourceforge.pmd.rules.XPathRule">
-       <description>
-       A field name is all in uppercase characters, which in sun's java naming
-       conventions indicate a constant. However, the field is not final.
-       </description>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[@Interface='false']
- /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-  [@Final='false']
-  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
- ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>3</priority>
-       <example>
-    <![CDATA[
-public class Foo {
-	// this is bad, since someone could accidentally
-	// do PI = 2.71828; which is actualy e
-	// final double PI = 3.16; is ok
-	double PI = 3.16;
-
-}
-    ]]>
-       </example>
-     </rule>
 
 
 
