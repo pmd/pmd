@@ -34,7 +34,7 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.List;
 
-public class ASTViewer implements HasLines {
+public class ASTViewer {
 
     public static class DFAGraphRule extends AbstractRule {
 
@@ -265,7 +265,7 @@ public class ASTViewer implements HasLines {
                 RuleContext ctx = new RuleContext();
                 ctx.setSourceCodeFilename("");
                 new PMD().processFile(new StringReader(codeEditorPane.getText()), rs, ctx);
-                dfaPanel.resetTo((ASTMethodDeclaration)dfaGraphRule.getMethods().get(0), ASTViewer.this);
+                dfaPanel.resetTo((ASTMethodDeclaration)dfaGraphRule.getMethods().get(0), codeEditorPane);
                 dfaPanel.repaint();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -309,9 +309,50 @@ public class ASTViewer implements HasLines {
         }
     }
 
+    private static class MyTextPane extends JTextPane implements HasLines {
+        public MyTextPane() {
+            setPreferredSize(new Dimension(400,200));
+            setText(loadText());
+        }
+        public String getLine(int number) {
+            int count = 1;
+            for (StringTokenizer st = new StringTokenizer(getText(), "\n"); st.hasMoreTokens();) {
+                String tok = st.nextToken();
+                if (count == number) {
+                    return tok;
+                }
+                count++;
+            }
+            throw new RuntimeException("Line number " + number + " not found");
+        }
+        private String loadText() {
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(new File(SETTINGS_FILE_NAME)));
+                StringBuffer text = new StringBuffer();
+                String hold;
+                while ( (hold = br.readLine()) != null) {
+                    text.append(hold);
+                    text.append(System.getProperty("line.separator"));
+                }
+                return text.toString();
+            }   catch (IOException e) {
+                e.printStackTrace();
+                return "";
+            } finally {
+                try {
+                    if (br != null)
+                        br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_astviewer";
 
-    private JTextPane codeEditorPane = new JTextPane();
+    private MyTextPane codeEditorPane;
     private JTextArea astArea = new JTextArea();
     private DefaultListModel xpathResults = new DefaultListModel();
     private JList xpathResultList = new JList(xpathResults);
@@ -321,8 +362,6 @@ public class ASTViewer implements HasLines {
 
     public ASTViewer() {
         JPanel controlPanel = new JPanel();
-        codeEditorPane.setPreferredSize(new Dimension(400,200));
-        codeEditorPane.setText(loadText());
         controlPanel.add(createCodeEditPanel());
         controlPanel.add(createXPathQueryPanel());
 
@@ -331,7 +370,7 @@ public class ASTViewer implements HasLines {
 
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
 
-        dfaPanel = new DFAPanel(null, this);
+        dfaPanel = new DFAPanel(null, codeEditorPane);
 
         JTabbedPane tabbed = new JTabbedPane();
         tabbed.addTab("Abstract Syntax Tree / XPath", resultsSplitPane);
@@ -351,18 +390,6 @@ public class ASTViewer implements HasLines {
 
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/2));
         resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation()/2));
-    }
-
-    public String getLine(int number) {
-        int count = 1;
-        for (StringTokenizer st = new StringTokenizer(codeEditorPane.getText(), "\n"); st.hasMoreTokens();) {
-            String tok = st.nextToken();
-            if (count == number) {
-                return tok;
-            }
-            count++;
-        }
-        throw new RuntimeException("Line number " + number + " not found");
     }
 
     private JSmartPanel createASTPanel() {
@@ -389,6 +416,7 @@ public class ASTViewer implements HasLines {
         JPanel top = new JPanel();
         top.setLayout(new BorderLayout());
         JSmartPanel p = new JSmartPanel();
+        codeEditorPane = new MyTextPane();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
         p.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
         return p;
@@ -411,30 +439,6 @@ public class ASTViewer implements HasLines {
         b.addActionListener(new DFAListener());
         p.add(b, BorderLayout.SOUTH);
         return p;
-    }
-
-    private String loadText() {
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(new File(SETTINGS_FILE_NAME)));
-            StringBuffer text = new StringBuffer();
-            String hold;
-            while ( (hold = br.readLine()) != null) {
-                text.append(hold);
-                text.append(System.getProperty("line.separator"));
-            }
-            return text.toString();
-        }   catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        } finally {
-        	try {
-	        	if (br != null)
-	        		br.close();
-	        } catch (IOException e) {
-            	e.printStackTrace();
-	        }
-        }
     }
 
     public static void main(String[] args) {
