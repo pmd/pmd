@@ -1,1 +1,4 @@
+.nbattrs
+.nbintdb
 build
+build.ant.properties

@@ -42,9 +42,7 @@ import pmd.config.ui.RuleComparator;
 import pmd.custom.RuleClassLoader;
 
 /**
- * @author ole martin mørk
- * @author Gunnlaugur Þór Briem
- * @created 26. november 2002
+ * Configuration utilities for PMD module.
  */
 public abstract class ConfigUtils {
 
@@ -59,7 +57,7 @@ public abstract class ConfigUtils {
 	 *
 	 * @param rules Collection of Rule objects.
 	 */
-	public static void addRuleSetFactory (RuleSetFactory fact) {
+	public static synchronized void addRuleSetFactory (RuleSetFactory fact) {
 		if (extraFactories == null) {
 			extraFactories = new ArrayList ();
 		}
@@ -67,21 +65,26 @@ public abstract class ConfigUtils {
 	}
 
 	/**
-	 * Unregisters extra rules that are available.
+	 * Unregisters extra rules previously registered.
 	 *
 	 * @param rules Collection of Rule objects.
 	 */
-	public static void removeRuleSetFactory (RuleSetFactory fact) {
+	public static synchronized void removeRuleSetFactory (RuleSetFactory fact) {
 		if (extraFactories != null) {
 			extraFactories.remove (fact);
 		}
 	}
 	
 	/**
-	 * Description of the Method
+	 * Determines the list of rules to use. This is done by iterating over all
+	 * known rules and, for each one, checking whether its name appears in the
+	 * given string followed by a comma and a space. If it does appear, then it
+	 * is added to the list of rules to use, after setting any properties whose
+	 * defaults have been configured to be overridden, in
+	 * {@link PMDOptionsSettings}.{@link PMDOptionsSettings#getDefault getDefault()}.{@link PMDOptionsSettings#getRuleProperties getRuleProperties()}.
 	 *
-	 * @param rules Description of the Parameter
-	 * @return Description of the Return Value
+	 * @param rules a string containing the names of the rules to use, with a comma-and-space after each one (including the last).
+	 * @return a list containing the rules to use. Each element of the list is an instance of {@link Rule}.
 	 */
 	public static List createRuleList( String rules ) {
 		Iterator iterator = getAllAvailableRules().iterator();
@@ -106,21 +109,31 @@ public abstract class ConfigUtils {
 		return list;
 	}
 	
+
+	/**
+	 * Determines the list of rules to use.
+	 * This just delegates to {@link #createRuleList} with the argument
+	 * {@link PMDOptionsSettings}.{@link PMDOptionsSettings#getDefault getDefault()}.{@link PMDOptionsSettings#getRules getRules()}.
+	 *
+	 * @return a list containing the rules to use. Each element of the list is an instance of {@link Rule}.
+	 */
 	public static List getRuleList() {
 		return createRuleList( PMDOptionsSettings.getDefault().getRules() );
 	}
 
 
 	/**
-	 * Returns the list as text
+	 * Returns a particular string representation of the given list of PMD rules.
+	 * The representation consists of the names of the rules, each one
+	 * (including the last) followed by a comma and a space.
 	 *
-	 * @param value The list to be presented as text
+	 * @param ruleList The list of rules to be presented as text
 	 * @return A string containing all the values in the list
 	 */
-	public static String getValueAsText( List value ) {
+	public static String getValueAsText(List ruleList) {
 		StringBuffer buffer = new StringBuffer();
-		if( value != null ) {
-			Iterator iterator = value.iterator();
+		if( ruleList != null ) {
+			Iterator iterator = ruleList.iterator();
 			while( iterator.hasNext() ) {
 				Rule rule = ( Rule )iterator.next();
 				buffer.append( rule.getName() ).append( ", " );
@@ -131,9 +144,10 @@ public abstract class ConfigUtils {
 
 
 	/**
-	 * Gets the allAvailableRules attribute of the ConfigUtils class
+	 * Gets a list of all PMD rules known to the environment.
+	 * This includes those shipped as part of PMD, and those configured in custom rulesets.
 	 *
-	 * @return The allAvailableRules value
+	 * @return a list of all known PMD rules, not null. Each element is an instance of {@link Rule}.
 	 */
 	public static List getAllAvailableRules() {
 		List list = new ArrayList();
@@ -147,14 +161,16 @@ public abstract class ConfigUtils {
 						RuleSet ruleset = ( RuleSet )iterator.next();
 						list.addAll( ruleset.getRules() );
 					}
-					if (extraFactories != null) {
-						iterator = extraFactories.iterator (); 
-						while (iterator.hasNext () ) {
-							ruleSetFactory = (RuleSetFactory)iterator.next ();
-							Iterator it = ruleSetFactory.getRegisteredRuleSets();
-							while( it.hasNext() ) {
-								RuleSet ruleset = ( RuleSet )it.next();
-								list.addAll( ruleset.getRules() );
+					synchronized(ConfigUtils.class) {
+						if (extraFactories != null) {
+							iterator = extraFactories.iterator (); 
+							while (iterator.hasNext () ) {
+								ruleSetFactory = (RuleSetFactory)iterator.next ();
+								Iterator it = ruleSetFactory.getRegisteredRuleSets();
+								while( it.hasNext() ) {
+									RuleSet ruleset = ( RuleSet )it.next();
+									list.addAll( ruleset.getRules() );
+								}
 							}
 						}
 					}

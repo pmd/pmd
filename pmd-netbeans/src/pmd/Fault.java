@@ -29,9 +29,7 @@ package pmd;
 import net.sourceforge.pmd.PMDException;
 
 /**
- * Contains a fault that pmd discovers
- * @created 17.oktober 2002
- * @author Ole-Martin Mørk
+ * Represents a PMD rule violation.
  */
 public class Fault implements Comparable {
 

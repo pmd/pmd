@@ -1,4 +1,4 @@
-nbantext.jar and openide.jar are compiled from SPL-licensed sources.
+nbantext-*.jar and openide*.jar are compiled from SPL-licensed sources.
 They are needed only at build time, not in the distributed NBM.
 The header for the source files is:
 

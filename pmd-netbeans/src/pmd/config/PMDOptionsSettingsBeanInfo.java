@@ -39,44 +39,45 @@ import pmd.config.ui.RuleEditor;
 import pmd.config.ui.RuleSetChooserEditor;
 
 /**
- * Description of {@link PMDOptionsSettings}.
- *
- * @author Ole-Martin Mørk
- * @created 24. oktober 2002
+ * Bean descriptor for {@link PMDOptionsSettings}.
  */
 public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 
 	/**
-	 * Returns the description of the PMD properties
+	 * Returns the property descriptors for the properties comprising the PMD settings.
 	 *
-	 * @return the description of the rulesets property
+	 * @return an array of property descriptors describing all PMD settings properties, not null.
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor descriptor[] = new PropertyDescriptor[4];
+		PropertyDescriptor descriptor[] = new PropertyDescriptor[5];
 		try {
 			
-			PropertyDescriptor rules = new PropertyDescriptor( "rules", PMDOptionsSettings.class, "getRules", "setRules" );
+			PropertyDescriptor rules = new PropertyDescriptor( PMDOptionsSettings.PROP_RULES, PMDOptionsSettings.class, "getRules", "setRules" );
 			rules.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_rules" ) );
 			rules.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_rules" ) );
 			rules.setPropertyEditorClass( RuleEditor.class );
 			descriptor[0] = rules;
 
-			PropertyDescriptor rulesets = new PropertyDescriptor( "rulesets", PMDOptionsSettings.class, "getRulesets", "setRulesets" );
+			PropertyDescriptor rulesets = new PropertyDescriptor( PMDOptionsSettings.PROP_RULESETS, PMDOptionsSettings.class, "getRulesets", "setRulesets" );
 			rulesets.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_rulesets" ) );
 			rulesets.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_rulesets" ) );
 			rulesets.setPropertyEditorClass( RuleSetChooserEditor.class );
 			rulesets.setExpert(true);
 			descriptor[1] = rulesets;
 			
-			PropertyDescriptor enableScan = new PropertyDescriptor( "scanEnabled", PMDOptionsSettings.class, "isScanEnabled", "setScanEnabled" );
+			PropertyDescriptor enableScan = new PropertyDescriptor( PMDOptionsSettings.PROP_ENABLE_SCAN, PMDOptionsSettings.class, "isScanEnabled", "setScanEnabled" );
 			enableScan.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_enablescan" ) );
 			enableScan.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_enablescan" ) );
 			descriptor[2] = enableScan;			
 			
-			PropertyDescriptor scanInterval = new PropertyDescriptor( "scanInterval", PMDOptionsSettings.class, "getScanInterval", "setScanInterval" );
+			PropertyDescriptor scanInterval = new PropertyDescriptor( PMDOptionsSettings.PROP_SCAN_INTERVAL, PMDOptionsSettings.class, "getScanInterval", "setScanInterval" );
 			scanInterval.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_scanInterval" ) );
 			scanInterval.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_scanInterval" ) );
 			descriptor[3] = scanInterval;		
+			
+			PropertyDescriptor ruleProperties = new PropertyDescriptor( PMDOptionsSettings.PROP_RULE_PROPERTIES, PMDOptionsSettings.class, "getRuleProperties", "setRuleProperties" );
+			ruleProperties.setHidden(true);
+			descriptor[4] = ruleProperties;
 			
 		}
 		catch( IntrospectionException ie ) {
@@ -87,10 +88,11 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 
 
 	/**
-	 * Returns the icon for the property.
+	 * Returns an icon representing PMD settings.
 	 *
-	 * @param type the type of icon
-	 * @return the icon
+	 * @param type the type of icon, one of {@link BeanInfo#ICON_COLOR_16x16},
+	 * {@link BeanInfo#ICON_MONO_16x16}, {@link BeanInfo#ICON_COLOR_32x32}, {@link BeanInfo#ICON_MONO_32x32}
+	 * @return the icon, not null.
 	 */
 	public Image getIcon( int type ) {
 		Image img;

@@ -26,18 +26,20 @@
  */
 package pmd.config;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import org.openide.options.SystemOption;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
 /**
- * Options for PMD netbeans
- *
- * @author Ole-Martin Mørk
- * @author Gunnlaugur Þór Briem
- * @created 24. oktober 2002
+ * Settings for the PMD-NetBeans module.
  */
 public class PMDOptionsSettings extends SystemOption {
 
@@ -77,8 +79,8 @@ public class PMDOptionsSettings extends SystemOption {
 	 */
 	public final static String PROP_ENABLE_SCAN = "EnableScan";
 	
-	/** Default interval for scanning, 10 seconds. **/
-	public static final int DEFAULT_SCAN_INTERVAL = 10;
+	/** Default interval for scanning, two seconds. **/
+	public static final int DEFAULT_SCAN_INTERVAL = 2;
 	
 	/** The default rules.*/
 	private static final String DEFAULT_RULES =
@@ -98,8 +100,9 @@ public class PMDOptionsSettings extends SystemOption {
 	/** Sets the default rulesets and initializes the option */
 	protected void initialize() {
 		super.initialize();
-		setRules( DEFAULT_RULES );
-		setRuleProperties( new HashMap() );
+		setRules(DEFAULT_RULES);
+		// OK to initialize with an empty map, we'll never expose it (always return a HashMap copy)
+		setRuleProperties(Collections.EMPTY_MAP);
 		setRulesets(new CustomRuleSetSettings());
 		setScanEnabled(Boolean.FALSE);
 		setScanInterval(new Integer(DEFAULT_SCAN_INTERVAL));
@@ -157,19 +160,37 @@ public class PMDOptionsSettings extends SystemOption {
 
 	/**
 	 * Returns the rule properties property (sorry). See {@link #PROP_RULE_PROPERTIES}.
+	 * Note: this returns a non-live <em>deep copy</em> of the rule properties map;
+	 * changes to the map or its contents will not affect the PMD settings until you
+	 * call {@link #setRuleProperties} with the modified map.
+	 * <p>
+	 * This is my nice naive way to observe correct property change event handling. It
+	 * gets inefficient as the set of rule properties gets large ... but the set of
+	 * rule properties generally <em>doesn't</em> get large because it really only
+	 * contains <em>overrides</em> of the PMD default rule properties.
+	 * <p>
+	 * IMPLEMENTATION NOTE: the deep copy operation recurses into all Map and Collection
+	 * values, so circular references will kill it. Make sure you put only simple data
+	 * in the rule properties! Also, note that non-Map, non-Collection values are not
+	 * cloned; the assumption is that the leaves of this hierarchy (actual rule property
+	 * values) are always immutable objects, most likely just strings.
 	 *
 	 * @return the rule properties, not null.
 	 */
 	public Map getRuleProperties() {
-		return ( Map )getProperty( PROP_RULE_PROPERTIES );
+		return deepMapCopy((Map)getProperty(PROP_RULE_PROPERTIES));
 	}
 
 	/**
 	 * Sets the rule properties property (sorry). See {@link #PROP_RULE_PROPERTIES}.
+	 * See also the constraints on rule property values and the ban on circular references,
+	 * in the documentation for {@link #getRuleProperties}.
 	 *
-	 * @param ruleProperties The new rule properties, not null.
+	 * @param ruleProperties The new rule properties map, not null. In this Map, each key must be
+	 * a String, the name of a PMD rule, and each value must be a Map, specifying the properties
+	 * for that rule.
 	 */
-	public void setRuleProperties( Map ruleProperties ) {
+	public void setRuleProperties(Map ruleProperties) {
 		putProperty( PROP_RULE_PROPERTIES, ruleProperties, true );
 	}
 
@@ -202,7 +223,7 @@ public class PMDOptionsSettings extends SystemOption {
 	 *
 	 */
 	public void setScanEnabled(Boolean scanEnabled) {
-		putProperty( PROP_ENABLE_SCAN, scanEnabled );
+		putProperty( PROP_ENABLE_SCAN, scanEnabled, true );
 	}
 	
 	/** Getter for property scanInterval.
@@ -219,6 +240,64 @@ public class PMDOptionsSettings extends SystemOption {
 	 */
 	public void setScanInterval(Integer scanInterval) {
 		putProperty( PROP_SCAN_INTERVAL, scanInterval );
+	}
+	
+	/**
+	 * Performs a deep-copy operation on the given map, recursing into all values that are Maps or
+	 * Collections. Note that this is risky; if the map/collection hierarchy contains circular references,
+	 * then this will recurse infinitely and terminate in a StackOverflowError. So, uh, don't put circular
+	 * references here :)
+	 *
+	 * @param map the Map to copy, not null.
+	 */
+	private Map deepMapCopy(Map map) {
+		HashMap copy = new HashMap(map.size() * 2 + 2);
+		Iterator iterator = map.entrySet().iterator();
+		Map.Entry entry;
+		Object key, value;
+		while(iterator.hasNext()) {
+			entry = (Map.Entry)iterator.next();
+			key = entry.getKey();
+			value = entry.getValue();
+			if(value instanceof Map) {
+				copy.put(key, deepMapCopy((Map)value));
+			} else if(value instanceof Collection) {
+				copy.put(key, deepCollectionCopy((Collection)value));
+			} else {
+				copy.put(key, value);
+			}
+		}
+		return copy;
+	}
+	
+	/**
+	 * Performs a deep-copy operation on the given collection, recursing into all values that are Maps or
+	 * Collections. Note that this is risky; if the map/collection hierarchy contains circular references,
+	 * then this will recurse infinitely and terminate in a StackOverflowError. So, uh, don't put circular
+	 * references here :)
+	 *
+	 * @param coll the Collection to copy, not null.
+	 */
+	private Collection deepCollectionCopy(Collection coll) {
+		Collection copy;
+		if(coll instanceof Set) {
+			copy = new HashSet(coll.size() * 2 + 2);
+		} else {
+			copy = new ArrayList(coll.size());
+		}
+		Iterator iterator = coll.iterator();
+		Object elem;
+		while(iterator.hasNext()) {
+			elem = iterator.next();
+			if(elem instanceof Map) {
+				copy.add(deepMapCopy((Map)elem));
+			} else if(elem instanceof Collection) {
+				copy.add(deepCollectionCopy((Collection)elem));
+			} else {
+				copy.add(elem);
+			}
+		}
+		return copy;
 	}
 	
 }

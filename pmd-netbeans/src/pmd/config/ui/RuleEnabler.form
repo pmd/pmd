@@ -102,7 +102,7 @@
             <Component class="javax.swing.JList" name="chosenList">
               <Properties>
                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="SelectedListModel.getSelectedListModelInstance()" type="code"/>
+                  <Connection code="SelectedListModel.getInstance()" type="code"/>
                 </Property>
                 <Property name="cellRenderer" type="javax.swing.ListCellRenderer" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="new ListCell()" type="code"/>

@@ -32,7 +32,6 @@ import net.sourceforge.pmd.Rule;
 
 /**
  * A comparator used to sort the rules in the listbox in the option panel.
- * @author  ole martin mørk
  */
 public class RuleComparator implements Comparator{
 	

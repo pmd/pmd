@@ -30,9 +30,8 @@ import java.awt.Component;
 import java.beans.PropertyEditorSupport;
 import pmd.config.ConfigUtils;
 
-/** The PropertyEditor of the Rule property
- * @author ole martin mørk
- * @created 18. november 2002
+/** 
+ * The PropertyEditor of the Rule property
  */
 public class RuleEditor extends PropertyEditorSupport {
 
@@ -60,7 +59,7 @@ public class RuleEditor extends PropertyEditorSupport {
 	 */
 	public Object getValue() {
 		return ConfigUtils.getValueAsText( 
-			SelectedListModel.getSelectedListModelInstance().getList() );
+			SelectedListModel.getInstance().getList() );
 	}
 
 
@@ -79,7 +78,7 @@ public class RuleEditor extends PropertyEditorSupport {
 	 */
 	public void setValue( Object obj ) {
 		if( obj != null ) {
-			SelectedListModel.getSelectedListModelInstance().setList( 
+			SelectedListModel.getInstance().setList( 
 				ConfigUtils.createRuleList( (String)obj ) );
 			AvailableListModel.getInstance().refresh();
 		}

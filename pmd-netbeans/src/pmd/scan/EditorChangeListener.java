@@ -28,53 +28,91 @@ package pmd.scan;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.text.StyledDocument;
+
 import org.openide.ErrorManager;
 import org.openide.cookies.EditorCookie;
 import org.openide.nodes.Node;
-import org.openide.windows.TopComponent.Registry;
+import org.openide.windows.TopComponent;
+
+import pmd.RunPMDAction;
 import pmd.config.PMDOptionsSettings;
 
 /**
- *
- * @author  ole martin mørk
+ * Listener for changes in active document or PMD settings.
+ * When either of these changes, this object makes PMD background scanning react accordingly.
  */
 public class EditorChangeListener implements PropertyChangeListener {
 
-	private final Registry registry;
 	private Scanner scanner;
-	public EditorChangeListener(Registry registry ) {
-		this.registry = registry;
+	private Node currentlyScannedNode;
 	
+	public static void initialize() {
+		EditorChangeListener ecl = new EditorChangeListener();
+		TopComponent.getRegistry().addPropertyChangeListener(ecl);
+		PMDOptionsSettings.getDefault().addPropertyChangeListener(ecl);
+	}
+	
+	private EditorChangeListener() {
 	}
  	
- 	public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+ 	public void propertyChange(PropertyChangeEvent evt) {
+		tracelog("Got propchange in editorchangelistener: " + evt);
+		if(evt.getSource() instanceof PMDOptionsSettings) {
+			// settings changed, so chuck out current scanner if any.
+			if(scanner != null) {
+				tracelog("Stopping scanner " + scanner + " because of changed PMD settings");
+				scanner.stopThread();
+				scanner = null;
+				currentlyScannedNode = null;
+			}
+		}
 		if( PMDOptionsSettings.getDefault().isScanEnabled().equals( Boolean.TRUE ) ) {
-			Node node[] = registry.getActivatedNodes();
-			EditorCookie cookie = null;
-			int i = 0;
-			for( i = 0; i < node.length; i++ ) {
-				ErrorManager.getDefault().log(ErrorManager.ERROR, "checking cookie " + node[i]);			
-				cookie = (EditorCookie)node[i].getCookie( EditorCookie.class );
-				if( cookie != null ) {
+			Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
+			Node foundNode = null;
+			for(int i = 0; i < nodes.length; i++) {
+				if(nodes[i].getCookie(EditorCookie.class) != null) {
+					foundNode = nodes[i];
+					tracelog("  Found scannable node " + foundNode);
 					break;
+				} else {
+					tracelog("  Non-scannable node " + nodes[i] + " of class " + nodes[i].getClass().getName());
 				}
 			}
-			if( cookie != null ) {
-				ErrorManager.getDefault().log(ErrorManager.ERROR, "starting scan");
-				startScan( node[i] );
+			if(foundNode != null && (currentlyScannedNode == null || !foundNode.equals(currentlyScannedNode))) {
+				startScan(foundNode);
 			}
 		}
 	}
 	
-	private void startScan( Node node ) 
-	{
+	private void startScan( Node node ) {
 		if( scanner != null ) {
+			// check whether it's the same one (if so, replacing the scanner is unnecessary work)
+			EditorCookie edtCookie = (EditorCookie)node.getCookie(EditorCookie.class);
+			if(edtCookie != null) {
+				StyledDocument doc = edtCookie.getDocument();
+				if(doc != null && doc == scanner.getSubscribedDocument()) {
+					// Same document, so we don't need to replace the scanner.
+					tracelog("  Cancelling scanner replacement, same document!");
+					return;
+				}
+			}
+			// not the same one, so we replace the scanner.
+			tracelog("  Stopping scanner " + scanner);
 			scanner.stopThread();
 		}
 		scanner = new Scanner( node );
+		tracelog("  Starting scanner " + scanner);
 		Thread thread = new Thread( scanner );
 		thread.setPriority( Thread.MIN_PRIORITY );
+		this.currentlyScannedNode = node;
 		thread.start();
+	}
+	
+	private void tracelog(String str) {
+		if(RunPMDAction.TRACE_LOGGING) {
+			ErrorManager.getDefault().log(ErrorManager.ERROR, str);
+		}
 	}
 	
 }

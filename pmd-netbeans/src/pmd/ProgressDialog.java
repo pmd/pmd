@@ -37,8 +37,6 @@ import org.openide.windows.WindowManager;
 /**
  * Non-modal dialog box displaying the progress of a PMD code scan operation and allowing the user to cancel
  * it.
- *
- * @author  gthb
  */
 public class ProgressDialog extends JDialog implements RunPMDCallback {
 	

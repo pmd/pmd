@@ -26,65 +26,114 @@
  */
 package pmd.scan;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.StyledDocument;
 import org.openide.ErrorManager;
-import org.openide.cookies.LineCookie;
 import org.openide.loaders.DataObject;
+import org.openide.cookies.EditorCookie;
+import org.openide.cookies.LineCookie;
 import org.openide.nodes.Node;
 import org.openide.text.Line;
-import org.openide.text.Line.Set;
 import pmd.Fault;
 import pmd.RunPMDAction;
 import pmd.config.PMDOptionsSettings;
 
 /**
- *
- * @author  ole martin mørk
+ * PMD background scanner.
  */
-public class Scanner implements Runnable {
+public class Scanner implements Runnable, DocumentListener, PropertyChangeListener {
+
 	private final Node node;
-	
 	private boolean running = true;
+	private StyledDocument subscribedDoc = null;
+	private EditorCookie.Observable subscribedObservable = null;
+	
+	/**
+	 * If this is -1, scan constantly. Else, scan only when this has changed.
+	 */
+	private int modCount;
+	
 	/** Creates a new instance of Scanner */
 	public Scanner( Node node ) {
 		this.node = node;
+		EditorCookie edtCookie = (EditorCookie)node.getCookie(EditorCookie.class);
+		if(edtCookie != null) {
+			StyledDocument doc = edtCookie.getDocument();
+			if(doc != null) {
+				doc.removeDocumentListener(this); // prevent duplicate listener registration
+				doc.addDocumentListener(this);
+				subscribedDoc = doc;
+			} // else document has probably been unloaded because the editor window was closed.
+			EditorCookie.Observable obs = (EditorCookie.Observable)node.getCookie(EditorCookie.Observable.class);
+			if(obs != null) {
+				obs.removePropertyChangeListener(this); // prevent duplicate listener registration
+				obs.addPropertyChangeListener(this);
+				subscribedObservable = obs;
+			}
+			modCount = 0;
+		} else {
+			modCount = -1;
+		}
+		
+	}
+	
+	public StyledDocument getSubscribedDocument() {
+		return subscribedDoc;
 	}
 	
 	public void run() {
 		try {
+			tracelog("started");
 			while( running ) {
+				int lastModCount = modCount;
+				tracelog("run starting at modcount: " + lastModCount);
 				DataObject object = ( DataObject )node.getCookie( DataObject.class ) ;
-				List list = new ArrayList();
-				list.add( object );
-				List faults = RunPMDAction.checkCookies(list );
-				ErrorManager.getDefault().log(ErrorManager.ERROR, ""+faults);
-				PMDScanAnnotation.clearAll();
 				LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
-				Set lineset = cookie.getLineSet();
+				Line.Set lineset = cookie.getLineSet();
+				List list = Collections.singletonList(object);
+				List faults = RunPMDAction.checkCookies(list );
+				PMDScanAnnotation.clearAll();
 				for( int i = 0; i < faults.size(); i++ ) {
 					Fault fault = (Fault)faults.get( i );
 					int lineNum = fault.getLine();
-					Line line = lineset.getOriginal( lineNum - 1 );
-					ErrorManager.getDefault().log( ErrorManager.ERROR, "count: " + line.getAnnotationCount() );
-					if( line.getAnnotationCount() <= 0 ) {
+					Line line = lineset.getCurrent( lineNum - 1 );
+					if(line == null)
+					{
+						tracelog("no original line found for line " + lineNum + " in lineset; probably document closed" );
+					}
+					else
+					{
+						tracelog("Line class : " + line.getClass().getName());
+						tracelog("Node: " + node + ", count: " + line.getAnnotationCount() );
 						PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
 						String msg = fault.getMessage();
 						annotation.setErrorMessage( msg );
 						annotation.attach( line );
-
 						line.addPropertyChangeListener( annotation );
 					}
 				}
-				Thread.sleep( PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000 );
+				tracelog("run finished at modcount: " + lastModCount);
+				do {
+					try {
+						Thread.sleep( PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000 );
+					}
+					catch( InterruptedException e ) {
+						ErrorManager.getDefault().notify(e);
+					}
+				} while(running && modCount != -1 && modCount == lastModCount);
 			}
 		}
 		catch( IOException e ) {
 			ErrorManager.getDefault().notify(e);
 		}
-		catch( InterruptedException e ) {
-			ErrorManager.getDefault().notify(e);
+		finally {
+			tracelog("stopped");
 		}
 	}
 	
@@ -92,4 +141,61 @@ public class Scanner implements Runnable {
 		running = false;
 	}
 	
+	public String toString() {
+		return "PMDScanner[" + node + "]";
+	}
+	
+	public void changedUpdate(DocumentEvent ev) {
+		// Ignore these; they are just attribute changes. Actual typing appears as remove and insert updates.
+	}
+	
+	public void insertUpdate(DocumentEvent ev) {
+		incrementModCount();
+	}
+	
+	public void removeUpdate(DocumentEvent ev) {
+		incrementModCount();
+	}
+	
+	public void propertyChange(PropertyChangeEvent ev) {
+		if(ev.getSource() instanceof EditorCookie) {
+			EditorCookie cookie = (EditorCookie)ev.getSource();
+			if(subscribedDoc != null) {
+				subscribedDoc.removeDocumentListener(this);
+				subscribedDoc = null;
+			}
+			StyledDocument doc = cookie.getDocument();
+			if(doc == null) {
+				// stop the scanner thread -- this document has ben closed.
+				running = false;
+				incrementModCount();
+			} else {
+				doc.removeDocumentListener(this);
+				doc.addDocumentListener(this);
+				subscribedDoc = doc;
+				if(subscribedObservable != null) {
+					subscribedObservable.removePropertyChangeListener(this);
+					subscribedObservable = null;
+				}
+				EditorCookie.Observable obs = (EditorCookie.Observable)node.getCookie(EditorCookie.Observable.class);
+				if(obs != null) {
+					obs.removePropertyChangeListener(this); // prevent duplicate listener registration
+					obs.addPropertyChangeListener(this);
+					subscribedObservable = obs;
+				}
+			}
+		} else {
+			tracelog("Expected PropertyChangeEvent to come from EditorCookie, but it came from " + ev.getSource().getClass().getName());
+		}
+	}
+	
+	private synchronized void incrementModCount() {
+		modCount++;
+	}
+	
+	private void tracelog(String str) {
+		if(RunPMDAction.TRACE_LOGGING) {
+			ErrorManager.getDefault().log(ErrorManager.ERROR, this.toString() + ": " + str);		
+		}
+	}
 }

@@ -35,10 +35,8 @@ import javax.swing.table.AbstractTableModel;
 import net.sourceforge.pmd.Rule;
 import pmd.config.PMDOptionsSettings;
 
-/** The datamodel for the properties table
- * @author ole martin mørk
- * @author Gunnlaugur Þór Briem
- * @created 25. november 2002
+/**
+ * The data model for the rule properties table.
  */
 public class PropertiesModel extends AbstractTableModel {
 
@@ -46,9 +44,10 @@ public class PropertiesModel extends AbstractTableModel {
 	private final String values[][];
 
 	/** Creates a new instance of PropertiesModel
-	 * @param rule The rule the table should be based upon
+	 *
+	 * @param rule The rule whose properties should be displayed in the table, not null.
 	 */
-	public PropertiesModel( Rule rule ) {
+	public PropertiesModel(Rule rule) {
 		if( rule == null ) {
 			values = new String[0][0];
 			return;
@@ -76,6 +75,7 @@ public class PropertiesModel extends AbstractTableModel {
 	}
 	
 	/** Gets the number of columns in the table
+	 *
 	 * @return the number of columns
 	 */
 	public int getColumnCount() {
@@ -84,6 +84,7 @@ public class PropertiesModel extends AbstractTableModel {
 
 
 	/** Gets the number of rows in the table
+	 *
 	 * @return the number of rows
 	 */
 	public int getRowCount() {
@@ -92,9 +93,10 @@ public class PropertiesModel extends AbstractTableModel {
 
 
 	/** Gets the value at the specified place in the table
-	 * @return the value at row-column
+	 *
 	 * @param row The row where the data is
 	 * @param column The column where the data is
+	 * @return the value at row-column
 	 */
 	public Object getValueAt( int row, int column ) {
 		return values[row][column];
@@ -102,6 +104,7 @@ public class PropertiesModel extends AbstractTableModel {
 
 
 	/** Gets the name of the columns
+	 *
 	 * @param column The column index
 	 * @return The name of the column
 	 */
@@ -111,6 +114,7 @@ public class PropertiesModel extends AbstractTableModel {
 
 
 	/** Says if the cell is editable
+	 *
 	 * @param rowIndex The row
 	 * @param columnIndex The column
 	 * @return true if and only if <code>columnIndex == 1</code>.

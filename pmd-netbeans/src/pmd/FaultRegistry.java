@@ -31,19 +31,21 @@ import java.util.Map;
 import org.openide.loaders.DataObject;
 
 /**
- * A register holding all the faults the pmd finds. Used to lookup the coorect
- * file and line of the file.
- *
- * @author Ole-Martin Mørk
- * @created 24. oktober 2002
+ * A register holding all the faults the pmd finds. Used to lookup the correct
+ * file and line-within-file at which each fault was found.
  */
 public class FaultRegistry {
 
 	/** The registered faults */
 	private Map faults = new HashMap();
+	
+	/** The singleton instance of this class. */
 	private static FaultRegistry instance = new FaultRegistry();
+	
+	/** Private constructor; this is a singleton class. */
 	private FaultRegistry() {}
 	
+	/** Returns the singleton instance of this class. */
 	public static FaultRegistry getInstance() {
 		return instance;
 	}

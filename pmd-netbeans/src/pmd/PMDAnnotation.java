@@ -35,16 +35,18 @@ import org.openide.text.Annotation;
 import org.openide.text.Line;
 
 /**
- * Just a class thats mission is to mark the line where the error is. It's using
- * pmd-annotation type to mark the line
- *
- * @author ole martin mørk
- * @created 3. november 2002
+ * An annotation implementation marking the line where a PMD rule violation was found.
+ * This class tracks all constructed instances of this annotation type, and can remove
+ * any of them. It listens to property-change events from the lines at which the
+ * annotations are attached, and removes the annotations when the lines change or are
+ * removed.
  */
 public class PMDAnnotation extends Annotation implements PropertyChangeListener {
 
 	/** The error message shown on mouseover on the pmd icon */
 	private String errormessage = null;
+	
+	/** The annotations currently existing. */
 	private static List annotations = new ArrayList();
 	
 	private PMDAnnotation() {}
@@ -66,7 +68,7 @@ public class PMDAnnotation extends Annotation implements PropertyChangeListener 
 	/**
 	 * The annotation type.
 	 *
-	 * @return pmd-annotation
+	 * @return the string "pmd-annotation"
 	 */
 	public String getAnnotationType() {
 		return "pmd-annotation";
@@ -104,4 +106,5 @@ public class PMDAnnotation extends Annotation implements PropertyChangeListener 
 		line.removePropertyChangeListener( this );
 		detach();
 	}
+
 }

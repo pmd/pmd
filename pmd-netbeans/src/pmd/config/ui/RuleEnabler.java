@@ -36,21 +36,20 @@ import javax.swing.event.TableModelListener;
 
 import net.sourceforge.pmd.Rule;
 import org.apache.oro.text.perl.Perl5Util;
+import org.openide.ErrorManager;
 import pmd.config.PMDOptionsSettings;
 
 /**
  * The UI for editing the Rule and Properties properties.
- *
- * @author ole martin mørk
- * @author Gunnlaugur Þór Briem
  */
 public class RuleEnabler extends JPanel implements TableModelListener {
 
 	private final PropertyEditorSupport editor;
 	private String currentRuleName = null;
-	private final String REGEX_EXAMPLE = "s/^\\s+\\n|\\s+$//g";
-	private final String REGEX_INFORMATION = "s/\\s+/ /g";
-	private final static Perl5Util regex = new Perl5Util();
+	private static final String REGEX_EXAMPLE = "s/^\\s+\\n|\\s+$//g";
+	private static final String REGEX_INFORMATION = "s/\\s+/ /g";
+	private static final Perl5Util REGEX = new Perl5Util();
+
 	/** Creates a new editor
 	 * @param editor The object to be notified of changes in the property
 	 */
@@ -157,7 +156,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 
         jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane3.setPreferredSize(new java.awt.Dimension(270, 100));
-        chosenList.setModel(SelectedListModel.getSelectedListModelInstance());
+        chosenList.setModel(SelectedListModel.getInstance());
         chosenList.setCellRenderer(new ListCell());
         chosenList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -303,7 +302,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane4.setMinimumSize(new java.awt.Dimension(150, 150));
         jScrollPane4.setPreferredSize(new java.awt.Dimension(300, 200));
-        information.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.background"));
+        information.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
         information.setEditable(false);
         information.setLineWrap(true);
         information.setWrapStyleWord(true);
@@ -408,14 +407,14 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	 */
        private void updateTexts(Rule rule) {
 		if( rule != null ) {
-			String exampleText = regex.substitute( REGEX_EXAMPLE, rule.getExample() );
+			String exampleText = REGEX.substitute( REGEX_EXAMPLE, rule.getExample() );
 			if (exampleText.startsWith( "\n" )) {
 				// Probably REGEX_EXAMPLE should have taken care of this, but it did not?!
 				exampleText = exampleText.substring( 1 );
 			}
 			example.setText( exampleText );
 			example.setCaretPosition( 0 );
-			information.setText( regex.substitute( REGEX_INFORMATION, rule.getDescription().trim() ) );
+			information.setText( REGEX.substitute( REGEX_INFORMATION, rule.getDescription().trim() ) );
 			information.setCaretPosition( 0 );
 			updatePropertiesModel( rule );
 		}
@@ -441,8 +440,8 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	 * @param evt the event fired
 	 */
 	private void removeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllActionPerformed
-		AvailableListModel.getInstance().addAll( SelectedListModel.getSelectedListModelInstance().getList() );
-		SelectedListModel.getSelectedListModelInstance().removeAll();
+		AvailableListModel.getInstance().addAll(SelectedListModel.getInstance().getList());
+		SelectedListModel.getInstance().removeAll();
 		editor.firePropertyChange();
 
 	}//GEN-LAST:event_removeAllActionPerformed
@@ -455,15 +454,15 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 		Object object[] = chosenList.getSelectedValues();
 		if( object != null ) {
 			for( int i = 0; i < object.length; i++ ) {
-				SelectedListModel.getSelectedListModelInstance().remove( object[i] );
-				AvailableListModel.getInstance().addRule( object[i] );
+				SelectedListModel.getInstance().remove( object[i] );
+				AvailableListModel.getInstance().addRule( (Rule)object[i] );
 			}
 			editor.firePropertyChange();
-			if( index >= SelectedListModel.getSelectedListModelInstance().getList().size() ) {
-				index = SelectedListModel.getSelectedListModelInstance().getList().size() - 1;
+			if( index >= SelectedListModel.getInstance().getList().size() ) {
+				index = SelectedListModel.getInstance().getList().size() - 1;
 			}
 			if( index >= 0 ) {
-				chosenList.setSelectedIndex( index );
+				chosenList.setSelectedIndex(index);
 				chosenList.requestFocus();
 			}
 		}
@@ -474,7 +473,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	 * @param evt the event fired
 	 */
 	private void choseAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choseAllActionPerformed
-		SelectedListModel.getSelectedListModelInstance().addAll( AvailableListModel.getInstance().getList() );
+		SelectedListModel.getInstance().addAll(AvailableListModel.getInstance().getList());
 		AvailableListModel.getInstance().removeAll();
 		editor.firePropertyChange();
 	}//GEN-LAST:event_choseAllActionPerformed
@@ -488,7 +487,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 		if( object != null ) {
 			for( int i = 0; i < object.length; i++ ) {
 				AvailableListModel.getInstance().remove( object[i] );
-				SelectedListModel.getSelectedListModelInstance().addRule( object[i] );
+				SelectedListModel.getInstance().addRule( (Rule)object[i] );
 			}
 			editor.firePropertyChange();
 			if( index >= AvailableListModel.getInstance().getList().size() ) {
@@ -509,12 +508,14 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 			PMDOptionsSettings settings = PMDOptionsSettings.getDefault();
 			String propName = (String)model.getValueAt(row, 0);
 			String newValue = (String)model.getValueAt(row, 1);
-			Map rulePropOverrides = (Map)settings.getRuleProperties().get(this.currentRuleName);
+			Map allRulesPropOverrides = settings.getRuleProperties();
+			Map rulePropOverrides = (Map)allRulesPropOverrides.get(this.currentRuleName);
 			if(rulePropOverrides == null) {
 				rulePropOverrides = new HashMap();
-				settings.getRuleProperties().put(this.currentRuleName, rulePropOverrides);
 			}
 			rulePropOverrides.put(propName, newValue);
+			allRulesPropOverrides.put(this.currentRuleName, rulePropOverrides);
+			settings.setRuleProperties(allRulesPropOverrides);
 			editor.firePropertyChange();
 		}
 	}	

@@ -36,18 +36,12 @@ import net.sourceforge.pmd.Rule;
 import pmd.config.ConfigUtils;
 
 /**
- * The datamodel for the available rules list
- *
- * @author ole martin mørk
- * @created 16. november 2002
+ * The data model for the available-but-not-selected-rules UI.
  */
-public class AvailableListModel extends AbstractListModel {
-	/** The data in the list */
-	private List list;
+public class AvailableListModel extends RuleListModel {
+	
 	/** The instance */
 	private static AvailableListModel listmodel;
-
-
 
 	/**
 	 * Gets the instance of the AvailableListModel class
@@ -55,113 +49,21 @@ public class AvailableListModel extends AbstractListModel {
 	 * @return The instance
 	 */
 	public static synchronized AvailableListModel getInstance() {
-		if( listmodel == null ) {
+		if(listmodel == null) {
 			listmodel = new AvailableListModel();
 		}
 		return listmodel;
 	}
 
-
 	/** Creates a new instance of ListModel */
 	protected AvailableListModel() {
-		list = new ArrayList();
-		refresh();
+		super();
 	}
-
-
-	/**
-	 * Gets the element at the specified index
-	 *
-	 * @param index index of the list
-	 * @return The list element
-	 */
-	public Object getElementAt( int index ) {
-		return ( ( Rule )list.get( index ) );
-	}
-
-
-	/**
-	 * Gets the size of the list
-	 *
-	 * @return The size value
-	 */
-	public int getSize() {
-		return list.size();
-	}
-
-
-	/**
-	 * Sets the list.
-	 *
-	 * @param list The new list value
-	 */
-	public void setList( List list ) {
-		this.list = list;
-	}
-
-
-	/**
-	 * Adds object <CODE>o</CODE> to the list
-	 *
-	 * @param o The parameter to add to the list
-	 */
-	public void addRule( Object o ) {
-		if( !list.contains( o ) ) {
-			list.add( ( Rule )o );
-			Collections.sort( list, new RuleComparator() );
-			fireIntervalAdded( this, list.size(), list.size() );
-		}
-	}
-
-
-	/**
-	 * Removes <code>o</code> from the list
-	 *
-	 * @param o the object to remove
-	 */
-	public void remove( Object o ) {
-		int i = list.indexOf( o );
-		list.remove( o );
-		Collections.sort( list, new RuleComparator() );
-		fireIntervalRemoved( this, i, i );
-	}
-
-
-	/** Removes all elements in the list */
-	public void removeAll() {
-		int i = list.size();
-		list.clear();
-		fireIntervalRemoved( this, 0, i );
-	}
-
-
-	/**
-	 * Adds all data in <CODE>coll</CODE> to the list
-	 *
-	 * @param coll The collection containing Rule elements
-	 */
-	public void addAll( Collection coll ) {
-		int i = list.size();
-		list.addAll( coll );
-		Collections.sort( list, new RuleComparator() );
-		fireIntervalAdded( this, i, list.size() );
-	}
-
-
-	/**
-	 * Returns the data for the list
-	 *
-	 * @return The data
-	 */
-	public List getList() {
-		return list;
-	}
-
 
 	/** Resets the list */
 	public void refresh() {
 		list = ConfigUtils.getAllAvailableRules();
-		Collections.sort( list, new RuleComparator() );	
-		list.removeAll( SelectedListModel.getSelectedListModelInstance().getList() );
+		list.removeAll(SelectedListModel.getInstance().getList());
+		Collections.sort(list, new RuleComparator());	
 	}
 }

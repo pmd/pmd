@@ -30,16 +30,15 @@ import java.awt.Component;
 import java.beans.PropertyEditorSupport;
 import pmd.config.CustomRuleSetSettings;
 
-/** The PropertyEditor of the Rule property
- * @author ole martin mørk
- * @created 18. november 2002
+/**
+ * PropertyEditor implementation for custom rulesets.
  */
 public class RuleSetChooserEditor extends PropertyEditorSupport {
 	RuleSetChooser chooser = new RuleSetChooser( this );
 
 	/** 
 	 * Returns the custom editor of the Rule property
-	 * @return the editor
+	 * @return the editor, not null.
 	 */
 	public Component getCustomEditor() {
 		return chooser;
@@ -47,7 +46,8 @@ public class RuleSetChooserEditor extends PropertyEditorSupport {
 
 
 	/** 
-	 * Returns true
+	 * This implementation returns true, custom editor functionality is supported.
+	 *
 	 * @return true
 	 */
 	public boolean supportsCustomEditor() {
@@ -56,8 +56,9 @@ public class RuleSetChooserEditor extends PropertyEditorSupport {
 
 
 	/** 
-	 * Returns the selected rules
-	 * @return the selected rules
+	 * Returns the current custom-ruleset configuration.
+	 *
+	 * @return the current custom ruleset configuration, not null.
 	 */
 	public Object getValue() {
 		CustomRuleSetSettings ruleSetSettings = new CustomRuleSetSettings();
@@ -72,7 +73,8 @@ public class RuleSetChooserEditor extends PropertyEditorSupport {
 
 	/** 
 	 * Returns a string representation of the property value
-	 * @return the property as text
+	 *
+	 * @return the property value as text, not null.
 	 */
 	public String getAsText() {
 		return getValue().toString();
@@ -81,6 +83,7 @@ public class RuleSetChooserEditor extends PropertyEditorSupport {
 
 	/** 
 	 * Sets the value to be edited in the editor
+	 *
 	 * @param obj The new value
 	 */
 	public void setValue( Object obj ) {
@@ -96,9 +99,10 @@ public class RuleSetChooserEditor extends PropertyEditorSupport {
 
 
 	/** 
-	 * Not implemented
-	 * @param string the text
+	 * This implementation is a no-op.
+	 *
+	 * @param string not used.
 	 * @exception IllegalArgumentException never
 	 */
-	public void setAsText( String string ) throws IllegalArgumentException {}
+	public void setAsText(String string) throws IllegalArgumentException {}
 }

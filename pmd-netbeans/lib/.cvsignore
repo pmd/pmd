@@ -1,4 +1,6 @@
+.nbattrs
 openide.jar
 openide-io.jar
+openide-loaders.jar
 java-api.jar
 java-src-model.jar

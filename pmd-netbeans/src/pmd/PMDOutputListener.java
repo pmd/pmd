@@ -36,9 +36,6 @@ import org.openide.windows.OutputListener;
 
 /**
  * Listens for user actions on the output pane
- *
- * @author Ole-Martin Mørk
- * @created 24. oktober 2002
  */
 public class PMDOutputListener implements OutputListener {
 	
@@ -48,7 +45,7 @@ public class PMDOutputListener implements OutputListener {
 
 
 	/**
-	 * Private constructor
+	 * Private constructor, this is a singleton class.
 	 *
 	 * @see #getInstance()
 	 */
@@ -56,27 +53,27 @@ public class PMDOutputListener implements OutputListener {
 
 
 	/**
-	 * Returns the instance of this class
+	 * Returns the singleton instance of this class.
 	 *
-	 * @return the instance
+	 * @return the singleton instance, not null.
 	 */
 	public static PMDOutputListener getInstance() {
 		return instance;
 	}
 
 
-	/** Removes the marking of the line. */
+	/** Removes all PMD annotations from all lines. */
 	public void detach() {
 		PMDAnnotation.clearAll();
 	}
 
 
 	/**
-	 * Fired when the user doubleclicks on a line in the outputpane
+	 * Fired when the user double-clicks on a line in the output pane
 	 *
 	 * @param outputEvent the event that was fired
 	 */
-	public void outputLineAction( OutputEvent outputEvent ) {
+	public void outputLineAction(OutputEvent outputEvent) {
 		PMDAnnotation.clearAll();
 		DataObject object = FaultRegistry.getInstance().getDataObject( outputEvent.getLine() );
 		LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
@@ -92,24 +89,24 @@ public class PMDOutputListener implements OutputListener {
 		StatusDisplayer.getDefault().setStatusText( msg );
 	}
 	
-	public void addAnnotation() {
-	
-	
-	}
+	/**
+	 * This implementation is a no-op.
+	 */
+	public void addAnnotation() { }
 
 
 	/**
-	 * Not implemented
+	 * This implementation is a no-op.
 	 *
-	 * @param outputEvent Description of the Parameter
+	 * @param outputEvent not used.
 	 */
-	public void outputLineCleared( OutputEvent outputEvent ) { }
+	public void outputLineCleared(OutputEvent outputEvent) { }
 
 
 	/**
-	 * Not implemented
+	 * This implementation is a no-op.
 	 *
-	 * @param outputEvent Description of the Parameter
+	 * @param outputEvent not used.
 	 */
-	public void outputLineSelected( OutputEvent outputEvent ) { }
+	public void outputLineSelected(OutputEvent outputEvent) { }
 } 

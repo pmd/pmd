@@ -29,39 +29,34 @@ package pmd.config.ui;
 import java.util.ArrayList;
 
 
-/** The datamodel behind the SelectedList
- * @author ole martin mørk
- * @created 25. november 2002
+/**
+ * The data model for the selected-rules UI.
  */
-public class SelectedListModel extends AvailableListModel {
+public class SelectedListModel extends RuleListModel {
 
-	/** The instance */	
-	private static SelectedListModel listmodel = new SelectedListModel();
+	/** The instance */
+	private static SelectedListModel listmodel;
 
+	/**
+	 * Gets the instance of the SelectedListModel class
+	 *
+	 * @return The instance
+	 */
+	public static synchronized SelectedListModel getInstance() {
+		if(listmodel == null) {
+			listmodel = new SelectedListModel();
+		}
+		return listmodel;
+	}
 
 	/** Creates a new instance of SelectedListModel */
 	private SelectedListModel() {
 		super();
 	}
 
-
-	/** Gets the instance of the SelectedListModel class
-	 * @return the instance
-	 */
-	public static AvailableListModel getInstance() {
-		return getSelectedListModelInstance();
-	}
-
-
 	/** Resets the content of the list */
 	public void refresh() {
-		setList( new ArrayList() );
+		setList(new ArrayList());
 	}
 
-	/** Gets the instance of the SelectedListModel class
-	 * @return The instance
-	 */
-	public static SelectedListModel getSelectedListModelInstance() {
-		return listmodel;
-	}
 }

@@ -1,3 +1,20 @@
+Version 0.95
+- Updated pmd to version 1.8 (wow, somebody's been out of action for a while! :)
+- Adapted to NB 3.6 API, did not test in earlier versions (I don't *know* that
+  I broke compatibility with NB 3.5, but I may well have. File a bug on it if
+  you care about NB 3.5 compatibility)
+- Fixed obnoxious real-time scanning bugs (bugs 789809 and 780004)
+- Removed obnoxious huge dialog that popped up when installing the module
+- Made real-time scanning less wasteful (runs only when document has changed)
+- Made real-time scanning re-run when PMD settings change (you can now watch
+  the annotations in the document change as you change the rules in the
+  options dialog)
+- Fixed some smaller bugs and lurkers
+- Got rid of some logging noise
+- The build now includes full debugging info (previously local-variable info
+  was not included), for easier debugging. I may remove this later since it
+  increases classloading time (though no doubt the difference is minuscule)
+
 Version 0.91
 - Updated pmd to version 1.3 (required code change because PMD API changed)
 

@@ -28,8 +28,6 @@ package pmd;
 
 /**
  * Interface for receiving notification of {@link RunPMDAction} executions.
- *
- * @author Gunnlaugur Þór Briem
  */
 public interface RunPMDCallback {
 

@@ -67,21 +67,29 @@ import pmd.config.ConfigUtils;
 import pmd.scan.EditorChangeListener;
 
 /**
- * Action that can always be invoked and work procedurally.
- *
- * @author Ole-Martin Mørk
- * @created 17. oktober 2002
+ * Action that runs PMD on the currently selected Java file or set of Java files.
+ * This is called both by NetBeans when the action is manually invoked by the user
+ * ({@link #performAction}),
+ * and by the real-time scanner when a Java file needs to be scanned
+ * ({@link #checkCookies}).
  */
 public class RunPMDAction extends CookieAction {
 	
+	/** True means verbose trace logging should be performed. Trace logging goes out at ERROR level
+	 * so that INFORMATIONAL level is not needed (would require more configuration and would mix output
+	 * with a lot of verbose non-PMD-related output). There is probably a better-behaved way of doing this ...
+	 * if you care, please tell me :)
+	 **/
+	public static final boolean TRACE_LOGGING = System.getProperty("pmd-netbeans.trace.logging") != null;
+
+
 	/**
 	 * Overridden to log that the action is being initialized, and to register an editor change listener for
 	 * scanning.
 	 */
 	protected void initialize() {
-		ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, "Initializing RunPMDAction");
 		super.initialize();
-		TopComponent.getRegistry().addPropertyChangeListener( new EditorChangeListener(TopComponent.getRegistry()) );
+		EditorChangeListener.initialize();
 	}
 	/**
 	 * Gets the name of this action
@@ -196,7 +204,7 @@ public class RunPMDAction extends CookieAction {
 			}
 			catch( PMDException e ) {
 				Fault fault = new Fault( 1, name, e );
-				ErrorManager.getDefault().notify( e );
+				ErrorManager.getDefault().log(ErrorManager.ERROR, "PMD threw exception " + e.toString());
 				list.add( fault );
 				FaultRegistry.getInstance().registerFault( fault, dataobject );
 			}
@@ -310,10 +318,10 @@ public class RunPMDAction extends CookieAction {
 
 
 	/**
-	 * Gets the dataObjects attribute of the RunPMDAction object
+	 * Gets the data objects associated with the given nodes.
 	 *
-	 * @param node Description of the Parameter
-	 * @return The dataObjects value
+	 * @param node the nodes to get data objects for
+	 * @return a list of the data objects. Each element is instanceof DataObject.
 	 */
 	private List getDataObjects( Node[] node ) {
 		ArrayList list = new ArrayList();
@@ -362,7 +370,7 @@ public class RunPMDAction extends CookieAction {
 		 */
 		public boolean pmdProgress(int index) {
 			StatusDisplayer.getDefault().setStatusText(
-				"PMD checking for rule violations in file " + ( index + 1 ) + "/" + numFiles );
+				"PMD checking for rule violations in file " + index + "/" + numFiles );
 			return true;
 		}
 		

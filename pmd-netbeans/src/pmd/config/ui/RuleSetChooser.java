@@ -11,8 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
 /**
- *
- * @author  ole martin mørk
+ * UI for configuring custom rulesets.
  */
 public class RuleSetChooser extends JPanel {
 	private final PropertyEditorSupport editor;
@@ -275,23 +274,23 @@ public class RuleSetChooser extends JPanel {
 	}
 	
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel buttonPanel;
-    private javax.swing.JList rulesetList;
     private javax.swing.JButton addRuleSet;
-    private javax.swing.JPanel upperPanel;
-    private javax.swing.JLabel lblRules;
-    private javax.swing.JLabel lblRuleSets;
     private javax.swing.JButton addjar;
-    private javax.swing.JPanel lowerRightPanel;
-    private javax.swing.JScrollPane rulelListPane;
-    private javax.swing.JScrollPane jarListPane;
-    private javax.swing.JButton removeRuleSet;
+    private javax.swing.JPanel buttonPanel;
     private javax.swing.JPanel buttonPanel2;
     private javax.swing.JList jarList;
-    private javax.swing.JButton removejar;
-    private javax.swing.JPanel uperRightPanel;
-    private javax.swing.JCheckBox stdRules;
+    private javax.swing.JScrollPane jarListPane;
+    private javax.swing.JLabel lblRuleSets;
+    private javax.swing.JLabel lblRules;
     private javax.swing.JPanel lowerPanel;
+    private javax.swing.JPanel lowerRightPanel;
+    private javax.swing.JButton removeRuleSet;
+    private javax.swing.JButton removejar;
+    private javax.swing.JScrollPane rulelListPane;
+    private javax.swing.JList rulesetList;
+    private javax.swing.JCheckBox stdRules;
+    private javax.swing.JPanel uperRightPanel;
+    private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
 	
 }
