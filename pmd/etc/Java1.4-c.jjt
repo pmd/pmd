@@ -846,9 +846,9 @@ void PrimaryPrefix() :
 {
   Literal()
 |
-  "this"
+  "this" {jjtThis.setUsesThisModifier();}
 |
-  "super" "." <IDENTIFIER>
+  "super"  {jjtThis.setUsesSuperModifier();} "." <IDENTIFIER>
 |
   "(" Expression() ")"
 |

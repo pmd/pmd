@@ -3026,9 +3026,13 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         break;
       case THIS:
         jj_consume_token(THIS);
+           jjtree.closeNodeScope(jjtn000, true);
+           jjtc000 = false;
+          jjtn000.setUsesThisModifier();
         break;
       case SUPER:
         jj_consume_token(SUPER);
+            jjtn000.setUsesSuperModifier();
         jj_consume_token(DOT);
         jj_consume_token(IDENTIFIER);
         break;

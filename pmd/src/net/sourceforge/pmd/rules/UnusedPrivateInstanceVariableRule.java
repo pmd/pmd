@@ -7,6 +7,8 @@ package net.sourceforge.pmd.rules;
 
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.HashSet;
+import java.util.Set;
 import java.text.MessageFormat;
 
 import net.sourceforge.pmd.ast.*;
@@ -34,7 +36,6 @@ public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
         return data;
     }
 
-
     public Object visit(ASTClassBody node, Object data) {
         if (!foundDeclarationsAlready) {
             foundDeclarationsAlready = true;
@@ -43,20 +44,18 @@ public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
             nameSpaces.push(nameSpace);
             for (int i=0;i<node.jjtGetNumChildren(); i++) {
                 SimpleNode child = (SimpleNode)node.jjtGetChild(i);
-                if (child instanceof ASTClassBodyDeclaration) {
-                    if (child.jjtGetNumChildren() > 0 &&  child.jjtGetChild(0) instanceof ASTFieldDeclaration) {
-                        ASTFieldDeclaration field = (ASTFieldDeclaration)child.jjtGetChild(0);
-                        AccessNode access = (AccessNode)field;
-                        if (!access.isPrivate()) {
-                            continue;
-                        }
-                        SimpleNode target = (SimpleNode)field.jjtGetChild(1).jjtGetChild(0);
-                        if (target.getImage() != null && target.getImage().equals("serialVersionUID")) {
-                            continue;
-                        }
-                        Namespace group = (Namespace)nameSpaces.peek();
-                        group.peek().add(new Symbol(target.getImage(), target.getBeginLine()));
+                if (child instanceof ASTClassBodyDeclaration && child.jjtGetNumChildren() > 0 &&  child.jjtGetChild(0) instanceof ASTFieldDeclaration) {
+                    ASTFieldDeclaration field = (ASTFieldDeclaration)child.jjtGetChild(0);
+                    AccessNode access = (AccessNode)field;
+                    if (!access.isPrivate()) {
+                        continue;
                     }
+                    SimpleNode target = (SimpleNode)field.jjtGetChild(1).jjtGetChild(0);
+                    if (target.getImage() != null && target.getImage().equals("serialVersionUID")) {
+                        continue;
+                    }
+                    Namespace group = (Namespace)nameSpaces.peek();
+                    group.peek().add(new Symbol(target.getImage(), target.getBeginLine()));
                 }
             }
         }
@@ -64,24 +63,53 @@ public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
         return data;
     }
 
+    private Set params = new HashSet();
+
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        super.visit(node, data);
+        params.clear();
+        return data;
+    }
+
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        super.visit(node, data);
+        params.clear();
+        return data;
+    }
+
+    public Object visit(ASTFormalParameter node, Object data) {
+        ASTVariableDeclaratorId paramName = (ASTVariableDeclaratorId)node.jjtGetChild(1);
+        params.add(paramName.getImage());
+        return data;
+    }
+
     public Object visit(ASTPrimarySuffix node, Object data) {
         if ((node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
-            recordPossibleUsage(node);
+            ASTPrimaryExpression parent = (ASTPrimaryExpression)node.jjtGetParent();
+
+            boolean force = false;
+            if (parent.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
+                ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)parent.jjtGetChild(0);
+                force = prefix.usesThisModifier();
+            }
+            recordPossibleUsage(node, force);
         }
         return super.visit(node, data);
     }
 
     public Object visit(ASTName node, Object data) {
         if ((node.jjtGetParent() instanceof ASTPrimaryPrefix)) {
-            recordPossibleUsage(node);
+            recordPossibleUsage(node, false);
         }
         return super.visit(node, data);
     }
 
-    private void recordPossibleUsage(SimpleNode node) {
+    private void recordPossibleUsage(SimpleNode node, boolean force) {
         String otherImg = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(node.getImage().indexOf('.')+1);
         Namespace group = (Namespace)nameSpaces.peek();
-        group.peek().recordPossibleUsageOf(new Symbol(getEndName(node.getImage()), node.getBeginLine()));
-        group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()));
+        if ((!params.contains(getEndName(node.getImage())) && !params.contains(otherImg)) || force) {
+            group.peek().recordPossibleUsageOf(new Symbol(getEndName(node.getImage()), node.getBeginLine()));
+            group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()));
+        }
     }
 }
