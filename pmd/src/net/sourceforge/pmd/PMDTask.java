@@ -51,6 +51,8 @@ public class PMDTask extends Task {
 
         PMD pmd = new PMD();
         Report report = new Report(format);
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(report);
 
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
@@ -61,7 +63,7 @@ public class PMDTask extends Task {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                     report.setCurrentFile(file.getAbsolutePath());
                     if (verbose) System.out.println(file.getAbsoluteFile());
-                    pmd.processFile(file, ruleSetType, report);
+                    pmd.processFile(file, ruleSetType, ctx);
                 } catch (FileNotFoundException fnfe) {
                     throw new BuildException(fnfe);
                 }
@@ -70,7 +72,7 @@ public class PMDTask extends Task {
 
         StringBuffer buf = new StringBuffer();
         if (!report.isEmpty()) {
-            buf.append(report.render());
+            buf.append(ctx.getReport().render());
             buf.append(System.getProperty("line.separator"));
         }
         try {

@@ -9,17 +9,14 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.*;
 
 public class EmptyIfStmtRule extends AbstractRule implements Rule {
     public String getDescription() {return "Avoid empty IF statements";}
 
    public Object visit(ASTBlock node, Object data){
        if ((node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement) && node.jjtGetNumChildren()==0) {
-           ((Report)data).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
+           (((RuleContext)data).getReport()).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
        }
 
         return super.visit(node, data);

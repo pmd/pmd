@@ -6,10 +6,7 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.ast.*;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.*;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -66,7 +63,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
             return super.visit(node, data);
         }
         if (node.getImage() != null && node.getImage().equals("toString")) {
-            ((Report)data).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
+            (((RuleContext)data).getReport()).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
         }
         return super.visit(node, data);
     }

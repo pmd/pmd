@@ -6,6 +6,10 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.SimpleNode;
+
+import java.util.List;
+import java.util.Iterator;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter {
 
@@ -20,5 +24,16 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter {
 
     public int hashCode() {
         return getName().hashCode();
+    }
+
+    protected void visitAll( List acus, RuleContext ctx ) {
+        for (Iterator i = acus.iterator(); i.hasNext();) {
+           SimpleNode node = (SimpleNode)i.next();
+           node.childrenAccept( this, ctx );
+        }
+    }
+
+    public void apply( List acus, RuleContext ctx ) {
+        visitAll( acus, ctx );
     }
 }

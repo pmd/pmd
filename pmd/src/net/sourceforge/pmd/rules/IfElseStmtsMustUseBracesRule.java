@@ -8,10 +8,7 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.*;
 
 public class IfElseStmtsMustUseBracesRule extends AbstractRule implements Rule {
 
@@ -62,7 +59,7 @@ public class IfElseStmtsMustUseBracesRule extends AbstractRule implements Rule {
 
         if  (!hasBlockAsFirstChild(firstStmt) && !hasBlockAsFirstChild(secondStmt)) {
             if (node.getBeginLine() != this.lineNumberOfLastViolation) {
-                Report rpt = (Report)data;
+                Report rpt = ((RuleContext)data).getReport();
                 rpt.addRuleViolation(new RuleViolation(this, node.getBeginLine()));
                 this.lineNumberOfLastViolation = node.getBeginLine();
             }

@@ -48,7 +48,7 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
 
         doingIDTraversal = false;
         super.visit(node, null);
-        reportUnusedInstanceVars((Report)data, nameSpace.peek());
+        reportUnusedInstanceVars(((RuleContext)data).getReport(), nameSpace.peek());
 
         nameSpace.removeTable();
         nameSpaces.pop();

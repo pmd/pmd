@@ -82,7 +82,7 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
         Namespace group = (Namespace)tableGroups.peek();
         group.addTable();
         super.visit(node, data);
-        reportUnusedLocals((Report)data, group.peek());
+        reportUnusedLocals(((RuleContext)data).getReport(), group.peek());
         group.removeTable();
         return data;
     }

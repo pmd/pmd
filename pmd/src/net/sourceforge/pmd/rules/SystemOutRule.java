@@ -2,10 +2,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.*;
 
 import java.util.*;
 
@@ -15,7 +12,7 @@ public class SystemOutRule extends AbstractRule implements Rule {
 
     public Object visit(ASTName node, Object data){
         if (node.getImage() != null && (node.getImage().startsWith("System.out") || node.getImage().startsWith("System.err") || node.getImage().startsWith("System.in"))) {
-            ((Report)data).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
+            (((RuleContext)data).getReport()).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
         }
         return super.visit(node,data);
     }

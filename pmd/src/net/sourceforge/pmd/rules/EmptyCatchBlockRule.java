@@ -7,10 +7,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.*;
 
 public class EmptyCatchBlockRule extends AbstractRule implements Rule {
 
@@ -18,7 +15,7 @@ public class EmptyCatchBlockRule extends AbstractRule implements Rule {
 
    public Object visit(ASTBlock node, Object data){
        if ((node.jjtGetParent() instanceof ASTTryStatement) && node.jjtGetNumChildren()==0) {
-           ((Report)data).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
+           (((RuleContext)data).getReport()).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
        }
 
         return super.visit(node, data);
