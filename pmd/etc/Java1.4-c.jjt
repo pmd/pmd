@@ -716,7 +716,7 @@ void ConditionalOrExpression() #void :
   ConditionalAndExpression() ( "||" ConditionalAndExpression() )*
 }
 
-void ConditionalAndExpression() #void :
+void ConditionalAndExpression() :
 {}
 {
   InclusiveOrExpression() ( "&&" InclusiveOrExpression() )*
