@@ -55,6 +55,8 @@ import errorlist.ErrorList;
 import errorlist.ErrorSource;
 import javax.swing.JDialog;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 
 
 public class PMDJEditPlugin extends EBPlugin {
@@ -607,9 +609,24 @@ public class PMDJEditPlugin extends EBPlugin {
 			this.view = view;
 			setLayout(new BorderLayout());
 			pBar = new JProgressBar(min,max);
-			pBar.setBorder(new EmptyBorder(pBar.getInsets()));
-			pBar.setForeground(jEdit.getColorProperty("pmd.progressbar.foreground"));
-			pBar.setBackground(jEdit.getColorProperty("pmd.progressbar.background"));
+			pBar.setUI(new BasicProgressBarUI()
+							  {
+								  public Color getSelectionBackground()
+								  {
+									return jEdit.getColorProperty("pmd.progressbar.foreground");
+								  }
+
+								  public Color getSelectionForeground()
+								  {
+									return jEdit.getColorProperty("pmd.progressbar.foreground");
+								  }
+							  });
+			//pBar.addNotify();
+			pBar.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+			pBar.setToolTipText("PMD Check in Progress");
+			pBar.setForeground(jEdit.getColorProperty("pmd.progressbar.background")); //Color of the ProgressBar flow
+			pBar.setBackground(jEdit.getColorProperty("view.status.background")); //Color of the ProgressBar Background
+
 			pBar.setStringPainted(true);
 			add(pBar, BorderLayout.CENTER);
 			view.getStatus().add(pBar, BorderLayout.EAST);
