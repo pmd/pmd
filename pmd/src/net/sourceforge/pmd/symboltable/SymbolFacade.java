@@ -16,6 +16,8 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
 
     private Set localScopeTriggers = new HashSet();
     private Set classScopeTriggers = new HashSet();
+    private Set globalScopeTriggers = new HashSet();
+
     private ContextManager contextManager;
     private LookupController lookupController;
 
@@ -24,7 +26,6 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         SymbolTable symbolTable = new SymbolTable();
         contextManager = new ContextManagerImpl(symbolTable);
         lookupController = new LookupController(symbolTable);
-        contextManager.openScope(new GlobalScope());
     }
 
     private void initScopeTriggers() {
@@ -37,12 +38,15 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         localScopeTriggers.add(ASTIfStatement.class);
 
         classScopeTriggers.add(ASTClassBody.class);
+
+        globalScopeTriggers.add(ASTCompilationUnit.class);
     }
 
     public void initializeWith(ASTCompilationUnit node) {
         node.jjtAccept(this, null);
     }
 
+    public Object visit(ASTCompilationUnit node, Object data){openScope(node);return data;}
     public Object visit(ASTClassBody node, Object data){openScope(node);return data;}
     public Object visit(ASTBlock node, Object data){openScope(node);return data;}
     public Object visit(ASTConstructorDeclaration node, Object data){openScope(node);return data;}
@@ -52,10 +56,6 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
     public Object visit(ASTForStatement node, Object data){openScope(node);return data;}
     public Object visit(ASTIfStatement node, Object data){openScope(node);return data;}
 
-    /**
-     * Note the current scope is responsible for figuring out what kind of
-     * NameDeclaration this is
-     */
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         node.setScope(contextManager.getCurrentScope());
         contextManager.getCurrentScope().addDeclaration(new NameDeclaration(node));
@@ -79,6 +79,10 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
             contextManager.leaveScope();
         } else if (classScopeTriggers.contains(node.getClass())) {
             contextManager.openScope(new ClassScope());
+            super.visit(node, null);
+            contextManager.leaveScope();
+        } else if (globalScopeTriggers.contains(node.getClass())) {
+            contextManager.openScope(new GlobalScope());
             super.visit(node, null);
             contextManager.leaveScope();
         } else {
