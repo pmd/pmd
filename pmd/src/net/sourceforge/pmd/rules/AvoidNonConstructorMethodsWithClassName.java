@@ -3,8 +3,11 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.text.MessageFormat;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
@@ -25,7 +28,9 @@ public class AvoidNonConstructorMethodsWithClassName extends AbstractRule {
 		String declaringType = getDeclaringType (node);
 		if (methodName!=null && declaringType!=null) {
 			if (methodName.equals(declaringType)) {
-				addViolation((RuleContext) data, node.getBeginLine());
+				RuleContext ctx = (RuleContext) data;
+				RuleViolation ruleViolation = createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{methodName}));
+                ctx.getReport().addRuleViolation(ruleViolation);
 			}
 		}
 		return data;
