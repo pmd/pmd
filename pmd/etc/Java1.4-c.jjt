@@ -476,13 +476,16 @@ void InterfaceMemberDeclaration() :
 
 void FieldDeclaration() :
 {
-StringBuffer modifiers = new StringBuffer();
 }
 {
-  ( "public" {modifiers.append("public,");} | "protected" {modifiers.append("protected,");} | "private" {modifiers.append("private,");} | "static" {modifiers.append("static,");} | "final" {modifiers.append("final,");} | "transient" {modifiers.append("transient,");} | "volatile" {modifiers.append("volatile,");})*
-  {
-    jjtThis.setImage(modifiers.toString());
-  }
+  ( "public"            { ((AccessNode) jjtThis).setPublic( true ); }
+  | "protected"         { ((AccessNode) jjtThis).setProtected( true ); }
+  | "private"           { ((AccessNode) jjtThis).setPrivate( true ); }
+  | "static"            { ((AccessNode) jjtThis).setStatic( true ); }
+  | "final"             { ((AccessNode) jjtThis).setFinal( true ); }
+  | "transient"         { ((AccessNode) jjtThis).setTransient( true ); }
+  | "volatile"          { ((AccessNode) jjtThis).setVolatile( true ); } )*
+
   Type() VariableDeclarator() ( "," VariableDeclarator() )* ";"
 }
 
@@ -525,7 +528,16 @@ void ArrayInitializer() :
 void MethodDeclaration() :
 {}
 {
-  ( "public" | "protected" | "private" | "static" | "abstract" | "final" | "native" | "synchronized" | "strictfp")*
+  ( "public"            { ((AccessNode) jjtThis).setPublic( true ); }
+  | "protected"         { ((AccessNode) jjtThis).setProtected( true ); }
+  | "private"           { ((AccessNode) jjtThis).setPrivate( true ); }
+  | "static"            { ((AccessNode) jjtThis).setStatic( true ); }
+  | "abstract"          { ((AccessNode) jjtThis).setAbstract( true ); }
+  | "final"             { ((AccessNode) jjtThis).setFinal( true ); }
+  | "native"            { ((AccessNode) jjtThis).setNative( true ); }
+  | "synchronized"      { ((AccessNode) jjtThis).setSynchronized( true ); }
+  | "strictfp"          { ((AccessNode) jjtThis).setStrict( true ); }
+  )*
   ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }
