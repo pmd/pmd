@@ -159,6 +159,13 @@
         <roles><role>Developer</role></roles>
       </developer>
 
+      <developer>
+        <name>Jiger Patel</name>
+        <id>jigerjava</id>
+        <email>jigerjava@users.sourceforge.net</email>
+        <roles><role>Developer</role></roles>
+      </developer>
+
    </developers>
 
   <contributors>
