@@ -55,16 +55,12 @@
       <td valign="top">Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
       <td valign="top" align="center">No</td>
     </tr>
-    <tr>
-      <td valign="top">verbose</td>
-       <td valign="top">Verbose output - names of files processed, rule counts, full stacktraces, etc.</td>
-      <td valign="top" align="center">No</td>
-    </tr>
 </table>
 
       </subsection>
       <subsection name="Examples">
-          <p>Running one ruleset to produce a HTML report</p>
+
+<p>Running one ruleset to produce a HTML report</p>
 <source>
 <![CDATA[
 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
@@ -81,8 +77,7 @@
 ]]>
 </source>
 
-          <p>Running multiple rulesets to produce an XML report</p>
-
+<p>Running multiple rulesets to produce an XML report</p>
 <source>
 <![CDATA[
 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
@@ -99,8 +94,7 @@
 ]]>
 </source>
 
-          <p>Using a custom renderer</p>
-
+<p>Using a custom renderer</p>
 <source>
 <![CDATA[
 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
@@ -116,8 +110,7 @@
 ]]>
 </source>
 
-          <p>Using a classpath reference in the taskdef</p>
-
+<p>Using a classpath reference in the taskdef</p>
 <source>
 <![CDATA[
 <path id="pmd.classpath">
@@ -140,6 +133,40 @@
 ]]>
 </source>
 
+<p>Getting verbose output</p>
+<source>
+<![CDATA[
+[tom@hal etc]$ ant -verbose pmd
+Apache Ant version 1.5.2 compiled on March 31 2003
+Buildfile: build.xml
+Detected Java version: 1.4 in: /usr/local/j2sdk1.4.1_02/jre
+Detected OS: Linux
+parsing buildfile build.xml with URI = file:/home/tom/data/pmd/pmd/etc/build.xml
+Project base dir set to: /home/tom/data/pmd/pmd
+Build sequence for target `pmd' is [pmd]
+Complete build sequence is [pmd, copy, cppjavacc, cpd, delete, compile, clean, jar, dist, cpdjnlp, jjtree, javadoc, test, tomserver]
+
+pmd:
+      [pmd] Using the normal ClassLoader
+      [pmd] Using these rulesets: rulesets/imports.xml
+      [pmd] Using rule DontImportJavaLang
+      [pmd] Using rule UnusedImports
+      [pmd] Using rule ImportFromSamePackage
+      [pmd] Using rule DuplicateImports
+      [pmd] Processing file /usr/local/java/src/java/lang/ref/Finalizer.java
+      [pmd] Processing file /usr/local/java/src/java/lang/ref/FinalReference.java
+      [pmd] Processing file /usr/local/java/src/java/lang/ref/PhantomReference.java
+      [pmd] Processing file /usr/local/java/src/java/lang/ref/Reference.java
+      [pmd] Processing file /usr/local/java/src/java/lang/ref/ReferenceQueue.java
+      [pmd] Processing file /usr/local/java/src/java/lang/ref/SoftReference.java
+      [pmd] Processing file /usr/local/java/src/java/lang/ref/WeakReference.java
+      [pmd] 0 problems found
+
+BUILD SUCCESSFUL
+Total time: 2 seconds
+[tom@hal etc]$
+]]>
+</source>
 
       </subsection>
    </section>

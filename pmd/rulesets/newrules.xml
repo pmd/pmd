@@ -7,7 +7,7 @@ These are new rules for the next release
 
 
     <rule name="SymbolTableTestRule"
-          message="test"
+          message="NOT FULLY IMPLEMENTED - test"
           class="net.sourceforge.pmd.rules.SymbolTableTestRule">
       <description>
       asdsad
@@ -41,70 +41,8 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="FinalizeShouldBeProtected"
-          message="If you override finalize(), make it protected"
-          class="net.sourceforge.pmd.rules.XPathRule">
-      <description>
-      If you override finalize(), make it protected
-      </description>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//MethodDeclaration[@Protected="false"]
-  /MethodDeclarator[@Image="finalize"]
-  [not(FormalParameters/*)]
-                    ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>3</priority>
-
-      <example>
-  <![CDATA[
-public class Foo {
- public void bar() {
-  int x = 2;
-  x = x;
- }
-}
-  ]]>
-      </example>
-    </rule>
-
-    <rule name="FinalFieldCouldBeStatic"
-          message="This final field could be made static"
-          class="net.sourceforge.pmd.rules.XPathRule">
-      <description>
-      If a final field is assigned to a compile-time constant, it could be
-          made static, thus saving overhead in each object
-      </description>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//FieldDeclaration
- [@Final='true' and @Static='false']
- /VariableDeclarator/VariableInitializer
-  /Expression/ConditionalAndExpression/InstanceOfExpression
-   /PrimaryExpression/PrimaryPrefix/Literal
-                    ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>3</priority>
-
-      <example>
-  <![CDATA[
-public class Foo {
- public final int BAR = 42; // this could be static and save some space
-}
-  ]]>
-      </example>
-    </rule>
-
     <rule name="UnnecessaryParentheses"
-          message="Unnecessary parentheses are a bit noisy"
+          message="NOT FULLY IMPLEMENTED - Unnecessary parentheses are a bit noisy"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
       Unnecessary parameters are a bit noisy
