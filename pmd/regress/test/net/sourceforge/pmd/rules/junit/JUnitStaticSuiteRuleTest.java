@@ -5,20 +5,28 @@
  */
 package test.net.sourceforge.pmd.rules.junit;
 
-import net.sourceforge.pmd.rules.junit.JUnitStaticSuiteRule;
+import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class JUnitStaticSuiteRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite']");
+    }
+
     public void testNonstatic() throws Throwable {
-        runTest("junit/JUnitStaticSuite1.java", 1, new JUnitStaticSuiteRule());
+        runTest("junit/JUnitStaticSuite1.java", 1, rule);
     }
 
     public void testGoodOK() throws Throwable {
-        runTest("junit/JUnitStaticSuite2.java", 0, new JUnitStaticSuiteRule());
+        runTest("junit/JUnitStaticSuite2.java", 0, rule);
     }
 
     public void testPrivateSuite() throws Throwable {
-        runTest("junit/JUnitStaticSuite3.java", 1, new JUnitStaticSuiteRule());
+        runTest("junit/JUnitStaticSuite3.java", 1, rule);
     }
 }

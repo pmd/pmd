@@ -57,14 +57,6 @@ public class XPathRuleTest extends RuleTst {
 //        
 //    }
 
-    public void testJUnitStaticSuiteRule() throws Throwable {
-        rule.addProperty(
-            "xpath",
-            "//MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite']");
-        runTest("junit/JUnitStaticSuite1.java", 1, rule);
-        runTest("junit/JUnitStaticSuite2.java", 0, rule);
-        runTest("junit/JUnitStaticSuite3.java", 1, rule);
-    }
 
     public void testJUnitSpellingRule() throws Throwable {
         rule.addProperty(
