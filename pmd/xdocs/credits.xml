@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Vadim Nasardinov - run.sh cleanup</li>
             <li>Sreenivasa Viswanadha - grammar cleanup for Ctrl-Z problem</li>
             <li>Sigiswald Madou - bug report</li>
             <li>Dan Tullis - bug report</li>

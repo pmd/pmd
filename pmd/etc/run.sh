@@ -1,4 +1,41 @@
+#!/bin/bash
+
+if [ -z "$3" ]; then
+    script=`basename $0`
+    echo "Usage:"
+    echo "    $script <java-src-file> html|xml rulesetfile1[,rulesetfile2[,..]]"
+    exit 1
+fi
+
+SCRIPT_DIR=`dirname $0`
+CWD="$PWD"
+
+cd "$SCRIPT_DIR/../lib"
+LIB_DIR=`pwd -P`
+
+classpath=$CLASSPATH
+
+build_dir="$SCRIPT_DIR/../build"
+
+if [ -d "$build_dir" ]; then
+    cd "$build_dir"
+    build_dir=`pwd -P`
+    classpath=$classpath:$build_dir
+fi
+
+cd "$CWD"
+
+for jarfile in `ls $LIB_DIR/*.jar`; do
+    classpath=$classpath:$jarfile
+done
+
+
 FILE=$1
-FORMAT=$2
-RULESETFILES=$3
-java -cp ../lib/pmd-1.2.1.jar:../lib/jaxen-core-1.0-fcs.jar:../lib/saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD $FILE $FORMAT $RULESETFILES
+shift
+FORMAT=$1
+shift
+RULESETFILES="$@"
+
+# echo "CLASSPATH: $classpath"
+
+java -cp $classpath net.sourceforge.pmd.PMD $FILE $FORMAT $RULESETFILES
