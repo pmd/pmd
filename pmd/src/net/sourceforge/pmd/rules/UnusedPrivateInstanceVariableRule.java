@@ -66,7 +66,7 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
             return super.visit(node, data);
         }
         AccessNode grandparentAccessNode = (AccessNode)grandparent;
-        if (grandparentAccessNode.isPublic() || grandparentAccessNode.isStatic()) {
+        if (!grandparentAccessNode.isPrivate() || grandparentAccessNode.isStatic()) {
             return super.visit(node, data);
         }
         Namespace group = (Namespace)nameSpaces.peek();
