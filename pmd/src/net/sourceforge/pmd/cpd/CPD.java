@@ -48,12 +48,12 @@ public class CPD {
     }
 
     public void go() {
-        if (!listener.update("Starting to process " + tokenSets.size() + " files"))
+        if (!listener.update("Starting to process " + tokenSets.size() + " files; " + tokenSets.tokenCount() + " tokens"))
             return;
         GST gst = new GST(tokenSets, minimumTileSize);
         results = gst.crunch(listener);
         if (results == null)
-            results = new ResultsImpl();  //just ot make sure we don't pass back a null Results
+            results = new ResultsImpl();  //just to make sure we don't pass back a null Results
     }
 
     public Results getResults() {
@@ -107,28 +107,18 @@ public class CPD {
         }
         CPD cpd = new CPD();
         cpd.setListener(new CPDNullListener());
-
-        try {
-            cpd.setMinimumTileSize(Integer.parseInt(args[0]));
-        } catch (Exception e) {
-            usage();
-            System.exit(1);
-        }
+        cpd.setMinimumTileSize(Integer.parseInt(args[0]));
 
         try {
             cpd.addRecursively(args[1]);
+            long start = System.currentTimeMillis();
+            cpd.go();
+            long total = System.currentTimeMillis() - start;
+            System.out.println("Time elapsed in milliseconds: " + total);
+            System.out.println((new TextRenderer()).render(cpd));
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            usage();
         }
-
-        long start = System.currentTimeMillis();
-        cpd.go();
-        long total = System.currentTimeMillis() - start;
-        System.out.println("That took " + total);
-        CPDRenderer renderer = new TextRenderer();
-        System.out.println(renderer.render(cpd));
-        System.out.println("That took " + total);
     }
 
     private static void usage() {
