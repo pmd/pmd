@@ -10,66 +10,45 @@
   trim="false">
 
 <jsl:template match="ruleset">
-<document>
-    <j:set trim="true" var="rulesetname">
-             <x:expr select="@name"/>
-    </j:set>
-
-  <properties>
-    <author email="tom@infoether.org">Tom Copeland</author>
-    <title>Rule Set: ${rulesetname}</title>
-  </properties>
-
-  <body>
-    <section name="${rulesetname}">
-       <p>
-       <x:expr select="./description"/>
-       </p>
-        <jsl:applyTemplates/>
-    </section>
-  </body>
-</document>
+	<document>
+		<j:set trim="true" var="rulesetname">
+			<x:expr select="@name"/>
+		</j:set>
+		<properties>
+			<author email="tom@infoether.org">Tom Copeland</author>
+			<title>Rule Set: ${rulesetname}</title>
+		</properties>
+		<body>
+			<section name="${rulesetname}">
+				<p><x:expr select="./description"/></p>
+				<jsl:applyTemplates/>
+			</section>
+		</body>
+	</document>
 </jsl:template>
 
 <jsl:template match="rule">
-
-    <j:set trim="true" var="rulename">
-             <x:expr select="@name"/>
-    </j:set>
-
-    <subsection name="${rulename}">
-
-    <p>
-      <x:expr select="./description"/>
-    </p>
-
-    <j:set trim="true" var="isxpath">
-             <x:expr select="./properties/property/value"/>
-    </j:set>
-
-    <j:if test="${isxpath}">
-        <p>
-            This rule is defined by the following XPath expression:
-        </p>
-        <j:set trim="true" var="value">
-                 <x:expr select="./properties/property/value"/>
-        </j:set>
-        <source>
-        ${value}
-        </source>
-    </j:if>
-
-    <p>
-       Here's an example of code that would trigger this rule:
-    </p>
-    <j:set trim="true" var="examplecode">
-             <x:expr select="./example"/>
-    </j:set>
-    <![CDATA[
-        ${examplecode}
-    ]]>
-    </subsection>
+	<j:set trim="true" var="rulename">
+		<x:expr select="@name"/>
+	</j:set>
+	<subsection name="${rulename}">
+		<p><x:expr select="./description"/></p>
+		<j:set trim="true" var="isxpath"><x:expr select="count(properties/property[@name='xpath'])"/></j:set>
+		<j:if test="${isxpath != 0}">
+			<p>This rule is defined by the following XPath expression:</p>
+			<j:set trim="true" var="value">
+				<x:expr select="./properties/property/value"/>
+			</j:set>
+			<source>${value}</source>
+		</j:if>
+		<p>Here's an example of code that would trigger this rule:</p>
+		<j:set trim="true" var="examplecode">
+			<x:expr select="./example"/>
+		</j:set>
+		<source>
+			${examplecode}
+		</source>
+	</subsection>
 </jsl:template>
-
 
 </jsl:stylesheet>

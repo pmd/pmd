@@ -1,42 +1,47 @@
 <?xml version="1.0"?>
 
 <project default="java:jar"
-  	xmlns:j="jelly:core"
-  	xmlns:m="maven"
-  	xmlns:dvsl="dvsl"
-  	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">  
-             
+	xmlns:j="jelly:core"
+	xmlns:ant="jelly:ant"
+	xmlns:doc="doc"
+	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">  
 
 	<goal name="init-pmd-tag">
-	    <taskdef
-    	   	name="pmd"
+		<taskdef
+			name="pmd"
 			classname="net.sourceforge.pmd.ant.PMDTask">
-       		<classpath>
-         		<pathelement location="target/classes" />
-         		<pathelement location="." />
-       		</classpath>
-    	</taskdef>
-    </goal>
-    
-    <goal name="pmd-site" prereqs="pmd:ruleset-docs">
-      <attainGoal name="site:generate" />
-    </goal>
-    
-    <preGoal name="site:generate">
-        <attainGoal name="pmd:ruleset-docs"/>
-    </preGoal>
+			<classpath>
+				<pathelement location="target/classes" />
+				<pathelement location="." />
+			</classpath>
+		</taskdef>
+	</goal>
 
-  	<goal name="pmd:ruleset-docs" prereqs="init-dvsl-tag">
-  		<mkdir dir="${maven.gen.docs}/rules" />
-	    <dvsl:dvsl
-	    	  extension=".xml"
-	    	  includes="**/*.xml"
-		      basedir="${rulesets.dir}"
-		      style="./etc/dvsl/rule-format.dvsl"
-		      destdir="${maven.gen.docs}/rules">
-    	</dvsl:dvsl>
-  	</goal>
-  	
-  	
- </project>
- 
+	<goal name="pmd-site" prereqs="pmd:ruleset-docs">
+		<attainGoal name="site:generate" />
+	</goal>
+
+	<preGoal name="site:generate">
+		<attainGoal name="pmd:ruleset-docs"/>
+	</preGoal>
+
+	<goal name="pmd:ruleset-docs">
+		<mkdir dir="${maven.gen.docs}/rules" />
+		<ant:fileScanner var="rulesetFiles">
+			<ant:fileset dir="${rulesets.dir}/" includes="*.xml"/>
+		</ant:fileScanner>
+		<j:forEach var="file" items="${rulesetFiles.iterator()}">
+			<echo message="Processing ${file}"/>
+			<doc:jslFile
+				input="${file}"
+				stylesheet="etc/dvsl/rule-format.jsl"
+				output="${maven.gen.docs}/rules/${file.name}"/>
+		</j:forEach>
+	</goal>
+
+	<postGoal name="xdoc:register-reports"> 
+		<attainGoal name="maven-linkcheck-plugin:deregister"/> 
+		<echo>******************linkcheck is disabled.</echo>
+	</postGoal>
+
+</project>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<project default="java:jar"
+  	xmlns:j="jelly:core"
+  	xmlns:m="maven"
+  	xmlns:dvsl="dvsl"
+  	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">  
+             
+
+	<goal name="init-pmd-tag">
+	    <taskdef
+    	   	name="pmd"
+			classname="net.sourceforge.pmd.ant.PMDTask">
+       		<classpath>
+         		<pathelement location="target/classes" />
+         		<pathelement location="." />
+       		</classpath>
+    	</taskdef>
+    </goal>
+    
+    <goal name="pmd-site" prereqs="pmd:ruleset-docs">
+      <attainGoal name="site:generate" />
+    </goal>
+    
+    <preGoal name="site:generate">
+        <attainGoal name="pmd:ruleset-docs"/>
+    </preGoal>
+
+  	<goal name="pmd:ruleset-docs" prereqs="init-dvsl-tag">
+  		<mkdir dir="${maven.gen.docs}/rules" />
+	    <dvsl:dvsl
+	    	  extension=".xml"
+	    	  includes="**/*.xml"
+		      basedir="${rulesets.dir}"
+		      style="./etc/dvsl/rule-format.dvsl"
+		      destdir="${maven.gen.docs}/rules">
+    	</dvsl:dvsl>
+  	</goal>
+  	
+  	
+ </project>
+ 
