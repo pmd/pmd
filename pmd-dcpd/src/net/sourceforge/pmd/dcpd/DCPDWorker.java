@@ -8,8 +8,11 @@ package net.sourceforge.pmd.dcpd;
 public class DCPDWorker {
 
     public DCPDWorker() {
-
+        // get space
+        // register self listener for TokenSetsWrapper objects
+        // wait
     }
+
     public static void main(String[] args) {
         new DCPDWorker();
     }
