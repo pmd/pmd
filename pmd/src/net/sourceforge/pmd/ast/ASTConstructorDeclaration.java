@@ -11,6 +11,10 @@ public class ASTConstructorDeclaration extends AccessNode {
     super(p, id);
   }
 
+    public int getParameterCount() {
+        return ((ASTFormalParameters)jjtGetChild(0)).getParameterCount();
+    }
+
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
