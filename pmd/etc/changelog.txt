@@ -1,4 +1,5 @@
 ???? ?? 2002 - 1.02:
+Added new rule: ImportFromSamePackageRule
 
 November 07 2002 - 1.01:
 Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.

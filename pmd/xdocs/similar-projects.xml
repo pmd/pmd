@@ -27,6 +27,8 @@
              Linux.  They charge $500 to move a license from one machine to another.</li>
          <li><a href="http://www.tcs.com/products/assent/htdocs/assent_index.htm">Assent</a> - The usual stuff, seems pretty complete.</li>
          <li><a href="http://www.jenssoft.com/">CodeCompanion</a> - Decent collection of rules, $199.</li>
+         <li><a href="http://www.andiz.de/azosystems/en/index.html">AzoJavaChecker</a> - Rules aren't listed online so it's hard to tell what they have.  Not sure how much it costs since I don't know German.</li>
+         <li><a href="http://www.alajava.com/aubjex/products.htm">Aubjex</a> - Rules aren't listed online.  Appears to have some code modification stuff, which would be cool to have in PMD.  $299.</li>
        </ul>
      </subsection>
    </section>
