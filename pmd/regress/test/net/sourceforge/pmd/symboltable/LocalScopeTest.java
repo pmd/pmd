@@ -12,19 +12,19 @@ public class LocalScopeTest extends TestCase {
 
     public void testAdd() {
         LocalScope scope = new LocalScope();
-        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE, Kind.LOCAL_VARIABLE));
+        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE));
         assertTrue(scope.contains(new NameOccurrence(NameDeclarationTest.createNode("foo", 12))));
     }
 
     public void testUnused() {
         LocalScope scope = new LocalScope();
-        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE, Kind.LOCAL_VARIABLE));
+        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE));
         assertTrue(scope.getUnusedDeclarations().hasNext());
     }
 
     public void testUnused2() {
         LocalScope scope = new LocalScope();
-        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE, Kind.LOCAL_VARIABLE));
+        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE));
         scope.addOccurrence(new NameOccurrence(NameDeclarationTest.createNode("foo", 12)));
         assertTrue(!scope.getUnusedDeclarations().hasNext());
     }

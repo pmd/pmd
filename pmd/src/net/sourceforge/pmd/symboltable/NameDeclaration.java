@@ -10,15 +10,9 @@ import net.sourceforge.pmd.ast.SimpleNode;
 public class NameDeclaration {
 
     private SimpleNode node;
-    private Kind kind;
 
-    public NameDeclaration(SimpleNode node, Kind kind) {
+    public NameDeclaration(SimpleNode node) {
         this.node = node;
-        this.kind = kind;
-    }
-
-    public Kind getKind() {
-        return kind;
     }
 
     public int getLine() {

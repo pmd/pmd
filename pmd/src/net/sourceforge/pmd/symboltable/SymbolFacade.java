@@ -53,20 +53,12 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
     public Object visit(ASTIfStatement node, Object data){openScope(node);return data;}
 
     /**
-     * Collect LocalScope NameDeclarations
+     * Note the current scope is responsible for figuring out what kind of
+     * NameDeclaration this is
      */
-/*
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
-            node.setScope(contextManager.getCurrentScope());
-            contextManager.getCurrentScope().addDeclaration(new NameDeclaration(node, Kind.LOCAL_VARIABLE));
-        }
-        return super.visit(node, data);
-    }
-*/
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         node.setScope(contextManager.getCurrentScope());
-        contextManager.getCurrentScope().addDeclaration(new NameDeclaration(node, Kind.UNKNOWN));
+        contextManager.getCurrentScope().addDeclaration(new NameDeclaration(node));
         return super.visit(node, data);
     }
 
