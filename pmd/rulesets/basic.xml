@@ -12,7 +12,7 @@ which everyone should follow.
     <description>
 Empty Catch Block, will find instances where an exception is caught,
 but nothing is done.  In most circumstances, this swallows an exception
-which should either be acted on, or reported.
+which should either be acted on or reported.
     </description>
 
     <example>
@@ -47,8 +47,8 @@ but nothing is done about it.
         class="net.sourceforge.pmd.rules.EmptyWhileStmtRule">
      <description>
 Empty While Statement, will find all instances where a while statement
-does nothing.  This is just a waste of time.  If it is a timing loop,
-then you should use Thread.sleep() for it.
+does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
+it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
      </description>
 
      <example>
@@ -65,7 +65,7 @@ while (a == b) {
         class="net.sourceforge.pmd.rules.UnusedLocalVariableRule">
     <description>
 Unused Local Variables: detects when a variable is declared, but not
-used (except for possibly initial setting.)
+used (except for possibly initial assignment)
     </description>
 
     <example>
@@ -127,7 +127,7 @@ public class Something {
   </rule>
 
   <rule name="LongVariable"
-        message="Avoid excesive length variables"
+        message="Avoid excessively long variables"
         class="net.sourceforge.pmd.rules.LongVariableRule">
     <description>
 Long Variable: detects when a field, formal or local variable is declared
@@ -141,10 +141,10 @@ public class Something {
   public static void main( String argumentsList[] ) { // VIOLATION - Formal
     int otherReallyLongName = -5; // VIOLATION - Local
 
-    for (int interestingIntIndex = 0;  // VIOLATION - For 
+    for (int interestingIntIndex = 0;  // VIOLATION - For
              interestingIntIndex < 10;
              interestingIntIndex ++ ) {
-       
+
     }
 }
 
