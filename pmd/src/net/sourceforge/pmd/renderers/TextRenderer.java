@@ -9,6 +9,9 @@ import java.util.Iterator;
 public class TextRenderer implements Renderer {
 
     public String render(Report report) {
+        if (report.isEmpty()) {
+            return "No problems found!";
+        }
         StringBuffer buf = new StringBuffer();
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
