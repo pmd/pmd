@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
-<ruleset name="Basic Rules">
+<ruleset name="Basic Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
 The Basic Ruleset contains a collection of good practices which everyone should follow.
   </description>
@@ -297,7 +298,7 @@ not
  [count(
    FormalParameters//Type/Name
     [@Image = 'Object' or @Image = 'java.lang.Object']) = 1]
-    [@Image = 'equals']))]      
+    [@Image = 'equals']))]
                   ]]>
               </value>
           </property>

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
-<ruleset name="Finalizer Rules">
+<ruleset name="Finalizer Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
 These rules deal with different problems that can occur with finalizers.
   </description>

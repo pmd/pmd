@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
-<ruleset name="Clone Implementation Rules">
+<ruleset name="Clone Implementation Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
 The Clone Implementation ruleset contains a collection of rules that find questionable usages of the clone() method.
   </description>
@@ -19,8 +20,8 @@ The Clone Implementation ruleset contains a collection of rules that find questi
 [@Image = 'clone']
 [count(FormalParameters/*) = 0]
 [count(../Block//*[
-	(self::AllocationExpression) and
-	(./Name/@Image = ancestor::
+    (self::AllocationExpression) and
+    (./Name/@Image = ancestor::
 UnmodifiedClassDeclaration[position()=last()]/@Image)
   ])> 0
 ]
@@ -33,9 +34,9 @@ UnmodifiedClassDeclaration[position()=last()]/@Image)
      <example>
  <![CDATA[
 class Foo{
-	public Object clone(){
-		return new Foo(); // This is bad
-	}
+    public Object clone(){
+        return new Foo(); // This is bad
+    }
 }
 ]]>
      </example>

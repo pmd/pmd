@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 
-<ruleset name="coupling">
+<ruleset name="coupling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
-	These are new rules for coupling
+    These are new rules for coupling
   </description>
 
     <rule name="CouplingBetweenObjectsRule"

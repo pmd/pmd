@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
-<ruleset name="Strict Exception Rules">
+<ruleset name="Strict Exception Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
 The Strict Exception ruleset contains a collection of strict rules concerning exceptions.
   </description>
@@ -158,5 +159,5 @@ throw new Exception();
       </property>
     </properties>
   </rule>
-    
+
 </ruleset>
