@@ -11,108 +11,72 @@ public class AccessNode extends SimpleNode implements AccessFlags {
 
     protected short accessFlags = 0x0000;
 
-    public void setPublic(boolean value) {
-        if (value) {
-            accessFlags |= ACC_PUBLIC;
-        } else {
-            accessFlags &= ~ACC_PUBLIC;
-        }
+    public void setPublic() {
+        accessFlags |= ACC_PUBLIC;
     }
 
     public boolean isPublic() {
         return (accessFlags & ACC_PUBLIC) > 0;
     }
 
-    public void setPrivate(boolean value) {
-        if (value) {
-            accessFlags |= ACC_PRIVATE;
-        } else {
-            accessFlags &= ~ACC_PRIVATE;
-        }
+    public void setPrivate() {
+        accessFlags |= ACC_PRIVATE;
     }
 
     public boolean isPrivate() {
         return (accessFlags & ACC_PRIVATE) > 0;
     }
 
-    public void setProtected(boolean value) {
-        if (value) {
-            accessFlags |= ACC_PROTECTED;
-        } else {
-            accessFlags &= ~ACC_PROTECTED;
-        }
+    public void setProtected() {
+        accessFlags |= ACC_PROTECTED;
     }
 
     public boolean isProtected() {
         return (accessFlags & ACC_PROTECTED) > 0;
     }
 
-    public void setStatic(boolean value) {
-        if (value) {
-            accessFlags |= ACC_STATIC;
-        } else {
-            accessFlags &= ~ACC_STATIC;
-        }
+    public void setStatic() {
+        accessFlags |= ACC_STATIC;
     }
 
     public boolean isStatic() {
         return (accessFlags & ACC_STATIC) > 0;
     }
 
-    public void setFinal(boolean value) {
-        if (value) {
-            accessFlags |= ACC_FINAL;
-        } else {
-            accessFlags &= ~ACC_FINAL;
-        }
+    public void setFinal() {
+        accessFlags |= ACC_FINAL;
     }
 
     public boolean isFinal() {
         return (accessFlags & ACC_FINAL) > 0;
     }
 
-    public void setSynchronized(boolean value) {
-        if (value) {
-            accessFlags |= ACC_SYNCHRONIZED;
-        } else {
-            accessFlags &= ~ACC_SYNCHRONIZED;
-        }
+    public void setSynchronized() {
+        accessFlags |= ACC_SYNCHRONIZED;
     }
 
     public boolean isSynchronized() {
         return (accessFlags & ACC_SYNCHRONIZED) > 0;
     }
 
-    public void setVolatile(boolean value) {
-        if (value) {
-            accessFlags |= ACC_VOLATILE;
-        } else {
-            accessFlags &= ~ACC_VOLATILE;
-        }
+    public void setVolatile() {
+        accessFlags |= ACC_VOLATILE;
     }
 
     public boolean isVolatile() {
         return (accessFlags & ACC_VOLATILE) > 0;
     }
 
-    public void setTransient(boolean value) {
-        if (value) {
-            accessFlags |= ACC_TRANSIENT;
-        } else {
-            accessFlags &= ~ACC_TRANSIENT;
-        }
+    public void setTransient() {
+        accessFlags |= ACC_TRANSIENT;
     }
 
     public boolean isTransient() {
         return (accessFlags & ACC_TRANSIENT) > 0;
     }
 
-    public void setNative(boolean value) {
-        if (value) {
-            accessFlags |= ACC_NATIVE;
-        } else {
-            accessFlags &= ~ACC_NATIVE;
-        }
+    public void setNative() {
+        accessFlags |= ACC_NATIVE;
     }
 
     public boolean isNative() {
@@ -120,12 +84,8 @@ public class AccessNode extends SimpleNode implements AccessFlags {
     }
 
 
-    public void setInterface(boolean value) {
-        if (value) {
-            accessFlags |= ACC_INTERFACE;
-        } else {
-            accessFlags &= ~ACC_INTERFACE;
-        }
+    public void setInterface() {
+        accessFlags |= ACC_INTERFACE;
     }
 
     public boolean isInterface() {
@@ -133,12 +93,8 @@ public class AccessNode extends SimpleNode implements AccessFlags {
     }
 
 
-    public void setAbstract(boolean value) {
-        if (value) {
-            accessFlags |= ACC_ABSTRACT;
-        } else {
-            accessFlags &= ~ACC_ABSTRACT;
-        }
+    public void setAbstract() {
+        accessFlags |= ACC_ABSTRACT;
     }
 
     public boolean isAbstract() {
@@ -146,12 +102,8 @@ public class AccessNode extends SimpleNode implements AccessFlags {
     }
 
 
-    public void setStrict(boolean value) {
-        if (value) {
-            accessFlags |= ACC_STRICT;
-        } else {
-            accessFlags &= ~ACC_STRICT;
-        }
+    public void setStrict() {
+        accessFlags |= ACC_STRICT;
     }
 
     public boolean isStrict() {
@@ -159,12 +111,8 @@ public class AccessNode extends SimpleNode implements AccessFlags {
     }
 
 
-    public void setSuper(boolean value) {
-        if (value) {
-            accessFlags |= ACC_SUPER;
-        } else {
-            accessFlags &= ~ACC_SUPER;
-        }
+    public void setSuper() {
+        accessFlags |= ACC_SUPER;
     }
 
     public boolean isSuper() {

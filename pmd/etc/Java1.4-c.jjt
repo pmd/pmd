@@ -371,10 +371,10 @@ void TypeDeclaration() :
 void ClassDeclaration() :
 {}
 {
-  ( "abstract"  { ((AccessNode) jjtThis).setAbstract( true ); }
-  | "final"     { ((AccessNode) jjtThis).setFinal( true ); }
-  | "public"    { ((AccessNode) jjtThis).setPublic( true ); }
-  | "strictfp"  { ((AccessNode) jjtThis).setStrict( true ); }
+  ( "abstract"  { ((AccessNode) jjtThis).setAbstract(); }
+  | "final"     { ((AccessNode) jjtThis).setFinal(); }
+  | "public"    { ((AccessNode) jjtThis).setPublic(); }
+  | "strictfp"  { ((AccessNode) jjtThis).setStrict(); }
   )*
   UnmodifiedClassDeclaration()
 }
@@ -399,13 +399,13 @@ void ClassBody() :
 void NestedClassDeclaration() :
 {}
 {
-  ("static"       { ((AccessNode) jjtThis).setStatic( true ); }
-  | "abstract"    { ((AccessNode) jjtThis).setAbstract( true ); }
-  | "final"       { ((AccessNode) jjtThis).setFinal( true ); }
-  | "public"      { ((AccessNode) jjtThis).setPublic( true ); }
-  | "protected"   { ((AccessNode) jjtThis).setProtected( true ); }
-  | "private"     { ((AccessNode) jjtThis).setPrivate( true ); }
-  | "strictfp"    { ((AccessNode) jjtThis).setStrict( true ); }
+  ("static"       { ((AccessNode) jjtThis).setStatic(); }
+  | "abstract"    { ((AccessNode) jjtThis).setAbstract(); }
+  | "final"       { ((AccessNode) jjtThis).setFinal(); }
+  | "public"      { ((AccessNode) jjtThis).setPublic(); }
+  | "protected"   { ((AccessNode) jjtThis).setProtected(); }
+  | "private"     { ((AccessNode) jjtThis).setPrivate(); }
+  | "strictfp"    { ((AccessNode) jjtThis).setStrict(); }
   )*
   UnmodifiedClassDeclaration()
 }
@@ -487,13 +487,13 @@ void FieldDeclaration() :
 {
 }
 {
-  ( "public"            { ((AccessNode) jjtThis).setPublic( true ); }
-  | "protected"         { ((AccessNode) jjtThis).setProtected( true ); }
-  | "private"           { ((AccessNode) jjtThis).setPrivate( true ); }
-  | "static"            { ((AccessNode) jjtThis).setStatic( true ); }
-  | "final"             { ((AccessNode) jjtThis).setFinal( true ); }
-  | "transient"         { ((AccessNode) jjtThis).setTransient( true ); }
-  | "volatile"          { ((AccessNode) jjtThis).setVolatile( true ); } )*
+  ( "public"            { ((AccessNode) jjtThis).setPublic(); }
+  | "protected"         { ((AccessNode) jjtThis).setProtected(); }
+  | "private"           { ((AccessNode) jjtThis).setPrivate(); }
+  | "static"            { ((AccessNode) jjtThis).setStatic(); }
+  | "final"             { ((AccessNode) jjtThis).setFinal(); }
+  | "transient"         { ((AccessNode) jjtThis).setTransient(); }
+  | "volatile"          { ((AccessNode) jjtThis).setVolatile(); } )*
 
   Type() VariableDeclarator() ( "," VariableDeclarator() )* ";"
 }
@@ -537,15 +537,15 @@ void ArrayInitializer() :
 void MethodDeclaration() :
 {}
 {
-  ( "public"            { ((AccessNode) jjtThis).setPublic( true ); }
-  | "protected"         { ((AccessNode) jjtThis).setProtected( true ); }
-  | "private"           { ((AccessNode) jjtThis).setPrivate( true ); }
-  | "static"            { ((AccessNode) jjtThis).setStatic( true ); }
-  | "abstract"          { ((AccessNode) jjtThis).setAbstract( true ); }
-  | "final"             { ((AccessNode) jjtThis).setFinal( true ); }
-  | "native"            { ((AccessNode) jjtThis).setNative( true ); }
-  | "synchronized"      { ((AccessNode) jjtThis).setSynchronized( true ); }
-  | "strictfp"          { ((AccessNode) jjtThis).setStrict( true ); }
+  ( "public"            { ((AccessNode) jjtThis).setPublic(); }
+  | "protected"         { ((AccessNode) jjtThis).setProtected(); }
+  | "private"           { ((AccessNode) jjtThis).setPrivate(); }
+  | "static"            { ((AccessNode) jjtThis).setStatic(); }
+  | "abstract"          { ((AccessNode) jjtThis).setAbstract(); }
+  | "final"             { ((AccessNode) jjtThis).setFinal(); }
+  | "native"            { ((AccessNode) jjtThis).setNative(); }
+  | "synchronized"      { ((AccessNode) jjtThis).setSynchronized(); }
+  | "strictfp"          { ((AccessNode) jjtThis).setStrict(); }
   )*
   ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
@@ -577,9 +577,9 @@ void ConstructorDeclaration() :
 {}
 {
   [
-  "public" { ((AccessNode) jjtThis).setPublic( true ); }
-  | "protected" { ((AccessNode) jjtThis).setProtected( true ); }
-  | "private"  { ((AccessNode) jjtThis).setPrivate( true ); }
+  "public" { ((AccessNode) jjtThis).setPublic(); }
+  | "protected" { ((AccessNode) jjtThis).setProtected(); }
+  | "private"  { ((AccessNode) jjtThis).setPrivate(); }
   ]
   <IDENTIFIER> FormalParameters() [ "throws" NameList() ]
   "{"
