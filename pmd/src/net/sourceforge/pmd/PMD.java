@@ -44,8 +44,8 @@ public class PMD {
     }
 
     public static void main(String[] args) {
-        if (args.length != 2) {
-            throw new RuntimeException("Please pass in both a filename and a format");
+        if (args.length != 3) {
+            throw new RuntimeException("Please pass in a filename, a format, and a rule set");
         }
         File input = new File(args[0]);
         if (!input.exists()) {
@@ -56,7 +56,7 @@ public class PMD {
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         try {
-            pmd.processFile(input, RuleFactory.ALL, ctx);
+            pmd.processFile(input, args[2], ctx);
             System.out.println(report.render());
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
