@@ -7,13 +7,13 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +39,6 @@ public class VariableNamingConventions extends AbstractRule {
         memberSuffix = split(getStringProperty("memberSuffix"));
     }
 
-    public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        return checkNames(node, data);
-    }
-
     public Object visit(ASTFieldDeclaration node, Object data) {
         return checkNames(node, data);
     }
@@ -65,28 +61,25 @@ public class VariableNamingConventions extends AbstractRule {
                 return data;
             }
 
-/*
-FIXME
             // non static final class fields are OK
-            if (node.isFinal() && !node.isStatic() && !(node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration)) {
-                return data;
-            }
-
-            // final, non static, class, fields are OK
-            if (node.isFinal() && !node.isStatic() && !(node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration)) {
-                return data;
+            if (node.isFinal() && !node.isStatic()) {
+                if (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
+                    ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration)node.jjtGetParent().jjtGetParent().jjtGetParent();
+                    if (!c.isInterface()) {
+                        return data;
+                    }
+                }
             }
 
             // static finals (and interface fields, which are implicitly static and final) are
             // checked for uppercase
-            if ((node.isStatic() && node.isFinal()) || node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration) {
+            if ((node.isStatic() && node.isFinal()) || (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)node.jjtGetParent().jjtGetParent().jjtGetParent()).isInterface())) {
                 if (!varName.equals(varName.toUpperCase())) {
                     RuleContext ctx = (RuleContext) data;
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName, "Variables that are final and static should be in all caps."));
                 }
                 return data;
             }
-*/
 
             String strippedVarName = null;
             if (node.isStatic()) {
