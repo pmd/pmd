@@ -112,7 +112,7 @@ public class ProjectFile
 
             while (beginIndex >= 0)
             {
-                int endIndex = propertyValue.indexOf(VALUE_SEPARATOR);
+                int endIndex = propertyValue.indexOf(VALUE_SEPARATOR, beginIndex);
 
                 if (endIndex >= 0)
                 {
