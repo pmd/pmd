@@ -34,7 +34,7 @@ class Job
 		}
 		t.join  
 	end
-	def checkOutOK
+	def checked_out
 		File.exists?(@src)
 	end
   def run_ncss
@@ -42,10 +42,10 @@ class Job
    `#{cmd}`
   end
   def run_pmd
-   cmd="java -Xmx512m -jar pmd-1.2.2.jar \"" + ROOT + "/" + @src + "\" html rulesets/unusedcode.xml -shortnames > " + reportFile
+   cmd="java -Xmx512m -jar pmd-1.2.2.jar \"" + ROOT + "/" + @src + "\" html rulesets/unusedcode.xml -shortnames > " + report
    `#{cmd}`
-   arr = IO.readlines(reportFile())
-   newFile=File.open(reportFile(), "w")
+   arr = IO.readlines(report)
+   newFile=File.open(report(), "w")
    arr.each do | line | 
     if line["Error while parsing"] == nil 
      newFile << line
@@ -54,23 +54,23 @@ class Job
    newFile.close
   end
   def run_cpd
-   cmd="java -Xmx512m -cp pmd-1.2.2.jar net.sourceforge.pmd.cpd.CPD 100 " + @src + " > " + cpdReportFile
+   cmd="java -Xmx512m -cp pmd-1.2.2.jar net.sourceforge.pmd.cpd.CPD 100 " + @src + " > " + cpd_file
    `#{cmd}`
   end
 	def copy_up
-		`scp #{reportFile} #{cpdReportFile} #{ncss_report} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
+		`scp #{report} #{cpd_file} #{ncss_report} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
 	end
-	def reportFile 
+	def report 
 		"reports/" + @unix_name + "_" + @mod.sub(/ /, '') + ".html"
 	end
-	def cpdReportFile 
+	def cpd_file 
 		"reports/cpd_" + @unix_name + "_" + @mod.sub(/ /, '') + ".txt"
 	end
 	def ncss_report 
 		"reports/" + @unix_name + "_" + @mod.sub(/ /, '') + "_ncss.txt"
 	end
 	def clear
-		`rm -rf "#{@mod}" reports/#{reportFile} reports/#{cpdReportFile} reports/#{ncss_report}`
+		`rm -rf "#{@mod}" reports/#{report} reports/#{cpd_file} reports/#{ncss_report}`
 	end
 	def homepage_html
 		"<a href=\"http://" + @unix_name + ".sf.net/\">http://" + @unix_name + ".sf.net/</a>"
@@ -80,12 +80,12 @@ class Job
 	end
 	def cpd_lines
     count = 0
-    File.read(cpdReportFile).each {|line| count += 1 if line["================================="] }
+    File.read(cpd_file).each {|line| count += 1 if line["================================="] }
 		count
 	end	
 	def pmd_lines
-    count = 0
-    File.read(reportFile).each {|line| count += 1 if line["</td>"] }
+		count = 0
+    File.read(report).each {|line| count += 1 if line["</td>"] } unless !File.exists?(report)
    	count == 0 ? 0 : (count/4).to_i
 	end
 	def pctg
@@ -101,36 +101,42 @@ if __FILE__ == $0
 	ENV['JAVA_HOME']="/usr/local/java"
 	ENV['PATH']="#{ENV['PATH']}:#{ENV['JAVA_HOME']}/bin"
 	jobs = []
-	File.read("jobs.txt").each_line {|jobtext|
-		job = Job.new(*jobtext.split(":"))
-		if ARGV.length != 0 && ARGV[0] != job.mod
-			next
-		end
-		jobs << job
-		puts "Processing #{job}"
-		next
-		job.checkout_code
-		if job.checkOutOK
-			job.run_pmd
-			job.run_cpd
-			job.run_ncss
-			job.copy_up
-			job.clear
-		end
-	}
+	File.read("jobs.txt").each_line {|jobtext| jobs << Job.new(*jobtext.split(":")) }
+
+	if ARGV.include?("-build") 
+		jobs.each {|job|
+			if ARGV.include?("-job") && job.mod != ARGV.at(ARGV.index("-job")+1)
+				puts "skipping " + job.mod
+			end
+			puts "Processing #{job}"
+			job.checkout_code
+			if job.checked_out
+				job.run_pmd
+				job.run_cpd
+				job.run_ncss
+				job.copy_up
+				job.clear
+			end
+		}
+	end
+
+	jobs.sort! {|x,y| x.pmd_lines <=> y.pmd_lines }
+
 	fm = Ikko::FragmentManager.new
 	fm.base_path="./"
 	out = fm["header.frag", {"lastruntime"=>Time.now}]
 	jobs.each {|j|
 		out << fm["row.frag", {	
-			"title"=>fm["title.frag", {"file"=>j.reportFile, "title"=>j.title}],
+			"title"=>fm["title.frag", {"file"=>j.report, "title"=>j.title}],
 			"homepage"=>fm["homepage.frag", {"name"=>j.unix_name}],
 			"ncss"=>j.ncss, 
 			"pmd"=>j.pmd_lines.to_s,
 			"pctg"=>j.pctg.to_s,
-			"dupe"=>fm["cpd.frag", {"file"=>j.cpdReportFile, "dupes"=>j.cpd_lines.to_s}]
-		}]	
+			"dupe"=>fm["cpd.frag", {"file"=>j.cpd_file, "dupes"=>j.cpd_lines.to_s}]
+		}] unless !File.exists?(j.report) || !File.exists?(j.ncss_report)
 	}
-	File.open("index.html", "w") {|f| f.syswrite(out)}
+	File.open("scoreboard.html", "w") {|f| f.syswrite(out)}
+
+	#`scp scoreboard.html tomcopeland@pmd.sf.net:/home/groups/p/pm/pmd/htdocs/`
 end
 
