@@ -47,7 +47,10 @@ public class Test {
     private Entry convertTSS() {
         return new TSSWrapper(tokenSets);
     }
-    private  void add(List files) throws IOException {
+
+    private void add(String dir, boolean recurse) throws IOException {
+        FileFinder finder = new FileFinder();
+        List files = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
         for (Iterator i = files.iterator(); i.hasNext();) {
             add(files.size(), (File)i.next());
         }
@@ -60,11 +63,6 @@ public class Test {
         t.tokenize(ts, fr);
         fr.close();
         tokenSets.add(ts);
-    }
-
-    private void add(String dir, boolean recurse) throws IOException {
-        FileFinder finder = new FileFinder();
-        add(finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse));
     }
 
     private JavaSpace getSpace() throws Exception {
