@@ -4,7 +4,23 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class ShortMethodNameRuleTest extends RuleTst {
+public class ShortMethodNameRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//MethodDeclarator[string-length(@Image) < 3]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "ok", 0, rule),
+           new TestDescriptor(TEST2, "bad", 1, rule),
+           new TestDescriptor(TEST3, "2 violations", 2, rule),
+           new TestDescriptor(TEST4, "2 methods, 1 violation", 1, rule),
+       });
+    }
 
     private static final String TEST1 =
     "public class ShortMethodName0 {" + CPD.EOL +
@@ -42,26 +58,4 @@ public class ShortMethodNameRuleTest extends RuleTst {
     "    }" + CPD.EOL +
     "}";
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclarator[string-length(@Image) < 3]");
-    }
-
-    public void testShortMethodName0() throws Throwable {
-        runTestFromString(TEST1, 0, rule);
-    }
-
-    public void testShortMethodName1() throws Throwable {
-        runTestFromString(TEST2, 1, rule);
-    }
-
-    public void testShortMethodName2() throws Throwable {
-        runTestFromString(TEST3, 2, rule);
-    }
-
-    public void testShortMethodName3() throws Throwable {
-        runTestFromString(TEST4, 1, rule);
-    }
 }

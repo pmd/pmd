@@ -4,7 +4,36 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class OverrideBothEqualsAndHashcodeRuleTest extends RuleTst {
+public class OverrideBothEqualsAndHashcodeRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//ClassDeclaration//MethodDeclarator" +
+        	"[" +
+        	"(" +
+        	"@Image = 'equals'" +
+        	" and count(FormalParameters/*) = 1" +
+        	" and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode'])" +
+        	") or (" +
+        	"@Image='hashCode'" +
+        	" and count(FormalParameters/*) = 0" +
+        	" and not(//MethodDeclarator[count(FormalParameters//Type/Name[@Image = 'Object']) = 1][@Image = 'equals'])" +
+        	")]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "hash code only", 1, rule),
+           new TestDescriptor(TEST2, "equals only", 1, rule),
+           new TestDescriptor(TEST3, "overrides both", 0, rule),
+           new TestDescriptor(TEST4, "overrides neither", 0, rule),
+           new TestDescriptor(TEST5, "equals sig uses String, not Object", 1, rule),
+           new TestDescriptor(TEST6, "interface", 0, rule),
+       });
+    }
+
     private static final String TEST1 =
     "public class OverrideBothEqualsAndHashcode1 {" + CPD.EOL +
     " public int hashCode() {}" + CPD.EOL +
@@ -39,40 +68,4 @@ public class OverrideBothEqualsAndHashcodeRuleTest extends RuleTst {
     "public interface OverrideBothEqualsAndHashcode6 {" + CPD.EOL +
     " public boolean equals(Object o);" + CPD.EOL +
     "}";
-
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//ClassDeclaration//MethodDeclarator" +
-        	"[" +
-        	"(" +
-        	"@Image = 'equals'" +
-        	" and count(FormalParameters/*) = 1" +
-        	" and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode'])" +
-        	") or (" +
-        	"@Image='hashCode'" +
-        	" and count(FormalParameters/*) = 0" +
-        	" and not(//MethodDeclarator[count(FormalParameters//Type/Name[@Image = 'Object']) = 1][@Image = 'equals'])" +
-        	")]");
-    }
-
-    public void testHashCodeOnly() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void testEqualsOnly() throws Throwable {
-        runTestFromString(TEST2, 1, rule);
-    }
-    public void testCorrectImpl() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
-    public void testNeither() throws Throwable {
-        runTestFromString(TEST4, 0, rule);
-    }
-    public void testEqualsSignatureUsesStringNotObject() throws Throwable {
-        runTestFromString(TEST5, 1, rule);
-    }
-    public void testInterface() throws Throwable {
-        runTestFromString(TEST6, 0, rule);
-    }
 }

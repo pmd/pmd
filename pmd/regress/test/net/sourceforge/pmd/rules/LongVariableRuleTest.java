@@ -4,7 +4,24 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class LongVariableRuleTest extends RuleTst {
+public class LongVariableRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) > 12]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "param", 1, rule),
+           new TestDescriptor(TEST2, "ok", 0, rule),
+           new TestDescriptor(TEST3, "local", 1, rule),
+           new TestDescriptor(TEST4, "field", 1, rule),
+           new TestDescriptor(TEST5, "for", 1, rule),
+       });
+    }
 
     private static final String TEST1 =
     "public class LongVariableParam {" + CPD.EOL +
@@ -43,26 +60,4 @@ public class LongVariableRuleTest extends RuleTst {
     "    private int abcdefghijklmnopqrstuvwxyz; // Should cause a problem." + CPD.EOL +
     "}";
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) > 12]");
-    }
-
-    public void testLongVariableParam() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void testLongVariableNone() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void testLongVariableLocal() throws Throwable {
-        runTestFromString(TEST3, 1, rule);
-    }
-    public void testLongVariableField() throws Throwable {
-        runTestFromString(TEST4, 1, rule);
-    }
-    public void testLongVariableFor() throws Throwable {
-        runTestFromString(TEST5, 1, rule);
-    }
 }
