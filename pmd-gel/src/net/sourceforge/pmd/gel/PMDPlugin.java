@@ -14,6 +14,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 import javax.swing.ProgressMonitor;
 
@@ -79,14 +81,26 @@ public class PMDPlugin implements GelAction, Runnable, ReportListener {
 		report = new Report();
 		report.addListener(this);
 		gel.clearMessages();
+		if (gel.getProject() == null && gel.getEditor() == null) {
+			gel.showMessage("There are no java files to analyse!");
+			return;
+		}
 		gel.addMessage("PMD started");
 
 		try {
 			RuleSetFactory rsf = new RuleSetFactory();
-			Iterator it = rsf.getRegisteredRuleSets();
+			Properties props = new Properties();
+			props.load(rsf.getClass().getResourceAsStream("/rulesets/rulesets.properties"));
+			String rulesetFilenames = props.getProperty("rulesets.filenames");
 			ArrayList listOfRuleSet = new ArrayList();
-			while (it.hasNext()) {
-				listOfRuleSet.add((RuleSet)it.next());
+			StringTokenizer st = new StringTokenizer(rulesetFilenames, ",");
+			RuleSet ruleSet = null;
+			String rsFileName = null;
+			while (st.hasMoreTokens()) {
+				rsFileName = st.nextToken();
+				ruleSet = rsf.createRuleSet(rsFileName);
+				ruleSet.setFileName(rsFileName);
+				listOfRuleSet.add(ruleSet);
 			}
 			arrayRuleSet = new RuleSet[listOfRuleSet.size()];
 			for (int i = 0; i < arrayRuleSet.length; ++i) {
@@ -103,7 +117,7 @@ public class PMDPlugin implements GelAction, Runnable, ReportListener {
 			if (gel.getProject() != null) {
 				listOfFiles = new ArrayList();
 
-				it = gel.getProject().getSourcePaths().iterator();
+				Iterator it = gel.getProject().getSourcePaths().iterator();
 				FileFinder ff = new FileFinder();
 				FilenameFilter filter =
 					new JavaLanguage.JavaFileOrDirectoryFilter();
@@ -114,6 +128,15 @@ public class PMDPlugin implements GelAction, Runnable, ReportListener {
 
 					if (files != null) {
 						listOfFiles.addAll(files);
+					}
+				}
+				if (listOfFiles.isEmpty()) {
+					if (gel.getEditor() != null) {
+						gel.addMessage("WARNING: There are no java files in project source paths. Try to analyse current data in editor.");
+					} else {
+						gel.addMessage("WARNING: There are no java files to analyse.");
+						gel.addMessage("PMD finished");
+						return;
 					}
 				}
 			} else {
@@ -176,7 +199,7 @@ public class PMDPlugin implements GelAction, Runnable, ReportListener {
 			if (ruleSet.size() > 0) {
 				ctx.setReport(report);
 
-				if (gel.getProject() == null) {
+				if (gel.getProject() == null || listOfFiles.isEmpty()) {
 					String code = gel.getEditor().getContents();
 					String name = gel.getEditor().getFileName();
 

@@ -1,3 +1,11 @@
+July 09, 2004 - 0.7
+Author: Andrey Lumyanski
+Some bugs fixed (also #973177).
+
+May 24, 2004 - 0.6:
+Rewritten by Andrey Lumyanski
+Now any ruleset can be selected. All messages show in Gel Messages Console
+
 October 15, 2003 - 0.5:
 Backed up essentially to 0.2 - the newer code was locking up.
 Updated to pmd-1.2.2.
