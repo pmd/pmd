@@ -7,6 +7,7 @@ package net.sourceforge.pmd.jedit;
 
 import org.gjt.sp.jedit.OptionPane;
 import org.gjt.sp.jedit.AbstractOptionPane;
+import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -63,6 +64,8 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     private SelectedRules rules;
     private JTextArea exampleTextArea= new JTextArea(10, 50);
+    private JCheckBox directoryPopupBox;
+
     public PMDOptionPane() {
         super(PMDJEditPlugin.NAME);
         try {
@@ -87,14 +90,25 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         textPanel.setBorder(BorderFactory.createTitledBorder("Example"));
         textPanel.add(new JScrollPane(exampleTextArea));
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(rulesPanel, BorderLayout.NORTH);
-        panel.add(textPanel, BorderLayout.SOUTH);
-        addComponent(panel);
+        if (!jEdit.getProperties().containsKey(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
+            jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP, false);
+        }
+
+        directoryPopupBox = new JCheckBox("Ask for directory?", jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP));
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(rulesPanel, BorderLayout.NORTH);
+        mainPanel.add(textPanel, BorderLayout.CENTER);
+        mainPanel.add(directoryPopupBox, BorderLayout.SOUTH);
+
+        addComponent(mainPanel);
     }
 
     public void save() {
         rules.save();
+        if (directoryPopupBox != null) {
+            jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP, directoryPopupBox.isSelected());
+        }
     }
 }

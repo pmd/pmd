@@ -23,4 +23,3 @@ pmd-check-current-directory-recursively.label=Check directory recursively
 #
 options.PMD.title=PMD
 options.PMD.label=PMD
-

@@ -22,8 +22,8 @@ import net.sourceforge.pmd.*;
 public class PMDJEditPlugin extends EditPlugin {
 
     public static final String NAME = "PMD";
-    public static final String PROPERTY_PREFIX = "plugin.net.sourceforge.pmd.jedit.";
     public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
+    public static final String OPTION_UI_DIRECTORY_POPUP = "options.pmd.ui.directorypopup";
 
     public static class JavaFileOrDirectoryFilter implements FilenameFilter {
       public boolean accept(File dir, String filename) {
@@ -60,31 +60,42 @@ public class PMDJEditPlugin extends EditPlugin {
     }
 
     public void instanceCheckDirectory(View view) {
-        final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
-        if(browser == null) {
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        new Thread(new Runnable () {
-            public void run() {
-                processFiles(findFilesInDirectory(browser.getDirectory()));
+        if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
+            final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE);
+            process(findFilesInDirectory(dir));
+        } else {
+            final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
+            if(browser == null) {
+                JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        }).start();
+            process(findFilesInDirectory(browser.getDirectory()));
+        }
     }
+
 
     public static void checkDirectoryRecursively(View view) {
         instance.instanceCheckDirectoryRecursively(view);
     }
 
     public void instanceCheckDirectoryRecursively(View view) {
-        final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
-        if(browser == null) {
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
-            return;
+        if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
+            final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
+            process(findFilesRecursively(dir));
+        } else {
+            final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
+            if(browser == null) {
+                JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            process(findFilesRecursively(browser.getDirectory()));
         }
+    }
+
+    private void process(final List files) {
         new Thread(new Runnable () {
             public void run() {
-                processFiles(findFilesRecursively(browser.getDirectory()));
+                processFiles(files);
             }
         }).start();
     }
