@@ -227,8 +227,38 @@ or @Image='finalize'
 ]]>
       </example>
     </rule>
-    </ruleset>
 
-
-
+    <rule name="MissingBreakInSwitch"
+          message="A switch statement does not contain a break"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  A switch statement without a break inside can be totally valid, however, it is probably a bug.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//SwitchStatement[count(.//BreakStatement)=0]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+switch(status) {
+	case CANCELLED:
+		doCancelled();
+		// uncomment the next line if doNew() and doRemoved() should not be executed when status is cancelled
+		// break;
+	case NEW:
+		doNew();
+	case REMOVED:
+		doRemoved();
+	}
+]]>
+      </example>
+    </rule>
+    
+</ruleset>
 
