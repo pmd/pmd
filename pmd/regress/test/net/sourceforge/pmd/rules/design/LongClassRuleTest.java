@@ -16,7 +16,7 @@ public class LongClassRuleTest
 
     public LongClassRule getIUT() {
         LongClassRule IUT = new LongClassRule();
-        IUT.addProperty("minimumLength", "1000");
+        IUT.addProperty("minimum", "1000");
         return IUT;
     }
 
@@ -31,7 +31,7 @@ public class LongClassRuleTest
     }
     public void testLongClassWithLongerTest() throws Throwable {
         LongClassRule IUT = getIUT();
-        IUT.addProperty("minimumLength", "2000");
+        IUT.addProperty("minimum", "2000");
 
 	Report report = process("LongClass1.java", IUT );
 	assertEquals( 0, report.size() );
