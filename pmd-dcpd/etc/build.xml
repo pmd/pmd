@@ -5,6 +5,7 @@
 <property name="src" value="src\"/>
 <property name="build" value="build\"/>
 <property name="jar" value="dcpd.jar"/>
+<property name="clientzipfile" value="client.zip"/>
 <property name="build.compiler" value="jikes"/>
 
 <target name="delete">
@@ -45,13 +46,16 @@
 </target>
 
 <target name="buildworker" depends="clean,jar">
+   <delete dir="${clientzipfile}"/>
+   <delete dir="staging"/>
    <mkdir dir="staging"/>
    <copy file="${lib}/dcpd.jar" toDir="staging"/>
    <copy file="${lib}/pmd-0.9.jar" toDir="staging"/>
    <copy file="${lib}/runtimeonly/outrigger-dl.jar" toDir="staging"/>
    <copy file="${lib}/runtimeonly/reggie.jar" toDir="staging"/>
    <copy file="c:\jini-1_2_1\policy\policy.all" toDir="staging"/>
-   <zip zipfile="client.zip" basedir="staging"/>
+   <copy file="etc/linuxclient_go.sh" toDir="staging"/>
+   <zip zipfile="${clientzipfile}" basedir="staging"/>
 </target>
 
 
