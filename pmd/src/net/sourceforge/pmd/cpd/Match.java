@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.cpd;
 
-public class Match {
+public class Match implements Comparable {
 
     private Mark firstOccurrence;
     private Mark secondOccurrence;
@@ -22,5 +22,10 @@ public class Match {
 
     public Mark getSecondOccurrence() {
         return this.secondOccurrence;
+    }
+
+    public int compareTo(Object o) {
+        Match other = (Match)o;
+        return other.getTokenCount() - this.getTokenCount();
     }
 }

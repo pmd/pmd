@@ -59,10 +59,6 @@ public class TokenList implements Serializable {
         return tokens.size();
     }
 
-    public String toString() {
-        return id + ":" + tokens.size();
-    }
-
     public boolean equals(Object other) {
         TokenList o = (TokenList) other;
         return o.getID().equals(id);
@@ -74,9 +70,5 @@ public class TokenList implements Serializable {
 
     public Iterator iterator() {
         return tokens.iterator();
-    }
-
-    public TokenEntry get(int index) {
-        return (TokenEntry) tokens.get(index);
     }
 }

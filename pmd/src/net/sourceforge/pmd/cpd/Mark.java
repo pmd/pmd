@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.cpd;
 
-import java.util.List;
+
 
 public class Mark {
 

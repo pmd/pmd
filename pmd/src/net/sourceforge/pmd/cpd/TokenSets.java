@@ -1,48 +1,30 @@
 package net.sourceforge.pmd.cpd;
 
-import java.io.Serializable;
-import java.util.AbstractSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class TokenSets extends AbstractSet implements Serializable {
+public class TokenSets {
 
-    private Map tokenMap = new HashMap();
+    private Map tokenLists = new HashMap();
 
-    public void add(TokenList tokens) {
-        tokenMap.put(tokens.getID(), tokens);
-    }
-
-    public int size() {
-        return tokenMap.size();
+    public void add(TokenList tokenList) {
+        tokenLists.put(tokenList.getID(), tokenList);
     }
 
     public int tokenCount() {
         int total = 0;
-        for (Iterator i = tokenMap.values().iterator(); i.hasNext();) {
-            TokenList tl = (TokenList) i.next();
-            total += tl.size();
+        for (Iterator i = tokenLists.values().iterator(); i.hasNext();) {
+            total += ((TokenList) i.next()).size();
         }
         return total;
     }
 
     public Iterator iterator() {
-        return tokenMap.values().iterator();
+        return tokenLists.values().iterator();
     }
 
     public TokenList getTokenList(String file) {
-        return (TokenList) tokenMap.get(file);
+        return (TokenList) tokenLists.get(file);
     }
-
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        for (Iterator i = tokenMap.values().iterator(); i.hasNext();) {
-            TokenList ts = (TokenList) i.next();
-            sb.append(ts.toString());
-            sb.append(CPD.EOL);
-        }
-        return sb.toString();
-    }
-
 }
