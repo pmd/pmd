@@ -2,7 +2,6 @@
 
 <property name="lib" value="lib\"/>
 <property name="src" value="src\"/>
-<property name="classes" value="classes\"/>
 <property name="build" value="build\"/>
 <property name="rulesets" value="rulesets\"/>
 <property name="regress" value="regress\"/>
@@ -43,17 +42,10 @@
             <include name="*.properties"/>
         </fileset>
     </copy>
-    <copy todir="${build}">
-        <fileset dir="${classes}">
-            <include name="**/*.gif"/>
-            <include name="**/*.jpg"/>
-            <include name="**/*.properties"/>
-        </fileset>
-    </copy>
 </target>
 
 <target name="jar" depends="copy,compile">
-    <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF"/>
+    <jar jarfile="${lib}\pmd-${version}.jar" excludes="test/**/**" basedir="${build}" manifest="etc/MANIFEST.MF"/>
 </target>
 
 <target name="jarsrc" depends="copy,compile">
