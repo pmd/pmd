@@ -51,13 +51,14 @@ class HTMLResultRenderer
         writer.write("<h3><center><font color=\"blue\">PMD Analysis Results</font></center></h3>");
         writer.write("<b>Source File:</b> ");
         writer.write(fileName);
+        writer.write("<br>");
 
         //
         // Create a table.
         //
         if (violations.hasNext() == false)
         {
-            writer.write("No rule violations detected.");
+            writer.write("<p>No rule violations detected.");
         }
         else
         {

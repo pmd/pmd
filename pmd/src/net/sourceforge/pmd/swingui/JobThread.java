@@ -1,19 +1,19 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.Thread;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Donald A. Leckie
+ * @since August 17, 2002
+ * @version $Revision$, $Date$
+ */
 abstract class JobThread extends Thread
 {
 
     private List m_listeners;
 
-    //Constants
-    public static final String STARTED_JOB_THREAD = "Started Job Thread";
-    public static final String FINISHED_JOB_THREAD = "Finished Job Thread";
     /**
      *********************************************************************************
      *
@@ -29,7 +29,7 @@ abstract class JobThread extends Thread
      *
      * @param listener
      */
-    protected void addListener(ActionListener listener)
+    protected void addListener(JobThreadListener listener)
     {
         if (m_listeners == null)
         {
@@ -43,15 +43,49 @@ abstract class JobThread extends Thread
      *********************************************************************************
      *
      */
-    private void notifyListeners(ActionEvent event)
+    private void notifyJobThreadStarted(JobThreadEvent event)
     {
         if (m_listeners != null)
         {
             for (int n = 0; n < m_listeners.size(); n++)
             {
-                ActionListener listener = (ActionListener) m_listeners.get(n);
+                JobThreadListener listener = (JobThreadListener) m_listeners.get(n);
 
-                listener.actionPerformed(event);
+                listener.jobThreadStarted(event);
+            }
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *
+     */
+    private void notifyJobThreadFinished(JobThreadEvent event)
+    {
+        if (m_listeners != null)
+        {
+            for (int n = 0; n < m_listeners.size(); n++)
+            {
+                JobThreadListener listener = (JobThreadListener) m_listeners.get(n);
+
+                listener.jobThreadFinished(event);
+            }
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *
+     */
+    protected void notifyJobThreadStatus(JobThreadEvent event)
+    {
+        if (m_listeners != null)
+        {
+            for (int n = 0; n < m_listeners.size(); n++)
+            {
+                JobThreadListener listener = (JobThreadListener) m_listeners.get(n);
+
+                listener.jobThreadStatus(event);
             }
         }
     }
@@ -61,7 +95,7 @@ abstract class JobThread extends Thread
      *
      * @param listener
      */
-    protected void removeListener(ActionListener listener)
+    protected void removeListener(JobThreadListener listener)
     {
         m_listeners.remove(listener);
     }
@@ -72,9 +106,9 @@ abstract class JobThread extends Thread
      */
     public void run()
     {
-        notifyListeners(new ActionEvent(this, 1, STARTED_JOB_THREAD));
+        notifyJobThreadStarted(new JobThreadEvent(this));
         process();
-        notifyListeners(new ActionEvent(this, 2, FINISHED_JOB_THREAD));
+        notifyJobThreadFinished(new JobThreadEvent(this));
     }
 
     /**

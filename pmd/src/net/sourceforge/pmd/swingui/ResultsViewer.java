@@ -137,8 +137,21 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
                                   m_resultsViewer.m_ruleSet,
                                   m_resultsViewer.m_ruleContext);
 
-                HTMLResultRenderer renderer = new HTMLResultRenderer();
-                setText(renderer.render(m_file.getPath(), m_ruleContext.getReport()));
+                JobThreadEvent event;
+
+                event = new JobThreadEvent(this, "Rendering analysis results into HTML page.  Please wait...");
+
+                notifyJobThreadStatus(event);
+
+                HTMLResultRenderer renderer;
+                String htmlText;
+
+                renderer = new HTMLResultRenderer();
+                htmlText = renderer.render(m_file.getPath(), m_ruleContext.getReport());
+                event = new JobThreadEvent(this, "Storing HTML page into viewer.  Please wait...");
+
+                notifyJobThreadStatus(event);
+                setText(htmlText);
             }
             catch (FileNotFoundException exception)
             {

@@ -1,8 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.Rectangle;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -23,9 +21,10 @@ import javax.swing.SwingConstants;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class MessageDialog extends JDialog implements ActionListener
+class MessageDialog extends JDialog implements JobThreadListener
 {
 
+    private JLabel m_messageArea;
     private JobThread m_jobThread;
 
     /**
@@ -42,7 +41,7 @@ class MessageDialog extends JDialog implements ActionListener
         int dialogHeight = 100;
         Rectangle parentWindowBounds = PMDViewer.getWindow().getBounds();
         int x = parentWindowBounds.x + (parentWindowBounds.width - dialogWidth) / 2;
-        int y = parentWindowBounds.y + (parentWindowBounds.height - dialogHeight) / 2;;
+        int y = parentWindowBounds.y + (parentWindowBounds.height - dialogHeight) / 2;
 
         setBounds(x, y, dialogWidth, dialogHeight);
 
@@ -63,7 +62,7 @@ class MessageDialog extends JDialog implements ActionListener
         basePanel.setLayout(new BorderLayout());
         getContentPane().add(basePanel, BorderLayout.CENTER);
 
-        JLabel messageArea = new JLabel(message);
+        m_messageArea = new JLabel(message);
 
         {
             BevelBorder bevelBorder;
@@ -77,27 +76,41 @@ class MessageDialog extends JDialog implements ActionListener
             compoundBorder = new CompoundBorder(bevelBorder, etchedBorder);
             compoundBorder = new CompoundBorder(compoundBorder, emptyBorder);
 
-            messageArea.setBorder(compoundBorder);
+            m_messageArea.setBorder(compoundBorder);
         }
 
-        messageArea.setHorizontalAlignment(SwingConstants.CENTER);
-        messageArea.setVerticalAlignment(SwingConstants.CENTER);
-        basePanel.add(messageArea, BorderLayout.CENTER);
+        m_messageArea.setHorizontalAlignment(SwingConstants.CENTER);
+        m_messageArea.setVerticalAlignment(SwingConstants.CENTER);
+        basePanel.add(m_messageArea, BorderLayout.CENTER);
     }
 
     /**
      *******************************************************************************
      *
+     * @parameter event
      */
-    public void actionPerformed(ActionEvent event)
+    public void jobThreadStarted(JobThreadEvent event)
     {
-        if (event.getSource().equals(m_jobThread))
-        {
-            if (event.getActionCommand().equals(JobThread.FINISHED_JOB_THREAD))
-            {
-                setVisible(false);
-            }
-        }
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @parameter event
+     */
+    public void jobThreadFinished(JobThreadEvent event)
+    {
+        setVisible(false);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @parameter event
+     */
+    public void jobThreadStatus(JobThreadEvent event)
+    {
+        m_messageArea.setText(event.getMessage());
     }
 
     /**

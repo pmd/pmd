@@ -32,13 +32,13 @@ public class PMDViewer extends JFrame
      *******************************************************************************
      *
      */
-    public PMDViewer()
+    private PMDViewer()
     {
         super("PMD Viewer");
 
         m_pmdViewer = this;
 
-        int windowWidth = 1000;
+        int windowWidth = 1200;
         int windowHeight = 1000;
         int windowMargin = 10;
         Dimension screenSize = getToolkit().getScreenSize();
@@ -195,7 +195,7 @@ public class PMDViewer extends JFrame
      *
      * @param args
      */
-    public void setupFiles()
+    private void setupFiles()
     {
         m_directoryTree.setupFiles();
     }
