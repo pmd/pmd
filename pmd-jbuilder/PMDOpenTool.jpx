@@ -1,65 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--JBuilder XML Project-->
 <project>
-  <property category="idl" name="ProcessIDL" value="false"/>
-  <property category="runtime" name="DefaultConfiguration" value="-1"/>
-  <property category="runtime.0" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
-  <property category="runtime.0" name="ConfigurationName" value="Untitled Runtime Configuration"/>
-  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
-  <property category="runtime.0" name="application.class" value="pmdopentool.PMDOpenTool"/>
-  <property category="runtime.0" name="appserver.parameters" value=""/>
-  <property category="runtime.0" name="appserver.servername" value=""/>
-  <property category="runtime.0" name="appserver.vmparameters" value=""/>
-  <property category="runtime.0" name="server.arguments" value=""/>
-  <property category="runtime.0" name="server.disableServerClassTracing" value="0"/>
-  <property category="runtime.0" name="server.instance.name" value=""/>
-  <property category="runtime.0" name="server.name" value="Tomcat 4.0"/>
-  <property category="runtime.0" name="server.vmparameters" value=""/>
-  <property category="runtime.0" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
-  <property category="serverservices" name="single.server.name" value="Tomcat 4.0"/>
-  <property category="sys" name="AuthorLabel" value="@author"/>
   <property category="sys" name="BackupPath" value="bak"/>
-  <property category="sys" name="CheckStable" value="1"/>
   <property category="sys" name="Company" value="InfoEther"/>
   <property category="sys" name="CompanyLabel" value="Company:"/>
   <property category="sys" name="Copyright" value="Copyright (c) 2002"/>
   <property category="sys" name="CopyrightLabel" value="Copyright:"/>
-  <property category="sys" name="DefaultPath" value="src"/>
-  <property category="sys" name="Description" value="Provides an environemnt for using the PMD aplication from within JBuilder"/>
-  <property category="sys" name="DescriptionLabel" value="Description:"/>
   <property category="sys" name="DocPath" value="doc"/>
-  <property category="sys" name="ExcludeClassEnabled" value="0"/>
-  <property category="sys" name="IncludeTestPath" value="1"/>
-  <property category="sys" name="InstanceVisibility" value="2"/>
   <property category="sys" name="JDK" value="java 1.3.1-b24"/>
-  <property category="sys" name="LastTag" value="0"/>
-  <property category="sys" name="Libraries" value="Open Tools SDK;Ant;Xerces;PMD-0.6"/>
-  <property category="sys" name="MakeStable" value="0"/>
+  <property category="sys" name="Libraries" value="Open Tools SDK;Ant;Xerces;PMD-0.8;JBCL"/>
   <property category="sys" name="OutPath" value="classes"/>
-  <property category="sys" name="SourcePath" value="src;test"/>
-  <property category="sys" name="TestPath" value="test"/>
-  <property category="sys" name="Title" value="JBuilder OpenTool for PMD"/>
-  <property category="sys" name="TitleLabel" value="Title:"/>
-  <property category="sys" name="Version" value="1.0"/>
-  <property category="sys" name="VersionLabel" value="@version"/>
+  <property category="sys" name="SourcePath" value="src;test;doc"/>
   <property category="sys" name="WorkingDirectory" value="."/>
-  <property category="sys"
-    name="uidesign.size.net.sourceforge.pmd.jbuilder.ConfigureRuleSetPropertyPage" value="545,418"/>
-  <node name="Copy to JBuilder OpenTools Dir" type="ExternalTask">
-    <property category="external" name="dependencies" value="archive"/>
-    <property category="external" name="executable" value="&quot;C:\Documents and Settings\David Craine\My Documents\InfoEther-SF\pmd\pmd-jbuilder\copyfile.bat&quot;"/>
-    <property category="external" name="params" value="c:\JBuilder7\lib\ext\"/>
-    <property category="external" name="phase" value="package"/>
-  </node>
   <node name="PMDOpenTool" type="Archive">
     <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.OpenToolArchiver"/>
+    <property category="archiving" name="extraDeployRoots.1" value="F:import-ruleset-props.html"/>
+    <property category="archiving" name="extraDeployRoots.2" value="F:configure-ruleset-props.html"/>
+    <property category="archiving" name="extraDeployRoots.3" value="F:active-ruleset-props.html"/>
     <property category="archiving" name="overrideManifestPath" value="classes.opentools"/>
     <property category="archiving" name="targetPath" value="lib/PMDOpenTool.jar"/>
   </node>
-  <file path="classes.opentools"/>
-  <file path="copyfile.bat">
-    <property category="lh.cmdline" name="command" value="C:\Documents and Settings\David Craine\My Documents\InfoEther-SF\pmd\pmd-jbuilder\copyfile.bat"/>
-  </file>
-  <file path="src/net/sourceforge/pmd/jbuilder/PMDOpenTool.java"/>
-  <file path="Things to do.txt"/>
 </project>
