@@ -7,6 +7,8 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
+import net.sourceforge.pmd.ast.ASTResultType;
+import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.text.MessageFormat;
@@ -22,10 +24,9 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
         node.findChildrenOfType(ASTMethodDeclarator.class, methList);
 
         List getSetMethList = new ArrayList();
-        for (int i = 0; i < methList.size(); i++){
-            ASTMethodDeclarator meth = (ASTMethodDeclarator)methList.get(i);
-            String methName = meth.getImage();
-            if (methName.startsWith("get") || methName.startsWith("set") || methName.startsWith("is")){
+        for (Iterator i = methList.iterator(); i.hasNext();) {
+            ASTMethodDeclarator meth = (ASTMethodDeclarator)i.next();
+            if (isBeanAccessor(meth)) {
                 getSetMethList.add(meth);
             }
         }
@@ -43,8 +44,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
                 continue;
             }
             String varName = decl.getImage();
-            String firstChar = varName.substring(0,1);
-            varName = firstChar.toUpperCase() + varName.substring(1,varName.length());
+            varName = varName.substring(0,1).toUpperCase() + varName.substring(1,varName.length());
             boolean hasGetMethod =Arrays.binarySearch(methNameArray,"get" + varName) >= 0  || Arrays.binarySearch(methNameArray,"is" + varName) >= 0;
             boolean hasSetMethod = Arrays.binarySearch(methNameArray,"set" + varName) >= 0;
             if (!hasGetMethod || !hasSetMethod) {
@@ -53,5 +53,19 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             }
         }
         return super.visit(node, data);
+    }
+
+    private boolean isBeanAccessor(ASTMethodDeclarator meth) {
+        if (meth.getImage().startsWith("get") || meth.getImage().startsWith("set")){
+            return true;
+        }
+        if (meth.getImage().startsWith("is")) {
+            ASTResultType ret = (ASTResultType)meth.jjtGetParent().jjtGetChild(0);
+            List primitives = ret.findChildrenOfType(ASTPrimitiveType.class);
+            if (primitives.size() > 0 && ((ASTPrimitiveType)primitives.get(0)).isBoolean()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
