@@ -24,7 +24,7 @@ public class UseSingletonRuleTest
     public void testUseSingleton1() 
 	throws Throwable 
     {
-	Report report = process("design/UseSingleton1.java",
+	Report report = process("UseSingleton1.java",
 				new UseSingletonRule());
 	assertEquals( 1, report.size() );
     }
@@ -32,7 +32,7 @@ public class UseSingletonRuleTest
     public void testUseSingleton2() 
 	throws Throwable 
     {
-	Report report = process("design/UseSingleton2.java",
+	Report report = process("UseSingleton2.java",
 				new UseSingletonRule());
 	assertEquals( 0, report.size() );
     }
@@ -40,7 +40,7 @@ public class UseSingletonRuleTest
     public void testUseSingleton3() 
 	throws Throwable 
     {
-	Report report = process("design/UseSingleton3.java",
+	Report report = process("UseSingleton3.java",
 				new UseSingletonRule());
 	assertEquals( 1, report.size() );
     }
@@ -48,7 +48,7 @@ public class UseSingletonRuleTest
     public void testUseSingleton4() 
 	throws Throwable 
     {
-	Report report = process("design/UseSingleton4.java",
+	Report report = process("UseSingleton4.java",
 				new UseSingletonRule());
 	assertEquals( 0, report.size() );
     }
