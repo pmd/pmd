@@ -5,6 +5,8 @@ package test.net.sourceforge.pmd.testframework;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
+import net.sourceforge.pmd.dfa.DataFlowFacade;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
@@ -66,6 +68,10 @@ public class ParserTst extends TestCase {
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
+        SymbolFacade sf = new SymbolFacade();
+        sf.initializeWith(cu);
+        DataFlowFacade dff = new DataFlowFacade();
+        dff.initializeWith(cu);
         return (List)coll.getCollection();
     }
 }

@@ -7,8 +7,7 @@ import java.util.List;
 
 /**
  * @author raik
- *         <p/>
- *         Links data flow nodes eachother.
+ *         Links data flow nodes to each other.
  */
 public class Linker {
 

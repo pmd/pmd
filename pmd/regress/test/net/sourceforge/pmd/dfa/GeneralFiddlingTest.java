@@ -10,13 +10,6 @@ import net.sourceforge.pmd.dfa.DataFlowFacade;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: tom
- * Date: Sep 27, 2004
- * Time: 5:44:15 PM
- * To change this template use File | Settings | File Templates.
- */
 public class GeneralFiddlingTest extends ParserTst {
 
     public void test1() throws Throwable {

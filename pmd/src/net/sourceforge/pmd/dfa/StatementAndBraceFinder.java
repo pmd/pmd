@@ -42,38 +42,17 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         this.compute(node, "ASTConstructorDeclaration");
     }
 
-    private void compute(SimpleNode node, String name) {
-        this.dataFlow = new Structure();
-        this.dataFlow.addStartOrEndNode(node.getBeginLine()); // START
-        this.dataFlow.addNewNode(node);
-
-        node.jjtAccept(this, dataFlow);
-
-        this.dataFlow.addStartOrEndNode(node.getEndLine()); // END
-
-        Linker linker = new Linker(dataFlow);
-        try {
-            linker.computePaths();
-        } catch (LinkerException e) {
-            e.printStackTrace();
-        } catch (SequenceException e) {
-            e.printStackTrace();
-        }
-    }
-
-//  CREATE NODES
-
     public Object visit(ASTStatementExpression node, Object data) {
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node); // ASTStatementExpression
+        dataFlow.addNewNode(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTVariableDeclarator node, Object data) {
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node); // ASTVariableDeclarator
+        dataFlow.addNewNode(node);
         return super.visit(node, data);
     }
 
@@ -179,7 +158,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTBreakStatement node, Object data) {
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node); // ASTBreakStatement
+        dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
     }
@@ -188,7 +167,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTContinueStatement node, Object data) {
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node); // ASTContinueStatement
+        dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
     }
@@ -196,9 +175,28 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTReturnStatement node, Object data) {
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node); // ASTReturnStatement
+        dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
+    }
+
+    private void compute(SimpleNode node, String name) {
+        this.dataFlow = new Structure();
+        this.dataFlow.addStartOrEndNode(node.getBeginLine()); // START
+        this.dataFlow.addNewNode(node);
+
+        node.jjtAccept(this, dataFlow);
+
+        this.dataFlow.addStartOrEndNode(node.getEndLine()); // END
+
+        Linker linker = new Linker(dataFlow);
+        try {
+            linker.computePaths();
+        } catch (LinkerException e) {
+            e.printStackTrace();
+        } catch (SequenceException e) {
+            e.printStackTrace();
+        }
     }
 
     /*

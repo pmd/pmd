@@ -69,12 +69,12 @@ public class DataFlowNode implements IDataFlowNode {
         }
     }
 
-    public void setType(int type) {
-        this.type.set(type);
-    }
-
     public int getLine() {
         return this.line;
+    }
+
+    public void setType(int type) {
+        this.type.set(type);
     }
 
     public boolean isType(int type) {
@@ -116,5 +116,15 @@ public class DataFlowNode implements IDataFlowNode {
 
     public List getVariableAccess() {
         return this.variableAccess;
+    }
+
+    public String toString() {
+        String res = "DataFlowNode: ";
+        if (node == null) {
+            return res + "(SimpleNode is null)";
+        }
+        res += this.node.getClass().toString();
+        res += (node.getImage() == null ? "" : "(" + this.node.getImage() + ")");
+        return res;
     }
 }
