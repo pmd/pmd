@@ -1,3 +1,7 @@
+April 28 2003 - 0.3:
+Completely rewritten by Paul King; thanks Paul!
+Now any ruleset can be selected.
+
 April 21 2003 - 0.2:
 Changed Color.RED to Color.red; thanks to Michael Montuori for the bug report.
 Modified to run on the currently open file if a project is not available.

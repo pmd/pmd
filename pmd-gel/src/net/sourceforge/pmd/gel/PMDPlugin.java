@@ -1,24 +1,20 @@
 
 package net.sourceforge.pmd.gel;
-
-import java.awt.Dialog;
-import com.gexperts.gel.Editor;
+import java.util.AbstractList;
 import com.gexperts.gel.Gel;
 import com.gexperts.gel.GelAction;
-import com.gexperts.gel.Project;
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.StringReader;
-import java.io.FileInputStream;
 import java.util.Iterator;
-import java.util.Vector;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import javax.swing.ButtonGroup;
@@ -26,8 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.BorderFactory;
@@ -41,7 +36,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaLanguage;
 
-/** Description of the Class */
+/** This class allows Gel to invoke PMD on Java files */
 public class PMDPlugin implements GelAction {
   private boolean selectedAll;
   private boolean haveFile;
@@ -52,10 +47,11 @@ public class PMDPlugin implements GelAction {
   private String[] rulesetFilenames;
   private boolean[] rulesetInuse;
   private JCheckBox[] rulesetChecks;
-  private static final String defaultRulesets = "rulesets/unusedcode.xml,rulesets/basic.xml";
-
-  /**Constructor for the PMDPlugin object */
-  public PMDPlugin() { }
+  private static final String DEFAULT_RULES =
+    "rulesets/unusedcode.xml,rulesets/basic.xml,rulesets/imports.xml";
+  private static final String PROPERTIES_FILE =
+    "/rulesets/rulesets.properties";
+  private Properties descriptions = new Properties();
 
   /**
    * Called by Gel to see if plugin is invokable (active)
@@ -64,9 +60,9 @@ public class PMDPlugin implements GelAction {
    * @return The active value
    */
   public boolean isActive(Gel gel) {
-    boolean haveFile = (gel.getEditor() != null &&
-      gel.getEditor().getFileName() != null &&
-      gel.getEditor().getFileName().endsWith(".java"));
+    boolean haveFile = (gel.getEditor() != null
+      && gel.getEditor().getFileName() != null
+      && gel.getEditor().getFileName().endsWith(".java"));
     boolean haveProject = (gel.getProject() != null);
     return (haveFile || haveProject);
   }
@@ -77,13 +73,12 @@ public class PMDPlugin implements GelAction {
    * @param gel Our pointer back to Gel
    */
   public void perform(Gel gel) {
-  int yyyy= 5;
     try {
       selectedAll = true;
       savedGel = gel;
-      haveFile = (gel.getEditor() != null &&
-        gel.getEditor().getFileName() != null &&
-        gel.getEditor().getFileName().endsWith(".java"));
+      haveFile = (gel.getEditor() != null
+        && gel.getEditor().getFileName() != null
+        && gel.getEditor().getFileName().endsWith(".java"));
       if (haveFile) {
         savedFilename = gel.getEditor().getFileName();
         if (savedFilename == null) {
@@ -97,7 +92,7 @@ public class PMDPlugin implements GelAction {
     }
   }
 
-  /** Description of the Method */
+  /** Does the actual work of calling PMD */
   private void invokePlugin() {
     java.io.Reader reader = null;
     try {
@@ -105,20 +100,21 @@ public class PMDPlugin implements GelAction {
       RuleContext ctx = new RuleContext();
       RuleSetFactory rsf = new RuleSetFactory();
       RuleSet ruleSet = new RuleSet();
-      String rules = ""; // change later to StringBuffer
+      StringBuffer rules = new StringBuffer();
       for (int i = 0; i < rulesetFilenames.length; i++) {
         if (rulesetInuse[i]) {
           if (rules.length() != 0) {
-            rules += ",";
+            rules.append(",");
           }
-          rules += rulesetFilenames[i];
+          rules.append(rulesetFilenames[i]);
         }
       }
       if (rules.length() == 0) {
         return;
       }
-      savedGel.addMessage("PMD plugin activated on " + (selectedAll ? "all files" : savedFilename));
-      ruleSet.addRuleSet(rsf.createRuleSet(rules));
+      savedGel.addMessage("PMD plugin activated on "
+        + (selectedAll ? "all files" : savedFilename));
+      ruleSet.addRuleSet(rsf.createRuleSet(rules.toString()));
       ctx.setReport(new Report());
       if (!selectedAll) {
         String code = savedGel.getEditor().getContents();
@@ -126,10 +122,12 @@ public class PMDPlugin implements GelAction {
         reader = new StringReader(code);
         pmd.processFile(reader, ruleSet, ctx);
       } else {
-        for (Iterator iter = savedGel.getProject().getSourcePaths().iterator(); iter.hasNext(); ) {
+        Iterator iter = savedGel.getProject().getSourcePaths().iterator();
+        while (iter.hasNext()) {
           String srcDir = (String) iter.next();
           FileFinder ff = new FileFinder();
-          java.util.List files = ff.findFilesFrom(srcDir, new net.sourceforge.pmd.cpd.JavaLanguage.JavaFileOrDirectoryFilter(), true);
+          java.util.List files = ff.findFilesFrom(srcDir,
+            new JavaLanguage.JavaFileOrDirectoryFilter(), true);
           Iterator fileIter = files.iterator();
           while (fileIter.hasNext()) {
             File fileName = (File) fileIter.next();
@@ -148,7 +146,9 @@ public class PMDPlugin implements GelAction {
         Iterator i = r.iterator();
         while (i.hasNext()) {
           RuleViolation rv = (RuleViolation) i.next();
-          savedGel.addMessage(rv.getFilename() + ":" + rv.getLine() + ":" + rv.getDescription());
+          savedGel.addMessage(rv.getFilename() + ":"
+            + rv.getLine() + ":"
+            + rv.getDescription());
         }
       }
     } catch (Exception ex) {
@@ -157,14 +157,15 @@ public class PMDPlugin implements GelAction {
       if (reader != null) {
         try {
           reader.close();
-        } catch (Exception ex1) {}
+        } catch (Exception ex1) { }
       }
     }
     savedGel.addMessage("Done");
+    savedGel = null;
   }
 
   /**
-   * Gets the name attribute of the PMDPlugin object
+   * Gel uses this name in the plugin menu
    *
    * @return The name value
    */
@@ -174,17 +175,23 @@ public class PMDPlugin implements GelAction {
 
   private void createConfigPanel(boolean haveFile, boolean haveProject) {
     final JFrame optionsFrame = new JFrame();
+    Font headingFont = new Font("SansSerif", Font.BOLD, 12);
+//    javax.swing.UIManager.put("ToolTipUI","JoeToolTipUI");
+
     options = new JDialog(optionsFrame, "PMD Options");
-    Border padding = BorderFactory.createEmptyBorder(20, 20, 5, 5);
+    Border padding = BorderFactory.createEmptyBorder(10, 10, 5, 5);
     JPanel outerPanel = new JPanel();
     options.getContentPane().add(outerPanel);
     outerPanel.setLayout(new BorderLayout());
 
-    // options
-    JPanel optionsPanel = new JPanel();
-    optionsPanel.setBorder(padding);
+    // file options
+    JPanel fileOptionsPanel = new JPanel();
+    fileOptionsPanel.setBorder(padding);
     ButtonGroup btngroup = new ButtonGroup();
-    optionsPanel.setLayout(new GridLayout(haveFile && haveProject ? 2 : 1, 1));
+    fileOptionsPanel.setLayout(new GridLayout(haveFile && haveProject ? 3 : 2, 1));
+    JLabel fileOptionsLabel = new JLabel("Files to process:");
+    fileOptionsLabel.setFont(headingFont);
+    fileOptionsPanel.add(fileOptionsLabel);
 
     if (haveFile) {
       JRadioButton rbfile = new JRadioButton("Process current file: " + savedFilename, !haveProject);
@@ -195,7 +202,7 @@ public class PMDPlugin implements GelAction {
             selectedAll = false;
           }
         });
-      optionsPanel.add(rbfile);
+      fileOptionsPanel.add(rbfile);
     }
 
     if (haveProject) {
@@ -207,10 +214,10 @@ public class PMDPlugin implements GelAction {
             selectedAll = true;
           }
         });
-      optionsPanel.add(rball);
+      fileOptionsPanel.add(rball);
     }
 
-    outerPanel.add(optionsPanel, BorderLayout.NORTH);
+    outerPanel.add(fileOptionsPanel, BorderLayout.NORTH);
 
     // rules
     JPanel rulesPanel = new JPanel();
@@ -219,31 +226,36 @@ public class PMDPlugin implements GelAction {
     Properties props = new Properties(System.getProperties());
     java.io.InputStream in = null;
     try {
-      in = this.getClass().getResourceAsStream("/rulesets/rulesets.properties");
+      in = this.getClass().getResourceAsStream(PROPERTIES_FILE);
       props.load(in);
     } catch (Exception ex) {
-      savedGel.showMessage("Error getting rulesets file: " + ex.getMessage());
+      savedGel.showMessage("Error getting rulesets file (" + PROPERTIES_FILE
+        + "): " + ex.getMessage());
       return;
     } finally {
       if (in != null) {
         try {
           in.close();
-        } catch (Exception ex1) {}
+        } catch (Exception ex1) { }
       }
     }
     String files = props.getProperty("rulesets.filenames");
     StringTokenizer st = new StringTokenizer(files, ",");
     int size = st.countTokens();
-    rulesPanel.setLayout(new GridLayout(size, 1));
+    rulesPanel.setLayout(new GridLayout(size + 1, 1));
+    JLabel rulesLabel = new JLabel("Rulesets to use:");
+    rulesLabel.setFont(headingFont);
+    rulesPanel.add(rulesLabel);
     int index = 0;
     rulesetFilenames = new String[size];
     rulesetInuse = new boolean[size];
     rulesetChecks = new JCheckBox[size];
     while (st.hasMoreTokens()) {
       String label = st.nextToken();
-      boolean initialValue = (defaultRulesets.indexOf(label) != -1);
+      boolean initialValue = (DEFAULT_RULES.indexOf(label) != -1);
       JCheckBox jb = new JCheckBox(label, initialValue);
       rulesPanel.add(jb);
+      jb.setToolTipText(getDescription(label));
       rulesetFilenames[index] = label;
       rulesetInuse[index] = initialValue;
       rulesetChecks[index] = jb;
@@ -297,6 +309,58 @@ public class PMDPlugin implements GelAction {
     options.pack();
     options.setLocationRelativeTo(optionsFrame);
     options.setVisible(true);
+  }
+
+  private static final String START_TOKEN = "<description>";
+  private static final String END_TOKEN = "</description>";
+
+  // simplistic XML parsing routine - only one field of interest
+  private String getDescription(String rulesFilename) {
+    if (descriptions.containsKey(rulesFilename)) {
+      return descriptions.getProperty(rulesFilename);
+    }
+    BufferedReader br = null;
+    try {
+      int endPosn = 0;
+      int startPosn;
+      br = new BufferedReader(
+        new java.io.InputStreamReader(
+        this.getClass().getClassLoader().getResourceAsStream(rulesFilename)));
+      StringBuffer sb = new StringBuffer();
+      String line;
+      boolean found = false;
+      while (true) {
+        line = br.readLine();
+        if (line == null) {
+          break;
+        }
+        sb.append(line);
+        sb.append(" \n");
+        endPosn = line.indexOf(END_TOKEN);
+        if (endPosn != -1) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        return rulesFilename;
+      }
+      String lines = sb.toString();
+      startPosn = lines.indexOf(START_TOKEN);
+      endPosn = lines.indexOf(END_TOKEN);
+      if (startPosn == -1) {
+        return rulesFilename;
+      }
+      return (lines.substring(startPosn + START_TOKEN.length(), endPosn).trim());
+    } catch (Exception ex) {
+      return rulesFilename;
+    } finally {
+      try {
+        if (br != null) {
+          br.close();
+        }
+      } catch (Exception ignore) { }
+    }
   }
 
 }

@@ -4,7 +4,7 @@
 <property name="src" value="src\"/>
 <property name="classes" value="classes\"/>
 <property name="build" value="classes\"/>
-<property name="version" value="0.2"/>
+<property name="version" value="0.3"/>
 
 <path id="classpath.path">
 <pathelement location="${build}"/>
