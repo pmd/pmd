@@ -131,10 +131,7 @@ public class SimpleNodeTest
     public void testFindChildrenOfType() {
         ASTBlock block = new ASTBlock(2);
         block.jjtAddChild(new ASTReturnStatement(1), 0);
-
-        List nodes = new ArrayList();
-        block.findChildrenOfType(ASTReturnStatement.class, nodes);
-        assertEquals(1, nodes.size());
+        assertEquals(1, block.findChildrenOfType(ASTReturnStatement.class).size());
     }
 
     public void testFindChildrenOfTypeMultiple() {

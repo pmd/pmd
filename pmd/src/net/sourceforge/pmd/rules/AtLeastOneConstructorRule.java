@@ -14,9 +14,7 @@ import java.util.List;
 public class AtLeastOneConstructorRule extends AbstractRule implements Rule {
 
     public Object visit(ASTClassDeclaration node, Object data) {
-        List constructors = new ArrayList();
-        node.findChildrenOfType(ASTConstructorDeclaration.class, constructors);
-        if (constructors.isEmpty())  {
+        if (node.findChildrenOfType(ASTConstructorDeclaration.class).isEmpty())  {
             RuleContext ctx = (RuleContext)data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }

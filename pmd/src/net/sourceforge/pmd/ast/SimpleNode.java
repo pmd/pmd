@@ -4,6 +4,7 @@ package net.sourceforge.pmd.ast;
 import net.sourceforge.pmd.symboltable.Scope;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class SimpleNode implements Node {
   protected Node parent;
@@ -98,6 +99,12 @@ public class SimpleNode implements Node {
 
     public int getEndColumn() {
         return endColumn;
+    }
+
+    public List findChildrenOfType(Class targetType) {
+        List list = new ArrayList();
+        findChildrenOfType(targetType, list);
+        return list;
     }
 
     public void findChildrenOfType(Class targetType, List results) {

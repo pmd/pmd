@@ -24,9 +24,7 @@ public class AssignmentInOperandRule extends AbstractRule implements Rule {
     }
 
     private void checkForAssignmentInConditionalExpression(SimpleNode node, Object data) {
-        List kids = new ArrayList();
-        SimpleNode ifExpression = (SimpleNode)node.jjtGetChild(0);
-        ifExpression.findChildrenOfType(ASTAssignmentOperator.class, kids);
+        List kids = ((SimpleNode)node.jjtGetChild(0)).findChildrenOfType(ASTAssignmentOperator.class);
         if (!kids.isEmpty()) {
             RuleContext ctx = (RuleContext)data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
