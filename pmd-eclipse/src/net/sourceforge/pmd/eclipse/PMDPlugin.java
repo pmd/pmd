@@ -44,6 +44,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2003/07/30 19:29:02  phherlin
+ * Updating to PMD v1.2
+ *
  * Revision 1.10  2003/07/07 19:23:59  phherlin
  * Adding PMD violations view
  *
@@ -71,6 +74,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             "rulesets/javabeans.xml",
             "rulesets/junit.xml",
             "rulesets/naming.xml",
+            "rulesets/strictexception.xml",
             "rulesets/strings.xml",
             "rulesets/unusedcode.xml" };
 
