@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");
@@ -68,18 +69,11 @@ public class PMD {
         String reportFormat = args[1];
         String ruleSets = args[2];
 
-        File inputFile = new File(inputFileName);
-        if (!inputFile.exists()) {
-            throw new RuntimeException("File " + inputFileName + " doesn't exist");
-        }
-
         List files;
-        if (!inputFile.isDirectory()) {
-            files = new ArrayList();
-            files.add(inputFile);
+        if (inputFileName.indexOf(',') != -1) {
+            files = collectFromCommaDelimitedString(inputFileName);
         } else {
-            FileFinder finder = new FileFinder();
-            files = finder.findFilesFrom(inputFile.getAbsolutePath(), new JavaLanguage.JavaFileOrDirectoryFilter(), true);
+            files = collectFilesFromOneName(inputFileName);
         }
 
         PMD pmd = new PMD();
@@ -129,6 +123,34 @@ public class PMD {
             return;
         }
         System.out.println(renderer.render(ctx.getReport()));
+    }
+
+    private static List collectFilesFromOneName(String inputFileName) {
+        return collect(inputFileName);
+    }
+
+    private static List collectFromCommaDelimitedString(String fileList) {
+        List files = new ArrayList();
+        for (StringTokenizer st = new StringTokenizer(fileList, ","); st.hasMoreTokens();) {
+            files.addAll(collect(st.nextToken()));
+        }
+        return files;
+    }
+
+    private static List collect(String filename) {
+        File inputFile = new File(filename);
+        if (!inputFile.exists()) {
+            throw new RuntimeException("File " + inputFile.getName() + " doesn't exist");
+        }
+        List files;
+        if (!inputFile.isDirectory()) {
+            files = new ArrayList();
+            files.add(inputFile);
+        } else {
+            FileFinder finder = new FileFinder();
+            files = finder.findFilesFrom(inputFile.getAbsolutePath(), new JavaLanguage.JavaFileOrDirectoryFilter(), true);
+        }
+        return files;
     }
 
     private static void usage() {
