@@ -5,6 +5,8 @@ import net.sourceforge.pmd.RuleSet;
 import java.util.Iterator;
 import net.sourceforge.pmd.Rule;
 import java.util.HashMap;
+import com.borland.primetime.ide.Browser;
+import com.borland.primetime.ide.MessageCategory;
 
 /**
  * <p>Title: JBuilder OpenTool for PMD</p>
@@ -19,6 +21,7 @@ public class RuleSetProperty {
     private  GlobalProperty prop;
     private RuleSet originalRuleSet;
     private RuleSet activeRuleSet;
+    private static MessageCategory msgCat = new MessageCategory("test");
 
     /**
      * These values show the selection state of the rules as contained in the GlobalProperties
@@ -28,7 +31,7 @@ public class RuleSetProperty {
 
     /**
      * these values represent the current selection state of the rules as shown in the interface
-     * as and NOT their state as persisted in the GlobalProperties
+     * and NOT their state as persisted in the GlobalProperties
      */
     private HashMap ruleSelectionState = new HashMap();
 
@@ -94,9 +97,11 @@ public class RuleSetProperty {
     }
 
     /**
-     * determines whether a particular rule is enabled within the currently active ruleset
+     * Gets the current selection state of the rule.  This is the state as it appears in the interface and
+     * not necessarily as it is represented in the global property.  The selection state is used to set the
+     * GlobalProperty once this RuleSetProperty is revalidated.
      * @param ruleName the rule name
-     * @return true of the rule is enabled, false otherwise
+     * @return true of the rule is selected, false otherwise
      */
     public boolean isRuleSelected(String ruleName) {
         return ((Boolean)ruleSelectionState.get(buildPropName(originalRuleSet.getName(), ruleName))).booleanValue();

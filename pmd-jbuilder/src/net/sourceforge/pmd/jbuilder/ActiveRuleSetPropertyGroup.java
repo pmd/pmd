@@ -20,6 +20,8 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSet;
 import java.util.Iterator;
 import java.util.HashMap;
+import com.borland.primetime.ide.MessageCategory;
+import com.borland.primetime.ide.Browser;
 
 
 
@@ -29,15 +31,27 @@ import java.util.HashMap;
 public class ActiveRuleSetPropertyGroup
         implements PropertyGroup {
 
+    public static ActiveRuleSetPropertyGroup currentInstance = null;
     public static final String RULESETS = "RuleSets";
     public static final Object RULESETS_TOPIC = new Object();
-    public static HashMap ruleSets = new HashMap();
+    public HashMap ruleSets = new HashMap();
+    private MessageCategory msgCat = new MessageCategory("test");
 
+    /**
+    * Standard Constructor
+    */
+    public ActiveRuleSetPropertyGroup () {
+        currentInstance = this;
+    }
+
+    /**
+     * Called by JBuilder
+     */
+    public void initializeProperties () {
     /**
      * Populate the ruleSets hashmap with the known rule sets and their corresponding
      * global properties.
      */
-    static {
         try {
             RuleSetFactory rsf = new RuleSetFactory();
             Iterator iter = rsf.getRegisteredRuleSets();
@@ -52,18 +66,7 @@ public class ActiveRuleSetPropertyGroup
         catch (Exception e) {
         e.printStackTrace();
         }
-    }
 
-    /**
-    * Standard Constructor
-    */
-    public ActiveRuleSetPropertyGroup () {
-   }
-
-    /**
-     * Called by JBuilder
-     */
-    public void initializeProperties () {
     }
 
     /**

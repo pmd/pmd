@@ -57,7 +57,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
          * Go through all the ruleSetProperties objects and revalidate them to persist
          * their global properties
          */
-        for (Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator(); iter.hasNext(); ) {
+        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
             rsp.revalidateRules();
         }
@@ -105,7 +105,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         }
         );
         //get the list if rule sets and populate the listRuleSets model
-        for (Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator(); iter.hasNext();) {
+        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext();) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
             dlmRuleSets.addElement(rsp.getActiveRuleSet().getName());
             listRuleSets.updateUI();
@@ -140,8 +140,10 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         this.dlmRules.clear();
         String selectedRuleSet = ((JList)e.getSource()).getSelectedValue().toString();
         //get the RuleSetProperty for this ruleset
-        RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.ruleSets.get(selectedRuleSet);
+        RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(selectedRuleSet);
         //iterate over the rules from of the rule set
+        //We need to iterate over the originalRuleSet because the active rule set only
+        //has the rules that have been enabled
         for (Iterator iter = rsp.getOriginalRuleSet().getRules().iterator(); iter.hasNext(); ) {
             Rule rule = (Rule)iter.next();
             String ruleName = rule.getName();
@@ -193,7 +195,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
                     //get the currently selected rule set
                     String ruleSetName = listRuleSets.getSelectedValue().toString();
                     //get the RuleSetProperty object
-                    RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.ruleSets.get(ruleSetName);
+                    RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(ruleSetName);
                     //update the selection setting for this rule in the rule set property
                     rsp.setRuleSelected(rd.getName(), rd.isSelected());
 

@@ -66,7 +66,7 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
      */
     private void initRuleSplitPanes () {
         //loop through the sets of rules and place them in the appropriate pane based upon their setting
-        Iterator iter = ActiveRuleSetPropertyGroup.ruleSets.values().iterator();
+        Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator();
         while (iter.hasNext()) {
             RuleSetProperty rsp = (RuleSetProperty)iter.next();
             ListEntry le = new ListEntry(rsp.getActiveRuleSet().getName(), rsp.getGlobalProperty());
