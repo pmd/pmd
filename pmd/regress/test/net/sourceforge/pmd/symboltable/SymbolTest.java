@@ -3,10 +3,10 @@
  * Date: Jun 19, 2002
  * Time: 11:59:24 AM
  */
-package test.net.sourceforge.pmd;
+package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.Symbol;
+import net.sourceforge.pmd.symboltable.Symbol;
 
 public class SymbolTest extends TestCase {
 

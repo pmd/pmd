@@ -3,10 +3,10 @@
  * Date: Jul 12, 2002
  * Time: 8:10:10 PM
  */
-package test.net.sourceforge.pmd;
+package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.TypeSet;
+import net.sourceforge.pmd.symboltable.TypeSet;
 import net.sourceforge.pmd.PMD;
 
 import java.io.File;

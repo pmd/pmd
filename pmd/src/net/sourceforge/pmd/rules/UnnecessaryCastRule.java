@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.TypeSet;
+import net.sourceforge.pmd.symboltable.TypeSet;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTCastExpression;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;

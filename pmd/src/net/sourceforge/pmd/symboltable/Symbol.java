@@ -3,7 +3,7 @@
  * Date: Jun 19, 2002
  * Time: 11:48:50 AM
  */
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.Node;
 
@@ -11,7 +11,6 @@ public class Symbol {
 
     private String image;
     private int line;
-    private Node node;
 
     public Symbol(String image, int line) {
         this.image = image;
@@ -24,10 +23,6 @@ public class Symbol {
 
     public String getImage() {
         return image;
-    }
-
-    public void setASTNode(Node node) {
-        this.node = node;
     }
 
     public boolean equals(Object o) {

@@ -3,11 +3,12 @@
  * Date: Jun 19, 2002
  * Time: 11:09:06 AM
  */
-package test.net.sourceforge.pmd;
+package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.SymbolTable;
+import net.sourceforge.pmd.symboltable.SymbolTable;
+import net.sourceforge.pmd.symboltable.Symbol;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
@@ -49,20 +50,20 @@ public class SymbolTableTest extends TestCase {
         SymbolTable s = new SymbolTable();
         s.add(FOO);
         assertTrue(s.getUnusedSymbols().hasNext());
-        s.recordPossibleUsageOf(FOO);
+        s.recordPossibleUsageOf(FOO, null);
         assertTrue(!s.getUnusedSymbols().hasNext());
     }
 
     public void testRecordPossibleUsage() {
         SymbolTable parent = new SymbolTable();
         SymbolTable child = new SymbolTable(parent);
-        child.recordPossibleUsageOf(new Symbol("bar", 10));
+        child.recordPossibleUsageOf(new Symbol("bar", 10), null);
         assertTrue(!parent.getUnusedSymbols().hasNext());
     }
 
     public void testRecordPossibleUsage2() {
         SymbolTable s = new SymbolTable();
-        s.recordPossibleUsageOf(new Symbol("bar", 10));
+        s.recordPossibleUsageOf(new Symbol("bar", 10), null);
         assertTrue(!s.getUnusedSymbols().hasNext());
     }
 
@@ -77,7 +78,7 @@ public class SymbolTableTest extends TestCase {
         SymbolTable parent = new SymbolTable();
         parent.add(FOO);
         SymbolTable child = new SymbolTable(parent);
-        child.recordPossibleUsageOf(FOO);
+        child.recordPossibleUsageOf(FOO, null);
         assertTrue(!parent.getUnusedSymbols().hasNext());
     }
 

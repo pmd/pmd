@@ -3,7 +3,7 @@
  * Date: Jun 21, 2002
  * Time: 2:11:15 PM
  */
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.symboltable;
 
 import java.util.Stack;
 

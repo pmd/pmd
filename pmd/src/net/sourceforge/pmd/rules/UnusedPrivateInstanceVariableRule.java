@@ -13,8 +13,11 @@ import java.text.MessageFormat;
 
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.symboltable.Symbol;
+import net.sourceforge.pmd.symboltable.Namespace;
+import net.sourceforge.pmd.symboltable.SymbolTable;
 
-public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
+public class UnusedPrivateInstanceVariableRule extends AbstractRule {
 
     private Stack nameSpaces = new Stack();
     private boolean foundDeclarationsAlready;
@@ -31,7 +34,12 @@ public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
         foundDeclarationsAlready = false;
         super.visit(node, data);
         if (!nameSpaces.isEmpty()) {
-            harvestUnused((RuleContext)data, ((Namespace)nameSpaces.peek()).peek());
+            RuleContext ctx = (RuleContext)data;
+            SymbolTable table = ((Namespace)nameSpaces.peek()).peek();
+            for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
+                Symbol symbol = (Symbol)i.next();
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
+            }
         }
         return data;
     }
@@ -107,9 +115,11 @@ public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
     private void recordPossibleUsage(SimpleNode node, boolean force) {
         String otherImg = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(node.getImage().indexOf('.')+1);
         Namespace group = (Namespace)nameSpaces.peek();
-        if ((!params.contains(getEndName(node.getImage())) && !params.contains(otherImg)) || force) {
-            group.peek().recordPossibleUsageOf(new Symbol(getEndName(node.getImage()), node.getBeginLine()));
-            group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()));
+        String name1 = node.getImage();
+        if ((!params.contains((name1.indexOf('.') == -1) ? name1 : name1.substring(0, name1.indexOf('.'))) && !params.contains(otherImg)) || force) {
+            String name2 = node.getImage();
+            group.peek().recordPossibleUsageOf(new Symbol((name2.indexOf('.') == -1) ? name2 : name2.substring(0, name2.indexOf('.')), node.getBeginLine()), node);
+            group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()), node);
         }
     }
 }

@@ -3,11 +3,11 @@
  * Date: Jun 21, 2002
  * Time: 2:21:44 PM
  */
-package test.net.sourceforge.pmd;
+package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.Namespace;
-import net.sourceforge.pmd.SymbolTable;
+import net.sourceforge.pmd.symboltable.Namespace;
+import net.sourceforge.pmd.symboltable.SymbolTable;
 
 public class NamespaceTest extends TestCase{
 
