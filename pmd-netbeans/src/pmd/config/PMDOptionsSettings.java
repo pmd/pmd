@@ -49,7 +49,7 @@ public class PMDOptionsSettings extends SystemOption {
 	/** Sets the default rulesets and initializes the option  */
 	protected void initialize() {
 		super.initialize();
-		setRulesets( "rulesets/basic.xml,rulesets/imports.xml,rulesets/unusedcode.xml,rulesets/braces.xml" );
+		setRulesets( "rulesets/basic.xml,rulesets/imports.xml,rulesets/unusedcode.xml,rulesets/braces.xml,rulesets/design.xml,rulesets/strings.xml" );
 	}
 
 

@@ -4,7 +4,7 @@
 	<folder name="Services">
 		<file name="pmd-config-option.settings" url="config/option.xml">
 			<attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.config.Bundle"/>
-			<attr name="SystemFileSystem.icon" urlvalue="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif"/>
+			<attr name="SystemFileSystem.icon" urlvalue="nbresloc:/pmd/resources/MyActionIcon.gif"/>
 			<attr name="name" stringvalue="PMD Settings"/>
 		</file>
 	</folder>

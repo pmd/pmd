@@ -9,7 +9,7 @@
 				<!-- of openide module. The jar will be at <netbeans_home/lib/openide.jar                 -->
 				<!-- todo: Check out the license file, if the jar can be distributed with this module     -->
 				<pathelement path="lib/openide.jar"/>
-				<pathelement path="lib/pmd-1.0rc3.jar"/>
+				<pathelement path="lib/pmd-1.0.jar"/>
 			</classpath>
 		</javac>
 		<copy todir="build/classes">
@@ -36,7 +36,7 @@
 		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib\nbantext.jar" name="makenbm"/>
 		<mkdir dir="build/temp_distribution/netbeans/modules/ext"/>
 		<copy file="build/pmd.jar" tofile="build/temp_distribution/netbeans/modules/pmd.jar"/>
-		<copy file="lib/pmd-1.0rc3.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.0rc3.jar"/>
+		<copy file="lib/pmd-1.0.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.0.jar"/>
 		<makenbm file="build/pmd.nbm" homepage="http://pmd.sourceforge.net" module="build/pmd.jar" topdir="build/temp_distribution">
 			<license file="LICENSE.txt"/>
 		</makenbm>
@@ -45,15 +45,13 @@
 	<target depends="clean,nbm" description="Builds the distribution" name="distribution">
 		<zip compress="true" destfile="build\pmd-netbeans-bin.zip">
 			<zipfileset dir=".">
-				<include name="LICENSE.txt"/>
-				<include name="README.txt"/>
+				<include name="*.txt"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build\pmd.nbm"/>
 		</zip>
 		<zip compress="true" destfile="build\pmd-netbeans-src.zip">
 			<zipfileset dir=".">
-				<include name="LICENSE.txt"/>
-				<include name="README.txt"/>
+				<include name="*.txt"/>
 				<include name="build.xml"/>
 				<include name="src/**/*"/>
 				<exclude name="**/.nbattrs"/>

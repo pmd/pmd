@@ -15,7 +15,7 @@ Finish, restart the IDE and you're done :)
 USE
 ------------------------
 
-Right click on a folder or a java file, choose tools, PMD and watch the tool
+Right click on one or more folders or java files, choose tools, PMD and watch the tool
 find your flawes. The tool is also located under the global tools menu. Double 
 click on the errormessages in the output pane to go to the line in the
 java-file to correct the problem PMD discovered.
@@ -31,4 +31,4 @@ rulesets.
 ------------------------
 KNOWN BUGS
 ------------------------
-NullPointers when double clicking on a output line and the editor is not open.
+633432 - pmd-netbeans can't change settings in Sun ONE Studio 4

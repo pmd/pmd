@@ -6,6 +6,9 @@ Version 0.3
 - Added our own annotation type:
   - With our own icon
   - That is removed when the line is edited
+- Updated pmd to version 1.0. Checkout the new rulesets.
+- Fixed bug 633424
+- Fixed bug 633426
 
 
 Version 0.2

@@ -87,7 +87,7 @@ public class RunPMDAction extends CookieAction {
 	 * @return the name of the icon
 	 */
 	protected String iconResource() {
-		return "pmd/resources/MyActionIcon.gif";
+		return "/pmd/resources/MyActionIcon.gif";
 	}
 
 
@@ -118,7 +118,7 @@ public class RunPMDAction extends CookieAction {
 	 * @see org.openide.util.actions.SystemAction#MODE_EXACTLY_ONE
 	 */
 	protected int mode() {
-		return MODE_EXACTLY_ONE;
+		return MODE_ALL;
 	}
 
 
@@ -181,23 +181,26 @@ public class RunPMDAction extends CookieAction {
 		FaultRegistry.clearRegistry();
 		try {
 			printed = false;
-			SourceCookie cookie = ( SourceCookie )node[0].getCookie( SourceCookie.class );
 			InputOutput io = TopManager.getDefault().getIO( "PMD output", false );
 			io.select();
 			io.getOut().reset();
-			//Checks to see if it's a java source file
-			if( cookie != null ) {
-				checkCookie( ( DataObject )node[0].getCookie( DataObject.class ), listener, io.getOut() );
-			}
-			//Or if it's a folder
-			else {
-				DataFolder folder = ( DataFolder )node[0].getCookie( DataFolder.class );
-				Enumeration enumeration = folder.children( true );
-				while( enumeration.hasMoreElements() ) {
-					DataObject dataobject = ( DataObject )enumeration.nextElement();
-					cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
-					if( cookie != null ) {
-						checkCookie( dataobject, listener, io.getOut() );
+			for( int i = 0; i < node.length; i++ ) {
+				SourceCookie cookie = ( SourceCookie )node[i].getCookie( SourceCookie.class );
+
+				//Checks to see if it's a java source file
+				if( cookie != null ) {
+					checkCookie( ( DataObject )node[i].getCookie( DataObject.class ), listener, io.getOut() );
+				}
+				//Or if it's a folder
+				else {
+					DataFolder folder = ( DataFolder )node[i].getCookie( DataFolder.class );
+					Enumeration enumeration = folder.children( true );
+					while( enumeration.hasMoreElements() ) {
+						DataObject dataobject = ( DataObject )enumeration.nextElement();
+						cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
+						if( cookie != null ) {
+							checkCookie( dataobject, listener, io.getOut() );
+						}
 					}
 				}
 			}

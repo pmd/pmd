@@ -70,11 +70,13 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 	 * @return the icon
 	 */
 	public Image getIcon( int type ) {
+		Image img;
 		if( type == BeanInfo.ICON_COLOR_16x16 || type == BeanInfo.ICON_MONO_16x16 ) {
-			return Utilities.loadImage( "pmd/resources/PMDOptionsSettingsIcon.gif" );
+			img = Utilities.loadImage( "pmd/resources/MyActionIcon.gif" );
 		}
 		else {
-			return Utilities.loadImage( "pmd/resources/PMDOptionsSettingsIcon32.gif" );
+			img = Utilities.loadImage( "pmd/resources/PMDOptionsSettingsIcon32.gif" );
 		}
+		return img;
 	}
 }
