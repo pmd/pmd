@@ -207,8 +207,8 @@ which should either be acted on or reported.
     <subsection name="Run PMD using your new ruleset">
     <p>
     Remember when we ran go.bat over the Example.java file?  Do it again.  This time your "hello world" will show up right after the
-    AST gets printed out.  If it doesn't, post a message to the
-    forum - http://sourceforge.net/forum/forum.php?forum_id=188192 - so we can improve this document :-)
+    AST gets printed out.  If it doesn't, post a message to
+    <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can improve this document :-)
     </p>
     </subsection>
 
@@ -236,8 +236,8 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </source>
     </subsection>
     <p>
-    TODO - if you don't understand the code for the rule, post a message to the
-    forum - http://sourceforge.net/forum/forum.php?forum_id=188192 - so we can improve this document :-)
+    TODO - if you don't understand the code for the rule, post a message
+    to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can improve this document :-)
     </p>
 
     <subsection name="Repeat as necessary">
@@ -252,7 +252,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </p>
     <p>
     You're rolling now.  If you think a rule would benefit the Java development community as a whole,
-    post a message to the forum - http://sourceforge.net/forum/forum.php?forum_id=188192 - so we can get the rule
+    post a message to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can get the rule
     moved into one of the core rulesets.  Thanks!
     </p>
     </subsection>
