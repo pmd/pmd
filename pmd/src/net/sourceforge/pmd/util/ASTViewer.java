@@ -5,22 +5,27 @@
  */
 package net.sourceforge.pmd.util;
 
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ParseException;
-
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
 import java.io.StringReader;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ParseException;
 
 public class ASTViewer {
 
@@ -60,30 +65,31 @@ public class ASTViewer {
         }
     }
 
-    private JEditorPane codeEditorPane = new JEditorPane();
+    private JTextPane codeEditorPane = new JTextPane();
     private JTextArea astArea = new JTextArea();
     private JFrame frame = new JFrame("AST Viewer");
 
     public ASTViewer() {
-        JPanel codePanel = new JPanel();
-        codeEditorPane.setPreferredSize(new Dimension(500, 700));
+        JSmartPanel codePanel = new JSmartPanel();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
-        codePanel.add(codeScrollPane);
+        codePanel.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, 
+                GridBagConstraints.NORTH, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 0));
 
-        JPanel astPanel = new JPanel();
+        JSmartPanel astPanel = new JSmartPanel();
         astArea.setRows(40);
         astArea.setColumns(40);
         JScrollPane astScrollPane = new JScrollPane(astArea);
-        astPanel.add(astScrollPane);
-
+        astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, 
+                GridBagConstraints.NORTH, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 0));
 
         JButton showButton = new JButton("Show AST");
         showButton.setMnemonic('s');
         showButton.addActionListener(new ShowListener());
 
         frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(codePanel, BorderLayout.WEST);
-        frame.getContentPane().add(astPanel, BorderLayout.EAST);
+        frame.getContentPane().add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, astPanel), BorderLayout.NORTH); 
         frame.getContentPane().add(showButton, BorderLayout.SOUTH);
 
         frame.setSize(1000, 800);
@@ -95,4 +101,45 @@ public class ASTViewer {
     public static void main(String[] args) {
         new ASTViewer();
     }
+    
+    public class JSmartPanel extends JPanel {
+
+       private GridBagConstraints constraints;
+
+       /**
+        * Create a JPanel with a GridBagLayout layout
+        *
+        * @see java.awt.GridBagLayout
+        */
+       public JSmartPanel () {
+          super(new GridBagLayout());
+          constraints = new GridBagConstraints();
+       }
+
+       /**
+        * Add a component to the layout
+        *
+        * @see java.awt.GridBagLayout
+        * @see java.awt.GridBagConstraints
+        */
+       public void add (Component comp,
+                        int gridx, int gridy, int gridwidth, int gridheight,
+                        double weightx, double weighty,
+                        int anchor, int fill,
+                        Insets insets) {
+          constraints.gridx = gridx;
+          constraints.gridy = gridy;
+          constraints.gridwidth = gridwidth;
+          constraints.gridheight = gridheight;
+          constraints.weightx = weightx;
+          constraints.weighty = weighty;
+          constraints.anchor = anchor;
+          constraints.fill = fill;
+          constraints.insets = insets;
+         
+          add(comp, constraints);
+       }
+
+    }
+
 }
