@@ -72,7 +72,7 @@ public class CPDTask extends Task {
                 printIfVerbose("Duplicates found; putting a report in " + outputFile);
             }
 	        Writer writer = new BufferedWriter(new FileWriter(outputFile));
-	        writer.write(cpd.getReport());
+	        writer.write(new SimpleRenderer().render(cpd.getMatches()));
 	        writer.close();
     	}catch(IOException ex){
     		ex.printStackTrace();

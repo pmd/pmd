@@ -36,23 +36,6 @@ public class CPD {
         return matchAlgorithm.matches();
     }
 
-    public String getReport() {
-        // yikes.  there's a dire need for refactoring here.
-        StringBuffer rpt = new StringBuffer();
-        for (Iterator i = matchAlgorithm.matches(); i.hasNext();) {
-            Match match = (Match)i.next();
-            rpt.append("=====================================================================" + EOL);
-            rpt.append("Found a " + match.getLineCount() + " line (" + match.getTokenCount() + " tokens) duplication in the following files: " + EOL);
-            for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
-                Mark mark = (Mark)occurrences.next();
-                rpt.append("Starting at line " + mark.getBeginLine() + " of " + mark.getFile() + EOL);
-            }
-            rpt.append(match.getSourceCodeSlice() + EOL);
-        }
-        return rpt.toString();
-    }
-
-
     public void add(File file) throws IOException {
         add(1, file);
     }
@@ -99,7 +82,7 @@ public class CPD {
             long start = System.currentTimeMillis();
             cpd.go();
             long total = System.currentTimeMillis() - start;
-            System.out.println(cpd.getReport());
+            System.out.println(new SimpleRenderer().render(cpd.getMatches()));
             System.out.println("That took " + total + " milliseconds");
         } catch (Exception e) {
             e.printStackTrace();

@@ -171,7 +171,7 @@ public class GUI implements CPDListener {
             t.start();
             cpd.go();
             t.stop();
-            String report = cpd.getReport();
+            String report = new SimpleRenderer().render(cpd.getMatches());
             if (report.length() == 0) {
                 JOptionPane.showMessageDialog(frame, "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
             } else {
