@@ -1,3 +1,6 @@
+????? - 1.06:
+TODO - fix it so tests and rules don't duplicate the xpath expressions
+
 April 17 - 1.05:
 Added new rules: ReturnFromFinallyBlock, SimplifyBooleanExpressions
 Added a new Ant task for CPD; thanks to Andy Glover for the code.
@@ -7,7 +10,6 @@ Rebuilt parser with JavaCC 3.0; made several parser optimizations.
 The Ant task now accepts a <classpath> element to aid in loading custom rulesets.  Thanks to Luke Francl for the suggestion.
 Fixed several bugs in UnnecessaryConstructorRule; thanks to Adam Nemeth for the reports and fixes.
 All test-data classes have been inlined into their respective JUnit tests.
-TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 March 21, 2003 - 1.04
 Added new rules: ConstructorCallsOverridableMethodRule, AtLeastOneConstructorRule, JUnitAssertionsShouldIncludeMessageRule, DoubleCheckedLockingRule, ExcessivePublicCountRule, AccessorClassGenerationRule

@@ -26,7 +26,7 @@ Prepare binary release:
 rm -rf ~/tmp/pmd-1.05
 mkdir -p ~/tmp/pmd-1.05/etc ~/tmp/pmd/lib
 cp run.bat run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.bat astviewer.sh ~/tmp/pmd-1.05/etc
-cp ../lib/pmd-1.05.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd/lib
+cp ../lib/pmd-1.05.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.05/lib/
 cp -R xslt/ ~/tmp/pmd-1.05/etc/xslt/
 cp -R ../target/docs ~/tmp/pmd-1.05
 cd ~/tmp
@@ -36,12 +36,14 @@ Time to tag:
 cvs -q rtag -D tomorrow "pmd_release_1_05" pmd
 
 Prepare source release:
-rm -rf ~/tmp/pmd
-mkdir -p ~/tmp/pmd
-cvs -q export -d /home/tom/tmp/pmd -r pmd_release_1_05 pmd
-cp pmd/lib/pmd-1.05.jar ~/tmp/pmd/lib
-cp -R pmd/target/docs ~/tmp/pmd/
-zip -q -r ~/tmp/pmd-src-1.05.zip ~/tmp/pmd // TODO need to add a -b in here
+rm -rf ~/tmp/pmd-1.05
+mkdir tmp
+cvs -q export -d /home/tom/tmp/pmd-1.05 -r pmd_release_1_05 pmd
+mv tmp ~/tmp/pmd-1.05
+cp pmd/lib/pmd-1.05.jar ~/tmp/pmd-1.05/lib
+cp -R pmd/target/docs ~/tmp/pmd-1.05/
+cd ~/tmp/
+zip -q -r pmd-src-1.05.zip pmd-1.05/
 
 if you see a bug and fix it, you can delete the release using:
 cvs rtag -d pmd_release_1_05 pmd
