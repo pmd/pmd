@@ -39,10 +39,6 @@ class ResultsViewer extends JEditorPane
     private RuleSet m_ruleSet;
     private Report m_report;
     private boolean m_loadRuleSets;
-    private JScrollPane m_parentScrollPane;
-    private PMDDirectoryReturnedEventHandler m_pmdDirectoryReturnedEventHandler;
-    private DirectoryTableEventHandler m_directoryTableEventHandler;
-    private RuleSetChangedEventHandler m_ruleSetChangedEventHandler;
 
     /**
      ********************************************************************************
