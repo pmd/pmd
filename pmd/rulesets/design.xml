@@ -377,7 +377,7 @@ public class Foo {
              <property name="xpath">
                  <value>
 <![CDATA[
-//ClassBodyDeclaration/Initializer[not(@Static='true')]
+//ClassOrInterfaceBodyDeclaration/Initializer[@Static='false']
 ]]>
                  </value>
              </property>
