@@ -48,6 +48,7 @@ class PreferencesEditor extends JPanel
     private JTextArea m_currentPathToPMD;
     private JTextArea m_userPathToPMD;
     private JTextArea m_sharedPathToPMD;
+    private JTextArea m_analysisResultsPath;
     private JComboBox m_lowestPriorityForAnalysis;
     private JMenuBar m_menuBar;
 
@@ -91,31 +92,43 @@ class PreferencesEditor extends JPanel
         JPanel dataPanel;
         int row;
         Preferences preferences;
+        EmptyBorder emptyBorder;
+        EtchedBorder etchedBorder;
+        CompoundBorder compoundBorder;
 
         dataPanel = new JPanel(new GridBagLayout());
-        EmptyBorder emptyBorder = new EmptyBorder(10, 10, 10, 10);
-        EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
-        CompoundBorder compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
+        emptyBorder = new EmptyBorder(1, 1, 1, 1);
+        etchedBorder = new EtchedBorder(EtchedBorder.RAISED);
+        compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
+        compoundBorder = new CompoundBorder(compoundBorder, etchedBorder);
+        emptyBorder = new EmptyBorder(10, 10, 10, 10);
+        compoundBorder = new CompoundBorder(compoundBorder, emptyBorder);
         dataPanel.setBorder(compoundBorder);
         preferences = Preferences.getPreferences();
 
         row = 0;
-        createLabel("Current Path to PMD", dataPanel, row, 0);
+        createLabel("Current Path to PMD Directory", dataPanel, row, 0);
         String currentPath = preferences.getCurrentPathToPMD();
         m_currentPathToPMD = createTextArea(currentPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_currentPathToPMD);
 
         row++;
-        createLabel("User Path to PMD", dataPanel, row, 0);
+        createLabel("User Path to PMD Directory", dataPanel, row, 0);
         String userPath = preferences.getUserPathToPMD();
         m_userPathToPMD = createTextArea(userPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_userPathToPMD);
 
         row++;
-        createLabel("Shared Path to PMD", dataPanel, row, 0);
+        createLabel("Shared Path to PMD Directory", dataPanel, row, 0);
         String sharedPath = preferences.getSharedPathToPMD();
         m_sharedPathToPMD = createTextArea(sharedPath, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_sharedPathToPMD);
+
+        row++;
+        createLabel("Analysis Results Files Path", dataPanel, row, 0);
+        String analysisResultsPath = preferences.getAnalysisResultsPath();
+        m_analysisResultsPath = createTextArea(analysisResultsPath, dataPanel, row, 1);
+        createFileButton(dataPanel, row, 2, m_analysisResultsPath);
 
         row++;
         createLabel("Lowest Priority for Analysis", dataPanel, row, 0);

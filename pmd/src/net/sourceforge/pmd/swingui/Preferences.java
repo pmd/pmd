@@ -24,6 +24,7 @@ class Preferences
     private String m_defaultUserPathToPMD;
     private String m_defaultSharedPathToPMD;
     private String m_defaultCurrentPathToPMD;
+    private String m_defaultAnalysisResultsPath;
     private String m_preferencesPath;
     private static Preferences m_preferences;
 
@@ -32,10 +33,11 @@ class Preferences
     private final String SHARED_PATH_TO_PMD = "shared_path_to_pmd";
     private final String CURRENT_PATH_TO_PMD = "current_path_to_pmd";
     private final String LOWEST_PRIORITY_FOR_ANALYSIS = "lowest_priority_for_analysis";
-    private final String SAVE_ANALYSIS_RESULTS_PATH = "save_analysis_results_path";
+    private final String ANALYSIS_RESULTS_PATH = "analysis_results_path";
     private final String UNIVERSAL_SEPARATOR = "&US;";
     private final String PREFERENCES_FILE_NAME = "user.preferences";
     private final String PMD_DIRECTORY = "pmd";
+    private final String ANALYSIS_RESULTS_DIRECTORY = "Analysis_Results";
     private final int LOWEST_RULE_PRIORITY = Rule.LOWEST_PRIORITY;
 
 
@@ -50,19 +52,29 @@ class Preferences
         // Default user rule set directory.
         //
         m_defaultUserPathToPMD = System.getProperty("user.home");
-        setPathToPMD(USER_PATH_TO_PMD, m_defaultUserPathToPMD);
+        setPath(USER_PATH_TO_PMD, m_defaultUserPathToPMD);
 
         //
         // Current rule set directory.
         //
         m_defaultCurrentPathToPMD = m_defaultUserPathToPMD;
-        setPathToPMD(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
+        setPath(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
 
         //
         // Default shared rule set directory.
         //
         m_defaultSharedPathToPMD = System.getProperty("user.dir");
-        setPathToPMD(SHARED_PATH_TO_PMD, m_defaultSharedPathToPMD);
+        setPath(SHARED_PATH_TO_PMD, m_defaultSharedPathToPMD);
+
+        //
+        // Default analysis results path.
+        //
+        m_defaultAnalysisResultsPath = m_defaultUserPathToPMD
+                                     + File.separator
+                                     + PMD_DIRECTORY
+                                     + File.separator
+                                     + ANALYSIS_RESULTS_DIRECTORY;
+        setPath(ANALYSIS_RESULTS_PATH, m_defaultAnalysisResultsPath);
 
         //
         // Preferences path.
@@ -156,6 +168,11 @@ class Preferences
             if (m_properties.containsKey(CURRENT_PATH_TO_PMD) == false)
             {
                 m_properties.setProperty(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
+            }
+
+            if (m_properties.containsKey(ANALYSIS_RESULTS_PATH) == false)
+            {
+                m_properties.setProperty(ANALYSIS_RESULTS_PATH, m_defaultAnalysisResultsPath);
             }
 
             return true;
@@ -257,7 +274,7 @@ class Preferences
      */
     protected void setCurrentPathToPMD(String path)
     {
-        setPathToPMD(CURRENT_PATH_TO_PMD, path);
+        setPath(CURRENT_PATH_TO_PMD, path);
     }
 
     /**
@@ -267,7 +284,7 @@ class Preferences
      */
     protected void setUserPathToPMD(String path)
     {
-        setPathToPMD(USER_PATH_TO_PMD, path);
+        setPath(USER_PATH_TO_PMD, path);
     }
 
     /**
@@ -277,7 +294,7 @@ class Preferences
      */
     protected void setSharedPathToPMD(String path)
     {
-        setPathToPMD(SHARED_PATH_TO_PMD, path);
+        setPath(SHARED_PATH_TO_PMD, path);
     }
 
     /**
@@ -286,7 +303,7 @@ class Preferences
      * @param name
      * @param directory
      */
-    private boolean setPathToPMD(String name, String directory)
+    private boolean setPath(String name, String directory)
     {
         name = trim(name);
         directory = trim(directory);
@@ -315,7 +332,7 @@ class Preferences
     {
         directory = encodePath(trim(directory));
 
-        m_properties.put(SAVE_ANALYSIS_RESULTS_PATH, directory);
+        m_properties.put(ANALYSIS_RESULTS_PATH, directory);
     }
 
     /**
@@ -351,7 +368,7 @@ class Preferences
         }
         catch (NumberFormatException exception)
         {
-            priority = 5;
+            priority = LOWEST_RULE_PRIORITY;
         }
 
         return priority;
@@ -434,15 +451,11 @@ class Preferences
      */
     protected String getAnalysisResultsPath()
     {
-        String path = decodePath(m_properties.getProperty(SAVE_ANALYSIS_RESULTS_PATH));
+        String path = decodePath(m_properties.getProperty(ANALYSIS_RESULTS_PATH));
 
         if (path == null)
         {
-            path = getUserPathToPMD()
-                 + File.separator
-                 + PMD_DIRECTORY
-                 + File.separator
-                 + "Analysis_Results";
+            path = m_defaultAnalysisResultsPath;
         }
 
         (new File(path)).mkdirs();
@@ -499,68 +512,6 @@ class Preferences
     {
         return getPathToPMD(SHARED_PATH_TO_PMD);
     }
-
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    protected String getPreference(String name)
-    {
-        String key = trim(name).toLowerCase();
-        String value = m_properties.getProperty(key);
-
-        if (value == null)
-        {
-            value = "";
-        }
-
-        return value;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param name
-     * @param value
-     */
-    protected boolean setPreference(String name, String value)
-    {
-        name = trim(name);
-
-        if (name.length() == 0)
-        {
-            return false;
-        }
-
-        if (value == null)
-        {
-            value = "";
-        }
-
-        String key = name.toLowerCase();
-
-        if (key.equals(USER_PATH_TO_PMD) && (value.length() == 0))
-        {
-            return false;
-        }
-
-        if (key.equals(SHARED_PATH_TO_PMD) && (value.length() == 0))
-        {
-            return false;
-        }
-
-        if (key.equals(CURRENT_PATH_TO_PMD) && (value.length() == 0))
-        {
-            return false;
-        }
-
-        m_properties.put(key, value);
-
-        return true;
-    }
-
 
     /**
      *************************************************************************
