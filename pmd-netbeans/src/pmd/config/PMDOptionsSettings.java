@@ -41,24 +41,22 @@ public class PMDOptionsSettings extends SystemOption {
 	/** The serialVersionUID. Don't change! */
 	private final static long serialVersionUID = 8418202279282091070L;
 
-	/** 
-	 * The constant for the rulesets property 
-	 * @deprecated this property is not in use.
-	 */
-	public final static String PROP_RULESETS = "rulesets";
-	
 	/** The constant for the rulesets property */
 	public final static String PROP_RULES = "rules";
+
+	public final static String PROP_CLASSPATH = "classpath";
+	
+	public final static String PROP_RULESETS = "rulesets";
 	
 	/** The default rules.*/
-	private static final String DEFAULT_RULES = 
+	private static final String DEFAULT_RULES =
 		"AvoidDuplicateLiterals, StringToString, StringInstantiation, JUnitStaticSuite, " +
 		"JUnitSpelling, ForLoopsMustUseBracesRule, IfElseStmtsMustUseBracesRule, " +
 		"WhileLoopsMustUseBracesRule, IfStmtsMustUseBraces, EmptyCatchBlock, EmptyIfStmt, " +
-		"EmptyWhileStmt, JumbledIncrementer, UnnecessaryConversionTemporaryRule, " + 
+		"EmptyWhileStmt, JumbledIncrementer, UnnecessaryConversionTemporaryRule, " +
 		"OverrideBothEqualsAndHashcodeRule, EmptyTryBlock, EmptySwitchStatements, " +
 		"EmptyFinallyBlock, UnusedLocalVariable, UnusedPrivateField, UnusedFormalParameter, " +
-		"UnnecessaryConstructorRule, UnusedPrivateMethod, SwitchStmtsShouldHaveDefault, " + 
+		"UnnecessaryConstructorRule, UnusedPrivateMethod, SwitchStmtsShouldHaveDefault, " +
 		"SimplifyBooleanReturnsRule, LooseCouplingRule, AvoidDeeplyNestedIfStmts, " +
 		"AvoidReassigningParametersRule, OnlyOneReturn, UseSingletonRule, " +
 		"DontImportJavaLang, UnusedImports, DuplicateImports, ";
@@ -68,7 +66,6 @@ public class PMDOptionsSettings extends SystemOption {
 	/** Sets the default rulesets and initializes the option */
 	protected void initialize() {
 		super.initialize();
-		setRulesets( "" );
 		setRules( DEFAULT_RULES );
 	}
 
@@ -104,24 +101,6 @@ public class PMDOptionsSettings extends SystemOption {
 	}
 
 
-	/** Returns the rulesets property
-	 * @deprecated not used anymore, use {@link #getRules}
-	 * @return the rulesets property
-	 */
-	public String getRulesets() {
-		return ( String )getProperty( PROP_RULESETS );
-	}
-
-
-	/** Sets the rulesets property
-	 * @deprecated not used anymore, use {@link #setRules}
-	 * @param rulesets the rulesets value to set
-	 */
-	public void setRulesets( String rulesets ) {
-		putProperty( PROP_RULESETS, rulesets, true );
-	}
-
-
 	/**
 	 * Returns the rulesets property
 	 *
@@ -141,4 +120,36 @@ public class PMDOptionsSettings extends SystemOption {
 		putProperty( PROP_RULES, rules, true );
 	}
 
+	/** Getter for property classpath.
+	 * @return Value of property classpath.
+	 *
+	 */
+	public String getClasspath() {
+		return (String)getProperty( PROP_CLASSPATH );
+	}	
+	
+	/** Setter for property classpath.
+	 * @param classpath New value of property classpath.
+	 *
+	 */
+	public void setClasspath(String classpath) {
+		putProperty( PROP_CLASSPATH, classpath, true );
+	}
+	
+	/** Getter for property rulesets.
+	 * @return Value of property rulesets.
+	 *
+	 */
+	public String getRulesets() {
+		return (String)getProperty( PROP_RULESETS );
+	}
+	
+	/** Setter for property rulesets.
+	 * @param rulesets New value of property rulesets.
+	 *
+	 */
+	public void setRulesets(String rulesets) {
+		putProperty( PROP_RULESETS, rulesets, true );
+	}
+	
 }
