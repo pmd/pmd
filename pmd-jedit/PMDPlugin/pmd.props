@@ -1,0 +1,53 @@
+#
+# Plugin properties
+#
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.name=PMD
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.author=Jiger Patel, Tom Copeland
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=2.2
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=jedit.html
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.3
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.02.01.00
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.2
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-1.2.1.jar jaxen-core-1.0-fcs.jar saxpath-1.0-fcs.jar pmd-swingui-0.1.jar
+
+#
+# Menu properties
+#
+
+#New jEdit 4.2 properties
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.activate=defer
+
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu.label=$PMD
+
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu=pmd-check-current-buffer pmd-check-all-open-buffers pmd-check-current-directory pmd-check-current-directory-recursively pmd-clear-errorlist %pmd-cpd
+pmd-cpd=cpd-currentfile cpd-dir cpd-dir-recursively
+
+pmd-check-current-buffer.label=Check current buffer
+pmd-check-all-open-buffers.label=Check all open buffers
+pmd-check-current-directory.label=Check all files in current directory
+pmd-check-current-directory-recursively.label=Check directory recursively
+pmd-clear-errorlist.label=Clear ErrorList
+pmd-cpd.label=Detect Duplicate Code
+cpd-currentfile.label=In Current File
+cpd-dir.label=In Directory
+cpd-dir-recursively.label=In Directory Recursively
+pmd-check-file.label=Check selected file(s)
+#
+# Option pane properties
+#
+
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.option-pane=pmd
+options.pmd.label=PMD
+options.pmd.code=new net.sourceforge.pmd.jedit.PMDOptionPane()
+
+#Dockables properties.
+cpd-viewer.title=Copy/Paste Detector
+
+#FS Browser properties
+
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.browser-menu=pmd-check-file pmd-check-current-directory pmd-check-current-directory-recursively
+
+
+
+
+

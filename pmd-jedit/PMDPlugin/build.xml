@@ -1,0 +1,78 @@
+<project name="PMDPlugin" default="jar" basedir=".">
+
+	<property file="build.properties"></property>
+	<property name="config" value="."/>
+	<property name="src" value="src/"/>
+	<property name="lib" value="lib"/>
+	<property name="build" value="build"/>
+	<property name="pmdjar" value="pmd-1.2.1.jar"/>
+	<property name="pluginversion" value="2.2"/>
+	<property name="jedit.install.dir" value="../.."/>
+	<property name="jedit.jars.dir" value="${jedit.install.dir}\jars"/>
+	<property name="install.dir"  value=".."/>
+
+
+	<path id="project.class.path">
+		<pathelement location="${jedit.install.dir}/jedit.jar"/>
+		<pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
+		<pathelement location="${lib}/${pmdjar}"/>
+		<pathelement location="${lib}/jaxen-core-1.0-fcs.jar"/>
+		<pathelement location="${lib}/pmd-swingui-0.1.jar"/>
+		<pathelement location="${lib}/saxpath-1.0-fcs.jar"/>
+		<pathelement location="${build}"/>
+	</path>
+
+    <target name="delete">
+        <delete file="${install.dir}/${ant.project.name}.jar"/>
+		<delete dir="${build}"/>
+        <mkdir dir="${build}"/>
+    </target>
+
+	<target name="compile">
+		<mkdir dir="${build}"/>
+		<javac
+			srcdir="${src}"
+			destdir="${build}"
+			debug="on"
+			deprecation="on">
+			<classpath refid="project.class.path"/>
+		</javac>
+	</target>
+
+    <target name="jar" depends="compile">
+		<jar jarfile="${install.dir}/${ant.project.name}.jar">
+			<fileset dir="${build}"/>
+			<fileset dir="${config}">
+				<include name="*.props"/>
+				<include name="*.xml"/>
+				<include name="*.html"/>
+			</fileset>
+		</jar>
+    </target>
+
+
+	<target name="dist" depends="clean">
+        <antcall target="jar"/>
+		<copy todir="${install.dir}">
+			<fileset casesensitive="false" dir="${lib}" includes="*.jar"></fileset>
+		</copy>
+	</target>
+
+    <target name="release">
+        <antcall target="clean"/>
+        <antcall target="jar"/>
+        <mkdir dir="tmp/jars"/>
+        <copy file="${install.dir}/${ant.project.name}.jar" todir="tmp/jars"/>
+        <copy file="${install.dir}/${pmdjar}" todir="tmp/jars"/>
+        <copy file="${lib}/jaxen-core-1.0-fcs.jar" todir="tmp/jars"/>
+        <copy file="${lib}/saxpath-1.0-fcs.jar" todir="tmp/jars"/>
+        <copy file="${lib}/pmd-swingui-0.1.jar" todir="tmp/jars"/>
+        <zip zipfile="pmd-jedit-bin-${pluginversion}.zip" basedir="tmp"/>
+        <move file="pmd-jedit-bin-${pluginversion}.zip" todir="${install.dir}"/>
+        <delete dir="tmp"/>
+    </target>
+
+	<target name="clean" depends="delete,compile">
+	</target>
+
+</project>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE ACTIONS SYSTEM "actions.dtd">
+<ACTIONS>
+  <ACTION NAME="pmd-check-file">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.checkFile(view,browser);
+    </CODE>
+  </ACTION>
+  <ACTION NAME="pmd-check-current-directory">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectory(view, browser,false);
+    </CODE>
+  </ACTION>
+  <ACTION NAME="pmd-check-current-directory-recursively">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectory(view, browser,true);
+    </CODE>
+  </ACTION>
+</ACTIONS>
