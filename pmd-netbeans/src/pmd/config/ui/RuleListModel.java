@@ -33,7 +33,6 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 
 import net.sourceforge.pmd.Rule;
-import pmd.config.ConfigUtils;
 
 /**
  * Common base class for list models for PMD rule lists.
@@ -90,14 +89,14 @@ public abstract class RuleListModel extends AbstractListModel {
 
 
 	/**
-	 * Removes <code>o</code> from the list
+	 * Removes <code>obj</code> from the list
 	 *
-	 * @param o the object to remove.
+	 * @param obj the object to remove.
 	 */
-	public void remove(Object o) {
-		int i = list.indexOf(o);
-		list.remove(o);
-		fireIntervalRemoved(this, i, i);
+	public void remove(Object obj) {
+		int ind = list.indexOf(obj);
+		list.remove(obj);
+		fireIntervalRemoved(this, ind, ind);
 	}
 
 
@@ -115,10 +114,10 @@ public abstract class RuleListModel extends AbstractListModel {
 	 * @param coll The collection of rules to add. Each element in this collection must be a Rule.
 	 */
 	public void addAll(Collection coll) {
-		int i = list.size();
+		int ind = list.size();
 		list.addAll(coll);
 		Collections.sort(list, new RuleComparator() );
-		fireIntervalAdded(this, i, list.size()); // FIXME: bogus indices!
+		fireIntervalAdded(this, ind, list.size()); // FIXME: bogus indices!
 	}
 
 

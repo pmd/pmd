@@ -8,7 +8,6 @@ package pmd.custom;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -26,8 +25,8 @@ public class RuleClassLoader extends ClassLoader {
 	 *
 	 * @param parent the parent classloader to delegate to, not null.
 	 */
-	public RuleClassLoader( ClassLoader parent ) {
-		super( parent );
+	public RuleClassLoader(ClassLoader parent) {
+		super(parent);
 	}
 
 
@@ -38,45 +37,31 @@ public class RuleClassLoader extends ClassLoader {
 	 * @param name the fully-qualified classname of the class to find, not null.
 	 * @return the class, or null if not found.
 	 */
-	protected Class findClass( String name ) {
-		ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, "Loading class " + name );
+	protected Class findClass(String name) {
+		ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, "Loading class " + name);
 
-		String className = name.replace( '.', '/' );
+		String className = name.replace('.', '/');
 		className += ".class";
 
 		CustomRuleSetSettings settings = PMDOptionsSettings.getDefault().getRulesets();
 		Iterator iterator = settings.getClassPath().iterator();
 		try {
-			while( iterator.hasNext() ) {
-				File jar = new File( (String)iterator.next() );
-				JarFile jarFile = new JarFile( jar, false );
-				JarEntry entry = jarFile.getJarEntry( className );
-				ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, entry.toString() );
-				if( entry != null ) {
-					BufferedInputStream stream = new BufferedInputStream( jarFile.getInputStream( entry ) );
+			while(iterator.hasNext()) {
+				File jar = new File((String)iterator.next());
+				JarFile jarFile = new JarFile(jar, false);
+				JarEntry entry = jarFile.getJarEntry(className);
+				ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL, entry.toString());
+				if(entry != null) {
+					BufferedInputStream stream = new BufferedInputStream(jarFile.getInputStream(entry));
 					byte buffer[] = new byte[stream.available()];
-					stream.read( buffer, 0, buffer.length );
-					return defineClass( name, buffer, 0, buffer.length );
+					stream.read(buffer, 0, buffer.length);
+					return defineClass(name, buffer, 0, buffer.length);
 				}
 			}
-		}
-		catch( IOException e ) {
+		} catch(IOException e) {
 			return null;
 		}
 		return null;
 	}
 
-
-	/**
-	 * Method for standalone testing, not used in PMD-NetBeans integration.
-	 *
-	 * @param args command-line arguments.
-	 * @exception Exception thrown when this method feels like it.
-	 */
-	public static void main( String args[] ) throws Exception {
-		Class clazz = Class.forName( "net.sourceforge.pmd.Report", true, new RuleClassLoader( RuleClassLoader.class.getClassLoader() ) );
-		Object o = clazz.newInstance();
-		Method method = clazz.getMethod( "hasMetrics", null );
-		System.out.println( method.invoke( o, null ) );
-	}
 }

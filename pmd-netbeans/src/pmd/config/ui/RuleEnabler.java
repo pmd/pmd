@@ -36,7 +36,6 @@ import javax.swing.event.TableModelListener;
 
 import net.sourceforge.pmd.Rule;
 import org.apache.oro.text.perl.Perl5Util;
-import org.openide.ErrorManager;
 import pmd.config.PMDOptionsSettings;
 
 /**

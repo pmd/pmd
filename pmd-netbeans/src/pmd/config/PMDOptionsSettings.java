@@ -79,8 +79,8 @@ public class PMDOptionsSettings extends SystemOption {
 	 */
 	public final static String PROP_ENABLE_SCAN = "EnableScan";
 	
-	/** Default interval for scanning, two seconds. **/
-	public static final int DEFAULT_SCAN_INTERVAL = 2;
+	/** Default interval for scanning, five seconds. **/
+	public static final int DEFAULT_SCAN_INTERVAL = 5;
 	
 	/** The default rules.*/
 	private static final String DEFAULT_RULES =

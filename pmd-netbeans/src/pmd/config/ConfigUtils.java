@@ -45,33 +45,33 @@ import pmd.custom.RuleClassLoader;
  * Configuration utilities for PMD module.
  */
 public abstract class ConfigUtils {
-
+	
 	/**
 	 * Extra ruleset factories added by calling {@link #addRuleSetFactory}.
 	 * May be null (equivalent to empty).
 	 */
 	private static ArrayList extraFactories = null;
-
+	
 	/**
 	 * Registers extra rules that are available.
 	 *
 	 * @param rules Collection of Rule objects.
 	 */
-	public static synchronized void addRuleSetFactory (RuleSetFactory fact) {
+	public static synchronized void addRuleSetFactory(RuleSetFactory fact) {
 		if (extraFactories == null) {
-			extraFactories = new ArrayList ();
+			extraFactories = new ArrayList();
 		}
-		extraFactories.add (fact);
+		extraFactories.add(fact);
 	}
-
+	
 	/**
 	 * Unregisters extra rules previously registered.
 	 *
 	 * @param rules Collection of Rule objects.
 	 */
-	public static synchronized void removeRuleSetFactory (RuleSetFactory fact) {
+	public static synchronized void removeRuleSetFactory(RuleSetFactory fact) {
 		if (extraFactories != null) {
-			extraFactories.remove (fact);
+			extraFactories.remove(fact);
 		}
 	}
 	
@@ -109,7 +109,7 @@ public abstract class ConfigUtils {
 		return list;
 	}
 	
-
+	
 	/**
 	 * Determines the list of rules to use.
 	 * This just delegates to {@link #createRuleList} with the argument
@@ -120,8 +120,8 @@ public abstract class ConfigUtils {
 	public static List getRuleList() {
 		return createRuleList( PMDOptionsSettings.getDefault().getRules() );
 	}
-
-
+	
+	
 	/**
 	 * Returns a particular string representation of the given list of PMD rules.
 	 * The representation consists of the names of the rules, each one
@@ -141,8 +141,8 @@ public abstract class ConfigUtils {
 		}
 		return String.valueOf( buffer );
 	}
-
-
+	
+	
 	/**
 	 * Gets a list of all PMD rules known to the environment.
 	 * This includes those shipped as part of PMD, and those configured in custom rulesets.
@@ -163,12 +163,12 @@ public abstract class ConfigUtils {
 					}
 					synchronized(ConfigUtils.class) {
 						if (extraFactories != null) {
-							iterator = extraFactories.iterator (); 
-							while (iterator.hasNext () ) {
-								ruleSetFactory = (RuleSetFactory)iterator.next ();
-								Iterator it = ruleSetFactory.getRegisteredRuleSets();
-								while( it.hasNext() ) {
-									RuleSet ruleset = ( RuleSet )it.next();
+							iterator = extraFactories.iterator();
+							while (iterator.hasNext() ) {
+								ruleSetFactory = (RuleSetFactory)iterator.next();
+								Iterator iter = ruleSetFactory.getRegisteredRuleSets();
+								while( iter.hasNext() ) {
+									RuleSet ruleset = ( RuleSet )iter.next();
 									list.addAll( ruleset.getRules() );
 								}
 							}
@@ -177,15 +177,15 @@ public abstract class ConfigUtils {
 				}
 				catch( RuleSetNotFoundException e ) {
 					ErrorManager.getDefault().notify(e);
-				}	
+				}
 			}
 			Iterator rulesets = settings.getRuleSets().iterator();
 			while( rulesets.hasNext() ) {
 				String ruleSetXml = (String)rulesets.next();
 				try {
-					RuleSet ruleset = ruleSetFactory.createRuleSet( 
-						new FileInputStream( ruleSetXml ), 
-						new RuleClassLoader( ConfigUtils.class.getClassLoader() ) );
+					RuleSet ruleset = ruleSetFactory.createRuleSet(
+					new FileInputStream( ruleSetXml ),
+					new RuleClassLoader( ConfigUtils.class.getClassLoader() ) );
 					list.addAll( ruleset.getRules() );
 				}
 				catch( RuntimeException e ) {

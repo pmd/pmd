@@ -45,7 +45,7 @@ public interface RunPMDCallback {
 	 *              less than or equal to the number of files reported in {@link #pmdStart}.
 	 * @return true if the PMD execution should continue, false if it should stop.
 	 */
-	boolean pmdProgress(int i);
+	boolean pmdProgress(int index);
 
 	/**
 	 * Notifies that the current PMD execution has finished.

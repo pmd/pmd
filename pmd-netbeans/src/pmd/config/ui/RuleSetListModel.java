@@ -49,23 +49,23 @@ public class RuleSetListModel extends AbstractListModel{
 		return list;
 	}
 	
-	public boolean contains( Object o ) {
-		return list.contains( o );
+	public boolean contains(Object obj) {
+		return list.contains(obj);
 	}
 	
-	public void removeElementAt( int i ) {
-		list.remove( i );
-		fireIntervalRemoved( this, i, i+1 );
+	public void removeElementAt(int index) {
+		list.remove(index);
+		fireIntervalRemoved(this, index, index + 1);
 	}
 	
-	public void addElement( Object o ) {
-		list.add( o );
-		fireIntervalAdded(o, getSize()-1, getSize() );
+	public void addElement(Object obj) {
+		list.add(obj);
+		fireIntervalAdded(obj, getSize() - 1, getSize() );
 	}
 	
-	public void setList( List list ) {
+	public void setList(List list) {
 		this.list = list;
-		fireIntervalAdded( list, 0, list.size() );
+		fireIntervalAdded(list, 0, list.size());
 	}
 	
 }

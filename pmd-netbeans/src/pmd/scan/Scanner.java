@@ -145,21 +145,21 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 		return "PMDScanner[" + node + "]";
 	}
 	
-	public void changedUpdate(DocumentEvent ev) {
+	public void changedUpdate(DocumentEvent evt) {
 		// Ignore these; they are just attribute changes. Actual typing appears as remove and insert updates.
 	}
 	
-	public void insertUpdate(DocumentEvent ev) {
+	public void insertUpdate(DocumentEvent evt) {
 		incrementModCount();
 	}
 	
-	public void removeUpdate(DocumentEvent ev) {
+	public void removeUpdate(DocumentEvent evt) {
 		incrementModCount();
 	}
 	
-	public void propertyChange(PropertyChangeEvent ev) {
-		if(ev.getSource() instanceof EditorCookie) {
-			EditorCookie cookie = (EditorCookie)ev.getSource();
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getSource() instanceof EditorCookie) {
+			EditorCookie cookie = (EditorCookie)evt.getSource();
 			if(subscribedDoc != null) {
 				subscribedDoc.removeDocumentListener(this);
 				subscribedDoc = null;
@@ -185,7 +185,7 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 				}
 			}
 		} else {
-			tracelog("Expected PropertyChangeEvent to come from EditorCookie, but it came from " + ev.getSource().getClass().getName());
+			tracelog("Expected PropertyChangeEvent to come from EditorCookie, but it came from " + evt.getSource().getClass().getName());
 		}
 	}
 	

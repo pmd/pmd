@@ -61,7 +61,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
-import org.openide.windows.TopComponent;
 
 import pmd.config.ConfigUtils;
 import pmd.scan.EditorChangeListener;
@@ -239,35 +238,33 @@ public class RunPMDAction extends CookieAction {
 		FaultRegistry.getInstance().clearRegistry();
 		ProgressDialog progressDlg = null;
 		try {
-			StatusDisplayer.getDefault().setStatusText( "PMD checking for rule violations" );
-			List list = getDataObjects( node );
+			StatusDisplayer.getDefault().setStatusText("PMD checking for rule violations");
+			List list = getDataObjects(node);
 			progressDlg = new ProgressDialog();
-			List violations = checkCookies( list, progressDlg );
+			List violations = checkCookies(list, progressDlg);
 			progressDlg = null;
-			IOProvider ioProvider = (IOProvider)Lookup.getDefault().lookup( IOProvider.class );
-			InputOutput io = ioProvider.getIO( "PMD output", false );
-			if( violations.isEmpty() ) {
-				StatusDisplayer.getDefault().setStatusText( "PMD found no rule violations" );
-				io.closeInputOutput();
+			IOProvider ioProvider = (IOProvider)Lookup.getDefault().lookup(IOProvider.class);
+			InputOutput output = ioProvider.getIO("PMD output", false);
+			if(violations.isEmpty()) {
+				StatusDisplayer.getDefault().setStatusText("PMD found no rule violations");
+				output.closeInputOutput();
 			}
 			else {
-				io.select();
-				io.getOut().reset();
-				for( int i = 0; i < violations.size(); i++ ) {
-					Fault fault = (Fault)violations.get( i );
-					if( fault.getLine() == -1 ) {
-						io.getOut().println( String.valueOf( fault ) );
+				output.select();
+				output.getOut().reset();
+				for(int i = 0; i < violations.size(); i++) {
+					Fault fault = (Fault)violations.get(i);
+					if(fault.getLine() == -1) {
+						output.getOut().println(String.valueOf(fault));
 					}
 					else {
-						io.getOut().println( String.valueOf( fault ), listener );
+						output.getOut().println(String.valueOf(fault), listener);
 					}
 				}
-				StatusDisplayer.getDefault().setStatusText( "PMD found rule violations" );
+				StatusDisplayer.getDefault().setStatusText("PMD found rule violations");
 			}
-
-		}
-		catch( IOException e ) {
-			ErrorManager.getDefault().notify( e );
+		} catch(IOException e) {
+			ErrorManager.getDefault().notify(e);
 			if(progressDlg != null) {
 				progressDlg.pmdEnd();
 			}

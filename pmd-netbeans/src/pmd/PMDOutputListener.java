@@ -41,7 +41,7 @@ public class PMDOutputListener implements OutputListener {
 	
 
 	/** The instance of this class */
-	private final static PMDOutputListener instance = new PMDOutputListener();
+	private final static PMDOutputListener INSTANCE = new PMDOutputListener();
 
 
 	/**
@@ -58,7 +58,7 @@ public class PMDOutputListener implements OutputListener {
 	 * @return the singleton instance, not null.
 	 */
 	public static PMDOutputListener getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 

@@ -1,15 +1,22 @@
 Version 0.95
-- Updated pmd to version 1.8 (wow, somebody's been out of action for a while! :)
+- Updated pmd to version 1.8 (somebody's been out of action for a while! :)
 - Adapted to NB 3.6 API, did not test in earlier versions (I don't *know* that
   I broke compatibility with NB 3.5, but I may well have. File a bug on it if
   you care about NB 3.5 compatibility)
 - Fixed obnoxious real-time scanning bugs (bugs 789809 and 780004)
 - Removed obnoxious huge dialog that popped up when installing the module
-- Made real-time scanning less wasteful (runs only when document has changed)
+- Made real-time scanning less wasteful (the scan used to be repeated at the
+  defined interval even if you stayed in the same window and made no changes;
+  that is no longer the case)
 - Made real-time scanning re-run when PMD settings change (you can now watch
   the annotations in the document change as you change the rules in the
   options dialog)
 - Fixed some smaller bugs and lurkers
+- Changed default interval for real-time scanning to 5 seconds (from 10) ...
+  note that this is the minimum interval from the *end* of one scan to the
+  beginning of the next, so things don't go nuts if scans take a long time.
+  The minimum interval does not apply when going to another document; in that
+  case a new scan is started right away.
 - Got rid of some logging noise
 - The build now includes full debugging info (previously local-variable info
   was not included), for easier debugging. I may remove this later since it
