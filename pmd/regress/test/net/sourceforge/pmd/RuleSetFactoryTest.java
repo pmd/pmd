@@ -140,19 +140,25 @@ public class RuleSetFactoryTest extends TestCase {
         assertEquals("new property", r.getStringProperty("test4"));
     }
 
-    public void testExternalReferenceOverrideOriginalName() {
+    public void testExternalReferenceOverrideXPath() {
+        Rule r = loadFirstRule(REF_OVERRIDE_XPATH);
+        assertEquals("EmptyCatchBlock", r.getName());
+    }
+
+    public void testOverrideMessage() {
         Rule r = loadFirstRule(REF_OVERRIDE_ORIGINAL_NAME);
-        assertEquals("TestNameOverride", r.getName());
+        assertEquals("TestMessageOverride", r.getMessage());
     }
 
-    private Rule loadFirstRule(String ruleSetName) {
-        return ((Rule)(loadRuleSet(ruleSetName).getRules().iterator().next()));
-    }
-
-    private RuleSet loadRuleSet(String ruleSetName) {
-        RuleSetFactory rsf = new RuleSetFactory();
-        return rsf.createRuleSet(new ByteArrayInputStream(ruleSetName.getBytes()));
-    }
+    private static final String REF_OVERRIDE_XPATH =
+            "<?xml version=\"1.0\"?>" + PMD.EOL +
+            "<ruleset name=\"test\">" + PMD.EOL +
+            " <description>testdesc</description>" + PMD.EOL +
+            " <rule " + PMD.EOL +
+            "  ref=\"rulesets/basic.xml/EmptyCatchBlock\" " + PMD.EOL +
+            "  class=\"net.sourceforge.pmd.rules.XPathRule\">" +
+            " </rule>" + PMD.EOL +
+            "</ruleset>";
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
@@ -160,8 +166,7 @@ public class RuleSetFactoryTest extends TestCase {
             " <description>testdesc</description>" + PMD.EOL +
             " <rule " + PMD.EOL +
             "  ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" " + PMD.EOL +
-            "  name=\"TestNameOverride\" " + PMD.EOL +
-            "  class=\"net.sourceforge.pmd.rules.UnusedLocalVariableRule\">" +
+            "  message=\"TestMessageOverride\"> " + PMD.EOL +
             " </rule>" + PMD.EOL +
             "</ruleset>";
 
@@ -303,16 +308,20 @@ public class RuleSetFactoryTest extends TestCase {
             "</rule></ruleset>";
 
 
+    private Rule loadFirstRule(String ruleSetName) {
+        return ((Rule)(loadRuleSet(ruleSetName).getRules().iterator().next()));
+    }
+
+    private RuleSet loadRuleSet(String ruleSetName) {
+        RuleSetFactory rsf = new RuleSetFactory();
+        return rsf.createRuleSet(new ByteArrayInputStream(ruleSetName.getBytes()));
+    }
 /*
     public void testExternalReferences() {
         RuleSet rs = loadRuleSet(EXTERNAL_REFERENCE_RULE_SET);
         assertEquals(1, rs.size());
         assertEquals(UnusedLocalVariableRule.class, rs.getRuleByName("UnusedLocalVariable").getClass());
     }
-*/
-
-/*
-
         private static final String EXTERNAL_REFERENCE_RULE_SET =
                 "<?xml version=\"1.0\"?>" + PMD.EOL +
                 "<ruleset name=\"test\">" + PMD.EOL +

@@ -79,8 +79,7 @@ public class CPD {
             if (args.length == 3) {
                 lang = args[2];
             }
-            LanguageFactory f = new LanguageFactory();
-            Language language = f.createLanguage(lang);
+            Language language = new LanguageFactory().createLanguage(lang);
             CPD cpd = new CPD(Integer.parseInt(args[0]), language);
             cpd.addRecursively(args[1]);
             long start = System.currentTimeMillis();

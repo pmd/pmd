@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Map;
+import java.util.HashMap;
 
 public class RuleSetFactory {
 
@@ -191,7 +193,12 @@ public class RuleSetFactory {
                 } else if (node.getNodeName().equals("priority")) {
                     rule.setPriority(new Integer(parseTextNode(node).trim()).intValue());
                 } else if (node.getNodeName().equals("properties")) {
-                    parsePropertiesNode(rule, node);
+                    Properties p = new Properties();
+                    parsePropertiesNode(p, node);
+                    for (Iterator j = p.keySet().iterator(); j.hasNext();) {
+                        String key = (String)j.next();
+                        rule.addProperty(key, (String)p.getProperty(key));
+                    }
                 }
             }
         }
@@ -230,28 +237,57 @@ public class RuleSetFactory {
         RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
         Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
 
+        // override logic
         if (ruleNode.getFirstChild() != null) {
-            Rule overrideRule = parseInternallyDefinedRuleNode(ruleSet, ruleNode, false);
-            if (overrideRule.getName() != null) {
-                externalRule.setName(overrideRule.getName());
+            Map overrideMap = parseOverrideRule(ruleNode);
+            if (overrideMap.containsKey("name") && ((String)overrideMap.get("name")).length() != 0) {
+                externalRule.setName((String)overrideMap.get("name"));
             }
-            if (overrideRule.getMessage() != null) {
-                externalRule.setMessage(overrideRule.getMessage());
+            if (overrideMap.containsKey("message") && ((String)overrideMap.get("message")).length() != 0) {
+                externalRule.setMessage((String)overrideMap.get("message"));
             }
-            if (overrideRule.getDescription() != null) {
-                externalRule.setDescription(overrideRule.getDescription());
+            if (overrideMap.containsKey("description") && ((String)overrideMap.get("description")).length() != 0) {
+                externalRule.setDescription((String)overrideMap.get("description"));
             }
-            if (overrideRule.getExample() != null) {
-                externalRule.setExample(overrideRule.getExample());
+            if (overrideMap.containsKey("example") && ((String)overrideMap.get("example")).length() != 0) {
+                externalRule.setExample((String)overrideMap.get("example"));
             }
-            if (overrideRule.getPriority() != 0) {
-                externalRule.setPriority(overrideRule.getPriority());
+            if (overrideMap.containsKey("priority") && ((String)overrideMap.get("priority")).length() != 0) {
+                externalRule.setPriority(Integer.parseInt((String)overrideMap.get("priority")));
             }
-            if (overrideRule.getProperties() != null) {
-                externalRule.addProperties(overrideRule.getProperties());
+            if (overrideMap.containsKey("properties")) {
+                externalRule.addProperties((Properties)overrideMap.get("properties"));
             }
         }
         ruleSet.addRule(externalRule);
+    }
+
+    private Map parseOverrideRule(Node ruleNode) {
+        Map m = new HashMap();
+        Element ruleElement = (Element) ruleNode;
+        if (ruleElement.hasAttribute("name")) {
+            m.put("name", ruleElement.getAttribute("name"));
+        }
+        if (ruleElement.hasAttribute("message")) {
+            m.put("message", ruleElement.getAttribute("message"));
+        }
+        for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
+            Node node = ruleElement.getChildNodes().item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                if (node.getNodeName().equals("description")) {
+                    m.put("description", parseTextNode(node));
+                } else if (node.getNodeName().equals("example")) {
+                    m.put("example", parseTextNode(node));
+                } else if (node.getNodeName().equals("priority")) {
+                    m.put("priority", parseTextNode(node));
+                } else if (node.getNodeName().equals("properties")) {
+                    Properties p = new Properties();
+                    parsePropertiesNode(p, node);
+                    m.put("properties", p);
+                }
+            }
+        }
+        return m;
     }
 
     /**
@@ -298,11 +334,11 @@ public class RuleSetFactory {
      * @param rule           the rule being constructed
      * @param propertiesNode must be a properties element node
      */
-    private void parsePropertiesNode(Rule rule, Node propertiesNode) {
+    private void parsePropertiesNode(Properties p, Node propertiesNode) {
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("property")) {
-                parsePropertyNode(rule, node);
+                parsePropertyNode(p, node);
             }
         }
     }
@@ -313,7 +349,7 @@ public class RuleSetFactory {
      * @param rule         the rule being constructed
      * @param propertyNode must be a property element node
      */
-    private void parsePropertyNode(Rule rule, Node propertyNode) {
+    private void parsePropertyNode(Properties p, Node propertyNode) {
         Element propertyElement = (Element) propertyNode;
         String name = propertyElement.getAttribute("name");
         String value = propertyElement.getAttribute("value");
@@ -326,8 +362,8 @@ public class RuleSetFactory {
             }
         }
         if (propertyElement.hasAttribute("pluginname")) {
-            rule.addProperty("pluginname", propertyElement.getAttributeNode("pluginname").getNodeValue());
+            p.setProperty("pluginname", propertyElement.getAttributeNode("pluginname").getNodeValue());
         }
-        rule.addProperty(name, value);
+        p.setProperty(name, value);
     }
 }
