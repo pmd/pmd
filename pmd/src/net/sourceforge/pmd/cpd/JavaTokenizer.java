@@ -23,7 +23,7 @@ public class JavaTokenizer implements Tokenizer {
         JavaParserTokenManager tokenMgr = new TargetJDK1_4().createJavaParserTokenManager(new StringReader(sb.toString()));
         Token currToken = tokenMgr.getNextToken();
         boolean discarding = false;
-        while (currToken.image != "") {
+        while (currToken.image.length() > 0) {
             if (currToken.image.equals("import") || currToken.image.equals("package")) {
                 discarding = true;
                 currToken = tokenMgr.getNextToken();

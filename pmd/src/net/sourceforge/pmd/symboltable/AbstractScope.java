@@ -41,11 +41,12 @@ public abstract class AbstractScope implements Scope {
     protected abstract NameDeclaration findVariableHere(NameOccurrence occurrence);
 
     protected String glomNames(Iterator i) {
-        String result = "";
+        StringBuffer result = new StringBuffer();
         while (i.hasNext()) {
-            result += i.next().toString() + ",";
+            result.append(i.next().toString());
+            result.append(",");
         }
-        return result;
+        return result.toString();
     }
 
 }

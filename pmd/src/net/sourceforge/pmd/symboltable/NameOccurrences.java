@@ -70,11 +70,11 @@ public class NameOccurrences {
 
 
     public String toString() {
-        String result = "";
+        StringBuffer result = new StringBuffer();
         for (Iterator i = names.iterator(); i.hasNext();) {
             NameOccurrence occ = (NameOccurrence) i.next();
-            result += occ.getImage();
+            result.append(occ.getImage());
         }
-        return result;
+        return result.toString();
     }
 }
