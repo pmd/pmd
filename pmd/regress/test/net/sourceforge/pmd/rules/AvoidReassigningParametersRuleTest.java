@@ -24,7 +24,10 @@ public class AvoidReassigningParametersRuleTest extends RuleTst {
     public void testInstanceVarSameNameAsParam()  throws Throwable {
         runTest("AvoidReassigningParameters3.java", 1, rule);
     }
-    public void testInstanceVarSameNameAsParamButQualifiedWithThis()  throws Throwable {
+    public void testQualifiedNameInstanceVarSameAsParam()  throws Throwable {
         runTest("AvoidReassigningParameters4.java", 0, rule);
+    }
+    public void testQualifiedNameSameAsParam()  throws Throwable {
+        runTest("AvoidReassigningParameters5.java", 0, rule);
     }
 }

@@ -13,7 +13,7 @@
             <li>Damian O'Neill - Ant task patches</li>
             <li>Ralph Schaer - bug reports and verification</li>
             <li>Nanne Baars - rule suggestions</li>
-            <li>Vladimir Bossicard - several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a></li>
+            <li>Vladimir Bossicard - several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Rich Kilmer - logo design</li>
             <li>Liam Holohan - bug reports</li>
             <li>Peter Donald - design suggestions</li>
@@ -28,6 +28,7 @@
             <li>Radim Kubacki - bug reports</li>
             <li>Ales Bukovsky - pmd-netbeans feedback</li>
             <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
+            <li>mcclain looney - bug report</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

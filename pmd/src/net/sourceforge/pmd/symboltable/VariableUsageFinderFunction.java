@@ -22,15 +22,15 @@ public class VariableUsageFinderFunction implements UnaryFunction {
     }
 
     public void applyTo(Object o) {
-        NameDeclaration nameDeclaration = (NameDeclaration)o;
-        List usages = (List)decls.get(nameDeclaration);
+        NameDeclaration decl = (NameDeclaration)o;
+        List usages = (List)decls.get(decl);
         if (!usages.isEmpty()) {
             if (lookingForUsed) {
-                results.put(nameDeclaration, usages);
+                results.put(decl, usages);
             }
         } else {
             if (!lookingForUsed) {
-                results.put(nameDeclaration, usages);
+                results.put(decl, usages);
             }
         }
     }

@@ -14,6 +14,10 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         super(node);
     }
 
+    public Scope getScope() {
+        return node.getScope().getEnclosingClassScope();
+    }
+
     public boolean isExceptionBlockParameter() {
         return ((ASTVariableDeclaratorId)node).isExceptionBlockParameter();
     }
@@ -32,6 +36,6 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public String toString() {
-        return "Variable " + node.getImage() + ":" + node.getBeginLine();
+        return "Variable symbol " + node.getImage() + " line " + node.getBeginLine();
     }
 }

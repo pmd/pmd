@@ -21,7 +21,6 @@ public class VariableNameDeclarationTest extends TestCase {
         VariableNameDeclaration decl = new VariableNameDeclaration(exp);
         assertEquals("foo", decl.getImage());
         assertEquals(10, decl.getLine());
-        assertEquals(scope, decl.getScope());
     }
 
     public void testExceptionBlkParam() {
