@@ -21,7 +21,7 @@
 
 <target name="delete">
     <delete dir="${build}"/>
-    <delete file="${lib}\pmd.jar"/>
+    <delete file="${lib}\pmd-${version}.jar"/>
     <mkdir dir="${build}"/>
 </target>
 
