@@ -5,36 +5,45 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.CouplingBetweenObjectsRule;
 import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class CouplingBetweenObjectsRuleTest extends RuleTst {
+public class CouplingBetweenObjectsRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/coupling.xml", "CouplingBetweenObjectsRule");
+        rule.addProperty("threshold", "2");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "lots of coupling", 1, rule),
+           new TestDescriptor(TEST2, "no coupling", 0, rule),
+           new TestDescriptor(TEST3, "skip interfaces", 0, rule),
+       });
+    }
 
     private static final String TEST1 =
     "import java.util.*;" + PMD.EOL +
-    "public class CouplingBetweenObjects1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public List foo() {return null;}" + PMD.EOL +
     " public ArrayList foo() {return null;}" + PMD.EOL +
     " public Vector foo() {return null;}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class CouplingBetweenObjects2 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public interface Foo {" + PMD.EOL +
+    " public static final int FOO = 2;  " + PMD.EOL +
     "}";
 
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new CouplingBetweenObjectsRule();
-        rule.addProperty("threshold", "2");
-    }
-
-    public void testSimpleBad() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-
-    public void testSimpleOK() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
 }

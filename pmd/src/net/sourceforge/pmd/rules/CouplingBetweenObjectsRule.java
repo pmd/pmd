@@ -14,6 +14,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,6 @@ import java.util.Set;
  */
 public class CouplingBetweenObjectsRule extends AbstractRule {
 
-    private String className;
     private int couplingCount;
     private Set typesFoundSoFar;
 
@@ -56,19 +56,13 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
     }
 
     /**
-     * handles class declaration. I need this to capture class name. I think
-     * there is probably a better way to capture it; however, I don't know the
-     * framework well enough yet...
-     *
-     * @param ASTClassDeclaration node
-     * @param Object              data
-     * @return Object
-     */
-    public Object visit(ASTClassDeclaration node, Object data) {
-        SimpleNode firstStmt = (SimpleNode) node.jjtGetChild(0);
-        this.className = firstStmt.getImage();
-        return super.visit(node, data);
+     * skip interfaces
+     */ 
+    public Object visit(ASTInterfaceDeclaration node, Object data) {
+        return data;
     }
+
+
 
     /**
      * handles a return type of a method
@@ -83,7 +77,7 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
             if (tNode instanceof ASTType) {
                 SimpleNode nameNode = (SimpleNode) tNode.jjtGetChild(0);
                 if (nameNode instanceof ASTName) {
-                    this.checkVariableType(nameNode.getImage());
+                    this.checkVariableType(nameNode, nameNode.getImage());
                 }
             }
         }
@@ -128,7 +122,7 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
             if (firstStmt instanceof ASTType) {
                 ASTType tp = (ASTType) firstStmt;
                 SimpleNode nd = (SimpleNode) tp.jjtGetChild(0);
-                this.checkVariableType(nd.getImage());
+                this.checkVariableType(nd, nd.getImage());
             }
         }
 
@@ -144,7 +138,7 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
             SimpleNode sNode = (SimpleNode) node.jjtGetChild(x);
             if (sNode instanceof ASTType) {
                 SimpleNode nameNode = (SimpleNode) sNode.jjtGetChild(0);
-                this.checkVariableType(nameNode.getImage());
+                this.checkVariableType(nameNode, nameNode.getImage());
             }
         }
     }
@@ -155,10 +149,10 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
      *
      * @param String variableType
      */
-    private void checkVariableType(String variableType) {
+    private void checkVariableType(SimpleNode nameNode, String variableType) {
         //if the field is of any type other than the class type
         //increment the count
-        if (!this.className.equals(variableType) && (!this.filterTypes(variableType)) && !this.typesFoundSoFar.contains(variableType)) {
+        if (!nameNode.getScope().getEnclosingClassScope().getClassName().equals(variableType) && (!this.filterTypes(variableType)) && !this.typesFoundSoFar.contains(variableType)) {
             this.couplingCount++;
             this.typesFoundSoFar.add(variableType);
         }
@@ -172,14 +166,14 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
      * @return boolean true if variableType is not what we care about
      */
     private boolean filterTypes(String variableType) {
-        return variableType.startsWith("java.lang.") || (variableType.equals("String")) || filterPrimativesAndWrappers(variableType);
+        return variableType.startsWith("java.lang.") || (variableType.equals("String")) || filterPrimitivesAndWrappers(variableType);
     }
 
     /**
      * @param String variableType
      * @return boolean true if variableType is a primative or wrapper
      */
-    private boolean filterPrimativesAndWrappers(String variableType) {
+    private boolean filterPrimitivesAndWrappers(String variableType) {
         return (variableType.equals("int") || variableType.equals("Integer") || variableType.equals("char") || variableType.equals("Character") || variableType.equalsIgnoreCase("double") || variableType.equalsIgnoreCase("long") || variableType.equalsIgnoreCase("short") || variableType.equalsIgnoreCase("float") || variableType.equalsIgnoreCase("byte") || variableType.equalsIgnoreCase("boolean"));
     }
 }
