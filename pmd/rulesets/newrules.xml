@@ -128,6 +128,39 @@ These are new rules for the next release
     </rule>
 
 
+    <rule name="CouplingBetweenObjectsRule"
+        message="High amount of different objects as memebers donotes a high coupling"
+        class="net.sourceforge.pmd.rules.CouplingBetweenObjectsRule">
+    <description>
+        Rule counts unique attributes, local variables and return types within an object. An amount
+        higher than specified threshold can indicate a high degree of couping with in an object
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="threshold" value="20"/>
+    </properties>
+    <example>
+    <![CDATA[
+      import com.Blah;
+      import org.Bar;
+      import org.Bardo;
+      //
+      public class Foo {
+        private Blah var1;
+        private Bar var2;
+        //followed by many imports of unique objects
+
+        void ObjectC doWork() {
+           Bardo var55;
+           ObjectA var44;
+           ObjectZ var93;
+           return something;
+        }
+
+        }
+        ]]>
+    </example>
+  </rule>
 
   <rule name="ExcessiveImportsRule"
      message="A high number of imports can indicate a high degree of coupling within an object."
