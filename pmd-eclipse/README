@@ -1,4 +1,6 @@
-
+===================================================================
+To Install:
+===================================================================
 If you are using the binary, just unzip the Zip file
 in $ECLIPSE_HOME/plugins.
 
@@ -10,15 +12,26 @@ Jar up the files that get dumped into the bin directory after
 the build, and copy the following directory structure to the 
 $ECLIPSE_HOME/plugins directory:
 
-$ECLIPSE_HOME/plugins/net.sourceforge.pmd_0.4.0 (or current version)
+$ECLIPSE_HOME/plugins/net.sourceforge.pmd_0.5.0 (or current version)
   plugin.xml
   pmd-eclipse.jar                               
-  lib/pmd-1.02.jar (or most recent version of PMD.)
+  lib/pmd-1.03.jar (or most recent version of PMD.)
   icons/pmd-icon-32.gif
   icons/pmd-icon-16.gif
+
+===================================================================
+To Use:
+===================================================================
   
-Finally, Customize your Development Environment to get the PMD buttons
-and Menu options.  
+From the Windows, Preferences menu, you can select what rulesets PMD will use.
+PMD can now be used in two different modes.
+On the Properties page for a project, you can enable PMD for the project.  This 
+will cause PMD to be run after each compile, and the PMD violations will appear as 
+Warnings in the Tasks view.
+You can also right click on a package or class and use the Check Code with PMD 
+option.  This will run PMD on the selected files, and violations will
+appear as a Task in the Tasks view.  You can mark these Tasks as complete
+and remove them from the Tasks view.
 
 Share and Enjoy!
 
