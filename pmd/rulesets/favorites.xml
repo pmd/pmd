@@ -1,22 +1,19 @@
 <?xml version="1.0"?>
 
-<ruleset name="Tom's Favorites">
+<ruleset name="Favorites">
   <description>
 The Favorites ruleset contains links to rules that I like to use.  Usually I
 combine this ruleset with the unusedcode.xml, basic.xml, and import.xml rulesets for my projects.
-This ruleset also serves as an example of how to reference one ruleset from another.
+This ruleset also serves as an example of do a custom ruleset.
   </description>
 
   <rule ref="rulesets/braces.xml/WhileLoopsMustUseBracesRule"/>
   <rule ref="rulesets/braces.xml/ForLoopsMustUseBracesRule"/>
-  <rule ref="rulesets/design.xml/LooseCouplingRule"/>
-  <rule ref="rulesets/design.xml/SimplifyBooleanReturnsRule"/>
-  <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
-  <rule ref="rulesets/strings.xml/StringToString"/>
-  <rule ref="rulesets/strings.xml/StringInstantiation"/>
-  <rule ref="rulesets/controversial.xml/UnnecessaryConstructorRule"/>
-  <rule ref="rulesets/controversial.xml/NullAssignment"/>
-  <rule ref="rulesets/controversial.xml/UnusedModifier"/>
+    <rule ref="rulesets/design.xml/LooseCouplingRule"/>
+    <rule ref="rulesets/design.xml/SimplifyBooleanReturnsRule"/>
+    <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
+    <rule ref="rulesets/strings.xml/StringToString"/>
+    <rule ref="rulesets/strings.xml/StringInstantiation"/>
 
 </ruleset>
 

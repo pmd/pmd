@@ -5,102 +5,98 @@
 The Braces Ruleset contains a collection of braces rules.
   </description>
 
+   <rule name="IfStmtsMustUseBraces"
+         message="Avoid using if statements without curly braces"
+         class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+     Avoid using if statements without using curly braces
+     </description>
+       <properties>
+           <property name="xpath" value="//IfStatement[count(*) &lt; 3][not(Statement/Block)]"/>
+       </properties>
+       <priority>3</priority>
 
-  <rule name="IfElseStmtsMustUseBracesRule"
-        message="Avoid using 'if...else' statements without curly braces"
-        class="net.sourceforge.pmd.rules.IfElseStmtsMustUseBracesRule">
-    <description>
-    Avoid using if..else statements without using curly braces
-    </description>
-      <properties>
-          <property name="xpath" value="//IfStatement[count(*) > 2][not(Statement/Block)]"/>
-      </properties>
-      <priority>3</priority>
+     <example>
+ <![CDATA[
+ public class Foo {
+   public void bar() {
+     int x = 0;
+     if (foo) x++;
+   }
+ }
+ ]]>
+     </example>
+     </rule>
 
-    <example>
-<![CDATA[
+    <rule name="WhileLoopsMustUseBracesRule"
+          message="Avoid using 'while' statements without curly braces"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Avoid using 'while' statements without using curly braces
+      </description>
+        <properties>
+            <property name="xpath" value="//WhileStatement[not(Statement/Block)]"/>
+        </properties>
+        <priority>3</priority>
 
-  public void doSomething() {
-    // this is OK
-    if (foo) x++;
-
-    // but this is not
-    if (foo)
-        x=x+1;
-    else
-        x=x-1;
-  }
-]]>
-    </example>
-  </rule>
-
-  <rule name="WhileLoopsMustUseBracesRule"
-        message="Avoid using 'while' statements without curly braces"
-        class="net.sourceforge.pmd.rules.WhileLoopsMustUseBracesRule">
-    <description>
-    Avoid using 'while' statements without using curly braces
-    </description>
-      <properties>
-          <property name="xpath" value="//WhileStatement[not(Statement/Block)]"/>
-      </properties>
-      <priority>3</priority>
-
-    <example>
-<![CDATA[
-  public void doSomething() {
-    while (true)
-        x++;
-  }
-]]>
-    </example>
-  </rule>
-
-  <rule name="ForLoopsMustUseBracesRule"
-        message="Avoid using 'for' statements without curly braces"
-        class="net.sourceforge.pmd.rules.ForLoopsMustUseBracesRule">
-    <description>
-    Avoid using 'for' statements without using curly braces
-    </description>
-      <properties>
-          <property name="xpath" value="//ForStatement[not(Statement/Block)]"/>
-      </properties>
-      <priority>3</priority>
-
-    <example>
-<![CDATA[
-  public void foo() {
-    for (int i=0; i<42;i++)
-        foo();
-  }
-]]>
-    </example>
-  </rule>
-
-
-  <rule name="IfStmtsMustUseBraces"
-        message="Avoid using if statements without curly braces"
-        class="net.sourceforge.pmd.rules.IfStmtsMustUseBracesRule">
-    <description>
-    Avoid using if statements without using curly braces
-    </description>
-      <properties>
-          <property name="xpath" value="//IfStatement[count(*) < 3][not(Statement/Block)]"/>
-      </properties>
-      <priority>3</priority>
-
-    <example>
-<![CDATA[
-public class Foo {
-  public void bar() {
-    int x = 0;
-    if (foo) x++;
-  }
-}
-]]>
-    </example>
+      <example>
+  <![CDATA[
+    public void doSomething() {
+      while (true)
+          x++;
+    }
+  ]]>
+      </example>
     </rule>
 
+      <rule name="IfElseStmtsMustUseBracesRule"
+           message="Avoid using 'if...else' statements without curly braces"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       Avoid using if..else statements without using curly braces
+       </description>
+         <properties>
+             <property name="xpath" value="//IfStatement[count(*) > 2][not(Statement/Block)]"/>
+         </properties>
+         <priority>3</priority>
 
+       <example>
+   <![CDATA[
+
+     public void doSomething() {
+       // this is OK
+       if (foo) x++;
+
+       // but this is not
+       if (foo)
+           x=x+1;
+       else
+           x=x-1;
+     }
+   ]]>
+       </example>
+     </rule>
+
+     <rule name="ForLoopsMustUseBracesRule"
+           message="Avoid using 'for' statements without curly braces"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       Avoid using 'for' statements without using curly braces
+       </description>
+         <properties>
+             <property name="xpath" value="//ForStatement[not(Statement/Block)]"/>
+         </properties>
+         <priority>3</priority>
+
+       <example>
+   <![CDATA[
+     public void foo() {
+       for (int i=0; i<42;i++)
+           foo();
+     }
+   ]]>
+       </example>
+     </rule>
 
 </ruleset>
 

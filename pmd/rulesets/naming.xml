@@ -8,12 +8,12 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
 
   <rule name="ShortVariable"
         message="Avoid variables with short names such as ''{0}''"
-        class="net.sourceforge.pmd.rules.ShortVariableRule">
+        class="net.sourceforge.pmd.rules.XPathRule">
     <description>
 Detects when a field, local or parameter has a short name.
     </description>
       <properties>
-          <property name="xpath" value="//VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)]"/>
+          <property name="xpath" value="//VariableDeclaratorId[string-length(@Image) &lt; 3][not(ancestor::ForInit)]"/>
       </properties>
       <priority>3</priority>
     <example>
@@ -35,7 +35,7 @@ public class Something {
 
   <rule name="LongVariable"
         message="Avoid excessively long variable names such as ''{0}''"
-        class="net.sourceforge.pmd.rules.LongVariableRule">
+        class="net.sourceforge.pmd.rules.XPathRule">
     <description>
 Detects when a field, formal or local variable is declared with a big name.
     </description>
@@ -64,13 +64,13 @@ public class Something {
 
   <rule name="ShortMethodNameRule"
         message="Avoid using short method names such as ''{0}''"
-        class="net.sourceforge.pmd.rules.ShortMethodNameRule">
+        class="net.sourceforge.pmd.rules.XPathRule">
      <description>
 Detects when very short method names are used.
      </description>
       <priority>3</priority>
       <properties>
-          <property name="xpath" value="//MethodDeclarator[string-length(@Image) < 3]"/>
+          <property name="xpath" value="//MethodDeclarator[string-length(@Image) &lt; 3]"/>
       </properties>
      <example>
 <![CDATA[
