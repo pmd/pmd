@@ -43,7 +43,6 @@ public class PMDOpenTool {
      * Default constructor
      */
     public PMDOpenTool () {
-        int j;
     }
 
     /**
@@ -230,7 +229,7 @@ public class PMDOpenTool {
                                         checkCode(code.toString(), javaNode);
                                     }
                                     catch (Exception ex) {
-
+                                        ex.printStackTrace();
                                     }
                                 }
                             }
