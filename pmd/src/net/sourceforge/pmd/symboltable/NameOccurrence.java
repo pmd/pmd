@@ -102,7 +102,7 @@ public class NameOccurrence {
     }
 
     public boolean isSelfAssignment() {
-        if (location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreDecrementExpression || location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreIncrementExpression) {
+        if (location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreDecrementExpression || location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreIncrementExpression || location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPostfixExpression) {
             return true;
         }
 

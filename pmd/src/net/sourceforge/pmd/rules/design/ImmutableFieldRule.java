@@ -81,7 +81,7 @@ public class ImmutableFieldRule extends AbstractRule {
     }
 
     private boolean initializedInDeclaration(SimpleNode node) {
-        return node.findChildrenOfType(ASTVariableInitializer.class).size() > 0;
+        return !node.findChildrenOfType(ASTVariableInitializer.class).isEmpty();
     }
 
     /** construct a set containing all ASTConstructorDeclaration nodes for this class

@@ -2,11 +2,10 @@
 New rules: AvoidProtectedFieldInFinalClass
 Fixed bug 1050173 - ImmutableFieldRule no longer reports false positives for static fields.
 Fixed bug 1050286 - ImmutableFieldRule no longer reports false positives for classes which have multiple constructors only a subset of which set certain fields. 
-Fixed bug 1050295 - ImmutableFieldRule no longer reports false positives for fields which are incremented by postfix operators.
+Fixed bug 1055346 - ImmutableFieldRule no longer reports false positive on preinc/predecrement/postfix expressions.
 Fixed bug 1041739 - EmptyStatementNotInLoop no longer reports false positives for nested class declarations in methods.
 Fixed bug 1039963 - CPD no longer fails to parse C++ files with multi-line macros.
 Fixed bug 1053663 - SuspiciousConstantFieldName no longer reports false positives for interface members.
-Fixed bug 1055346 - ImmutableFieldRule no longer reports false positive on preinc/predecrement expressions.
 Fixed bug 1055930 - CouplingBetweenObjectsRule no longer throws a NPE on interfaces
 Fixed a possible NPE in dfa.report.ReportTree.
 Implemented RFE 1058033 - Renamed run.[sh|bat] to pmd.[sh|bat].

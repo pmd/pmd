@@ -27,6 +27,7 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST9, "preincrement", 0, rule),
            new TestDescriptor(TEST10, "predecrement", 0, rule),
            new TestDescriptor(TEST11, "compound assignment 2", 0, rule),
+           new TestDescriptor(TEST12, "rhs 2", 0, rule),
        });
     }
 
@@ -122,6 +123,14 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
     " private int x = 0;" + PMD.EOL +
     " public void bar() {" + PMD.EOL +
     "  x += 1;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST12 =
+    "public class Foo {" + PMD.EOL +
+    " private int x = 0;" + PMD.EOL +
+    " public void bar() {" + PMD.EOL +
+    "  Object y = new Bar(x++);" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
