@@ -1,8 +1,8 @@
 package test.net.sourceforge.pmd.dfa;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.dfa.Linker;
 import net.sourceforge.pmd.dfa.IProcessableStructure;
+import net.sourceforge.pmd.dfa.Linker;
 import net.sourceforge.pmd.dfa.LinkerException;
 import net.sourceforge.pmd.dfa.SequenceException;
 

@@ -2,11 +2,11 @@ package test.net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.dfa.IDataFlowNode;
 
-import java.util.List;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public class AcceptanceTestRule extends AbstractRule {
 
@@ -21,14 +21,13 @@ public class AcceptanceTestRule extends AbstractRule {
         super.visit(node, data);
         String methodName = node.getImage();
         IDataFlowNode inode = node.getDataFlowNode();
-        if (inode == null) {
+        if (inode == null || inode.getFlow() == null) {
             return data;
         }
-        List flow = inode.getFlow();
-        if (flow == null) {
-            return data;
+        boolean result = check(methodName, inode.getFlow());
+        if (!result) {
+            System.out.println(methodName + " failed");
         }
-        check(methodName, flow);
         return data;
     }
 
@@ -36,33 +35,32 @@ public class AcceptanceTestRule extends AbstractRule {
         if (methodName == null || flow == null) {
             return false;
         }
-
         this.methodName = methodName;
         this.flow = flow;
-
-        Object returnValue = null;
-        System.out.print("Testing method " + methodName + " ");
-
         try {
-            returnValue = getClass().getMethod(methodName, null).invoke(this, null);
+            return ((Boolean)(getClass().getMethod(methodName, null).invoke(this, null))).booleanValue();
         } catch (SecurityException e) {
             //e.printStackTrace();
             System.err.println("SecurityException");
+            return false;
         } catch (NoSuchMethodException e) {
             //e.printStackTrace();
             System.err.println("NoSuchMethodException");
+            return false;
         } catch (IllegalArgumentException e) {
             //e.printStackTrace();
             System.err.println("IllegalArgumentException");
+            return false;
         } catch (IllegalAccessException e) {
             //e.printStackTrace();
             System.err.println("IllegalAccessException");
+            return false;
         } catch (InvocationTargetException e) {
             //e.printStackTrace();
+            e.getCause().printStackTrace();
             System.err.println("InvocationTargetException");
+            return false;
         }
-        System.out.println(" -  result: " + returnValue);
-        return true;
     }
 
     private boolean test(int array[][]) {
@@ -385,7 +383,7 @@ public class AcceptanceTestRule extends AbstractRule {
             {1},
             {2},
             {3},
-            {4},
+            {4,5},
             {5},
             {}
         };
