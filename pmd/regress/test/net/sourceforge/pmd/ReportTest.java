@@ -9,10 +9,7 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportListener;
+import net.sourceforge.pmd.*;
 
 import java.util.Iterator;
 
@@ -23,7 +20,9 @@ public class ReportTest extends TestCase implements ReportListener {
 	
     public void testBasic() {
         Report r = new Report();
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 5, "foo"));
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("foo");
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 5, ctx));
         assertTrue(!r.isEmpty());
     }
 
@@ -57,8 +56,11 @@ public class ReportTest extends TestCase implements ReportListener {
     // Files are grouped together now.
     public void testSortedReport_File() {
         Report r = new Report();
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 10, "foo"));
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 20, "bar"));
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("foo");
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 10, ctx));
+        ctx.setSourceCodeFilename("bar");
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 20, ctx));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue(result.indexOf("bar") < result.indexOf("foo"));
@@ -66,10 +68,13 @@ public class ReportTest extends TestCase implements ReportListener {
 
     public void testSortedReport_Line() {
         Report r = new Report();
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("foo1");
         r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg"),
-					     10, "foo1"));
+					     10, ctx));
+        ctx.setSourceCodeFilename("foo2");
         r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1", "msg"),
-					     20, "foo2"));
+					     20, ctx));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue(result.indexOf("rule2") < result.indexOf("rule1"));
@@ -79,7 +84,9 @@ public class ReportTest extends TestCase implements ReportListener {
         Report rpt  = new Report();
         rpt.addListener(this);
         violationSemaphore = false;
-        rpt.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 5, "file"));
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("file");
+        rpt.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 5, ctx));
         assertTrue(violationSemaphore);
         
         metricSemaphore = false;

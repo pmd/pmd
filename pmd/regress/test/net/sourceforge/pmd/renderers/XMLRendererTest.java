@@ -17,6 +17,7 @@ public class XMLRendererTest
     private XMLRenderer IUT = null;
     private MockRule RULE1 = new MockRule( "RULE1", "RULE1", "msg" );
     private MockRule RULE2 = new MockRule( "RULE2", "RULE2", "msg" );
+    private RuleContext ctx = new RuleContext();
 
     public XMLRendererTest( String name ) {
 	super( name );
@@ -38,9 +39,8 @@ public class XMLRendererTest
 	throws Throwable
     {
 	Report report = new Report();
-	report.addRuleViolation( new RuleViolation( RULE1, 
-				 1, "Rule1",
-				 "testSingleReport") );
+        ctx.setSourceCodeFilename("testSingleReport");
+	report.addRuleViolation( new RuleViolation( RULE1,  1, "Rule1", ctx ) );
 
 	String rendered = IUT.render( report );
 
@@ -69,13 +69,14 @@ public class XMLRendererTest
 	throws Throwable
     {
 	Report report = new Report();
-	report.addRuleViolation( new RuleViolation( RULE1, 
+        ctx.setSourceCodeFilename("testDoubleReport");
+	report.addRuleViolation( new RuleViolation( RULE1,
 				 1, "Rule1",
-				 "testDoubleReport") );
+				 ctx) );
 
 	report.addRuleViolation( new RuleViolation( RULE2, 
 				 2, "Rule2",
-				 "testDoubleReport") );
+				 ctx) );
 
 	String rendered = IUT.render( report );
 
@@ -110,13 +111,15 @@ public class XMLRendererTest
 	throws Throwable
     {
 	Report report = new Report();
-	report.addRuleViolation( new RuleViolation( RULE1, 
+        ctx.setSourceCodeFilename("testTwoFiles_0");
+	report.addRuleViolation( new RuleViolation( RULE1,
 				 1, "Rule1",
-				 "testTwoFiles_0") );
+				 ctx) );
 
-	report.addRuleViolation( new RuleViolation( RULE1, 
+        ctx.setSourceCodeFilename("testTwoFiles_1");
+	report.addRuleViolation( new RuleViolation( RULE1,
 				 1, "Rule1",
-				 "testTwoFiles_1") );
+				 ctx) );
 
 	String rendered = IUT.render( report );
 
@@ -155,17 +158,20 @@ public class XMLRendererTest
 	throws Throwable
     {
 	Report report = new Report();
-	report.addRuleViolation( new RuleViolation( RULE1, 
+        ctx.setSourceCodeFilename("testTwoFiles_0");
+	report.addRuleViolation( new RuleViolation( RULE1,
 				 1, "Rule1",
-				 "testTwoFiles_0") );
+				 ctx) );
 
-	report.addRuleViolation( new RuleViolation( RULE1, 
+        ctx.setSourceCodeFilename("testTwoFiles_1");
+	report.addRuleViolation( new RuleViolation( RULE1,
 				 1, "Rule1",
-				 "testTwoFiles_1") );
+				 ctx) );
 
-	report.addRuleViolation( new RuleViolation( RULE2, 
+        ctx.setSourceCodeFilename("testTwoFiles_0");
+	report.addRuleViolation( new RuleViolation( RULE2,
 				 2, "Rule2",
-				 "testTwoFiles_0") );
+				 ctx) );
 
 	String rendered = IUT.render( report );
 

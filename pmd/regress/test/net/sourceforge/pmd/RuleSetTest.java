@@ -86,7 +86,9 @@ public class RuleSetTest extends TestCase
 	RuleSet IUT = new RuleSet();
 
 	MockRule rule = new MockRule("name", "desc", "msg");
-	RuleViolation violation = new RuleViolation( rule, 1, "filename" );
+    RuleContext ctx = new RuleContext();
+    ctx.setSourceCodeFilename("filename");
+	RuleViolation violation = new RuleViolation( rule, 1, ctx );
 	rule.addViolation( violation );
 
 	IUT.addRule( rule );
@@ -105,7 +107,9 @@ public class RuleSetTest extends TestCase
 
 	for (int i = 0; i < numRules; i++) {
 	    MockRule rule = new MockRule("name", "desc", "msg");
-	    RuleViolation violation = new RuleViolation( rule, i, "filename");
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("filename");
+	    RuleViolation violation = new RuleViolation( rule, i, ctx);
 
 	    ruleViolations.add( violation );
 	    rule.addViolation( violation );
