@@ -7,13 +7,15 @@
 <body>
     <section name="How to make a new rule set">
 <p>
-Say you want to check for certain rules but not others.  You can do this by making your own rule set.
+Say you want to pick specific rules from various rule sets.  You can do this by making your own rule set.
 </p>
     <subsection name="Create a new ruleset.xml file">
     </subsection>
     <subsection name="Add some rule references to it">
     </subsection>
-    <subsection name="Reference it your Ant task">
+    <subsection name="Reference it in your Ant task">
+    </subsection>
+    <subsection name="To see it in your IDE, add it to rulesets/rulesets.properties">
     </subsection>
     </section>
 </body>
