@@ -48,9 +48,10 @@ public class GUI implements CPDListener {
         }
     }
 
-    private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
+    private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home") + "/tmp/ant");
     private JTextField minimumLengthField = new JTextField("75");
     private JTextField timeField = new JTextField(6);
+    private JTextField comparisonsField = new JTextField(8);
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JTextArea resultsTextArea = new JTextArea();
     private JCheckBox recurseCheckbox = new JCheckBox("", true);
@@ -72,8 +73,10 @@ public class GUI implements CPDListener {
 
         // first make all the buttons
         JButton browseButton = new JButton("Browse");
+        browseButton.setMnemonic('b');
         browseButton.addActionListener(new BrowseListener());
         JButton goButton = new JButton("Go");
+        goButton.setMnemonic('g');
         goButton.addActionListener(new GoListener());
         JButton cxButton = new JButton("Cancel");
         cxButton.addActionListener(new CancelListener());
@@ -121,6 +124,8 @@ public class GUI implements CPDListener {
         helper.addLabel("Tokenizing files:");
         helper.add(tokenizingFilesBar, 3);
         helper.nextRow();
+        helper.addLabel("Comparisons so far:");
+        helper.add(comparisonsField);
         helper.addLabel("Time elapsed:");
         helper.add(timeField);
         helper.nextRow();
@@ -142,7 +147,7 @@ public class GUI implements CPDListener {
     private void go() {
         try {
             CPD cpd = new CPD();
-            cpd.setListener(this);
+            cpd.setCpdListener(this);
             cpd.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
             tokenizingFilesBar.setMinimum(0);
             if (rootDirectoryField.getText().endsWith(".java")) {
@@ -181,8 +186,14 @@ public class GUI implements CPDListener {
         }
     }
 
+    // CPDListener
+    public void comparisonCountUpdate(int comparisons) {
+        comparisonsField.setText(String.valueOf(comparisons));
+    }
+
     public void addedFile(int fileCount, File file) {
         tokenizingFilesBar.setMaximum(fileCount);
         tokenizingFilesBar.setValue(tokenizingFilesBar.getValue() + 1);
     }
+    // CPDListener
 }

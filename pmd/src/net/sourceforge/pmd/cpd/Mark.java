@@ -8,11 +8,14 @@ import java.util.List;
         private Locator locator;
         private int offset;
         private List code;
+        private CPDListener listener;
+        private static int comparisons;
 
-        public Mark(List code, int offset, Locator locator) {
+        public Mark(List code, int offset, Locator locator, CPDListener listener) {
             this.code = code;
             this.offset = offset;
             this.locator = locator;
+            this.listener = listener;
         }
 
         public Locator getLocator() {
@@ -29,6 +32,10 @@ import java.util.List;
 
         // implements the 'cyclic' comparison from the perl
         public int compareTo(Object o) {
+            Mark.comparisons++;
+            if (Mark.comparisons % 100000 == 0) {
+                listener.comparisonCountUpdate(Mark.comparisons);
+            }
             Mark mark = (Mark)o;
             if (mark.offset == this.offset) { return 0; }
             // don't compare leading 'mark' token

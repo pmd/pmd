@@ -47,7 +47,7 @@ public class CPDTask extends Task {
     	try{	
     		this.validateFields();
 	    	CPD cpd = new CPD();
-		    cpd.setListener(new CPDNullListener());
+		    cpd.setCpdListener(new CPDNullListener());
 	        cpd.setMinimumTileSize(this.tileSize);
 	        cpd.addRecursively(this.codeLocation);
 	

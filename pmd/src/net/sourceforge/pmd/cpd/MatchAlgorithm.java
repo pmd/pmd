@@ -17,16 +17,18 @@ public class MatchAlgorithm {
     // separate what the token is from where it is. Locator is only used if we need to see the code at that location.
 
     private MatchListener l;
+    private CPDListener cpdListener;
 
-    public MatchAlgorithm( MatchListener l) {
+    public MatchAlgorithm(MatchListener l, CPDListener cpdListener) {
         this.l = l;
+        this.cpdListener = cpdListener;
     }
 
     public void add(MyToken token, Locator locator) {
         pool.put(token, token);
         code.add(token);
         if (token.isMarkToken()) {
-            marks.add(new Mark(code, code.size(), locator));
+            marks.add(new Mark(code, code.size(), locator, cpdListener));
         }
 /*
         MyToken flyweight = (MyToken)pool.get(token);

@@ -9,12 +9,12 @@ import java.util.List;
 public class CPD {
 
     private int mts;
-    private CPDListener listener;
+    private CPDListener cpdListener;
     private MatchListener matchListener;
     private TokenSets tokenSets = new TokenSets();
 
-    public void setListener(CPDListener listener) {
-        this.listener = listener;
+    public void setCpdListener(CPDListener cpdListener) {
+        this.cpdListener = cpdListener;
     }
 
     public void setMinimumTileSize(int mts) {
@@ -23,7 +23,7 @@ public class CPD {
 
     public void go() {
         matchListener = new SimpleListener();
-        MatchAlgorithm m = new MatchAlgorithm(matchListener);
+        MatchAlgorithm m = new MatchAlgorithm(matchListener, cpdListener);
         for (Iterator i = tokenSets.iterator(); i.hasNext();) {
             TokenList tl = (TokenList)i.next();
             for (Iterator j = tl.iterator();j.hasNext();) {
@@ -81,7 +81,7 @@ public class CPD {
     }
 
     private void add(int fileCount, File file) throws IOException {
-        listener.addedFile(fileCount, file);
+        cpdListener.addedFile(fileCount, file);
         Tokenizer t = new JavaTokensTokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
@@ -96,7 +96,7 @@ public class CPD {
             System.exit(1);
         }
         CPD cpd = new CPD();
-        cpd.setListener(new CPDNullListener());
+        cpd.setCpdListener(new CPDNullListener());
         try {
             cpd.setMinimumTileSize(Integer.parseInt(args[0]));
             cpd.addRecursively(args[1]);
