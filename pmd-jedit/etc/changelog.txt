@@ -1,4 +1,6 @@
-???? - 0.7:
+August 2 2002 - 0.7:
+Updated to use pmd-0.8
+Now individual rules can be selected
 
 July 26 2002 - 0.6:
 Updated to use pmd-0.7.
