@@ -58,8 +58,7 @@ public class SelectedRuleSetsMap {
     }
 
     private JCheckBox createCheckBox(String name) {
-        JCheckBox box = new JCheckBox();
-        box.setBackground(Color.white);
+        JCheckBox box = new JCheckBox(name);
         box.setSelected(jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_RULESETS_PREFIX + name, true));
         return box;
     }

@@ -1,14 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE ACTIONS SYSTEM "actions.dtd">
 <ACTIONS>
-  <ACTION NAME="pmd.check">
+  <ACTION NAME="PMD">
     <CODE>
       net.sourceforge.pmd.jedit.PMDJEditPlugin.check(buffer, view);
-    </CODE>
-  </ACTION>
-  <ACTION NAME="pmd.options">
-    <CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.displayPreferencesDialog(view);
     </CODE>
   </ACTION>
 </ACTIONS>

@@ -18,21 +18,20 @@ import java.io.StringReader;
 
 import net.sourceforge.pmd.*;
 
-public class PMDJEditPlugin extends EBPlugin {
+public class PMDJEditPlugin extends EditPlugin {
 
     public static final String NAME = "PMD";
-    public static final String MENU = "pmd-menu";
     public static final String PROPERTY_PREFIX = "plugin.net.sourceforge.pmd.jedit.";
     public static final String OPTION_PREFIX = "options.pmd.";
     public static final String OPTION_RULESETS_PREFIX = "options.pmd.rulesets.";
 
     private static PMDJEditPlugin instance;
-    
+
     static {
 	    instance = new PMDJEditPlugin();
 	    instance.start();
     }
-    
+
     private DefaultErrorSource errorSource;
     
     // boilerplate JEdit code
@@ -41,18 +40,18 @@ public class PMDJEditPlugin extends EBPlugin {
 	    ErrorSource.registerErrorSource(errorSource);
     }
     
+    public void createMenuItems(Vector menuItems) {
+        menuItems.addElement(GUIUtilities.loadMenuItem(NAME));
+    }
+
+    public void createOptionPanes(OptionsDialog optionsDialog) {
+        optionsDialog.addOptionPane(new PMDOptionPane());
+    }
+    // boilerplate JEdit code
+
     public static void check(Buffer buffer, View view) {
         instance.instanceCheck(buffer, view);
     }
-
-    public static void displayPreferencesDialog(View view) {
-        instance.instanceDisplayPreferencesDialog(view);
-    }
-
-    public void createMenuItems(Vector menuItems) {
-        menuItems.addElement(GUIUtilities.loadMenu(MENU));
-    }
-    // boilerplate JEdit code
 
     public void instanceCheck(Buffer buffer, View view) {
         try {
@@ -68,18 +67,18 @@ public class PMDJEditPlugin extends EBPlugin {
             ctx.setReport(new Report());
             ctx.setSourceCodeFilename(buffer.getPath());
             pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
-            for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                RuleViolation rv = (RuleViolation)i.next();
+            if (ctx.getReport().isEmpty()) {
+                JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found");
+                errorSource.clear();
+            } else {
                 String path = buffer.getPath();
-                DefaultErrorSource.DefaultError err = new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription());
-                errorSource.addError(err);
+                for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+                    RuleViolation rv = (RuleViolation)i.next();
+                    errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription()));
+                }
             }
         } catch (RuleSetNotFoundException rsne) {
             rsne.printStackTrace();
         }
-    }
-
-    public void instanceDisplayPreferencesDialog(View view) {
-        new PMDOptionPane();
     }
 }

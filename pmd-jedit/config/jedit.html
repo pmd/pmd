@@ -1,32 +1,23 @@
 <html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>
-PMD JEdit Plug-in Users' Guide
+PMD-JEdit Plug-in Users' Guide
 </title>
 <body>
-<h1>PMD JEdit Plug-in Users' Guide</h1>
+<h1>PMD-JEdit Plug-in Users' Guide</h1>
 <hr>
-<h2>Installation</h2>
-<h3>System requirements</h3>
-<p>PMD is a Java source code analyzer.  The PMD JEdit Plugin requires at least JEdit 4.0final. <a href="http://pmd.sf.net/" target="_blank">Here's</a> the PMD web site.</p>
+<p>PMD is a Java source code analyzer - it finds unused variables, questionable design decisions, empty catch blocks, and so forth.
+You can read much more about PMD here - http://pmd.sf.net/.</p>
 <h3>Installation</h3>
-<p>First, you may have to delete old version of the PMD plugin from your jars directory... you can pretty much just delete any jar file starting with "pmd" to be on the safe side.  Then, unzip the PMD-Jedit .zip file.
-Just unzip it into your JEdit directory and it'll put a couple of jar files into your jars directory, restart JEdit,
-and you'll be ready to go.  </p>
-<h2>Integration</h2>
-<p>The software adds a new menu item group into the <b>Plugins</b> menu of the editor view.  There are several menu items:</p>
 <ul>
-
-<li>
-<b>Plugins</b>-&gt;<b>PMD</b>-&gt;<b>Check code</b> - checks your currently displayed Java code pops up a window with the results.</p>
-</li>
-
-<li>
-<b>Plugins</b>-&gt;<b>PMD</b>-&gt;<b>Options</b> - here's where you can choose what rulesets you want to use to check your code.</p>
-</li>
-
+<li>Uninstall any old PMD-JEdit plugins
+<li>Unzip the PMD-JEdit-bin-0.5.zip file into your JEdit directory; it'll put a couple of jar files into your jars directory.
+<li>Restart JEdit and you'll be ready to go.
 </ul>
-<h2>License</h2>
-<p>The JEdit Plug-in is free software, released under the Apache license.</p>
+<h3>Integration</h3>
+<p>There's a new 'PMD' menu item in the Plugins menu.  This checks your currently displayed Java code and puts the results in the ErrorList.</p>
+<p>There's also a new section in the Global Options configuration panel that lets you pick rule sets.</p>
+<h3>License</h3>
+<p>The PMD-JEdit plugin is free software released under the Apache license.</p>
 </body>
 </html>

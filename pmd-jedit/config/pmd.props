@@ -12,10 +12,11 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-0.6.jar
 #
 # Menu properties
 #
-pmd-menu=pmd.check - pmd.options
-pmd-menu.label=PMD
-pmd.check.label=$Check code
-pmd.options.label=$Options
+PMD.label=$PMD
 
+#
+# Option pane properties
+#
+options.pmd.title=PMD
 options.pmd.label=PMD
 

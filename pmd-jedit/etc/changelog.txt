@@ -1,4 +1,7 @@
-???? 2002 - 0.5:
+July 22 2002 - 0.5:
+Moved options into Global Options area and made them look nicer.
+Cleaned up menus.
+Cleaned up help text.
 
 July 18 2002 - 0.4:
 Updated to use pmd-0.6
