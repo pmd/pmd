@@ -20,14 +20,13 @@ public class UseSingletonRule extends AbstractRule {
     public Object visit(ASTCompilationUnit cu, Object data) {
         methodCount = 0;
         isOK = false;
-        Object RC = cu.childrenAccept(this, data);
-
+        Object result = cu.childrenAccept(this, data);
         if (!isOK && methodCount > 0) {
             RuleContext ctx = (RuleContext) data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, cu.getBeginLine()));
         }
 
-        return RC;
+        return result;
     }
 
     public Object visit(ASTFieldDeclaration decl, Object data) {

@@ -365,6 +365,9 @@ public class RuleSetFactory {
                 }
             }
         }
+        if (propertyElement.hasAttribute("pluginname")) {
+            rule.addProperty("pluginname", propertyElement.getAttributeNode("pluginname").getNodeValue());
+        }
         rule.addProperty(name, value);
     }
     

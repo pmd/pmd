@@ -5,9 +5,16 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
+
+import java.io.StringReader;
 
 public class ShortVariableRuleTest extends SimpleAggregatorTst {
 
@@ -16,6 +23,8 @@ public class ShortVariableRuleTest extends SimpleAggregatorTst {
     public void setUp() {
         rule = new XPathRule();
         rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)][not((ancestor::FormalParameter) and (ancestor::TryStatement))]");
+        rule.setMessage("{0}");
+        rule.addProperty("pluginname", "true");
     }
 
     public void testAll() {

@@ -39,7 +39,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Lori Olson - Caught copy/paste bug in rule descriptions</li>
+            <li>wedemann - Found bug in RuleSetFactory XPath message variable plugging</li>
+            <li>Lori Olson - Found copy/paste bug in rule descriptions</li>
             <li>Adrian Papari - Wrote the PapariTextRenderer</li>
             <li>Curt Cox - some additions to the 'Similar Projects' page</li>
             <li>Michael Griffel - bug fix for XMLRenderer</li>
