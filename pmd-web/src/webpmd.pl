@@ -101,9 +101,6 @@ sub loadProjectList() {
 
 sub addProject() {
 	my ($project) = @_;
-	#my $cmd = "echo \"@{[$project->getString()]}\" > @{[$project->getJobsFile()]}";
-	#my $cmd = "mail tomcopeland@users.sourceforge.net -s \"@{[$project->getString()]}\"";
-	#system("${cmd}");
   open(SENDMAIL, "|/usr/lib/sendmail -oi -t -odq") or die "Couldn't send email: $!\n";
   print SENDMAIL <<"EOF";
 From: PMD-WEB <tomcopeland\@users.sourceforge.net>
