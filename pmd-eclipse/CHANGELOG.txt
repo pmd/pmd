@@ -1,0 +1,32 @@
+Change log for the PMD Eclipse plugin
+-------------------------------------
+
+vV.R.M - release date
+
+Runtime
+-------
+. Fixing SWTException when PMD is run on a file with syntax error
+  (thanks to Chris Grindstaff)
+  
+
+
+
+----------------------------------------------------------------------------------------
+v0.5.0 - 19/03/2003
+
+Runtime
+-------
+. Adding PMD as a project incremental builder.
+. Refactor some entries in the plugin.xml file.
+. Adding a "Delete PMD marker" popup menu on project, java files and task view.
+. Adding a "Generate AST" popup menu on java file.
+. Enabling popups in resource view and package view
+. Externalizing strings and messages.
+. Adding support for i18n : english is the default locale and providing french as the
+  first alternative locale.
+. Using PMD v1.03
+
+Development
+-----------
+. Adding a ant build file
+. Adapting .project to be compatible with both Eclipse 2.02 and WSAD v5.
