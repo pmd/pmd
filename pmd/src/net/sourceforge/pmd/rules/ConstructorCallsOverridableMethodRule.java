@@ -12,6 +12,7 @@ import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTNestedClassDeclaration;
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,8 +46,7 @@ import java.util.Set;
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
-public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.AbstractRule {
-
+public final class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.AbstractRule {
 	/**
 	 *		2: method();
 	 *			ASTPrimaryPrefix
@@ -158,7 +159,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	 *		Evaluate right to left
 	 *
 	 */
-	public static class MethodInvocation {
+	private static class MethodInvocation {
 		private String m_Name;
 		private ASTArguments m_Args;
 		private ASTPrimaryExpression m_Ape;
@@ -204,10 +205,10 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 			if ( i > 1) {//should always be at least 2, probably can eliminate this check
 				//start at end which is guaranteed, work backwards
 				Node lastNode = node.jjtGetChild(i-1);
-				if(lastNode.jjtGetNumChildren() == 1 && (lastNode.jjtGetChild(0) instanceof ASTArguments)){ //could be ASTExpression for instance 'a[4] = 5';
+				if((lastNode.jjtGetNumChildren() == 1) && (lastNode.jjtGetChild(0) instanceof ASTArguments)){ //could be ASTExpression for instance 'a[4] = 5';
 					//start putting method together
 //					System.out.println("Putting method together now");
-					List varNames = new ArrayList();;
+					List varNames = new ArrayList();
 					List packagesAndClasses = new ArrayList(); //look in JLS for better name here;
 					String methodName=null;
 					ASTArguments args = (ASTArguments)lastNode.jjtGetChild(0) ;
@@ -225,7 +226,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 							Node child = node.jjtGetChild(x);
 							if(child instanceof ASTPrimarySuffix){ //check suffix type match
 								ASTPrimarySuffix child2 = (ASTPrimarySuffix) child;
-//								name = getNameFromSuffix((ASTPrimarySuffix)child);
+//								String name = getNameFromSuffix((ASTPrimarySuffix)child);
 //								System.out.println("found name suffix of : " + name);
 								if(child2.getImage() == null && child2.jjtGetNumChildren() == 0){
 									thisIndex = x;
@@ -237,16 +238,12 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 							}
 							else if(child instanceof ASTPrimaryPrefix){ //check prefix type match
 								ASTPrimaryPrefix child2 = (ASTPrimaryPrefix)child;
-								String name = getNameFromPrefix(child2);
-//								System.out.println("found name prefix of : " + name);
-								if(name == null){
+								if(getNameFromPrefix(child2) == null){
 									if(child2.getImage() == null){
 										thisIndex = x;
 										break;
 									}
 									else {//happens when super is used [super.method(): image = 'method']
-//										name = child2.getImage();
-//										System.out.println("SuperCall on prefix node of " + name);
 										superFirst = true;
 										thisIndex = x;
 										//the true super is at an unusable index because super.method() has only 2 nodes [method=0,()=1]
@@ -365,22 +362,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 			}
 			return meth;
 		}
-//		public boolean equals(Object object){
-//			boolean equal = false;
-//			if(object == this){
-//				equal = true;
-//			}
-//			else if(object instanceof MethodInvocation){
-//				MethodInvocation m = (MethodInvocation)object;
-//				if(	m.getClassName().equals(getClassName()) && //need null check too
-//					m.getCallingVariableName().equals(getCallingVariableName()) && //need null check too
-//					m.getName().equals(getName())){ //need null check to
-//						//need arguement check...
-//						equal = true;
-//				}
-//			}
-//			return equal;
-//		}
+
 		public void show(){
 			//StringBuffer sb = new StringBuffer();
 			System.out.println("<MethodInvocation>");
@@ -404,7 +386,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 		}
 	}
 
-    public static class ConstructorInvocation {
+    private final class ConstructorInvocation {
         private ASTExplicitConstructorInvocation m_Eci;
         private String name;
         private int count =0;
@@ -429,11 +411,11 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
         }
     }
 
-    public static class Holder {
+    private final class MethodHolder {
         private ASTMethodDeclarator m_Amd;
         private boolean m_Dangerous = false;
 
-        public Holder(ASTMethodDeclarator amd){
+        public MethodHolder(ASTMethodDeclarator amd){
             m_Amd = amd;
         }
         public ASTMethodDeclarator getASTMethodDeclarator(){
@@ -447,7 +429,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
         }
     }
 
-	public static class ConstructorHolder {
+	private final class ConstructorHolder {
 		private ASTConstructorDeclaration m_Cd;
 		private boolean m_Dangerous = false;
 		private ConstructorInvocation m_Ci;
@@ -496,43 +478,57 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
     /**
      * 1 package per class. holds info for evaluating a single class.
      */
-    public static class EvalPackage{
-
+    private static class EvalPackage{
+        public EvalPackage(){}
         public EvalPackage(String className){
             m_ClassName = className;
+			calledMethods = new ArrayList();//meths called from constructor
+			allMethodsOfClass = new HashMap();
+			calledConstructors = new ArrayList();//all constructors called from constructor
+			allPrivateConstructorsOfClass = new HashMap();
         }
         public String m_ClassName;
-        public List calledMethods = new ArrayList();//meths called from constructor
-        public Map allMethodsOfClass = new HashMap();
+        public List calledMethods;
+        public Map allMethodsOfClass;
 
-        public List calledConstructors = new ArrayList();//all constructors called from constructor
-        public Map allPrivateConstructorsOfClass = new HashMap();
+        public List calledConstructors;
+        public Map allPrivateConstructorsOfClass;
     }
-
-	/**
-	 * Used to itentify which class we are parsing.
-	 */
-	private static int classID;
-	/**
-	 * Used to itentify which class we are parsing.
-	 * This works because all classes at the same level can be evaluated in
-	 * parallel.
-	 * @todo No this can't possibly work
-	 */
-	private static Integer classIDKey;
+	private static final class NullEvalPackage extends EvalPackage{
+		public NullEvalPackage(){
+            m_ClassName = "";
+			calledMethods = Collections.EMPTY_LIST;
+			allMethodsOfClass = Collections.EMPTY_MAP;
+			calledConstructors = Collections.EMPTY_LIST;
+			allPrivateConstructorsOfClass = Collections.EMPTY_MAP;
+        }
+	}
+	private static final NullEvalPackage nullEvalPackage = new NullEvalPackage();
+	
+	
 	/**
 	 * 1 package per class.
 	 */
-	private Map evalPackages = new HashMap();
+	private final List evalPackages = new ArrayList();//could use java.util.Stack
 
-	private EvalPackage getEvalPackage(){
-		return (EvalPackage) evalPackages.get(classIDKey);
+	private EvalPackage getCurrentEvalPackage(){
+		return (EvalPackage) evalPackages.get( evalPackages.size() - 1 );
 	}
-
+	/**
+	 * Adds and evaluation package and makes it current
+	 */
+	private void putEvalPackage(EvalPackage ep){
+		evalPackages.add( ep );
+	}
+	private void removeCurrentEvalPackage(){
+		evalPackages.remove( evalPackages.size() - 1 );
+	}
+	private void clearEvalPackages(){
+		evalPackages.clear();
+	}
 	/**
 	 * This check must be evaluated independelty for each class.  Inner classses
 	 * get their own EvalPackage in order to perform independent evaluation.
-	 * @todo differentiate between super() and this()
 	 */
 	private Object visitClassDec(AccessNode node,Object data){
 		Node child1 =node.jjtGetChild(0);
@@ -543,29 +539,30 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 		}
 
 		RuleContext ctx=null;
-		classID++;
-		classIDKey = new Integer(classID);
 		//evaluate each level independently
 		if(!node.isFinal() && !node.isStatic()){
-			evalPackages.put(classIDKey,new EvalPackage(className));
+			putEvalPackage(new EvalPackage(className));
+		}
+		else {
+			putEvalPackage(nullEvalPackage);
 		}
 		//store any errors caught from other passes.
 		ctx = (RuleContext) super.visit(node, data);
 
 		//skip this class if it has no evaluation package
-		if(getEvalPackage() != null){
+		if(!(getCurrentEvalPackage() instanceof NullEvalPackage)){
 			//evaluate danger of all methods in class
-			while(evaluateDangerOfMethods(getEvalPackage().allMethodsOfClass) == true);
+			while(evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass) == true);
 			//evaluate danger of constructors
-			evaluateDangerOfConstructors1(getEvalPackage().allPrivateConstructorsOfClass,getEvalPackage().allMethodsOfClass.keySet());
-			while(evaluateDangerOfConstructors2(getEvalPackage().allPrivateConstructorsOfClass) == true);
+			evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass,getCurrentEvalPackage().allMethodsOfClass.keySet());
+			while(evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass) == true);
 
 			//get each method called on this object from a non-private constructor, if its dangerous flag it
-			for(Iterator it = getEvalPackage().calledMethods.iterator();it.hasNext();){
+			for(Iterator it = getCurrentEvalPackage().calledMethods.iterator();it.hasNext();){
 				MethodInvocation meth = (MethodInvocation) it.next();
 				//check against each dangerous method in class
-				for(Iterator it2 = getEvalPackage().allMethodsOfClass.keySet().iterator();it2.hasNext();){
-					Holder h = (Holder)it2.next();
+				for(Iterator it2 = getCurrentEvalPackage().allMethodsOfClass.keySet().iterator();it2.hasNext();){
+					MethodHolder h = (MethodHolder)it2.next();
 					if(h.isDangerous()){
 						String methName = h.getASTMethodDeclarator().getImage();
 						int count = h.getASTMethodDeclarator().getParameterCount();
@@ -580,12 +577,12 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 				}
 			}
 			//get each unsafe private constructor, and check if its called from any non private constructors
-			for(Iterator privConstIter = getEvalPackage().allPrivateConstructorsOfClass.keySet().iterator();privConstIter.hasNext();){
+			for(Iterator privConstIter = getCurrentEvalPackage().allPrivateConstructorsOfClass.keySet().iterator();privConstIter.hasNext();){
 				ConstructorHolder ch = (ConstructorHolder) privConstIter.next();
 				if(ch.isDangerous()){ //if its dangerous check if its called from any non-private constructors
 					//System.out.println("visitClassDec Evaluating dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
 					int paramCount = ch.getASTConstructorDeclaration().getParameterCount();
-					for(Iterator calledConstIter = getEvalPackage().calledConstructors.iterator();calledConstIter.hasNext();){
+					for(Iterator calledConstIter = getCurrentEvalPackage().calledConstructors.iterator();calledConstIter.hasNext();){
 						ConstructorInvocation ci = (ConstructorInvocation) calledConstIter.next();
 						if(ci.getArgumentCount() == paramCount) {
 							//match name  super / this !?
@@ -597,11 +594,9 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 					}
 				}
 			}
-			//finished evaluating this class, move up a level
-			evalPackages.remove(classIDKey);
 		}
-		classID--;
-		classIDKey = new Integer(classID);
+		//finished evaluating this class, move up a level
+		removeCurrentEvalPackage();
 		return ctx;
 	}
 
@@ -623,23 +618,22 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 		//check each method if it calls overridable method
 		boolean found = false;
 		for(Iterator methodsIter = classMethodMap.keySet().iterator();methodsIter.hasNext();){
-			Holder h = (Holder)methodsIter.next();
+			MethodHolder h = (MethodHolder)methodsIter.next();
 			List calledMeths = (List)classMethodMap.get(h);
 			for(Iterator calledMethsIter = calledMeths.iterator();calledMethsIter.hasNext() && (h.isDangerous() == false);){
 				//if this method matches one of our dangerous methods, mark it dangerous
 				MethodInvocation meth = (MethodInvocation) calledMethsIter.next();
 				//System.out.println("Called meth is " + meth);
 				for(Iterator innerMethsIter = classMethodMap.keySet().iterator();innerMethsIter.hasNext();){ //need to skip self here h == h3
-					Holder h3 = (Holder)innerMethsIter.next();
+					MethodHolder h3 = (MethodHolder)innerMethsIter.next();
 					if(h3.isDangerous()){
 						String matchMethodName = h3.getASTMethodDeclarator().getImage();
 						int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
 						//System.out.println("matchint " + matchMethodName + " to " + methName);
-						//WE MUST MATCH ON METHOD SIGNATURE AS WELL, but cant till can get sig from methDecl
 						if(matchMethodName.equals(meth.getName()) && (matchMethodParamCount == meth.getArgumentCount())){
 							h.setDangerous(true);
 							found = true;
-							break;//new
+							break;
 						}
 					}
 				}
@@ -666,7 +660,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 					int methArgCount = meth.getArgumentCount();
 					//check each of the already evaluated methods: need to optimize this out
 					for(Iterator evaldMethsIter = evaluatedMethods.iterator();evaldMethsIter.hasNext();){
-						Holder h = (Holder)evaldMethsIter.next();
+						MethodHolder h = (MethodHolder)evaldMethsIter.next();
 						if(h.isDangerous()){
 							String matchName = h.getASTMethodDeclarator().getImage();
 							int matchParamCount = h.getASTMethodDeclarator().getParameterCount();
@@ -689,6 +683,8 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	 * marks dangerous if call dangerous private constructor
 	 * we ignore all non-private constructors here.  That is, the map passed in
 	 * should not contain any non-private constructors.
+	 * we return boolean in order to limit the number of passes through this method
+	 * but it seems as if we can forgo that and just process it till its done.
 	 */
 	private boolean evaluateDangerOfConstructors2(Map classConstructorMap){
 		boolean found = false;//triggers on danger state change
@@ -701,14 +697,12 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 			}
 			//if its not dangerous then evaluate if it should be
 			//if it calls dangerous constructor mark it as dangerous
-			//String cName = calledC.getName();
 			int cCount = calledC.getArgumentCount();
 			for(Iterator innerConstIter = classConstructorMap.keySet().iterator();innerConstIter.hasNext() && !ch.isDangerous();){ //forget skipping self because that introduces another check for each, but only 1 hit
 				ConstructorHolder h2 = (ConstructorHolder)innerConstIter.next();
 				if(h2.isDangerous()){
-					//String matchConstName = h2.getASTConstructorDeclaration().getImage();
 					int matchConstArgCount = h2.getASTConstructorDeclaration().getParameterCount();
-					if(/*matchConstName.equals(cName) && */ (matchConstArgCount == cCount)){
+					if(matchConstArgCount == cCount){
 						ch.setDangerous(true);
 						found = true;
 						//System.out.println("evaluateDangerOfConstructors2 setting dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
@@ -728,9 +722,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	 * Work on each file independently.
 	 */
     public Object visit(ASTCompilationUnit node, Object data) {
-		classID =0;
-		classIDKey = null;
-		evalPackages.clear();
+		clearEvalPackages();
 //		try {
 			return super.visit(node,data);
 //		}
@@ -756,7 +748,12 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	public Object visit(ASTNestedClassDeclaration node, Object data){
 		return visitClassDec(node,data);
 	}
-
+	public Object visit(ASTInterfaceDeclaration node, Object data){
+		putEvalPackage(nullEvalPackage);
+		Object o = super.visit(node,data);//interface may have inner classes, possible? if not just skip whole interface
+		removeCurrentEvalPackage();
+		return o;
+	}
 
 	/**
 	 * Non-private constructor's methods are added to a list for later safety
@@ -773,46 +770,45 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	 * @todo eliminate the redundency
 	 */
 	public Object visit(ASTConstructorDeclaration node, Object data) {
-		if(getEvalPackage() != null){//only evaluate if we have an eval package for this class
+		if(!(getCurrentEvalPackage() instanceof NullEvalPackage)){//only evaluate if we have an eval package for this class
 			List calledMethodsOfConstructor = new ArrayList();
 			ConstructorHolder ch = new ConstructorHolder(node);
-			addCalledMethodsOfNode(node,calledMethodsOfConstructor,getEvalPackage().m_ClassName);
+			addCalledMethodsOfNode(node,calledMethodsOfConstructor,getCurrentEvalPackage().m_ClassName);
 			if(!node.isPrivate()){
 				//these calledMethods are what we will evaluate for being called badly
-				getEvalPackage().calledMethods.addAll(calledMethodsOfConstructor);
+				getCurrentEvalPackage().calledMethods.addAll(calledMethodsOfConstructor);
 				//these called private constructors are what we will evaluate for being called badly
 				//we add all constructors invoked by non-private constructors
 				//but we are only interested in the private ones.  We just can't tell the difference here
 				ASTExplicitConstructorInvocation eci = ch.getASTExplicitConstructorInvocation();
 				if(eci != null && eci.isThis()){
-					getEvalPackage().calledConstructors.add(ch.getCalledConstructor());
+					getCurrentEvalPackage().calledConstructors.add(ch.getCalledConstructor());
 				}
 			}
 			else {
 				//add all private constructors to list for later evaluation on if they are safe to call from another constructor
 				//store this constructorHolder for later evaluation
-				getEvalPackage().allPrivateConstructorsOfClass.put(ch, calledMethodsOfConstructor);
+				getCurrentEvalPackage().allPrivateConstructorsOfClass.put(ch, calledMethodsOfConstructor);
 			}
 		}
 		return super.visit(node,data);
     }
 
 	/**
-	 * Create a Holder to hold the method.
-	 * Store the Holder in the Map as the key
+	 * Create a MethodHolder to hold the method.
+	 * Store the MethodHolder in the Map as the key
 	 * Store each method called by the current method as a List in the Map as the Object
 	 */
     public Object visit(ASTMethodDeclarator node, Object data) {
-
-		if(getEvalPackage() != null){//only evaluate if we have an eval package for this class
+		if(!(getCurrentEvalPackage() instanceof NullEvalPackage)){//only evaluate if we have an eval package for this class
 			AccessNode parent = (AccessNode)node.jjtGetParent();
-			Holder h = new Holder(node);
+			MethodHolder h = new MethodHolder(node);
 			if (!parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) {
 				h.setDangerous(true);//this method is overridable
 			}
 			List l = new ArrayList();
-			addCalledMethodsOfNode((SimpleNode)parent,l,getEvalPackage().m_ClassName);
-			getEvalPackage().allMethodsOfClass.put(h, l);
+			addCalledMethodsOfNode((SimpleNode)parent,l,getCurrentEvalPackage().m_ClassName);
+			getCurrentEvalPackage().allMethodsOfClass.put(h, l);
 		}
         return super.visit(node, data);
     }
@@ -824,7 +820,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 ////////////////////////////////////////////////////////////////////////////////
 //Helper methods to process visits
 
-	private final static void addCalledMethodsOfNode(AccessNode node, List calledMethods, String className){
+	private static void addCalledMethodsOfNode(AccessNode node, List calledMethods, String className){
 		List expressions = new ArrayList();
 		node.findChildrenOfType(ASTPrimaryExpression.class, expressions);
 		addCalledMethodsOfNodeImpl(expressions,calledMethods,className);
@@ -833,13 +829,13 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	/**
 	 * Adds all methods called on this instance from within this Node.
 	 */
-	private final static void addCalledMethodsOfNode(SimpleNode node, List calledMethods, String className){
+	private static void addCalledMethodsOfNode(SimpleNode node, List calledMethods, String className){
 		List expressions = new ArrayList();
 		node.findChildrenOfType(ASTPrimaryExpression.class, expressions);
 		addCalledMethodsOfNodeImpl(expressions,calledMethods,className);
 	}
 
-	private final static void addCalledMethodsOfNodeImpl(List expressions, List calledMethods, String className){
+	private static void addCalledMethodsOfNodeImpl(List expressions, List calledMethods, String className){
 		for(Iterator it = expressions.iterator();it.hasNext();){
 			ASTPrimaryExpression ape = (ASTPrimaryExpression)it.next();
 			MethodInvocation meth = findMethod(ape,className);
@@ -856,7 +852,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	 * @return A method call on the class passed in, or null if no method call
 	 *         is found.
 	 */
-	public final static MethodInvocation findMethod(ASTPrimaryExpression node, String className){
+	private static MethodInvocation findMethod(ASTPrimaryExpression node, String className){
 		MethodInvocation meth = MethodInvocation.getMethod(node);
 		boolean found = false;
 //		if(meth != null){
@@ -892,7 +888,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	/**
 	 *  ASTPrimaryPrefix has name in child node of ASTName
 	 */
-	public final static String getNameFromPrefix(ASTPrimaryPrefix node) {
+	private static String getNameFromPrefix(ASTPrimaryPrefix node) {
 		String name = null;
 		//should only be 1 child, if more I need more knowledge
 		if(node.jjtGetNumChildren() == 1) { //safety check
@@ -906,7 +902,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	/**
 	 * ASTPrimarySuffix has name in itself
 	 */
-	public final static String getNameFromSuffix(ASTPrimarySuffix node) {
+	private static String getNameFromSuffix(ASTPrimarySuffix node) {
 		return node.getImage();
 	}
 
