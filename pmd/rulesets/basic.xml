@@ -470,11 +470,12 @@ not
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[//Statement/EmptyStatement
+<![CDATA[
+//Statement/EmptyStatement
  [not(
        ../../../ForStatement
        or ../../../WhileStatement
-       or ../../../BlockStatement/UnmodifiedClassDeclaration
+       or ../../../BlockStatement/ClassOrInterfaceDeclaration
        or ../../../../../../ForStatement/Statement[1]
         /Block[1]/BlockStatement[1]/Statement/EmptyStatement
        or ../../../../../../WhileStatement/Statement[1]
