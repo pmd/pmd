@@ -100,6 +100,25 @@ public abstract void bar(); // abstract compiles, but is useless
      </example>
      </rule>
 
+  <rule name="ForLoopShouldBeWhileLoop"
+        message="This for loop could be simplified to a while loop"
+        class="net.sourceforge.pmd.rules.ForLoopShouldBeWhileLoopRule">
+    <description>
+    Some for loops can be simplified to while loops - this makes them more concise.
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo {
+    void bar() {
+        for (;true;) true; // No Init or Update part, may as well be: while (true)
+    }
+}
+]]>
+    </example>
+  </rule>
+
+
   </ruleset>
 
 
