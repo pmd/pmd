@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,8 @@ public class PMDTask extends Task {
     public static class Formatter {
         private Renderer renderer;
         private String toFile;
+        private boolean isReportFilePathAbsolute;
+
         public void setType(String type) {
             if (type.equals("xml")) {
                 renderer = new XMLRenderer();
@@ -43,8 +46,17 @@ public class PMDTask extends Task {
             }
         }
         public void setToFile(String toFile) {this.toFile = toFile;}
+
+        public void setIsReportFilePathAbsolute(boolean value) {this.isReportFilePathAbsolute = value;}
         public Renderer getRenderer() {return renderer;}
-        public String getToFile() {return toFile;}
+
+        public Writer getToFileWriter(String baseDir) throws IOException {
+            String outFile = toFile;
+            if (!isReportFilePathAbsolute) {
+                outFile = baseDir + System.getProperty("file.separator") + toFile;
+            }
+            return new BufferedWriter(new FileWriter(new File(outFile)));
+        }
     }
 
     public static class Database {
@@ -192,7 +204,7 @@ public class PMDTask extends Task {
                 Formatter formatter = (Formatter)i.next();
                 String buffer = formatter.getRenderer().render(ctx.getReport()) + EOL;
                 try {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(new File(project.getBaseDir() + System.getProperty("file.separator") + formatter.getToFile())));
+                    Writer writer = formatter.getToFileWriter(project.getBaseDir().toString());
                     writer.write(buffer, 0, buffer.length());
                     writer.close();
                 } catch (IOException ioe) {

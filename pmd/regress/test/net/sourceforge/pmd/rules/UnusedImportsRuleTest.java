@@ -5,7 +5,6 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.rules.UnusedImportsRule;
 
 public class UnusedImportsRuleTest extends RuleTst {
@@ -18,22 +17,15 @@ public class UnusedImportsRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        Report report = process("UnusedImports1.java", rule);
-        assertEquals(1, report.size());
+        runTest("UnusedImports1.java", 1, rule);
     }
-
     public void test2() throws Throwable {
-        Report report = process("UnusedImports2.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedImports2.java", 0, rule);
     }
-
     public void test3() throws Throwable {
-        Report report = process("UnusedImports3.java", rule);
-        assertEquals(2, report.size());
+        runTest("UnusedImports3.java", 2, rule);
     }
-
     public void test4() throws Throwable {
-        Report report = process("UnusedImports4.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("UnusedImports4.java", 0, rule);
     }
 }

@@ -1,3 +1,5 @@
+UPDATE THE ANT XDOCS WITH isReportFilePathAbsolute ATTRIBUTE!
+
 Move rulesets/tmp.xml somewhere else
 
 update run.bat to point to pmd-1.02.jar
