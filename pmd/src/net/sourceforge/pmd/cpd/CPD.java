@@ -99,6 +99,10 @@ public class CPD {
     }
 
     public static void main(String[] args) {
+        if (args.length != 2) {
+            usage();
+            System.exit(1);
+        }
         CPD cpd = new CPD();
         cpd.setListener(new CPDNullListener());
         cpd.setMinimumTileSize(Integer.parseInt(args[0]));
@@ -117,4 +121,7 @@ public class CPD {
         System.out.println("That took " + total);
     }
 
+    private static void usage() {
+        System.out.println("Usage: java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java");
+    }
 }
