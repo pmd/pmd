@@ -35,7 +35,7 @@
          <li><a href="http://www.andiz.de/azosystems/en/index.html">AzoJavaChecker</a> - Rules aren't listed online so it's hard to tell what they have.  Not sure how much it costs since I don't know German.</li>
          <li><a href="http://www.alajava.com/aubjex/products.htm">Aubjex</a> - Rules aren't listed online.  Appears to have some code modification stuff, which would be cool to have in PMD.  $299.</li>
          <li><a href="http://www.excelsior-usa.com/fd.html">Flaw Detector</a> - In beta, does control/data flow analysis to detect NullPointerExceptions</li>
-         <li><a href="hhttp://www.appperfect.com/products/devsuite/ca.html">AppPerfect</a> - 220 rules, produces PDF/Excel reports, std version is free, professional version $500 and includes auto-fixing problems</li>
+         <li><a href="http://www.appperfect.com/products/devsuite/ca.html">AppPerfect</a> - 220 rules, produces PDF/Excel reports, std version is free, professional version $500 and includes auto-fixing problems</li>
        </ul>
      </subsection>
    </section>
