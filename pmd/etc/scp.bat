@@ -3,6 +3,7 @@ set CVSROOT=:ext:tomcopeland@cvs.pmd.sourceforge.net:/cvsroot/pmd
 set CVS_RSH=c:\bin\ssh\ssh
 set HOME=c:
 set ANT_HOME=c:\ant
+set PATH=c:\j2sdk1.4.1_01\bin;%PATH%
 set CLASSPATH=../build/
 set CLASSPATH=%CLASSPATH%;../test-data/
 set CLASSPATH=%CLASSPATH%;../

@@ -22,12 +22,12 @@ public class AtLeastOneConstructorRule extends AbstractRule implements Rule {
     }
 
     public Object visit(ASTNestedClassDeclaration node, Object data) {
-        return check(node, data, false);
+        return check(node, data);
     }
 
-    private Object check(SimpleNode node, Object data, boolean descend) {
+    private Object check(SimpleNode node, Object data) {
         List constructors = new ArrayList();
-        node.findChildrenOfType(ASTConstructorDeclaration.class, constructors, descend);
+        node.findChildrenOfType(ASTConstructorDeclaration.class, constructors, false);
         if (constructors.isEmpty())  {
             RuleContext ctx = (RuleContext)data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));

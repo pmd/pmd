@@ -103,8 +103,8 @@ public class PMDDirectory
 
         m_pmdDirectoryRequestEventHandler = new PMDDirectoryRequestEventHandler();
         m_ruleSetEventHandler = new RuleSetEventHandler();
-        ListenerList.addListener((PMDDirectoryRequestEventListener) m_pmdDirectoryRequestEventHandler);
-        ListenerList.addListener((RuleSetEventListener) m_ruleSetEventHandler);
+        ListenerList.addListener( m_pmdDirectoryRequestEventHandler);
+        ListenerList.addListener( m_ruleSetEventHandler);
         m_pmdDirectoryPath = pathToPMD + File.separator + "PMD";
         m_ruleSetsDirectoryPath = m_pmdDirectoryPath + File.separator + "rulesets";
         key = "java.class.path";
@@ -246,7 +246,6 @@ public class PMDDirectory
                 }
                 catch (IOException exception)
                 {
-                    exception = null;
                 }
             }
         }
@@ -325,7 +324,7 @@ public class PMDDirectory
      */
     public List getRuleSets() throws PMDException
     {
-        List ruleSetList = null;
+        List ruleSetList;
         List ruleSetFilesList = getRuleSetFiles();
 
         if (ruleSetFilesList.size() == 0)
@@ -495,14 +494,9 @@ public class PMDDirectory
     public void savePropertiesFile()
     throws PMDException
     {
-        FileOutputStream outputStream;
-        String propertiesFileName;
-        File file;
-
-        outputStream = null;
-        propertiesFileName = m_pmdDirectoryPath + File.separator + PROPERTIES_FILE_NAME;
-        file = new File(propertiesFileName);
-
+        FileOutputStream outputStream = null;
+        String propertiesFileName = m_pmdDirectoryPath + File.separator + PROPERTIES_FILE_NAME;
+        File file = new File(propertiesFileName);
         if (file.exists())
         {
             file.delete();

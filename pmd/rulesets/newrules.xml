@@ -222,6 +222,65 @@ These are new rules for the next release
     </example>
     </rule>
 
+    <rule name="AccessorClassGenerationRule"
+          message="Avoid instantiation through private constructors from outside of the constructor's class."
+          class="net.sourceforge.pmd.rules.AccessorClassGenerationRule">
+      <description>
+      Instantiation by way of private constructors from outside of the constructor's class often causes the generation of an accessor.
+      A factory method, or non-privitization of the constructor can eliminate this situation.
+      The generated class file is actually an interface.  It gives the accessing class the ability to invoke a new hidden package
+      scope constructor that takes the interface as a supplementary parameter.  This turns a private constructor effectively into
+      one with package scope, though not visible to the naked eye.
+      </description>
+      <priority>3</priority>
+      <example>
+  <![CDATA[
+  public class OuterClass {
+    void method(){
+      InnerClass ic = new InnerClass();//Causes generation of accessor
+    }
+    public class InnerClass {
+      private InnerClass(){
+      }
+    }
+  }
+
+  public class OuterClass {
+    void method(){
+      InnerClass ic = new InnerClass();//OK, due to public constructor
+    }
+    public class InnerClass {
+      public InnerClass(){
+      }
+    }
+  }
+
+  public class OuterClass {
+    void method(){
+      InnerClass ic = InnerClass.getInnerClass();//OK
+    }
+    public static class InnerClass {
+      private InnerClass(){
+      }
+      private static InnerClass getInnerClass(){
+        return new InnerClass();
+      }
+    }
+  }
+
+  public class OuterClass {
+    private OuterClass(){
+    }
+    public class InnerClass {
+      void method(){
+        OuterClass oc = new OuterClass();//Causes generation of accessor
+      }
+    }
+  }
+  ]]>
+      </example>
+    </rule>
+
   </ruleset>
 
 

@@ -25,7 +25,7 @@ public class CharacterTokenizer implements Tokenizer {
         List lines = new ArrayList();
         StringBuffer sb = new StringBuffer();
         LineNumberReader r = new LineNumberReader(input);
-        String currentLine = null;
+        String currentLine;
         int position = 0;
         while ((currentLine = r.readLine()) != null) {
             lines.add(currentLine);

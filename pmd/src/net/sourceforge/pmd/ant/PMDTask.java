@@ -83,7 +83,7 @@ public class PMDTask extends Task {
             }
         }
 
-        RuleSet rules = null;
+        RuleSet rules;
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             rules = ruleSetFactory.createRuleSet(ruleSetFiles);

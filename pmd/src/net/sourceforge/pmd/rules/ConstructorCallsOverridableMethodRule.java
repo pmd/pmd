@@ -325,7 +325,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 						//System.out.println("no this found:");
 						FIRSTNODE:{ //variable names are in the prefix + the first method call [a.b.c.x()]
 							ASTPrimaryPrefix child = (ASTPrimaryPrefix)node.jjtGetChild(0);
-							String toParse = getNameFromPrefix((ASTPrimaryPrefix)child);
+							String toParse = getNameFromPrefix(child);
 //							System.out.println("parsing for var names in : " + toParse);
 							java.util.StringTokenizer st = new java.util.StringTokenizer(toParse,".");
 							while(st.hasMoreTokens()){
@@ -542,17 +542,12 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 			putEvalPackage(nullEvalPackage);
 		}
 		//store any errors caught from other passes.
-		RuleContext ctx;
 		if(node instanceof ASTClassDeclaration){
-			ctx = (RuleContext) super.visit((ASTClassDeclaration)node, data);
+			super.visit((ASTClassDeclaration)node, data);
 		}
 		else {
-			ctx = (RuleContext) super.visit((ASTNestedClassDeclaration)node, data);
+			super.visit((ASTNestedClassDeclaration)node, data);
 		}
-		if(ctx == null){
-			ctx = (RuleContext) data;
-		}
-
 		//skip this class if it has no evaluation package
 		if(!(getCurrentEvalPackage() instanceof NullEvalPackage)){
 			//evaluate danger of all methods in class
@@ -572,9 +567,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 						int count = h.getASTMethodDeclarator().getParameterCount();
 						if(meth.getName().equals(methName) && (meth.getArgumentCount() == count)){
 							//bad call
-							if(ctx == null){
-								ctx = (RuleContext)data;
-							}
+                            RuleContext ctx = (RuleContext)data;
 							ctx.getReport().addRuleViolation(createRuleViolation(ctx, meth.getASTPrimaryExpression().getBeginLine()));
 						}
 					}
@@ -590,9 +583,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 						ConstructorInvocation ci = (ConstructorInvocation) calledConstIter.next();
 						if(ci.getArgumentCount() == paramCount) {
 							//match name  super / this !?
-							if(ctx == null){
-								ctx = (RuleContext)data;
-							}
+                            RuleContext ctx = (RuleContext)data;
 							ctx.getReport().addRuleViolation(createRuleViolation(ctx,ci.getASTExplicitConstructorInvocation().getBeginLine()));
 						}
 					}
@@ -601,7 +592,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
 		}
 		//finished evaluating this class, move up a level
 		removeCurrentEvalPackage();
-		return ctx;
+		return data;
 	}
 
 	/**

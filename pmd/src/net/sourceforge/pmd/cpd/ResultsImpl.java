@@ -24,7 +24,7 @@ public class ResultsImpl extends TileOccurrences implements Serializable, Result
     public int getTileLineCount(Tile tile, TokenSets tokenSets) {
         TokenEntry firstToken = (TokenEntry)((List)tileToOccurrenceMap.get(tile)).get(0);
         TokenList tl = tokenSets.getTokenList(firstToken);
-        TokenEntry lastToken = (TokenEntry)tl.get(firstToken.getIndex()-1 + tile.getTokenCount());
+        TokenEntry lastToken = tl.get(firstToken.getIndex()-1 + tile.getTokenCount());
         int result = lastToken.getBeginLine() - firstToken.getBeginLine() + 1;
         if (result == 0) {
             result = 1;

@@ -67,7 +67,7 @@ public class GST {
             TokenEntry tok = (TokenEntry)i.next();
             TokenList tokenSet = tokenSets.getTokenList(tok);
             if (tokenSet.hasTokenAfter(tile, tok)) {
-                TokenEntry token = (TokenEntry)tokenSet.get(tok.getIndex() + tile.getTokenCount());
+                TokenEntry token = tokenSet.get(tok.getIndex() + tile.getTokenCount());
                 // make sure the next token hasn't already been used in an occurrence
                 if (!newOcc.contains(token)) {
                     Tile newTile = tile.copy();

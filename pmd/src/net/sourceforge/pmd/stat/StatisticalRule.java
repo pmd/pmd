@@ -33,7 +33,7 @@ public abstract class StatisticalRule extends AbstractRule {
     public void apply( List acus, RuleContext ctx ) {
         visitAll( acus, ctx );
 
-		double deviation = 0.0;
+		double deviation;
 		double minimum = 0.0;
 		
 		if (hasProperty("sigma")) {

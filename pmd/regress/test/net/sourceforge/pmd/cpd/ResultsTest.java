@@ -22,6 +22,6 @@ public class ResultsTest extends TestCase {
         r.addTile(tile, startToken);
         Iterator i = r.getOccurrences(tile);
         assertTrue(i.hasNext());
-        assertEquals(startToken, (TokenEntry)i.next());
+        assertEquals(startToken, i.next());
     }
 }

@@ -38,7 +38,7 @@ public class NameOccurrence {
     }
 
     public boolean isOnLeftHandSide() {
-        SimpleNode primaryExpression = null;
+        SimpleNode primaryExpression;
         if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
             primaryExpression = (SimpleNode)location.jjtGetParent().jjtGetParent();
         } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {

@@ -93,7 +93,7 @@ public class PMD {
             throw new RuntimeException("File " + inputFileName + " doesn't exist");
         }
 
-        List files = null;
+        List files;
         if (!inputFile.isDirectory()) {
             files = new ArrayList();
             files.add(inputFile);
@@ -125,7 +125,7 @@ public class PMD {
             rsnfe.printStackTrace();
         }
 
-        Renderer renderer = null;
+        Renderer renderer;
         if (reportFormat.equals("xml")) {
             renderer = new XMLRenderer();
         } else if (reportFormat.equals("ideaj")) {

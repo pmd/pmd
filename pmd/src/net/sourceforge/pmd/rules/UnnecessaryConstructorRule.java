@@ -35,13 +35,12 @@ public class UnnecessaryConstructorRule extends AbstractRule {
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
         // must be public
-        AccessNode accessNode = (AccessNode)node;
-        if (!accessNode.isPublic()) {
+        if (!node.isPublic()) {
             return data;
         }
 
         // must have no parameters
-        ASTFormalParameters params = (ASTFormalParameters)accessNode.jjtGetChild(0);
+        ASTFormalParameters params = (ASTFormalParameters)node.jjtGetChild(0);
         if (params.jjtGetNumChildren() > 0) {
             return data;
         }

@@ -72,7 +72,7 @@ public class RuleSetFactory {
             NodeList rules = root.getElementsByTagName("rule");
             for (int i =0; i<rules.getLength(); i++) {
                 Node ruleNode = rules.item(i);
-                Rule rule = null;
+                Rule rule;
                 if (ruleNode.getAttributes().getNamedItem("ref") != null) {
                     ExternalRuleID externalRuleID = new ExternalRuleID(ruleNode.getAttributes().getNamedItem("ref").getNodeValue());
                     RuleSetFactory rsf = new RuleSetFactory();

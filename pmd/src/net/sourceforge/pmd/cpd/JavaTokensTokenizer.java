@@ -25,7 +25,7 @@ public class JavaTokensTokenizer implements Tokenizer {
         List lines = new ArrayList();
         StringBuffer sb = new StringBuffer();
         LineNumberReader r = new LineNumberReader(input);
-        String currentLine = null;
+        String currentLine;
         while ((currentLine = r.readLine()) != null) {
             lines.add(currentLine);
             sb.append(currentLine);

@@ -34,7 +34,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
     }
 
     public Object visit(ASTPrimaryExpression node, Object data) {
-        if (node.jjtGetNumChildren() == 0 || ((SimpleNode)node.jjtGetChild(0)).jjtGetNumChildren() == 0 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
+        if (node.jjtGetNumChildren() == 0 || (node.jjtGetChild(0)).jjtGetNumChildren() == 0 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
             return super.visit(node, data);
         }
         // TODO... hmmm... is this inPrimaryExpressionContext gibberish necessary?
