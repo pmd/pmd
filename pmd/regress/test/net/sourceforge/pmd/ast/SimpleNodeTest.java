@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
@@ -13,8 +14,10 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
+import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
@@ -150,6 +153,48 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(ee.jjtGetChild(1), io2);
     }
 
+    public void testGetFirstChild() {
+        ASTBlock block = new ASTBlock(1);
+        ASTStatement x = new ASTStatement(2);
+        block.jjtAddChild(x, 0);
+        block.jjtAddChild(new ASTStatement(3), 1);
+        
+        Node n = block.getFirstChildOfType(ASTStatement.class);
+        assertNotNull(n);
+        assertTrue(n instanceof ASTStatement);
+        assertEquals(x, n);
+    }
+    
+    public void testGetFirstChildNested() {
+        ASTBlock block = new ASTBlock(1);
+        ASTStatement x = new ASTStatement(2);
+        ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
+        x.jjtAddChild(x1, 1);
+        block.jjtAddChild(x, 0);
+        block.jjtAddChild(new ASTStatement(3), 1);
+        
+        Node n = block.getFirstChildOfType(ASTAssignmentOperator.class);
+        assertNotNull(n);
+        assertTrue(n instanceof ASTAssignmentOperator);
+        assertEquals(x1, n);
+    }
+    
+    public void testGetFirstChildNestedDeeper() {
+        ASTBlock block = new ASTBlock(1);
+        ASTStatement x = new ASTStatement(2);
+        ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
+        ASTName x2 = new ASTName(5);
+        
+        x.jjtAddChild(x1, 1);
+        x1.jjtAddChild(x2, 0);
+        block.jjtAddChild(x, 0);
+        block.jjtAddChild(new ASTStatement(3), 1);
+        
+        Node n = block.getFirstChildOfType(ASTName.class);
+        assertNotNull(n);
+        assertTrue(n instanceof ASTName);
+        assertEquals(x2, n);
+    }
     private void verifyNode(SimpleNode node, int beginLine, int beginCol, int endLine, int endCol) {
         assertEquals("Unexpected beginning line: ", beginLine, node.getBeginLine());
         assertEquals("Unexpected beginning column: ", beginCol, node.getBeginColumn());

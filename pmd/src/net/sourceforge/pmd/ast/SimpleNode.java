@@ -288,5 +288,30 @@ public class SimpleNode implements Node {
         }
     }
 
+
+    /**
+     *Traverses down the tree to find the first child instance of type childType
+     *
+     * @param childType class which you want to find.
+     * @return Node of type childType.  Returns <code>null</code> if none found.
+     */
+    public Node getFirstChildOfType(Class childType) {
+        return getFirstChildOfType(childType, this);
+    }
+
+    private Node getFirstChildOfType(Class childType, Node node) {
+            for (int i=0;i<node.jjtGetNumChildren();i++) {
+                Node n = node.jjtGetChild(i);
+                if (n!=null) {
+                if (n.getClass().equals(childType))
+                    return n;
+                Node n2 = getFirstChildOfType(childType, n);
+                if (n2!=null)
+                    return n2;
+                }
+            }
+        return null;
+    }
+
 }
 
