@@ -64,6 +64,25 @@ public class Foo {
     </example>
     </rule>
 
+  <rule name="IfStmtsMustUseBraces"
+        message="Avoid using if statements without curly braces"
+        class="net.sourceforge.pmd.rules.IfStmtsMustUseBracesRule">
+    <description>
+    Avoid using if statements without using curly braces
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo {
+  public void bar() {
+    int x = 0;
+    if (foo) x++;
+  }
+}
+]]>
+    </example>
+    </rule>
+
   </ruleset>
 
 

@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTBlock;
 
 public abstract class BracesRule extends AbstractRule {
+
     protected boolean hasBlockAsFirstChild(SimpleNode node) {
         return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
     }
