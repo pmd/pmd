@@ -16,6 +16,7 @@ import oracle.ide.config.IdeSettings;
 import oracle.ide.model.Document;
 import oracle.ide.model.Element;
 import oracle.ide.model.Project;
+import oracle.ide.model.Reference;
 import oracle.ide.panels.Navigable;
 import oracle.jdeveloper.model.JProject;
 import oracle.jdeveloper.model.JavaSourceNode;
@@ -98,6 +99,11 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                     Iterator i = ((Project)context.getDocument()).getListOfChildren().iterator();
                     while (i.hasNext()) {
                         Object obj = i.next();
+                        if (!(obj instanceof Reference)) {
+                            System.out.println("PMD plugin expected a Reference, found a " + obj.getClass() + " instead.  Odd.");
+                            continue;
+                        }
+                        obj = ((Reference)obj).getData();
                         if (!(obj instanceof Document)) {
                             continue;
                         }
