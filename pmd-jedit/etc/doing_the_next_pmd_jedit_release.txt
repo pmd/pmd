@@ -1,7 +1,8 @@
 update the release date in the changelog
 change config/pmd.props to reflect actual pmd.jar file version
-change config/pmd.props to reflect pmd-jedit version
-change build.xml to reflect pmd-jedit version
+change config/pmd.props to reflect plugin version
+change jedit.html to reflect the plugin version
+change build.xml to reflect the plugin version
 
 Create the binary release:
 ant release
