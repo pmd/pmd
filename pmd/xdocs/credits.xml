@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>George Menhorn - CPD bug reports and suggestions</li>
             <li>Paul Roebuck - Ant build improvement, several bug reports</li>
             <li>Jon A. Maxwell - Bug report</li>
             <li>Maik Schreiber - Bug report</li>

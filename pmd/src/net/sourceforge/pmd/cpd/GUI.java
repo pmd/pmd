@@ -233,8 +233,15 @@ public class GUI implements CPDListener {
                     long hours = (long) Math.floor(elapsedSeconds / 3600);
                     long minutes = (long) Math.floor((elapsedSeconds - (hours * 3600)) / 60);
                     long seconds = elapsedSeconds - ((minutes * 60) + (hours * 3600));
-                    timeField.setText("" + hours + ":" + minutes + ":" + seconds);
+                    timeField.setText("" + munge(String.valueOf(hours)) + ":" + munge(String.valueOf(minutes)) + ":" + munge(String.valueOf(seconds)));
                 }
+                private String munge(String in) {
+                    if (in.length() < 2) {
+                        in = "0" + in;
+                    }
+                    return in;
+                }
+
             });
             t.start();
             cpd.go();
