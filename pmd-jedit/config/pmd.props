@@ -3,7 +3,7 @@
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.name=PMD
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.author=Tom Copeland
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=0.5
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=0.6
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.3
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.00.99.00
@@ -12,7 +12,11 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-0.6.jar
 #
 # Menu properties
 #
-PMD.label=$PMD
+pmd-menu=pmd-check-current-file pmd-check-current-directory pmd-check-current-directory-recursively
+pmd-menu.label=$PMD
+pmd-check-current-file.label=Check current file
+pmd-check-current-directory.label=Check all files in current directory
+pmd-check-current-directory-recursively.label=Check directory recursively
 
 #
 # Option pane properties

@@ -6,15 +6,18 @@
 package net.sourceforge.pmd.jedit;
 
 import org.gjt.sp.jedit.*;
+import org.gjt.sp.jedit.browser.VFSBrowser;
+import org.gjt.sp.jedit.io.VFSManager;
 import org.gjt.sp.jedit.gui.OptionsDialog;
+import org.gjt.sp.jedit.gui.DockableWindowManager;
 import errorlist.ErrorSource;
 import errorlist.DefaultErrorSource;
 import javax.swing.*;
 import java.util.Vector;
 import java.util.Iterator;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
-import java.io.StringReader;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.*;
 
 import net.sourceforge.pmd.*;
 
@@ -40,13 +43,72 @@ public class PMDJEditPlugin extends EditPlugin {
     }
     
     public void createMenuItems(Vector menuItems) {
-        menuItems.addElement(GUIUtilities.loadMenuItem(NAME));
+        menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
     }
 
     public void createOptionPanes(OptionsDialog optionsDialog) {
         optionsDialog.addOptionPane(new PMDOptionPane());
     }
     // boilerplate JEdit code
+
+    public static void checkDirectory(View view) {
+        instance.instanceCheckDirectory(view);
+    }
+
+    public void instanceCheckDirectory(View view) {
+        errorSource.clear();
+
+        DockableWindowManager wm = view.getDockableWindowManager();
+        VFSBrowser browser = (VFSBrowser)wm.getDockable("vfs.browser");
+        if(browser == null) {
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", "PMD", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        PMD pmd = new PMD();
+        SelectedRuleSetsMap selectedRuleSets = null;
+        try {
+            selectedRuleSets = new SelectedRuleSetsMap();
+        } catch (RuleSetNotFoundException rsne) {
+            // should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
+            System.out.println("PMD ERROR: Couldn't find a ruleset");
+            rsne.printStackTrace();
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Unable to find rulesets, halting PMD", "PMD", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(new Report());
+        List files = findFilesInDirectory(browser.getDirectory());
+        for (Iterator i = files.iterator(); i.hasNext();) {
+            File file = (File)i.next();
+            ctx.setReport(new Report());
+            ctx.setSourceCodeFilename(file.getAbsolutePath());
+            try {
+                pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRuleSets(), ctx);
+            } catch (FileNotFoundException fnfe) {
+                // should never happen, but if it does, carry on to the next file
+                System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
+            }
+            for (Iterator j = ctx.getReport().iterator(); j.hasNext();) {
+                RuleViolation rv = (RuleViolation)j.next();
+                errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
+            }
+        }
+/*
+        if (ctx.getReport().isEmpty()) {
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
+            errorSource.clear();
+        }
+*/
+    }
+
+    public static void checkDirectoryRecursively(View view) {
+        instance.instanceCheckDirectoryRecursively(view);
+    }
+
+    public void instanceCheckDirectoryRecursively(View view) {
+        JOptionPane.showMessageDialog(null, "Not yet implemented");
+    }
 
     public static void check(Buffer buffer, View view) {
         instance.instanceCheck(buffer, view);
@@ -55,19 +117,15 @@ public class PMDJEditPlugin extends EditPlugin {
     public void instanceCheck(Buffer buffer, View view) {
         try {
             errorSource.clear();
-            RuleContext ctx = new RuleContext();
-            RuleSetFactory ruleSetFactory = new RuleSetFactory();
-            SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
-            RuleSet rules = new RuleSet();
+
             PMD pmd = new PMD();
-            for (Iterator i = selectedRuleSets.getSelectedRuleSets(); i.hasNext();) {
-                rules.addRuleSet((RuleSet)i.next());
-            }
+            SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
+            RuleContext ctx = new RuleContext();
             ctx.setReport(new Report());
             ctx.setSourceCodeFilename(buffer.getPath());
-            pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
+            pmd.processFile(new StringReader(view.getTextArea().getText()), selectedRuleSets.getSelectedRuleSets(), ctx);
             if (ctx.getReport().isEmpty()) {
-                JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found");
+                JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
                 errorSource.clear();
             } else {
                 String path = buffer.getPath();
@@ -80,4 +138,22 @@ public class PMDJEditPlugin extends EditPlugin {
             rsne.printStackTrace();
         }
     }
+
+    private List findFilesInDirectory(String dir) {
+      FilenameFilter filter = new FilenameFilter() {
+          public boolean accept(File pathname, String filename) {
+              return filename.endsWith("java");
+          }
+      };
+      String[] files = (new File(dir)).list(filter);
+      List result = new ArrayList();
+      for (int i=0; i<files.length; i++) {
+         File sourceFile = new File(dir + System.getProperty("file.separator") + files[i]);
+         if (sourceFile.isDirectory()) {
+            continue;
+         }
+         result.add(sourceFile);
+      }
+      return result;
+   }
 }

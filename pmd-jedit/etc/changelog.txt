@@ -1,3 +1,5 @@
+???? - 0.6
+
 July 22 2002 - 0.5:
 Moved options into Global Options area and made them look nicer.
 Cleaned up menus.

@@ -52,15 +52,16 @@ public class SelectedRuleSetsMap {
         }
     }
 
-    public Iterator getSelectedRuleSets() {
+    public RuleSet getSelectedRuleSets() {
+        RuleSet newRuleSet = new RuleSet();
         List selected = new ArrayList();
         for (Iterator i = keys(); i.hasNext();) {
             RuleSet rs = (RuleSet)i.next();
             if (get(rs).isSelected()) {
-                selected.add(rs);
+                newRuleSet.addRuleSet(rs);
             }
         }
-        return selected.iterator();
+        return newRuleSet;
     }
 
     private JCheckBox createCheckBox(String name) {
