@@ -17,7 +17,7 @@ public class ClassScopeTest extends TestCase {
         ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage("bar");
         s.addDeclaration(new VariableNameDeclaration(node));
-        assertTrue(s.getVariableDeclarations(false).keySet().iterator().hasNext());
+        assertTrue(s.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
     public void testCantContainsSuperToString() {
@@ -50,6 +50,4 @@ public class ClassScopeTest extends TestCase {
         s = new ClassScope();
         assertEquals("Anonymous$2", s.getClassName());
     }
-
-
 }

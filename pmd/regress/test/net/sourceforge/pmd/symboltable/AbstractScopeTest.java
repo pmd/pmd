@@ -51,9 +51,8 @@ public class AbstractScopeTest extends TestCase {
         MyScope parent = new MyScope();
         scope.setParent(parent);
         assertEquals(parent, scope.getParent());
-
-        assertTrue(!scope.getVariableDeclarations(false).keySet().iterator().hasNext());
-        assertTrue(scope.getVariableDeclarations(true).isEmpty());
+        assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
+        assertTrue(scope.getVariableDeclarations().isEmpty());
     }
 
     public void testEnclClassScopeGetsDelegatedRight() {

@@ -47,8 +47,8 @@ public abstract class AbstractScope implements Scope {
         return findVariableHere(occurrence) != null;
     }
 
-    public Map getVariableDeclarations(boolean lookingForUsed) {
-        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames, lookingForUsed);
+    public Map getVariableDeclarations() {
+        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
         Applier.apply(f, variableNames.keySet().iterator());
         return f.getUsed();
     }

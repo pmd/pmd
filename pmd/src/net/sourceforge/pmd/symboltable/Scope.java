@@ -14,9 +14,9 @@ public interface Scope {
 
     /**
      * Returns a Map (VariableNameDeclaration->List(NameOccurrence,NameOccurrence)) of declarations that
-     * exist and are either used or not used at this scope
+     * exist at this scope
      */
-    Map getVariableDeclarations(boolean lookingForUsed);
+    Map getVariableDeclarations();
 
     /**
      * Add a variable declaration to this scope

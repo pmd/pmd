@@ -18,22 +18,17 @@ import java.util.List;
 public class UnusedPrivateFieldRule extends AbstractRule {
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
-        check(node, (RuleContext) data, true);
-        check(node, (RuleContext) data, false);
-        return super.visit(node, data);
-    }
-
-    private void check(ASTUnmodifiedClassDeclaration node, RuleContext ctx, boolean flag) {
-        Map unused = node.getScope().getVariableDeclarations(flag);
-        for (Iterator i = unused.keySet().iterator(); i.hasNext();) {
+        Map vars = node.getScope().getVariableDeclarations();
+        for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
             if (!decl.getAccessNodeParent().isPrivate() || isOK(decl.getImage())) {
                 continue;
             }
-            if (!actuallyUsed((List)unused.get(decl))) {
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
+            if (!actuallyUsed((List)vars.get(decl))) {
+                ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
             }
         }
+        return super.visit(node, data);
     }
 
     private boolean actuallyUsed(List usages) {

@@ -10,14 +10,20 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.List;
 
 public class UnusedFormalParameterRule extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         if (node.isPrivate() && !node.isNative()) {  // make sure it's both private and not native
             RuleContext ctx = (RuleContext) data;
-            for (Iterator i = node.getScope().getVariableDeclarations(false).keySet().iterator(); i.hasNext();) {
+            Map vars = node.getScope().getVariableDeclarations();
+            for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration nameDecl = (VariableNameDeclaration) i.next();
+                if (!((List)vars.get(nameDecl)).isEmpty()){
+                    continue;
+                }
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{nameDecl.getImage()})));
             }
         }

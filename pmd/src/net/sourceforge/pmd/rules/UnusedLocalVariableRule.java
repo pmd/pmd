@@ -18,20 +18,15 @@ import java.util.List;
 public class UnusedLocalVariableRule extends AbstractRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
-            check(node, (RuleContext) data, true);
-            check(node, (RuleContext) data, false);
-        }
-        return data;
-    }
-
-    private void check(ASTVariableDeclaratorId node, RuleContext ctx, boolean flag) {
-        Map unused = node.getScope().getVariableDeclarations(flag);
-        for (Iterator i = unused.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-            if (!actuallyUsed((List)unused.get(decl))) {
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
+            Map unused = node.getScope().getVariableDeclarations();
+            for (Iterator i = unused.keySet().iterator(); i.hasNext();) {
+                VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
+                if (!actuallyUsed((List)unused.get(decl))) {
+                    ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
+                }
             }
         }
+        return data;
     }
 
     private boolean actuallyUsed(List usages) {

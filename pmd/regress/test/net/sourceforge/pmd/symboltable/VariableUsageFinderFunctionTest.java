@@ -17,16 +17,19 @@ import java.util.List;
 public class VariableUsageFinderFunctionTest extends TestCase {
 
     public void testLookingForUsed() {
-        Map decls = new HashMap();
-        ASTVariableDeclaratorId id = new ASTVariableDeclaratorId(1);
-        id.setImage("x");
-        NameDeclaration decl = new VariableNameDeclaration(id);
-        List occs = new ArrayList();
-        occs.add(new NameOccurrence(new SimpleNode(2), "x"));
-        decls.put(decl, occs);
-        VariableUsageFinderFunction f = new VariableUsageFinderFunction(decls, true);
+        ASTVariableDeclaratorId variableDeclarationIdNode = new ASTVariableDeclaratorId(1);
+        variableDeclarationIdNode.setImage("x");
+        NameDeclaration nameDeclaration = new VariableNameDeclaration(variableDeclarationIdNode);
+        List nameOccurrences = new ArrayList();
+        nameOccurrences.add(new NameOccurrence(new SimpleNode(2), "x"));
+
+        Map declarations = new HashMap();
+        declarations.put(nameDeclaration, nameOccurrences);
+
         List vars = new ArrayList();
-        vars.add(decl);
+        vars.add(nameDeclaration);
+
+        VariableUsageFinderFunction f = new VariableUsageFinderFunction(declarations);
         Applier.apply(f, vars.iterator());
         Map p = f.getUsed();
         System.out.println("p = " + p.size());

@@ -32,7 +32,7 @@ public class LocalScopeTest extends TestCase {
         name.jjtAddChild(prefix, 1);
         NameOccurrence occ = new NameOccurrence(name, "foo");
         scope.addVariableNameOccurrence(occ);
-        assertTrue(!scope.getVariableDeclarations(false).keySet().iterator().hasNext());
+        assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
     public void testNameWithSuperIsNotFlaggedAsUnused() {
@@ -44,7 +44,7 @@ public class LocalScopeTest extends TestCase {
         name.jjtAddChild(prefix, 1);
         NameOccurrence occ = new NameOccurrence(name, "foo");
         scope.addVariableNameOccurrence(occ);
-        assertTrue(!scope.getVariableDeclarations(false).keySet().iterator().hasNext());
+        assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
     public void testExceptionParamNameIsDiscarded() {
@@ -52,7 +52,6 @@ public class LocalScopeTest extends TestCase {
         VariableNameDeclaration decl = new VariableNameDeclaration(node);
         LocalScope scope = new LocalScope();
         scope.addDeclaration(decl);
-        assertTrue(!scope.getVariableDeclarations(false).keySet().iterator().hasNext());
+        assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
-
 }

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class BeanMembersShouldSerializeRule extends AbstractRule {
 
@@ -38,9 +39,10 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
 
         Arrays.sort(methNameArray);
 
-        for (Iterator i = node.getScope().getVariableDeclarations(true).keySet().iterator();i.hasNext();) {
+        Map vars = node.getScope().getVariableDeclarations();
+        for (Iterator i = vars.keySet().iterator();i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
-            if (decl.getAccessNodeParent().isTransient() || decl.getAccessNodeParent().isStatic()){
+            if (((List)vars.get(decl)).isEmpty() || decl.getAccessNodeParent().isTransient() || decl.getAccessNodeParent().isStatic()){
                 continue;
             }
             String varName = decl.getImage();
@@ -62,7 +64,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
         if (meth.getImage().startsWith("is")) {
             ASTResultType ret = (ASTResultType)meth.jjtGetParent().jjtGetChild(0);
             List primitives = ret.findChildrenOfType(ASTPrimitiveType.class);
-            if (primitives.size() > 0 && ((ASTPrimitiveType)primitives.get(0)).isBoolean()) {
+            if (!primitives.isEmpty() && ((ASTPrimitiveType)primitives.get(0)).isBoolean()) {
                 return true;
             }
         }

@@ -13,25 +13,13 @@ public class VariableUsageFinderFunction implements UnaryFunction {
 
     private Map results = new HashMap();
     private Map decls;
-    private boolean lookingForUsed;
 
-    public VariableUsageFinderFunction(Map decls, boolean lookingForUsed) {
+    public VariableUsageFinderFunction(Map decls) {
         this.decls = decls;
-        this.lookingForUsed = lookingForUsed;
     }
 
     public void applyTo(Object o) {
-        NameDeclaration decl = (NameDeclaration) o;
-        List usages = (List) decls.get(decl);
-        if (!usages.isEmpty()) {
-            if (lookingForUsed) {
-                results.put(decl, usages);
-            }
-        } else {
-            if (!lookingForUsed) {
-                results.put(decl, usages);
-            }
-        }
+        results.put((NameDeclaration) o, (List) decls.get(o));
     }
 
     public Map getUsed() {
