@@ -81,6 +81,11 @@
           <tr><td><center><img src="http://sourceforge.net/sflogo.php?group_id=56262"/></center></td>
               <td><a href="http://sourceforge.net/">SourceForge</a> for
                   providing hosting services for PMD.</td></tr>
+          <tr><td><center><img src="images/refactorit_logo.gif"/></center></td>
+              <td><a href="http://www.refactorit.com/">RefactorIT</a> for letting
+                  their software be used free-of-charge on PMD code
+                  (<a href="http://www.refactorit.com/index.html?id=649">OpenSource
+                  Community License</a>)</td></tr>
         </table>
         </subsection>
     </section>
