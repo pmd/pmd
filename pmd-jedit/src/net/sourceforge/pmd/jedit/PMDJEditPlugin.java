@@ -36,6 +36,9 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class PMDJEditPlugin extends EditPlugin {
@@ -88,9 +91,9 @@ public class PMDJEditPlugin extends EditPlugin {
 	}
 	// boilerplate JEdit code
 
-	public static void checkDirectory(View view) {
-		instance.instanceCheckDirectory(view);
-	}
+    public static void checkDirectory(View view) {
+        instance.instanceCheckDirectory(view);
+    }
 
 	public void instanceCheckDirectory(View view) {
 		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
@@ -113,7 +116,35 @@ public class PMDJEditPlugin extends EditPlugin {
 		}
 	}
 
+    // check all open buffers
+    public static void checkAllOpenBuffers(View view) {
+        instance.instanceCheckAllOpenBuffers(view);
+    }
 
+    public void instanceCheckAllOpenBuffers(View view) {
+        // I'm putting the files in a Set to work around some
+        // odd behavior in jEdit - the buffer.getNext()
+        // seems to iterate over the files twice.
+        Set fileSet = new HashSet();
+        for (int i=0; i<jEdit.getBufferCount(); i++ ) {
+            Buffer buffer = jEdit.getFirstBuffer();
+            while (buffer != null) {
+                System.out.println("file = " + buffer.getFile());
+                if (buffer.getFile().getName().endsWith(".java")) {
+                    fileSet.add(buffer.getFile());
+                }
+                buffer = buffer.getNext();
+            }
+        }
+
+        List files = new ArrayList();
+        files.addAll(fileSet);
+        process(files);
+    }
+    // check all open buffers
+
+
+    // check directory recursively
 	public static void checkDirectoryRecursively(View view) {
 		instance.instanceCheckDirectoryRecursively(view);
 	}
@@ -138,10 +169,17 @@ public class PMDJEditPlugin extends EditPlugin {
 			process(findFiles(browser.getDirectory(), true));
 		}
 	}
+    // check directory recursively
+
+    // clear error list
+    public static void clearErrorList() {
+        instance.instanceClearErrorList();
+    }
 
 	public void instanceClearErrorList() {
         errorSource.clear();
 	}
+    // clear error list
 
 	private void process(final List files) {
 		new Thread(new Runnable () {
@@ -151,12 +189,9 @@ public class PMDJEditPlugin extends EditPlugin {
 				   }).start();
 	}
 
+    // check current buffer
 	public static void check(Buffer buffer, View view) {
 		instance.instanceCheck(buffer, view);
-	}
-
-	public static void clearErrorList() {
-		instance.instanceClearErrorList();
 	}
 
 	public void instanceCheck(Buffer buffer, View view) {
@@ -186,6 +221,7 @@ public class PMDJEditPlugin extends EditPlugin {
 			JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + buffer.getPath());
 		}
 	}
+    // check current buffer
 
 	private void processFiles(List files) {
 		errorSource.clear();

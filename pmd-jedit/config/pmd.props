@@ -14,11 +14,12 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=saxpath-1.0-fcs.jar
 #
 # Menu properties
 #
-pmd-menu=pmd-check-current-file pmd-check-current-directory pmd-check-current-directory-recursively pmd-clear-errorlist %pmd-cpd
+pmd-menu=pmd-check-current-buffer pmd-check-all-open-buffers pmd-check-current-directory pmd-check-current-directory-recursively pmd-clear-errorlist %pmd-cpd
 pmd-cpd=cpd-currentfile cpd-dir cpd-dir-recursively
 
 pmd-menu.label=$PMD
-pmd-check-current-file.label=Check current file
+pmd-check-current-buffer.label=Check current buffer
+pmd-check-all-open-buffers.label=Check all open buffers
 pmd-check-current-directory.label=Check all files in current directory
 pmd-check-current-directory-recursively.label=Check directory recursively
 pmd-clear-errorlist.label=Clear ErrorList
