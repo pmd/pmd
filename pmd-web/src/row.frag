@@ -3,6 +3,6 @@
 <td align="center"><!--Fragment key="homepage"--></td>
 <td align="center"><!--Fragment key="ncss"--></td>
 <td align="center"><!--Fragment key="pmd"--></td>
-<td align="center"><!--Fragment key="pctg"--></td>
+<!--Fragment key="pctg"-->
 <td align="center"><!--Fragment key="dupe"--></td>
 </tr>

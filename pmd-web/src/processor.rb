@@ -76,6 +76,9 @@ class Job
 		"<a href=\"http://" + @unix_name + ".sf.net/\">http://" + @unix_name + ".sf.net/</a>"
 	end
 	def ncss
+		if File.size(ncss_report) < 5
+			return 0	
+		end
 		File.read(ncss_report).split(":")[1].strip.chomp	
 	end
 	def cpd_lines
@@ -91,8 +94,17 @@ class Job
 	def pctg
 		sprintf("%.2f", (pmd_lines.to_f/(ncss == 0 ? 1 : ncss.to_i))*100)
 	end
-	def to_s
-		@location + ":" + @title + ":" + @unix_name +":"+@mod+":"+@src
+	def color
+    if pctg.to_f < 0.2 
+			"#00ff00"
+		elsif pctg.to_f < 0.8
+			"yellow"
+		else
+			"red"
+		end
+	end
+	def to_s_
+		@location + ":" + @title + ":" + @unix_name +":"+@mod+":"+@srco
 	end
 end
 
@@ -120,7 +132,13 @@ if __FILE__ == $0
 		}
 	end
 
-	jobs.sort! {|x,y| x.pmd_lines <=> y.pmd_lines }
+	jobs.sort! {|x,y| 
+		if !File.exists?(x.ncss_report) || !File.exists?(y.ncss_report)
+			-1
+		else
+			x.pctg <=> y.pctg 
+		end
+	}
 
 	fm = Ikko::FragmentManager.new
 	fm.base_path="./"
@@ -131,9 +149,9 @@ if __FILE__ == $0
 			"homepage"=>fm["homepage.frag", {"name"=>j.unix_name}],
 			"ncss"=>j.ncss, 
 			"pmd"=>j.pmd_lines.to_s,
-			"pctg"=>j.pctg.to_s,
+			"pctg"=>fm["pctg.frag", {"color"=>j.color, "pctg"=>j.pctg.to_s}], 
 			"dupe"=>fm["cpd.frag", {"file"=>j.cpd_file, "dupes"=>j.cpd_lines.to_s}]
-		}] unless !File.exists?(j.report) || !File.exists?(j.ncss_report)
+		}] unless !File.exists?(j.report) || !File.exists?(j.ncss_report) || j.ncss == 0
 	}
 	File.open("scoreboard.html", "w") {|f| f.syswrite(out)}
 
