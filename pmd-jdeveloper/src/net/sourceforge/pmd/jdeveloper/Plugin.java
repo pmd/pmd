@@ -8,6 +8,7 @@ import net.sourceforge.pmd.RuleViolation;
 import oracle.ide.ContextMenu;
 import oracle.ide.Ide;
 import oracle.ide.IdeAction;
+import oracle.ide.layout.ViewId;
 import oracle.ide.addin.Addin;
 import oracle.ide.addin.Context;
 import oracle.ide.addin.ContextMenuListener;
@@ -19,6 +20,7 @@ import oracle.ide.model.Project;
 import oracle.ide.panels.Navigable;
 import oracle.jdeveloper.model.JProject;
 import oracle.jdeveloper.model.JavaSourceNode;
+import oracle.jdeveloper.compiler.CompilerPage;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -115,6 +117,9 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         return true;
     }
 
+    /**
+     * TODO investigate CompilerPage as a replacement for RuleViolationPage; or could perhaps subclass it instead.
+     */
     private void render(RuleContext ctx) {
         if (rvPage == null) {
             rvPage = new RuleViolationPage();
