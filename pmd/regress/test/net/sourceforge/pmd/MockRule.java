@@ -40,7 +40,7 @@ public class MockRule implements Rule {
     }
 
     public void addProperty(String name, String value) {
-        properties.setProperty(name, value);
+        properties.setValue(name, value);
     }
 
     public int getIntProperty(String name) {

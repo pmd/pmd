@@ -10,7 +10,12 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleProperties;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetReader;
+import net.sourceforge.pmd.RuleSetWriter;
 
 
 /**
@@ -25,6 +30,15 @@ public class RuleSetReadWriteTest extends TestCase
     private InputStream m_inputStream;
     private RuleSet m_ruleSetIn;
     private RuleSet m_ruleSetOut;
+
+    /**
+     ********************************************************************************
+     *
+     */
+    public RuleSetReadWriteTest()
+    {
+        super("Rule Set Read/Write Test");
+    }
 
     /**
      ********************************************************************************
@@ -127,14 +141,23 @@ public class RuleSetReadWriteTest extends TestCase
                 while (property.hasMoreElements())
                 {
                     String propertyName = (String) property.nextElement();
-                    String propertyInValue = propertiesIn.getProperty(propertyName);
-                    String propertyOutValue = propertiesOut.getProperty(propertyName);
+                    String propertyInValue = propertiesIn.getValue(propertyName);
+                    String propertyOutValue = propertiesOut.getValue(propertyName);
 
                     assertNotNull("\"" + propertyName + "\" exists in output rule properties.", propertyOutValue);
 
                     String msg = "Rule property \"" + propertyName + "\" values are equal.";
 
                     assertEquals(msg, propertyInValue, propertyOutValue);
+
+                    String propertyInValueType = propertiesIn.getValueType(propertyName);
+                    String propertyOutValueType = propertiesOut.getValueType(propertyName);
+
+                    assertNotNull("\"" + propertyName + "\" exists in output rule properties.", propertyOutValueType);
+
+                    msg = "Rule property \"" + propertyName + "\" value types are equal.";
+
+                    assertEquals(msg, propertyInValueType, propertyOutValueType);
                 }
             }
         }
