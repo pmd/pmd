@@ -27,7 +27,7 @@ public class SimplifyBooleanExpressionsRuleTest extends RuleTst {
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//Expression/ConditionalAndExpression/PrimaryExpression[position()>1]/PrimaryPrefix/Literal/BooleanLiteral");
+        rule.addProperty("xpath", "//Expression/ConditionalAndExpression/InstanceOfExpression[position()>1]/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral");
     }
 
     public void testInFieldAssignment() throws Throwable {

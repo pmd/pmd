@@ -92,7 +92,8 @@ public class Foo {
           <property name="xpath">
               <value>
                   <![CDATA[
-//Expression/ConditionalAndExpression/PrimaryExpression[position()>1]/PrimaryPrefix/Literal/BooleanLiteral
+//Expression/ConditionalAndExpression/InstanceOfExpression[position()>1]
+ /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
                   ]]>
               </value>
           </property>

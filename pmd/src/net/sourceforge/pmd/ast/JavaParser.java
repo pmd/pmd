@@ -2170,15 +2170,39 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   }
 
   final public void InstanceOfExpression() throws ParseException {
-    RelationalExpression();
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case INSTANCEOF:
-      jj_consume_token(INSTANCEOF);
-      Type();
-      break;
-    default:
-      jj_la1[59] = jj_gen;
-      ;
+ /*@bgen(jjtree) InstanceOfExpression */
+  ASTInstanceOfExpression jjtn000 = new ASTInstanceOfExpression(this, JJTINSTANCEOFEXPRESSION);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      RelationalExpression();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INSTANCEOF:
+        jj_consume_token(INSTANCEOF);
+        Type();
+        break;
+      default:
+        jj_la1[59] = jj_gen;
+        ;
+      }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (RuntimeException)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
     }
   }
 

@@ -746,7 +746,7 @@ void EqualityExpression() #void :
   InstanceOfExpression() ( ( "==" | "!=" ) InstanceOfExpression() )*
 }
 
-void InstanceOfExpression() #void :
+void InstanceOfExpression() :
 {}
 {
   RelationalExpression() [ "instanceof" Type() ]

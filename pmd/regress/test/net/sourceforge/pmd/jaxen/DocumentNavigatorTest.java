@@ -281,12 +281,12 @@ public class DocumentNavigatorTest extends RuleTst {
     public void testXPath3() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
         List matches = xPath.selectNodes(rule.typeDeclaration);
-        assertEquals(72, matches.size());
+        assertEquals(76, matches.size());
     }
     
     public void testXPath4() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
         List matches = xPath.selectNodes(rule.compilationUnit);
-        assertEquals(75, matches.size());
+        assertEquals(79, matches.size());
     }    
 }

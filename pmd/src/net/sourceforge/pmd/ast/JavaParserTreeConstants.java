@@ -39,43 +39,44 @@ public interface JavaParserTreeConstants
   public int JJTASSIGNMENTOPERATOR = 32;
   public int JJTVOID = 33;
   public int JJTCONDITIONALANDEXPRESSION = 34;
-  public int JJTPREINCREMENTEXPRESSION = 35;
-  public int JJTPREDECREMENTEXPRESSION = 36;
-  public int JJTCASTLOOKAHEAD = 37;
-  public int JJTCASTEXPRESSION = 38;
-  public int JJTPRIMARYEXPRESSION = 39;
-  public int JJTPRIMARYPREFIX = 40;
-  public int JJTPRIMARYSUFFIX = 41;
-  public int JJTLITERAL = 42;
-  public int JJTBOOLEANLITERAL = 43;
-  public int JJTNULLLITERAL = 44;
-  public int JJTARGUMENTS = 45;
-  public int JJTARGUMENTLIST = 46;
-  public int JJTALLOCATIONEXPRESSION = 47;
-  public int JJTARRAYDIMSANDINITS = 48;
-  public int JJTSTATEMENT = 49;
-  public int JJTLABELEDSTATEMENT = 50;
-  public int JJTBLOCK = 51;
-  public int JJTBLOCKSTATEMENT = 52;
-  public int JJTLOCALVARIABLEDECLARATION = 53;
-  public int JJTEMPTYSTATEMENT = 54;
-  public int JJTSTATEMENTEXPRESSION = 55;
-  public int JJTSWITCHSTATEMENT = 56;
-  public int JJTSWITCHLABEL = 57;
-  public int JJTIFSTATEMENT = 58;
-  public int JJTWHILESTATEMENT = 59;
-  public int JJTDOSTATEMENT = 60;
-  public int JJTFORSTATEMENT = 61;
-  public int JJTFORINIT = 62;
-  public int JJTSTATEMENTEXPRESSIONLIST = 63;
-  public int JJTFORUPDATE = 64;
-  public int JJTBREAKSTATEMENT = 65;
-  public int JJTCONTINUESTATEMENT = 66;
-  public int JJTRETURNSTATEMENT = 67;
-  public int JJTTHROWSTATEMENT = 68;
-  public int JJTSYNCHRONIZEDSTATEMENT = 69;
-  public int JJTTRYSTATEMENT = 70;
-  public int JJTASSERTSTATEMENT = 71;
+  public int JJTINSTANCEOFEXPRESSION = 35;
+  public int JJTPREINCREMENTEXPRESSION = 36;
+  public int JJTPREDECREMENTEXPRESSION = 37;
+  public int JJTCASTLOOKAHEAD = 38;
+  public int JJTCASTEXPRESSION = 39;
+  public int JJTPRIMARYEXPRESSION = 40;
+  public int JJTPRIMARYPREFIX = 41;
+  public int JJTPRIMARYSUFFIX = 42;
+  public int JJTLITERAL = 43;
+  public int JJTBOOLEANLITERAL = 44;
+  public int JJTNULLLITERAL = 45;
+  public int JJTARGUMENTS = 46;
+  public int JJTARGUMENTLIST = 47;
+  public int JJTALLOCATIONEXPRESSION = 48;
+  public int JJTARRAYDIMSANDINITS = 49;
+  public int JJTSTATEMENT = 50;
+  public int JJTLABELEDSTATEMENT = 51;
+  public int JJTBLOCK = 52;
+  public int JJTBLOCKSTATEMENT = 53;
+  public int JJTLOCALVARIABLEDECLARATION = 54;
+  public int JJTEMPTYSTATEMENT = 55;
+  public int JJTSTATEMENTEXPRESSION = 56;
+  public int JJTSWITCHSTATEMENT = 57;
+  public int JJTSWITCHLABEL = 58;
+  public int JJTIFSTATEMENT = 59;
+  public int JJTWHILESTATEMENT = 60;
+  public int JJTDOSTATEMENT = 61;
+  public int JJTFORSTATEMENT = 62;
+  public int JJTFORINIT = 63;
+  public int JJTSTATEMENTEXPRESSIONLIST = 64;
+  public int JJTFORUPDATE = 65;
+  public int JJTBREAKSTATEMENT = 66;
+  public int JJTCONTINUESTATEMENT = 67;
+  public int JJTRETURNSTATEMENT = 68;
+  public int JJTTHROWSTATEMENT = 69;
+  public int JJTSYNCHRONIZEDSTATEMENT = 70;
+  public int JJTTRYSTATEMENT = 71;
+  public int JJTASSERTSTATEMENT = 72;
 
 
   public String[] jjtNodeName = {
@@ -114,6 +115,7 @@ public interface JavaParserTreeConstants
     "AssignmentOperator",
     "void",
     "ConditionalAndExpression",
+    "InstanceOfExpression",
     "PreIncrementExpression",
     "PreDecrementExpression",
     "CastLookahead",
