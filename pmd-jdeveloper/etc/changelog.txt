@@ -1,9 +1,10 @@
-????, 2004 - 0.8:
+March 16, 2004 - 0.8:
 Updated PMD version to 1.6.
 Updated to work with JDeveloper 9.0.4.
+Removed old JDeveloper-specific RulesetFactory, yay!
 
 Nov 17 2003 - 0.7:
-Fixed bug 765847 - PMD plugin now works on BC4J project.  Thanks to Hariolf Häfele for the report.
+Fixed bug 765847 - PMD plugin now works on BC4J projects.  Thanks to Hariolf Häfele for the report.
 
 Nov 04 2003 - 0.6:
 Added rule name to LogWindow; thx to Roman Legat for the suggestion.

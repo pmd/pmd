@@ -4,7 +4,6 @@
 	<property name="src" value="src/"/>
 	<property name="lib" value="lib/"/>
 	<property name="etc" value="etc/"/>
-	<property name="build" value="build/"/>
 	<property name="pmdjar" value="pmd-1.6.jar"/>
 	<property name="pluginversion" value="0.7"/>
 	<property name="jdeveloper.install.dir" value="/home/tom/jdev/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
@@ -12,21 +11,21 @@
 	<path id="project.class.path">
 		<pathelement location="${lib}/${pmdjar}"/>
 		<pathelement location="${lib}/jdeveloper.jar"/>
-		<pathelement location="${build}"/>
+		<pathelement location="build"/>
 	</path>
 
 
     <target name="delete">
         <delete file="${lib}/${ant.project.name}.jar"/>
         <delete file="${jdeveloper.install.dir}/${ant.project.name}.jar"/>
-		<delete dir="${build}"/>
-        <mkdir dir="${build}"/>
+		<delete dir="build"/>
+        <mkdir dir="build"/>
     </target>
 
 	<target name="compile">
 		<javac
 			srcdir="${src}"
-			destdir="${build}"
+			destdir="build"
 			debug="on"
 			deprecation="on">
 			<classpath refid="project.class.path"/>
@@ -34,9 +33,9 @@
 	</target>
 
     <target name="jar" depends="compile">
-        <replace file="${etc}/Manifest.mf" token="#pluginversion#" value="${pluginversion}"/>
-		<jar jarfile="${lib}/${ant.project.name}-${pluginversion}.jar" manifest="${etc}\Manifest.mf">
-			<fileset dir="${build}" excludes="**/*.di,**/*.i"/>
+        <copy file="etc/jdev-ext.xml" todir="build/meta-inf"/>
+        <jar jarfile="${lib}/${ant.project.name}-${pluginversion}.jar">
+			<fileset dir="build" excludes="**/*.di,**/*.i"/>
 		</jar>
     </target>
 

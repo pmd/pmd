@@ -6,22 +6,13 @@
       <extension>
         <addin>net.sourceforge.pmd.jdeveloper.Plugin</addin>
         <dependency_addin>oracle.jdeveloper.library.JLibraryManager</dependency_addin>
-       <palette>
-          <page>
-            <name>PMD</name>
-            <showForTypes>java</showForTypes>
-            <type>java</type>
-            <view>1</view>
-            <remove>1</remove>
-            <item>
-              <info>PMD</info>
-              <isPersistent>false</isPersistent>
-              <longLabel>PMD static analysis</longLabel>
-              <shortLabel>PMD</shortLabel>
-              <type>java</type>
-            </item>
-          </page>
-        </palette>
+        <gallery>
+            <name>net.sourceforge.pmd.jdeveloper.Plugin</name>
+            <description>PMD static analysis</description>
+            <help>PMD static analysis</help>
+            <category>General</category>
+            <folder>PMD</folder>
+        </gallery>
       </extension>
     </group>
   </feature>
