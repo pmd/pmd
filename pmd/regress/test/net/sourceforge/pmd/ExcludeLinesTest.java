@@ -34,6 +34,9 @@ public class ExcludeLinesTest extends RuleTst {
             copyBuffer.append(tmp + PMD.EOL);
         }
         copyBuffer.deleteCharAt(copyBuffer.length()-1);
+        if (PMD.EOL.length() == 2) {
+            copyBuffer.deleteCharAt(copyBuffer.length()-1);
+        }
         assertEquals(TEST1, copyBuffer.toString());
     }
 
