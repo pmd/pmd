@@ -45,8 +45,8 @@ function highlight() {
 <th>Percentage<br>Unused Code</th>
 <th>Duplicate<br>Code</th>
 <th>
-<a href="http://rubyforge.org/projects/ruby-doom/?ref=pmd">DOOM</a>
+<a href="http://ruby-doom.rubyforge.org/?ref=pmd">DOOM</a>
 <br>
-<a href="http://rubyforge.org/projects/ruby-doom/?ref=pmd">Map</a>
+<a href="http://ruby-doom.rubyforge.org/?ref=pmd">Map</a>
 </th>
 </tr>
