@@ -47,14 +47,6 @@ public class SimplifyBooleanExpressionsRuleTest extends SimpleAggregatorTst {
     private static final String TEST4 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
-    "  if (getFoo() == false && " + PMD.EOL +
-    "  isBar() == true) {}" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
-
-    private static final String TEST5 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
     "  if (getFoo() == false && isBar() == true) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
