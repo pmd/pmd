@@ -10,6 +10,8 @@
     <section name="Sites/Articles about PMD">
     <ul>
         <br/>
+        <li>March 2005 - Kirk Knoernschild's article "Benefits of the Build" in <a href="http://www.sdmagazine.com/">Software Development magazine</a> mentions PMD as a way to automate code reviews</li>
+        <br/>
         <li>1/7/2005 - <a href="http://www-106.ibm.com/developerworks/java/library/j-pmd/">"Zap bugs with PMD"</a> - Elliotte Rusty Harold's article on installing, configuring, and running PMD</li>
         <br/>
         <li>6/16/2004 - <a href="http://www.onjava.com/pub/a/onjava/2004/06/16/ccunittest.html">"Code Improvement Through Cyclomatic Complexity"</a> - Andrew Glover's CCM article featuring PMD</li>
