@@ -18,10 +18,10 @@ public class TextRenderer implements Renderer {
             buf.append("\t" + rv.getDescription());
         }
         for (Iterator i = report.errors(); i.hasNext();) {
-            Report.ProcessingError rv = (Report.ProcessingError) i.next();
-            buf.append(EOL + rv.getFile());
+            Report.ProcessingError error = (Report.ProcessingError) i.next();
+            buf.append(EOL + error.getFile());
             buf.append("\t-");
-            buf.append("\t" + rv.getMsg());
+            buf.append("\t" + error.getMsg());
         }
         return buf.toString();
     }
