@@ -149,7 +149,7 @@ public class PMDJEditPlugin extends EBPlugin
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 		JPanel pnlAccessory = new JPanel();
-		JCheckBox chkRecursive = new JCheckBox("Recursive", false);
+		JCheckBox chkRecursive = new JCheckBox("Recursive", jEdit.getBooleanProperty("pmd.checkDirRecursive"));
 		pnlAccessory.add(chkRecursive);
 		chooser.setAccessory(pnlAccessory);
 
@@ -170,6 +170,7 @@ public class PMDJEditPlugin extends EBPlugin
 				}
 
 				jEdit.setProperty("pmd.cpd.lastDirectory",selectedFile.getCanonicalPath());
+				jEdit.setBooleanProperty("pmd.checkDirRecursive",chkRecursive.isSelected());
 				process(findFiles(selectedFile.getCanonicalPath(), chkRecursive.isSelected()), view);
 			}
 			else
@@ -501,7 +502,7 @@ public class PMDJEditPlugin extends EBPlugin
 		pnlAccessory.add(BorderLayout.NORTH, pnlTile);
 
 		JPanel pnlRecursive = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JCheckBox chkRecursive = new JCheckBox("Recursive", false);
+		JCheckBox chkRecursive = new JCheckBox("Recursive", jEdit.getBooleanProperty("pmd.checkDirRecursive"));
 		pnlRecursive.add(chkRecursive);
 		pnlAccessory.add(BorderLayout.CENTER, pnlRecursive);
 
@@ -534,6 +535,7 @@ public class PMDJEditPlugin extends EBPlugin
 
 			try
 			{
+				jEdit.setBooleanProperty("pmd.checkDirRecursive",chkRecursive.isSelected());
 				instance.instanceCPDDir(view, selectedFile.getCanonicalPath(), tilesize, chkRecursive.isSelected());
 			}
 			catch(IOException e)
