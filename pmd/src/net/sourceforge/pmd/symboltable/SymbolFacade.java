@@ -7,9 +7,6 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.*;
 
-import java.util.StringTokenizer;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 public class SymbolFacade extends JavaParserVisitorAdapter {

@@ -13,8 +13,6 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Window;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -28,8 +26,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-
-import net.sourceforge.pmd.Rule;
 
 /**
  *

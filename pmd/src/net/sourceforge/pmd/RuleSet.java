@@ -24,8 +24,6 @@ public class RuleSet
      */
     private String m_fileName;
 
-    public RuleSet() { }
-
     public int size() {
     return rules.size();
     }

@@ -10,8 +10,6 @@ import java.text.MessageFormat;
 public class ShortVariableRule 
     extends AbstractRule
 {
-    public ShortVariableRule() { }
-
     public Object visit(ASTVariableDeclaratorId decl, Object data) {
 	RuleContext ctx = (RuleContext) data;
 	String image = decl.getImage();

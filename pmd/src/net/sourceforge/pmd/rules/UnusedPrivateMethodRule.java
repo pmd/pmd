@@ -6,13 +6,11 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.ast.*;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Map;
 import java.text.MessageFormat;
 
 public class UnusedPrivateMethodRule extends AbstractRule {

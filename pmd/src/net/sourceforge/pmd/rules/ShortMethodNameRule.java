@@ -10,8 +10,6 @@ import java.text.MessageFormat;
 public class ShortMethodNameRule
     extends AbstractRule
 {
-    public ShortMethodNameRule() { }
-
     public Object visit(ASTMethodDeclarator decl, Object data) {
 	RuleContext ctx = (RuleContext) data;
 	String image = decl.getImage();

@@ -5,7 +5,6 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import java.util.Iterator;
 import java.util.Collections;
 import java.util.Map;
 

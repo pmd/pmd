@@ -1,14 +1,9 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.Font;
 import java.awt.Point;
 import java.io.FileInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -16,7 +11,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.JViewport;
 import javax.swing.text.html.HTMLEditorKit;
 
 import net.sourceforge.pmd.PMD;

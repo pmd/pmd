@@ -3,8 +3,6 @@ package net.sourceforge.pmd.swingui;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
-import javax.swing.UIManager;
-
 /**
  *
  * @author Donald A. Leckie

@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.EventObject;
 
 import javax.swing.border.EtchedBorder;

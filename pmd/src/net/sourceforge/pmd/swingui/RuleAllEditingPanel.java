@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.swingui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.JPanel;

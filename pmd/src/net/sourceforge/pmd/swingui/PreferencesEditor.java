@@ -12,9 +12,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;

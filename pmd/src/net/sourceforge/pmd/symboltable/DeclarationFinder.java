@@ -7,7 +7,6 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 public class DeclarationFinder extends JavaParserVisitorAdapter {

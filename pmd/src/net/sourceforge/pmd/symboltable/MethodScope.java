@@ -7,8 +7,6 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.Applier;
 
-import java.util.Iterator;
-
 public class MethodScope extends AbstractScope {
 
     protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
