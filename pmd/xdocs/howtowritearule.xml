@@ -30,12 +30,12 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     </p>
     <source>
 <![CDATA[
-       public class Example {
-        public void bar() {
-         while (baz)
-            buz.doSomething();
-        }
-       }
+class Example {
+ void bar() {
+  while (baz)
+   buz.doSomething();
+ }
+}
 ]]>
     </source>
     <p>
@@ -53,13 +53,13 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
 <![CDATA[
 CompilationUnit
  TypeDeclaration
-  ClassDeclaration
-   UnmodifiedClassDeclaration
+  ClassDeclaration:(package private)
+   UnmodifiedClassDeclaration:Example
     ClassBody
      ClassBodyDeclaration
-      MethodDeclaration
+      MethodDeclaration:(package private)
        ResultType
-       MethodDeclarator
+       MethodDeclarator:bar
         FormalParameters
        Block
         BlockStatement
@@ -68,15 +68,15 @@ CompilationUnit
            Expression
             PrimaryExpression
              PrimaryPrefix
-              Name
+              Name:baz
            Statement
             StatementExpression
              PrimaryExpression
               PrimaryPrefix
-               Name
+               Name:buz.doSomething
               PrimarySuffix
                Arguments
-]]>
+ ]]>
     </source>
     <p>
     You can generate this yourself by:
@@ -99,7 +99,7 @@ WhileStatement
 ]]>
     </source>
     <p>
-    If you were to add curly braces and click &quot;Go&quot; again, you'd see that the
+    If you were to add curly braces around the call to <code>buz.doSomething()</code>and click &quot;Go&quot; again, you'd see that the
         AST would change a bit.  It'd look like this:
     </p>
     <source>
@@ -256,7 +256,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </p>
 
     <subsection name="Writing a rule as an XPath expression">
-        <p>Recently Daniel Sheppard integrated an XPath engine into PMD, so now you can write rules as
+        <p>Daniel Sheppard integrated an XPath engine into PMD, so now you can write rules as
         XPath expressions.  For example, the XPath expression for our WhileLoopsMustUseBracesRule looks like this:</p>
         <source>
             //WhileStatement[not(Statement/Block)]
