@@ -213,7 +213,9 @@ class HTMLResultRenderer
 
                 m_writer.write("<td align=\"left\" valign=\"top\">\n");
                 m_writer.write("<pre>\n");
+                m_writer.write("<font size=\"-1\">");
                 m_writer.write(example);
+                m_writer.write("</font>");
                 m_writer.write("\n</pre>\n");
                 m_writer.write("</td>\n");
             }
