@@ -33,14 +33,13 @@ public class SimpleNode implements Node {
         return dataFlowNode;
     }
 
-    public void removeASTModifiersChild() {
-        if (this.jjtGetNumChildren() > 2) {
-            throw new RuntimeException("Hm, expected only two children when trimming out Modifiers node, found " + jjtGetNumChildren() + " instead.");
+    public void discardIfNecessary() {
+        if (discardable) {
+            SimpleNode parent = (SimpleNode)this.jjtGetParent();
+            SimpleNode kid = (SimpleNode) this.jjtGetChild(0);
+            kid.jjtSetParent(parent);
+            parent.jjtReplaceChild(this, kid);
         }
-        if (!(this.jjtGetChild(0) instanceof ASTModifiers)) {
-            throw new RuntimeException("removeASTModifiersChild called but first child is not an ASTModifiers");
-        }
-        this.children = new Node[] {children[1]};
     }
 
     public void setDataFlowNode(IDataFlowNode dataFlowNode) {
@@ -53,10 +52,6 @@ public class SimpleNode implements Node {
 
     public void setUnDiscardable() {
         this.discardable = false;
-    }
-
-    public boolean isDiscardable() {
-        return this.discardable;
     }
 
     public SimpleNode(int i) {

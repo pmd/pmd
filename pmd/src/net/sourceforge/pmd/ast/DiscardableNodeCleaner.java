@@ -34,18 +34,7 @@ public class DiscardableNodeCleaner {
     private void clean(ASTCompilationUnit root, Class type) {
         List nodes = root.findChildrenOfType(type);
         for (Iterator i = nodes.iterator(); i.hasNext();) {
-            SimpleNode node = (SimpleNode) i.next();
-            if (node.isDiscardable()) {
-                if (node instanceof ASTModifiers) {
-                    ((SimpleNode)node.jjtGetParent()).removeASTModifiersChild();
-                } else {
-                    SimpleNode parent = (SimpleNode) node.jjtGetParent();
-                    SimpleNode kid = (SimpleNode) node.jjtGetChild(0);
-                    kid.jjtSetParent(parent);
-                    parent.jjtReplaceChild(node, kid);
-                }
-            }
-
+            ((SimpleNode) i.next()).discardIfNecessary();
         }
     }
 }

@@ -15,7 +15,16 @@ public class ASTModifiers extends SimpleNode {
         return true;
     }
 
-
+    public void discardIfNecessary() {
+        SimpleNode node = (SimpleNode)jjtGetParent();
+        if (node.jjtGetNumChildren() > 2) {
+            throw new RuntimeException("Hm, expected only two children when trimming out Modifiers node, found " + jjtGetNumChildren() + " instead.");
+        }
+        if (!(node.jjtGetChild(0) instanceof ASTModifiers)) {
+            throw new RuntimeException("removeASTModifiersChild called but first child is not an ASTModifiers");
+        }
+        node.children = new Node[] {node.children[1]};
+    }
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
