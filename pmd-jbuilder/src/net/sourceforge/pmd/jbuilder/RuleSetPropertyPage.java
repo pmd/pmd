@@ -24,11 +24,15 @@ import  java.awt.event.*;
 import  com.borland.primetime.ide.Browser;
 import  com.borland.primetime.ide.MessageCategory;
 import  java.util.Enumeration;
+import net.sourceforge.pmd.RuleSetFactory;
+import java.util.Iterator;
+import net.sourceforge.pmd.RuleSet;
+import com.borland.primetime.properties.GlobalProperty;
 
 
 
 public class RuleSetPropertyPage extends PropertyPage {
-    //static MessageCategory cat = new MessageCategory("test");
+    static MessageCategory msgCat = new MessageCategory("test");
     private BorderLayout borderLayout1 = new BorderLayout();
     private JSplitPane jSplitPane1 = new JSplitPane();
     private Border border1;
@@ -77,6 +81,30 @@ public class RuleSetPropertyPage extends PropertyPage {
                 dlmAvailableRuleSets.addElement(le);
             }
         }
+        /*try {
+                RuleSetFactory rsf = new RuleSetFactory();
+                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, "rsf: " + rsf.toString());
+                Iterator iter = rsf.getRegisteredRuleSets();
+                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, "Iter: " + iter.toString());
+
+                while (iter.hasNext()) {
+                    RuleSet rs = (RuleSet)iter.next();
+                    Browser.getActiveBrowser().getMessageView().addMessage(msgCat, rs.getName());
+                    GlobalProperty gp = new GlobalProperty("RuleSets", rs.getName(), "true");
+                    ListEntry le = new ListEntry(rs.getName(), gp);
+                    if (Boolean.valueOf(gp.getValue()).booleanValue()) {
+                        dlmSelectedRuleSets.addElement(le);
+                    }
+                    else {
+                        dlmAvailableRuleSets.addElement(le);
+                    }
+
+                }
+        }
+        catch (Exception e){
+            Browser.getActiveBrowser().getMessageView().addMessage(msgCat, e.toString());
+
+        }*/
     }
 
     /**
