@@ -30,7 +30,7 @@ sub default() {
  print b("Stats:");
  print br(), br(); 
  my $tm = localtime;
- my $timeuntil = $tm->min; 
+ my $timeuntil = 60 - $tm->min; 
  print "There are ${timeuntil} minutes until the next hourly run";
  open(FILE,"lastruntime.txt");
  my $lastruntime=<FILE>;
@@ -49,6 +49,9 @@ sub default() {
  print $query->hidden(-name=>'cachebuster', -value=>${cachebuster});
  print p(), submit(-value=>'Go');
  print end_form();
+ 
+ print hr(); 
+ print p("Comments?  Questions?  Please post them <a href=\"http://sourceforge.net/forum/forum.php?forum_id=188192\">here</a>");
 }
 
 sub loadProjectList() {
