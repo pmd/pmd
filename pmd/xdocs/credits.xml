@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>aryanto - reported a broken reference in the 'favorites' ruleset.</li>
             <li>Wim Deblauwe - suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Archimedes Trajano - suggested SimpleDateFormatNeedsLocale</li>
             <li>Joerg Kurt Wegner - bug report for UnusedLocalVariable</li>

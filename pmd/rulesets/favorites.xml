@@ -10,7 +10,7 @@ This ruleset also serves as an example of do a custom ruleset.
 
   <rule ref="rulesets/braces.xml/WhileLoopsMustUseBracesRule"/>
   <rule ref="rulesets/braces.xml/ForLoopsMustUseBracesRule"/>
-  <rule ref="rulesets/design.xml/LooseCouplingRule"/>
+  <rule ref="rulesets/coupling.xml/LooseCouplingRule"/>
   <rule ref="rulesets/design.xml/SimplifyBooleanReturnsRule"/>
   <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
   <rule ref="rulesets/strings.xml/StringToString"/>
