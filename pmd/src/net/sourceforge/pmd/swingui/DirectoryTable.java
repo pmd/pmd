@@ -41,9 +41,9 @@ class DirectoryTable extends JTable
      *
      * @param directoryTree
      */
-    protected DirectoryTable(DirectoryTree directoryTree)
+    protected DirectoryTable(DirectoryTree directoryTree, String fileExtension)
     {
-        super(new DirectoryTableModel(directoryTree));
+        super(new DirectoryTableModel(directoryTree, fileExtension));
 
         setDoubleBuffered(true);
         setShowGrid(false);
@@ -112,7 +112,7 @@ class DirectoryTable extends JTable
      *
      * @return
      */
-    protected File getSelectedSourceFile()
+    protected File getSelectedFile()
     {
         ListSelectionModel selectionModel = getSelectionModel();
         int row = selectionModel.getAnchorSelectionIndex();

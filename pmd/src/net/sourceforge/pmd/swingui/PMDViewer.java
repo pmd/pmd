@@ -207,7 +207,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
     {
         Color background;
 
-        m_directoryTree = new DirectoryTree(this);
+        m_directoryTree = new DirectoryTree("File Directories");
         m_directoryTreeScrollPane = ComponentFactory.createScrollPane(m_directoryTree);
         background = UIManager.getColor("pmdTreeBackground");
 
@@ -222,7 +222,7 @@ public class PMDViewer extends JFrame implements JobThreadListener
     {
         Color background;
 
-        m_directoryTable = new DirectoryTable(m_directoryTree);
+        m_directoryTable = new DirectoryTable(m_directoryTree, ".java");
         m_directoryTableScrollPane = ComponentFactory.createScrollPane(m_directoryTable);
         background = UIManager.getColor("pmdTableBackground");
 

@@ -74,7 +74,7 @@ class MessageDialog extends JDialog
     private void initialize(Window parentWindow, String message)
     {
         int dialogWidth = 400;
-        int dialogHeight = 150;
+        int dialogHeight = 400;
         Rectangle parentWindowBounds = parentWindow.getBounds();
         int x = parentWindowBounds.x + (parentWindowBounds.width - dialogWidth) / 2;
         int y = parentWindowBounds.y + (parentWindowBounds.height - dialogHeight) / 2;

@@ -105,7 +105,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
         {
             if (m_analyzeThreadInUse.inUse() == false)
             {
-                File file = m_directoryTable.getSelectedSourceFile();
+                File file = m_directoryTable.getSelectedFile();
 
                 if (file != null)
                 {
@@ -161,7 +161,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
         {
             synchronized(m_report)
             {
-                File file = m_directoryTable.getSelectedSourceFile();
+                File file = m_directoryTable.getSelectedFile();
                 String filePath = file.getPath();
                 TextRenderer renderer = new TextRenderer();
 

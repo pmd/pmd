@@ -22,9 +22,9 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
 {
     private DateFormat m_dateFormat;
     private DecimalFormat m_decimalFormat;
+    private String m_fileExtension;
 
     //Constants
-    private final String JAVA = ".java";
     protected static final int FILE_NAME_COLUMN = 0;
     protected static final int FILE_SIZE_COLUMN = 1;
     protected static final int FILE_LAST_MODIFIED_COLUMN = 2;
@@ -34,7 +34,7 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
      *********************************************************************************
      *
      */
-    protected DirectoryTableModel(DirectoryTree directoryTree)
+    protected DirectoryTableModel(DirectoryTree directoryTree, String fileExtension)
     {
         super(createData(), createColumnNames());
 
@@ -44,6 +44,7 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
         StringBuffer buffer;
         String pattern;
 
+        m_fileExtension = fileExtension.toLowerCase();
         m_dateFormat = DateFormat.getDateTimeInstance();
         decimalFormatSymbols = new DecimalFormatSymbols();
         buffer = new StringBuffer(25);
@@ -123,18 +124,17 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
         TreePath treePath = event.getPath();
         DirectoryTreeNode treeNode = (DirectoryTreeNode) treePath.getLastPathComponent();
         Object userObject = treeNode.getUserObject();
+        Vector rows = getDataVector();
+
+        for (int n = 0; n < rows.size(); n++)
+        {
+            ((Vector) rows.get(n)).clear();
+        }
+
+        rows.clear();
 
         if (userObject instanceof File)
         {
-            Vector rows = getDataVector();
-
-            for (int n = 0; n < rows.size(); n++)
-            {
-                ((Vector) rows.get(n)).clear();
-            }
-
-            rows.clear();
-
             File directory;
             File[] files;
             StringBuffer buffer = new StringBuffer(25);
@@ -189,9 +189,9 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
                     row.set(DirectoryTableModel.FILE_SIZE_COLUMN, size);
                 }
             }
-
-            fireTableDataChanged();
         }
+
+        fireTableDataChanged();
     }
 
     /**
@@ -208,7 +208,7 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
             {
                 String fileName = file.getName().toLowerCase();
 
-                return (fileName.endsWith(JAVA));
+                return (fileName.endsWith(m_fileExtension));
             }
 
             return false;

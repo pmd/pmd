@@ -60,8 +60,8 @@ class DirectoryTreeNode extends DefaultMutableTreeNode
      *
      * @return A new root node.
      */
-    protected static DirectoryTreeNode createRootNode()
+    protected static DirectoryTreeNode createRootNode(String rootName)
     {
-        return new DirectoryTreeNode("File Directories");
+        return new DirectoryTreeNode(rootName);
     }
 }

@@ -22,38 +22,42 @@ class DirectoryTreeModel extends DefaultTreeModel implements TreeWillExpandListe
     /**
      *****************************************************************************
      */
-    protected DirectoryTreeModel()
+    protected DirectoryTreeModel(String rootName)
     {
-        super(DirectoryTreeNode.createRootNode());
+        super(DirectoryTreeNode.createRootNode(rootName));
     }
 
     /**
      ********************************************************************************
      *
      */
-    protected void setupFiles(File[] fileSystemRoots)
+    protected void setupFiles(File[] rootFiles)
     {
-        DirectoryTreeNode rootNode = (DirectoryTreeNode) getRoot();
+        DirectoryTreeNode rootNode;
+        FilesFilter filesFilter;
 
-        if (fileSystemRoots != null)
+        rootNode = (DirectoryTreeNode) getRoot();
+        filesFilter = new FilesFilter();
+
+        if (rootFiles != null)
         {
-            for (int n1 = 0; n1 < fileSystemRoots.length; n1++)
+            for (int n1 = 0; n1 < rootFiles.length; n1++)
             {
-                File fileSystemRoot;
-                DirectoryTreeNode fileSystemRootNode;
+                File rootFile;
+                DirectoryTreeNode fileNode;
 
-                fileSystemRoot = fileSystemRoots[n1];
-                fileSystemRootNode = new DirectoryTreeNode(fileSystemRoot);
+                rootFile = rootFiles[n1];
+                fileNode = new DirectoryTreeNode(rootFile);
 
-                rootNode.add(fileSystemRootNode);
+                rootNode.add(fileNode);
 
-                File[] files = fileSystemRoot.listFiles(new FilesFilter());
+                File[] files = rootFile.listFiles(filesFilter);
 
                 if (files != null)
                 {
                     for (int n2 = 0; n2 < files.length; n2++)
                     {
-                        fileSystemRootNode.add(new DirectoryTreeNode(files[n2]));
+                        fileNode.add(new DirectoryTreeNode(files[n2]));
                     }
                 }
             }
@@ -99,6 +103,8 @@ class DirectoryTreeModel extends DefaultTreeModel implements TreeWillExpandListe
             DirectoryTreeNode childTreeNode = (DirectoryTreeNode) children.nextElement();
             File directory = (File) childTreeNode.getUserObject();
             File[] files = directory.listFiles(new FilesFilter());
+
+            childTreeNode.removeAllChildren();
 
             if (files != null)
             {
@@ -148,6 +154,13 @@ class DirectoryTreeModel extends DefaultTreeModel implements TreeWillExpandListe
     private class FilesFilter implements FileFilter
     {
 
+        /**
+         ****************************************************************************
+         *
+         * @param file
+         *
+         * @return
+         */
         public boolean accept(File file)
         {
             return file.isDirectory() && (file.isHidden() == false);

@@ -7,7 +7,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Point;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -16,9 +21,7 @@ import java.util.EventObject;
 
 import javax.swing.border.EtchedBorder;
 import javax.swing.BorderFactory;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.Icon;
-import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
@@ -31,6 +34,7 @@ import javax.swing.UIManager;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMDDirectory;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 
@@ -448,7 +452,20 @@ class RulesTree extends JTree implements IConstants
          */
         public void actionPerformed(ActionEvent event)
         {
-            Rule rule = getNewRuleFromUser();
+            Rule rule = null;
+
+            try
+            {
+                rule = getNewRuleFromUser();
+            }
+            catch (PMDException exception)
+            {
+                String message = exception.getMessage();
+                Exception originalException = exception.getOriginalException();
+                MessageDialog.show(m_rulesEditor, message, originalException);
+
+                return;
+            }
 
             if (rule != null)
             {
@@ -480,6 +497,8 @@ class RulesTree extends JTree implements IConstants
                 }
 
                 sortChildren(ruleSetNode);
+                TreePath treePath = new TreePath(ruleNode.getPath());
+                rulesTree.setSelectionPath(treePath);
             }
         }
 
@@ -489,81 +508,44 @@ class RulesTree extends JTree implements IConstants
          * @return
          */
         private Rule getNewRuleFromUser()
+        throws PMDException
         {
-            JFileChooser fileChooser = new JFileChooser();
             PMDViewer pmdViewer = m_rulesEditor.getPMDViewer();
-            PMDDirectory pmdDirectory = pmdViewer.getPMDDirectory();
-            String rulesDirectoryPath = pmdDirectory.getRuleSetsDirectory();
-            File rulesDirectory = new File(rulesDirectoryPath);
+            RulesClassSelectDialog dialog = new RulesClassSelectDialog(m_rulesEditor, pmdViewer);
+            dialog.show();
 
-            fileChooser.setCurrentDirectory(rulesDirectory);
-            fileChooser.setApproveButtonText("Select");
-            fileChooser.addChoosableFileFilter(new RulesFileFilter());
-            fileChooser.setMultiSelectionEnabled(false);
-            fileChooser.setDialogTitle("Select Rule Class");
-            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-
-            int userAction = fileChooser.showDialog(m_rulesEditor, null);
-
-            if (userAction == JFileChooser.APPROVE_OPTION)
+            if (dialog.selectWasPressed())
             {
-                File selectedFile = fileChooser.getSelectedFile();
-                String path = selectedFile.getPath();
-
-                if (path.startsWith(rulesDirectoryPath) == false)
-                {
-                    String template = "File \"{0}\" must be in the rule sets directory \"{1}\"; otherwise, it will not be on the classpath.";
-                    String[] args = {path, rulesDirectoryPath};
-                    String message = MessageFormat.format(template, args);
-                    MessageDialog.show(m_rulesEditor, message);
-
-                    return null;
-                }
-
-                int index;
-                String className;
-
-                index = rulesDirectoryPath.length() + 1;
-                className = path.substring(index);
-                index = className.indexOf(".class");
-                className = className.substring(0, index);
-                className = className.replace(File.separatorChar, '.');
+                File selectedFile = dialog.getSelectedClassFile();
+                RuleClassLoader classLoader = new RuleClassLoader();
+                Class clazz = classLoader.loadClass(selectedFile);
 
                 try
                 {
-                    Class ruleClass = Class.forName(className);
-                    Rule rule = (Rule) ruleClass.newInstance();
+                    Object object = clazz.newInstance();
 
-                    if (rule instanceof AbstractRule)
+                    if (object instanceof AbstractRule)
                     {
-                        return rule;
+                        return (Rule) object;
                     }
 
                     String abstractRuleClassName = AbstractRule.class.getName();
                     String template = "The selected class \"{0}\" must subclass the abstract rule class \"{1}\".";
-                    String[] args = {className, abstractRuleClassName};
+                    String[] args = {clazz.getName(), abstractRuleClassName};
                     String message = MessageFormat.format(template, args);
                     MessageDialog.show(m_rulesEditor, message);
-                }
-                catch (ClassNotFoundException exception)
-                {
-                    String template = "The selected class \"{0}\" was not found on the classpath.  The class file path must be \"{1}\".";
-                    String classFilePath = className.replace('.', File.separatorChar) + ".class";
-                    String[] args = {className, classFilePath};
-                    String message = MessageFormat.format(template, args);
-                    MessageDialog.show(m_rulesEditor, message, exception);
                 }
                 catch (InstantiationException exception)
                 {
                     String template = "Could not instantiate class \"{0}\".";
-                    String[] args = {className};
+                    String[] args = {clazz.getName()};
                     String message = MessageFormat.format(template, args);
                     MessageDialog.show(m_rulesEditor, message, exception);
                 }
                 catch (IllegalAccessException exception)
                 {
                     String template = "Encountered illegal access while instantiating class \"{0}\".";
-                    String[] args = {className};
+                    String[] args = {clazz.getName()};
                     String message = MessageFormat.format(template, args);
                     MessageDialog.show(m_rulesEditor, message, exception);
                 }
@@ -578,7 +560,7 @@ class RulesTree extends JTree implements IConstants
      *******************************************************************************
      *******************************************************************************
      */
-    private class RulesFileFilter extends FileFilter
+    private class RulesFileFilter implements FileFilter
     {
         /**
          ***************************************************************************
@@ -589,6 +571,11 @@ class RulesTree extends JTree implements IConstants
          */
         public boolean accept(File file)
         {
+            if (file.isDirectory())
+            {
+                return true;
+            }
+
             return file.getName().endsWith(".class");
         }
 
@@ -600,6 +587,90 @@ class RulesTree extends JTree implements IConstants
         public String getDescription()
         {
             return "Rule Class Files";
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class RuleClassLoader extends ClassLoader
+    {
+
+        /**
+         **************************************************************************
+         *
+         */
+        private RuleClassLoader()
+        {
+            super();
+        }
+
+        /**
+         **************************************************************************
+         *
+         */
+        private Class loadClass(File file)
+        {
+            FileInputStream inputStream = null;
+            Class clazz = null;
+
+            try
+            {
+                inputStream = new FileInputStream(file);
+                clazz = null;
+
+                if (inputStream != null)
+                {
+                    final int size = 10000;
+                    int byteCount = 0;
+                    byte[] buffer = new byte[size];
+                    ByteArrayOutputStream byteArrayOutputStream;
+
+                    byteArrayOutputStream = new ByteArrayOutputStream(size);
+
+                    try
+                    {
+                        while ((byteCount = inputStream.read(buffer)) > 0)
+                        {
+                            byteArrayOutputStream.write(buffer, 0, byteCount);
+                        }
+                    }
+                    catch (IOException exception)
+                    {
+                        return null;
+                    }
+
+                    buffer = byteArrayOutputStream.toByteArray();
+                    clazz = super.defineClass(null, buffer, 0, buffer.length);
+
+                    if (clazz != null)
+                    {
+                        resolveClass(clazz);
+                    }
+                }
+            }
+            catch (FileNotFoundException exception)
+            {
+                clazz = null;
+            }
+            finally
+            {
+                if (inputStream != null)
+                {
+                    try
+                    {
+                        inputStream.close();
+                    }
+                    catch (IOException exception)
+                    {
+                        inputStream = null;
+                    }
+                }
+            }
+
+            return clazz;
         }
     }
 

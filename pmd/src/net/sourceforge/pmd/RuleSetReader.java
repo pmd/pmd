@@ -227,15 +227,26 @@ public class RuleSetReader implements IConstants
                     ruleClass = Class.forName(className);
                     m_rule = (Rule) ruleClass.newInstance();
                 }
-                catch (ClassNotFoundException exception)
+                catch (ClassNotFoundException classNotFoundException)
                 {
-                    String template = "Cannot find class \"{0}\" on the classpath.";
-                    Object[] args = {className};
-                    String msg = MessageFormat.format(template, args);
-                    PMDException pmdException = new PMDException(msg, exception);
-                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
-                    pmdException.fillInStackTrace();
-                    throw saxException;
+                    try
+                    {
+                        Class ruleClass;
+
+                        className = "net.sourceforge.pmd.UnknownRule";
+                        ruleClass = Class.forName(className);
+                        m_rule = (Rule) ruleClass.newInstance();
+                    }
+                    catch (Exception exception)
+                    {
+                        String template = "Cannot find class \"{0}\" on the classpath.";
+                        Object[] args = {className};
+                        String msg = MessageFormat.format(template, args);
+                        PMDException pmdException = new PMDException(msg, exception);
+                        SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
+                        pmdException.fillInStackTrace();
+                        throw saxException;
+                    }
                 }
                 catch (IllegalAccessException exception)
                 {
