@@ -22,7 +22,7 @@ public class TokenSetsTest extends TestCase {
         TokenList ts = new TokenList("foo");
         ts.add(tok);
         tss.add(ts);
-        assertEquals(ts, tss.getTokenSet(new Occurrence("foo", tok)));
+        assertEquals(ts, tss.getTokenSet(new Occurrence(tok)));
         assertTrue(tss.iterator().hasNext());
     }
 }

@@ -30,7 +30,7 @@ public class TokenListTest extends TestCase{
     }
 
     public void testHasTokenAfter() {
-        assertTrue(GSTTest.createHelloTokenSet("foo").hasTokenAfter(new Tile(new Token('h', 0, "foo")), new Occurrence("foo", new Token('h', 0, "foo"))));
+        assertTrue(GSTTest.createHelloTokenSet("foo").hasTokenAfter(new Tile(new Token('h', 0, "foo")), new Occurrence(new Token('h', 0, "foo"))));
     }
 
 

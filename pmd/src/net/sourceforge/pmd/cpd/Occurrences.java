@@ -17,9 +17,7 @@ public class Occurrences {
             TokenList ts = (TokenList)j.next();
             for (Iterator i = ts.iterator(); i.hasNext();) {
                 Token tok = (Token)i.next();
-                Tile tile = new Tile(tok);
-                Occurrence occ = new Occurrence(ts.getID(), tok);
-                addTile(tile, occ);
+                addTile(new Tile(tok), new Occurrence(tok));
             }
         }
     }
@@ -43,8 +41,7 @@ public class Occurrences {
     public void deleteSoloTiles() {
         for (Iterator i = tiles.iterator(); i.hasNext();) {
             Tile tile = (Tile)i.next();
-            List occurrenceList = (List)occurrences.get(tile);
-            if (occurrenceList.size() == 1) {
+            if (((List)occurrences.get(tile)).size() == 1) {
                 occurrences.remove(tile);
                 i.remove();
             }

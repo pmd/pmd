@@ -7,24 +7,22 @@ package net.sourceforge.pmd.cpd;
 
 public class Occurrence {
 
-    private int index;
-    private String tokenSetID;
+    private Token token;
 
-    public Occurrence(String id, Token tok) {
-        this.tokenSetID = id;
-        this.index = tok.getIndex();
+    public Occurrence(Token tok) {
+        this.token = tok;
     }
 
     public int getIndex() {
-        return index;
+        return token.getIndex();
     }
 
     public String getTokenSetID() {
-        return tokenSetID;
+        return token.getTokenSrcID();
     }
 
     public String toString() {
-        return "[" + tokenSetID + "," + index + "]";
+        return "[" + token.getTokenSrcID() + "," + token.getIndex() + "]";
     }
 
     public boolean equals(Object other) {

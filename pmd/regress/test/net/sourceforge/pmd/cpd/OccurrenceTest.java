@@ -15,9 +15,8 @@ public class OccurrenceTest extends TestCase {
     }
 
     public void testBasic() {
-        Occurrence occ = new Occurrence("foo", new Token('h',0,"foo"));
+        Occurrence occ = new Occurrence(new Token('h',0,"foo"));
         assertEquals("foo", occ.getTokenSetID());
         assertEquals(0, occ.getIndex());
-        assertEquals(occ, new Occurrence("foo", new Token('a', 0, "bar")));
     }
 }
