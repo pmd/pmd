@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="dpeugh@users.sourceforge.net">David Dixon-Peugh</author>
+    <title>Coming Soon!  Run PMD on your SourceForge Project!</title>
+  </properties>
+
+  <body>
+    <section name="PMD Demo">
+<p>
+We are hard at work developing an Online Demo for you to run
+your SourceForge project through PMD with the Basic Ruleset.
+</p>
+
+<p>
+Your project results will be linked off of the PMD website
+for a fixed period of time (maybe 1 to 2 days) for you to
+peruse the results.  A try before you buy if you will.
+</p>
+
+<p>
+So watch this space, because the demo is coming quickly!
+</p>
+   </section>
+ </body>
+</document>

@@ -16,6 +16,10 @@
       <item name="Similar Projects" href="/similar-projects.html" />
       <item name="Credits" href="/credits.html" />
     </menu>
+    <menu name="Demo">
+      <item name="Coming Soon!  Your Project Here" href="/coming-soon.html" />
+      <item name="PMD v0.5" href="/demo/pmd-0.5.html" />
+    </menu>
     <menu name="Rule Sets">
       <item name="Basic Rules" href="/rules/basic.html" />
       <item name="Naming Rules" href="/rules/naming.html" />

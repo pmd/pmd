@@ -12,8 +12,8 @@
   <body>
 <section name="Running PMD Demo on &lt;?php print($unixname) ?&gt;">
 <p>Your PMD Report should be ready in a couple of seconds.  It will
-be available from 
-<a href="/demo/&lt;?php print($unixname) ?&gt;/&lt;?php print($module)?&gt;/pmd-report.html">here</a>
+be available at:
+http://pmd.sourceforge.net/demo/<?php print($unixname) ?>/pmd.xml
 </p>
 </section>
   </body>
