@@ -15,8 +15,9 @@ public class EmptyIfStmtRule extends AbstractRule implements Rule {
     public String getDescription() {return "Avoid empty 'if' statements";}
 
    public Object visit(ASTBlock node, Object data){
+       RuleContext ctx = (RuleContext)data;
        if ((node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement) && node.jjtGetNumChildren()==0) {
-           (((RuleContext)data).getReport()).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
+           ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
        }
 
         return super.visit(node, data);

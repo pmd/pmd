@@ -49,6 +49,7 @@ public class IfElseStmtsMustUseBracesRule extends AbstractRule implements Rule {
      *
      */
     public Object visit(ASTIfStatement node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         // filter out if stmts without an else
         if (node.jjtGetNumChildren() < 3) {
             return super.visit(node, data);
@@ -60,9 +61,8 @@ public class IfElseStmtsMustUseBracesRule extends AbstractRule implements Rule {
 
         if  (!hasBlockAsFirstChild(firstStmt) && !hasBlockAsFirstChild(secondStmt)) {
             if (node.getBeginLine() != this.lineNumberOfLastViolation) {
-                Report rpt = ((RuleContext)data).getReport();
-                rpt.addRuleViolation(new RuleViolation(this, node.getBeginLine()));
-                this.lineNumberOfLastViolation = node.getBeginLine();
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+                lineNumberOfLastViolation = node.getBeginLine();
             }
         }
         return super.visit(node,data);

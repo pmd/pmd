@@ -23,6 +23,7 @@ public class EmptyWhileStmtRule extends AbstractRule implements Rule{
      *    BlockStmt
      */
    public Object visit(ASTWhileStatement node, Object data){
+        RuleContext ctx = (RuleContext)data;
        ASTStatement stmt = (ASTStatement)node.jjtGetChild(1);
 
        // can this happen?  an Statement without a child?
@@ -38,7 +39,7 @@ public class EmptyWhileStmtRule extends AbstractRule implements Rule{
         ASTBlock block = (ASTBlock)stmt.jjtGetChild(0);
         // this block must have 1 child, and that child must be a BlockStatement
        if (block.jjtGetNumChildren() == 0 || (!(block.jjtGetChild(0) instanceof ASTBlockStatement))) {
-           (((RuleContext)data).getReport()).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
+           ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
        }
        return super.visit(node, data);
     }

@@ -26,6 +26,7 @@ public class PMD {
             //c.dump("");
             List acus = new ArrayList();
             acus.add(c);
+            ctx.setFilename(filename);
             for (Iterator iterator = rules.iterator(); iterator.hasNext();) {
                 Rule rule = (Rule)iterator.next();
                 rule.apply(acus, ctx);
@@ -64,7 +65,7 @@ public class PMD {
             throw new RuntimeException("File " + args[0] + " doesn't exist");
         }
         PMD pmd = new PMD();
-        Report report = new Report(args[1], input.getAbsolutePath());
+        Report report = new Report(args[1]);
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         try {

@@ -52,6 +52,7 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
 
     // these AST types are variable/name usages
     public Object visit(ASTVariableDeclaratorId node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         //System.out.println("ASTVariableDeclaratorId.getImage() = " + node.getImage());
         if (!(node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration)) {
             return super.visit(node, data);
@@ -62,6 +63,7 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
     }
 
     public Object visit(ASTName node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         //System.out.println("ASTName.getImage() = " + node.getImage() + "; " + node.getBeginLine());
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
             String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
@@ -72,20 +74,21 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
     }
     // these AST types are variable/name usages
 
-    private void reportUnusedLocals(Report report, SymbolTable table) {
+    private void reportUnusedLocals(RuleContext ctx, SymbolTable table) {
         for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
             Symbol symbol = (Symbol)i.next();
-            report.addRuleViolation(new RuleViolation(this, symbol.getLine(), "Found unused local variable '" + symbol.getImage() + "'"));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), "Found unused local variable '" + symbol.getImage() + "'"));
         }
     }
 
     private Object addTable(SimpleNode node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         Namespace group = (Namespace)tableGroups.peek();
         group.addTable();
-        super.visit(node, data);
-        reportUnusedLocals(((RuleContext)data).getReport(), group.peek());
+        super.visit(node, ctx);
+        reportUnusedLocals(ctx, group.peek());
         group.removeTable();
-        return data;
+        return ctx;
     }
 
 }

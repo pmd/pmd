@@ -18,7 +18,7 @@ public class UnnecessaryTemporariesRuleTest extends RuleTst{
 
     public void testUnnecessaryTemporaries() throws Throwable {
         Report report = process("UnnecessaryTemporary.java", new UnnecessaryConversionTemporaryRule());
-        assertEquals(6, report.countViolationsInCurrentFile());
-        assertEquals(new UnnecessaryConversionTemporaryRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
+        assertEquals(6, report.size());
+        assertEquals(new UnnecessaryConversionTemporaryRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 }

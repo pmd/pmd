@@ -33,9 +33,8 @@ public class RuleTst
     {
         PMD p = new PMD();
         RuleContext ctx = new RuleContext();
-        ctx.setReport(new Report("xml", fileName));
+        ctx.setReport(new Report("xml"));
         p.processFile(fileName, getClass().getClassLoader().getResourceAsStream(fileName), rule, ctx);
         return ctx.getReport();
-
     }
 }

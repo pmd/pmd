@@ -22,4 +22,11 @@ public class RuleContextTest extends TestCase {
         Report r2 = ctx.getReport();
         assertEquals(r, r2);
     }
+
+    public void testFilename() {
+        RuleContext ctx = new RuleContext();
+        assertNull(ctx.getFilename());
+        ctx.setFilename("foo");
+        assertEquals("foo", ctx.getFilename());
+    }
 }

@@ -11,13 +11,20 @@ public class RuleViolationTest extends TestCase {
         super(name);
     }
 
-    public void testBasic() {
+    public void testConstructor1() {
         Rule rule = new MockRule("name", "desc");
-        RuleViolation r = new RuleViolation(rule, 2);
-        System.out.println("r.getXML() = " + r.getXML());
-        assertTrue(r.getXML().indexOf("desc") != -1);
-        assertTrue(r.getXML().indexOf("2") != -1);
-        assertTrue(r.getHTML().indexOf("desc") != -1);
-        assertTrue(r.getHTML().indexOf("2") != -1);
+        RuleViolation r = new RuleViolation(rule, 2, "filename");
+        assertEquals(rule, r.getRule());
+        assertEquals(2, r.getLine());
+        assertEquals("filename", r.getFilename());
+    }
+
+    public void testConstructor2() {
+        Rule rule = new MockRule("name", "desc");
+        RuleViolation r = new RuleViolation(rule, 2, "description", "filename");
+        assertEquals(rule, r.getRule());
+        assertEquals(2, r.getLine());
+        assertEquals("filename", r.getFilename());
+        assertEquals("description", r.getDescription());
     }
 }

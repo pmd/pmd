@@ -49,7 +49,8 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
 
         doingIDTraversal = false;
         super.visit(node, null);
-        reportUnusedInstanceVars(((RuleContext)data).getReport(), nameSpace.peek());
+        RuleContext ctx = (RuleContext)data;
+        reportUnusedInstanceVars(ctx, nameSpace.peek());
 
         nameSpace.removeTable();
         nameSpaces.pop();
@@ -58,6 +59,7 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     }
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         if (!doingIDTraversal) {
             return super.visit(node, data);
         }
@@ -76,29 +78,30 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     }
 
     public Object visit(ASTPrimarySuffix node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         if (!doingIDTraversal && (node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
-            recordPossibleUsage(node, data);
+            recordPossibleUsage(node);
         }
         return super.visit(node, data);
     }
 
     public Object visit(ASTName node, Object data) {
         if (!doingIDTraversal && (node.jjtGetParent() instanceof ASTPrimaryPrefix)) {
-            recordPossibleUsage(node, data);
+            recordPossibleUsage(node);
         }
         return super.visit(node, data);
     }
 
-    private void recordPossibleUsage(SimpleNode node, Object data) {
+    private void recordPossibleUsage(SimpleNode node) {
         String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
         Namespace group = (Namespace)nameSpaces.peek();
         group.peek().recordPossibleUsageOf(new Symbol(img, node.getBeginLine()));
     }
 
-    private void reportUnusedInstanceVars(Report report, SymbolTable table) {
+    private void reportUnusedInstanceVars(RuleContext ctx, SymbolTable table) {
         for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
             Symbol symbol = (Symbol)i.next();
-            report.addRuleViolation(new RuleViolation(this, symbol.getLine(), "Found unused private instance variable '" + symbol.getImage() + "'"));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), "Found unused private instance variable '" + symbol.getImage() + "'"));
         }
     }
 }

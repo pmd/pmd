@@ -23,59 +23,59 @@ public class UnusedLocalVariableTest extends RuleTst {
 
     public void testUnusedLocal1() throws Throwable {
         Report report = process("Unused1.java", new UnusedLocalVariableRule());
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
+        assertEquals(1, report.size());
+        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 
     public void testUnusedLocal2() throws Throwable {
         Report report = process("Unused2.java", new UnusedLocalVariableRule());
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
+        assertEquals(1, report.size());
+        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 
     public void testUnusedLocal3() throws Throwable {
         Report report = process("Unused3.java", new UnusedLocalVariableRule());
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
+        assertEquals(1, report.size());
+        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 
     public void testUnusedLocal4() throws Throwable {
         Report report = process("Unused4.java", new UnusedLocalVariableRule());
-        assertTrue(report.currentFileHasNoViolations());
+        assertTrue(report.isEmpty());
     }
 
     public void testUnusedLocal5() throws Throwable {
         Report report = process("Unused5.java", new UnusedLocalVariableRule());
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
+        assertEquals(1, report.size());
+        assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 
     public void testUnusedLocal6() throws Throwable {
         Report report = process("Unused6.java", new UnusedLocalVariableRule());
-        assertTrue(report.currentFileHasNoViolations());
+        assertTrue(report.isEmpty());
     }
 
     public void testUnusedLocal7() throws Throwable {
         Report report = process("Unused7.java", new UnusedLocalVariableRule());
-        assertTrue(report.currentFileHasNoViolations());
+        assertTrue(report.isEmpty());
     }
 
     public void testUnusedLocal8() throws Throwable {
         Report report = process("Unused8.java", new UnusedLocalVariableRule());
-        assertTrue(report.currentFileHasNoViolations());
+        assertTrue(report.isEmpty());
     }
 
     public void testUnusedLocal9() throws Throwable {
         Report report = process("Unused9.java", new UnusedLocalVariableRule());
-        assertEquals(2, report.countViolationsInCurrentFile());
-        Iterator i =  report.violationsInCurrentFile();
+        assertEquals(2, report.size());
+        Iterator i =  report.iterator();
         assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)i.next()).getRule());
         assertEquals(new UnusedLocalVariableRule(), ((RuleViolation)i.next()).getRule());
     }
 
     public void testUnusedLocal10() throws Throwable {
         Report report = process("Unused10.java", new UnusedLocalVariableRule());
-        assertTrue(report.currentFileHasNoViolations());
+        assertTrue(report.isEmpty());
     }
 
 }

@@ -16,11 +16,11 @@ public class IfElseStmtsMustUseBracesRuleTest extends RuleTst {
 
     public void testIfElseStmtsMustUseBraces1() throws Throwable {
         Report report = process("IfElseStmtsNeedBraces1.java", new IfElseStmtsMustUseBracesRule());
-        assertEquals(1, report.countViolationsInCurrentFile());
+        assertEquals(1, report.size());
     }
     public void testIfElseStmtsMustUseBraces2() throws Throwable {
         Report report = process("IfElseStmtsNeedBraces2.java", new IfElseStmtsMustUseBracesRule());
-        assertTrue(report.currentFileHasNoViolations());
+        assertTrue(report.isEmpty());
     }
 
 

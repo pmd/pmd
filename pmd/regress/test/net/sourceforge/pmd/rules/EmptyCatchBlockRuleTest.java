@@ -18,19 +18,19 @@ public class EmptyCatchBlockRuleTest extends RuleTst {
 
     public void testEmptyCatchBlock() throws Throwable {
         Report report = process("EmptyCatchBlock.java", new EmptyCatchBlockRule());
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new EmptyCatchBlockRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
+        assertEquals(1, report.size());
+        assertEquals(new EmptyCatchBlockRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 
     public void testEmptyCatchBlock2() throws Throwable {
         Report report = process("EmptyCatchBlock2.java", new EmptyCatchBlockRule());
-        assertTrue(report.currentFileHasNoViolations());
+        assertTrue(report.isEmpty());
     }
 
     public void testEmptyCatchBlock3() throws Throwable {
         Report report = process("EmptyCatchBlock3.java", new EmptyCatchBlockRule());
-        assertEquals(1, report.countViolationsInCurrentFile());
-        assertEquals(new EmptyCatchBlockRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
+        assertEquals(1, report.size());
+        assertEquals(new EmptyCatchBlockRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 
 

@@ -40,4 +40,12 @@ public abstract class AbstractRule
     public void apply( List acus, RuleContext ctx ) {
         visitAll( acus, ctx );
     }
+
+    public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber) {
+        return new RuleViolation(this, lineNumber, ctx.getFilename());
+    }
+
+    public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, String specificDescription) {
+        return new RuleViolation(this, lineNumber, specificDescription, ctx.getFilename());
+    }
 }

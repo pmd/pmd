@@ -32,6 +32,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
     }
 
     public Object visit(ASTPrimaryExpression node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         if (node.jjtGetNumChildren() == 0 || ((SimpleNode)node.jjtGetChild(0)).jjtGetNumChildren() == 0 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
             return super.visit(node, data);
         }
@@ -43,6 +44,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
     }
 
     public Object visit(ASTAllocationExpression node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         if (!inPrimaryExpressionContext) {
             return super.visit(node, data);
         }
@@ -59,11 +61,12 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
     }
 
     public Object visit(ASTPrimarySuffix node, Object data) {
+        RuleContext ctx = (RuleContext)data;
         if (!inPrimaryExpressionContext || !usingPrimitiveWrapperAllocation) {
             return super.visit(node, data);
         }
         if (node.getImage() != null && node.getImage().equals("toString")) {
-            (((RuleContext)data).getReport()).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
         return super.visit(node, data);
     }

@@ -31,12 +31,11 @@ public class UseSingletonRule
     }
 
     public Object visit( ASTCompilationUnit cu, Object data ) {
-
 	Object RC = cu.childrenAccept( this, data );
 
 	if ((!isOK) && (methodCount > 0)) {
-	    (((RuleContext) data).getReport()).
-		addRuleViolation( new RuleViolation( this, cu.getBeginLine() ));
+        RuleContext ctx = (RuleContext)data;
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, cu.getBeginLine() ));
 	}
 
 	return RC;

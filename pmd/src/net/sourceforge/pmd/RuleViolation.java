@@ -6,34 +6,32 @@ public class RuleViolation {
     private int line;
     private Rule rule;
     private String description;
+    private String filename;
 
-    public RuleViolation(Rule rule, int line) {
-        this(rule, line, rule.getDescription());
+    public RuleViolation(Rule rule, int line, String filename) {
+        this(rule, line, rule.getDescription(), filename);
     }
 
-    public RuleViolation(Rule rule, int line, String specificDescription) {
+    public RuleViolation(Rule rule, int line, String specificDescription, String filename) {
         this.line = line;
         this.rule = rule;
         this.description = specificDescription;
+        this.filename = filename;
     }
 
     public Rule getRule() {
         return rule;
     }
 
-    public String getXML() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("<ruleviolation>" + System.getProperty("line.separator"));
-        buf.append("<line>" + Integer.toString(line) + "</line>" + System.getProperty("line.separator"));
-        buf.append("<description>" + description + "</description>" + System.getProperty("line.separator"));
-        buf.append("</ruleviolation>");
-        return buf.toString();
+    public int getLine() {
+        return line;
     }
 
-    public String getHTML() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("<td>" + Integer.toString(line) + "</td>" + System.getProperty("line.separator"));
-        buf.append("<td>" + description + "</td>" + System.getProperty("line.separator"));
-        return buf.toString();
+    public String getDescription() {
+        return description;
+    }
+
+    public String getFilename() {
+        return filename;
     }
 }

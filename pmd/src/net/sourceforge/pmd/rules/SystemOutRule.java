@@ -11,8 +11,9 @@ public class SystemOutRule extends AbstractRule implements Rule {
     public String getDescription() {return "Don't use System.out/in/err, use the Cougaar logging service instead";}
 
     public Object visit(ASTName node, Object data){
+        RuleContext ctx = (RuleContext)data;
         if (node.getImage() != null && (node.getImage().startsWith("System.out") || node.getImage().startsWith("System.err") || node.getImage().startsWith("System.in"))) {
-            (((RuleContext)data).getReport()).addRuleViolation(new RuleViolation(this, node.getBeginLine()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
         return super.visit(node,data);
     }
