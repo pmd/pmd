@@ -1,3 +1,5 @@
+???? 2002 - 0.4:
+
 July 03 2002 - 0.3:
 Added new rules: UseSingletonRule, ShortVariableRule, LongVariableRule, ShortMethodNameRule
 Moved rules into RuleSets which are defined in XML files in the ruleset directory
