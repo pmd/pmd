@@ -6,10 +6,7 @@
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.*;
-import net.sourceforge.pmd.RuleContext;
 
-import java.util.Set;
-import java.util.List;
 
 public class SymbolFacade extends JavaParserVisitorAdapter {
 

@@ -92,7 +92,7 @@ public void doSomething() {
 
 
  <rule name="ExcessiveParameterList"
-       message="Avoid really long parameter list."
+       message="Avoid really long parameter lists."
        class="net.sourceforge.pmd.rules.design.LongParameterListRule">
    <description>
 This checks to make sure that the Parameter Lists in the project aren't

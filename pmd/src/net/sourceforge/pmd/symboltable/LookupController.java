@@ -5,8 +5,6 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-
 public class LookupController {
 
     private SymbolTable symbolTable;
