@@ -184,7 +184,7 @@ public class GUI implements CPDListener {
     }
 
     // CPDListener
-    public void comparisonCountUpdate(int comparisons) {
+    public void comparisonCountUpdate(long comparisons) {
         comparisonsField.setText(String.valueOf(comparisons));
     }
 

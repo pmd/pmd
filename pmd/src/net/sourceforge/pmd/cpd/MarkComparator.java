@@ -5,8 +5,9 @@ import java.util.List;
 
 public class MarkComparator implements Comparator {
 
+    private static final int COMPARISON_UPDATE_INTERVAL = 100000;
     private CPDListener l;
-    private int comparisons;
+    private long comparisons;
     private List code;
 
     public MarkComparator(CPDListener l, List code) {
@@ -20,7 +21,7 @@ public class MarkComparator implements Comparator {
 
     public int compare(Object o1, Object o2) {
         comparisons++;
-        if (comparisons % 100000 == 0) {
+        if (comparisons % COMPARISON_UPDATE_INTERVAL == 0) {
             l.comparisonCountUpdate(comparisons);
         }
 
