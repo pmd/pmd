@@ -401,7 +401,7 @@ public class Bar {
           message="Avoid empty synchronized blocks"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  Avoid empty try blocks - what's the point?
+  Avoid empty synchronized blocks - they're useless.
       </description>
       <properties>
           <property name="xpath">
