@@ -6,10 +6,11 @@
 package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.reports.Report;
-import net.sourceforge.pmd.reports.ReportFactory;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.Report;
 
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
@@ -22,24 +23,23 @@ public class ReportTest extends TestCase {
     }
 
     public void testBasic() {
-        ReportFactory rf = new ReportFactory();
-        Report r = rf.createReport("xml");
+        Report r = new Report();
         r.addRuleViolation(new RuleViolation(new MockRule(), 5, "foo"));
         assertTrue(!r.isEmpty());
     }
 
     public void testSortedReport() {
-        ReportFactory rf = new ReportFactory();
-        Report r = rf.createReport("xml");
+        Report r = new Report();
         r.addRuleViolation(new RuleViolation(new MockRule(), 10, "foo"));
         r.addRuleViolation(new RuleViolation(new MockRule(), 20, "bar"));
-        String result = r.render();
+        Renderer rend = new XMLRenderer();
+        String result = rend.render(r);
         assertTrue(result.indexOf("foo") < result.indexOf("bar"));
     }
 
 /*
     public void testRenderXML() {
-        Report r = new Report("xml");
+        Renderer r = new Renderer("xml");
         r.addRuleViolation(new RuleViolation(new MockRule(), 5, "foo"));
         String rpt = r.render();
         assertTrue(rpt.indexOf("foo") != -1);
@@ -48,7 +48,7 @@ public class ReportTest extends TestCase {
     }
 
     public void testRenderHTML() {
-        Report r = new Report("html", "format");
+        Renderer r = new Renderer("html", "format");
         r.addRuleViolation(new RuleViolation(new MockRule(), 5, "filename"));
         String rpt = r.render();
         assertTrue(rpt.indexOf("format") != -1);

@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.reports.Report;
-import net.sourceforge.pmd.reports.ReportFactory;
+import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.ast.*;
 
@@ -34,8 +34,7 @@ public class RuleTst
     {
         PMD p = new PMD();
         RuleContext ctx = new RuleContext();
-        ReportFactory rf = new ReportFactory();
-        Report report = rf.createReport("xml");
+        Report report = new Report();
         ctx.setReport(report);
         ctx.setSourceCodeFilename(fileName);
         RuleSet rules = new RuleSet();

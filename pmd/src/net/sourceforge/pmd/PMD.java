@@ -9,8 +9,9 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.reports.Report;
-import net.sourceforge.pmd.reports.ReportFactory;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.swingui.PMDFrame;
 
 import java.io.*;
@@ -23,7 +24,7 @@ public class PMD {
     /**
      * @param fileContents - an InputStream to the Java code to analyse
      * @param ruleSet - the set of rules to process against the file
-     * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
+     * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
      */
     public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws FileNotFoundException {
         try {
@@ -46,7 +47,7 @@ public class PMD {
     /**
      * @param reader - an InputStream to the Java code to analyse
      * @param ruleSet - the set of rules to process against the file
-     * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
+     * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
      */
     public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws FileNotFoundException {
         try {
@@ -86,16 +87,22 @@ public class PMD {
 
         PMD pmd = new PMD();
 
-        ReportFactory rf = new ReportFactory();
         RuleContext ctx = new RuleContext();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream(ruleSetFilename));
 
-        ctx.setReport(rf.createReport(reportFormat));
+        ctx.setReport(new Report());
+
+        Renderer rend = null;
+        if (rend.equals("xml")) {
+            rend = new XMLRenderer();
+        } else {
+            rend = new HTMLRenderer();
+        }
         ctx.setSourceCodeFilename(inputFile.getAbsolutePath());
         try {
             pmd.processFile(new FileInputStream(inputFile), rules, ctx);
-            System.out.println(ctx.getReport().render());
+            System.out.println(rend.render(ctx.getReport()));
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         }

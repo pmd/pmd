@@ -3,17 +3,18 @@
  * Date: Jul 2, 2002
  * Time: 12:11:11 PM
  */
-package net.sourceforge.pmd.reports;
+package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.Report;
 
 import java.util.Iterator;
 
-public class XMLReport extends AbstractReport {
+public class XMLRenderer implements Renderer {
 
-    public String render() {
+    public String render(Report report) {
         StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?><pmd>" + System.getProperty("line.separator"));
-        for (Iterator i = super.iterator(); i.hasNext();) {
+        for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append("<ruleviolation>" + System.getProperty("line.separator"));
             buf.append("<file>" + rv.getFilename() + "</file>" + System.getProperty("line.separator"));

@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.swingui;
 
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.reports.ReportFactory;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelListener;
@@ -29,11 +29,10 @@ public class PMDFrame {
             PMD pmd = new PMD();
             RuleContext ctx = new RuleContext();
             ctx.setSourceCodeFilename(fileNameField.getText());
-            ReportFactory rf = new ReportFactory();
-            ctx.setReport(rf.createReport("xml"));
+            ctx.setReport(new Report());
             try {
                 pmd.processFile(new FileInputStream(new File(fileNameField.getText())), ruleSet, ctx);
-                reportTextArea.setText(ctx.getReport().render());
+                reportTextArea.setText((new XMLRenderer()).render(ctx.getReport()));
             } catch (FileNotFoundException fnfe) {
                 fnfe.printStackTrace();
             }

@@ -5,9 +5,10 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.rules.EmptyWhileStmtRule;
 import net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule;
+import net.sourceforge.pmd.Report;
 
 public class OverrideBothEqualsAndHashcodeRuleTest extends RuleTst {
     public OverrideBothEqualsAndHashcodeRuleTest( String name ) {

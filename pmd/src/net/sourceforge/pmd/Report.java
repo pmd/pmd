@@ -3,24 +3,22 @@
  * Date: Jul 2, 2002
  * Time: 12:10:00 PM
  */
-package net.sourceforge.pmd.reports;
+package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.renderers.Renderer;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
 
-public abstract class AbstractReport implements Report {
+public class Report {
 
     private List violations = new ArrayList();
 
     public void addRuleViolation(RuleViolation violation) {
         violations.add(violation);
     }
-
-    public abstract String render();
 
     public boolean isEmpty() {
         return violations.isEmpty();
@@ -30,7 +28,6 @@ public abstract class AbstractReport implements Report {
         sort();
         return violations.iterator();
     }
-
 
     public int size() {
         return violations.size();

@@ -1,8 +1,7 @@
 package test.net.sourceforge.pmd;
 
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.reports.Report;
-import net.sourceforge.pmd.reports.ReportFactory;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.ast.*;
 
 import java.io.StringReader;
@@ -115,18 +114,15 @@ public class RuleSetTest extends TestCase
 
 	RuleContext context = new RuleContext();
 	Set reportedValues = new HashSet();
-    ReportFactory rf = new ReportFactory();
-    Report report = rf.createReport("xml");
-
-	context.setReport( report );
+	context.setReport( new Report() );
 	IUT.apply( makeCompilationUnits(),
 		   context );
 
 	assertEquals("Invalid number of Violations Reported",
-		     size, report.size() );
+		     size, context.getReport().size() );
 
 	Iterator violations =
-	    report.iterator();
+	    context.getReport().iterator();
 	while (violations.hasNext()) {
 	    RuleViolation violation =
 		(RuleViolation) violations.next();

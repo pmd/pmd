@@ -15,12 +15,10 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.reports.Report;
-import net.sourceforge.pmd.reports.ReportFactory;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.*;
 
 public class PMDTask extends Task {
 
@@ -60,16 +58,16 @@ public class PMDTask extends Task {
             throw new BuildException("No report file specified");
         }
 
-        ReportFactory rf = new ReportFactory();
-        if (format == null || !rf.contains(format)) {
-            throw new BuildException("Report format must be one of " + rf.getConcatenatedString() + "; you specified " + format);
+        if (format == null || (!format.equals("xml") && !format.equals("html"))) {
+            throw new BuildException("Renderer format must be either 'xml' or 'html'; you specified " + format);
         }
 
         PMD pmd = new PMD();
 
         RuleContext ctx = new RuleContext();
         RuleSet rules = createRuleSets();
-        ctx.setReport(rf.createReport(format));
+        Report report = new Report();
+        ctx.setReport(report);
 
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
@@ -89,7 +87,13 @@ public class PMDTask extends Task {
 
         StringBuffer buf = new StringBuffer();
         if (!ctx.getReport().isEmpty()) {
-            buf.append(ctx.getReport().render());
+            Renderer rend = null;
+            if (rend.equals("xml")) {
+                rend = new XMLRenderer();
+            } else {
+                rend = new HTMLRenderer();
+            }
+            buf.append(rend.render(ctx.getReport()));
             buf.append(System.getProperty("line.separator"));
         }
         try {

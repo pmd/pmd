@@ -7,7 +7,7 @@ package test.net.sourceforge.pmd.rules;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import org.cougaar.util.pmd.SystemPropsRule;
 

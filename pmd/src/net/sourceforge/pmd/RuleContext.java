@@ -5,7 +5,7 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.renderers.Renderer;
 
 public class RuleContext {
 

@@ -7,7 +7,8 @@ package test.net.sourceforge.pmd.rules;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.renderers.Renderer;
 import org.cougaar.util.pmd.SystemPropsRule;
 
 public class SystemPropsRuleTest extends RuleTst {

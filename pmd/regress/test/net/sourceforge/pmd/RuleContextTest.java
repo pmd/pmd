@@ -7,8 +7,8 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.reports.Report;
-import net.sourceforge.pmd.reports.ReportFactory;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.renderers.Renderer;
 
 public class RuleContextTest extends TestCase {
     public RuleContextTest(String name) {
@@ -18,8 +18,7 @@ public class RuleContextTest extends TestCase {
     public void testReport() {
         RuleContext ctx = new RuleContext();
         assertNull(ctx.getReport());
-        ReportFactory rf = new ReportFactory();
-        Report r = rf.createReport("xml");
+        Report r = new Report();
         ctx.setReport(r);
         Report r2 = ctx.getReport();
         assertEquals(r, r2);
