@@ -127,7 +127,7 @@ class AboutPMD extends JDialog
         bottomPanel.add(versionLabel);
 
         // SourceForge PMD Project
-        JLabel sourceForgeLabel = new JLabel("Developed by the SourgeForge PMD Project Team");
+        JLabel sourceForgeLabel = new JLabel("Developed by the SourceForge PMD Project Team");
         sourceForgeLabel.setFont(UIManager.getFont("labelFont"));
         sourceForgeLabel.setHorizontalAlignment(JLabel.CENTER);
         bottomPanel.add(sourceForgeLabel);
