@@ -4,8 +4,7 @@ update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
 update release number in project.xml
 
-ant dist
-ant test
+ant dist test
 Do all the JUnit tests run?  OK, then:
 ant dist
 
@@ -21,7 +20,7 @@ Regenerate the web site
 Prepare binary release:
 rm -rf ~/tmp/pmd-1.1
 mkdir -p ~/tmp/pmd-1.1/etc ~/tmp/pmd/lib
-cp ../LICENSE.txt run.bat run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.bat astviewer.sh ~/tmp/pmd-1.1/etc
+cp ../LICENSE.txt run.* cygwin-run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.* ~/tmp/pmd-1.1/etc
 cp ../lib/pmd-1.1.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.1/lib/
 cp -R xslt/ ~/tmp/pmd-1.1/etc/xslt/
 cp -R ../target/docs ~/tmp/pmd-1.1
