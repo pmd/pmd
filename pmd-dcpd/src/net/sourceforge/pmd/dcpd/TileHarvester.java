@@ -29,42 +29,16 @@ public class TileHarvester {
     public Occurrences harvest(int originalOccurrencesCount) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
         Occurrences occ = new Occurrences(new CPDNullListener());
         for (int i=0;i<originalOccurrencesCount; i++) {
-            TileWrapper tw = (TileWrapper)space.take(new TileWrapper(null,
-                    null,
-                    job.id,
-                    TileWrapper.DONE,
-                    null,
-                    new Integer(i), new Integer(0), null), null, Lease.FOREVER);
-            if (tw.discardFlag == null) {
-                addAllExpansions(i, tw, occ);
+            Chunk chunk = (Chunk)space.take(new Chunk(job.id,  null, Chunk.DONE, new Integer(i)), null, Lease.FOREVER);
+            for (int j=0; j<chunk.tileWrappers.size(); j++) {
+                addTileWrapperToOccurrences((TileWrapper)chunk.tileWrappers.get(j), occ);
             }
         }
         return occ;
     }
 
-    private void addAllExpansions(int originalPosition, TileWrapper firstExpansion, Occurrences occ) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
-        TileWrapper nextExpansion = firstExpansion;
-        for (int i=0; i<firstExpansion.expansionsTotal.intValue(); i++) {
-            if (i>0) {
-                nextExpansion = (TileWrapper)space.take(new TileWrapper(null,
-                    null,
-                    job.id,
-                    TileWrapper.DONE,
-                    null,
-                    new Integer(originalPosition),
-                    new Integer(i),
-                    firstExpansion.expansionsTotal), null, Lease.FOREVER);
-            }
-            //System.out.println("Gathered " + nextExpansion + "; occurrences = " + nextExpansion.occurrences.size());
-            // here's where we discard solo tiles
-            if (nextExpansion.occurrences.size() > 1) {
-                addTileWrapperToOccurrences(nextExpansion, occ);
-            }
-        }
-    }
-
     private void addTileWrapperToOccurrences(TileWrapper tw, Occurrences occ) {
-        if (!occ.containsAnyTokensIn(tw.tile)) {
+        if (tw.occurrences.size() > 1 && !occ.containsAnyTokensIn(tw.tile)) {
             for (int i=0; i<tw.occurrences.size(); i++) {
                 occ.addTile(tw.tile, (TokenEntry)tw.occurrences.get(i));
             }

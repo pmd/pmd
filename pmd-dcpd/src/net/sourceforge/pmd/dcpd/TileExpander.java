@@ -28,67 +28,44 @@ public class TileExpander {
     }
 
     public void expandAvailableTiles() throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
-        Entry twQuery = space.snapshot(new TileWrapper(null, null, tsw.jobID, TileWrapper.NOT_DONE, null, null, null, null));
+        Entry twQuery = space.snapshot(new Chunk(tsw.jobID, null, Chunk.NOT_DONE, null));
 
-        TileWrapper tileWrapperToExpand = null;
+        Chunk chunk = null;
         int total = 0;
-        while ((tileWrapperToExpand = (TileWrapper)space.take(twQuery, null, 10)) != null) {
+        while ((chunk = (Chunk)space.take(twQuery, null, 10)) != null) {
             total++;
-            //System.out.println("Expanding " + tileWrapperToExpand.tile.getImage());
-            Occurrences results = expand(tileWrapperToExpand);
-            int expansionIndex = 0;
-            for (Iterator i = results.getTiles();i.hasNext();) {
-                Tile tile = (Tile)i.next();
-                TileWrapper tileWrapperToWrite = new TileWrapper(tile,
-                                                    marshal(results.getOccurrences(tile)),
-                                                    tsw.jobID,
-                                                    TileWrapper.DONE,
-                                                    null,
-                                                    tileWrapperToExpand.originalTilePosition,
-                                                    new Integer(expansionIndex),
-                                                    new Integer(results.size()));
-                space.write(tileWrapperToWrite, null, Lease.FOREVER);
-                //System.out.println("Wrote " + tileWrapperToWrite + "; occurrences = " + tileWrapperToWrite.occurrences.size());
-                expansionIndex++;
+            List wrappers = new ArrayList();
+            for (int j=0; j<chunk.tileWrappers.size(); j++) {
+                TileWrapper tileWrapperToExpand = (TileWrapper)chunk.tileWrappers.get(j);
+                //System.out.println("Expanding " + tileWrapperToExpand.tile.getImage());
+                Occurrences results = expand(tileWrapperToExpand, j);
+                int expansionIndex = 0;
+                for (Iterator i = results.getTiles();i.hasNext();) {
+                    Tile tile = (Tile)i.next();
+                    TileWrapper tileWrapperToWrite = new TileWrapper(tile, results.getOccurrencesList(tile), new Integer(expansionIndex), new Integer(results.size()));
+                    wrappers.add(tileWrapperToWrite);
+                    //System.out.println("Wrote " + tileWrapperToWrite + "; occurrences = " + tileWrapperToWrite.occurrences.size());
+                    expansionIndex++;
+                }
             }
+            Chunk chunkToWrite = new Chunk(tsw.jobID, wrappers, Chunk.DONE, chunk.sequenceID);
+            space.write(chunkToWrite, null, Lease.FOREVER);
         }
         if (total>0) System.out.println("Expanded " + total + " tiles");
     }
 
-
-    private List marshal(Iterator i) {
-        List list = new ArrayList();
-        while (i.hasNext()) {
-            list.add(i.next());
-        }
-        return list;
-    }
-
-    private Occurrences expand(TileWrapper tileWrapper)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
+    private Occurrences expand(TileWrapper tileWrapper, int sequenceID)  throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
         Occurrences newOcc = new Occurrences(new CPDNullListener());
         for (Iterator i = tileWrapper.occurrences.iterator(); i.hasNext();) {
             TokenEntry tok = (TokenEntry)i.next();
             TokenList tokenSet = tsw.tokenSets.getTokenList(tok);
             if (tokenSet.hasTokenAfter(tileWrapper.tile, tok)) {
                 TokenEntry token = (TokenEntry)tokenSet.get(tok.getIndex() + tileWrapper.tile.getTokenCount());
-                // make sure the next token hasn't already been used in an occurrence
                 if (!newOcc.contains(token)) {
                     Tile newTile = tileWrapper.tile.copy();
                     newTile.add(token);
                     newOcc.addTile(newTile, tok);
                 }
-            } else {
-                // we have to put something back in the space to let DGST know that
-                // this tile has been processed...
-                TileWrapper tileWrapperToWrite = new TileWrapper(tileWrapper.tile,
-                                                    new ArrayList(),
-                                                    tsw.jobID,
-                                                    TileWrapper.DONE,
-                                                    TileWrapper.DISCARD_DUE_TO_EOF,
-                                                    tileWrapper.originalTilePosition,
-                                                    new Integer(0),
-                                                    null);
-                space.write(tileWrapperToWrite, null, Lease.FOREVER);
             }
         }
         return newOcc;

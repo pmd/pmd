@@ -19,7 +19,7 @@
         <classpath>
             <pathelement location="${compiletimelibsdir}/jini-core.jar"/>
             <pathelement location="${compiletimelibsdir}/jini-ext.jar"/>
-            <pathelement location="${lib}/pmd-0.9.jar"/>
+            <pathelement location="${lib}/pmd-1.0rc1.jar"/>
         </classpath>
     </javac>
 </target>

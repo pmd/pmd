@@ -3,7 +3,7 @@ set CLASSPATH=
 set CLASSPATH=%CLASSPATH%;c:\data\pmd\pmd-dcpd\lib\runtimeonly\outrigger-dl.jar
 set CLASSPATH=%CLASSPATH%;c:\data\pmd\pmd-dcpd\lib\runtimeonly\reggie.jar
 set CLASSPATH=%CLASSPATH%;c:\data\pmd\pmd-dcpd\build
-set CLASSPATH=%CLASSPATH%;c:\data\pmd\pmd-dcpd\lib\pmd-0.9.jar
+set CLASSPATH=%CLASSPATH%;c:\data\pmd\pmd-dcpd\lib\pmd-1.0rc1.jar
 
 set MAIN=net.sourceforge.pmd.dcpd.%1
 set MEMORY_ARG=-Xms128M -Xmx384M

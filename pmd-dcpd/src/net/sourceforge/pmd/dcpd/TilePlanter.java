@@ -30,14 +30,11 @@ public class TilePlanter {
         int tilesSoFar=0;
         for (Iterator i = occ.getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
-            TileWrapper tw = new TileWrapper(tile,
-                    marshal(occ.getOccurrences(tile)),
-                    job.id,
-                    TileWrapper.NOT_DONE,
-                    null,
-                    new Integer(tilesSoFar),
-                    null, null);
-            space.write(tw, null, Lease.FOREVER);
+            TileWrapper tw = new TileWrapper(tile, occ.getOccurrencesList(tile), null, null);
+            List wrappers = new ArrayList();
+            wrappers.add(tw);
+            Chunk chunk = new Chunk(job.id, wrappers, Chunk.NOT_DONE, new Integer(tilesSoFar));
+            space.write(chunk, null, Lease.FOREVER);
             //System.out.println("Scattering " + tw.tile.getImage() +  "->" + tw.occurrences.size());
             tilesSoFar++;
             if (tilesSoFar % 100 == 0) {
@@ -45,13 +42,4 @@ public class TilePlanter {
             }
         }
     }
-
-    private List marshal(Iterator i) {
-        List list = new ArrayList();
-        while (i.hasNext()) {
-            list.add(i.next());
-        }
-        return list;
-    }
-
 }

@@ -44,7 +44,7 @@ public class DCPD {
             System.out.println("Writing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Crunching");
-            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 100);
+            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 30);
             Results results = dgst.crunch(new CPDListenerImpl());
             System.out.println("Crunching complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 

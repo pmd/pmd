@@ -20,7 +20,7 @@ public class DGST {
     private TokenSets tokenSets;
     private JavaSpace space;
     private Job job;
-    private Results results = new Results();
+    private Results results = new DCPDResultsImpl();
 
     public DGST(JavaSpace space, Job job, TokenSets tokenSets, int minimumTileSize) {
         this.minimumTileSize = minimumTileSize;
@@ -59,39 +59,33 @@ public class DGST {
     private void addToResults(Occurrences occ) {
         for (Iterator i = occ.getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
-            if (tile.getTokenCount() > this.minimumTileSize) {
-                // why is this necessary?  Seems like Results.clearDupes() or whatever it's called
-                // should take care of it...
-                if (!isDuplicate(tile)) {
-                    for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
-                        TokenEntry te = (TokenEntry)j.next();
-                        results.addTile(tile, te);
-                    }
+            if (tile.getTokenCount() >= minimumTileSize) {
+                for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
+                    TokenEntry te = (TokenEntry)j.next();
+                    results.addTile(tile, te);
                 }
             }
         }
     }
 
-    private boolean isDuplicate(Tile tile) {
+/*
+    private boolean isDuplicate(Tile candidate) {
         for (Iterator j = results.getTiles(); j.hasNext();) {
-            Tile tile2 = (Tile)j.next();
-            TokenEntry first = (TokenEntry)tile2.getTokens().get(0);
-            TokenEntry second = (TokenEntry)tile.getTokens().get(0);
-            if (first.getTokenSrcID().equals(second.getTokenSrcID()) &&
-                first.getBeginLine() == second.getBeginLine() &&
-                first.getImage().equals(second.getImage())) {
-                return true;
+            Tile tile = (Tile)j.next();
+            for (int i=0;i<tile.getTokens().size(); i++) {
+                TokenEntry tok = (TokenEntry)tile.getTokens().get(i);
+                for (int k=0; k<candidate.getTokens().size(); k++) {
+                    TokenEntry candidateToken = (TokenEntry)candidate.getTokens().get(k);
+                    if (tok.getTokenSrcID().equals(candidateToken.getTokenSrcID()) &&
+                        tok.getBeginLine() == candidateToken.getBeginLine() &&
+                        tok.getImage().equals(candidateToken.getImage())) {
+                            System.out.println("DISCARD");
+                            return true;
+                        }
+                }
             }
         }
         return false;
     }
-
-    private List marshal(Iterator i) {
-        List list = new ArrayList();
-        while (i.hasNext()) {
-            list.add(i.next());
-        }
-        return list;
-    }
-
+*/
 }
