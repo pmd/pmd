@@ -57,24 +57,9 @@ CompilationUnit
          Statement
           WhileStatement
            Expression
-            ConditionalExpression
-             ConditionalOrExpression
-              ConditionalAndExpression
-               InclusiveOrExpression
-                ExclusiveOrExpression
-                 AndExpression
-                  EqualityExpression
-                   InstanceOfExpression
-                    RelationalExpression
-                     ShiftExpression
-                      AdditiveExpression
-                       MultiplicativeExpression
-                        UnaryExpression
-                         UnaryExpressionNotPlusMinus
-                          PostfixExpression
-                           PrimaryExpression
-                            PrimaryPrefix
-                             Name
+            PrimaryExpression
+             PrimaryPrefix
+              Name
            Statement
             StatementExpression
              PrimaryExpression
