@@ -71,7 +71,8 @@ The Braces Ruleset contains a collection of braces rules.
              <property name="xpath">
                  <value>
                      <![CDATA[
-    //Statement[parent::IfStatement and not(child::Block)]
+//IfStatement
+[count(child::Statement) != count(child::Statement/Block)]
                      ]]>
                  </value>
              </property>
