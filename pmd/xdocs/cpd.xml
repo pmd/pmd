@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="tom@infoether.com">Tom Copeland</author>
+    <title>Finding copied and pasted code</title>
+  </properties>
+
+  <body>
+   <section name="Copied and pasted code">
+     <subsection name="Copied and pasted code is usually bad">
+     <p>But it can be hard to find, especially in a large project.  So we wrote a utility to
+     find it for us.
+     </subsection>
+   </section>
+  </body>
+</document>
