@@ -35,6 +35,7 @@ class MessageDialog extends JDialog
 {
 
     private JTextArea m_messageArea;
+    private boolean m_yesButtonWasPressed;
 
     /**
      *******************************************************************************
@@ -124,6 +125,35 @@ class MessageDialog extends JDialog
     /**
      *******************************************************************************
      *
+     */
+    private void addAnswerButtons()
+    {
+        JButton yesButton;
+        JButton noButton;
+        JPanel buttonPanel;
+
+        buttonPanel = new JPanel(new FlowLayout());
+
+        yesButton = ComponentFactory.createButton("Yes");
+        yesButton.setForeground(Color.white);
+        yesButton.setBackground(UIManager.getColor("pmdGreen"));
+        yesButton.addActionListener(new YesButtonActionListener());
+        buttonPanel.add(yesButton);
+
+        noButton = ComponentFactory.createButton("No");
+        noButton.setForeground(Color.white);
+        noButton.setBackground(Color.red);
+        noButton.addActionListener(new NoButtonActionListener());
+        buttonPanel.add(noButton);
+
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param parentWindow
+     * @param message
      * @param exception
      */
     protected static void show(Window parentWindow, String message, Exception exception)
@@ -169,9 +199,40 @@ class MessageDialog extends JDialog
     /**
      *******************************************************************************
      *
-     * @param exception
+     * @param parentWindow
+     * @param message
+     */
+    protected static boolean answerIsYes(Window parentWindow, String message)
+    {
+        MessageDialog dialog = setup(parentWindow, message);
+
+        dialog.addAnswerButtons();
+        dialog.setVisible(true);
+
+        return dialog.m_yesButtonWasPressed;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param parentWindow
+     * @param message
      */
     protected static void show(Window parentWindow, String message)
+    {
+        MessageDialog dialog = setup(parentWindow, message);
+
+        dialog.addCloseButton();
+        dialog.setVisible(true);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param parentWindow
+     * @param message
+     */
+    private static MessageDialog setup(Window parentWindow, String message)
     {
         if (message == null)
         {
@@ -189,8 +250,7 @@ class MessageDialog extends JDialog
             dialog = new MessageDialog((Dialog) parentWindow, "message", message);
         }
 
-        dialog.addCloseButton();
-        dialog.setVisible(true);
+        return dialog;
     }
 
     /**
@@ -208,6 +268,46 @@ class MessageDialog extends JDialog
          */
         public void actionPerformed(ActionEvent event)
         {
+            MessageDialog.this.setVisible(false);
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class YesButtonActionListener implements ActionListener
+    {
+
+        /**
+         ************************************************************************
+         *
+         * @param event
+         */
+        public void actionPerformed(ActionEvent event)
+        {
+            MessageDialog.this.m_yesButtonWasPressed = true;
+            MessageDialog.this.setVisible(false);
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class NoButtonActionListener implements ActionListener
+    {
+
+        /**
+         ************************************************************************
+         *
+         * @param event
+         */
+        public void actionPerformed(ActionEvent event)
+        {
+            MessageDialog.this.m_yesButtonWasPressed = false;
             MessageDialog.this.setVisible(false);
         }
     }

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.RuleSet;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
+class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData, IConstants
 {
     private RuleSet m_ruleSet;
     private Rule m_rule;
@@ -27,46 +27,24 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
     private byte m_flags;
 
     // Constant
-    protected static final char RULE_SET_TYPE = 'S';
-    protected static final char RULE_TYPE = 'R';
-    protected static final char PROPERTY_TYPE = 'P';
     private static final char ROOT_TYPE = 'O';
     private static final byte IS_ROOT = 0x01;
     private static final byte IS_RULE_SET = 0x02;
     private static final byte IS_RULE = 0x04;
     private static final byte IS_PROPERTY = 0x08;
     private static final byte INCLUDE = (byte) 0x80;
-    private static final String EMPTY_STRING = "";
 
     /**
      ***************************************************************************
      *
      * @param name
      */
-    protected RulesTreeNode(String text, char nodeType)
+    protected RulesTreeNode(String text)
     {
         super();
 
-        switch (nodeType)
-        {
-            case ROOT_TYPE:
-                m_flags |= IS_ROOT;
-                break;
-
-            case RULE_SET_TYPE:
-                m_flags |= IS_RULE_SET;
-                break;
-
-            case RULE_TYPE:
-                m_flags |= IS_RULE;
-                break;
-
-            case PROPERTY_TYPE:
-                m_flags |= IS_PROPERTY;
-                break;
-        }
-
         m_name = trim(text);
+        m_flags |= IS_ROOT;
         m_flags |= INCLUDE;
 
         setDisplayName();
@@ -529,6 +507,6 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
      */
     protected static final RulesTreeNode createRootNode()
     {
-        return new RulesTreeNode("Rules", ROOT_TYPE);
+        return new RulesTreeNode("Rules");
     }
 }

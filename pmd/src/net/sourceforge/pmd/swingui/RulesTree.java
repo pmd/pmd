@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Point;
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -15,7 +16,9 @@ import java.util.EventObject;
 
 import javax.swing.border.EtchedBorder;
 import javax.swing.BorderFactory;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
@@ -26,6 +29,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.UIManager;
 
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PMDDirectory;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 
 
@@ -35,10 +41,13 @@ import net.sourceforge.pmd.RuleSet;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesTree extends JTree
+class RulesTree extends JTree implements IConstants
 {
 
     private RulesEditor m_rulesEditor;
+
+    // Constants
+    private final String UNTITLED = "Untitled";
 
     /**
      ***************************************************************************
@@ -81,6 +90,20 @@ class RulesTree extends JTree
         TreePath treePath = getSelectionPath();
 
         return (treePath == null) ? null : (RulesTreeNode) treePath.getLastPathComponent();
+    }
+
+    /**
+     ***************************************************************************
+     *
+     * @param node
+     *
+     * @return
+     */
+    protected boolean isExpanded(RulesTreeNode node)
+    {
+        TreePath treePath = new TreePath(node.getPath());
+
+        return isExpanded(treePath);
     }
 
     /**
@@ -178,11 +201,11 @@ class RulesTree extends JTree
     {
 
         private JMenuItem m_addRuleSetMenuItem;
-        private JMenuItem m_deleteRuleSetMenuItem;
+        private JMenuItem m_removeRuleSetMenuItem;
         private JMenuItem m_addRuleMenuItem;
-        private JMenuItem m_deleteRuleMenuItem;
+        private JMenuItem m_removeRuleMenuItem;
         private JMenuItem m_addPropertyMenuItem;
-        private JMenuItem m_deletePropertyMenuItem;
+        private JMenuItem m_removePropertyMenuItem;
 
         /**
          ***********************************************************************
@@ -193,13 +216,15 @@ class RulesTree extends JTree
         {
             if (event.isPopupTrigger())
             {
+                RulesTree rulesTree;
                 Point location;
                 TreePath treePath;
                 RulesTreeNode treeNode;
                 JPopupMenu popupMenu;
 
+                rulesTree = RulesTree.this;
                 location = event.getPoint();
-                treePath = RulesTree.this.getPathForLocation(location.x, location.y);
+                treePath = rulesTree.getPathForLocation(location.x, location.y);
                 treeNode = (RulesTreeNode) treePath.getLastPathComponent();
                 popupMenu = null;
 
@@ -222,7 +247,8 @@ class RulesTree extends JTree
 
                 if (popupMenu != null)
                 {
-                    popupMenu.show(RulesTree.this, location.x, location.y);
+                    rulesTree.getSelectionModel().setSelectionPath(treePath);
+                    popupMenu.show(rulesTree, location.x, location.y);
                 }
             }
         }
@@ -237,11 +263,11 @@ class RulesTree extends JTree
             JPopupMenu popupMenu = createPopupMenu();
 
             m_addRuleSetMenuItem.setEnabled(true);
-            m_deleteRuleSetMenuItem.setEnabled(false);
+            m_removeRuleSetMenuItem.setEnabled(false);
             m_addRuleMenuItem.setEnabled(false);
-            m_deleteRuleMenuItem.setEnabled(false);
+            m_removeRuleMenuItem.setEnabled(false);
             m_addPropertyMenuItem.setEnabled(false);
-            m_deletePropertyMenuItem.setEnabled(false);
+            m_removePropertyMenuItem.setEnabled(false);
 
             return popupMenu;
         }
@@ -256,11 +282,11 @@ class RulesTree extends JTree
             JPopupMenu popupMenu = createPopupMenu();
 
             m_addRuleSetMenuItem.setEnabled(false);
-            m_deleteRuleSetMenuItem.setEnabled(true);
+            m_removeRuleSetMenuItem.setEnabled(true);
             m_addRuleMenuItem.setEnabled(true);
-            m_deleteRuleMenuItem.setEnabled(false);
+            m_removeRuleMenuItem.setEnabled(false);
             m_addPropertyMenuItem.setEnabled(false);
-            m_deletePropertyMenuItem.setEnabled(false);
+            m_removePropertyMenuItem.setEnabled(false);
 
             return popupMenu;
         }
@@ -275,11 +301,11 @@ class RulesTree extends JTree
             JPopupMenu popupMenu = createPopupMenu();
 
             m_addRuleSetMenuItem.setEnabled(false);
-            m_deleteRuleSetMenuItem.setEnabled(false);
+            m_removeRuleSetMenuItem.setEnabled(false);
             m_addRuleMenuItem.setEnabled(false);
-            m_deleteRuleMenuItem.setEnabled(true);
+            m_removeRuleMenuItem.setEnabled(true);
             m_addPropertyMenuItem.setEnabled(true);
-            m_deletePropertyMenuItem.setEnabled(false);
+            m_removePropertyMenuItem.setEnabled(false);
 
             return popupMenu;
         }
@@ -294,11 +320,11 @@ class RulesTree extends JTree
             JPopupMenu popupMenu = createPopupMenu();
 
             m_addRuleSetMenuItem.setEnabled(false);
-            m_deleteRuleSetMenuItem.setEnabled(false);
+            m_removeRuleSetMenuItem.setEnabled(false);
             m_addRuleMenuItem.setEnabled(false);
-            m_deleteRuleMenuItem.setEnabled(false);
+            m_removeRuleMenuItem.setEnabled(false);
             m_addPropertyMenuItem.setEnabled(false);
-            m_deletePropertyMenuItem.setEnabled(true);
+            m_removePropertyMenuItem.setEnabled(true);
 
             return popupMenu;
         }
@@ -316,9 +342,9 @@ class RulesTree extends JTree
             m_addRuleSetMenuItem.addActionListener(new AddRuleSetActionListener());
             popupMenu.add(m_addRuleSetMenuItem);
 
-            m_deleteRuleSetMenuItem = new JMenuItem("Delete Rule Set");
-            m_deleteRuleSetMenuItem.addActionListener(new DeleteRuleSetActionListener());
-            popupMenu.add(m_deleteRuleSetMenuItem);
+            m_removeRuleSetMenuItem = new JMenuItem("Remove Rule Set");
+            m_removeRuleSetMenuItem.addActionListener(new RemoveRuleSetActionListener());
+            popupMenu.add(m_removeRuleSetMenuItem);
 
             popupMenu.add(new JSeparator());
 
@@ -326,9 +352,9 @@ class RulesTree extends JTree
             m_addRuleMenuItem.addActionListener(new AddRuleActionListener());
             popupMenu.add(m_addRuleMenuItem);
 
-            m_deleteRuleMenuItem = new JMenuItem("Delete Rule");
-            m_deleteRuleMenuItem.addActionListener(new DeleteRuleActionListener());
-            popupMenu.add(m_deleteRuleMenuItem);
+            m_removeRuleMenuItem = new JMenuItem("Remove Rule");
+            m_removeRuleMenuItem.addActionListener(new RemoveRuleActionListener());
+            popupMenu.add(m_removeRuleMenuItem);
 
             popupMenu.add(new JSeparator());
 
@@ -336,9 +362,9 @@ class RulesTree extends JTree
             m_addPropertyMenuItem.addActionListener(new AddRulePropertyActionListener());
             popupMenu.add(m_addPropertyMenuItem);
 
-            m_deletePropertyMenuItem = new JMenuItem("Delete Rule Property");
-            m_deletePropertyMenuItem.addActionListener(new DeleteRulePropertyActionListener());
-            popupMenu.add(m_deletePropertyMenuItem);
+            m_removePropertyMenuItem = new JMenuItem("Remove Rule Property");
+            m_removePropertyMenuItem.addActionListener(new RemoveRulePropertyActionListener());
+            popupMenu.add(m_removePropertyMenuItem);
 
             return popupMenu;
         }
@@ -354,6 +380,32 @@ class RulesTree extends JTree
 
         public void actionPerformed(ActionEvent event)
         {
+            RuleSet ruleSet = new RuleSet();
+            String ruleSetName = UNTITLED;
+            int counter = 0;
+            RulesTree rulesTree = RulesTree.this;
+            RulesTreeNode rootNode = rulesTree.getSelectedNode();
+
+            while (rootNode.getChildNode(ruleSetName) != null)
+            {
+                counter++;
+                ruleSetName = UNTITLED + "-" + counter;
+            }
+
+            ruleSet.setName(ruleSetName);
+
+            RulesTreeNode ruleSetNode = new RulesTreeNode(ruleSet);
+            DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
+
+            rootNode.add(ruleSetNode);
+            treeModel.nodeStructureChanged(rootNode);
+
+            if (rulesTree.isExpanded(ruleSetNode) == false)
+            {
+                rulesTree.expandNode(ruleSetNode);
+            }
+
+            sortChildren(rootNode);
         }
     }
 
@@ -362,11 +414,22 @@ class RulesTree extends JTree
      *******************************************************************************
      *******************************************************************************
      */
-    private class DeleteRuleSetActionListener implements ActionListener
+    private class RemoveRuleSetActionListener implements ActionListener
     {
 
         public void actionPerformed(ActionEvent event)
         {
+            RulesTreeNode ruleSetNode = RulesTree.this.getSelectedNode();
+            String ruleSetName = ruleSetNode.getName();
+            String template = "Do you really want to remove the rule set \"{0}\"?\nThe remove cannot be undone.";
+            String[] args = {ruleSetName};
+            String message = MessageFormat.format(template, args);
+
+            if (MessageDialog.answerIsYes(m_rulesEditor, message))
+            {
+                DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
+                treeModel.removeNodeFromParent(ruleSetNode);
+            }
         }
     }
 
@@ -378,8 +441,136 @@ class RulesTree extends JTree
     private class AddRuleActionListener implements ActionListener
     {
 
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
         public void actionPerformed(ActionEvent event)
         {
+            Rule rule = getNewRuleFromUser();
+
+            if (rule != null)
+            {
+                String className = rule.getClass().getName();
+                int index = className.lastIndexOf('.') + 1;
+                String baseRuleName = className.substring(index);
+                String ruleName = baseRuleName;
+                int counter = 0;
+                RulesTree rulesTree = RulesTree.this;
+                RulesTreeNode ruleSetNode = rulesTree.getSelectedNode();
+
+                while (ruleSetNode.getChildNode(ruleName) != null)
+                {
+                    counter++;
+                    ruleName = baseRuleName + "-" + counter;
+                }
+
+                rule.setName(ruleName);
+
+                RulesTreeNode ruleNode = new RulesTreeNode(ruleSetNode, rule);
+                DefaultTreeModel treeModel = (DefaultTreeModel) rulesTree.getModel();
+
+                ruleSetNode.add(ruleNode);
+                treeModel.nodeStructureChanged(ruleSetNode);
+
+                if (rulesTree.isExpanded(ruleSetNode) == false)
+                {
+                    rulesTree.expandNode(ruleSetNode);
+                }
+
+                sortChildren(ruleSetNode);
+            }
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @return
+         */
+        private Rule getNewRuleFromUser()
+        {
+            JFileChooser fileChooser = new JFileChooser();
+            PMDViewer pmdViewer = m_rulesEditor.getPMDViewer();
+            PMDDirectory pmdDirectory = pmdViewer.getPMDDirectory();
+            String rulesDirectoryPath = pmdDirectory.getRuleSetsDirectory();
+            File rulesDirectory = new File(rulesDirectoryPath);
+
+            fileChooser.setCurrentDirectory(rulesDirectory);
+            fileChooser.setApproveButtonText("Select");
+            fileChooser.addChoosableFileFilter(new RulesFileFilter());
+            fileChooser.setMultiSelectionEnabled(false);
+            fileChooser.setDialogTitle("Select Rule Class");
+            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+
+            int userAction = fileChooser.showDialog(m_rulesEditor, null);
+
+            if (userAction == JFileChooser.APPROVE_OPTION)
+            {
+                File selectedFile = fileChooser.getSelectedFile();
+                String path = selectedFile.getPath();
+
+                if (path.startsWith(rulesDirectoryPath) == false)
+                {
+                    String template = "File \"{0}\" must be in the rule sets directory \"{1}\"; otherwise, it will not be on the classpath.";
+                    String[] args = {path, rulesDirectoryPath};
+                    String message = MessageFormat.format(template, args);
+                    MessageDialog.show(m_rulesEditor, message);
+
+                    return null;
+                }
+
+                int index;
+                String className;
+
+                index = rulesDirectoryPath.length() + 1;
+                className = path.substring(index);
+                index = className.indexOf(".class");
+                className = className.substring(0, index);
+                className = className.replace(File.separatorChar, '.');
+
+                try
+                {
+                    Class ruleClass = Class.forName(className);
+                    Rule rule = (Rule) ruleClass.newInstance();
+
+                    if (rule instanceof AbstractRule)
+                    {
+                        return rule;
+                    }
+
+                    String abstractRuleClassName = AbstractRule.class.getName();
+                    String template = "The selected class \"{0}\" must subclass the abstract rule class \"{1}\".";
+                    String[] args = {className, abstractRuleClassName};
+                    String message = MessageFormat.format(template, args);
+                    MessageDialog.show(m_rulesEditor, message);
+                }
+                catch (ClassNotFoundException exception)
+                {
+                    String template = "The selected class \"{0}\" was not found on the classpath.  The class file path must be \"{1}\".";
+                    String classFilePath = className.replace('.', File.separatorChar) + ".class";
+                    String correctPath = rulesDirectoryPath + File.separator + classFilePath;
+                    String[] args = {className, classFilePath};
+                    String message = MessageFormat.format(template, args);
+                    MessageDialog.show(m_rulesEditor, message, exception);
+                }
+                catch (InstantiationException exception)
+                {
+                    String template = "Could not instantiate class \"{0}\".";
+                    String[] args = {className};
+                    String message = MessageFormat.format(template, args);
+                    MessageDialog.show(m_rulesEditor, message, exception);
+                }
+                catch (IllegalAccessException exception)
+                {
+                    String template = "Encountered illegal access while instantiating class \"{0}\".";
+                    String[] args = {className};
+                    String message = MessageFormat.format(template, args);
+                    MessageDialog.show(m_rulesEditor, message, exception);
+                }
+            }
+
+            return null;
         }
     }
 
@@ -388,11 +579,52 @@ class RulesTree extends JTree
      *******************************************************************************
      *******************************************************************************
      */
-    private class DeleteRuleActionListener implements ActionListener
+    private class RulesFileFilter extends FileFilter
+    {
+        /**
+         ***************************************************************************
+         *
+         * @param file
+         *
+         * @return
+         */
+        public boolean accept(File file)
+        {
+            return file.getName().endsWith(".class");
+        }
+
+        /**
+         **************************************************************************
+         *
+         * @return
+         */
+        public String getDescription()
+        {
+            return "Rule Class Files";
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class RemoveRuleActionListener implements ActionListener
     {
 
         public void actionPerformed(ActionEvent event)
         {
+            RulesTreeNode ruleNode = RulesTree.this.getSelectedNode();
+            String ruleName = ruleNode.getName();
+            String template = "Do you really want to remove the rule \"{0}\"?\nThe remove cannot be undone.";
+            String[] args = {ruleName};
+            String message = MessageFormat.format(template, args);
+
+            if (MessageDialog.answerIsYes(m_rulesEditor, message))
+            {
+                DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
+                treeModel.removeNodeFromParent(ruleNode);
+            }
         }
     }
 
@@ -406,6 +638,29 @@ class RulesTree extends JTree
 
         public void actionPerformed(ActionEvent event)
         {
+            String propertyName = UNTITLED;
+            int counter = 0;
+            RulesTree rulesTree = RulesTree.this;
+            RulesTreeNode ruleNode = rulesTree.getSelectedNode();
+
+            while (ruleNode.getChildNode(propertyName) != null)
+            {
+                counter++;
+                propertyName = UNTITLED + "-" + counter;
+            }
+
+            RulesTreeNode propertyNode = new RulesTreeNode(ruleNode, propertyName, "", STRING);
+            DefaultTreeModel treeModel = (DefaultTreeModel) rulesTree.getModel();
+
+            ruleNode.add(propertyNode);
+            treeModel.nodeStructureChanged(ruleNode);
+
+            if (rulesTree.isExpanded(ruleNode) == false)
+            {
+                rulesTree.expandNode(ruleNode);
+            }
+
+            sortChildren(ruleNode);
         }
     }
 
@@ -414,11 +669,22 @@ class RulesTree extends JTree
      *******************************************************************************
      *******************************************************************************
      */
-    private class DeleteRulePropertyActionListener implements ActionListener
+    private class RemoveRulePropertyActionListener implements ActionListener
     {
 
         public void actionPerformed(ActionEvent event)
         {
+            RulesTreeNode propertyNode = RulesTree.this.getSelectedNode();
+            String propertyName = propertyNode.getName();
+            String template = "Do you really want to remove the property \"{0}\"?\nThe remove cannot be undone.";
+            String[] args = {propertyName};
+            String message = MessageFormat.format(template, args);
+
+            if (MessageDialog.answerIsYes(m_rulesEditor, message))
+            {
+                DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
+                treeModel.removeNodeFromParent(propertyNode);
+            }
         }
     }
 

@@ -3,20 +3,21 @@ package net.sourceforge.pmd;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import net.sourceforge.pmd.swingui.IConstants;
+
 /**
  *
  * @author Donald A. Leckie
  * @since October 1, 2002
  * @version $Revision$, $Date$
  */
-public class RuleProperties
+public class RuleProperties implements IConstants
 {
 
     private Properties m_properties = new Properties();
 
     // Constants
     private static final String SEPARATOR = "&PS;";
-    private static final String EMPTY_STRING = "";
 
     /**
      ******************************************************************************

@@ -1030,11 +1030,11 @@ public class PMDViewer extends JFrame implements JobThreadListener
             JMenuItem menuItem;
 
             //
-            // Copy Results menu item
+            // Online Help menu item
             //
             icon = UIManager.getIcon("help");
             menuItem = new JMenuItem("Online Help", icon);
-            menuItem.addActionListener((ActionListener) new HelpActionListener());
+            menuItem.addActionListener(new HelpActionListener());
             menuItem.setMnemonic('H');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK));
             add(menuItem);
@@ -1045,10 +1045,10 @@ public class PMDViewer extends JFrame implements JobThreadListener
             add(new JSeparator());
 
             //
-            // Rule Properties menu item
+            // About menu item
             //
             menuItem = new JMenuItem("About...");
-            menuItem.addActionListener((ActionListener) new AboutActionListener());
+            menuItem.addActionListener(new AboutActionListener());
             menuItem.setMnemonic('A');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
             add(menuItem);

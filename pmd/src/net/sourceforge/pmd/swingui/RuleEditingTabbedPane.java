@@ -142,8 +142,6 @@ public class RuleEditingTabbedPane extends JTabbedPane
         {
             if (m_changeListenerIsEnabled)
             {
-                IRulesEditingData[] currentData = getData();
-
                 saveData();
 
                 Object selectedComponent = getSelectedComponent();
@@ -152,7 +150,7 @@ public class RuleEditingTabbedPane extends JTabbedPane
                 m_rulePanel.setIsEditing(selectedComponent == m_rulePanel);
                 m_rulePropertyPanel.setIsEditing(selectedComponent == m_rulePropertyPanel);
                 setData(getSelectedTreeNode());
-                SwingUtilities.invokeLater(new SortChildren(currentData));
+                SwingUtilities.invokeLater(new SortChildren());
             }
         }
     }
@@ -179,8 +177,6 @@ public class RuleEditingTabbedPane extends JTabbedPane
 
                 if (component instanceof RulesTreeNode)
                 {
-                    IRulesEditingData[] currentData = getData();
-
                     saveData();
 
                     RulesTreeNode treeNode = (RulesTreeNode) component;
@@ -201,8 +197,19 @@ public class RuleEditingTabbedPane extends JTabbedPane
                         }
                     }
 
+                    if (treeNode.getParent() == null)
+                    {
+                        // Get next to last tree node in tree path.
+                        int pathIndex = treePath.getPathCount() - 2;
+
+                        if (pathIndex >= 0)
+                        {
+                            treeNode = (RulesTreeNode) treePath.getPathComponent(pathIndex);
+                        }
+                    }
+
                     setData(treeNode);
-                    SwingUtilities.invokeLater(new SortChildren(currentData));
+                    SwingUtilities.invokeLater(new SortChildren());
                 }
             }
         }
@@ -216,35 +223,31 @@ public class RuleEditingTabbedPane extends JTabbedPane
     private class SortChildren implements Runnable
     {
 
-        private IRulesEditingData[] m_childData;
-
-        /**
-         ***************************************************************************
-         *
-         * @param currentData
-         */
-        private SortChildren(IRulesEditingData[] childData)
-        {
-            m_childData = childData;
-        }
-
         /**
          ***************************************************************************
          *
          */
         public void run()
         {
-            if (m_childData != null)
+            IRulesEditingData[] childData = RuleEditingTabbedPane.this.getData();
+
+            if (childData != null)
             {
-                TreePath selectedPath = m_rulesTree.getSelectionPath();
+                TreePath selectedPath;
+
+                selectedPath = m_rulesTree.getSelectionPath();
                 m_changeListenerIsEnabled = false;
                 m_selectionListenerIsEnabled = false;
                 m_rulesTree.removeSelectionPath(selectedPath);
 
-                for (int n = 0; n < m_childData.length; n++)
+                for (int n = 0; n < childData.length; n++)
                 {
-                    RulesTreeNode childNode = (RulesTreeNode) m_childData[n];
-                    m_rulesTree.sortChildren((RulesTreeNode) childNode.getParent());
+                    RulesTreeNode childNode = (RulesTreeNode) childData[n];
+
+                    if (childNode != null)
+                    {
+                        m_rulesTree.sortChildren((RulesTreeNode) childNode.getParent());
+                    }
                 }
 
                 m_rulesTree.setSelectionPath(selectedPath);

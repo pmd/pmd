@@ -34,7 +34,7 @@ import javax.swing.UIManager;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-public class RulePropertyEditingPanel extends JPanel
+public class RulePropertyEditingPanel extends JPanel implements IConstants
 {
 
     private JLabel m_nameLabel;
@@ -49,12 +49,6 @@ public class RulePropertyEditingPanel extends JPanel
     private String m_originalName;
     private String m_originalValue;
     private FocusListener m_focusListener = new PropertyNameFocusListener();
-
-    // Constants
-    private final String BOOLEAN = "Boolean";
-    private final String DECIMAL_NUMBER = "Decimal Number";
-    private final String INTEGER = "Integer";
-    private final String STRING = "String";
 
     /**
      *******************************************************************************

@@ -249,8 +249,6 @@ public class PMDDirectory
     /**
      ********************************************************************************
      *
-     * @param ruleSetDirectory
-     *
      * @return
      */
     public List getRuleSets()
@@ -298,6 +296,26 @@ public class PMDDirectory
         }
 
         return ruleSetList;
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @return
+     */
+    public String getPMDDirectory()
+    {
+        return m_rootDirectory;
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @return
+     */
+    public String getRuleSetsDirectory()
+    {
+        return m_ruleSetsDirectory;
     }
 
     /**

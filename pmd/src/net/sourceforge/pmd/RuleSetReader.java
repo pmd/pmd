@@ -10,6 +10,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.swingui.IConstants;
+
 /**
  * Reads an XML file containing information about a rule set and each rule within the rule set.
  * <p>
@@ -19,7 +21,7 @@ import org.xml.sax.SAXException;
  * @since August 30, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetReader
+public class RuleSetReader implements IConstants
 {
 
     private RuleSet m_ruleSet;
@@ -27,7 +29,6 @@ public class RuleSetReader
 
     // Constants
     private final String REJECT_NOT_INCLUDED = "Reject not included";
-    private final String EMPTY_STRING = "";
 
     /**
      *****************************************************************************
