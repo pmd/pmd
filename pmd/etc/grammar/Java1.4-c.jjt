@@ -58,8 +58,12 @@ options {
 
 PARSER_BEGIN(JavaParser)
 package net.sourceforge.pmd.ast;
-public class JavaParser
-{
+public class JavaParser {
+
+  private boolean assertLookahead() {
+    return getToken(1).image.equals("assert");
+  }
+
 }
 PARSER_END(JavaParser)
 
@@ -161,7 +165,6 @@ TOKEN :
 | < VOLATILE: "volatile" >
 | < WHILE: "while" >
 | < STRICTFP: "strictfp" >
-| < ASSERT: "assert" >
 }
 
 /* LITERALS */
@@ -973,6 +976,9 @@ void ArrayDimsAndInits() :
 void Statement() :
 {}
 {
+  LOOKAHEAD( { assertLookahead() } )
+  AssertStatement()
+|
   LOOKAHEAD(2)
   LabeledStatement()
 |
@@ -1003,8 +1009,6 @@ void Statement() :
   SynchronizedStatement()
 |
   TryStatement()
-|
-  AssertStatement()
 }
 
 void LabeledStatement() :
@@ -1022,6 +1026,9 @@ void Block() :
 void BlockStatement() :
 {}
 {
+  LOOKAHEAD( { assertLookahead() } )
+  Statement()
+|
   LOOKAHEAD([ "final" ] Type() <IDENTIFIER>)
   LocalVariableDeclaration() ";"
 |
@@ -1185,7 +1192,10 @@ void TryStatement() :
 }
 
 void AssertStatement() :
-{}
 {
-   "assert" Expression() [ ":" Expression() ] ";"
+    Token tok;
+}
+{
+  tok = <IDENTIFIER> {}
+  Expression() [ ":" Expression() ] ";"
 }

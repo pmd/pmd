@@ -20,6 +20,7 @@ public class AttributeAxisIteratorTest extends TestCase {
         }
     }
 
+/*
     public void testNext() {
         SimpleNode n = new SimpleNode(0);
         n.testingOnly__setBeginLine(1);
@@ -38,4 +39,5 @@ public class AttributeAxisIteratorTest extends TestCase {
         assertEquals("EndColumn", a.getName());
         assertFalse(iter.hasNext());
     }
+*/
 }

@@ -3,13 +3,13 @@ package test.net.sourceforge.pmd;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleProperties;
 import net.sourceforge.pmd.RuleViolation;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Properties;
 
 public class MockRule implements Rule {
 
@@ -17,9 +17,8 @@ public class MockRule implements Rule {
     private String description;
     private String message;
     private Set violations = new HashSet();
-    private RuleProperties properties = new RuleProperties();
+    private Properties properties = new Properties();
     private String example;
-    private boolean m_include;
     private int priority;
 
     public String getExample() {
@@ -71,7 +70,7 @@ public class MockRule implements Rule {
     }
 
     public void addProperty(String name, String value) {
-        properties.setValue(name, value);
+        properties.setProperty(name, value);
     }
 
     public int getIntProperty(String name) {
@@ -90,7 +89,7 @@ public class MockRule implements Rule {
         return properties.getProperty(name);
     }
 
-    public RuleProperties getProperties() {
+    public Properties getProperties() {
         return properties;
     }
 
@@ -99,7 +98,6 @@ public class MockRule implements Rule {
     }
 
     public void setInclude(boolean include) {
-        m_include = include;
     }
 
     /**

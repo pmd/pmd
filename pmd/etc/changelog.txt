@@ -4,6 +4,7 @@ Fixed bug 782235 - "ant -version" now prints more details when a file errors out
 Fixed bug 779874 - LooseCouplingRule no longer triggers on ArrayList
 Fixed bug 781393 - VariableNameDeclaration no longer throws ClassCastExpression since ASTLocalVariableDeclaration now subclasses AccessNode
 Fixed bug 797243 - CPD XML report can no longer contain ]]> (CDEnd)
+Fixed bug 690196 - PMD now parses pre-Java 1.4 code - i.e., non-keyword usage of "assert".
 Fixed bug - Specifying a non-existing rule format on the command line no longer results in a ClassNotFoundException.
 XPath rules may now include pluggable parameters.  This feature is very limited.  For now.
 Tweaked CPD time display field
