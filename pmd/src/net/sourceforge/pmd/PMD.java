@@ -143,15 +143,25 @@ public class PMD {
     }
 
     private static String glomName(boolean shortNames, String inputFileName, File file) {
-        if (shortNames && inputFileName.indexOf(',') == -1 && (new File(inputFileName)).isDirectory()) {
-            String name = file.getAbsolutePath().substring(inputFileName.length());
-            if (name.startsWith(System.getProperty("file.separator"))) {
-                name = name.substring(1);
+        if (shortNames && inputFileName.indexOf(',') == -1) {
+            if ((new File(inputFileName)).isDirectory()) {
+                return trimAnyPathSep(file.getAbsolutePath().substring(inputFileName.length()));
+            } else {
+                if (inputFileName.indexOf(System.getProperty("file.separator").charAt(0)) == -1) {
+                    return inputFileName;
+                }
+                return trimAnyPathSep(inputFileName.substring(inputFileName.lastIndexOf(System.getProperty("file.separator"))));
             }
-            return name;
         } else {
             return file.getAbsolutePath();
         }
+    }
+
+    private static String trimAnyPathSep(String name) {
+        if (name.startsWith(System.getProperty("file.separator"))) {
+            name = name.substring(1);
+        }
+        return name;
     }
 
     private static List collectFilesFromOneName(String inputFileName) {
