@@ -49,7 +49,7 @@
     </target>
 
     <target name="test" depends="compile">
-        <junit printsummary="no" haltonfailure="yes">
+        <junit printsummary="yes" haltonfailure="yes">
           <classpath>
             <pathelement location="${build}" />
             <pathelement location="${test-data}" />

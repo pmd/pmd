@@ -105,6 +105,9 @@
     <contributor>
       <name>Rich Kilmer</name>
     </contributor>
+    <contributor>
+      <name>Ralph Schaer</name>
+    </contributor>
   </contributors>
 
   <!-- Need to mark these as compile-time/run-time -->
