@@ -5,7 +5,7 @@
 
 maven -b xdoc:generate-from-pom xdoc:transform
 DOCS_FILE=docs.tar.gz
-cp xdocs/cpdresults.txt target/docs/
+cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
 cd target
 rm $DOCS_FILE
 tar zcf $DOCS_FILE docs/

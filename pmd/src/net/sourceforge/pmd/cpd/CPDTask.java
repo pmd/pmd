@@ -35,9 +35,8 @@ import net.sourceforge.pmd.ant.PathChecker;
  * Required: minimumTokenCount, outputFile, and at least one file
  * Optional: verbose
  *
- * TODO: 1.Think about forking process? 
- *       2. Perhaps come up with another renderer such as XML and 
- *          allow user to plug that render in via ant...
+ * TODO Perhaps come up with another renderer such as XML and
+ *      allow user to plug that render in via ant...
  *   
  * @since Mar 26, 2003  
  * @author aglover
