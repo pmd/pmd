@@ -16,7 +16,9 @@ Detects when a field, local or parameter has a short name.
           <property name="xpath">
               <value>
                   <![CDATA[
-    //VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)]
+    //VariableDeclaratorId[string-length(@Image) < 3]
+     [not(ancestor::ForInit)]
+     [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
                   ]]>
               </value>
           </property>
