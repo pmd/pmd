@@ -12,6 +12,16 @@ public class ASTLocalVariableDeclaration extends SimpleNode {
   }
 
 
+    private boolean isFinal;
+
+    public void setIsFinal() {
+        this.isFinal = true;
+    }
+
+    public boolean isFinal() {
+        return this.isFinal;
+    }
+
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
