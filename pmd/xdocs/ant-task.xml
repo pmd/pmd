@@ -32,9 +32,13 @@
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>
-
     <td valign="top">rulesettype</td>
     <td valign="top">The set of rules to use (all, general, cougaar)</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">format</td>
+    <td valign="top">The report format (xml, text)</td>
     <td valign="top" align="center">Yes</td>
   </tr>
 </table>
@@ -45,7 +49,7 @@
 <![CDATA[
 <target name="pmd">
   <taskdef name="pmd" classname="com.infoether.pmd.PMDTask" />
-  <pmd reportFile="C:\foo.txt" verbose="false" rulesettype="general">
+  <pmd reportFile="C:\foo.xml" verbose="false" rulesettype="general" format="xml">
     <fileset dir="C:\j2sdk1.4.0\src\">
       <include name="**/*.java"/>
     </fileset>
