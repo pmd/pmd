@@ -10,7 +10,8 @@ import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -19,7 +20,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -33,11 +33,13 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/03/18 23:28:36  phherlin
- * *** keyword substitution change ***
+ * Revision 1.3  2003/03/30 20:48:59  phherlin
+ * Adding logging
+ * Displaying error dialog in a thread safe way
  *
  */
 public class PMDGenerateASTAction implements IObjectActionDelegate {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDGenerateASTAction");
     private IWorkbenchPart targetPart;
     private static final String INDENT = "\t";
 
@@ -52,6 +54,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
      */
     public void run(IAction action) {
+        log.info("Generation AST action requested");
         ISelection sel = targetPart.getSite().getSelectionProvider().getSelection();
         if (sel instanceof IStructuredSelection) {
             IStructuredSelection structuredSel = (IStructuredSelection) sel;
@@ -78,6 +81,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
      * @param file a file
      */
     private void generateAST(IFile file) {
+        log.info("Genrating AST for file " + file.getName());
         try {
             JavaParser parser = new JavaParser(file.getContents());
             SimpleNode root = parser.CompilationUnit();
@@ -108,15 +112,9 @@ public class PMDGenerateASTAction implements IObjectActionDelegate {
             }
 
         } catch (CoreException e) {
-            MessageDialog.openError(
-                null,
-                PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION) + e.getMessage());
+            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         } catch (ParseException e) {
-            MessageDialog.openError(
-                null,
-                PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION) + e.getMessage());
+            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_PMD_EXCEPTION), e);
         }
     }
 

@@ -5,12 +5,13 @@ import java.lang.reflect.InvocationTargetException;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.builder.PMDNature;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
@@ -27,11 +28,13 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/03/18 23:28:37  phherlin
- * *** keyword substitution change ***
+ * Revision 1.3  2003/03/30 20:52:17  phherlin
+ * Adding logging
+ * Displaying error dialog in a thread safe way
  *
  */
 public class PMDPropertyPage extends PropertyPage {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.properties.PMDPropertyPage");
     private Button enablePMDButton;
 
     /**
@@ -55,6 +58,7 @@ public class PMDPropertyPage extends PropertyPage {
      * @see PreferencePage#createContents(Composite)
      */
     protected Control createContents(Composite parent) {
+        log.info("PMD properties editing requested");
         noDefaultAndApplyButton();
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new RowLayout());
@@ -66,6 +70,7 @@ public class PMDPropertyPage extends PropertyPage {
      * User press OK Button
      */
     public boolean performOk() {
+        log.info("Properties editing accepted");
         boolean fEnabled = enablePMDButton.getSelection();
         if (fEnabled) {
             addPMDNature();
@@ -87,11 +92,7 @@ public class PMDPropertyPage extends PropertyPage {
                 fEnabled = project.hasNature(PMDNature.PMD_NATURE);
             }
         } catch (CoreException e) {
-            fEnabled = false;
-            MessageDialog.openError(
-                getShell(),
-                getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION) + e.toString());
+            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         } finally {
             return fEnabled;
         }
@@ -106,6 +107,7 @@ public class PMDPropertyPage extends PropertyPage {
         try {
             if (getElement() instanceof IProject) {
                 IProject project = (IProject) getElement();
+                log.info("Adding PMD nature to the project " + project.getName());
                 ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(getShell());
                 progressDialog.run(true, true, new AddNatureTask(project));
                 fNatureAdded = true;
@@ -113,7 +115,7 @@ public class PMDPropertyPage extends PropertyPage {
         } catch (InterruptedException e) {
             PMDPlugin.getDefault().logError("Adding PMD nature interrupted", e);
         } catch (InvocationTargetException e) {
-            PMDPlugin.getDefault().logError("Error adding PMD nature", e);
+            PMDPlugin.getDefault().showError("Error adding PMD nature", e);
         } finally {
             return fNatureAdded;
         }
@@ -126,13 +128,14 @@ public class PMDPropertyPage extends PropertyPage {
         try {
             if (getElement() instanceof IProject) {
                 IProject project = (IProject) getElement();
+                log.info("Removing PMD nature from the project " + project.getName());
                 ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(getShell());
                 progressDialog.run(true, true, new RemoveNatureTask(project));
             }
         } catch (InterruptedException e) {
             PMDPlugin.getDefault().logError("Removing PMD nature interrupted", e);
         } catch (InvocationTargetException e) {
-            PMDPlugin.getDefault().logError("Error removing PMD nature", e);
+            PMDPlugin.getDefault().showError("Error removing PMD nature", e);
         }
     }
 
@@ -179,10 +182,7 @@ public class PMDPropertyPage extends PropertyPage {
                     project.setDescription(description, monitor);
                 }
             } catch (CoreException e) {
-                MessageDialog.openError(
-                    getShell(),
-                    getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                    getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION) + e.toString());
+                PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
             }
         }
     };
@@ -213,10 +213,7 @@ public class PMDPropertyPage extends PropertyPage {
                     project.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
                 }
             } catch (CoreException e) {
-                MessageDialog.openError(
-                    getShell(),
-                    getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                    getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION) + e.toString());
+                PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
             }
         }
     }
@@ -229,4 +226,13 @@ public class PMDPropertyPage extends PropertyPage {
     private String getMessage(String key) {
         return PMDPlugin.getDefault().getMessage(key);
     }
+
+    /**
+     * @see org.eclipse.jface.preference.IPreferencePage#performCancel()
+     */
+    public boolean performCancel() {
+        log.info("Properties editing canceled");
+        return super.performCancel();
+    }
+
 }
