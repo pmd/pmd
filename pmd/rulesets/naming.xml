@@ -11,8 +11,11 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
         class="net.sourceforge.pmd.rules.ShortVariableRule">
     <description>
 Short Variable: detects when a field, local or parameter has a
-length of less than 3 characters.
+short name.
     </description>
+   <properties>
+    <property name="minimumLength" value="3"/>
+   </properties>
     <example>
 <![CDATA[
 public class Something {
@@ -63,9 +66,12 @@ public class Something {
         message="Avoid using short method names such as ''{0}''"
         class="net.sourceforge.pmd.rules.ShortMethodNameRule">
      <description>
-Short Method Names: Detects when method names less than 4 characters
+Short Method Names: Detects short method names.
 long are used.
      </description>
+   <properties>
+    <property name="minimumLength" value="3"/>
+   </properties>
      <example>
 <![CDATA[
 public class ShortMethod {

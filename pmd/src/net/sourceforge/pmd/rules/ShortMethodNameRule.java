@@ -17,7 +17,7 @@ public class ShortMethodNameRule
 	RuleContext ctx = (RuleContext) data;
 	String image = decl.getImage();
 
-	if (image.length() <= 3) {
+	if (image.length() <= getIntProperty("minimumLength")) {
         ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {decl.getImage()})));
 	}
 

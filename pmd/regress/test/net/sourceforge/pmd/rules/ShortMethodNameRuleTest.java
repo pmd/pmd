@@ -21,6 +21,7 @@ public class ShortMethodNameRuleTest
     public void setUp() {
         rule = new ShortMethodNameRule();
         rule.setMessage("Avoid this stuff -> {0}");
+        rule.addProperty("minimumLength", "3");
     }
 
     public void testShortMethodName0() throws Throwable {

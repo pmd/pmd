@@ -21,6 +21,7 @@ public class ShortVariableRuleTest
     public void setUp() {
         rule = new ShortVariableRule();
         rule.setMessage("Avoid stuff like -> ''{0}''");
+        rule.addProperty("minimumLength", "3");
     }
 
     public void testShortVariableField() throws Throwable {
