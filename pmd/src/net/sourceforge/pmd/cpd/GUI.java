@@ -45,8 +45,9 @@ public class GUI implements CPDListener {
 
     private JTextField expandingTileField = new JTextField(50);
     private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
+
     public GUI() {
-        JFrame f = new JFrame("PMD Cut and Paste Detector");
+        JFrame frame = new JFrame("PMD Cut and Paste Detector");
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
@@ -56,7 +57,7 @@ public class GUI implements CPDListener {
         fileMenu.add(exitItem);
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
-        f.setJMenuBar(menuBar);
+        frame.setJMenuBar(menuBar);
 
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(3,2));
@@ -95,17 +96,16 @@ public class GUI implements CPDListener {
         resultsPanel.add(new JScrollPane(resultsTextArea));
         resultsPanel.setBorder(BorderFactory.createTitledBorder("Results"));
 
-
-        f.getContentPane().setLayout(new BorderLayout());
+        frame.getContentPane().setLayout(new BorderLayout());
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.NORTH);
         topPanel.add(progressPanel, BorderLayout.SOUTH);
-        f.getContentPane().add(topPanel, BorderLayout.NORTH);
-        f.getContentPane().add(resultsPanel, BorderLayout.SOUTH);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.pack();
-        f.show();
+        frame.getContentPane().add(topPanel, BorderLayout.NORTH);
+        frame.getContentPane().add(resultsPanel, BorderLayout.SOUTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.show();
     }
 
     private void go() {
