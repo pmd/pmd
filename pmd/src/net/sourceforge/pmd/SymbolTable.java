@@ -5,15 +5,12 @@
  */
 package net.sourceforge.pmd;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 public class SymbolTable {
 
     private SymbolTable parent;
-    private HashMap usageCounts = new HashMap();
+    private Map usageCounts = new HashMap();
 	private static final Integer ZERO = new Integer(0);
 	private static final Integer ONE = new Integer(1);
 
