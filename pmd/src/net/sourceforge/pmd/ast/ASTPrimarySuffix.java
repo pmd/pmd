@@ -22,8 +22,12 @@ public class ASTPrimarySuffix extends SimpleNode {
     }
 
     public void dump(String prefix) {
-        System.out.println(toString(prefix) + ":" + getImage());
-        dumpChildren(prefix);
+        if (getImage() == null) {
+            System.out.println(toString(prefix));
+        } else {
+            System.out.println(toString(prefix) + ":" + getImage());
+        }
+       dumpChildren(prefix);
     }
 
 

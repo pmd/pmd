@@ -33,15 +33,20 @@ public class ASTPrimaryPrefix extends SimpleNode {
     public void dump(String prefix) {
         String out = getImage();
         if (usesSuperModifier) {
-            out = "super." + getImage();
+            out = "super." + out;
         } else if (usesThisModifier) {
             if (getImage() == null) {
                 out = "this";
             } else {
-                out = "this." + getImage();
+                out = "this." + out;
             }
         }
-        System.out.println(toString(prefix) + ":" + out);
+
+        if (out == null) {
+            System.out.println(toString(prefix));
+        } else {
+            System.out.println(toString(prefix) + ":" + out);
+        }
         dumpChildren(prefix);
     }
 
