@@ -7,18 +7,17 @@ import net.sourceforge.pmd.ast.*;
 
 import java.text.MessageFormat;
 
-public class LongVariableRule 
-    extends AbstractRule
+public class LongVariableRule extends AbstractRule
 {
     public Object visit(ASTVariableDeclaratorId decl, Object data) {
-	RuleContext ctx = (RuleContext) data;
-	String image = decl.getImage();
+        RuleContext ctx = (RuleContext) data;
+        String image = decl.getImage();
 
-	if (image.length() > getIntProperty("minimumLength")) {
-        String msg = MessageFormat.format(getMessage(), new Object[] {image});
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getBeginLine(), msg));
-	}
-	
-	return null;
+        if (image.length() > getIntProperty("minimumLength")) {
+            String msg = MessageFormat.format(getMessage(), new Object[] {image});
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getBeginLine(), msg));
+        }
+
+        return data;
     }
 }

@@ -15,16 +15,16 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
 
     private boolean inPrimaryExpressionContext;
     private boolean usingPrimitiveWrapperAllocation;
-    private Set primitiveTypes = new HashSet();
+    private Set primitiveWrappers = new HashSet();
 
     public UnnecessaryConversionTemporaryRule() {
-        primitiveTypes.add("Integer");
-        primitiveTypes.add("Boolean");
-        primitiveTypes.add("Double");
-        primitiveTypes.add("Long");
-        primitiveTypes.add("Short");
-        primitiveTypes.add("Byte");
-        primitiveTypes.add("Float");
+        primitiveWrappers.add("Integer");
+        primitiveWrappers.add("Boolean");
+        primitiveWrappers.add("Double");
+        primitiveWrappers.add("Long");
+        primitiveWrappers.add("Short");
+        primitiveWrappers.add("Byte");
+        primitiveWrappers.add("Float");
     }
 
     public Object visit(ASTPrimaryExpression node, Object data) {
@@ -40,15 +40,10 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
     }
 
     public Object visit(ASTAllocationExpression node, Object data) {
-        if (!inPrimaryExpressionContext) {
+        if (!inPrimaryExpressionContext || !(node.jjtGetChild(0) instanceof ASTName)) {
             return super.visit(node, data);
         }
-        if (!(node.jjtGetChild(0) instanceof ASTName)) {
-            return super.visit(node, data);
-        }
-        SimpleNode child = (SimpleNode)node.jjtGetChild(0);
-        String name = child.getImage();
-        if (!primitiveTypes.contains(name)) {
+        if (!primitiveWrappers.contains(((SimpleNode)node.jjtGetChild(0)).getImage())) {
             return super.visit(node, data);
         }
         usingPrimitiveWrapperAllocation = true;
@@ -56,11 +51,11 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
     }
 
     public Object visit(ASTPrimarySuffix node, Object data) {
-        RuleContext ctx = (RuleContext)data;
         if (!inPrimaryExpressionContext || !usingPrimitiveWrapperAllocation) {
             return super.visit(node, data);
         }
         if (node.getImage() != null && node.getImage().equals("toString")) {
+            RuleContext ctx = (RuleContext)data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
         return super.visit(node, data);

@@ -26,19 +26,17 @@ public class UnusedFormalParameterRule extends AbstractRule {
      * @param paramNames list of param names to check
      */
     private void checkParamNames(HashSet paramNames, SimpleNode startNode) {
-        if (paramNames.isEmpty()) return;  //if there are no more paramNames then there's no reason to keep checking
+        if (paramNames.isEmpty()) {
+            return;  //if there are no more paramNames then there's no reason to keep checking
+        }
         if (startNode instanceof ASTName) {
-            String nodeImage = ((ASTName)startNode).getImage();
-            //check to see if there is a "." in the image which indicates a method call on this variable name
-            int index = nodeImage.indexOf('.');
-            if (index != -1) {
-                nodeImage = nodeImage.substring(0, index);   //set the node Image to the prefix
-            }
+            // TODO this is the same as NameOccurrence.getObjectName()
+            String nodeImage = startNode.getImage().indexOf('.') != -1 ?  startNode.getImage().substring(0, startNode.getImage().indexOf('.')) : startNode.getImage();
+            // TODO this is the same as NameOccurrence.getObjectName()
             if (paramNames.contains(nodeImage)) {
                 paramNames.remove(nodeImage);  //the name is used so let's remove it from the list
             }
-        }
-        else if (startNode.jjtGetNumChildren() > 0) {
+        } else if (startNode.jjtGetNumChildren() > 0) {
             int limit = startNode.jjtGetNumChildren();
             for (int i=0; i<limit; i++) {
                 SimpleNode node = (SimpleNode)startNode.jjtGetChild(i);
@@ -51,10 +49,11 @@ public class UnusedFormalParameterRule extends AbstractRule {
         if (node.isPrivate() && ! node.isNative()) {  //make sure it's a private method and not a native method
             SimpleNode md = (SimpleNode)node.jjtGetChild(1);
             SimpleNode formalParams = (SimpleNode)md.jjtGetChild(0);
-            int paramCount = formalParams.jjtGetNumChildren();
-            if (paramCount == 0) return data;  //bail out if now paramters
+            if (formalParams.jjtGetNumChildren() == 0) {
+                return data;  //bail out if now paramters
+            }
             HashSet paramNames = new HashSet();
-            for (int i=0; i<paramCount; i++) {
+            for (int i=0; i<formalParams.jjtGetNumChildren(); i++) {
                 ASTVariableDeclaratorId paramName = (ASTVariableDeclaratorId)formalParams.jjtGetChild(i).jjtGetChild(1);
                 paramNames.add(paramName.getImage());
             }

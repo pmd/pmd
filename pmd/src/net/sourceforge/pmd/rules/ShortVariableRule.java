@@ -20,7 +20,7 @@ public class ShortVariableRule
         ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {image})));
 	}
 
-	return null;
+	return data;
     }
 
     protected boolean isForInit( Node node ) {
