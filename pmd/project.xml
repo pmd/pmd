@@ -12,7 +12,9 @@
   <logo>/images/pmd_logo_small.jpg</logo>
   <inceptionYear>2002</inceptionYear>
   <package>net.sourceforge.pmd</package>
+	<shortDescription>Java Static Analysis Tool</shortDescription>
   <description>
+<![CDATA[
 <p>PMD scans Java source code and looks for potential problems like:</p>
 <ul>
   <li>Unused local variables</li>
@@ -27,7 +29,8 @@
 <p>PMD has plugins for JDeveloper, JEdit, JBuilder, NetBeans/Sun ONE Studio, IntelliJ IDEA, TextPad, Maven, Ant, Eclipse,
 Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a>.</p>
 <p>Thanks to the <a href="http://cougaar.org/index.php?referrer=pmd">Cougaar</a> program for sponsoring PMD!</p>
-  </description>
+  ]]>
+</description>
   <shortDescription>PMD Source Checker</shortDescription>
 
   <url>http://pmd.sourceforge.net/</url>
