@@ -184,7 +184,7 @@ public class SimpleNode implements Node , IPositionProvider {
         }
 
         if (!descendIntoNestedClasses) {
-            if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)node).isInnerClass()) {
+            if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)node).isNested()) {
                 return;
             }
 

@@ -14,7 +14,7 @@ import java.util.List;
 public class TestClassWithoutTestCases extends AbstractRule {
 	
 	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface() || node.isInnerClass()) {
+        if (node.isInterface() || node.isNested()) {
 		return data;
         }
 

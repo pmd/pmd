@@ -16,7 +16,7 @@ public class ASTClassOrInterfaceDeclaration extends AccessNode {
     return visitor.visit(this, data);
   }
 
-    public boolean isInnerClass() {
+    public boolean isNested() {
         return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration;    
     }
 
@@ -29,4 +29,12 @@ public class ASTClassOrInterfaceDeclaration extends AccessNode {
     public void setInterface() {
         this.isInterface = true;
     }
+
+    public void dump(String prefix) {
+        String interfaceStr = isInterface ? "interface" : "class";
+        String innerStr = isNested() ? "(nested)" : "";
+        System.out.println(toString(prefix) + "(" + interfaceStr  + ")" + innerStr);
+        dumpChildren(prefix);
+    }
+
 }

@@ -1201,7 +1201,6 @@ void ClassOrInterfaceBody():
 
 void ClassOrInterfaceBodyDeclaration():
 {
-   boolean isNestedInterface = false;
    int modifiers;
 }
 {

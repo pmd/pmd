@@ -108,28 +108,14 @@ most people really dislike :-)
             <property name="xpath">
                 <value>
                     <![CDATA[
-    //UnmodifiedInterfaceDeclaration//MethodDeclaration
+    //ClassOrInterfaceDeclaration[@Interface='true']/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
       [@Public = 'true' or @Abstract = 'true']
       [count(//Block) = 0]
-       [not (parent::ClassBodyDeclaration
-        [parent::ClassBody
-         [parent::UnmodifiedClassDeclaration
-          [parent::NestedClassDeclaration]
-         ]
-        ]
-       )]
-|   //UnmodifiedInterfaceDeclaration//FieldDeclaration
-    [@Public = 'true' or @Static = 'true' or @Final = 'true']
-    [not (parent::ClassBodyDeclaration
-     [parent::ClassBody
-      [parent::UnmodifiedClassDeclaration
-       [parent::NestedClassDeclaration]
-      ]
-     ]
-    )]
-|   //UnmodifiedInterfaceDeclaration//NestedClassDeclaration[@Public = 'true' or @Static = 'true']
-|   //UnmodifiedInterfaceDeclaration//NestedInterfaceDeclaration[@Public = 'true' or @Static = 'true']
-|   //UnmodifiedClassDeclaration//NestedInterfaceDeclaration[@Static = 'true']
+|   //ClassOrInterfaceDeclaration[@Interface='true']/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+      [@Public = 'true' or @Static = 'true' or @Final = 'true']
+|   //ClassOrInterfaceDeclaration[@Interface='true']//ClassOrInterfaceDeclaration[@Interface='false'][@Nested='true'][@Public = 'true' or @Static = 'true']
+|   //ClassOrInterfaceDeclaration[@Interface='true']//ClassOrInterfaceDeclaration[@Interface='true'][@Public = 'true' or @Static = 'true']
+|   //ClassOrInterfaceDeclaration[@Interface='false']//ClassOrInterfaceDeclaration[@Interface='true'][@Nested='true'][@Static = 'true']
                     ]]>
                 </value>
             </property>
