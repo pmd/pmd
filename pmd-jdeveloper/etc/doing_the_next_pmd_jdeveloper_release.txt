@@ -9,13 +9,15 @@ TESTS:
 3) Are options persistant?
 
 Create the src release:
+cd ~/data/pmd/
 cvs -q rtag -D tomorrow "pmd_jdeveloper_release_0_2" pmd-jdeveloper
 rm -rf ~/tmp/pmd-jdeveloper
 mkdir -p ~/tmp/pmd-jdeveloper
 cvs -q export -d tmp -r pmd_jdeveloper_release_0_2 pmd-jdeveloper
 mv tmp/* ~/tmp/pmd-jdeveloper
+rmdir tmp/
 cp pmd-jdeveloper/lib/pmd-jdeveloper-0.2.jar ~/tmp/pmd-jdeveloper/lib
-cd c:\tmp
+cd ~/tmp
 zip -q -r pmd-jdeveloper-src-0.2.zip pmd-jdeveloper
 
 ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-0.2.zip
