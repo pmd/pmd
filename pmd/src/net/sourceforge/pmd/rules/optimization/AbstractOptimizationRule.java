@@ -83,10 +83,6 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
     }
 
 
-    protected final void addViolation(RuleContext context, int beginLine) {
-        context.getReport().addRuleViolation(createRuleViolation(context, beginLine));
-    }
-
 
     private final boolean variableAssigned(final String varName, final List assignements) {
         if (assignements==null || assignements.isEmpty()) {
