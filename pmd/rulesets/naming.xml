@@ -274,11 +274,10 @@ public class Foo {
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration
- [@Final='false']
- [../../../../ClassOrInterfaceDeclaration[@Interface='false']]
- /VariableDeclarator
- /VariableDeclaratorId[upper-case(@Image)=@Image]
+//ClassOrInterfaceDeclaration[@Interface='false']
+ /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+  [@Final='false']
+  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
  ]]>
                 </value>
             </property>
