@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Vladimir Bossicard - VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Pablo Casado - Bug report for UseSingletonRule</li>
             <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Nicolai Czempin - Various rule suggestions, additional PMD backronyms</li>
@@ -43,7 +44,6 @@
             <li>David Campbell - detailed bugs reports, Ant task refactoring, documentation tweaks</li>
             <li>Michael Sutherland - bug report in IfStmtMustUseBracesRule</li>
             <li>Egon Willighagen - pmd-web suggestion</li>
-            <li>Vladimir Bossicard - numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Didier Duquennoy - pmd-netbeans feedback</li>
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Gunnlaugur Thor Briem - bug report on JavaCC parser's use of java.lang.Error</li>
