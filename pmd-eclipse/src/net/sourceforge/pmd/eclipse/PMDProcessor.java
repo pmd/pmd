@@ -17,6 +17,7 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.TargetJDK1_3;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +33,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2003/10/14 21:25:04  phherlin
+ * Adding and implementing "JDK13 compatibility" property.
+ *
  * Revision 1.11  2003/09/29 22:38:49  phherlin
  * Adding and implementing "JDK13 compatibility" property.
  * Desactivated, waiting for PMD 1.2.2 to be released
@@ -158,7 +162,7 @@ public class PMDProcessor {
      */
     private void initialize() {
         pmdEngine = new PMD();
-        pmdEngineJdk13 = new PMD( /* new TargetJDK1_3() */ );
+        pmdEngineJdk13 = new PMD(new TargetJDK1_3());
     }
 
     /**
