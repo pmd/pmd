@@ -18,6 +18,7 @@
          <li><a href="http://www.tbbr32568.pwb.blueyonder.co.uk/jnp/">JNP</a> - Nifty research project, uses JJTree/JavaCC.  Web site is frequently down.</li>
          <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a> - Very detailed, supports both Maven and Ant. Uses ANTLR.</li>
          <li><a href="http://jcsc.sourceforge.net/">JCSC</a> - Does a variety of coding standard checks, uses JavaCC and the GNU Regexp package.</li>
+         <li><a href="http://www.cs.umd.edu/~pugh/java/bugs/">FindBugs</a> - works on bytecode, uses BCEL.  Source code uses templates, nifty stuff!</li>
        </ul>
      </subsection>
      <subsection name="Commercial">
