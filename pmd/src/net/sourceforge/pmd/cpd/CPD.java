@@ -39,6 +39,10 @@ public class CPD {
         tokenSets.add(ts);
     }
 
+    public void setMinimumTileSize(int tileSize) {
+        minimumTileSize = tileSize;
+    }
+
     public void add(File file) throws IOException {
         add(1, file);
     }
@@ -52,29 +56,9 @@ public class CPD {
     }
 
     private void addDirectory(String dir, boolean recurse) throws IOException {
-        File root = new File(dir);
-        List list = new ArrayList();
-        scanDirectory(root, list, recurse);
+        FileFinder finder = new FileFinder();
+        List list = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
         add(list);
-    }
-
-    public void setMinimumTileSize(int tileSize) {
-        minimumTileSize = tileSize;
-    }
-
-    private void scanDirectory(File dir, List list, boolean recurse) {
-     FilenameFilter filter = new JavaFileOrDirectoryFilter();
-     String[] possibles = dir.list(filter);
-     for (int i=0; i<possibles.length; i++) {
-        File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
-        if (tmp.isDirectory()) {
-            if (recurse) {
-                scanDirectory(tmp, list, true);
-            }
-        } else {
-           list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
-        }
-     }
     }
 
     public void add(String id, String input) throws IOException {
