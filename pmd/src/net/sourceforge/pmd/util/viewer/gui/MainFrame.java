@@ -129,7 +129,7 @@ public class MainFrame
 	}
 
 	/**
-     * @see org.gruschko.pmd.viewer.model.ViewerModelListener#viewerModelChanged(org.gruschko.pmd.viewer.model.ViewerModelEvent)
+     * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
     public void viewerModelChanged(ViewerModelEvent e) {
         evalBtn.setEnabled(model.hasCompiledTree());
@@ -139,6 +139,9 @@ public class MainFrame
 
 /*
  * $Log$
+ * Revision 1.6  2005/02/16 15:47:01  mikkey
+ * javadoc fixes
+ *
  * Revision 1.5  2004/12/13 14:46:11  tomcopeland
  * Applied, thanks Miguel!
  *

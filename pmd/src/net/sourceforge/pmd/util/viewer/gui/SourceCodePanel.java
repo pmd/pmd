@@ -53,7 +53,7 @@ public class SourceCodePanel
     }
 
     /**
-     * @see org.gruschko.pmd.viewer.model.ViewerModelListener#viewerModelChanged(org.gruschko.pmd.viewer.model.ViewerModelEvent)
+     * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
     public void viewerModelChanged(ViewerModelEvent e) {
         if (e.getReason() == ViewerModelEvent.NODE_SELECTED) {
@@ -92,6 +92,9 @@ public class SourceCodePanel
 
 /*
  * $Log$
+ * Revision 1.5  2005/02/16 15:47:27  mikkey
+ * javadoc fixes
+ *
  * Revision 1.4  2004/09/27 19:42:52  tomcopeland
  * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
  *

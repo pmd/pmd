@@ -73,7 +73,7 @@ public class ASTPanel
     }
 
     /**
-     * @see org.gruschko.pmd.viewer.model.ViewerModelListener#viewerModelChanged(org.gruschko.pmd.viewer.model.ViewerModelEvent)
+     * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
     public void viewerModelChanged(ViewerModelEvent e) {
         switch (e.getReason()) {
@@ -114,6 +114,9 @@ public class ASTPanel
 
 /*
  * $Log$
+ * Revision 1.5  2005/02/16 15:46:05  mikkey
+ * javadoc fixes
+ *
  * Revision 1.4  2004/09/27 19:42:52  tomcopeland
  * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
  *

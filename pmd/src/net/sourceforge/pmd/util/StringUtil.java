@@ -46,7 +46,7 @@ public class StringUtil {
      * XML special chars are escaped.
      *
      * @param buf The destination XML stream
-     * @param str The String to append to the stream
+     * @param src The String to append to the stream
      */
     public static void appendXmlEscaped(StringBuffer buf, String src) {
         int l = src.length();
