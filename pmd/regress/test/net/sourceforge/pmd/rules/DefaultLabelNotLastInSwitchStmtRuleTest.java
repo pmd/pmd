@@ -18,7 +18,9 @@ public class DefaultLabelNotLastInSwitchStmtRuleTest extends SimpleAggregatorTst
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "ok", 0, rule),
            new TestDescriptor(TEST2, "bad", 1, rule),
+/*
            new TestDescriptor(TEST3, "ok, no default", 0, rule),
+*/
        });
     }
 

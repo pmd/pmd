@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 
 import java.util.Set;
 
