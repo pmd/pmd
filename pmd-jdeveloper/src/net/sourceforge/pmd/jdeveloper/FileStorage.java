@@ -1,10 +1,13 @@
 package net.sourceforge.pmd.jdeveloper;
 
+import oracle.ide.Ide;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.Date;
+import java.util.Iterator;
 
 public class FileStorage implements SettingsStorage {
 
@@ -14,23 +17,24 @@ public class FileStorage implements SettingsStorage {
         this.file = file;
     }
 
-    public void save(String key, String value) throws SettingsException  {
+    public void save(Properties newProperties)  throws SettingsException {
         try {
-            Properties properties = new Properties();
+            Properties savedProperties = new Properties();
 
             if (file.exists()) {
-                // load old properties
                 FileInputStream fis = new FileInputStream(file);
-                properties.load(fis);
+                savedProperties.load(fis);
                 fis.close();
             }
 
-            // set new property
-            properties.setProperty(key, value);
+            for (Iterator i = newProperties.keySet().iterator(); i.hasNext();) {
+                String key = (String)i.next();
+                String value = newProperties.getProperty(key);
+                savedProperties.setProperty(key, value);
+            }
 
-            // save all
             FileOutputStream fos = new FileOutputStream(file);
-            properties.store(fos, "PMD-JDeveloper rule selections " + new Date());
+            savedProperties.store(fos, "PMD-JDeveloper rule selections " + new Date());
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Properties;
 
 public class SelectedRules {
 
@@ -63,10 +64,12 @@ public class SelectedRules {
     }
 
     public void save(SettingsStorage settings) throws SettingsException {
+        Properties properties = new Properties();
         for (Iterator i = rules.keySet().iterator(); i.hasNext();) {
             Rule rule = (Rule)i.next();
-            settings.save("pmd.rule." + rule.getName(), String.valueOf(get(rule).isSelected()));
+            properties.setProperty("pmd.rule." + rule.getName(),  String.valueOf(get(rule).isSelected()));
         }
+        settings.save(properties);
     }
 
     public RuleSet getSelectedRules() {
