@@ -1,10 +1,26 @@
 package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class JUnitStaticSuiteRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class JUnitStaticSuite1 {" + CPD.EOL +
+    " public TestSuite suite() {}" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class JUnitStaticSuite2 {" + CPD.EOL +
+    " public static TestSuite suite() {}" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class JUnitStaticSuite3 {" + CPD.EOL +
+    " private static TestSuite suite() {}" + CPD.EOL +
+    "}";
 
     private Rule rule;
 
@@ -12,16 +28,13 @@ public class JUnitStaticSuiteRuleTest extends RuleTst {
         rule = new XPathRule();
         rule.addProperty("xpath", "//MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite']");
     }
-
     public void testNonstatic() throws Throwable {
-        runTestFromFile("junit/JUnitStaticSuite1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
-
     public void testGoodOK() throws Throwable {
-        runTestFromFile("junit/JUnitStaticSuite2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
-
     public void testPrivateSuite() throws Throwable {
-        runTestFromFile("junit/JUnitStaticSuite3.java", 1, rule);
+        runTestFromString(TEST3, 1, rule);
     }
 }
