@@ -4,7 +4,6 @@
     <classpathentry exported="true" kind="lib" path="pmd-eclipse.jar"/>
     <classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
     <classpathentry kind="lib" path="lib/commons-logging.jar"/>
-    <classpathentry kind="lib" path="lib/pmd-1.2.jar"/>
     <classpathentry kind="lib" path="lib/jaxen-core-1.0-fcs.jar"/>
     <classpathentry kind="lib" path="lib/saxpath-1.0-fcs.jar"/>
     <classpathentry kind="var"
@@ -24,5 +23,6 @@
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_2.0.2.1/boot.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.boot_2.0.2.1/bootsrc.zip"/>
     <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+    <classpathentry kind="lib" path="lib/pmd-1.2.1.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

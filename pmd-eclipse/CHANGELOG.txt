@@ -1,6 +1,17 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
+v1.1.1 - 05/08/2003
+
+Runtime
+-------
+. Updating to PMD v1.2.1
+. Fixing CoreException when refreshing violations view with Eclipse v3
+
+
+
+
+----------------------------------------------------------------------------------------
 v1.1.0 - 30/07/2003
 
 Runtime
