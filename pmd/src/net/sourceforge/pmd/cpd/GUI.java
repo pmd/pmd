@@ -1,8 +1,3 @@
-/*
-* User: tom
-* Date: Aug 6, 2002
-* Time: 2:45:54 PM
- */
 package net.sourceforge.pmd.cpd;
 
 import javax.swing.*;

@@ -30,6 +30,7 @@ public class Mark implements Comparable {
     }
 
     public int compareTo(Object o) {
+        // I hate this, but we've got to give feedback somehow
         Mark.comparisons++;
         if (Mark.comparisons % 100000 == 0) {
             listener.comparisonCountUpdate(Mark.comparisons);

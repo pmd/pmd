@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Aug 22, 2002
- * Time: 4:37:01 PM
- */
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
@@ -13,6 +8,7 @@ import java.util.List;
 public class FileFinder {
 
     private FilenameFilter filter;
+    private static final String FILE_SEP = System.getProperty("file.separator");
 
     public List findFilesFrom(String dir, FilenameFilter filter, boolean recurse) {
         this.filter = filter;
@@ -25,15 +21,15 @@ public class FileFinder {
      * Implements a tail recursive file scanner
      */
     private void scanDirectory(File dir, List list, boolean recurse) {
-        String[] possibles = dir.list(filter);
-        for (int i = 0; i < possibles.length; i++) {
-            File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
+        String[] candidates = dir.list(filter);
+        for (int i = 0; i < candidates.length; i++) {
+            File tmp = new File(dir + FILE_SEP + candidates[i]);
             if (tmp.isDirectory()) {
                 if (recurse) {
                     scanDirectory(tmp, list, true);
                 }
             } else {
-                list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
+                list.add(new File(dir + FILE_SEP + candidates[i]));
             }
         }
     }

@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GridBagHelper {
+
     GridBagLayout gridbag;
     Container container;
     GridBagConstraints c;

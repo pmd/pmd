@@ -8,6 +8,8 @@ import java.util.List;
 
 public class CPD {
 
+    public static final String EOL = System.getProperty("line.separator", "\n");
+
     private int mts;
     private CPDListener cpdListener;
     private MatchListener matchListener;
@@ -42,15 +44,15 @@ public class CPD {
             Match match = (Match)i.next();
             TokenList tl = tokenSets.getTokenList(match.getStart().getFile());
             rpt.append("=====================================================================");
-            rpt.append(System.getProperty("line.separator"));
+            rpt.append(EOL);
             rpt.append("Found a " + match.getTokenCount() + " token duplication in the following files: ");
-            rpt.append(System.getProperty("line.separator"));
+            rpt.append(EOL);
             rpt.append(match.getStart().getFile());
-            rpt.append(System.getProperty("line.separator"));
+            rpt.append(EOL);
             rpt.append(match.getEnd().getFile());
-            rpt.append(System.getProperty("line.separator"));
+            rpt.append(EOL);
             rpt.append(tl.getLineSlice(match.getStart().getLoc(), match.getTokenCount()));
-            rpt.append(System.getProperty("line.separator"));
+            rpt.append(EOL);
         }
         return rpt.toString();
     }

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Aug 22, 2002
- * Time: 4:34:12 PM
- */
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;

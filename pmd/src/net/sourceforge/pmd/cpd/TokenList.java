@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jul 30, 2002
- * Time: 9:59:31 AM
- */
 package net.sourceforge.pmd.cpd;
 
 import java.io.Serializable;

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Aug 6, 2002
- * Time: 12:22:03 PM
- */
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.ast.JavaCharStream;

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jul 30, 2002
- * Time: 9:59:48 AM
- */
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
