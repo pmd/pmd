@@ -10,6 +10,10 @@
     <section name="Sites/Articles about PMD">
     <ul>
         <br/>
+        <li>6/16/2004 - <a href="http://www.onjava.com/pub/a/onjava/2004/06/16/ccunittest.html">"Code Improvement Through Cyclomatic Complexity"</a> - Andrew Glover's CCM article featuring PMD</li>
+        <br/>
+        <li>6/1/2004 - <a href="http://tinyurl.com/3dgpe">"Open Source-Perlen"</a> - A German article on PMD in Java Magazin</li>
+        <br/>
         <li>6/1/2004 - <a href="http://www.ociweb.com/jnb/jnbJun2004.html">"Improving Project Quality with PMD"</a> - Tom Wheeler's "Java News Brief", June 2004 issue</li>
         <br/>
         <li>2/1/2004 - <a href="http://www.sdmagazine.com/documents/s=9058/sdm0403a/sdm0403a.html">Software Development</a> - Listed as one of their 'Open-Source Projects to Watch'</li>
