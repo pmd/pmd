@@ -270,13 +270,26 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </p>
 
     <subsection name="Writing a rule as an XPath expression">
-        <p>Recently Dan Sheppard integrated an XPath engine into PMD, so now you can write rules as
+        <p>Recently Daniel Sheppard integrated an XPath engine into PMD, so now you can write rules as
         XPath expressions.  For example, the XPath expression for our WhileLoopsMustUseBracesRule looks like this:</p>
         <source>
             //WhileStatement[not(Statement/Block)]
         </source>
         <p>Concise, eh?  Here's an <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">article</a> with a lot more detail.</p>
-        <p>>Note that access modifiers are held as attributes, so, for example,
+        <p>Note that for XPath rules you'll need to set the
+            <code>class</code> attribute in the rule definition to <code>net.sourceforge.pmd.rules.XPathRule.</code>  Like this:
+            <source>
+                <![CDATA[
+                <rule name="EmptyCatchBlock"
+                      message="Avoid empty catch blocks"
+                      class="net.sourceforge.pmd.rules.XPathRule">
+                  <description>
+                  etc., etc.
+                  ]]>
+            </source>
+
+            </p>
+        <p>Note that access modifiers are held as attributes, so, for example,
                 <source>//FieldDeclaration[@Private='true']</source>
                 finds all private fields.  You can see the code
             that determines all the attributes <a href="http://pmd.sourceforge.net/xref/net/sourceforge/pmd/jaxen/AttributeAxisIterator.html">here</a></p>
