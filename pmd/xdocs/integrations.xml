@@ -113,7 +113,7 @@ violation message within this view, you will be taken to the line in the source 
 The way I use the JEdit plugin is:</p>
 <ul>
 <li>Dock the ErrorList - Utilities->Global Options->Docking, then pick ErrorList and put it at the bottom of your screen</li>
-<li>Open the File Browser if it isn't already</li>
+<li>Open the File Browser if it isn't already open</li>
 <li>Double-click on my source directory</li>
 <li>Select Plugins->PMD->Check directory recursively</li>
 </ul>
