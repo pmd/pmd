@@ -27,12 +27,28 @@ import java.util.List;
 
 public class PMDTask extends Task {
 
+    public static class Formatter {
+        private Renderer renderer;
+        private String toFile;
+        public void setType(String type) {
+            if (type.equals("xml")) {
+                renderer = new XMLRenderer();
+            } else if (type.equals("html")) {
+                renderer = new HTMLRenderer();
+            } else {
+                throw new BuildException("Formatter type must be either 'xml' or 'html'; you specified " + type);
+            }
+        }
+        public void setToFile(String toFile) {this.toFile = toFile;}
+        public Renderer getRenderer() {return renderer;}
+        public String getToFile() {return toFile;}
+    }
+
+    private List formatters = new ArrayList();
     private List filesets  = new ArrayList();
-    private String reportFile;
     private boolean verbose;
     private boolean printToConsole;
     private String ruleSetFiles;
-    private String format;
     private boolean failOnError;
 
     /**
@@ -60,21 +76,13 @@ public class PMDTask extends Task {
         filesets.add(set);
     }
     
-    public void setReportFile(String reportFile) {
-        this.reportFile = reportFile;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
+    public void addFormatter(Formatter f) {
+        formatters.add(f);
     }
 
     public void execute() throws BuildException {
-        if (reportFile == null) {
-            throw new BuildException("No report file specified");
-        }
-
-        if (format == null || (!format.equals("xml") && !format.equals("html"))) {
-            throw new BuildException("Renderer format must be either 'xml' or 'html'; you specified " + format);
+        if (formatters.isEmpty()) {
+            throw new BuildException("No formatter specified");
         }
 
         RuleSet rules = null;
@@ -97,7 +105,7 @@ public class PMDTask extends Task {
             for (int j=0; j<srcFiles.length; j++) {
                 try {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
-                    if (verbose) System.out.println(file.getAbsoluteFile());
+                    printIfVerbose (file.getAbsoluteFile().toString());
 
                     ctx.setSourceCodeFilename(file.getAbsolutePath());
 
@@ -108,31 +116,31 @@ public class PMDTask extends Task {
             }
         }
 
-        StringBuffer buf = new StringBuffer();
         if (!ctx.getReport().isEmpty()) {
-            Renderer rend = null;
-            if (format.equals("xml")) {
-                rend = new XMLRenderer();
-						} else {
-                rend = new HTMLRenderer();
+            for (Iterator i = formatters.iterator(); i.hasNext();) {
+                Formatter formatter = (Formatter)i.next();
+                String buffer = formatter.getRenderer().render(ctx.getReport()) + EOL;
+                try {
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(new File(formatter.getToFile())));
+                    writer.write(buffer, 0, buffer.length());
+                    writer.close();
+                } catch (IOException ioe) {
+                    throw new BuildException(ioe.getMessage());
+                }
             }
-            buf.append(rend.render(ctx.getReport()));
-            buf.append(EOL);
-						if (printToConsole) {
-							Renderer r = new TextRenderer();
-							System.out.println(r.render(report));
-						}
         }
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(reportFile)));
-            writer.write(buf.toString(), 0, buf.length());
-            writer.close();
-        } catch (IOException ioe) {
-            throw new BuildException(ioe.getMessage());
+
+        if (!ctx.getReport().isEmpty() && printToConsole) {
+            Renderer r = new TextRenderer();
+            System.out.println(r.render(report));
         }
 
         if (failOnError && !ctx.getReport().isEmpty()) {
             throw new BuildException("Stopping build since PMD found problems in the code");
         }
+    }
+
+    private void printIfVerbose(String in) {
+        if (verbose) System.out.println(in);
     }
 }

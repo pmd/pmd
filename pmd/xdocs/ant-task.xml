@@ -10,7 +10,7 @@
   <body>
     <section name="PMD">
       <subsection name="Description">
-        <p>Runs a set of static code analysis rules on some Java source code files and generates a list of problems found.</p>
+        <p>Runs a set of static code analysis rules on Java source code files and generates a list of problems found.</p>
       </subsection>
       <subsection name="Parameters">
 <table border="1" cellpadding="2" cellspacing="0">
@@ -20,25 +20,15 @@
     <td align="center" valign="top"><b>Required</b></td>
   </tr>
   <tr>
-    <td valign="top">reportfile</td>
-    <td valign="top">The file to which the report is written.</td>
+    <td valign="top">formatter</td>
+    <td valign="top">Specifies formats and files to which the report is written. Can be of type 'xml' or 'html'.  See example below.</td>
     <td valign="top" align="center">Yes</td>
 
-  </tr>
-  <tr>
-    <td valign="top">verbose</td>
- 	<td valign="top">Verbose output - names of files processed, rule counts, etc.</td>
-    <td valign="top" align="center">No</td>
   </tr>
   <tr>
     <td valign="top">rulesetfiles</td>
     <td valign="top">A comma delimited list of ruleset files ('rulesets/basic.xml,rulesets/design.xml').  If you write
     your own ruleset files, you can put them on the classpath and plug them in here.</td>
-    <td valign="top" align="center">Yes</td>
-  </tr>
-  <tr>
-    <td valign="top">format</td>
-    <td valign="top">The report format (xml, html)</td>
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>
@@ -51,6 +41,11 @@
     <td valign="top">Whether or not to print any problems found to the Ant log/console</td>
     <td valign="top" align="center">No</td>
   </tr>
+    <tr>
+      <td valign="top">verbose</td>
+       <td valign="top">Verbose output - names of files processed, rule counts, etc.</td>
+      <td valign="top" align="center">No</td>
+    </tr>
 </table>
 
       </subsection>
@@ -59,7 +54,8 @@
 <![CDATA[
 <target name="pmd">
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
-  <pmd reportFile="C:\foo.xml" rulesetfiles="rulesets/unusedcode.xml" format="xml">
+  <pmd rulesetfiles="rulesets/unusedcode.xml">
+    <formatter type="html" toFile="c:\jdk-report.html"/>
     <fileset dir="C:\j2sdk1.4.0\src\">
       <include name="**/*.java"/>
     </fileset>
@@ -68,7 +64,8 @@
 
 <target name="pmd">
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
-  <pmd reportFile="C:\foo.xml" verbose="false" rulesetfiles="rulesets/basic.xml,rulesets/design.xml" format="xml" failonerror="no">
+  <pmd verbose="true" rulesetfiles="rulesets/basic.xml,rulesets/design.xml" failonerror="no">
+    <formatter type="xml" toFile="c:\jdk-report.xml"/>
     <fileset dir="C:\j2sdk1.4.0\src\">
       <include name="**/*.java"/>
     </fileset>
