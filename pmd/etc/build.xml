@@ -30,13 +30,13 @@
                 <include name="*.xml"/>
             </fileset>
         </copy>
-        <jar jarfile="${lib}\pmd-0.4.jar" basedir="${build}" excludes="test/**/*.class"/>
+        <jar jarfile="${lib}\pmd-0.5.jar" basedir="${build}" excludes="test/**/*.class"/>
     </target>
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <!--<pmd reportFile="c:\pmd.html" rulesetfiles="rulesets/basic.xml" format="html">-->
-        <pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/unusedcode.xml" format="html">
+        <pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/imports.xml" format="html">
             <!--<fileset dir="c:\data\pmd\pmd\src">-->
             <fileset dir="c:\j2sdk1.4.0\src\com\sun\corba">
             <!--<fileset dir="c:\j2sdk1.4.0\src\">-->

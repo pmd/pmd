@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-<ruleset name="new_for_0_5">
+<ruleset name="new_for_0_6">
   <description>
-These are new ones for 0.5
+These are new ones for 0.6
   </description>
 
  <rule name="UnnecessaryCast"

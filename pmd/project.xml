@@ -43,9 +43,9 @@
 
   <versions>
     <version>
-      <id>0.4</id>
-      <name>0.4</name>
-      <tag>pmd_release_0_4</tag>
+      <id>0.5</id>
+      <name>0.5</name>
+      <tag>pmd_release_0_5</tag>
     </version>
     <version>
       <id>dev</id>

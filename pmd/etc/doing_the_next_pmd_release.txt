@@ -3,7 +3,7 @@ update the release date in the changelog
 move rules from "new_for_v_0_5.xml" into a real ruleset file
 cvs rm new_for_0_5.xml
 cvs add new_for_0_6.xml
-update dist task to reflect pmd-0.5
+update jar task to reflect pmd-0.5
 update docs to mention GUI if it's in a presentable state
 
 set ANT_HOME=c:\ant
