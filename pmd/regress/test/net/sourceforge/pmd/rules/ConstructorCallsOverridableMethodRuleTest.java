@@ -12,11 +12,11 @@ public class ConstructorCallsOverridableMethodRuleTest extends SimpleAggregatorT
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "", 1, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST2, "", 1, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST3, "", 1, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST4, "", 0, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST5, "", 1, new ConstructorCallsOverridableMethodRule()),
+           new TestDescriptor(TEST1, "calling public method from constructor", 1, new ConstructorCallsOverridableMethodRule()),
+           new TestDescriptor(TEST2, "calling protected method from constructor", 1, new ConstructorCallsOverridableMethodRule()),
+           new TestDescriptor(TEST3, "calling package private method from constructor", 1, new ConstructorCallsOverridableMethodRule()),
+           new TestDescriptor(TEST4, "calling private method, ok", 0, new ConstructorCallsOverridableMethodRule()),
+           new TestDescriptor(TEST5, "overloaded constructors, calling public methos", 1, new ConstructorCallsOverridableMethodRule()),
            new TestDescriptor(TEST6, "calling method on literal bug", 0, new ConstructorCallsOverridableMethodRule()),
            new TestDescriptor(TEST7, "method in anonymous inner class is ok", 0, new ConstructorCallsOverridableMethodRule()),
        });
