@@ -547,8 +547,7 @@ void VariableInitializer() :
 {}
 {
   ArrayInitializer()
-|
-  Expression()
+| Expression()
 }
 
 void ArrayInitializer() :
@@ -579,7 +578,8 @@ void MethodDeclarator() :
   Token t = null;
 }
 {
-  t=<IDENTIFIER> {
+  t=<IDENTIFIER>
+  {
     checkForBadAssertUsage(t.image, "a method name");
     jjtThis.setImage( t.image );
   }
@@ -811,12 +811,9 @@ void UnaryExpression() #void :
 {}
 {
   ( "+" | "-" ) UnaryExpression()
-|
-  PreIncrementExpression()
-|
-  PreDecrementExpression()
-|
-  UnaryExpressionNotPlusMinus()
+| PreIncrementExpression()
+| PreDecrementExpression()
+| UnaryExpressionNotPlusMinus()
 }
 
 void PreIncrementExpression() :
@@ -834,12 +831,9 @@ void PreDecrementExpression() :
 void UnaryExpressionNotPlusMinus()  #void :
 {}
 {
-  ( "~" | "!" ) UnaryExpression()
-|
-  LOOKAHEAD( CastLookahead() )
-  CastExpression()
-|
-  PostfixExpression()
+ ( "~" | "!" ) UnaryExpression()
+| LOOKAHEAD( CastLookahead() ) CastExpression()
+| PostfixExpression()
 }
 
 // This production is to determine lookahead only.  The LOOKAHEAD specifications
@@ -847,14 +841,10 @@ void UnaryExpressionNotPlusMinus()  #void :
 // this.
 void CastLookahead() :
 {}
-{
-  LOOKAHEAD(2)
-  "(" PrimitiveType()
-|
-  LOOKAHEAD("(" Name() "[")
+{ LOOKAHEAD(2) "(" PrimitiveType()
+| LOOKAHEAD("(" Name() "[")
   "(" Name() "[" "]"
-|
-  "(" Name() ")" ( "~" | "!" | "(" | <IDENTIFIER> | "this" | "super" | "new" | Literal() )
+| "(" Name() ")" ( "~" | "!" | "(" | <IDENTIFIER> | "this" | "super" | "new" | Literal() )
 }
 
 void PostfixExpression()  #void :
@@ -865,12 +855,8 @@ void PostfixExpression()  #void :
 
 void CastExpression() :
 {}
-{
-  LOOKAHEAD("(" PrimitiveType())
-  "(" Type() ")" UnaryExpression()
-|
-// removed a LOOKAHEAD which was not technically needed DW, 7/99
-  "(" Type() ")" UnaryExpressionNotPlusMinus()
+{ LOOKAHEAD("(" PrimitiveType()) "(" Type() ")" UnaryExpression()
+| "(" Type() ")" UnaryExpressionNotPlusMinus()
 }
 
 void PrimaryExpression() :
@@ -881,24 +867,16 @@ void PrimaryExpression() :
 
 void PrimaryPrefix() :
 {
-  String s = null;
   Token t = null;
 }
 {
   Literal()
-|
-  "this" {jjtThis.setUsesThisModifier();}
-|
-  "super"  {jjtThis.setUsesSuperModifier();} "." t=<IDENTIFIER> {s = t.image;} {jjtThis.setImage(s);}
-|
-  "(" Expression() ")"
-|
-  AllocationExpression()
-|
-  LOOKAHEAD( ResultType() "." "class" )
-  ResultType() "." "class"
-|
-  Name()
+| "this" {jjtThis.setUsesThisModifier();}
+| "super"  {jjtThis.setUsesSuperModifier();} "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+| "(" Expression() ")"
+| AllocationExpression()
+| LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
+| Name()
 }
 
 void PrimarySuffix() :
@@ -906,21 +884,12 @@ void PrimarySuffix() :
   String s = null;
   Token t = null;
 }
-{
-  LOOKAHEAD(2)
-  "." "this"
-|
-  LOOKAHEAD(2)
-  "." "super"
-|
-  LOOKAHEAD(2)
-  "." AllocationExpression()
-|
-  "[" Expression() "]"
-|
-  "." t=<IDENTIFIER> {s = t.image;} {jjtThis.setImage(s);}
-|
-  Arguments() {((ASTPrimarySuffix)jjtThis).setIsArguments();}
+{ LOOKAHEAD(2) "." "this"
+| LOOKAHEAD(2) "." "super"
+| LOOKAHEAD(2) "." AllocationExpression()
+| "[" Expression() "]"
+| "." t=<IDENTIFIER> {s = t.image;} {jjtThis.setImage(s);}
+| Arguments() {((ASTPrimarySuffix)jjtThis).setIsArguments();}
 }
 
 void Literal() :
@@ -969,8 +938,7 @@ void AllocationExpression() :
   "new" Name()
     (
       ArrayDimsAndInits()
-    |
-      Arguments() [ ClassBody() ]
+    | Arguments() [ ClassBody() ]
     )
 }
 
@@ -1040,8 +1008,7 @@ void BlockStatement() :
 | "final" TypeDeclaration()
 | Statement()
 | UnmodifiedClassDeclaration()
-| // added this choice point to handle inner interfaces. DW, 7/99
-  UnmodifiedInterfaceDeclaration()
+| UnmodifiedInterfaceDeclaration()
 }
 
 void LocalVariableDeclaration() :
