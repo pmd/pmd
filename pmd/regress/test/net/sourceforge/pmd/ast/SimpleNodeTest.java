@@ -195,6 +195,13 @@ public class SimpleNodeTest extends ParserTst {
         assertTrue(n instanceof ASTName);
         assertEquals(x2, n);
     }
+    
+    public void testAsXml() {
+        ASTBlock b = new ASTBlock(1);
+        String x = b.asXml();
+        assertEquals("<net.sourceforge.pmd.ast.ASTBlock id=\"1\"></net.sourceforge.pmd.ast.ASTBlock>", x);
+    }
+    
     private void verifyNode(SimpleNode node, int beginLine, int beginCol, int endLine, int endCol) {
         assertEquals("Unexpected beginning line: ", beginLine, node.getBeginLine());
         assertEquals("Unexpected beginning column: ", beginCol, node.getBeginColumn());
