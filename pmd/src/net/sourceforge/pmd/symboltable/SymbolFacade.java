@@ -27,13 +27,13 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
     }
 
     private void initScopeTriggers() {
-        localScopeTriggers.add(ASTBlock.class.toString());
-        localScopeTriggers.add(ASTConstructorDeclaration.class.toString());
-        localScopeTriggers.add(ASTMethodDeclaration.class.toString());
-        localScopeTriggers.add(ASTFieldDeclaration.class.toString());
-        localScopeTriggers.add(ASTTryStatement.class.toString());
-        localScopeTriggers.add(ASTForStatement.class.toString());
-        localScopeTriggers.add(ASTIfStatement.class.toString());
+        localScopeTriggers.add(ASTBlock.class);
+        localScopeTriggers.add(ASTConstructorDeclaration.class);
+        localScopeTriggers.add(ASTMethodDeclaration.class);
+        localScopeTriggers.add(ASTFieldDeclaration.class);
+        localScopeTriggers.add(ASTTryStatement.class);
+        localScopeTriggers.add(ASTForStatement.class);
+        localScopeTriggers.add(ASTIfStatement.class);
     }
 
     public void initializeWith(ASTCompilationUnit node) {
@@ -70,7 +70,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
     }
 
     private void openScope(SimpleNode node) {
-        if (localScopeTriggers.contains(node.getClass().toString())) {
+        if (localScopeTriggers.contains(node.getClass())) {
             contextManager.openScope(new LocalScope());
             super.visit(node, null);
             contextManager.leaveScope();

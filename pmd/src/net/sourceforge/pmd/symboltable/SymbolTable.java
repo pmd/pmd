@@ -9,14 +9,17 @@ import java.util.*;
 
 public class SymbolTable {
 
-    private List scopes = new ArrayList();
+    // this is really only used during the initial construction
+    // of the symbol table.  After that the AST provides part of the traversal mechanism,
+    // and the individual scopes provide the other part
+    private Stack scopes = new Stack();
 
     public SymbolTable() {
         scopes.add(new LocalScope());
     }
 
     public Scope peek() {
-        return (Scope)scopes.get(scopes.size()-1);
+        return (Scope)scopes.peek();
     }
 
     public int depth() {
@@ -29,7 +32,7 @@ public class SymbolTable {
     }
 
     public void pop() {
-        scopes.remove(peek());
+        scopes.pop();
     }
 
 }

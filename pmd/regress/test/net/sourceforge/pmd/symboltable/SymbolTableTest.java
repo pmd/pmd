@@ -19,24 +19,39 @@ import java.io.Reader;
 
 public class SymbolTableTest extends TestCase {
 
-    public void testAdd() {
+    public void testPush() {
         SymbolTable s = new SymbolTable();
         s.push(new LocalScope());
         assertEquals(2,s.depth());
     }
 
-    public void testRemove() {
+    public void testPop() {
         SymbolTable s = new SymbolTable();
         s.push(new LocalScope());
         s.pop();
         assertEquals(1,s.depth());
     }
 
-    public void testGet() {
+    public void testPeek() {
         SymbolTable s = new SymbolTable();
         Scope scope = new LocalScope();
         s.push(scope);
         assertEquals(scope, s.peek());
+    }
+
+    public void testParentLinkage() {
+        SymbolTable s = new SymbolTable();
+        Scope scope = new LocalScope();
+        s.push(scope);
+        Scope scope2 = new LocalScope();
+        s.push(scope2);
+        Scope scope3 = new LocalScope();
+        s.push(scope3);
+        assertEquals(scope2.getParent(), scope);
+        assertEquals(scope3.getParent(), scope2);
+        s.pop();
+        assertEquals(scope2.getParent(), scope);
+        assertEquals(scope3.getParent(), scope2);
     }
 
 }
