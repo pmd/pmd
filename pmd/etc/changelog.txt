@@ -5,6 +5,7 @@ Fixed bug 617971: Statistical rules no longer produce tons of false positives du
 Fixed bug 633209: OnlyOneReturn rule no longer requires the return stmt to be the last statement.
 Enhanced EmptyCatchBlockRule to flag multiple consecutive empty catch blocks.
 Renamed AvoidStringLiteralsRule to AvoidDuplicateLiteralsRule.
+Modified Ant task to truncate file paths to make the HTML output neater.
 
 November 04 2002 - 1.0:
 Added new rules: StringToStringRule, AvoidReassigningParametersRule, UnnecessaryConstructorRule, AvoidStringLiteralsRule

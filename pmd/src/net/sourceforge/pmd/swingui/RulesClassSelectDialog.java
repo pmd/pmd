@@ -26,7 +26,6 @@ import net.sourceforge.pmd.PMDDirectory;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleProperties;
-import net.sourceforge.pmd.RuleSet;
 
 /**
  *
