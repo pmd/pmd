@@ -6,13 +6,13 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class FinalizeOnlyCallsSuperFinalizeRuleTest extends SimpleAggregatorTst {
+public class FinalizeOverloadedRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]/Block[count(BlockStatement)=1]/BlockStatement[Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image='finalize']");
+        rule.addProperty("xpath", "//MethodDeclaration[MethodDeclarator[@Image='finalize'][FormalParameters/*]]");
     }
 
     public void testAll() {
@@ -24,16 +24,13 @@ public class FinalizeOnlyCallsSuperFinalizeRuleTest extends SimpleAggregatorTst 
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
-    " public void finalize() {" + PMD.EOL +
-    "  super.finalize();" + PMD.EOL +
-    " }" + PMD.EOL +
+    " public void finalize(int foo) {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
     "public class Foo {" + PMD.EOL +
     " public void finalize() {" + PMD.EOL +
-    "  int x = 2;" + PMD.EOL +
-    "  super.finalize();" + PMD.EOL +
+    "  doSomething();" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }

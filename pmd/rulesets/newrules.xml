@@ -157,11 +157,12 @@ public class Foo {
         <properties>
             <property name="xpath">
                 <value>
-                    <![CDATA[
-                       //MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
-                           /Block[count(BlockStatement)=1]
-                             /BlockStatement[Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image="finalize"]
-                   ]]>
+<![CDATA[
+   //MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
+       /Block[count(BlockStatement)=1]
+         /BlockStatement[Statement/StatementExpression/PrimaryExpression
+          /PrimaryPrefix[@Image="finalize"]
+]]>
                 </value>
             </property>
         </properties>
@@ -177,6 +178,36 @@ public class Foo {
        </example>
      </rule>
 
-</ruleset>
+<rule name="FinalizeOverloaded"
+      message="Finalize methods should not be overloaded"
+      class="net.sourceforge.pmd.rules.XPathRule">
+   <description>
+   Methods named finalize() should not have parameters.  It is
+   confusing and probably a bug to overload finalize().  It will
+   not be called by the VM.
+   </description>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//MethodDeclaration
+ [MethodDeclarator[@Image="finalize"][FormalParameters/*]]
+]]>
+            </value>
+        </property>
+    </properties>
+    <priority>3</priority>
+   <example>
+<![CDATA[
+   public class Foo {
+       // this is confusing and probably a bug
+       public void finalize(int a) {
+       }
+   }
+]]>
+   </example>
+ </rule>
+
+ </ruleset>
 
 
