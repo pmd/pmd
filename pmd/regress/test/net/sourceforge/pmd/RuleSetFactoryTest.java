@@ -32,8 +32,34 @@ public class RuleSetFactoryTest  extends TestCase {
     private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>" +
                          "<ruleset name=\"test\">\r\n<description>testdesc</description><rule ref=\"rulesets/basic.xml/EmptyCatchBlock\"/></ruleset>";
 
+    private static final String SINGLE_RULE_WITH_PROPS = "<?xml version=\"1.0\"?>" +
+                         "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
+                         "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\">" +
+                         "<properties><property name=\"fooBoolean\" value=\"true\"/><property name=\"foo\" value=\"bar\"/><property name=\"fooint\" value=\"2\"/></properties>" +
+                         "</rule></ruleset>";
+
+    private static final String SINGLE_RULE_NO_PROPS = "<?xml version=\"1.0\"?>" +
+                         "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
+                         "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\">" +
+                         "<properties></properties>" +
+                         "</rule></ruleset>";
     public RuleSetFactoryTest(String name) {
         super(name);
+    }
+
+    public void testCreateSingleRuleWithPropsSet() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE_WITH_PROPS.getBytes()));
+        Rule r = (Rule)rs.getRules().iterator().next();
+        assertEquals("bar", r.getStringProperty("foo"));
+        assertEquals(2, r.getIntProperty("fooint"));
+        assertTrue(r.getBooleanProperty("fooBoolean"));
+    }
+
+    public void testCreateSingleRuleNoPropsSet() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE_WITH_PROPS.getBytes()));
+        Rule r = (Rule)rs.getRules().iterator().next();
     }
 
     public void testCreateEmptyRuleSet() {

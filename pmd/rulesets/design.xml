@@ -61,8 +61,11 @@ public class Bar {
 Excessive Method Length usually means that the method is doing
 too much.  There is usually quite a bit of Cut and Paste there
 as well.  Try to reduce the method size by creating helper methods,
-and removing cut and paste. (Current Threshold is 200 lines)
+and removing cut and paste.
    </description>
+   <properties>
+    <property name="minimumLength" value="200"/>
+   </properties>
    <example>
 <![CDATA[
 public void doSomething() {

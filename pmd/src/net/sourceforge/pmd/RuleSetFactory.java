@@ -23,16 +23,13 @@ public class RuleSetFactory {
      * Returns an Iterator of RuleSet objects
      */
     public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
-
-
         try {
             Properties props = new Properties();
             props.load(getClass().getClassLoader().getResourceAsStream("rulesets/rulesets.properties"));
             String rulesetFilenames = props.getProperty("rulesets.filenames");
             List ruleSets = new ArrayList();
             for (StringTokenizer st = new StringTokenizer(rulesetFilenames, ","); st.hasMoreTokens();) {
-                RuleSet ruleSet = createRuleSet(st.nextToken());
-                ruleSets.add(ruleSet);
+                ruleSets.add(createRuleSet(st.nextToken()));
             }
             return ruleSets.iterator();
         } catch (IOException ioe) {
@@ -67,6 +64,16 @@ public class RuleSetFactory {
                     rule = (Rule)Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue()).newInstance();
                     rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
                     rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
+                }
+                // get the properties
+                for (Node node = ruleNode.getFirstChild(); node != null; node = node.getNextSibling() ) {
+                    if (node.getNodeName().equals("properties")) {
+                        for (Node propNode = node.getFirstChild(); propNode != null; propNode = propNode.getNextSibling() ) {
+                            String propName = propNode.getAttributes().getNamedItem("name").getNodeValue();
+                            String propValue = propNode.getAttributes().getNamedItem("value").getNodeValue();
+                            rule.addProperty(propName, propValue);
+                        }
+                    }
                 }
                 ruleSet.addRule(rule);
             }

@@ -11,16 +11,31 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Report;
 
-import java.util.Set;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 public class MockRule implements Rule {
 
     private String name;
     private String desc;
     private Set violations = new HashSet();
+    private Properties properties = new Properties();
+
+    public void addProperty(String name, String value) {
+        properties.put(name, value);
+    }
+
+    public int getIntProperty(String name) {
+        return Integer.parseInt(properties.getProperty(name));
+    }
+
+    public boolean getBooleanProperty(String name) {
+        return Boolean.valueOf(properties.getProperty(name)).booleanValue();
+    }
+
+    public String getStringProperty(String name) {
+        return properties.getProperty(name);
+    }
+
 
     public MockRule() {}
 
@@ -46,4 +61,5 @@ public class MockRule implements Rule {
 	    report.addRuleViolation( (RuleViolation) vs.next() );
 	}
     }
+
 }

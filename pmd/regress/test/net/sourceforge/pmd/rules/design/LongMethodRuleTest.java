@@ -14,26 +14,34 @@ public class LongMethodRuleTest
 	super( name );
     }
 
+    public LongMethodRule getIUT() {
+        LongMethodRule IUT = new LongMethodRule();
+        IUT.addProperty("minimumLength", "200");
+        return IUT;
+    }
     public void testShortMethod() throws Throwable {
-	Report report = process("LongMethod1.java", 
-				new LongMethodRule());
+	Report report = process("LongMethod1.java", getIUT() );
 	assertEquals( 0, report.size() );
     }
 
     public void testReallyLongMethod() throws Throwable {
-	Report report = process("LongMethod2.java",
-				new LongMethodRule() );
+	Report report = process("LongMethod2.java", getIUT() );
 	assertEquals( 1, report.size() );
     }
 
+    public void testReallyLongMethodWithLongerRange() throws Throwable {
+        LongMethodRule IUT = getIUT();
+        IUT.addProperty("minimumLength", "1000");
+	Report report = process("LongMethod2.java", IUT );
+	assertEquals( 0, report.size() );
+    }
+
     public void testNotQuiteLongMethod() throws Throwable {
-	Report report = process("LongMethod3.java",
-				new LongMethodRule() );
+	Report report = process("LongMethod3.java", getIUT() );
 	assertEquals( 0, report.size() );
     }
     public void testLongMethod() throws Throwable {
-	Report report = process("LongMethod4.java",
-				new LongMethodRule() );
+	Report report = process("LongMethod4.java", getIUT() );
 	assertEquals( 1, report.size() );
     }
 }

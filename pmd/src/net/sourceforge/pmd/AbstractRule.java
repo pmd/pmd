@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.List;
 import java.util.Iterator;
+import java.util.Properties;
 
 public abstract class AbstractRule 
     extends JavaParserVisitorAdapter
@@ -18,7 +19,24 @@ public abstract class AbstractRule
 {
 
     private String name = getClass().getName();
+    private Properties properties = new Properties();
     private String message;
+
+    public void addProperty(String name, String value) {
+        properties.put(name, value);
+    }
+
+    public int getIntProperty(String name) {
+        return Integer.parseInt(properties.getProperty(name));
+    }
+
+    public boolean getBooleanProperty(String name) {
+        return Boolean.valueOf(properties.getProperty(name)).booleanValue();
+    }
+
+    public String getStringProperty(String name) {
+        return properties.getProperty(name);
+    }
 
     public String getName() {
         return name;

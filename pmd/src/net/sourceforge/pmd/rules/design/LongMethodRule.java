@@ -7,7 +7,7 @@ import net.sourceforge.pmd.ast.*;
 
 /**
  * This rule detects when a method exceeds a certain
- * threshold.  i.e. if a method has more than 200 lines
+ * threshold.  i.e. if a method has more than x lines
  * of code.
  */
 public class LongMethodRule
@@ -18,7 +18,7 @@ public class LongMethodRule
     public Object visit( ASTMethodDeclaration decl, Object data ) {
 	RuleContext ctx = (RuleContext) data;
 
-	if ((decl.getEndLine() - decl.getBeginLine()) > 200) {
+	if ((decl.getEndLine() - decl.getBeginLine()) > getIntProperty("minimumLength")) {
 	    ctx.getReport()
 		.addRuleViolation( createRuleViolation( ctx,
 							decl.getBeginLine(),
