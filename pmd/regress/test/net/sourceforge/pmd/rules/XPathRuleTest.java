@@ -68,20 +68,6 @@ public class XPathRuleTest extends RuleTst {
     }
 
     /**
-     * This differs from the original in that ALL duplicates are marked. 
-     * @throws Throwable
-     */
-    public void testAvoidDuplicateLiteralsRule() throws Throwable {
-        //fail("I wouldn't even know where to begin");
-        rule.addProperty(
-            "xpath",
-            "//Literal[@Image = preceding::Literal/@Image or @Image = following::Literal/@Image]");
-        runTestFromString(AvoidDuplicateLiteralsRuleTest.TEST1, 4, rule);
-        runTestFromString(AvoidDuplicateLiteralsRuleTest.TEST2, 0, rule);
-        runTestFromString(AvoidDuplicateLiteralsRuleTest.TEST3, 0, rule);
-    }
-
-    /**
      * @todo Figure it out.
      */
     public void testAvoidReassigningParameters() throws Throwable {

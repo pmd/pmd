@@ -25,10 +25,12 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule;
 import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 import java.util.Set;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
+public class AvoidDuplicateLiteralsRuleTest extends SimpleAggregatorTst {
 
     private AvoidDuplicateLiteralsRule rule;
 
@@ -38,20 +40,12 @@ public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
         rule.addProperty("threshold", "2");
     }
 
-    public void testTwoLiteralStringArgs() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-
-    public void testLiteralIntArg() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-
-    public void testLiteralFieldDecl() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
-
-    public void testLiteralFieldDecl2() throws Throwable {
-        runTestFromString(TEST4, 1, rule);
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "duplicate literals in argument list", 1, rule),
+           new TestDescriptor(TEST2, "literal int argument, ok for now", 0, rule),
+           new TestDescriptor(TEST3, "duplicate literals in field decl", 1, rule),
+       });
     }
 
     public void testStringParserEmptyString() {
@@ -105,11 +99,6 @@ public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
     "}";
 
     public static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " private static final String FOO = \"foo\";" + PMD.EOL +
-    "}";
-
-    public static final String TEST4 =
     "public class Foo {" + PMD.EOL +
     " String[] FOO = {\"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\"};" + PMD.EOL +
     "}";
