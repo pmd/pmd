@@ -34,6 +34,9 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2005/01/31 23:39:37  phherlin
+ * Upgrading to PMD 2.2
+ *
  * Revision 1.4  2005/01/16 22:53:03  phherlin
  * Upgrade to PMD 2.1: take into account new rules attributes symboltable and dfa
  *
@@ -103,7 +106,7 @@ public class RuleSetWriterImpl implements RuleSetWriter {
     private Element getRuleSetElement(Document doc, RuleSet ruleSet) {
         Element ruleSetElement = doc.createElement("ruleset");
         ruleSetElement.setAttribute("name", ruleSet.getName());
-        ruleSetElement.setAttribute("include", ruleSet.include() ? "true" : "false");
+        // ruleSetElement.setAttribute("include", ruleSet.include() ? "true" : "false");
 
         Element descriptionElement = getDescriptionElement(doc, ruleSet.getDescription());
         ruleSetElement.appendChild(descriptionElement);

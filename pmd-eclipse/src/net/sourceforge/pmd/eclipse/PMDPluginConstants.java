@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.QualifiedName;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/01/31 23:39:37  phherlin
+ * Upgrading to PMD 2.2
+ *
  * Revision 1.2  2005/01/16 22:52:17  phherlin
  * Upgrade to PMD 2.1: add new packaged rulesets
  *
@@ -33,8 +36,10 @@ public interface PMDPluginConstants {
             "rulesets/junit.xml",
             "rulesets/logging-java.xml",
             "rulesets/naming.xml",
+            "rulesets/optimizations.xml",
             "rulesets/strictexception.xml",
             "rulesets/strings.xml",
+            "rulesets/sunsecure.xml",
             "rulesets/unusedcode.xml"};
 
     public static final String[] RULESET_DEFAULTLIST = RULESET_ALLPMD;
