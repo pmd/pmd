@@ -105,13 +105,21 @@ public class CPD {
         }
         CPD cpd = new CPD();
         cpd.setListener(new CPDNullListener());
-        cpd.setMinimumTileSize(Integer.parseInt(args[0]));
+
+        try {
+            cpd.setMinimumTileSize(Integer.parseInt(args[0]));
+        } catch (Exception e) {
+            usage();
+            System.exit(1);
+        }
+
         try {
             cpd.addRecursively(args[1]);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
+
         long start = System.currentTimeMillis();
         cpd.go();
         long total = System.currentTimeMillis() - start;
@@ -122,6 +130,9 @@ public class CPD {
     }
 
     private static void usage() {
-        System.out.println("Usage: java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java");
+        System.out.println("Usage:");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD <tile size> <directory>");
+        System.out.println("i.e: ");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java");
     }
 }
