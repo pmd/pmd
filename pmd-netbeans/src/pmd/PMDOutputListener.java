@@ -75,7 +75,11 @@ public class PMDOutputListener implements OutputListener {
 	 */
 	public void outputLineAction(OutputEvent outputEvent) {
 		PMDAnnotation.clearAll();
-		DataObject object = FaultRegistry.getInstance().getDataObject( outputEvent.getLine() );
+                String l = outputEvent.getLine();
+                if (l.charAt(l.length()-1) == '\n') {
+                    l = l.substring(0, l.length()-1);
+                }
+		DataObject object = FaultRegistry.getInstance().getDataObject( l );
 		LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
 		Set lineset = cookie.getLineSet();
 		int lineNum = Fault.getLineNum( outputEvent.getLine() );
