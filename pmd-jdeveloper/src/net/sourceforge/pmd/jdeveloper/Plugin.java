@@ -8,7 +8,6 @@ import oracle.ide.AddinManager;
 import oracle.ide.ContextMenu;
 import oracle.ide.Ide;
 import oracle.ide.IdeAction;
-import oracle.ide.log.LogWindow;
 import oracle.ide.addin.Addin;
 import oracle.ide.addin.Context;
 import oracle.ide.addin.ContextMenuListener;
@@ -28,7 +27,6 @@ import oracle.jdeveloper.model.JavaSources;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import java.io.InputStream;
 import java.util.Iterator;
 
 public class Plugin implements Addin, Controller, ContextMenuListener {
@@ -48,6 +46,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     private static final int BUSINESS = 8;
 
     private JMenuItem checkItem;
+    private RuleViolationPage rvPage;
 
     public Plugin() {
         super();
@@ -96,12 +95,6 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     public boolean handleEvent(IdeAction ideAction, Context context) {
         if (ideAction.getCommandId() == CHECK_CMD_ID) {
             try {
-                LogWindow window = Ide.getLogWindow();
-
-                if (!window.isVisible()) {
-                    window.show();
-                }
-
                 PMD pmd = new PMD();
                 RuleContext ctx = new RuleContext();
                 ctx.setReport(new Report());
@@ -111,10 +104,15 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 if (ctx.getReport().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
                 } else {
+                    if (rvPage == null) {
+                        rvPage = new RuleViolationPage();
+                    }
+                    if (!rvPage.isVisible()) {
+                        rvPage.show();
+                    }
+                    rvPage.clearAll();
                     for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                        RuleViolation rv = (RuleViolation)i.next();
-                        window.log(rv.getFilename() + ":" + rv.getLine() +":"+ rv.getDescription());
-                        System.out.println("rv = " + rv.getDescription());
+                        rvPage.add((RuleViolation)i.next());
                     }
                 }
                 return true;
