@@ -69,9 +69,9 @@ public class Something {
 Detects when very short method names are used.
      </description>
       <priority>3</priority>
-   <properties>
-    <property name="minimumLength" value="3"/>
-   </properties>
+      <properties>
+          <property name="xpath" value="//MethodDeclarator[string-length(@Image) < 3]"/>
+      </properties>
      <example>
 <![CDATA[
 public class ShortMethod {

@@ -59,30 +59,6 @@ public class XPathRuleTest extends RuleTst {
 //        runTest("StringToString6.java", 1, rule);
 //        
 //    }
-    
-    public void testStringInstantiationRule() throws Throwable {
-        rule.addProperty("xpath", "//AllocationExpression[Name/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]");
-        runTest("StringInstantiation1.java", 2, rule);
-        runTest("StringInstantiation2.java", 0, rule);
-        runTest("StringInstantiation3.java", 0, rule);
-        runTest("StringInstantiation4.java", 0, rule);
-    }
-
-	public void testSimplifyBooleanReturns() throws Throwable {
-	    rule.addProperty("xpath", "//IfStatement[count(.//ReturnStatement//BooleanLiteral) = 2]");
-        runTest("SimplifyBooleanReturns1.java", 1, rule);
-        runTest("SimplifyBooleanReturns2.java", 1, rule);
-        runTest("SimplifyBooleanReturns3.java", 0, rule);
-	}
-
-    public void testShortMethodName() throws Throwable {
-        rule.addProperty("xpath", "//MethodDeclarator[string-length(@Image) < 3]");
-        runTest("ShortMethodName0.java", 0, rule);
-        runTest("ShortMethodName1.java", 1, rule);
-        runTest("ShortMethodName2.java", 2, rule);
-        runTest("ShortMethodName3.java", 1, rule);
-    }
-
 	public void testShortVariable() throws Throwable {
         rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)]");
         runTest("ShortVariableField.java", 1, rule);
@@ -207,6 +183,13 @@ public class XPathRuleTest extends RuleTst {
         runTest("DontImportJavaLang1.java", 1, rule);
         runTest("DontImportJavaLang2.java", 1, rule);
         runTest("DontImportJavaLang3.java", 0, rule);
+    }
+
+    public void testSimplifyBooleanReturns() throws Throwable {
+        rule.addProperty("xpath", "//IfStatement[count(.//ReturnStatement//BooleanLiteral) = 2]");
+        runTest("SimplifyBooleanReturns1.java", 1, rule);
+        runTest("SimplifyBooleanReturns2.java", 1, rule);
+        runTest("SimplifyBooleanReturns3.java", 0, rule);
     }
 
     /**

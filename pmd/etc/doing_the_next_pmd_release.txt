@@ -1,4 +1,6 @@
 >>>>>>>>>>>>>>>>> Update ant docs to reflect verbose attribute change
+>>>>>>>>>>>>>>>>> Update custom ruleset docs to reflect implications of David Fuller ResourceLoader - i.e., if you
+do a custom ruleset you can just specify it in the Ant task by its full filename
 
 Move rulesets/tmp.xml somewhere else
 update run.bat to point to pmd-1.03.jar

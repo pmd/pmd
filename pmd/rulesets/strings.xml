@@ -12,6 +12,9 @@ These rules deal with different problems that can occur with String manipulation
     <description>
     Avoid instantiating String objects; this is usually unnecessary.
     </description>
+       <properties>
+           <property name="xpath" value="//AllocationExpression[Name/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]"/>
+       </properties>
        <priority>2</priority>
 
     <example>
