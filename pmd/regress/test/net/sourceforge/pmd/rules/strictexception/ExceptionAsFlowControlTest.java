@@ -49,7 +49,7 @@ public class ExceptionAsFlowControlTest extends SimpleAggregatorTst {
         " void bar() {" + PMD.EOL +
         "  try {} catch (IOException e) {" + PMD.EOL +
         "  if (foo!=null) " + PMD.EOL +
-        "       throw new IOExpception(foo.getResponseMessage()); " + PMD.EOL +
+        "       throw new IOException(foo.getResponseMessage()); " + PMD.EOL +
         "  else  " + PMD.EOL +
         "       throw e; " + PMD.EOL +
         "  " + PMD.EOL +
