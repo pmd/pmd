@@ -229,7 +229,7 @@ public class PMDViewer extends JFrame
         {
             m_preferences = new Preferences();
 
-            m_preferences.load();
+            m_preferences.load(this);
         }
 
         return m_preferences;

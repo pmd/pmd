@@ -76,7 +76,7 @@ class Preferences
      *
      * @return
      */
-    protected boolean load()
+    protected boolean load(PMDViewer pmdViewer)
     {
         String path = System.getProperty("user.home") + File.separator + "pmd" + File.separator + "pmd.preferences";
         File file = new File(path);
@@ -97,7 +97,7 @@ class Preferences
                 Object[] args = {"pmd.preferences", directory};
                 String message = MessageFormat.format(template, args);
 
-                MessageDialog.show(message, exception);
+                MessageDialog.show(pmdViewer, message, exception);
 
                 tryWorkingDirectory = true;
             }
@@ -119,7 +119,7 @@ class Preferences
                     Object[] args = {"pmd.preferences", directory};
                     String message = MessageFormat.format(template, args);
 
-                    MessageDialog.show(message, exception);
+                    MessageDialog.show(pmdViewer, message, exception);
 
                     return false;
                 }
@@ -164,7 +164,7 @@ class Preferences
             Object[] args = {"pmd.preferences", path};
             String message = MessageFormat.format(template, args);
 
-            MessageDialog.show(message, exception);
+            MessageDialog.show(pmdViewer, message, exception);
 
             return false;
         }

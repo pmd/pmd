@@ -13,8 +13,6 @@ import java.awt.LayoutManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -23,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.tree.TreePath;
 import javax.swing.UIManager;
 
 import net.sourceforge.pmd.RuleSet;
@@ -34,7 +31,7 @@ import net.sourceforge.pmd.RuleSet;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-public class RuleSetEditingPanel extends JPanel implements TreeSelectionListener
+public class RuleSetEditingPanel extends JPanel
 {
     private JLabel m_nameLabel;
     private JTextField m_name;
@@ -44,6 +41,7 @@ public class RuleSetEditingPanel extends JPanel implements TreeSelectionListener
     private JLabel m_includeLabel;
     private JCheckBox m_include;
     private boolean m_enabled;
+    private IRulesEditingData m_currentData;
 
     /**
      *******************************************************************************
@@ -96,6 +94,8 @@ public class RuleSetEditingPanel extends JPanel implements TreeSelectionListener
         // Rule Set Active
         m_include = new JCheckBox("");
         panel.add(m_include);
+
+        disableData();
     }
 
     /**
@@ -103,31 +103,39 @@ public class RuleSetEditingPanel extends JPanel implements TreeSelectionListener
      *
      * @param event
      */
-    public void valueChanged(TreeSelectionEvent event)
+    public void valueChanged(IRulesEditingData data)
     {
-        TreePath treePath = event.getPath();
-        Object object = treePath.getLastPathComponent();
+        saveData();
 
-        if (object instanceof IRulesEditingData)
+        if (data.isRuleSet())
         {
-            IRulesEditingData data = (IRulesEditingData) object;
+            setData(data);
+        }
+        else if (data.isRule())
+        {
+            setData(data.getParentRuleSetData());
+        }
+        else if (data.isProperty())
+        {
+            setData(data.getParentRuleSetData());
+        }
+        else
+        {
+            disableData();
+        }
+    }
 
-            if (data.isRuleSet())
-            {
-                setData(data);
-            }
-            else if (data.isRule())
-            {
-                setData(data.getParentRuleSetData());
-            }
-            else if (data.isProperty())
-            {
-                setData(data.getParentRuleSetData());
-            }
-            else
-            {
-                disableData();
-            }
+    /**
+     *******************************************************************************
+     *
+     */
+    private void saveData()
+    {
+        if (m_currentData != null)
+        {
+            m_currentData.setName(m_name.getText());
+            m_currentData.setDescription(m_description.getText());
+            m_currentData.setInclude(m_include.isSelected());
         }
     }
 
@@ -153,6 +161,8 @@ public class RuleSetEditingPanel extends JPanel implements TreeSelectionListener
             m_name.setText(data.getName());
             m_description.setText(data.getDescription());
             m_include.setSelected(data.include());
+
+            m_currentData = data;
         }
     }
 

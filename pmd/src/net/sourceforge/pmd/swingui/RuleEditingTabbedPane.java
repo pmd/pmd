@@ -15,9 +15,9 @@ import javax.swing.UIManager;
 public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionListener
 {
 
-    private RuleSetEditingPanel m_ruleSetEditingPanel;
-    private RuleEditingPanel m_ruleEditingPanel;
-    private RulePropertyEditingPanel m_rulePropertyEditingPanel;
+    private RuleSetEditingPanelGUI m_ruleSetEditingPanel;
+    private RuleEditingPanelGUI m_ruleEditingPanel;
+    private RulePropertyEditingPanelGUI m_rulePropertyEditingPanel;
 
     /**
      *******************************************************************************
@@ -28,9 +28,9 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
     {
         super(JTabbedPane.BOTTOM);
 
-        m_ruleSetEditingPanel = new RuleSetEditingPanel();
-        m_ruleEditingPanel = new RuleEditingPanel();
-        m_rulePropertyEditingPanel = new RulePropertyEditingPanel();
+        m_ruleSetEditingPanel = new RuleSetEditingPanelGUI();
+        m_ruleEditingPanel = new RuleEditingPanelGUI();
+        m_rulePropertyEditingPanel = new RulePropertyEditingPanelGUI();
 
         addTab("Rule Set", m_ruleSetEditingPanel);
         addTab("Rule", m_ruleEditingPanel);

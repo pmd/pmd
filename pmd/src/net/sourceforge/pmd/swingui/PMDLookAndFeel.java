@@ -97,7 +97,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
                   "pmdTableHeaderBackground", "#686868",
                   "pmdTableHeaderForeground", "#FFFFFF",
                  "pmdEditingPanelBackground", String.valueOf(Color.lightGray.getRGB()),
-                    "disabledTextBackground", "#F5F5F5",
+                    "disabledTextBackground", "#AAAAAA",
           };
 
           loadSystemColors(table, defaultSystemColors, isNativeLookAndFeel());

@@ -13,8 +13,6 @@ import java.awt.LayoutManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -23,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.tree.TreePath;
 import javax.swing.UIManager;
 
 import net.sourceforge.pmd.Rule;
@@ -34,7 +31,7 @@ import net.sourceforge.pmd.Rule;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-public class RuleEditingPanel extends JPanel implements TreeSelectionListener
+public class RuleEditingPanel extends JPanel
 {
 
     private JLabel m_nameLabel;
@@ -53,6 +50,7 @@ public class RuleEditingPanel extends JPanel implements TreeSelectionListener
     private JLabel m_includeLabel;
     private JCheckBox m_include;
     private boolean m_enabled;
+    private IRulesEditingData m_currentData;
 
     /**
      *******************************************************************************
@@ -147,6 +145,8 @@ public class RuleEditingPanel extends JPanel implements TreeSelectionListener
         // Rule Set Active
         m_include = new JCheckBox("");
         panel.add(m_include);
+
+        disableData();
     }
 
     /**
@@ -154,31 +154,42 @@ public class RuleEditingPanel extends JPanel implements TreeSelectionListener
      *
      * @param event
      */
-    public void valueChanged(TreeSelectionEvent event)
+    public void valueChanged(IRulesEditingData data)
     {
-        TreePath treePath = event.getPath();
-        Object component = treePath.getLastPathComponent();
+        saveData();
 
-        if (component instanceof IRulesEditingData)
+        if (data.isRuleSet())
         {
-            IRulesEditingData data = (IRulesEditingData) component;
+            disableData();
+        }
+        else if (data.isRule())
+        {
+            setData(data);
+        }
+        else if (data.isProperty())
+        {
+            setData(data.getParentRuleData());
+        }
+        else
+        {
+            disableData();
+        }
+    }
 
-            if (data.isRuleSet())
-            {
-                disableData();
-            }
-            else if (data.isRule())
-            {
-                setData(data);
-            }
-            else if (data.isProperty())
-            {
-                setData(data.getParentRuleData());
-            }
-            else
-            {
-                disableData();
-            }
+    /**
+     *******************************************************************************
+     *
+     */
+    private void saveData()
+    {
+        if (m_currentData != null)
+        {
+            m_currentData.setName(m_name.getText());
+            m_currentData.setClassName(m_className.getText());
+            m_currentData.setMessage(m_message.getText());
+            m_currentData.setDescription(m_description.getText());
+            m_currentData.setExample(m_example.getText());
+            m_currentData.setInclude(m_include.isSelected());
         }
     }
 
@@ -195,6 +206,8 @@ public class RuleEditingPanel extends JPanel implements TreeSelectionListener
             {
                 m_name.setEnabled(true);
                 m_name.setBackground(Color.white);
+                m_className.setEnabled(true);
+                m_className.setBackground(Color.white);
                 m_message.setEnabled(true);
                 m_message.setBackground(Color.white);
                 m_description.setEnabled(true);
@@ -205,12 +218,14 @@ public class RuleEditingPanel extends JPanel implements TreeSelectionListener
             }
 
             m_name.setText(data.getName());
+            m_className.setText(data.getClassName());
             m_message.setText(data.getMessage());
             m_description.setText(data.getDescription());
             m_example.setText(data.getExample());
             m_include.setSelected(data.include());
 
             m_enabled = true;
+            m_currentData = data;
         }
     }
 
