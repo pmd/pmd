@@ -10,11 +10,11 @@
         <CLASS Type="TFiles">
             <PROPERTY Name="CurrentIndex">0</PROPERTY>
                 <CLASS Type="TFile">
-                    <PROPERTY Name="CaretLeft">2</PROPERTY>
-                    <PROPERTY Name="CaretTop">60</PROPERTY>
+                    <PROPERTY Name="CaretLeft">11</PROPERTY>
+                    <PROPERTY Name="CaretTop">176</PROPERTY>
                     <PROPERTY Name="FileName">$(PROJECT)\src\net\sourceforge\pmd\gel\PMDPlugin.java</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">50</PROPERTY>
+                    <PROPERTY Name="WindowTop">163</PROPERTY>
                 </CLASS>
                 <CLASS Type="TFile">
                     <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
