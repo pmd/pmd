@@ -1116,7 +1116,8 @@ Token t = null;
 jjtThis.setModifiers(modifiers);
 }
 {
-  ( ["final"] "class" | "interface" { jjtThis.setInterface(); } )
+
+  ( /* See note about this optional final modifier in BlockStatement */ ["final"] "class" | "interface" { jjtThis.setInterface(); } )
   t=<IDENTIFIER> { jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
@@ -1741,6 +1742,12 @@ void BlockStatement():
 |
   Statement()
 |
+  /*
+  TODO: Seems like we should be discarding the "final"
+  after using it in the lookahead; I added a ["final"] inside
+  ClassOrInterfaceDeclaration, but that seems like a hack that
+  could break other things...
+  */
   LOOKAHEAD( ["final"] "class") ClassOrInterfaceDeclaration(0)
 }
 
