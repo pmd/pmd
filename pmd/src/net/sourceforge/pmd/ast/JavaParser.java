@@ -19,6 +19,12 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     }
   }
 
+  private void checkForBadStaticImportUsage() {
+    if (!isJDK15) {
+      throw new ParseException("Can't use static imports when running in JDK 1.4 mode!");
+    }
+  }
+
   private void checkForBadEnumUsage(String in, String usage) {
     if (isJDK15 && in.equals("enum")) {
       throw new ParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
@@ -183,15 +189,24 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(IMPORT);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case STATIC:
+        jj_consume_token(STATIC);
+                       checkForBadStaticImportUsage();jjtn000.setStatic();
+        break;
+      default:
+        jj_la1[4] = jj_gen;
+        ;
+      }
       Name();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DOT:
         jj_consume_token(DOT);
         jj_consume_token(STAR);
-                             jjtn000.setImportOnDemand();
+                                                                                                jjtn000.setImportOnDemand();
         break;
       default:
-        jj_la1[4] = jj_gen;
+        jj_la1[5] = jj_gen;
         ;
       }
       jj_consume_token(SEMICOLON);
@@ -238,7 +253,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           jj_consume_token(SEMICOLON);
           break;
         default:
-          jj_la1[5] = jj_gen;
+          jj_la1[6] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -283,7 +298,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[6] = jj_gen;
+          jj_la1[7] = jj_gen;
           break label_3;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -304,7 +319,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                   jjtn000.setStrict();
           break;
         default:
-          jj_la1[7] = jj_gen;
+          jj_la1[8] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -347,7 +362,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Name();
         break;
       default:
-        jj_la1[8] = jj_gen;
+        jj_la1[9] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -357,7 +372,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         NameList();
         break;
       default:
-        jj_la1[9] = jj_gen;
+        jj_la1[10] = jj_gen;
         ;
       }
       ClassBody();
@@ -439,7 +454,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[10] = jj_gen;
+          jj_la1[11] = jj_gen;
           break label_5;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -472,7 +487,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                     jjtn000.setStrict();
           break;
         default:
-          jj_la1[11] = jj_gen;
+          jj_la1[12] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -541,7 +556,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           jj_consume_token(SEMICOLON);
           break;
         default:
-          jj_la1[12] = jj_gen;
+          jj_la1[13] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -584,7 +599,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[13] = jj_gen;
+          jj_la1[14] = jj_gen;
           break label_6;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -609,7 +624,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                           jjtn000.setFinal();
           break;
         default:
-          jj_la1[14] = jj_gen;
+          jj_la1[15] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -629,7 +644,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         NameList();
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[16] = jj_gen;
         ;
       }
       EnumElement();
@@ -640,7 +655,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[16] = jj_gen;
+          jj_la1[17] = jj_gen;
           break label_7;
         }
         jj_consume_token(COMMA);
@@ -682,7 +697,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Arguments();
         break;
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[18] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -690,7 +705,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         ClassBody();
         break;
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[19] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -736,7 +751,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[19] = jj_gen;
+          jj_la1[20] = jj_gen;
           break label_8;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -768,7 +783,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           jj_consume_token(STRICTFP);
           break;
         default:
-          jj_la1[20] = jj_gen;
+          jj_la1[21] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -812,7 +827,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[21] = jj_gen;
+          jj_la1[22] = jj_gen;
           break label_9;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -829,7 +844,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                   jjtn000.setStrict();
           break;
         default:
-          jj_la1[22] = jj_gen;
+          jj_la1[23] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -875,7 +890,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[23] = jj_gen;
+          jj_la1[24] = jj_gen;
           break label_10;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -908,7 +923,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                     jjtn000.setStrict();
           break;
         default:
-          jj_la1[24] = jj_gen;
+          jj_la1[25] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -950,7 +965,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         NameList();
         break;
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[26] = jj_gen;
         ;
       }
       jj_consume_token(LBRACE);
@@ -984,7 +999,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[26] = jj_gen;
+          jj_la1[27] = jj_gen;
           break label_11;
         }
         InterfaceMemberDeclaration();
@@ -1047,7 +1062,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           jj_consume_token(SEMICOLON);
           break;
         default:
-          jj_la1[27] = jj_gen;
+          jj_la1[28] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1092,7 +1107,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[28] = jj_gen;
+          jj_la1[29] = jj_gen;
           break label_12;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1125,7 +1140,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                           jjtn000.setVolatile();
           break;
         default:
-          jj_la1[29] = jj_gen;
+          jj_la1[30] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1139,7 +1154,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[30] = jj_gen;
+          jj_la1[31] = jj_gen;
           break label_13;
         }
         jj_consume_token(COMMA);
@@ -1180,7 +1195,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         VariableInitializer();
         break;
       default:
-        jj_la1[31] = jj_gen;
+        jj_la1[32] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -1218,7 +1233,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[32] = jj_gen;
+          jj_la1[33] = jj_gen;
           break label_14;
         }
         jj_consume_token(LBRACKET);
@@ -1277,7 +1292,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Expression();
         break;
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[34] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1351,7 +1366,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         }
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[35] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1359,7 +1374,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         jj_consume_token(COMMA);
         break;
       default:
-        jj_la1[35] = jj_gen;
+        jj_la1[36] = jj_gen;
         ;
       }
       jj_consume_token(RBRACE);
@@ -1405,7 +1420,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[36] = jj_gen;
+          jj_la1[37] = jj_gen;
           break label_16;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1446,7 +1461,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                           jjtn000.setStrict();
           break;
         default:
-          jj_la1[37] = jj_gen;
+          jj_la1[38] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1459,7 +1474,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         NameList();
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[39] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1470,7 +1485,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         jj_consume_token(SEMICOLON);
         break;
       default:
-        jj_la1[39] = jj_gen;
+        jj_la1[40] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1513,7 +1528,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[40] = jj_gen;
+          jj_la1[41] = jj_gen;
           break label_17;
         }
         jj_consume_token(LBRACKET);
@@ -1566,7 +1581,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
             ;
             break;
           default:
-            jj_la1[41] = jj_gen;
+            jj_la1[42] = jj_gen;
             break label_18;
           }
           jj_consume_token(COMMA);
@@ -1574,7 +1589,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         }
         break;
       default:
-        jj_la1[42] = jj_gen;
+        jj_la1[43] = jj_gen;
         ;
       }
       jj_consume_token(RPAREN);
@@ -1611,7 +1626,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
              jjtn000.setFinal();
         break;
       default:
-        jj_la1[43] = jj_gen;
+        jj_la1[44] = jj_gen;
         ;
       }
       Type();
@@ -1661,13 +1676,13 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                  jjtn000.setPrivate();
           break;
         default:
-          jj_la1[44] = jj_gen;
+          jj_la1[45] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[45] = jj_gen;
+        jj_la1[46] = jj_gen;
         ;
       }
       jj_consume_token(IDENTIFIER);
@@ -1678,7 +1693,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         NameList();
         break;
       default:
-        jj_la1[46] = jj_gen;
+        jj_la1[47] = jj_gen;
         ;
       }
       jj_consume_token(LBRACE);
@@ -1764,7 +1779,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           jj_consume_token(SEMICOLON);
           break;
         default:
-          jj_la1[47] = jj_gen;
+          jj_la1[48] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1802,7 +1817,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
               jjtn000.setStatic();
         break;
       default:
-        jj_la1[48] = jj_gen;
+        jj_la1[49] = jj_gen;
         ;
       }
       Block();
@@ -1851,7 +1866,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Name();
         break;
       default:
-        jj_la1[49] = jj_gen;
+        jj_la1[50] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1862,7 +1877,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[50] = jj_gen;
+          jj_la1[51] = jj_gen;
           break label_20;
         }
         jj_consume_token(LBRACKET);
@@ -1946,7 +1961,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
             jjtn000.setImage("double");
         break;
       default:
-        jj_la1[51] = jj_gen;
+        jj_la1[52] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1979,7 +1994,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Type();
         break;
       default:
-        jj_la1[52] = jj_gen;
+        jj_la1[53] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2050,7 +2065,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[53] = jj_gen;
+          jj_la1[54] = jj_gen;
           break label_22;
         }
         jj_consume_token(COMMA);
@@ -2104,7 +2119,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Expression();
         break;
       default:
-        jj_la1[54] = jj_gen;
+        jj_la1[55] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -2208,7 +2223,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                jjtn000.setImage("|="); jjtn000.setCompound();
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[56] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2236,7 +2251,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         ConditionalExpression();
         break;
       default:
-        jj_la1[56] = jj_gen;
+        jj_la1[57] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -2275,7 +2290,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[57] = jj_gen;
+          jj_la1[58] = jj_gen;
           break label_23;
         }
         jj_consume_token(SC_OR);
@@ -2318,7 +2333,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[58] = jj_gen;
+          jj_la1[59] = jj_gen;
           break label_24;
         }
         jj_consume_token(SC_AND);
@@ -2361,7 +2376,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[59] = jj_gen;
+          jj_la1[60] = jj_gen;
           break label_25;
         }
         jj_consume_token(BIT_OR);
@@ -2404,7 +2419,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[60] = jj_gen;
+          jj_la1[61] = jj_gen;
           break label_26;
         }
         jj_consume_token(XOR);
@@ -2447,7 +2462,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[61] = jj_gen;
+          jj_la1[62] = jj_gen;
           break label_27;
         }
         jj_consume_token(BIT_AND);
@@ -2491,7 +2506,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[62] = jj_gen;
+          jj_la1[63] = jj_gen;
           break label_28;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2504,7 +2519,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                                                                                                                             jjtn000.setImage("!=");jjtn000.setUnDiscardable();
           break;
         default:
-          jj_la1[63] = jj_gen;
+          jj_la1[64] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2546,7 +2561,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Type();
         break;
       default:
-        jj_la1[64] = jj_gen;
+        jj_la1[65] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -2588,7 +2603,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[65] = jj_gen;
+          jj_la1[66] = jj_gen;
           break label_29;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2609,7 +2624,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                                                                                                                                                                                                                                           jjtn000.setImage(">=");jjtn000.setUnDiscardable();
           break;
         default:
-          jj_la1[66] = jj_gen;
+          jj_la1[67] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2653,7 +2668,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[67] = jj_gen;
+          jj_la1[68] = jj_gen;
           break label_30;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2670,7 +2685,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                                                                                                                                                                                       jjtn000.setImage(">>>");jjtn000.setUnDiscardable();
           break;
         default:
-          jj_la1[68] = jj_gen;
+          jj_la1[69] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2713,7 +2728,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[69] = jj_gen;
+          jj_la1[70] = jj_gen;
           break label_31;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2726,7 +2741,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                                                                                                                             jjtn000.setImage("-");jjtn000.setUnDiscardable();
           break;
         default:
-          jj_la1[70] = jj_gen;
+          jj_la1[71] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2770,7 +2785,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[71] = jj_gen;
+          jj_la1[72] = jj_gen;
           break label_32;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2787,7 +2802,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                                                                                                                                                                              jjtn000.setImage("%");jjtn000.setUnDiscardable();
           break;
         default:
-          jj_la1[72] = jj_gen;
+          jj_la1[73] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2833,7 +2848,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                                                                   jjtn000.setImage("-");jjtn000.setUnDiscardable();
           break;
         default:
-          jj_la1[73] = jj_gen;
+          jj_la1[74] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2871,7 +2886,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         UnaryExpressionNotPlusMinus();
         break;
       default:
-        jj_la1[74] = jj_gen;
+        jj_la1[75] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2975,14 +2990,14 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                                                                   jjtn000.setImage("!");jjtn000.setUnDiscardable();
           break;
         default:
-          jj_la1[75] = jj_gen;
+          jj_la1[76] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         UnaryExpression();
         break;
       default:
-        jj_la1[76] = jj_gen;
+        jj_la1[77] = jj_gen;
         if (jj_2_18(2147483647)) {
           CastExpression();
         } else {
@@ -3011,7 +3026,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
             PostfixExpression();
             break;
           default:
-            jj_la1[77] = jj_gen;
+            jj_la1[78] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
@@ -3093,13 +3108,13 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
             Literal();
             break;
           default:
-            jj_la1[78] = jj_gen;
+            jj_la1[79] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
           break;
         default:
-          jj_la1[79] = jj_gen;
+          jj_la1[80] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -3145,13 +3160,13 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                                                                                           jjtn000.setImage("--");jjtn000.setUnDiscardable();
           break;
         default:
-          jj_la1[80] = jj_gen;
+          jj_la1[81] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[81] = jj_gen;
+        jj_la1[82] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -3195,7 +3210,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           UnaryExpressionNotPlusMinus();
           break;
         default:
-          jj_la1[82] = jj_gen;
+          jj_la1[83] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -3298,7 +3313,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         AllocationExpression();
         break;
       default:
-        jj_la1[83] = jj_gen;
+        jj_la1[84] = jj_gen;
         if (jj_2_23(2147483647)) {
           ResultType();
           jj_consume_token(DOT);
@@ -3309,7 +3324,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
             Name();
             break;
           default:
-            jj_la1[84] = jj_gen;
+            jj_la1[85] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
@@ -3375,7 +3390,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
                jjtn000.setIsArguments();
           break;
         default:
-          jj_la1[85] = jj_gen;
+          jj_la1[86] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -3441,7 +3456,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         NullLiteral();
         break;
       default:
-        jj_la1[86] = jj_gen;
+        jj_la1[87] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3483,7 +3498,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         jj_consume_token(FALSE);
         break;
       default:
-        jj_la1[87] = jj_gen;
+        jj_la1[88] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3546,7 +3561,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         ArgumentList();
         break;
       default:
-        jj_la1[88] = jj_gen;
+        jj_la1[89] = jj_gen;
         ;
       }
       jj_consume_token(RPAREN);
@@ -3585,7 +3600,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[89] = jj_gen;
+          jj_la1[90] = jj_gen;
           break label_34;
         }
         jj_consume_token(COMMA);
@@ -3638,18 +3653,18 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
               ClassBody();
               break;
             default:
-              jj_la1[90] = jj_gen;
+              jj_la1[91] = jj_gen;
               ;
             }
             break;
           default:
-            jj_la1[91] = jj_gen;
+            jj_la1[92] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
           break;
         default:
-          jj_la1[92] = jj_gen;
+          jj_la1[93] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -3719,14 +3734,14 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
               ;
               break;
             default:
-              jj_la1[93] = jj_gen;
+              jj_la1[94] = jj_gen;
               break label_37;
             }
           }
           ArrayInitializer();
           break;
         default:
-          jj_la1[94] = jj_gen;
+          jj_la1[95] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -3833,7 +3848,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           TryStatement();
           break;
         default:
-          jj_la1[95] = jj_gen;
+          jj_la1[96] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -3945,7 +3960,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           TypeDeclaration();
           break;
         default:
-          jj_la1[96] = jj_gen;
+          jj_la1[97] = jj_gen;
           if (jj_2_34(1)) {
             Statement();
           } else {
@@ -3957,7 +3972,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
               UnmodifiedInterfaceDeclaration();
               break;
             default:
-              jj_la1[97] = jj_gen;
+              jj_la1[98] = jj_gen;
               jj_consume_token(-1);
               throw new ParseException();
             }
@@ -3997,7 +4012,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
              jjtn000.setFinal();
         break;
       default:
-        jj_la1[98] = jj_gen;
+        jj_la1[99] = jj_gen;
         ;
       }
       Type();
@@ -4009,7 +4024,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[99] = jj_gen;
+          jj_la1[100] = jj_gen;
           break label_39;
         }
         jj_consume_token(COMMA);
@@ -4064,7 +4079,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         PreDecrementExpression();
         break;
       default:
-        jj_la1[101] = jj_gen;
+        jj_la1[102] = jj_gen;
         if (jj_2_35(2147483647)) {
           PostfixExpression();
         } else {
@@ -4108,12 +4123,12 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
               Expression();
               break;
             default:
-              jj_la1[100] = jj_gen;
+              jj_la1[101] = jj_gen;
               ;
             }
             break;
           default:
-            jj_la1[102] = jj_gen;
+            jj_la1[103] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
@@ -4159,7 +4174,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[103] = jj_gen;
+          jj_la1[104] = jj_gen;
           break label_40;
         }
         SwitchLabel();
@@ -4212,7 +4227,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         jj_consume_token(COLON);
         break;
       default:
-        jj_la1[104] = jj_gen;
+        jj_la1[105] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -4255,7 +4270,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Statement();
         break;
       default:
-        jj_la1[105] = jj_gen;
+        jj_la1[106] = jj_gen;
         ;
       }
   jjtree.closeNodeScope(jjtn000, true);
@@ -4384,7 +4399,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         ForInit();
         break;
       default:
-        jj_la1[106] = jj_gen;
+        jj_la1[107] = jj_gen;
         ;
       }
       jj_consume_token(SEMICOLON);
@@ -4419,7 +4434,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Expression();
         break;
       default:
-        jj_la1[107] = jj_gen;
+        jj_la1[108] = jj_gen;
         ;
       }
       jj_consume_token(SEMICOLON);
@@ -4450,7 +4465,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         ForUpdate();
         break;
       default:
-        jj_la1[108] = jj_gen;
+        jj_la1[109] = jj_gen;
         ;
       }
       jj_consume_token(RPAREN);
@@ -4512,7 +4527,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           StatementExpressionList();
           break;
         default:
-          jj_la1[109] = jj_gen;
+          jj_la1[110] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -4552,7 +4567,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[110] = jj_gen;
+          jj_la1[111] = jj_gen;
           break label_42;
         }
         jj_consume_token(COMMA);
@@ -4619,7 +4634,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         jj_consume_token(IDENTIFIER);
         break;
       default:
-        jj_la1[111] = jj_gen;
+        jj_la1[112] = jj_gen;
         ;
       }
       jj_consume_token(SEMICOLON);
@@ -4642,7 +4657,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         jj_consume_token(IDENTIFIER);
         break;
       default:
-        jj_la1[112] = jj_gen;
+        jj_la1[113] = jj_gen;
         ;
       }
       jj_consume_token(SEMICOLON);
@@ -4691,7 +4706,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Expression();
         break;
       default:
-        jj_la1[113] = jj_gen;
+        jj_la1[114] = jj_gen;
         ;
       }
       jj_consume_token(SEMICOLON);
@@ -4793,7 +4808,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           ;
           break;
         default:
-          jj_la1[114] = jj_gen;
+          jj_la1[115] = jj_gen;
           break label_43;
         }
         jj_consume_token(CATCH);
@@ -4810,7 +4825,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Block();
         break;
       default:
-        jj_la1[115] = jj_gen;
+        jj_la1[116] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -4850,7 +4865,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         Expression();
         break;
       default:
-        jj_la1[116] = jj_gen;
+        jj_la1[117] = jj_gen;
         ;
       }
       jj_consume_token(SEMICOLON);
@@ -5132,16 +5147,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     try { return !jj_3_37(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(36, xla); }
-  }
-
-  final private boolean jj_3R_51() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_17()) { jj_scanpos = xsp; break; }
-    }
-    return false;
   }
 
   final private boolean jj_3R_105() {
@@ -6198,12 +6203,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
-  final private boolean jj_3R_341() {
-    if (jj_scan_token(COLON)) return true;
-    if (jj_3R_65()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_74() {
     if (jj_3R_131()) return true;
     return false;
@@ -6211,6 +6210,12 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
 
   final private boolean jj_3R_73() {
     if (jj_3R_130()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_341() {
+    if (jj_scan_token(COLON)) return true;
+    if (jj_3R_65()) return true;
     return false;
   }
 
@@ -6330,16 +6335,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
-  final private boolean jj_3R_148() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_3R_65()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_341()) jj_scanpos = xsp;
-    if (jj_scan_token(SEMICOLON)) return true;
-    return false;
-  }
-
   final private boolean jj_3R_262() {
     if (jj_scan_token(LBRACE)) return true;
     Token xsp;
@@ -6348,6 +6343,16 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       if (jj_3_3()) { jj_scanpos = xsp; break; }
     }
     if (jj_scan_token(RBRACE)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_148() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_3R_65()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_341()) jj_scanpos = xsp;
+    if (jj_scan_token(SEMICOLON)) return true;
     return false;
   }
 
@@ -6360,6 +6365,18 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   final private boolean jj_3R_289() {
     if (jj_scan_token(EXTENDS)) return true;
     if (jj_3R_51()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_136() {
+    if (jj_scan_token(CLASS)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_289()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_290()) jj_scanpos = xsp;
+    if (jj_3R_262()) return true;
     return false;
   }
 
@@ -6378,15 +6395,8 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
-  final private boolean jj_3R_136() {
-    if (jj_scan_token(CLASS)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_289()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_290()) jj_scanpos = xsp;
-    if (jj_3R_262()) return true;
+  final private boolean jj_3R_181() {
+    if (jj_scan_token(STRICTFP)) return true;
     return false;
   }
 
@@ -6400,11 +6410,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     }
     xsp = jj_scanpos;
     if (jj_3R_349()) jj_scanpos = xsp;
-    return false;
-  }
-
-  final private boolean jj_3R_181() {
-    if (jj_scan_token(STRICTFP)) return true;
     return false;
   }
 
@@ -6439,11 +6444,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
-  final private boolean jj_3R_346() {
-    if (jj_3R_353()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_126() {
     Token xsp;
     while (true) {
@@ -6451,6 +6451,11 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       if (jj_3R_162()) { jj_scanpos = xsp; break; }
     }
     if (jj_3R_136()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_346() {
+    if (jj_3R_353()) return true;
     return false;
   }
 
@@ -6484,13 +6489,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
-  final private boolean jj_3R_159() {
-    if (jj_scan_token(THROW)) return true;
-    if (jj_3R_65()) return true;
-    if (jj_scan_token(SEMICOLON)) return true;
-    return false;
-  }
-
   final private boolean jj_3_2() {
     Token xsp;
     while (true) {
@@ -6501,17 +6499,9 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
-  final private boolean jj_3R_362() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_150()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_158() {
-    if (jj_scan_token(RETURN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_347()) jj_scanpos = xsp;
+  final private boolean jj_3R_159() {
+    if (jj_scan_token(THROW)) return true;
+    if (jj_3R_65()) return true;
     if (jj_scan_token(SEMICOLON)) return true;
     return false;
   }
@@ -6526,11 +6516,17 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
-  final private boolean jj_3R_157() {
-    if (jj_scan_token(CONTINUE)) return true;
+  final private boolean jj_3R_362() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_150()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_158() {
+    if (jj_scan_token(RETURN)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(71)) jj_scanpos = xsp;
+    if (jj_3R_347()) jj_scanpos = xsp;
     if (jj_scan_token(SEMICOLON)) return true;
     return false;
   }
@@ -6556,6 +6552,15 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
 
   final private boolean jj_3R_69() {
     if (jj_3R_126()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_157() {
+    if (jj_scan_token(CONTINUE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(71)) jj_scanpos = xsp;
+    if (jj_scan_token(SEMICOLON)) return true;
     return false;
   }
 
@@ -6603,6 +6608,11 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
+  final private boolean jj_3_1() {
+    if (jj_3R_44()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_344() {
     if (jj_3R_352()) return true;
     return false;
@@ -6610,11 +6620,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
 
   final private boolean jj_3R_358() {
     if (jj_3R_359()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_3R_44()) return true;
     return false;
   }
 
@@ -6650,6 +6655,12 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
+  final private boolean jj_3R_332() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_285()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_154() {
     if (jj_scan_token(DO)) return true;
     if (jj_3R_68()) return true;
@@ -6658,12 +6669,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     if (jj_3R_65()) return true;
     if (jj_scan_token(RPAREN)) return true;
     if (jj_scan_token(SEMICOLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_332() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_285()) return true;
     return false;
   }
 
@@ -8070,6 +8075,16 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     return false;
   }
 
+  final private boolean jj_3R_51() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_17()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
   public JavaParserTokenManager token_source;
   public Token token, jj_nt;
   private int jj_ntk;
@@ -8078,7 +8093,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   public boolean lookingAhead = false;
   private boolean jj_semLA;
   private int jj_gen;
-  final private int[] jj_la1 = new int[117];
+  final private int[] jj_la1 = new int[118];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -8090,16 +8105,16 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       jj_la1_3();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x1000,0x10001000,0x10001000,0x4000000,0x0,0x10001000,0x10001000,0x5104a000,0x10000000,0x10000000,0x0,0x0,0x0,0x0,0x10001000,0x10001000,0x1000,0x1000,0x10001000,0x10001000,0x4000000,0x510cb000,0x5104a000,0x10000000,0x10000000,0x0,0x0,0x0,0x4904a000,0x4904a000,0x0,0x10001000,0x10001000,0x0,0x0,0x0,0x0,0x5104a000,0x10000000,0x0,0x0,0x0,0x4904a000,0x0,0x4104a000,0x0,0x4104a000,0x4104a000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4904a000,0x0,0x0,0x4904a000,0x8000000,0x0,0x0,0x0,0x0,0x8000000,0x0,0x0,0x8000000,0x8000000,0x4904a000,0x0,0x0,0x0,0x0,0x0,0x0,0xc9a4e000,0x10000000,0x80000,0x10000000,0x0,0x0,0x0,0x4904a000,0x410000,0x410000,0x2000000,0x5904a000,0x4904a000,0x4904a000,0x4904a000,0x0,0x0,0x0,0x4904a000,0x20000,0x20000000,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x10001000,0x10001000,0x4000000,0x0,0x10001000,0x10001000,0x5104a000,0x10000000,0x10000000,0x0,0x0,0x0,0x0,0x10001000,0x10001000,0x1000,0x1000,0x10001000,0x10001000,0x4000000,0x510cb000,0x5104a000,0x10000000,0x10000000,0x0,0x0,0x0,0x4904a000,0x4904a000,0x0,0x10001000,0x10001000,0x0,0x0,0x0,0x0,0x5104a000,0x10000000,0x0,0x0,0x0,0x4904a000,0x0,0x4104a000,0x0,0x4104a000,0x4104a000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4904a000,0x0,0x0,0x4904a000,0x8000000,0x0,0x0,0x0,0x0,0x8000000,0x0,0x0,0x8000000,0x8000000,0x4904a000,0x0,0x0,0x0,0x0,0x0,0x0,0xc9a4e000,0x10000000,0x80000,0x10000000,0x0,0x0,0x0,0x4904a000,0x410000,0x410000,0x2000000,0x5904a000,0x4904a000,0x4904a000,0x4904a000,0x0,0x0,0x0,0x4904a000,0x20000,0x20000000,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x800,0x8,0x0,0x0,0x0,0x40004040,0x40004000,0x40004000,0x0,0x4,0x40027000,0x40027000,0x110370a0,0x27000,0x27000,0x4,0x0,0x0,0x0,0x40127100,0x40127100,0x40004000,0x40004000,0x40027000,0x40027000,0x0,0x591371e0,0x110370a0,0x11027000,0x11027000,0x0,0x0,0x0,0x8a2506a0,0x8a2506a0,0x0,0x40127100,0x40127100,0x800000,0x0,0x0,0x0,0x100a0,0x0,0x7000,0x7000,0x800000,0x8a2506a0,0x20000,0x100a0,0x0,0x100a0,0x80100a0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8a2506a0,0x0,0x0,0x8a2506a0,0x82240600,0x0,0x0,0x0,0x0,0x82240600,0x0,0x0,0x82000400,0x2000000,0x8a2506a0,0x0,0x0,0x0,0x200,0x0,0x0,0xae7d86a2,0x0,0x40,0x0,0x0,0x0,0x0,0x8a2506a0,0x0,0x0,0x0,0x8a2506a0,0x8a2506a0,0x8a2506a0,0x8a2506a0,0x0,0x0,0x0,0x8a2506a0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x800,0x8,0x0,0x0,0x20000,0x0,0x40004040,0x40004000,0x40004000,0x0,0x4,0x40027000,0x40027000,0x110370a0,0x27000,0x27000,0x4,0x0,0x0,0x0,0x40127100,0x40127100,0x40004000,0x40004000,0x40027000,0x40027000,0x0,0x591371e0,0x110370a0,0x11027000,0x11027000,0x0,0x0,0x0,0x8a2506a0,0x8a2506a0,0x0,0x40127100,0x40127100,0x800000,0x0,0x0,0x0,0x100a0,0x0,0x7000,0x7000,0x800000,0x8a2506a0,0x20000,0x100a0,0x0,0x100a0,0x80100a0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8a2506a0,0x0,0x0,0x8a2506a0,0x82240600,0x0,0x0,0x0,0x0,0x82240600,0x0,0x0,0x82000400,0x2000000,0x8a2506a0,0x0,0x0,0x0,0x200,0x0,0x0,0xae7d86a2,0x0,0x40,0x0,0x0,0x0,0x0,0x8a2506a0,0x0,0x0,0x0,0x8a2506a0,0x8a2506a0,0x8a2506a0,0x8a2506a0,0x0,0x0,0x0,0x8a2506a0,0x0,0x0,0x0,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x40000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x10080,0x0,0x0,0x0,0x20000,0x400,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10080,0x10080,0x0,0x0,0x20000,0x80000,0x4000,0xc014e8,0xc014e8,0x20000,0x0,0x0,0x0,0x11000,0x4000,0x20000,0x80,0x0,0x0,0x0,0x0,0x4e8,0x0,0x80,0x4000,0x0,0x80,0x20000,0x80000,0x80000,0x1000000,0x40000000,0x80000000,0x0,0x0,0x0,0x24000000,0x24000000,0x0,0x18300000,0x18300000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc004e8,0xc00000,0xc00000,0x4e8,0xc004e8,0x400,0x0,0x0,0x400,0x468,0x80,0x44400,0x68,0x0,0xc004e8,0x20000,0x1000,0x4400,0x0,0x4000,0x4000,0x114e8,0x0,0x0,0x0,0x20000,0x80000,0x0,0x4e8,0x0,0x0,0x0,0x4e8,0xc004e8,0x4e8,0x4e8,0x20000,0x80,0x80,0xc004e8,0x0,0x0,0x2000000,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x40000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x10080,0x0,0x0,0x0,0x20000,0x400,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10080,0x10080,0x0,0x0,0x20000,0x80000,0x4000,0xc014e8,0xc014e8,0x20000,0x0,0x0,0x0,0x11000,0x4000,0x20000,0x80,0x0,0x0,0x0,0x0,0x4e8,0x0,0x80,0x4000,0x0,0x80,0x20000,0x80000,0x80000,0x1000000,0x40000000,0x80000000,0x0,0x0,0x0,0x24000000,0x24000000,0x0,0x18300000,0x18300000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc004e8,0xc00000,0xc00000,0x4e8,0xc004e8,0x400,0x0,0x0,0x400,0x468,0x80,0x44400,0x68,0x0,0xc004e8,0x20000,0x1000,0x4400,0x0,0x4000,0x4000,0x114e8,0x0,0x0,0x0,0x20000,0x80000,0x0,0x4e8,0x0,0x0,0x0,0x4e8,0xc004e8,0x4e8,0x4e8,0x20000,0x80,0x80,0xc004e8,0x0,0x0,0x2000000,};
    }
    private static void jj_la1_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x1000000,0x2000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf,0xf,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffe000,0xffe000,0x0,0x0,0x0,0x80,0x100,0x40,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1c00,0xc,0xc,0x230,0x230,0xc,0xf,0x0,0x0,0x0,0x0,0x0,0x3,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0xf,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0xffe000,0x3,0x0,0x0,0x0,0x0,0x3,0xf,0x3,0x3,0x0,0x0,0x0,0xf,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x0,0x1000000,0x2000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf,0xf,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffe000,0xffe000,0x0,0x0,0x0,0x80,0x100,0x40,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1c00,0xc,0xc,0x230,0x230,0xc,0xf,0x0,0x0,0x0,0x0,0x0,0x3,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0xf,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0xffe000,0x3,0x0,0x0,0x0,0x0,0x3,0xf,0x3,0x3,0x0,0x0,0x0,0xf,0x0,0x0,0x0,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[37];
   private boolean jj_rescan = false;
@@ -8110,7 +8125,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 117; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 118; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -8120,7 +8135,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 117; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 118; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -8129,7 +8144,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 117; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 118; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -8139,7 +8154,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 117; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 118; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -8258,7 +8273,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 117; i++) {
+    for (int i = 0; i < 118; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

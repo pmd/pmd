@@ -5,6 +5,7 @@ package net.sourceforge.pmd.ast;
 public class ASTImportDeclaration extends SimpleNode {
 
     private boolean isImportOnDemand;
+    private boolean isStatic;
 
     public ASTImportDeclaration(int id) {
         super(id);
@@ -15,17 +16,24 @@ public class ASTImportDeclaration extends SimpleNode {
     }
 
     public void setImportOnDemand() {
-        this.isImportOnDemand = true;
+        isImportOnDemand = true;
     }
 
     public boolean isImportOnDemand() {
         return isImportOnDemand;
     }
 
+    public void setStatic() {
+        isStatic = true;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
     public ASTName getImportedNameNode() {
         return (ASTName) jjtGetChild(0);
     }
-
 
     /**
      * Accept the visitor. *

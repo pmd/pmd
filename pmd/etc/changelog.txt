@@ -10,8 +10,10 @@ Fixed bug 1055346 - ImmutableFieldRule no longer reports false positive on prein
 Fixed bug 1055930 - CouplingBetweenObjectsRule no longer throws a NPE on interfaces
 Implemented RFE 1058033 - Renamed run.[sh|bat] to pmd.[sh|bat].
 Implemented RFE 1058042 - XML output is more readable now.
+Applied patch 1051956 - Rulesets that reference rules using "ref" can now override various properties.
 YAHTMLRenderer no longer has dependence on Ant packages.
 Modified the AST to correctly include PostfixExpression nodes.  Previously a statement like "x++;" was embedded in the parent StatementExpression node.
+Continued working on JDK 1.5 compatibility - added support for static import statements.
 
 October 19, 2004 - 2.0:
 New rules: InstantiationToGetClass, IdempotentOperationsRule, SuspiciousEqualsMethodName, SimpleDateFormatNeedsLocale, JUnitTestsShouldContainAssertsRule, SuspiciousConstantFieldName, ImmutableFieldRule, MoreThanOneLoggerRule, LoggerIsNotStaticFinalRule, UseLocaleWithCaseConversions

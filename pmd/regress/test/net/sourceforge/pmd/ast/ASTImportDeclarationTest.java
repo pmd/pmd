@@ -3,23 +3,52 @@
 */
 package test.net.sourceforge.pmd.ast;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.TargetJDK1_5;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
-public class ASTImportDeclarationTest extends TestCase {
+import java.util.Set;
 
-    public void testBasic() {
-        ASTImportDeclaration i = new ASTImportDeclaration(1);
-        assertTrue(!i.isImportOnDemand());
-        i.setImportOnDemand();
-        assertTrue(i.isImportOnDemand());
+public class ASTImportDeclarationTest extends ParserTst {
+
+    public void testImportOnDemand() throws Throwable {
+        Set ops = getNodes(ASTImportDeclaration.class, TEST1);
+        assertTrue(((ASTImportDeclaration)(ops.iterator().next())).isImportOnDemand());
     }
 
-    public void testGetImportedNameNode() {
-        ASTImportDeclaration i = new ASTImportDeclaration(1);
-        ASTName name = new ASTName(2);
-        i.jjtAddChild(name, 0);
-        assertEquals(name, i.getImportedNameNode());
+    public void testGetImportedNameNode() throws Throwable {
+        Set ops = getNodes(ASTImportDeclaration.class, TEST2);
+        ASTImportDeclaration i = (ASTImportDeclaration)(ops.iterator().next());
+        assertEquals("foo.bar.Baz", i.getImportedNameNode().getImage());
     }
+
+    public void testStaticImport() throws Throwable {
+        Set ops = getNodes(new TargetJDK1_5(),  ASTImportDeclaration.class, TEST3);
+        ASTImportDeclaration i = (ASTImportDeclaration)(ops.iterator().next());
+        assertTrue(i.isStatic());
+    }
+
+    public void testStaticImportFailsWithJDK14() throws Throwable {
+        try {
+            getNodes(ASTImportDeclaration.class, TEST3);
+            fail("Should have failed to parse a static import in JDK 1.4 mode");
+        } catch (ParseException pe) {
+            // cool
+        }
+    }
+
+    private static final String TEST1 =
+    "import foo.bar.*;" + PMD.EOL +
+    "public class Foo {}";
+
+    private static final String TEST2 =
+    "import foo.bar.Baz;" + PMD.EOL +
+    "public class Foo {}";
+
+    private static final String TEST3 =
+    "import static foo.bar.Baz;" + PMD.EOL +
+    "public class Foo {}";
+
 }

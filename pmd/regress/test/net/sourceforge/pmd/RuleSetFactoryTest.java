@@ -28,7 +28,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;

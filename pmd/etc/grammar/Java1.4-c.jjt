@@ -83,6 +83,12 @@ public class JavaParser {
     }
   }
 
+  private void checkForBadStaticImportUsage() {
+    if (!isJDK15) {
+      throw new ParseException("Can't use static imports when running in JDK 1.4 mode!");
+    }
+  }
+
   private void checkForBadEnumUsage(String in, String usage) {
     if (isJDK15 && in.equals("enum")) {
       throw new ParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
@@ -416,7 +422,7 @@ void PackageDeclaration() :
 void ImportDeclaration() :
 {}
 {
-  "import" Name() [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
+  "import" [ "static" {checkForBadStaticImportUsage();jjtThis.setStatic();} ] Name() [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
 void TypeDeclaration() :

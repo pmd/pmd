@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.testframework;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
@@ -54,8 +55,12 @@ public class ParserTst extends TestCase {
     }
 
     public Set getNodes(Class clazz, String javaCode) throws Throwable {
+        return getNodes(new TargetJDK1_4(), clazz, javaCode);
+    }
+
+    public Set getNodes(TargetJDKVersion jdk, Class clazz, String javaCode) throws Throwable {
         Collector coll = new Collector(clazz);
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
+        JavaParser parser = jdk.createParser(new StringReader(javaCode));
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
