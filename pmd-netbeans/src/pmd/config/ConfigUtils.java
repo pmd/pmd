@@ -26,15 +26,19 @@
  */
 package pmd.config;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.JOptionPane;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import pmd.config.ui.RuleComparator;
+import pmd.custom.RuleClassLoader;
 
 /**
  * @author ole martin mørk
@@ -59,6 +63,10 @@ public class ConfigUtils {
 		}
 		Collections.sort( list, new RuleComparator() );
 		return list;
+	}
+	
+	public static List getRuleList() {
+		return createRuleList( PMDOptionsSettings.getDefault().getRules() );
 	}
 
 
@@ -88,16 +96,37 @@ public class ConfigUtils {
 	 */
 	public static List getAllAvailableRules() {
 		List list = new ArrayList();
+		CustomRuleSetSettings settings = PMDOptionsSettings.getDefault().getRulesets();
+		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		try {
-			RuleSetFactory ruleSetFactory = new RuleSetFactory();
-			Iterator iterator = ruleSetFactory.getRegisteredRuleSets();
-			while( iterator.hasNext() ) {
-				RuleSet ruleset = ( RuleSet )iterator.next();
-				list.addAll( ruleset.getRules() );
+			if( settings.isIncludeStdRules() ) {
+				try {
+					Iterator iterator = ruleSetFactory.getRegisteredRuleSets();
+					while( iterator.hasNext() ) {
+						RuleSet ruleset = ( RuleSet )iterator.next();
+						list.addAll( ruleset.getRules() );
+					}
+				}
+				catch( RuleSetNotFoundException e ) {
+					e.printStackTrace();
+				}	
+			}
+			Iterator rulesets = settings.getRuleSets().iterator();
+			while( rulesets.hasNext() ) {
+				String ruleSetXml = (String)rulesets.next();
+				try {
+					RuleSet ruleset = ruleSetFactory.createRuleSet( 
+						new FileInputStream( ruleSetXml ), 
+						new RuleClassLoader( ConfigUtils.class.getClassLoader() ) );
+					list.addAll( ruleset.getRules() );
+				}
+				catch( RuntimeException e ) {
+					e.printStackTrace();
+				}
 			}
 		}
-		catch( RuleSetNotFoundException e ) {
-			e.printStackTrace();
+		catch( FileNotFoundException e ) {
+			throw new RuntimeException( e.getMessage() );
 		}
 		Collections.sort( list, new RuleComparator() );
 		return list;

@@ -44,9 +44,7 @@ public class PMDOptionsSettings extends SystemOption {
 	/** The constant for the rulesets property */
 	public final static String PROP_RULES = "rules";
 
-	public final static String PROP_CLASSPATH = "classpath";
-	
-	public final static String PROP_RULESETS = "rulesets";
+	public final static String PROP_RULESETS = "rulesetz";
 	
 	/** The default rules.*/
 	private static final String DEFAULT_RULES =
@@ -120,35 +118,19 @@ public class PMDOptionsSettings extends SystemOption {
 		putProperty( PROP_RULES, rules, true );
 	}
 
-	/** Getter for property classpath.
-	 * @return Value of property classpath.
-	 *
-	 */
-	public String getClasspath() {
-		return (String)getProperty( PROP_CLASSPATH );
-	}	
-	
-	/** Setter for property classpath.
-	 * @param classpath New value of property classpath.
-	 *
-	 */
-	public void setClasspath(String classpath) {
-		putProperty( PROP_CLASSPATH, classpath, true );
-	}
-	
 	/** Getter for property rulesets.
 	 * @return Value of property rulesets.
 	 *
 	 */
-	public String getRulesets() {
-		return (String)getProperty( PROP_RULESETS );
+	public CustomRuleSetSettings getRulesets() {
+		return (CustomRuleSetSettings)getProperty( PROP_RULESETS );
 	}
 	
 	/** Setter for property rulesets.
 	 * @param rulesets New value of property rulesets.
 	 *
 	 */
-	public void setRulesets(String rulesets) {
+	public void setRulesets(CustomRuleSetSettings rulesets) {
 		putProperty( PROP_RULESETS, rulesets, true );
 	}
 	

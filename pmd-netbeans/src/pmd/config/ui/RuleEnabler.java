@@ -30,6 +30,7 @@ import java.beans.PropertyEditorSupport;
 import javax.swing.JPanel;
 import net.sourceforge.pmd.Rule;
 import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
 
 /** The JPanel used to edit the Rule property
  * @author ole martin mørk
@@ -43,6 +44,7 @@ public class RuleEnabler extends JPanel {
 	public RuleEnabler( PropertyEditorSupport editor ) {
 		this.editor = editor;
 		initComponents();
+		AvailableListModel.getInstance().refresh();
 	}
 
 	/** This method is called from within the constructor to
@@ -372,6 +374,7 @@ public class RuleEnabler extends JPanel {
 	private void chosenListMouseClicked(MouseEvent evt) {//GEN-FIRST:event_chosenListMouseClicked
 		if( evt.getClickCount() >= 2 ) {
 			removeOneActionPerformed();
+			
 		}
 	}//GEN-LAST:event_chosenListMouseClicked
 

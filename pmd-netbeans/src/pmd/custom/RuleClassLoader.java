@@ -9,9 +9,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.StringTokenizer;
+import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import pmd.config.CustomRuleSetSettings;
 import pmd.config.PMDOptionsSettings;
 
 /**
@@ -42,11 +43,11 @@ public class RuleClassLoader extends ClassLoader {
 		String className = name.replace( '.', '/' );
 		className += ".class";
 
-		String classPath = PMDOptionsSettings.getDefault().getClasspath();
-		StringTokenizer tokens = new StringTokenizer( classPath, ";" );
+		CustomRuleSetSettings settings = PMDOptionsSettings.getDefault().getRulesets();
+		Iterator iterator = settings.getClassPath().iterator();
 		try {
-			while( tokens.hasMoreTokens() ) {
-				File jar = new File( tokens.nextToken() );
+			while( iterator.hasNext() ) {
+				File jar = new File( (String)iterator.next() );
 				JarFile jarFile = new JarFile( jar, false );
 				JarEntry entry = jarFile.getJarEntry( className );
 				System.out.println( entry );

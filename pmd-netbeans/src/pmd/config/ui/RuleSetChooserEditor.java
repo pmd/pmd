@@ -28,9 +28,7 @@ package pmd.config.ui;
 
 import java.awt.Component;
 import java.beans.PropertyEditorSupport;
-import java.util.StringTokenizer;
-import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
+import pmd.config.CustomRuleSetSettings;
 
 /** The PropertyEditor of the Rule property
  * @author ole martin mørk
@@ -62,16 +60,13 @@ public class RuleSetChooserEditor extends PropertyEditorSupport {
 	 * @return the selected rules
 	 */
 	public Object getValue() {
-		ListModel model = chooser.getListModel();
-		StringBuffer buffer = new StringBuffer();
-		for( int i = 0; i < model.getSize(); i++ ) {
-			buffer.append( model.getElementAt( i ) ).append( ", " );
-		}
-		if( buffer.length() > 2 ) {
-			buffer.delete( buffer.length() - 2, buffer.length() );
-		}
-		buffer.append( ", " ).append( chooser.includeStandardRules() );
-		return buffer.toString();
+		CustomRuleSetSettings ruleSetSettings = new CustomRuleSetSettings();
+		RuleSetListModel model = (RuleSetListModel)chooser.getRuleSetListModel();
+		RuleSetListModel model2 = (RuleSetListModel)chooser.getJarListModel();
+		ruleSetSettings.setIncludeStdRules( chooser.includeStandardRules() );
+		ruleSetSettings.setClassPath( model2.getList() );
+		ruleSetSettings.setRuleSets( model.getList() );
+		return ruleSetSettings;
 	}
 
 
@@ -89,18 +84,13 @@ public class RuleSetChooserEditor extends PropertyEditorSupport {
 	 * @param obj The new value
 	 */
 	public void setValue( Object obj ) {
-		if( obj != null ) {
-			DefaultListModel model = chooser.getListModel();
-			StringTokenizer tokenizer = new StringTokenizer( obj.toString(), "," );
-			int tokens = tokenizer.countTokens();
-			for( int i = 0; i < tokens - 1 && tokenizer.hasMoreTokens(); i++ ) {
-				model.addElement( tokenizer.nextToken().trim() );
-			}
-			if( tokenizer.hasMoreTokens() ) {
-				chooser.setIncludeStandardRules(
-					Boolean.valueOf( tokenizer.nextToken().trim() ).equals( Boolean.TRUE ) );
-			}
-			
+		if( obj != null && obj instanceof CustomRuleSetSettings ) {
+			CustomRuleSetSettings settings = (CustomRuleSetSettings)obj;
+			RuleSetListModel model = (RuleSetListModel)chooser.getRuleSetListModel();
+			model.setList( settings.getRuleSets() );
+			RuleSetListModel model2 = (RuleSetListModel)chooser.getJarListModel();
+			model2.setList( settings.getClassPath() );
+			chooser.setIncludeStandardRules( settings.isIncludeStdRules() );
 		}
 	}
 
@@ -110,5 +100,5 @@ public class RuleSetChooserEditor extends PropertyEditorSupport {
 	 * @param string the text
 	 * @exception IllegalArgumentException never
 	 */
-	public void setAsText( String string ) throws IllegalArgumentException { }
+	public void setAsText( String string ) throws IllegalArgumentException {}
 }

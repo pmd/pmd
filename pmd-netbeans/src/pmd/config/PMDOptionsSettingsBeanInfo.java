@@ -52,24 +52,20 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 	 * @return the description of the rulesets property
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor descriptor[] = new PropertyDescriptor[3];
+		PropertyDescriptor descriptor[] = new PropertyDescriptor[2];
 		try {
 			PropertyDescriptor rules = new PropertyDescriptor( "rules", PMDOptionsSettings.class, "getRules", "setRules" );
 			rules.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_rules" ) );
 			rules.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_rules" ) );
 			rules.setPropertyEditorClass( RuleEditor.class );
 			descriptor[0] = rules;
-			
-			PropertyDescriptor classpath = new PropertyDescriptor( "classpath", PMDOptionsSettings.class, "getClasspath", "setClasspath" );
-			classpath.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_classpath" ) );
-			classpath.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_classpath" ) );
-			descriptor[1] = classpath;
-			
+
 			PropertyDescriptor rulesets = new PropertyDescriptor( "rulesets", PMDOptionsSettings.class, "getRulesets", "setRulesets" );
 			rulesets.setDisplayName( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "PROP_rulesets" ) );
 			rulesets.setShortDescription( NbBundle.getMessage( PMDOptionsSettingsBeanInfo.class, "HINT_rulesets" ) );
 			rulesets.setPropertyEditorClass( RuleSetChooserEditor.class );
-			descriptor[2] = rulesets;
+			rulesets.setExpert(true);
+			descriptor[1] = rulesets;
 		}
 		catch( IntrospectionException ie ) {
 			ErrorManager.getDefault().notify( ie );

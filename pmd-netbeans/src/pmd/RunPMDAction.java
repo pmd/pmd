@@ -59,7 +59,6 @@ import org.openide.util.actions.CookieAction;
 import org.openide.windows.InputOutput;
 
 import pmd.config.ConfigUtils;
-import pmd.config.PMDOptionsSettings;
 
 /**
  * Action that can always be invoked and work procedurally.
@@ -230,8 +229,7 @@ public class RunPMDAction extends CookieAction {
 	 */
 	private static RuleSet constructRuleSets() {
 		RuleSet rules = new RuleSet();
-		List list = ConfigUtils.createRuleList(
-			PMDOptionsSettings.getDefault().getRules() );
+		List list = ConfigUtils.getRuleList();
 		Iterator iterator = list.iterator();
 		while( iterator.hasNext() ) {
 			rules.addRule( ( Rule )iterator.next() );

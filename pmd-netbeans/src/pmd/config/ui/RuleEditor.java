@@ -82,8 +82,6 @@ public class RuleEditor extends PropertyEditorSupport {
 			SelectedListModel.getSelectedListModelInstance().setList( 
 				ConfigUtils.createRuleList( (String)obj ) );
 			AvailableListModel.getInstance().refresh();
-			AvailableListModel.getInstance().getList().removeAll( 
-				SelectedListModel.getSelectedListModelInstance().getList() );
 		}
 	}
 

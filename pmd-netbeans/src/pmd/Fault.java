@@ -61,7 +61,11 @@ public class Fault implements Comparable {
 	public int compareTo( Object object ) {
 		int compared = 0;
 		if( object instanceof Fault ) {
-			compared = line - ( ( Fault )object ).line;
+			Fault other = (Fault)object;
+			compared = clazz.compareTo( other.clazz );
+			if (compared == 0 ) {
+				compared = line - ( ( Fault )object ).line;
+			}
 		}
 		return compared;
 	}

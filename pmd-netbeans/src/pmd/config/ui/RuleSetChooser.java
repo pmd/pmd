@@ -7,7 +7,6 @@
 package pmd.config.ui;
 
 import java.beans.PropertyEditorSupport;
-import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
@@ -17,12 +16,16 @@ import javax.swing.JPanel;
  */
 public class RuleSetChooser extends JPanel {
 	private final PropertyEditorSupport editor;
-	private final JFileChooser chooser = new JFileChooser();
+	private final JFileChooser ruleSetChooser = new JFileChooser();
+	private final JFileChooser jarChooser = new JFileChooser();
 	/** Creates new form RuleSetChooser */
 	public RuleSetChooser(PropertyEditorSupport editor) {
 		this.editor = editor;
-		RuleSetFilter filter = new RuleSetFilter();
-		chooser.setFileFilter( filter );
+		RuleSetFilter filter = new RuleSetFilter( RuleSetFilter.RULESETS);
+		ruleSetChooser.setFileFilter( filter );
+		RuleSetFilter jarFilter = new RuleSetFilter( RuleSetFilter.JARS);
+		jarChooser.setFileFilter( jarFilter );
+		
 		initComponents();
 	}
 	
@@ -34,70 +37,87 @@ public class RuleSetChooser extends JPanel {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        upperPanel = new javax.swing.JPanel();
+        rulelListPane = new javax.swing.JScrollPane();
         rulesetList = new javax.swing.JList();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        remove = new javax.swing.JButton();
-        add = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        uperRightPanel = new javax.swing.JPanel();
+        buttonPanel = new javax.swing.JPanel();
+        removeRuleSet = new javax.swing.JButton();
+        addRuleSet = new javax.swing.JButton();
+        lblRuleSets = new javax.swing.JLabel();
         stdRules = new javax.swing.JCheckBox();
+        lowerPanel = new javax.swing.JPanel();
+        jarListPane = new javax.swing.JScrollPane();
+        jarList = new javax.swing.JList();
+        lowerRightPanel = new javax.swing.JPanel();
+        buttonPanel2 = new javax.swing.JPanel();
+        removejar = new javax.swing.JButton();
+        addjar = new javax.swing.JButton();
+        lblRules = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
-        setPreferredSize(new java.awt.Dimension(355, 200));
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(300, 131));
-        rulesetList.setModel(new DefaultListModel());
+        setPreferredSize(new java.awt.Dimension(600, 400));
+        setMinimumSize(new java.awt.Dimension(500, 500));
+        upperPanel.setLayout(new java.awt.GridBagLayout());
+
+        upperPanel.setBorder(new javax.swing.border.EtchedBorder());
+        upperPanel.setMinimumSize(new java.awt.Dimension(200, 200));
+        rulelListPane.setPreferredSize(new java.awt.Dimension(300, 131));
+        rulesetList.setModel(new RuleSetListModel());
         rulesetList.setMinimumSize(new java.awt.Dimension(200, 200));
-        jScrollPane1.setViewportView(rulesetList);
+        rulelListPane.setViewportView(rulesetList);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 1, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        add(jScrollPane1, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 1, 3);
+        upperPanel.add(rulelListPane, gridBagConstraints);
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        uperRightPanel.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.BorderLayout(0, 5));
+        buttonPanel.setLayout(new java.awt.BorderLayout(0, 5));
 
-        remove.setText("Remove");
-        remove.addActionListener(new java.awt.event.ActionListener() {
+        removeRuleSet.setText("Remove RuleSets");
+        removeRuleSet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeActionPerformed(evt);
+                removeRuleSetActionPerformed(evt);
             }
         });
 
-        jPanel2.add(remove, java.awt.BorderLayout.CENTER);
+        buttonPanel.add(removeRuleSet, java.awt.BorderLayout.CENTER);
 
-        add.setText("Add");
-        add.addActionListener(new java.awt.event.ActionListener() {
+        addRuleSet.setText("Add RuleSet");
+        addRuleSet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addActionPerformed(evt);
+                addRuleSetActionPerformed(evt);
             }
         });
 
-        jPanel2.add(add, java.awt.BorderLayout.NORTH);
+        buttonPanel.add(addRuleSet, java.awt.BorderLayout.NORTH);
 
-        jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
+        uperRightPanel.add(buttonPanel, java.awt.BorderLayout.NORTH);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        add(jPanel1, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 3);
+        upperPanel.add(uperRightPanel, gridBagConstraints);
 
-        jLabel1.setText("Choose the rulesets to use.");
+        lblRuleSets.setLabelFor(rulelListPane);
+        lblRuleSets.setText("Choose the rulesets to use");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(jLabel1, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
+        upperPanel.add(lblRuleSets, gridBagConstraints);
 
         stdRules.setText("Include PMD standard rules.");
         stdRules.addActionListener(new java.awt.event.ActionListener() {
@@ -110,35 +130,137 @@ public class RuleSetChooser extends JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        add(stdRules, gridBagConstraints);
+        upperPanel.add(stdRules, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipady = 1;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(upperPanel, gridBagConstraints);
+
+        lowerPanel.setLayout(new java.awt.GridBagLayout());
+
+        lowerPanel.setBorder(new javax.swing.border.EtchedBorder());
+        lowerPanel.setMinimumSize(new java.awt.Dimension(200, 200));
+        jarListPane.setPreferredSize(new java.awt.Dimension(300, 131));
+        jarList.setModel(new RuleSetListModel());
+        jarList.setMinimumSize(new java.awt.Dimension(200, 300));
+        jarListPane.setViewportView(jarList);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 1, 3);
+        lowerPanel.add(jarListPane, gridBagConstraints);
+
+        lowerRightPanel.setLayout(new java.awt.BorderLayout());
+
+        buttonPanel2.setLayout(new java.awt.BorderLayout(0, 5));
+
+        removejar.setText("Remove Rule jar");
+        removejar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removejarActionPerformed(evt);
+            }
+        });
+
+        buttonPanel2.add(removejar, java.awt.BorderLayout.CENTER);
+
+        addjar.setText("Add Rule jar");
+        addjar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addjarActionPerformed(evt);
+            }
+        });
+
+        buttonPanel2.add(addjar, java.awt.BorderLayout.NORTH);
+
+        lowerRightPanel.add(buttonPanel2, java.awt.BorderLayout.NORTH);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 3);
+        lowerPanel.add(lowerRightPanel, gridBagConstraints);
+
+        lblRules.setLabelFor(jarListPane);
+        lblRules.setText("Choose rule jars");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
+        lowerPanel.add(lblRules, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(lowerPanel, gridBagConstraints);
 
     }//GEN-END:initComponents
+
+	private void removejarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removejarActionPerformed
+		int index = jarList.getSelectedIndex();
+		getJarListModel().removeElementAt( index );
+		editor.firePropertyChange();
+	}//GEN-LAST:event_removejarActionPerformed
+
+	private void addjarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addjarActionPerformed
+		int returnValue = jarChooser.showOpenDialog( this );
+		if(returnValue == JFileChooser.APPROVE_OPTION) {
+			if( !getJarListModel().contains( jarChooser.getSelectedFile().getAbsolutePath() ) ) {
+				getJarListModel().addElement( 
+					jarChooser.getSelectedFile().getAbsolutePath() );
+			}
+		}
+		jarChooser.cancelSelection();
+		editor.firePropertyChange();
+	}//GEN-LAST:event_addjarActionPerformed
 
 	private void stdRulesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stdRulesActionPerformed
 		editor.firePropertyChange();
 	}//GEN-LAST:event_stdRulesActionPerformed
 
-	private void removeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeActionPerformed
+	private void removeRuleSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeRuleSetActionPerformed
 		int index = rulesetList.getSelectedIndex();
-		getListModel().removeElementAt( index );
+		getRuleSetListModel().removeElementAt( index );
 		editor.firePropertyChange();
-	}//GEN-LAST:event_removeActionPerformed
+	}//GEN-LAST:event_removeRuleSetActionPerformed
 
-	private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-		int returnValue = chooser.showOpenDialog( this );
+	private void addRuleSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRuleSetActionPerformed
+		int returnValue = ruleSetChooser.showOpenDialog( this );
 		if(returnValue == JFileChooser.APPROVE_OPTION) {
-			if( !getListModel().contains( chooser.getSelectedFile().getAbsolutePath() ) ) {
-				getListModel().addElement( 
-					chooser.getSelectedFile().getAbsolutePath() );
+			if( !getRuleSetListModel().contains( ruleSetChooser.getSelectedFile().getAbsolutePath() ) ) {
+				getRuleSetListModel().addElement( 
+					ruleSetChooser.getSelectedFile().getAbsolutePath() );
 			}
 		}
-		chooser.cancelSelection();
+		ruleSetChooser.cancelSelection();
 		editor.firePropertyChange();
-	}//GEN-LAST:event_addActionPerformed
+	}//GEN-LAST:event_addRuleSetActionPerformed
 	
-	public DefaultListModel getListModel() {
-		return (DefaultListModel)rulesetList.getModel();
+	public RuleSetListModel getRuleSetListModel() {
+		return (RuleSetListModel)rulesetList.getModel();
 	}
+	
+	public RuleSetListModel getJarListModel() {
+		return (RuleSetListModel)jarList.getModel();
+	}
+	
 	
 	public boolean includeStandardRules() {
 		return stdRules.isSelected();
@@ -149,14 +271,23 @@ public class RuleSetChooser extends JPanel {
 	}
 	
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel buttonPanel;
     private javax.swing.JList rulesetList;
-    private javax.swing.JButton remove;
-    private javax.swing.JButton add;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton addRuleSet;
+    private javax.swing.JPanel upperPanel;
+    private javax.swing.JLabel lblRules;
+    private javax.swing.JLabel lblRuleSets;
+    private javax.swing.JButton addjar;
+    private javax.swing.JPanel lowerRightPanel;
+    private javax.swing.JScrollPane rulelListPane;
+    private javax.swing.JScrollPane jarListPane;
+    private javax.swing.JButton removeRuleSet;
+    private javax.swing.JPanel buttonPanel2;
+    private javax.swing.JList jarList;
+    private javax.swing.JButton removejar;
+    private javax.swing.JPanel uperRightPanel;
     private javax.swing.JCheckBox stdRules;
+    private javax.swing.JPanel lowerPanel;
     // End of variables declaration//GEN-END:variables
 	
 }

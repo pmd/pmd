@@ -14,12 +14,32 @@ import javax.swing.filechooser.FileFilter;
  */
 public class RuleSetFilter extends FileFilter {
 	
+	public static final int JARS = 1;
+	public static final int RULESETS = 2;
+	
+	private int type;
+	public RuleSetFilter( int type ) {
+		this.type = type;
+	}
 	public boolean accept(java.io.File file) {
-		return file.getName().toLowerCase().endsWith( "xml" ) || file.isDirectory();
+		if( file.isDirectory() ) {
+			return true;
+		}
+		if( type == RULESETS ) {
+			return file.getName().toLowerCase().endsWith( "xml" );
+		}
+		else {
+			return file.getName().toLowerCase().endsWith( "jar" );
+		}
 	}	
 
 	public String getDescription() {
-		return "RuleSet(*.xml)";
+		if( type == RULESETS ) {
+			return "RuleSet(*.xml)";
+		}
+		else {
+			return "Rules(*.jar)";
+		}
 	}
 	
 }

@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.JOptionPane;
 
 import net.sourceforge.pmd.Rule;
 import pmd.config.ConfigUtils;
@@ -42,10 +43,11 @@ import pmd.config.ConfigUtils;
  * @created 16. november 2002
  */
 public class AvailableListModel extends AbstractListModel {
-	/** The instance */
-	private static AvailableListModel listmodel = new AvailableListModel();
 	/** The data in the list */
-	private List list = new ArrayList();
+	private List list;
+	/** The instance */
+	private static AvailableListModel listmodel;
+
 
 
 	/**
@@ -53,13 +55,17 @@ public class AvailableListModel extends AbstractListModel {
 	 *
 	 * @return The instance
 	 */
-	public static AvailableListModel getInstance() {
+	public static synchronized AvailableListModel getInstance() {
+		if( listmodel == null ) {
+			listmodel = new AvailableListModel();
+		}
 		return listmodel;
 	}
 
 
 	/** Creates a new instance of ListModel */
 	protected AvailableListModel() {
+		list = new ArrayList();
 		refresh();
 	}
 
@@ -156,6 +162,7 @@ public class AvailableListModel extends AbstractListModel {
 	/** Resets the list */
 	public void refresh() {
 		list = ConfigUtils.getAllAvailableRules();
-		Collections.sort( list, new RuleComparator() );
+		Collections.sort( list, new RuleComparator() );	
+		list.removeAll( SelectedListModel.getSelectedListModelInstance().getList() );
 	}
 }
