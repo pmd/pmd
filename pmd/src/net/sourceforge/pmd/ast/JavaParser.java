@@ -2400,6 +2400,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
           break;
         case MINUS:
           jj_consume_token(MINUS);
+               System.out.println("FOOOOOOOOOOOOOOOOO"); jjtn000.setNegative();
           break;
         default:
           jj_la1[69] = jj_gen;

@@ -826,7 +826,7 @@ void MultiplicativeExpression() #void :
 void UnaryExpression() :
 {}
 {
-  ( "+" | "-" {jjtThis.setNegative();} ) UnaryExpression()
+  ( "+" {jjtThis.setPositive();} | "-" {jjtThis.setNegative();} ) UnaryExpression()
 | PreIncrementExpression()
 | PreDecrementExpression()
 | UnaryExpressionNotPlusMinus()

@@ -11,19 +11,39 @@ public class ASTUnaryExpression extends SimpleNode {
         super(p, id);
     }
 
-    private boolean isPositive = true;
+    private boolean isPositive;
+    private boolean isPlaceholder = true;
 
     public void setNegative() {
-        this.isPositive = false;
+        isPositive = false;
+        isPlaceholder = false;
+    }
+
+    public void setPositive() {
+        isPositive = true;
+        isPlaceholder = false;
     }
 
     public boolean isPositive() {
-        return this.isPositive;
+        if (isPlaceholder) return false;
+        return isPositive;
+    }
+
+    public boolean isPlaceholder() {
+        return isPlaceholder;
+    }
+
+    public boolean isNegative() {
+        if (isPlaceholder) return false;
+        return !isPositive;
     }
 
     public void dump(String prefix) {
-        String out = isPositive ? "+" : "-";
-        System.out.println(toString(prefix) + ":" + out);
+        if (isPlaceholder) {
+            System.out.println(toString(prefix) + ":" + ("(placeholder)"));
+        } else {
+            System.out.println(toString(prefix) + ":" + (isPositive ? "+" : "-"));
+        }
         dumpChildren(prefix);
     }
 
