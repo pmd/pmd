@@ -167,7 +167,8 @@ public class RunPMDAction extends CookieAction {
 				pmd.processFile( reader, set, ctx );
 			}
 			catch( PMDException e ) {
-				Fault fault = new Fault( 1, name, e.getMessage() );
+				Fault fault = new Fault( 1, name, e );
+				ErrorManager.getDefault().notify( e );
 				list.add( fault );
 				FaultRegistry.getInstance().registerFault( fault, dataobject );
 			}
