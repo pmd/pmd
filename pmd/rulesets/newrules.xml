@@ -41,37 +41,28 @@ class Bar {
     </example>
     </rule>
 
-<rule   name="ConfusingTernaryExpression"
-        message="This ternary expression could be simplified"
-        class="net.sourceforge.pmd.rules.XPathRule">
+  <rule name="ConfusingTernary"
+    message="Avoid if (x != y) ..; else ..;"
+    class="net.sourceforge.pmd.rules.design.ConfusingTernary">
     <description>
-     Using != in ternary expressions can be confusing; try
-        rewriting this to use ==.
+      In an "if" expression with an "else" clause, avoid negation in
+      the test.  For example, rephrase:
+        if (x != y) diff(); else same();
+      as:
+        if (x == y) same(); else diff();
+      Most "if (x != y)" cases without an "else" are often return
+      cases, so consistent use of this rule makes the code easier
+      to read.  Also, this resolves trivial ordering problems, such
+      as "does the error case go first?" or "does the common case
+      go first?".
     </description>
-    <properties>
-        <property name="xpath">
-            <value>
-<![CDATA[
-//ConditionalExpression
-  [EqualityExpression[@Image="!="]
- or
-  PrimaryExpression/PrimaryPrefix/Expression/EqualityExpression[@Image="!="]]
-]]>
-            </value>
-        </property>
-     </properties>
-    <priority>1</priority>
-<example>
-   <![CDATA[
-class Foo {
- void bar() {
-  x = a != b ? c : d; // confusing
-  x = a == b ? d : c; // ah, that's better
- }
-}
-]]>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
+      return (x != y) ? diff : same;
+      ]]>
     </example>
-    </rule>
+  </rule>
 
 </ruleset>
 
