@@ -18,6 +18,8 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BasicScopeFactory implements ScopeFactory {
 
@@ -25,6 +27,7 @@ public class BasicScopeFactory implements ScopeFactory {
     private Set methodTriggers = new HashSet();
     private Set classTriggers = new HashSet();
     private Set globalTriggers = new HashSet();
+
     private Stack scopes = new Stack();
 
     public BasicScopeFactory() {
@@ -34,26 +37,32 @@ public class BasicScopeFactory implements ScopeFactory {
     public void openScope(ScopeCreationVisitor vis, SimpleNode node) {
         // special case - anonymous inner class - blahh
         if (node instanceof ASTClassBodyDeclaration) {
-            if (node.jjtGetParent() instanceof ASTClassBody
-             && node.jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression) {
-                processScope(vis, new ClassScope(), node);
-            } else {
-                vis.cont(node);
-            }
+            anonymousInnerClassCheck(node, vis);
         } else {
-            Scope scope;
-            if (localTriggers.contains(node.getClass())) {
-                scope = new LocalScope();
-            } else if (methodTriggers.contains(node.getClass())) {
-                scope = new MethodScope();
-            } else if (classTriggers.contains(node.getClass())) {
-                scope = new ClassScope(node.getImage());
-            } else if (globalTriggers.contains(node.getClass())) {
-                scope = new GlobalScope();
-            } else {
-                throw new RuntimeException("Can't find an appropriate scope for node of class " + node.getClass());
-            }
-            processScope(vis, scope, node);
+            checkForScope(node, vis);
+        }
+    }
+
+    private void checkForScope(SimpleNode node, ScopeCreationVisitor vis) {
+        Scope scope = null;
+        if (localTriggers.contains(node.getClass())) {
+            scope = new LocalScope();
+        } else if (methodTriggers.contains(node.getClass())) {
+            scope = new MethodScope();
+        } else if (classTriggers.contains(node.getClass())) {
+            scope = new ClassScope(node.getImage());
+        } else if (globalTriggers.contains(node.getClass())) {
+            scope = new GlobalScope();
+        }
+        processScope(vis, scope, node);
+    }
+
+    private void anonymousInnerClassCheck(SimpleNode node, ScopeCreationVisitor vis) {
+        if (node.jjtGetParent() instanceof ASTClassBody
+         && node.jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression) {
+            processScope(vis, new ClassScope(), node);
+        } else {
+            vis.cont(node);
         }
     }
 
