@@ -37,7 +37,7 @@ sub default() {
  print "Project title (i.e., PMD): ", textfield(-name=>'title',-default=>'',-override=>1);
  print br(), "Project's Unix name (i.e., pmd): ", textfield(-name=>'unixname',-default=>'',-override=>1);
  print br(), "Module directory (i.e., pmd-dcpd): ", textfield(-name=>'moduledirectory',-default=>'',-override=>1);
- print br(), "Source directory (including module directory, i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
+ print br(), "Source directory (i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
  my $cachebuster=`date`;
  print $query->hidden(-name=>'cachebuster', -value=>${cachebuster});
  print br(), submit(-value=>'Go');
@@ -49,7 +49,14 @@ sub default() {
 
 sub printStats() {
  print hr(); 
- print b("Stats:"), br(), "There are ", getTimeUntil(), " minutes until the next run";
+ print b("Stats"); 
+ if (-e "currentjob.txt") {
+  open(FILE, "currentjob.txt");
+  my $currentjob = <FILE>;
+  close(FILE);
+  print br(), "Currently processing $currentjob";
+ }
+ print br(), "There are ", getTimeUntil(), " minutes until the next scheduled run";
  open(FILE,"lastruntime.txt");
  my $lastruntime=<FILE>;
  close(FILE);
@@ -72,18 +79,14 @@ sub loadProjectList() {
    open(FILE,"jobs/${file}");
    my $jobdata=<FILE>;
    close(FILE);
-   my $p = PMD::Project->new($jobdata);
+   my $project = PMD::Project->new($jobdata);
    my $jobtext="";
-   if (-e $p->getRptFile()) {
-    my $reportURL=$p->getRptURL();
-    my $title = $p->getTitle();
-    $jobtext="<a href=\"${reportURL}\">$title</a>";
+   if (-e $project->getRptFile()) {
+    $jobtext="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
    } else {
-    $jobtext=$p->getTitle();
+    $jobtext=$project->getTitle();
    }
-   my $lines = $p->getLines();
-   my $unixname = $p->getUnixName();
-   $result="${result}<tr><td>${jobtext}</td><td></td><td><a href=\"http://${unixname}.sf.net/\">http://${unixname}.sf.net/</a></td><td>${lines}</td>";
+   $result="${result}<tr><td>${jobtext}</td><td></td><td><a href=\"http://@{[$project->getUnixName()]}.sf.net/\">http://@{[$project->getUnixName()]}.sf.net/</a></td><td>@{[$project->getLines()]}</td>";
   }
  }
  $result = "${result}</table>";
@@ -92,9 +95,7 @@ sub loadProjectList() {
 
 sub addProject() {
  my ($project) = @_;
- my $data = $project->getString();
- my $jobsfile = $project->getJobsFile();
- my $cmd = "echo \"$data\" > $jobsfile";
+ my $cmd = "echo \"@{[$project->getString()]}\" > @{[$project->getJobsFile()]}";
  `${cmd}`;
 }
 

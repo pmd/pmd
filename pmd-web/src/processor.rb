@@ -15,9 +15,11 @@ jobsDir.each { |candidate|
    end
    job = PMD::Job.new(title,unixname,moduleDir,srcDir)
    puts "Processing #{job}"
+   File.open("currentjob.txt", "w") { |file| file.syswrite(job.unixName) }
    job.checkout_code
    job.run_pmd
    job.clear
+   File.delete("currentjob.txt");
   end
  rescue
   puts "Exiting with error: #{$!}"

@@ -45,6 +45,9 @@ end
 
 
 class Job
+
+  attr_reader :unixName
+
   def initialize(title, unixName, moduleDirectory, sourceDirectory )
     @title = title
     @unixName = unixName
