@@ -4,7 +4,7 @@
 	<property name="src" value="src/"/>
 	<property name="etc" value="etc/"/>
 	<property name="pmdjar" value="pmd-1.6.jar"/>
-	<property name="pluginversion" value="0.8"/>
+	<property name="pluginversion" value="0.9"/>
 	<property name="jdeveloper.install.dir" value="/home/tom/jdev905/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 	<path id="project.class.path">
