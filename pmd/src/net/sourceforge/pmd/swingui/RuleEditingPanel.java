@@ -180,7 +180,7 @@ public class RuleEditingPanel extends JPanel
      *******************************************************************************
      *
      */
-    private void saveData()
+    protected void saveData()
     {
         if (m_currentData != null)
         {

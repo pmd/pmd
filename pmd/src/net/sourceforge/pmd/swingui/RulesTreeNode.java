@@ -76,7 +76,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
      *
      * @param name
      */
-    protected RulesTreeNode(Rule rule)
+    protected RulesTreeNode(RulesTreeNode ruleSetNode, Rule rule)
     {
         super();
 
@@ -85,6 +85,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
         m_message = trim(rule.getMessage());
         m_description = trim(rule.getDescription());
         m_example = trim(rule.getExample());
+        m_ruleSet = ruleSetNode.getRuleSet();
         m_rule = rule;
         m_flags |= IS_RULE;
 
@@ -101,13 +102,15 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
      *
      * @param name
      */
-    protected RulesTreeNode(String propertyName, String propertyValue)
+    protected RulesTreeNode(RulesTreeNode ruleNode, String propertyName, String propertyValue)
     {
         super();
 
         m_name = trim(propertyName);
         m_propertyValue = trim(propertyValue);
         m_flags |= IS_PROPERTY;
+        m_rule = ruleNode.getRule();
+        m_ruleSet = ((RulesTreeNode) ruleNode.getParent()).getRuleSet();
 
         setDisplayName();
     }
@@ -392,31 +395,25 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
      *************************************************************************
      *
      */
-    protected void saveRuleSetData()
+    protected void saveData()
     {
-        m_ruleSet.setName(m_name);
-        m_ruleSet.setDescription(m_description);
-    }
-
-    /**
-     *************************************************************************
-     *
-     */
-    protected void saveRuleData()
-    {
-        m_rule.setName(m_name);
-        m_rule.setMessage(m_message);
-        m_rule.setDescription(m_description);
-        m_rule.setExample(m_example);
-    }
-
-    /**
-     *************************************************************************
-     *
-     */
-    protected void saveRulePropertyData()
-    {
-        m_rule.addProperty(m_name, m_propertyValue);
+        if (isRuleSet())
+        {
+            m_ruleSet.setName(m_name);
+            m_ruleSet.setDescription(m_description);
+        }
+        else if (isRule())
+        {
+            m_rule.setName(m_name);
+            m_rule.setMessage(m_message);
+            m_rule.setDescription(m_description);
+            m_rule.setExample(m_example);
+            m_rule.setInclude(include());
+        }
+        else if (isProperty())
+        {
+            m_rule.addProperty(m_name, m_propertyValue);
+        }
     }
 
     /**

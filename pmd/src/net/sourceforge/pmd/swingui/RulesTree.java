@@ -41,12 +41,25 @@ class RulesTree extends JTree
     /**
      ***************************************************************************
      *
+     * @param node
      */
     protected void expandNode(RulesTreeNode node)
     {
         TreePath treePath = new TreePath(node.getPath());
 
         expandPath(treePath);
+    }
+
+    /**
+     ***************************************************************************
+     *
+     * @return
+     */
+    protected RulesTreeNode getSelectedNode()
+    {
+        TreePath treePath = getSelectionPath();
+
+        return (RulesTreeNode) treePath.getLastPathComponent();
     }
 
     /**

@@ -50,11 +50,37 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
     /**
      *******************************************************************************
      *
+     */
+    protected void saveData()
+    {
+        Object object = getSelectedComponent();
+
+        if (object == m_ruleAllEditingPanel)
+        {
+            m_ruleAllEditingPanel.saveData();
+        }
+        else if (object == m_ruleSetEditingPanel)
+        {
+            m_ruleSetEditingPanel.saveData();
+        }
+        else if (object == m_ruleEditingPanel)
+        {
+            m_ruleEditingPanel.saveData();
+        }
+        else if (object == m_rulePropertyEditingPanel)
+        {
+            m_rulePropertyEditingPanel.saveData();
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *
      * @param event
      */
     public void valueChanged(TreeSelectionEvent event)
     {
-        if (this.getSelectedComponent() != m_ruleAllEditingPanel)
+        if (getSelectedComponent() != m_ruleAllEditingPanel)
         {
             TreePath treePath = event.getPath();
             Object component = treePath.getLastPathComponent();

@@ -54,6 +54,7 @@ class RulesEditor extends JDialog
 
     private PMDViewer m_pmdViewer;
     private RulesTree m_tree;
+    private RuleEditingTabbedPane m_editingTabbedPane;
 
     /**
      *******************************************************************************
@@ -90,10 +91,14 @@ class RulesEditor extends JDialog
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         buildTree();
-        JScrollPane treeScrollPane = createTreeScrollPane();
-        JTabbedPane editingTabbedPane = new RuleEditingTabbedPane(m_tree);
-        JSplitPane splitPane = createSplitPane(treeScrollPane, editingTabbedPane);
-        JPanel buttonPanel = createButtonPanel();
+        JScrollPane treeScrollPane;
+        JSplitPane splitPane;
+        JPanel buttonPanel;
+
+        treeScrollPane = createTreeScrollPane();
+        m_editingTabbedPane = new RuleEditingTabbedPane(m_tree);
+        splitPane = createSplitPane(treeScrollPane, m_editingTabbedPane);
+        buttonPanel = createButtonPanel();
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.add(splitPane, BorderLayout.CENTER);
@@ -276,7 +281,7 @@ class RulesEditor extends JDialog
 
         for (int n = 0; n < rules.length; n++)
         {
-            RulesTreeNode ruleNode = new RulesTreeNode(rules[n]);
+            RulesTreeNode ruleNode = new RulesTreeNode(ruleSetNode, rules[n]);
 
             ruleSetNode.add(ruleNode);
             loadProperties(ruleNode);
@@ -314,9 +319,13 @@ class RulesEditor extends JDialog
 
         for (int n = 0; n < propertyNames.length; n++)
         {
-            String propertyName = propertyNames[n];
-            String propertyValue = (String) properties.getProperty(propertyName);
-            RulesTreeNode propertyNode = new RulesTreeNode(propertyName, propertyValue);
+            String propertyName;
+            String propertyValue;
+            RulesTreeNode propertyNode;
+
+            propertyName = propertyNames[n];
+            propertyValue = (String) properties.getProperty(propertyName);
+            propertyNode = new RulesTreeNode(ruleNode, propertyName, propertyValue);
 
             ruleNode.add(propertyNode);
 
@@ -460,11 +469,13 @@ class RulesEditor extends JDialog
          */
         public void actionPerformed(ActionEvent event)
         {
+            m_editingTabbedPane.saveData();
+
             RulesTreeNode rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
 
             saveData(rootNode);
 
-            if (saveRuleSets(rootNode))
+            if (writeRuleSets(rootNode))
             {
                 RulesEditor.this.setVisible(false);
             }
@@ -477,18 +488,7 @@ class RulesEditor extends JDialog
          */
         private void saveData(RulesTreeNode treeNode)
         {
-            if (treeNode.isRuleSet())
-            {
-                treeNode.saveRuleSetData();
-            }
-            else if (treeNode.isRule())
-            {
-                treeNode.saveRuleData();
-            }
-            else if (treeNode.isProperty())
-            {
-                treeNode.saveRulePropertyData();
-            }
+            treeNode.saveData();
 
             Enumeration children = treeNode.children();
 
@@ -503,7 +503,7 @@ class RulesEditor extends JDialog
          *
          * @param treeNode
          */
-        private boolean saveRuleSets(RulesTreeNode treeNode)
+        private boolean writeRuleSets(RulesTreeNode treeNode)
         {
             Preferences preferences = m_pmdViewer.getPreferences();
             String ruleSetDirectory = preferences.getCurrentRuleSetDirectory();
@@ -514,7 +514,7 @@ class RulesEditor extends JDialog
                 FileOutputStream fileOutputStream = null;
                 RulesTreeNode ruleSetNode = (RulesTreeNode) ruleSetNodes.nextElement();
                 RuleSet ruleSet = ruleSetNode.getRuleSet();
-                String fileName = ruleSetDirectory + File.separator + ruleSet.getName();
+                String fileName = ruleSetDirectory + File.separator + ruleSet.getName() + ".xml";
 
                 try
                 {

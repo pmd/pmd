@@ -77,4 +77,15 @@ class RuleAllEditingPanel extends JPanel
     {
         return m_rulePropertyPanel;
     }
+
+    /**
+     *******************************************************************************
+     *
+     */
+    protected void saveData()
+    {
+        m_ruleSetPanel.saveData();
+        m_rulePanel.saveData();
+        m_rulePropertyPanel.saveData();
+    }
 }
