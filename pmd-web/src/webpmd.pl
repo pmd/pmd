@@ -78,7 +78,7 @@ sub getTimeUntil() {
 }
 
 sub loadProjectList() {
- my $result="<table><tr><th>Project</th><th></th><th>Home page</th><th>Problems found</th></tr>";
+ my @projects = ();
  opendir(DIR, "jobs/") or return "can't open jobs directory!";
  while (defined($file=readdir(DIR))) {
   if ($file =~ /txt/) {
@@ -86,12 +86,19 @@ sub loadProjectList() {
    my $jobdata=<FILE>;
    close(FILE);
    my $project = PMD::Project->new($jobdata);
-   my $jobtext=$project->getTitle();
-   if (-e $project->getRptFile()) {
-    $jobtext="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
-   }
-   $result="${result}<tr><td>${jobtext}</td><td></td><td>@{[$project->getHomePage()]}</td><td>@{[$project->getLines()]}</td>";
+   push(@projects, $project);
   }
+ }
+
+ @newprojects = sort { $a->getLocation() cmp $b->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
+
+ my $result="<table><tr><th>Project</th><th></th><th>Home page</th><th>Problems found</th></tr>";
+ foreach $project (@newprojects) {
+  my $jobtext=$project->getTitle();
+  if (-e $project->getRptFile()) {
+   $jobtext="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
+  }
+  $result="${result}<tr><td>${jobtext}</td><td></td><td>@{[$project->getHomePage()]}</td><td>@{[$project->getLines()]}</td>";
  }
  $result = "${result}</table>";
  return $result;

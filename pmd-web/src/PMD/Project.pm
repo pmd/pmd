@@ -13,6 +13,7 @@ push @EXPORT, '&getJobsFile';
 push @EXPORT, '&getRptFile';
 push @EXPORT, '&getRptURL';
 push @EXPORT, '&getLines';
+push @EXPORT, '&getLocation';
 
 sub new {
  my $self = {};
