@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Report {
 
-    private List ruleViolations = new ArrayList();
+    private List violations = new ArrayList();
     private String format;
 
     public Report(String format) {
@@ -14,7 +14,7 @@ public class Report {
     }
 
     public void addRuleViolation(RuleViolation violation) {
-        ruleViolations.add(violation);
+        violations.add(violation);
     }
 
     public String render() {
@@ -26,7 +26,7 @@ public class Report {
 
     private String renderToXML() {
         StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?><pmd>" + System.getProperty("line.separator"));
-        for (Iterator i = ruleViolations.iterator(); i.hasNext();) {
+        for (Iterator i = violations.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append("<ruleviolation>" + System.getProperty("line.separator"));
             buf.append("<file>" + rv.getFilename() + "</file>" + System.getProperty("line.separator"));
@@ -41,7 +41,7 @@ public class Report {
 
     private String renderToHTML() {
         StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + System.getProperty("line.separator")+ "<table><tr>" + System.getProperty("line.separator")+ "<th>File</th><th>Line</th><th>Problem</th></tr>" + System.getProperty("line.separator"));
-        for (Iterator i = ruleViolations.iterator(); i.hasNext();) {
+        for (Iterator i = violations.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append("<tr>" + System.getProperty("line.separator")+ "<td>" + rv.getFilename() + "</td>" + System.getProperty("line.separator"));
             buf.append("<td>" + Integer.toString(rv.getLine()) + "</td>" + System.getProperty("line.separator"));
@@ -53,14 +53,14 @@ public class Report {
     }
 
     public boolean isEmpty() {
-        return ruleViolations.isEmpty();
+        return violations.isEmpty();
     }
 
     public Iterator iterator() {
-        return ruleViolations.iterator();
+        return violations.iterator();
     }
 
     public int size() {
-        return this.ruleViolations.size();
+        return violations.size();
     }
 }

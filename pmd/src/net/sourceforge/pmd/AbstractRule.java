@@ -17,8 +17,23 @@ public abstract class AbstractRule
     implements Rule
 {
 
+    private String name = getClass().getName();
+    private String description;
+
     public String getName() {
-        return getClass().getName();
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean equals(Object o) {
@@ -48,4 +63,5 @@ public abstract class AbstractRule
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, String specificDescription) {
         return new RuleViolation(this, lineNumber, specificDescription, ctx.getFilename());
     }
+
 }

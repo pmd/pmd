@@ -19,6 +19,9 @@
                 optimize="false"
                 srcdir="${src}:${regress}"
                 destdir="${build}">
+          <classpath>
+            <pathelement location="${lib}/nanoxml-2.2.1.jar" />
+          </classpath>
         </javac>
 	</target>
 
@@ -42,6 +45,7 @@
           <classpath>
             <pathelement location="${build}" />
             <pathelement location="${test-data}" />
+            <pathelement location="${lib}/nanoxml-2.2.1.jar" />
             <pathelement path="${java.class.path}" />
           </classpath>
 

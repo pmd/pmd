@@ -54,7 +54,6 @@ public class RuleSetTest extends TestCase
 
     }
 
-/*
     public void testApply0Rules()
 	throws Throwable
     {
@@ -68,7 +67,7 @@ public class RuleSetTest extends TestCase
 	RuleSet IUT = new RuleSet();
 
 	MockRule rule = new MockRule();
-	RuleViolation violation = new RuleViolation( rule, 1 );
+	RuleViolation violation = new RuleViolation( rule, 1, "filename" );
 	rule.addViolation( violation );
 
 	IUT.addRule( rule );
@@ -87,7 +86,7 @@ public class RuleSetTest extends TestCase
 
 	for (int i = 0; i < numRules; i++) {
 	    MockRule rule = new MockRule();
-	    RuleViolation violation = new RuleViolation( rule, i );
+	    RuleViolation violation = new RuleViolation( rule, i, "filename");
 
 	    ruleViolations.add( violation );
 	    rule.addViolation( violation );
@@ -113,10 +112,10 @@ public class RuleSetTest extends TestCase
 		   context );
 
 	assertEquals("Invalid number of Violations Reported",
-		     size, report.countViolationsInCurrentFile() );
+		     size, report.size() );
 
 	Iterator violations =
-	    report.violationsInCurrentFile();
+	    report.iterator();
 	while (violations.hasNext()) {
 	    RuleViolation violation =
 		(RuleViolation) violations.next();
@@ -148,5 +147,4 @@ public class RuleSetTest extends TestCase
 
 	return RC;
     }
-*/
 }

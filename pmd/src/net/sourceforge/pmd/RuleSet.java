@@ -8,6 +8,7 @@ import java.util.Iterator;
 public class RuleSet
 {
     private Set rules = new HashSet();
+    private String name;
 
     public RuleSet() { }
 
@@ -16,7 +17,8 @@ public class RuleSet
     }
 
     public void addRule( Rule rule ) {
-	rules.add( rule );
+        System.out.println("rule = " + rule);
+ 	rules.add( rule );
     }
 
     public Set getRules() {
@@ -31,6 +33,14 @@ public class RuleSet
 
 	    rule.apply( acuList, ctx );
 	}
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

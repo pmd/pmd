@@ -28,6 +28,14 @@ public class MockRule implements Rule {
         this.desc = desc;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.desc = description;
+    }
+
     public void addViolation( RuleViolation violation ) {
 	violations.add( violation );
     }
