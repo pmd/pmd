@@ -1,3 +1,5 @@
+Version 0.9
+- Updated pmd to version 1.2.1
 - The NBM module can now be built signed with someone's key (task 76460)
 - Display progress in a dialog and allow cancel (Feature Request 687119)
 - Let modules register extra rulesets (Radim Kubacki's patch 690601, thanks!)
