@@ -21,7 +21,6 @@ cd ..
 cd etc
 
 Prepare binary release:
-CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 rm -rf ~/tmp/pmd-1.8
 mkdir -p ~/tmp/pmd-1.8/etc
 mkdir ~/tmp/pmd-1.8/lib
@@ -35,6 +34,7 @@ cd -
 
 Time to tag:
 
+CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ../../
 cvs -q tag -D tomorrow "pmd_release_1_8" pmd
 
