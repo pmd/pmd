@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <author email="dpeugh@users.sourceforge.net">David Dixon-Peugh</author>
+    <title>IDE Integrations</title>
+  </properties>
+
+  <body>
+    <section name="Integrations with IDEs">
+      <subsection name="Summary">
+<table>
+  <tr><td><b>IDE</b></td>
+      <td><b>File Release</b></td>
+      <td><b>Current Version</b></td>
+      <td><b>Author</b></td>
+      <td><b>Download</b></td></tr>
+  <tr><td>Eclipse</td>
+      <td>pmd-eclipse</td>
+      <td>0.1</td>
+      <td>dpeugh</td>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=100231">X</a></td></tr>
+  <tr><td>Emacs</td>
+      <td>pmd-emacs</td>
+      <td>0.1</td>
+      <td>dpeugh</td>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=99873">X</a></td></tr>
+  <tr><td>JBuilder</td>
+      <td>pmd-jbuilder</td>
+      <td>0.2</td>
+      <td>dcraine</td>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=99301">X</a></td></tr>
+  <tr><td>JEdit</td>
+      <td>pmd-jedit</td>
+      <td>0.3</td>
+      <td>tomcopeland</td>
+      <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;release_id=99325">X</a></td></tr>
+  <tr><td>Maven</td>
+      <td>pmd-maven</td>
+      <td>N/A</td>
+      <td>dpeugh</td>
+      <td>N/A</td></tr>
+  </table>
+      </subsection>
+      <subsection name="Eclipse">
+<p>
+Integration into Eclipse is accomplished throught the extensive
+Plugin architecture provided by Eclipse.  It is written an Java,
+and has some nice features to it.
+</p>
+<p>
+Eclipse Integration will fill the TODO list of the project with
+each Rule Violation that PMD detects.  These violations are marked
+in the code with the Task icon on the left hand side of the editor.
+</p>
+<p>
+The Eclipse integration was written with the version 2.0 of Eclipse,
+so I'm not certain if it will work on earlier versions.
+</p>
+<p>
+As Eclipse is not my primary IDE, we are looking for people who can
+make suggestions, and possibly even handle the care and feeding of
+the Eclipse plugin.
+</p>
+      </subsection>
+      <subsection name="Emacs">
+<p>
+Integration with GNU Emacs is performed through ELisp. (what else?)
+</p>
+<p>
+There is only one command "pmd-current-buffer" which will execute
+PMD on the Java code in the current buffer.  It will generate an
+XML report in the *PMD* buffer.
+</p>
+<p>
+It is planned to provide a better format for the results from PMD
+to make usage in Emacs better.  Additonally, it is hoped that we
+will be able to jump from a rule violation, to the position in the
+code which caused it.
+</p>
+
+      </subsection>
+      <subsection name="Borland JBuilder">
+<p>
+TODO: dcraine - Please fill in this section.
+</p>
+      </subsection>
+
+      <subsection name="JEdit">
+<p>
+TODO: tomcopeland - Please fill in this section
+</p>
+      </subsection>
+      <subsection name="Maven">
+<p>
+The Maven plugin will be written using the new plugin architecture
+that is currently being developed by the Maven project.  Currently
+we are waiting for the development to settle down before commiting
+any serious resources to it.
+</p>
+<p>
+The Maven plugin will work by generating web pages which blend into
+the website, identifing Rule Violations.
+</p>
+<p>
+A possible other integration with Maven, will be the integration
+of PMD into JXR or LXR.  This should allow annotation of code in
+the web environment.  Work on this has not started.
+</p>
+      </subsection>
+    </section>
+  </body>
+</document>
