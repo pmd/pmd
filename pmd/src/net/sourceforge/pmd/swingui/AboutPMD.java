@@ -12,6 +12,10 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -26,6 +30,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
+
+import net.sourceforge.pmd.ProjectFile;
 
 /**
  *
@@ -123,7 +129,7 @@ class AboutPMD extends JDialog
         // Version Label
         String versionText = Resources.getString("RESOURCEVersion")
                            + " "
-                           + Resources.getString("RESOURCEpmdVersion");
+                           + ProjectFile.getProperty("currentVersion");
         JLabel versionLabel = new JLabel(versionText);
         versionLabel.setFont(UIManager.getFont("labelFont"));
         versionLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -348,27 +354,35 @@ class AboutPMD extends JDialog
         row++;
         addTitle(" ", row, creditsPanel);
 
-        row ++;
+        String developerNameKey = "developers/developer/name";
+        String developerSelectKey = "developers/developer/roles/role";
+        String selectValue = "developer";
+        String[] developers = getPeople(developerNameKey, developerSelectKey, selectValue);
+
+        row++;
         addTitle("Developers", row, creditsPanel);
-        addPerson("Alex Chaffee", row, creditsPanel);
+        row--;
+
+        for (int n = 0; n < developers.length; n++)
+        {
+            row++;
+            addPerson(developers[n], row, creditsPanel);
+        }
 
         row++;
-        addPerson("Tom Copeland", row, creditsPanel);
+        addTitle(" ", row, creditsPanel);
+
+        String[] contributors = getPeople("contributors/contributor/name", null, null);
 
         row++;
-        addPerson("David Craine", row, creditsPanel);
+        addTitle("Contributors", row, creditsPanel);
+        row--;
 
-        row++;
-        addPerson("David Dixon-Peugh", row, creditsPanel);
-
-        row++;
-        addPerson("Siegfried Goeschl", row, creditsPanel);
-
-        row++;
-        addPerson("Richard Kilmer", row, creditsPanel);
-
-        row++;
-        addPerson("Don Leckie", row, creditsPanel);
+        for (int n = 0; n < contributors.length; n++)
+        {
+            row++;
+            addPerson(contributors[n], row, creditsPanel);
+        }
 
         return parentPanel;
     }
@@ -396,7 +410,7 @@ class AboutPMD extends JDialog
         constraints.gridheight = 1;
         constraints.anchor = constraints.NORTHEAST;
         constraints.fill = constraints.NONE;
-        constraints.insets = new Insets(2, 2, 2, 2);
+        constraints.insets = new Insets(0, 2, 0, 2);
 
         creditsPanel.add(label, constraints);
     }
@@ -422,9 +436,100 @@ class AboutPMD extends JDialog
         constraints.gridheight = 1;
         constraints.anchor = constraints.WEST;
         constraints.fill = constraints.NONE;
-        constraints.insets = new Insets(2, 2, 2, 2);
+        constraints.insets = new Insets(0, 2, 0, 2);
 
         creditsPanel.add(label, constraints);
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @param nameKey
+     * @param selectKey
+     * @param selectValue
+     *
+     * @return
+     */
+    private String[] getPeople(String nameKey, String selectKey, String selectValue)
+    {
+        String nameList = ProjectFile.getProperty(nameKey);
+        String[] names = ProjectFile.toArray(nameList);
+
+        if ((selectKey != null) && (selectValue != null))
+        {
+            String selectList = ProjectFile.getProperty(selectKey);
+            String[] selections = ProjectFile.toArray(selectList);
+            List tempNameList = new ArrayList();
+
+            for (int n = 0; n < names.length; n++)
+            {
+                if ((n < selections.length) && selections[n].equalsIgnoreCase(selectValue))
+                {
+                    tempNameList.add(names[n]);
+                }
+
+                selections[n] = null;
+                names[n] = null;
+            }
+
+            names = new String[tempNameList.size()];
+            tempNameList.toArray(names);
+            tempNameList.clear();
+        }
+
+        Arrays.sort(names, new PeopleNameComparator());
+
+        return names;
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class PeopleNameComparator implements Comparator
+    {
+
+        /**
+         ********************************************************************************
+         *
+         * @param object1
+         * @param object2
+         *
+         * @return
+         */
+        public int compare(Object object1, Object object2)
+        {
+            String name1 = (String) object1;
+            String name2 = (String) object2;
+            int index = name1.lastIndexOf(' ') + 1;
+
+            if (index >= 0)
+            {
+                name1 = name1.substring(index).concat(name1);
+            }
+
+            index = name2.lastIndexOf(' ') + 1;
+
+            if (index >= 0)
+            {
+                name2 = name2.substring(index).concat(name2);
+            }
+
+            return name1.compareToIgnoreCase(name2);
+        }
+
+        /**
+         ********************************************************************************
+         *
+         * @param object
+         *
+         * @return
+         */
+        public boolean compare(Object object)
+        {
+            return object == this;
+        }
     }
 
     /**
