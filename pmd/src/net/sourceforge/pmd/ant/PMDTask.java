@@ -93,10 +93,7 @@ public class PMDTask extends Task {
 
         PMD pmd = new PMD();
         RuleContext ctx = new RuleContext();
-        Report report = new Report();
-
-
-        ctx.setReport(report);
+        ctx.setReport(new Report());
 
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
@@ -124,6 +121,8 @@ public class PMDTask extends Task {
             }
         }
 
+        printIfVerbose("Problems found: " + ctx.getReport().size());
+
         if (!ctx.getReport().isEmpty()) {
             for (Iterator i = formatters.iterator(); i.hasNext();) {
                 Formatter formatter = (Formatter)i.next();
@@ -139,7 +138,7 @@ public class PMDTask extends Task {
 
             if (printToConsole) {
                 Renderer r = new TextRenderer();
-                System.out.println(r.render(report));
+                System.out.println(r.render(ctx.getReport()));
             }
 
             if (failOnRuleViolation) {
