@@ -16,6 +16,7 @@ public class UnnecessaryConstructorRule extends AbstractRule {
 
     private List constructors;
 
+    // TODO - modify this to get the constructors from the symbol table
     public Object visit(ASTCompilationUnit node, Object data) {
         constructors = new ArrayList();
         node.findChildrenOfType(ASTConstructorDeclaration.class, constructors);
