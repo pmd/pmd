@@ -20,9 +20,6 @@ by
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.
  * </copyright>
  */
-/**
- * Created on Aug 29, 2002
- */
 package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.ast.ASTStatement;

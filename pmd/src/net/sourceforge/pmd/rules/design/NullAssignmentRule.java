@@ -18,7 +18,6 @@
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.
  * </copyright>
  *
- * Created on Dec 13, 2002
  */
 package net.sourceforge.pmd.rules.design;
 
