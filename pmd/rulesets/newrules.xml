@@ -49,9 +49,8 @@ public class Foo implements java.io.Serializable {
           <property name="xpath">
               <value>
     <![CDATA[
-//*[(name()='ClassDeclaration' or name()='NestedClassDeclaration')
-    and @Final='true'] 
-/*/*/*/MethodDeclaration[@Final='true']
+//ClassOrInterfaceDeclaration[@Final='true' and @Interface='false']
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
     ]]>
               </value>
           </property>
