@@ -5,8 +5,6 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.SimpleNode;
-
 public interface ContextManager {
     public Scope getCurrentScope();
     public void openScope(Scope scope);

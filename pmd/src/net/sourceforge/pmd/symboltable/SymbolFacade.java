@@ -9,7 +9,6 @@ import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.RuleContext;
 
 import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
 
 public class SymbolFacade extends JavaParserVisitorAdapter {
@@ -56,8 +55,10 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         if (scope instanceof NullScope) {
             super.visit(node, null);
         } else {
-            contextManager.openScope(new LocalScope());
+            //System.out.println("opening scope " + scope.getClass().getName().substring(scope.getClass().getName().lastIndexOf('.')+1) + " created as a result of hitting a " + node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.')+1));
+            contextManager.openScope(scope);
             super.visit(node, null);
+            //System.out.println("leaving scope " + scope.getClass().getName().substring(scope.getClass().getName().lastIndexOf('.')+1) + " created as a result of hitting a " + node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.')+1));
             contextManager.leaveScope();
         }
     }

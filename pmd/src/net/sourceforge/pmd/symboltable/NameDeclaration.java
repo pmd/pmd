@@ -15,6 +15,10 @@ public class NameDeclaration {
         this.node = node;
     }
 
+    public SimpleNode getNode() {
+        return node;
+    }
+
     public int getLine() {
         return node.getBeginLine();
     }

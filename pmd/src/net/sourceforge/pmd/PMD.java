@@ -30,10 +30,10 @@ public class PMD {
         try {
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
+            //c.dump("");
             SymbolFacade stb = new SymbolFacade();
             stb.initializeWith(c);
             ctx.setSymbolTableBuilder(stb);
-            //c.dump("");
             List acus = new ArrayList();
             acus.add(c);
             ruleSet.apply(acus, ctx);
@@ -117,13 +117,14 @@ public class PMD {
             System.out.println(rend.render(ctx.getReport()));
         } else if (reportFormat.equals("ideaj")) {
             IDEAJRenderer special = new IDEAJRenderer();
-            if (args[3].equals(".method")) {
+            if (args[4].equals(".method")) {
                 // working on a directory tree
-                System.out.println(special.render(ctx.getReport()));
+                String sourcePath = args[3];
+                System.out.println(special.render(ctx.getReport(), sourcePath));
             } else {
                 // working on one file
-                String classAndMethodName = args[3];
-                String singleFileName = args[4];
+                String classAndMethodName = args[4];
+                String singleFileName = args[5];
                 System.out.println(special.render(ctx.getReport(), classAndMethodName, singleFileName));
             }
         } else if (reportFormat.equals("text")) {

@@ -77,4 +77,8 @@ public class UnusedLocalVariableTest extends RuleTst {
     public void test14() throws Throwable {
         runTest("Unused14.java", 2, rule);
     }
+
+    public void test15() throws Throwable {
+        runTest("Unused15.java", 0, rule);
+    }
 }

@@ -14,6 +14,10 @@ public class LocalScope extends AbstractScope implements Scope {
     private Map names = new HashMap();
 
     public void addDeclaration(NameDeclaration nameDecl) {
+        // this declaration needs to go somewhere... should this be delegated to a higher scope?
+        if (nameDecl.getNode().jjtGetParent() instanceof ASTFormalParameter) {
+            return;
+        }
         if (names.containsKey(nameDecl)) {
             throw new RuntimeException(nameDecl + " is already in the symbol table");
         }
