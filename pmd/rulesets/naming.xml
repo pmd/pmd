@@ -35,8 +35,11 @@ public class Something {
         class="net.sourceforge.pmd.rules.LongVariableRule">
     <description>
 Long Variable: detects when a field, formal or local variable is declared
-with a name larger than 12 characters.
+with a big name.
     </description>
+   <properties>
+    <property name="minimumLength" value="12"/>
+   </properties>
     <example>
 <![CDATA[
 public class Something {

@@ -21,6 +21,7 @@ public class LongVariableRuleTest
     public void setUp() {
         rule = new LongVariableRule();
         rule.setMessage("Avoid long names like {0}");
+        rule.addProperty("minimumLength", "12");
     }
 
     public void testLongVariableField() throws Throwable {
