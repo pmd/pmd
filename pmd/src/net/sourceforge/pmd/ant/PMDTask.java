@@ -131,6 +131,7 @@ public class PMDTask extends Task {
         if (!ctx.getReport().isEmpty()) {
             for (Iterator i = formatters.iterator(); i.hasNext();) {
                 Formatter formatter = (Formatter) i.next();
+                log("Sending a report to " + formatter, Project.MSG_VERBOSE);
                 String buffer = formatter.getRenderer().render(ctx.getReport()) + EOL;
                 try {
                     Writer writer = formatter.getToFileWriter(project.getBaseDir().toString());

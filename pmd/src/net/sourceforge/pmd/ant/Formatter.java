@@ -15,7 +15,7 @@ import java.io.Writer;
 public class Formatter {
 
     private Renderer renderer;
-    private String toFile;
+    private File toFile;
 
     public void setType(String type) {
         if (type.equals("xml")) {
@@ -36,7 +36,7 @@ public class Formatter {
         }
     }
 
-    public void setToFile(String toFile) {
+    public void setToFile(File toFile) {
         this.toFile = toFile;
     }
 
@@ -45,15 +45,17 @@ public class Formatter {
     }
 
     public boolean isToFileNull() {
-        return this.toFile == null;
+        return toFile == null;
     }
 
     public Writer getToFileWriter(String baseDir) throws IOException {
-        String outFile = toFile;
-        PathChecker pc = new PathChecker(System.getProperty("os.name"));
-        if (!pc.isAbsolute(toFile)) {
-            outFile = baseDir + System.getProperty("file.separator") + toFile;
+        if (!toFile.isAbsolute()) {
+            return new BufferedWriter(new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
         }
-        return new BufferedWriter(new FileWriter(new File(outFile)));
+        return new BufferedWriter(new FileWriter(toFile));
+    }
+
+    public String toString() {
+        return "file = " + toFile + "; renderer = " + renderer.getClass().getName();
     }
 }
