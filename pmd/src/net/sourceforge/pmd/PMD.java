@@ -121,6 +121,9 @@ public class PMD {
         } else if (reportFormat.equals("ideaj")) {
             IDEAJRenderer special = new IDEAJRenderer();
             System.out.println(special.render(ctx.getReport(), args[3], args[4]));
+        } else if (reportFormat.equals("text")) {
+            Renderer rend = new TextRenderer();
+            System.out.println(rend.render(ctx.getReport()));
         } else {
             Renderer rend = new HTMLRenderer();
             System.out.println(rend.render(ctx.getReport()));
