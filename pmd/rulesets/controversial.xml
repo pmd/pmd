@@ -19,7 +19,8 @@ most people really dislike :-)
             <property name="xpath">
                 <value>
                     <![CDATA[
-    //ConstructorDeclaration[1][position() = last()][@Public='true'][not(FormalParameters/*)][not(BlockStatement)]
+//ConstructorDeclaration[1][position() = last()][@Public='true']
+  [not(FormalParameters/*)][not(BlockStatement)]
                     ]]>
                 </value>
             </property>
@@ -120,7 +121,7 @@ most people really dislike :-)
             <property name="xpath">
                 <value>
                     <![CDATA[
-    //*[name()='WhileStatement' or name()='IfStatement'][Expression//AssignmentOperator]
+//*[name()='WhileStatement' or name()='IfStatement'][Expression//AssignmentOperator]
                     ]]>
                 </value>
             </property>

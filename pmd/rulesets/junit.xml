@@ -15,7 +15,8 @@ These rules deal with different problems that can occur with JUnit tests.
         <property name="xpath">
             <value>
                 <![CDATA[
-  //MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite']
+  //MethodDeclaration[not(@Static='true') or not(@Public='true')]
+   [MethodDeclarator/@Image='suite']
                 ]]>
             </value>
         </property>
@@ -44,7 +45,11 @@ These rules deal with different problems that can occur with JUnit tests.
       <property name="xpath">
           <value>
               <![CDATA[
-//MethodDeclarator[(not(@Image = 'setUp') and translate(@Image, 'SETuP', 'setUp') = 'setUp') or (not(@Image = 'tearDown') and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')][FormalParameters[count(*) = 0]]
+//MethodDeclarator[(not(@Image = 'setUp') 
+ and translate(@Image, 'SETuP', 'setUp') = 'setUp') 
+ or (not(@Image = 'tearDown') 
+ and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')]
+ [FormalParameters[count(*) = 0]]
               ]]>
           </value>
       </property>

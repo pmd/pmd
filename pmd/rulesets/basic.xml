@@ -135,7 +135,8 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           <property name="xpath">
               <value>
                   <![CDATA[
-    //TryStatement[@Finally='true']/Block[position() = last()][count(*) = 0]
+    //TryStatement[@Finally='true']/Block[position() = last()]
+      [count(*) = 0]
                   ]]>
               </value>
           </property>
@@ -199,7 +200,8 @@ The Basic Ruleset contains a collection of good practices which everyone should 
          <property name="xpath">
              <value>
                  <![CDATA[
-    //ForStatement[ForUpdate//Name/@Image = ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]
+    //ForStatement[ForUpdate//Name/@Image = 
+      ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]
                  ]]>
              </value>
          </property>
@@ -282,11 +284,14 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       [
       (@Image = 'equals'
           and count(FormalParameters/*) = 1
-          and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode'])
+          and not(//MethodDeclarator[count(FormalParameters/*) = 0]
+          [@Image = 'hashCode'])
        or
       (@Image='hashCode'
           and count(FormalParameters/*) = 0
-          and not(//MethodDeclarator[count(FormalParameters//Type/Name[@Image = 'Object']) = 1][@Image = 'equals']))
+          and not(//MethodDeclarator[count(FormalParameters//Type/Name
+          [@Image = 'Object']) = 1]
+          [@Image = 'equals']))
       )]
                   ]]>
               </value>
