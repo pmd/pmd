@@ -54,7 +54,7 @@ public class DataPoint
 	 * @return Rule
 	 */
 	public Rule getRule() {
-		return rule;
+		return rule; 
 	}
 
 	/**
