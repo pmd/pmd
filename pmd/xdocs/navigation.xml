@@ -16,18 +16,20 @@
     </links>
     <menu name="Overview">
       <item name="Installation" href="/installing.html" />
-      <item name="Command line usage" href="/running.html" />
-      <item name="Ant task usage" href="/ant-task.html" />
-      <item name="Maven plugin usage" href="/maven-plugin.html" />
-      <item name="IDE plugin usage" href="/integrations.html" />
       <item name="PMD in the press" href="/news.html" />
       <item name="Best practices" href="/bestpractices.html" />
       <item name="Future directions" href="/future.html" />
-      <item name="Finding copied and pasted code" href="/cpd.html" />
       <item name="Similar projects" href="/similar-projects.html" />
       <item name="Credits" href="/credits.html" />
       <item name="License" href="/license.html" />
       <item name="What does 'PMD' mean?" href="/meaning.html" />
+    </menu>
+    <menu name="Usage">
+      <item name="Command line usage" href="/running.html" />
+      <item name="Ant task usage" href="/ant-task.html" />
+      <item name="Maven plugin usage" href="/maven-plugin.html" />
+      <item name="IDE plugin usage" href="/integrations.html" />
+      <item name="Finding copied and pasted code" href="/cpd.html" />
     </menu>
     <menu name="Customizing PMD">
         <item name="Compiling PMD" href="/compiling.html" />
