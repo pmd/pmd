@@ -12,9 +12,8 @@
     </links>
     <menu name="Overview">
       <item name="Running PMD" href="/running.html" />
-      <item name="Ant Task" href="/ant-task.html" />
-      <item name="IDE Integrations" href="/integrations.html" />
-      <item name="Similar Projects" href="/similar-projects.html" />
+      <item name="Integration points" href="/integrations.html" />
+      <item name="Similar projects" href="/similar-projects.html" />
       <item name="Credits" href="/credits.html" />
       <item name="What does 'PMD' mean?" href="/meaning.html" />
     </menu>
