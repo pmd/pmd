@@ -3,10 +3,24 @@
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.design.LongParameterListRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class LongParameterListRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class LongParameterList0 {" + CPD.EOL +
+    "    public void foo() {}" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class LongParameterList1 {" + CPD.EOL +
+    "    public void foo(int p01, int p02, int p03, int p04, int p05," + CPD.EOL +
+    "                   int p06, int p07, int p08, int p09, int p10 ) { }" + CPD.EOL +
+    "    public void bar(int p01, int p02, int p03, int p04, int p05 ) { }" + CPD.EOL +
+    "}";
+
     public LongParameterListRule getIUT() {
         LongParameterListRule IUT = new LongParameterListRule();
         IUT.addProperty("minimum", "9");
@@ -14,17 +28,10 @@ public class LongParameterListRuleTest extends RuleTst {
     }
 
     public void testShortMethod() throws Throwable {
-        Report report = runTestFromFile("LongParameterList0.java", getIUT());
-        assertEquals(0, report.size());
+        runTestFromString(TEST1, 0, getIUT());
     }
 
     public void testOneLongMethod() throws Throwable {
-        Report report = runTestFromFile("LongParameterList1.java", getIUT());
-        assertEquals(1, report.size());
+        runTestFromString(TEST2, 1, getIUT());
     }
-
-    //      public void testTwoLongMethods() throws Throwable {
-    //  	Report report = runTestFromFile("LongParameterList2.java", getIUT() );
-    //  	assertEquals( 2, report.size() );
-    //      }
 }

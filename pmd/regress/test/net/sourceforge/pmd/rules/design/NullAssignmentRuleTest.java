@@ -1,53 +1,62 @@
-/**
- * $Id$
- *
- * <copyright>
- *  Copyright 1997-2002 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- *
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
- *
- * Created on Dec 13, 2002
- */
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.rules.design.NullAssignmentRule;
+import net.sourceforge.pmd.cpd.CPD;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
-/**
- * @author dpeugh
- *
- * Tests the NullAssignmentRule
- *
- */
 public class NullAssignmentRuleTest extends RuleTst {
 
+    private static final String TEST1 =
+    "public class NullAssignment1 {" + CPD.EOL +
+    "       public Object foo() {" + CPD.EOL +
+    "               Object x = null; // OK" + CPD.EOL +
+    "               return x;" + CPD.EOL +
+    "       }       " + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class NullAssignment2 {" + CPD.EOL +
+    "       public void foo() {" + CPD.EOL +
+    "               Object x;" + CPD.EOL +
+    "               x = new Object();" + CPD.EOL +
+    "               for (int y = 0; y < 10; y++) {" + CPD.EOL +
+    "                       System.err.println(y);  " + CPD.EOL +
+    "               }" + CPD.EOL +
+    "               x = null; // This is bad" + CPD.EOL +
+    "       }" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class NullAssignment3 {" + CPD.EOL +
+    "       public void foo() {" + CPD.EOL +
+    "               Object x;" + CPD.EOL +
+    "               if (x == null) { // This is OK" + CPD.EOL +
+    "                       return;" + CPD.EOL +
+    "               }" + CPD.EOL +
+    "       }" + CPD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class NullAssignment4 {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  String x = null;" + CPD.EOL +
+    "  x = new String(null);" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
     public void testInitAssignment() throws Throwable {
-        runTestFromFile("NullAssignment1.java", 0, new NullAssignmentRule());
+        runTestFromString(TEST1, 0, new NullAssignmentRule());
     }
 
     public void testBadAssignment() throws Throwable {
-        runTestFromFile("NullAssignment2.java", 1, new NullAssignmentRule());
+        runTestFromString(TEST2, 1, new NullAssignmentRule());
     }
 
     public void testCheckTest() throws Throwable {
-        runTestFromFile("NullAssignment3.java", 0, new NullAssignmentRule());
+        runTestFromString(TEST3, 0, new NullAssignmentRule());
     }
 
     public void testNullParamOnRHS() throws Throwable {
-        runTestFromFile("NullAssignment4.java", 0, new NullAssignmentRule());
+        runTestFromString(TEST4, 0, new NullAssignmentRule());
     }
 }
