@@ -20,12 +20,30 @@
 
 #match("rule")
 <subsection name="$attrib.name">
+
 <p>
   $node.get("./description").value()
+</p>
+
+<!--
+#if ($node.get("./properties/property").attribute("name"))
+This rule is defined by the following XPath expression:
+<source>
+<![CDATA[ $node.get("./properties/property").attribute("value") ]]>
+</source>
+#end
+-->
+
+
+<p>
+    Here's an example of code that would trigger this rule:
 </p>
 <source>
 <![CDATA[ $node.get("./example").value() ]]>
 </source>
+
 </subsection>
 #end
+
+
 
