@@ -153,5 +153,57 @@ public class FooTest extends TestCase {
       </example>
     </rule>
 
+
+    <rule name="UseAssertSameInsteadOfAssertTrue"
+          message="user assertSame(x, y) instead of assertTrue(x==y)"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+          This rule detects junit assertions in object references equallity. These assertions 
+          should be made by more specific mehtods, like assertSame, assertNotSame.
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+
+//PrimaryExpression
+[ 
+    PrimaryPrefix/Name
+    [
+        @Image = 'assertTrue' 
+        or @Image = 'assertFalse' 
+    ] 
+]
+[ 
+    PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression
+    [
+        @Image = '=='
+        or  @Image = '!='
+    ]
+]
+                
+ ]]>
+            </value>
+        </property>
+    </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class FooTest extends TestCase {
+
+    void testCode() {
+        Object a, b;
+
+        // bad usage
+        assertTrue(a==b);
+
+        // good usage
+        assertSame(a, b);        
+    }
+}
+]]>
+      </example>
+    </rule>
+
 </ruleset>
 

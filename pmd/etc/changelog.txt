@@ -1,5 +1,5 @@
 ????, 2005 - 3.1:
-New rule: SimplifyStartsWith [put in optimizations ruleset], UnnecessaryParentheses [put in controversial ruleset], CollapsibleIfStatements [put in basic ruleset]
+New rule: SimplifyStartsWith [put in optimizations ruleset], UnnecessaryParentheses [put in controversial ruleset], CollapsibleIfStatements [put in basic ruleset], UseAssertEqualsInsteadOfAssertTrue[put in junit ruleset],  UseAssertSameInsteadOfAssertTrue [put in junit ruleset]
 Fixed bug 1169731 - UnusedImports no longer reports false positives on types used inside generics.  This bug also resulted in a bug in ForLoopShouldBeWhileLoop being fixed, thanks Wim!
 Fixed bug 1170109 - The Ant task now supports an optional 'targetjdk' attribute that accepts values of '1.3', '1.4', or '1.5'.
 Fixed bug 1170535 - LongVariable now report variables longer than 17 characters, not 12.
