@@ -1,9 +1,10 @@
-July 21, 2003 - 1.2:
+July 30, 2003 - 1.2:
 Added new rules: VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule, AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking, BooleanInstantiation
 Fixed bug 583047 - ASTName column numbers are now correct
 Fixed bug 761048 - Symbol table now creates a scope level for anonymous inner classes
 Fixed bug 763529 - AccessorClassGenerationRule no longer crashes when given a final inner class
 Fixed bug 771943 - AtLeastOneConstructorRule and UnnecessaryConstructorRule no longer reports false positives on inner classes.
+Applied patch from Chris Webster to fix another UnnecessaryConstructorRule problem.
 Added ability to accept a comma-delimited string of files and directories on the command line.
 Added a CSVRenderer.
 Added a "-shortfilenames" argument to the PMD command line interface.

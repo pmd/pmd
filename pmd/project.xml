@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>1.1</currentVersion>
+  <currentVersion>1.2</currentVersion>
   <organization>
     <name>Project Ultra*Log @ DARPA</name>
     <url>http://pmd.sourceforge.net/</url>
@@ -48,9 +48,9 @@ Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?g
 
   <versions>
     <version>
-      <id>1.1</id>
-      <name>1.1</name>
-      <tag>pmd_release_1_1</tag>
+      <id>1.2</id>
+      <name>1.2</name>
+      <tag>pmd_release_1_2</tag>
     </version>
     <version>
       <id>dev</id>
