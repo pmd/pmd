@@ -20,8 +20,14 @@ public class RuleTst extends TestCase {
         assertEquals(expectedResults, processUsingStringReader(code, rule).size());
     }
 
-    public Rule findRule(String rs, String r) throws RuleSetNotFoundException {
-        return new RuleSetFactory().createRuleSet(rs).getRuleByName(r);
+    public Rule findRule(String rs, String r) {
+        try {
+			return new RuleSetFactory().createRuleSet(rs).getRuleByName(r);
+		} catch (RuleSetNotFoundException e) {
+			e.printStackTrace();
+			fail("Rule "+r+" not found in ruleset "+rs);
+			return null;
+		}
     }
 
     public void runTestFromString(String code, Rule rule, Report report) throws Throwable {
