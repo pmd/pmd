@@ -12,6 +12,7 @@ import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -79,6 +80,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
     private JCheckBox directoryPopupBox, chkRunPMDOnSave;
 	JTextField txtMinTileSize;
 	JTextField txtCustomRules;
+	JComboBox comboRenderer;
 
 
     public PMDOptionPane() {
@@ -127,7 +129,13 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 		pnlTileSize.add(lblMinTileSize);
 		pnlTileSize.add(txtMinTileSize);
 
-
+		comboRenderer = new JComboBox(new String[] {"None", "Text", "Html", "XML", "CSV"});
+		comboRenderer.setSelectedItem(jEdit.getProperty(PMDJEditPlugin.RENDERER));
+        JLabel lblRenderer = new JLabel("Export Output as ");
+		
+		pnlTileSize.add(lblRenderer);
+		pnlTileSize.add(comboRenderer);
+		
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(rulesPanel, BorderLayout.NORTH);
@@ -148,6 +156,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
 		jEdit.setIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,(txtMinTileSize.getText().length() == 0)?100:Integer.parseInt(txtMinTileSize.getText()));
 		jEdit.setBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE,(chkRunPMDOnSave.isSelected()));
+		jEdit.setProperty(PMDJEditPlugin.RENDERER, (String)comboRenderer.getSelectedItem());
 
 		if(txtCustomRules != null)
 		{

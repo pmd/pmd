@@ -47,6 +47,9 @@ cpd-viewer.title=Copy/Paste Detector
 
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.browser-menu=pmd-check-file pmd-check-current-directory pmd-check-current-directory-recursively
 
+#pmd properties
+pmd.renderer=None
+
 
 
 

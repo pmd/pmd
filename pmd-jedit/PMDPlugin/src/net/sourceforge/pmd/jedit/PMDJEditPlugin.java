@@ -5,19 +5,51 @@
  */
 package net.sourceforge.pmd.jedit;
 
-import errorlist.*;
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.cpd.*;
-import org.gjt.sp.jedit.*;
-import org.gjt.sp.jedit.browser.*;
-import org.gjt.sp.jedit.io.*;
-
-import javax.swing.*;
-import java.io.*;
-import java.util.*;
-import org.gjt.sp.jedit.msg.*;
-import org.gjt.sp.util.Log;
 import java.awt.BorderLayout;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.CPPLanguage;
+import net.sourceforge.pmd.cpd.FileFinder;
+import net.sourceforge.pmd.cpd.JavaLanguage;
+import net.sourceforge.pmd.cpd.Mark;
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.PHPLanguage;
+import net.sourceforge.pmd.renderers.*;
+
+import org.gjt.sp.jedit.Buffer;
+import org.gjt.sp.jedit.EBMessage;
+import org.gjt.sp.jedit.EBPlugin;
+import org.gjt.sp.jedit.View;
+import org.gjt.sp.jedit.jEdit;
+import org.gjt.sp.jedit.browser.VFSBrowser;
+import org.gjt.sp.jedit.io.VFS;
+import org.gjt.sp.jedit.io.VFSManager;
+import org.gjt.sp.jedit.msg.BufferUpdate;
+import org.gjt.sp.util.Log;
+
+import errorlist.DefaultErrorSource;
+import errorlist.ErrorList;
+import errorlist.ErrorSource;
 
 
 public class PMDJEditPlugin extends EBPlugin {
@@ -33,12 +65,13 @@ public class PMDJEditPlugin extends EBPlugin {
 
 	private static PMDJEditPlugin instance;
 
-/* 	static {
-		instance = new PMDJEditPlugin();
-		instance.start();
-	}
- */
+	/* 	static {
+			instance = new PMDJEditPlugin();
+			instance.start();
+		}
+	 */
 	private DefaultErrorSource errorSource;
+	public static final String RENDERER = "pmd.renderer";
 
 	// boilerplate JEdit code
 	public void start()
@@ -53,16 +86,16 @@ public class PMDJEditPlugin extends EBPlugin {
 	{
 		instance = null;
 		unRegisterErrorSource();
- 	}
-
-
-/* 	public void createMenuItems(Vector menuItems) {
-		menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
 	}
 
-	public void createOptionPanes(OptionsDialog optionsDialog) {
-		optionsDialog.addOptionPane(new PMDOptionPane());
-	} */
+
+	/* 	public void createMenuItems(Vector menuItems) {
+			menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
+		}
+
+		public void createOptionPanes(OptionsDialog optionsDialog) {
+			optionsDialog.addOptionPane(new PMDOptionPane());
+		} */
 	// boilerplate JEdit code
 
 	public static void checkDirectory(View view) {
@@ -80,7 +113,7 @@ public class PMDJEditPlugin extends EBPlugin {
 					JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				process(findFiles(dir, false));
+				process(findFiles(dir, false), view);
 			}
 		}
 		else
@@ -90,7 +123,7 @@ public class PMDJEditPlugin extends EBPlugin {
 				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			process(findFiles(browser.getDirectory(), false));
+			process(findFiles(browser.getDirectory(), false), view);
 		}
 	}
 
@@ -105,7 +138,7 @@ public class PMDJEditPlugin extends EBPlugin {
 				{
 					if(bu.getBuffer().getMode().getName().equals("java"))
 					{
-						instance.check(bu.getBuffer(),bu.getView());
+						check(bu.getBuffer(),bu.getView());
 					}
 				}
 			}
@@ -127,12 +160,12 @@ public class PMDJEditPlugin extends EBPlugin {
 		{
 			for (int i=0; i<buffers.length; i++ )
 			{
-					if (buffers[i].getName().endsWith(".java"))
-					{
-						//fileSet.add(buffer.getFile());
-						Log.log(Log.DEBUG,this,"checking = " + buffers[i].getPath());
-						instanceCheck(buffers[i],view, false);
-					}
+				if (buffers[i].getName().endsWith(".java"))
+				{
+					//fileSet.add(buffer.getFile());
+					Log.log(Log.DEBUG,this,"checking = " + buffers[i].getPath());
+					instanceCheck(buffers[i],view, false);
+				}
 			}
 		}
 
@@ -153,7 +186,7 @@ public class PMDJEditPlugin extends EBPlugin {
 		String dir = null;
 		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP))
 		{
-			 dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
+			dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
 			if (dir != null && dir.trim() != null)
 			{
 				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
@@ -174,7 +207,7 @@ public class PMDJEditPlugin extends EBPlugin {
 		}
 
 		List listOfFiles =findFiles(dir, true);
-		process(listOfFiles);
+		process(listOfFiles, view);
 	}// check directory recursively
 
 	// clear error list
@@ -187,12 +220,12 @@ public class PMDJEditPlugin extends EBPlugin {
 	}
 	// clear error list
 
-	private void process(final List files) {
+	public void process(final List files, final View view) {
 		new Thread(new Runnable () {
-			           public void run() {
-				           processFiles(files);
-			           }
-		           }).start();
+					   public void run() {
+						   processFiles(files, view);
+					   }
+				   }).start();
 	}
 
 	// check current buffer
@@ -240,7 +273,7 @@ public class PMDJEditPlugin extends EBPlugin {
 		}
 	}// check current buffer
 
-	private void processFiles(List files) {
+	private void processFiles(List files, View view) {
 		unRegisterErrorSource();
 		errorSource.clear();
 		PMD pmd = new PMD();
@@ -260,7 +293,7 @@ public class PMDJEditPlugin extends EBPlugin {
 		boolean foundProblems = false;
 		for (Iterator i = files.iterator(); i.hasNext();) {
 			File file = (File)i.next();
-			ctx.setReport(new Report());
+			//ctx.setReport(new Report());
 			ctx.setSourceCodeFilename(file.getAbsolutePath());
 			try {
 				pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRules(), ctx);
@@ -286,6 +319,7 @@ public class PMDJEditPlugin extends EBPlugin {
 		else
 		{
 			registerErrorSource();
+			exportErrorAsReport(view, ctx);
 		}
 	}
 
@@ -464,7 +498,7 @@ public class PMDJEditPlugin extends EBPlugin {
 			JOptionPane.showMessageDialog(view, "Selection must be a directory",NAME, JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		instance.process(instance.findFiles(de[0].path, recursive));
+		instance.process(instance.findFiles(de[0].path, recursive),view);
 	}
 
 	public void startProgressBarDisplay(View view, int min, int max)
@@ -485,6 +519,53 @@ public class PMDJEditPlugin extends EBPlugin {
 		pbd = null;
 		Log.log(Log.DEBUG,this,"Comeplted display");
 	}
+
+	public void exportErrorAsReport(final View view, RuleContext ctx)
+	{
+
+		String format = jEdit.getProperty(PMDJEditPlugin.RENDERER);
+
+		//"None", "Text", "Html", "XML", "CSV"
+		if(format != null && !format.equals("None"))
+		{
+			Renderer renderer = null;
+			if (format.equals("XML"))
+			{
+				renderer = new XMLRenderer();
+			}
+			else if (format.equals("Html"))
+			{
+				renderer = new HTMLRenderer();
+			}
+			else if (format.equals("CSV"))
+			{
+				renderer = new CSVRenderer();
+			}
+			else if (format.equals("Text"))
+			{
+				renderer = new TextRenderer();
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(view, "Invalid Renderer", NAME, JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			final String output = renderer.render(ctx.getReport());
+			view.setBuffer(jEdit.newFile(view));
+			VFSManager.runInAWTThread(
+					new Runnable()
+					{
+						public void run()
+						{
+						    view.getTextArea().setText(output);
+						}
+					});
+
+			
+		}
+	}//End of exportErrorAsReport
+
 
 	class ProgressBar extends JPanel
 	{
@@ -507,6 +588,7 @@ public class PMDJEditPlugin extends EBPlugin {
 			pBar.setValue(pBar.getMaximum());
 		}
 	}
+
 
 }
 
