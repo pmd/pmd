@@ -35,7 +35,8 @@ import net.sourceforge.pmd.cpd.*;
 public class PMDOpenTool {
     static MessageCategory msgCat = new MessageCategory("PMD Results");
     static MessageCategory cpdCat = new MessageCategory("CPD Results");
-    public static ActionGroup GROUP_PMD = new ActionGroup("PMD", 'p', true);
+    public static ActionGroup GROUP_MENU_PMD = new ActionGroup("PMD", 'p', true);
+    public static ActionGroup GROUP_PROJECT_PMD = new ActionGroup("PMD", 'p', true);
     public static ActionGroup GROUP_TOOLBAR_PMD = new ActionGroup("PMD", 'P', true);
     static Font fileNameMsgFont = new Font("Dialog", Font.BOLD, 12);
     static Font stdMsgFont = new Font("Dialog", Font.PLAIN, 12);
@@ -58,11 +59,11 @@ public class PMDOpenTool {
         if (majorVersion == PrimeTime.CURRENT_MAJOR_VERSION) {
 
 
-            GROUP_PMD.add(B_ACTION_PMDCheck);
-            GROUP_PMD.add(B_ACTION_PMDProjectCheck);
-            GROUP_PMD.add(B_ACTION_CPDProjectCheck);
-            GROUP_PMD.add(B_ACTION_PMDConfig);
-            JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
+            GROUP_MENU_PMD.add(B_ACTION_PMDCheck);
+            GROUP_MENU_PMD.add(B_ACTION_PMDProjectCheck);
+            GROUP_MENU_PMD.add(B_ACTION_CPDProjectCheck);
+            GROUP_MENU_PMD.add(B_ACTION_PMDConfig);
+            JBuilderMenu.GROUP_Tools.add(GROUP_MENU_PMD);
             GROUP_TOOLBAR_PMD.add(B_ACTION_PMDCheck);
             GROUP_TOOLBAR_PMD.add(B_ACTION_PMDProjectCheck);
             GROUP_TOOLBAR_PMD.add(B_ACTION_CPDProjectCheck);
@@ -129,15 +130,19 @@ public class PMDOpenTool {
     }
 
     private static void registerWithProjectView() {
-        ContextActionProvider cap = new ContextActionProvider() {
+        GROUP_PROJECT_PMD.add(B_ACTION_PMDProjectCheck);
+        GROUP_PROJECT_PMD.add(B_ACTION_CPDProjectCheck);
+
+        ContextActionProvider cap1 = new ContextActionProvider() {
             public Action getContextAction (Browser browser, Node[] nodes) {
                 Node node = browser.getProjectView().getSelectedNode();
                 if (node instanceof JBProject || node instanceof PackageNode)
-                    return  B_ACTION_PMDProjectCheck;
+                    return GROUP_PROJECT_PMD;
                 return null;
             }
         };
-        ProjectView.registerContextActionProvider(cap);
+
+        ProjectView.registerContextActionProvider(cap1);
     }
 
     /**
@@ -203,7 +208,7 @@ public class PMDOpenTool {
     //create the Menu action item for initiating the PMD check
     public static BrowserAction B_ACTION_PMDCheck =
             // A new action with short menu string, mnemonic, and long menu string
-    new BrowserAction("PMD Checker", 'P', "Displays PMD statistics about a Java File", new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkFile.gif"))) {
+    new BrowserAction("PMD Check File", 'P', "Displays PMD statistics about a Java File", new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkFile.gif"))) {
 
         // The function called when the menu is selected
         public void actionPerformed (Browser browser) {
@@ -459,7 +464,7 @@ class PMDMessage extends Message {
                         TextNodeViewer.class);
                 browser.setActiveViewer(javaNode, viewer, requestFocus);
                 EditorPane editor = viewer.getEditor();
-                editor.gotoPosition(line, column, false, EditorPane.CENTER_IF_NEAR_EDGE);
+                editor.gotoLine(line, false, EditorPane.CENTER_IF_NEAR_EDGE);
                 if (requestFocus) {
                     editor.requestFocus();
                 }
@@ -573,7 +578,7 @@ class CPDMessage extends Message {
                             TextNodeViewer.class);
                     browser.setActiveViewer(javaNode, viewer, requestFocus);
                     EditorPane editor = viewer.getEditor();
-                    editor.gotoPosition(startline, 0, false, EditorPane.CENTER_IF_NEAR_EDGE);
+                    editor.gotoLine(startline, false, EditorPane.CENTER_IF_NEAR_EDGE);
                     if (requestFocus) {
                         editor.requestFocus();
                     }
