@@ -754,7 +754,9 @@ class Foo {
          <properties>
              <property name="xpath">
                  <value>
-                     <![CDATA[//ClassDeclaration[@Final='true']//FieldDeclaration[@Protected='true'] ]]>
+<![CDATA[
+//ClassOrInterfaceDeclaration[@Final='true']//FieldDeclaration[@Protected='true'] 
+ ]]>
                  </value>
              </property>
          </properties>
