@@ -11,13 +11,15 @@
    <section name="Similar Projects">
      <subsection name="Commercial">
        <ul>
-         <li><a href="http://www.parasoft.com">JTest</a>- Very nice with tons of features,
+         <li><a href="http://www.parasoft.com">JTest</a> - Very nice with tons of features,
              but also very expensive and requires a running X server (or Xvfb) to run on
              Linux.  They charge $500 to move a license from one machine to another.</li>
+         <li><a href="http://www.tcs.com/products/assent/htdocs/assent_index.htm">Assent</a> - The usual stuff, seems pretty complete.</li>
        </ul>
      </subsection>
      <subsection name="Open Source">
        <ul>
+         <li><a href="http://csdl.ics.hawaii.edu/Research/JWiz/JWiz.html">JWiz</a> - Research project, checks some neat stuff, like if you create a Button without adding an ActionListener to it.  Neat.
          <li><a href="http://doctorj.org">DoctorJ</a> - Written in C++.  Uses Lex and YACC.  Checks Javadoc, syntax and calculates metrics.</li>
          <li><a href="http://www.alphaworks.ibm.com/tech/toad">Toad</a> - All kinds of stuff from Big Blue.</li>
          <li><a href="http://www.artho.com/jlint/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.</li>
