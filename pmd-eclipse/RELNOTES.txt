@@ -1,6 +1,48 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
+v1.1.0 - 30/07/2003
+
+NEW : Redesigning the plugin configuration
+------------------------------------------
+Since the beginning, the plugin was configured by selecting globaly desired, already
+written rulesets. Before v1.0.0, only rulesets from PMD was allowed or also, custom
+rulesets packaged in a fragment plugin. Since then, rulesets can also be loaded from
+standard file system.
+
+Now, the plugin configuration is no more rulset based, but rule based. That is, you can
+configure globaly what rules are to be used and configure them (change the priority level,
+the description and the violation message). The rules can be imported from PMD rulesets
+or from any custom ruleset. It's even possible to create new rules, such as XPath rules.
+
+Finally, the configured rules can be enabled or disabled in the properties of each
+project.
+
+For more information, read the how to chapter about the plugin configuration.
+
+
+NEW : Adding a violation view
+-----------------------------
+PMD violations are shown as problems (or tasks) in the tasks view. Some users do not like this
+method to list violations.
+Now, a special view has been designed to display only violations. This view works like
+the tasks view, but displays informations differently. Also, this view provides filters
+specific for PMD such as a sorter by priority level.
+The users who do not want to use the tasks view any more may filter PMD markers to remove
+them from the tasks view.
+
+For more information, read the how to chapter about using the plugin.
+
+
+UPDATED : Grouping menu items
+-----------------------------
+(request and patch from Christian Jäckel)
+In order to be less intrusive in the context menu of the package and navigator views, PMD
+menu items are now grouped in a submenu. This submenu is displayed by selecting the unique
+entry "PMD" in the context menu of the desired view.
+
+
+----------------------------------------------------------------------------------------
 v1.0.0 - 19/06/2003
 
 NEW : Adding a logging facility

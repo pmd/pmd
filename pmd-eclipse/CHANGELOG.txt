@@ -1,12 +1,15 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
-v1.1.0 - jj/mm/aaaa
+v1.1.0 - 30/07/2003
 
 Runtime
 -------
 . Writing more docs (using PMD, using CPD, reporting bugs)
 . Redesigning the way to configure the plugin (see doc)
+. Adding a view that show PMD violations
+. Grouping PMD menu items in a submenu to be less intrusive in the views context menu
+. Updating to PMD v1.2
 
 
 
