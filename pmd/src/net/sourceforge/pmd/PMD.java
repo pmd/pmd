@@ -137,13 +137,10 @@ public class PMD {
         } else {
             renderer = new HTMLRenderer();
         }
-
         System.out.println(renderer.render(ctx.getReport()));
     }
 
     private static void usage() {
-        System.err.println("");
-        System.err.println("Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml");
-        System.err.println("");
+        System.err.println(System.getProperty("line.separator") + "Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml"+ System.getProperty("line.separator"));
     }
 }
