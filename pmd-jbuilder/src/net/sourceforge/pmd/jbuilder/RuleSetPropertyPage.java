@@ -133,31 +133,31 @@ public class RuleSetPropertyPage extends PropertyPage {
 
     void jbSelectRuleSets_actionPerformed(ActionEvent e) {
         //get the selected elements in the selected list and move to the available list
-        int [] selectedItems = jlistAvailableRuleSets.getSelectedIndices();
-        if (selectedItems != null) {
-            for (int i=0; i<selectedItems.length; i++) {
-                ListEntry le = (ListEntry)dlmAvailableRuleSets.get(selectedItems[i]);
-                dlmSelectedRuleSets.addElement(le);
-                dlmAvailableRuleSets.remove(selectedItems[i]);
-                jlistSelectedRuleSets.updateUI();
-                jlistAvailableRuleSets.updateUI();
-            }
+        int selectedIndex = jlistAvailableRuleSets.getSelectedIndex();
+        while (selectedIndex != -1) {
+            ListEntry le = (ListEntry)dlmAvailableRuleSets.get(selectedIndex);
+            dlmSelectedRuleSets.addElement(le);
+            dlmAvailableRuleSets.remove(selectedIndex);
+            selectedIndex = jlistAvailableRuleSets.getSelectedIndex();
         }
+        jlistSelectedRuleSets.updateUI();
+        jlistAvailableRuleSets.updateUI();
+
 
     }
 
     void jbDeselectRuleSets_actionPerformed(ActionEvent e) {
         //get the selected elements in the available list and move to the selected list
-        int [] selectedItems = jlistSelectedRuleSets.getSelectedIndices();
-        if (selectedItems != null) {
-            for (int i=0; i<selectedItems.length; i++) {
-                ListEntry le = (ListEntry)dlmSelectedRuleSets.get(selectedItems[i]);
-                dlmAvailableRuleSets.addElement(le);
-                dlmSelectedRuleSets.remove(selectedItems[i]);
-                jlistSelectedRuleSets.updateUI();
-                jlistAvailableRuleSets.updateUI();
-            }
+        int selectedIndex = jlistSelectedRuleSets.getSelectedIndex();
+        while(selectedIndex != -1) {
+            ListEntry le = (ListEntry)dlmSelectedRuleSets.get(selectedIndex);
+            dlmAvailableRuleSets.addElement(le);
+            dlmSelectedRuleSets.remove(selectedIndex);
+            selectedIndex = jlistSelectedRuleSets.getSelectedIndex();
         }
+        jlistSelectedRuleSets.updateUI();
+        jlistAvailableRuleSets.updateUI();
+
     }
 
 }
