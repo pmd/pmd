@@ -44,6 +44,7 @@ public class MockRule implements Rule {
     }
 
     public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public String getDescription() {
