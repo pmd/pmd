@@ -108,6 +108,9 @@
     <contributor>
       <name>Ralph Schaer</name>
     </contributor>
+    <contributor>
+      <name>Peter Friese</name>
+    </contributor>
   </contributors>
 
   <!-- Need to mark these as compile-time/run-time -->
