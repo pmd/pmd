@@ -18,14 +18,12 @@
      <p><a href="cpdresults.txt">Here</a> are the duplicates CPD found in the JDK 1.4 source code.</p>
      <p><a href="cpp_cpdresults.txt">Here</a> are the duplicates CPD found in the APACHE_2_0_BRANCH branch of Apache
          (just the <code>httpd-2.0/server/</code> directory).</p>
-     <p>There's also a JavaSpaces version available for splitting the CPD effort across a farm of machines.
-     I usually post news on that <a href="http://cpd.jini.org/">here</a> and the releases are <a href="http://sf.net/projects/pmd/">here</a></p>
        <p>Andy Glover wrote an Ant task for CPD; here's how to use it:</p>
        <source>
 <![CDATA[
 <target name="cpd">
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
-    <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt" verbose="true">
+    <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt">
         <fileset dir="/home/tom/tmp/ant">
             <include name="**/*.java"/>
         </fileset>
@@ -33,6 +31,9 @@
 </target>
 ]]>
        </source>
+       <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e., <code>ant -v -f mybuildfile.xml cpd</code>.</p>
+       <p>There's also a JavaSpaces version available for splitting the CPD effort across a farm of machines.
+       I usually post news on that <a href="http://cpd.jini.org/">here</a> and the releases are <a href="http://sf.net/projects/pmd/">here</a>.  This project is pretty much dead, though, since Brian's rewrite is fast enough to just run it on one machine.</p>
      <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
    </section>
   </body>
