@@ -30,7 +30,7 @@ public class Token {
     }
 
     public String toString() {
-        return "Token[" + tokenSrcID + "," + index +"," + c+"]";
+        return "[" + tokenSrcID + "," + index +"," + c+"]";
     }
 
 }

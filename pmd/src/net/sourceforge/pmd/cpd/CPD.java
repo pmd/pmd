@@ -90,7 +90,7 @@ public class CPD {
             cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused6.java"));
             cpd.add(new File("c:\\pmd\\pmd\\test-data\\Unused7.java"));
 						*/
-						cpd.add(findFilesRecursively("c:\\pmd\\pmd\\src\\"));
+						cpd.add(findFilesRecursively("c:\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd"));
 /*
             List files = findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity");
             files.addAll(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\agent"));
@@ -101,7 +101,8 @@ public class CPD {
             ioe.printStackTrace();
             return;
         }
-        cpd.go(100);
+        cpd.go(50);
+				System.out.println("****************************************************");
         for (Iterator i = cpd.getResults().getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
             System.out.println(tile.getImage());

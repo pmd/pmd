@@ -17,7 +17,7 @@ public class Tokenizer {
         int position = 0;
         while ((c = input.read()) != -1) {
             char myChar = (char)c;
-            if (myChar != '\r' && myChar != '\n') {
+            if (myChar != '\r' && myChar != '\n' && myChar != ' ') {
                 tokens.add(new Token(myChar, position, tokens.getID()));
                 position++;
             }

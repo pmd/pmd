@@ -9,54 +9,44 @@ import java.util.*;
 
 public class Results {
 
-    private List tiles = new ArrayList();
-    private Map occurrences = new HashMap();
+    private List orderedTiles = new ArrayList();
+    private Map tileToOccurrenceMap = new HashMap();
 
     public void addTile(Tile tile, Token tok) {
-        if (!has(tile)) {
+        if (!orderedTiles.contains(tile)) {
             List list = new ArrayList();
             list.add(tok);
-            tiles.add(tile);
-            occurrences.put(tile, list);
+            orderedTiles.add(tile);
+            tileToOccurrenceMap.put(tile, list);
         } else {
-            List list = (List)occurrences.get(tile);
+            List list = (List)tileToOccurrenceMap.get(tile);
             list.add(tok);
         }
     }
 
     public void consolidate() {
-        for (int i=tiles.size()-1; i>=0; i--) {
-            Tile tile = (Tile)tiles.get(i);
+        for (int i=orderedTiles.size()-1; i>=0; i--) {
+            Tile tile = (Tile)orderedTiles.get(i);
             removeDupesOf(tile);
         }
     }
 
     public int size() {
-        return tiles.size();
+        return orderedTiles.size();
     }
 
     public Iterator getTiles() {
-        return tiles.iterator();
+        return orderedTiles.iterator();
     }
 
     public Iterator getOccurrences(Tile tile) {
-        return ((List)occurrences.get(tile)).iterator();
-    }
-
-    private boolean has(Tile candidate) {
-        for (Iterator i = tiles.iterator(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
-            if (tile.equals(candidate)) {
-                return true;
-            }
-        }
-        return false;
+        return ((List)tileToOccurrenceMap.get(tile)).iterator();
     }
 
     private void removeDupesOf(Tile tile) {
         Set occs = new HashSet();
-        occs.addAll((List)occurrences.get(tile));
-        for (Iterator i = occurrences.keySet().iterator(); i.hasNext();) {
+        occs.addAll((List)tileToOccurrenceMap.get(tile));
+        for (Iterator i = tileToOccurrenceMap.keySet().iterator(); i.hasNext();) {
             Tile tile2 = (Tile)i.next();
 
             if (tile2.equals(tile)) {
@@ -64,12 +54,12 @@ public class Results {
             }
 
             Set possibleDupe = new HashSet();
-            possibleDupe.addAll((List)occurrences.get(tile2));
+            possibleDupe.addAll((List)tileToOccurrenceMap.get(tile2));
 
             possibleDupe.removeAll(occs);
             if (possibleDupe.isEmpty()) {
-                occurrences.remove(tile);
-                tiles.remove(tile);
+                tileToOccurrenceMap.remove(tile);
+                orderedTiles.remove(tile);
                 break;
             }
         }
