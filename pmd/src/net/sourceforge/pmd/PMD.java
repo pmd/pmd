@@ -70,6 +70,13 @@ public class PMD {
         String reportFormat = args[1];
         String ruleSets = args[2];
 
+        boolean shortNames = false;
+        for (int i=0; i<args.length; i++) {
+            if (args[i].equals("-shortnames")) {
+                shortNames = true;
+            }
+        }
+
         List files;
         if (inputFileName.indexOf(',') != -1) {
             files = collectFromCommaDelimitedString(inputFileName);
@@ -87,11 +94,11 @@ public class PMD {
             RuleSet rules = ruleSetFactory.createRuleSet(ruleSets);
             for (Iterator i = files.iterator(); i.hasNext();) {
                 File file = (File) i.next();
-                ctx.setSourceCodeFilename(file.getAbsolutePath());
+                ctx.setSourceCodeFilename(glomName(shortNames, inputFileName, file));
                 try {
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (PMDException pmde) {
-                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), file.getAbsolutePath()));
+                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), glomName(shortNames, inputFileName, file)));
                 }
             }
         } catch (FileNotFoundException fnfe) {
@@ -126,6 +133,18 @@ public class PMD {
             return;
         }
         System.out.println(renderer.render(ctx.getReport()));
+    }
+
+    private static String glomName(boolean shortNames, String inputFileName, File file) {
+        if (shortNames && inputFileName.indexOf(',') == -1 && (new File(inputFileName)).isDirectory()) {
+            String name = file.getAbsolutePath().substring(inputFileName.length());
+            if (name.startsWith(System.getProperty("file.separator"))) {
+                name = name.substring(1);
+            }
+            return name;
+        } else {
+            return file.getAbsolutePath();
+        }
     }
 
     private static List collectFilesFromOneName(String inputFileName) {
