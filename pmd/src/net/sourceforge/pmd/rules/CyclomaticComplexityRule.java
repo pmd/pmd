@@ -189,14 +189,8 @@ public class CyclomaticComplexityRule extends AbstractRule {
         if (methodEntry.m_decisionPoints >= getIntProperty("reportLevel")) {
             // The {0} "{1}" has a cyclomatic complexity of {2}.
             RuleContext ruleContext = (RuleContext) data;
-            String template = getMessage();
-            String methodName = (methodDeclarator == null) ? "" : methodDeclarator.getImage();
-            String complexity = String.valueOf(methodEntry.m_decisionPoints);
-            String[] args = {"method", methodName, complexity};
-            String message = MessageFormat.format(template, args);
-            int lineNumber = node.getBeginLine();
-            RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
-            ruleContext.getReport().addRuleViolation(ruleViolation);
+            String[] args = {"method", (methodDeclarator == null) ? "" : methodDeclarator.getImage(), String.valueOf(methodEntry.m_decisionPoints)};
+            ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, node.getBeginLine(), MessageFormat.format(getMessage(), args)));
         }
 
         return data;
