@@ -12,6 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.Font;
 import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
+
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -52,7 +55,7 @@ public class PMDViewer extends JFrame
     private ResultsViewer m_resultsViewer;
     private JScrollPane m_resultsViewerScrollPane;
     private JSplitPane m_mainSplitPane;
-    private PMDClipboard m_clipboardOwner = new PMDClipboard();
+    private PMDClipboard m_clipboardOwner;
 
     /**
      *******************************************************************************
@@ -61,6 +64,8 @@ public class PMDViewer extends JFrame
     private PMDViewer()
     {
         super("PMD Viewer");
+
+        m_clipboardOwner = new PMDClipboard();
 
         int windowWidth = 1200;
         int windowHeight = 1000;
@@ -94,7 +99,7 @@ public class PMDViewer extends JFrame
         createMainSplitPane();
         getContentPane().add(createContentPanel(windowMargin));
 
-        ImageIcon image = Utilities.getImageIcon("icons/pmdLogo.jpg");
+        ImageIcon image = (ImageIcon) UIManager.get("pmdLogoImage");
         setIconImage(image.getImage());
     }
 
@@ -244,6 +249,7 @@ public class PMDViewer extends JFrame
     /**
      *********************************************************************************
      *
+     * @param rootDirectories
      */
     private void setupFiles(File[] rootDirectories)
     {
@@ -265,9 +271,9 @@ public class PMDViewer extends JFrame
 
             UIManager.setLookAndFeel(useLookAndFeel);
 
-            PMDViewer pmdViewer = new PMDViewer();
             LoadRootDirectories loadRootDirectories = new LoadRootDirectories();
             loadRootDirectories.start();
+            PMDViewer pmdViewer = new PMDViewer();
             pmdViewer.setVisible(true);
             pmdViewer.setupFiles(loadRootDirectories.getDirectories());
         }

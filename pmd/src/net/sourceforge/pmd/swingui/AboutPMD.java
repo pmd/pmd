@@ -111,7 +111,7 @@ class AboutPMD extends JDialog
         JPanel aboutPanel = new JPanel(new BorderLayout());
 
         // PMD Image
-        ImageIcon imageIcon = Utilities.getImageIcon("icons/pmdLogo.jpg");
+        ImageIcon imageIcon = (ImageIcon) UIManager.get("pmdLogoImage");
         JLabel imageLabel = new JLabel(imageIcon);
         aboutPanel.add(imageLabel, BorderLayout.CENTER);
 
@@ -121,13 +121,17 @@ class AboutPMD extends JDialog
         aboutPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // Version Label
-        JLabel versionLabel = new JLabel("Version 1.0RC2");
+        String versionText = Resources.getString("RESOURCEVersion")
+                           + " "
+                           + Resources.getString("RESOURCEpmdVersion");
+        JLabel versionLabel = new JLabel(versionText);
         versionLabel.setFont(UIManager.getFont("labelFont"));
         versionLabel.setHorizontalAlignment(JLabel.CENTER);
         bottomPanel.add(versionLabel);
 
         // SourceForge PMD Project
-        JLabel sourceForgeLabel = new JLabel("Developed by the SourceForge PMD Project Team");
+        String sourceForgeText = Resources.getString("RESOURCEDevelopedBySourceForgePMDTeam");
+        JLabel sourceForgeLabel = new JLabel(sourceForgeText);
         sourceForgeLabel.setFont(UIManager.getFont("labelFont"));
         sourceForgeLabel.setHorizontalAlignment(JLabel.CENTER);
         bottomPanel.add(sourceForgeLabel);

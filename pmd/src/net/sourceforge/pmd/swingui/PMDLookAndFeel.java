@@ -2,6 +2,12 @@ package net.sourceforge.pmd.swingui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.swing.ImageIcon;
 import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
@@ -79,8 +85,6 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         String pkgName = "net.sourceforge.pmd.swingui";
     }
 
-
-
     /**
      ****************************************************************************
      *
@@ -113,8 +117,6 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
           loadSystemColors(table, defaultSystemColors, isNativeLookAndFeel());
     }
 
-
-
     /**
      ****************************************************************************
      *
@@ -137,6 +139,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
             "view",             LookAndFeel.makeIcon(plafClass, "icons/view.gif"),
             "help",             LookAndFeel.makeIcon(plafClass, "icons/help.gif"),
             "pmdLogo",          LookAndFeel.makeIcon(plafClass, "icons/pmdLogo.gif"),
+            "pmdLogoImage",     getImageIcon("icons/pmdLogo.jpg"),
             "labelFont",        new Font("Dialog", Font.BOLD, 12),
             "label14Font",      new Font("Dialog", Font.BOLD, 14),
             "label16Font",      new Font("Dialog", Font.BOLD, 16),
@@ -148,6 +151,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
             "messageFont",      new Font("Dialog", Font.PLAIN, 12),
             "serif12Font",      new Font("Serif", Font.PLAIN, 12),
             "serif14Font",      new Font("Serif", Font.PLAIN, 14),
+            "viewerProperties", loadViewerProperties(),
 
             // These are all the icons defined in the WindowsLookAndFeel.  We redefine them
             // here because of the way they are defined in that class: in terms of the return
@@ -175,5 +179,82 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         };
 
         table.putDefaults(defaults);
+    }
+
+    /**
+     ****************************************************************************
+     *
+     * @return
+     */
+    private Properties loadViewerProperties()
+    {
+        Properties properties = new Properties();
+
+        try
+        {
+            InputStream inputStream = getClass().getResourceAsStream("pmdViewer.properties");
+            properties.load(inputStream);
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+
+        return properties;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param fileName
+     *
+     * @return
+     */
+    protected static final ImageIcon getImageIcon(String fileName)
+    {
+        final byte[][] buffer = new byte[1][];
+
+        try
+        {
+            InputStream resource = PMDLookAndFeel.class.getResourceAsStream(fileName);
+
+            if (resource == null)
+            {
+                return null;
+            }
+
+            BufferedInputStream in;
+            ByteArrayOutputStream out;
+            int n;
+
+            in = new BufferedInputStream(resource);
+            out = new ByteArrayOutputStream(1024);
+            buffer[0] = new byte[1024];
+
+            while ((n = in.read(buffer[0])) > 0)
+            {
+                out.write(buffer[0], 0, n);
+            }
+
+            in.close();
+            out.flush();
+            buffer[0] = out.toByteArray();
+        }
+        catch (IOException ioe)
+        {
+            return null;
+        }
+
+        if (buffer[0] == null)
+        {
+            return null;
+        }
+
+        if (buffer[0].length == 0)
+        {
+            return null;
+        }
+
+        return new ImageIcon(buffer[0]);
     }
 }
