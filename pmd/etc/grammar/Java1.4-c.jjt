@@ -899,7 +899,7 @@ void ShiftExpression() :
 void AdditiveExpression() :
 {}
 {
-  MultiplicativeExpression() {checkForDiscard(jjtThis);} ( ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");jjtThis.setUnDiscardable();} ) MultiplicativeExpression() )*
+  MultiplicativeExpression() {checkForDiscard(jjtThis);} ( ( "+" {jjtThis.setImage("+");jjtThis.setUnDiscardable();} | "-" {jjtThis.setImage("-");jjtThis.setUnDiscardable();} ) MultiplicativeExpression() )*
 }
 
 void MultiplicativeExpression() :
@@ -911,7 +911,7 @@ void MultiplicativeExpression() :
 void UnaryExpression() :
 {}
 {
-  ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) UnaryExpression() | PreIncrementExpression() | PreDecrementExpression() | UnaryExpressionNotPlusMinus()
+  ( "+" {jjtThis.setImage("+");jjtThis.setUnDiscardable();} | "-" {jjtThis.setImage("-");jjtThis.setUnDiscardable();} ) UnaryExpression() | PreIncrementExpression() | PreDecrementExpression() | UnaryExpressionNotPlusMinus()
 }
 
 void PreIncrementExpression() :

@@ -16,6 +16,7 @@ public class DiscardableNodeCleaner {
         ASTExclusiveOrExpression.class,
         ASTConditionalExpression.class,
         ASTRelationalExpression.class,
+        ASTUnaryExpression.class,
         ASTUnaryExpressionNotPlusMinus.class,
         ASTPostfixExpression.class,
         ASTMultiplicativeExpression.class,

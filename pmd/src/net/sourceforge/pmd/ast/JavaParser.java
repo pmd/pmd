@@ -2722,11 +2722,11 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PLUS:
           jj_consume_token(PLUS);
-                                                                  jjtn000.setImage("+");
+                                                                  jjtn000.setImage("+");jjtn000.setUnDiscardable();
           break;
         case MINUS:
           jj_consume_token(MINUS);
-                                                                                                 jjtn000.setImage("-");jjtn000.setUnDiscardable();
+                                                                                                                            jjtn000.setImage("-");jjtn000.setUnDiscardable();
           break;
         default:
           jj_la1[70] = jj_gen;
@@ -2829,11 +2829,11 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PLUS:
           jj_consume_token(PLUS);
-         jjtn000.setImage("+");
+         jjtn000.setImage("+");jjtn000.setUnDiscardable();
           break;
         case MINUS:
           jj_consume_token(MINUS);
-                                        jjtn000.setImage("-");
+                                                                   jjtn000.setImage("-");jjtn000.setUnDiscardable();
           break;
         default:
           jj_la1[73] = jj_gen;
@@ -6836,6 +6836,11 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
+  final private boolean jj_3R_284() {
+    if (jj_3R_302()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_89() {
     if (jj_3R_137()) return true;
     return false;
@@ -6934,6 +6939,11 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
 
   final private boolean jj_3R_123() {
     if (jj_3R_159()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_283() {
+    if (jj_3R_231()) return true;
     return false;
   }
 
@@ -7126,8 +7136,8 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
-  final private boolean jj_3R_284() {
-    if (jj_3R_302()) return true;
+  final private boolean jj_3R_282() {
+    if (jj_3R_230()) return true;
     return false;
   }
 
@@ -7199,11 +7209,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
-  final private boolean jj_3R_283() {
-    if (jj_3R_231()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_146() {
     if (jj_3R_171()) return true;
     return false;
@@ -7215,6 +7220,11 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     xsp = jj_scanpos;
     if (jj_3R_91()) jj_scanpos = xsp;
     if (jj_scan_token(RPAREN)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_316() {
+    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
@@ -7278,11 +7288,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
-  final private boolean jj_3R_282() {
-    if (jj_3R_230()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_171() {
     Token xsp;
     xsp = jj_scanpos;
@@ -7312,11 +7317,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
 
   final private boolean jj_3R_272() {
     if (jj_scan_token(NE)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_316() {
-    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
@@ -7433,6 +7433,11 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     if (jj_scan_token(SUPER)) return true;
     if (jj_scan_token(DOT)) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_301() {
+    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
@@ -7570,11 +7575,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
 
   final private boolean jj_3R_297() {
     if (jj_scan_token(LSHIFT)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_301() {
-    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
