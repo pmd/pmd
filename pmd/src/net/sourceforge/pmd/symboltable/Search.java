@@ -9,7 +9,7 @@ public class Search {
     private static final boolean TRACE = false;
 
     private NameOccurrence occ;
-    private NameDeclaration decl;
+    private VariableNameDeclaration decl;
 
     public Search(NameOccurrence occ) {
         if (TRACE) System.out.println("new search for " + occ);
@@ -26,11 +26,11 @@ public class Search {
         if (TRACE) System.out.println("found " + decl);
     }
 
-    public NameDeclaration getResult() {
+    public VariableNameDeclaration getResult() {
         return decl;
     }
 
-    private NameDeclaration searchUpward(NameOccurrence nameOccurrence, Scope scope) {
+    private VariableNameDeclaration searchUpward(NameOccurrence nameOccurrence, Scope scope) {
         if (!scope.contains(nameOccurrence) && scope.getParent() != null) {
             if (TRACE) System.out.println("moving up fm " + getClsName(scope.getClass()) +  " to " + getClsName(scope.getParent().getClass()));
             return searchUpward(nameOccurrence, scope.getParent());

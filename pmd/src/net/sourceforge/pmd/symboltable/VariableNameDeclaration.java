@@ -8,11 +8,11 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
-public class NameDeclaration {
+public class VariableNameDeclaration {
 
     protected SimpleNode node;
 
-    public NameDeclaration(SimpleNode node) {
+    public VariableNameDeclaration(SimpleNode node) {
         this.node = node;
     }
 
@@ -36,7 +36,7 @@ public class NameDeclaration {
     }
 
     public boolean equals(Object o) {
-        NameDeclaration n = (NameDeclaration)o;
+        VariableNameDeclaration n = (VariableNameDeclaration)o;
         return n.getImage().equals(node.getImage());
     }
 

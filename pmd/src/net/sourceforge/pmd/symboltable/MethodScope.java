@@ -9,12 +9,12 @@ import java.util.Iterator;
 
 public class MethodScope extends AbstractScope {
 
-    protected NameDeclaration findHere(NameOccurrence occurrence) {
+    protected VariableNameDeclaration findHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper()) {
             return null;
         }
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
             if (nameDeclaration.getImage().equals(occurrence.getImage())) {
                 return nameDeclaration;
             }

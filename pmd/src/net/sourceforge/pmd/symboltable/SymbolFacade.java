@@ -29,7 +29,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
 
     public Object visit(ASTPrimaryExpression node, Object data) {
         NameOccurrences qualifiedNames = new NameOccurrences(node);
-        NameDeclaration decl = null;
+        VariableNameDeclaration decl = null;
         for (Iterator i = qualifiedNames.iterator(); i.hasNext();) {
             NameOccurrence occ = (NameOccurrence)i.next();
             Search search = new Search(occ);

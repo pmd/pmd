@@ -7,7 +7,7 @@ package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.symboltable.ClassScope;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -18,7 +18,7 @@ public class ClassScopeTest extends TestCase {
         ClassScope s = new ClassScope("Foo");
         SimpleNode node = new SimpleNode(1);
         node.setImage("bar");
-        s.addVariableDeclaration(new NameDeclaration(node));
+        s.addVariableDeclaration(new VariableNameDeclaration(node));
         assertTrue(s.getUnusedDeclarations().hasNext());
     }
 
@@ -33,7 +33,7 @@ public class ClassScopeTest extends TestCase {
         ClassScope s = new ClassScope("Foo");
         SimpleNode node = new SimpleNode(1);
         node.setImage("X");
-        s.addVariableDeclaration(new NameDeclaration(node));
+        s.addVariableDeclaration(new VariableNameDeclaration(node));
 
         SimpleNode node2 = new SimpleNode(2);
         node2.setImage("Foo.X");

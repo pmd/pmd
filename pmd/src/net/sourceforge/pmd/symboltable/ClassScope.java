@@ -27,7 +27,7 @@ public class ClassScope extends AbstractScope {
         methodNames.put(decl, new ArrayList());
     }
 
-    protected NameDeclaration findHere(NameOccurrence occurrence) {
+    protected VariableNameDeclaration findHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
             if (names.isEmpty()) {
                 // this could happen if you do this:
@@ -44,11 +44,11 @@ public class ClassScope extends AbstractScope {
             // }
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
-            return (NameDeclaration)names.keySet().iterator().next();
+            return (VariableNameDeclaration)names.keySet().iterator().next();
         }
 
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
-            NameDeclaration decl = (NameDeclaration)i.next();
+            VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
             if (decl.getImage().equals(occurrence.getImage()) || (className + "." + decl.getImage()).equals(occurrence.getImage())) {
                 return decl;
             }

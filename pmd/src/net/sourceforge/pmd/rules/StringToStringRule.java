@@ -7,7 +7,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.ast.*;
 
@@ -25,7 +25,7 @@ public class StringToStringRule extends AbstractRule {
         // now we know we're at a node of type String
         Map decls = node.getScope().getUsedDeclarations();
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
-            NameDeclaration decl = (NameDeclaration)i.next();
+            VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
             if (!decl.getImage().equals(node.getImage())) {
                 continue;
             }

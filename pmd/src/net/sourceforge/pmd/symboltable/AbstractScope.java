@@ -28,7 +28,7 @@ public abstract class AbstractScope implements Scope {
         return parent;
     }
 
-    public void addVariableDeclaration(NameDeclaration nameDecl) {
+    public void addVariableDeclaration(VariableNameDeclaration nameDecl) {
         if (names.containsKey(nameDecl)) {
             throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
         }
@@ -43,7 +43,7 @@ public abstract class AbstractScope implements Scope {
     public Map getUsedDeclarations() {
         Map used = new HashMap();
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
             List usages = (List)names.get(nameDeclaration);
             if (!usages.isEmpty()) {
                 used.put(nameDeclaration, usages);
@@ -55,7 +55,7 @@ public abstract class AbstractScope implements Scope {
     public Iterator getUnusedDeclarations() {
         List unused = new ArrayList();
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
             if (((List)names.get(nameDeclaration)).isEmpty()) {
                 unused.add(nameDeclaration);
             }
@@ -63,8 +63,8 @@ public abstract class AbstractScope implements Scope {
         return unused.iterator();
     }
 
-    public NameDeclaration addOccurrence(NameOccurrence occurrence) {
-        NameDeclaration decl = findHere(occurrence);
+    public VariableNameDeclaration addOccurrence(NameOccurrence occurrence) {
+        VariableNameDeclaration decl = findHere(occurrence);
         if (decl != null) {
             List nameOccurrences = (List)names.get(decl);
             nameOccurrences.add(occurrence);
@@ -76,7 +76,7 @@ public abstract class AbstractScope implements Scope {
         parent.addMethodDeclaration(decl);
     }
 
-    protected abstract NameDeclaration findHere(NameOccurrence occurrence);
+    protected abstract VariableNameDeclaration findHere(NameOccurrence occurrence);
 
     protected String glomNames() {
         String result = "";

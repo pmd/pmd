@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.ast.*;
 
 import java.util.Iterator;
@@ -181,7 +181,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
 TODO this uses the symbol table
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         for (Iterator i = node.getScope().getUnusedMethodDeclarations();i.hasNext();) {
-            NameDeclaration decl = (NameDeclaration)i.next();
+            VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
             AccessNode accessNode = (AccessNode)decl.getNode().jjtGetParent();
 
             // exclude non-private methods and serializable methods

@@ -17,7 +17,7 @@ public class UnusedLocalVariableRule extends AbstractRule {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
             RuleContext ctx = (RuleContext)data;
             for (Iterator i =  node.getScope().getUnusedDeclarations(); i.hasNext();) {
-                NameDeclaration symbol = (NameDeclaration)i.next();
+                VariableNameDeclaration symbol = (VariableNameDeclaration)i.next();
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
             }
         }

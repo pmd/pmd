@@ -15,9 +15,9 @@ public class AbstractScopeTest extends TestCase {
 
     // A helper class to stub out AbstractScope's abstract stuff
     private class MyScope extends AbstractScope {
-        protected NameDeclaration findHere(NameOccurrence occ) {
+        protected VariableNameDeclaration findHere(NameOccurrence occ) {
             for (Iterator i = names.keySet().iterator(); i.hasNext();) {
-                NameDeclaration decl = (NameDeclaration)i.next();
+                VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
                 if (decl.getImage().equals(occ.getImage())) {
                     return decl;
                 }
@@ -28,7 +28,7 @@ public class AbstractScopeTest extends TestCase {
 
     // Another helper class to test the search for a class scope behavior
     private class IsEnclosingClassScope extends AbstractScope {
-        protected NameDeclaration findHere(NameOccurrence occ) {return null;}
+        protected VariableNameDeclaration findHere(NameOccurrence occ) {return null;}
         public Scope getEnclosingClassScope() {
             return this;
         }
@@ -55,7 +55,7 @@ public class AbstractScopeTest extends TestCase {
         Scope scope = new MyScope();
         SimpleNode node = new SimpleNode(1);
         node.setImage("foo");
-        NameDeclaration decl = new NameDeclaration(node);
+        VariableNameDeclaration decl = new VariableNameDeclaration(node);
         scope.addVariableDeclaration(decl);
         assertTrue(scope.contains(new NameOccurrence(new SimpleNode(1), "foo")));
     }

@@ -22,26 +22,26 @@ public class GlobalScope extends AbstractScope implements Scope {
         return Collections.EMPTY_LIST.iterator();
     }
 
-    public void addVariableDeclaration(NameDeclaration decl) {}
+    public void addVariableDeclaration(VariableNameDeclaration decl) {}
 
     public boolean contains(NameOccurrence occ) {
         return false;
     }
 
-    public NameDeclaration addOccurrence(NameOccurrence occ) {
+    public VariableNameDeclaration addOccurrence(NameOccurrence occ) {
         return null;
     }
 
     public String toString() {
         String result = "GlobalScope:";
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            VariableNameDeclaration nameDeclaration = (VariableNameDeclaration)i.next();
             result += nameDeclaration.getImage() +",";
         }
         return result;
     }
 
-    protected NameDeclaration findHere(NameOccurrence occ) {
+    protected VariableNameDeclaration findHere(NameOccurrence occ) {
         return null;
     }
 

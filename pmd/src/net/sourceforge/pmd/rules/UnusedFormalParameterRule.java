@@ -3,7 +3,7 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import java.text.MessageFormat;
 import java.util.Iterator;
 
@@ -13,7 +13,7 @@ public class UnusedFormalParameterRule extends AbstractRule {
         if (node.isPrivate() && ! node.isNative()) {  // make sure it's both private and not native
             RuleContext ctx = (RuleContext)data;
             for (Iterator i = node.getScope().getUnusedDeclarations(); i.hasNext();) {
-                NameDeclaration nameDecl = (NameDeclaration)i.next();
+                VariableNameDeclaration nameDecl = (VariableNameDeclaration)i.next();
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {nameDecl.getImage()})));
             }
         }
