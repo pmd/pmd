@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.dfa;
 
+import net.sourceforge.pmd.ast.SimpleNode;
+
 import java.util.List;
 
 public interface IDataFlowNode {
@@ -24,4 +26,6 @@ public interface IDataFlowNode {
     boolean removePathToChild(IDataFlowNode child);
 
     void reverseParentPathsTo(IDataFlowNode destination);
+
+    SimpleNode getSimpleNode();    
 }

@@ -1,44 +1,51 @@
 package net.sourceforge.pmd.util.designer;
 
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import net.sourceforge.pmd.util.HasLines;
 
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.Graphics;
+import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Canvas;
-import java.awt.Image;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.Iterator;
-import java.util.ArrayList;
+import java.util.List;
 
 public class DFAPanel extends JPanel implements ListSelectionListener {
 
-    public static class DFACanvas extends Canvas {
+    public static class DFARenderer {
 
         private static final int NODE_RADIUS = 10;
         private static final int NODE_DIAMETER = 2 * NODE_RADIUS;
 
         private SimpleNode node;
 
-        private int x = 150;
-        private int y = 50;
+        private int x = 75;
+        private int y = 0;
         private HasLines lines;
 
-        public void paint(Graphics g) {
-            super.paint(g);
+        public void setCode(HasLines h) {
+            this.lines = h;
+        }
+
+        public void setMethod(SimpleNode node) {
+            this.node = node;
+        }
+
+        public void renderTo(Graphics2D g) {
             if (node == null) {
                 return;
             }
+            g.setPaint(Color.LIGHT_GRAY);
+            g.fillRect(0, 0, HEIGHT, WIDTH);
+            g.setPaint(Color.BLACK);
             List flow = node.getDataFlowNode().getFlow();
             for (int i = 0; i < flow.size(); i++) {
                 IDataFlowNode inode = (IDataFlowNode) flow.get(i);
@@ -80,14 +87,6 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
                     g.drawString(output, x - 3 * NODE_DIAMETER + (j * 20), y + NODE_RADIUS - 2);
                 }
             }
-        }
-
-        public void setCode(HasLines h) {
-            this.lines = h;
-        }
-
-        public void setMethod(SimpleNode node) {
-            this.node = node;
         }
 
         private int computeDrawPos(int index) {
@@ -151,16 +150,16 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         }
     }
 
-/*
-    private Image offScreenImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
-    private JPanel offScreenPanel = new JPanel();
-    private Graphics2D offScreenGraphics = (Graphics2D)offScreenImage.getGraphics();
-*/
+    private static final int HEIGHT = 400;
+    private static final int WIDTH = 300;
 
-    private DFACanvas dfaCanvas;
+    private Image offScreenImage = new BufferedImage(HEIGHT, WIDTH, BufferedImage.TYPE_INT_RGB);
+    private Graphics2D offScreenGraphics = (Graphics2D)offScreenImage.getGraphics();
+    private JPanel offScreenPanel = new JPanel();
+
+    private DFARenderer dfaRenderer;
     private JList nodeList;
     private DefaultListModel nodes = new DefaultListModel();
-    private JPanel wrapperPanel;
 
     public DFAPanel() {
         super();
@@ -176,37 +175,40 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         leftPanel.add(nodeList);
         add(leftPanel, BorderLayout.WEST);
 
-        dfaCanvas = new DFACanvas();
-        JScrollPane scrollPane = new JScrollPane(dfaCanvas);
-        wrapperPanel = new JPanel();
-        wrapperPanel.add(scrollPane);
-        add(wrapperPanel, BorderLayout.EAST);
+        dfaRenderer = new DFARenderer();
+        add(offScreenPanel, BorderLayout.CENTER);
     }
 
     public void valueChanged(ListSelectionEvent event) {
-        ElementWrapper wrapper = (ElementWrapper)nodeList.getSelectedValue();
-        dfaCanvas.setMethod(wrapper.getNode());
-        repaint();
-/*
-        board.renderTo(offScreenGraphics);
-        offScreenPanel.getGraphics().drawImage(offScreenImage, 0, 0, offScreenPanel);
-*/
+        ElementWrapper wrapper = null;
+        if (nodes.size() == 1) {
+            wrapper = (ElementWrapper)nodes.get(0);
+        } else if (nodes.isEmpty()) {
+            return;
+        } else if (nodeList.getSelectedValue() == null) {
+            wrapper = (ElementWrapper)nodes.get(0);
+        } else {
+            wrapper = (ElementWrapper)nodeList.getSelectedValue();
+        }
+        dfaRenderer.setMethod(wrapper.getNode());
+        render();
     }
 
     public void resetTo(List newNodes, HasLines lines) {
-        dfaCanvas.setCode(lines);
+        dfaRenderer.setCode(lines);
         nodes.clear();
         for (Iterator i = newNodes.iterator(); i.hasNext();) {
             nodes.addElement(new ElementWrapper((ASTMethodDeclaration)i.next()));
         }
         nodeList.setSelectedIndex(0);
-        dfaCanvas.setMethod((SimpleNode)newNodes.get(0));
-        repaint();
+        dfaRenderer.setMethod((SimpleNode)newNodes.get(0));
+        render();
     }
 
-    public void paint(Graphics g) {
-        super.paint(g);
-        dfaCanvas.paint(g);
+    private void render() {
+        offScreenPanel.setSize(HEIGHT, WIDTH);
+        dfaRenderer.renderTo(offScreenGraphics);
+        offScreenPanel.getGraphics().drawImage(offScreenImage, 0, 0, offScreenPanel);
     }
 }
 

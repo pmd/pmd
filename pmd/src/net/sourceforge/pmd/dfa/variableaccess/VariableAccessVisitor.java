@@ -27,11 +27,17 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author raik
@@ -41,197 +47,110 @@ import java.util.ArrayList;
  */
 public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
-    private List undefList = new LinkedList();
 
-    public void compute(ASTMethodDeclaration node) {
-        if (node.jjtGetParent() instanceof ASTClassBodyDeclaration) {
-            this.compute(node, "ASTMethodDeclaration");
-        }
-    }
+       private List undefList = new Vector();
 
-    public void compute(ASTConstructorDeclaration node) {
-        this.compute(node, "ASTConstructorDeclaration");
-    }
+       public void compute(ASTMethodDeclaration node) {
+           if(node.jjtGetParent() instanceof ASTClassBodyDeclaration) {
+               this.computeNow(node);
+           }
+       }
 
-    private void compute(SimpleNode node, String name) {
+       public void compute(ASTConstructorDeclaration node) {
+               this.computeNow(node);
+       }
 
-        node.jjtAccept(this, null);
+       private void computeNow(SimpleNode node) {
 
-        IDataFlowNode inode = node.getDataFlowNode();
+               IDataFlowNode inode = node.getDataFlowNode();
 
-        IDataFlowNode firstINode =
-                (IDataFlowNode) inode.getFlow().get(0);
+               IDataFlowNode firstINode =
+                       (IDataFlowNode)inode.getFlow().get(0);
 
-        IDataFlowNode lastINode =
-                (IDataFlowNode) inode.getFlow().get(inode.getFlow().size() - 1);
+               IDataFlowNode lastINode =
+                       (IDataFlowNode)inode.getFlow().get(inode.getFlow().size()-1);
 
-        firstINode.setVariableAccess(this.undefList);
-        lastINode.setVariableAccess(this.undefList);
-    }
-	
-	
-//  ----------------------------------------------------------------------------
-//	STACK OBJECTS - nodes which represent a whole expression or statement
-//	like: x = y + 3;
-    
-    // ALSO ACCESS OBJECT
-    public Object visit(ASTEqualityExpression node, Object data) {
-        List varAccess = new ArrayList();
-        varAccess.add(node);
-        super.visit(node, varAccess);
-        data = this.computeVariableAccess(node, varAccess);
-        return data;
-    }
 
-    // ALSO ACCESS OBJECT
-    public Object visit(ASTRelationalExpression node, Object data) {
-        List varAccess = new ArrayList();
-        varAccess.add(node);
-        super.visit(node, varAccess);
-        data = this.computeVariableAccess(node, varAccess);
-        return data;
-    }
+               Set scopeSet = new HashSet();
+               /*
+                * Fills the HashSet with all VariableDeclarations(Map) of all scopes
+                * of this data flow(method). Adds no dublicated VariablesDeclarations
+                * into the HashSet.
+                * */
+               for(int i=0; i<inode.getFlow().size();i++) {
+                       IDataFlowNode n = (IDataFlowNode)inode.getFlow().get(i);
 
-    // ALSO ACCESS OBJECT
-    public Object visit(ASTReturnStatement node, Object data) {
-        List varAccess = new ArrayList();
-        varAccess.add(node);
-        super.visit(node, varAccess);
-        data = this.computeVariableAccess(node, varAccess);
-        return data;
-    }
+                       SimpleNode snode = n.getSimpleNode();
+                       if(snode == null) continue;
 
-    // ALSO ACCESS OBJECT
-    public Object visit(ASTFormalParameter node, Object data) {
-        List varAccess = new ArrayList();
-        varAccess.add(node);
-        super.visit(node, varAccess);
-        data = this.computeVariableAccess(node, varAccess);
-        return data;
-    }
+                       if(!scopeSet.contains(snode.getScope().getVariableDeclarations()))
+                               scopeSet.add(snode.getScope().getVariableDeclarations());
+               }
 
-    // ALSO ACCESS OBJECT
-    public Object visit(ASTPrimaryPrefix node, Object data) {
-        List varAccess = new ArrayList();
-        varAccess.add(node);
-        super.visit(node, varAccess);
-        data = this.computeVariableAccess(node, varAccess);
-        return data;
-    }
+               /*
+                * for all founded VariablesDeclarations of all scopes
+                * */
+               Iterator scopeIter = scopeSet.iterator();
+               while(scopeIter.hasNext()) {
+                       Map map = (Map)scopeIter.next();
 
-    public Object visit(ASTStatementExpression node, Object data) {
-        List varAccess = new ArrayList();
-        super.visit(node, varAccess);
-        data = this.computeVariableAccess(node, varAccess);
-        return data;
-    }
+                       // for each set of VariableDeclaration
+                       Iterator iter = map.keySet().iterator();
+                       while(iter.hasNext()) {
+                               VariableNameDeclaration vnd = (VariableNameDeclaration)iter.next();
+                               this.addVariableAccess(
+                                       vnd.getLine(),
+                                       new VariableAccess(VariableAccess.DEFINITION,vnd.getImage()),
+                                       inode.getFlow()
+                               );
+                               this.undefList.add(new VariableAccess(
+                                               VariableAccess.UNDEFINITION,
+                                               vnd.getImage())
+                               );
+                               List values = (List)map.get(vnd);
+                               for(int g=0;g<values.size();g++) {
+                                       NameOccurrence no = (NameOccurrence)values.get(g);
 
-    public Object visit(ASTVariableDeclarator node, Object data) {
-        List varAccess = new ArrayList();
-        super.visit(node, varAccess);
-        data = this.computeVariableAccess(node, varAccess);
-        return data;
-    }
+                                       if(no.isOnLeftHandSide()) {
+                                               this.addVariableAccess(
+                                                       no.getBeginLine(),
+                                                       new VariableAccess(VariableAccess.DEFINITION,no.getImage()),
+                                                       inode.getFlow()
+                                               );
+                                       }
 
-    private Object computeVariableAccess(SimpleNode node, List data) {
-        StatementExpressionEvaluator see = new StatementExpressionEvaluator(data);
-        IDataFlowNode dfn = node.getDataFlowNode();
+                                       if(no.isOnRightHandSide()) {
+                                               this.addVariableAccess(
+                                                       no.getBeginLine(),
+                                                       new VariableAccess(VariableAccess.REFERENCING,no.getImage()),
+                                                       inode.getFlow()
+                                               );
+                                       }
 
-        if (dfn == null) {
-            System.out.println("VariableAccessVisitor - " + node.getClass().getName() + " - IDataFlowNode == null");
-            return data; //TODO redefinition
-        }
+                                       if(!no.isOnLeftHandSide() && !no.isOnRightHandSide()) {
+                                               this.addVariableAccess(
+                                                       no.getBeginLine(),
+                                                       new VariableAccess(VariableAccess.REFERENCING,no.getImage()),
+                                                       inode.getFlow()
+                                               );
+                                       }
+                               }
+                       }
+               }
 
-        dfn.setVariableAccess(see.computeAccess()); //TODO throw exception
+               firstINode.setVariableAccess(this.undefList);
+               lastINode.setVariableAccess(this.undefList);
+       }
 
-        LinkedList ret = new LinkedList();
-        for (int i = 0; i < dfn.getVariableAccess().size(); i++) {
-            VariableAccess va = (VariableAccess) dfn.getVariableAccess().get(i);
-            ret.add(new VariableAccess(VariableAccess.UNDEFINITION, va.getVariableName()));
-        }
-        //System.out.println("l: "+ret);
-        
-        
-        // no duplicate values TODO refactoring
-        for (int i = 0; i < ret.size(); i++) {
-            VariableAccess va = (VariableAccess) ret.get(i);
-            boolean write = true;
-            for (int j = 0; j < this.undefList.size(); j++) {
-                VariableAccess vaTmp = (VariableAccess) this.undefList.get(j);
-                if (va.getVariableName().equals(vaTmp.getVariableName())) {
-                    write = false;
-                    break;
-                }
-            }
-            if (write) {
-                this.undefList.add(va);
-            }
-        }
-        return dfn.getVariableAccess();
-    }
+       private void addVariableAccess(int line, VariableAccess va, List flow) {
+               for(int i=1;i<flow.size();i++) {
+                       IDataFlowNode inode = (IDataFlowNode)flow.get(i);
+                       if(line == inode.getLine()) {
+                               Vector v = new Vector();
+                               v.add(va);
+                               inode.setVariableAccess(v);
+                       }
+               }
+       }
 
-//  ----------------------------------------------------------------------------
-//	VALUE OBJECTS - nodes which represent a variable.
-    
-    public Object visit(ASTName node, Object data) {
-        if (data != null) {
-            Node n = node.jjtGetParent();
-            if (!(n instanceof ASTType || n instanceof ASTAllocationExpression)) {
-                List v = (List) data;
-                v.add(node);
-            }
-        }
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (data != null) {
-            List v = (List) data;
-            v.add(node);
-        }
-        return super.visit(node, data);
-    }    
-    
-    
-    
-//  ----------------------------------------------------------------------------
-//	ACCESS OBJECTS - nodes which determines the access of a variable.
-
-    public Object visit(ASTArguments node, Object data) {
-        if (data != null) { // because error do_while
-            List v = (List) data;
-            v.add(node);
-        }
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTAssignmentOperator node, Object data) {
-        List v = (List) data;
-        v.add(node);
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTPostfixExpression node, Object data) {
-        List v = (List) data;
-        v.add(node);
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTPreDecrementExpression node, Object data) {
-        List v = (List) data;
-        v.add(node);
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTPreIncrementExpression node, Object data) {
-        List v = (List) data;
-        v.add(node);
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTVariableInitializer node, Object data) {
-        List v = (List) data;
-        v.add(node);
-        return super.visit(node, data);
-    }
 }

@@ -86,6 +86,11 @@ public class DataFlowNode implements IDataFlowNode {
         }
     }
 
+    public SimpleNode getSimpleNode() {
+        return this.node;
+    }
+
+
     public List getChildren() {
         return this.children;
     }

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTExpression;
 
 public class NameOccurrence {
 
@@ -41,6 +42,17 @@ public class NameOccurrence {
 
     public SimpleNode getLocation() {
       return location;
+    }
+
+    public boolean isOnRightHandSide() {
+        SimpleNode node = (SimpleNode)location.jjtGetParent().jjtGetParent().jjtGetParent();
+        if(node instanceof ASTExpression) {
+            SimpleNode parent = (SimpleNode)node.jjtGetParent();
+            if(node.jjtGetNumChildren() == 3) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isOnLeftHandSide() {

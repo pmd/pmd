@@ -12,309 +12,350 @@ import java.util.List;
  */
 public class Linker {
 
-    private List braceStack;
-    private List cbrStack;
+    private List braceStack = null;
+    private List cbrStack = null;
 
-    public Linker(IProcessableStructure dataFlow) {
+    public Linker(IProcessableStructure dataFlow) throws LinkerException {
         this.braceStack = dataFlow.getBraceStack();
         this.cbrStack = dataFlow.getCBRStack();
     }
-    
+
+//     ----------------------------------------------------------------------------
+
     /**
      * Creates all the links between the data flow nodes.
-     */
-    public void computePaths() throws LinkerException, SequenceException {
-        if (braceStack == null || cbrStack == null) {
+     * */
+    public void computePaths()
+       throws LinkerException, SequenceException {
+
+        if(this.braceStack == null || this.cbrStack == null) {
             throw new LinkerException();
         }
 
-        SequenceChecker sc = new SequenceChecker(braceStack);
+               SequenceChecker sc = new SequenceChecker(this.braceStack);
 
-        /*
-         * Returns true if there are more sequences, computes the first and
-         * the last index of the sequence.
-         * */
-        while (!sc.run()) {
-            if (sc.getFirstIndex() < 0 || sc.getLastIndex() < 0) {
-                throw new SequenceException("computePaths(): return index <  0");
-            }
+               /*
+                * Returns true if there are more sequences, computes the first and
+                * the last index of the sequence.
+                * */
+               while(!sc.run()) {
+                   if(sc.getFirstIndex() < 0 || sc.getLastIndex() < 0) {
+                       throw new SequenceException("computePaths(): return index <  0");
+                   }
 
-            StackObject firstSO = (StackObject) braceStack.get(sc.getFirstIndex());
+                   StackObject firstSO = (StackObject)braceStack.get(sc.getFirstIndex());
 
-            switch (firstSO.getType()) {
-                case NodeType.IF_EXPR:
-                    int x = sc.getLastIndex() - sc.getFirstIndex();
-                    if (x == 2) {
-                        this.computeIf(sc.getFirstIndex(), sc.getFirstIndex() + 1, sc.getLastIndex());
-                    } else if (x == 1) {
-                        this.computeIf(sc.getFirstIndex(), sc.getLastIndex());
-                    } else {
-                        System.out.println("Error - computePaths 1");
-                    }
-                    break;
+                   switch(firstSO.getType()) {
+                       case NodeType.IF_EXPR:
+                           int x = sc.getLastIndex() - sc.getFirstIndex();
+                               if(x == 2) {
+                                       this.computeIf(sc.getFirstIndex(),sc.getFirstIndex()+1,sc.getLastIndex());
+                               }
+                               else if(x == 1) {
+                                   this.computeIf(sc.getFirstIndex(),sc.getLastIndex());
+                               }
+                               else {
+                                   System.out.println("Error - computePaths 1");
+                               }
+                               break;
 
-                case NodeType.WHILE_EXPR:
-                    this.computeWhile(sc.getFirstIndex(), sc.getLastIndex());
-                    break;
+                       case NodeType.WHILE_EXPR:
+                           this.computeWhile(sc.getFirstIndex(),sc.getLastIndex());
+                           break;
 
-                case NodeType.SWITCH_START:
-                    this.computeSwitch(sc.getFirstIndex(), sc.getLastIndex());
-                    break;
+                       case NodeType.SWITCH_START:
+                           this.computeSwitch(sc.getFirstIndex(), sc.getLastIndex());
+                           break;
 
-                case NodeType.FOR_INIT:
-                case NodeType.FOR_EXPR:
-                case NodeType.FOR_UPDATE:
-                case NodeType.FOR_BEFORE_FIRST_STATEMENT:
-                    this.computeFor(sc.getFirstIndex(), sc.getLastIndex());
-                    break;
+                       case NodeType.FOR_INIT:
+                       case NodeType.FOR_EXPR:
+                       case NodeType.FOR_UPDATE:
+                       case NodeType.FOR_BEFORE_FIRST_STATEMENT:
+                               this.computeFor(sc.getFirstIndex(), sc.getLastIndex());
+                               break;
 
-                case NodeType.DO_BEFORE_FIRST_STATEMENT:
-                    this.computeDo(sc.getFirstIndex(), sc.getLastIndex());
-                    break;
+                       case NodeType.DO_BEFORE_FIRST_STATEMENT:
+                               this.computeDo(sc.getFirstIndex(),sc.getLastIndex());
+                           break;
 
-                default:
-            }
+                       default:
+                   }
 
-            for (int y = sc.getLastIndex(); y >= sc.getFirstIndex(); y--) {
-                braceStack.remove(y);
-            }
-        }
+                       for(int y=sc.getLastIndex();y>=sc.getFirstIndex();y--) {
+                               braceStack.remove(y);
+                       }
+               }
 
-        while (!this.cbrStack.isEmpty()) {
-            StackObject so = (StackObject) cbrStack.get(0);
-            IDataFlowNode node = so.getDataFlowNode();
+               while(!this.cbrStack.isEmpty()) {
+                       StackObject so = (StackObject)cbrStack.get(0);
+                   IDataFlowNode node = (IDataFlowNode)so.getDataFlowNode();
 
-            switch (so.getType()) {
-                case NodeType.RETURN_STATEMENT:
-                    //	remove all children (should contain only one child)
-                    node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
+                   switch(so.getType()) {
+                   case NodeType.RETURN_STATEMENT:
+                       //      remove all children (should contain only one child)
+                               node.removePathToChild((IDataFlowNode)node.getChildren().get(0));
 
-                    IDataFlowNode lastNode =
-                            (IDataFlowNode) node.getFlow().get(node.getFlow().size() - 1);
-                    node.addPathToChild(lastNode);
+                               IDataFlowNode lastNode =
+                                   (IDataFlowNode)node.getFlow().get(node.getFlow().size()-1);
+                               node.addPathToChild(lastNode);
 
-                    cbrStack.remove(0);
-                    break;
+                               cbrStack.remove(0);
+                               break;
 
-                case NodeType.BREAK_STATEMENT:
-                    List bList = node.getFlow();
-                    for (int i = bList.indexOf(node); i < bList.size(); i++) {
-                        IDataFlowNode n = (IDataFlowNode) bList.get(i);
+                       case NodeType.BREAK_STATEMENT:
+                               List bList = node.getFlow();
+                               for(int i = bList.indexOf(node);i<bList.size();i++) {
+                                   IDataFlowNode n = (IDataFlowNode)bList.get(i);
 
-                        if (n.isType(NodeType.WHILE_LAST_STATEMENT) ||
-                                n.isType(NodeType.SWITCH_END) ||
-                                n.isType(NodeType.FOR_END) ||
-                                n.isType(NodeType.DO_EXPR)) {
+                                   if( n.isType(NodeType.WHILE_LAST_STATEMENT) ||
+                                           n.isType(NodeType.SWITCH_END) ||
+                                           n.isType(NodeType.FOR_END) ||
+                                           n.isType(NodeType.DO_EXPR)) {
 
-                            node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
+                                       node.removePathToChild((IDataFlowNode)node.getChildren().get(0));
 
-                            IDataFlowNode last = (IDataFlowNode) bList.get(i + 1);
-                            node.addPathToChild(last);
+                                       IDataFlowNode last = (IDataFlowNode)bList.get(i+1);
+                                       node.addPathToChild(last);
 
-                            cbrStack.remove(0);
-                            break;
-                        }
-                    }
-                    break;
+                                       cbrStack.remove(0);
+                                       break;
+                                   }
+                               }
+                               break;
 
-                case NodeType.CONTINUE_STATEMENT:
-                    List cList = node.getFlow();
+                       case NodeType.CONTINUE_STATEMENT:
+                               //List cList = node.getFlow();
 
-                    /* traverse up the tree and find the first loop start node
-                     *
-                     * is StackObject usefull? should'nt the information be stored
-                     * in the node itself?
-                     *
-                     * one node could have several status - that means that the
-                     * same node is stored several times in a stack with a different
-                     * status
-                     *
-                     * the node could be stored several times
-                     * on the stack too, but the node now contains the status itself
-                     * and it is impossible to recognize the order the status
-                     * was stored.
-                     *
-                     * it will be also impossible to determine the status (e.g getType())
-                     * of a node, because the node could contain more than one
-                     * status
-                     */
-                    for (int i = cList.indexOf(node) - 1; i >= 0; i--) {
-                        IDataFlowNode n = (IDataFlowNode) cList.get(i);
+                               /* traverse up the tree and find the first loop start node
+                                */
+/*
+                               for(int i = cList.indexOf(node)-1;i>=0;i--) {
+                                   IDataFlowNode n = (IDataFlowNode)cList.get(i);
 
-                        if (n.isType(NodeType.FOR_UPDATE) ||
-                                n.isType(NodeType.FOR_EXPR) ||
-                                n.isType(NodeType.WHILE_EXPR)) {
+                                   if(n.isType(NodeType.FOR_UPDATE) ||
+                                               n.isType(NodeType.FOR_EXPR) ||
+                                               n.isType(NodeType.WHILE_EXPR)) {
+*/
+                                       /*
+                                        * while(..) {
+                                        *              while(...) {
+                                        *                      ...
+                                        *              }
+                                        *              continue;
+                                        * }
+                                        *
+                                        * Without this Expression he continues the second
+                                        * WHILE loop. The continue statement and the while loop
+                                        * have to be in different scopes.
+                                        *
+                                        * TODO An error occures if "continue" is even nested in
+                                        * scopes other than local loop scopes, like "if".
+                                        * The result is, that the data flow isn't build right
+                                        * and the pathfinder runs in invinity loop.
+                                        * */
+/*                                     if(n.getSimpleNode().getScope().equals(node.getSimpleNode().getScope())) {
+                                               System.err.println("equals");
+                                               continue;
+                                       }
+                                       else {
+                                               System.err.println("don't equals");
+                                       }
 
-                            //remove all children (should contain only one child)
-                            node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
+                                               //remove all children (should contain only one child)
+                                       node.removePathToChild((IDataFlowNode)node.getChildren().get(0));
 
-                            node.addPathToChild(n);
-                            cbrStack.remove(0);
-                            break;
-                        } else if (n.isType(NodeType.DO_BEFORE_FIRST_STATEMENT)) {
+                                       node.addPathToChild(n);
+                                       cbrStack.remove(0);
+                                       break;
 
-                            IDataFlowNode inode = (IDataFlowNode) n.getFlow().get(n.getIndex() + 1);
+                                   }else if(n.isType(NodeType.DO_BEFOR_FIRST_STATEMENT)) {
 
-                            for (int j = 0; j < inode.getParents().size(); j++) {
-                                IDataFlowNode parent = (IDataFlowNode) inode.getParents().get(j);
+                                       IDataFlowNode inode = (IDataFlowNode)n.getFlow().get(n.getIndex()1);
 
-                                if (parent.isType(NodeType.DO_EXPR)) {
-                                    node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
-                                    node.addPathToChild(parent);
+                                       for(int j=0;j<inode.getParents().size();j) {
+                                               IDataFlowNode parent = (IDataFlowNode)inode.getParents().get(j);
 
-                                    cbrStack.remove(0);
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                    }
-            }
-        }
+                                               if(parent.isType(NodeType.DO_EXPR)) {
+                                                       node.removePathToChild((IDataFlowNode)node.getChildren().get(0));
+                                               node.addPathToChild(parent);
+
+                                               cbrStack.remove(0);
+                                                       break;
+                                               }
+                                       }
+                                       break;
+                                   }
+                               }
+*/cbrStack.remove(0); // delete this statement if you uncomment the stuff above
+                   }
+               }
     }
-	
 
-    private void computeDo(int first, int last) {
-        IDataFlowNode doSt = ((StackObject)braceStack.get(first)).getDataFlowNode();
-        IDataFlowNode doExpr = ((StackObject)braceStack.get(last)).getDataFlowNode();
 
-        //IDataFlowNode doFirst = (IDataFlowNode)doSt.getChildren().get(0);
-        IDataFlowNode doFirst = (IDataFlowNode) doSt.getFlow().get(doSt.getIndex() + 1);
 
-        if (doFirst.getIndex() != doExpr.getIndex()) {
-            doExpr.addPathToChild(doFirst);
-        }
-    }
-	
-    private void computeFor(int firstIndex, int lastIndex) {
+//     ----------------------------------------------------------------------------
+
+       private void computeDo(int first, int last) {
+
+               IDataFlowNode doSt = (IDataFlowNode)((StackObject)this.braceStack.get(first)).getDataFlowNode();
+               IDataFlowNode doExpr = (IDataFlowNode)((StackObject)this.braceStack.get(last)).getDataFlowNode();
+
+               //IDataFlowNode doFirst = (IDataFlowNode)doSt.getChildren().get(0);
+               IDataFlowNode doFirst = (IDataFlowNode)doSt.getFlow().get(doSt.getIndex()+1);
+
+               if(doFirst.getIndex() != doExpr.getIndex()) {
+                       doExpr.addPathToChild(doFirst);
+               }
+       }
+
+//     ----------------------------------------------------------------------------
+
+       private void computeFor(int firstIndex, int lastIndex) {
+
         IDataFlowNode fExpr = null;
         IDataFlowNode fUpdate = null;
         IDataFlowNode fSt = null;
         IDataFlowNode fEnd = null;
-        boolean isInit = false;
-        boolean isExpr = false;
         boolean isUpdate = false;
 
-        for (int i = firstIndex; i <= lastIndex; i++) {
-            StackObject so = (StackObject) this.braceStack.get(i);
-            IDataFlowNode node = so.getDataFlowNode();
+        for(int i=firstIndex;i<=lastIndex;i++) {
+            StackObject so = (StackObject)this.braceStack.get(i);
+               IDataFlowNode node = (IDataFlowNode)so.getDataFlowNode();
 
-            if (so.getType() == NodeType.FOR_INIT) {
-                isInit = true;
-            }
-            if (so.getType() == NodeType.FOR_EXPR) {
+            if(so.getType() == NodeType.FOR_EXPR) {
                 fExpr = node;
-                isExpr = true;
             }
-            if (so.getType() == NodeType.FOR_UPDATE) {
+            if(so.getType() == NodeType.FOR_UPDATE) {
                 fUpdate = node;
-                isUpdate = true;
+                   isUpdate = true;
             }
-            if (so.getType() == NodeType.FOR_BEFORE_FIRST_STATEMENT) {
+            if(so.getType() == NodeType.FOR_BEFORE_FIRST_STATEMENT) {
                 fSt = node;
             }
-            if (so.getType() == NodeType.FOR_END) {
+            if(so.getType() == NodeType.FOR_END) {
                 fEnd = node;
             }
         }
+        IDataFlowNode end = (IDataFlowNode)fEnd.getFlow().get(fEnd.getIndex()+1);
 
-        IDataFlowNode end = (IDataFlowNode) fEnd.getFlow().get(fEnd.getIndex() + 1);
-        IDataFlowNode firstSt = (IDataFlowNode) fSt.getChildren().get(0);
+        IDataFlowNode firstSt = (IDataFlowNode)fSt.getChildren().get(0);
 
-        if (isUpdate) {
-            if (fSt.getIndex() != fEnd.getIndex()) {
-                end.reverseParentPathsTo(fUpdate);
+           if(isUpdate) {
+               if(fSt.getIndex() != fEnd.getIndex()) {
+                   end.reverseParentPathsTo(fUpdate);
 
-                fExpr.removePathToChild(fUpdate);
-                fUpdate.addPathToChild(fExpr);
+                   fExpr.removePathToChild(fUpdate);
+                   fUpdate.addPathToChild(fExpr);
 
-                fUpdate.removePathToChild(firstSt);
+                   fUpdate.removePathToChild(firstSt);
 
-                fExpr.addPathToChild(firstSt);
-                fExpr.addPathToChild(end);
-            } else {
-                fSt.removePathToChild(end);
+                   fExpr.addPathToChild(firstSt);
+                   fExpr.addPathToChild(end);
+               }
+               else {
+                   fSt.removePathToChild(end);
 
-                fExpr.removePathToChild(fUpdate);
-                fUpdate.addPathToChild(fExpr);
+                   fExpr.removePathToChild(fUpdate);
+                   fUpdate.addPathToChild(fExpr);
 
-                fExpr.addPathToChild(fUpdate);
-                fExpr.addPathToChild(end);
-            }
-        } else {
-            if (fSt.getIndex() != fEnd.getIndex()) {
-                end.reverseParentPathsTo(fExpr);
-                fExpr.addPathToChild(end);
-            }
-        }
-    }
+                   fExpr.addPathToChild(fUpdate);
+                   fExpr.addPathToChild(end);
+               }
+           }
+           else {
+               if(fSt.getIndex() != fEnd.getIndex()) {
+                   end.reverseParentPathsTo(fExpr);
+                           fExpr.addPathToChild(end);
+                       }
+           }
+       }
 
-    private void computeSwitch(int firstIndex, int lastIndex) {
-        int diff = lastIndex - firstIndex;
-        boolean defaultStatement = false;
-        IDataFlowNode sStart = ((StackObject) this.braceStack.get(firstIndex)).getDataFlowNode();
-        IDataFlowNode sEnd = ((StackObject) this.braceStack.get(lastIndex)).getDataFlowNode();
-        IDataFlowNode end = (IDataFlowNode) sEnd.getChildren().get(0);
-        for (int i = 0; i < diff - 2; i++) {
-            StackObject so = (StackObject) this.braceStack.get(firstIndex + 2 + i);
-            IDataFlowNode node = so.getDataFlowNode();
-            sStart.addPathToChild((IDataFlowNode) node.getChildren().get(0));
-            if (so.getType() == NodeType.SWITCH_LAST_DEFAULT_STATEMENT) {
-                defaultStatement = true;
-            }
-        }
-        if (!defaultStatement) {
-            sStart.addPathToChild(end);
-        }
-    }
-	
-    private void computeWhile(int first, int last) {
-        IDataFlowNode wStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
-        IDataFlowNode wEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
-        IDataFlowNode end = (IDataFlowNode) wEnd.getFlow().get(wEnd.getIndex() + 1);
+//     ----------------------------------------------------------------------------
 
-        if (wStart.getIndex() != wEnd.getIndex()) {
-            end.reverseParentPathsTo(wStart);
-            wStart.addPathToChild(end);
-        }
-    }
+       private void computeSwitch(int firstIndex, int lastIndex) {
 
-    private void computeIf(int first, int second, int last) {
-        IDataFlowNode ifStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
-        IDataFlowNode ifEnd = ((StackObject) this.braceStack.get(second)).getDataFlowNode();
-        IDataFlowNode elseEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
-        IDataFlowNode elseStart = (IDataFlowNode) ifEnd.getFlow().get(ifEnd.getIndex() + 1);
-        IDataFlowNode end = (IDataFlowNode) elseEnd.getFlow().get(elseEnd.getIndex() + 1);
+           int diff = lastIndex-firstIndex;
+           boolean defaultStatement = false;
 
-        // if if-statement and else-statement contains statements or expressions
-        if (ifStart.getIndex() != ifEnd.getIndex() &&
-                ifEnd.getIndex() != elseEnd.getIndex()) {
+           IDataFlowNode sStart =
+               (IDataFlowNode)((StackObject)this.braceStack.get(firstIndex)).getDataFlowNode();
+               IDataFlowNode sEnd =
+                   (IDataFlowNode)((StackObject)this.braceStack.get(lastIndex)).getDataFlowNode();
+               IDataFlowNode end = (IDataFlowNode)sEnd.getChildren().get(0);
 
-            elseStart.reverseParentPathsTo(end);
-            ifStart.addPathToChild(elseStart);
-        }
-        // if only if-statement contains no expressions
-        else if (ifStart.getIndex() == ifEnd.getIndex() &&
-                ifEnd.getIndex() != elseEnd.getIndex()) {
+               for(int i=0;i<diff-2;i++) {
+                       StackObject so = (StackObject)this.braceStack.get(firstIndex+2+i);
+                   IDataFlowNode node = (IDataFlowNode)so.getDataFlowNode();
 
-            ifStart.addPathToChild(end);
-        }
-        // if only else-statement contains no expressions
-        else if (ifEnd.getIndex() == elseEnd.getIndex() &&
-                ifStart.getIndex() != ifEnd.getIndex()) {
+                   sStart.addPathToChild((IDataFlowNode)node.getChildren().get(0));
 
-            ifStart.addPathToChild(end);
-        }
-    }
-	
-    private void computeIf(int first, int last) {
-        IDataFlowNode ifStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
-        IDataFlowNode ifEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
+                   if(so.getType() == NodeType.SWITCH_LAST_DEFAULT_STATEMENT)
+                       defaultStatement = true;
+               }
 
-        // only if the if-statement contains another Statement or Expression
-        if (ifStart.getIndex() != ifEnd.getIndex()) {
-            IDataFlowNode end = (IDataFlowNode) ifEnd.getFlow().get(ifEnd.getIndex() + 1);
-            ifStart.addPathToChild(end);
-        }
-    }
+               if(!defaultStatement)
+                   sStart.addPathToChild(end);
+       }
+
+//     ----------------------------------------------------------------------------
+
+       private void computeWhile(int first, int last) {
+
+        IDataFlowNode wStart = (IDataFlowNode)((StackObject)this.braceStack.get(first)).getDataFlowNode();
+        IDataFlowNode wEnd = (IDataFlowNode)((StackObject)this.braceStack.get(last)).getDataFlowNode();
+
+        IDataFlowNode end = (IDataFlowNode)wEnd.getFlow().get(wEnd.getIndex()+1);
+
+               if(wStart.getIndex() != wEnd.getIndex()) {
+                   end.reverseParentPathsTo(wStart);
+                   wStart.addPathToChild(end);
+               }
+       }
+
+//     ----------------------------------------------------------------------------
+
+       private void computeIf(int first, int second, int last) {
+
+               IDataFlowNode ifStart = (IDataFlowNode)((StackObject)this.braceStack.get(first)).getDataFlowNode();
+               IDataFlowNode ifEnd = (IDataFlowNode)((StackObject)this.braceStack.get(second)).getDataFlowNode();
+               IDataFlowNode elseEnd = (IDataFlowNode)((StackObject)this.braceStack.get(last)).getDataFlowNode();
+
+               IDataFlowNode elseStart = (IDataFlowNode)ifEnd.getFlow().get(ifEnd.getIndex()+1);
+               IDataFlowNode end = (IDataFlowNode)elseEnd.getFlow().get(elseEnd.getIndex()+1);
+
+               // if if-statement and else-statement contains statements or expressions
+               if(ifStart.getIndex() != ifEnd.getIndex() &&
+                       ifEnd.getIndex() != elseEnd.getIndex()) {
+
+                   elseStart.reverseParentPathsTo(end);
+                       ifStart.addPathToChild(elseStart);
+               }
+               // if only if-statement contains no expressions
+               else if(ifStart.getIndex() == ifEnd.getIndex() &&
+                       ifEnd.getIndex() != elseEnd.getIndex()) {
+
+                       ifStart.addPathToChild(end);
+               }
+               // if only else-statement contains no expressions
+               else if(ifEnd.getIndex() == elseEnd.getIndex() &&
+                       ifStart.getIndex() != ifEnd.getIndex()) {
+
+                       ifStart.addPathToChild(end);
+               }
+       }
+
+//     ----------------------------------------------------------------------------
+
+       private void computeIf(int first, int last) {
+           IDataFlowNode ifStart = (IDataFlowNode)((StackObject)this.braceStack.get(first)).getDataFlowNode();
+               IDataFlowNode ifEnd = (IDataFlowNode)((StackObject)this.braceStack.get(last)).getDataFlowNode();
+
+               // only if the if-statement contains another Statement or Expression
+               if(ifStart.getIndex() != ifEnd.getIndex()) {
+                       IDataFlowNode end = (IDataFlowNode)ifEnd.getFlow().get(ifEnd.getIndex()+1);
+                       ifStart.addPathToChild(end);
+               }
+       }
+
+//     ----------------------------------------------------------------------------
 }
