@@ -3,10 +3,10 @@
 */
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.ast.ParseException;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.Set;
