@@ -51,7 +51,7 @@ public class ASTFieldDeclaration extends AccessNode implements Dimensionable{
             }
             out += ")";
         }
-        System.out.println(toString(prefix) + out);
+        System.out.println(out);
         dumpChildren(prefix);
     }
 }
