@@ -14,11 +14,7 @@
 </target>
 
 <target name="compile">
-    <javac  deprecation="true"
-            debug="true"
-            optimize="false"
-            srcdir="${src}"
-            destdir="${build}">
+    <javac deprecation="true" debug="true" optimize="false" srcdir="${src}" destdir="${build}">
         <classpath>
             <pathelement location="${compiletimelibsdir}/jini-core.jar"/>
             <pathelement location="${compiletimelibsdir}/jini-ext.jar"/>
@@ -28,7 +24,7 @@
 </target>
 
 <target name="rmic">
-    <rmic base="${build}" classname="net.sourceforge.pmd.dcpd.JobAddedListener" >
+    <rmic base="${build}" debug="true" classname="net.sourceforge.pmd.dcpd.JobAddedListener" >
         <classpath>
             <pathelement location="${compiletimelibsdir}/jini-core.jar"/>
             <pathelement location="${compiletimelibsdir}/jini-ext.jar"/>
