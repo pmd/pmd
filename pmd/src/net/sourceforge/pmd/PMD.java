@@ -39,7 +39,7 @@ public class PMD {
             System.out.println("Error while parsing " + ctx.getSourceCodeFilename() + " at line " + pe.currentToken.beginLine + "; continuing...");
         } catch (Throwable t) {
             System.out.println("Error while parsing " +  ctx.getSourceCodeFilename() + "; "+ t.getMessage() + "; continuing...");
-            t.printStackTrace();
+            //t.printStackTrace();
         }
 	}
 

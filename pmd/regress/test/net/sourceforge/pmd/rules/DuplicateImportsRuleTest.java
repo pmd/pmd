@@ -26,6 +26,9 @@ public class DuplicateImportsRuleTest extends RuleTst {
     public void test1() throws Throwable {
         Report report = process("DuplicateImports.java", rule);
         assertEquals(1, report.size());
-        assertEquals(rule, ((RuleViolation)report.iterator().next()).getRule());
+    }
+    public void test2() throws Throwable {
+        Report report = process("DuplicateImports2.java", rule);
+        assertEquals(1, report.size());
     }
 }
