@@ -32,12 +32,7 @@
 </target>
 ]]>
        </source>
-     <p>Future plans</p>
-     <ul>
-        <li>Make a PMD rule for CPD</li>
-        <li>Make the GUI remember your settings</li>
-        <li>Suggestions?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</li>
-     </ul>
+     <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
    </section>
   </body>
 </document>
