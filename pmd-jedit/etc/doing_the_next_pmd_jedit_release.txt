@@ -1,8 +1,8 @@
 update the release date in the changelog
 change config/pmd.props to reflect actual pmd.jar file version
-change config/pmd.props to reflect pmd-jedit release 1.1
-change config/jedit.html to reflect pmd-jedit release 1.1
-change the build.xml to reflect pmd-jedit release 1.1
+change config/pmd.props to reflect pmd-jedit release 1.2
+change config/jedit.html to reflect pmd-jedit release 1.2
+change the build.xml to reflect pmd-jedit release 1.2
 
 Create the binary release:
 ant release
@@ -13,13 +13,13 @@ TESTS:
 3) Are options persistant?
 
 Create the src release:
-cvs -q rtag -D tomorrow "pmd_jedit_release_1_1" pmd-jedit
+cvs -q rtag -D tomorrow "pmd_jedit_release_1_2" pmd-jedit
 rmdir /q /s c:\tmp\pmd-jedit
 mkdir c:\tmp\pmd-jedit
-cvs -q export -d c:\tmp\pmd-jedit -r pmd_jedit_release_1_1 pmd-jedit
-copy pmd-jedit\lib\PMDJEditPlugin-1.1.jar c:\tmp\pmd-jedit\lib
+cvs -q export -d c:\tmp\pmd-jedit -r pmd_jedit_release_1_2 pmd-jedit
+copy pmd-jedit\lib\PMDJEditPlugin-1.2.jar c:\tmp\pmd-jedit\lib
 cd c:\tmp
-"c:\program files\winzip\wzzip.exe" -r -p pmd-jedit-src-1.1.zip pmd-jedit
+"c:\program files\winzip\wzzip.exe" -r -p pmd-jedit-src-1.2.zip pmd-jedit
 rmdir /q /s pmd-jedit
 
 FTP the zip file to SF
@@ -27,13 +27,13 @@ ftp upload.sourceforge.net
 generic userid/password: anonymous/tom@infoether.com
 cd incoming
 bin
-put pmd-jedit-src-1.1.zip
-put pmd-jedit-bin-1.1.zip
+put pmd-jedit-src-1.2.zip
+put pmd-jedit-bin-1.2.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jedit-src-1.1.zip file
-Add the pmd-jedit-bin-1.1.zip file
+Add the pmd-jedit-src-1.2.zip file
+Add the pmd-jedit-bin-1.2.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the JEdit plugin!"
