@@ -107,7 +107,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 return true;
             } catch (PMDException e) {
                 e.printStackTrace();
-                e.getOriginalException().printStackTrace();
+                e.getReason().printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error while running PMD: " + e.getMessage(), TITLE, JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 e.printStackTrace();
