@@ -1,3 +1,6 @@
+??? 2003 - 2.1:
+Added "clear ErrorList" option.
+
 April 18 2003 - 2.0:
 Jiger Patel integrated CPD functionality.
 Upgraded to work with pmd-1.05.

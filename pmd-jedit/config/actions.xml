@@ -16,6 +16,11 @@
       net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectoryRecursively(view);
     </CODE>
   </ACTION>
+    <ACTION NAME="pmd-clear-errorlist">
+      <CODE>
+        net.sourceforge.pmd.jedit.PMDJEditPlugin.clearErrorList();
+      </CODE>
+    </ACTION>
   <ACTION NAME="cpd-currentfile">
     <CODE>
       net.sourceforge.pmd.jedit.PMDJEditPlugin.CPDCurrentFile(view);

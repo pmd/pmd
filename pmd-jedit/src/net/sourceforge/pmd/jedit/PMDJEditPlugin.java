@@ -139,6 +139,10 @@ public class PMDJEditPlugin extends EditPlugin {
 		}
 	}
 
+	public void instanceClearErrorList() {
+        errorSource.clear();
+	}
+
 	private void process(final List files) {
 		new Thread(new Runnable () {
 					   public void run() {
@@ -149,6 +153,10 @@ public class PMDJEditPlugin extends EditPlugin {
 
 	public static void check(Buffer buffer, View view) {
 		instance.instanceCheck(buffer, view);
+	}
+
+	public static void clearErrorList() {
+		instance.instanceClearErrorList();
 	}
 
 	public void instanceCheck(Buffer buffer, View view) {

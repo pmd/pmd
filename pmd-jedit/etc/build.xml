@@ -53,14 +53,14 @@
 
 	<target name="dist" depends="clean">
         <antcall target="jar"/>
-        <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="${jedit.install.dir}"/>
+        <copy file="${lib}/${ant.project.name}.jar" todir="${jedit.install.dir}"/>
 	</target>
 
     <target name="release">
         <antcall target="clean"/>
         <antcall target="jar"/>
         <mkdir dir="tmp/jars"/>
-        <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="tmp/jars"/>
+        <copy file="${lib}/${ant.project.name}.jar" todir="tmp/jars"/>
         <copy file="${lib}/${pmdjar}" todir="tmp/jars"/>
         <copy file="${lib}/jaxen-core-1.0-fcs.jar" todir="tmp/jars"/>
         <copy file="${lib}/saxpath-1.0-fcs.jar" todir="tmp/jars"/>

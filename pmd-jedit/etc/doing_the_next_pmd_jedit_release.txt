@@ -28,7 +28,7 @@ ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.0.zip pmd-jedit-bin-2.
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jedit-2.0.zip file
+Add the 2 zip files
 Classify the file
 
 Submit some news saying "hey, new release of the JEdit plugin!"
