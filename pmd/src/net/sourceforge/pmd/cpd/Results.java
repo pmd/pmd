@@ -18,12 +18,13 @@ public class Results extends TileOccurrences {
     }
 
     public int getTileLineCount(Tile tile, TokenSets tokenSets) {
-        Iterator i = getOccurrences(tile);
-        TokenEntry firstToken = (TokenEntry)i.next();
+        TokenEntry firstToken = (TokenEntry)((List)tileToOccurrenceMap.get(tile)).get(0);
         TokenList tl = tokenSets.getTokenList(firstToken);
-        int lastTokenIndex = firstToken.getIndex() + tile.getTokenCount();
-        TokenEntry lastToken = (TokenEntry)tl.get(lastTokenIndex);
-        return (lastToken.getBeginLine()+1) - firstToken.getBeginLine();
+        TokenEntry lastToken = (TokenEntry)tl.get(firstToken.getIndex() + tile.getTokenCount());
+        // note we subtract 1 here... if we didn't, then this:
+        // line20: foo =bar;
+        // line21: baz = bif;
+        return lastToken.getBeginLine() - firstToken.getBeginLine() - 1;
     }
 
     private void removeDupesOf(Tile tile) {

@@ -108,7 +108,8 @@ public class CPD {
             Iterator i = results.getOccurrences(tile);
             TokenEntry firstToken = (TokenEntry)i.next();
             TokenList tl = tokenSets.getTokenList(firstToken);
-            return tl.getSlice(firstToken.getBeginLine(), firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets));
+            int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets)-1;
+            return tl.getSlice(firstToken.getBeginLine()-1, endLine);
         } catch (Exception ex) {ex.printStackTrace(); }
         return "";
     }
@@ -121,8 +122,8 @@ public class CPD {
         try {
             //cpd.add(findFilesRecursively("c:\\data\\pmd\\pmd-cpd\\src\\net\\sourceforge\\pmd\\cpd"));
             //cpd.add(new File("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\PlayHelper.java"));
-            cpd.addRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\");
-            //cpd.add(findFilesRecursively("c:\\data\\cougaar\\core\\src\\org\\"));
+            //cpd.addRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\");
+            cpd.addRecursively("c:\\data\\cougaar\\core\\src\\org\\");
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return;

@@ -36,7 +36,7 @@ public class GUI implements CPDListener {
     }
     private class BrowseListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fc = new JFileChooser(System.getProperty("user.home"));
+            JFileChooser fc = new JFileChooser(rootDirectoryField.getText());
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fc.showDialog(frame, "Select");
             if (fc.getSelectedFile() != null) {
@@ -45,7 +45,9 @@ public class GUI implements CPDListener {
         }
     }
 
-    private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
+    private JTextField rootDirectoryField= new JTextField("C:\\data\\datagrabber\\datagrabber\\src\\org\\cougaar\\mlm\\ui\\newtpfdd\\transit\\");
+    //private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
+
     //private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     //private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
     private JTextField minimumLengthField= new JTextField("30");
@@ -137,10 +139,14 @@ public class GUI implements CPDListener {
             cpd.setListener(this);
             cpd.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
             addingTokensBar.setStringPainted(true);
-            if (recurseCheckbox.isSelected()) {
-                cpd.addRecursively(rootDirectoryField.getText());
+            if (rootDirectoryField.getText().endsWith(".java")) {
+                cpd.add(new File(rootDirectoryField.getText()));
             } else {
-                cpd.addAllInDirectory(rootDirectoryField.getText());
+                if (recurseCheckbox.isSelected()) {
+                    cpd.addRecursively(rootDirectoryField.getText());
+                } else {
+                    cpd.addAllInDirectory(rootDirectoryField.getText());
+                }
             }
             cpd.go();
             CPDRenderer renderer = new TextRenderer();
