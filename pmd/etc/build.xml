@@ -2,6 +2,7 @@
 
 <property name="lib" value="lib\"/>
 <property name="src" value="src\"/>
+<property name="classes" value="classes\"/>
 <property name="build" value="build\"/>
 <property name="rulesets" value="rulesets\"/>
 <property name="test-data" value="test-data\"/>
@@ -9,7 +10,6 @@
 <property name="reports" value="reports\"/>
 <property name="version" value="0.9"/>
 <property name="jnlp_staging_area" value="c:\data\importscrubberjnlp\"/>
-<property name="build.compiler" value="jikes"/>
 
   <path id="classpath.path">
    <pathelement location="${build}"/>
@@ -43,6 +43,11 @@
             <fileset dir="${rulesets}">
                 <include name="*.xml"/>
                 <include name="*.properties"/>
+            </fileset>
+        </copy>
+        <copy todir="${build}">
+            <fileset dir="${classes}">
+                <include name="**/*.gif"/>
             </fileset>
         </copy>
         <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF" excludes="test/**/*.class"/>
