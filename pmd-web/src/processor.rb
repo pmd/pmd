@@ -159,26 +159,27 @@ if __FILE__ == $0
 	if ARGV.include?("-doom")
 		jobs.each {|j|
 			pmd = PMDMap.new(j.pmd_lines)
-
-			puts "Creating the map"
 			p = Path.new(0, 1000)
 			p.add("e200/n200/e200/s200/e200/", pmd.nooks)
 			p.add("s400/")
 			p.add("w200/s200/w200/n200/w200/", pmd.nooks)
 			p.add("n400/")
-
-			m = SimpleLineMap(p)
+			m = SimpleLineMap.new(p)
 			m.set_player(Point.new(50,900))
 			0.upto(pmd.nooks-1) {|x|
 	        m.add_barrel Point.new((x*600)+300, 1100)
 	        m.add_barrel Point.new((x*600)+300, 500)
 			}
-			m.create(j.wad + ".tmp")
+			m.create_wad(j.wad + ".tmp")
 			cmd = "./bsp " + j.wad + ".tmp -o " + j.wad + " && rm -f " + j.wad + ".tmp"
 			`#{cmd}`
 		}
 	end
 	
+	if ARGV.include?("-copy")
+		jobs.each {|j| j.copy_up }
+	end
+
 	fm = Ikko::FragmentManager.new
 	fm.base_path="./"
 	out = fm["header.frag", {"lastruntime"=>Time.now}]
