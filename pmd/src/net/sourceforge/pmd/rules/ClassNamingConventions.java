@@ -12,7 +12,7 @@ public class ClassNamingConventions extends AbstractRule {
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         if (Character.isLowerCase(node.getImage().charAt(0))) {
             RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), getMessage()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, getMessage()));
         }
         return data;
     }

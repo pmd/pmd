@@ -29,7 +29,7 @@ public class AvoidNonConstructorMethodsWithClassName extends AbstractRule {
 		if (methodName!=null && declaringType!=null) {
 			if (methodName.equals(declaringType)) {
 				RuleContext ctx = (RuleContext) data;
-				RuleViolation ruleViolation = createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{methodName}));
+				RuleViolation ruleViolation = createRuleViolation(ctx, node, MessageFormat.format(getMessage(), new Object[]{methodName}));
                 ctx.getReport().addRuleViolation(ruleViolation);
 			}
 		}

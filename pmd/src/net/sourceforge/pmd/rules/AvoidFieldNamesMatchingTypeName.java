@@ -31,7 +31,7 @@ public class AvoidFieldNamesMatchingTypeName extends AbstractRule {
 			ASTUnmodifiedClassDeclaration cl = (ASTUnmodifiedClassDeclaration) node.getFirstParentOfType(ASTUnmodifiedClassDeclaration.class);
 			if (cl!=null && cl.getImage() != null) {
 				if (varName.equals(cl.getImage().toLowerCase())) {
-					addViolation((RuleContext) data, node.getBeginLine());
+					addViolation((RuleContext) data, node);
 				}
 			}
 		}
