@@ -19,7 +19,7 @@ public class HTMLRenderer implements Renderer {
         return buf.toString();
     }
 
-    public StringBuffer renderBody(Report report) {
+    public String renderBody(Report report) {
         boolean colorize = true;
         int violationCount = 1;
         StringBuffer buf = new StringBuffer();
@@ -47,6 +47,6 @@ public class HTMLRenderer implements Renderer {
 
             violationCount++;
         }
-        return buf;
+        return buf.toString();
     }
 }
