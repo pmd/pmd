@@ -38,6 +38,10 @@ public abstract class TileOccurrences implements Serializable {
         return ((List)tileToOccurrenceMap.get(tile)).iterator();
     }
 
+    public List getOccurrencesList(Tile tile) {
+        return (List)tileToOccurrenceMap.get(tile);
+    }
+
     public int getOccurrenceCountFor(Tile tile) {
         return ((List)tileToOccurrenceMap.get(tile)).size();
     }
