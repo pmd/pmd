@@ -14,7 +14,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.cpd.FileFinder;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.EditPlugin;
 import org.gjt.sp.jedit.GUIUtilities;
@@ -22,7 +21,6 @@ import org.gjt.sp.jedit.View;
 import org.gjt.sp.jedit.browser.VFSBrowser;
 import org.gjt.sp.jedit.gui.OptionsDialog;
 import org.gjt.sp.jedit.jEdit;
-import gnu.regexp.*;
 
 import javax.swing.*;
 import java.io.File;
@@ -33,8 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.io.IOException;
-import java.io.LineNumberReader;
-import java.awt.BorderLayout;
 
 
 public class PMDJEditPlugin extends EditPlugin {
@@ -43,8 +39,6 @@ public class PMDJEditPlugin extends EditPlugin {
 	public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
 	public static final String OPTION_UI_DIRECTORY_POPUP = "options.pmd.ui.directorypopup";
 	//private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
-
-	private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
 
 	private static PMDJEditPlugin instance;
 
@@ -260,7 +254,8 @@ public class PMDJEditPlugin extends EditPlugin {
 		}
 		catch(NumberFormatException e)
 		{
-			//Use the default.
+			//use the default.
+			tilesize = jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100);
 		}
 
 		CPD cpd = new CPD(tilesize, new JavaLanguage());
@@ -295,54 +290,16 @@ public class PMDJEditPlugin extends EditPlugin {
 			{
 				Mark mark = (Mark)occurrences.next();
 
-				//SourceCode sourceCode = (SourceCode)tokenSets.get(mark.getgetTokenSrcID());
-				/*                 if (!printedHeader) {
-				                    rpt.append("Found a " + tokens.getLineCount(mark, match) + " line (" + match.getTokenCount() + " tokens) duplication in the following files: ");
-				                    rpt.append(EOL);
-				                    printedHeader = true;
-				                }
-				 */
-				System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount());
+				//System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount());
 				int lastLine = mark.getBeginLine()+match.getLineCount();
-
-				//CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getgetTokenSrcID(),mark.getBeginLine(),view.getTextArea().getLineEndOffset(lastLine+1) - view.getTextArea().getLineStartOffset(mark.getBeginLine()-1));
 
 				CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getTokenSrcID(),mark.getBeginLine(),lastLine);
 
-				System.out.println("Adding Duplicate " + duplicate +" to Duplicates "+ duplicates);
+				//System.out.println("Adding Duplicate " + duplicate +" to Duplicates "+ duplicates);
 				duplicates.addDuplicate(duplicate);
-				//report.append(mark.getgetTokenSrcID()+":"+mark.getBeginLine() +",");
-
-				if(!occurrences.hasNext())
-				{
-					/* 					System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getgetTokenSrcID() +" Line Count "+ match.getLineCount());
-										int lastLine = mark.getBeginLine()+(match.getLineCount()-1);
-					 */					/*
-												JEditTextArea textArea = view.getTextArea();
-												textArea.setSelection(new Selection.Range(
-													buffer.getLineStartOffset(startLine),
-													buffer.getLineEndOffset(endLine) - 1));
-												textArea.moveCaretPosition(buffer.getLineEndOffset(endLine) - 1);
-
-										*/
-
-					//Below errorSource.addError code works perfectly find vis-a-vis the chunk of code shown by getReport.
-					//errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, mark.getgetTokenSrcID(), mark.getBeginLine()-1,0,view.getTextArea().getLineEndOffset(lastLine+1) - view.getTextArea().getLineStartOffset(mark.getBeginLine()-1) ,report.toString()));
-
-
-					//DefaultErrorSource.DefaultError error = new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, mark.getgetTokenSrcID(), mark.getBeginLine()-1,0,view.getTextArea().getLineEndOffset(lastLine -1) - view.getTextArea().getLineStartOffset(mark.getBeginLine()-1) ,report.toString());
-					//errorSource.addError(error);
-				}
-
-				/* if (!occurrences.hasNext()) {
-				    rpt.append(sourceCode.getSlice(mark.getBeginLine()-1, mark.getBeginLine() + tokens.getLineCount(mark, match)));
-				    rpt.append(EOL);
-			} */
 			}
-			//report.delete(0,report.length());
 			dv.addDuplicates(duplicates);
 		}
-
 		dv.refreshTree();
 		dv.expandAll();
 	}//End of processDuplicates
