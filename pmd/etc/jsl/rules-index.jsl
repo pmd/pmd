@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<jsl:stylesheet
+  select="$doc"
+  xmlns:j="jelly:core"
+  xmlns:jsl="jelly:jsl"
+  xmlns:util="jelly:util"
+  xmlns:x="jelly:xml"
+  xmlns:doc="doc"
+  trim="false">
+
+<jsl:template match="rulesets">
+	<document>
+		<j:set trim="true" var="rulesetname">
+			<x:expr select="@name"/>
+		</j:set>
+		<properties>
+			<author email="mikkey@sourceforge.net">Miguel Griffa</author>
+			<title>PMD Rulesets index</title>
+		</properties>
+		<body>
+			<section name="Index">
+				<p>This document contians different indexes to all PMD 
+				rulesets and rules.</p>
+				<p>NOTE: this page is still under development.</p>
+			</section>
+			<section name="Rules by ruleset">
+			    <p>List of rulesets and rules contained in each ruleset.</p>
+    		    <x:set var="ruleset" select="/rulesets/ruleset"/>
+                <ul>
+                <j:forEach var="rs" items="${ruleset}">
+                    <li>${rs.attributeValue("name")} (${rs.element("description").getText()})
+                    </li>
+                </j:forEach>
+                </ul>
+			</section>
+			<section name="Rules by name">
+			    <p>List of rules sorted alphabetically.</p>
+    		    <x:set var="rules" select="/rulesets/ruleset/rule"/>
+                <j:forEach var="r" items="${rules}">
+                    <p>name: ${r.attributeValue("name")} </p>
+                </j:forEach>
+                <!--x:forEach var="r" sort="true" select="/rulesets/ruleset/rule">
+                    <p>name: ${r} / <x:expr select="@name"/> </p>
+                </x:forEach-->
+			</section>
+		</body>
+	</document>
+</jsl:template>
+
+</jsl:stylesheet>
