@@ -60,10 +60,6 @@ public class JUnitTestsShouldContainAssertsRule extends AbstractRule implements 
 	
     private boolean containsAssert(Node n, boolean assertFound) {
         if (!assertFound) {
-            SimpleNode sn = null;
-            if (n instanceof SimpleNode) {
-                sn = (SimpleNode) n;
-            }
             if (n instanceof ASTStatementExpression) {
                 if (isAssertStatement((ASTStatementExpression)n)) {
                     return true;

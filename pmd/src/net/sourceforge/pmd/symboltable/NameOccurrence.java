@@ -8,6 +8,8 @@ import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTPostfixExpression;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
+import net.sourceforge.pmd.ast.ASTName;
 
 public class NameOccurrence {
 
@@ -60,7 +62,7 @@ public class NameOccurrence {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
 
-        if (primaryExpression instanceof ASTPostfixExpression)  {
+        if (postFixWithExceptions(primaryExpression))  {
             return true;
         }
 
@@ -76,11 +78,23 @@ public class NameOccurrence {
             return false;
         }
 
-        if (((ASTAssignmentOperator) (primaryExpression.jjtGetChild(1))).isCompound()) {
+        if (isCompoundAssignment(primaryExpression)) {
             return false;
         }
 
         return true;
+    }
+
+    private boolean isCompoundAssignment(SimpleNode primaryExpression) {
+        return ((ASTAssignmentOperator) (primaryExpression.jjtGetChild(1))).isCompound();
+    }
+
+    private boolean postFixWithExceptions(SimpleNode primaryExpression) {
+        return primaryExpression instanceof ASTPostfixExpression && primaryExpression.jjtGetParent() instanceof ASTStatementExpression && thirdChildHasDottedName(primaryExpression);
+    }
+
+    private boolean thirdChildHasDottedName(SimpleNode primaryExpression) {
+        return primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTName && ((ASTName)(primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0))).getImage().indexOf(".") == -1;
     }
 
     public Scope getScope() {
