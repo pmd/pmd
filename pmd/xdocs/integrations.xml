@@ -36,7 +36,7 @@
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>JEdit</td>
       <td>pmd-jedit</td>
-      <td>0.8</td>
+      <td>1.0</td>
       <td>tomcopeland</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>IntelliJ IDEA</td>
@@ -86,12 +86,10 @@ There is only one command "pmd-current-buffer" which will execute
 PMD on the Java code in the current buffer.  It will generate an
 XML report in the *PMD* buffer.
 </p>
-<p>
-It is planned to provide a better format for the results from PMD
-to make usage in Emacs better.  Additonally, it is hoped that we
-will be able to jump from a rule violation, to the position in the
-code which caused it.
-</p>
+<ul>
+<li>Enable jumping to the rule violation in the source code</li>
+<li>Generally, make it nicer to work with</li>
+</ul>
 
       </subsection>
       <subsection name="Borland JBuilder">
@@ -119,13 +117,13 @@ violation message within this view, you will be taken to the line in the source 
       </subsection>
 
       <subsection name="JEdit">
-<p>
-The way I use the JEdit plugin is:</p>
+<p>The way I use the JEdit plugin is:</p>
 <ul>
-<li>Dock the ErrorList - Utilities->Global Options->Docking, then pick ErrorList and put it at the bottom of your screen</li>
+<li>Dock the ErrorList by going to Utilities->Global Options->Docking and putting ErrorList at the bottom of the screen</li>
 <li>Open the File Browser if it isn't already open</li>
-<li>Double-click on my source directory</li>
+<li>Double-click on a source directory</li>
 <li>Select Plugins->PMD->Check directory recursively</li>
+<li>Note that you can select individual rules by going to Utilities->Global Options->Plugin Options->PMD</li>
 </ul>
 
       </subsection>
@@ -142,7 +140,7 @@ works OK.  Here's how to set it up:</p>
 <li>Description: PMD doth help one clean the code</li>
 <li>Program: javaw</li>
 <li>For the next two parameters you'll need to plug in the location of your PMD installation, the rulesets you want to use, and your working directory</li>
-<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.0.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
+<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.01.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
 <li>Working directory: c:\</li>
 </ul>
 </ul>

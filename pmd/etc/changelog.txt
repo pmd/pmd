@@ -1,4 +1,6 @@
-November 07 2002 - 1.0.1:
+???? ?? 2002 - 1.02:
+
+November 07 2002 - 1.01:
 Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.
 Fixed bug 633892: StringToStringRule false positive exposed problem in symbol table usage to declaration code.
 Fixed bug 617971: Statistical rules no longer produce tons of false positives due to accumulated results.

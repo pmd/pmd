@@ -46,6 +46,7 @@ rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
 cvs -q export -d c:\tmp\pmd -r pmd_release_1_01 pmd
 copy pmd\lib\pmd-1.01.jar c:\tmp\pmd\lib
+copy the docs directory over to c:\tmp\pmd -- how to do this on cmd line?
 zip it up, rename it to pmd-src-1.01.zip
 
 if you see a bug and fix it, you can delete the release using:
