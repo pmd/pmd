@@ -57,7 +57,7 @@ public class Report {
     }
 
     private String renderToXML() {
-        StringBuffer buf = new StringBuffer("<pmd>" + System.getProperty("line.separator"));
+        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?><pmd>" + System.getProperty("line.separator"));
         for (Iterator i = fileToViolationsMap.keySet().iterator(); i.hasNext();) {
             String filename = (String)i.next();
             List violations = (List)fileToViolationsMap.get(filename);
