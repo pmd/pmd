@@ -49,6 +49,35 @@ import pmd.custom.RuleClassLoader;
 public abstract class ConfigUtils {
 
 	/**
+	 * Extra ruleset factories added by calling {@link #addRuleSetFactory}.
+	 * May be null (equivalent to empty).
+	 */
+	private static ArrayList extraFactories = null;
+
+	/**
+	 * Registers extra rules that are available.
+	 *
+	 * @param rules Collection of Rule objects.
+	 */
+	public static void addRuleSetFactory (RuleSetFactory fact) {
+		if (extraFactories == null) {
+			extraFactories = new ArrayList ();
+		}
+		extraFactories.add (fact);
+	}
+
+	/**
+	 * Unregisters extra rules that are available.
+	 *
+	 * @param rules Collection of Rule objects.
+	 */
+	public static void removeRuleSetFactory (RuleSetFactory fact) {
+		if (extraFactories != null) {
+			extraFactories.remove (fact);
+		}
+	}
+	
+	/**
 	 * Description of the Method
 	 *
 	 * @param rules Description of the Parameter
@@ -117,6 +146,17 @@ public abstract class ConfigUtils {
 					while( iterator.hasNext() ) {
 						RuleSet ruleset = ( RuleSet )iterator.next();
 						list.addAll( ruleset.getRules() );
+					}
+					if (extraFactories != null) {
+						iterator = extraFactories.iterator (); 
+						while (iterator.hasNext () ) {
+							ruleSetFactory = (RuleSetFactory)iterator.next ();
+							Iterator it = ruleSetFactory.getRegisteredRuleSets();
+							while( it.hasNext() ) {
+								RuleSet ruleset = ( RuleSet )it.next();
+								list.addAll( ruleset.getRules() );
+							}
+						}
 					}
 				}
 				catch( RuleSetNotFoundException e ) {
