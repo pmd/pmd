@@ -77,6 +77,15 @@ class Job
 	end
 	def ncss
 		File.read(ncss_report).split(":")[1].strip.chomp	
+	end	
+	def pmd_html
+		
+	end
+	def pmd_lines
+    count = 0
+    File.read(reportFile).each {|line| count += 1 if line["</td>"] }
+   	count = count == 0 ? 0 : (count/4).to_i
+		return count
 	end
 	def to_s
 		return @location + ":" + @title + ":" + @unix_name +":"+@mod+":"+@src
@@ -109,7 +118,12 @@ if __FILE__ == $0
 	fm.base_path="./"
 	out = fm["header.frag", {"lastruntime"=>Time.now}]
 	jobs.each {|j|
-		out << fm["row.frag", {"title"=>j.title, "homepage"=>j.homepage_html, "ncss"=>j.ncss}]	
+		out << fm["row.frag", {	
+			"title"=>fm["title.frag", {"file"=>j.reportFile, "title"=>j.title}],
+			"homepage"=>fm["homepage.frag", {"name"=>j.unix_name}],
+			"ncss"=>j.ncss, 
+			"pmd"=>j.pmd_lines.to_s
+		}]	
 	}
 	File.open("index.html", "w") {|f| f.syswrite(out)}
 end
