@@ -107,8 +107,45 @@ public class PMDJEditPlugin extends EditPlugin {
     }
 
     public void instanceCheckDirectoryRecursively(View view) {
-        JOptionPane.showMessageDialog(null, "Not yet implemented");
+        DockableWindowManager wm = view.getDockableWindowManager();
+        VFSBrowser browser = (VFSBrowser)wm.getDockable("vfs.browser");
+        if(browser == null) {
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", "PMD", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        PMD pmd = new PMD();
+        SelectedRuleSetsMap selectedRuleSets = null;
+        try {
+            selectedRuleSets = new SelectedRuleSetsMap();
+        } catch (RuleSetNotFoundException rsne) {
+            // should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
+            System.out.println("PMD ERROR: Couldn't find a ruleset");
+            rsne.printStackTrace();
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Unable to find rulesets, halting PMD", "PMD", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(new Report());
+        List files = findFilesRecursively(browser.getDirectory());
+        for (Iterator i = files.iterator(); i.hasNext();) {
+            File file = (File)i.next();
+            ctx.setReport(new Report());
+            ctx.setSourceCodeFilename(file.getAbsolutePath());
+            try {
+                pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRuleSets(), ctx);
+            } catch (FileNotFoundException fnfe) {
+                // should never happen, but if it does, carry on to the next file
+                System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
+            }
+            for (Iterator j = ctx.getReport().iterator(); j.hasNext();) {
+                RuleViolation rv = (RuleViolation)j.next();
+                errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
+            }
+        }
     }
+		
+		
 
     public static void check(Buffer buffer, View view) {
         instance.instanceCheck(buffer, view);
@@ -155,5 +192,29 @@ public class PMDJEditPlugin extends EditPlugin {
          result.add(sourceFile);
       }
       return result;
+   }
+	 
+	 private List findFilesRecursively(String dir) {
+      File root = new File(dir);
+      List list = new ArrayList();
+      scanDirectory(root, list);
+      return list;
+   }
+
+   private void scanDirectory(File dir, List list) {
+      FilenameFilter filter = new FilenameFilter() {
+          public boolean accept(File dir, String filename) {
+              return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+          }
+      };
+      String[] possibles = dir.list(filter);
+      for (int i=0; i<possibles.length; i++) {
+         File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
+         if (tmp.isDirectory()) {
+            scanDirectory(tmp, list);
+         } else { 
+					 list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
+				 }
+      }
    }
 }
