@@ -17,10 +17,12 @@ import net.sourceforge.pmd.ast.*;
  * from non-private constructors.
  *
  *
- * @todo Currently can't compare method signatures because types are not known
- *       from call.  Impossible to tell types with current architecture.
- * @todo Currently can't tell super() from this().
- * @author dnoyeb@users.sourceforge.net
+ * @todo match parameter types.  Agressive strips off any package names.  Normal
+ *       compares the names as is.
+ *
+ * @todo What about interface declarations which can have internal classes
+ *
+ * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
 public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.AbstractRule {
 
@@ -40,12 +42,26 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	 *			ASTPrimarySuffix -> method
 	 *			ASTPrimarySuffix -> ()
 	 *				ASTArguments
+	 *
+	 *          super.method();
+	 *			ASTPrimaryPrefix -> image = "method"
+	 *			ASTPrimarySuffix -> image = null
+	 *				ASTArguments ->
+	 *
+	 *          super.a.method();
+	 *			ASTPrimaryPrefix -> image = "a"
+	 *			ASTPrimarySuffix -> image = "method"
+	 *			ASTPrimarySuffix -> image = null
+	 *				ASTArguments ->
+
+	 *
 	 *		4: this.a.method();
-	 *			ASTPrimaryPrefix -> this image=null
-	 *			ASTPrimarySuffix -> a
-	 *			ASTPrimarySuffix -> method
-	 *			ASTPrimarySuffix -> ()
+	 *			ASTPrimaryPrefix -> image = null
+	 *			ASTPrimarySuffix -> image = "a"
+	 *			ASTPrimarySuffix -> image = "method"
+	 *			ASTPrimarySuffix ->
 	 *				ASTArguments
+	 *
 	 *      4: ClassName.this.method();
 	 *			ASTPrimaryPrefix
 	 *				ASTName	image = "ClassName"
@@ -92,6 +108,21 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	 *			ASTPrimarySuffix -> ()
 	 *				ASTArguments
 	 *
+	 *			OuterClass.InnerClass.this.a.method().method().method();
+	 *			ASTPrimaryPrefix
+	 *				ASTName image = "OuterClass.InnerClass"
+	 *			ASTPrimarySuffix -> this		image=null
+	 *			ASTPrimarySuffix -> a			image='a'
+	 *			ASTPrimarySuffix -> method		image='method'
+	 *			ASTPrimarySuffix -> ()			image=null
+	 *				ASTArguments
+	 *			ASTPrimarySuffix -> method		image='method'
+	 *			ASTPrimarySuffix -> ()			image=null
+	 *				ASTArguments
+	 *			ASTPrimarySuffix -> method		image='method'
+	 *			ASTPrimarySuffix -> ()			image=null
+	 *				ASTArguments
+	 *
 	 *      3..n:	Class.InnerClass[0].InnerClass[n].this.method();
 	 *				ASTPrimaryPrefix
 	 *					ASTName image = "Class[0]..InnerClass[n]"
@@ -111,15 +142,15 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 		private String m_Name;
 		private ASTArguments m_Args;
 		private ASTPrimaryExpression m_Ape;
-		private List m_VariableNames;
-		private List m_PackageClassNames;
+		private List m_ReferenceNames;
+		private List m_QualifierNames;
 		private int m_ArgumentSize;
 		private boolean m_Super;
 
-		private MethodInvocation(ASTPrimaryExpression ape, List packageClassNames, List variableNames, String name, int argumentSize, boolean superCall){
+		private MethodInvocation(ASTPrimaryExpression ape, List qualifierNames, List referenceNames, String name, int argumentSize, boolean superCall){
 			m_Ape = ape;
-			m_PackageClassNames = packageClassNames;
-			m_VariableNames = variableNames;
+			m_QualifierNames = qualifierNames;
+			m_ReferenceNames = referenceNames;
 			m_Name = name;
 			m_ArgumentSize = argumentSize;
 			m_Super = superCall;
@@ -131,32 +162,17 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 		public String getName(){
 			return m_Name;
 		}
-		protected void setName(String name){
-			m_Name = name;
-		}
 		public int getArgumentCount(){
 			return m_ArgumentSize;
 		}
-		protected void setArgumentCount(int argumentSize){
-			m_ArgumentSize = argumentSize;
+		public List getReferenceNames(){
+			return m_ReferenceNames;//new ArrayList(variableNames);
 		}
-		public List getVariableNames(){
-			return m_VariableNames;//new ArrayList(variableNames);
-		}
-		protected void setVariableNames(List variableNames){
-			m_VariableNames = variableNames;
-		}
-		public List getPackageClassNames(){
-			return m_PackageClassNames;
-		}
-		protected void setPackageClassNames(List packageClassNames){
-			m_PackageClassNames = packageClassNames;
+		public List getQualifierNames(){
+			return m_QualifierNames;
 		}
 		public net.sourceforge.pmd.ast.ASTArguments getArguments(){
 			return m_Args;
-		}
-		protected void setArguments(net.sourceforge.pmd.ast.ASTArguments args){
-			m_Args = args;
 		}
 		public ASTPrimaryExpression getASTPrimaryExpression(){
 			return m_Ape;
@@ -168,7 +184,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 			if ( i > 1) {//should always be at least 2, probably can eliminate this check
 				//start at end which is guaranteed, work backwards
 				Node lastNode = node.jjtGetChild(i-1);
-				if(lastNode.jjtGetNumChildren() == 1 && (lastNode.jjtGetChild(0) instanceof ASTArguments)){ //this should always be the case, probably can eliminate this check
+				if(lastNode.jjtGetNumChildren() == 1 && (lastNode.jjtGetChild(0) instanceof ASTArguments)){ //could be ASTExpression for instance 'a[4] = 5';
 					//start putting method together
 //					System.out.println("Putting method together now");
 					List varNames = new ArrayList();;
@@ -176,97 +192,155 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 					String methodName=null;
 					ASTArguments args = (ASTArguments)lastNode.jjtGetChild(0) ;
 					int numOfArguments = args.getArgumentCount();
-					boolean superCall = false;
-
+					boolean superFirst = false;
 					int thisIndex=-1;
-					//search all nodes except last for 'this'.  this will be at: node 0, node 1, nowhere
-					for(int x = 0; x < i-1; x++){
-						Node child = node.jjtGetChild(x);
 
-						String name = null;
-						if(child instanceof ASTPrimarySuffix){ //check suffix type match
-							name = getNameFromSuffix((ASTPrimarySuffix)child);
-//							System.out.println("found name suffix of : " + name);
-						}
-						else if(child instanceof ASTPrimaryPrefix){ //check prefix type match
-							ASTPrimaryPrefix child2 = (ASTPrimaryPrefix)child;
-							name = getNameFromPrefix(child2);
-//							System.out.println("found name prefix of : " + name);
-							if(child2.getImage() != null){ //happens when super is used
-								name = child2.getImage();
-//								System.out.println("SuperCall on prefix node of " + name);
-								superCall = true;
-								thisIndex = x;//really a this/super index
+					FIND_SUPER_OR_THIS: {
+						//search all nodes except last for 'this' or 'super'.  will be at: (node 0 | node 1 | nowhere)
+						//this is an ASTPrimarySuffix with a null image and does not have child (which will be of type ASTArguments)
+						//this is an ASTPrimaryPrefix with a null image and an ASTName that has a null image
+						//super is an ASTPrimarySuffix with a null image and does not have child (which will be of type ASTArguments)
+						//super is an ASTPrimaryPrefix with a non-null image
+						for(int x = 0; x < i-1; x++){
+							Node child = node.jjtGetChild(x);
+							if(child instanceof ASTPrimarySuffix){ //check suffix type match
+								ASTPrimarySuffix child2 = (ASTPrimarySuffix) child;
+//								name = getNameFromSuffix((ASTPrimarySuffix)child);
+//								System.out.println("found name suffix of : " + name);
+								if(child2.getImage() == null && child2.jjtGetNumChildren() == 0){
+									thisIndex = x;
+									break;
+								}
+								//could be super, could be this.  currently we cant tell difference so we miss super when
+								//XYZ.ClassName.super.method();
+								//still works though.
 							}
-						}
-						else{
-							System.err.println("Bad Format error");
-						}
-						//'this' comes as a null.  Need better check because super also comes as null.
-						if(name == null){
-							thisIndex = x;
-							break;
+							else if(child instanceof ASTPrimaryPrefix){ //check prefix type match
+								ASTPrimaryPrefix child2 = (ASTPrimaryPrefix)child;
+								String name = getNameFromPrefix(child2);
+//								System.out.println("found name prefix of : " + name);
+								if(name == null){
+									if(child2.getImage() == null){
+										thisIndex = x;
+										break;
+									}
+									else {//happens when super is used [super.method(): image = 'method']
+//										name = child2.getImage();
+//										System.out.println("SuperCall on prefix node of " + name);
+										superFirst = true;
+										thisIndex = x;
+										//the true super is at an unusable index because super.method() has only 2 nodes [method=0,()=1]
+										//as opposed to the 3 you might expect and which this.method() actually has. [this=0,method=1.()=2]
+										break;
+									}
+								}
+							}
+//							else{
+//								System.err.println("Bad Format error"); //throw exception, quit evaluating this compilation node
+//							}
 						}
 					}
-
-					//need detection of SUPER
-
-
 
 					if(thisIndex != -1){
-//						System.out.println("Found this: " + thisIndex);
-						//variable names are all nodes between this and the argument holding suffix
-						for(int x= thisIndex + 1 ; x< i-1;x++){
-							Node child = node.jjtGetChild(x);
-							String suffixName;
-							if(child instanceof ASTPrimarySuffix){ //all should be primary suffix after 'this'
-								suffixName = getNameFromSuffix((ASTPrimarySuffix)child);
-//								System.out.println("Found suffix: " + suffixName);
-								if(x == i-2){ //method name
-									methodName = suffixName;
+//						System.out.println("Found this or super: " + thisIndex);
+						//Hack that must be removed if and when the patters of super.method() begins to logically match the rest of the patterns !!!
+						if(superFirst){ //this is when super is the first node of statement.  no qualifiers, all variables or method
+//							System.out.println("super first");
+							FIRSTNODE:{
+								ASTPrimaryPrefix child = (ASTPrimaryPrefix)node.jjtGetChild(0);
+								String name = child.getImage();//special case
+								if(i == 2){ //last named node = method name
+									methodName = name;
 								}
-								else{ //variable name
-									varNames.add(suffixName);
+								else { //not the last named node so its only var name
+									varNames.add(name);
+								}
+							}
+							OTHERNODES:{ //variables
+								for(int x=1;x< i-1;x++){
+									Node child = node.jjtGetChild(x);
+									ASTPrimarySuffix ps = (ASTPrimarySuffix)child;
+									if(ps.isArguments() == false){
+										String name = ((ASTPrimarySuffix)child).getImage();
+										if(x == i-2){//last node
+											methodName = name;
+										}
+										else {//not the last named node so its only var name
+											varNames.add(name);
+										}
+									}
 								}
 							}
 						}
-						//everything before 'this' is package or class name
-						//this will be at 0 or 1.  if its at 1, then we have package/class names preceeding
-						if(thisIndex > 0){
-							Node child = node.jjtGetChild(0);
-							if(child instanceof ASTPrimaryPrefix){ //check prefix type match
-								String toParse = getNameFromPrefix((ASTPrimaryPrefix)child);
-//								System.out.println("parsing for class/package names in : " + toParse);
-								java.util.StringTokenizer st = new java.util.StringTokenizer(toParse,".");
-								while(st.hasMoreTokens()){
-									packagesAndClasses.add(st.nextToken());
+						else {//not super call
+							FIRSTNODE:{
+								if(thisIndex == 1){//qualifiers in node 0
+									ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
+									String toParse = getNameFromPrefix(child);
+//									System.out.println("parsing for class/package names in : " + toParse);
+									java.util.StringTokenizer st = new java.util.StringTokenizer(toParse,".");
+									while(st.hasMoreTokens()){
+										packagesAndClasses.add(st.nextToken());
+									}
 								}
 							}
-							else{
-								System.err.println("Bad Format error");
+							OTHERNODES:{ //other methods called in this statement are grabbed here
+								//this is at 0, then no Qualifiers
+								//this is at 1, the node 0 contains qualifiers
+								for(int x= thisIndex + 1 ; x< i-1;x++){//everything after this is var name or method name
+									ASTPrimarySuffix child = (ASTPrimarySuffix)node.jjtGetChild(x);
+									if(child.isArguments() == false){ //skip the () of method calls
+										String name = getNameFromSuffix(child);
+//										System.out.println("Found suffix: " + suffixName);
+										if(x == i-2){
+											methodName = name;
+										}
+										else {
+											varNames.add(name);
+										}
+									}
+								}
 							}
 						}
 					}
-					else { //if no this, everything is method name or variable
-						//var names all in prefix, method name at end
-//						System.out.println("no this found:");
-						Node child = node.jjtGetChild(0);
-						if(child instanceof ASTPrimaryPrefix){ //first is always ASTPrimaryPrefix
+					else { //if no this or super found, everything is method name or variable
+						//System.out.println("no this found:");
+						FIRSTNODE:{ //variable names are in the prefix + the first method call [a.b.c.x()]
+							ASTPrimaryPrefix child = (ASTPrimaryPrefix)node.jjtGetChild(0);
 							String toParse = getNameFromPrefix((ASTPrimaryPrefix)child);
 //							System.out.println("parsing for var names in : " + toParse);
 							java.util.StringTokenizer st = new java.util.StringTokenizer(toParse,".");
 							while(st.hasMoreTokens()){
 								String value = st.nextToken();
-								if(!st.hasMoreTokens()){ //method name
-									methodName = value;
+								if(!st.hasMoreTokens()){
+									if(i == 2){//if this expression is 2 nodes long, then the last part of prefix is method name
+										methodName = value;
+									}
+									else{
+										varNames.add(value);
+									}
 								}
 								else { //variable name
 									varNames.add(value);
 								}
 							}
 						}
+						OTHERNODES:{ //other methods called in this statement are grabbed here
+							for(int x = 1; x < i-1; x++){
+								ASTPrimarySuffix child = (ASTPrimarySuffix)node.jjtGetChild(x);
+								if(child.isArguments() == false) {
+									String name = getNameFromSuffix(child);
+									if(x == i-2){
+										methodName = name;
+									}
+									else {
+										varNames.add(name);
+									}
+								}
+							}
+						}
 					}
-					meth = new MethodInvocation( node, packagesAndClasses, varNames, methodName,numOfArguments,superCall);
+					meth = new MethodInvocation( node, packagesAndClasses, varNames, methodName,numOfArguments,superFirst);
 				}
 			}
 			return meth;
@@ -290,21 +364,21 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 		public void show(){
 			//StringBuffer sb = new StringBuffer();
 			System.out.println("<MethodInvocation>");
-			List pkg = getPackageClassNames();
-			System.out.println("  <Packaging>");
+			List pkg = getQualifierNames();
+			System.out.println("  <Qualifiers>");
 			for(Iterator it = pkg.iterator();it.hasNext();){
 				String name = (String)it.next();
 				System.out.println("    " + name);
 			}
-			System.out.println("  </Packaging>");
+			System.out.println("  </Qualifiers>");
 			System.out.println("  <Super>" + isSuper() + "</Super>");
-			List vars = getVariableNames();
-			System.out.println("  <Variables>");
+			List vars = getReferenceNames();
+			System.out.println("  <References>");
 			for(Iterator it = vars.iterator();it.hasNext();){
 				String name = (String)it.next();
 				System.out.println("    " + name);
 			}
-			System.out.println("  </Variables>");
+			System.out.println("  </References>");
 			System.out.println("  <Name>" + getName() + "</Name>");
 			System.out.println("</MethodInvocation>");
 		}
@@ -421,6 +495,9 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	private static int classID;
 	/**
 	 * Used to itentify which class we are parsing.
+	 * This works because all classes at the same level can be evaluated in
+	 * parallel.
+	 * @todo No this can't possibly work
 	 */
 	private static Integer classIDKey;
 	/**
@@ -440,8 +517,9 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 	private Object visitClassDec(AccessNode node,Object data){
 		Node child1 =node.jjtGetChild(0);
 		String className=null;
-		if(child1 instanceof ASTUnmodifiedClassDeclaration){
+		if(child1 instanceof ASTUnmodifiedClassDeclaration){ //rid of this
 			className = ((ASTUnmodifiedClassDeclaration)child1).getImage();
+//			System.out.println("Class is " + className);
 		}
 
 		RuleContext ctx=null;
@@ -504,7 +582,7 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 		}
 		classID--;
 		classIDKey = new Integer(classID);
-		return data;
+		return ctx;
 	}
 
 	/**
@@ -633,18 +711,29 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 		classID =0;
 		classIDKey = null;
 		evalPackages.clear();
-		return super.visit(node,data);
+//		try {
+			return super.visit(node,data);
+//		}
+//		catch(Exception e){
+//			e.printStackTrace();
+//			throw new RuntimeException(e.getMessage());
+//		}
     }
+	//for testing only
+//	public Object visit(ASTPackageDeclaration node, Object data){
+//		System.out.println("package= " + ((ASTName)node.jjtGetChild(0)).getImage());
+//		return super.visit(node,data);
+//	}
 
 	/**
 	 * This check must be evaluated independelty for each class.  Inner classses
 	 * get their own EvalPackage in order to perform independent evaluation.
 	 */
-	public Object visit(net.sourceforge.pmd.ast.ASTClassDeclaration node, Object data){
+	public Object visit(ASTClassDeclaration node, Object data){
 		return visitClassDec(node,data);
 	}
 
-	public Object visit(net.sourceforge.pmd.ast.ASTNestedClassDeclaration node, Object data){
+	public Object visit(ASTNestedClassDeclaration node, Object data){
 		return visitClassDec(node,data);
 	}
 
@@ -755,10 +844,10 @@ public class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.A
 //		}
 		if(meth != null){
 			//if it's a call on a variable, or on its superclass ignore it.
-			if((meth.getVariableNames().size() == 0) && !meth.isSuper()){
+			if((meth.getReferenceNames().size() == 0) && !meth.isSuper()){
 				//if this list does not contain our class name, then its not referencing our class
 				//this is a cheezy test... but it errs on the side of less false hits.
-				List packClass = meth.getPackageClassNames();
+				List packClass = meth.getQualifierNames();
 				if(packClass.size() > 0) {
 					for(Iterator it = packClass.iterator();it.hasNext();){
 						String name = (String) it.next();
