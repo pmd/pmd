@@ -8,16 +8,19 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule;
 
 public class OverrideBothEqualsAndHashcodeRuleTest extends RuleTst {
-    public void test1() throws Throwable{
+    public void testHashCodeOnly() throws Throwable{
         runTest("OverrideBothEqualsAndHashcode1.java", 1, new OverrideBothEqualsAndHashcodeRule());
     }
-    public void test2() throws Throwable{
+    public void testEqualsOnly() throws Throwable{
         runTest("OverrideBothEqualsAndHashcode2.java", 1, new OverrideBothEqualsAndHashcodeRule());
     }
-    public void test3() throws Throwable{
+    public void testCorrectImpl() throws Throwable{
         runTest("OverrideBothEqualsAndHashcode3.java", 0, new OverrideBothEqualsAndHashcodeRule());
     }
-    public void test4() throws Throwable{
+    public void testNeither() throws Throwable{
         runTest("OverrideBothEqualsAndHashcode4.java", 0, new OverrideBothEqualsAndHashcodeRule());
+    }
+    public void testEqualsSignatureUsesStringNotObject() throws Throwable{
+        runTest("OverrideBothEqualsAndHashcode5.java", 1, new OverrideBothEqualsAndHashcodeRule());
     }
 }

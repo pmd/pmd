@@ -1,4 +1,3 @@
 public class OverrideBothEqualsAndHashcode1 {
-    //public boolean equals(Object other) {}
-    public int hashCode() {}
+ public int hashCode() {}
 }
