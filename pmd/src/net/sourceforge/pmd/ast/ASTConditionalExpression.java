@@ -13,7 +13,6 @@ public class ASTConditionalExpression extends SimpleNode {
         setDiscardable();
     }
 
-
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
