@@ -5,6 +5,7 @@
     <author>David Dixon-Peugh</author>
   </properties>
 
+  <body>
   <section>What does it mean?</section>
 <p>
 Here on the PMD project, we've been trying to find the
@@ -29,5 +30,5 @@ have come up with several "backronyms" to explain it.
       <td>Directives</td></tr>
 </table>
 </p>
-
+</body>
 </document>
