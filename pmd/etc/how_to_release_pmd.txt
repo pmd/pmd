@@ -1,13 +1,13 @@
 update the xdocs to reflect the new release
-update the changelog.txt (when we get one)
+update the changelog.txt
 update the readme.txt (when we get one)
 
 ant dist
-rename jar to pmd-0.1.jar
-cvs add -kb pmd-0.1.jar
-cvs rtag -D tomorrow "pmd_release_0_1" pmd
+rename jar to pmd-0.2.jar
+cvs add -kb pmd-0.2.jar
+cvs rtag -D tomorrow "pmd_release_0_2" pmd
 mkdir c:\tmp\pmd
-cvs export -d c:\tmp\pmd -r pmd_release_0_1 pmd
+cvs export -d c:\tmp\pmd -r pmd_release_0_2 pmd
 cd c:\tmp
 zip it up
 unzip it into c:\tmp2
@@ -30,11 +30,11 @@ ftp upload.sourceforge.net
 generic userid/password: anonymous/tomcopeland@users.sourceforge.net
 cd incoming
 bin
-put pmd-0.1.zip
+put pmd-0.2.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd.zip file
+Add the pmd-0.2.zip file
 Classify the file
 
 Submit some news saying "hey, new release!"
