@@ -84,6 +84,9 @@ PMD scans Java source code and looks for potential problems:
   </developers>
 
   <contributors>
+    <contributor>
+      <name>Damian O'Neill</name>
+    </contributor>
   </contributors>
 
   <!-- Need to mark these as compile-time/run-time -->
