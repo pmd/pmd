@@ -26,12 +26,12 @@
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>JBuilder</td>
       <td>pmd-jbuilder</td>
-      <td>0.7</td>
+      <td>0.9</td>
       <td>dcraine</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Netbeans</td>
       <td>pmd-netbeans</td>
-      <td>0.1</td>
+      <td>0.4</td>
       <td>olemartin</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>JEdit</td>
@@ -46,7 +46,7 @@
       <td>N/A</td></tr>
   <tr><td>Maven</td>
       <td>pmd-maven</td>
-      <td>0.1</td>
+      <td>0.3</td>
       <td>wsdgoe</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
   <tr><td>Ant</td>
@@ -142,12 +142,14 @@ works OK.  Here's how to set it up:</p>
 <li>Description: PMD doth help one clean the code</li>
 <li>Program: javaw</li>
 <li>For the next two parameters you'll need to plug in the location of your PMD installation, the rulesets you want to use, and your working directory</li>
-<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.0rc3.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml,rulesets/basic.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
+<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.0.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
 <li>Working directory: c:\</li>
 </ul>
 </ul>
 <p>That's pretty much it.  Now you can right click on a source directory and select PMD, it'll run recursively on the source files, and the results should
-be displayed in a window and hyperlinked into the correct file and line of code. </p>
+be displayed in a window and hyperlinked into the correct file and line of code.  I usually
+right-click on the message window title bar and unselect "autohide" so the window doesn't go
+away every time I fix something in the code window.</p>
       </subsection>
       <subsection name="Maven">
 <p>
