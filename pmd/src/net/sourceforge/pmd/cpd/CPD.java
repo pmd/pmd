@@ -110,8 +110,8 @@ public class CPD {
             Iterator i = results.getOccurrences(tile);
             TokenEntry firstToken = (TokenEntry)i.next();
             TokenList tl = tokenSets.getTokenList(firstToken);
-            int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets)-1;
-            return tl.getSlice(firstToken.getBeginLine()-1, endLine);
+            int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets);
+            return tl.getSlice(firstToken.getBeginLine()-1, endLine-1);
         } catch (Exception ex) {ex.printStackTrace(); }
         return "";
     }

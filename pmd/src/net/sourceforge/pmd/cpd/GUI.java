@@ -48,10 +48,8 @@ public class GUI implements CPDListener {
     }
 
     //private JTextField rootDirectoryField= new JTextField("C:\\data\\datagrabber\\datagrabber\\src\\org\\cougaar\\mlm\\ui\\newtpfdd\\transit\\");
-    private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\rules\\");
-
     //private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
-    //private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
+    private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
     private JTextField minimumLengthField= new JTextField("30");
 
     private JProgressBar tokenizingFilesBar = new JProgressBar();
