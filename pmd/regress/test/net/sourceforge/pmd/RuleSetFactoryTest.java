@@ -28,13 +28,25 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.util.ResourceLoader;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class RuleSetFactoryTest extends TestCase {
+
+    public void testRefs() throws Throwable {
+        InputStream in = ResourceLoader.loadResourceAsStream("rulesets/favorites.xml", this.getClass().getClassLoader());
+        if (in == null) {
+            throw new RuleSetNotFoundException("Can't find resource   Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: " + System.getProperty("java.class.path"));
+        }
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet("rulesets/favorites.xml");
+        assertNotNull(rs.getRuleByName("WhileLoopsMustUseBraces"));
+    }
 
     public void testRuleSetNotFound() {
         RuleSetFactory rsf = new RuleSetFactory();

@@ -33,6 +33,7 @@ public class DocumentNavigatorTest extends RuleTst {
         private Node statement;
         private Node primaryPrefix;
         private Node primaryExpression;
+
         /**
          * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(ASTCompilationUnit, Object)
          */

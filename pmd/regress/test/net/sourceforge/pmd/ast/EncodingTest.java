@@ -12,8 +12,8 @@ import java.io.InputStreamReader;
 public class EncodingTest extends TestCase {
 
     public void testDecodingOfUTF8() throws Throwable {
-        String platformEncoding = System.getProperty("file.encoding");
-        String iso = "ISO-8859-1";
+        //String platformEncoding = System.getProperty("file.encoding");
+        //String iso = "ISO-8859-1";
         String utf8 = "UTF-8";
 
         TargetJDK1_4 targetJDK1_4 = new TargetJDK1_4();

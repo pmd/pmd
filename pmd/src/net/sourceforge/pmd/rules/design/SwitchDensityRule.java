@@ -21,12 +21,10 @@ import net.sourceforge.pmd.stat.StatisticalRule;
  *         problem.
  */
 public class SwitchDensityRule extends StatisticalRule {
+
     private static class SwitchDensity {
         private int labels = 0;
         private int stmts = 0;
-
-        public SwitchDensity() {
-        }
 
         public void addSwitchLabel() {
             labels++;
@@ -50,10 +48,6 @@ public class SwitchDensityRule extends StatisticalRule {
             }
             return 1.0 * (stmts / labels);
         }
-    }
-
-    public SwitchDensityRule() {
-        super();
     }
 
     public Object visit(ASTSwitchStatement node, Object data) {

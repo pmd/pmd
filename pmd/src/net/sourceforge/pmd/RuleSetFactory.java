@@ -116,6 +116,9 @@ public class RuleSetFactory {
             }
 
             return ruleSet;
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+            throw new RuntimeException("Couldn't find that class " + cnfe.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't read from that source: " + e.getMessage());
@@ -163,7 +166,8 @@ public class RuleSetFactory {
     private Rule parseInternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode, boolean addRule) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         Element ruleElement = (Element) ruleNode;
 
-        Rule rule = (Rule)classLoader.loadClass(ruleElement.getAttribute("class")).newInstance();
+        String attribute = ruleElement.getAttribute("class");
+        Rule rule = (Rule)classLoader.loadClass(attribute).newInstance();
 
         rule.setName(ruleElement.getAttribute("name"));
         rule.setMessage(ruleElement.getAttribute("message"));
@@ -221,27 +225,31 @@ public class RuleSetFactory {
      */
     private void parseRuleNodeWithSimpleReference(RuleSet ruleSet, Node ruleNode, String ref) throws RuleSetNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         RuleSetFactory rsf = new RuleSetFactory();
+
         ExternalRuleID externalRuleID = new ExternalRuleID(ref);
         RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
         Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
-        Rule overrideRule = parseInternallyDefinedRuleNode(ruleSet, ruleNode, false);
-        if (overrideRule.getName() != null) {
-            externalRule.setName(overrideRule.getName());
-        }
-        if (overrideRule.getMessage() != null) {
-            externalRule.setMessage(overrideRule.getMessage());
-        }
-        if (overrideRule.getDescription() != null) {
-            externalRule.setDescription(overrideRule.getDescription());
-        }
-        if (overrideRule.getExample() != null) {
-            externalRule.setExample(overrideRule.getExample());
-        }
-        if (overrideRule.getPriority() != 0) {
-            externalRule.setPriority(overrideRule.getPriority());
-        }
-        if (overrideRule.getProperties() != null) {
-            externalRule.addProperties(overrideRule.getProperties());
+
+        if (ruleNode.getFirstChild() != null) {
+            Rule overrideRule = parseInternallyDefinedRuleNode(ruleSet, ruleNode, false);
+            if (overrideRule.getName() != null) {
+                externalRule.setName(overrideRule.getName());
+            }
+            if (overrideRule.getMessage() != null) {
+                externalRule.setMessage(overrideRule.getMessage());
+            }
+            if (overrideRule.getDescription() != null) {
+                externalRule.setDescription(overrideRule.getDescription());
+            }
+            if (overrideRule.getExample() != null) {
+                externalRule.setExample(overrideRule.getExample());
+            }
+            if (overrideRule.getPriority() != 0) {
+                externalRule.setPriority(overrideRule.getPriority());
+            }
+            if (overrideRule.getProperties() != null) {
+                externalRule.addProperties(overrideRule.getProperties());
+            }
         }
         ruleSet.addRule(externalRule);
     }
