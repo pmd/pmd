@@ -62,7 +62,9 @@ public class StatisticalRuleTest
 		
 	public static final double MEAN = 499.5;
 	public static final double SIGMA = 288.6750;
-	public static final int NUM_TESTS = 32;
+	public static final int NUM_TESTS = 512;
+	
+	public static final double DELTA = 0.005;
 	
     public StatisticalRuleTest(String name) 
     {
@@ -155,12 +157,21 @@ public class StatisticalRuleTest
 	
 	/**
 	 * This returns the expected number of reports.
+	 * 
+	 * If the Minimum comes in at 521.569 then we expect
+	 * 522, 523, ... 999 will pass.
 	 */
 	public int expectedMinimum(double minimum) {
-		int RC = 999 - ((int) Math.round(minimum - 0.5) + 1);
-		if (RC >= 0) return RC; else return 0;
+		Double d = new Double( minimum );
+		return 999 - d.intValue();
 	}
 	
+	public void testExpectedMinimum() {
+		for (int i = 0; i < 999; i++) {
+			assertEquals("Integer Min", 999 - i, expectedMinimum( i * 1.0 ));
+			assertEquals("Double Min", 999 - i, expectedMinimum( (i * 1.0) + 0.5 ));
+		}	
+	}
 	/**
 	 * This returns a random value for Top Score.
 	 */
@@ -173,6 +184,8 @@ public class StatisticalRuleTest
 	 * which will return more than the minimum provided.
 	 */
 	public int randomTopScore(double target) {
+		if (target < 0) return 0;
+		
 		return random.nextInt( (new Double(target)).intValue() );
 	}
 	

@@ -96,7 +96,7 @@ public abstract class StatisticalRule extends AbstractRule {
 		while (points.hasNext()) {
             DataPoint point = (DataPoint) points.next();
 
-            if (point.getScore() >= (minValue - DELTA)) {
+            if (point.getScore() > (minValue - DELTA)) {
                 RC.add(point);
             }
 		}
