@@ -35,19 +35,21 @@ public class CPD {
     }
 
     public String getReport() {
+        // yikes.  there's a dire need for refactoring here.
         StringBuffer rpt = new StringBuffer();
         for (Iterator i = matchAlgorithm.matches(); i.hasNext();) {
             Match match = (Match)i.next();
-            TokenList tl = tokenSets.getTokenList(match.getFirstOccurrence().getFile());
+            TokenList tokenList1 = tokenSets.getTokenList(match.getFirstOccurrence().getFile());
             rpt.append("=====================================================================");
             rpt.append(EOL);
-            rpt.append("Found a " + match.getTokenCount() + " token duplication in the following files: ");
+            rpt.append("Found a " + tokenList1.getLineCount(match.getFirstOccurrence().getIndexIntoFile(), match.getTokenCount()) + " line (" +match.getTokenCount() + " tokens) duplication in the following files: ");
             rpt.append(EOL);
-            rpt.append(match.getFirstOccurrence().getFile());
+            rpt.append("Starting at line " + tokenList1.getLine(match.getFirstOccurrence().getIndexIntoFile())+ " of " + match.getFirstOccurrence().getFile());
             rpt.append(EOL);
-            rpt.append(match.getSecondOccurrence().getFile());
+            TokenList tokenList2 = tokenSets.getTokenList(match.getSecondOccurrence().getFile());
+            rpt.append("Starting at line " + tokenList2.getLine(match.getSecondOccurrence().getIndexIntoFile())+ " of " + match.getSecondOccurrence().getFile());
             rpt.append(EOL);
-            rpt.append(tl.getLineSlice(match.getFirstOccurrence().getIndexIntoFile(), match.getTokenCount()));
+            rpt.append(tokenList1.getLineSlice(match.getFirstOccurrence().getIndexIntoFile(), match.getTokenCount()));
             rpt.append(EOL);
         }
         return rpt.toString();

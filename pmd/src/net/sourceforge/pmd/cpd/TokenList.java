@@ -19,6 +19,16 @@ public class TokenList implements Serializable {
         code = newCode;
     }
 
+    public int getLine(int index) {
+        return ((TokenEntry)tokens.get(index)).getBeginLine();
+    }
+
+    public int getLineCount(int startTokenIndex, int tokenCount) {
+        TokenEntry t = (TokenEntry)tokens.get(startTokenIndex);
+        TokenEntry t2 = (TokenEntry)tokens.get(Math.min(startTokenIndex + tokenCount, tokens.size()-1));
+        return t2.getBeginLine() - t.getBeginLine();
+    }
+
     public String getLineSlice(int startTokenIndex, int tokenCount) {
         TokenEntry t = (TokenEntry)tokens.get(startTokenIndex);
         TokenEntry t2 = (TokenEntry)tokens.get(Math.min(startTokenIndex + tokenCount, tokens.size()-1));
