@@ -25,4 +25,7 @@ public class UnusedFormalParameterRuleTest  extends RuleTst {
     public void testOneParamWithMethodCall() throws Throwable {
         runTest("UnusedFormalParam3.java", 0, rule);
     }
+    public void testInterface() throws Throwable {
+        runTest("UnusedFormalParam4.java", 0, rule);
+    }
 }
