@@ -321,7 +321,7 @@ public class Foo {
                 <value>
                     <![CDATA[
 //FieldDeclaration
- [not (ancestor::InterfaceDeclaration)]
+ [not (../../../../ClassOrInterfaceDeclaration[@Interface='true'])]
   [@Final='true' and @Static='false']
    /VariableDeclarator/VariableInitializer/Expression
     /PrimaryExpression/PrimaryPrefix/Literal
