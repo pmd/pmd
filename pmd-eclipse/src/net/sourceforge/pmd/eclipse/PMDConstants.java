@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2003/08/11 21:58:06  phherlin
+ * Adding a label for the default package
+ *
  * Revision 1.6  2003/07/07 19:23:59  phherlin
  * Adding PMD violations view
  *
@@ -87,6 +90,7 @@ public interface PMDConstants {
     public static final String MSGKEY_VIEW_ACTION_REMOVE_VIOLATION = "view.action.remove_violation";
     public static final String MSGKEY_VIEW_MENU_RESOURCE_FILTER = "view.menu.resource_filter";
     public static final String MSGKEY_VIEW_MENU_PRIORITY_FILTER = "view.menu.priority_filter";
+    public static final String MSGKEY_VIEW_DEFAULT_PACKAGE = "view.default_package";
     
     public static final String MSGKEY_ERROR_TITLE = "message.error.title";
     public static final String MSGKEY_ERROR_CORE_EXCEPTION = "message.error.core_exception";

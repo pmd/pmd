@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.views;
 
+import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -19,6 +20,9 @@ import org.eclipse.swt.graphics.Image;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2003/08/11 21:56:29  phherlin
+ * Adding a label for the default package
+ *
  * Revision 1.2  2003/08/11 21:14:21  phherlin
  * Fixing exception when refreshing violations table
  *
@@ -91,6 +95,8 @@ public class MarkerLabelProvider implements ITableLabelProvider {
                         IPackageDeclaration[] packageDeclarations = compilationUnit.getPackageDeclarations();
                         if (packageDeclarations.length > 0) {
                             result = packageDeclarations[0].getElementName();
+                        } else {
+                            result = PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_VIEW_DEFAULT_PACKAGE, "");
                         }
                     }
                 } else if (columnIndex == 5) {
