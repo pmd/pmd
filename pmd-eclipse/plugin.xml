@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="2.0.4.v3"
+   version="2.0.5.v3"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
@@ -26,7 +26,6 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="net.sourceforge.pmd.core"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.runtime.compatibility"/>
    </requires>
 
 
@@ -291,6 +290,7 @@
       </toc>
    </extension>
    <extension
+         id="pmdViews"
          point="org.eclipse.ui.views">
       <category
             name="%view.category"
@@ -303,6 +303,11 @@
             class="net.sourceforge.pmd.eclipse.views.ViolationView"
             id="net.sourceforge.pmd.eclipse.views.ViolationView">
       </view>
+   </extension>
+   <extension
+         id="pmdPreferences"
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="net.sourceforge.pmd.eclipse.PluginPreferenceInitializer"/>
    </extension>
 
 </plugin>
