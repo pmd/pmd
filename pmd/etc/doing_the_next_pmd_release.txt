@@ -63,6 +63,8 @@ Add the pmd-src-1.4.zip file
 Classify the file
 
 Redo the web site
+cd ~/data/pmd/pmd
+./docs.sh upload
 
 Submit some news saying "hey, new release!"
 Go to http://freshmeat.net/, say "hey, new release!"

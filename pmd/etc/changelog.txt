@@ -1,3 +1,5 @@
+????, 2004 - 1.5:
+
 January 7, 2004 - 1.4:
 New rules: AbstractNamingRule, ProperCloneImplementationRule
 Fixed bug 840926 - AvoidReassigningParametersRule no longer reports a false positive when assigning a value to an array slot when the array is passed as a parameter to a method
