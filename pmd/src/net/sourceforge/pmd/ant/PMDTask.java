@@ -47,8 +47,7 @@ public class PMDTask extends Task {
     private String encoding = System.getProperty("file.encoding");
     private boolean failOnError;
     private boolean failOnRuleViolation;
-    private boolean targetJDK13;
-    private boolean targetJDK15;
+    private String targetJDK = "1.4";
     private String failuresPropertyName;
     private String excludeMarker;
     private final Collection nestedRules = new ArrayList();
@@ -57,12 +56,8 @@ public class PMDTask extends Task {
         this.shortFilenames = value;
     }
 
-    public void setTargetJDK13(boolean value) {
-        this.targetJDK13 = value;
-    }
-
-    public void setTargetJDK15(boolean value) {
-        this.targetJDK15 = value;
+    public void setTargetJDK(String value) {
+        this.targetJDK = value;
     }
 
     public void setExcludeMarker(String value) {
@@ -140,9 +135,9 @@ public class PMDTask extends Task {
         logRulesUsed(rules);
 
         PMD pmd;
-        if (targetJDK13) {
+        if (targetJDK.equals("1.3")) {
             pmd = new PMD(new TargetJDK1_3());
-        } else if (targetJDK15) {
+        } else if (targetJDK.equals("1.5")) {
             pmd = new PMD(new TargetJDK1_5());
         } else {
             pmd = new PMD();
@@ -244,8 +239,8 @@ public class PMDTask extends Task {
             ruleSetFiles = getNestedRuleSetFiles();            
         }
 
-        if (targetJDK13 && targetJDK15) {
-            throw new BuildException("It doesn't make sense to target both JDK 1.3 and JDK 1.5");
+        if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5")) {
+            throw new BuildException("The targetjdk attribute, if used, must be set to either '1.3', '1.4', or '1.5'");
         }
     }
 
