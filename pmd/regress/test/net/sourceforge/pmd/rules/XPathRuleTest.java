@@ -1,9 +1,6 @@
 package test.net.sourceforge.pmd.rules;
-import net.sourceforge.pmd.rules.XPathRule;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Node;
 
-import javax.xml.transform.TransformerException;
+import net.sourceforge.pmd.rules.XPathRule;
 
 /**
  * @author daniels
@@ -161,12 +158,5 @@ public class XPathRuleTest extends RuleTst {
         runTest("DuplicateImports2.java", 1, rule);
         //runTest("DuplicateImports3.java", 1, rule);
         runTest("DuplicateImports4.java", 0, rule);
-    }
-
-    public Node assertNodeName(Node root, String path, String name) throws TransformerException {
-        Node node = XPathAPI.selectSingleNode(root, path);
-        assertNotNull("Node is null", node);
-        assertEquals(name, node.getNodeName());
-        return node;
     }
 }
