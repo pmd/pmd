@@ -20,9 +20,8 @@ public class ConstructorCallsOverridableMethodRuleTest extends RuleTst {
         runTest("ConstructorCallsOverridableMethodRule4.java", 0, new ConstructorCallsOverridableMethodRule());
     }
 
-/*
     public void testCallsPrivateConstructor() throws Throwable {
         runTest("ConstructorCallsOverridableMethodRule5.java", 1, new ConstructorCallsOverridableMethodRule());
     }
-*/
+
 }
