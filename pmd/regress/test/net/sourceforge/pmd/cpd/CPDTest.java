@@ -6,11 +6,14 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.*;
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.Results;
+import net.sourceforge.pmd.cpd.Tile;
+import net.sourceforge.pmd.cpd.TokenEntry;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
 public class CPDTest extends TestCase{
 

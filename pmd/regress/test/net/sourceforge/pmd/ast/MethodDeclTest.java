@@ -1,12 +1,9 @@
 package test.net.sourceforge.pmd.ast;
 
-import java.io.StringReader;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
-import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
-
-import net.sourceforge.pmd.ast.*;
 
 public class MethodDeclTest
     extends ParserTst

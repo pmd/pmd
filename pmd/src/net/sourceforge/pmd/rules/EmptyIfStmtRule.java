@@ -5,9 +5,11 @@
  */
 package net.sourceforge.pmd.rules;
 
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.*;
 
 public class EmptyIfStmtRule extends AbstractRule implements Rule {
 

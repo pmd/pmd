@@ -3,11 +3,10 @@
  */
 package test.net.sourceforge.pmd.stat;
 
-import java.util.Random;
-
+import junit.framework.TestCase;
 import net.sourceforge.pmd.stat.Metric;
 
-import junit.framework.TestCase;
+import java.util.Random;
 
 /**
  * @author David Dixon-Peugh

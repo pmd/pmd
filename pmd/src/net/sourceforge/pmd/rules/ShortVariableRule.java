@@ -2,8 +2,9 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTForInit;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.Node;
 
 import java.text.MessageFormat;
 

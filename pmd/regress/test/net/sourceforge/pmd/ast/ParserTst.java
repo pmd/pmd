@@ -1,15 +1,16 @@
 package test.net.sourceforge.pmd.ast;
 
 import junit.framework.TestCase;
-
-import java.util.Set;
-import java.util.HashSet;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.JavaParserVisitor;
 
 import java.io.StringReader;
-
-import java.lang.reflect.*;
-
-import net.sourceforge.pmd.ast.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ParserTst 
     extends TestCase

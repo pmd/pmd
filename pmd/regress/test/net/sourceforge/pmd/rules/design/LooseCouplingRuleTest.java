@@ -5,8 +5,8 @@
  */
 package test.net.sourceforge.pmd.rules.design;
 
-import test.net.sourceforge.pmd.rules.RuleTst;
 import net.sourceforge.pmd.rules.design.LooseCouplingRule;
+import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class LooseCouplingRuleTest extends RuleTst {
     private LooseCouplingRule rule;

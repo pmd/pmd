@@ -6,7 +6,6 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.UnusedPrivateMethodRule;
-import net.sourceforge.pmd.Report;
 
 public class UnusedPrivateMethodRuleTest  extends RuleTst {
     private UnusedPrivateMethodRule rule;

@@ -1,18 +1,17 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Properties;
+import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 import javax.swing.ImageIcon;
 import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
-
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
+import java.awt.Color;
+import java.awt.Font;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  *

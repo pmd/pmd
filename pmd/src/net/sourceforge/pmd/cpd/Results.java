@@ -5,7 +5,8 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 public interface Results  {
     public void addTile(Tile tile, TokenEntry tok);

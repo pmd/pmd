@@ -7,9 +7,17 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTForStatement;
+import net.sourceforge.pmd.ast.ASTForUpdate;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTStatement;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class JumbledIncrementerRule extends AbstractRule {
 

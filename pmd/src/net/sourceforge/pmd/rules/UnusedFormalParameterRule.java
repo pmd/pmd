@@ -4,6 +4,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+
 import java.text.MessageFormat;
 import java.util.Iterator;
 

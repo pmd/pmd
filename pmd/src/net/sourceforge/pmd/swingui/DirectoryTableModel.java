@@ -1,5 +1,9 @@
 package net.sourceforge.pmd.swingui;
 
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.TreePath;
 import java.io.File;
 import java.io.FileFilter;
 import java.text.DateFormat;
@@ -7,10 +11,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.Vector;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.TreePath;
 
 /**
  *

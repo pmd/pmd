@@ -1,12 +1,28 @@
 package net.sourceforge.pmd.swingui;
 
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.JTree;
+import javax.swing.UIManager;
+import javax.swing.border.EtchedBorder;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.Point;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -17,24 +33,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EventObject;
-
-import javax.swing.border.EtchedBorder;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.UIManager;
-
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
 
 
 /**

@@ -5,8 +5,8 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.UnusedImportsRule;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.rules.UnusedImportsRule;
 
 public class UnusedImportsRuleTest extends RuleTst {
 

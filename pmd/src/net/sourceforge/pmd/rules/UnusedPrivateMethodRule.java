@@ -5,13 +5,14 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.*;
 
+import java.text.MessageFormat;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.HashSet;
-import java.text.MessageFormat;
 
 public class UnusedPrivateMethodRule extends AbstractRule {
 

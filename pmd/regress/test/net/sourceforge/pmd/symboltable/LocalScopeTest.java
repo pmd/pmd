@@ -6,8 +6,12 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.*;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class LocalScopeTest extends TestCase {
 

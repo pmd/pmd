@@ -6,10 +6,13 @@
 package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.ReportListener;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.*;
 
 import java.util.Iterator;
 

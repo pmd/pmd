@@ -1,11 +1,17 @@
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTBlockStatement;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTReturnStatement;
+import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.Set;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class SimpleNodeTest
     extends ParserTst

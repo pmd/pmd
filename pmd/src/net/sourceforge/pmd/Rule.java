@@ -1,6 +1,6 @@
 package net.sourceforge.pmd;
 
-import java.util.*;
+import java.util.List;
 
 public interface Rule {
     public String getName();

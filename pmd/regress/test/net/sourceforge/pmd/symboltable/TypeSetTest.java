@@ -6,12 +6,12 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.TypeSet;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.symboltable.TypeSet;
 
 import java.io.File;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 public class TypeSetTest extends TestCase {
 

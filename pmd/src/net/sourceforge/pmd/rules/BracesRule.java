@@ -6,8 +6,8 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public abstract class BracesRule extends AbstractRule {
 

@@ -7,9 +7,9 @@ package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.Results;
+import net.sourceforge.pmd.cpd.ResultsImpl;
 import net.sourceforge.pmd.cpd.Tile;
 import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.cpd.ResultsImpl;
 
 import java.util.Iterator;
 

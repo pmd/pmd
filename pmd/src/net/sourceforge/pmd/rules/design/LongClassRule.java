@@ -1,8 +1,6 @@
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.stat.*;
-
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTClassDeclaration;
 
 /**
  * This rule detects when a class exceeds a certain

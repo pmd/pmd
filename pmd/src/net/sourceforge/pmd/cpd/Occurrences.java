@@ -5,8 +5,9 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.util.*;
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
 public class Occurrences extends TileOccurrences implements Serializable {
 

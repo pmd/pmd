@@ -5,10 +5,7 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.util.Applier;
-
-import java.util.*;
 
 public class LocalScope extends AbstractScope {
 

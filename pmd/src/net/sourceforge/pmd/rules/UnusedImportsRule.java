@@ -7,12 +7,14 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.ast.ASTName;
 
-import java.util.Set;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.text.MessageFormat;
+import java.util.Set;
 
 public class UnusedImportsRule extends AbstractRule {
 

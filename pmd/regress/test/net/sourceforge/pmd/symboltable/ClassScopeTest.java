@@ -6,12 +6,11 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.ClassScope;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.symboltable.ClassScope;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class ClassScopeTest extends TestCase {
 

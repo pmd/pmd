@@ -6,8 +6,8 @@
 package test.net.sourceforge.pmd.util;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.util.UnaryFunction;
 import net.sourceforge.pmd.util.Applier;
+import net.sourceforge.pmd.util.UnaryFunction;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,11 +7,13 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTName;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class PositionalIteratorRule extends AbstractRule {
 

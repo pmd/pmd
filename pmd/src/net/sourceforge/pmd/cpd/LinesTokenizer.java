@@ -5,11 +5,11 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.io.Reader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.util.List;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LinesTokenizer implements Tokenizer {
 

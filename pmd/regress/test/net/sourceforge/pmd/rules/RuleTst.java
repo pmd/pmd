@@ -8,9 +8,11 @@ package test.net.sourceforge.pmd.rules;
  */
 
 import junit.framework.TestCase;
-
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
 
 public class RuleTst
     extends TestCase

@@ -5,8 +5,8 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.JUnitSpellingRule;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.JUnitSpellingRule;
 
 public class JUnitSpellingRuleTest extends RuleTst {
 

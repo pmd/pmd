@@ -7,7 +7,8 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.Applier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassScope extends AbstractScope {
 

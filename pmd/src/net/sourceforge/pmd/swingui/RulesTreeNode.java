@@ -1,11 +1,10 @@
 package net.sourceforge.pmd.swingui;
 
-import java.util.Enumeration;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.Enumeration;
 
 /**
  *

@@ -6,15 +6,15 @@
 package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.HashSet;
 
 public class RuleSetFactoryTest  extends TestCase {
 

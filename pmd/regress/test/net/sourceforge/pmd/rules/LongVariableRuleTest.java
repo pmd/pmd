@@ -1,11 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import test.net.sourceforge.pmd.*;
-
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.rules.LongVariableRule;
-
-import junit.framework.*;
 
 public class LongVariableRuleTest
     extends RuleTst

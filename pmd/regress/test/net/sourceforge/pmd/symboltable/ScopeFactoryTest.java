@@ -6,8 +6,12 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.*;
 import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.symboltable.ClassScope;
+import net.sourceforge.pmd.symboltable.GlobalScope;
+import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.MethodScope;
+import net.sourceforge.pmd.symboltable.ScopeFactory;
 
 public class ScopeFactoryTest extends TestCase {
 

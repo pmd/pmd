@@ -5,8 +5,8 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleViolation;
 
 import java.util.Iterator;
 

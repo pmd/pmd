@@ -1,12 +1,12 @@
 package net.sourceforge.pmd.swingui;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.Enumeration;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Enumeration;
 
 /**
  *

@@ -6,10 +6,10 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.symboltable.TypeSet;
-import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTCastExpression;
+import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.symboltable.TypeSet;
 
 public class UnnecessaryCastRule extends AbstractRule {
 

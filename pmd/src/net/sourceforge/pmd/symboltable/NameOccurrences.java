@@ -5,11 +5,15 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class NameOccurrences {

@@ -7,8 +7,8 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 
 public class AbstractRuleTest extends TestCase {
 

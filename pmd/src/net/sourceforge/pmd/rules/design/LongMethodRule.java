@@ -1,8 +1,6 @@
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.stat.*;
-
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
 /**
  * This rule detects when a method exceeds a certain

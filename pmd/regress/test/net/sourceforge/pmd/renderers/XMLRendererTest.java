@@ -1,15 +1,15 @@
 package test.net.sourceforge.pmd.renderers;
 
 import junit.framework.TestCase;
-
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
-
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 import test.net.sourceforge.pmd.MockRule;
 
-import net.sourceforge.pmd.renderers.*;
-import net.sourceforge.pmd.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class XMLRendererTest
     extends TestCase

@@ -6,13 +6,13 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.DeclarationFinder;
 import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
 
 public class DeclarationFinderTest extends TestCase {
 

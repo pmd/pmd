@@ -6,13 +6,12 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.ScopeCreator;
-import net.sourceforge.pmd.symboltable.LocalScope;
-import net.sourceforge.pmd.symboltable.GlobalScope;
-import net.sourceforge.pmd.symboltable.Scope;
-import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.symboltable.GlobalScope;
+import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.ScopeCreator;
 
 public class ScopeCreatorTest extends TestCase {
     public void testScopesAreCreated() {

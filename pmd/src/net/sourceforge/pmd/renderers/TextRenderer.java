@@ -1,7 +1,9 @@
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.*;
-import java.util.*;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleViolation;
+
+import java.util.Iterator;
 
 public class TextRenderer implements Renderer {
 

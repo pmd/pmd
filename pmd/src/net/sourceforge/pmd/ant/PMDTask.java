@@ -1,17 +1,29 @@
 package net.sourceforge.pmd.ant;
 
-import org.apache.tools.ant.Task;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.io.*;
-
-import net.sourceforge.pmd.renderers.*;
-import net.sourceforge.pmd.*;
+import java.util.List;
 
 public class PMDTask extends Task {
 

@@ -5,14 +5,14 @@
  */
 package test.net.sourceforge.pmd.symboltable;
 
+import junit.framework.TestCase;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import junit.framework.TestCase;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ImageFinderFunctionTest extends TestCase {
 

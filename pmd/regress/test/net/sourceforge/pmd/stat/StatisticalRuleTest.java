@@ -1,15 +1,18 @@
 package test.net.sourceforge.pmd.stat;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
-
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.stat.*;
-
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.stat.StatisticalRule;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 /**
  * This class tests the Statistical Rules in PMD.

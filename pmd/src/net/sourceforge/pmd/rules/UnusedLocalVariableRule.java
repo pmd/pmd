@@ -5,12 +5,14 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.util.Iterator;
-import java.text.MessageFormat;
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import net.sourceforge.pmd.ast.*;
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.symboltable.*;
+import java.text.MessageFormat;
+import java.util.Iterator;
 
 public class UnusedLocalVariableRule extends AbstractRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {

@@ -1,11 +1,12 @@
 package test.net.sourceforge.pmd.rules.design;
 
-import test.net.sourceforge.pmd.rules.*;
-
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.ast.*;
-import net.sourceforge.pmd.rules.design.*;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.ReportListener;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.rules.design.UseSingletonRule;
 import net.sourceforge.pmd.stat.Metric;
+import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class UseSingletonRuleTest
     extends RuleTst implements ReportListener

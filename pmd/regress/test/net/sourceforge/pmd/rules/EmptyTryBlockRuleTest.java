@@ -7,7 +7,6 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.rules.EmptyCatchBlockRule;
 import net.sourceforge.pmd.rules.EmptyTryBlockRule;
 
 public class EmptyTryBlockRuleTest extends RuleTst {

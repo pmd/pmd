@@ -5,8 +5,11 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.util.*;
 import java.io.Serializable;
+import java.util.AbstractSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class TokenSets extends AbstractSet implements Serializable {
 

@@ -5,10 +5,10 @@
  */
 package net.sourceforge.pmd.rules;
 
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.RuleContext;
 
 public class IfStmtsMustUseBracesRule extends BracesRule {
 

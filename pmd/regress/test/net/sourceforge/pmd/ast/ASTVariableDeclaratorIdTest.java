@@ -6,9 +6,9 @@
 package test.net.sourceforge.pmd.ast;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 public class ASTVariableDeclaratorIdTest extends TestCase {
 

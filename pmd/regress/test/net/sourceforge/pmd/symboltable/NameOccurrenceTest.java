@@ -6,11 +6,8 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-
-import java.util.List;
-
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 

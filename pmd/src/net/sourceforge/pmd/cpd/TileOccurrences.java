@@ -5,8 +5,12 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.util.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public abstract class TileOccurrences implements Serializable {
     // as soon as we switch to JDK1.4, change

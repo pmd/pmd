@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.swingui;
 
-import java.io.File;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.io.File;
 
 /**
  *

@@ -5,10 +5,12 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTClassBody;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.ast.AccessNode;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractRule implements Rule {
 

@@ -1,9 +1,10 @@
 package net.sourceforge.pmd.swingui;
 
-import java.util.Iterator;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+
+import java.util.Iterator;
 
 /**
  *

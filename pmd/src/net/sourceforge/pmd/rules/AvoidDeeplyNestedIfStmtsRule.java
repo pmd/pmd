@@ -1,7 +1,9 @@
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTIfStatement;
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractRule {
 	

@@ -7,11 +7,14 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTReturnStatement;
+import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class OnlyOneReturnRule extends AbstractRule {
 

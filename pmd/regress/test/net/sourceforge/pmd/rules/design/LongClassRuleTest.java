@@ -4,7 +4,6 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.rules.design.LongClassRule;
-
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class LongClassRuleTest

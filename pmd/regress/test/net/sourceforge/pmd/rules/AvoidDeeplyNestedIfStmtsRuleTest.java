@@ -5,8 +5,8 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule;
 
 public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
 

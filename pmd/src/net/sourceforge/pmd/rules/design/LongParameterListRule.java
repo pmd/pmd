@@ -1,8 +1,7 @@
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.stat.*;
-
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTFormalParameter;
+import net.sourceforge.pmd.ast.ASTFormalParameters;
 
 /**
  * This rule detects an abnormally long parameter list.

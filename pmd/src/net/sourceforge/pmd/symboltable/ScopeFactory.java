@@ -7,8 +7,8 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.*;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 public class ScopeFactory {
 

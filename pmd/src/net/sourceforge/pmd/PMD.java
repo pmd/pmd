@@ -5,19 +5,28 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.renderers.*;
-import net.sourceforge.pmd.swingui.PMDViewer;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.renderers.IDEAJRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.swingui.PMDViewer;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
-import java.io.*;
-import java.util.List;
-import java.util.Iterator;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class PMD {
 

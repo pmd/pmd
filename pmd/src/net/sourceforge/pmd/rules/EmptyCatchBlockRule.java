@@ -5,10 +5,12 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.ASTCatch;
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.ast.ASTCatch;
+import net.sourceforge.pmd.ast.ASTTryStatement;
 
 import java.util.Iterator;
 

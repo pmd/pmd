@@ -1,8 +1,7 @@
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.ast.*;
-
-import junit.framework.*;
+import junit.framework.TestCase;
+import net.sourceforge.pmd.ast.AccessNode;
 
 public class AccessNodeTest
     extends TestCase

@@ -7,7 +7,13 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTBlockStatement;
+import net.sourceforge.pmd.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTReturnStatement;
+import net.sourceforge.pmd.ast.ASTStatement;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class SimplifyBooleanReturnsRule extends AbstractRule {
 

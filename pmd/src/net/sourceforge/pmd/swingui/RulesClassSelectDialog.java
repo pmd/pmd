@@ -1,31 +1,20 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.FlowLayout;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
+import net.sourceforge.pmd.PMDDirectory;
+import net.sourceforge.pmd.PMDException;
 
-import javax.swing.border.EtchedBorder;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
-
-import net.sourceforge.pmd.PMDDirectory;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleProperties;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  *

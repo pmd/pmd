@@ -5,8 +5,8 @@
  */
 package test.net.sourceforge.pmd.rules.design;
 
-import test.net.sourceforge.pmd.rules.RuleTst;
 import net.sourceforge.pmd.rules.design.OnlyOneReturnRule;
+import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class OnlyOneReturnRuleTest extends RuleTst {
 

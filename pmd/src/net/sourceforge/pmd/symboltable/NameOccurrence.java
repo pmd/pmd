@@ -5,7 +5,9 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class NameOccurrence {
 

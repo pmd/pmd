@@ -1,9 +1,9 @@
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.swingui.IConstants;
+
 import java.util.Enumeration;
 import java.util.Properties;
-
-import net.sourceforge.pmd.swingui.IConstants;
 
 /**
  *

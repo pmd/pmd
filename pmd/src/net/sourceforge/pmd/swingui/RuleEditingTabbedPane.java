@@ -1,13 +1,13 @@
 package net.sourceforge.pmd.swingui;
 
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
-import javax.swing.UIManager;
 
 /**
  *

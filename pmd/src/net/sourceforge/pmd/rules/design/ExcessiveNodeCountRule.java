@@ -1,7 +1,8 @@
 package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.stat.*;
+import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.stat.StatisticalRule;
 
 /**
  * This is a common super class for things which

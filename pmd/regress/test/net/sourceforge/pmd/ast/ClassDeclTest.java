@@ -1,9 +1,9 @@
 package test.net.sourceforge.pmd.ast;
 
-import java.util.Set;
-import java.util.Iterator;
+import net.sourceforge.pmd.ast.ASTClassDeclaration;
 
-import net.sourceforge.pmd.ast.*;
+import java.util.Iterator;
+import java.util.Set;
 
 public class ClassDeclTest
     extends ParserTst

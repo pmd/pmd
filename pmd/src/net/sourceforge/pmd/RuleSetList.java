@@ -1,5 +1,7 @@
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.swingui.Resources;
+
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,8 +10,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.StringTokenizer;
-
-import net.sourceforge.pmd.swingui.Resources;
 
 /**
  * Reads and writes a list of included rule sets.  Used by the PMD Viewer to select the

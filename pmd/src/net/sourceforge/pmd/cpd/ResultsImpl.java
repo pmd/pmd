@@ -5,8 +5,11 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.util.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class ResultsImpl extends TileOccurrences implements Serializable, Results {
 

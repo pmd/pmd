@@ -8,12 +8,12 @@ package net.sourceforge.pmd.cpd;
 import net.sourceforge.pmd.ast.JavaCharStream;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 
-import java.io.Reader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.io.StringReader;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class JavaTokensTokenizer implements Tokenizer {
 

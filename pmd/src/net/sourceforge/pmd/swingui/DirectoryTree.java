@@ -1,14 +1,14 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.Component;
-import java.io.File;
-import javax.swing.border.EtchedBorder;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JTree;
+import javax.swing.UIManager;
+import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import javax.swing.UIManager;
+import java.awt.Component;
+import java.io.File;
 
 /**
  *

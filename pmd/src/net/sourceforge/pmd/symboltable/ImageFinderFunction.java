@@ -7,7 +7,9 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.UnaryFunction;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ImageFinderFunction implements UnaryFunction {
 

@@ -6,14 +6,12 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.NameOccurrences;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-
-import java.util.List;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.NameOccurrences;
 
 public class NameOccurrencesTest extends TestCase {
 

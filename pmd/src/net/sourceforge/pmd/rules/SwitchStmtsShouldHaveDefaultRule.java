@@ -7,8 +7,8 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.ast.ASTSwitchStatement;
 
 public class SwitchStmtsShouldHaveDefaultRule extends AbstractRule {
 

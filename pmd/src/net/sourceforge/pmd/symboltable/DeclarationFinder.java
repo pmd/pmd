@@ -5,9 +5,9 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 public class DeclarationFinder extends JavaParserVisitorAdapter {
 

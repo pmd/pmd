@@ -6,8 +6,8 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTForStatement;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class ForLoopsMustUseBracesRule  extends BracesRule {
 

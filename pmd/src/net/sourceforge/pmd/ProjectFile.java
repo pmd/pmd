@@ -1,13 +1,17 @@
 package net.sourceforge.pmd;
 
-import java.io.InputStream;
-import java.util.*;
-
 import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Stack;
+import java.util.StringTokenizer;
 
 /**
  * Loads the PMD <b>project.xml</b> file and stores the contents in a Properties object.

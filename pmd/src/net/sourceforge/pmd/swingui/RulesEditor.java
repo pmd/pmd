@@ -1,5 +1,16 @@
 package net.sourceforge.pmd.swingui;
 
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleProperties;
+import net.sourceforge.pmd.RuleSet;
+
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,18 +22,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
-
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleProperties;
-import net.sourceforge.pmd.RuleSet;
 
 /**
  *

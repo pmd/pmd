@@ -7,15 +7,15 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
-import java.util.Map;
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
-import java.text.MessageFormat;
+import java.util.Map;
 
 public class AvoidReassigningParametersRule extends AbstractRule {
 

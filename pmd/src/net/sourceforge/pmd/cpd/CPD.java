@@ -5,7 +5,10 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 

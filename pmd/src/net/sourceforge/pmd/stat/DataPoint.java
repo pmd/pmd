@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.stat;
 
-import java.util.Random;
-
 import net.sourceforge.pmd.Rule;
+
+import java.util.Random;
 
 /**
  * @author David Dixon-Peugh

@@ -1,11 +1,12 @@
 package net.sourceforge.pmd.swingui;
 
-import java.io.StringWriter;
-import java.util.Iterator;
-import javax.swing.UIManager;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+
+import javax.swing.UIManager;
+import java.io.StringWriter;
+import java.util.Iterator;
 
 /**
  *

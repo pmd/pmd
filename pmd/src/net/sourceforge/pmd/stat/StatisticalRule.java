@@ -1,13 +1,13 @@
 package net.sourceforge.pmd.stat;
 
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleContext;
 
 /**
  * @author David Dixon-Peugh

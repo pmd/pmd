@@ -8,8 +8,8 @@ package net.sourceforge.pmd.renderers;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 
-import java.util.Iterator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
