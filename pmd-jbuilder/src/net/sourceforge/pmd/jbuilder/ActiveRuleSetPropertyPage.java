@@ -164,7 +164,9 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
      * @return help topic
      */
     public HelpTopic getHelpTopic () {
-        return  null;
+        return new ZipHelpTopic(
+         null,
+         getClass().getResource("/active-ruleset-props.html").toString());
     }
 
     /**

@@ -75,8 +75,9 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
      * This methiod is called by JBuilder
      */
     public HelpTopic getHelpTopic() {
-        /**@todo Implement this com.borland.primetime.properties.PropertyPage abstract method*/
-        throw new java.lang.UnsupportedOperationException("Method getHelpTopic() not yet implemented.");
+        return new ZipHelpTopic(
+         null,
+         getClass().getResource("/configure-ruleset-props.html").toString());
     }
 
     /**
