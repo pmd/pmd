@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaCharStream;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.eclipse.ASTWriter;
@@ -42,6 +43,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2004/04/29 21:15:08  phherlin
+ * Upgrading to PMD v1.7
+ *
  * Revision 1.8  2003/12/18 23:58:37  phherlin
  * Fixing malformed UTF-8 characters in generated xml files
  *
@@ -114,7 +118,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
     private void generateAST(IFile file) {
         log.info("Genrating AST for file " + file.getName());
         try {
-            JavaParser parser = new JavaParser(file.getContents());
+            JavaParser parser = new JavaParser(new JavaCharStream(file.getContents()));
             ASTCompilationUnit compilationUnit = parser.CompilationUnit();
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ASTWriter astWriter = WriterAbstractFactory.getFactory().getASTWriter();
