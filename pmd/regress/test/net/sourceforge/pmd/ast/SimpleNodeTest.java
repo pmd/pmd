@@ -60,6 +60,19 @@ public class SimpleNodeTest
 		    2, 3, 2, 29 );
     }
 
+    public void testNoLookahead() throws Throwable
+    {
+	String javaCode = "public class Foo { }\n"; // 1, 7 -> 1, 20
+
+	Set uCD = getNodes( ASTUnmodifiedClassDeclaration.class,
+					    javaCode );
+	Iterator iter = uCD.iterator();
+	assertTrue( iter.hasNext() );
+	verifyNode( (SimpleNode) iter.next(),
+		    1, 8, 1, 20 );
+	
+    }
+
     public void verifyNode( SimpleNode node,
 			    int beginLine, int beginCol,
 			    int endLine, int endCol ) {
