@@ -6,19 +6,17 @@ package test.net.sourceforge.pmd.rules.junit;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAsserts;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
-
     private Rule rule;
-
+    
     public void setUp() throws RuleSetNotFoundException {
         rule = findRule("rulesets/junit.xml", "JUnitTestsShouldIncludeAssert");
     }
-
     public void testAll() throws Throwable {
+
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "Contains assert", 0, rule),
            new TestDescriptor(TEST2, "Missing assert", 1, rule),
@@ -28,6 +26,8 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST6, "One wrong", 1, rule),
            new TestDescriptor(TEST7, "Skip interfaces", 0, rule),
            new TestDescriptor(TEST8, "Skip abstract methods", 0, rule),
+           new TestDescriptor(TEST9, "", 0, rule),
+           new TestDescriptor(TEST10, "BUG 1105633 - False +: JUnit testcases could have fail() instead of assert", 0, rule),
        });
     }
 
@@ -100,4 +100,23 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
         " public abstract void setUp() throws Exception;" + PMD.EOL +
         "}";
 
+    private static final String TEST9 =
+        "public abstract class AbstractAggregateCreator {" + PMD.EOL + 
+            "    public abstract int getType();" + PMD.EOL + 
+            "    public abstract ProfileAggregate create(DatabaseTransaction db," + PMD.EOL + 
+            "        DailyProfileList profiles, ProfileType type, ProfileStatus status)" + PMD.EOL + 
+            "        throws VixenException;" + PMD.EOL + 
+            "}";
+    
+    private static final String TEST10 =
+        "public class FooTest {" +  PMD.EOL +
+        " public void testNPEThrown() {" +  PMD.EOL +
+        "  try {" + PMD.EOL + 
+        "   methodCall(null);" + PMD.EOL + 
+        "   fail(\"Expected NullPointerException to be thrown.\");" + PMD.EOL + 
+        "  } catch (NullPointerException npe) {" + PMD.EOL + 
+        "   // Caught expected exception" + PMD.EOL + 
+        "  }" +  PMD.EOL +
+        " }" +  PMD.EOL +
+        "}";
 }
