@@ -204,6 +204,11 @@ public class GUI implements CPDListener {
 
     private void go() {
         try {
+            if (!(new File(rootDirectoryField.getText())).exists()) {
+                JOptionPane.showMessageDialog(frame, "Can't read from that root source directory", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             Language language = null;
             LanguageFactory lf = new LanguageFactory();
             if (languageBox.getSelectedItem().equals("Java")) {
