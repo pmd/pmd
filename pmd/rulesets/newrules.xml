@@ -21,6 +21,28 @@ public class Foo {}
     </example>
     </rule>
 
+  <rule name="EmptySwitchStatements"
+        message="Avoid empty switch statements"
+        class="net.sourceforge.pmd.rules.EmptySwitchStmtRule">
+    <description>
+    Avoid empty switch statements.
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  switch (x) {
+   // once there was code here
+   // but it's been commented out or something
+  }
+ }
+}
+]]>
+    </example>
+    </rule>
+
 
   </ruleset>
 

@@ -51,4 +51,9 @@ public class RuleTst
         rules.addRule(rule);
         p.processFile(getClass().getClassLoader().getResourceAsStream(fileName), rules, ctx);
     }
+
+    public void runTest(String filename, int expectedResults, Rule rule) throws Throwable {
+        Report report = process(filename, rule);
+        assertEquals(expectedResults, report.size());
+    }
 }
