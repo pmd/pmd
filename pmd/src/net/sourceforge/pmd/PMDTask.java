@@ -60,19 +60,23 @@ public class PMDTask extends Task {
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             String[] srcFiles = ds.getIncludedFiles();
             for (int j=0; j<srcFiles.length; j++) {
-                File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
-                if (verbose) System.out.println(file.getAbsoluteFile());
-                PMD pmd = new PMD();
-                Report report = pmd.processFile(file, ruleSetType);
-                if (!report.empty()) {
-                    if (format.equals("xml")) {
-                        buf.append(report.renderToXML());
-                    } else if (format.equals("text")) {
-                        buf.append(report.renderToText());
-                    } else {
-                        throw new BuildException("Report format must be either 'text' or 'xml'; you specified " + format);
+                try {
+                    File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
+                    if (verbose) System.out.println(file.getAbsoluteFile());
+                    PMD pmd = new PMD();
+                    Report report = pmd.processFile(file, ruleSetType);
+                    if (!report.empty()) {
+                        if (format.equals("xml")) {
+                            buf.append(report.renderToXML());
+                        } else if (format.equals("text")) {
+                            buf.append(report.renderToText());
+                        } else {
+                            throw new BuildException("Report format must be either 'text' or 'xml'; you specified " + format);
+                        }
+                        buf.append(System.getProperty("line.separator"));
                     }
-                    buf.append(System.getProperty("line.separator"));
+                } catch (FileNotFoundException fnfe) {
+                    throw new BuildException(fnfe);
                 }
             }
         }

@@ -16,19 +16,12 @@ import java.util.Iterator;
 
 public class PMD {
 		
-		public Report processFile(InputStream is) {
-			return null;
-		}
-
-		public Report processFile(FileReader fr) {
-		return null; }
-	
-    public Report processFile(File file, String ruleSetType) {
-        Report report = new Report(file.getAbsolutePath());
+	public Report processFile(String filename, InputStream is, String ruleSetType) throws FileNotFoundException {
+        Report report = new Report(filename);
         List rules = RuleFactory.createRules(ruleSetType);
 
         try {
-            Reader reader = new BufferedReader(new FileReader(file));
+            InputStreamReader reader = new InputStreamReader(is);
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
             //c.dump("");
@@ -37,17 +30,17 @@ public class PMD {
                 c.childrenAccept(rule, report);
             }
             reader.close();
-        } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
         } catch (ParseException pe) {
-            System.out.println("Error while parsing " + file.getAbsolutePath() + " at line " + pe.currentToken.beginLine + "; continuing...");
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+            System.out.println("Error while parsing " + filename + " at line " + pe.currentToken.beginLine + "; continuing...");
         } catch (Throwable t) {
-            System.out.println("Error while parsing " + file.getAbsolutePath() + "; "+ t.getMessage() + "; continuing...");
+            System.out.println("Error while parsing " + filename + "; "+ t.getMessage() + "; continuing...");
             //t.printStackTrace();
         }
         return report;
+	}
+
+    public Report processFile(File file, String ruleSetType) throws FileNotFoundException{
+        return processFile(file.getAbsolutePath(), new FileInputStream(file), ruleSetType);
     }
 
     public static void main(String[] args) {
@@ -59,7 +52,11 @@ public class PMD {
             throw new RuntimeException("File " + args[0] + " doesn't exist");
         }
         PMD pmd = new PMD();
-        Report report = pmd.processFile(input, RuleFactory.ALL);
-        System.out.println("<pmd>" + report.renderToXML() + "</pmd>");
+        try {
+            Report report = pmd.processFile(input, RuleFactory.ALL);
+            System.out.println("<pmd>" + report.renderToXML() + "</pmd>");
+        } catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        }
     }
 }

@@ -3,6 +3,7 @@
 <property name="lib" value="lib\"/>
 <property name="src" value="src\"/>
 <property name="build" value="build\"/>
+<property name="test-data" value="test-data\"/>
 <property name="regress" value="regress\"/>
 <property name="reports" value="reports\"/>
 
@@ -29,6 +30,7 @@
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.PMDTask"/>
         <pmd reportFile="c:\jdk.xml" verbose="false" rulesettype="general" format="xml">
+            <!--<fileset dir="c:\data\pmd\pmd\src">-->
             <fileset dir="c:\j2sdk1.4.0\src">
                 <include name="**/*.java"/>
             </fileset>
@@ -39,6 +41,7 @@
         <junit printsummary="yes" haltonfailure="yes">
           <classpath>
             <pathelement location="${build}" />
+            <pathelement location="${test-data}" />
             <pathelement path="${java.class.path}" />
           </classpath>
 
