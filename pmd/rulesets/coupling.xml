@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<ruleset name="coupling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ruleset name="Coupling Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
-    These are new rules for coupling
+    These are rules which find instances of high or inappropriate coupling between objects and packages.
   </description>
 
     <rule name="CouplingBetweenObjectsRule"

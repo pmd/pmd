@@ -14,12 +14,14 @@ PMD checks source code against rules and produces a report.  Like this:
 <li>Something passes a file name and a RuleSet into PMD</li>
 <li>PMD hands an InputStream to the file off to a JavaCC-generated parser</li>
 <li>PMD gets a reference to an Abstract Syntax Tree back from the parser</li>
-<li>Each Rule in the RuleSet gets to traverse the AST and check for problems</li>
+<li>PMD hands the AST off to the symbol table layer if any of the rules need it.  The SymbolFacade then builds a bunch of Scope nodes and attaches them to the appropriate places in the AST.</li>
+<li>Ditto for the data flow analysis layer, except this time it's DFA nodes that get built and attached.</li>
+<li>Each Rule in the RuleSet gets to traverse the AST and check for problems.  The Rules can also poke around the symbol table and DFA nodes.</li>
 <li>The Report is now filled with RuleViolations, and those get printed out in XML or HTML or whatever</li>
 </ul>
 </p>
 
-<p>A paucity of detail, I'm sure you'd agree.  If you think this document can be
+<p>Not much detail here... if you think this document can be
 improved, please post <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a> and let me know how.  Thanks!
 </p>
 

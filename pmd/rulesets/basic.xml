@@ -18,29 +18,25 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-    //TryStatement
+    <![CDATA[//TryStatement
     [@Catch='true']
     [FormalParameter/Type/Name[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']]
     /Block[position() > 1]
     [count(*) = 0]
-    [../@Finally='false' or following-sibling::Block]
-                  ]]>
+    [../@Finally='false' or following-sibling::Block]]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-    public void doSomething() {
+  <![CDATA[public void doSomething() {
       try {
         FileInputStream fis = new FileInputStream("/tmp/bugger");
       } catch (IOException ioe) {
           // not good
       }
-    }
-  ]]>
+    }]]>
       </example>
     </rule>
 
@@ -54,18 +50,14 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-    //IfStatement/Statement/Block[count(*) = 0]
-                  ]]>
+                  <![CDATA[//IfStatement/Statement/Block[count(*) = 0]]]>
               </value>
           </property>
       </properties>
       <example>
-  <![CDATA[
-    if (foo == 0) {
+    <![CDATA[if (foo == 0) {
        // why bother checking up on foo?
-    }
-  ]]>
+    }]]>
        </example>
     </rule>
 
@@ -81,20 +73,16 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-    //WhileStatement/Statement/Block[count(*) = 0]
-                  ]]>
+                  <![CDATA[//WhileStatement/Statement/Block[count(*) = 0]]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
        <example>
-  <![CDATA[
-  while (a == b) {
+  <![CDATA[while (a == b) {
     // not good
-  }
-  ]]>
+  }]]>
        </example>
     </rule>
 

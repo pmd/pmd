@@ -26,6 +26,4 @@ public class ASTPostfixExpression extends SimpleNode {
         System.out.println(toString(prefix) + ":" + getImage());
         dumpChildren(prefix);
     }
-
-    
 }

@@ -14,22 +14,18 @@ Say you want to pick specific rules from various rule sets.  You can do this by 
     it into your new file, delete all the old rules from it, and change
     the name and description.  Like this:</p>
     <source>
-<![CDATA[
-<?xml version="1.0"?>
-
+<![CDATA[<?xml version="1.0"?>
 <ruleset name="customruleset">
   <description>
   This ruleset checks my code for bad stuff
   </description>
-</ruleset>
-]]>
+</ruleset>]]>
     </source>
     </subsection>
     <subsection name="Add some rule references to it">
     <p>After you add these references it'll look something like this:</p>
     <source>
-<![CDATA[
-<?xml version="1.0"?>
+<![CDATA[<?xml version="1.0"?>
 <ruleset name="customruleset">
 
   <description>
@@ -46,37 +42,32 @@ Say you want to pick specific rules from various rule sets.  You can do this by 
   <rule ref="rulesets/braces.xml">
     <exclude name="WhileLoopsMustUseBracesRule"/>
   </rule>
-</ruleset>
-]]>
+</ruleset>]]>
     </source>
     </subsection>
         <subsection name="Excluding rules from a ruleset">
             <p>You can also make a custom ruleset that excludes rules, like this:</p>
             <source>
-<![CDATA[
-<?xml version="1.0"?>
+<![CDATA[<?xml version="1.0"?>
 <ruleset name="mybraces">
  <description>Just the braces rules I like</description>
  <rule ref="rulesets/braces.xml">
   <exclude name="WhileLoopsMustUseBracesRule"/>
   <exclude name="IfElseStmtsMustUseBracesRule"/>
  </rule>
-</ruleset>
-]]>
+</ruleset>]]>
             </source>
         </subsection>
     <subsection name="Reference it in your Ant task">
     <p>You can specify the full path to your custom ruleset name alongside
         of the built-in PMD rulesets - like this:</p>
 <source>
-    <![CDATA[
-    <pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
+    <![CDATA[<pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
         <formatter type="xml" toFile="foo.xml"/>
         <fileset dir="/home/tom/data/pmd/pmd/src">
             <include name="**/*.java"/>
         </fileset>
-    </pmd>
-    ]]>
+    </pmd>]]>
 </source>
     </subsection>
     <subsection name="To see it in your IDE, add it to rulesets/rulesets.properties">

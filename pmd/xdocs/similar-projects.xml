@@ -17,8 +17,7 @@
          <li><a href="http://www.ovmj.org/jamit/index.html">Jamit</a> - bytecode analyzer, nice <a href="http://www.ovmj.org/jamit/data2_classes.php3">graphs</a></li>
          <li><a href="http://csdl.ics.hawaii.edu/Research/JWiz/JWiz.html">JWiz</a> - Research project, checks some neat stuff, like if you create a Button without adding an ActionListener to it.  Neat.</li>
          <li><a href="http://doctorj.sourceforge.net">DoctorJ</a> - Written in C++.  Uses Lex and YACC.  Checks Javadoc, syntax and calculates metrics.</li>
-         <li><a href="http://www.alphaworks.ibm.com/tech/toad">Toad</a> - All kinds of stuff from Big Blue.</li>
-         <li><a href="http://www.artho.com/jlint/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.</li>
+         <li><a href="http://jlint.sourceforge.net/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.</li>
          <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a> - Very detailed, supports both Maven and Ant. Uses ANTLR.</li>
          <li><a href="http://jcsc.sourceforge.net/">JCSC</a> - Does a variety of coding standard checks, uses JavaCC and the GNU Regexp package.</li>
        </ul>
@@ -28,12 +27,10 @@
          <li><a href="http://www.mmsindia.com/jstyle.html">JStyle</a> - $995, nice folks, lots of metrics and rules</li>
          <li><a href="http://www.redhillconsulting.com.au/products/simian/index.html">Simian</a> - fast, works with Java, C#, C, CPP, COBOL, JSP, HTML</li>
          <li><a href="http://www.instantiations.com/codepro/default.htm">CodePro Studio</a> - $589, works with Eclipse, lots of rules</li>
-         <li><a href="http://www.kodein.net/index.html">KodeIn</a> - $75, lots of rules, uses JavaCC.</li>
-         <li><a href="http://www.parasoft.com">JTest</a> - Very nice with tons of features,
+         <li><a href="http://www.parasoft.com/jsp/products/home.jsp?product=Jtest&amp;itemId=13">JTest</a> - Very nice with tons of features,
              but also very expensive and requires a running X server (or Xvfb) to run on
              Linux.  They charge $500 to move a license from one machine to another.</li>
          <li><a href="http://www.tcs.com/0_products/assent/assent_rules.htm#java">Assent</a> - The usual stuff, seems pretty complete.</li>
-         <li><a href="http://www.jenssoft.com/">CodeCompanion</a> - Decent collection of rules, $199.</li>
          <li><a href="http://www.andiz.de/azosystems/en/index.html">AzoJavaChecker</a> - Rules aren't listed online so it's hard to tell what they have.  Not sure how much it costs since I don't know German.</li>
          <li><a href="http://www.alajava.com/aubjex/products.htm">Aubjex</a> - Rules aren't listed online.  Appears to have some code modification stuff, which would be cool to have in PMD.  $299.</li>
          <li><a href="http://www.excelsior-usa.com/fd.html">Flaw Detector</a> - In beta, does control/data flow analysis to detect NullPointerExceptions</li>

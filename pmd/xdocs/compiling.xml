@@ -24,7 +24,7 @@ Now you'll need to either check out the source code or download the latest sourc
     </pre>
 </p>
 <p>
-    Now cd down into the pmd/etc directory:
+    Now cd down into the <code>pmd/etc</code> directory:
     <pre>
         [tom@hal building]$ cd pmd-1.9/etc/
         [tom@hal etc]$ ls -l | grep build.xml
@@ -39,28 +39,23 @@ Now you'll need to either check out the source code or download the latest sourc
         Buildfile: build.xml
 
         compile:
-            [mkdir] Created dir: /home/tom/tmp/building/pmd-1.9/build
-            [javac] Compiling 417 source files to /home/tom/tmp/building/pmd-1.9/build
-            [javac] Note: /home/tom/tmp/building/pmd-1.9/regress/test/net/sourceforge/pmd/
-             RuleSetReadWriteTest.java uses or overrides a deprecated API.
-            [javac] Note: Recompile with -deprecation for details.
+            [javac] Compiling 509 source files to /home/tom/data/pmd/pmd/build
 
         BUILD SUCCESSFUL
-        Total time: 7 seconds
+        Total time: 6 seconds
         [tom@hal etc]$
     </pre>
 </p>
 <p>
     Notes:
     <ul>
-        <li>The build.xml in the top-level directory is for Maven.  Renaming it makes Maven
-            do odd things; still investigating that.</li>
+        <li>There's also a build.xml in the top-level directory, but it's for Maven.  Renaming it made Maven
+            do odd things; anybody know how to get around that?</li>
         <li>The rules that have already been written are specified in the rulesets/ directory in the
             source distribution.  They're also in the jar file that's included with both the
             source and binary distributions.</li>
     </ul>
 </p>
-
 
 <p>A paucity of detail, I'm sure you'd agree.  If you think this document can be
 improved, please post <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a> and let me know how.  Thanks!

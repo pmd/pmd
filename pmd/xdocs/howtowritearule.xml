@@ -14,13 +14,13 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     </p>
     </subsection>
 
-        <subsection name="Figure out what you want to look for">
+        <subsection name="Java or XPath?">
             <p>There are two way to write rules:</p>
             <ul>
-                <li>Write a Java class</li>
+                <li>Write a rule using Java</li>
                 <li>Write an XPath expression</li>
             </ul>
-            <p>We'll cover the Java class first and the XPath second.  Most of this documentation is applicable
+            <p>We'll cover the Java way first and the XPath way second.  Most of this documentation is applicable
  to both methods, too, so read on.</p>
         </subsection>
     <subsection name="Figure out what you want to look for">
@@ -29,15 +29,12 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     In the source code below, it's easy to get lost visually - it's kind of hard to tell what the curly braces belong to.
     </p>
     <source>
-<![CDATA[
-class Example {
+<![CDATA[class Example {
  void bar() {
   while (baz)
    buz.doSomething();
  }
-}
-]]>
-    </source>
+}]]></source>
     <p>
     So we know what an example in source code looks like, which is half the battle.
     </p>
@@ -50,8 +47,7 @@ class Example {
     produce an AST (Abstract Syntax Tree).  The AST for the code above looks like this:
     </p>
     <source>
-<![CDATA[
-CompilationUnit
+<![CDATA[CompilationUnit
  TypeDeclaration
   ClassDeclaration:(package private)
    UnmodifiedClassDeclaration(Example)
@@ -75,15 +71,14 @@ CompilationUnit
               PrimaryPrefix
                Name:buz.doSomething
               PrimarySuffix
-               Arguments
- ]]>
-    </source>
+               Arguments]]></source>
     <p>
     You can generate this yourself by:
     <ul>
     <li>Run the batch file etc/designer.bat</li>
     <li>Paste the code into the left text area and click the "Go" button</li>
     <li>Note that there's another panel and a textfield to test out XPath expressions; more on that later.</li>
+        <li>Here's a screenshot:<br/><img src="images/designer_screenshot.png"/></li>
     </ul>
     </p>
     <p>
@@ -91,27 +86,23 @@ CompilationUnit
         looks kind of like this (excluding that expression gibberish for clarity):
     </p>
     <source>
-<![CDATA[
-WhileStatement
+<![CDATA[WhileStatement
  Expression
  Statement
-  StatementExpression
-]]>
+  StatementExpression]]>
     </source>
     <p>
     If you were to add curly braces around the call to <code>buz.doSomething()</code>and click &quot;Go&quot; again, you'd see that the
         AST would change a bit.  It'd look like this:
     </p>
     <source>
-<![CDATA[
-WhileStatement
+<![CDATA[WhileStatement
  Expression
  Statement
   Block
    BlockStatement
     Statement
-     StatementExpression
-]]>
+     StatementExpression]]>
     </source>
     <p>
     Ah ha!  We see that the curly braces add a couple more AST nodes - a <code>Block</code>
@@ -125,8 +116,7 @@ WhileStatement
             <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd/etc/grammar/Java1.4-c.jjt?rev=1.3&amp;content-type=text/vnd.viewcvs-markup">EBNF grammar</a>.
             So, for example, the Statement definition looks like this:
 <source>
-<![CDATA[
-void Statement() :
+<![CDATA[void Statement() :
 {}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
@@ -145,8 +135,7 @@ void Statement() :
 | ThrowStatement()
 | SynchronizedStatement()
 | TryStatement()
-}
-]]>
+}]]>
 </source>
             showing that a Statement may be followed by all sorts of stuff.
         </p>
@@ -157,11 +146,9 @@ void Statement() :
     Create a new Java class that extends <code>net.sourceforge.pmd.AbstractRule</code>:
     </p>
     <source>
-<![CDATA[
-import net.sourceforge.pmd.*;
+<![CDATA[import net.sourceforge.pmd.*;
 public class WhileLoopsMustUseBracesRule extends AbstractRule {
-}
-]]>
+}]]>
     </source>
     <p>
     That was easy.  PMD works by creating the AST and then traverses it recursively so a rule can get a callback
@@ -169,16 +156,14 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
         the AST traversal finds a <code>WhileStatement</code>:
     </p>
     <source>
-<![CDATA[
-import net.sourceforge.pmd.*;
+<![CDATA[import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.ast.*;
 public class WhileLoopsMustUseBracesRule extends AbstractRule {
     public Object visit(ASTWhileStatement node, Object data) {
         System.out.println("hello world");
         return data;
     }
-}
-]]>
+}]]>
     </source>
     <p>
     We stuck a <code>println()</code> in there for now so we can see when our rule gets hit.
@@ -189,15 +174,15 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     <subsection name="Put the WhileLoopsMustUseBracesRule rule in a ruleset file">
     <p>
     Now our rule is written - at least, the shell of it is - and now we need to tell PMD about it.  We need
-    to add it to a rule set XML file.  Look at <code>rulesets/basic.xml</code>; it's got lots of rule definitions in it.
-    Copy and paste one of these rules into a new ruleset - call it mycustomrules.xml or something.
+    to add it to a ruleset XML file.  Look at <code>rulesets/basic.xml</code>; it's got lots of rule definitions in it.
+    Copy and paste one of these rules into a new ruleset - call it <code>mycustomrules.xml</code> or something.
         Then fill in the elements and attributes:
     </p>
     <ul>
     <li>name - WhileLoopsMustUseBracesRule</li>
     <li>message - Use braces for while loops</li>
-    <li>class - Wherever you put the rule.  Note this doesn't have to be in net.sourceforge.pmd;
-        it can be in com.yourcompany.util.pmd or whereever you want</li>
+    <li>class - Wherever you put the rule.  Note this doesn't have to be in <code>net.sourceforge.pmd</code>;
+        it can be in <code>com.yourcompany.util.pmd</code> or whereever you want</li>
     <li>description - Use braces for while loops</li>
     <li>example - A little code snippet in CDATA tags that shows a rule violation</li>
     </ul>
@@ -246,8 +231,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     and put it in the <code>Report</code>, which is attached to the <code>RuleContext</code>.  Like this:
     </p>
     <source>
-<![CDATA[
-public class WhileLoopsMustUseBracesRule extends AbstractRule {
+<![CDATA[public class WhileLoopsMustUseBracesRule extends AbstractRule {
     public Object visit(ASTWhileStatement node, Object data) {
         SimpleNode firstStmt = (SimpleNode)node.jjtGetChild(1);
         if (!hasBlockAsFirstChild(firstStmt)) {
@@ -259,8 +243,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     private boolean hasBlockAsFirstChild(SimpleNode node) {
         return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
     }
-}
-]]>
+}]]>
     </source>
     </subsection>
     <p>
@@ -278,13 +261,11 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
         <p>Note that for XPath rules you'll need to set the
             <code>class</code> attribute in the rule definition to <code>net.sourceforge.pmd.rules.XPathRule.</code>  Like this:
             <source>
-                <![CDATA[
-                <rule name="EmptyCatchBlock"
+                <![CDATA[<rule name="EmptyCatchBlock"
                       message="Avoid empty catch blocks"
                       class="net.sourceforge.pmd.rules.XPathRule">
                   <description>
-                  etc., etc.
-                  ]]>
+                  etc., etc.]]>
             </source>
 
             </p>
@@ -292,6 +273,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
                 <source>//FieldDeclaration[@Private='true']</source>
                 finds all private fields.  You can see the code
             that determines all the attributes <a href="http://pmd.sourceforge.net/xref/net/sourceforge/pmd/jaxen/AttributeAxisIterator.html">here</a></p>
+        <p>Thanks to Miguel Griffa for writing a longer  <a href="xpathruletutorial.html">XPath tutorial</a>.</p>
     </subsection>
 
     <subsection name="Bundle it up">

@@ -10,12 +10,12 @@
       <subsection name="Summary">
 <table>
   <tr><td><b>IDE</b></td>
-      <td><b>Package</b></td>
+      <td><b>CVS Module</b></td>
       <td><b>Maintainers</b></td>
       </tr>
   <tr><td>Eclipse</td>
       <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-eclipse/">pmd-eclipse</a></td>
-      <td>Tom Burke, Philippe Herlin</td>
+      <td>Philippe Herlin</td>
   </tr>
   <tr><td>Emacs</td>
       <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-emacs/">pmd-emacs</a></td>
@@ -256,11 +256,11 @@ selecting the "Ask for Directory" checkbox.</p>
 
 
       <subsection name="IDEA">
-<p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA External Tool
+<p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA "External Tool"
 works OK.  Here's how to set it up:</p>
 <ul>
 <li>Open IDEA and go to File->Settings</li>
-<li>Click on the External Tools icon</li>
+<li>Click on the "External Tools" icon</li>
 <li>Click on the Add button</li>
 <li>Fill in the blocks</li>
 <ul>

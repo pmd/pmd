@@ -3,7 +3,7 @@
 <ruleset name="Strict Exception Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
-The Strict Exception ruleset contains a collection of strict rules concerning exceptions.
+These rules provide some strict guidelines about throwing and catching exceptions.
   </description>
 
    <rule name="AvoidCatchingThrowable"
