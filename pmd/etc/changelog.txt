@@ -1,4 +1,5 @@
 ?????, 2003 - 1.3.0:
+Fixed bug 822245 - VariableNamingConventionsRule now handles interface fields correctly.
 Added new rules: EmptySynchronizedBlock, UnnecessaryReturn
 ASTType now has an getDimensions() method.
 TODO - fix it so tests and rules don't duplicate the xpath expressions

@@ -33,6 +33,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTInterfaceMemberDeclaration;
 
 public class VariableNamingConventionsRule extends AbstractRule {
 
@@ -49,6 +50,10 @@ public class VariableNamingConventionsRule extends AbstractRule {
     boolean isFinal = false;
     if (node instanceof AccessNode) {
       isFinal = ((AccessNode)node).isFinal();
+    }
+
+    if (node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration) {
+        isFinal = true;
     }
 
     ASTType childNodeType = (ASTType)node.jjtGetChild(0);

@@ -35,6 +35,7 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "all is well", 0, new VariableNamingConventionsRule()),
            new TestDescriptor(TEST5, "local finals are ok", 0, new VariableNamingConventionsRule()),
            new TestDescriptor(TEST6, "serialVersionUID is OK", 0, new VariableNamingConventionsRule()),
+           new TestDescriptor(TEST7, "interface fields are tested", 1, new VariableNamingConventionsRule()),
        });
     }
 
@@ -69,5 +70,10 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
     private static final String TEST6 =
     "public class Foo {" + PMD.EOL +
     "  static final long serialVersionUID = 423343L;" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public interface Foo {" + PMD.EOL +
+    "  int foo = 42;" + PMD.EOL +
     "}";
 }
