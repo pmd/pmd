@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<ruleset name="Datenflussanomalieanalyse">
+  <description>
+      Dieses Ruleset enthaelt Regeln fuer die Datenflussanomalieanalyse.
+      Begriffe: d-definiert, r-referenziert, u-undefiniert
+      Folgende Konstellationen werden durch diese Regeln abgedeckt:
+      dd, du, ur
+  </description>
+
+  <rule name="FindDataFlowAnomalies"
+      message="found anomalie"
+        symboltable="true"
+        dfa="true"
+        class="net.sourceforge.pmd.dfa.DaaRule">
+  
+    <description>
+		Führt die Datenflussanomalieanalyse für eine Methode aus.
+    </description>
+  
+    <priority>3</priority>
+
+    <example>
+      <![CDATA[
+		CODE
+      ]]>
+    </example>
+  
+  </rule>
+
+<!--
+  <rule name="DataFlowAsGraph"
+        message="Graph"
+        class="uni.stralsund.pmd.rules.DisplayDataFlowRule">
+  
+    <description>
+    	Displays a data flow.
+    </description>
+  
+    <priority>5</priority>
+
+    <example>
+      <![CDATA[
+		CODE
+      ]]>
+    </example>
+  
+  </rule>
+-->
+</ruleset>
