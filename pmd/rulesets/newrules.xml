@@ -298,6 +298,46 @@ or (  ./AllocationExpression
       </example>
     </rule>
 
+
+    <rule name="CallSuperInConstructor"
+          message="It is a good practice to call super() in a constructor"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      It is a good practice to call super() in a constructor. If super() is not called
+      but another consuctor (overloaded constructor) of the class is called, this rule
+      will not report it.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//ConstructorDeclaration[
+count(.//ExplicitConstructorInvocation)=0
+]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class Foo extends Bar{
+	
+	public Foo() {
+		// call the constructor of Bar
+		super();
+	}
+	
+	public Foo(int code) {
+		// do something with code
+		this();
+		// no problem with this
+	}
+}
+]]>
+      </example>
+    </rule>
     
 </ruleset>
 
