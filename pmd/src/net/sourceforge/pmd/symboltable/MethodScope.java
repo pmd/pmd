@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.util.Applier;
+
 import java.util.Iterator;
 
 public class MethodScope extends AbstractScope {
@@ -13,13 +15,9 @@ public class MethodScope extends AbstractScope {
         if (occurrence.isThisOrSuper()) {
             return null;
         }
-        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
-            if (nameDeclaration.getImage().equals(occurrence.getImage())) {
-                return nameDeclaration;
-            }
-        }
-        return null;
+        ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
+        Applier.apply(finder, variableNames.keySet().iterator());
+        return finder.getDecl();
     }
 
     public String toString() {

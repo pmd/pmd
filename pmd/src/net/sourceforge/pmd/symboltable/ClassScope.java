@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.util.Applier;
+
 import java.util.*;
 
 public class ClassScope extends AbstractScope {
@@ -20,11 +22,6 @@ public class ClassScope extends AbstractScope {
     }
 
     public void addDeclaration(MethodNameDeclaration decl) {
-        if (methodNames.containsKey(decl)) {
-            return;
-            // TODO - can this be uncommented now?
-            //throw new RuntimeException("Method " + decl + " is already in the symbol table");
-        }
         methodNames.put(decl, new ArrayList());
     }
 
@@ -45,21 +42,27 @@ public class ClassScope extends AbstractScope {
             // }
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
-            return (VariableNameDeclaration)variableNames.keySet().iterator().next();
+            return (NameDeclaration)variableNames.keySet().iterator().next();
         }
 
 
-        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-            NameDeclaration decl = (VariableNameDeclaration)i.next();
-            if (decl.getImage().equals(occurrence.getImage()) || (className + "." + decl.getImage()).equals(occurrence.getImage())) {
-                return decl;
-            }
+        List images = new ArrayList();
+        images.add(occurrence.getImage());
+        if (occurrence.getImage().startsWith(className)) {
+            images.add(clipClassName(occurrence.getImage()));
         }
-        return null;
+        ImageFinderFunction finder = new ImageFinderFunction(images);
+        Applier.apply(finder, variableNames.keySet().iterator());
+        return finder.getDecl();
     }
 
     public String toString() {
         return "ClassScope:" + super.glomNames();
+    }
+
+    private String clipClassName(String in) {
+        int firstDot = in.indexOf('.');
+        return in.substring(firstDot+1);
     }
 
 }

@@ -34,12 +34,7 @@ public class GlobalScope extends AbstractScope implements Scope {
     }
 
     public String toString() {
-        String result = "GlobalScope:";
-        for (Iterator i = variableNames.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
-            result += nameDeclaration.getImage() +",";
-        }
-        return result;
+        return "GlobalScope:" + super.glomNames();
     }
 
     protected NameDeclaration findVariableHere(NameOccurrence occ) {
