@@ -10,30 +10,33 @@ import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class ClassScopeTest extends TestCase {
 
-/*
     public void testContains() {
-        ClassScope s = new ClassScope("foo");
-        s.addDeclaration(NameDeclarationTest.FOO);
+        ClassScope s = new ClassScope("Foo");
+        SimpleNode node = new SimpleNode(1);
+        node.setImage("bar");
+        s.addDeclaration(new NameDeclaration(node));
         assertTrue(s.getUnusedDeclarations().hasNext());
     }
 
-    public void testContainsQualified() {
+    public void testCantContainsSuperToString() {
         ClassScope s = new ClassScope("foo");
-        s.addDeclaration(new NameDeclaration(NameDeclarationTest.createNode("x", 10)));
-        s.addOccurrence(new NameOccurrence(NameDeclarationTest.createNode("x.length", 15)));
-        assertTrue(!s.getUnusedDeclarations().hasNext());
+        SimpleNode node = new SimpleNode(1);
+        node.setImage("super.toString");
+        assertTrue(!s.contains(new NameOccurrence(node, node.getImage())));
     }
 
-    public void testStaticFinal() {
-        ClassScope s = new ClassScope("foo");
-        s.addDeclaration(new NameDeclaration(NameDeclarationTest.createNode("x", 10)));
-        s.addOccurrence(new NameOccurrence(NameDeclarationTest.createNode("foo.x", 15)));
-        assertTrue(!s.getUnusedDeclarations().hasNext());
-    }
-*/
+    public void testContainsStaticVariablePrefixedWithClassName() {
+        ClassScope s = new ClassScope("Foo");
+        SimpleNode node = new SimpleNode(1);
+        node.setImage("X");
+        s.addDeclaration(new NameDeclaration(node));
 
-    public void test1() {}
+        SimpleNode node2 = new SimpleNode(2);
+        node2.setImage("Foo.X");
+        assertTrue(s.contains(new NameOccurrence(node2, node2.getImage())));
+    }
 }
