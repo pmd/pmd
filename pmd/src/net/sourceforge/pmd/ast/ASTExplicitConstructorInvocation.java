@@ -32,10 +32,10 @@ public class ASTExplicitConstructorInvocation extends SimpleNode {
     }
 
     public boolean isThis() {
-        return thisOrSuper.equals("this");
+        return thisOrSuper != null && thisOrSuper.equals("this");
     }
 
     public boolean isSuper() {
-        return thisOrSuper.equals("super");
+        return thisOrSuper != null && thisOrSuper.equals("super");
     }
 }
