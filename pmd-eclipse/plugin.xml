@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="net.sourceforge.pmd.eclipse"
+   name="pmd-eclipse Plug-in"
+   version="0.1.0"
+   provider-name="PMD"
+   class="net.sourceforge.pmd.eclipse.PMDPlugin">
+
+   <runtime>
+      <library name="pmd-eclipse.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/pmd-0.5.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.apache.xerces"/>
+   </requires>
+
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Run PMD"
+            visible="true"
+            id="net.sourceforge.pmd.eclipse.actionSet">
+         <menu
+               label="&amp;PMD"
+               id="sampleMenu">
+            <separator
+                  name="sampleGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;PMD"
+               icon="icons/sample.gif"
+               tooltip="Run PMD"
+               class="net.sourceforge.pmd.eclipse.actions.PMDAction"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               id="net.sourceforge.pmd.eclipse.actions.PMDAction">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <actionSet
+               id="net.sourceforge.pmd.eclipse.actionSet">
+         </actionSet>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="PMD"
+            class="net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage"
+            id="net.sourceforge.pmd.eclipse.preferences.PMDPreferencePage">
+      </page>
+   </extension>
+
+</plugin>
