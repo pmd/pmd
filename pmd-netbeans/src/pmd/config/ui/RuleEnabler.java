@@ -38,7 +38,7 @@ import org.apache.oro.text.perl.Perl5Util;
 public class RuleEnabler extends JPanel {
 
 	private final PropertyEditorSupport editor;
-	
+	private final String REGEX = "s/ +/ /g";
 	private final static Perl5Util regex = new Perl5Util();
 	/** Creates a new editor
 	 * @param editor The object to be notified of changes in the property
@@ -395,8 +395,8 @@ public class RuleEnabler extends JPanel {
 	private void chosenListValueChanged() {//GEN-FIRST:event_chosenListValueChanged
 		Rule rule =  (Rule)chosenList.getSelectedValue();
 		if( rule != null ) {
-			example.setText( regex.substitute( "s/ +/ /g", rule.getExample().trim() ) );
-			information.setText( regex.substitute( "s/ +/ /g", rule.getDescription().trim() ) );
+			example.setText( regex.substitute( REGEX, rule.getExample().trim() ) );
+			information.setText( regex.substitute( REGEX, rule.getDescription().trim() ) );
 			properties.setModel( new PropertiesModel( rule ) );
 		}
 	}//GEN-LAST:event_chosenListValueChanged
@@ -407,8 +407,8 @@ public class RuleEnabler extends JPanel {
 	private void availableListValueChanged() {//GEN-FIRST:event_availableListValueChanged
 		Rule rule =  (Rule)availableList.getSelectedValue();
 		if( rule != null ) {
-			example.setText( regex.substitute( "s/ +/ /g", rule.getExample().trim() ) );
-			information.setText( regex.substitute( "s/ +/ /g", rule.getDescription().trim() ) );
+			example.setText( regex.substitute( REGEX, rule.getExample().trim() ) );
+			information.setText( regex.substitute( REGEX, rule.getDescription().trim() ) );
 			properties.setModel( new PropertiesModel( rule ) );
 		}
 	}//GEN-LAST:event_availableListValueChanged

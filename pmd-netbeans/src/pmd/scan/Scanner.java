@@ -36,10 +36,8 @@ import org.openide.nodes.Node;
 import org.openide.text.Line;
 import org.openide.text.Line.Set;
 import pmd.Fault;
-import pmd.PMDAnnotation;
 import pmd.RunPMDAction;
 import pmd.config.PMDOptionsSettings;
-import pmd.scan.PMDScanAnnotation;
 
 /**
  *

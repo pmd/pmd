@@ -26,6 +26,7 @@
  */
 package pmd;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -262,7 +263,7 @@ public class RunPMDAction extends CookieAction {
 		else {
 			Iterator iterator = dataobject.files().iterator();
 			FileObject file = ( FileObject )iterator.next();
-			reader = new InputStreamReader( file.getInputStream() );
+			reader = new BufferedReader( new InputStreamReader( file.getInputStream() ) );
 		}
 		return reader;
 	}

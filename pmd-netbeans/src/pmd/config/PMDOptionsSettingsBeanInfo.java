@@ -27,7 +27,6 @@
 package pmd.config;
 
 import java.awt.Image;
-import java.awt.*;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
