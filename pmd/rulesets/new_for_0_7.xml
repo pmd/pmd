@@ -20,6 +20,24 @@ public class Something {
     </example>
   </rule>
 
+  <rule name="WhileLoopsMustUseBracesRule"
+        message="Avoid using 'while' statements without curly braces"
+        class="net.sourceforge.pmd.rules.WhileLoopsMustUseBracesRule">
+    <description>
+    Avoid using 'while' statements without using curly braces
+    </description>
+
+    <example>
+<![CDATA[
+  public void doSomething() {
+    while (true)
+        x++;
+  }
+]]>
+    </example>
+  </rule>
+
+
 </ruleset>
 
 

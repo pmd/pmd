@@ -46,15 +46,12 @@
     </target>
 
     <target name="test" depends="compile">
-        <junit printsummary="yes" haltonfailure="yes">
+        <junit printsummary="no" haltonfailure="yes">
           <classpath>
             <pathelement location="${build}" />
             <pathelement location="${test-data}" />
             <pathelement location="${basedir}" />
           </classpath>
-
-          <formatter type="plain" />
-
           <batchtest fork="no" todir="${build}">
             <fileset dir="${regress}">
               <include name="test/**/*Test.java" />

@@ -1,31 +1,25 @@
 /*
  * User: tom
- * Date: Jun 26, 2002
- * Time: 10:21:05 AM
+ * Date: Jul 19, 2002
+ * Time: 11:13:17 PM
  */
 package net.sourceforge.pmd.rules;
 
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.ast.ASTWhileStatement;
 
-public class IfElseStmtsMustUseBracesRule extends AbstractRule {
-
+public class WhileLoopsMustUseBracesRule extends AbstractRule {
     private int lineNumberOfLastViolation;
 
-    public Object visit(ASTIfStatement node, Object data) {
+    public Object visit(ASTWhileStatement node, Object data) {
         RuleContext ctx = (RuleContext)data;
-        // filter out if stmts without an else
-        if (node.jjtGetNumChildren() < 3) {
-            return super.visit(node, data);
-        }
-
-        // the first child is a Expression, so skip that and get the first 2 stmts
         SimpleNode firstStmt = (SimpleNode)node.jjtGetChild(1);
-        SimpleNode secondStmt = (SimpleNode)node.jjtGetChild(2);
 
-        if (!hasBlockAsFirstChild(firstStmt) && !hasBlockAsFirstChild(secondStmt) && (node.getBeginLine() != this.lineNumberOfLastViolation)) {
+        if (!hasBlockAsFirstChild(firstStmt) && (node.getBeginLine() != this.lineNumberOfLastViolation)) {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
             lineNumberOfLastViolation = node.getBeginLine();
         }
@@ -35,4 +29,5 @@ public class IfElseStmtsMustUseBracesRule extends AbstractRule {
     private boolean hasBlockAsFirstChild(SimpleNode node) {
         return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
     }
+
 }
