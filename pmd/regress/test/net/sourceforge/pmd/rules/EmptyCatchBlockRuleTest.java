@@ -12,7 +12,7 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
         rule = new XPathRule();
         rule.addProperty(
             "xpath",
-            "//TryStatement[@Catch='true']"
+            "//TryStatement[@Catch='true'][FormalParameter/Type/Name[@Image != 'InterruptedException']][FormalParameter/Type/Name[@Image != 'CloneNotSupportedException']]"
                 + "/Block"
                 + "[position() > 1]"
                 + "[count(*) = 0]"
@@ -26,6 +26,8 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST3, "no catch with nested catch in finally", 1, rule),
            new TestDescriptor(TEST4, "multiple catch blocks", 2, rule),
            new TestDescriptor(TEST5, "empty try with finally", 0, rule),
+           new TestDescriptor(TEST6, "InterruptedException is OK", 0, rule),
+           new TestDescriptor(TEST7, "CloneNotSupportedException is OK", 0, rule),
        });
     }
 
@@ -82,6 +84,22 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
     "  } catch (Exception e) {" + CPD.EOL +
     "   blah.blah();" + CPD.EOL +
     "  } finally {}" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  try {" + CPD.EOL +
+    "  } catch (InterruptedException e) {}" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  try {" + CPD.EOL +
+    "  } catch (CloneNotSupportedException e) {}" + CPD.EOL +
     " }" + CPD.EOL +
     "}";
 }
