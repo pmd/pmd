@@ -10,6 +10,8 @@
     <section name="Sites/Articles about PMD">
     <ul>
         <br/>
+        <li>11/21/2003 - <a href="http://www.javaworld.com/javaworld/jw-11-2003/jw-1121-quality_p.html">JavaWorld</a> - Various code inspection tools</li>
+        <br/>
         <li><a href="https://jjguidelines.dev.java.net/index.html">JJGuidelines - Java and J2EE Conventions, Guidelines and Best Practices</a> - a project sponsored by the Belgian government to codify coding practices; uses PMD as the compliance checking utility</li>
         <br/>
         <li>6/15/2003 - <a href="http://www.sdtimes.com/news/080/story15.htm">Software Development Times</a> - PMD is embedded in QStudio.</li>
