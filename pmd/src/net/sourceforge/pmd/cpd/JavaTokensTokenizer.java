@@ -2,6 +2,7 @@ package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.ast.JavaCharStream;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
+import net.sourceforge.pmd.ast.Token;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -31,7 +32,7 @@ public class JavaTokensTokenizer implements Tokenizer {
         // now tokenize it
         JavaCharStream javaStream = new JavaCharStream(new StringReader(sb.toString()));
         JavaParserTokenManager tokenMgr = new JavaParserTokenManager(javaStream);
-        net.sourceforge.pmd.ast.Token currToken = tokenMgr.getNextToken();
+        Token currToken = tokenMgr.getNextToken();
         while (currToken.image != "") {
             if (currToken.image.equals("import") || currToken.image.equals("package")) {
                 discarding = true;

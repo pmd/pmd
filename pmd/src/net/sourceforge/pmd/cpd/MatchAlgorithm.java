@@ -23,12 +23,10 @@ public class MatchAlgorithm {
         this.cpdListener = cpdListener;
     }
 
-    public void add(MyToken token, Locator locator) {
+    public void add(TokenEntry token, Locator locator) {
         pool.put(token, token);
         code.add(token);
-        if (token.isMarkToken()) {
-            marks.add(new Mark(code, code.size(), locator, cpdListener));
-        }
+        marks.add(new Mark(code, code.size(), locator, cpdListener));
 /*
         MyToken flyweight = (MyToken)pool.get(token);
         if (flyweight == null) {
@@ -53,7 +51,7 @@ public class MatchAlgorithm {
        */
         int count = 1;
        for (Iterator iter = pool.keySet().iterator(); iter.hasNext();) {
-           MyToken token = (MyToken)iter.next();
+           TokenEntry token = (TokenEntry)iter.next();
            token.setSortCode(count++);
        }
        // use quicksort on the marks, same as the perl version
@@ -91,9 +89,9 @@ public class MatchAlgorithm {
            }
 */
            for (int j = 0; j < code.size(); j++) {
-               MyToken token1 = mark1.tokenAt(j);
-               MyToken token2 = mark2.tokenAt(j);
-               if (!token1.equals(token2) || token1 == MyToken.EOF || token2 == MyToken.EOF) {
+               TokenEntry token1 = mark1.tokenAt(j);
+               TokenEntry token2 = mark2.tokenAt(j);
+               if (!token1.equals(token2) || token1 == TokenEntry.EOF || token2 == TokenEntry.EOF) {
                    break;
                }
                matches++;

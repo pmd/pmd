@@ -29,9 +29,7 @@ public class CPD {
             TokenList tl = (TokenList)i.next();
             for (Iterator j = tl.iterator();j.hasNext();) {
                 TokenEntry te = (TokenEntry)j.next();
-                char[] chars = te.getImage().toCharArray();
-                MyToken mt = new MyToken(chars, 0, chars.length, true);
-                matchAlgorithm.add(mt, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()));
+                matchAlgorithm.add(te, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()));
             }
         }
         matchAlgorithm.findMatches(minimumTileSize);

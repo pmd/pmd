@@ -17,6 +17,7 @@ public class CharacterTokenizer implements Tokenizer {
      * You'll probably want to write a test for this before using it
      */
     public void tokenize(TokenList tokens, Reader input) throws IOException {
+/*
         List lines = new ArrayList();
         StringBuffer sb = new StringBuffer();
         LineNumberReader r = new LineNumberReader(input);
@@ -32,5 +33,6 @@ public class CharacterTokenizer implements Tokenizer {
             }
         }
         tokens.setCode(lines);
+*/
     }
 }

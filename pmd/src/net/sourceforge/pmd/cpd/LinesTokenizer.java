@@ -9,6 +9,7 @@ import java.util.List;
 public class LinesTokenizer implements Tokenizer {
 
     public void tokenize(TokenList tokens, Reader input) throws IOException {
+/*
         String eol = System.getProperty("line.separator", "\n");
         List lines = new ArrayList();
         StringBuffer sb = new StringBuffer();
@@ -21,5 +22,6 @@ public class LinesTokenizer implements Tokenizer {
             tokens.add(new TokenEntry(currentLine, tokens.size(), tokens.getID(), lines.size()));
         }
         tokens.setCode(lines);
+*/
     }
 }

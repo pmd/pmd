@@ -21,11 +21,11 @@ public class Mark implements Comparable {
         return this.locator;
     }
 
-    public MyToken tokenAt(int i) {
+    public TokenEntry tokenAt(int i) {
         if (i < 0) {
-            return (MyToken)code.get((code.size() + i + offset) % code.size());
+            return (TokenEntry)code.get((code.size() + i + offset) % code.size());
         } else {
-            return (MyToken)code.get((i + offset) % code.size());
+            return (TokenEntry)code.get((i + offset) % code.size());
         }
     }
 
