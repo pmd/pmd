@@ -1,0 +1,63 @@
+<project name="pmd-jdeveloper" default="compile" basedir="../">
+
+	<property name="config" value="config/"/>
+	<property name="src" value="src/"/>
+	<property name="lib" value="lib/"/>
+	<property name="etc" value="etc/"/>
+	<property name="build" value="build/"/>
+	<property name="pmdjar" value="pmd-1.03.jar"/>
+	<property name="pluginversion" value="0.1"/>
+	<property name="jdeveloper.install.dir" value="C:\downloads\jdev9031\jdev\lib\ext\${ant.project.name}-${pluginversion}"/>
+
+	<path id="project.class.path">
+		<pathelement location="${lib}/${pmdjar}"/>
+		<pathelement location="${lib}/jdeveloper.jar"/>
+		<pathelement location="${build}"/>
+	</path>
+
+
+    <target name="delete">
+        <delete file="${lib}/${ant.project.name}.jar"/>
+        <delete file="${jdeveloper.install.dir}/${ant.project.name}.jar"/>
+		<delete dir="${build}"/>
+        <mkdir dir="${build}"/>
+    </target>
+
+	<target name="compile">
+		<javac
+			srcdir="${src}"
+			destdir="${build}"
+			debug="on"
+			deprecation="on">
+			<classpath refid="project.class.path"/>
+		</javac>
+	</target>
+
+    <target name="jar">
+		<jar jarfile="${lib}/${ant.project.name}-${pluginversion}.jar" manifest="${etc}\manifest.mf">
+			<fileset dir="${build}"/>
+		</jar>
+    </target>
+
+
+	<target name="dist" depends="compile,jar">
+        <mkdir dir="${jdeveloper.install.dir}/lib"/>
+        <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper.install.dir}/lib"/>
+        <copy file="${lib}/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>
+	</target>
+
+    <target name="release">
+        <antcall target="clean"/>
+        <antcall target="jar"/>
+        <mkdir dir="tmp/jars"/>
+        <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="tmp/jars"/>
+        <copy file="${lib}/${pmdjar}" todir="tmp/jars"/>
+        <zip zipfile="pmd-jdeveloper-bin-${pluginversion}.zip" basedir="tmp"/>
+        <move file="pmd-jdeveloper-bin-${pluginversion}.zip" todir="c:\tmp"/>
+        <delete dir="tmp"/>
+    </target>
+
+	<target name="clean" depends="delete,compile">
+	</target>
+
+</project>
