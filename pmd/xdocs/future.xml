@@ -8,18 +8,24 @@
 
   <body>
   <section name="Future Directions">
+      <subsection name="Code cleanups">
+        <p>Some of the code is a bit sloppy:</p>
+          <ul>
+              <li>RuleSetFactory is a mess.  It needs to be refactored into something that has layers, or decorators, or something.</li>
+              <li>Cleanups would be welcome for ConstructorCallsOverridableMethod and DoubleCheckedLocking</li>
+              <li>The Designer GUI is a bit messed up; the bottom panes look funny.</li>
+          </ul>
+      </subsection>
+      <subsection name="Utilities">
+          <ul>
+              <li>It'd be nice to have a utility that would run each PMD rule on, say, the JDK, and time it.  Then we could see where our bottlenecks are.</li>
+          </ul>
+      </subsection>
    <subsection name="Better symbol analysis">
      <p>Currently PMD only looks at one source file at a time.  Instead, it
      should resolve symbols across classes.  This will eliminate some open
      bugs and enable a lot more rules to be written.  However, it'll taken some doing,
      because it'll require parsing of class files.  Lots of work here.</p>
-   </subsection>
-   <subsection name="Code cleanups">
-     <p>Some of the code is a bit sloppy:</p>
-       <ul>
-           <li>RuleSetFactory is a mess.  It needs to be refactored into something that has layers, or decorators, or something.</li>
-           <li>Cleanups would be welcome for ConstructorCallsOverridableMethod and DoubleCheckedLocking</li>
-       </ul>
    </subsection>
       <subsection name="Data flow analysis (DFA)">
           <p>Raik Schroeder, a graduate student at
