@@ -1,8 +1,9 @@
 ??? - 2.5
-- Updated to PMD 1.8
+- Updated to PMD 1.9
 - Removed Recursive Directory options and integrated them into FileChooser itself.
 - Complete redesign of the way PMD Rules and Copy/Paste Detector are used.
-- Lots of code cleanup.
+- Fixed improper highlighting of Rule Violations. Because of this bug, any open file in jEdit was showing errors of other files too.
+- Lots of code cleanup and optimizations.
 
 22 March 2004- 2.4
 - Optimized usage of ErrorSource for faster Error Highlighting.

@@ -330,27 +330,29 @@ public class PMDJEditPlugin extends EBPlugin
 		}
 
 		RuleContext ctx = new RuleContext();
-		ctx.setReport(new Report());
+
 
 		boolean foundProblems = false;
+		Report reports[] = new Report[files.size()];
 
-		for (Iterator i = files.iterator(); i.hasNext();)
+		Iterator iter = files.iterator();
+		for (int i=0;iter.hasNext();i++)
 		{
-			File file = (File)i.next();
+			File file = (File)iter.next();
 			//ctx.setReport(new Report());
+			reports[i] = new Report(); //Store the reference to Reports generated since we will need it for Rendering output.
+			ctx.setReport(reports[i]);
 			ctx.setSourceCodeFilename(file.getAbsolutePath());
 
 			try
 			{
 				pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRules(), ctx);
 			}
-
 			catch (FileNotFoundException fnfe)
 			{
 				// should never happen, but if it does, carry on to the next file
 				System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
 			}
-
 			catch (PMDException pmde)
 			{
 				pmde.printStackTrace();
@@ -366,7 +368,7 @@ public class PMDJEditPlugin extends EBPlugin
 			{
 				foundProblems = true;
 				RuleViolation rv = (RuleViolation)j.next();
-				errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
+				errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
 			}
 
 		}//End of for
@@ -376,11 +378,10 @@ public class PMDJEditPlugin extends EBPlugin
 			JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
 			errorSource.clear();
 		}
-
 		else
 		{
 			registerErrorSource();
-			exportErrorAsReport(view, ctx);
+			exportErrorAsReport(view, reports);
 		}
 
 		endProgressBarDisplay(pbd);
@@ -566,21 +567,21 @@ public class PMDJEditPlugin extends EBPlugin
 	{
 		if(dir != null)
 		{
-				jEdit.setProperty("pmd.cpd.lastDirectory",dir);
-				instance.errorSource.clear();
+			jEdit.setProperty("pmd.cpd.lastDirectory",dir);
+			instance.errorSource.clear();
 
-				CPD cpd = new CPD(tileSize, new JavaLanguage());
+			CPD cpd = new CPD(tileSize, new JavaLanguage());
 
-				if(recursive)
-				{
-					cpd.addRecursively(dir);
-				}
-				else
-				{
-					cpd.addAllInDirectory(dir);
-				}
-				cpd.go();
-				instance.processDuplicates(cpd, view);
+			if(recursive)
+			{
+				cpd.addRecursively(dir);
+			}
+			else
+			{
+				cpd.addAllInDirectory(dir);
+			}
+			cpd.go();
+			instance.processDuplicates(cpd, view);
 		}//End of if(dir != null)
 	}
 
@@ -688,7 +689,7 @@ public class PMDJEditPlugin extends EBPlugin
 		}
 	}
 
-	public void exportErrorAsReport(final View view, RuleContext ctx)
+	public void exportErrorAsReport(final View view, Report reports[])
 	{
 
 		String format = jEdit.getProperty(PMDJEditPlugin.RENDERER);
@@ -702,44 +703,47 @@ public class PMDJEditPlugin extends EBPlugin
 			{
 				renderer = new XMLRenderer();
 			}
-
 			else if (format.equals("Html"))
 			{
 				renderer = new HTMLRenderer();
 			}
-
 			else if (format.equals("CSV"))
 			{
 				renderer = new CSVRenderer();
 			}
-
 			else if (format.equals("Text"))
 			{
 				renderer = new TextRenderer();
 			}
-
 			else
 			{
 				JOptionPane.showMessageDialog(view, "Invalid Renderer", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-			final String output = renderer.render(ctx.getReport());
-			view.setBuffer(jEdit.newFile(view));
-			VFSManager.runInAWTThread(
-				new Runnable()
+			if(reports != null)
+			{
+				final StringBuffer strbuf = new StringBuffer();
+				String output = null;
+				for(int i=0;i<reports.length;i++)
 				{
-					public void run()
-					{
-						view.getTextArea().setText(output);
-					}
+					output = renderer.render(reports[i]);
+					strbuf.append(output);
 				}
 
-			);
-
-
-		}
-	}//End of exportErrorAsReport
+				view.setBuffer(jEdit.newFile(view));
+				VFSManager.runInAWTThread(
+					new Runnable()
+					{
+						public void run()
+						{
+							view.getTextArea().setText(strbuf.toString());
+						}
+					}
+				);
+			}//End of if
+		}//End of exportErrorAsReport
+	}
 
 
 	class ProgressBar extends JPanel
