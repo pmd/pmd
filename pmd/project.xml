@@ -122,6 +122,13 @@
       <email>olemartin@users.sourceforge.net</email>
       <roles><role>Developer</role></roles>
     </developer>
+
+    <developer>
+      <name>Paul Kendall</name>
+      <id>pkendall</id>
+      <email>pkendall@users.sourceforge.net</email>
+      <roles><role>Developer</role></roles>
+    </developer>
    </developers>
 
   <contributors>
