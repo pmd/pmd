@@ -52,7 +52,7 @@ class Foo{
              <property name="xpath">
                  <value>
                      <![CDATA[
-//ClassDeclaration
+//ClassOrInterfaceDeclaration
 [@Final = 'false']
 [.//MethodDeclaration[
 MethodDeclarator/@Image = 'clone'
