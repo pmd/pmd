@@ -9,7 +9,7 @@
   <body>
     <section name="PMD">
       <subsection name="Description">
-        Runs a set of PMD rules on a set of files and generates a report.
+        <p>Runs a set of PMD rules on a set of files and generates a report.
       </subsection>
       <subsection name="Parameters">
 <table border="1" cellpadding="2" cellspacing="0">
