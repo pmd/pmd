@@ -14,15 +14,32 @@ public class XMLRenderer implements Renderer {
 
     public String render(Report report) {
         StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?><pmd>" + System.getProperty("line.separator"));
+	String filename = "*start*";
+	String lineSep = System.getProperty("line.separator");
+
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
-            buf.append("<ruleviolation>" + System.getProperty("line.separator"));
-            buf.append("<file>" + rv.getFilename() + "</file>" + System.getProperty("line.separator"));
-            buf.append("<line>" + Integer.toString(rv.getLine()) + "</line>" + System.getProperty("line.separator"));
-            buf.append("<description>" + rv.getDescription() + "</description>" + System.getProperty("line.separator"));
-            buf.append("</ruleviolation>");
-            buf.append(System.getProperty("line.separator"));
+	    if (!rv.getFilename().equals(filename)) { // New File
+		if (!filename.equals("*start*")) {
+		    buf.append("</file>");
+		}
+		filename = rv.getFilename();
+		buf.append("<file name=\"" + filename + "\">");
+		buf.append( lineSep );
+	    }
+		
+	    buf.append("<violation ");
+	    buf.append("line=\"" + Integer.toString( rv.getLine() ) + "\" ");
+	    buf.append("rule=\"" + rv.getRule().getName() + "\">" );
+	    buf.append( lineSep );
+            buf.append(rv.getDescription());
+	    buf.append( lineSep );
+            buf.append("</violation>");
+            buf.append( lineSep );
         }
+	if (!filename.equals("*start*")) {
+	    buf.append("</file>");
+	}
         buf.append("</pmd>");
         return buf.toString();
     }
