@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Sep 23, 2002
- * Time: 5:07:40 PM
- */
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.Report;

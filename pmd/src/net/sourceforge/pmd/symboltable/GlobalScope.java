@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 3, 2002
- * Time: 11:13:44 AM
- */
 package net.sourceforge.pmd.symboltable;
 
 import java.util.Collections;

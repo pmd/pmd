@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Nov 6, 2002
- * Time: 8:04:20 AM
- */
 package net.sourceforge.pmd.ast;
 
 public class ASTCatch {

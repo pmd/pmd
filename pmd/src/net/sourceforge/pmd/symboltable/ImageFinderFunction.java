@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 29, 2002
- * Time: 12:47:54 PM
- */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.UnaryFunction;

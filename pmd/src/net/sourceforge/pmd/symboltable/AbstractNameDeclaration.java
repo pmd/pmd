@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 23, 2002
- * Time: 11:44:17 AM
- */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.SimpleNode;

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Jun 21, 2002
- * Time: 11:26:34 AM
- */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 21, 2002
- * Time: 10:51:34 AM
- */
 package net.sourceforge.pmd.symboltable;
 
 public class Search {

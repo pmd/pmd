@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Aug 23, 2002
- * Time: 8:43:14 PM
- */
 package net.sourceforge.pmd.rules;
 
 public class ImportWrapper {

@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 1, 2002
- * Time: 11:05:43 AM
- */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;

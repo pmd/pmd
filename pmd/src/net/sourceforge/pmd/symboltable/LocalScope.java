@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 1, 2002
- * Time: 1:33:03 PM
- */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.Applier;

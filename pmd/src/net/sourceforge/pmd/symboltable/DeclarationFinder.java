@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Oct 10, 2002
- * Time: 8:02:39 AM
- */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;

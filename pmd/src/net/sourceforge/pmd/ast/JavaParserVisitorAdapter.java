@@ -1,12 +1,4 @@
-/*
- * User: tom
- * Date: Jun 13, 2002
- * Time: 4:57:15 PM
- */
 package net.sourceforge.pmd.ast;
-
-
-
 
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(SimpleNode node, Object data) {
