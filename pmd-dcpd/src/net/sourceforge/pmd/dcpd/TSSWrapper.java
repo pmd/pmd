@@ -11,23 +11,12 @@ import java.util.Iterator;
 
 public class TSSWrapper implements Entry {
 
-    public TokenList tls[] = null;
+    public TokenSets tss;
 
-    public TSSWrapper() {
-    }
+    public TSSWrapper() {}
 
     public TSSWrapper(TokenSets tss) {
-        tls = new TokenList[ tss.size() ];
-
-        int pos = 0;
-        for (Iterator i = tss.iterator();i.hasNext();) {
-            TokenList tl = (TokenList)i.next();
-            tls[pos] = tl;
-            pos++;
-        }
+        this.tss = tss;
     }
 
-    public int size() {
-        return tls.length;
-    }
 }

@@ -24,7 +24,7 @@ public class Test {
     public Test() {
         try {
             JavaSpace space = getSpace();
-            add("C:\\j2sdk1.4.0_01\\src\\java\\lang\\ref", true);
+            add("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true);
             Entry wrapper = convertTSS();
             System.out.println("token count = " + tokenSets.tokenCount());
 
