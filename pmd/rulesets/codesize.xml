@@ -17,7 +17,7 @@ and removing cut and paste.
 
 Default value is 2.5 sigma greater than the mean.
 
-NOTE:  In version 0.9 and higher, their are three parameters available:
+There are three parameters available:
 minimum - Minimum Length before reporting.
 sigma - Std Deviations away from the mean before reporting.
 topscore - The Maximum Number of reports to generate.
