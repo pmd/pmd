@@ -9,8 +9,6 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.*;
 
-import java.text.MessageFormat;
-
 public class AvoidStringLiteralsRule extends AbstractRule {
 
     public Object visit(ASTLiteral node, Object data) {

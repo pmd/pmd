@@ -12,18 +12,21 @@ import net.sourceforge.pmd.rules.EmptyCatchBlockRule;
 
 public class EmptyCatchBlockRuleTest extends RuleTst {
 
-    public void testEmptyCatchBlock() throws Throwable {
+    public void testSimple() throws Throwable {
         runTest("EmptyCatchBlock.java", 1, new EmptyCatchBlockRule());
     }
 
-    public void testEmptyCatchBlock2() throws Throwable {
+    public void testNotEmpty() throws Throwable {
         runTest("EmptyCatchBlock2.java", 0, new EmptyCatchBlockRule());
     }
 
-    public void testEmptyCatchBlock3() throws Throwable {
+    public void testNoCatchWithNestedCatchInFinally() throws Throwable {
         runTest("EmptyCatchBlock3.java", 1, new EmptyCatchBlockRule());
     }
 
+    public void testMultipleCatchBlocks() throws Throwable {
+        runTest("EmptyCatchBlock4.java", 2, new EmptyCatchBlockRule());
+    }
 
 }
 

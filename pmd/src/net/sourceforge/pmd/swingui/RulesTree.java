@@ -32,7 +32,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.UIManager;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.PMDDirectory;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;

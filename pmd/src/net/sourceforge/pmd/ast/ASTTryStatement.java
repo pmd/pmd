@@ -2,6 +2,9 @@
 
 package net.sourceforge.pmd.ast;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class ASTTryStatement extends SimpleNode {
 
     private boolean hasCatch;
@@ -42,10 +45,16 @@ public class ASTTryStatement extends SimpleNode {
     /**
      * Call hasCatch() before you call this method
      */
-    public ASTBlock getFirstCatchBlock() {
-        return (ASTBlock)jjtGetChild(2);
+    public List getCatchBlocks() {
+        int numChildren = jjtGetNumChildren();
+        if (hasFinally)
+            numChildren--;
+        List blocks = new ArrayList();
+        for (int i=1 ; i<numChildren ; i+=2) {
+            blocks.add(new ASTCatch((ASTFormalParameter)jjtGetChild(i+0), (ASTBlock)jjtGetChild(i+1)));
+        }
+        return blocks;
     }
-
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
