@@ -219,8 +219,12 @@ public abstract class Foo { // should be AbstractFoo
             <property name="xpath">
                 <value>
 <![CDATA[
-   //UnmodifiedClassDeclaration[@Image = //MethodDeclarator/@Image]
-]]>
+//MethodDeclaration
+ [parent::ClassBodyDeclaration
+  [parent::ClassBody
+   [parent::UnmodifiedClassDeclaration/@Image = //MethodDeclarator/@Image
+   ]]]
+ ]]>
                 </value>
             </property>
         </properties>

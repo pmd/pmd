@@ -5,30 +5,38 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="AvoidDuplicateLiterals"
-        message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
-        class="net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule">
-    <description>
-Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
-    </description>
-        <priority>3</priority>
-   <properties>
-    <property name="threshold" value="4"/>
-   </properties>
-    <example>
+    <rule name="MethodWithSameNameAsEnclosingClass"
+          message="Classes should not have non-constructor methods with the same name as the class"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       Non-constructor methods should not have the same name as the enclosing class.
+       </description>
+        <properties>
+            <property name="xpath">
+                <value>
 <![CDATA[
-public class Foo {
- private void bar() {
-    buz("Howdy");
-    buz("Howdy");
-    buz("Howdy");
-    buz("Howdy");
- }
- private void buz(String x) {}
+//MethodDeclaration
+ [parent::ClassBodyDeclaration
+  [parent::ClassBody
+   [parent::UnmodifiedClassDeclaration/@Image = //MethodDeclarator/@Image
+   ]]]
+ ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+       <example>
+    <![CDATA[
+public class MyClass {
+// this is bad because it is a method
+public void MyClass() {}
+// this is OK because it is a constructor
+public MyClass() {}
 }
-]]>
-    </example>
-  </rule>
+    ]]>
+       </example>
+     </rule>
+
 
 
 
