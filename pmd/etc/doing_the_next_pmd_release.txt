@@ -15,7 +15,8 @@ TESTS: Can you
 2) run the Ant 'pmd' task and get a report
 ant pmd
 
-Regenerate the web site
+cd ..
+./upload_docs
 
 Prepare binary release:
 rm -rf ~/tmp/pmd-1.1

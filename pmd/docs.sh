@@ -9,7 +9,7 @@ elif [ $option == "all" ]; then
 	echo "Running maven pmd-site"
 	rm -rf target
 	maven pmd-site
-elif [ $option == "all" ]; then
+elif [ $option == "upload" ]; then
 	echo "Generating xdocs and uploading"
 	maven -b xdoc:transform
 	DOCS_FILE=docs.tar.gz
