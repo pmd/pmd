@@ -58,7 +58,6 @@ public class GST {
     }
 
     private void expandTile(Occurrences oldOcc, Occurrences newOcc, Tile tile, CPDListener listener, int tilesSoFar, int totalTiles) {
-        Tile newTile = null;
         for (Iterator i = oldOcc.getOccurrences(tile); i.hasNext();) {
             TokenEntry tok = (TokenEntry)i.next();
             TokenList tokenSet = tokenSets.getTokenList(tok);
@@ -66,15 +65,12 @@ public class GST {
                 TokenEntry token = (TokenEntry)tokenSet.get(tok.getIndex() + tile.getTokenCount());
                 // make sure the next token hasn't already been used in an occurrence
                 if (!newOcc.contains(token)) {
-                    newTile = tile.copy();
+                    Tile newTile = tile.copy();
                     newTile.add(token);
                     newOcc.addTile(newTile, tok);
 										listener.addedNewTile(newTile, tilesSoFar, totalTiles);
                 }
             }
-        }
-        if (newTile != null) {
-            listener.update(newTile.getImage() + " expanded to " + newOcc.getOccurrenceCountFor(newTile) + " occurrences");
         }
         newOcc.deleteSoloTiles();
     }
