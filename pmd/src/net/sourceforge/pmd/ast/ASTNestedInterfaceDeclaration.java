@@ -11,6 +11,10 @@ public class ASTNestedInterfaceDeclaration extends SimpleNode {
     super(p, id);
   }
 
+    public ASTUnmodifiedInterfaceDeclaration getUnmodifedInterfaceDeclaration() {
+        return (ASTUnmodifiedInterfaceDeclaration)jjtGetChild(0);
+    }
+
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
