@@ -28,7 +28,7 @@
 	    	  extension=".xml"
 	    	  includes="**/*.xml"
 		      basedir="${rulesets.dir}"
-		      style="${dvsl.dir}/rule-format.dvsl"
+		      style="c:\data\pmd\pmd\dvsl\rule-format.dvsl"
 		      destdir="${maven.gen.docs}/rules">
     	</dvsl:dvsl>
   	</goal>

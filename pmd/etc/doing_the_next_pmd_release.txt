@@ -5,7 +5,6 @@ move rules from "newrules.xml" into a real ruleset file
 update jar task to reflect pmd-1.0rc1
 update xdocs/running.xml to reflect pmd-1.0rc1
 update release number in project.xml
-update release number in pmd.xml
 
 set ANT_HOME=c:\ant
 ant dist

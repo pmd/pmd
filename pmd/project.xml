@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>0.9</currentVersion>
+  <currentVersion>1.0rc1</currentVersion>
   <organization>
     <name>Project Ultra*Log @ DARPA</name>
     <url>http://pmd.sourceforge.net/</url>
@@ -47,9 +47,9 @@
 
   <versions>
     <version>
-      <id>0.9</id>
-      <name>0.9</name>
-      <tag>pmd_release_0_9</tag>
+      <id>1.0rc1</id>
+      <name>1.0rc1</name>
+      <tag>pmd_release_1_0rc1</tag>
     </version>
     <version>
       <id>dev</id>

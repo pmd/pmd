@@ -53,6 +53,21 @@ public class Foo {}
     </example>
     </rule>
 
+  <rule name="UnusedImports"
+        message="Avoid unused imports such as ''{0}''"
+        class="net.sourceforge.pmd.rules.UnusedImportsRule">
+    <description>
+    Avoid unused import statements.
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+import java.io.File;
+public class Foo {}
+]]>
+    </example>
+    </rule>
 
 </ruleset>
 

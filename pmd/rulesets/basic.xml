@@ -81,41 +81,7 @@ while (a == b) {
     </example>
   </rule>
 
-  <rule name="OverrideBothEqualsAndHashcodeRule"
-        message="Ensure you override both equals() and hashCode()"
-        class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule">
-    <description>
-Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
-    </description>
 
-    <example>
-<![CDATA[
-// this is bad
-public class Bar {
-    public boolean equals(Object o) {
-        // do some comparison
-    }
-}
-
-// and so is this
-public class Baz {
-    public int hashCode() {
-        // return some hash value
-    }
-}
-
-// this is OK
-public class Foo {
-    public boolean equals(Object other) {
-        // do some comparison
-    }
-    public int hashCode() {
-        // return some hash value
-    }
-}
-]]>
-    </example>
-  </rule>
 
   <rule name="EmptyTryBlock"
         message="Avoid empty try blocks"
@@ -157,7 +123,65 @@ public void bar() {
     </example>
   </rule>
 
-  </ruleset>
+  <rule name="EmptySwitchStatements"
+        message="Avoid empty switch statements"
+        class="net.sourceforge.pmd.rules.EmptySwitchStmtRule">
+    <description>
+    Avoid empty switch statements.
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  switch (x) {
+   // once there was code here
+   // but it's been commented out or something
+  }
+ }
+}
+]]>
+    </example>
+    </rule>
+
+  <rule name="OverrideBothEqualsAndHashcodeRule"
+        message="Ensure you override both equals() and hashCode()"
+        class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule">
+    <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public class Bar {
+    public boolean equals(Object o) {
+        // do some comparison
+    }
+}
+
+// and so is this
+public class Baz {
+    public int hashCode() {
+        // return some hash value
+    }
+}
+
+// this is OK
+public class Foo {
+    public boolean equals(Object other) {
+        // do some comparison
+    }
+    public int hashCode() {
+        // return some hash value
+    }
+}
+]]>
+    </example>
+  </rule>
+
+</ruleset>
 
 
 
