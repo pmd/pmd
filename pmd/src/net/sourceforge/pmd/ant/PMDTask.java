@@ -16,8 +16,7 @@ import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.renderers.*;
 import net.sourceforge.pmd.*;
 
 public class PMDTask extends Task {
@@ -25,6 +24,7 @@ public class PMDTask extends Task {
     private List filesets  = new ArrayList();
     private String reportFile;
     private boolean verbose;
+    private boolean printToConsole;
     private String ruleSetFiles;
     private String format;
     private boolean failOnError;
@@ -40,6 +40,10 @@ public class PMDTask extends Task {
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
+    }
+
+    public void setPrintToConsole(boolean printToConsole) {
+        this.printToConsole = printToConsole;
     }
 
     public void setRuleSetFiles(String ruleSetFiles) {
@@ -101,11 +105,15 @@ public class PMDTask extends Task {
             Renderer rend = null;
             if (format.equals("xml")) {
                 rend = new XMLRenderer();
-            } else {
+						} else {
                 rend = new HTMLRenderer();
             }
             buf.append(rend.render(ctx.getReport()));
             buf.append(EOL);
+						if (printToConsole) {
+							Renderer r = new TextRenderer();
+							System.out.println(r.render(report));
+						}
         }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(reportFile)));
