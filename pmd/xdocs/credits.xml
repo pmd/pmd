@@ -40,6 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>
             <li>Todd Wright - ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Noel Grandin - EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Michael Haggerty - bug report for UnusedModifier</li>

@@ -49,6 +49,10 @@
         <td>N/A</td>
         <td>Jeff Epstein</td>
     </tr>
+    <tr><td>Omnicore's CodeGuide</td>
+        <td>N/A</td>
+        <td>Austin Moore</td>
+    </tr>
   <tr><td>IntelliJ IDEA</td>
       <td>N/A</td>
       <td>Tom Copeland</td>
@@ -130,7 +134,27 @@ selecting the "Ask for Directory" checkbox.</p>
 <p>Please see <a href="http://maven.apache.org/reference/plugins/pmd/">the Maven plugins web site</a> for more information.</p>
 </subsection>
 
-<subsection name="TextPad">
+        <subsection name="Gel">
+  <p>Here's how to set up the PMD-Gel plugin:</p>
+  <ul>
+  <li>Download the pmd-gel-[version].zip file</li>
+  <li>Close Gel</li>
+  <li>Remove any old plugin versions from your gel\plugins directory</li>
+  <li>Unzip the new zip file into your gel\plugins directory</li>
+  <li>Start Gel</li>
+  <li>Go to Tools->Options->Plugin</li>
+  <li>Select the PMD plugin and click "Remove"</li>
+  <li>Click "Add" and select "net.sourceforge.pmd.gel.PMDPlugin"</li>
+  <li>Restart Gel</li>
+  </ul>
+  <p>That's pretty much it.  Now you can open a Java project and click on Plugins->PMD and
+  a configuration panel will pop up.  You can pick which ruleset you want to run and
+      you can also pick whether you want to run PMD on the current file or on every
+      source file in your project.</p>
+    <p>Note that the source code needs to be compilable before PMD can check it.</p>
+        </subsection>
+
+        <subsection name="TextPad">
 
     <H5><U>Assumptions</U></H5>
 
@@ -197,25 +221,34 @@ selecting the "Ask for Directory" checkbox.</p>
     <P><I>Because directory analysis may take a while, you may choose to cancel this operation.  Do so by closing the (blank Command Results) document, and then confirming that, "yes, I do really want to exit the tool".</I></P>
 </subsection>
 
-        <subsection name="Gel">
-  <p>Here's how to set up the PMD-Gel plugin:</p>
+        <subsection name="Code Guide">
+  <p>Here's how to set up PMD with Omnicore's CodeGuide (taken from <a href="http://sourceforge.net/forum/forum.php?thread_id=1098291&amp;forum_id=188193">here</a>):
+ </p>
   <ul>
-  <li>Download the pmd-gel-[version].zip file</li>
-  <li>Close Gel</li>
-  <li>Remove any old plugin versions from your gel\plugins directory</li>
-  <li>Unzip the new zip file into your gel\plugins directory</li>
-  <li>Start Gel</li>
-  <li>Go to Tools->Options->Plugin</li>
-  <li>Select the PMD plugin and click "Remove"</li>
-  <li>Click "Add" and select "net.sourceforge.pmd.gel.PMDPlugin"</li>
-  <li>Restart Gel</li>
+      <li>Download the PMD zip file from <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=51441">here</a></li>
+      <li>Unpack the zip file to your local disk. I put it in /Applications/</li>
+      <li>Add the following tool to CodeGuide (Tools->Configure Tools->New):</li>
+      <ul>
+          <li>Name: PMD </li>
+          <li>Kind: Tool for directories</li>
+          <li>Executable: /Applications/pmd-1.8/etc/run.sh</li>
+          <li>Arguments: $DIRECTORY_PATH$ emacs rulesets/$USER_ARGUMENTS$.xml</li>
+      </ul>
   </ul>
-  <p>That's pretty much it.  Now you can open a Java project and click on Plugins->PMD and
-  a configuration panel will pop up.  You can pick which ruleset you want to run and
-      you can also pick whether you want to run PMD on the current file or on every
-      source file in your project.</p>
-    <p>Note that the source code needs to be compilable before PMD can check it.</p>
+  <p>Now you can right click on a source directory, select the PMD tool and a dialog box will appear.
+ Type in the name of a rule set (e.g. unusedcode). PMD is then executed on the directory you
+ selected with the rule set you specified. Since CodeGuide understands the emacs syntax you can
+ click on the file name and CodeGuide will jump to that file and line number.</p>
+
+    <p>Note: I set this up on Mac OS X. It should work on other unix variations just the same.
+    Of course you need to change the "Executable" setting above to where your PMD is installed.
+    On Windows you need to use the run.bat file instead of run.sh.</p>
+
+    <p>If you haven't heard of CodeGuide before, <a href="http://www.omnicore.com/">check it out</a>.
+ It's a great IDE.</p>
         </subsection>
+
+
       <subsection name="IDEA">
 <p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA External Tool
 works OK.  Here's how to set it up:</p>
