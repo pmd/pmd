@@ -73,7 +73,7 @@ At this time, only one can be used at a time.
 
    </description>
    <properties>
-    <property name="sigma" value="2.5"/>
+    <property name="minimum" value="100"/>
    </properties>
    <example>
 <![CDATA[
@@ -112,7 +112,7 @@ At this time, only one can be used at a time.
 
    </description>
    <properties>
-    <property name="sigma" value="2.5"/>
+    <property name="minimum" value="10"/>
    </properties>
    <example>
 <![CDATA[
@@ -147,7 +147,7 @@ At this time, only one can be used at a time.
 
    </description>
    <properties>
-    <property name="sigma" value="2.5"/>
+    <property name="minimum" value="1000"/>
    </properties>
    <example>
 <![CDATA[
