@@ -7,6 +7,8 @@ update the changelog
 ant dist
 rename jar to pmd-0.2.jar
 cvs add -kb pmd-0.2.jar
+cvs rm pmd-0.1.jar
+cvs ci -m "adding new jar, removing old one"
 cvs rtag -D tomorrow "pmd_release_0_2" pmd
 mkdir c:\tmp\pmd
 cvs export -d c:\tmp\pmd -r pmd_release_0_2 pmd
