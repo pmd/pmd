@@ -6,17 +6,6 @@
 	xmlns:doc="doc"
 	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">  
 
-	<goal name="init-pmd-tag">
-		<taskdef
-			name="pmd"
-			classname="net.sourceforge.pmd.ant.PMDTask">
-			<classpath>
-				<pathelement location="target/classes" />
-				<pathelement location="." />
-			</classpath>
-		</taskdef>
-	</goal>
-
 	<goal name="pmd-site" prereqs="pmd:ruleset-docs">
 		<attainGoal name="site:generate" />
 	</goal>
