@@ -12,9 +12,28 @@ import java.util.*;
 
 public class SymbolTable {
 
+    private List scopes = new ArrayList(); // this will turn into a TreeSet at some point
+
+    public int size() {
+        return scopes.size();
+    }
+
+    public Scope get(int index) {
+        return (Scope)scopes.get(index);
+    }
+
+    public void add(Scope scope) {
+        scopes.add(scope);
+    }
+
+    public void remove(int index) {
+        scopes.remove(index);
+    }
+/*
     private ContextManager cm;
     private LookupController lookupController;
-
+*/
+/*
     public SymbolTable() {
         // this sharing of the scopes ArrayList seems evil.  Time will tell.
         List scopes = new ArrayList();
@@ -22,28 +41,41 @@ public class SymbolTable {
         cm = new ContextManager(scopes);
         cm.openScope(new LocalScope()); // TODO this should be ClassScope, probably
     }
+*/
 
+/*
     public void openScope(Scope scope) {
         cm.openScope(scope);
     }
+*/
 
+/*
     public void leaveScope() {
         cm.leaveScope();
     }
 
+*/
+/*
     public void addDeclaration(NameDeclaration nameDecl) {
         cm.getCurrentScope().addDeclaration(nameDecl);
     }
+*/
 
+/*
     public void lookup(NameOccurrence nameOccurrence) {
         lookupController.lookup(nameOccurrence);
     }
+*/
 
+/*
     public Iterator getUnusedNameDeclarations() {
         return cm.getCurrentScope().getUnusedDeclarations();
     }
 
+*/
+/*
     public Scope getCurrentScope() {
         return cm.getCurrentScope();
     }
+*/
 }

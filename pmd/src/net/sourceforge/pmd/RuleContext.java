@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.symboltable.SymbolTable;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.File;
 import java.io.FileReader;
@@ -21,7 +22,7 @@ public class RuleContext {
 
     private Report report;
     private String sourceCodeFilename;
-    private SymbolTable table;
+    private SymbolFacade builder;
 
     public Report getReport() {
         return report;
@@ -39,12 +40,12 @@ public class RuleContext {
         this.sourceCodeFilename = filename;
     }
 
-    public void setSymbolTable(SymbolTable table) {
-        this.table = table;
+    public void setSymbolTableBuilder(SymbolFacade table) {
+        this.builder = table;
     }
 
-    public SymbolTable getSymbolTable() {
-        return this.table;
+    public SymbolFacade getSymbolTableBuilder() {
+        return this.builder;
     }
 
 

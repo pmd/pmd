@@ -20,6 +20,26 @@ public class SymbolTableTest extends TestCase {
 
     public void testAdd() {
         SymbolTable s = new SymbolTable();
+        s.add(new LocalScope());
+        assertEquals(1,s.size());
+    }
+
+    public void testRemove() {
+        SymbolTable s = new SymbolTable();
+        s.add(new LocalScope());
+        s.remove(0);
+        assertEquals(0,s.size());
+    }
+
+    public void testGet() {
+        SymbolTable s = new SymbolTable();
+        Scope scope = new LocalScope();
+        s.add(scope);
+        assertEquals(scope, s.get(0));
+    }
+/*
+    public void testAdd() {
+        SymbolTable s = new SymbolTable();
         s.addDeclaration(NameDeclarationTest.FOO);
         try {
             s.addDeclaration(NameDeclarationTest.FOO);
@@ -75,4 +95,5 @@ public class SymbolTableTest extends TestCase {
         parent.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
         assertTrue(!parent.getUnusedNameDeclarations().hasNext());
     }
+*/
 }

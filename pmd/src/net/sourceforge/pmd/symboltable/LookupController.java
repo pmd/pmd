@@ -6,23 +6,25 @@
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 
 import java.util.List;
 
 public class LookupController {
 
-    private List scopes;
+    private SymbolTable symbolTable;
 
-    public LookupController(List scopes) {
-        this.scopes = scopes;
+    public LookupController(SymbolTable scopes) {
+        this.symbolTable = scopes;
     }
 
     public void lookup(NameOccurrence nameOccurrence) {
-        lookup(nameOccurrence, scopes.size()-1);
+        lookup(nameOccurrence, symbolTable.size()-1);
     }
 
     private void lookup(NameOccurrence nameOccurrence, int startingDepth) {
-        Scope scope = (Scope)scopes.get(startingDepth);
+        Scope scope = (Scope)symbolTable.get(startingDepth);
         if (!scope.contains(nameOccurrence) && startingDepth>1) {
             lookup(nameOccurrence, startingDepth-1);
         }

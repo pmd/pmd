@@ -52,4 +52,13 @@ public class LocalScope implements Scope {
         }
         return null;
     }
+
+    public String toString() {
+        String result = "";
+        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            result += nameDeclaration.getImage() +",";
+        }
+        return result;
+    }
 }

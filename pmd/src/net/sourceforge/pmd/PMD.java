@@ -14,7 +14,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.swingui.PMDViewer;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
-import net.sourceforge.pmd.symboltable.SymbolTableBuilder;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import javax.swing.*;
 import java.io.*;
@@ -33,10 +33,10 @@ public class PMD {
         try {
             JavaParser parser = new JavaParser(reader);
             ASTCompilationUnit c = parser.CompilationUnit();
-            SymbolTableBuilder stb = new SymbolTableBuilder();
+            SymbolFacade stb = new SymbolFacade();
             stb.initializeWith(c);
-            ctx.setSymbolTable(stb.getSymbolTable());
-            //c.dump("");
+            ctx.setSymbolTableBuilder(stb);
+            c.dump("");
             List acus = new ArrayList();
             acus.add(c);
             ruleSet.apply(acus, ctx);
