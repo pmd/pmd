@@ -83,7 +83,7 @@ public class RuleSetFactory {
                     RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
                     rule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
                 } else {
-                    rule = (Rule) Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue()).newInstance();
+                    rule = (Rule) Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue(), true, classLoader).newInstance();
                     rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
                     rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
                 }
@@ -96,7 +96,7 @@ public class RuleSetFactory {
                     }
 
                     if (node.getNodeName() != null && node.getNodeName().equals("priority")) {
-                        rule.setPriority(Integer.parseInt(node.getFirstChild().getNodeValue()));
+                        rule.setPriority(Integer.parseInt(node.getFirstChild().getNodeValue().trim()));
                     }
 
                     if (node.getNodeName() != null && node.getNodeName().equals("example")) {
