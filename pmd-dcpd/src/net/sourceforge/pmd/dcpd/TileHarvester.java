@@ -48,7 +48,7 @@ public class TileHarvester {
             if (i>0) {
                 nextExpansion = (TileWrapper)space.take(new TileWrapper(null,
                     null,
-                    firstExpansion.jobID,
+                    job.id,
                     TileWrapper.DONE,
                     null,
                     new Integer(originalPosition),

@@ -36,7 +36,7 @@ public class DCPD {
 
             System.out.println("Tokenizing");
             job = new Job("java_lang", new Integer(1));
-            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true), job.id);
+            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\ref", true), job.id);
             System.out.println("Tokenizing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Writing the TokenSetsWrapper to the space");
@@ -44,7 +44,7 @@ public class DCPD {
             System.out.println("Writing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Crunching");
-            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 30);
+            DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 100);
             Results results = dgst.crunch(new CPDListenerImpl());
             System.out.println("Crunching complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 

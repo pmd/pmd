@@ -43,9 +43,9 @@ public class DCPDWorker {
     public void jobAdded(Job job) {
         try {
             currentJob = job;
-            System.out.println("Received a job " + job.name + " , id is " + job.id.intValue());
+            System.out.println("Received a job " + currentJob.name + ", id is " + currentJob.id.intValue());
 
-            tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, job.id), null, 100);
+            tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, currentJob.id), null, 100);
             System.out.println("Read a TokenSetsWrapper with " + tsw.tokenSets.size() + " token lists");
 
             while (true) {
