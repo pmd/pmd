@@ -38,7 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Andriy Rozeluk - AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
+            <li>Andriy Rozeluk - Suggestions for improving UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
             <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
             <li>Pieter Bloemendaal - AvoidReassigningParametersRule bug report</li>

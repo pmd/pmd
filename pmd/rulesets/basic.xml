@@ -435,10 +435,14 @@ public class Bar {
           <property name="xpath">
               <value>
                   <![CDATA[
-    //ResultType[
-    parent::MethodDeclaration[Block/BlockStatement/Statement/ReturnStatement] and
-    @Void='true'
+//ReturnStatement
+ [parent::Statement
+  [parent::BlockStatement
+   [parent::Block
+    [parent::MethodDeclaration/ResultType[@Void='true']
     ]
+   ]
+  ]
                   ]]>
               </value>
           </property>

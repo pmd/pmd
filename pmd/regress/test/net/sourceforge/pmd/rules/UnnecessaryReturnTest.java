@@ -12,7 +12,7 @@ public class UnnecessaryReturnTest extends SimpleAggregatorTst{
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//ResultType[@Void='true' and parent::MethodDeclaration[Block/BlockStatement/Statement/ReturnStatement]]");
+        rule.addProperty("xpath", "//ReturnStatement[parent::Statement[parent::BlockStatement[parent::Block[parent::MethodDeclaration/ResultType[@Void='true']]]]");
     }
 
     public void testAll() {
@@ -20,8 +20,8 @@ public class UnnecessaryReturnTest extends SimpleAggregatorTst{
            new TestDescriptor(TEST1, "bad", 1, rule),
            new TestDescriptor(TEST2, "ok since method is not void", 0, rule),
            new TestDescriptor(TEST3, "ok since return is in sub block", 0, rule),
-           new TestDescriptor(TEST4, "interface methods work ok", 0, rule),
-           new TestDescriptor(TEST5, "abstract methods work ok", 0, rule),
+           new TestDescriptor(TEST4, "interface methods don't have return statements", 0, rule),
+           new TestDescriptor(TEST5, "abstract methods don't have return statements", 0, rule),
        });
     }
 
@@ -56,5 +56,4 @@ public class UnnecessaryReturnTest extends SimpleAggregatorTst{
     "public class Foo {" + PMD.EOL +
     " abstract void bar();" + PMD.EOL +
     "}";
-
 }

@@ -4,6 +4,7 @@ Fixed bug 840926 - AvoidReassigningParametersRule no longer reports a false posi
 Fixed bug 760520 - RuleSetFactory is less strict about whitespace in ruleset.xml files.
 Fixed bug 826805 - JumbledIncrementorRule no longer reports a false positive when a outer loop incrementor is used as an array index
 Fixed bug 845343 - AvoidDuplicateLiterals now picks up cases when a duplicate literal appears in field declarations.
+Implemented RFE 845348 - UnnecessaryReturn yields more useful line numbers now
 Added a ruleset DTD and a ruleset XML Schema.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
