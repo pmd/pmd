@@ -5,23 +5,30 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.rules.DontImportJavaLangRule;
+import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.Rule;
 
 public class DontImportJavaLangRuleTest extends RuleTst {
 
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//ImportDeclaration"
+                + "[starts-with(Name/@Image, 'java.lang')]"
+                + "[not(starts-with(Name/@Image, 'java.lang.ref'))]"
+                + "[not(starts-with(Name/@Image, 'java.lang.reflect'))]");
+    }
+
     public void test1() throws Throwable {
-        Report report = process("DontImportJavaLang1.java", new DontImportJavaLangRule());
-        assertEquals(1, report.size());
+        runTest("DontImportJavaLang1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        Report report = process("DontImportJavaLang2.java", new DontImportJavaLangRule());
-        assertEquals(1, report.size());
+        runTest("DontImportJavaLang2.java", 1, rule);
     }
 
     public void test3() throws Throwable {
-        Report report = process("DontImportJavaLang3.java", new DontImportJavaLangRule());
-        assertTrue(report.isEmpty());
+        runTest("DontImportJavaLang3.java", 0, rule);
     }
 }
