@@ -111,7 +111,6 @@
       <email>purpletech@users.sourceforge.net</email>
       <roles><role>Developer</role></roles>
     </developer>
-
   </developers>
 
   <contributors>
@@ -123,6 +122,9 @@
     </contributor>
     <contributor>
       <name>Peter Friese</name>
+    </contributor>
+    <contributor>
+      <name>Siegfried Goeschl</name>
     </contributor>
   </contributors>
 
