@@ -61,6 +61,13 @@ public class TypeSetTest extends TestCase {
     public void testPrimitiveTypeResolver() throws Throwable {
         TypeSet.Resolver r = new TypeSet.PrimitiveTypeResolver();
         assertEquals(int.class, r.resolve("int"));
+        assertEquals(byte.class, r.resolve("byte"));
+        assertEquals(long.class, r.resolve("long"));
+    }
+
+    public void testVoidTypeResolver() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.VoidResolver();
+        assertEquals(void.class, r.resolve("void"));
     }
     public void testExplicitImportResolver() throws Throwable {
         Set imports = new HashSet();

@@ -93,7 +93,16 @@ public class TypeSet {
         }
     }
 
-        private String pkg;
+    public static class VoidResolver implements Resolver {
+        public Class resolve(String name) throws ClassNotFoundException {
+            if (name.equals("void")) {
+                return void.class;
+            }
+            throw new ClassNotFoundException();
+        }
+    }
+
+    private String pkg;
     private Set imports = new HashSet();
     private List resolvers = new ArrayList();
 
@@ -129,6 +138,8 @@ public class TypeSet {
     }
 
     private void buildResolvers() {
+        resolvers.add(new PrimitiveTypeResolver());
+        resolvers.add(new VoidResolver());
         resolvers.add(new ExplicitImportResolver(imports));
         resolvers.add(new CurrentPackageResolver(pkg));
         resolvers.add(new ImplicitImportResolver());
