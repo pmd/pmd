@@ -7,19 +7,18 @@ import javax.swing.tree.TreePath;
 /**
  *
  * @author Donald A. Leckie
- * @since August 29, 2002
+ * @since September 8, 2002
  * @version $Revision$, $Date$
  */
-class RulePropertyEditingPanelGUI extends RulePropertyEditingPanel implements TreeSelectionListener
+class RuleAllEditingPanelUI extends RuleAllEditingPanel implements TreeSelectionListener
 {
-
 
     /**
      *******************************************************************************
      *
      * @return
      */
-    protected RulePropertyEditingPanelGUI()
+    protected RuleAllEditingPanelUI()
     {
         super();
     }
@@ -36,8 +35,9 @@ class RulePropertyEditingPanelGUI extends RulePropertyEditingPanel implements Tr
 
         if (object instanceof IRulesEditingData)
         {
-            valueChanged((IRulesEditingData) object);
+            getRuleSetEditingPanel().valueChanged((IRulesEditingData) object);
+            getRuleEditingPanel().valueChanged((IRulesEditingData) object);
+            getRulePropertyEditingPanel().valueChanged((IRulesEditingData) object);
         }
     }
-
 }

@@ -33,46 +33,46 @@ class HTMLResultRenderer
         //
         // Write HTML header.
         //
-        writer.write("<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">");
-        writer.write("<html>");
-        writer.write("<head>");
-        writer.write("<meta content=\"text/html; charset=iso-8859-1\">");
-        writer.write("<title>PMD Analysis Results</title>");
-        writer.write("</head>");
+        writer.write("<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">\n");
+        writer.write("<html>\n");
+        writer.write("<head>\n");
+        writer.write("<meta content=\"text/html; charset=iso-8859-1\">\n");
+        writer.write("<title>PMD Analysis Results</title>\n");
+        writer.write("</head>\n");
 
         //
         // Write the body.
         //
-        writer.write("<body>");
+        writer.write("<body>\n");
 
         //
         // Write the name of the file that was analyzed.
         //
-        writer.write("<h3><center><font color=\"blue\">PMD Analysis Results</font></center></h3>");
+        writer.write("<h3><center><font color=\"blue\">PMD Analysis Results</font></center></h3>\n");
         writer.write("<b>Source File:</b> ");
         writer.write(fileName);
-        writer.write("<br>");
+        writer.write("\n<br>\n");
 
         //
         // Create a table.
         //
         if (violations.hasNext() == false)
         {
-            writer.write("<p>No rule violations detected.");
+            writer.write("<p>No rule violations detected.\n");
         }
         else
         {
-            writer.write("<table bgcolor=\"#FFFFD9\" border>");
+            writer.write("<table bgcolor=\"#FFFFD9\" border>\n");
 
             //
             // Create the column headings.
             //
-            writer.write("<tr>");
-            writer.write("<th><b>Line<br>No.</b></th>");
-            writer.write("<th><b>Rule</b></th>");
-            writer.write("<th><b>Description</b></th>");
-            writer.write("<th><b>Example</b></th>");
-            writer.write("</tr>");
+            writer.write("<tr>\n");
+            writer.write("<th><b>Line<br>No.</b></th>\n");
+            writer.write("<th><b>Rule</b></th>\n");
+            writer.write("<th><b>Description</b></th>\n");
+            writer.write("<th><b>Example</b></th>\n");
+            writer.write("</tr>\n");
 
             while (violations.hasNext())
             {
@@ -82,14 +82,14 @@ class HTMLResultRenderer
                 //
                 // Begin table row.
                 //
-                writer.write("<tr>");
+                writer.write("<tr>\n");
 
                 //
                 // Line Number
                 //
-                writer.write("<td align=\"center\" valign=\"top\">");
+                writer.write("<td align=\"center\" valign=\"top\">\n");
                 writer.write(String.valueOf(ruleViolation.getLine()));
-                writer.write("</td>");
+                writer.write("\n</td>\n");
 
                 //
                 // Rule Message
@@ -105,9 +105,9 @@ class HTMLResultRenderer
                     ruleMessage = ruleMessage.replace('\n', ' ').trim();
                 }
 
-                writer.write("<td align=\"left\" valign=\"top\">");
+                writer.write("<td align=\"left\" valign=\"top\">\n");
                 writer.write(ruleMessage);
-                writer.write("</td>");
+                writer.write("\n</td>\n");
 
                 //
                 // Rule Description
@@ -123,9 +123,9 @@ class HTMLResultRenderer
                     description = description.replace('\n', ' ').trim();
                 }
 
-                writer.write("<td align=\"left\" valign=\"top\">");
+                writer.write("<td align=\"left\" valign=\"top\">\n");
                 writer.write(description);
-                writer.write("</td>");
+                writer.write("\n</td>\n");
 
                 //
                 // Rule Example
@@ -134,27 +134,27 @@ class HTMLResultRenderer
 
                 if ((example != null) && (example.length() > 0))
                 {
-                    writer.write("<td align=\"left\" valign=\"top\">");
-                    writer.write("<pre>");
+                    writer.write("<td align=\"left\" valign=\"top\">\n");
+                    writer.write("<pre>\n");
                     writer.write(example);
-                    writer.write("</pre>");
-                    writer.write("</td>");
+                    writer.write("\n</pre>\n");
+                    writer.write("</td>\n");
                 }
 
                 //
                 // End table row.
                 //
-                writer.write("</tr>");
+                writer.write("</tr>\n");
             }
 
-            writer.write("</table>");
+            writer.write("</table>\n");
         }
 
         //
         // Closeup.
         //
-        writer.write("</body>");
-        writer.write("</html>");
+        writer.write("</body>\n");
+        writer.write("</html>\n");
 
         return writer.toString();
     }

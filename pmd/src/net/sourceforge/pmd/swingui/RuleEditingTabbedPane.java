@@ -15,9 +15,10 @@ import javax.swing.UIManager;
 public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionListener
 {
 
-    private RuleSetEditingPanelGUI m_ruleSetEditingPanel;
-    private RuleEditingPanelGUI m_ruleEditingPanel;
-    private RulePropertyEditingPanelGUI m_rulePropertyEditingPanel;
+    private RuleAllEditingPanelUI m_ruleAllEditingPanel;
+    private RuleSetEditingPanelUI m_ruleSetEditingPanel;
+    private RuleEditingPanelUI m_ruleEditingPanel;
+    private RulePropertyEditingPanelUI m_rulePropertyEditingPanel;
 
     /**
      *******************************************************************************
@@ -28,15 +29,18 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
     {
         super(JTabbedPane.BOTTOM);
 
-        m_ruleSetEditingPanel = new RuleSetEditingPanelGUI();
-        m_ruleEditingPanel = new RuleEditingPanelGUI();
-        m_rulePropertyEditingPanel = new RulePropertyEditingPanelGUI();
+        m_ruleAllEditingPanel = new RuleAllEditingPanelUI();
+        m_ruleSetEditingPanel = new RuleSetEditingPanelUI();
+        m_ruleEditingPanel = new RuleEditingPanelUI();
+        m_rulePropertyEditingPanel = new RulePropertyEditingPanelUI();
 
+        addTab("All", m_ruleAllEditingPanel);
         addTab("Rule Set", m_ruleSetEditingPanel);
         addTab("Rule", m_ruleEditingPanel);
         addTab("Property", m_rulePropertyEditingPanel);
         setFont(UIManager.getFont("tabFont"));
 
+        rulesTree.addTreeSelectionListener(m_ruleAllEditingPanel);
         rulesTree.addTreeSelectionListener(m_ruleSetEditingPanel);
         rulesTree.addTreeSelectionListener(m_ruleEditingPanel);
         rulesTree.addTreeSelectionListener(m_rulePropertyEditingPanel);
@@ -50,24 +54,27 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
      */
     public void valueChanged(TreeSelectionEvent event)
     {
-        TreePath treePath = event.getPath();
-        Object component = treePath.getLastPathComponent();
-
-        if (component instanceof RulesTreeNode)
+        if (this.getSelectedComponent() != m_ruleAllEditingPanel)
         {
-            RulesTreeNode treeNode = (RulesTreeNode) component;
+            TreePath treePath = event.getPath();
+            Object component = treePath.getLastPathComponent();
 
-            if (treeNode.isRuleSet())
+            if (component instanceof RulesTreeNode)
             {
-                setSelectedComponent(m_ruleSetEditingPanel);
-            }
-            else if (treeNode.isRule())
-            {
-                setSelectedComponent(m_ruleEditingPanel);
-            }
-            else if (treeNode.isProperty())
-            {
-                setSelectedComponent(m_rulePropertyEditingPanel);
+                RulesTreeNode treeNode = (RulesTreeNode) component;
+
+                if (treeNode.isRuleSet())
+                {
+                    setSelectedComponent(m_ruleSetEditingPanel);
+                }
+                else if (treeNode.isRule())
+                {
+                    setSelectedComponent(m_ruleEditingPanel);
+                }
+                else if (treeNode.isProperty())
+                {
+                    setSelectedComponent(m_rulePropertyEditingPanel);
+                }
             }
         }
     }

@@ -33,6 +33,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
     private PMD m_pmd;
     private RuleContext m_ruleContext;
     private RuleSet m_ruleSet;
+    private String m_htmlText;
 
     /**
      ********************************************************************************
@@ -107,6 +108,30 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
 
     /**
      ********************************************************************************
+     *
+     * @return
+     */
+    protected String getHTMLText()
+    {
+        return m_htmlText;
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @return
+     */
+    protected String getPlainText()
+    {
+        File file = m_directoryTable.getSelectedSourceFile();
+        String filePath = file.getPath();
+        TextRenderer renderer = new TextRenderer();
+
+        return renderer.render(filePath, m_ruleContext.getReport());
+    }
+
+    /**
+     ********************************************************************************
      ********************************************************************************
      ********************************************************************************
      */
@@ -147,14 +172,13 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
                 notifyJobThreadStatus(event);
 
                 HTMLResultRenderer renderer;
-                String htmlText;
 
                 renderer = new HTMLResultRenderer();
-                htmlText = renderer.render(m_file.getPath(), m_ruleContext.getReport());
+                m_htmlText = renderer.render(m_file.getPath(), m_ruleContext.getReport());
                 event = new JobThreadEvent(this, "Storing HTML page into viewer.  Please wait...");
 
                 notifyJobThreadStatus(event);
-                setText(htmlText);
+                setText(m_htmlText);
             }
             catch (FileNotFoundException exception)
             {

@@ -7,6 +7,12 @@ import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
+/**
+ *
+ * @author Donald A. Leckie
+ * @since September 5, 2002
+ * @version $Revision$, $Date$
+ */
 class Utilities
 {
 

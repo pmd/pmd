@@ -2,6 +2,10 @@ package net.sourceforge.pmd.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +16,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -47,7 +52,7 @@ public class PMDViewer extends JFrame
     private ResultsViewer m_resultsViewer;
     private JScrollPane m_resultsViewerScrollPane;
     private JSplitPane m_mainSplitPane;
-    private static PMDViewer m_pmdViewer;
+    private PMDClipboard m_clipboardOwner = new PMDClipboard();
 
     /**
      *******************************************************************************
@@ -56,8 +61,6 @@ public class PMDViewer extends JFrame
     private PMDViewer()
     {
         super("PMD Viewer");
-
-        m_pmdViewer = this;
 
         int windowWidth = 1200;
         int windowHeight = 1000;
@@ -90,6 +93,9 @@ public class PMDViewer extends JFrame
         createResultsViewerScrollPane();
         createMainSplitPane();
         getContentPane().add(createContentPanel(windowMargin));
+
+        ImageIcon image = Utilities.getImageIcon("icons/pmdLogo.jpg");
+        setIconImage(image.getImage());
     }
 
     /**
@@ -103,7 +109,6 @@ public class PMDViewer extends JFrame
        setJMenuBar(menuBar);
        menuBar.add(new FileMenu(menuBar));
        menuBar.add(new EditMenu(menuBar));
-       menuBar.add(new ViewMenu(menuBar));
        menuBar.add(new HelpMenu(menuBar));
     }
 
@@ -228,22 +233,12 @@ public class PMDViewer extends JFrame
     {
         if (m_preferences == null)
         {
-            m_preferences = new Preferences();
+            m_preferences = new Preferences(this);
 
             m_preferences.load(this);
         }
 
         return m_preferences;
-    }
-
-    /**
-     *********************************************************************************
-     *
-     * @return
-     */
-    protected static final JFrame getWindow()
-    {
-        return m_pmdViewer;
     }
 
     /**
@@ -405,26 +400,26 @@ public class PMDViewer extends JFrame
             // Copy Results menu item
             //
             icon = UIManager.getIcon("copy");
-            menuItem = new JMenuItem("Copy Results", icon);
-            menuItem.addActionListener((ActionListener) new CopyResultsActionListener());
+            menuItem = new JMenuItem("Copy Results as HTML", icon);
+            menuItem.addActionListener((ActionListener) new CopyHTMLResultsActionListener());
             menuItem.setMnemonic('C');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
+            add(menuItem);
+
+            //
+            // Copy Results menu item
+            //
+            icon = UIManager.getIcon("copy");
+            menuItem = new JMenuItem("Copy Results as Text", icon);
+            menuItem.addActionListener((ActionListener) new CopyTextResultsActionListener());
+            menuItem.setMnemonic('Y');
+            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
             add(menuItem);
 
             //
             // Separator
             //
             add(new JSeparator());
-
-            //
-            // Rule Properties menu item
-            //
-            icon = UIManager.getIcon("edit");
-            menuItem = new JMenuItem("Rules...", icon);
-            menuItem.addActionListener((ActionListener) new EditRulesActionListener());
-            menuItem.setMnemonic('R');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
-            add(menuItem);
 
             //
             // Preferences menu item
@@ -435,39 +430,15 @@ public class PMDViewer extends JFrame
             menuItem.setMnemonic('f');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_MASK));
             add(menuItem);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class ViewMenu extends JMenu
-    {
-
-        /**
-         ********************************************************************
-         *
-         * @param menuBar
-         */
-        private ViewMenu(JMenuBar menuBar)
-        {
-            super("View");
-
-            setMnemonic('V');
-
-            Icon icon;
-            JMenuItem menuItem;
 
             //
-            // Copy Results menu item
+            // Rule Properties menu item
             //
-            icon = UIManager.getIcon("view");
-            menuItem = new JMenuItem("Rules", icon);
-            menuItem.addActionListener((ActionListener) new ViewRulesActionListener());
-            menuItem.setMnemonic('U');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_MASK));
+            icon = UIManager.getIcon("edit");
+            menuItem = new JMenuItem("Rules...", icon);
+            menuItem.addActionListener((ActionListener) new EditRulesActionListener());
+            menuItem.setMnemonic('R');
+            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
             add(menuItem);
         }
     }
@@ -530,6 +501,7 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            MessageDialog.show(PMDViewer.this, "What should we save?  The results?");
         }
     }
 
@@ -543,6 +515,7 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            MessageDialog.show(PMDViewer.this, "What should we save?  The results?");
         }
     }
 
@@ -556,6 +529,7 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            MessageDialog.show(PMDViewer.this, "Printing not available yet.");
         }
     }
 
@@ -569,6 +543,7 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            MessageDialog.show(PMDViewer.this, "Page setup not available yet.");
         }
     }
 
@@ -591,10 +566,48 @@ public class PMDViewer extends JFrame
      *********************************************************************************
      *********************************************************************************
      */
-    private class CopyResultsActionListener implements ActionListener
+    private class CopyHTMLResultsActionListener implements ActionListener
     {
 
         public void actionPerformed(ActionEvent event)
+        {
+            String htmlText = m_resultsViewer.getHTMLText();
+            Clipboard clipboard = PMDViewer.this.getToolkit().getSystemClipboard();
+            StringSelection contents = new StringSelection(htmlText);
+            clipboard.setContents(contents, m_clipboardOwner);
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class CopyTextResultsActionListener implements ActionListener
+    {
+
+        public void actionPerformed(ActionEvent event)
+        {
+            String text = m_resultsViewer.getPlainText();
+            Clipboard clipboard = PMDViewer.this.getToolkit().getSystemClipboard();
+            StringSelection contents = new StringSelection(text);
+            clipboard.setContents(contents, m_clipboardOwner);
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class PMDClipboard implements ClipboardOwner
+    {
+
+        /**
+         ************************************************************************
+         *
+         */
+        public void lostOwnership(Clipboard clipboard, Transferable contents)
         {
         }
     }
@@ -633,20 +646,7 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
-            Preferences preferences = getPreferences();
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class ViewRulesActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
+            (new PreferencesEditor(PMDViewer.this)).setVisible(true);
         }
     }
 
@@ -660,6 +660,7 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            MessageDialog.show(PMDViewer.this, "Online Help not available yet.");
         }
     }
 

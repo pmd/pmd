@@ -79,7 +79,7 @@ public class RuleSetEditingPanel extends JPanel
         panel.add(m_descriptionLabel);
 
         // Rule Set Description Text
-        m_description = ComponentFactory.createTextArea();
+        m_description = ComponentFactory.createTextArea("");
 
         // Rule Set Description Scroll Pane;
         m_descriptionScrollPane = ComponentFactory.createScrollPane(m_description);
@@ -185,6 +185,7 @@ public class RuleSetEditingPanel extends JPanel
         m_include.setSelected(false);
         m_include.setEnabled(false);
 
+        m_currentData = null;
         m_enabled = false;
     }
 
@@ -226,7 +227,18 @@ public class RuleSetEditingPanel extends JPanel
          */
         public Dimension preferredLayoutSize(Container parent)
         {
-            return new Dimension(100, 100);
+            Dimension size;
+            int parentWidth;
+
+            size = layoutContainer(parent, true);
+            parentWidth = parent.getWidth();
+
+            if (size.width > parentWidth)
+            {
+                size.width = parentWidth;
+            }
+
+            return size;
         }
 
         /**
@@ -238,7 +250,12 @@ public class RuleSetEditingPanel extends JPanel
          */
         public Dimension minimumLayoutSize(Container parent)
         {
-            return new Dimension(100, 100);
+            Dimension size;
+
+            size = layoutContainer(parent, true);
+            size.width = 50;
+
+            return size;
         }
 
         /**
@@ -248,6 +265,20 @@ public class RuleSetEditingPanel extends JPanel
          * @param parent The component which needs to be laid out.
          */
         public void layoutContainer(Container parent)
+        {
+            layoutContainer(parent, false);
+        }
+
+        /**
+         **************************************************************************
+         * Lays out the container in the specified panel.
+         *
+         * @param parent The component which needs to be laid out.
+         * @param computePanelSize
+         *
+         * @return
+         */
+        private Dimension layoutContainer(Container parent, boolean computePanelSize)
         {
             Dimension containerSize;
             Insets containerInsets;
@@ -384,6 +415,24 @@ public class RuleSetEditingPanel extends JPanel
                                 ? activeLabelHeight
                                 : activeHeight;
 
+            if (computePanelSize)
+            {
+                int panelWidth = containerInsets.left
+                               + firstColumnWidth
+                               + columnSpacing
+                               + secondColumnWidth
+                               + containerInsets.right;
+                int panelHeight = containerInsets.top
+                                + firstLineHeight
+                                + lineSpacing
+                                + secondLineHeight
+                                + lineSpacing
+                                + thirdLineHeight
+                                + containerInsets.bottom;
+
+                return new Dimension(panelWidth, panelHeight);
+            }
+
             // Layout components
             int x;
             int y;
@@ -422,6 +471,8 @@ public class RuleSetEditingPanel extends JPanel
             y = containerInsets.top + firstLineHeight + secondLineHeight + (lineSpacing * 2);
             yOffset = (thirdLineHeight - activeHeight) / 2;
             m_include.setBounds(x, y + yOffset, activeWidth, activeHeight);
+
+            return null;
         }
     }
 }

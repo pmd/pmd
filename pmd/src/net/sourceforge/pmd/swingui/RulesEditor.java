@@ -94,8 +94,8 @@ class RulesEditor extends JDialog
         JTabbedPane editingTabbedPane = new RuleEditingTabbedPane(m_tree);
         JSplitPane splitPane = createSplitPane(treeScrollPane, editingTabbedPane);
         JPanel buttonPanel = createButtonPanel();
-        JPanel contentPanel = new JPanel(new BorderLayout());
 
+        JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.add(splitPane, BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -140,28 +140,24 @@ class RulesEditor extends JDialog
         Preferences preferences;
         String ruleSetDirectoryName;
         File ruleSetDirectory;
+        List ruleSetList;
+        boolean getRegisteredRuleSets;
 
         preferences = m_pmdViewer.getPreferences();
         ruleSetDirectoryName = preferences.getCurrentRuleSetDirectory();
         ruleSetDirectory = new File(ruleSetDirectoryName);
+        ruleSetList = new ArrayList();
+        getRegisteredRuleSets = false;
 
         if (ruleSetDirectory.exists() == false)
         {
-            String template = "The rule set directory \"{0}\" does not exist.  "
-                            + "Verify that the directory name is correct in the Preferences.";
-            Object[] args = {ruleSetDirectoryName};
-            String message = MessageFormat.format(template, args);
-            PMDException exception = new PMDException(message);
-
-            exception.fillInStackTrace();
-
-            throw exception;
+            ruleSetDirectory.mkdirs();
+            getRegisteredRuleSets = true;
         }
-
-        if (ruleSetDirectory.isDirectory() == false)
+        else if (ruleSetDirectory.isDirectory() == false)
         {
             String template = "The rule set directory name \"{0}\" is not a directory.  "
-                            + "Verify that the directory name is correct in the Preferences.";
+                            + "Verify that the directory name is correct in the Preferences Editor.";
             Object[] args = {ruleSetDirectoryName};
             String message = MessageFormat.format(template, args);
             PMDException exception = new PMDException(message);
@@ -170,47 +166,81 @@ class RulesEditor extends JDialog
 
             throw exception;
         }
-
-        File[] ruleSetFiles = ruleSetDirectory.listFiles(new XMLFileFilter());
-        List ruleSetList = new ArrayList();
-
-        for (int n = 0; n < ruleSetFiles.length; n++)
+        else
         {
-            FileInputStream inputStream = null;
+            File[] ruleSetFiles = ruleSetDirectory.listFiles(new XMLFileFilter());
 
+            if (ruleSetFiles.length == 0)
+            {
+                getRegisteredRuleSets = true;
+            }
+            else
+            {
+                for (int n = 0; n < ruleSetFiles.length; n++)
+                {
+                    FileInputStream inputStream = null;
+
+                    try
+                    {
+                        RuleSetReader ruleSetReader;
+
+                        inputStream = new FileInputStream(ruleSetFiles[n]);
+                        ruleSetReader = new RuleSetReader(inputStream);
+
+                        ruleSetList.add(ruleSetReader.read());
+                    }
+                    catch (FileNotFoundException exception)
+                    {
+                        String template = "Could not open file \"{0}\".  The file does not exist or the path may be incorrect.";
+                        Object[] args = {ruleSetFiles[n].getName()};
+                        String message = MessageFormat.format(template, args);
+                        PMDException pmdException = new PMDException(message, exception);
+
+                        pmdException.fillInStackTrace();
+
+                        throw pmdException;
+                    }
+                    finally
+                    {
+                        if (inputStream != null)
+                        {
+                            try
+                            {
+                                inputStream.close();
+                            }
+                            catch (IOException exception)
+                            {
+                                exception.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //
+        // If no rule sets were found then load the registered rule sets.
+        //
+        if (getRegisteredRuleSets)
+        {
             try
             {
-                RuleSetReader ruleSetReader;
+                RuleSetFactory ruleSetFactory = new RuleSetFactory();
+                Iterator ruleSets = ruleSetFactory.getRegisteredRuleSets();
 
-                inputStream = new FileInputStream(ruleSetFiles[n]);
-                ruleSetReader = new RuleSetReader(inputStream);
-
-                ruleSetList.add(ruleSetReader.read());
+                while (ruleSets.hasNext())
+                {
+                    ruleSetList.add(ruleSets.next());
+                }
             }
-            catch (FileNotFoundException exception)
+            catch (RuleSetNotFoundException exception)
             {
-                String template = "Could not open file \"{0}\".  The file does not exist or the path may be incorrect.";
-                Object[] args = {ruleSetFiles[n].getName()};
-                String message = MessageFormat.format(template, args);
+                String message = "Rule Set Not Found";
                 PMDException pmdException = new PMDException(message, exception);
 
                 pmdException.fillInStackTrace();
 
                 throw pmdException;
-            }
-            finally
-            {
-                if (inputStream != null)
-                {
-                    try
-                    {
-                        inputStream.close();
-                    }
-                    catch (IOException exception)
-                    {
-                        exception.printStackTrace();
-                    }
-                }
             }
         }
 
@@ -331,48 +361,13 @@ class RulesEditor extends JDialog
      *******************************************************************************
      *
      */
-    private JButton createSaveButton()
-    {
-        JButton saveButton = ComponentFactory.createButton("Save");
-
-        saveButton.setForeground(Color.white);
-        saveButton.setBackground(UIManager.getColor("pmdGreen"));
-        saveButton.addActionListener(new SaveButtonActionListener());
-
-        return saveButton;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     */
-    private JButton createCancelButton()
-    {
-        JButton cancelButton = ComponentFactory.createButton("Cancel");
-
-        cancelButton.setForeground(Color.white);
-        cancelButton.setBackground(Color.red);
-        cancelButton.addActionListener(new CancelButtonActionListener());
-
-        return cancelButton;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     */
     private JPanel createButtonPanel()
     {
-        JButton saveButton = createSaveButton();
-        JButton cancelButton = createCancelButton();
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 10));
-        EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.RAISED);
+        ActionListener saveActionListener = new SaveButtonActionListener();
+        ActionListener cancelActionListener = new CancelButtonActionListener();
 
-        buttonPanel.setBorder(etchedBorder);
-        buttonPanel.add(saveButton);
-        buttonPanel.add(cancelButton);
-
-        return buttonPanel;
+        return ComponentFactory.createSaveCancelButtonPanel(saveActionListener,
+                                                            cancelActionListener);
     }
 
     /**

@@ -163,6 +163,7 @@ public class RulePropertyEditingPanel extends JPanel
         m_value.setEnabled(false);
         m_value.setBackground(background);
 
+        m_currentData = null;
         m_enabled = false;
     }
 
@@ -204,7 +205,18 @@ public class RulePropertyEditingPanel extends JPanel
          */
         public Dimension preferredLayoutSize(Container parent)
         {
-            return new Dimension(100, 100);
+            Dimension size;
+            int parentWidth;
+
+            size = layoutContainer(parent, true);
+            parentWidth = parent.getWidth();
+
+            if (size.width > parentWidth)
+            {
+                size.width = parentWidth;
+            }
+
+            return size;
         }
 
         /**
@@ -216,7 +228,12 @@ public class RulePropertyEditingPanel extends JPanel
          */
         public Dimension minimumLayoutSize(Container parent)
         {
-            return new Dimension(100, 100);
+            Dimension size;
+
+            size = layoutContainer(parent, true);
+            size.width = 50;
+
+            return size;
         }
 
         /**
@@ -226,6 +243,20 @@ public class RulePropertyEditingPanel extends JPanel
          * @param parent The component which needs to be laid out.
          */
         public void layoutContainer(Container parent)
+        {
+            layoutContainer(parent, false);
+        }
+
+        /**
+         **************************************************************************
+         * Lays out the container in the specified panel.
+         *
+         * @param parent The component which needs to be laid out.
+         * @param computePanelSize
+         *
+         * @return
+         */
+        private Dimension layoutContainer(Container parent, boolean computePanelSize)
         {
             Dimension containerSize;
             Insets containerInsets;
@@ -323,6 +354,22 @@ public class RulePropertyEditingPanel extends JPanel
             int firstLineHeight = (nameHeight > nameLabelHeight) ? nameHeight : nameLabelHeight;
             int secondLineHeight = (valueHeight > valueLabelHeight) ? valueHeight : valueLabelHeight;
 
+            if (computePanelSize)
+            {
+                int panelWidth = containerInsets.left
+                               + firstColumnWidth
+                               + columnSpacing
+                               + secondColumnWidth
+                               + containerInsets.right;
+                int panelHeight = containerInsets.top
+                                + firstLineHeight
+                                + lineSpacing
+                                + secondLineHeight
+                                + containerInsets.bottom;
+
+                return new Dimension(panelWidth, panelHeight);
+            }
+
             // Layout components
             int x;
             int y;
@@ -349,6 +396,8 @@ public class RulePropertyEditingPanel extends JPanel
             x = containerInsets.left + firstColumnWidth + columnSpacing;
             y = containerInsets.top + firstLineHeight + lineSpacing;
             m_value.setBounds(x, y, secondColumnWidth, valueHeight);
+
+            return null;
         }
     }
 }

@@ -96,11 +96,10 @@ class MessageDialog extends JDialog implements JobThreadListener
         basePanel.setLayout(new BorderLayout());
         getContentPane().add(basePanel, BorderLayout.CENTER);
 
-        m_messageArea = ComponentFactory.createTextArea();
+        m_messageArea = ComponentFactory.createTextArea(message);
 
         m_messageArea.setFont(UIManager.getFont("messageFont"));
         m_messageArea.setEditable(false);
-        m_messageArea.setText(message);
         basePanel.add(m_messageArea, BorderLayout.CENTER);
     }
 

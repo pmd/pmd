@@ -24,10 +24,12 @@ import net.sourceforge.pmd.PMDException;
 class Preferences
 {
 
+    private PMDViewer m_pmdViewer;
     private Properties m_preferences = new Properties();
     private String m_defaultUserRuleSetDirectory;
     private String m_defaultSharedRuleSetDirectory;
     private String m_defaultCurrentRuleSetDirectory;
+    private String m_preferencesPath;
 
     // Constants
     protected static final String USER_RULE_SET_DIRECTORY = "user_rule_set_directory";
@@ -42,7 +44,7 @@ class Preferences
      *
      * @return
      */
-    protected Preferences()
+    protected Preferences(PMDViewer pmdViewer)
     {
         String path;
 
@@ -68,22 +70,33 @@ class Preferences
         m_defaultSharedRuleSetDirectory = path;
 
         setRuleSetDirectory(SHARED_RULE_SET_DIRECTORY, path);
+
+        //
+        // Preferences path.
+        //
+        getPreferencesPath();
     }
 
 
     /**
      *******************************************************************************
      *
+     * @param pmdViewer
+     *
      * @return
      */
-    protected boolean load(PMDViewer pmdViewer)
+    protected void getPreferencesPath()
     {
-        String path = System.getProperty("user.home") + File.separator + "pmd" + File.separator + "pmd.preferences";
-        File file = new File(path);
+        m_preferencesPath = System.getProperty("user.home")
+                          + File.separator
+                          + "pmd"
+                          + File.separator
+                          + "pmd.preferences";
+
+        File file = new File(m_preferencesPath);
 
         if (file.exists() == false)
         {
-            boolean tryWorkingDirectory = false;
             File directory = file.getParentFile();
 
             try
@@ -93,39 +106,26 @@ class Preferences
             }
             catch (IOException exception)
             {
-                String template = "Could not create file \"{0}\" in your home directory \"{1}\".  Will try your working directory.";
+                String template = "Could not create file \"{0}\" in your home directory \"{1}\".";
                 Object[] args = {"pmd.preferences", directory};
                 String message = MessageFormat.format(template, args);
 
-                MessageDialog.show(pmdViewer, message, exception);
-
-                tryWorkingDirectory = true;
-            }
-
-            if (tryWorkingDirectory)
-            {
-                path = System.getProperty("user.dir") + File.separator + "pmd" + File.separator + "pmd.preferences";
-                file = new File(path);
-                directory = file.getParentFile();
-
-                try
-                {
-                    directory.mkdirs();
-                    file.createNewFile();
-                }
-                catch (IOException exception)
-                {
-                    String template = "Could not create file \"{0}\" in your working directory \"{1}\".";
-                    Object[] args = {"pmd.preferences", directory};
-                    String message = MessageFormat.format(template, args);
-
-                    MessageDialog.show(pmdViewer, message, exception);
-
-                    return false;
-                }
+                MessageDialog.show(m_pmdViewer, message, exception);
             }
         }
+    }
 
+
+    /**
+     *******************************************************************************
+     *
+     * @param pmdViewer
+     *
+     * @return
+     */
+    protected boolean load(PMDViewer pmdViewer)
+    {
+        File file = new File(m_preferencesPath);
         FileInputStream inputStream = null;
 
         try
@@ -161,7 +161,7 @@ class Preferences
         catch (IOException exception)
         {
             String template = "Could not load file \"{0}\" from directory \"{1}\".";
-            Object[] args = {"pmd.preferences", path};
+            Object[] args = {"pmd.preferences", m_preferencesPath};
             String message = MessageFormat.format(template, args);
 
             MessageDialog.show(pmdViewer, message, exception);
@@ -188,16 +188,14 @@ class Preferences
      *******************************************************************************
      *
      */
-    private void savePreferences()
+    protected void save()
         throws PMDException
     {
         FileOutputStream outputStream = null;
-        String path = null;
 
         try
         {
-            path = System.getProperty("user.home") + File.separator + "pmd.preferences";
-            outputStream = new FileOutputStream(path);
+            outputStream = new FileOutputStream(m_preferencesPath);
 
             m_preferences.store(outputStream, null);
         }
@@ -205,12 +203,12 @@ class Preferences
         {
             try
             {
-                (new File(path)).createNewFile();
+                (new File(m_preferencesPath)).createNewFile();
             }
             catch (IOException ioException)
             {
                 String template = "Could not find your \"{0}\" file in your home directory \"{1}\".";
-                Object[] args = {"pmd.preferences", path};
+                Object[] args = {"pmd.preferences", m_preferencesPath};
                 String message = MessageFormat.format(template, args);
                 PMDException pmdException = new PMDException(message, ioException);
 
@@ -222,7 +220,7 @@ class Preferences
         catch (IOException exception)
         {
             String template = "Could not save your \"{0}\" file in your home directory \"{1}\".";
-            Object[] args = {"pmd.preferences", path};
+            Object[] args = {"pmd.preferences", m_preferencesPath};
             String message = MessageFormat.format(template, args);
             PMDException pmdException = new PMDException(message, exception);
 

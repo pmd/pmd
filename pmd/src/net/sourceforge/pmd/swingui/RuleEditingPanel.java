@@ -103,7 +103,7 @@ public class RuleEditingPanel extends JPanel
         panel.add(m_messageLabel);
 
         // Rule Message Text
-        m_message = ComponentFactory.createTextArea();
+        m_message = ComponentFactory.createTextArea("");
 
         // Rule Message Scroll Pane;
         m_messageScrollPane = ComponentFactory.createScrollPane(m_message);
@@ -116,7 +116,7 @@ public class RuleEditingPanel extends JPanel
         panel.add(m_descriptionLabel);
 
         // Rule Description Text
-        m_description = ComponentFactory.createTextArea();
+        m_description = ComponentFactory.createTextArea("");
 
         // Rule Description Scroll Pane;
         m_descriptionScrollPane = ComponentFactory.createScrollPane(m_description);
@@ -129,7 +129,7 @@ public class RuleEditingPanel extends JPanel
         panel.add(m_exampleLabel);
 
         // Rule Example Text
-        m_example = ComponentFactory.createTextArea();
+        m_example = ComponentFactory.createTextArea("");
         m_example.setFont(UIManager.getFont("codeFont"));
 
         // Rule Example Scroll Pane;
@@ -245,6 +245,10 @@ public class RuleEditingPanel extends JPanel
         m_message.setEnabled(false);
         m_message.setBackground(background);
 
+        m_className.setText("");
+        m_className.setEnabled(false);
+        m_className.setBackground(background);
+
         m_description.setText("");
         m_description.setEnabled(false);
         m_description.setBackground(background);
@@ -256,6 +260,7 @@ public class RuleEditingPanel extends JPanel
         m_include.setSelected(false);
         m_include.setEnabled(false);
 
+        m_currentData = null;
         m_enabled = false;
     }
 
@@ -297,7 +302,18 @@ public class RuleEditingPanel extends JPanel
          */
         public Dimension preferredLayoutSize(Container parent)
         {
-            return parent.getSize();
+            Dimension size;
+            int parentWidth;
+
+            size = layoutContainer(parent, true);
+            parentWidth = parent.getWidth();
+
+            if (size.width > parentWidth)
+            {
+                size.width = parentWidth;
+            }
+
+            return size;
         }
 
         /**
@@ -309,7 +325,12 @@ public class RuleEditingPanel extends JPanel
          */
         public Dimension minimumLayoutSize(Container parent)
         {
-            return new Dimension(100, 100);
+            Dimension size;
+
+            size = layoutContainer(parent, true);
+            size.width = 50;
+
+            return size;
         }
 
         /**
@@ -319,6 +340,20 @@ public class RuleEditingPanel extends JPanel
          * @param parent The component which needs to be laid out.
          */
         public void layoutContainer(Container parent)
+        {
+            layoutContainer(parent, false);
+        }
+
+        /**
+         **************************************************************************
+         * Lays out the container in the specified panel.
+         *
+         * @param parent The component which needs to be laid out.
+         * @param computePanelSize
+         *
+         * @return
+         */
+        private Dimension layoutContainer(Container parent, boolean computePanelSize)
         {
             Dimension containerSize;
             Insets containerInsets;
@@ -538,6 +573,30 @@ public class RuleEditingPanel extends JPanel
                                 ? activeLabelHeight
                                 : activeHeight;
 
+            if (computePanelSize)
+            {
+                int panelWidth = containerInsets.left
+                               + firstColumnWidth
+                               + columnSpacing
+                               + secondColumnWidth
+                               + containerInsets.right;
+                int panelHeight = containerInsets.top
+                                + firstLineHeight
+                                + lineSpacing
+                                + secondLineHeight
+                                + lineSpacing
+                                + thirdLineHeight
+                                + lineSpacing
+                                + fourthLineHeight
+                                + lineSpacing
+                                + fifthLineHeight
+                                + lineSpacing
+                                + sixthLineHeight
+                                + containerInsets.bottom;
+
+                return new Dimension(panelWidth, panelHeight);
+            }
+
             // Layout components
             int x;
             int y;
@@ -602,6 +661,8 @@ public class RuleEditingPanel extends JPanel
             x = containerInsets.left + firstColumnWidth + columnSpacing;
             yOffset = (sixthLineHeight - activeHeight) / 2;
             m_include.setBounds(x, y + yOffset, activeWidth, activeHeight);
+
+            return null;
         }
     }
 }

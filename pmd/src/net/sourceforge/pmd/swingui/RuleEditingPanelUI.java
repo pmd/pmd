@@ -10,7 +10,7 @@ import javax.swing.tree.TreePath;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RuleSetEditingPanelGUI extends RuleSetEditingPanel implements TreeSelectionListener
+class RuleEditingPanelUI extends RuleEditingPanel implements TreeSelectionListener
 {
 
 
@@ -19,7 +19,7 @@ class RuleSetEditingPanelGUI extends RuleSetEditingPanel implements TreeSelectio
      *
      * @return
      */
-    protected RuleSetEditingPanelGUI()
+    protected RuleEditingPanelUI()
     {
         super();
     }
@@ -39,5 +39,4 @@ class RuleSetEditingPanelGUI extends RuleSetEditingPanel implements TreeSelectio
             valueChanged((IRulesEditingData) object);
         }
     }
-
 }

@@ -3,6 +3,8 @@ package net.sourceforge.pmd.swingui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
@@ -16,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,7 +47,7 @@ class AboutPMD extends JDialog
 
         Dimension screenSize = getToolkit().getScreenSize();
         int windowWidth = 750;
-        int windowHeight = 450;
+        int windowHeight = 500;
         int windowLocationX = (screenSize.width - windowWidth) / 2;
         int windowLocationY = (screenSize.height - windowHeight) / 2;
 
@@ -57,9 +60,28 @@ class AboutPMD extends JDialog
         EmptyBorder emptyBorder = new EmptyBorder(10, 10, 10, 10);
         contentPanel.setBorder(emptyBorder);
         contentPanel.add(createTabbedPane(), BorderLayout.CENTER);
+        contentPanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
-        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        JScrollPane scrollPane = ComponentFactory.createScrollPane(contentPanel);
         getContentPane().add(scrollPane);
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @return
+     */
+    private JPanel createButtonPanel()
+    {
+        JButton closeButton = new JButton("Close");
+        closeButton.setForeground(Color.white);
+        closeButton.setBackground(UIManager.getColor("pmdBlue"));
+        closeButton.addActionListener(new CloseButtonActionListener());
+
+        JPanel buttonPanel = ComponentFactory.createButtonPanel();
+        buttonPanel.add(closeButton);
+
+        return buttonPanel;
     }
 
     /**
@@ -89,7 +111,7 @@ class AboutPMD extends JDialog
         JPanel aboutPanel = new JPanel(new BorderLayout());
 
         // PMD Image
-        ImageIcon imageIcon = Utilities.getImageIcon("icons/pmd_logo_small.jpg");
+        ImageIcon imageIcon = Utilities.getImageIcon("icons/pmdLogo.jpg");
         JLabel imageLabel = new JLabel(imageIcon);
         aboutPanel.add(imageLabel, BorderLayout.CENTER);
 
@@ -124,58 +146,58 @@ class AboutPMD extends JDialog
         JPanel infoPanel = new JPanel(layout);
         int row = 0;
 
-        addName("Java Runtime Environment Version", row, infoPanel, layout);
-        addValue(System.getProperty("java.version"), row, infoPanel, layout);
+        addName("Java Runtime Environment Version", row, infoPanel);
+        addValue(System.getProperty("java.version"), row, infoPanel);
 
         row++;
-        addName("Java Runtime Environment Vendor", row, infoPanel, layout);
-        addValue(System.getProperty("java.vendor"), row, infoPanel, layout);
+        addName("Java Runtime Environment Vendor", row, infoPanel);
+        addValue(System.getProperty("java.vendor"), row, infoPanel);
 
         row++;
-        addName("Java Installation Directory", row, infoPanel, layout);
-        addValue(System.getProperty("java.home"), row, infoPanel, layout);
+        addName("Java Installation Directory", row, infoPanel);
+        addValue(System.getProperty("java.home"), row, infoPanel);
 
         row++;
-        addName("Java ClassPath", row, infoPanel, layout);
-        addMultiLineValue(System.getProperty("java.class.path"), row, 5, infoPanel, layout);
+        addName("Java ClassPath", row, infoPanel);
+        addMultiLineValue(System.getProperty("java.class.path"), row, 5, infoPanel);
 
         row += 5;
-        addName("Operating System Name", row, infoPanel, layout);
-        addValue(System.getProperty("os.name"), row, infoPanel, layout);
+        addName("Operating System Name", row, infoPanel);
+        addValue(System.getProperty("os.name"), row, infoPanel);
 
         row++;
-        addName("Operating System Architecture", row, infoPanel, layout);
-        addValue(System.getProperty("os.arch"), row, infoPanel, layout);
+        addName("Operating System Architecture", row, infoPanel);
+        addValue(System.getProperty("os.arch"), row, infoPanel);
 
         row++;
-        addName("Operating System Version", row, infoPanel, layout);
-        addValue(System.getProperty("os.version"), row, infoPanel, layout);
+        addName("Operating System Version", row, infoPanel);
+        addValue(System.getProperty("os.version"), row, infoPanel);
 
         row++;
-        addName("User's Home Directory", row, infoPanel, layout);
-        addValue(System.getProperty("user.home"), row, infoPanel, layout);
+        addName("User's Home Directory", row, infoPanel);
+        addValue(System.getProperty("user.home"), row, infoPanel);
 
         row++;
-        addName("User's Current Working Director", row, infoPanel, layout);
-        addValue(System.getProperty("user.dir"), row, infoPanel, layout);
+        addName("User's Current Working Director", row, infoPanel);
+        addValue(System.getProperty("user.dir"), row, infoPanel);
 
         row++;
-        addName("VM Total Memory", row, infoPanel, layout);
+        addName("VM Total Memory", row, infoPanel);
         long totalMemory = Runtime.getRuntime().totalMemory() / 1024;
         String totalMemoryText = DecimalFormat.getNumberInstance().format(totalMemory) + "KB";
-        addValue(totalMemoryText, row, infoPanel, layout);
+        addValue(totalMemoryText, row, infoPanel);
 
         row++;
-        addName("VM Free Memory", row, infoPanel, layout);
+        addName("VM Free Memory", row, infoPanel);
         long freeMemory = Runtime.getRuntime().freeMemory() / 1024;
         String freeMemoryText = DecimalFormat.getNumberInstance().format(freeMemory) + "KB";
-        addValue(freeMemoryText, row, infoPanel, layout);
+        addValue(freeMemoryText, row, infoPanel);
 
         row++;
-        addName("VM Used Memory", row, infoPanel, layout);
+        addName("VM Used Memory", row, infoPanel);
         long usedMemory = totalMemory - freeMemory;
         String usedMemoryText = DecimalFormat.getNumberInstance().format(usedMemory) + "KB";
-        addValue(usedMemoryText, row, infoPanel, layout);
+        addValue(usedMemoryText, row, infoPanel);
 
         return infoPanel;
     }
@@ -185,15 +207,17 @@ class AboutPMD extends JDialog
      *
      * @param name
      */
-    private void addName(String name, int row, JPanel infoPanel, GridBagLayout layout)
+    private void addName(String name, int row, JPanel infoPanel)
     {
         JLabel label;
+        GridBagLayout layout;
         GridBagConstraints constraints;
 
         label = new JLabel(name, JLabel.RIGHT);
         label.setFont(UIManager.getFont("labelFont"));
         label.setHorizontalAlignment(JLabel.RIGHT);
-        label.setForeground(Color.blue);
+        label.setForeground(UIManager.getColor("pmdBlue"));
+        layout = (GridBagLayout) infoPanel.getLayout();
         constraints = layout.getConstraints(label);
         constraints.gridx = 0;
         constraints.gridy = row;
@@ -211,13 +235,15 @@ class AboutPMD extends JDialog
      *
      * @param value
      */
-    private void addValue(String value, int row, JPanel infoPanel, GridBagLayout layout)
+    private void addValue(String value, int row, JPanel infoPanel)
     {
         JLabel label;
+        GridBagLayout layout;
         GridBagConstraints constraints;
 
         label = new JLabel(value, JLabel.LEFT);
         label.setFont(UIManager.getFont("dataFont"));
+        layout = (GridBagLayout) infoPanel.getLayout();
         constraints = layout.getConstraints(label);
         constraints.gridx = 1;
         constraints.gridy = row;
@@ -235,10 +261,11 @@ class AboutPMD extends JDialog
      *
      * @param value
      */
-    private void addMultiLineValue(String value, int row, int lines, JPanel infoPanel, GridBagLayout layout)
+    private void addMultiLineValue(String value, int row, int lines, JPanel infoPanel)
     {
         JTextArea textArea;
         JScrollPane scrollPane;
+        GridBagLayout layout;
         GridBagConstraints constraints;
         Font font;
         FontMetrics fontMetrics;
@@ -246,13 +273,11 @@ class AboutPMD extends JDialog
         int width;
         Dimension size;
 
-        textArea = new JTextArea(value);
-        font = UIManager.getFont("dataFont");
-        textArea.setFont(font);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
+        textArea = ComponentFactory.createTextArea(value);
         textArea.setBackground(Color.lightGray);
-        scrollPane = new JScrollPane(textArea);
+
+        scrollPane = ComponentFactory.createScrollPane(textArea);
+        font = textArea.getFont();
         fontMetrics = textArea.getFontMetrics(font);
         width = 500;
         height = (lines * fontMetrics.getHeight()) + 5;
@@ -260,8 +285,8 @@ class AboutPMD extends JDialog
         scrollPane.setSize(size);
         scrollPane.setMinimumSize(size);
         scrollPane.setPreferredSize(size);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        layout = (GridBagLayout) infoPanel.getLayout();
         constraints = layout.getConstraints(scrollPane);
         constraints.gridx = 1;
         constraints.gridy = row;
@@ -307,39 +332,39 @@ class AboutPMD extends JDialog
         parentPanel.add(creditsPanel, BorderLayout.CENTER);
         int row = 0;
 
-        addTitle("Project Administrators", row, creditsPanel, layout);
-        addPerson("Tom Copeland", row, creditsPanel, layout);
+        addTitle("Project Administrators", row, creditsPanel);
+        addPerson("Tom Copeland", row, creditsPanel);
 
         row++;
-        addPerson("David Craine", row, creditsPanel, layout);
+        addPerson("David Craine", row, creditsPanel);
 
         row++;
-        addPerson("David Dixon-Peugh", row, creditsPanel, layout);
+        addPerson("David Dixon-Peugh", row, creditsPanel);
 
         row++;
-        addTitle(" ", row, creditsPanel, layout);
+        addTitle(" ", row, creditsPanel);
 
         row ++;
-        addTitle("Developers", row, creditsPanel, layout);
-        addPerson("Alex Chaffee", row, creditsPanel, layout);
+        addTitle("Developers", row, creditsPanel);
+        addPerson("Alex Chaffee", row, creditsPanel);
 
         row++;
-        addPerson("Tom Copeland", row, creditsPanel, layout);
+        addPerson("Tom Copeland", row, creditsPanel);
 
         row++;
-        addPerson("David Craine", row, creditsPanel, layout);
+        addPerson("David Craine", row, creditsPanel);
 
         row++;
-        addPerson("David Dixon-Peugh", row, creditsPanel, layout);
+        addPerson("David Dixon-Peugh", row, creditsPanel);
 
         row++;
-        addPerson("Siegfried Goeschl", row, creditsPanel, layout);
+        addPerson("Siegfried Goeschl", row, creditsPanel);
 
         row++;
-        addPerson("Richard Kilmer", row, creditsPanel, layout);
+        addPerson("Richard Kilmer", row, creditsPanel);
 
         row++;
-        addPerson("Don Leckie", row, creditsPanel, layout);
+        addPerson("Don Leckie", row, creditsPanel);
 
         return parentPanel;
     }
@@ -349,15 +374,17 @@ class AboutPMD extends JDialog
      *
      * @param name
      */
-    private void addTitle(String name, int row, JPanel creditsPanel, GridBagLayout layout)
+    private void addTitle(String name, int row, JPanel creditsPanel)
     {
         JLabel label;
+        GridBagLayout layout;
         GridBagConstraints constraints;
 
         label = new JLabel(name, JLabel.RIGHT);
         label.setFont(UIManager.getFont("label14Font"));
         label.setHorizontalAlignment(JLabel.RIGHT);
-        label.setForeground(Color.blue);
+        label.setForeground(UIManager.getColor("pmdBlue"));
+        layout = (GridBagLayout) creditsPanel.getLayout();
         constraints = layout.getConstraints(label);
         constraints.gridx = 0;
         constraints.gridy = row;
@@ -375,13 +402,15 @@ class AboutPMD extends JDialog
      *
      * @param value
      */
-    private void addPerson(String value, int row, JPanel creditsPanel, GridBagLayout layout)
+    private void addPerson(String value, int row, JPanel creditsPanel)
     {
         JLabel label;
+        GridBagLayout layout;
         GridBagConstraints constraints;
 
         label = new JLabel(value, JLabel.LEFT);
         label.setFont(UIManager.getFont("serif14Font"));
+        layout = (GridBagLayout) creditsPanel.getLayout();
         constraints = layout.getConstraints(label);
         constraints.gridx = 1;
         constraints.gridy = row;
@@ -392,5 +421,24 @@ class AboutPMD extends JDialog
         constraints.insets = new Insets(2, 2, 2, 2);
 
         creditsPanel.add(label, constraints);
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class CloseButtonActionListener implements ActionListener
+    {
+
+        /**
+         ********************************************************************
+         *
+         * @param event
+         */
+        public void actionPerformed(ActionEvent event)
+        {
+            AboutPMD.this.setVisible(false);
+        }
     }
 }
