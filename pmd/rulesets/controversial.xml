@@ -107,7 +107,15 @@ most people really dislike :-)
             <property name="xpath">
                 <value>
                     <![CDATA[
-    //UnmodifiedInterfaceDeclaration//MethodDeclaration[@Public = 'true' or @Abstract = 'true']
+    //UnmodifiedInterfaceDeclaration//MethodDeclaration
+      [@Public = 'true' or @Abstract = 'true']
+       [not (parent::ClassBodyDeclaration
+        [parent::ClassBody
+         [parent::UnmodifiedClassDeclaration
+          [parent::NestedClassDeclaration]
+         ]
+        ]
+       )]
 |   //UnmodifiedInterfaceDeclaration//FieldDeclaration[@Public = 'true' or @Static = 'true' or @Final = 'true']
 |   //UnmodifiedInterfaceDeclaration//NestedClassDeclaration[@Public = 'true' or @Static = 'true']
 |   //UnmodifiedInterfaceDeclaration//NestedInterfaceDeclaration[@Public = 'true' or @Static = 'true']

@@ -40,6 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Michael Haggerty - bug report for UnusedModifier</li>
             <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>
             <li>Morgan Schweers - Javascript highlighter for the PMD scoreboard</li>
             <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many PMD scoreboard ideas</li>

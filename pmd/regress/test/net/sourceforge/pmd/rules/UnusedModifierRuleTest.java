@@ -38,6 +38,7 @@ public class UnusedModifierRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST17, "OK in interface nested in class", 0, rule),
            new TestDescriptor(TEST18, "wasted 'public static final' in interface field inside another interface", 2, rule),
            new TestDescriptor(TEST19, "OK in interface field inside another interface", 0, rule),
+           new TestDescriptor(TEST20, "Don't check nested classes", 0, rule),
        });
     }
 
@@ -140,4 +141,10 @@ public class UnusedModifierRuleTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
+    private static final String TEST20 =
+    "interface Foo {" + PMD.EOL +
+    " class Bar {" + PMD.EOL +
+    "  public void foo() {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 }
