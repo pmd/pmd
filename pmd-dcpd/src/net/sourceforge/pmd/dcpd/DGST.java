@@ -48,7 +48,9 @@ public class DGST {
             TileHarvester tg = new TileHarvester(space, job);
             occ = tg.gather(occ.size());
             addToResults(occ);
-            System.out.println("Season complete; tile count now " + occ.size() + "; tile size is " + ((Tile)(occ.getTiles().next())).getTokenCount() + "; " + ((Tile)(occ.getTiles().next())).getImage());
+            if (!occ.isEmpty()) {
+                System.out.println("Season complete; tile count now " + occ.size() + "; tile size is " + ((Tile)(occ.getTiles().next())).getTokenCount() + "; " + ((Tile)(occ.getTiles().next())).getImage());
+            }
             TilePlanter scatterer = new TilePlanter(space, job);
             scatterer.scatter(occ);
         }

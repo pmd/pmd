@@ -34,6 +34,7 @@ public class TilePlanter {
                     marshal(occ.getOccurrences(tile)),
                     job.id,
                     TileWrapper.NOT_DONE,
+                    null,
                     new Integer(tilesSoFar),
                     null, null);
             space.write(tw, null, Lease.FOREVER);

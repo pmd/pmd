@@ -33,8 +33,11 @@ public class TileHarvester {
                     null,
                     job.id,
                     TileWrapper.DONE,
+                    null,
                     new Integer(i), new Integer(0), null), null, Lease.FOREVER);
-            addAllExpansions(i, tw, occ);
+            if (tw.discardFlag == null) {
+                addAllExpansions(i, tw, occ);
+            }
         }
         return occ;
     }
@@ -47,6 +50,7 @@ public class TileHarvester {
                     null,
                     firstExpansion.jobID,
                     TileWrapper.DONE,
+                    null,
                     new Integer(originalPosition),
                     new Integer(i),
                     firstExpansion.expansionsTotal), null, Lease.FOREVER);

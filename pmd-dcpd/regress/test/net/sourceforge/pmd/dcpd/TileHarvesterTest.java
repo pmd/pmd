@@ -37,6 +37,7 @@ public class TileHarvesterTest extends TestCase {
                     TileExpanderTest.marshal(occ.getOccurrences(tile)),
                     job.id,
                     TileWrapper.NOT_DONE,
+                    null,
                     new Integer(tilesSoFar),
                     null, null);
             tilesToWrite.add(tw);
