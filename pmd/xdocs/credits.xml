@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>John Meagher - suggested the rule 'MissingSerialVersionUID' and provided the implementation for it</li>
             <li>Bruno Juillet - patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Benoit Xhenseval - many bug reports (with good failure cases!), Ant task patch, XSLT patch, suggestion for improving XML report</li>
             <li>Elliotte Rusty Harold - suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
