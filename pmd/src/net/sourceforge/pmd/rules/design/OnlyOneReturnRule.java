@@ -36,13 +36,6 @@ public class OnlyOneReturnRule extends AbstractRule {
                 }
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, problem.getBeginLine()));
             }
-        } else if (returnNodes.size() == 1) {
-            // if there's only one return, make sure it's the last statement
-            RuleContext ctx = (RuleContext)data;
-            ASTReturnStatement returnNode = (ASTReturnStatement)returnNodes.get(0);
-            if (returnNode.getEndLine() != (node.getEndLine() -1)) {
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, returnNode.getBeginLine()));
-            }
         }
         return data;
     }

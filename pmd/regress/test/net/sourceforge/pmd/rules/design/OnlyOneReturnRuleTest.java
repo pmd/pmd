@@ -20,18 +20,6 @@ public class OnlyOneReturnRuleTest extends RuleTst {
         runTest("OnlyOneReturn3.java", 0, new OnlyOneReturnRule());
     }
     public void testVoidRtn() throws Throwable {
-        runTest("OnlyOneReturn4.java", 1, new OnlyOneReturnRule());
+        runTest("OnlyOneReturn4.java", 0, new OnlyOneReturnRule());
     }
-    public void testRtnStmtSpillsOverToNextLine() throws Throwable {
-        runTest("OnlyOneReturn5.java", 0, new OnlyOneReturnRule());
-    }
-    // TODO this causes a rule violation
-    /**
-     * public int bar() {
-     *  return 2;
-     *
-     * }
-     */
-    // due to the blank line after "return 2;"
-    // is this OK?
 }

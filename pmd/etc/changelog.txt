@@ -2,6 +2,7 @@ November 07 2002 - 1.0.1:
 Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.
 Fixed bug 633892: StringToStringRule false positive exposed problem in symbol table usage to declaration code.
 Fixed bug 617971: Statistical rules no longer produce tons of false positives due to accumulated results.
+Fixed bug 633209: OnlyOneReturn rule no longer requires the return stmt to be the last statement.
 Enhanced EmptyCatchBlockRule to flag multiple consecutive empty catch blocks.
 Renamed AvoidStringLiteralsRule to AvoidDuplicateLiteralsRule.
 

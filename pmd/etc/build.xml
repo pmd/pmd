@@ -59,7 +59,7 @@
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <!--<pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/tmp.xml" format="html">-->
         <pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/tmp.xml" format="html">
-            <fileset dir="c:\j2sdk1.4.1_01\src\java\lang\ref">
+            <fileset dir="c:\j2sdk1.4.1_01\src\java\">
                 <include name="**/*.java"/>
                 <!--<exclude name="**/ast**/"/>-->
             </fileset>
