@@ -6,17 +6,40 @@
 These are new rules that are still in progress
   </description>
 
-  <rule
-   ref="rulesets/codesize.xml/ExcessiveMethodLength"
-   message="This is one of the 6 longest methods">
-      <properties>
-        <property name="topscore" value="6"/>
-        <property name="minimum" value="1"/>
-      </properties>
+
+  <rule name="UnusedPrivateField"
+        message="Avoid unused private fields such as ''{0}''"
+        symboltable="true"
+        class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule">
+    <description>
+Detects when a private field is declared and/or assigned a value, but not used.
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+public class Something {
+  private static int FOO = 2; // Unused
+  private int i = 5; // Unused
+  private int j = 6;
+  public int addOne() {
+    return j++;
+  }
+}
+]]>
+    </example>
   </rule>
-   
+
 
 <!--
+<rule
+ ref="rulesets/codesize.xml/ExcessiveMethodLength"
+ message="This is one of the 6 longest methods">
+    <properties>
+      <property name="topscore" value="6"/>
+      <property name="minimum" value="1"/>
+    </properties>
+</rule>
+
 <rule name="UnnecessaryParentheses"
       message="NOT FULLY IMPLEMENTED - Unnecessary parentheses are a bit noisy"
       class="net.sourceforge.pmd.rules.XPathRule">

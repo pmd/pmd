@@ -11,11 +11,13 @@ import java.io.StringReader;
 public abstract class STBBaseTst extends TestCase {
 
     protected ASTCompilationUnit acu;
-    protected SymbolFacade stb = new SymbolFacade();
+
+    protected SymbolFacade stb;
 
     protected void parseCode(String code) {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(code));
         acu = parser.CompilationUnit();
+        stb = new SymbolFacade();
         stb.initializeWith(acu);
     }
 

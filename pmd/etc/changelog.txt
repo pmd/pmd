@@ -2,6 +2,7 @@
 Optimized the SystemOutPrintln rule; now it runs about an order of magnitude faster.
 Fixed a bug - the StatisticalRule no longer 'merges' data points when using the 'topscore' property.
 Implemented RFE 1058039 - PMD's command line interface now accepts abbreviated names for the standard rulesets; for example 'java net.sourceforge.pmd.PMD /my/source/code/ text basic,unusedcode' would run the rulesets/basic.xml and the rulesets/unusedcode.xml rulesets on the source in /my/source/code and produce a text report.
+Fixed bug 1114625 - UnusedPrivateField no longer throws an NPE on standalone postfix expressions which are prefixed with 'this'.
 
 February 1, 2005 - 2.3:
 Fixed bug 1113927 - ExceptionAsFlowControl no longer throws NPEs on code where a throw statement exists without a try statement wrapping it.

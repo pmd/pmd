@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 
 public class NameOccurrence {
 
@@ -93,7 +94,16 @@ public class NameOccurrence {
     }
 
     private boolean isStandAlonePostfix(SimpleNode primaryExpression) {
-        return primaryExpression instanceof ASTPostfixExpression && primaryExpression.jjtGetParent() instanceof ASTStatementExpression && thirdChildHasDottedName(primaryExpression);
+        if (!(primaryExpression instanceof ASTPostfixExpression) || !(primaryExpression.jjtGetParent() instanceof ASTStatementExpression)) {
+            return false;
+        }
+
+        ASTPrimaryPrefix pf = (ASTPrimaryPrefix)((ASTPrimaryExpression)primaryExpression.jjtGetChild(0)).jjtGetChild(0);
+        if (pf.usesThisModifier()) {
+            return true;
+        }
+
+        return thirdChildHasDottedName(primaryExpression);
     }
 
     private boolean thirdChildHasDottedName(SimpleNode primaryExpression) {
