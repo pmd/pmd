@@ -7,7 +7,7 @@
 <property name="test-data" value="test-data\"/>
 <property name="regress" value="regress\"/>
 <property name="reports" value="reports\"/>
-<property name="version" value="0.8"/>
+<property name="version" value="0.9"/>
 <property name="jnlp_staging_area" value="c:\data\importscrubberjnlp\"/>
 <property name="build.compiler" value="jikes"/>
 

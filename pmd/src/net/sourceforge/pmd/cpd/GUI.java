@@ -25,13 +25,13 @@ public class GUI implements CPDListener {
         public void actionPerformed(ActionEvent e) {
             new Thread(new Runnable() {
                 public void run() {
-									  addingTokensBar.setValue(0);
-									  tokenizingFilesBar.setValue(0);
-										tilesOnThisPassBar.setValue(0);
-									  addingTokensBar.setString("");
-									  tokenizingFilesBar.setString("");
-										tilesOnThisPassBar.setString("");
-										resultsTextArea.setText("");
+                    addingTokensBar.setValue(0);
+                    tokenizingFilesBar.setValue(0);
+                    tilesOnThisPassBar.setValue(0);
+                    addingTokensBar.setString("");
+                    tokenizingFilesBar.setString("");
+                    tilesOnThisPassBar.setString("");
+                    resultsTextArea.setText("");
                     go();
                 }
             }).start();
@@ -55,8 +55,6 @@ public class GUI implements CPDListener {
         }
     }
 
-    //private JTextField rootDirectoryField= new JTextField("C:\\data\\datagrabber\\datagrabber\\src\\org\\cougaar\\mlm\\ui\\newtpfdd\\transit\\");
-    //private JTextField rootDirectoryField= new JTextField("C:\\j2sdk1.4.0_01\\src\\java\\lang\\reflect");
     private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     private JTextField minimumLengthField= new JTextField("75");
 	private JTextField timeField = new JTextField(6);
@@ -96,7 +94,7 @@ public class GUI implements CPDListener {
         littlePanel.add(browseButton);
         inputPanel.add(littlePanel);
         inputPanel.add(new JLabel("Enter a minimum tile size"));
-				minimumLengthField.setColumns(4);
+		minimumLengthField.setColumns(4);
         inputPanel.add(minimumLengthField);
         inputPanel.add(recurseCheckbox);
 
@@ -123,8 +121,8 @@ public class GUI implements CPDListener {
         JPanel panel3 = new JPanel();
         panel3.add(new JLabel("Current tile"));
         panel3.add(currentTileField);
-				panel3.add(tilesOnThisPassBar);
-				panel3.add(timeField);
+        panel3.add(tilesOnThisPassBar);
+        panel3.add(timeField);
         progressPanel.add(panel3, BorderLayout.SOUTH);
         progressPanel.setBorder(BorderFactory.createTitledBorder("Progress"));
 
@@ -166,24 +164,23 @@ public class GUI implements CPDListener {
                     cpd.addAllInDirectory(rootDirectoryField.getText());
                 }
             }
-						final long start = System.currentTimeMillis();
-						javax.swing.Timer t = new javax.swing.Timer(1000,
-              new ActionListener() {
-                  public void actionPerformed(ActionEvent e) {
-										  long now = System.currentTimeMillis();
-											long elapsedMillis = now-start;
-											long elapsedSeconds = elapsedMillis/1000;
-											long hours = (long)Math.floor(elapsedSeconds/3600);
-											long minutes = (long)Math.floor((elapsedSeconds-(hours*3600))/60);
-											long seconds = elapsedSeconds-((minutes*60)+(hours*3600));
-                      timeField.setText("" + hours + ":" + minutes + ":" + seconds);
-                  }
-              });
-							t.start();
+			final long start = System.currentTimeMillis();
+			javax.swing.Timer t = new javax.swing.Timer(1000, new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    long now = System.currentTimeMillis();
+                    long elapsedMillis = now-start;
+                    long elapsedSeconds = elapsedMillis/1000;
+                    long hours = (long)Math.floor(elapsedSeconds/3600);
+                    long minutes = (long)Math.floor((elapsedSeconds-(hours*3600))/60);
+                    long seconds = elapsedSeconds-((minutes*60)+(hours*3600));
+                    timeField.setText("" + hours + ":" + minutes + ":" + seconds);
+                }
+            });
+			t.start();
 						
             cpd.go();
-						t.stop();
-						currentTileField.setText("");
+			t.stop();
+			currentTileField.setText("");
             CPDRenderer renderer = new TextRenderer();
             String report = renderer.render(cpd);
             if (report.length() == 0) {
@@ -221,17 +218,17 @@ public class GUI implements CPDListener {
     }
 
     public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
-			addingTokensBar.setValue(addingTokensBar.getMaximum());
-			addingTokensBar.setString("");
-			if (tile.getImage().length() <= 20) {
-				currentTileField.setText(tile.getImage());
-			} else {
-				currentTileField.setText(tile.getImage().substring(0,20));
-			}
-			tilesOnThisPassBar.setMaximum(totalTiles);
-      tilesOnThisPassBar.setValue(tilesSoFar);
-			tilesOnThisPassBar.setString(tilesSoFar + "/" + totalTiles);
-		}
+        addingTokensBar.setValue(addingTokensBar.getMaximum());
+        addingTokensBar.setString("");
+        if (tile.getImage().length() <= 20) {
+            currentTileField.setText(tile.getImage());
+        } else {
+            currentTileField.setText(tile.getImage().substring(0,20));
+        }
+        tilesOnThisPassBar.setMaximum(totalTiles);
+        tilesOnThisPassBar.setValue(tilesSoFar);
+		tilesOnThisPassBar.setString(tilesSoFar + "/" + totalTiles);
+	}
 		
     private String findName(String name, String slash) {
         int lastSlash = name.lastIndexOf(slash)+1;

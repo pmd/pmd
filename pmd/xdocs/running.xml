@@ -12,7 +12,7 @@
     <li>Type run &lt;filename&gt; &lt;report format&gt;, &lt;rule set file&gt;i.e.:</li>
     <br></br>
     <pre>
-C:\tmp\pmd-0.8\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+C:\tmp\pmd-0.9\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
 &lt;?xml version="1.0"?&gt;&lt;pmd&gt;
 &lt;file name="c:\data\pmd\pmd\test-data\Unused1.java"&gt;
 &lt;violation line="5" rule="UnusedLocalVariable"&gt;
@@ -29,7 +29,7 @@ C:\tmp\pmd-0.8\pmd\etc&gt;
    <section name="Running PMD via Ant">
    <ul>
     <li>Add a new Ant target to your build file - <a href="ant-task.html">here's</a> some examples.</li>
-    <li>Make sure the pmd-0.8.jar file is on your classpath.</li>
+    <li>Make sure the pmd-0.9.jar file is on your classpath.</li>
     <li>Run Ant like you normally do.</li>
    </ul>
    </section>

@@ -21,7 +21,7 @@ will update documents on the Build Site.
        name="pmd"
        classname="net.sourceforge.pmd.ant.PMDTask">
        <classpath>
-         <pathelement location="${lib.repo}/pmd-0.8.jar" />
+         <pathelement location="${lib.repo}/pmd-0.9.jar" />
        </classpath>
     </taskdef>
 

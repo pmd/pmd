@@ -1,5 +1,5 @@
 @echo off
-set CLASSPATH=../lib/pmd-0.8.jar
+set CLASSPATH=../lib/pmd-0.9.jar
 set FILE=%1%
 set FORMAT=%2%
 set RULESETFILE=%3%

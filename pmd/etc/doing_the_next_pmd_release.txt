@@ -1,4 +1,5 @@
 update run.bat to point to pmd-0.9.jar
+update cpdgui.bat to point to pmd-0.9.jar
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
 update jar task to reflect pmd-0.9
