@@ -7,6 +7,8 @@ import javax.swing.plaf.ProgressBarUI;
 import java.io.File;
 import net.sourceforge.pmd.cpd.CPDListener;
 import net.sourceforge.pmd.cpd.CPD;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowEvent;
 
 public class CPDDialog  extends JFrame implements CPDListener  {
     private CPD cpd;
@@ -56,19 +58,18 @@ public class CPDDialog  extends JFrame implements CPDListener  {
             firstToken = false;
             jLabel1.setText("Adding Tokens...");
             jProgressBar1.setMaximum(tokenSetCount);
-            progress = 0;
         }
-        jProgressBar1.setValue(progress++);
+        jProgressBar1.setValue(doneSoFar);
     }
 
     public void expandingTile(String tileImage) {
         if (firstExpansion) {
             firstExpansion = false;
             jLabel1.setText("Expanding Tokens...");
-            jProgressBar1.setMaximum(PROG_MAX);
+            jProgressBar1.setMaximum(PROG_MAX*4);
             progress = 0;
         }
-        jProgressBar1.setValue(progress++ % PROG_MAX);
+        jProgressBar1.setValue(progress++ % (PROG_MAX*4));
     }
 
     public void close() {
@@ -87,10 +88,15 @@ public class CPDDialog  extends JFrame implements CPDListener  {
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setText("CPD Status");
         this.getContentPane().setLayout(verticalFlowLayout1);
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.getContentPane().add(jLabel1, null);
         this.getContentPane().add(jProgressBar1, null);
-        this.setSize(400,400);
         this.setVisible(true) ;
+        this.pack();
+        this.setSize(new Dimension(400, 114));
+        int xpos = (Toolkit.getDefaultToolkit().getScreenSize().width - this.getSize().width)/2;
+        int ypos = (Toolkit.getDefaultToolkit().getScreenSize().height - this.getSize().height)/2;
+        this.setLocation(xpos, ypos);
         this.show();
     }
 }

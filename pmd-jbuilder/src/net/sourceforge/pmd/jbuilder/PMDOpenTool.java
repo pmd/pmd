@@ -33,6 +33,9 @@ import net.sourceforge.pmd.cpd.Tile;
 import net.sourceforge.pmd.cpd.CPDNullListener;
 import net.sourceforge.pmd.cpd.CPDListener;
 import javax.swing.ProgressMonitor;
+import net.sourceforge.pmd.cpd.TokenEntry;
+import com.borland.primetime.vfs.Url;
+import java.util.ArrayList;
 
 
 
@@ -349,10 +352,17 @@ public class PMDOpenTool {
              }
              cpd.go();
              Results results = cpd.getResults();
+             int resultCount = 0;
              if (results != null) {
                  for (Iterator iter = results.getTiles(); iter.hasNext(); ) {
                      Tile t = (Tile)iter.next();
-                     Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, String.valueOf(t.getTokenCount()+": " + t.getImage()));
+                     resultCount++;
+                     CPDMessage msg = CPDMessage.createMessage("Duplicate code set: " + resultCount);
+                     for (Iterator iter2 = results.getOccurrences(t); iter2.hasNext(); ) {
+                         TokenEntry te = (TokenEntry)iter2.next();
+                         msg.addChildMessage(te.getTokenSrcID(), te.getBeginLine(), 0, te.getTokenSrcID());
+                    }
+                    Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg);
                  }
              }
              cpdd.close();
@@ -437,6 +447,109 @@ class PMDMessage extends Message {
     }
 }
 
+/**
+ * Wrapper for the OpenTools message object
+ */
+class CPDMessage extends Message {
+    final LineMark MARK = new HighlightMark();
+    String filename;
+    FileNode javaNode = null;
+    int startline = 0;
+    int endline = 0;
+    int column = 0;
+    boolean isParent = true;
+    ArrayList childMessages = new ArrayList();
+
+    /**
+     * Constructor
+     * @param msg text message
+     * @param line line of code to associate this message with
+     * @param node the node that the code belongs to
+     */
+
+    private CPDMessage(String msg) {
+        super(msg);
+        this.setLazyFetchChildren(true);
+    }
+
+    private CPDMessage (String msg, int startline, int endline, String fileName) {
+        super(msg);
+        this.startline = startline;
+        this.endline = endline;
+        this.filename = fileName;
+        try {
+            File javaFile = new File(fileName);
+            javaNode = Browser.getActiveBrowser().getActiveProject().findNode(new Url(javaFile));
+        }
+        catch (Exception e){
+            Browser.getActiveBrowser().getMessageView().addMessage(Constants.MSGCAT_TEST, e.toString());
+        }
+    }
+
+    public static CPDMessage createMessage(String msg) {
+        CPDMessage cpdm = new CPDMessage(msg);
+        cpdm.isParent = true;
+        return cpdm;
+    }
+
+
+    public void addChildMessage (String msg, int startline, int endline, String fileName) {
+        this.lazyFetchChildren = true;
+        CPDMessage cpdmsg =  new CPDMessage(msg, startline, endline, fileName);
+        cpdmsg.isParent = false;
+        childMessages.add(cpdmsg);
+
+    }
+
+    public void fetchChildren(Browser browser) {
+        for (Iterator iter = childMessages.iterator(); iter.hasNext(); ) {
+            browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, (CPDMessage)iter.next());
+        }
+    }
+
+    /**
+     * Called by JBuilder when user selects a message
+     * @param browser JBuilder Browser
+     */
+    public void selectAction (Browser browser) {
+        displayResult(browser, true);
+    }
+
+    /**
+     * Called by JBuilder when the user double-clicks a message
+     * @param browser JBuilder Browser
+     */
+    public void messageAction (Browser browser) {
+        displayResult(browser, true);
+    }
+
+    /**
+     * Position the code window to the line number that the message is associated with
+     * @param browser JBuilder Browser
+     * @param requestFocus whether or not the code window should receive focus
+     */
+    private void displayResult (Browser browser, boolean requestFocus) {
+        if (!isParent) {
+            try {
+                if (requestFocus || browser.isOpenNode(javaNode)) {
+                    browser.setActiveNode(javaNode, requestFocus);
+                    TextNodeViewer viewer = (TextNodeViewer)browser.getViewerOfType(javaNode,
+                            TextNodeViewer.class);
+                    browser.setActiveViewer(javaNode, viewer, requestFocus);
+                    EditorPane editor = viewer.getEditor();
+                    editor.gotoPosition(startline, column, false, EditorPane.CENTER_IF_NEAR_EDGE);
+                    if (requestFocus) {
+                        editor.requestFocus();
+                    }
+                    editor.setTemporaryMark(startline, MARK);
+
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+}
 
 /**
  * Used to highlite a line of code within a source file
