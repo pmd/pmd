@@ -10,6 +10,8 @@ import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.jdbc.JDBCReportListener;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
@@ -24,6 +26,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class PMDTask extends Task {
 
@@ -44,8 +49,58 @@ public class PMDTask extends Task {
         public String getToFile() {return toFile;}
     }
 
+    public static class Database {
+	private String url = "";
+	private String user = "";
+	private String driver = "";
+	private String password = "";
+	private int projectId = 0;
+
+	public void setUrl(String url) {
+	    this.url = url;
+	}
+
+	public String getUrl() {
+	    return url;
+	}
+
+	public void setUser(String user) {
+	    this.user = user;
+	}
+	
+	public String getUser() {
+	    return user;
+	}
+
+	public void setPassword(String password) {
+	    this.password = password;
+	}
+	
+	public String getPassword() {
+	    return password;
+	}
+
+	public void setProjectId(int projectId) {
+	    this.projectId = projectId;
+	}
+	
+	public int getProjectId() {
+	    return projectId;
+	}
+
+	public void setDriver(String driver) {
+	    this.driver = driver;
+	}
+
+	public String getDriver() {
+	    return driver;
+	}
+    }
+
     private List formatters = new ArrayList();
     private List filesets  = new ArrayList();
+    private List databases = new ArrayList();
+
     private boolean verbose;
     private boolean printToConsole;
     private String ruleSetFiles;
@@ -80,6 +135,10 @@ public class PMDTask extends Task {
         formatters.add(f);
     }
 
+    public void addDatabase(Database d) {
+	databases.add(d);
+    }
+
     public void execute() throws BuildException {
         if (formatters.isEmpty()) {
             throw new BuildException("No formatter specified");
@@ -96,6 +155,25 @@ public class PMDTask extends Task {
         PMD pmd = new PMD();
         RuleContext ctx = new RuleContext();
         Report report = new Report();
+
+	for (Iterator i = databases.iterator(); i.hasNext();) {
+	    try {
+		Database db = (Database) i.next();
+		if  (!db.getDriver().equals("")) {
+		    Class driverClass = Thread.currentThread().getContextClassLoader().
+			loadClass( db.getDriver() );
+		    DriverManager.registerDriver( (Driver) driverClass.newInstance() );
+		}
+		
+		JDBCReportListener listener =
+		    new JDBCReportListener( db.getUrl(), db.getUser(), 
+					    db.getPassword(), db.getProjectId() );
+		report.addListener( listener );
+	    } catch (Exception ex) {
+		throw new BuildException( ex );
+	    }
+	}
+
         ctx.setReport(report);
 
         for (Iterator i = filesets.iterator(); i.hasNext();) {

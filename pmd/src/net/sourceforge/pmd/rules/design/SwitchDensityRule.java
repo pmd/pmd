@@ -38,7 +38,6 @@ public class SwitchDensityRule extends StatisticalRule {
 		
 		public double getDensity() { 
 			if (labels == 0) {
-				System.err.println("Warning!  Empty Switch!");
 				return 0;
 			}
 			return 1.0 * (stmts / labels); 

@@ -22,6 +22,10 @@ import java.util.Properties;
  * 
  * Naturally, you can just call the apropriate initializer if you don't
  * want to use the System Properties. . .
+ *
+ * It is up to the outside application to ensure that its JDBC driver
+ * is registered with DriverManager.  I believe different drivers register
+ * differently, so I don't really want to do this myself.
  */
 
 public class JDBCReportListener 
@@ -43,15 +47,15 @@ public class JDBCReportListener
 	throws SQLException
     {
 	if (System.getProperty( JDBC_PROJECTID ) != null) {
-	    initialize(System.getProperty( JDBC_URL ), 
-		       System.getProperty( JDBC_USER ),
-		       System.getProperty( JDBC_PASSWORD ),
-		       Integer.parseInt(System.getProperty( JDBC_PROJECTID )));
+	    initialize( System.getProperty( JDBC_URL ), 
+		        System.getProperty( JDBC_USER ),
+		        System.getProperty( JDBC_PASSWORD ),
+		        Integer.parseInt(System.getProperty( JDBC_PROJECTID )));
 	} else {
-	    initialize(System.getProperty( JDBC_URL ),
-		       System.getProperty( JDBC_USER ),
-		       System.getProperty( JDBC_PASSWORD ),
-		       0 );
+	    initialize( System.getProperty( JDBC_URL ),
+		        System.getProperty( JDBC_USER ),
+		        System.getProperty( JDBC_PASSWORD ),
+		        0 );
 	}
     }
 
@@ -64,7 +68,8 @@ public class JDBCReportListener
 		    Integer.parseInt(props.getProperty( JDBC_PROJECTID )));
     }
 
-    public JDBCReportListener( String url, String user, String password, int projectId ) 
+    public JDBCReportListener( String url, 
+			       String user, String password, int projectId ) 
 	throws SQLException
     {
 	initialize( url, user, password, projectId );
@@ -124,14 +129,14 @@ public class JDBCReportListener
     }
     public void metricAdded( Metric metric ) {
 	try {
-	    metricStmt.setInt( 1, runId );
-	    metricStmt.setString( 2, metric.getMetricName() );
-	    metricStmt.setDouble( 3, metric.getLowValue() );
-	    metricStmt.setDouble( 4, metric.getHighValue() );
-	    metricStmt.setDouble( 5, metric.getAverage() );
-	    metricStmt.setDouble( 6, metric.getStandardDeviation() );
+ 	    metricStmt.setInt( 1, runId );
+ 	    metricStmt.setString( 2, metric.getMetricName() );
+ 	    metricStmt.setDouble( 3, metric.getLowValue() );
+ 	    metricStmt.setDouble( 4, metric.getHighValue() );
+ 	    metricStmt.setDouble( 5, metric.getAverage() );
+ 	    metricStmt.setDouble( 6, metric.getStandardDeviation() );
 
-	    metricStmt.execute();
+ 	    metricStmt.execute();
 	} catch (Exception e) {
 	    throw new RuntimeException( e );
 	}
