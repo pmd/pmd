@@ -357,7 +357,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     </rule>
 
     <rule name="ReturnFromFinallyBlock"
-          message="Avoid returning from a finally blocks"
+          message="Avoid returning from a finally block"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
   Avoid returning from a finally block - this can discard exceptions.
