@@ -25,7 +25,7 @@ public class CharacterTokenizer implements Tokenizer {
             sb.append(currentLine);
             sb.append(EOL);
             for (int i = 0; i < currentLine.length(); i++) {
-                tokens.add(new TokenEntry(String.valueOf(currentLine.charAt(i)), position, tokens.getID(), lines.size()));
+                tokens.add(new TokenEntry(String.valueOf(currentLine.charAt(i)), position, tokens.getFileName(), lines.size()));
                 position++;
             }
         }

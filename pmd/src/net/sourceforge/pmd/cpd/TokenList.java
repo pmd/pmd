@@ -7,20 +7,20 @@ import java.util.List;
 
 public class TokenList implements Serializable {
 
-    private String id;
+    private String fileName;
     private List tokens = new ArrayList();
     private List code;
 
-    public TokenList(String id) {
-        this.id = id;
+    public TokenList(String fileName) {
+        this.fileName = fileName;
     }
 
     public void setCode(List newCode) {
         code = newCode;
     }
 
-    public int getLine(int index) {
-        return ((TokenEntry)tokens.get(index)).getBeginLine();
+    public int getLineNumber(int tokenIndex) {
+        return ((TokenEntry)tokens.get(tokenIndex)).getBeginLine();
     }
 
     public int getLineCount(int startTokenIndex, int tokenCount) {
@@ -51,8 +51,8 @@ public class TokenList implements Serializable {
         tokens.add(tok);
     }
 
-    public String getID() {
-        return id;
+    public String getFileName() {
+        return fileName;
     }
 
     public int size() {
@@ -61,11 +61,11 @@ public class TokenList implements Serializable {
 
     public boolean equals(Object other) {
         TokenList o = (TokenList) other;
-        return o.getID().equals(id);
+        return o.getFileName().equals(fileName);
     }
 
     public int hashCode() {
-        return id.hashCode();
+        return fileName.hashCode();
     }
 
     public Iterator iterator() {

@@ -16,7 +16,7 @@ public class LinesTokenizer implements Tokenizer {
             lines.add(currentLine);
             sb.append(currentLine);
             sb.append(eol);
-            tokens.add(new TokenEntry(currentLine, tokens.size(), tokens.getID(), lines.size()));
+            tokens.add(new TokenEntry(currentLine, tokens.size(), tokens.getFileName(), lines.size()));
         }
         tokens.setCode(lines);
 */

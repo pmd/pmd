@@ -24,7 +24,7 @@ public class CPD {
     }
 
     public void go() {
-        for (Iterator i = tokenSets.iterator(); i.hasNext();) {
+        for (Iterator i = tokenSets.values().iterator(); i.hasNext();) {
             TokenList tl = (TokenList)i.next();
             for (Iterator j = tl.iterator();j.hasNext();) {
                 TokenEntry te = (TokenEntry)j.next();
@@ -44,10 +44,10 @@ public class CPD {
             rpt.append(EOL);
             rpt.append("Found a " + tokenList1.getLineCount(match.getFirstOccurrence().getIndexIntoFile(), match.getTokenCount()) + " line (" +match.getTokenCount() + " tokens) duplication in the following files: ");
             rpt.append(EOL);
-            rpt.append("Starting at line " + tokenList1.getLine(match.getFirstOccurrence().getIndexIntoFile())+ " of " + match.getFirstOccurrence().getFile());
+            rpt.append("Starting at line " + tokenList1.getLineNumber(match.getFirstOccurrence().getIndexIntoFile())+ " of " + match.getFirstOccurrence().getFile());
             rpt.append(EOL);
             TokenList tokenList2 = tokenSets.getTokenList(match.getSecondOccurrence().getFile());
-            rpt.append("Starting at line " + tokenList2.getLine(match.getSecondOccurrence().getIndexIntoFile())+ " of " + match.getSecondOccurrence().getFile());
+            rpt.append("Starting at line " + tokenList2.getLineNumber(match.getSecondOccurrence().getIndexIntoFile())+ " of " + match.getSecondOccurrence().getFile());
             rpt.append(EOL);
             rpt.append(tokenList1.getLineSlice(match.getFirstOccurrence().getIndexIntoFile(), match.getTokenCount()));
             rpt.append(EOL);
