@@ -36,11 +36,12 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractRule implements R
     }
 
     public Object visit(ASTMethodDeclarator node, Object data) {
+        AccessNode parent = (AccessNode)node.jjtGetParent();
         // hashcode has no param
         // TODO ensure it returns an int
-        if (node.getImage().equals("hashcode") && ((AccessNode)node.jjtGetParent()).isPublic() && !((AccessNode)node.jjtGetParent()).isStatic() && node.jjtGetChild(0).jjtGetNumChildren() == 0) {
+        if (node.getImage().equals("hashcode") && parent.isPublic() && !parent.isStatic() && node.jjtGetChild(0).jjtGetNumChildren() == 0) {
             overridesHashcode = true;
-        } else if (node.getImage().equals("equals") && ((AccessNode)node.jjtGetParent()).isPublic()  && !((AccessNode)node.jjtGetParent()).isStatic()) {
+        } else if (node.getImage().equals("equals") && parent.isPublic()  && !parent.isStatic()) {
             // TODO equals has 1 param
             overridesEquals = true;
         }
