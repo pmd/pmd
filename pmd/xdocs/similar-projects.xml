@@ -8,7 +8,7 @@
   </properties>
 
   <body>
-   <section name="Similar Projects">
+   <section name="Similar to PMD">
      <subsection name="Open Source">
        <ul>
          <li><a href="http://csdl.ics.hawaii.edu/Research/JWiz/JWiz.html">JWiz</a> - Research project, checks some neat stuff, like if you create a Button without adding an ActionListener to it.  Neat.</li>
@@ -23,6 +23,7 @@
      </subsection>
      <subsection name="Commercial">
        <ul>
+         <li><a href="http://www.redhillconsulting.com.au/products/simian/index.html">Simian</a> - fast, works with Java, C#, C, CPP, COBOL, JSP, HTML</li>
          <li><a href="http://www.instantiations.com/codepro/default.htm">CodePro Studio</a> - $589, works with Eclipse, lots of rules</li>
          <li><a href="http://www.kodein.net/index.html">KodeIn</a> - $75, lots of rules, uses JavaCC.</li>
          <li><a href="http://www.parasoft.com">JTest</a> - Very nice with tons of features,
@@ -33,6 +34,13 @@
          <li><a href="http://www.andiz.de/azosystems/en/index.html">AzoJavaChecker</a> - Rules aren't listed online so it's hard to tell what they have.  Not sure how much it costs since I don't know German.</li>
          <li><a href="http://www.alajava.com/aubjex/products.htm">Aubjex</a> - Rules aren't listed online.  Appears to have some code modification stuff, which would be cool to have in PMD.  $299.</li>
        </ul>
+     </subsection>
+   </section>
+   <section name="Similar to CPD">
+       <subsection name="Commercial">
+         <ul>
+             <li><a href="http://www.redhillconsulting.com.au/products/simian/index.html">Simian</a> - fast, works with Java, C#, C, CPP, COBOL, JSP, HTML</li>
+         </ul>
      </subsection>
    </section>
   </body>
