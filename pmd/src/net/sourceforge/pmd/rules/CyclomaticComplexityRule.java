@@ -3,6 +3,7 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTIfStatement;
@@ -10,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.Node;
@@ -70,13 +72,28 @@ public class CyclomaticComplexityRule extends AbstractRule
      *
      * @return
      */
-    public Object visit(ASTSwitchLabel node, Object data)
+    public Object visit(ASTSwitchStatement node, Object data)
     {
         Entry entry = (Entry) m_entryStack.peek();
 
-// *******
-// Needs work: don't count label if there is no block under it.
-        entry.m_decisionPoints++;
+        int childCount = node.jjtGetNumChildren();
+        int lastIndex = childCount - 1;
+
+        for (int n = 0; n < lastIndex; n++)
+        {
+            Node childNode = node.jjtGetChild(n);
+
+            if (childNode instanceof ASTSwitchLabel)
+            {
+                childNode = node.jjtGetChild(n + 1);
+
+                if (childNode instanceof ASTBlockStatement)
+                {
+                    entry.m_decisionPoints++;
+                }
+            }
+        }
+
         super.visit(node, data);
 
         return data;
