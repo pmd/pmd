@@ -1,9 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 import java.util.Iterator;
@@ -18,8 +21,10 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     protected String description;
     protected String example;
     protected String ruleSetName;
-    protected boolean m_include;
+    protected boolean include;
     protected int priority = LOWEST_PRIORITY;
+    private String packageName;
+    private String className;
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -89,7 +94,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         if (!(o instanceof Rule)) {
             return false;
         }
-        return ((Rule)o).getName().equals(getName());
+        return ((Rule) o).getName().equals(getName());
     }
 
     public int hashCode() {
@@ -108,11 +113,15 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber) {
-        return new RuleViolation(this, lineNumber, ctx);
+        return new RuleViolation(this, lineNumber, ctx, packageName, className);
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, String specificDescription) {
-        return new RuleViolation(this, lineNumber, specificDescription, ctx);
+        return new RuleViolation(this, lineNumber, specificDescription, ctx, packageName, className);
+    }
+
+    public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, int lineNumber2, String variableName, String specificDescription) {
+        return new RuleViolation(this, lineNumber, lineNumber2, variableName, specificDescription, ctx, packageName, className);
     }
 
     public Properties getProperties() {
@@ -120,11 +129,11 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     public boolean include() {
-        return m_include;
+        return include;
     }
 
     public void setInclude(boolean include) {
-        m_include = include;
+        this.include = include;
     }
 
     public int getPriority() {
@@ -137,5 +146,15 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public Object visit(ASTPackageDeclaration node, Object data) {
+        packageName = ((ASTName) node.jjtGetChild(0)).getImage();
+        return super.visit(node, data);
+    }
+
+    public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+        className = node.getImage();
+        return super.visit(node, data);
     }
 }

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.stat.Metric;
@@ -39,18 +39,39 @@ public class Report {
     private List listeners = new ArrayList();
     private List errors = new ArrayList();
 
+
     /**
-     *
+     * @return a Map summarizing the Report:
+     *         String (Package.Class) ->Integer (count of violations)
+     */
+    public Map getCountSummary() {
+        Map summary = new HashMap();
+        for (Iterator iter = violations.iterator(); iter.hasNext();) {
+            RuleViolation rv = (RuleViolation) iter.next();
+            String key = rv.getPackageName() + "." + rv.getClassName();
+            Object o = summary.get(key);
+            if (o == null) {
+                Integer value = new Integer(1);
+                summary.put(key, value);
+            } else {
+                Integer value = (Integer) o;
+                summary.put(key, new Integer(value.intValue() + 1));
+            }
+        }
+        return summary;
+    }
+
+    /**
      * @return a Map summarizing the Report: String (rule name) ->Integer (count of violations)
      */
     public Map getSummary() {
         Map summary = new HashMap();
         for (Iterator i = violations.iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation)i.next();
+            RuleViolation rv = (RuleViolation) i.next();
             if (!summary.containsKey(rv.getRule().getName())) {
                 summary.put(rv.getRule().getName(), new Integer(0));
             }
-            Integer count = (Integer)summary.get(rv.getRule().getName());
+            Integer count = (Integer) summary.get(rv.getRule().getName());
             count = new Integer(count.intValue() + 1);
             summary.put(rv.getRule().getName(), count);
         }

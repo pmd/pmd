@@ -10,6 +10,7 @@ import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaLanguage;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
+import net.sourceforge.pmd.dfa.DataFlowFacade;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -56,6 +57,8 @@ public class PMD {
             Thread.yield();
             SymbolFacade stb = new SymbolFacade();
             stb.initializeWith(c);
+            //DataFlowFacade dff = new DataFlowFacade();
+            //dff.initializeWith(c);
             List acus = new ArrayList();
             acus.add(c);
             ruleSet.apply(acus, ctx);
@@ -100,6 +103,8 @@ public class PMD {
     public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws PMDException {
         processFile(fileContents, System.getProperty("file.encoding"), ruleSet, ctx);
     }
+
+
 
     public static void main(String[] args) {
         CommandLineOptions opts = new CommandLineOptions(args);

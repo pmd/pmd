@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import java.util.Comparator;
@@ -40,9 +40,28 @@ public class RuleViolation {
     private Rule rule;
     private String description;
     private String filename;
+    private int line2 = -1;
+    private String packageName;
+    private String className;
+    private String variableName;
 
-    public RuleViolation(Rule rule, int line, RuleContext ctx) {
-        this(rule, line, rule.getMessage(), ctx);
+    public RuleViolation(Rule rule, int line, RuleContext ctx, String packageName, String className) {
+        this(rule, line, rule.getMessage(), ctx, packageName, className);
+    }
+
+    public RuleViolation(Rule rule, int line, String specificDescription, RuleContext ctx, String packageName, String className) {
+        this(rule, line, -1, "", specificDescription, ctx, packageName, className);
+    }
+
+    public RuleViolation(Rule rule, int line, int line2, String variableName, String specificDescription, RuleContext ctx, String packageName, String className) {
+        this.line = line;
+        this.line2 = line2;
+        this.rule = rule;
+        this.description = specificDescription;
+        this.filename = ctx.getSourceCodeFilename();
+        this.packageName = packageName;
+        this.className = className;
+        this.variableName = variableName;
     }
 
     public RuleViolation(Rule rule, int line, String specificDescription, RuleContext ctx) {
@@ -66,6 +85,22 @@ public class RuleViolation {
 
     public String getFilename() {
         return filename;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public int getLine2() {
+        return line2;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public String getVariableName() {
+        return variableName;
     }
 
     public String toString() {
