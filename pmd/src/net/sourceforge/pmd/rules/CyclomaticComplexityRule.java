@@ -55,25 +55,21 @@ public class CyclomaticComplexityRule extends AbstractRule {
     private Stack entryStack = new Stack();
 
     public Object visit(ASTIfStatement node, Object data) {
-        Entry entry = (Entry) entryStack.peek();
-        entry.bumpDecisionPoints();
+        ((Entry) entryStack.peek()).bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     public Object visit(ASTForStatement node, Object data) {
-        Entry entry = (Entry) entryStack.peek();
-        entry.bumpDecisionPoints();
+        ((Entry) entryStack.peek()).bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     public Object visit(ASTSwitchStatement node, Object data) {
         Entry entry = (Entry) entryStack.peek();
-
         int childCount = node.jjtGetNumChildren();
         int lastIndex = childCount - 1;
-
         for (int n = 0; n < lastIndex; n++) {
             Node childNode = node.jjtGetChild(n);
             if (childNode instanceof ASTSwitchLabel) {
@@ -83,15 +79,12 @@ public class CyclomaticComplexityRule extends AbstractRule {
                 }
             }
         }
-
         super.visit(node, data);
-
         return data;
     }
 
     public Object visit(ASTWhileStatement node, Object data) {
-        Entry entry = (Entry) entryStack.peek();
-        entry.bumpDecisionPoints();
+        ((Entry) entryStack.peek()).bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }

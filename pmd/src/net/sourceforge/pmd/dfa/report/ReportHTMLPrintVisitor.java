@@ -23,9 +23,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
 
     private StringBuffer packageBuf = new StringBuffer();
     private StringBuffer classBuf = new StringBuffer();
-    private int lenght;
-
-// ----------------------------------------------------------------------------
+    private int length;
 
     /**
      * Writes the buffer to file.
@@ -93,7 +91,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
                     "<th>#</th>" +
                     " </tr>" + PMD.EOL);
 
-            this.lenght = this.packageBuf.length();
+            this.length = this.packageBuf.length();
         }
 
 
@@ -114,11 +112,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
             String str = (String) cnode.getClassName();
 
             classBuf.insert(0,
-                    "<html>" +
-                    " <head>" +
-                    "   <title>PMD - " + str + "</title>" +
-                    " </head>" +
-                    " <body>" + PMD.EOL + "" +
+                    "<html><head><title>PMD - " + str + "</title></head><body>" + PMD.EOL + "" +
                     "<h2>Class View</h2>" +
                     "<h3 align=\"center\">Class: " + str + "</h3>" +
                     "<table border=\"\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" +
@@ -136,7 +130,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
             classBuf = new StringBuffer();
 
 
-            this.packageBuf.insert(this.lenght,
+            this.packageBuf.insert(this.length,
                     "<tr>" +
                     " <td>-</td>" +
                     " <td><a href=\"" + str + ".html\">" + str + "</a></td>" +
@@ -150,7 +144,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
 
             // rootNode
             if (node.getParent() == null) {
-                str = "Gesamt";
+                str = "Aggregate";
             }
             // all the other nodes
             else {
@@ -158,21 +152,15 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
                 node.getParent().addNumberOfViolation(node.getNumberOfViolations());
             }
 
-            this.packageBuf.insert(this.lenght,
-                    "<tr>" +
-                    " <td><b>" + str + "</b></td>" +
+            this.packageBuf.insert(this.length,
+                    "<tr><td><b>" + str + "</b></td>" +
                     " <td>-</td>" +
                     " <td>" + node.getNumberOfViolations() + "</td>" +
                     "</tr>" + PMD.EOL);
         }
-/*
-+    * The first node of result tree.
-+    * */
+        // The first node of result tree.
         if (node.getParent() == null) {
-            this.packageBuf.append("</table>" +
-                    " </body>" +
-                    "</html>");
-
+            this.packageBuf.append("</table> </body></html>");
             this.write("index.html", this.packageBuf);
         }
     }

@@ -19,25 +19,25 @@
             <li>Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
             <li>Ole-Martin Mork - NetBeans plugin</li>
             <li>Andrei Lumianski - Gel plugin</li>
-            <li> Brant Langer Gurganus - Working on the Swing GUI</li>
+            <li>Brant Langer Gurganus - Swing GUI</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">
         <ul>
-            <li>Don Leckie - The PMD GUI</li>
             <li>Tom Burke - Eclipse plugin</li>
-            <li>Rich Kilmer - logo design</li>
-            <li>Paul Kendall - various bugfixes and features</li>
             <li>Alex Chaffee - various bugfixes and features</li>
             <li>Siegfried Goeschl - original Maven plugin, various bugfixes and features</li>
+            <li>Don Leckie - The PMD GUI</li>
+            <li>Rich Kilmer - logo design</li>
+            <li>Paul Kendall - various bugfixes and features</li>
         </ul>
         </subsection>
         <subsection name="Significant contributors">
         <ul>
-            <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform</li>
-            <li>Dan Sheppard - XPath engine integration concept and implementation</li>
+            <li>Raik Schroeder - data flow analyis layer, YAHTMLRenderer</li>
             <li>Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching</li>
-            <li>Raik Schroeder - data flow analyis layer</li>
+            <li>Dan Sheppard - XPath engine integration concept and implementation</li>
+            <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform</li>
         </ul>
         </subsection>
         <subsection name="Contributors">
@@ -47,7 +47,6 @@
             <li>Wim Deblauwe - suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Archimedes Trajano - suggested SimpleDateFormatNeedsLocale</li>
             <li>Joerg Kurt Wegner - bug report for UnusedLocalVariable</li>
-            <li>Brant Langer Gurganus - project.xml patch, Javadoc patches, reported an encoding problem</li>
             <li>David Hovemeyer - a nice patch to let PMD process code in jar/zip files</li>
             <li>Bruno - SuspiciousEqualsMethodName</li>
             <li>Ernst Reissner - suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>

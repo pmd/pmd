@@ -12,7 +12,7 @@ public class ReportTree {
     private class TreeIterator implements Iterator {
 
         private AbstractReportNode iterNode = rootNode;
-        private boolean hasNextFlag = false;
+        private boolean hasNextFlag;
 
         public void remove() {
             throw new UnsupportedOperationException();
@@ -20,10 +20,7 @@ public class ReportTree {
 
         public boolean hasNext() {
             this.hasNextFlag = true;
-            if (this.getNext() == null) {
-                return false;
-            }
-            return true;
+            return this.getNext() != null;
         }
 
         public Object next() {
