@@ -31,6 +31,7 @@ Say you want to pick specific rules from various rule sets.  You can do this by 
 <![CDATA[
 <?xml version="1.0"?>
 <ruleset name="customruleset">
+
   <description>
   This ruleset checks my code for bad stuff
   </description>
