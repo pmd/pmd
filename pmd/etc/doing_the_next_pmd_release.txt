@@ -23,26 +23,28 @@ Prepare binary release:
 rmdir /q /s c:\tmp\pmd
 mkdir -p c:\tmp\pmd\etc
 mkdir c:\tmp\pmd\lib
-copy build.xml c:\tmp\pmd\etc
 copy run.bat c:\tmp\pmd\etc
+copy build.xml c:\tmp\pmd\etc
 copy cpdgui.bat c:\tmp\pmd\etc
 copy ..\lib\pmd-1.0rc1.jar c:\tmp\pmd\lib
-Zip it up, rename it pmd-bin-1.0.zip
+copy ..\lib\xmlParserAPIs-2.0.2.jar c:\tmp\pmd\lib
+copy ..\lib\xercesImpl-2.0.2.jar c:\tmp\pmd\lib
+Zip it up, rename it pmd-bin-1.0rc1.zip
 
 All is well, so time to tag:
 cvs ci -m "preps for release"
 cd c:\data\pmd
-cvs rtag -D tomorrow "pmd_release_1_0" pmd
+cvs rtag -D tomorrow "pmd_release_1_0rc1" pmd
 
 Prepare source release:
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
-cvs export -d c:\tmp\pmd -r pmd_release_1_0 pmd
+cvs export -d c:\tmp\pmd -r pmd_release_1_0rc1 pmd
 copy pmd\lib\pmd-1.0rc1.jar c:\tmp\pmd\lib
-zip it up, rename it to pmd-src-1.0.zip
+zip it up, rename it to pmd-src-1.0rc1.zip
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_1_0 pmd
+cvs rtag -d pmd_release_1_0rc1 pmd
 and then retag everything
 
 FTP the zip file to SF
@@ -50,17 +52,15 @@ ftp upload.sourceforge.net
 generic userid/password: anonymous/tomcopeland@users.sourceforge.net
 cd incoming
 bin
-put pmd-bin-1.0.zip
-put pmd-src-1.0.zip
+put pmd-bin-1.0rc1.zip
+put pmd-src-1.0rc1.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-1.0.zip file
-Add the pmd-src-1.0.zip file
+Add the pmd-bin-1.0rc1.zip file
+Add the pmd-src-1.0rc1.zip file
 Classify the file
 
-SSH in to shell.sourceforge.net
-cd /home/groups/p/pm/pmd/build/
-./quick.sh
+Redo the web site
 
 Submit some news saying "hey, new release!"
