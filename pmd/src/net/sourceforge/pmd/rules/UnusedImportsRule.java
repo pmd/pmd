@@ -29,10 +29,7 @@ public class UnusedImportsRule extends AbstractRule {
             String msg = MessageFormat.format(getMessage(), new Object[] {wrapper.getName()});
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, wrapper.getLine(), msg));
         }
-
         return data;
-
-
     }
 
     public Object visit(ASTImportDeclaration node, Object data) {

@@ -17,7 +17,7 @@ import net.sourceforge.pmd.RuleViolation;
  * Aug 8, 2002 StatisticalRule.java
  */
 public abstract class StatisticalRule extends AbstractRule {
-	public static double DELTA = 0.05; // Within this range. . .
+	public static double DELTA = 0.000005; // Within this range. . .
 	
     private SortedSet dataPoints =
 		new TreeSet();
@@ -91,26 +91,16 @@ public abstract class StatisticalRule extends AbstractRule {
 										   double minValue ) 
     {
 		Iterator points = pointSet.iterator();
+        SortedSet RC = new TreeSet();
 
-        DataPoint point = null;
+		while (points.hasNext()) {
+            DataPoint point = (DataPoint) points.next();
 
-		if (points.hasNext()) {
-			point = (DataPoint) points.next();
-			while ((point.getScore() < minValue) && (points.hasNext())) {
-				point = (DataPoint) points.next();
-			}
-			
-			if (points.hasNext()) {
-				return pointSet.subSet(point, pointSet.last());
-			}
+            if (point.getScore() >= (minValue - DELTA)) {
+                RC.add(point);
+            }
 		}
-
-        if (point != null && point.getScore() >=  minValue) {
-            TreeSet result = new TreeSet();
-            result.add(point);
-            return result;
-        }
-		return new TreeSet();
+        return RC;
     }
     
     protected SortedSet applyTopScore( SortedSet points,

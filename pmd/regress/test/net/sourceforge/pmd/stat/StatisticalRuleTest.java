@@ -121,7 +121,7 @@ public class StatisticalRuleTest
 	public double randomSigma(int minimum) {
 		double minSigma = ((999 - minimum) - MEAN)/SIGMA;
 			
-		if (minSigma <= 0) return randomSigma();
+		if ((minSigma <= 0) || (minSigma > 2)) return randomSigma();
 		
 		return minSigma + (random.nextDouble() * (2 - minSigma));
 	}
