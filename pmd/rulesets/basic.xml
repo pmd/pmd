@@ -127,7 +127,7 @@ public class Something {
   </rule>
 
   <rule name="LongVariable"
-        message="Avoid excessively long variables"
+        message="Avoid excessively long variable names"
         class="net.sourceforge.pmd.rules.LongVariableRule">
     <description>
 Long Variable: detects when a field, formal or local variable is declared
