@@ -4,15 +4,15 @@ import java.util.List;
 
 public class Mark {
 
-    private int index;
-    private int offset;
+    private int indexIntoFile;
+    private int indexIntoTokenArray;
     private List code;
     private String file;
 
     public Mark(List code, int offset, String file, int index) {
         this.code = code;
-        this.offset = offset;
-        this.index = index;
+        this.indexIntoTokenArray = offset;
+        this.indexIntoFile = index;
         this.file = file;
     }
 
@@ -21,19 +21,15 @@ public class Mark {
     }
 
     public int getIndexIntoFile() {
-        return this.index;
+        return this.indexIntoFile;
     }
 
     public int getIndexIntoTokenArray() {
-        return offset;
+        return indexIntoTokenArray;
     }
 
     public TokenEntry tokenAt(int index) {
-        if (index < 0) {
-            return (TokenEntry)code.get((code.size() + index + offset) % code.size());
-        } else {
-            return (TokenEntry)code.get((index + offset) % code.size());
-        }
+        return (TokenEntry)code.get((index + indexIntoTokenArray) % code.size());
     }
 
 }
