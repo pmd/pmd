@@ -1,7 +1,7 @@
 public class ContainsSystemGetProps {
-    public ContainsSystemGetProps() {
-        System.getProperty("Rule violation");
+    public void foo() {
+        System.getProperty("this.is.not.allowed");
         System.getProperties();
-        System.setProperty("Another rule violation", "foo");
+        System.setProperty("set.a.system.property", "value");
     }
 }

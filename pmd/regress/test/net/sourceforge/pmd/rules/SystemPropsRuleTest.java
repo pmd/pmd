@@ -22,4 +22,8 @@ public class SystemPropsRuleTest extends RuleTst {
         assertEquals(new SystemPropsRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 
+    public void testProps2() throws Throwable {
+        Report report = process("ContainsSystemGetProps2.java", new SystemPropsRule());
+        assertTrue(report.isEmpty());
+    }
 }

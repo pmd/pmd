@@ -875,7 +875,9 @@ void Literal() :
 |
   <CHARACTER_LITERAL>
 |
-  <STRING_LITERAL>
+{ String stringValue = ""; Token t = null;}
+t=<STRING_LITERAL>
+{ stringValue=t.image;} {jjtThis.setImage(stringValue);}
 |
   BooleanLiteral()
 |
