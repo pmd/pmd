@@ -4,12 +4,12 @@ public class Locator {
 
     private String file;
     private int line;
-    private int loc;
+    private int indexIntoFile;
 
-    public Locator(String file, int line, int originalTokenLocation) {
+    public Locator(String file, int line, int indexIntoFile) {
         this.file = file;
         this.line = line;
-        this.loc = originalTokenLocation;
+        this.indexIntoFile = indexIntoFile;
     }
 
     public int getLine() {
@@ -19,8 +19,8 @@ public class Locator {
         return file;
     }
 
-    public int getLoc() {
-        return this.loc;
+    public int getIndexIntoFile() {
+        return this.indexIntoFile;
     }
 
     public String toString() {

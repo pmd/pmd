@@ -47,7 +47,7 @@ public class CPD {
             rpt.append(EOL);
             rpt.append(match.getEnd().getFile());
             rpt.append(EOL);
-            rpt.append(tl.getLineSlice(match.getStart().getLoc(), match.getTokenCount()));
+            rpt.append(tl.getLineSlice(match.getStart().getIndexIntoFile(), match.getTokenCount()));
             rpt.append(EOL);
         }
         return rpt.toString();
