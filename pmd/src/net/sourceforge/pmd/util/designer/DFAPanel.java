@@ -14,6 +14,9 @@ import java.awt.Graphics;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Canvas;
+import java.awt.Image;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -148,6 +151,12 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         }
     }
 
+/*
+    private Image offScreenImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
+    private JPanel offScreenPanel = new JPanel();
+    private Graphics2D offScreenGraphics = (Graphics2D)offScreenImage.getGraphics();
+*/
+
     private DFACanvas dfaCanvas;
     private JList nodeList;
     private DefaultListModel nodes = new DefaultListModel();
@@ -158,9 +167,10 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
 
         setLayout(new BorderLayout());
         JPanel leftPanel = new JPanel();
+        nodes.addElement("Hit 'Go'");
         nodeList = new JList(nodes);
+        nodeList.setFixedCellWidth(100);
         nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        nodeList.setFixedCellWidth(300);
         nodeList.setBorder(BorderFactory.createLineBorder(Color.black));
         nodeList.addListSelectionListener(this);
         leftPanel.add(nodeList);
@@ -177,6 +187,10 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         ElementWrapper wrapper = (ElementWrapper)nodeList.getSelectedValue();
         dfaCanvas.setMethod(wrapper.getNode());
         repaint();
+/*
+        board.renderTo(offScreenGraphics);
+        offScreenPanel.getGraphics().drawImage(offScreenImage, 0, 0, offScreenPanel);
+*/
     }
 
     public void resetTo(List newNodes, HasLines lines) {
