@@ -15,7 +15,17 @@ You can read much more about PMD here - http://pmd.sf.net/.</p>
 <li>Restart JEdit and you'll be ready to go.
 </ul>
 <h3>Integration</h3>
-<p>There's a new 'PMD' menu item in the Plugins menu.  This checks your currently displayed Java code and puts the results in the ErrorList.</p>
+<p>There's a new 'PMD' menu item in the Plugins menu.  This has several submenu options</p>
+<ul>
+<li>"Check current file" checks your currently displayed Java code</li>
+<li>"Check all files in current directory" does just that</li>
+<li>"Check directory recursively" does just that, too! </li>
+</ul>
+<p>"Current directory" means "the directory which is displayed in the file system browser.  So, for 
+example, if you wanted to run PMD on your whole source tree, and your top level 
+source directory is named "src", you would 1) double-click on the "src" directory and 
+then 2) select the "PMD->Check directory recursively" menu option.</p>
+<p>All those options put any errors into the ErrorList so you can jump around your project fixing stuff.
 <p>There's also a new section in the Global Options configuration panel that lets you pick rule sets.</p>
 <h3>License</h3>
 <p>The PMD-JEdit plugin is free software released under the Apache license.</p>

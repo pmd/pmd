@@ -1,4 +1,5 @@
 ???? - 0.6
+PMD can be run on 1) all files in a directory or 2) recursively into a directory tree.
 
 July 22 2002 - 0.5:
 Moved options into Global Options area and made them look nicer.
