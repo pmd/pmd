@@ -39,7 +39,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Will Sargent - ExceptionAsFlowControlRule</li>
+            <li>Will Sargent - ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
             <li>Choi Ki Soo - Found bug in XMLRenderer</li>
             <li>wedemann - Found bug in RuleSetFactory XPath message variable plugging</li>
