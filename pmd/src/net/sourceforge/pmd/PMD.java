@@ -66,12 +66,15 @@ public class PMD {
         }
 
         if (args.length != 3) {
-            throw new RuntimeException("Please pass in a java source code filename, a report format, and a rule set file name");
+            System.err.println("");
+            System.err.println("Please pass in a java source code filename or directory, a report format, and a ruleset filename or a comma-delimited string of ruleset filenames." + System.getProperty("line.separator") + "For example: " + System.getProperty("line.separator") + "c:\\> java -jar pmd-0.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml");
+            System.err.println("");
+            System.exit(1);
         }
 
         String inputFileName = args[0];
         String reportFormat = args[1];
-        String ruleSetFilename = args[2];
+        String ruleSets = args[2];
 
         File inputFile = new File(inputFileName);
         if (!inputFile.exists()) {
@@ -90,11 +93,11 @@ public class PMD {
         PMD pmd = new PMD();
 
         RuleContext ctx = new RuleContext();
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream(ruleSetFilename));
         ctx.setReport(new Report());
 
         try {
+            RuleSetFactory ruleSetFactory = new RuleSetFactory();
+            RuleSet rules = ruleSetFactory.createRuleSet(ruleSets);
             for (Iterator i = files.iterator(); i.hasNext();) {
                 File file = (File)i.next();
                 ctx.setSourceCodeFilename(file.getAbsolutePath());
@@ -102,6 +105,8 @@ public class PMD {
             }
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
+        } catch (RuleSetNotFoundException rsnfe) {
+            rsnfe.printStackTrace();
         }
 
         Renderer rend = null;

@@ -69,7 +69,8 @@ public class PMDTask extends Task {
 
         RuleSet rules = null;
         try {
-            rules = createRuleSets();
+            RuleSetFactory ruleSetFactory = new RuleSetFactory();
+            rules = ruleSetFactory.createRuleSet(ruleSetFiles);
         } catch (RuleSetNotFoundException rsnfe) {
             throw new BuildException(rsnfe.getMessage());
         }
@@ -118,22 +119,4 @@ public class PMDTask extends Task {
             throw new BuildException("Stopping build since PMD found problems in the code");
         }
     }
-
-    private RuleSet createRuleSets() throws RuleSetNotFoundException {
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-
-        if (ruleSetFiles.indexOf(',') == -1) {
-           return ruleSetFactory.createRuleSet(ruleSetFiles);
-        }
-
-        RuleSet ruleSet = new RuleSet();
-        for (StringTokenizer st = new StringTokenizer(ruleSetFiles, ","); st.hasMoreTokens();) {
-            String ruleSetName = st.nextToken();
-            RuleSet tmpRuleSet = ruleSetFactory.createRuleSet(ruleSetName);
-            if (verbose) System.out.println("Adding " + tmpRuleSet.size() + " rules from ruleset " + ruleSetName);
-            ruleSet.addRuleSet(tmpRuleSet);
-        }
-        return ruleSet;
-    }
-
 }

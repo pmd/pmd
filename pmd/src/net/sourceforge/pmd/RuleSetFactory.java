@@ -41,7 +41,17 @@ public class RuleSetFactory {
     }
 
     public RuleSet createRuleSet(String name) throws RuleSetNotFoundException {
-        return createRuleSet(tryToGetStreamTo(name));
+        if (name.indexOf(',') == -1) {
+           return createRuleSet(tryToGetStreamTo(name));
+        }
+
+        RuleSet ruleSet = new RuleSet();
+        for (StringTokenizer st = new StringTokenizer(name, ","); st.hasMoreTokens();) {
+            String ruleSetName = st.nextToken();
+            RuleSet tmpRuleSet = createRuleSet(ruleSetName);
+            ruleSet.addRuleSet(tmpRuleSet);
+        }
+        return ruleSet;
     }
 
     public RuleSet createRuleSet(InputStream inputStream) {
