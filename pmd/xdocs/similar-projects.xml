@@ -14,13 +14,12 @@
          <li><a href="http://www.cs.umd.edu/~pugh/java/bugs/">FindBugs</a> - bytecode analyzer, lots of rules, responsive developers</li>
          <li><a href="http://www.ovmj.org/jamit/index.html">Jamit</a> - bytecode analyzer, nice <a href="http://www.ovmj.org/jamit/data2_classes.php3">graphs</a></li>
          <li><a href="http://csdl.ics.hawaii.edu/Research/JWiz/JWiz.html">JWiz</a> - Research project, checks some neat stuff, like if you create a Button without adding an ActionListener to it.  Neat.</li>
-         <li><a href="http://doctorj.org">DoctorJ</a> - Written in C++.  Uses Lex and YACC.  Checks Javadoc, syntax and calculates metrics.</li>
+         <li><a href="http://doctorj.sourceforge.net">DoctorJ</a> - Written in C++.  Uses Lex and YACC.  Checks Javadoc, syntax and calculates metrics.</li>
          <li><a href="http://www.alphaworks.ibm.com/tech/toad">Toad</a> - All kinds of stuff from Big Blue.</li>
          <li><a href="http://www.artho.com/jlint/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.</li>
-         <li><a href="http://www.tbbr32568.pwb.blueyonder.co.uk/jnp/">JNP</a> - Nifty research project, uses JJTree/JavaCC.  Web site is frequently down.</li>
          <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a> - Very detailed, supports both Maven and Ant. Uses ANTLR.</li>
          <li><a href="http://jcsc.sourceforge.net/">JCSC</a> - Does a variety of coding standard checks, uses JavaCC and the GNU Regexp package.</li>
-         <li><a href="http://www.cs.umd.edu/~pugh/java/bugs/">FindBugs</a> - works on bytecode, uses BCEL.  Source code uses templates, nifty stuff!</li>
+         <li><a href="http://findbugs.sourceforge.net/">FindBugs</a> - works on bytecode, uses BCEL.  Source code uses templates, nifty stuff!</li>
        </ul>
      </subsection>
      <subsection name="Commercial">
