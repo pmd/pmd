@@ -59,7 +59,7 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="rulesets/unusedcode.xml" printtoconsole="true">
+    <pmd rulesetfiles="rulesets/unusedcode.xml" printtoconsole="true" targetjdk13="true">
         <formatter type="csv" toFile="pmd_report.csv"/>
         <fileset dir="/usr/local/java/src/java/lang/">
             <include name="*.java"/>

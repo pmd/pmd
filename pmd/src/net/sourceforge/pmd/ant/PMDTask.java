@@ -8,6 +8,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import org.apache.tools.ant.AntClassLoader;
@@ -38,6 +39,7 @@ public class PMDTask extends Task {
     private String ruleSetFiles;
     private boolean failOnError;
     private boolean failOnRuleViolation;
+    private boolean targetJDK13;
 
     /**
      * The end of line string for this machine.
@@ -46,6 +48,10 @@ public class PMDTask extends Task {
 
     public void setShortFilenames(boolean value) {
         this.shortFilenames = value;
+    }
+
+    public void setTargetJDK13(boolean value) {
+        this.targetJDK13 = value;
     }
 
     public void setFailOnError(boolean fail) {
@@ -110,7 +116,13 @@ public class PMDTask extends Task {
 
         logRulesUsed(rules);
 
-        PMD pmd = new PMD();
+        PMD pmd;
+        if (targetJDK13) {
+            pmd = new PMD(new TargetJDK1_3());
+        } else {
+            pmd = new PMD();
+        }
+
         RuleContext ctx = new RuleContext();
         ctx.setReport(new Report());
         for (Iterator i = filesets.iterator(); i.hasNext();) {

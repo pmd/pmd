@@ -1,3 +1,6 @@
+
+<<<<<<<<<<<<<<< BEFORE RELEASE <<<<<<<<<<<<<< update Ant task docs to reflect new 'targetjdk13' boolean
+
 update run.*, astviewer.*, cpd.jnlp, cpdgui.bat, build.xml, PMD.java to point to pmd-1.2.1.jar
 update xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-1.2.1
 update the release date in the changelog
