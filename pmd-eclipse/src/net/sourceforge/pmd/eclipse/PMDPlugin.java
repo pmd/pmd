@@ -48,6 +48,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.13  2003/08/14 16:10:41  phherlin
+ * Implementing Review feature (RFE#787086)
+ *
  * Revision 1.12  2003/08/11 21:57:28  phherlin
  * Refactoring ruleset preference store : moving to state location
  *
@@ -67,6 +70,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class PMDPlugin extends AbstractUIPlugin {
 
     // Public constants
+    public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse";
     public static final String[] RULESET_DEFAULTLIST =
         { "rulesets/basic.xml", "rulesets/design.xml", "rulesets/imports.xml", "rulesets/unusedcode.xml" };
     public static final String[] RULESET_ALLPMD =
@@ -85,20 +89,20 @@ public class PMDPlugin extends AbstractUIPlugin {
             "rulesets/strings.xml",
             "rulesets/unusedcode.xml" };
 
-    public static final String RULESET_PREFERENCE = "net.sourceforge.pmd.eclipse.ruleset";
+    public static final String RULESET_PREFERENCE = PLUGIN_ID + ".ruleset";
     public static final String RULESET_DEFAULT = "";
     public static final String RULESET_FILE = "/ruleset.xml";
 
-    public static final String MIN_TILE_SIZE_PREFERENCE = "net.sourceforge.pmd.eclipse.CPDPreference.mintilesize";
+    public static final String MIN_TILE_SIZE_PREFERENCE = PLUGIN_ID + ".CPDPreference.mintilesize";
     public static final int MIN_TILE_SIZE_DEFAULT = 25;
 
-    public static final String PMD_MARKER = "net.sourceforge.pmd.eclipse.pmdMarker";
-    public static final String PMD_TASKMARKER = "net.sourceforge.pmd.eclipse.pmdTaskMarker";
+    public static final String PMD_MARKER = PLUGIN_ID + ".pmdMarker";
+    public static final String PMD_TASKMARKER = PLUGIN_ID + ".pmdTaskMarker";
 
     public static final QualifiedName SESSION_PROPERTY_ACTIVE_RULESET =
-        new QualifiedName("net.sourceforge.pmd.eclipse.sessprops", "active_rulset");
+        new QualifiedName(PLUGIN_ID + ".sessprops", "active_rulset");
     public static final QualifiedName PERSISTENT_PROPERTY_ACTIVE_RULESET =
-        new QualifiedName("net.sourceforge.pmd.eclipse.persprops", "active_rulset");
+        new QualifiedName(PLUGIN_ID + ".persprops", "active_rulset");
 
     public static final String LIST_DELIMITER = ";";
 
@@ -123,6 +127,10 @@ public class PMDPlugin extends AbstractUIPlugin {
     public static final String SETTINGS_VIEW_WARNINGHIGH_FILTER = "view.warninghigh_filter";
     public static final String SETTINGS_VIEW_WARNING_FILTER = "view.warning_filter";
     public static final String SETTINGS_VIEW_INFORMATION_FILTER = "view.information_filter";
+    
+    public static final String REVIEW_MARKER = "// @PMD:REVIEWED:";
+    public static final String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
+    public static final String REVIEW_ADDITIONAL_COMMENT_PREFERENCE = PLUGIN_ID + ".review_additional_comment";
 
     // Static attributes
     private static PMDPlugin plugin;
@@ -132,6 +140,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     private Properties messageTable;
     private RuleSet ruleSet;
     private String[] priorityLabels;
+    private String reviewAdditionalComment;
 
     /**
      * The constructor.
@@ -529,4 +538,27 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
         }
     }
+    
+    /**
+     * Get the additional text for review comment
+     * @return
+     */
+    public String getReviewAdditionalComment() {
+        if (reviewAdditionalComment == null) {
+            getPreferenceStore().setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
+            reviewAdditionalComment = getPreferenceStore().getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
+        }
+        
+        return reviewAdditionalComment;
+    }
+
+    /**
+     * Set the additional text for review comment
+     * @param string
+     */
+    public void setReviewAdditionalComment(String string) {
+        reviewAdditionalComment = string;
+        getPreferenceStore().setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, reviewAdditionalComment);
+    }
+
 }

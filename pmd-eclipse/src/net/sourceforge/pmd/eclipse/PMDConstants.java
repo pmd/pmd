@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2003/08/14 16:10:41  phherlin
+ * Implementing Review feature (RFE#787086)
+ *
  * Revision 1.7  2003/08/11 21:58:06  phherlin
  * Adding a label for the default package
  *
@@ -28,6 +31,11 @@ public interface PMDConstants {
     public static final String MSGKEY_PROPERTY_LABEL_SELECT_RULE = "property.label.select_rule";
     
     public static final String MSGKEY_PREF_GENERAL_TITLE = "preference.pmd.title";
+    public static final String MSGKEY_PREF_GENERAL_LABEL_ADDCOMMENT = "preference.pmd.label.addcomment";
+    public static final String MSGKEY_PREF_GENERAL_LABEL_SAMPLE = "preference.pmd.label.sample";
+    public static final String MSGKEY_PREF_GENERAL_TOOLTIP_ADDCOMMENT = "preference.pmd.tooltip.addcomment";
+    public static final String MSGKEY_PREF_GENERAL_MESSAGE_INCORRECT_FORMAT ="preference.pmd.message.incorrect_format";
+    public static final String MSGKEY_PREF_GENERAL_GROUP_REVIEW = "preference.pmd.group.review";
     public static final String MSGKEY_PREF_RULESET_TITLE = "preference.ruleset.title";
     public static final String MSGKEY_PREF_RULESET_LIST = "preference.ruleset.list";
     public static final String MSGKEY_PREF_RULESET_ADD = "preference.ruleset.add";
@@ -79,6 +87,7 @@ public interface PMDConstants {
     public static final String MSGKEY_VIEW_TOOLTIP_INFORMATION_FILTER = "view.tooltip.information_filter";
     public static final String MSGKEY_VIEW_TOOLTIP_SHOW_RULE = "view.tooltip.show_rule";
     public static final String MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION = "view.tooltip.remove_violation";
+    public static final String MSGKEY_VIEW_TOOLTIP_REVIEW = "view.tooltip.review";
     public static final String MSGKEY_VIEW_ACTION_PROJECT = "view.action.project";
     public static final String MSGKEY_VIEW_ACTION_FILE = "view.action.file";
     public static final String MSGKEY_VIEW_ACTION_ERRORHIGH = "view.action.errorhigh";
@@ -88,6 +97,7 @@ public interface PMDConstants {
     public static final String MSGKEY_VIEW_ACTION_INFORMATION = "view.action.information";
     public static final String MSGKEY_VIEW_ACTION_SHOW_RULE = "view.action.show_rule";
     public static final String MSGKEY_VIEW_ACTION_REMOVE_VIOLATION = "view.action.remove_violation";
+    public static final String MSGKEY_VIEW_ACTION_REVIEW = "view.action.review";
     public static final String MSGKEY_VIEW_MENU_RESOURCE_FILTER = "view.menu.resource_filter";
     public static final String MSGKEY_VIEW_MENU_PRIORITY_FILTER = "view.menu.priority_filter";
     public static final String MSGKEY_VIEW_DEFAULT_PACKAGE = "view.default_package";
@@ -95,6 +105,11 @@ public interface PMDConstants {
     public static final String MSGKEY_ERROR_TITLE = "message.error.title";
     public static final String MSGKEY_ERROR_CORE_EXCEPTION = "message.error.core_exception";
     public static final String MSGKEY_ERROR_PMD_EXCEPTION = "message.error.pmd_exception";
+    public static final String MSGKEY_ERROR_IO_EXCEPTION = "message.error.io_exception";
+    public static final String MSGKEY_ERROR_JAVAMODEL_EXCEPTION = "message.error.javamodel_exception";
+    public static final String MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION = "message.error.invocationtarget_exception";
+    public static final String MSGKEY_ERROR_INTERRUPTED_EXCEPTION = "message.error.interrupted_exception";
+    public static final String MSGKEY_ERROR_RUNTIME_EXCEPTION = "message.error.runtime_exception";    
     public static final String MSGKEY_ERROR_RULESET_NOT_FOUND = "message.error.ruleset_not_found";
     public static final String MSGKEY_ERROR_IMPORTING_RULESET = "message.error.importing_ruleset";
     public static final String MSGKEY_ERROR_EXPORTING_RULESET = "message.error.exporting_ruleset";
@@ -109,6 +124,7 @@ public interface PMDConstants {
     public static final String MSGKEY_CONFIRM_TITLE = "message.confirm.title";
     public static final String MSGKEY_CONFIRM_RULESET_EXISTS = "message.confirm.ruleset_exists";
     public static final String MSGKEY_CONFIRM_CLEAR_RULESET = "message.confirm.clear_ruleset";
+    public static final String MSGKEY_CONFIRM_REVIEW_MULTIPLE_MARKERS = "message.confirm.review_multiple_markers";
     
     public static final String MSGKEY_INFORMATION_TITLE = "message.information.title";
     public static final String MSGKEY_INFORMATION_RULESET_EXPORTED = "message.information.ruleset_exported";
@@ -127,5 +143,7 @@ public interface PMDConstants {
     public static final String MSGKEY_MONITOR_CHECKING_FILE = "monitor.checking_file";
     public static final String MSGKEY_PMD_PROCESSING = "monitor.begintask";
     public static final String MSGKEY_MONITOR_UPDATING_PROJECTS = "monitor.updating_projects";
+    public static final String MSGKEY_MONITOR_REVIEW = "monitor.review";
+    public static final String MSGKEY_MONITOR_REMOVE_REVIEWS = "monitor.remove_reviews";
     
 }

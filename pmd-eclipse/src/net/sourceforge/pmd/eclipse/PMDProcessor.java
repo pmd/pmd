@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -8,12 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.internal.resources.MarkerInfo;
@@ -28,6 +32,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2003/08/14 16:10:41  phherlin
+ * Implementing Review feature (RFE#787086)
+ *
  * Revision 1.9  2003/07/07 19:27:52  phherlin
  * Making rules selectable from projects
  *
@@ -109,14 +116,27 @@ public class PMDProcessor {
      */
     private void updateMarkers(IFile file, RuleContext context, boolean fTask, Map accumulator) throws CoreException {
         Set markerSet = new HashSet();
-
+        List reviewsList = findReviewedViolations(file);
+        Review review = new Review();
         Iterator iter = context.getReport().iterator();
         while (iter.hasNext()) {
             RuleViolation violation = (RuleViolation) iter.next();
-            markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
-            log.debug("Adding a violation " + violation);
+            review.ruleName = violation.getRule().getName();
+            review.lineNumber = violation.getLine();
+
+            if (!reviewsList.contains(review)) {
+                markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
+                log.debug("Adding a violation " + violation);
+            } else {
+                log.debug(
+                    "Ignoring violation of rule "
+                        + violation.getRule().getName()
+                        + " at line "
+                        + violation.getLine()
+                        + " because of a review.");
+            }
         }
-        
+
         if (accumulator != null) {
             log.debug("Adding markerSet to accumulator for file " + file);
             accumulator.put(file, markerSet);
@@ -187,7 +207,86 @@ public class PMDProcessor {
                 break;
         }
         markerInfo.setAttributes((String[]) attributeNames.toArray(new String[attributeNames.size()]), values.toArray());
-        
+
         return markerInfo;
     }
+
+    /**
+     * Search for reviewed violations in that file
+     * @param file
+     */
+    private List findReviewedViolations(IFile file) {
+        List reviewsList = new ArrayList();
+        try {
+            int lineNumber = 0;
+            boolean findLine = false;
+            boolean comment = false;
+            Stack pendingReviews = new Stack();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
+            while (reader.ready()) {
+                String line = reader.readLine().trim();
+                lineNumber++;
+                if (line.startsWith("/*")) {
+                    if (line.indexOf("*/") == -1) {
+                        comment = true;
+                    }
+                } else if (comment && (line.indexOf("*/") != -1)) {
+                    comment = false;
+                } else if (!comment && line.startsWith(PMDPlugin.REVIEW_MARKER)) {
+                    String tail = line.substring(17);
+                    int index = tail.indexOf(':');
+                    String ruleName = tail.substring(0, index);
+                    pendingReviews.push(ruleName);
+                    findLine = true;
+                } else if (!comment && findLine) {
+                    if (!line.equals("") && !line.startsWith("//")) {
+                        findLine = false;
+                        while (!pendingReviews.empty()) {
+                            Review review = new Review();
+                            review.ruleName = (String) pendingReviews.pop();
+                            review.lineNumber = lineNumber;
+                            reviewsList.add(review);
+                        }
+                    }
+                }
+            }
+
+            if (log.isDebugEnabled()) {
+                for (int i = 0; i < reviewsList.size(); i++) {
+                    Review review = (Review) reviewsList.get(i);
+                    log.debug("Review : rule " + review.ruleName + ", line " + review.lineNumber);
+                }
+            }
+
+        } catch (CoreException e) {
+            PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION, e);
+        } catch (IOException e) {
+            PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_IO_EXCEPTION, e);
+        }
+
+        return reviewsList;
+    }
+
+    /**
+     * Private inner type to handle reviews
+     */
+    private class Review {
+        public String ruleName;
+        public int lineNumber;
+
+        public boolean equals(Object obj) {
+            boolean result = false;
+            if (obj instanceof Review) {
+                Review reviewObj = (Review) obj;
+                result = (this.ruleName.equals(reviewObj.ruleName)) && (this.lineNumber == reviewObj.lineNumber);
+            }
+            return result;
+        }
+
+        public int hashCode() {
+            return ruleName.hashCode() + lineNumber * lineNumber;
+        }
+
+    }
+
 }

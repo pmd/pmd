@@ -49,6 +49,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2003/08/14 16:10:41  phherlin
+ * Implementing Review feature (RFE#787086)
+ *
  * Revision 1.3  2003/08/13 20:10:20  phherlin
  * Refactoring private->protected to remove warning about non accessible member access in enclosing types
  *
@@ -78,6 +81,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     protected IAction informationFilterAction;
     protected IAction showRuleAction;
     protected IAction removeViolationAction;
+    protected IAction reviewAction;
 
     /**
      * @see org.eclipse.ui.IWorkbenchPart#createPartControl(Composite)
@@ -259,45 +263,59 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     public int getSorterFlag() {
         return sorterFlag;
     }
-    
+
     /**
-     * Returns the rule from the selected violation
+     * Returns the rule from the first selected violation
      */
     public Rule getSelectedViolationRule() {
         Rule rule = null;
-        
+        try {
+            IMarker[] markers = getSelectedViolations();
+            if (markers != null) {
+                rule = PMDPlugin.getDefault().getRuleSet().getRuleByName(markers[0].getAttribute(PMDPlugin.KEY_MARKERATT_RULENAME, ""));
+            }
+        } catch (RuntimeException e) {
+            PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_RUNTIME_EXCEPTION, e);
+        }
+
+        return rule;
+    }
+
+    /**
+     * Return the selected violation
+     */
+    public IMarker[] getSelectedViolations() {
+        IMarker[] markers = null;
         ISelection selection = violationTableViewer.getSelection();
-        if ((selection != null) && (selection instanceof IStructuredSelection)) {
-            IMarker marker = (IMarker) ((IStructuredSelection) selection).getFirstElement();
-            try {
-                rule = PMDPlugin.getDefault().getRuleSet().getRuleByName(marker.getAttribute(PMDPlugin.KEY_MARKERATT_RULENAME, ""));
-            } catch (RuntimeException e) {
-                rule = null;
+        if ( (selection != null) && (selection instanceof IStructuredSelection)) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            markers = new IMarker[structuredSelection.size()];
+            Iterator i = structuredSelection.iterator();
+            int index = 0;
+            while (i.hasNext()) {
+                markers[index++] = (IMarker) i.next();
             }
         }
-        
-        return rule;
+
+        return markers;
     }
     
     /**
      * Remove the selected violation
      */
     public void removeSelectedViolation() {
-        ISelection selection = violationTableViewer.getSelection();
-        if (selection instanceof IStructuredSelection) {
+        IMarker[] markers = getSelectedViolations();
+        if (markers != null) {
             try {
                 Workspace workspace = (Workspace) ResourcesPlugin.getWorkspace();
                 workspace.prepareOperation();
                 workspace.beginOperation(true);
-                IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-                Iterator i = structuredSelection.iterator();
-                while (i.hasNext()) {
-                    IMarker marker = (IMarker) i.next();
-                    marker.delete();
+                for (int i = 0; i < markers.length; i++) {
+                    markers[i].delete();
                 }
                 workspace.endOperation(false, null);
             } catch (CoreException e) {
-                ; // do nothing
+                PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION, e);
             }
         }
     }
@@ -436,6 +454,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
 
                 manager.add(showRuleAction);
                 manager.add(removeViolationAction);
+                manager.add(reviewAction);
 
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
@@ -521,6 +540,10 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
         removeViolationAction.setText(getMessage(PMDConstants.MSGKEY_VIEW_ACTION_REMOVE_VIOLATION));
         removeViolationAction.setToolTipText(getMessage(PMDConstants.MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION));
         removeViolationAction.setImageDescriptor(PMDPlugin.getDefault().getImageDescriptor(PMDPlugin.ICON_REMVIO));
+
+        reviewAction = new ReviewAction(this);
+        reviewAction.setText(getMessage(PMDConstants.MSGKEY_VIEW_ACTION_REVIEW));
+        reviewAction.setToolTipText(getMessage(PMDConstants.MSGKEY_VIEW_TOOLTIP_REVIEW));
     }
 
 }
