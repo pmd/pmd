@@ -32,7 +32,6 @@ public class RuleViolation {
     private Rule rule;
     private String description;
     private String filename;
-    private String className;
 
     public RuleViolation(Rule rule, int line, RuleContext ctx) {
         this(rule, line, rule.getMessage(), ctx);
@@ -43,7 +42,6 @@ public class RuleViolation {
         this.rule = rule;
         this.description = specificDescription;
         this.filename = ctx.getSourceCodeFilename();
-        this.className = ctx.getClassName();
     }
 
     public Rule getRule() {
@@ -60,9 +58,5 @@ public class RuleViolation {
 
     public String getFilename() {
         return filename;
-    }
-
-    public String getClassName() {
-        return className;
     }
 }

@@ -38,9 +38,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
-        if (data != null) {
-            ((RuleContext)data).setClassName(node.getImage());
-        }
 	return visit( (SimpleNode) node, data );
     }
 
@@ -69,9 +66,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     public Object visit(ASTUnmodifiedInterfaceDeclaration node, Object data) {
-        if (data != null) {
-            ((RuleContext)data).setClassName(node.getImage());
-        }
 	return visit( (SimpleNode) node, data );
     }
 
