@@ -13,6 +13,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.File;
 import java.util.Iterator;
+import java.util.Calendar;
 
 public class GUI implements CPDListener {
 
@@ -58,6 +59,7 @@ public class GUI implements CPDListener {
     //private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     private JTextField rootDirectoryField= new JTextField("C:\\j2sdk1.4.0_01\\src\\java\\lang\\reflect");
     private JTextField minimumLengthField= new JTextField("30");
+		private JTextField timeField = new JTextField(6);
 
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JProgressBar addingTokensBar = new JProgressBar();
@@ -122,6 +124,7 @@ public class GUI implements CPDListener {
         panel3.add(new JLabel("Current tile"));
         panel3.add(currentTileField);
 				panel3.add(tilesOnThisPassBar);
+				panel3.add(timeField);
         progressPanel.add(panel3, BorderLayout.SOUTH);
         progressPanel.setBorder(BorderFactory.createTitledBorder("Progress"));
 
@@ -143,7 +146,7 @@ public class GUI implements CPDListener {
         frame.pack();
         frame.show();
     }
-
+		
     private void go() {
         try {
             CPD cpd = new CPD();
@@ -163,7 +166,23 @@ public class GUI implements CPDListener {
                     cpd.addAllInDirectory(rootDirectoryField.getText());
                 }
             }
+						final long start = System.currentTimeMillis();
+						javax.swing.Timer t = new javax.swing.Timer(1000,
+              new ActionListener() {
+                  public void actionPerformed(ActionEvent e) {
+										  long now = System.currentTimeMillis();
+											long elapsedMillis = now-start;
+											long elapsedSeconds = elapsedMillis/1000;
+											long hours = (long)Math.floor(elapsedSeconds/3600);
+											long minutes = (long)Math.floor((elapsedSeconds-(hours*3600))/60);
+											long seconds = elapsedSeconds-((minutes*60)+(hours*3600));
+                      timeField.setText("" + hours + ":" + minutes + ":" + seconds);
+                  }
+              });
+							t.start();
+						
             cpd.go();
+						t.stop();
 						currentTileField.setText("");
             CPDRenderer renderer = new TextRenderer();
             resultsTextArea.setText(renderer.render(cpd));
