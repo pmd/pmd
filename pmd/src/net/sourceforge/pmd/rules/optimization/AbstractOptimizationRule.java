@@ -19,6 +19,7 @@ import net.sourceforge.pmd.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 /**
  * Base class with utility methods for optimization rules
@@ -63,10 +64,17 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         if (pf!=null && !pf.isEmpty()) {
             for (Iterator it = pf.iterator() ; it.hasNext() ; ) {
                 ASTPostfixExpression pe = (ASTPostfixExpression) it.next();
-                
-                if (( pe.getImage().equals("++") || pe.getImage().equals("--") ) 
-                        && ((ASTName)pe.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().equals(varName)) {
-                    return true;
+
+                if (( pe.getImage().equals("++") || pe.getImage().equals("--"))) {
+                    SimpleNode first = (SimpleNode)pe.jjtGetChild(0);
+                    SimpleNode second = (SimpleNode)first.jjtGetChild(0);
+                    if (second.jjtGetNumChildren() == 0) {
+                        continue;
+                    }
+                    ASTName name = (ASTName)second.jjtGetChild(0);
+                    if (name.getImage().equals(varName)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -91,7 +99,12 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         for (Iterator it = assignements.iterator() ; it.hasNext() ; ) {
             final ASTAssignmentOperator a = (ASTAssignmentOperator) it.next();
             // if node is assigned return true
-            ASTName n = (ASTName) a.jjtGetParent().jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+            SimpleNode firstChild = (SimpleNode)a.jjtGetParent().jjtGetChild(0);
+            SimpleNode otherChild =  (SimpleNode)firstChild.jjtGetChild(0);
+            if (otherChild.jjtGetNumChildren() == 0 || !(otherChild.jjtGetChild(0) instanceof ASTName)) {
+                continue;
+            }
+            ASTName n = (ASTName) otherChild.jjtGetChild(0);
             if (n.getImage().equals(varName)) {
                 return true;
             }
