@@ -532,6 +532,9 @@ void VariableDeclaratorId() :
   }
   ( "[" "]" )*
   {
+    if (!usingAssertAsIdentifier && s.equals("assert")) {
+      throw new ParseException("Can't use 'assert' as an identifier when running in JDK 1.4 mode!");
+    }
     jjtThis.setImage( s );
   }
 }

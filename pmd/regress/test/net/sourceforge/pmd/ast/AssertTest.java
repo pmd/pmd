@@ -16,8 +16,6 @@ public class AssertTest extends TestCase  {
         new JavaParser(new StringReader(TEST4)).CompilationUnit();
     }
 
-/*
-TODO
     public void testAssertAsIdentifierFailsWith1_4() {
         try {
             new JavaParser(new StringReader(TEST5)).CompilationUnit();
@@ -26,10 +24,11 @@ TODO
             // cool
         }
     }
-*/
 
     public void testAssertAsIdentifierSucceedsWith1_3() {
-        new JavaParser(new StringReader(TEST6)).CompilationUnit();
+        JavaParser jp = new JavaParser(new StringReader(TEST6));
+        jp.setAssertAsIdentifier();
+        jp.CompilationUnit();
     }
 
     public void testAssertAsKeywordFailsWith1_3() {
