@@ -132,7 +132,10 @@
     <contributor>
       <name>Peter Friese</name>
     </contributor>
-  </contributors>
+    <contributor>
+      <name>Nanne Baars</name>
+    </contributor>
+    </contributors>
 
   <!-- Need to mark these as compile-time/run-time -->
 
