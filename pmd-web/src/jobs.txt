@@ -120,3 +120,5 @@ jEdit:jedit:jEdit:jEdit/org/
 hipergate:hipergate:java:java/src/
 Matra:matra:matra-java:matra-java/com/
 Kaprekar:kaprekar:kaprekar-java:kaprekar-java/com/
+Lipidia:lipidia:src:src/
+
