@@ -30,7 +30,6 @@ public class TypeSetTest extends TestCase {
         assertEquals(1, t.getImportsCount());
     }
 
-
     public void testFindClassImplicitImport() throws Throwable {
         TypeSet t = new TypeSet();
         Class clazz = t.findClass("String");
@@ -58,6 +57,11 @@ public class TypeSetTest extends TestCase {
         assertEquals(File.class, clazz);
     }
     // inner class tests
+
+    public void testPrimitiveTypeResolver() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.PrimitiveTypeResolver();
+        assertEquals(int.class, r.resolve("int"));
+    }
     public void testExplicitImportResolver() throws Throwable {
         Set imports = new HashSet();
         imports.add("java.io.File");

@@ -74,7 +74,26 @@ public class TypeSet {
         }
     }
 
-    private String pkg;
+    public static class PrimitiveTypeResolver implements Resolver {
+        private Map primitiveTypes = new HashMap();
+
+        public PrimitiveTypeResolver() {
+            primitiveTypes.put("int", int.class);
+            primitiveTypes.put("float", float.class);
+            primitiveTypes.put("double", double.class);
+            primitiveTypes.put("long", long.class);
+            primitiveTypes.put("boolean", boolean.class);
+            primitiveTypes.put("byte", byte.class);
+        }
+        public Class resolve(String name) throws ClassNotFoundException {
+            if (!primitiveTypes.containsKey(name)) {
+                throw new ClassNotFoundException();
+            }
+            return (Class)primitiveTypes.get(name);
+        }
+    }
+
+        private String pkg;
     private Set imports = new HashSet();
     private List resolvers = new ArrayList();
 
