@@ -1,4 +1,7 @@
-December 16, 2004:
+January 31, 2004 - 1.4:
+Updated PMD version to 2.2.
+
+December 16, 2004 - 1.3:
 Updated PMD version to 2.1.
 
 July 16, 2004 - 1.2:

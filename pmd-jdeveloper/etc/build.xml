@@ -3,8 +3,8 @@
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
 	<property name="etc" value="etc/"/>
-	<property name="pmdjar" value="pmd-2.1.jar"/>
-	<property name="pluginversion" value="1.3"/>
+	<property name="pmdjar" value="pmd-2.2.jar"/>
+	<property name="pluginversion" value="1.4"/>
 	<property name="jdeveloper.install.dir" value="/home/tom/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 	<path id="project.class.path">
