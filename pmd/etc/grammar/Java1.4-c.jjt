@@ -89,6 +89,12 @@ public class JavaParser {
     }
   }
 
+  private void checkForBadVariableArgumentsUsage() {
+    if (!isJDK15) {
+      throw new ParseException("Can't use variable arguments (varargs) when running in JDK 1.4 mode!");
+    }
+  }
+
   private void checkForBadEnumUsage(String in, String usage) {
     if (isJDK15 && in.equals("enum")) {
       throw new ParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
@@ -690,7 +696,7 @@ void FormalParameters() :
 void FormalParameter() :
 {}
 {
-  [ "final" {jjtThis.setFinal();} ] Type() VariableDeclaratorId()
+  [ "final" {jjtThis.setFinal();} ] Type() [ "..." {checkForBadVariableArgumentsUsage();} ] VariableDeclaratorId()
 }
 
 void ConstructorDeclaration() :

@@ -84,6 +84,21 @@ public class JDKVersionTest extends TestCase  {
     }
     // assert keyword/identifier
 
+    public void testVarargsShouldPassWith15() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_VARARGS));
+        p.CompilationUnit();
+    }
+
+    public void testVarargsShouldFailWith14() throws Throwable {
+        try {
+            JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_VARARGS));
+            p.CompilationUnit();
+            fail("Should have throw ParseException!");
+        } catch (ParseException pe) {
+            // cool
+        }
+    }
+
     private static final String ASSERT_TEST1 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
@@ -137,5 +152,10 @@ public class JDKVersionTest extends TestCase  {
     private static final String JDK14_ENUM =
     "public class Test {" + PMD.EOL +
     " int enum;" + PMD.EOL +
+    "}";
+
+    private static final String JDK15_VARARGS =
+    "public class Test {" + PMD.EOL +
+    " void bar(Object ... args) {}" + PMD.EOL +
     "}";
 }
