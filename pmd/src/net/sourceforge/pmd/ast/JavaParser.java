@@ -1727,7 +1727,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     try {
       if (jj_2_16(2147483647)) {
         jj_consume_token(THIS);
-                                             ((ASTExplicitConstructorInvocation)jjtn000).setIsThis();
+                                             jjtn000.setIsThis();
         Arguments();
         jj_consume_token(SEMICOLON);
       } else {
@@ -1760,7 +1760,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
             ;
           }
           jj_consume_token(SUPER);
-                                                     ((ASTExplicitConstructorInvocation)jjtn000).setIsSuper();
+                                                    jjtn000.setIsSuper();
           Arguments();
           jj_consume_token(SEMICOLON);
           break;

@@ -713,9 +713,9 @@ void ConstructorDeclaration() :
 void ExplicitConstructorInvocation() :
 {}
 {
-  LOOKAHEAD("this"  Arguments() ";") "this" {((ASTExplicitConstructorInvocation)jjtThis).setIsThis();} Arguments() ";"
+  LOOKAHEAD("this"  Arguments() ";") "this" {jjtThis.setIsThis();} Arguments() ";"
 |
-  [ LOOKAHEAD(2) PrimaryExpression() "." ] "super"  {((ASTExplicitConstructorInvocation)jjtThis).setIsSuper();} Arguments() ";"
+  [ LOOKAHEAD(2) PrimaryExpression() "." ] "super" {jjtThis.setIsSuper();} Arguments() ";"
 }
 
 void Initializer() :
