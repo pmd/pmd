@@ -24,3 +24,18 @@
 # character to interpose another module into the current module.  This
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
+pmd-base -a pmd/pmd
+pmd-swingui -a pmd/pmd-swingui
+pmd-web -a pmd/pmd-web
+pmd-rx -a pmd/pmd-rx
+pmd-netbeans -a pmd/pmd-netbeans
+pmd-mysql -a pmd/pmd-mysql
+pmd-jedit -a pmd/pmd-jedit
+pmd-jdeveloper -a pmd/pmd-jdeveloper
+pmd-jbuilder -a pmd/pmd-jbuilder
+pmd-gel -a pmd/pmd-gel
+pmd-emacs -a pmd/pmd-emacs
+pmd-eclipse -a pmd-eclicpse-pmd pmd/pmd-eclipse pmd-eclipse-feature
+pmd-eclipse-pmd -a pmd/pmd-eclipse-pmd
+pmd-eclipse-feature -a pmd/pmd-eclipse-feature
+pmd-dcpd -a pmd/pmd-dcpd
