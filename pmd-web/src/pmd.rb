@@ -1,9 +1,9 @@
 #
-# project.rb - This is the basics of what we need
+# pmd.rb - This is the basics of what we need
 # to represent a project.  
 #
 
-module PMD;
+module PMD
 
 class Project
   def initialize( name, source )
@@ -37,16 +37,26 @@ end
 class SFProject < CVSProject
   def initialize( name, mod, source )
     @name = name
-    @cvsroot = ':pserver:anonymous@cvs.' + name +
-      '.sourceforge.net:/cvsroot/' + name
+    @cvsroot = ':pserver:anonymous@cvs.' + name + '.sourceforge.net:/cvsroot/' + name
     @mod = mod
     @source = name + '/' + mod + '/' + source
   end
 end
 
+
+class Job
+  def initialize( projectName, moduleDirectory, sourceDirectory )
+    @projectName = projectName
+    @cvsroot = ':pserver:anonymous@cvs.' + projectName + '.sourceforge.net:/cvsroot/' + projectName
+    @moduleDirectory = moduleDirectory
+    @sourceDirectory = moduleDirectory + '/' + sourceDirectory
+  end
+  
+  def to_s
+   return @projectName +":"+@moduleDirectory+":"+@sourceDirectory
+  end
 end
 
 
-quilt = PMD::SFProject.new ARGV[0], ARGV[1], ARGV[2]
-quilt.updateSource
-quilt.runAnt
+end
+
