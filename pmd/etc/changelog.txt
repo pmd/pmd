@@ -1,3 +1,5 @@
+????? 2002 - 0.6:
+
 July 16 2002 - 0.5:
 Added new rules: DontImportJavaLangRule, DuplicateImportsRule
 Added new ruleset: rulesets/imports.xml
