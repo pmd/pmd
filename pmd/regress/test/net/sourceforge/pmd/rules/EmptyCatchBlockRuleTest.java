@@ -10,7 +10,7 @@ import net.sourceforge.pmd.rules.EmptyCatchBlockRule;
 public class EmptyCatchBlockRuleTest extends RuleTst {
 
     public void testSimple() throws Throwable {
-        runTest("EmptyCatchBlock.java", 1, new EmptyCatchBlockRule());
+        runTest("EmptyCatchBlock1.java", 1, new EmptyCatchBlockRule());
     }
 
     public void testNotEmpty() throws Throwable {
@@ -23,6 +23,10 @@ public class EmptyCatchBlockRuleTest extends RuleTst {
 
     public void testMultipleCatchBlocks() throws Throwable {
         runTest("EmptyCatchBlock4.java", 2, new EmptyCatchBlockRule());
+    }
+
+    public void testEmptyTryAndFinally() throws Throwable {
+        runTest("EmptyCatchBlock5.java", 0, new EmptyCatchBlockRule());
     }
 
 }
