@@ -14,14 +14,14 @@ sub nopage() {
 }
 
 sub default() {
- print start_html("Run PMD on your Sourceforge project");
+ print start_html("Run PMD on your Sourceforge/Jakarta project");
  
  print "<center><a href=\"http://pmd.sourceforge.net/\"><img src=\"http://sourceforge.net/sflogo.php?group_id=56262&type=5\" alt=\"Project Ultra*Log @ DARPA\" border=\"0\" /></a></center>";
 
  print h3("<center>PMD-WEB</center>");
 
- if (param("title")) {
-  my $project = PMD::Project->new(param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
+ if (param("location")) {
+  my $project = PMD::Project->new(param("location"),param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
   addProject($project);
   print p(), b("Added "), b($project->getTitle()), b(" to the schedule"), p();
  } 
@@ -32,12 +32,13 @@ sub default() {
  printStats();
 
  print hr(); 
- print "Want to run PMD every hour on your Java Sourceforge project?  Fill in the blanks and hit go:";
+ print "Want to run PMD every hour on your Java Sourceforge/Jakarta project?  Fill in the blanks and hit go:";
  print start_form();
  print "Project title (i.e., PMD): ", textfield(-name=>'title',-default=>'',-override=>1);
+ print br(), "Project location: ", radio_group(-name=>'location',-values=>['Sourceforge','Jakarta'],-default=>'Sourceforge',-override=>1);
  print br(), "Project's Unix name (i.e., pmd): ", textfield(-name=>'unixname',-default=>'',-override=>1);
  print br(), "Module directory (i.e., pmd-dcpd): ", textfield(-name=>'moduledirectory',-default=>'',-override=>1);
- print br(), "Source directory (i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
+ print br(), "Source directory (including module directory, i.e., pmd-dcpd/src): ", textfield(-name=>'srcdir',-default=>'',-override=>1);
  my $cachebuster=`date`;
  print $query->hidden(-name=>'cachebuster', -value=>${cachebuster});
  print br(), submit(-value=>'Go');
@@ -84,7 +85,7 @@ sub loadProjectList() {
    if (-e $project->getRptFile()) {
     $jobtext="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
    }
-   $result="${result}<tr><td>${jobtext}</td><td></td><td><a href=\"http://@{[$project->getUnixName()]}.sf.net/\">http://@{[$project->getUnixName()]}.sf.net/</a></td><td>@{[$project->getLines()]}</td>";
+   $result="${result}<tr><td>${jobtext}</td><td></td><td>@{[$project->getHomePage()]}</td><td>@{[$project->getLines()]}</td>";
   }
  }
  $result = "${result}</table>";

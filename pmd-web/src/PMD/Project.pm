@@ -18,12 +18,13 @@ sub new {
  my $self = {};
  bless($self);
  if ((scalar(@_)-1) == 1) {
-  ($self->{TITLE},$self->{UNIXNAME}, $self->{MODULEDIR}, $self->{SRCDIR}) = split(":", @_[1]);
+  ($self->{LOCATION},$self->{TITLE},$self->{UNIXNAME}, $self->{MODULEDIR}, $self->{SRCDIR}) = split(":", @_[1]);
  } else {
-  $self->{TITLE} = @_[1];
-  $self->{UNIXNAME} = @_[2];
-  $self->{MODULEDIR} = @_[3];
-  $self->{SRCDIR} = @_[4];
+  $self->{LOCATION} = @_[1];
+  $self->{TITLE} = @_[2];
+  $self->{UNIXNAME} = @_[3];
+  $self->{MODULEDIR} = @_[4];
+  $self->{SRCDIR} = @_[5];
  }
  return $self;
 }
@@ -39,6 +40,10 @@ sub getLines() {
   $lines = "0";
  }
  return $lines;
+}
+sub getLocation() {
+ my $self = shift;
+ return $self->{LOCATION}
 }
 
 sub getTitle() {
@@ -63,7 +68,7 @@ sub getSrcDir() {
 
 sub getString() {
  my $self = shift;
- return "$self->{TITLE}:$self->{UNIXNAME}:$self->{MODULEDIR}:$self->{SRCDIR}"; 
+ return "$self->{LOCATION}:$self->{TITLE}:$self->{UNIXNAME}:$self->{MODULEDIR}:$self->{SRCDIR}"; 
 }
 
 sub getJobsFile() {
@@ -88,6 +93,15 @@ sub getReportName() {
  my $modwithoutspaces = $self->{MODULEDIR};
  $modwithoutspaces=~s/\s+//g;
  return "$self->{UNIXNAME}_${modwithoutspaces}.html";
+}
+
+sub getHomePage() {
+ my $self = shift;
+ if ($self->getLocation() =~ "Sourceforge") {
+  return "<a href=\"http://@{[$self->getUnixName()]}.sf.net/\">http://@{[$self->getUnixName()]}.sf.net/</a>";
+ } else  {
+  return "<a href=\"http://jakarta.apache.org/\">http://jakarta.apache.org/</a>";
+ }
 }
 
 1;

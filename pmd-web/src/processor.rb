@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-Dir.chdir("/home/groups/p/pm/pmd/cgi-bin");
+Dir.chdir("/home/groups/p/pm/pmd/cgi-bin/");
 
 require 'pmd.rb'
 
@@ -9,11 +9,11 @@ start=Time.now
 jobsDir.each { |candidate| 
  begin 	
   if candidate[".txt"] 
-   title,unixname,moduleDir,srcDir = File.new("jobs/#{candidate}").read.split(":") 
+   location,title,unixname,moduleDir,srcDir = File.new("jobs/#{candidate}").read.split(":") 
    if ARGV.length != 0 && ARGV[0] != moduleDir
     next
    end
-   job = PMD::Job.new(title,unixname,moduleDir,srcDir)
+   job = PMD::Job.new(location,title,unixname,moduleDir,srcDir)
    puts "Processing #{job}"
    File.open("currentjob.txt", "w") { |file| file.syswrite(job.unixName) }
    job.checkout_code

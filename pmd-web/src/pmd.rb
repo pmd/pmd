@@ -48,10 +48,15 @@ class Job
 
   attr_reader :unixName
 
-  def initialize(title, unixName, moduleDirectory, sourceDirectory )
+  def initialize(location, title, unixName, moduleDirectory, sourceDirectory )
+    @location = location
     @title = title
     @unixName = unixName
-    @cvsroot = ':pserver:anonymous@cvs.' + unixName + '.sourceforge.net:/cvsroot/' + unixName
+    if (@location == "Sourceforge")
+     @cvsroot = ':pserver:anonymous@cvs.' + unixName + '.sourceforge.net:/cvsroot/' + unixName
+    else
+     @cvsroot = ':pserver:anoncvs@cvs.apache.org:/home/cvspublic'
+    end
     @moduleDirectory = moduleDirectory
     @sourceDirectory = sourceDirectory.strip
   end
@@ -82,7 +87,7 @@ class Job
   end
   
   def to_s
-   return @title + ":" + @unixName +":"+@moduleDirectory+":"+@sourceDirectory
+   return @location + ":" + @title + ":" + @unixName +":"+@moduleDirectory+":"+@sourceDirectory
   end
 end
 
