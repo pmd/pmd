@@ -6,6 +6,28 @@ These are new rules for the next release
   </description>
 
 
+    <rule name="VariableNamingConventionsRule"
+    message="{0} variable {1} should begin with {2}"
+    class="net.sourceforge.pmd.rules.VariableNamingConventionsRule">
+        <description>
+    A variable naming conventions rule - customize this to your liking
+    Final variables should be all caps
+    Non-final variables should not include underscores
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public static final int MY_NUM = 0;
+    public String myTest = "";
+    DataModule dmTest = new DataModule();
+}
+]]>
+        </example>
+    </rule>
+
+
+
     <rule name="SymbolTableTestRule"
           message="NOT FULLY IMPLEMENTED - test"
           class="net.sourceforge.pmd.rules.SymbolTableTestRule">
