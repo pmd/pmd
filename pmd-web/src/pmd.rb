@@ -50,7 +50,7 @@ class Job
     @unixName = unixName
     @cvsroot = ':pserver:anonymous@cvs.' + unixName + '.sourceforge.net:/cvsroot/' + unixName
     @moduleDirectory = moduleDirectory
-    @sourceDirectory = sourceDirectory
+    @sourceDirectory = sourceDirectory.strip
   end
   
   def checkout_code

@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+Dir.chdir("/home/groups/p/pm/pmd/cgi-bin");
+
 require 'pmd.rb'
 
 jobsDir = Dir.new("jobs")
