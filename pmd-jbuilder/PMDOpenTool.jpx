@@ -33,10 +33,10 @@
   <property category="sys" name="InstanceVisibility" value="2"/>
   <property category="sys" name="JDK" value="java 1.3.1-b24"/>
   <property category="sys" name="LastTag" value="0"/>
-  <property category="sys" name="Libraries" value="Open Tools SDK;Ant;Xerces;PMD-0.4"/>
+  <property category="sys" name="Libraries" value="Open Tools SDK;Ant;Xerces;PMD-0.6"/>
   <property category="sys" name="MakeStable" value="0"/>
   <property category="sys" name="OutPath" value="classes"/>
-  <property category="sys" name="SourcePath" value="src;test;../PMD/src"/>
+  <property category="sys" name="SourcePath" value="src;test"/>
   <property category="sys" name="TestPath" value="test"/>
   <property category="sys" name="Title" value="JBuilder OpenTool for PMD"/>
   <property category="sys" name="TitleLabel" value="Title:"/>
@@ -45,7 +45,7 @@
   <property category="sys" name="WorkingDirectory" value="."/>
   <node name="Copy to JBuilder OpenTools Dir" type="ExternalTask">
     <property category="external" name="dependencies" value="archive"/>
-    <property category="external" name="executable" value="&quot;C:\Documents and Settings\David Craine\My Documents\InfoEther-SF\pmd\pmd-jbuilder\copyfile.bat&quot;"/>
+    <property category="external" name="executable" value="&quot;C:\Documents and Settings\David Craine\My Documents\InfoEther Projects\pmd\pmd-jbuilder\copyfile.bat&quot;"/>
     <property category="external" name="params" value="c:\JBuilder7\lib\ext\"/>
     <property category="external" name="phase" value="package"/>
   </node>
@@ -57,5 +57,4 @@
   </node>
   <file path="classes.opentools"/>
   <file path="copyfile.bat"/>
-  <file path="src/net/sourceforge/pmd/jbuilder/PMDOpenTool.java"/>
 </project>
