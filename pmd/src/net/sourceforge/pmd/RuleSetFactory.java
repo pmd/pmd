@@ -177,7 +177,7 @@ public class RuleSetFactory {
      * Parse a rule node
      *
      * @param ruleSet     the ruleset being constructed
-     * @param ruleElement must be a rule element node
+     * @param ruleNode must be a rule element node
      */
     private void parseRuleNode(RuleSet ruleSet, Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
@@ -227,7 +227,7 @@ public class RuleSetFactory {
                     parsePropertiesNode(p, node);
                     for (Iterator j = p.keySet().iterator(); j.hasNext();) {
                         String key = (String)j.next();
-                        rule.addProperty(key, (String)p.getProperty(key));
+                        rule.addProperty(key, p.getProperty(key));
                     }
                 }
             }
@@ -312,7 +312,6 @@ public class RuleSetFactory {
     /**
      * Parse a properties node
      *
-     * @param rule           the rule being constructed
      * @param propertiesNode must be a properties element node
      */
     private static void parsePropertiesNode(Properties p, Node propertiesNode) {
@@ -327,7 +326,6 @@ public class RuleSetFactory {
     /**
      * Parse a property node
      *
-     * @param rule         the rule being constructed
      * @param propertyNode must be a property element node
      */
     private static void parsePropertyNode(Properties p, Node propertyNode) {
