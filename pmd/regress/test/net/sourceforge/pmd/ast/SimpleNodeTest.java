@@ -82,8 +82,6 @@ public class SimpleNodeTest
 
         while (i.hasNext()) {
             SimpleNode node = (SimpleNode) i.next();
-            System.err.println( node.getImage() + " # Kids: " + Integer.toString(node.jjtGetNumChildren()) );
-
             if (node.getImage().equals("java.io.File")) {
                 verifyNode(node, 1, 16, 1, 19);
             }
@@ -99,8 +97,6 @@ public class SimpleNodeTest
 
         while (i.hasNext()) {
             SimpleNode node = (SimpleNode) i.next();
-            System.err.println( node.getImage() + " # Kids: " + Integer.toString(node.jjtGetNumChildren()) );
-
             if (node.getImage().equals("java.io.File")) {
                 verifyNode(node, 2, 1, 2, 4);
                 // This is a BUG!  Should start on line 1.
