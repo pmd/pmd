@@ -31,7 +31,6 @@ public abstract class StatisticalRule extends AbstractRule {
 		count++;
 		total += point.getScore();
 		totalSquared += point.getScore() * point.getScore();
-		
 		dataPoints.add( point );
     }
     
@@ -50,8 +49,11 @@ public abstract class StatisticalRule extends AbstractRule {
 	
 		if (hasProperty("minimum")) {
 			double mMin = getDoubleProperty("minimum");
-			if (mMin > minimum) { minimum = mMin; }
+			if (mMin > minimum) {
+                minimum = mMin;
+            }
 		} 
+
 		SortedSet newPoints = applyMinimumValue(dataPoints, minimum);
 			
 		if (hasProperty("topscore")) {
@@ -90,18 +92,24 @@ public abstract class StatisticalRule extends AbstractRule {
     {
 		Iterator points = pointSet.iterator();
 
+        DataPoint point = null;
+
 		if (points.hasNext()) {
-			DataPoint point = (DataPoint) points.next();			
-			while ((point.getScore() < minValue) &&
-				   (points.hasNext())) {
+			point = (DataPoint) points.next();
+			while ((point.getScore() < minValue) && (points.hasNext())) {
 				point = (DataPoint) points.next();
-			}	
+			}
 			
 			if (points.hasNext()) {
 				return pointSet.subSet(point, pointSet.last());
 			}
-		}    
-		
+		}
+
+        if (point != null && point.getScore() >=  minValue) {
+            TreeSet result = new TreeSet();
+            result.add(point);
+            return result;
+        }
 		return new TreeSet();
     }
     

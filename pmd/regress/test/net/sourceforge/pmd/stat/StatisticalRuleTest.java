@@ -183,7 +183,26 @@ public class StatisticalRuleTest
 	public int expectedTopScore(int target) {
 		return target;
 	}
-	
+
+    // Test Single Datapoint
+    public void testSingleDatapoint()
+    {
+        StatisticalRule IUT = new MockStatisticalRule();
+
+        DataPoint point = new DataPoint();
+        point.setScore(1001.0);
+        point.setLineNumber( 1001 );
+        point.setMessage("SingleDataPoint");
+
+        IUT.addProperty("minimum", "1000");
+
+        IUT.addDataPoint( point );
+
+        Report report = makeReport( IUT );
+
+        assertEquals("Expecting only one result.", 1, report.size());
+    }
+
 	// Okay, we have three properties we need to
 	// test in Combination:
 	//  S = Sigma

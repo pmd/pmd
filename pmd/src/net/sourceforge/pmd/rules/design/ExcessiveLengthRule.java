@@ -29,7 +29,6 @@ public class ExcessiveLengthRule
 	    point.setScore( 1.0 * (node.getEndLine() - node.getBeginLine() ));
 	    point.setRule( this );
 	    point.setMessage( getMessage() );
-
 	    addDataPoint( point );
 	}
 
