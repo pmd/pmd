@@ -16,16 +16,17 @@ ant dist
 
 TESTS: Can you
 1) run 1 file and get a report
-run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
-run c:\data\pmd\pmd\test-data\Unused1.java html rulesets/unusedcode.xml
+run c:\data\pmd\pmd\test-data\UnusedLocal1.java xml rulesets/unusedcode.xml
+run c:\data\pmd\pmd\test-data\UnusedLocal1.java html rulesets/unusedcode.xml
 2) run the Ant 'pmd' task and get a report
 ant pmd
+
+Generate the web site
 
 Prepare binary release:
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd\etc
 mkdir c:\tmp\pmd\lib
-mkdir c:\tmp\pmd\docs\javadoc
 copy run.bat c:\tmp\pmd\etc
 copy build.xml c:\tmp\pmd\etc
 copy cpdgui.bat c:\tmp\pmd\etc
@@ -34,12 +35,10 @@ copy changelog.txt c:\tmp\pmd\etc
 copy ..\lib\pmd-1.01.jar c:\tmp\pmd\lib
 copy ..\lib\xmlParserAPIs-2.0.2.jar c:\tmp\pmd\lib
 copy ..\lib\xercesImpl-2.0.2.jar c:\tmp\pmd\lib
-generate the web site and copy the javadoc into c:\tmp\pmd\docs\javadoc
+copy the docs directory over to c:\tmp\pmd -- how to do this on cmd line?
 Zip it up, rename it pmd-bin-1.01.zip
 
-All is well, so time to tag:
-cvs -q ci -m "preps for release"
-cd c:\data\pmd
+Time to tag:
 cvs -q rtag -D tomorrow "pmd_release_1_01" pmd
 
 Prepare source release:
