@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>1.2.2</currentVersion>
+  <currentVersion>1.3</currentVersion>
   <organization>
     <name>Project Ultra*Log @ DARPA</name>
     <url>http://pmd.sourceforge.net/</url>
@@ -48,9 +48,9 @@ Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?g
 
   <versions>
     <version>
-      <id>1.2.2</id>
-      <name>1.2.2</name>
-      <tag>pmd_release_1_2_2</tag>
+      <id>1.3</id>
+      <name>1.3</name>
+      <tag>pmd_release_1_3</tag>
     </version>
     <version>
       <id>dev</id>
@@ -104,32 +104,11 @@ Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?g
     </developer>
 
     <developer>
-      <name>Alex Chaffee</name>
-      <id>purpletech</id>
-      <email>purpletech@users.sourceforge.net</email>
-      <roles><role>Developer</role></roles>
-    </developer>
-
-    <developer>
-      <name>Siegfried Goeschl</name>
-      <id>wdsgoe</id>
-      <email>wdsgoe@users.sourceforge.net</email>
-      <roles><role>Developer</role></roles>
-    </developer>
-
-    <developer>
       <name>Ole-Martin Mork</name>
       <id>olemartin</id>
       <email>olemartin@users.sourceforge.net</email>
       <roles><role>Developer</role></roles>
        <organization>Bekk Consulting</organization>
-    </developer>
-
-    <developer>
-      <name>Paul Kendall</name>
-      <id>pkendall</id>
-      <email>pkendall@users.sourceforge.net</email>
-      <roles><role>Developer</role></roles>
     </developer>
 
       <developer>
@@ -143,13 +122,6 @@ Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?g
         <name>Philippe Herlin</name>
         <id>phherlin</id>
         <email>phherlin@users.sourceforge.net</email>
-        <roles><role>Developer</role></roles>
-      </developer>
-
-      <developer>
-        <name>Nascif Abousalh-Neto</name>
-        <id>nascif</id>
-        <email>nascif@users.sourceforge.net</email>
         <roles><role>Developer</role></roles>
       </developer>
 
