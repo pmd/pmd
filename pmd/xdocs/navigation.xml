@@ -5,10 +5,14 @@
   <organizationLogo href="http://sourceforge.net/sflogo.php?group_id=56262&amp;type=5" />
   <body>
     <links>
-      <item name="SF Project Page" 
+      <item name="SourceForge.net Project Page" 
             href="http://www.sf.net/projects/pmd" />
       <item name="Hosted by SourceForge" 
             href="http://www.sf.net" />
+      <item name="Ultra*Log"
+            href="http://www.ultralog.net/" />
+      <item name="DARPA"
+            href="http://www.darpa.mil/" />
     </links>
     <menu name="Overview">
       <item name="Running PMD" href="/running.html" />
