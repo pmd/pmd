@@ -13,7 +13,6 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.swingui.PMDViewer;
-
 import javax.swing.*;
 import java.io.*;
 import java.util.List;
