@@ -87,9 +87,9 @@ and count(NameList/Name[contains
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ClassDeclaration
-[not(./UnmodifiedClassDeclaration/NameList/Name
-[contains(@Image, 'Cloneable')])]
+//ClassOrInterfaceDeclaration
+[not(./ImplementsList/ClassOrInterfaceType
+[@Image='Cloneable'])]
 [.//MethodDeclaration/MethodDeclarator[@Image
 = 'clone' and count(FormatParameters/*) = 0]]
                     ]]>
