@@ -71,23 +71,6 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
     }
     
     /**
-     * Tells if the result type of the node is an array or not.
-     * 
-     * @param rt the ASTResultType node
-     * @return <code>true</code> if this method returns an array  and <code>false</code> in other case
-     */
-    protected boolean resultTypeIsArray(ASTResultType rt) {
-        if (!rt.isVoid()) {
-            final ASTType t = (ASTType) rt.getFirstChildOfType(ASTType.class);
-            if (t.isArray()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    
-    /**
      * Tells if the variable name is a local variable declared in the method.
      * @param vn the variable name
      * @param node the ASTMethodDeclaration where the local variable name will be searched

@@ -32,7 +32,7 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
     public Object visit(ASTMethodDeclaration node, Object data) {
         final ASTResultType rt = (ASTResultType) node.getFirstChildOfType(ASTResultType.class);
 
-        if (resultTypeIsArray(rt)) {
+        if (rt.returnsArray()) {
             final List returns = node.findChildrenOfType(ASTReturnStatement.class);
             
             if (returns!=null) {

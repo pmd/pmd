@@ -11,6 +11,10 @@ public class ASTResultType extends SimpleNode {
         super(p, id);
     }
 
+    public boolean returnsArray() {
+        return !isVoid() && ((ASTType)jjtGetChild(0)).isArray();
+    }
+
     public boolean isVoid() {
         return jjtGetNumChildren() == 0;
     }
