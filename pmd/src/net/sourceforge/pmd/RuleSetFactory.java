@@ -28,7 +28,7 @@ public class RuleSetFactory {
             RuleSet ruleSet = new RuleSet();
             ruleSet.setName(root.getAttribute("name"));
 
-/*
+
             NodeList rules = root.getChildNodes();
             for (int i =0; i<rules.getLength(); i++) {
                 Node ruleNode = (Node)rules.item(i);
@@ -38,7 +38,7 @@ public class RuleSetFactory {
                 rule.setName(ruleName);
                 ruleSet.addRule(rule);
             }
-*/
+
 
             return ruleSet;
         } catch (Exception e) {

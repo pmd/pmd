@@ -25,7 +25,7 @@ public class RuleSetFactoryTest  extends TestCase {
                          "</rule></ruleset>";
     private static final String MULTIPLE_RULE_SET = "<?xml version=\"1.0\"?>" +
                          "<ruleset name=\"test\">" +
-                         "<rule name=\"MockRuleName\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
+                         "<rule name=\"MockRuleName1\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
                          "<rule name=\"MockRuleName2\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
                          "</ruleset>";
 
@@ -40,7 +40,7 @@ public class RuleSetFactoryTest  extends TestCase {
         assertEquals(0, rs.size());
     }
 
-/*
+
     public void testCreateSingleRuleSet() {
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE_SET.getBytes()));
@@ -56,16 +56,16 @@ public class RuleSetFactoryTest  extends TestCase {
 
     public void testCreateMultipleRuleSet() {
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet(new StringReader(SINGLE_RULE_SET));
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(MULTIPLE_RULE_SET.getBytes()));
         assertEquals("test", rs.getName());
         assertEquals(2, rs.size());
         Set expected = new HashSet();
-        expected.add("MockRuleName");
+        expected.add("MockRuleName1");
         expected.add("MockRuleName2");
         for (Iterator i = rs.getRules().iterator(); i.hasNext();) {
             Rule rule = (Rule)i.next();
             assertTrue(expected.contains(rule.getName()));
         }
     }
-*/
+
 }
