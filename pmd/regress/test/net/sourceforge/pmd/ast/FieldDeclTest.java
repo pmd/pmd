@@ -10,13 +10,11 @@ import java.util.Set;
 
 public class FieldDeclTest extends ParserTst {
     public String makeAccessJavaCode(String access[]) {
-        String RC = "public class Test { ";
+        String result = "public class Test { ";
         for (int i = 0; i < access.length; i++) {
-            RC += access[i] + " ";
+            result += access[i] + " ";
         }
-
-        RC += " int j;  }";
-        return RC;
+        return result + " int j;  }";
     }
 
     public ASTFieldDeclaration getFieldDecl(String access[]) throws Throwable {

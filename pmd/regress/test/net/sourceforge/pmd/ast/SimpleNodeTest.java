@@ -33,9 +33,33 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     public void testNoLookahead() throws Throwable {
-        String code = "public class Foo { }"; // 1, 8 -> 1, 20
+        String code = NO_LOOKAHEAD; // 1, 8 -> 1, 20
         Set uCD = getNodes(ASTUnmodifiedClassDeclaration.class, code);
         verifyNode((SimpleNode) uCD.iterator().next(), 1, 8, 1, 20);
+    }
+
+    public void testHasExplicitExtends() throws Throwable {
+        String code = HAS_EXPLICIT_EXTENDS;
+        ASTUnmodifiedClassDeclaration ucd = (ASTUnmodifiedClassDeclaration)(getNodes(ASTUnmodifiedClassDeclaration.class, code).iterator().next());
+        assertTrue(ucd.hasExplicitExtends());
+    }
+
+    public void testNoExplicitExtends() throws Throwable {
+        String code = NO_EXPLICIT_EXTENDS;
+        ASTUnmodifiedClassDeclaration ucd = (ASTUnmodifiedClassDeclaration)(getNodes(ASTUnmodifiedClassDeclaration.class, code).iterator().next());
+        assertTrue(!ucd.hasExplicitExtends());
+    }
+
+    public void testHasExplicitImplements() throws Throwable {
+        String code = HAS_EXPLICIT_IMPLEMENTS;
+        ASTUnmodifiedClassDeclaration ucd = (ASTUnmodifiedClassDeclaration)(getNodes(ASTUnmodifiedClassDeclaration.class, code).iterator().next());
+        assertTrue(ucd.hasExplicitImplements());
+    }
+
+    public void testNoExplicitImplements() throws Throwable {
+        String code = NO_EXPLICIT_IMPLEMENTS;
+        ASTUnmodifiedClassDeclaration ucd = (ASTUnmodifiedClassDeclaration)(getNodes(ASTUnmodifiedClassDeclaration.class, code).iterator().next());
+        assertTrue(!ucd.hasExplicitImplements());
     }
 
     public void testColumnsOnQualifiedName() throws Throwable {
@@ -118,6 +142,18 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals("Wrong ending column:", endCol, node.getEndColumn());
     }
 
+    private static final String HAS_EXPLICIT_EXTENDS =
+    "public class Test extends Foo {}";
+
+    private static final String NO_EXPLICIT_EXTENDS =
+    "public class Test {}";
+
+    private static final String HAS_EXPLICIT_IMPLEMENTS =
+    "public class Test implements Foo {}";
+
+    private static final String NO_EXPLICIT_IMPLEMENTS =
+    "public class Test {}";
+
     private static final String METHOD_DIFF_LINES =
     "public class Test {" + PMD.EOL +
     " public void foo() {" + PMD.EOL +
@@ -149,4 +185,6 @@ public class SimpleNodeTest extends ParserTst {
     " if (x != null) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
+
+    private static final String NO_LOOKAHEAD = "public class Foo { }";
 }

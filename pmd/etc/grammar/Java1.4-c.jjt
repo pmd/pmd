@@ -408,7 +408,8 @@ void UnmodifiedClassDeclaration() :
 {
   "class" t=<IDENTIFIER>
   { jjtThis.setImage( t.image ); }
-  [ "extends" { jjtThis.setHasExplicitExtends(); } Name() ] [ "implements" NameList() ]
+  [ "extends" { jjtThis.setHasExplicitExtends(); } Name() ]
+  [ "implements" { jjtThis.setHasExplicitImplements(); } NameList() ]
   ClassBody()
 }
 

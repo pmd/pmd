@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ParserTst extends TestCase {
+
     private class Collector implements InvocationHandler {
         private Class clazz = null;
         private Set collection = new HashSet();
@@ -44,12 +45,9 @@ public class ParserTst extends TestCase {
     public Set getNodes(Class clazz, String javaCode) throws Throwable {
         Collector coll = new Collector(clazz);
         JavaParser parser = new JavaParser(new StringReader(javaCode));
-
         ASTCompilationUnit cu = parser.CompilationUnit();
-
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
         return coll.getCollection();
     }
-
 }
