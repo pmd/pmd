@@ -99,6 +99,22 @@ public class JDKVersionTest extends TestCase  {
         }
     }
 
+    public void testJDK15ForLoopSyntaxShouldPassWith15() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_FORLOOP));
+        p.CompilationUnit();
+    }
+
+    public void testJDK15ForLoopShouldFailWith14() throws Throwable {
+        try {
+            JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_FORLOOP));
+            p.CompilationUnit();
+            fail("Should have throw ParseException!");
+        } catch (ParseException pe) {
+            // cool
+        }
+    }
+
+
     private static final String ASSERT_TEST1 =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
@@ -157,5 +173,12 @@ public class JDKVersionTest extends TestCase  {
     private static final String JDK15_VARARGS =
     "public class Test {" + PMD.EOL +
     " void bar(Object ... args) {}" + PMD.EOL +
+    "}";
+
+    private static final String JDK15_FORLOOP =
+    "public class Test {" + PMD.EOL +
+    " void foo(List list) {" + PMD.EOL +
+    "  for (Integer i : list) {}" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 }

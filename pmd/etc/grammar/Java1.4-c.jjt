@@ -95,6 +95,12 @@ public class JavaParser {
     }
   }
 
+  private void checkForBadJDK15ForLoopSyntaxArgumentsUsage() {
+    if (!isJDK15) {
+      throw new ParseException("Can't use JDK 1.5 for loop syntax when running in JDK 1.4 mode!");
+    }
+  }
+
   private void checkForBadEnumUsage(String in, String usage) {
     if (isJDK15 && in.equals("enum")) {
       throw new ParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
@@ -1164,7 +1170,16 @@ void DoStatement() :
 void ForStatement() :
 {}
 {
-  "for" "(" [ ForInit() ] ";" [ Expression() ] ";" [ ForUpdate() ] ")" Statement()
+  "for" "("
+(
+  LOOKAHEAD(Type() <IDENTIFIER> ":")
+  {checkForBadJDK15ForLoopSyntaxArgumentsUsage();} Type() <IDENTIFIER> ":" Expression()
+|
+  [ ForInit() ] ";"
+  [ Expression() ] ";"
+  [ ForUpdate() ]
+)
+  ")" Statement()
 }
 
 void ForInit() :

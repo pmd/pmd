@@ -14,9 +14,8 @@ Implemented RFE 1058042 - XML output is more readable now.
 Applied patch 1051956 - Rulesets that reference rules using "ref" can now override various properties.
 YAHTMLRenderer no longer has dependence on Ant packages.
 Modified the AST to correctly include PostfixExpression nodes.  Previously a statement like "x++;" was embedded in the parent StatementExpression node.
-Continued working on JDK 1.5 compatibility - added support for static import statements and varargs.
-- still TODO: generics, annotations, new for loop syntax
--- autoboxing shouldn't need a grammar change
+Continued working on JDK 1.5 compatibility - added support for static import statements, varargs, and the new for loop syntax
+- still TODO: generics and annotations  (note that autoboxing shouldn't require a grammar change)
 - Good article on features: http://java.sun.com/developer/technicalArticles/releases/j2se15/
 
 October 19, 2004 - 2.0:
