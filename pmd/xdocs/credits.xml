@@ -132,6 +132,10 @@
                   their software be used free-of-charge on PMD code
                   (<a href="http://www.refactorit.com/index.html?id=649">OpenSource
                   Community License</a>)</td></tr>
+            <tr><td><center><img src="images/qasystems_logo.jpg"/></center></td>
+                <td><a href="http://www.qa-systems.com/products/qstudioforjava/">QA-Systems</a> for sending in some
+                    handy utilities for PMD and shipping PMD inside their QStudio product
+                    </td></tr>
         </table>
         </subsection>
     </section>
