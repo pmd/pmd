@@ -5,12 +5,13 @@
   <description>
 The Favorites ruleset contains links to rules that I like to use.  Usually I
 combine this ruleset with the unusedcode.xml, basic.xml, and import.xml rulesets for my projects.
-This ruleset also serves as an example of do a custom ruleset.
+This ruleset also serves as an example of how to do a custom ruleset.
   </description>
 
+  <rule ref="rulesets/basic.xml"/>
+  <rule ref="rulesets/unusedcode.xml"/>
   <rule ref="rulesets/braces.xml/WhileLoopsMustUseBraces"/>
   <rule ref="rulesets/braces.xml/ForLoopsMustUseBraces"/>
-  <rule ref="rulesets/coupling.xml/LooseCoupling"/>
   <rule ref="rulesets/design.xml/SimplifyBooleanReturns"/>
   <rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>
   <rule ref="rulesets/strings.xml/StringToString"/>
