@@ -1,26 +1,26 @@
 package net.sourceforge.pmd.jbuilder;
 
+import java.awt.*;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.*;
 import javax.swing.text.*;
 
 import com.borland.jbuilder.*;
 import com.borland.jbuilder.node.*;
 import com.borland.primetime.*;
+import com.borland.primetime.editor.*;
 import com.borland.primetime.ide.*;
 import com.borland.primetime.node.*;
 import com.borland.primetime.viewer.*;
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.reports.*;
-import com.borland.primetime.actions.DelegateHandler;
-import com.borland.primetime.actions.DelegateAction;
-import javax.swing.Action;
-import com.borland.primetime.editor.LineMark;
-import com.borland.primetime.editor.EditorPane;
-import com.borland.primetime.editor.EditorManager;
-import com.borland.primetime.editor.MasterStyleContext;
-import java.awt.Color;
+import com.borland.primetime.actions.ActionGroup;
+import com.borland.primetime.properties.NodeProperty;
+import com.borland.primetime.properties.GlobalProperty;
+import com.borland.primetime.properties.PropertyManager;
+import com.borland.primetime.properties.PropertyDialog;
 
 
 /**
@@ -33,9 +33,9 @@ import java.awt.Color;
  */
 
 public class PMDOpenTool  {
+
     static MessageCategory msgCat = new MessageCategory("PMD Results");
-
-
+    public static ActionGroup GROUP_PMD = new ActionGroup("PMD", 'p', true);
 
     public PMDOpenTool() {
         int i;
@@ -44,10 +44,14 @@ public class PMDOpenTool  {
 
     public static void initOpenTool(byte majorVersion, byte minorVersion) {
         if (majorVersion == PrimeTime.CURRENT_MAJOR_VERSION) {
-            JBuilderMenu.GROUP_Tools.add(ACTION_PMDCheck);
+            GROUP_PMD.add(ACTION_PMDCheck);
+            GROUP_PMD.add(ACTION_PMDConfig);
+            JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
             registerWithContentManager();
+            PropertyManager.registerPropertyGroup(new RuleSetPropertyGroup());
         }
     }
+
 
     /**
      * Registers an "PMD Checker" action with the ContentManager (Tabs)
@@ -66,6 +70,23 @@ public class PMDOpenTool  {
         ContentManager.registerContextActionProvider(cap);
     }
 
+
+    private static RuleSet constructRuleSets(RuleSetFactory ruleSetFactory, PMD pmd) {
+        RuleSet masterRuleSet = null;
+        for (int i = 0; i<RuleSetPropertyGroup.PROPKEYS.length; i++) {
+            if (Boolean.valueOf(RuleSetPropertyGroup.PROPKEYS[i].getValue()).booleanValue()){
+                RuleSet rules= ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream("rulesets/"+RuleSetPropertyGroup.RULESET_NAMES[i]+".xml"));
+                if (masterRuleSet == null) {
+                    masterRuleSet = rules;
+                }
+                else {
+                    masterRuleSet.addRuleSet(rules);
+                }
+            }
+        }
+        return masterRuleSet;
+    }
+
     public static  Report instanceCheck(String text) {
 
         PMD pmd = new PMD();
@@ -73,7 +94,9 @@ public class PMDOpenTool  {
         ReportFactory rf = new ReportFactory();
         RuleContext ctx = new RuleContext();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream("rulesets/unusedcode.xml"));
+        //RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream("rulesets/unusedcode.xml"));
+        RuleSet rules = constructRuleSets(ruleSetFactory, pmd);
+        if (rules == null) return null;
 
         ctx.setReport(rf.createReport("xml"));
         ctx.setSourceCodeFilename("this");
@@ -90,7 +113,6 @@ public class PMDOpenTool  {
     }
 
     public static /*final*/ BrowserAction ACTION_PMDCheck =
-
     // A new action with short menu string, mnemonic, and long menu string
     new BrowserAction("PMD Checker", 'P', "Displays PMD statistics about a Java File") {
 
@@ -114,6 +136,7 @@ public class PMDOpenTool  {
                             for (Iterator i = rpt.iterator(); i.hasNext(); ) {
                                 RuleViolation rv = (RuleViolation)i.next();
                                 PMDMessage pmdMsg = new PMDMessage(rv.getDescription() + " at line " + rv.getLine(), rv.getLine(), (JavaFileNode)node);
+                                pmdMsg.setForeground(Color.red);
                                 Browser.getActiveBrowser().getMessageView().addMessage(msgCat, pmdMsg);//add the result message
                             }
                         }
@@ -127,6 +150,18 @@ public class PMDOpenTool  {
 
         }
     };
+
+    public static BrowserAction ACTION_PMDConfig =
+            new BrowserAction("Configure PMD", 'C', "Configure the PMD Settings") {
+        public void actionPerformed(Browser browser) {
+            PropertyManager.showPropertyDialog(browser,
+              "PMD Options",
+              RuleSetPropertyGroup.RULESETS_TOPIC,
+              PropertyDialog.getLastSelectedPage());
+
+        }
+    };
+
     /**
     * Main method for testing purposes
     * @param args standard arguments
