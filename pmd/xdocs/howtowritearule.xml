@@ -17,8 +17,8 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     </subsection>
     <subsection name="Figure out what you want to look for">
     <p>
-    Now lets's figure out what problem you want to spot.  Let's use "While loops must use braces" as an example.
-    You've seen this before a thousand times so you know what it looks like:
+    Lets's figure out what problem you want to spot; we'll use "While loops must use braces" as an example.
+    In the source code above, it's easy to get lost visually - it's kind of hard to tell what the curly braces belong to.
     </p>
     <source>
 <![CDATA[
