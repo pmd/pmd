@@ -58,9 +58,8 @@ public class PMDTask extends Task {
 
         PMD pmd = new PMD();
         ReportFactory rf = new ReportFactory();
-        Report report = rf.createReport(format);
         RuleContext ctx = new RuleContext();
-        ctx.setReport(report);
+        ctx.setReport(rf.createReport(format));
 
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
@@ -79,11 +78,11 @@ public class PMDTask extends Task {
         }
 
         StringBuffer buf = new StringBuffer();
-        if (!report.isEmpty()) {
+        if (!ctx.getReport().isEmpty()) {
             buf.append(ctx.getReport().render());
             buf.append(System.getProperty("line.separator"));
             if (failOnError) {
-                throw new BuildException("Report contains problems");
+                throw new BuildException("Stopping build since PMD found problems in the code");
             }
         }
         try {
