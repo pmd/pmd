@@ -5,8 +5,8 @@
 	<property name="src" value="src/"/>
 	<property name="lib" value="lib"/>
 	<property name="build" value="build"/>
-	<property name="pmdjar" value="pmd-1.6.jar"/>
-	<property name="pluginversion" value="2.4"/>
+	<property name="pmdjar" value="pmd-1.7.jar"/>
+	<property name="pluginversion" value="2.5"/>
 	<property name="jedit.install.dir" value="../.."/>
 	<property name="jedit.jars.dir" value="${jedit.install.dir}\jars"/>
 	<property name="install.dir"  value=".."/>

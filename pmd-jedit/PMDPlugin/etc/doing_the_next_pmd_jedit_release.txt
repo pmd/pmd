@@ -15,19 +15,19 @@ TESTS:
 4) Does CPD work?
 5) Check if the PMD Help shows correct data like Release notes, help/new features.
 Create the src release:
-cvs -q rtag -D tomorrow "pmd_jedit_release_2_4" pmd-jedit
+cvs -q rtag -D tomorrow "pmd_jedit_release_2_5" pmd-jedit
 rm -rf ~/tmp/pmd-jedit
 mkdir -p ~/tmp/pmd-jedit
-cvs -q export -d tmp -r pmd_jedit_release_2_4 pmd-jedit
+cvs -q export -d tmp -r pmd_jedit_release_2_5 pmd-jedit
 mv tmp/* ~/tmp/pmd-jedit
 rmdir tmp/
 cp pmd-jedit/PMDPlugin/lib/PMDPlugin.jar ~/tmp/pmd-jedit/PMDPlugin/lib
 copy other relevant libraries to ~/tmp/pmd-jedit/PMDPlugin/lib
 cd ~/tmp
-zip -q -r pmd-jedit-src-2.4.zip pmd-jedit
+zip -q -r pmd-jedit-src-2.5.zip pmd-jedit
 rm -rf pmd-jedit
 
-ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.4.zip pmd-jedit-bin-2.4.zip
+ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.5.zip pmd-jedit-bin-2.5.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
