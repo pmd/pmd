@@ -24,6 +24,7 @@ import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTLiteral;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -873,6 +874,9 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
      *         is found.
      */
     private static MethodInvocation findMethod(ASTPrimaryExpression node, String className) {
+        if (node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
+            return null;
+        }
         MethodInvocation meth = MethodInvocation.getMethod(node);
         boolean found = false;
         //		if(meth != null){
