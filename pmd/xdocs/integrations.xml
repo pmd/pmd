@@ -122,33 +122,7 @@ selecting the "Ask for Directory" checkbox.</p>
 
       </subsection>
         <subsection name="Maven">
-  <p>
-  <ul>
-  <li>Copy the downloaded plugin into the Maven plugin directory.</li>
-  <li>Run "maven -g" and look out for documented PMD goals. If you see some then the unpacking succeeded.</li>
-  <li>The PMD plugin can be started through "maven pmd" or integrated by using the following code snippet in
-  maven.xml:</li>
-      <source>
-  <![CDATA[
-  <?xml version="1.0"?>
-   <preGoal name="site:generate">
-      <attainGoal name="pmd"/>
-   </preGoal>
-  ]]>
-      </source>
-  <li>The generated report has to be added manually to the website which is usually done with navigation.xml</li>
-      <source>
-  <![CDATA[
-  <?xml version="1.0"?>
-    <menu name="Custom Reports">
-      <item name="PMD Report" href="/pmd-report.html"/>
-      <!-- Add more custom reports here -->
-    </menu>
-  ]]>
-      </source>
-      <li>Please see <a href="http://sourceforge.net/projects/maven-plugins/">the Maven plugins web site</a> for more information.</li>
-  </ul>
-  </p>
+  <p>Please see <a href="http://maven.apache.org/reference/plugins/pmd/index.html">the Maven plugins web site</a> for more information.</p>
         </subsection>
         <subsection name="Gel">
   <p>Here's how to set up the PMD-Gel plugin:</p>
