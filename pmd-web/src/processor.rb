@@ -22,13 +22,13 @@ class PMDMap
 	def initialize(problems)
 		@problems = problems
 	end
-	def nooks()
+	def nooks
 		if @problems < MIN_NOOKS
 			return MIN_NOOKS
 		elsif @problems > 100
 			return MAX_NOOKS
 		end
-		return (@problems/10).to_i + MIN_NOOKS
+		(@problems/10).to_i + MIN_NOOKS
 	end
 end
 
@@ -41,7 +41,7 @@ class Job
 	def initialize(title, unix_name, mod, src )
 		@title = title
 		@unix_name = unix_name
-		@cvsroot = ':pserver:anonymous@cvs.sourceforge.net:/cvsroot/' + unix_name
+		@cvsroot = ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/" + unix_name
 		@mod = mod
 		@src = src.strip
 	end
@@ -60,13 +60,11 @@ class Job
    cmd="java -Xmx512m -jar pmd-1.2.2.jar \"" + ROOT + "/" + @src + "\" html rulesets/unusedcode.xml -shortnames > " + report
    `#{cmd}`
    arr = IO.readlines(report)
-   newFile=File.open(report(), "w")
-   arr.each do | line | 
-    if line["Error while parsing"] == nil 
-     newFile << line
-    end
-   end
-   newFile.close
+   File.open(report, "w") {|f|
+	   arr.each do | x | 
+	    f << x if x["Error while parsing"] == nil 
+	   end
+		}
   end
   def run_cpd
    cmd="java -Xmx512m -cp pmd-1.2.2.jar net.sourceforge.pmd.cpd.CPD 100 " + @src + " > " + cpd_file
@@ -94,9 +92,7 @@ class Job
 		"<a href=\"http://" + @unix_name + ".sf.net/\">http://" + @unix_name + ".sf.net/</a>"
 	end
 	def ncss
-		if File.size(ncss_report) < 5
-			return 0	
-		end
+		return 0 if File.size(ncss_report) < 5
 		File.read(ncss_report).split(":")[1].strip.chomp	
 	end
 	def cpd_lines

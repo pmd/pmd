@@ -97,7 +97,7 @@ Roller Weblogger:roller:roller:roller/src
 Scope:scope:scopemvc2:scopemvc2/src
 Sorched Earth 2000:scorch:src:src
 Secure Data Manager:sdm:sdm:sdm/src
-The Singularity System:singularity-sys:singularity:singularity/src
+The Singularity System:singularity-sys:framework:framework/src
 SkinLF:skinlf:skinlf2:skinlf2/src
 Semionic Network Toolkit:sntool:sntool-dev:sntool-dev/src
 Spring Framework:springframework:spring:spring/src
