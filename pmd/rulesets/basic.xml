@@ -2,8 +2,7 @@
 
 <ruleset name="Basic Rules">
   <description>
-The Basic Ruleset contains a collection of good practice rules
-which everyone should follow.
+The Basic Ruleset contains a collection of good practices which everyone should follow.
   </description>
 
 
@@ -16,7 +15,15 @@ which everyone should follow.
   which should either be acted on or reported.
       </description>
       <properties>
-          <property name="xpath" value="//TryStatement[@Catch='true']/Block[position() > 1][count(*) = 0][../@Finally='false' or following-sibling::Block]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //TryStatement[@Catch='true']/Block[position() > 1]
+    [count(*) = 0]
+    [../@Finally='false' or following-sibling::Block]
+                  ]]>
+              </value>
+          </property>
       </properties>
         <priority>3</priority>
 
@@ -41,7 +48,13 @@ which everyone should follow.
     </description>
         <priority>3</priority>
       <properties>
-          <property name="xpath" value="//IfStatement/Statement/Block[count(*) = 0]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+                    //IfStatement/Statement/Block[count(*) = 0]
+                  ]]>
+              </value>
+          </property>
       </properties>
       <example>
   <![CDATA[
@@ -62,7 +75,13 @@ which everyone should follow.
   it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
        </description>
       <properties>
-          <property name="xpath" value="//WhileStatement/Statement/Block[count(*) = 0]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //WhileStatement/Statement/Block[count(*) = 0]
+                  ]]>
+              </value>
+          </property>
       </properties>
         <priority>3</priority>
 
@@ -83,7 +102,13 @@ which everyone should follow.
   Avoid empty try blocks - what's the point?
       </description>
       <properties>
-          <property name="xpath" value="//TryStatement/Block[1][count(*) = 0]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //TryStatement/Block[1][count(*) = 0]
+                  ]]>
+              </value>
+          </property>
       </properties>
         <priority>3</priority>
 
@@ -107,7 +132,13 @@ which everyone should follow.
   Avoid empty finally blocks - these can be deleted.
       </description>
       <properties>
-          <property name="xpath" value="//TryStatement[@Finally='true']/Block[position() = last()][count(*) = 0]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //TryStatement[@Finally='true']/Block[position() = last()][count(*) = 0]
+                  ]]>
+              </value>
+          </property>
       </properties>
         <priority>3</priority>
 
@@ -132,7 +163,13 @@ which everyone should follow.
       Avoid empty switch statements.
       </description>
       <properties>
-          <property name="xpath" value="//SwitchStatement[count(*) = 1]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //SwitchStatement[count(*) = 1]
+                  ]]>
+              </value>
+          </property>
       </properties>
         <priority>3</priority>
 
@@ -159,7 +196,13 @@ which everyone should follow.
      Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
      </description>
      <properties>
-         <property name="xpath" value="//ForStatement[ForUpdate//Name/@Image = ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]"/>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+    //ForStatement[ForUpdate//Name/@Image = ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]
+                 ]]>
+             </value>
+         </property>
      </properties>
         <priority>3</priority>
 
@@ -185,7 +228,13 @@ which everyone should follow.
       Some for loops can be simplified to while loops - this makes them more concise.
       </description>
     <properties>
-    	<property name="xpath" value="//ForStatement[count(*) > 1][not(ForInit)][not(ForUpdate)]"/>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+    //ForStatement[count(*) > 1][not(ForInit)][not(ForUpdate)]
+                ]]>
+            </value>
+        </property>
     </properties>
         <priority>3</priority>
       <example>
@@ -227,17 +276,23 @@ which everyone should follow.
   Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
       </description>
       <properties>
-          <property name="xpath" value="
-              //ClassDeclaration//MethodDeclarator
-              [
-              (@Image = 'equals'
-                  and count(FormalParameters/*) = 1
-                  and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode'])
-               or
-              (@Image='hashCode'
-                  and count(FormalParameters/*) = 0
-                  and not(//MethodDeclarator[count(FormalParameters//Type/Name[@Image = 'Object']) = 1][@Image = 'equals']))
-              )]"/>
+          <property name="xpath" value=""/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+      //ClassDeclaration//MethodDeclarator
+      [
+      (@Image = 'equals'
+          and count(FormalParameters/*) = 1
+          and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode'])
+       or
+      (@Image='hashCode'
+          and count(FormalParameters/*) = 0
+          and not(//MethodDeclarator[count(FormalParameters//Type/Name[@Image = 'Object']) = 1][@Image = 'equals']))
+      )]
+                  ]]>
+              </value>
+          </property>
       </properties>
         <priority>3</priority>
 
@@ -269,6 +324,7 @@ which everyone should follow.
   ]]>
       </example>
     </rule>
+
 
 </ruleset>
 

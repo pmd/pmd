@@ -12,7 +12,13 @@ The Braces Ruleset contains a collection of braces rules.
      Avoid using if statements without using curly braces
      </description>
        <properties>
-           <property name="xpath" value="//IfStatement[count(*) &lt; 3][not(Statement/Block)]"/>
+           <property name="xpath">
+               <value>
+                   <![CDATA[
+    //IfStatement[count(*) < 3][not(Statement/Block)]
+                   ]]>
+               </value>
+           </property>
        </properties>
        <priority>3</priority>
 
@@ -35,7 +41,13 @@ The Braces Ruleset contains a collection of braces rules.
       Avoid using 'while' statements without using curly braces
       </description>
         <properties>
-            <property name="xpath" value="//WhileStatement[not(Statement/Block)]"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+    //WhileStatement[not(Statement/Block)]
+                    ]]>
+                </value>
+            </property>
         </properties>
         <priority>3</priority>
 
@@ -56,7 +68,13 @@ The Braces Ruleset contains a collection of braces rules.
        Avoid using if..else statements without using curly braces
        </description>
          <properties>
-             <property name="xpath" value="//IfStatement[count(*) > 2][not(Statement/Block)]"/>
+             <property name="xpath">
+                 <value>
+                     <![CDATA[
+    //IfStatement[count(*) > 2][not(Statement/Block)]
+                     ]]>
+                 </value>
+             </property>
          </properties>
          <priority>3</priority>
 
@@ -84,7 +102,13 @@ The Braces Ruleset contains a collection of braces rules.
        Avoid using 'for' statements without using curly braces
        </description>
          <properties>
-             <property name="xpath" value="//ForStatement[not(Statement/Block)]"/>
+             <property name="xpath">
+                 <value>
+                     <![CDATA[
+    //ForStatement[not(Statement/Block)]
+                     ]]>
+                 </value>
+             </property>
          </properties>
          <priority>3</priority>
 

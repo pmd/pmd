@@ -13,7 +13,13 @@ These rules deal with different problems that can occur with String manipulation
     Avoid instantiating String objects; this is usually unnecessary.
     </description>
        <properties>
-           <property name="xpath" value="//AllocationExpression[Name/@Image='String'][count(.//Expression) &lt; 2][not(ArrayDimsAndInits)]"/>
+           <property name="xpath">
+               <value>
+                   <![CDATA[
+    //AllocationExpression[Name/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]
+                    ]]>
+               </value>
+           </property>
        </properties>
        <priority>2</priority>
 

@@ -16,7 +16,13 @@ most people really dislike :-)
   it's public, has an empty body, and takes no arguments.
       </description>
         <properties>
-            <property name="xpath" value="//ConstructorDeclaration[1][position() = last()][@Public='true'][not(FormalParameters/*)][not(BlockStatement)]"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+    //ConstructorDeclaration[1][position() = last()][@Public='true'][not(FormalParameters/*)][not(BlockStatement)]
+                    ]]>
+                </value>
+            </property>
         </properties>
         <priority>3</priority>
       <example>
@@ -86,7 +92,13 @@ most people really dislike :-)
      Unused modifiers are, well, unused.
      </description>
         <properties>
-            <property name="xpath" value="//InterfaceDeclaration//MethodDeclaration[@Public='true' or @Abstract = 'true']"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+    //InterfaceDeclaration//MethodDeclaration[@Public='true' or @Abstract = 'true']
+                    ]]>
+                </value>
+            </property>
         </properties>
         <priority>3</priority>
      <example>

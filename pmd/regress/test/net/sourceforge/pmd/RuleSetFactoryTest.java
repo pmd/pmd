@@ -28,6 +28,30 @@ public class RuleSetFactoryTest extends TestCase {
 
     private static final String RULE_WITH_PROPERTIES = "<?xml version=\"1.0\"?>" + EOL + "<ruleset name=\"test\">" + EOL + "<description>" + EOL + "testdesc" + EOL + "</description>" + EOL + "<priority>3</priority>" + EOL + "<rule name=\"MockRuleName\" " + EOL + "message=\"avoid the mock rule\" " + EOL + "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL + "<description>" + EOL + "testdesc2" + EOL + "</description>" + EOL + "<priority>3</priority>" + EOL + "<properties>" + EOL + "<property name=\"fooBoolean\" value=\"true\"/>" + EOL + "<property name=\"fooDouble\" value=\"1.0\" />" + EOL + "<property name=\"foo\" value=\"bar\"/>" + EOL + "<property name=\"fooint\" value=\"2\"/>" + EOL + "</properties>" + EOL + "</rule>" + EOL + "</ruleset>";
 
+    private static final String RULE_WITH_XPATH =
+            "<?xml version=\"1.0\"?>" + EOL +
+            "<ruleset name=\"test\">" + EOL +
+            "<description>" + EOL +
+            "testdesc" + EOL +
+            "</description>" + EOL +
+            "<priority>3</priority>" + EOL +
+            "<rule name=\"MockRuleName\" " + EOL +
+            "message=\"avoid the mock rule\" " + EOL +
+            "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL +
+            "<description>" + EOL +
+            "testdesc2" + EOL +
+            "</description>" + EOL +
+            "<properties>" + EOL +
+            "<property name=\"xpath\">" + EOL +
+            "<value>" + EOL +
+            "<![CDATA[ //Block ]]>" + EOL +
+            "</value>" + EOL +
+            "</property>" + EOL +
+            "</properties>" + EOL +
+            "</rule>" + EOL +
+            "</ruleset>";
+
+
     public void testRuleSetNotFound() {
         RuleSetFactory rsf = new RuleSetFactory();
         try {
@@ -88,6 +112,13 @@ public class RuleSetFactoryTest extends TestCase {
         assertTrue(r.getDescription().indexOf("testdesc2") != -1);
     }
 
+    public void testXPath() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(RULE_WITH_XPATH.getBytes()));
+        Rule r = (Rule) rs.getRules().iterator().next();
+        assertTrue(r.hasProperty("xpath"));
+        assertEquals(" //Block ", r.getStringProperty("xpath"));
+    }
     /*
         public void testExternalReferences() {
             RuleSetFactory rsf = new RuleSetFactory();

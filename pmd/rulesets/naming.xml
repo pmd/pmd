@@ -13,7 +13,13 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
 Detects when a field, local or parameter has a short name.
     </description>
       <properties>
-          <property name="xpath" value="//VariableDeclaratorId[string-length(@Image) &lt; 3][not(ancestor::ForInit)]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //VariableDeclaratorId[string-length(@Image) < 3][not(ancestor::ForInit)]
+                  ]]>
+              </value>
+          </property>
       </properties>
       <priority>3</priority>
     <example>
@@ -41,7 +47,13 @@ Detects when a field, formal or local variable is declared with a big name.
     </description>
       <priority>3</priority>
       <properties>
-          <property name="xpath" value="//VariableDeclaratorId[string-length(@Image) > 12]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //VariableDeclaratorId[string-length(@Image) > 12]
+                  ]]>
+              </value>
+          </property>
       </properties>
     <example>
 <![CDATA[
@@ -70,7 +82,13 @@ Detects when very short method names are used.
      </description>
       <priority>3</priority>
       <properties>
-          <property name="xpath" value="//MethodDeclarator[string-length(@Image) &lt; 3]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //MethodDeclarator[string-length(@Image) < 3]
+                  ]]>
+              </value>
+          </property>
       </properties>
      <example>
 <![CDATA[

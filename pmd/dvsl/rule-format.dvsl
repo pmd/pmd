@@ -25,15 +25,14 @@
   $node.get("./description").value()
 </p>
 
-<!--
-#if ($node.get("./properties/property").attribute("name"))
-This rule is defined by the following XPath expression:
+#if ($node.get("./properties/property/value"))
+<p>
+    This rule is defined by the following XPath expression:
+</p>
 <source>
-<![CDATA[ $node.get("./properties/property").attribute("value") ]]>
+<![CDATA[$node.get("./properties/property/value")]]>
 </source>
 #end
--->
-
 
 <p>
     Here's an example of code that would trigger this rule:

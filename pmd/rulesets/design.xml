@@ -90,7 +90,13 @@ public class Foo {
     Switch statements should have a default label.
     </description>
       <properties>
-          <property name="xpath" value="//SwitchStatement[not(SwitchLabel[count(*) = 0])]"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+    //SwitchStatement[not(SwitchLabel[count(*) = 0])]
+                  ]]>
+              </value>
+          </property>
       </properties>
       <priority>3</priority>
 
