@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.rules.*;
 
 public class FunctionalTest extends TestCase{
 

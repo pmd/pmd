@@ -11,8 +11,8 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleFactory;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.DontCreateTimersRule;
-import net.sourceforge.pmd.EmptyIfStmtRule;
+import net.sourceforge.pmd.rules.DontCreateTimersRule;
+import net.sourceforge.pmd.rules.EmptyIfStmtRule;
 
 public class RuleFactoryTest extends TestCase {
     public RuleFactoryTest(String name) {

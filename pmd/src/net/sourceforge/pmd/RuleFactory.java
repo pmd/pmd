@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.rules.*;
+
 import java.util.*;
 
 public class RuleFactory {
