@@ -52,6 +52,14 @@ class Job
     @sourceDirectory = moduleDirectory + '/' + sourceDirectory
   end
   
+  def checkout_code
+  `cvs -d:#{cvsroot} co #{moduleDirectory}`
+  end
+  
+  def run_pmd
+  `java -jar pmd-1.0rc2.jar #{sourceDirectory} html rulesets/unusedcode.xml > reports/#{projectName}.html`
+  end
+  
   def to_s
    return @projectName +":"+@moduleDirectory+":"+@sourceDirectory
   end
