@@ -244,7 +244,6 @@ public class PMDJEditPlugin extends EditPlugin {
 		instance.errorSource.clear();
 		CPD cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new JavaLanguage());
 		cpd.add(new File(view.getBuffer().getPath()));
-		System.out.println("Add successfull.Going for go.");
 		cpd.go();
 		instance.processDuplicates(cpd, view);
 	}
@@ -299,7 +298,6 @@ public class PMDJEditPlugin extends EditPlugin {
 		{
 			cpd.addAllInDirectory(selectedFile.getCanonicalPath());
 		}
-		System.out.println("Add successfull.Going for go.");
 		cpd.go();
 		instance.processDuplicates(cpd, view);
 	}
@@ -308,7 +306,6 @@ public class PMDJEditPlugin extends EditPlugin {
 	private void processDuplicates(CPD cpd, View view)
 	{
 		//StringBuffer report = new StringBuffer();
-		System.out.println("Report "+ new SimpleRenderer().render(cpd.getMatches()));
 		CPDDuplicateCodeViewer dv = getCPDDuplicateCodeViewer(view);
 
 		dv.clearDuplicates();
