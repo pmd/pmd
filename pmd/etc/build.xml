@@ -36,10 +36,9 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <!--<pmd reportFile="c:\pmd.html" rulesetfiles="rulesets/basic.xml" format="html">-->
-        <pmd reportFile="c:\jdk14.html" rulesetfiles="rulesets/imports.xml" format="html">
-            <!--<fileset dir="c:\data\pmd\pmd\src">-->
-            <fileset dir="c:\j2sdk1.4.0\src\com\sun\corba">
+        <pmd reportFile="c:\pmd.html" rulesetfiles="rulesets/design.xml,rulesets/unusedcode.xml,rulesets/basic.xml,rulesets/imports.xml" format="html">
+            <fileset dir="c:\data\pmd\pmd\src">
+            <!--<fileset dir="c:\j2sdk1.4.0\src\com\sun\corba">-->
             <!--<fileset dir="c:\j2sdk1.4.0\src\">-->
                 <include name="**/*.java"/>
             </fileset>

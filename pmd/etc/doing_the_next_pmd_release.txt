@@ -5,6 +5,7 @@ cvs rm new_for_0_6.xml
 cvs add new_for_0_7.xml
 update jar task to reflect pmd-0.6
 update docs to mention GUI if it's in a presentable state
+update release number in project.xml
 
 set ANT_HOME=c:\ant
 ant dist

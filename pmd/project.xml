@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>0.5</currentVersion>
+  <currentVersion>0.6</currentVersion>
   <logo>images/pmd_logo_small.jpg</logo>
   <organization>
     <name>Tom Copeland/David Dixon-Peugh</name>
@@ -44,9 +44,9 @@
 
   <versions>
     <version>
-      <id>0.5</id>
-      <name>0.5</name>
-      <tag>pmd_release_0_5</tag>
+      <id>0.6</id>
+      <name>0.6</name>
+      <tag>pmd_release_0_6</tag>
     </version>
     <version>
       <id>dev</id>
