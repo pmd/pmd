@@ -79,7 +79,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             return super.visit(node, data);
         }
         // exclude these serializable things
-        if (node.getImage().equals("readObject") || node.getImage().equals("writeObject")|| node.getImage().equals("readResolve") || node.getImage().equals("writeResolve")) {
+        if (node.getImage().equals("readObject") || node.getImage().equals("writeObject")|| node.getImage().equals("readResolve")) {
             return super.visit(node, data);
         }
         privateMethodNodes.add(node);
