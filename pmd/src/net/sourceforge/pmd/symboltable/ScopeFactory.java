@@ -25,7 +25,7 @@ public class ScopeFactory {
         if (localTriggers.contains(node.getClass())) {
             return new LocalScope();
         } else if (functionTriggers.contains(node.getClass())) {
-            return new FunctionScope();
+            return new MethodScope();
         } else if (classTriggers.contains(node.getClass())) {
             if (node instanceof ASTUnmodifiedClassDeclaration) {
                 return new ClassScope(((ASTUnmodifiedClassDeclaration)node).getClassName());

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.symboltable;
 
 import java.util.Iterator;
 
-public class FunctionScope extends AbstractScope {
+public class MethodScope extends AbstractScope {
 
     protected NameDeclaration findHere(NameOccurrence occurrence) {
         // bail out if there's a qualifier, because if it
@@ -25,6 +25,6 @@ public class FunctionScope extends AbstractScope {
     }
 
     public String toString() {
-        return "FunctionScope:" + super.glomNames();
+        return "MethodScope:" + super.glomNames();
     }
 }

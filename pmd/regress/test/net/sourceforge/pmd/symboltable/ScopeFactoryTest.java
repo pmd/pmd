@@ -23,8 +23,8 @@ public class ScopeFactoryTest extends TestCase {
 
     public void testfunctionScope() {
         ScopeFactory sf = new ScopeFactory();
-        assertTrue(sf.createScope(new ASTMethodDeclaration(1)) instanceof FunctionScope);
-        assertTrue(sf.createScope(new ASTConstructorDeclaration(1)) instanceof FunctionScope);
+        assertTrue(sf.createScope(new ASTMethodDeclaration(1)) instanceof MethodScope);
+        assertTrue(sf.createScope(new ASTConstructorDeclaration(1)) instanceof MethodScope);
     }
 
     public void testLocalScope() {
