@@ -4,22 +4,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class UnusedModifierRuleTest extends RuleTst {
-
-    private static final String TEST1 =
-    "public interface UnusedModifier1 {" + CPD.EOL +
-    " public void bar();" + CPD.EOL +
-    "}";
-
-    private static final String TEST2 =
-    "public abstract class UnusedModifier2 {" + CPD.EOL +
-    " public abstract void bar();" + CPD.EOL +
-    "}";
-
-    private static final String TEST3 =
-    "public interface UnusedModifier3 {" + CPD.EOL +
-    " abstract void bar();" + CPD.EOL +
-    "}";
+public class UnusedModifierRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
@@ -28,13 +13,33 @@ public class UnusedModifierRuleTest extends RuleTst {
         rule.addProperty("xpath", "//InterfaceDeclaration//MethodDeclaration[@Public='true' or @Abstract = 'true']");
     }
 
-    public void testAbstract() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "wasted 'public'", 1, rule),
+           new TestDescriptor(TEST2, "class, no problem", 0, rule),
+           new TestDescriptor(TEST3, "wasted 'abstract'", 1, rule),
+           new TestDescriptor(TEST4, "all is well", 0, rule)
+       });
     }
-    public void testAbstractClass() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void testPublicAndAbstract() throws Throwable {
-        runTestFromString(TEST3, 1, rule);
-    }
+
+    private static final String TEST1 =
+    "public interface Foo {" + CPD.EOL +
+    " public void bar();" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public abstract class Foo {" + CPD.EOL +
+    " public abstract void bar();" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public interface Foo {" + CPD.EOL +
+    " abstract void bar();" + CPD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public interface Foo {" + CPD.EOL +
+    " void bar();" + CPD.EOL +
+    "}";
+
 }
