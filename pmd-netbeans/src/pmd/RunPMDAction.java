@@ -62,6 +62,7 @@ import org.openide.util.actions.CookieAction;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 import pmd.config.ConfigUtils;
 import pmd.scan.EditorChangeListener;
@@ -135,23 +136,38 @@ public class RunPMDAction extends CookieAction {
 
 
 	/**
-	 * Runs PMD on the specified cookie
+	 * Runs PMD on the given list of DataObjects, with no callback.
+	 * This just calls {@link #checkCookies(List, RunPMDCallback)} with a default callback that displays
+	 * progress in the status bar.
 	 *
 	 * @param dataobjects the list of data objects to run PMD on, not null. Elements are instanceof
 	 *                    {@link DataObject}.
 	 * @return the list of rule violations found in the run, not null. Elements are instanceof {@link Fault}.
-	 * @exception IOException If the method can't read the files it should check or
-	 *      can't write to the output window
+	 * @throws IOException on failure to read one of the files or to write to the output window.
 	 */
-	public static List checkCookies( List dataobjects )
-		 throws IOException
-	{
+	public static List checkCookies( List dataobjects ) throws IOException {
+		return checkCookies(dataobjects, new DefaultCallback());
+	}
+	
+	/**
+	 * Runs PMD on the given list of DataObjects, interacting with the given callback.
+	 *
+	 * @param dataobjects the list of data objects to run PMD on, not null. Elements are instanceof
+	 *                    {@link DataObject}.
+	 * @param callback the callback to interact with. Receives notifications and can stop the run.
+	 * @return the list of rule violations found in the run, not null. Elements are instanceof {@link Fault}.
+	 * @throws IOException on failure to read one of the files or to write to the output window.
+	 */
+	public static List checkCookies( List dataobjects, RunPMDCallback callback ) throws IOException {
 		RuleSet set = constructRuleSets();
 		PMD pmd = new PMD();
 		ArrayList list = new ArrayList( 100 );
+		callback.pmdStart( dataobjects.size() );
 		for( int i = 0; i < dataobjects.size(); i++ ) {
-			StatusDisplayer.getDefault().setStatusText( 
-				"PMD checking for rule violations, " + ( i + 1 ) + "/" + ( dataobjects.size()  ) );
+			boolean keepGoing = callback.pmdProgress( i + 1 );
+			if(!keepGoing) {
+				break;
+			}
 			DataObject dataobject = ( DataObject )dataobjects.get( i );
 			FileObject fobj = dataobject.getPrimaryFile();
 			String name = ClassPath.getClassPath( fobj, ClassPath.COMPILE ).getResourceName( fobj, '.', false );
@@ -189,6 +205,7 @@ public class RunPMDAction extends CookieAction {
 				FaultRegistry.getInstance().registerFault( fault, dataobject );
 			}
 		}
+		callback.pmdEnd();
 		Collections.sort( list );
 		return list;
 	}
@@ -206,7 +223,8 @@ public class RunPMDAction extends CookieAction {
 		try {
 			StatusDisplayer.getDefault().setStatusText( "PMD checking for rule violations" );
 			List list = getDataObjects( node );
-			List violations = checkCookies( list );
+			ProgressDialog progressDlg = new ProgressDialog(WindowManager.getDefault().getMainWindow());
+			List violations = checkCookies( list, progressDlg );
 			IOProvider ioProvider = (IOProvider)Lookup.getDefault().lookup( IOProvider.class );
 			InputOutput io = ioProvider.getIO( "PMD output", false );
 			if( violations.isEmpty() ) {
@@ -305,5 +323,45 @@ public class RunPMDAction extends CookieAction {
 			}
 		}
 		return list;
+	}
+	
+	/**
+	 * Default callback implementation, to use when no callback is provided to <code>checkCookies</code>.
+	 * Writes progress information into the StatusDisplayer (generally the status bar). Use a separate
+	 * instance of this for each run, as it stores state (the total number of files).
+	 */
+	private static class DefaultCallback implements RunPMDCallback {
+		
+		/**
+		 * This implementation is a no-op.
+		 */
+		public void pmdEnd() {
+			// NO-OP
+		}
+		
+		/**
+		 * This implementation reports progress in the status bar and returns true.
+		 *
+		 * @param index index of the file on which PMD execution is starting. Greater than 0,
+		 *              less than or equal to the number of files reported in {@link #pmdStart}.
+		 * @return true
+		 */
+		public boolean pmdProgress(int index) {
+			StatusDisplayer.getDefault().setStatusText(
+				"PMD checking for rule violations in file " + ( index + 1 ) + "/" + numFiles );
+			return true;
+		}
+		
+		/**
+		 * This implementation stores the number of files.
+		 *
+		 * @param numFiles the number of files to be scanned, greater than 0.
+		 */
+		public void pmdStart(int numFiles) {
+			this.numFiles = numFiles;
+		}
+		
+		private int numFiles;
+		
 	}
 }
