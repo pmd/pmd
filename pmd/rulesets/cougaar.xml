@@ -49,7 +49,7 @@ Don't use System.out/in/err, use the Cougaar logging service instead.
         message="Don't use System.getProperty()/getProperties()/setProperty()"
         class="org.cougaar.util.pmd.SystemPropsRule">
     <description>
-Don't use System.getProperty()/getProperties()/setProperty()
+Don't use System.getProperty()/getProperties()/setProperty().  One exception - you can use System.getProperty("org.cougaar.[whatever]"); - i.e., the preamble org.cougaar makes it OK.
     </description>
 
     <example>

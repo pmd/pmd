@@ -11,7 +11,7 @@ which everyone should follow.
         message="Avoid empty catch blocks"
         class="net.sourceforge.pmd.rules.EmptyCatchBlockRule">
     <description>
-Empty Catch Block, will find instances where an exception is caught,
+Empty Catch Block finds instances where an exception is caught,
 but nothing is done.  In most circumstances, this swallows an exception
 which should either be acted on or reported.
     </description>
@@ -33,9 +33,8 @@ which should either be acted on or reported.
         message="Avoid empty 'if' statements"
         class="net.sourceforge.pmd.rules.EmptyIfStmtRule">
     <description>
-Empty If Statement, will find instances where a condition is checked,
-but nothing is done about it.
-    </description>
+Empty If Statement finds instances where a condition is checked but nothing is done about it.
+  </description>
     <example>
 <![CDATA[
   if (absValue < 1) {
@@ -49,7 +48,7 @@ but nothing is done about it.
         message="Avoid empty 'while' statements"
         class="net.sourceforge.pmd.rules.EmptyWhileStmtRule">
      <description>
-Empty While Statement, will find all instances where a while statement
+Empty While Statement finds all instances where a while statement
 does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
 it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
      </description>
@@ -110,7 +109,7 @@ while (a == b) {
         message="Ensure you override both equals() and hashCode()"
         class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule">
     <description>
-Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
     </description>
 
     <example>
@@ -146,7 +145,7 @@ public class Foo {
         message="Avoid empty try blocks"
         class="net.sourceforge.pmd.rules.EmptyTryBlockRule">
     <description>
-Avoid empty try blocks
+Avoid empty try blocks - what's the point?
     </description>
 
     <example>
@@ -166,7 +165,7 @@ public void bar() {
         message="Avoid empty finally blocks"
         class="net.sourceforge.pmd.rules.EmptyFinallyBlockRule">
     <description>
-Avoid empty finally blocks
+Avoid empty finally blocks - these can be deleted.
     </description>
 
     <example>
