@@ -1,9 +1,6 @@
-/*
- * ConstructorCallsOverridableMethodRule.java
- * dnoyeb@users.sourceforge.net
- * Created on February 5, 2003, 1:54 PM
- */
-
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+*/
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.RuleContext;
