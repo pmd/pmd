@@ -66,9 +66,9 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="rulesets/my-rules.xml" shortFilenames="true" failonerror="true">
+    <pmd rulesetfiles="rulesets/scratchpad.xml" shortFilenames="true" failonerror="true">
         <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
-        <fileset dir="/home/tom/tmp/Pmd/">
+        <fileset dir="/usr/local/java/src/java/lang/ref/">
             <include name="**/*.java"/>
         </fileset>
     </pmd>

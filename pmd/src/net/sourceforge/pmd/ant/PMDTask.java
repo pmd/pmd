@@ -163,33 +163,31 @@ public class PMDTask extends Task {
 
         log(ctx.getReport().size() + " problems found", Project.MSG_VERBOSE);
 
-        if (!ctx.getReport().isEmpty()) {
-            for (Iterator i = formatters.iterator(); i.hasNext();) {
-                Formatter formatter = (Formatter) i.next();
-                log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-                String buffer = formatter.getRenderer().render(ctx.getReport()) + PMD.EOL;
-                try {
-                    Writer writer = formatter.getToFileWriter(getProject().getBaseDir().toString());
-                    writer.write(buffer, 0, buffer.length());
-                    writer.close();
-                } catch (IOException ioe) {
-                    throw new BuildException(ioe.getMessage());
-                }
+        for (Iterator i = formatters.iterator(); i.hasNext();) {
+            Formatter formatter = (Formatter) i.next();
+            log("Sending a report to " + formatter, Project.MSG_VERBOSE);
+            String buffer = formatter.getRenderer().render(ctx.getReport()) + PMD.EOL;
+            try {
+                Writer writer = formatter.getToFileWriter(getProject().getBaseDir().toString());
+                writer.write(buffer, 0, buffer.length());
+                writer.close();
+            } catch (IOException ioe) {
+                throw new BuildException(ioe.getMessage());
             }
+        }
 
-            if (failuresPropertyName != null && ctx.getReport().size() > 0) {
-                getProject().setProperty(failuresPropertyName, String.valueOf(ctx.getReport().size()));
-                log("Setting property " + failuresPropertyName + " to " + String.valueOf(ctx.getReport().size()), Project.MSG_VERBOSE);
-            }
+        if (failuresPropertyName != null && ctx.getReport().size() > 0) {
+            getProject().setProperty(failuresPropertyName, String.valueOf(ctx.getReport().size()));
+            log("Setting property " + failuresPropertyName + " to " + String.valueOf(ctx.getReport().size()), Project.MSG_VERBOSE);
+        }
 
-            if (printToConsole) {
-                Renderer r = new TextRenderer();
-                log(r.render(ctx.getReport()), Project.MSG_INFO);
-            }
+        if (printToConsole) {
+            Renderer r = new TextRenderer();
+            log(r.render(ctx.getReport()), Project.MSG_INFO);
+        }
 
-            if (failOnRuleViolation) {
-                throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
-            }
+        if (failOnRuleViolation) {
+            throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
         }
     }
 

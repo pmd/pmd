@@ -1,5 +1,6 @@
 ????, 2005: 2.2:
 Fixed bug 1088459 - JUnitTestsShouldContainAsserts no longer throws ClassCastException on interface, native, and abstract method declarations.
+Fixed bug 1100059 - The Ant task now generates a small empty-ish report if there are no violations.
 Implemented RFE 1086168 - PMD XML reports now contain a version and timestamp attribute in the <pmd> element.
 Fixed a bug in the rule override logic; it no longer requires the "class" attribute of a rule be listed in the overrides section.
 Added 'ignoreLiterals' and 'ignoreIdentifiers' boolean options to the CPD task.
