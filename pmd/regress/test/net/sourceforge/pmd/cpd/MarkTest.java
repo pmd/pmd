@@ -11,7 +11,7 @@ public class MarkTest extends TestCase {
 
     public void testSimple() {
         Locator loc = new Locator("/var/foo.java", 10);
-        Mark mark = new Mark(new ArrayList(), 5, loc, new CPDNullListener());
+        Mark mark = new Mark(new ArrayList(), loc);
         assertEquals(mark.getLocator(), loc);
     }
 }

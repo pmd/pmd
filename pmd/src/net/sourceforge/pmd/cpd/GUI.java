@@ -20,6 +20,8 @@ public class GUI implements CPDListener {
                     tokenizingFilesBar.setValue(0);
                     tokenizingFilesBar.setString("");
                     resultsTextArea.setText("");
+                    comparisonsField.setText("");
+                    timeField.setText("");
                     go();
                 }
             }).start();
