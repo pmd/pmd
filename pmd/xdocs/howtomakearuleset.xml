@@ -32,6 +32,9 @@ Say you want to pick specific rules from various rule sets and customize them.  
   This ruleset checks my code for bad stuff
   </description>
 
+  <!-- We'll use the entire 'strings' ruleset -->
+  <rule ref="rulesets/strings.xml"/>  
+
   <!-- Here's some rules we'll specify one at a time -->
   <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
   <rule ref="rulesets/unusedcode.xml/UnusedPrivateField"/>

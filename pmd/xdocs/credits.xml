@@ -42,7 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Elliotte Rusty Harold - noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
+            <li>Elliotte Rusty Harold - "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Miguel Griffa - SystemPrintln rule, patch to improve JUnitTestsShouldContainAsserts, new Maven pmd:dist-bin goal, LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
             <li>Olaf Heimburger - reported a possible NPE in ReportTree</li>
