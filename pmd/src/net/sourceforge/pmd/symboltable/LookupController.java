@@ -10,27 +10,24 @@ import java.util.Iterator;
 
 public class LookupController {
 
-    public NameDeclaration lookup(NameOccurrence nameOccurrence) {
-/*
-        if (nameOccurrence.isQualified())  {
-            List qualifiers = nameOccurrence.getQualifiers();
-            for (Iterator i = qualifiers.iterator(); i.hasNext();) {
-                NameDeclaration decl = lookup(nameOccurrence.getScope());
+    public void lookup(NameOccurrences occs) {
+        NameDeclaration decl = null;
+        for (Iterator i = occs.iterator(); i.hasNext();) {
+            NameOccurrence occ = (NameOccurrence)i.next();
+            Search search = new Search(occ);
+            if (decl == null) {
+                // doing the first name lookup
+                decl = search.execute();
+                if (decl == null) {
+                    // we can't find it, so just give up
+                    // when we decide searches across compilation units like a compiler would, we'll
+                    // force this to either find a symbol or throw a "cannot resolve symbol" Exception
+                    break;
+                }
+            } else {
+                // now we've got a scope we're starting with, so work from there
+                decl = search.execute(decl.getNode().getScope());
             }
-        } else {
-            return lookup(nameOccurrence, nameOccurrence.getScope());
         }
-*/
-        return lookup(nameOccurrence, nameOccurrence.getScope());
-    }
-
-    private NameDeclaration lookup(NameOccurrence nameOccurrence, Scope scope) {
-        if (!scope.contains(nameOccurrence) && scope.getParent() != null) {
-            return lookup(nameOccurrence, scope.getParent());
-        }
-        if (scope.contains(nameOccurrence)) {
-            return scope.addOccurrence(nameOccurrence);
-        }
-        return null;
     }
 }

@@ -5,7 +5,7 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.*;
 
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -14,72 +14,51 @@ import java.util.List;
 
 public class NameOccurrence {
 
-    private SimpleNode node;
-    private Qualifier qualifier;
+    private SimpleNode occurrenceLocation;
+    private String image;
+    private NameOccurrence qualifiedName;
 
-    public NameOccurrence(SimpleNode node) {
-        this.node = node;
+    public NameOccurrence(SimpleNode occurrenceLocation, String image) {
+        this.occurrenceLocation = occurrenceLocation;
+        this.image = image;
     }
 
+    public void setNameWhichThisQualifies(NameOccurrence qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
+
+    public NameOccurrence getNameForWhichThisIsAQualifier() {
+        return this.qualifiedName;
+    }
+
+    // do these two methods justify keeping a node as an instance var?
     public Scope getScope() {
-        return node.getScope();
+        return occurrenceLocation.getScope();
     }
 
-    /**
-     * TODO - this method needs to be unified with the Qualifier.THIS and SUPER thing
-     */
-    public boolean isQualified() {
-        return node.getImage().indexOf('.') != -1;
+    public int getBeginLine() {
+        return occurrenceLocation.getBeginLine();
     }
+    // do these two methods justify keeping a node as an instance var?
 
-    public List getQualifiers() {
-        List names = new ArrayList();
-        if (qualifier != null) {
-            names.add(qualifier.getImage());
-        }
-        for (StringTokenizer st = new StringTokenizer(node.getImage(), "."); st.hasMoreTokens();) {
-            names.add(st.nextToken());
-        }
-        return names;
-    }
-
-    public void setQualifier(Qualifier qualifier) {
-        this.qualifier = qualifier;
-    }
-
-    public boolean usesThisOrSuper() {
-        return qualifier != null;
+    public boolean isThisOrSuper() {
+        return image.equals("this") || image.equals("super");
     }
 
     public boolean equals(Object o) {
         NameOccurrence n = (NameOccurrence)o;
-        return n.getObjectName().equals(node.getImage());
+        return n.getImage().equals(getImage());
     }
 
     public String getImage() {
-        return node.getImage();
-    }
-
-    public int getBeginLine() {
-        return node.getBeginLine();
+        return image;
     }
 
     public int hashCode() {
-        return getObjectName().hashCode();
+        return getImage().hashCode();
     }
 
     public String toString() {
-        return node.getImage() + ":" + node.getBeginLine();
+        return getImage() + ":" + occurrenceLocation.getBeginLine();
     }
-
-    public String getObjectName() {
-        // TODO when does this happen?  Maybe on a class name?
-        if (node.getImage() == null) {
-            return null;
-        }
-        // TODO when does this happen?  Maybe on a class name?
-
-        return (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
-    }
-
 }

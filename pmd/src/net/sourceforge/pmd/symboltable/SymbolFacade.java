@@ -7,6 +7,11 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.*;
 
+import java.util.StringTokenizer;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class SymbolFacade extends JavaParserVisitorAdapter {
 
     public void initializeWith(ASTCompilationUnit node) {
@@ -18,33 +23,16 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         DeclarationFinder df = new DeclarationFinder();
         node.jjtAccept(df, null);
 
-        // finally, traverse the AST and pick up all the usages
+        // finally, traverse the AST and pick up all the name occurrences
         node.jjtAccept(this, null);
     }
 
-    public Object visit(ASTPrimaryPrefix node, Object data) {
+    public Object visit(ASTPrimaryExpression node, Object data) {
+        NameOccurrences qualifiedNames = new NameOccurrences(node);
         LookupController lookupController = new LookupController();
-        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTName) {
-            SimpleNode child = (SimpleNode)node.jjtGetChild(0);
-            lookupController.lookup(new NameOccurrence(child));
-        } else {
-            if (node.jjtGetParent() instanceof ASTPrimaryExpression) {
-                SimpleNode parent = (SimpleNode)node.jjtGetParent();
-                if (parent.jjtGetNumChildren() > 1 && parent.jjtGetChild(1) instanceof ASTPrimarySuffix) {
-                    ASTPrimarySuffix suffix = (ASTPrimarySuffix)parent.jjtGetChild(1);
-
-                    // TODO - make this nicer
-                    NameOccurrence occ = new NameOccurrence(suffix);
-                    if (node.usesSuperModifier()) {
-                        occ.setQualifier(Qualifier.SUPER);
-                    } else if (node.usesThisModifier()) {
-                        occ.setQualifier(Qualifier.THIS);
-                    }
-
-                    lookupController.lookup(occ);
-                }
-            }
-        }
+        lookupController.lookup(qualifiedNames);
         return super.visit(node, data);
     }
+
+
 }

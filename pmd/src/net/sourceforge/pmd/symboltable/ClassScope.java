@@ -16,9 +16,28 @@ public class ClassScope extends AbstractScope {
     }
 
     protected NameDeclaration findHere(NameOccurrence occurrence) {
+        if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
+
+            if (names.isEmpty()) {
+                // this could happen if you do this:
+                // public class Foo {
+                //  private String x = super.toString();
+                // }
+                return null;
+            }
+            // return any name declaration, since all we really want is to get the scope
+            // for example, if there's a
+            // public class Foo {
+            //  private static final int X = 2;
+            //  private int y = Foo.X;
+            // }
+            // we'll look up Foo just to get a handle to the class scope
+            // and then we'll look up X.
+            return (NameDeclaration)names.keySet().iterator().next();
+        }
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
             NameDeclaration decl = (NameDeclaration)i.next();
-            if (decl.getImage().equals(occurrence.getObjectName()) || (className + "." + decl.getImage()).equals(occurrence.getImage())) {
+            if (decl.getImage().equals(occurrence.getImage()) || (className + "." + decl.getImage()).equals(occurrence.getImage())) {
                 return decl;
             }
         }
