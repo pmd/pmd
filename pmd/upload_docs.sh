@@ -3,7 +3,7 @@
 #rm -rf target
 #maven pmd-site
 
-maven xdoc:transform
+maven -b xdoc:generate-from-pom xdoc:transform
 DOCS_FILE=docs.tar.gz
 cp xdocs/cpdresults.txt target/docs/
 cd target
