@@ -1,8 +1,8 @@
-update run.bat to point to pmd-0.8.jar
+update run.bat to point to pmd-0.9.jar
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
-update jar task to reflect pmd-0.8
-update xdocs/running.xml to reflect pmd-0.8
+update jar task to reflect pmd-0.9
+update xdocs/running.xml to reflect pmd-0.9
 update release number in project.xml
 update release number in pmd.xml
 
@@ -25,23 +25,23 @@ mkdir -p c:\tmp\pmd\etc
 mkdir c:\tmp\pmd\lib
 copy build.xml c:\tmp\pmd\etc
 copy run.bat c:\tmp\pmd\etc
-copy ..\lib\pmd-0.8.jar c:\tmp\pmd\lib
-Zip it up, rename it pmd-bin-0.8.zip
+copy ..\lib\pmd-0.9.jar c:\tmp\pmd\lib
+Zip it up, rename it pmd-bin-0.9.zip
 
 All is well, so time to tag:
 cvs ci -m "preps for release"
 cd c:\data\pmd
-cvs rtag -D tomorrow "pmd_release_0_8" pmd
+cvs rtag -D tomorrow "pmd_release_0_9" pmd
 
 Prepare source release:
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
-cvs export -d c:\tmp\pmd -r pmd_release_0_8 pmd
-copy pmd\lib\pmd-0.8.jar c:\tmp\pmd\lib
-zip it up, rename it to pmd-src-0.8.zip
+cvs export -d c:\tmp\pmd -r pmd_release_0_9 pmd
+copy pmd\lib\pmd-0.9.jar c:\tmp\pmd\lib
+zip it up, rename it to pmd-src-0.9.zip
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_0_8 pmd
+cvs rtag -d pmd_release_0_9 pmd
 and then retag everything
 
 FTP the zip file to SF
@@ -49,17 +49,17 @@ ftp upload.sourceforge.net
 generic userid/password: anonymous/tomcopeland@users.sourceforge.net
 cd incoming
 bin
-put pmd-bin-0.8.zip
-put pmd-src-0.8.zip
+put pmd-bin-0.9.zip
+put pmd-src-0.9.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-0.8.zip file
-Add the pmd-src-0.8.zip file
+Add the pmd-bin-0.9.zip file
+Add the pmd-src-0.9.zip file
 Classify the file
 
 SSH in to shell.sourceforge.net
 cd /home/groups/p/pm/pmd/build/
-./quickgo.sh
+./quick.sh
 
 Submit some news saying "hey, new release!"
