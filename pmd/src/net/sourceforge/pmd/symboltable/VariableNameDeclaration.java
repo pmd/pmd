@@ -32,6 +32,10 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return (AccessNode) node.jjtGetParent().jjtGetParent();
     }
 
+    public ASTVariableDeclaratorId getDeclaratorId() {
+        return (ASTVariableDeclaratorId) node;
+    }
+
     public boolean equals(Object o) {
         VariableNameDeclaration n = (VariableNameDeclaration) o;
         return n.node.getImage().equals(node.getImage());
