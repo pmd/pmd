@@ -206,8 +206,7 @@ public class PMDJEditPlugin extends EditPlugin {
 			pmde.printStackTrace();
 			JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + buffer.getPath());
 		}
-	}
-    // check current buffer
+	}// check current buffer
 
 	private void processFiles(List files) {
 		errorSource.clear();
