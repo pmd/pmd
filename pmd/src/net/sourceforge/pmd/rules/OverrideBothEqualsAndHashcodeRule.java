@@ -12,6 +12,7 @@ import net.sourceforge.pmd.ast.ASTClassBody;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractRule implements Rule {
 
@@ -45,6 +46,10 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractRule implements R
         }
 
         criteria = new ViolationCriteria();
+        return data;
+    }
+
+    public Object visit(ASTInterfaceDeclaration node, Object data) {
         return data;
     }
 

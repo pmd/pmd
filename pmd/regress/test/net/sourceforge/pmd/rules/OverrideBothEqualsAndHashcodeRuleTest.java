@@ -23,4 +23,7 @@ public class OverrideBothEqualsAndHashcodeRuleTest extends RuleTst {
     public void testEqualsSignatureUsesStringNotObject() throws Throwable{
         runTest("OverrideBothEqualsAndHashcode5.java", 1, new OverrideBothEqualsAndHashcodeRule());
     }
+    public void testInterface() throws Throwable{
+        runTest("OverrideBothEqualsAndHashcode6.java", 0, new OverrideBothEqualsAndHashcodeRule());
+    }
 }
