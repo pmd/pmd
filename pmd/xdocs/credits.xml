@@ -40,9 +40,9 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Todd Wright - XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
             <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>
-            <li>Todd Wright - ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Noel Grandin - EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Michael Haggerty - bug report for UnusedModifier</li>
             <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>

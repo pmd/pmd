@@ -184,12 +184,20 @@ return 3;
 
     <rule name="AtLeastOneConstructor"
       message="Each class should declare at least one constructor"
-      class="net.sourceforge.pmd.rules.AtLeastOneConstructorRule">
+      class="net.sourceforge.pmd.rules.XPathRule">
   <description>
   Each class should declare at least one constructor.
   </description>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//UnmodifiedClassDeclaration[not(ClassBody/ClassBodyDeclaration/ConstructorDeclaration)]
+]]>
+                </value>
+            </property>
+         </properties>
     <priority>3</priority>
-
   <example>
   <![CDATA[
   public class Foo {
