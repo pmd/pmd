@@ -1,25 +1,22 @@
 update the xdocs:
-+command line ui now takes a filename, format, rule set
-+Ant task has moved
-+update the project.xml; change the version to 0.2
-update run.bat to point to pmd-0.2.jar
+update run.bat to point to pmd-0.3.jar
 update the changelog
 
 ant dist
 ant test
 Do all the tests run?  OK, then:
 ant dist
-rename jar to pmd-0.2.jar
-cvs add -kb pmd-0.2.jar
+rename jar to pmd-0.3.jar
+cvs add -kb pmd-0.3.jar
 cvs rm pmd-0.1.jar
 cvs ci -m "adding new jar, removing old one"
 cd c:\data\pmd
-cvs rtag -D tomorrow "pmd_release_0_2" pmd
+cvs rtag -D tomorrow "pmd_release_0_3" pmd
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
-cvs export -d c:\tmp\pmd -r pmd_release_0_2 pmd
-zip it up, rename it to pmd-0.2.zip
-unzip it into c:\tmp\pmd-0.2
+cvs export -d c:\tmp\pmd -r pmd_release_0_3 pmd
+zip it up, rename it to pmd-0.3.zip
+unzip it into c:\tmp\pmd-0.3
 clear classpath
 TESTS: Can you
 1) run 1 file and get a report
@@ -29,7 +26,7 @@ run c:\data\pmd\pmd\test-data\Unused1.java text all
 ant pmd
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_0_2 pmd
+cvs rtag -d pmd_release_0_3 pmd
 and then retag everything
 
 FTP the zip file to SF
@@ -37,11 +34,11 @@ ftp upload.sourceforge.net
 generic userid/password: anonymous/tomcopeland@users.sourceforge.net
 cd incoming
 bin
-put pmd-0.2.zip
+put pmd-0.3.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-0.2.zip file
+Add the pmd-0.3.zip file
 Classify the file
 
 SSH in to shell.sourceforge.net

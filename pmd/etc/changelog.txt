@@ -1,3 +1,5 @@
+??? - 0.3:
+
 June 27 2002 - 0.2:
 Added new rules: IfElseStmtsMustUseBracesRule, EmptyWhileStmtRule
 Modified command line interface to accept a rule set
