@@ -27,8 +27,12 @@ cd etc
 Prepare binary release:
 rm -rf ~/tmp/pmd-2.1
 mkdir -p ~/tmp/pmd-2.1/etc
+mkdir -p ~/tmp/pmd-2.1/bin
 mkdir ~/tmp/pmd-2.1/lib
-cp ../LICENSE.txt pmd.* cygwin-run.sh build.xml cpdgui.bat changelog.txt designer.* ~/tmp/pmd-2.1/etc
+cp ../LICENSE.txt build.xml changelog.txt ~/tmp/pmd-2.1/etc
+cd ../bin/
+cp pmd.* cygwin-run.sh cpdgui.bat designer.* ~/tmp/pmd-2.1/bin
+cd ../etc/
 cp ../lib/pmd-2.1.jar ../lib/xmlParserAPIs-2.6.2.jar ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-2.1/lib/
 cp -R xslt/ ~/tmp/pmd-2.1/etc/xslt/
 cp -R ../target/docs ~/tmp/pmd-2.1
@@ -45,7 +49,7 @@ cvs -q tag -D tomorrow "pmd_release_2_1" pmd
 Prepare source release:
 rm -rf ~/tmp/pmd-2.1
 rm -rf ~/tmp/pmd-src-2.1.zip
-cd pmd/etc
+cd pmd/bin/
 ant jarsrc
 cd ../../
 rm -rf tmp/

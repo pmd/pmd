@@ -26,7 +26,7 @@ public class AvoidReassigningParametersTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST5, "qualified name same as parameter", 0, rule),
            new TestDescriptor(TEST6, "assignment to parameter public field", 0, rule),
            new TestDescriptor(TEST7, "assignment to array parameter slot", 0, rule),
-           new TestDescriptor(TEST8, "TEST8", 1, rule),
+           new TestDescriptor(TEST8, "throws a stacktrace", 1, rule),
        });
     }
 

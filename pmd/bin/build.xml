@@ -1,6 +1,6 @@
 <project name="pmd" default="compile" basedir="../">
 
-<property name="etc" value="etc\"/>
+<property name="bin" value="bin\"/>
 <property name="lib" value="lib\"/>
 <property name="src" value="src\"/>
 <property name="build" value="build\"/>
@@ -125,7 +125,7 @@
 </target>
 
 <target name="jjtree">
-    <jjtree target="etc/grammar/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
+    <jjtree target="../etc/grammar/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
     <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
     <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
@@ -146,7 +146,7 @@
             <exclude name="SymtabManager.java"/>
         </fileset>
     </delete>
-    <javacc target="etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="/usr/local/javacc-3.2/"/>
+    <javacc target="../etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="/usr/local/javacc-3.2/"/>
     <replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException"/>
 </target>
 
