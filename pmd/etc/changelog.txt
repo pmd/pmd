@@ -1,6 +1,7 @@
 ???? ?? 2002 - 1.02:
 Added new rule: ImportFromSamePackageRule
 Updated LooseCouplingRule to check for usage of Vector; thx to Vladimir for the good catch.
+Updated AvoidDuplicateLiteralsRule to report the line number of the first occurrence of the duplicate String.
 
 November 07 2002 - 1.01:
 Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.
