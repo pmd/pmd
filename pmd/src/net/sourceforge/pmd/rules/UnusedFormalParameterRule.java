@@ -28,13 +28,12 @@ public class UnusedFormalParameterRule extends AbstractRule {
      */
     private void checkParamNames(HashSet paramNames, SimpleNode startNode) {
         if (paramNames.isEmpty()) return;  //if there are no more paramNames then there's no reason to keep checking
-        int index = 0;
         if (startNode instanceof ASTName) {
             String nodeImage = ((ASTName)startNode).getImage();
             //check to see if there is a "." in the image which indicates a method call on this variable name
-            int index2 = nodeImage.indexOf('.');
-            if (index2 != -1) {
-                nodeImage = nodeImage.substring(0, index2);   //set the node Image to the prefix
+            int index = nodeImage.indexOf('.');
+            if (index != -1) {
+                nodeImage = nodeImage.substring(0, index);   //set the node Image to the prefix
             }
             if (paramNames.contains(nodeImage)) {
                 paramNames.remove(nodeImage);  //the name is used so let's remove it from the list
