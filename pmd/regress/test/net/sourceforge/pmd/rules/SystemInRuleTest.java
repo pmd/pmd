@@ -7,7 +7,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.reports.Report;
-import net.sourceforge.pmd.rules.SystemOutRule;
+import org.cougaar.util.pmd.SystemOutRule;
 
 public class SystemInRuleTest extends RuleTst {
     public SystemInRuleTest(String name) {

@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.rules;
+package org.cougaar.util.pmd;
 
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;

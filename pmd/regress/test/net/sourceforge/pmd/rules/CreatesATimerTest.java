@@ -7,7 +7,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.reports.Report;
-import net.sourceforge.pmd.rules.DontCreateTimersRule;
+import org.cougaar.util.pmd.DontCreateTimersRule;
 
 public class CreatesATimerTest extends RuleTst {
     public CreatesATimerTest(String name) {

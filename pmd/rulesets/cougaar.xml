@@ -7,7 +7,7 @@
 
   <rule name="DontCreateThreadsRule"
         message="Don't create threads, use the ThreadService instead"
-        class="net.sourceforge.pmd.rules.DontCreateThreadsRule">
+        class="org.cougaar.util.pmd.DontCreateThreadsRule">
     <description>
 Don't create Threads, use the Cougaar ThreadService instead.
     </description>
@@ -21,7 +21,7 @@ Don't create Threads, use the Cougaar ThreadService instead.
 
   <rule name="DontCreateTimersRule"
         message="Don't create Timers, use the AlarmService instead"
-        class="net.sourceforge.pmd.rules.DontCreateTimersRule">
+        class="org.cougaar.util.pmd.DontCreateTimersRule">
     <description>
 Don't create Timers, use the AlarmService instead.
     </description>
@@ -34,7 +34,7 @@ Don't create Timers, use the AlarmService instead.
   </rule>
   <rule name="DontUseSystemOut"
         message="Don't use System.out/in/err, use the Cougaar logging service instead"
-        class="net.sourceforge.pmd.rules.SystemOutRule">
+        class="org.cougaar.util.pmd.SystemOutRule">
     <description>
 Don't use System.out/in/err, use the Cougaar logging service instead.
     </description>
@@ -47,7 +47,7 @@ Don't use System.out/in/err, use the Cougaar logging service instead.
   </rule>
   <rule name="DontUseSystemProperties"
         message="Don't use System.getProperty()/getProperties()/setProperty()"
-        class="net.sourceforge.pmd.rules.SystemPropsRule">
+        class="org.cougaar.util.pmd.SystemPropsRule">
     <description>
 Don't use System.getProperty()/getProperties()/setProperty()
     </description>
