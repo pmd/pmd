@@ -27,6 +27,7 @@
             <li>Stefan Bodewig - bug report</li>
             <li>Radim Kubacki - bug reports</li>
             <li>Ales Bukovsky - pmd-netbeans feedback</li>
+            <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
