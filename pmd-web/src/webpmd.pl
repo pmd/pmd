@@ -25,7 +25,7 @@ sub default() {
  my $lastruntime=<FILE>;
  close(FILE);
  print br();
- print "This report is run 10 minutes past the hour at midnight, 3, 6, 9, 12, 15, 18, and 21 hours U.S. Pacific Standard Time.<br>The last run finished at ", $lastruntime, ".  Right now it's ", ctime(), ".";
+ print "This report is regenerated 10 minutes past the hour at 0000, 0600, 1200, and 1800 U.S. Pacific Standard Time.<br>The last run finished at ", $lastruntime, ".  Right now it's ", ctime(), ".";
  print "<p><b>1/31/03: The jakarta.apache.org and xml.apache.org projects have been moved <a href=\"http://cvs.apache.org/~tcopeland/pmdweb/\">here</a></b>";
  print br();
  print hr();
