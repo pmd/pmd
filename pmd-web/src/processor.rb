@@ -77,15 +77,16 @@ class Job
 	end
 	def ncss
 		File.read(ncss_report).split(":")[1].strip.chomp	
-	end	
-	def pmd_html
-		
 	end
+	def cpd_lines
+    count = 0
+    File.read(cpdReportFile).each {|line| count += 1 if line["================================="] }
+		count
+	end	
 	def pmd_lines
     count = 0
     File.read(reportFile).each {|line| count += 1 if line["</td>"] }
-   	count = count == 0 ? 0 : (count/4).to_i
-		return count
+   	count == 0 ? 0 : (count/4).to_i
 	end
 	def pctg
 		sprintf("%.2f", (pmd_lines.to_f/(ncss == 0 ? 1 : ncss.to_i))*100)
@@ -126,7 +127,8 @@ if __FILE__ == $0
 			"homepage"=>fm["homepage.frag", {"name"=>j.unix_name}],
 			"ncss"=>j.ncss, 
 			"pmd"=>j.pmd_lines.to_s,
-			"pctg"=>j.pctg.to_s
+			"pctg"=>j.pctg.to_s,
+			"dupe"=>fm["cpd.frag", {"file"=>j.cpdReportFile, "dupes"=>j.cpd_lines.to_s}]
 		}]	
 	}
 	File.open("index.html", "w") {|f| f.syswrite(out)}

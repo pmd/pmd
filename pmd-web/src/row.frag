@@ -1,8 +1,8 @@
 <tr>
-<td><!--Fragment key="title"--></td>
-<td><!--Fragment key="homepage"--></td>
-<td><!--Fragment key="ncss"--></td>
-<td><!--Fragment key="pmd"--></td>
-<td><!--Fragment key="pctg"--></td>
-<td><!--Fragment key="dupe"--></td>
+<td align="center"><!--Fragment key="title"--></td>
+<td align="center"><!--Fragment key="homepage"--></td>
+<td align="center"><!--Fragment key="ncss"--></td>
+<td align="center"><!--Fragment key="pmd"--></td>
+<td align="center"><!--Fragment key="pctg"--></td>
+<td align="center"><!--Fragment key="dupe"--></td>
 </tr>
