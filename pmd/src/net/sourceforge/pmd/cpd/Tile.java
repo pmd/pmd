@@ -48,18 +48,6 @@ public class Tile {
         return sb.toString();
     }
 
-    public String toString() {
-        StringBuffer sb = new StringBuffer("Tile[");
-        for (Iterator i = tokens.iterator(); i.hasNext();) {
-            if (sb.length() > 6) {
-                sb.append(",");
-            }
-            TokenEntry tok = (TokenEntry)i.next();
-            sb.append(tok);
-        }
-        return sb.toString()+ "]";
-    }
-
     public boolean equals(Object other) {
         Tile tile = (Tile)other;
         return tile.getImage().equals(getImage());

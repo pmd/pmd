@@ -63,22 +63,4 @@ public class Occurrences extends TileOccurrences {
     public boolean isEmpty() {
         return orderedTiles.isEmpty();
     }
-
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        for (Iterator i = getTiles(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
-            sb.append(tile + ":");
-            for (Iterator j = getOccurrences(tile); j.hasNext();) {
-                TokenEntry tok = (TokenEntry)j.next();
-                sb.append(tok+",");
-            }
-            if (sb.toString().endsWith(",")) {
-                sb = new StringBuffer(sb.substring(0, sb.length()-1));
-            }
-            sb.append(System.getProperty("line.separator"));
-        }
-        return sb.toString();
-    }
-
 }
