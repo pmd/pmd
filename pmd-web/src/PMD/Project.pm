@@ -9,6 +9,7 @@ push @EXPORT, '&getUnixName';
 push @EXPORT, '&getModuleDir';
 push @EXPORT, '&getSrcDir';
 push @EXPORT, '&getString';
+push @EXPORT, '&getPctg';
 push @EXPORT, '&getJobsFile';
 push @EXPORT, '&getRptFile';
 push @EXPORT, '&getRptURL';
@@ -16,54 +17,71 @@ push @EXPORT, '&getLines';
 push @EXPORT, '&getLocation';
 
 sub new {
- my $self = {};
- bless($self);
- if ((scalar(@_)-1) == 1) {
-  ($self->{LOCATION},$self->{TITLE},$self->{UNIXNAME}, $self->{MODULEDIR}, $self->{SRCDIR}) = split(":", @_[1]);
- } else {
-  $self->{LOCATION} = @_[1];
-  $self->{TITLE} = @_[2];
-  $self->{UNIXNAME} = @_[3];
-  $self->{MODULEDIR} = @_[4];
-  $self->{SRCDIR} = @_[5];
- }
- return $self;
+	my $self = {};
+	bless($self);
+	if ((scalar(@_)-1) == 1) {
+		($self->{LOCATION},$self->{TITLE},$self->{UNIXNAME}, $self->{MODULEDIR}, $self->{SRCDIR}) = split(":", @_[1]);
+	} else {
+		$self->{LOCATION} = @_[1];
+		$self->{TITLE} = @_[2];
+		$self->{UNIXNAME} = @_[3];
+		$self->{MODULEDIR} = @_[4];
+		$self->{SRCDIR} = @_[5];
+	}
+	
+	# count lines in the report
+  open(FILE,getRptFile($self));
+  my @x = <FILE>;
+  close(FILE);
+  my $lines;
+  foreach (@x) {
+    $lines = $lines + 1 if $_ =~ "<td ";
+  }
+	$self->{LINES} = sprintf("%0.f", $lines/4);
+
+	# get NCSS lines
+	if (! -e getNCSSFile($self)) {
+		$self->{NCSS} = "TBD";
+	} else {
+		open(FILE,getNCSSFile($self));
+		my @x = <FILE>;
+		close(FILE);
+		@splits = split(/:/,$x[0]);
+		$self->{NCSS} = $splits[1];
+	}
+
+	return $self;
 }
 
 sub getLines() {
- my $self = shift;
- open(FILE,getRptFile($self));
- my @x = <FILE>;
- close(FILE);
- my $lines;
- foreach (@x) {
-  $lines = $lines + 1 if $_ =~ "<td ";
- }
- return sprintf("%0.f", $lines/4);
+	my $self = shift;
+	return $self->{LINES}
+}
+
+sub getPctg() {	
+	my $self = shift;
+  my $mungencss = $self->{NCSS};
+  if ($mungencss == 0) {
+  	$mungencss = 1;
+  }
+	return (int(($self->{LINES}/$mungencss)*10000))/100;	
 }
 
 sub getCPDLines() {
- my $self = shift;
- open(FILE,getCPDRptFile($self));
- my @x = <FILE>;
- close(FILE);
- my $lines;
- foreach (@x) {
-  $lines = $lines + 1 if $_ =~ "=================================";
- }
- return sprintf("%0.f", $lines);
+	my $self = shift;
+	open(FILE,getCPDRptFile($self));
+	my @x = <FILE>;
+	close(FILE);
+	my $lines;
+	foreach (@x) {
+		$lines = $lines + 1 if $_ =~ "=================================";
+	}
+	return sprintf("%0.f", $lines);
 }
 
 sub getNCSS() {
- my $self=shift;
- if (! -e getNCSSFile($self)) {
-  return "TBD";
- }
- open(FILE,getNCSSFile($self));
- my @x = <FILE>;
- close(FILE);
- @splits = split(/:/,$x[0]);
- return $splits[1];
+ my $self = shift;
+ return $self->{NCSS};
 }
 
 sub getLocation() {
@@ -115,7 +133,7 @@ sub getCPDRptURL() {
 
 sub getRptFile() {
  my $self = shift;
- my $name = $self->getReportName();
+ my $name = getReportName($self);
  return "../htdocs/reports/${name}";
 }
 

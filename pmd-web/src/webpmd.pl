@@ -66,7 +66,7 @@ sub loadProjectList() {
 		}
 	}
 
-	@newprojects = sort { $b->getLocation() cmp $a->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
+	@newprojects = sort { $a->getPctg() cmp $b->getPctg() } @projects;
 
 	my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>NCSS</th><th>Problems</th><th>Percentage<br>Unused Code</th><th>Duplicate<br>Code</th></tr>";
 	foreach $project (@newprojects) {
@@ -76,23 +76,19 @@ sub loadProjectList() {
 		}
 		$result="${result}<tr><td>${jobLink}</td><td></td><td>@{[$project->getHomePage()]}</td>";
 		$result="${result}<td>@{[$project->getNCSS()]}</td>";
-		my $ncss = $project->getNCSS();
-		if ($ncss == 0) {	
-			$ncss = 1;
-		}
-		my $rounded = (int(($project->getLines()/$ncss)*10000))/100;
+		my $pctg = $project->getPctg();
 		my $color="red";
-		if ($rounded < .2) {
+		if ($pctg < .2) {
 			$color="#00ff00";
-		} elsif ($rounded < .8 ) {
+		} elsif ($pctg < .8 ) {
 			$color="yellow";
 		}
-		$rounded = sprintf("%0.2f", $rounded);
+		$pctg = sprintf("%0.2f", $pctg);
 		if ($project->getNCSS() == "TBD") {
-			$rounded = "N/A";
+			$pctg = "N/A";
 			$color = "white";
 		}
-		$result="${result}<td align=center>@{[$project->getLines()]}</td><td bgcolor=$color align=center>$rounded</td>";
+		$result="${result}<td align=center>@{[$project->getLines()]}</td><td bgcolor=$color align=center>$pctg</td>";
 		my $cpdLink="0";
 		if (-e $project->getCPDRptFile() && $project->getCPDLines() > 0) {
 			$cpdLink="<a href=\"@{[$project->getCPDRptURL]}\">@{[$project->getCPDLines()]}</a>";
