@@ -24,6 +24,10 @@ public class RuleSet
 	return rules;
     }
 
+    public void addRuleSet(RuleSet ruleSet) {
+        rules.addAll(ruleSet.getRules());
+    }
+
     public void apply( List acuList,
 		       RuleContext ctx ) {
 	Iterator rs = rules.iterator();

@@ -55,6 +55,15 @@ public class RuleSetTest extends TestCase
 
     }
 
+    public void testAddRuleSet() {
+        RuleSet set1 = new RuleSet();
+        set1.addRule(new MockRule());
+        RuleSet set2 = new RuleSet();
+        set2.addRule(new MockRule());
+        set1.addRuleSet(set2);
+        assertEquals(2, set1.size());
+    }
+
     public void testApply0Rules()
 	throws Throwable
     {

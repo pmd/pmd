@@ -21,7 +21,7 @@ public class PMDTask extends Task {
     private List filesets  = new ArrayList();
     private String reportFile;
     private boolean verbose;
-    private String ruleSetFile;
+    private String ruleSetFiles;
     private String format;
     private boolean failOnError;
 
@@ -33,8 +33,8 @@ public class PMDTask extends Task {
         this.verbose = verbose;
     }
 
-    public void setRuleSetFile(String ruleSetFile) {
-        this.ruleSetFile = ruleSetFile;
+    public void setRuleSetFiles(String ruleSetFiles) {
+        this.ruleSetFiles = ruleSetFiles;
     }
 
     public void addFileset(FileSet set) {
@@ -61,10 +61,8 @@ public class PMDTask extends Task {
         PMD pmd = new PMD();
 
         ReportFactory rf = new ReportFactory();
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream(ruleSetFile));
-
         RuleContext ctx = new RuleContext();
+        RuleSet rules = createRuleSets();
         ctx.setReport(rf.createReport(format));
 
         for (Iterator i = filesets.iterator(); i.hasNext();) {
@@ -98,5 +96,23 @@ public class PMDTask extends Task {
         } catch (IOException ioe) {
             throw new BuildException(ioe.getMessage());
         }
+    }
+
+    private RuleSet createRuleSets() {
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSet ruleSet = new RuleSet();
+
+        if (ruleSetFiles.indexOf(',') == -1) {
+            ruleSet = ruleSetFactory.createRuleSet(getClass().getClassLoader().getResourceAsStream(ruleSetFiles));
+        } else {
+            for (StringTokenizer st = new StringTokenizer(ruleSetFiles, ","); st.hasMoreTokens();) {
+                String ruleSetName = st.nextToken();
+                RuleSet tmpRuleSet = ruleSetFactory.createRuleSet(getClass().getClassLoader().getResourceAsStream(ruleSetName));
+                if (verbose) System.out.println("Adding " + tmpRuleSet.size() + " rules from ruleset " + ruleSetName);
+                ruleSet.addRuleSet(tmpRuleSet);
+            }
+        }
+
+        return ruleSet;
     }
 }
