@@ -6,6 +6,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTSwitchLabel;
@@ -143,6 +144,18 @@ public class CyclomaticComplexityRule extends AbstractRule
      */
     public Object visit(ASTMethodDeclaration node, Object data)
     {
+        Node parentNode = node.jjtGetParent();
+
+        while (parentNode != null)
+        {
+            if (parentNode instanceof ASTInterfaceDeclaration)
+            {
+                return data;
+            }
+
+            parentNode = parentNode.jjtGetParent();
+        }
+
         m_entryStack.push(new Entry(node));
         super.visit(node, data);
         Entry methodEntry = (Entry) m_entryStack.pop();
