@@ -28,13 +28,13 @@
 
    <plugin
          id="net.sourceforge.pmd.eclipse"
-         download-size="1004760"
+         download-size="981"
          install-size="0"
          version="2.0.0"/>
 
    <plugin
          id="net.sourceforge.pmd.core"
-         download-size="3773690"
+         download-size="3685"
          install-size="0"
          version="1.3.2"/>
 

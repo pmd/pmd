@@ -1,6 +1,84 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
+IMPORTANT : SINCE v2.0 THE INSTALLATION PROCEDURE HAS BEEN CHANGED.
+            READ THE SETUP_README.TXT FILE IN THE DOWNLOADED PACKAGE
+            FOR INSTRUCTIONS.
+            
+
+v2.0RC1 (alias v2.0.0) - 01/12/2003
+-----------------------------------
+
+As the plugin has become more complex, the plugin is now published with "release
+candidates" technique. So, when a RC is published, only bugs are corrected before
+a final release is published.
+
+
+UPDATED : Changing the deployment structure of the plugin
+---------------------------------------------------------
+The plugin has been refactored to follow the standard deployment (installation)
+procedures of Eclipse. PMD comes now into Eclipse as a "feature" and is composed
+of two plugins : one for encapsulating PMD (net.sourceforge.pmd.core) and one for
+the UI integration (net.sourceforge.pmd.eclipse).
+A simple unzip doesn't work anymore, but using the update manager of Eclipse is required.
+Please, read the instructions included in the setup_readme.txt file of the package
+you downloaded from Sourceforge.
+
+
+NEW : Adding the "lazy check" feature
+-------------------------------------
+This feature comes to help "big" projects. Now, when PMD is enabled for a project, 
+the plugin ask before checking the entire project. If the answer is no, the new options
+are only applied when files are saved or added into the project.
+
+
+NEW : Adding the "working set" feature
+--------------------------------------
+This feature also comes for big projects. A working set can be configured by project
+to filter files that have to be checked by PMD. Open the project properties dialog to
+specify this working set.
+
+
+NEW : Using a project ruleset file
+----------------------------------
+Instead of using the rulset configured in Eclipse preferences, it's possible to
+configure projects to use a ruleset file from the project. This file must be named
+".ruleset" and must be in the root directory of the project. When the option is enabled,
+if the ruleset file doesn't exist, it is created.
+
+
+NEW : Previewing the Quickfix feature
+-------------------------------------
+The plugin comes with a preview of the future "quickfix" feature. This feature will
+enable to use the Quickfix feature of Eclipse to correct rules violations. This version
+provides a quickfix for the duplicate imports rule. The quickfix consists of deleting
+the line where the violation occurs.
+
+
+UPDATED : Improving Eclipse v3 support
+--------------------------------------
+The plugin has been refactored so that it should now work for both Eclipse v2 and v3
+under a JDK v1.3. But a Eclipse v2.10 minimum is still required.
+This version has been tested whith Eclipse v2.11 and Eclipse v3M4.
+
+
+FIXED : Importing rules and rulesets
+------------------------------------
+Various bug reports shared the same problem : XML parsing of ruleset files. This
+parsing has been refactored (included in the PMD core engine) so that these bugs should
+now be fixed. These bugs were about importing rulesets, modifying rules properties,...
+
+
+FIXED : Improving AST generation
+--------------------------------
+The generation of the AST has been refactored so that it now uses introspection to
+produce the tree. So now, no attributes should missed. Also, the XML output has been
+reviewed so that the generated file should now be a valid XML file.
+
+
+
+
+----------------------------------------------------------------------------------------
 v1.2.0 - 27/10/2003
 
 NEW : Adding a JDK 1.3 compatibility option
