@@ -43,6 +43,7 @@ public class DaaRule extends AbstractRule implements Executable {
         counter = 0;
 
         IDataFlowNode n = (IDataFlowNode) node.getDataFlowNode().getFlow().get(0);
+        System.out.println("In DaaRule, IDataFlowNode n = " + n);
 
         DAAPathFinder a = new DAAPathFinder(n, this, MAX_PATHS);
         a.run();

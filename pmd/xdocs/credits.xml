@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Eric Olander - AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Benoit Xhenseval - many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Christopher Judd - a nice patch to the XSLT that adds a summary</li>
             <li>John Meagher - suggested the rule 'MissingSerialVersionUID' and provided the implementation for it</li>
@@ -54,7 +55,6 @@
             <li>Hakan Civelek - an order-of-magnitude optimization to the SystemOutPrintln rule</li>
             <li>George Sexton - Suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>John Heintz - Added "any language" support to CPD.</li>
-            <li>Eric Olander - AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Harald Gurres - cleaned up the symbol table code with a very nice patch</li>
             <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>

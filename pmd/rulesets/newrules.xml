@@ -339,5 +339,50 @@ public class Foo extends Bar{
       </example>
     </rule>
     
+     <rule name="AvoidInstanceofChecksInCatchClause"
+           message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
+           class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+   Each caught exception type should be handled in its own catch clause.
+       </description>
+       <properties>
+           <property name="xpath">
+               <value>
+     <![CDATA[
+ //TryStatement/FormalParameter
+  /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
+   /Name[
+    @Image = ./ancestor::Block/preceding-sibling::FormalParameter
+     /VariableDeclaratorId/@Image
+   ]
+     ]]>
+               </value>
+           </property>
+       </properties>
+         <priority>3</priority>
+       <example>
+ <![CDATA[
+     // Avoid this
+       try {
+             ...something...
+       }
+       catch (Exception ee) {
+             if (ee instanceof IOException) {
+                 cleanup();
+             }
+       }
+
+       // Prefer this:
+       try {
+           ...something...
+       }
+       catch (IOException ee) {
+             cleanup();
+       }
+ ]]>
+       </example>
+     </rule>
+
+
 </ruleset>
 
