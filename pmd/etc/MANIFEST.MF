@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: Ant 1.4.1
+Main-class: net.sourceforge.pmd.PMD
+

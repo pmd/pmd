@@ -1,6 +1,5 @@
 @echo off
-set CLASSPATH=../lib/pmd-0.9.jar
 set FILE=%1%
 set FORMAT=%2%
 set RULESETFILE=%3%
-java net.sourceforge.pmd.PMD %FILE% %FORMAT% %RULESETFILE%
+java -jar ../lib/pmd-0.9.jar %FILE% %FORMAT% %RULESETFILE%
