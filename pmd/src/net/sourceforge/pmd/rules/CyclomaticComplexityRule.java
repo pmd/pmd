@@ -128,10 +128,10 @@ public class CyclomaticComplexityRule extends AbstractRule
     {
         m_entryStack.push(new Entry(node));
         super.visit(node, data);
-            Entry classEntry = (Entry) m_entryStack.pop();
-            double decisionPoints = (double) classEntry.m_decisionPoints;
-            double methodCount = (double) classEntry.m_methodCount;
-            int complexityAverage = (int) (Math.rint(decisionPoints / methodCount));
+        Entry classEntry = (Entry) m_entryStack.pop();
+        double decisionPoints = (double) classEntry.m_decisionPoints;
+        double methodCount = (double) classEntry.m_methodCount;
+        int complexityAverage = (methodCount == 0) ? 1 : (int) (Math.rint(decisionPoints / methodCount));
 
         if ((complexityAverage >= getIntProperty("reportLevel")) ||
             (classEntry.m_highestDecisionPoints >= getIntProperty("reportLevel")))
