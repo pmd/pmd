@@ -1,7 +1,7 @@
-???? 2002 - 0.4:
-Modified to use ErrorList
-Updated to use pmd-0.5.
-Fixed bug - displayed a popup if no messages are found.
+July 18 2002 - 0.4:
+Updated to use pmd-0.6
+Modified to use ErrorList plugin
+Fixed bug - displayed a popup if no messages are found
 
 July 12 2002 - 0.3:
 Updated to use pmd-0.4.

@@ -55,27 +55,27 @@ public class PMDJEditPlugin extends EBPlugin {
     // boilerplate JEdit code
 
     public void instanceCheck(Buffer buffer, View view) {
-        errorSource.clear();
-        RuleContext ctx = new RuleContext();
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
-        RuleSet rules = new RuleSet();
-        PMD pmd = new PMD();
-        for (Iterator i = selectedRuleSets.getSelectedRuleSetFileNames(); i.hasNext();) {
-            rules.addRuleSet(ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream((String)i.next())));
-        }
-        ctx.setReport(new Report());
-        ctx.setSourceCodeFilename(buffer.getPath());
         try {
+            errorSource.clear();
+            RuleContext ctx = new RuleContext();
+            RuleSetFactory ruleSetFactory = new RuleSetFactory();
+            SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
+            RuleSet rules = new RuleSet();
+            PMD pmd = new PMD();
+            for (Iterator i = selectedRuleSets.getSelectedRuleSets(); i.hasNext();) {
+                rules.addRuleSet((RuleSet)i.next());
+            }
+            ctx.setReport(new Report());
+            ctx.setSourceCodeFilename(buffer.getPath());
             pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
-        } catch (FileNotFoundException fnfe) {
-            // this goes away in PMD v0.6
-        }
-        for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation)i.next();
-            String path = buffer.getPath();
-            DefaultErrorSource.DefaultError err = new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription());
-            errorSource.addError(err);
+            for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+                RuleViolation rv = (RuleViolation)i.next();
+                String path = buffer.getPath();
+                DefaultErrorSource.DefaultError err = new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription());
+                errorSource.addError(err);
+            }
+        } catch (RuleSetNotFoundException rsne) {
+            rsne.printStackTrace();
         }
     }
 

@@ -18,6 +18,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSet;
+
 public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     private class SaveAL implements ActionListener {
@@ -32,7 +35,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         }
     }
 
-    private SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
+    private SelectedRuleSetsMap selectedRuleSets;
     private JDialog dialog;
 
     public PMDOptionPane() {
@@ -47,6 +50,13 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
     public void _init() {
         super._init();
 
+        if (this.selectedRuleSets == null) {
+            try {
+                selectedRuleSets = new SelectedRuleSetsMap();
+            } catch (RuleSetNotFoundException rsne) {
+                rsne.printStackTrace();
+            }
+        }
         JPanel textPanel = new JPanel();
         textPanel.setBackground(Color.white);
         textPanel.setLayout(new BorderLayout());
@@ -58,11 +68,11 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         checkBoxPanel.setBackground(Color.white);
         checkBoxPanel.setLayout(new GridLayout(selectedRuleSets.size(), 2));
         for (Iterator i = selectedRuleSets.keys(); i.hasNext();) {
-            String key = (String)i.next();
+            RuleSet rs = (RuleSet)i.next();
             JPanel oneBoxPanel = new JPanel();
             oneBoxPanel.setBackground(Color.white);
-            oneBoxPanel.add(new JLabel(key, JLabel.LEFT));
-            oneBoxPanel.add((JCheckBox)selectedRuleSets.get(key));
+            oneBoxPanel.add(new JLabel(rs.getName(), JLabel.LEFT));
+            oneBoxPanel.add((JCheckBox)selectedRuleSets.get(rs));
             checkBoxPanel.add(oneBoxPanel);
         }
 

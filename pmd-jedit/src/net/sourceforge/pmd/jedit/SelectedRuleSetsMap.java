@@ -11,43 +11,47 @@ import javax.swing.*;
 import java.util.*;
 import java.awt.Color;
 
-public class SelectedRuleSetsMap {
-    private Map selections = new HashMap();
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 
-    public SelectedRuleSetsMap() {
-        // TODO when PMD 0.6 comes out, modify to use RuleSetFactory.getRegisteredRulesets()
-        selections.put("basic", createCheckBox("basic"));
-        selections.put("unusedcode", createCheckBox("unusedcode"));
-        selections.put("design", createCheckBox("design"));
-        selections.put("naming", createCheckBox("naming"));
-        selections.put("imports", createCheckBox("imports"));
+public class SelectedRuleSetsMap {
+
+    private Map ruleSets = new HashMap();
+
+    public SelectedRuleSetsMap() throws RuleSetNotFoundException {
+        RuleSetFactory rsf = new RuleSetFactory();
+        for (Iterator i = rsf.getRegisteredRuleSets(); i.hasNext();) {
+            RuleSet rs = (RuleSet)i.next();
+            ruleSets.put(rs, createCheckBox(rs.getName()));
+        }
     }
 
     public Iterator keys() {
-        return selections.keySet().iterator();
+        return ruleSets.keySet().iterator();
     }
 
     public int size() {
-        return selections.size();
+        return ruleSets.size();
     }
 
     public JCheckBox get(Object key) {
-        return (JCheckBox)selections.get(key);
+        return (JCheckBox)ruleSets.get(key);
     }
 
     public void save() {
         for (Iterator i = keys(); i.hasNext();) {
-            String key = (String)i.next();
-            jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_RULESETS_PREFIX + key, get(key).isSelected());
+            RuleSet rs = (RuleSet)i.next();
+            jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_RULESETS_PREFIX + rs.getName(), get(rs).isSelected());
         }
     }
 
-    public Iterator getSelectedRuleSetFileNames() {
+    public Iterator getSelectedRuleSets() {
         List selected = new ArrayList();
         for (Iterator i = keys(); i.hasNext();) {
-            String key = (String)i.next();
-            if (get(key).isSelected()) {
-                selected.add("rulesets/" + key + ".xml");
+            RuleSet rs = (RuleSet)i.next();
+            if (get(rs).isSelected()) {
+                selected.add(rs);
             }
         }
         return selected.iterator();
