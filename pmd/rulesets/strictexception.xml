@@ -120,7 +120,7 @@ try {
         <value>
             <![CDATA[
 //TryStatement/FormalParameter/Type
- /Name[@Image='NullPointerException']
+ /ReferenceType/ClassOrInterfaceType[@Image='NullPointerException']
  ]]>
         </value>
       </property>
