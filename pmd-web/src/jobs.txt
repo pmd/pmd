@@ -16,7 +16,6 @@ ChemicalMarkupLanguge:cml:jumbo:jumbo/src
 Columba:columba:columba:columba/src
 Thought River Commons:commons:commons:commons/src
 CSVJdbc:csvjdbc:csvjdbc:csvjdbc/src/java
-Database Manager Java UI:dbmjui:dbmjui:dbmjui/forms-lib-common
 DbUnit:dbunit:dbunit:dbunit/src/java
 Easy Explore Eclipse version:easystruts:easyexplore-plugin:easyexplore-plugin/src
 Easy Struts:easystruts:easystruts-core:easystruts-core/src
@@ -121,4 +120,4 @@ hipergate:hipergate:java:java/src/
 Matra:matra:matra-java:matra-java/com/
 Kaprekar:kaprekar:kaprekar-java:kaprekar-java/com/
 Lipidia:lipidia:src:src/
-
+EJBCA:ejbca:ejbca:ejbca/src/

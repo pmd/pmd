@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require_gem 'ikko'
-require '/home/tom/data/ruby-doom/lib/doom.rb'
+require '/home/tom/data/rubyforge/ruby-doom/lib/doom.rb'
 
 # add timeout thingy to the Thread class, thx to Rich Kilmer for the code
 class MyThread < Thread
@@ -145,7 +145,9 @@ if __FILE__ == $0
 	ENV['JAVA_HOME']="/usr/local/java"
 	ENV['PATH']="#{ENV['PATH']}:#{ENV['JAVA_HOME']}/bin"
 	jobs = []
-	File.read("jobs.txt").each_line {|jobtext| jobs << Job.new(*jobtext.split(":")) }
+	File.read("jobs.txt").each_line {|jobtext| 
+		jobs << Job.new(*jobtext.split(":")) 
+	}
 
 	if ARGV.include?("-build") 
 		jobs.each {|job|
@@ -175,22 +177,25 @@ if __FILE__ == $0
 
 	if ARGV.include?("-doom")
 		jobs.each {|j|
-			pmd = PMDMap.new(j.pmd_lines)
-			p = Path.new(0, 1000)
-			p.add("e200/n200/e200/s200/e200/", pmd.nooks)
-			p.add("s400/")
-			p.add("w200/s200/w200/n200/w200/", pmd.nooks)
-			p.add("n400/")
-			m = SimpleLineMap.new(p)
-			m.set_player(Point.new(50,900))
-			0.upto(pmd.nooks-1) {|x|
-	        m.add_barrel Point.new((x*600)+300, 1100)
-	        m.add_barrel Point.new((x*600)+300, 500)
-			}
-			j.barrels = pmd.nooks * 2
-			m.create_wad(j.wad + ".tmp")
-			cmd = "./bsp " + j.wad + ".tmp -o " + j.wad + " && rm -f " + j.wad + ".tmp"
-			`#{cmd}`
+			begin
+				pmd = PMDMap.new(j.pmd_lines)
+				p = Path.new(0, 1000)
+				p.add("e200/n200/e200/s200/e200/", pmd.nooks)
+				p.add("s400/")
+				p.add("w200/s200/w200/n200/w200/", pmd.nooks)
+				p.add("n400/")
+				m = SimpleLineMap.new(p)
+				m.set_player(Point.new(50,900))
+				0.upto(pmd.nooks-1) {|x|
+		        m.add_barrel Point.new((x*600)+300, 1100)
+		        m.add_barrel Point.new((x*600)+300, 500)
+				}
+				j.barrels = pmd.nooks * 2
+				m.create_wad(j.wad + ".tmp")
+				cmd = "./bsp " + j.wad + ".tmp -o " + j.wad + " && rm -f " + j.wad + ".tmp"
+				`#{cmd}`
+			rescue 
+			end
 		}
 	end
 	
