@@ -20,17 +20,17 @@ public class HTMLRenderer implements Renderer {
     	int violationCount = 1;
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
-            buf.append("<tr ");
+            buf.append("<tr");
             if (colorize) {
-                buf.append("bgcolor=\"lightgrey\"");
+                buf.append(" bgcolor=\"lightgrey\"");
                 colorize = false;
             }   else {
                 colorize = true;
             }
-            buf.append("> ");
-    	    buf.append("<td align=center>" + violationCount + "</td>" + EOL);
-            buf.append(EOL+ "<td width=\"*%\">" + rv.getFilename() + "</td>" + EOL);
-            buf.append("<td align=center width=\"5%\">" + Integer.toString(rv.getLine()) + "</td>" + EOL);
+            buf.append("> "+EOL);
+    	    buf.append("<td align=\"center\">" + violationCount + "</td>" + EOL);
+            buf.append("<td width=\"*%\">" + rv.getFilename() + "</td>" + EOL);
+            buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getLine()) + "</td>" + EOL);
 
             String d = rv.getDescription();
             d = replaceString(d, '&', "&amp;");
