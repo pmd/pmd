@@ -242,9 +242,9 @@ public class CyclomaticComplexityRule extends AbstractRule
     {
         // ASTUnmodifedClassDeclaration or ASTMethodDeclarator or ASTConstructorDeclaration
         private SimpleNode m_node;
-        private int m_decisionPoints = 1;
-        private int m_highestDecisionPoints;
-        private int m_methodCount;
+        public int m_decisionPoints = 1;
+        public int m_highestDecisionPoints;
+        public int m_methodCount;
 
         /**
          ***********************************************************************
