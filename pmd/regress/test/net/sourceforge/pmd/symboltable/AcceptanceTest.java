@@ -8,16 +8,12 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTInitializer;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
-import java.util.Iterator;
 
 public class AcceptanceTest extends TestCase {
 

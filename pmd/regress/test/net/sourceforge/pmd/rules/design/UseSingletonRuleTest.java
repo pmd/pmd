@@ -10,9 +10,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.rules.design.UseSingletonRule;
 import net.sourceforge.pmd.stat.Metric;
-import test.net.sourceforge.pmd.testframework.RuleTst;
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class UseSingletonRuleTest extends SimpleAggregatorTst implements ReportListener {
 

@@ -1,9 +1,9 @@
 package test.net.sourceforge.pmd.rules;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.rules.SuspiciousOctalEscapeRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
-import net.sourceforge.pmd.rules.SuspiciousOctalEscapeRule;
-import net.sourceforge.pmd.PMD;
 
 public class SuspiciousOctalEscapeRuleTest extends SimpleAggregatorTst {
     public void testAll() {

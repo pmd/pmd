@@ -3,12 +3,12 @@
 */
 package net.sourceforge.pmd.util;
 
+import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import net.sourceforge.pmd.TargetJDK1_4;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;

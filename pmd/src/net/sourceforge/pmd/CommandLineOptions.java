@@ -7,12 +7,12 @@ import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.IDEAJRenderer;
+import net.sourceforge.pmd.renderers.PapariTextRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.renderers.PapariTextRenderer;
 
 public class CommandLineOptions {
 

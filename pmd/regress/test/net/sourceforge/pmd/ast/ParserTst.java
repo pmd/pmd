@@ -4,10 +4,10 @@
 package test.net.sourceforge.pmd.ast;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
-import net.sourceforge.pmd.TargetJDK1_4;
 
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;

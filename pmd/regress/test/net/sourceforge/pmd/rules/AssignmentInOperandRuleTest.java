@@ -6,7 +6,6 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.XPathRule;
-import test.net.sourceforge.pmd.testframework.RuleTst;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 

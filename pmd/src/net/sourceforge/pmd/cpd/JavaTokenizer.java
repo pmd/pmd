@@ -3,10 +3,9 @@
 */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.ast.JavaCharStream;
+import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 import net.sourceforge.pmd.ast.Token;
-import net.sourceforge.pmd.TargetJDK1_4;
 
 import java.io.StringReader;
 

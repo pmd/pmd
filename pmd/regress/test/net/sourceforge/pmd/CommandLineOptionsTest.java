@@ -29,8 +29,8 @@ import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.IDEAJRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
-import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 
 public class CommandLineOptionsTest extends TestCase {
 
