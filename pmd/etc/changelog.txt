@@ -1,5 +1,5 @@
 ???? - 1.11:
-Added new rule: VariableNamingConventionsRule - thanks to Jeff Anderson for the code.
+Added new rules: VariableNamingConventionsRule, MethodNamingConventionsRule
 Fixed bug 583047 - columns were wrong on ASTName nodes
 ASTViewer now shows node images and modifiers
 ASTViewer now saves last edited text to ~/.pmd_astviewer

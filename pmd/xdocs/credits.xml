@@ -10,7 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
-            <li>Jeff Anderson - VariableNamingConventionsRule</li>
+            <li>Jeff Anderson - VariableNamingConventionsRule, MethodNamingConventionsRule</li>
             <li>Frank van Puffelen - documentation suggestions</li>
             <li>Conrad Roche - bug report</li>
             <li>mcclain looney - patch for CPD GUI, bug reports</li>

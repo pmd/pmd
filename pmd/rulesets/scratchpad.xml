@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<ruleset name="tmp">
+  <description>
+These are new rules that are still in progress
+  </description>
+
+
+<rule name="SymbolTableTestRule"
+      message="NOT FULLY IMPLEMENTED - test"
+      class="net.sourceforge.pmd.rules.SymbolTableTestRule">
+  <description>
+  asdsad
+  </description>
+    <priority>3</priority>
+
+  <example>
+  <![CDATA[
+  // asdadas
+  ]]>
+  </example>
+</rule>
+
+<rule name="IdempotentOperationsRule"
+      message="NOT FULLY IMPLEMENTED - Avoid idempotent operations"
+      class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
+  <description>
+  Avoid idempotent operations - they are silly.
+  </description>
+    <priority>3</priority>
+
+  <example>
+  <![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  x = x;
+ }
+}
+  ]]>
+  </example>
+</rule>
+
+<rule name="UnnecessaryParentheses"
+      message="NOT FULLY IMPLEMENTED - Unnecessary parentheses are a bit noisy"
+      class="net.sourceforge.pmd.rules.XPathRule">
+  <description>
+  Unnecessary parameters are a bit noisy
+  </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+//ReturnStatement
+ [count(//Expression) >1]
+ [count(//PrimarySuffix)<2]
+                ]]>
+            </value>
+        </property>
+    </properties>
+    <priority>3</priority>
+
+  <example>
+  <![CDATA[
+public class Foo {
+ public int bar() {
+  return (42);
+ }
+}
+  ]]>
+  </example>
+</rule>
+
+</ruleset>

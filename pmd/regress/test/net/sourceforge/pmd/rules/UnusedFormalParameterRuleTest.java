@@ -42,8 +42,7 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST4 =
-    "public interface UnusedFormalParam4 {" + CPD.EOL +
-    " public void foo(String bar);" + CPD.EOL +
+    "public interface Foo {" + CPD.EOL +
+    " void foo(String bar);" + CPD.EOL +
     "}";
-
 }

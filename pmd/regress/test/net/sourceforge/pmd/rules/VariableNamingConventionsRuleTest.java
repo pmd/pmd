@@ -10,6 +10,7 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "finals should be all caps", 1, new VariableNamingConventionsRule()),
            new TestDescriptor(TEST2, "non-finals shouldn't have underscores", 1, new VariableNamingConventionsRule()),
            new TestDescriptor(TEST3, "variables names should start with lowercase character", 1, new VariableNamingConventionsRule()),
+           new TestDescriptor(TEST4, "all is well", 0, new VariableNamingConventionsRule()),
        });
     }
 
@@ -26,5 +27,11 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
     private static final String TEST3 =
     "public class Foo {" + CPD.EOL +
     " private int Ubar = 2;" + CPD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + CPD.EOL +
+    " private int bar = 2;" + CPD.EOL +
+    " private static final int FOO_BAR = 2;" + CPD.EOL +
     "}";
 }

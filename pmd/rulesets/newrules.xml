@@ -26,72 +26,24 @@ public class Foo {
         </example>
     </rule>
 
-
-
-    <rule name="SymbolTableTestRule"
-          message="NOT FULLY IMPLEMENTED - test"
-          class="net.sourceforge.pmd.rules.SymbolTableTestRule">
-      <description>
-      asdsad
-      </description>
-        <priority>3</priority>
-
-      <example>
-  <![CDATA[
-  // asdadas
-  ]]>
-      </example>
-    </rule>
-
-    <rule name="IdempotentOperationsRule"
-          message="NOT FULLY IMPLEMENTED - Avoid idempotent operations"
-          class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
-      <description>
-      Avoid idempotent operations - they are silly.
-      </description>
-        <priority>3</priority>
-
-      <example>
-  <![CDATA[
+    <rule name="MethodNamingConventions"
+              message="Method name does not begin with a lower case character."
+              class="net.sourceforge.pmd.rules.MethodNamingConventionsRule">
+          <description>
+              Method names should always begin with a lower case character, and should not contain underscores.
+          </description>
+          <priority>1</priority>
+          <example>
+<![CDATA[
 public class Foo {
- public void bar() {
-  int x = 2;
-  x = x;
- }
+        public void fooStuff() {
+        }
 }
-  ]]>
-      </example>
-    </rule>
+]]>
+          </example>
+        </rule>
 
-    <rule name="UnnecessaryParentheses"
-          message="NOT FULLY IMPLEMENTED - Unnecessary parentheses are a bit noisy"
-          class="net.sourceforge.pmd.rules.XPathRule">
-      <description>
-      Unnecessary parameters are a bit noisy
-      </description>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//ReturnStatement
- [count(//Expression) >1]
- [count(//PrimarySuffix)<2]
-                    ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>3</priority>
 
-      <example>
-  <![CDATA[
-public class Foo {
- public int bar() {
-  return (42);
- }
-}
-  ]]>
-      </example>
-    </rule>
 
   </ruleset>
 
