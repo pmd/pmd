@@ -6,20 +6,54 @@
 	<property name="keystore" value="${user.home}/.pmdkeystore"/>
 	<property name="storepass" value="?"/>
 
-	<target description="Compiles all java files and copies property files to the classes dir" name="compile">
+	<target name="init">
+		<fail unless="nb.home" message="To resolve library dependencies, you must indicate a NetBeans home directory. Use ant -Dnb.home=XXX or define it in build.ant.properties"/>
+		<condition property="nb.home.exists">
+			<and>
+				<available file="${nb.home}/lib/openide.jar"/>
+				<available file="${nb.home}/lib/openide-loaders.jar"/>
+				<available file="${nb.home}/modules/autoload/openide-io.jar"/>
+				<available file="${nb.home}/modules/autoload/java-api.jar"/>
+				<available file="${nb.home}/modules/autoload/java-src-model.jar"/>
+			</and>
+		</condition>
+		<fail unless="nb.home.exists" message="The directory ${nb.home} does not exist or does not seem to be a NetBeans 3.6 installation"/>
+		
+		<property name="pmdmodule.jar" value="pmd.jar"/>
+		<path id="nb.cp">
+			<pathelement location="${nb.home}/lib/openide.jar"/>
+			<pathelement location="${nb.home}/lib/openide-loaders.jar"/>
+			<pathelement location="${nb.home}/modules/autoload/openide-io.jar"/>
+			<pathelement location="${nb.home}/modules/autoload/java-api.jar"/>
+			<pathelement location="${nb.home}/modules/autoload/java-src-model.jar"/>
+		</path>
+		<patternset id="pmd.files">
+			<include name="modules/${pmdmodule.jar}"/>
+			<include name="modules/ext/${pmd.jar}"/>
+			<include name="modules/ext/saxpath-1.0-fcs.jar"/>
+			<include name="modules/ext/jakarta-oro-2.0.jar"/>
+			<include name="modules/ext/jaxen-core-1.0-fcs.jar"/>
+		</patternset>
+	</target>
+	
+	<target name="init-deploy" depends="init">
+		<property name="nb36.user.dir" location="${user.home}/.netbeans/3.6"/>
+		<condition property="netbeans.deploy.dir" value="${nb36.user.dir}">
+			<and>
+				<available file="${nb36.user.dir}"/>
+				<not>
+					<isset property="netbeans.deploy.dir"/>
+				</not>
+			</and>
+		</condition>
+	</target>
+
+	<target name="compile" depends="init" description="Compiles all java files and copies property files to the classes dir">
 		<mkdir dir="build/classes"/>
-		<javac debug="on" debuglevel="source,lines,vars" deprecation="on" destdir="build/classes" srcdir="src">
+		<javac debug="on" debuglevel="source,lines,vars" deprecation="true" destdir="build/classes" srcdir="src">
 			<include name="**/*.java"/>
 			<classpath>
-				<!-- Copy this one from the openide/netbeans/lib directory -->
-				<pathelement path="lib/openide.jar"/>
-				<!-- Copy this one from the openide/loaders/netbeans/lib directory -->
-				<pathelement path="lib/openide-loaders.jar"/>
-				<!-- Copy these three from the openide/io/netbeans/modules/autoload directory -->
-				<pathelement path="lib/openide-io.jar"/>
-				<!-- .. from java/api -->
-				<pathelement path="lib/java-api.jar"/>
-				<pathelement path="lib/java-src-model.jar"/>
+				<path refid="nb.cp"/>
 				<pathelement path="lib/${pmd.jar}"/>
 				<pathelement path="lib/jakarta-oro-2.0.jar"/>
 			</classpath>
@@ -41,30 +75,49 @@
 				<filter token="pmd.jar" value="${pmd.jar}"/>
 			</filterset>
 		</copy>
-		<jar compress="false" jarfile="build/pmd.jar" manifest="work/manifest-filtered.mf">
+		<jar compress="false" jarfile="build/${pmdmodule.jar}" manifest="work/manifest-filtered.mf">
 			<fileset dir="build/classes">
 				<include name="**/*"/>
 			</fileset>
 		</jar>
 		<delete dir="work"/>
 	</target>
-	<target depends="jars" description="Prepare the module for distribution via Auto Update." name="nbm">
+
+	<target name="deploy" depends="init-deploy,jars">
+		<!--
+		If no deployment dir, then we fail rather than deploy globally; if you
+		do want to deploy globally, then set netbeans.deploy.dir explicitly.
+		-->
+		<fail unless="netbeans.deploy.dir" message="No NetBeans user directory to deploy into; either specify it in the property nb36.user.dir, or specify another NetBeans deployment directory (e.g. the install dir ${nb.home}) in the property netbeans.deploy.dir"/>
+		<mkdir dir="${netbeans.deploy.dir}/modules/ext"/>
+		<copy todir="${netbeans.deploy.dir}/modules/ext" taskname="Deploy libraries">
+			<fileset dir="lib">
+				<include name="${pmd.jar}"/>
+				<include name="saxpath-1.0-fcs.jar"/>
+				<include name="jakarta-oro-2.0.jar"/>
+				<include name="jaxen-core-1.0-fcs.jar"/>
+			</fileset>
+		</copy>
+		<copy file="build/${pmdmodule.jar}" todir="${netbeans.deploy.dir}/modules" taskname="Deploy PMD module jar"/>
+	</target>
+
+	<target name="nbm" depends="jars" description="Prepare the module for distribution via Auto Update.">
 		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib/nbantext-3.6.jar" name="makenbm"/>
-		<mkdir dir="build/temp_distribution/netbeans/modules/ext"/>
-		<copy file="build/pmd.jar" tofile="build/temp_distribution/netbeans/modules/pmd.jar"/>
-		<copy file="lib/${pmd.jar}" tofile="build/temp_distribution/netbeans/modules/ext/${pmd.jar}"/>
-		<copy file="lib/saxpath-1.0-fcs.jar" tofile="build/temp_distribution/netbeans/modules/ext/saxpath-1.0-fcs.jar"/>
-		<copy file="lib/jakarta-oro-2.0.jar" tofile="build/temp_distribution/netbeans/modules/ext/jakarta-oro-2.0.jar"/>
-		<copy file="lib/jaxen-core-1.0-fcs.jar" tofile="build/temp_distribution/netbeans/modules/ext/jaxen-core-1.0-fcs.jar"/>
+		<property name="tempdist.dir" location="build/temp_distribution"/>
+		<antcall target="deploy">
+			<param name="netbeans.deploy.dir" value="${tempdist.dir}/netbeans"/>
+		</antcall>
 		<makenbm file="build/pmd.nbm" homepage="http://pmd.sourceforge.net/" 
-               module="build/pmd.jar" topdir="build/temp_distribution" 
-               needsrestart="false" distribution="http://www.netbeans.org/example/pmd.nbm">
+		         module="build/${pmdmodule.jar}" topdir="${tempdist.dir}" 
+		         needsrestart="false" distribution="http://www.netbeans.org/example/pmd.nbm">
 			<license file="LICENSE.txt"/>
 			<signature keystore="${keystore}" storepass="${storepass}" alias="pmdkey"/>
 		</makenbm>
 	</target>
+	
 	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
-		<zip compress="true" destfile="build/pmd-netbeans35-src-${VERSION}.zip">
+		<fail unless="VERSION" message="Must define VERSION property with the version number for this distribution!"/>
+		<zip compress="true" destfile="build/pmd-netbeans36-src-${VERSION}.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 				<include name="build.xml"/>
@@ -78,14 +131,24 @@
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
-		<zip compress="true" destfile="build/pmd-netbeans35-bin-${VERSION}.zip">
+		<zip compress="true" destfile="build/pmd-netbeans36-bin-${VERSION}.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
 	</target>
-	<target description="Clean all build products." name="clean">
+	
+	<target name="clean-deploy" depends="init-deploy" if="netbeans.deploy.dir">
+		<delete>
+			<fileset dir="${netbeans.deploy.dir}">
+				<patternset refid="pmd.files"/>
+			</fileset>
+		</delete>
+	</target>
+	
+	<target description="Clean all build products." name="clean" depends="clean-deploy">
 		<delete dir="build"/>
 	</target>
+	
 </project>
