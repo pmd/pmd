@@ -238,24 +238,6 @@ public class ASTViewer {
         }
     }
 
-    private class SaveListener implements ActionListener {
-        public void actionPerformed(ActionEvent ae) {
-            FileWriter fw = null;
-            try {
-                File f = new File(SETTINGS_FILE_NAME);
-                fw = new FileWriter(f);
-                fw.write(codeEditorPane.getText());
-            } catch (IOException ioe) {
-            } finally {
-            	try {
-	            	if (fw != null)
-	            		fw.close();
-	            } catch (IOException ioe) {
-	            }
-            }
-        }
-    }
-
     private class DFAListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
             try {
@@ -309,10 +291,10 @@ public class ASTViewer {
         }
     }
 
-    private static class MyTextPane extends JTextPane implements HasLines {
-        public MyTextPane() {
+    private static class CodeEditorTextPane extends JTextPane implements HasLines, ActionListener {
+        public CodeEditorTextPane() {
             setPreferredSize(new Dimension(400,200));
-            setText(loadText());
+            setText(loadCode());
         }
         public String getLine(int number) {
             int count = 1;
@@ -325,7 +307,21 @@ public class ASTViewer {
             }
             throw new RuntimeException("Line number " + number + " not found");
         }
-        private String loadText() {
+        public void actionPerformed(ActionEvent ae) {
+            FileWriter fw = null;
+            try {
+                fw = new FileWriter(new File(SETTINGS_FILE_NAME));
+                fw.write(getText());
+            } catch (IOException ioe) {
+            } finally {
+            	try {
+	            	if (fw != null)
+	            		fw.close();
+	            } catch (IOException ioe) {
+	            }
+            }
+        }
+        private String loadCode() {
             BufferedReader br = null;
             try {
                 br = new BufferedReader(new FileReader(new File(SETTINGS_FILE_NAME)));
@@ -352,7 +348,7 @@ public class ASTViewer {
 
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_astviewer";
 
-    private MyTextPane codeEditorPane;
+    private CodeEditorTextPane codeEditorPane;
     private JTextArea astArea = new JTextArea();
     private DefaultListModel xpathResults = new DefaultListModel();
     private JList xpathResultList = new JList(xpathResults);
@@ -416,7 +412,7 @@ public class ASTViewer {
         JPanel top = new JPanel();
         top.setLayout(new BorderLayout());
         JSmartPanel p = new JSmartPanel();
-        codeEditorPane = new MyTextPane();
+        codeEditorPane = new CodeEditorTextPane();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
         p.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
         return p;
@@ -434,7 +430,7 @@ public class ASTViewer {
         JButton b = new JButton("Go");
         b.setMnemonic('g');
         b.addActionListener(new ShowListener());
-        b.addActionListener(new SaveListener());
+        b.addActionListener(codeEditorPane);
         b.addActionListener(new XPathListener());
         b.addActionListener(new DFAListener());
         p.add(b, BorderLayout.SOUTH);
