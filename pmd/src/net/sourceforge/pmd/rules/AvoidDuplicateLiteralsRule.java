@@ -39,23 +39,18 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
 
         public Set parse(String in) {
             Set result = new HashSet();
-
             StringBuffer currentToken = new StringBuffer();
             boolean inEscapeMode = false;
-
             for (int i=0; i<in.length(); i++) {
-
                 if (inEscapeMode) {
                     inEscapeMode = false;
                     currentToken.append(in.charAt(i));
                     continue;
                 }
-
-                if (!inEscapeMode && in.charAt(i) == ESCAPE_CHAR) {
+                if (in.charAt(i) == ESCAPE_CHAR) {
                     inEscapeMode = true;
                     continue;
                 }
-
                 if (in.charAt(i) == delimiter) {
                     result.add(currentToken.toString());
                     currentToken = new StringBuffer();
