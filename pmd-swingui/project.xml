@@ -91,6 +91,7 @@
             </resource>
         </resources>-->
         <sourceDirectory>src/java/</sourceDirectory>
+        <unitTestSourceDirectory>src/test/</unitTestSourceDirectory>
         <resources>
             <resource>
                 <directory>src/java/</directory>
@@ -104,8 +105,9 @@
     <reports>
         <report>maven-changes-plugin</report>
         <report>maven-changelog-plugin</report>
-        <report>maven-checkstyle-plugin</report>
         <report>maven-javadoc-plugin</report>
+        <report>maven-junit-report-plugin</report>
+        <report>maven-checkstyle-plugin</report>
         <report>maven-pmd-plugin</report>
         <report>maven-tasklist-plugin</report>
         <report>maven-jxr-plugin</report>
