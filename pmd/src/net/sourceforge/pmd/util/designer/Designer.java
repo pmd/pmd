@@ -16,30 +16,43 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
+import sun.rmi.runtime.GetThreadPoolAction;
+
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyChangeListener;
 import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 
-public class Designer {
+public class Designer implements ClipboardOwner {
 
+    private ASTCompilationUnit doParse() {
+        StringReader sr = new StringReader(codeEditorPane.getText());
+        JavaParser parser = (new TargetJDK1_4()).createParser(sr);
+        return parser.CompilationUnit();        
+    }
     private class ShowListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
-            StringReader sr = new StringReader(codeEditorPane.getText());
-            JavaParser parser = (new TargetJDK1_4()).createParser(sr);
             MyPrintStream ps = new MyPrintStream();
             System.setOut(ps);
             try {
-                ASTCompilationUnit c = parser.CompilationUnit();
-                c.dump("");
+                ASTCompilationUnit lastCompilationUnit = doParse();
+                lastCompilationUnit.dump("");
                 astArea.setText(ps.getString());
             } catch (ParseException pe) {
                 astArea.setText(pe.fillInStackTrace().getMessage());
@@ -111,9 +124,21 @@ public class Designer {
     private JTextArea xpathQueryArea = new JTextArea(10, 30);
     private JFrame frame = new JFrame("PMD Rule Designer");
     private DFAPanel dfaPanel;
+    private final MouseListener codeEditPanelMouseListener = new MouseListener() {
+        public void mouseClicked(MouseEvent e) {}
+        public void mousePressed(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                popUpMenu(e);
+            }
+        }
+        public void mouseReleased(MouseEvent e) {}
+        public void mouseEntered(MouseEvent e) {}
+        public void mouseExited(MouseEvent e) {}
+        };
 
     public Designer() {
         JPanel controlPanel = new JPanel();
+        
         controlPanel.add(createCodeEditPanel());
         controlPanel.add(createXPathQueryPanel());
 
@@ -181,6 +206,9 @@ public class Designer {
         codeEditorPane = new CodeEditorTextPane();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
         p.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
+        
+        codeEditorPane.addMouseListener(codeEditPanelMouseListener);
+        
         return p;
     }
 
@@ -205,5 +233,38 @@ public class Designer {
 
     public static void main(String[] args) {
         new Designer();
+    }
+    private final void popUpMenu(MouseEvent e) {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem mi = new JMenuItem("Copy xml");
+        mi.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                copyXmlToClipboard();
+            }
+        });
+        menu.add(mi);
+        menu.show(e.getComponent(), e.getX(), e.getY());
+    }
+
+    private final void copyXmlToClipboard() {
+        String text = this.codeEditorPane.getText();
+        if (text!=null && text.trim().length()>0) {
+            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+            String xml = getXml();
+            StringSelection ss = new StringSelection(xml);
+            cb.setContents(ss, this);
+        } 
+    }
+
+    private String getXml() {
+        ASTCompilationUnit cu = doParse();
+        if (cu!=null) {
+            return cu.asXml();
+        }
+        return "";
+    }
+
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        //NOOP
     }
 }
