@@ -49,7 +49,7 @@ public class RuleFactory {
         list.add(new EmptyIfStmtRule());
         list.add(new UnnecessaryConversionTemporaryRule());
         list.add(new UnusedLocalVariableRule());
-        //list.add(new UnusedPrivateInstanceVariableRule());
+        list.add(new UnusedPrivateInstanceVariableRule());
         return list;
     }
 }

@@ -125,7 +125,6 @@ public class FunctionalTest extends TestCase{
         assertEquals(new EmptyIfStmtRule(), ((RuleViolation)report.iterator().next()).getRule());
     }
 
-/*
     public void testUnusedPrivateInstanceVar1() {
         Report report = process(new File(root() + "UnusedPrivateInstanceVar1.java"));
         assertEquals(1, report.getSize());
@@ -162,13 +161,14 @@ public class FunctionalTest extends TestCase{
         Report report = process(new File(root() + "UnusedPrivateInstanceVar8.java"));
         assertTrue(report.empty());
     }
+/*
+TODO - this tests unused variables in nested classes
+    public void testUnusedPrivateInstanceVar9() {
+        Report report = process(new File(root() + "UnusedPrivateInstanceVar9.java"));
+        assertEquals(1, report.getSize());
+    }
+TODO - this tests unused variables in nested classes
 */
-    // TODO
-    // there's another test here that needs to work, see UnusedPrivateInstanceVar5.java
-    // 'foo' should be marked as an unused instance variable, but it isn't because the
-    // anonymous inner classes are broken for that rule because the "doingIDTraversal" is an
-    // instance variable
-    // TODO
 
     private Report process(File file) {
         PMD p = new PMD();

@@ -18,6 +18,10 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     // need to attach it to the report or the stack or something
     // TODO
     private boolean doingIDTraversal;
+    // TODO
+    // this means we don't process nested or inner classes, which is sloppy
+    // TODO
+    private boolean alreadyWorking;
 
     public String getDescription() {
         return "Avoid unused private instance variables";
@@ -31,20 +35,24 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     }
 
     public Object visit(ASTClassBody node, Object data) {
+        if (alreadyWorking) {
+            return data;
+        }
+        alreadyWorking = true;
         doingIDTraversal = true;
         Namespace nameSpace = new Namespace();
         nameSpaces.push(nameSpace);
         nameSpace.addTable();
-        Object report = super.visit(node, data);
+        super.visit(node, null);
 
         doingIDTraversal = false;
-        //System.out.println("data = " + data);
-        report = super.visit(node, data);
-        reportUnusedInstanceVars((Report)report, nameSpace.peek());
+        super.visit(node, null);
+        reportUnusedInstanceVars((Report)data, nameSpace.peek());
 
         nameSpace.removeTable();
         nameSpaces.pop();
-        return report;
+        alreadyWorking = false;
+        return data;
     }
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
