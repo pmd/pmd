@@ -1,6 +1,7 @@
 package net.sourceforge.pmd;
 
 // import org.apache.xerces.parsers.SAXParser;
+import net.sourceforge.pmd.util.ResourceLoader;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -145,7 +146,7 @@ public class ProjectFile
         InputSource inputSource;
 
         PROPERTIES = new Properties();
-        inputStream = getClass().getClassLoader().getResourceAsStream("project.xml");
+        inputStream = ResourceLoader.loadResourceAsStream("project.xml");
         inputSource = new InputSource(inputStream);
 
         try

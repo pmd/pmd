@@ -5,6 +5,7 @@
  */
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.util.ResourceLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -28,7 +29,7 @@ public class RuleSetFactory {
     public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
         try {
             Properties props = new Properties();
-            props.load(getClass().getClassLoader().getResourceAsStream("rulesets/rulesets.properties"));
+            props.load(ResourceLoader.loadResourceAsStream("rulesets/rulesets.properties"));
             String rulesetFilenames = props.getProperty("rulesets.filenames");
             List ruleSets = new ArrayList();
             for (StringTokenizer st = new StringTokenizer(rulesetFilenames, ","); st.hasMoreTokens();) {
@@ -75,7 +76,7 @@ public class RuleSetFactory {
                 if (ruleNode.getAttributes().getNamedItem("ref") != null) {
                     ExternalRuleID externalRuleID = new ExternalRuleID(ruleNode.getAttributes().getNamedItem("ref").getNodeValue());
                     RuleSetFactory rsf = new RuleSetFactory();
-                    RuleSet externalRuleSet = rsf.createRuleSet(getClass().getClassLoader().getResourceAsStream(externalRuleID.getFilename()));
+                    RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
                     rule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
                 } else {
                     rule = (Rule)Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue()).newInstance();
@@ -120,9 +121,11 @@ public class RuleSetFactory {
     }
 
     private InputStream tryToGetStreamTo(String name) throws RuleSetNotFoundException {
-        InputStream in = getClass().getClassLoader().getResourceAsStream(name);
-        if (in == null) {
-            throw new RuleSetNotFoundException("Can't find ruleset " + name + "; make sure that path is on the CLASSPATH");
+        InputStream in = ResourceLoader.loadResourceAsStream( name );
+        if ( in == null ) {
+            throw new RuleSetNotFoundException( "Can't find resource " + name +
+           "Make sure the resource is valid file " +
+            "or URL or is on the CLASSPATH\n" );
         }
         return in;
     }
