@@ -3,17 +3,23 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="1.8.0.v3"
+   version="1.9.0.v3"
    provider-name="%plugin.provider">
 
    <runtime>
-      <library name="core.jar"/>
-      <library name="lib/jaxen-core-1.0-fcs.jar"/>
-      <library name="lib/saxpath-1.0-fcs.jar"/>
-      <library name="lib/pmd-1.8.jar">
+      <library name="lib/jaxen-core-1.0-fcs.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/saxpath-1.0-fcs.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/pmd-1.9.jar">
          <export name="*"/>
       </library>
    </runtime>
+   <requires>
+      <import plugin="org.apache.xerces"/>
+   </requires>
 
    <extension
          point="org.eclipse.help.toc">
