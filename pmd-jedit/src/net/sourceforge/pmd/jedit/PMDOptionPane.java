@@ -39,7 +39,10 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         addComponent(new JLabel("Please see http://pmd.sourceforge.net/ for more information on what's in each rule set."));
         for (Iterator i = selectedRuleSets.keys(); i.hasNext();) {
             RuleSet rs = (RuleSet)i.next();
-            addComponent((JCheckBox)selectedRuleSets.get(rs));
+            JPanel oneBoxPanel = new JPanel();
+            oneBoxPanel.add((JCheckBox)selectedRuleSets.get(rs));
+            oneBoxPanel.add(new JLabel(rs.getDescription()));
+            addComponent(oneBoxPanel);
         }
     }
 

@@ -27,17 +27,11 @@ public class PMDJEditPlugin extends EditPlugin {
     public static final String PROPERTY_PREFIX = "plugin.net.sourceforge.pmd.jedit.";
     public static final String OPTION_RULESETS_PREFIX = "options.pmd.rulesets.";
 		
-		public static class JavaFileFilter implements FilenameFilter {
-          public boolean accept(File unused, String filename) {
-              return filename.endsWith("java");
-          }
-		}
-		
-		public static class JavaFileOrDirectoryFilter implements FilenameFilter {
-          public boolean accept(File dir, String filename) {
-              return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
-          }
-		}
+    public static class JavaFileOrDirectoryFilter implements FilenameFilter {
+      public boolean accept(File dir, String filename) {
+          return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+      }
+    }
 
     private static PMDJEditPlugin instance;
 
@@ -71,10 +65,10 @@ public class PMDJEditPlugin extends EditPlugin {
         DockableWindowManager wm = view.getDockableWindowManager();
         VFSBrowser browser = (VFSBrowser)wm.getDockable("vfs.browser");
         if(browser == null) {
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", "PMD", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
             return;
         }
-				processFiles(findFilesInDirectory(browser.getDirectory()), browser);
+        processFiles(findFilesInDirectory(browser.getDirectory()), browser);
     }
 
     public static void checkDirectoryRecursively(View view) {
@@ -85,13 +79,11 @@ public class PMDJEditPlugin extends EditPlugin {
         DockableWindowManager wm = view.getDockableWindowManager();
         VFSBrowser browser = (VFSBrowser)wm.getDockable("vfs.browser");
         if(browser == null) {
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", "PMD", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
             return;
         }
-				processFiles(findFilesRecursively(browser.getDirectory()), browser);
+        processFiles(findFilesRecursively(browser.getDirectory()), browser);
     }
-		
-		
 
     public static void check(Buffer buffer, View view) {
         instance.instanceCheck(buffer, view);
@@ -122,7 +114,7 @@ public class PMDJEditPlugin extends EditPlugin {
         }
     }
 		
-		private void processFiles(List files, VFSBrowser browser) {
+    private void processFiles(List files, VFSBrowser browser) {
         errorSource.clear();
         PMD pmd = new PMD();
         SelectedRuleSetsMap selectedRuleSets = null;
@@ -132,11 +124,13 @@ public class PMDJEditPlugin extends EditPlugin {
             // should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
             System.out.println("PMD ERROR: Couldn't find a ruleset");
             rsne.printStackTrace();
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Unable to find rulesets, halting PMD", "PMD", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Unable to find rulesets, halting PMD", NAME, JOptionPane.ERROR_MESSAGE);
             return;
         }
         RuleContext ctx = new RuleContext();
         ctx.setReport(new Report());
+
+        boolean foundProblems = false;
         for (Iterator i = files.iterator(); i.hasNext();) {
             File file = (File)i.next();
             ctx.setReport(new Report());
@@ -148,48 +142,40 @@ public class PMDJEditPlugin extends EditPlugin {
                 System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
             }
             for (Iterator j = ctx.getReport().iterator(); j.hasNext();) {
+                foundProblems = true;
                 RuleViolation rv = (RuleViolation)j.next();
                 errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
             }
         }
-	/*
-        if (ctx.getReport().isEmpty()) {
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
+        if (!foundProblems) {
+            JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
             errorSource.clear();
         }
-*/
-	}
+    }
 
     private List findFilesInDirectory(String dir) {
-      FilenameFilter filter = new JavaFileFilter();
-      String[] files = (new File(dir)).list(filter);
       List result = new ArrayList();
-      for (int i=0; i<files.length; i++) {
-         File sourceFile = new File(dir + System.getProperty("file.separator") + files[i]);
-         if (!sourceFile.isDirectory()) {
-					 result.add(sourceFile);
-         }
-      }
+      scanDirectory(new File(dir), result, false);
       return result;
-   }
-	 
-	 private List findFilesRecursively(String dir) {
+    }
+
+     private List findFilesRecursively(String dir) {
       File root = new File(dir);
       List list = new ArrayList();
-      scanDirectory(root, list);
+      scanDirectory(root, list, true);
       return list;
-   }
+    }
 
-   private void scanDirectory(File dir, List list) {
+    private void scanDirectory(File dir, List list, boolean recurse) {
       FilenameFilter filter = new JavaFileOrDirectoryFilter();
       String[] possibles = dir.list(filter);
       for (int i=0; i<possibles.length; i++) {
          File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
-         if (tmp.isDirectory()) {
-            scanDirectory(tmp, list);
-         } else { 
-					 list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
-				 }
+         if (recurse && tmp.isDirectory()) {
+            scanDirectory(tmp, list, true);
+         } else {
+            list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
+         }
       }
-   }
+    }
 }

@@ -1,6 +1,7 @@
-???? - 0.6
-PMD can be run on 1) all files in a directory or 2) recursively into a directory tree.
+July 26 2002 - 0.6
 Updated to use pmd-0.7.
+PMD can be run on 1) all files in a directory or 2) recursively into a directory tree.
+Added some detail to the Options area.
 
 July 22 2002 - 0.5:
 Moved options into Global Options area and made them look nicer.
