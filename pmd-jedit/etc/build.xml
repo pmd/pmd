@@ -62,7 +62,7 @@
         <copy file="${lib}/jaxen-core-1.0-fcs.jar" todir="tmp/jars"/>
         <copy file="${lib}/saxpath-1.0-fcs.jar" todir="tmp/jars"/>
         <zip zipfile="pmd-jedit-bin-${pluginversion}.zip" basedir="tmp"/>
-        <move file="pmd-jedit-bin-${pluginversion}.zip" todir="c:\tmp"/>
+        <move file="pmd-jedit-bin-${pluginversion}.zip" todir="/home/tom/tmp"/>
         <delete dir="tmp"/>
     </target>
 
