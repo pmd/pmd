@@ -49,7 +49,7 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.browser-menu=pmd-check-file pmd-
 
 #pmd properties
 pmd.renderer=None
-
+pmd.showprogress=true
 
 
 

@@ -5,7 +5,10 @@
  */
 package net.sourceforge.pmd.jedit;
 
+import javax.swing.JWindow;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +53,8 @@ import org.gjt.sp.util.Log;
 import errorlist.DefaultErrorSource;
 import errorlist.ErrorList;
 import errorlist.ErrorSource;
+import javax.swing.JDialog;
+import javax.swing.border.EmptyBorder;
 
 
 public class PMDJEditPlugin extends EBPlugin {
@@ -60,8 +65,8 @@ public class PMDJEditPlugin extends EBPlugin {
 	public static final String DEFAULT_TILE_MINSIZE_PROPERTY = "pmd.cpd.defMinTileSize";
 	public static final String RUN_PMD_ON_SAVE = "pmd.runPMDOnSave";
 	public static final String CUSTOM_RULES_PATH_KEY = "pmd.customRulesPath";
+	public static final String SHOW_PROGRESS = "pmd.showprogress";
 	//private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
-	private ProgressBar pbd;
 
 	private static PMDJEditPlugin instance;
 
@@ -158,6 +163,12 @@ public class PMDJEditPlugin extends EBPlugin {
 
 		if(buffers != null)
 		{
+			ProgressBar pbd = null;
+			if(jEdit.getBooleanProperty(SHOW_PROGRESS))
+			{
+				 pbd = startProgressBarDisplay(view,0,buffers.length);
+			}
+
 			for (int i=0; i<buffers.length; i++ )
 			{
 				if (buffers[i].getName().endsWith(".java"))
@@ -166,7 +177,13 @@ public class PMDJEditPlugin extends EBPlugin {
 					Log.log(Log.DEBUG,this,"checking = " + buffers[i].getPath());
 					instanceCheck(buffers[i],view, false);
 				}
+
+				if(pbd != null)
+				{
+					pbd.increment(1);
+				}
 			}
+			endProgressBarDisplay(pbd);
 		}
 
 		//List files = new ArrayList();
@@ -276,6 +293,12 @@ public class PMDJEditPlugin extends EBPlugin {
 	private void processFiles(List files, View view) {
 		unRegisterErrorSource();
 		errorSource.clear();
+
+		ProgressBar pbd = null;
+		if(jEdit.getBooleanProperty(SHOW_PROGRESS))
+		{
+			pbd = startProgressBarDisplay(view,0,files.size());
+		}
 		PMD pmd = new PMD();
 		SelectedRules selectedRuleSets = null;
 		try {
@@ -304,11 +327,18 @@ public class PMDJEditPlugin extends EBPlugin {
 				pmde.printStackTrace();
 				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + file.getAbsolutePath());
 			}
+
+			if(jEdit.getBooleanProperty(SHOW_PROGRESS))
+			{
+				pbd.increment(1);
+			}
+
 			for (Iterator j = ctx.getReport().iterator(); j.hasNext();) {
 				foundProblems = true;
 				RuleViolation rv = (RuleViolation)j.next();
 				errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING,  file.getAbsolutePath(), rv.getLine()-1,0,0,rv.getDescription()));
 			}
+
 		}//End of for
 
 		if (!foundProblems)
@@ -321,6 +351,9 @@ public class PMDJEditPlugin extends EBPlugin {
 			registerErrorSource();
 			exportErrorAsReport(view, ctx);
 		}
+
+		endProgressBarDisplay(pbd);
+		pbd = null;
 	}
 
 	private List findFiles(String dir, boolean recurse) {
@@ -501,23 +534,20 @@ public class PMDJEditPlugin extends EBPlugin {
 		instance.process(instance.findFiles(de[0].path, recursive),view);
 	}
 
-	public void startProgressBarDisplay(View view, int min, int max)
+	public ProgressBar startProgressBarDisplay(View view, int min, int max)
+	{
+		ProgressBar pbd = new ProgressBar(view,min,max);
+		pbd.setVisible(true);
+		return pbd;
+	}
+
+	public void endProgressBarDisplay(ProgressBar pbd)
 	{
 		if(pbd != null)
 		{
-			view.getStatus().setMessage("Only one Progress Display tracked.");
-			return;
+			pbd.completeBar();
+			pbd.setVisible(false);
 		}
-		pbd = new ProgressBar(min,max);
-		pbd.setVisible(true);
-		Log.log(Log.DEBUG,this,"Showing PBD");
-	}
-
-	public void endProgressBarDisplay()
-	{
-		pbd.completeBar();
-		pbd = null;
-		Log.log(Log.DEBUG,this,"Comeplted display");
 	}
 
 	public void exportErrorAsReport(final View view, RuleContext ctx)
@@ -562,7 +592,7 @@ public class PMDJEditPlugin extends EBPlugin {
 						}
 					});
 
-			
+
 		}
 	}//End of exportErrorAsReport
 
@@ -570,22 +600,31 @@ public class PMDJEditPlugin extends EBPlugin {
 	class ProgressBar extends JPanel
 	{
 		private JProgressBar pBar;
+		private View view;
 
-		public ProgressBar(int min,int max)
+		public ProgressBar(View view, int min,int max)
 		{
+			this.view = view;
 			setLayout(new BorderLayout());
 			pBar = new JProgressBar(min,max);
+			pBar.setBorder(new EmptyBorder(pBar.getInsets()));
+			pBar.setForeground(Color.orange);
+			pBar.setStringPainted(true);
 			add(pBar, BorderLayout.CENTER);
+			view.getStatus().add(pBar, BorderLayout.EAST);
 		}
 
 		public void increment(int num)
 		{
-			pBar.setValue(num);
+			pBar.setValue(pBar.getValue()+num);
 		}
 
 		public void completeBar()
 		{
 			pBar.setValue(pBar.getMaximum());
+			view.getStatus().remove(pBar);
+			view = null;
+			pBar = null;
 		}
 	}
 

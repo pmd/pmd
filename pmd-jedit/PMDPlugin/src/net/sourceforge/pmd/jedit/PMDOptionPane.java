@@ -32,6 +32,7 @@ import java.awt.event.MouseEvent;
 
 public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
+
     public class CheckboxList extends JList {
 
         private class MyMouseAdapter extends MouseAdapter {
@@ -77,7 +78,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     private SelectedRules rules;
     private JTextArea exampleTextArea= new JTextArea(10, 50);
-    private JCheckBox directoryPopupBox, chkRunPMDOnSave;
+    private JCheckBox directoryPopupBox, chkRunPMDOnSave, chkShowProgressBar;
 	JTextField txtMinTileSize;
 	JTextField txtCustomRules;
 	JComboBox comboRenderer;
@@ -119,6 +120,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
         directoryPopupBox = new JCheckBox("Ask for directory?", jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP));
         chkRunPMDOnSave = new JCheckBox("Run PMD on Save", jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE));
+		chkShowProgressBar = new JCheckBox("Show PMD Progress Bar", jEdit.getBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS));
 
 		JPanel pnlSouth = new JPanel(new GridLayout(0,1));
 
@@ -132,10 +134,11 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 		comboRenderer = new JComboBox(new String[] {"None", "Text", "Html", "XML", "CSV"});
 		comboRenderer.setSelectedItem(jEdit.getProperty(PMDJEditPlugin.RENDERER));
         JLabel lblRenderer = new JLabel("Export Output as ");
-		
+
 		pnlTileSize.add(lblRenderer);
 		pnlTileSize.add(comboRenderer);
-		
+		pnlTileSize.add(chkShowProgressBar);
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(rulesPanel, BorderLayout.NORTH);
@@ -157,6 +160,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 		jEdit.setIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,(txtMinTileSize.getText().length() == 0)?100:Integer.parseInt(txtMinTileSize.getText()));
 		jEdit.setBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE,(chkRunPMDOnSave.isSelected()));
 		jEdit.setProperty(PMDJEditPlugin.RENDERER, (String)comboRenderer.getSelectedItem());
+		jEdit.setBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS, chkShowProgressBar.isSelected());
 
 		if(txtCustomRules != null)
 		{
