@@ -125,31 +125,20 @@ public class PMD {
             rsnfe.printStackTrace();
         }
 
+        Renderer renderer = null;
         if (reportFormat.equals("xml")) {
-            Renderer rend = new XMLRenderer();
-            System.out.println(rend.render(ctx.getReport()));
+            renderer = new XMLRenderer();
         } else if (reportFormat.equals("ideaj")) {
-            IDEAJRenderer special = new IDEAJRenderer();
-            if (args[4].equals(".method")) {
-                // working on a directory tree
-                String sourcePath = args[3];
-                System.out.println(special.render(ctx.getReport(), sourcePath));
-            } else {
-                // working on one file
-                String classAndMethodName = args[4];
-                String singleFileName = args[5];
-                System.out.println(special.render(ctx.getReport(), classAndMethodName, singleFileName));
-            }
+            renderer = new IDEAJRenderer(args);
         } else if (reportFormat.equals("text")) {
-            Renderer rend = new TextRenderer();
-            System.out.println(rend.render(ctx.getReport()));
+            renderer = new TextRenderer();
         } else if (reportFormat.equals("emacs")) {
-            Renderer rend = new EmacsRenderer();
-            System.out.println(rend.render(ctx.getReport()));
+            renderer = new EmacsRenderer();
         } else {
-            Renderer rend = new HTMLRenderer();
-            System.out.println(rend.render(ctx.getReport()));
+            renderer = new HTMLRenderer();
         }
+
+        System.out.println(renderer.render(ctx.getReport()));
     }
 
     private static void usage() {

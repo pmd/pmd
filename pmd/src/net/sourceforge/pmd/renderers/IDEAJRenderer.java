@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-public class IDEAJRenderer {
+public class IDEAJRenderer implements Renderer {
     protected String EOL = System.getProperty("line.separator", "\n");
 
     private static class SourcePath {
@@ -22,8 +22,7 @@ public class IDEAJRenderer {
 
         public SourcePath(String sourcePathString) {
             for (StringTokenizer st = new StringTokenizer(sourcePathString, ";"); st.hasMoreTokens();) {
-                String tok = st.nextToken();
-                paths.add(tok);
+                paths.add(st.nextToken());
             }
         }
 
@@ -38,17 +37,25 @@ public class IDEAJRenderer {
         }
     }
 
-	public String render(Report report, String classAndMethod, String file) {
-        StringBuffer buf = new StringBuffer();
-        for (Iterator i = report.iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation) i.next();
-            buf.append(rv.getDescription() + EOL);
-            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getLine() +")" + EOL);
-        }
-        return buf.toString();
-	}
+    private String[] args;
 
-    public String render(Report report, String sourcePathString) {
+    public IDEAJRenderer(String[] args) {
+        this.args = args;
+    }
+
+    public String render(Report report) {
+        if (args[4].equals(".method")) {
+            // working on a directory tree
+            String sourcePath = args[3];
+            return render(report, sourcePath);
+        }
+        // working on one file
+        String classAndMethodName = args[4];
+        String singleFileName = args[5];
+        return render(report, classAndMethodName, singleFileName);
+    }
+
+    private String render(Report report, String sourcePathString) {
         SourcePath sourcePath = new SourcePath(sourcePathString);
         StringBuffer buf = new StringBuffer();
         for (Iterator i = report.iterator(); i.hasNext();) {
@@ -58,6 +65,16 @@ public class IDEAJRenderer {
         }
         return buf.toString();
     }
+
+	private String render(Report report, String classAndMethod, String file) {
+        StringBuffer buf = new StringBuffer();
+        for (Iterator i = report.iterator(); i.hasNext();) {
+            RuleViolation rv = (RuleViolation) i.next();
+            buf.append(rv.getDescription() + EOL);
+            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getLine() +")" + EOL);
+        }
+        return buf.toString();
+	}
 
     private String getFullyQualifiedClassName(String in, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(in);
