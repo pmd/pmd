@@ -408,6 +408,7 @@ public class PMDJEditPlugin extends EBPlugin {
 		cpd.add(new File(view.getBuffer().getPath()));
 		cpd.go();
 		instance.processDuplicates(cpd, view);
+		view.getDockableWindowManager().showDockableWindow("cpd-viewer");
 	}
 
 	public static void cpdDir(View view, boolean recursive) throws IOException

@@ -22,6 +22,7 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu.label=$PMD
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu=pmd-check-current-buffer pmd-check-all-open-buffers pmd-check-current-directory pmd-check-current-directory-recursively pmd-clear-errorlist %pmd-cpd
 pmd-cpd=cpd-currentfile cpd-dir cpd-dir-recursively
 
+#Dockables and Menu Labels
 pmd-check-current-buffer.label=Check current buffer
 pmd-check-all-open-buffers.label=Check all open buffers
 pmd-check-current-directory.label=Check all files in current directory
@@ -32,6 +33,9 @@ cpd-currentfile.label=In Current File
 cpd-dir.label=In Directory
 cpd-dir-recursively.label=In Directory Recursively
 pmd-check-file.label=Check selected file(s)
+cpd-viewer.label=Copy/Paste Detector
+
+
 #
 # Option pane properties
 #
