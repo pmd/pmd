@@ -10,26 +10,26 @@ TESTS:
 3) Are options persistant?
 
 Create the src release:
-Ensure there's a PMDJEditPlugin-0.7.jar file in lib\
 cd c:\data\pmd
-cvs rtag -D tomorrow "pmd_jedit_release_0_7" pmd-jedit
+cvs rtag -D tomorrow "pmd_jedit_release_0_8" pmd-jedit
 rmdir /q /s c:\tmp\pmd-jedit
 mkdir c:\tmp\pmd-jedit
-cvs export -d c:\tmp\pmd-jedit -r pmd_jedit_release_0_7 pmd-jedit
-zip it up, rename it to pmd-jedit-src-0.7.zip
+cvs export -d c:\tmp\pmd-jedit -r pmd_jedit_release_0_8 pmd-jedit
+copy pmd-jedit\lib\PMDJEditPlugin-0.8.jar c:\tmp\pmd-jedit\lib
+zip it up, rename it to pmd-jedit-src-0.8.zip
 
 FTP the zip file to SF
 ftp upload.sourceforge.net
 generic userid/password: anonymous/tom@infoether.com
 cd incoming
 bin
-put pmd-jedit-src-0.7.zip
-put pmd-jedit-bin-0.7.zip
+put pmd-jedit-src-0.8.zip
+put pmd-jedit-bin-0.8.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jedit-src-0.7.zip file
-Add the pmd-jedit-bin-0.7.zip file
+Add the pmd-jedit-src-0.8.zip file
+Add the pmd-jedit-bin-0.8.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the JEdit plugin!"
