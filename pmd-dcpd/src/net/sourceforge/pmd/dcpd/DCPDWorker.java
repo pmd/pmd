@@ -48,9 +48,7 @@ public class DCPDWorker {
             tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, job.id), null, 100);
             System.out.println("Read a TokenSetsWrapper with " + tsw.tokenSets.size() + " token lists");
 
-            System.out.println("In doExpansion()");
             doExpansion();
-            System.out.println("Done doExpansion()");
 
         } catch (Exception e) {
             e.printStackTrace();
