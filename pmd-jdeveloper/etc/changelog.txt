@@ -1,2 +1,6 @@
+April 1, 2003 - 0.2:
+Updated to work with pmd-1.04.
+Implemented several of Ronald Kinion's suggestions.
+
 February 25, 2003 - 0.1:
 Initial release

@@ -6,7 +6,7 @@
 	<property name="etc" value="etc/"/>
 	<property name="build" value="build/"/>
 	<property name="pmdjar" value="pmd-1.04.jar"/>
-	<property name="pluginversion" value="0.1"/>
+	<property name="pluginversion" value="0.2"/>
 	<property name="jdeveloper.install.dir" value="/home/tom/jdev/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 	<path id="project.class.path">
@@ -45,12 +45,16 @@
         <mkdir dir="${jdeveloper.install.dir}/lib"/>
         <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper.install.dir}/lib"/>
         <copy file="${lib}/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>
+        <copy file="${lib}/saxpath-1.0-fcs.jar" todir="${jdeveloper.install.dir}/lib"/>
+        <copy file="${lib}/jaxen-core-1.0-fcs.jar" todir="${jdeveloper.install.dir}/lib"/>
 	</target>
 
     <target name="release" depends="clean,jar">
         <mkdir dir="tmp/${ant.project.name}-${pluginversion}/lib"/>
         <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
         <copy file="${lib}/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
+        <copy file="${lib}/saxpath-1.0-fcs.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+        <copy file="${lib}/jaxen-core-1.0-fcs.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
         <zip zipfile="pmd-jdeveloper-bin-${pluginversion}.zip" basedir="tmp"/>
         <move file="pmd-jdeveloper-bin-${pluginversion}.zip" todir="/home/tom/tmp"/>
         <delete dir="tmp"/>
