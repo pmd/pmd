@@ -6,6 +6,9 @@ package test.net.sourceforge.pmd.ast;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.PMD;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class ASTVariableDeclaratorIdTest extends ParserTst {
@@ -18,4 +21,18 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
         block.jjtSetParent(tryNode);
         assertTrue(v.isExceptionBlockParameter());
     }
+
+    public void testTypeNameNode() throws Throwable {
+        ASTCompilationUnit acu = (ASTCompilationUnit)(super.getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next());
+        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
+
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType)id.getTypeNameNode().jjtGetChild(0);
+        assertEquals("String", name.getImage());
+    }
+
+    private static final String TYPE_NAME_NODE =
+    "public class Test {" + PMD.EOL +
+    "  private String bar;" + PMD.EOL +
+    "}";
+
 }

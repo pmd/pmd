@@ -3,6 +3,7 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTPrimitiveType extends SimpleNode  implements Dimensionable{
+
     public ASTPrimitiveType(int id) {
         super(id);
     }

@@ -19,9 +19,13 @@ public class StringToStringRule extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         SimpleNode nameNode = node.getTypeNameNode();
-        if (nameNode instanceof ASTPrimitiveType || !nameNode.getImage().equals("String")) {
+        if (nameNode instanceof ASTPrimitiveType) {
             return data;
         }
+        if (!((SimpleNode)(nameNode.jjtGetChild(0))).getImage().equals("String")) {
+            return data;
+        }
+        
         // now we know we're at a variable declaration of type String
         Map decls = node.getScope().getVariableDeclarations();
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {

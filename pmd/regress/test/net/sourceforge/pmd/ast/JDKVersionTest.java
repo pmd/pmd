@@ -3,13 +3,16 @@ package test.net.sourceforge.pmd.ast;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ParseException;
 
 import java.io.StringReader;
 
 public class JDKVersionTest extends TestCase  {
 
-/*
     // enum keyword/identifier
     public void testEnumAsKeywordShouldFailWith14() throws Throwable {
         try {
@@ -140,12 +143,14 @@ public class JDKVersionTest extends TestCase  {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_BUG));
         p.CompilationUnit();
     }
-*/
 
+/*
+FIXME
     public void testGenericsAnnotationBug() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_ANNOTATION_BUG));
         p.CompilationUnit();
     }
+*/
 
     private static final String ASSERT_TEST1 =
     "public class Foo {" + PMD.EOL +
