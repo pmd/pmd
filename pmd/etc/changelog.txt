@@ -1,6 +1,6 @@
-????, 2004 - 1.5:
-New rules: DontImportSunRule, EmptyFinalizer, EmptyStaticInitializer, AvoidDollarSigns, UnconditionalIfStatement, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeDoesNotCallSuperFinalize, MethodWithSameNameAsEnclosingClass, ExplicitCallToFinalize, NonStaticInitializer, DefaultLabelNotLastInSwitchStmt, NonCaseLabelInSwitchStatement, SuspiciousHashcodeMethodName, EmptyStatementNotInLoop, SuspiciousOctalEscapeRule
-TODO - fix it so tests and rules don't duplicate the xpath expressions
+February 2, 2004 - 1.5:
+New rules: DontImportSunRule, EmptyFinalizer, EmptyStaticInitializer, AvoidDollarSigns, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeDoesNotCallSuperFinalize, MethodWithSameNameAsEnclosingClass, ExplicitCallToFinalize, NonStaticInitializer, DefaultLabelNotLastInSwitchStmt, NonCaseLabelInSwitchStatement, SuspiciousHashcodeMethodName, EmptyStatementNotInLoop, SuspiciousOctalEscapeRule
+FinalizeShouldBeProtected moved from design.xml to finalizers.xml.
 Added isTrue() to ASTBooleanLiteral.
 Added UnaryExpression to the AST.
 Added isPackagePrivate() to AccessNode.

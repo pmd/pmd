@@ -452,4 +452,107 @@ class Foo{
      </example>
      </rule>
 
-  </ruleset>
+    <rule name="NonStaticInitializer"
+           message="Non-static initializers are confusing"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       A nonstatic initializer block will be called any time a constructor
+       is invoked (just prior to invoking the constructor).  While this
+       is a valid language construct, it is rarely used and is confusing.
+       </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//ClassBodyDeclaration/Initializer[not(@Static='true')]
+]]>
+                 </value>
+             </property>
+         </properties>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+public class MyClass {
+ // this block gets run before any call to a constructor
+ {
+  System.out.println("I am about to construct myself");
+ }
+}
+   ]]>
+       </example>
+     </rule>
+
+    <rule name="DefaultLabelNotLastInSwitchStmt"
+           message="The default label should be the last label in a switch statement"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       The default label in a switch statement should be the last label, by convention.
+       Most programmers will expect the default label (if present) to be the last one.
+       </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//SwitchStatement
+ [not(SwitchLabel[position() = last()][count(*) = 0])]
+ [SwitchLabel[count(*) = 0]
+]]>
+                 </value>
+             </property>
+         </properties>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+      switch (a)
+      {
+         case 1:
+            // do something
+            break;
+         default:
+            // the default case should be last, by convention
+            break;
+         case 2:
+            break;
+      }
+   ]]>
+       </example>
+     </rule>
+
+    <rule name="NonCaseLabelInSwitchStatement"
+           message="A non-case label was present in a switch statement"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       A non-case label (e.g. a named break/continue label) was present in a switch statement.
+       This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
+       </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+ <![CDATA[
+    //SwitchStatement//BlockStatement/Statement/LabeledStatement
+ ]]>
+                 </value>
+             </property>
+         </properties>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+public class Foo {
+ void bar(int a) {
+  switch (a)
+  {
+   case 1:
+      // do something
+      break;
+   mylabel: // this is legal, but confusing!
+      break;
+   default:
+      break;
+  }
+ }
+}
+   ]]>
+       </example>
+     </rule>
+
+</ruleset>

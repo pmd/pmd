@@ -460,6 +460,102 @@ public class Bar {
     </rule>
 
 
+    <rule name="EmptyStaticInitializer"
+           message="Empty static initializer was found"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       An empty static initializer was found.
+       </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//ClassBodyDeclaration/Initializer[@Static='true']/Block[count(*)=0]
+]]>
+                 </value>
+             </property>
+         </properties>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+ public class Foo {
+  // why are there no statements in this static block?
+  static {}
+ }
+   ]]>
+       </example>
+     </rule>
+
+    <rule name="UnconditionalIfStatement"
+       message="Do not use 'if' statements that are always true or always false"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Do not use "if" statements that are always true or always false.
+      </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//IfStatement/Expression/ConditionalAndExpression
+ /InstanceOfExpression/UnaryExpression
+ /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+public class Foo {
+ public void close() {
+  if (true) {
+       // ...
+   }
+ }
+}
+  ]]>
+      </example>
+    </rule>
+
+    <rule name="EmptyStatementNotInLoop"
+          message="An empty statement (semicolon) not part of a loop"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       An empty statement (aka a semicolon by itself) that is not used
+       as the sole body of a for loop or while loop is probably a bug.  It
+       could also be a double semicolon, which is useless and should be
+       removed.
+       </description>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+   //Statement/EmptyStatement[not(
+       ../../../ForStatement
+       or ../../../WhileStatement
+       or ../../../../../../ForStatement/Statement[1]
+        /Block[1]/BlockStatement[1]/Statement/EmptyStatement
+       or ../../../../../../WhileStatement/Statement[1]
+        /Block[1]/BlockStatement[1]/Statement/EmptyStatement)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+       <example>
+<![CDATA[
+public class MyClass {
+   public void doit()
+   {
+      // this is probably not what you meant to do
+      ;
+      // the extra semicolon here this is not necessary
+      System.out.println("look at the extra semicolon");;
+   }
+}
+ ]]>
+       </example>
+     </rule>
 
 </ruleset>
 

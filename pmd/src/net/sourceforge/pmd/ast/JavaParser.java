@@ -2397,10 +2397,11 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PLUS:
           jj_consume_token(PLUS);
+         jjtn000.setPositive();
           break;
         case MINUS:
           jj_consume_token(MINUS);
-               System.out.println("FOOOOOOOOOOOOOOOOO"); jjtn000.setNegative();
+                                        jjtn000.setNegative();
           break;
         default:
           jj_la1[69] = jj_gen;
@@ -7912,6 +7913,12 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     return false;
   }
 
+  final private boolean jj_3R_299() {
+    if (jj_scan_token(MINUS)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
   final private boolean jj_3_16() {
     if (jj_3R_56()) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
@@ -8098,12 +8105,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     if (jj_scan_token(INCR)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     if (jj_3R_54()) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3R_299() {
-    if (jj_scan_token(MINUS)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }

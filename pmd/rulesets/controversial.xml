@@ -183,37 +183,61 @@ return 3;
   </example>
 </rule>
 
-    <rule name="FinalizeShouldBeProtected"
-          message="If you override finalize(), make it protected"
-          class="net.sourceforge.pmd.rules.XPathRule">
-      <description>
-      If you override finalize(), make it protected.  Otherwise, subclasses
-          may not called your implementation of finalize.
-      </description>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//MethodDeclaration[@Protected="false"]
-  /MethodDeclarator[@Image="finalize"]
-  [not(FormalParameters/*)]
-                    ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>3</priority>
-      <example>
-  <![CDATA[
-public class Foo {
- public void finalize() {
-  // do something
- }
-}
-  ]]>
-      </example>
+    <rule name="DontImportSunRule"
+       message="Avoid importing anything from the 'sun.*' packages"
+       class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+          Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
+       </description>
+       <properties>
+          <property name="xpath">
+               <value>
+<![CDATA[
+   //ImportDeclaration
+   [starts-with(Name/@Image, 'sun.')]
+   [not(starts-with(Name/@Image, 'sun.misc.Signal'))]
+]]>
+
+               </value>
+          </property>
+       </properties>
+       <priority>4</priority>
+
+       <example>
+<![CDATA[
+   import sun.misc.foo;
+   public class Foo {}
+]]>
+       </example>
     </rule>
 
+    <rule name="SuspiciousOctalEscapeRule"
+       message="Suspicious decimal characters following octal escape in string literal"
+          class="net.sourceforge.pmd.rules.SuspiciousOctalEscapeRule">
+      <description>
+      A suspicious octal escape sequence was found inside a String literal.
+      The Java language specification (section 3.10.6) says an octal
+      escape sequence inside a literal String shall consist of a backslash
+      followed by:
 
+           OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
+
+      Any octal escape sequence followed by non-octal digits can be confusing,
+      e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
+      the literal character "8".
+      </description>
+      <priority>3</priority>
+      <example>
+<![CDATA[
+ public class Foo {
+    public void foo() {
+       // interpreted as octal 12, followed by character '8'
+       System.out.println("suspicious: \128");
+    }
+ }
+]]>
+      </example>
+    </rule>
 </ruleset>
 
 

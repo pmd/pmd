@@ -19,7 +19,8 @@ public class UnconditionalIfStatementRuleTest extends SimpleAggregatorTst {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "if (true)", 1, rule),
            new TestDescriptor(TEST2, "if (false)", 1, rule),
-           new TestDescriptor(TEST3, "no constant folding", 0, rule)
+           new TestDescriptor(TEST3, "no constant folding", 0, rule),
+           new TestDescriptor(TEST4, "short circuit operator", 1, rule)
        });
     }
 
@@ -42,6 +43,14 @@ public class UnconditionalIfStatementRuleTest extends SimpleAggregatorTst {
     " private static final boolean DEBUG = \"false\";" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  if (DEBUG) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    // FIXME - this shouldn't be flagged
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void bar(Object x, boolean y) {" + PMD.EOL +
+    "  if (y == true) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

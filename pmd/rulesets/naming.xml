@@ -179,6 +179,98 @@ public abstract class Foo { // should be AbstractFoo
        </example>
     </rule>
 
+    <rule name="AvoidDollarSigns"
+           message="Avoid using dollar signs in variable/method/class/interface names"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       Avoid using dollar signs in variable/method/class/interface names.
+       </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//UnmodifiedClassDeclaration[contains(@Image, '$')]
+|
+//VariableDeclaratorId[contains(@Image, '$')]
+|
+//UnmodifiedInterfaceDeclaration[contains(@Image, '$')]
+|
+//MethodDeclarator[contains(@Image, '$')]
+ ]]>
+                 </value>
+             </property>
+         </properties>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+ public class Fo$o {  // yikes!
+ }
+   ]]>
+       </example>
+     </rule>
+
+    <rule name="MethodWithSameNameAsEnclosingClass"
+          message="Classes should not have non-constructor methods with the same name as the class"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       Non-constructor methods should not have the same name as the enclosing class.
+       </description>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+   //UnmodifiedClassDeclaration[@Image = //MethodDeclarator/@Image]
+]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+       <example>
+    <![CDATA[
+public class MyClass {
+// this is bad because it is a method
+public void MyClass() {}
+// this is OK because it is a constructor
+public MyClass() {}
+}
+    ]]>
+       </example>
+     </rule>
+
+    <rule name="SuspiciousHashcodeMethodName"
+          message="The method name and return type are suspiciously close to hashCode()"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       The method name and return type are suspiciously close to hashCode(), which
+       may mean you are trying (and failing) to override the hashCode() method.
+       </description>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration
+ [ResultType
+  //PrimitiveType
+   [@Image='int']
+   [//MethodDeclarator
+    [@Image='hashcode' or @Image='HashCode' or @Image='Hashcode']
+    [not(FormalParameters/*)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+       <example>
+    <![CDATA[
+public class Foo {
+ public int hashcode() {
+ // oops, this probably was supposed to be hashCode
+ }
+}
+    ]]>
+       </example>
+     </rule>
+
 
 </ruleset>
 
