@@ -3,20 +3,23 @@
  */
 package net.sourceforge.pmd.rules;
 
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.IPositionProvider;
+
 public class ImportWrapper {
-    private int line;
+    private IPositionProvider pos;
     private String name;
     private String fullname;
 
-    public ImportWrapper(String fullname, String name, int line) {
+    public ImportWrapper(String fullname, String name, IPositionProvider pos) {
         this.fullname = fullname;
         this.name = name;
-        this.line = line;
+        this.pos = pos;
     }
 
     public boolean equals(Object other) {
         ImportWrapper i = (ImportWrapper) other;
-        return i.getName().equals(getName());
+        return i.getName().equals(name);
     }
 
     public int hashCode() {
@@ -31,8 +34,8 @@ public class ImportWrapper {
         return fullname;
     }
 
-    public int getLine() {
-        return line;
+    public IPositionProvider getPositionProvider() {
+        return pos;
     }
 }
 

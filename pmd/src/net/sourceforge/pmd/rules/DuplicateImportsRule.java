@@ -35,7 +35,7 @@ public class DuplicateImportsRule extends AbstractRule {
                 String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf("."));
                 if (thisImportOnDemand.getName().equals(singleTypePkg)) {
                     String msg = MessageFormat.format(getMessage(), new Object[]{thisSingleTypeImport.getName()});
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, thisSingleTypeImport.getLine(), msg));
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, thisSingleTypeImport.getPositionProvider(), msg));
                 }
             }
         }
@@ -45,7 +45,7 @@ public class DuplicateImportsRule extends AbstractRule {
     }
 
     public Object visit(ASTImportDeclaration node, Object data) {
-        ImportWrapper wrapper = new ImportWrapper(node.getImportedNameNode().getImage(), node.getImportedNameNode().getImage(), node.getImportedNameNode().getBeginLine());
+        ImportWrapper wrapper = new ImportWrapper(node.getImportedNameNode().getImage(), node.getImportedNameNode().getImage(), node.getImportedNameNode());
 
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {
