@@ -6,7 +6,7 @@ The Design Ruleset contains a collection of rules that find questionable designs
   </description>
 
   <rule name="UseSingletonRule"
-        message="All methods are static.  Consider using Singleton instead."
+        message="All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor to silence this warning."
         class="net.sourceforge.pmd.rules.design.UseSingletonRule">
     <description>
     If you have a class that has nothing but static methods, consider making it a Singleton

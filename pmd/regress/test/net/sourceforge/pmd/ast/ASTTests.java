@@ -21,7 +21,6 @@ public class ASTTests
     suite.addTestSuite( ASTImportDeclarationTest.class );
     suite.addTestSuite( ASTVariableDeclaratorIdTest.class );
     suite.addTestSuite( AccessNodeTest.class );
-    suite.addTestSuite( AssertTest.class );
     suite.addTestSuite( ClassDeclTest.class );
     suite.addTestSuite( FieldDeclTest.class );
     suite.addTestSuite( MethodDeclTest.class );
@@ -35,6 +34,9 @@ public class ASTTests
 
 /*
  * $Log$
+ * Revision 1.3  2004/04/08 18:51:07  tomcopeland
+ * Implemented RFE 925839 - Added some more detail to the UseSingletonRule.
+ *
  * Revision 1.2  2003/11/20 16:01:02  tomcopeland
  * Changing over license headers in the source code
  *
