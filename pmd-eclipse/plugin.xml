@@ -2,7 +2,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="pmd-eclipse Plug-in"
-   version="0.2.0"
+   version="0.3.0"
    provider-name="PMD"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
