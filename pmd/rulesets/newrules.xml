@@ -481,6 +481,33 @@ public abstract class Foo {
 ]]>
       </example>
     </rule>
-    
+
+    <rule name="TestClassWithoutTestCases"
+          message="Class is postfixed with Test but has not test cases in it"
+          class="net.sourceforge.pmd.rules.TestClassWithoutTestCases">
+      <description>
+      Test classes end with the postfix Test. Having a non test class with that name is 
+      not a good practice, since most people will assume it is a test case. Test 
+      classes have test methods named testXXX. 
+      </description>
+      <properties></properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+//Consider changing the name of the class if it is not a test
+//Consider adding test methods if it is a test
+public class CarTest {	
+   
+   public static void main(String[] args) {
+   ...
+   }
+
+   // code
+}
+]]>
+      </example>
+    </rule>
+        
 </ruleset>
 

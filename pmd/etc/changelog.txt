@@ -1,5 +1,5 @@
 ????, 2005 - 2.4:
-New rules: MissingSerialVersionUID, UnnecessaryFinalModifier, AbstractClassDoesNotContainAbstractMethod, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, AvoidCallingFinalize, UseNotifyAllInsteadOfNotify, MissingBreakInSwitch, AvoidInstanceofChecksInCatchClause, AvoidFieldNamesMatchingTypeName, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingMethodName, AvoidNonConstructorMethodsWithClassName
+New rules: MissingSerialVersionUID, UnnecessaryFinalModifier, AbstractClassDoesNotContainAbstractMethod, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, AvoidCallingFinalize, UseNotifyAllInsteadOfNotify, MissingBreakInSwitch, AvoidInstanceofChecksInCatchClause, AvoidFieldNamesMatchingTypeName, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingMethodName, AvoidNonConstructorMethodsWithClassName, TestClassWithoutTestCases
 Fixed bug 994400 - False +: ConstructorCallsOverridableMethodRule, thanks ereissner for reporting it
 Fixed bug 1146116 - JUnitTestsShouldIncludeAssert crashes on inner Interface
 Fixed bug 1114625 - UnusedPrivateField no longer throws an NPE on standalone postfix expressions which are prefixed with 'this'.
