@@ -59,7 +59,9 @@ sub loadProjectList() {
 		if (-e $project->getRptFile()) {
 			$jobLink="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
 		}
-		$result="${result}<tr><td>${jobLink}</td><td></td><td>@{[$project->getHomePage()]}</td>";
+		$result="${result}\n<tr><td>${jobLink}</td>";
+		$result="${result}<td></td>";
+		$result="${result}<td><a name=\"@{[$project->getUnixName()]}\"></a>@{[$project->getHomePage()]}</td>";
 		$result="${result}<td>@{[$project->getNCSS()]}</td>";
 		my $pctg = $project->getPctg();
 		my $color="red";
@@ -73,12 +75,13 @@ sub loadProjectList() {
 			$pctg = "N/A";
 			$color = "white";
 		}
-		$result="${result}<td align=center>@{[$project->getLines()]}</td><td bgcolor=$color align=center>$pctg</td>";
+		$result="${result}<td align=center>@{[$project->getLines()]}</td>";
+		$result="${result}<td bgcolor=$color align=center>$pctg</td>";
 		my $cpdLink="0";
 		if (-e $project->getCPDRptFile() && $project->getCPDLines() > 0) {
 			$cpdLink="<a href=\"@{[$project->getCPDRptURL]}\">@{[$project->getCPDLines()]}</a>";
 		}
-		$result = "${result}<td align=center>$cpdLink</td></tr>";
+		$result = "${result}<td align=center>$cpdLink</td></tr>\n";
 	}
 	$result="${result}</tr></table>";
 	return $result;
