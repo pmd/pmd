@@ -844,13 +844,7 @@ class RulesTree extends JTree implements Constants
                 setOpenIcon(m_defaultOpenIcon);
             }
 
-            if (treeNode.hasUndefinedRuleClass())
-            {
-                setTextNonSelectionColor(Color.red);
-                setTextSelectionColor(Color.red);
-                setFont(m_plainFont);
-            }
-            else if (treeNode.include() && treeNode.includeAncestor())
+            if (treeNode.include() && treeNode.includeAncestor())
             {
                 setTextNonSelectionColor(Color.blue);
                 setTextSelectionColor(Color.blue);

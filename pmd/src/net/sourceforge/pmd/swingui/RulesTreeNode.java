@@ -2,7 +2,6 @@ package net.sourceforge.pmd.swingui;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.UndefinedRule;
 import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -587,16 +586,6 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
         {
             treeNodes[n] = null;
         }
-    }
-
-    /**
-     *************************************************************************
-     *
-     * @return
-     */
-    protected boolean hasUndefinedRuleClass()
-    {
-        return isRule() && (m_rule instanceof UndefinedRule);
     }
 
     /**
