@@ -5,27 +5,44 @@
 These are new rules that are still in progress
   </description>
 
-  <rule name="UseSingletonRule"
-        message="All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor to silence this warning."
-        class="net.sourceforge.pmd.rules.design.UseSingletonRule">
-    <description>
-    If you have a class that has nothing but static methods, consider making it a Singleton
-    </description>
-      <priority>3</priority>
+    <rule name="ConstructorCallsOverridableMethodRule"
+          message="Avoid calls to overridable methods during construction"
+          class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethodRule">
+      <description>
+      Calling overridable methods during construction poses a risk of invoking methods on an
+          incompletely constructed object.  This situation can be difficult to discern.
+      It may leave the sub-class unable to construct its superclass or forced to
+          replicate the construction process completely within itself, losing the ability to call
+      super().  If the default constructor contains a call to an overridable method,
+          the subclass may be completely uninstantiable.   Note that this includes method calls
+          throughout the control flow graph - i.e., if a constructor Foo() calls a private method
+            bar() that calls a public method buz(), there's a problem.
+      </description>
+        <priority>1</priority>
+      <example>
+  <![CDATA[
+    public class SeniorClass {
+      public SeniorClass(){
+          toString(); //may throw NullPointerException if overridden
+      }
+      public String toString(){
+        return "IAmSeniorClass";
+      }
+    }
+    public class JuniorClass extends SeniorClass {
+      private String name;
+      public JuniorClass(){
+        super(); //Automatic call leads to NullPointerException
+        name = "JuniorClass";
+      }
+      public String toString(){
+        return name.toUpperCase();
+      }
+    }
+  ]]>
+      </example>
+    </rule>
 
-    <example>
-<![CDATA[
-public class MaybeASingleton {
-    public static void foo() {
-     // etc
-    }
-    public static void bar() {
-     // etc
-    }
-}
-]]>
-    </example>
-  </rule>
 
 
     <!--

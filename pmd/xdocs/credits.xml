@@ -40,13 +40,13 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Michael Haggerty - bug reports for FinalizeDoesNotCallSuperFinalize and UnusedModifier</li>
             <li>ereissner - bug report and documentation suggestions for UseSingletonRule</li>
             <li>Phil Shaw - documentation suggestions</li>
             <li>Todd Wright - XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
             <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>
             <li>Noel Grandin - EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
-            <li>Michael Haggerty - bug report for UnusedModifier</li>
             <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>
             <li>Morgan Schweers - Javascript highlighter for the PMD scoreboard</li>
             <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many PMD scoreboard ideas</li>

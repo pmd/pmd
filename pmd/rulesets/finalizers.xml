@@ -108,6 +108,9 @@ a block whose last statement is NOT a call to super.finalize -->
    /Block
       /BlockStatement[last()]
       [not(Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image='finalize'])]
+      [not(Statement/TryStatement[@Finally='true']
+       /Block/BlockStatement/Statement/StatementExpression
+        /PrimaryExpression/PrimaryPrefix[@Image='finalize'])]
 ]]>
                 </value>
             </property>

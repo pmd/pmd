@@ -18,6 +18,8 @@ public class FinalizeDoesNotCallSuperFinalizeRuleTest extends SimpleAggregatorTs
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "bad", 1, rule),
            new TestDescriptor(TEST2, "ok", 0, rule),
+           new TestDescriptor(TEST3, "ok, super.finalize called in try..finally", 0, rule),
+           new TestDescriptor(TEST4, "ok, super.finalize called in try..catch..finally", 0, rule),
        });
     }
 
@@ -37,18 +39,21 @@ public class FinalizeDoesNotCallSuperFinalizeRuleTest extends SimpleAggregatorTs
     " }" + PMD.EOL +
     "}";
 
-/*
-TODO
-This should handle a call to super.finalize() within a finally block, e.g.
+    private static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " public void finalize() {" + PMD.EOL +
+    "  try {} finally {" + PMD.EOL +
+    "   super.finalize();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
-protected void finalize()
-{
-   try { //  do something
-    }
-   finally
-   {
-      super.finalize(); // this is OK and should not be flagged
-   }
-}
-*/
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " public void finalize() {" + PMD.EOL +
+    "  try {} catch(Exception e) {} finally {" + PMD.EOL +
+    "   super.finalize();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 }
