@@ -118,8 +118,6 @@ and syntax highlighting functionality.  Things to do:
 <li>Add some stuff to the configuration thing so you can turn on/off individual rules.</li>
 <li>Clean up the threading so the GUI doesn't freeze while PMD is working</li>
 </ul>
-
-</p>
       </subsection>
       <subsection name="Maven">
 <p>
