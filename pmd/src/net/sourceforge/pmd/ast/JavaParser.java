@@ -2386,58 +2386,82 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   }
 
   final public void UnaryExpression() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case PLUS:
-    case MINUS:
+ /*@bgen(jjtree) UnaryExpression */
+  ASTUnaryExpression jjtn000 = new ASTUnaryExpression(this, JJTUNARYEXPRESSION);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
-        jj_consume_token(PLUS);
-        break;
       case MINUS:
-        jj_consume_token(MINUS);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case PLUS:
+          jj_consume_token(PLUS);
+          break;
+        case MINUS:
+          jj_consume_token(MINUS);
+          break;
+        default:
+          jj_la1[69] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        UnaryExpression();
+        break;
+      case INCR:
+        PreIncrementExpression();
+        break;
+      case DECR:
+        PreDecrementExpression();
+        break;
+      case BOOLEAN:
+      case BYTE:
+      case CHAR:
+      case DOUBLE:
+      case FALSE:
+      case FLOAT:
+      case INT:
+      case LONG:
+      case NEW:
+      case NULL:
+      case SHORT:
+      case SUPER:
+      case THIS:
+      case TRUE:
+      case VOID:
+      case INTEGER_LITERAL:
+      case FLOATING_POINT_LITERAL:
+      case CHARACTER_LITERAL:
+      case STRING_LITERAL:
+      case IDENTIFIER:
+      case LPAREN:
+      case BANG:
+      case TILDE:
+        UnaryExpressionNotPlusMinus();
         break;
       default:
-        jj_la1[69] = jj_gen;
+        jj_la1[70] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      UnaryExpression();
-      break;
-    case INCR:
-      PreIncrementExpression();
-      break;
-    case DECR:
-      PreDecrementExpression();
-      break;
-    case BOOLEAN:
-    case BYTE:
-    case CHAR:
-    case DOUBLE:
-    case FALSE:
-    case FLOAT:
-    case INT:
-    case LONG:
-    case NEW:
-    case NULL:
-    case SHORT:
-    case SUPER:
-    case THIS:
-    case TRUE:
-    case VOID:
-    case INTEGER_LITERAL:
-    case FLOATING_POINT_LITERAL:
-    case CHARACTER_LITERAL:
-    case STRING_LITERAL:
-    case IDENTIFIER:
-    case LPAREN:
-    case BANG:
-    case TILDE:
-      UnaryExpressionNotPlusMinus();
-      break;
-    default:
-      jj_la1[70] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (RuntimeException)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
     }
   }
 

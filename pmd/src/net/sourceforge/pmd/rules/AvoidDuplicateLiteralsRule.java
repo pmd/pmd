@@ -123,7 +123,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     }
 
     public Object visit(ASTLiteral node, Object data) {
-        if (!hasAtLeastSixParents(node) || (!sixthParentIsAnArgList(node) && !sixthParentIsAVariableInitializer(node))) {
+        if (!hasAtLeastSevenParents(node) || (!seventhParentIsAnArgList(node) && !seventhParentIsAVariableInitializer(node))) {
             return data;
         }
 
@@ -149,17 +149,17 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         return data;
     }
 
-    private boolean sixthParentIsAVariableInitializer(ASTLiteral node) {
-        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTVariableInitializer;
+    private boolean seventhParentIsAVariableInitializer(ASTLiteral node) {
+        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTVariableInitializer;
     }
 
-    private boolean sixthParentIsAnArgList(ASTLiteral node) {
-        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList;
+    private boolean seventhParentIsAnArgList(ASTLiteral node) {
+        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList;
     }
 
-    private boolean hasAtLeastSixParents(Node node) {
+    private boolean hasAtLeastSevenParents(Node node) {
         Node currentNode = node;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             if (currentNode instanceof ASTCompilationUnit) {
                 return false;
             }

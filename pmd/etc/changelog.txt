@@ -2,6 +2,7 @@
 New rules: DontImportSunRule
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 Added isTrue() to ASTBooleanLiteral.
+Added UnaryExpression to the AST.
 
 January 7, 2004 - 1.4:
 New rules: AbstractNamingRule, ProperCloneImplementationRule

@@ -15,7 +15,7 @@ public class FinalFieldCouldBeStaticRuleTest extends SimpleAggregatorTst {
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//FieldDeclaration[not (ancestor::InterfaceDeclaration)][@Final='true' and @Static='false']/VariableDeclarator/VariableInitializer/Expression/ConditionalAndExpression/InstanceOfExpression/PrimaryExpression/PrimaryPrefix/Literal");
+        rule.addProperty("xpath", "//FieldDeclaration[not (ancestor::InterfaceDeclaration)][@Final='true' and @Static='false']/VariableDeclarator/VariableInitializer/Expression/ConditionalAndExpression/InstanceOfExpression/UnaryExpression/PrimaryExpression/PrimaryPrefix/Literal");
     }
 
     public void testAll() {

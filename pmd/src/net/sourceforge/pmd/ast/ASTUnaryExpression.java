@@ -11,6 +11,21 @@ public class ASTUnaryExpression extends SimpleNode {
         super(p, id);
     }
 
+    private boolean isPositive = true;
+
+    public void setNegative() {
+        this.isPositive = false;
+    }
+
+    public boolean isPositive() {
+        return this.isPositive;
+    }
+
+    public void dump(String prefix) {
+        String out = isPositive ? "+" : "-";
+        System.out.println(toString(prefix) + ":" + out);
+        dumpChildren(prefix);
+    }
 
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

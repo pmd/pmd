@@ -823,10 +823,10 @@ void MultiplicativeExpression() #void :
   UnaryExpression() ( ( "*" | "/" | "%" ) UnaryExpression() )*
 }
 
-void UnaryExpression() #void :
+void UnaryExpression() :
 {}
 {
-  ( "+" | "-" ) UnaryExpression()
+  ( "+" | "-" {jjtThis.setNegative();} ) UnaryExpression()
 | PreIncrementExpression()
 | PreDecrementExpression()
 | UnaryExpressionNotPlusMinus()

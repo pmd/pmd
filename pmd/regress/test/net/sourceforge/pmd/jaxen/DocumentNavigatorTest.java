@@ -151,116 +151,11 @@ public class DocumentNavigatorTest extends RuleTst {
         Iterator iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
         assertFalse(iter.hasNext());
     }
-    
-/*
-    public void testAttributeAxisIterator() {
-        //TODO: This is fragile - attribute order is not guaranteed
-        DocumentNavigator nav = new DocumentNavigator();
-        Attribute attr;
-        Iterator iter = nav.getAttributeAxisIterator(rule.primaryPrefix);
-        attr = (Attribute) iter.next();
-        assertEquals("BeginLine", attr.getName());
-        assertEquals("12", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("BeginColumn", attr.getName());
-        assertEquals("17", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("EndLine", attr.getName());
-        assertEquals("12", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("EndColumn", attr.getName());
-        assertEquals("33", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("ThisModifier", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("SuperModifier", attr.getName());
-        assertEquals("false", attr.getValue());
-        assertFalse(iter.hasNext());
-    }
-*/
-
-/*
-    public void testTest() throws Throwable {
-        runTestFromFile("UnusedModifier1.java", rule);
-        DocumentNavigator nav = new DocumentNavigator();
-		XPath xpath1 = new BaseXPath(".[@Public = 'true']", nav);
-		assertTrue(xpath1.booleanValueOf(rule.methodDeclaration));
-		assertSame(rule.methodDeclaration, xpath1.selectSingleNode(rule.methodDeclaration));       
-        XPath xpath2 = new BaseXPath("//ASTMethodDeclaration[@Public='true']", nav);
-        System.out.println(xpath2);
-        assertTrue(xpath2.booleanValueOf(rule.compilationUnit));
-        assertSame(rule.methodDeclaration, xpath2.selectSingleNode(rule.compilationUnit));       
-    }
-*/
-
-/*
-    public void testAttributeAxisIterator2() throws Throwable {
-        //TODO: This is fragile - attribute order is not guaranteed
-        runTestFromFile("UnusedModifier1.java", rule);
-        DocumentNavigator nav = new DocumentNavigator();
-        Attribute attr;
-        assertNotNull(rule.methodDeclaration);
-        Iterator iter = nav.getAttributeAxisIterator(rule.methodDeclaration);
-        attr = (Attribute) iter.next();
-        assertEquals("BeginLine", attr.getName());
-        assertEquals("2", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("BeginColumn", attr.getName());
-        assertEquals("2", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("EndLine", attr.getName());
-        assertEquals("2", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("EndColumn", attr.getName());
-        assertEquals("19", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Interface", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Private", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Transient", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Static", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Public", attr.getName());
-        assertEquals("true", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Protected", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Final", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Synchronized", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Volatile", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Native", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Abstract", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Strict", attr.getName());
-        assertEquals("false", attr.getValue());
-        attr = (Attribute) iter.next();
-        assertEquals("Super", attr.getName());
-        assertEquals("false", attr.getValue());
-        assertFalse(iter.hasNext());
-    }
-*/
 
     public void testXPath() throws JaxenException {
 		BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
 		List matches = xPath.selectNodes(rule.statement);
-		assertEquals(6, matches.size());        
+		assertEquals(6, matches.size());
     }
 
     public void testXPath2() throws JaxenException {
@@ -272,12 +167,12 @@ public class DocumentNavigatorTest extends RuleTst {
     public void testXPath3() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
         List matches = xPath.selectNodes(rule.typeDeclaration);
-        assertEquals(76, matches.size());
+        assertEquals(80, matches.size());
     }
     
     public void testXPath4() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
         List matches = xPath.selectNodes(rule.compilationUnit);
-        assertEquals(79, matches.size());
+        assertEquals(83, matches.size());
     }    
 }
