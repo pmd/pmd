@@ -170,7 +170,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             // are name and number of parameters the same?
             if (methodNode.getImage().equals(img) && methodNode.getParameterCount() == args
                     && !methodCalledFromItself(node, nodeImage)) {
-                // should check parameter types here, this misses some unused methods
+                // TODO should check parameter types here, this misses some unused methods, probably causing bug 1114754 http://sourceforge.net/tracker/index.php?func=detail&aid=1114754&group_id=56262&atid=479921
                 i.remove();
             }
         }
