@@ -6,7 +6,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class CloneMethodMustImplementCloneableRuleTest extends SimpleAggregatorTst{
+public class CloneMethodMustImplementCloneableTest extends SimpleAggregatorTst{
 
   private Rule rule;
 

@@ -6,7 +6,7 @@
 The Clone Implementation ruleset contains a collection of rules that find questionable usages of the clone() method.
   </description>
 
-    <rule name="ProperCloneImplementationRule"
+    <rule name="ProperCloneImplementation"
          message="Object clone() should be implemented with super.clone()"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>

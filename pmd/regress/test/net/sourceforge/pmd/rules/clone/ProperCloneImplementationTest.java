@@ -9,12 +9,12 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class ProperCloneImplementationRuleTest extends SimpleAggregatorTst{
+public class ProperCloneImplementationTest extends SimpleAggregatorTst{
 
   private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/clone.xml", "ProperCloneImplementationRule");
+        rule = findRule("rulesets/clone.xml", "ProperCloneImplementation");
     }
 
   public void testAll() {
