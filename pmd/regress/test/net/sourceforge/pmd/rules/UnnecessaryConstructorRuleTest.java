@@ -37,38 +37,38 @@ public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class UnnecessaryConstructor1 {" + PMD.EOL +
-    " public UnnecessaryConstructor1() {}" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public Foo() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class UnnecessaryConstructor2 {" + PMD.EOL +
-    " private UnnecessaryConstructor2() {}" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private Foo() {}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class UnnecessaryConstructor3 {" + PMD.EOL +
-    " public UnnecessaryConstructor3(int x) {}" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public Foo(int x) {}" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class UnnecessaryConstructor4 {" + PMD.EOL +
-    " public UnnecessaryConstructor4() {  " + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public Foo() {  " + PMD.EOL +
     "  int x = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class UnnecessaryConstructor5 {" + PMD.EOL +
-    " public UnnecessaryConstructor5() throws IOException {  " + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public Foo() throws IOException {  " + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public class UnnecessaryConstructor6 {" + PMD.EOL +
-    " public UnnecessaryConstructor6() {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public Foo() {" + PMD.EOL +
     " }" + PMD.EOL +
-    " public UnnecessaryConstructor6(String foo) {}" + PMD.EOL +
+    " public Foo(String foo) {}" + PMD.EOL +
     "}";
 
     private static final String TEST7 =
