@@ -59,7 +59,6 @@ class Job
   
   def run_pmd
    cmd="java -jar pmd-1.0rc2.jar \"#{@sourceDirectory}\" html rulesets/unusedcode.xml > \"#{reportFile()}\""
-   puts "running #{cmd}"
    `#{cmd}`
    arr = IO.readlines(reportFile())
    newFile=File.open(reportFile(), "w")

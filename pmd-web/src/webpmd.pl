@@ -4,6 +4,7 @@ $| =1;
 use CGI qw(:standard escapeHTML);
 use CGI::Carp qw(fatalsToBrowser);
 use Time::localtime;
+use PMD::Project;
 
 $query = new CGI();
 print $query->header();
@@ -20,9 +21,10 @@ sub default() {
  print h3("<center>PMD-WEB</center>");
 
  if (param("title")) {
-  addProject(param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
+  my $project = PMD::Project->new(param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
+  addProject($project);
   print p();
-  my $title = param("title");
+  my $title = $project->getTitle();
   print b("Added ${title} to the schedule");
  } 
 
@@ -119,8 +121,10 @@ sub getLines() {
 
 
 sub addProject() {
- my ($title, $unixname,$moduleDirectory,$srcdir) = @_;
- my $cmd="echo \"${title}:${unixname}:${moduleDirectory}:${srcdir}\" > jobs/${unixname}_${moduleDirectory}.txt";
+ my ($project) = @_;
+ my $data = $project->getString();
+ my $jobsfile = $project->getJobsFile();
+ my $cmd = "echo \"$data\" > $jobsfile";
  `${cmd}`;
 }
 
