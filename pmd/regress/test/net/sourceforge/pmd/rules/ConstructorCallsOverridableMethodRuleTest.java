@@ -16,9 +16,10 @@ public class ConstructorCallsOverridableMethodRuleTest extends SimpleAggregatorT
            new TestDescriptor(TEST2, "calling protected method from constructor", 1, new ConstructorCallsOverridableMethodRule()),
            new TestDescriptor(TEST3, "calling package private method from constructor", 1, new ConstructorCallsOverridableMethodRule()),
            new TestDescriptor(TEST4, "calling private method, ok", 0, new ConstructorCallsOverridableMethodRule()),
-           new TestDescriptor(TEST5, "overloaded constructors, calling public methos", 1, new ConstructorCallsOverridableMethodRule()),
+           new TestDescriptor(TEST5, "overloaded constructors, calling public method", 1, new ConstructorCallsOverridableMethodRule()),
            new TestDescriptor(TEST6, "calling method on literal bug", 0, new ConstructorCallsOverridableMethodRule()),
            new TestDescriptor(TEST7, "method in anonymous inner class is ok", 0, new ConstructorCallsOverridableMethodRule()),
+           new TestDescriptor(TEST8, "bug report 975407", 0, new ConstructorCallsOverridableMethodRule()),
        });
     }
 
@@ -81,5 +82,16 @@ public class ConstructorCallsOverridableMethodRuleTest extends SimpleAggregatorT
     "  });" + PMD.EOL +
     " }" + PMD.EOL +
     " public void bar() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST8 =
+    "package example;" + PMD.EOL +
+    "import java.util.HashMap;" + PMD.EOL +
+    "import java.util.Map;" + PMD.EOL +
+    "public class ConvertPARRequestContainer {" + PMD.EOL +
+    " public ConvertPARRequestContainer() {" + PMD.EOL +
+    "  updateConfigButtonsInfo();" + PMD.EOL +
+    " }" + PMD.EOL +
+    " private void updateConfigButtonsInfo() {}" + PMD.EOL +
     "}";
 }
