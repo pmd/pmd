@@ -37,6 +37,22 @@ public class Something {
     </example>
   </rule>
 
+  <rule name="ForLoopsMustUseBracesRule"
+        message="Avoid using 'for' statements without curly braces"
+        class="net.sourceforge.pmd.rules.ForLoopsMustUseBracesRule">
+    <description>
+    Avoid using 'for' statements without using curly braces
+    </description>
+
+    <example>
+<![CDATA[
+  public void foo() {
+    for (int i=0; i<42;i++)
+        foo();
+  }
+]]>
+    </example>
+  </rule>
 
 </ruleset>
 
