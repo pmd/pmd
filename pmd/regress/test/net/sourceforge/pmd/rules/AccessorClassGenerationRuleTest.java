@@ -6,7 +6,7 @@ import net.sourceforge.pmd.cpd.CPD;
 public class AccessorClassGenerationRuleTest extends RuleTst {
 
     private static final String TEST1 =
-    "public class AccessorClassGeneration1 {" + CPD.EOL +
+    "public class Foo1 {" + CPD.EOL +
     " public class InnerClass {" + CPD.EOL +
     "   private InnerClass(){" + CPD.EOL +
     "   }" + CPD.EOL +
@@ -17,7 +17,7 @@ public class AccessorClassGenerationRuleTest extends RuleTst {
     "}";
 
     private static final String TEST2 =
-    "public class AccessorClassGeneration2 {" + CPD.EOL +
+    "public class Foo2 {" + CPD.EOL +
     " public class InnerClass {" + CPD.EOL +
     "   public InnerClass(){" + CPD.EOL +
     "   }" + CPD.EOL +
@@ -28,13 +28,13 @@ public class AccessorClassGenerationRuleTest extends RuleTst {
     "}";
 
     private static final String TEST3 =
-    "public class AccessorClassGeneration3 {" + CPD.EOL +
+    "public class Foo3 {" + CPD.EOL +
     "    public class InnerClass {" + CPD.EOL +
     "      void method(){" + CPD.EOL +
-    "        new AccessorClassGeneration3();//Causes generation of accessor" + CPD.EOL +
+    "        new Foo3();//Causes generation of accessor" + CPD.EOL +
     "      }" + CPD.EOL +
     "    }" + CPD.EOL +
-    "    private AccessorClassGeneration3(){" + CPD.EOL +
+    "    private Foo3(){" + CPD.EOL +
     "    }" + CPD.EOL +
     "}";
 
