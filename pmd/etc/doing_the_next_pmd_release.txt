@@ -26,6 +26,7 @@ mkdir -p c:\tmp\pmd\etc
 mkdir c:\tmp\pmd\lib
 copy build.xml c:\tmp\pmd\etc
 copy run.bat c:\tmp\pmd\etc
+copy cpdgui.bat c:\tmp\pmd\etc
 copy ..\lib\pmd-0.9.jar c:\tmp\pmd\lib
 Zip it up, rename it pmd-bin-0.9.zip
 
