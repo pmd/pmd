@@ -18,45 +18,38 @@ import java.util.Iterator;
 
 public class Test {
 
-    private TokenSets tokenSets = new TokenSets();
+
+    public static class Message implements Entry {
+        public String content;
+        public Message() {}
+        public Message(String in) {
+            content = in;
+        }
+        public String toString() {
+            return "Message:"+content;
+        }
+    }
+
 
     public Test() {
         try {
             JavaSpace space = Util.findSpace("mordor");
-            add("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true);
-            Entry wrapper = new TokenSetsWrapper(tokenSets);
 
             long start = System.currentTimeMillis();
             System.out.println("WRITING");
-            space.write(wrapper, null, Lease.FOREVER);
+            space.write(new Message("howdy"), null, Lease.FOREVER);
             long stop = System.currentTimeMillis();
             System.out.println("that took " + (stop - start) + " milliseconds");
 
             start = System.currentTimeMillis();
             System.out.println("TAKING");
-            TokenSetsWrapper result = (TokenSetsWrapper)space.take(new TokenSetsWrapper(), null, Long.MAX_VALUE);
+            Message result = (Message)space.take(new Message(), null, Long.MAX_VALUE);
+            System.out.println("result = " + result.toString());
             stop = System.currentTimeMillis();
             System.out.println("that took " + (stop - start) + " milliseconds");
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void add(String dir, boolean recurse) throws IOException {
-        FileFinder finder = new FileFinder();
-        List files = finder.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
-        for (Iterator i = files.iterator(); i.hasNext();) {
-            add(files.size(), (File)i.next());
-        }
-    }
-
-    private void add(int fileCount, File file) throws IOException {
-        Tokenizer t = new JavaTokensTokenizer();
-        TokenList ts = new TokenList(file.getAbsolutePath());
-        FileReader fr = new FileReader(file);
-        t.tokenize(ts, fr);
-        fr.close();
-        tokenSets.add(ts);
     }
 
     public static void main(String[] args) {
