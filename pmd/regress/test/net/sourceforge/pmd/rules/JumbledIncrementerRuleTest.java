@@ -34,7 +34,7 @@ public class JumbledIncrementerRuleTest extends SimpleAggregatorTst {
         rule = new XPathRule();
         rule.addProperty(
             "xpath",
-            "//ForStatement[ForUpdate//Name/@Image = ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]");
+            "//ForStatement[ForUpdate/StatementExpressionList/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/@Image = ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]");
     }
 
     public void testAll() {
@@ -42,33 +42,34 @@ public class JumbledIncrementerRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "", 1, rule),
            new TestDescriptor(TEST2, "", 0, rule),
            new TestDescriptor(TEST3, "", 0, rule),
+           new TestDescriptor(TEST4, "using outer loop incrementor as array index is OK", 0, rule),
        });
     }
 
     private static final String TEST1 =
-    "public class JumbledIncrementerRule1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void foo() { " + PMD.EOL +
     "  for (int i = 0; i < 10; i++) { " + PMD.EOL +
     "   for (int k = 0; k < 20; i++) { " + PMD.EOL +
-    "    System.out.println(\"Hello\"); " + PMD.EOL +
+    "    int x = 2; " + PMD.EOL +
     "   } " + PMD.EOL +
     "  } " + PMD.EOL +
     " } " + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class JumbledIncrementerRule2 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void foo() { " + PMD.EOL +
     "  for (int i = 0; i < 10; i++) { " + PMD.EOL +
     "   for (int k = 0; k < 20; k++) { " + PMD.EOL +
-    "    System.out.println(\"Hello\"); " + PMD.EOL +
+    "    int x = 2; " + PMD.EOL +
     "   } " + PMD.EOL +
     "  } " + PMD.EOL +
     " } " + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class JumbledIncrementerRule3 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void foo() { " + PMD.EOL +
     "  for (int i=0; i<5; ) {" + PMD.EOL +
     "   i++;" + PMD.EOL +
@@ -85,6 +86,17 @@ public class JumbledIncrementerRuleTest extends SimpleAggregatorTst {
     "  for (int i=0; i<5;i++) ;" + PMD.EOL +
     "  for (int i=0; i<5;i++) " + PMD.EOL +
     "   foo();" + PMD.EOL +
+    " } " + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " public void foo() { " + PMD.EOL +
+    "  for (int i = 0; i < 10; i++) { " + PMD.EOL +
+    "   for (int k = 0; k < 20; j[i]++) { " + PMD.EOL +
+    "    int x = 2; " + PMD.EOL +
+    "   } " + PMD.EOL +
+    "  } " + PMD.EOL +
     " } " + PMD.EOL +
     "}";
 

@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Ron Sidi - bug reports</li>
             <li>David Koontz - suggestions for tweaking PMD command line options</li>
             <li>Jesse Glick - patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Jeff Epstein - TextPad integration and tests</li>

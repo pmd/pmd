@@ -195,7 +195,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
 
 
     <rule name="JumbledIncrementer"
-         message="Avoid using an outer loop incrementer in an inner loop for update expression"
+         message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>
      Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
@@ -204,9 +204,12 @@ The Basic Ruleset contains a collection of good practices which everyone should 
          <property name="xpath">
              <value>
                  <![CDATA[
-    //ForStatement[ForUpdate//Name/@Image = 
-      ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]
-                 ]]>
+//ForStatement
+ [
+  ForUpdate/StatementExpressionList/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+  =
+  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+ ]]]>
              </value>
          </property>
      </properties>

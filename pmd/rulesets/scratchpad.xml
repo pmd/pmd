@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<ruleset name="tmp">
+<ruleset name="scratchpad">
   <description>
 These are new rules that are still in progress
   </description>
 
 
-
-    <rule name="AvoidDuplicateLiterals"
+<!--
+<rule name="AvoidDuplicateLiterals"
         message="The same String literal appears {0} times in this file; the first occurrence is on line {1}"
         class="net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule">
     <description>
@@ -32,6 +32,7 @@ public class Foo {
 ]]>
     </example>
   </rule>
+-->
 
 
     <!--
