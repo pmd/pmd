@@ -176,7 +176,7 @@
 
 <target name="cpd">
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
-    <cpd minimumTokenCount="20" outputFile="cpd.txt">
+    <cpd ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt">
         <fileset dir="/usr/local/java/src/java/lang/ref">
             <include name="**/*.java"/>
         </fileset>

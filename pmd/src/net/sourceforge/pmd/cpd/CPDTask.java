@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * CPDTask
@@ -24,7 +25,7 @@ import java.util.List;
  * <project name="CPDProj" default="main" basedir=".">
  * <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  * <target name="main">
- * <cpd minimumTokenCount="100" outputFile="c:\cpdrun.txt">
+ * <cpd ignoreIdentifiers="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
  * <fileset dir="/path/to/my/src">
  * <include name="*.java"/>
  * </fileset>
@@ -42,6 +43,7 @@ public class CPDTask extends Task {
 
     private String format = TEXT_FORMAT;
     private int minimumTokenCount;
+    private boolean ignoreLiterals;
     private File outputFile;
     private List filesets = new ArrayList();
 
@@ -50,7 +52,11 @@ public class CPDTask extends Task {
             validateFields();
 
             log("Tokenizing files", Project.MSG_INFO);
-            CPD cpd = new CPD(minimumTokenCount, new JavaLanguage());
+            Properties p = new Properties();
+            if (ignoreLiterals) {
+                p.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
+            }
+            CPD cpd = new CPD(minimumTokenCount, new JavaLanguage(p));
             tokenizeFiles(cpd);
 
             log("Starting to analyze code", Project.MSG_INFO);
@@ -128,6 +134,10 @@ public class CPDTask extends Task {
 
     public void setMinimumTokenCount(int minimumTokenCount) {
         this.minimumTokenCount = minimumTokenCount;
+    }
+
+    public void setIgnoreLiterals(boolean value) {
+        this.ignoreLiterals = value;
     }
 
     public void setOutputFile(File outputFile) {
