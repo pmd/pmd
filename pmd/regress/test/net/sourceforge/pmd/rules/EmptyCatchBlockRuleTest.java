@@ -35,7 +35,7 @@ public class EmptyCatchBlockRuleTest extends RuleTst {
         runTestFromString(TEST5, 0, rule);
     }
 
-    private static final String TEST1 =
+    public static final String TEST1 =
     "import java.io.*;" + CPD.EOL +
     "public class EmptyCatchBlock {" + CPD.EOL +
     "    public EmptyCatchBlock() {" + CPD.EOL +

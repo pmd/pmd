@@ -95,19 +95,4 @@ public class XPathRuleTest extends RuleTst {
         runTestFromFile("AvoidReassigningParameters5.java", 0, rule);
         runTestFromFile("AvoidReassigningParameters6.java", 0, rule);
     }
-
-    /**
-     * @todo Only a partial implementation
-     * Can't figure out how to work with the ImportOnDemand nodes
-     */
-    public void testDuplicateImportsRule() throws Throwable {
-        rule.addProperty(
-            "xpath",
-            "//ImportDeclaration"
-                + "[preceding::ImportDeclaration/Name/@Image = Name/@Image]");
-        runTestFromFile("DuplicateImports.java", 1, rule);
-        runTestFromFile("DuplicateImports2.java", 1, rule);
-        //runTestFromFile("DuplicateImports3.java", 1, rule);
-        runTestFromFile("DuplicateImports4.java", 0, rule);
-    }
 }

@@ -7,6 +7,7 @@
 package test.net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
@@ -20,6 +21,7 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.UnsupportedAxisException;
 import test.net.sourceforge.pmd.rules.RuleTst;
+import test.net.sourceforge.pmd.rules.EmptyCatchBlockRuleTest;
 
 import java.util.Iterator;
 import java.util.List;
@@ -80,7 +82,7 @@ public class DocumentNavigatorTest extends RuleTst {
     public void setUp() throws Exception {
         try{
             rule = new TestRule();
-            runTestFromFile("EmptyCatchBlock1.java", rule);
+            runTestFromString(EmptyCatchBlockRuleTest.TEST1, rule, new Report());
         } catch (Throwable xx) {
             fail();
         }
