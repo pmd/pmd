@@ -1,10 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.cpd;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -60,12 +61,10 @@ public class GUI implements CPDListener {
                     JOptionPane.showMessageDialog(frame, "File saved");
                 } catch (IOException e) {
                     error("Couldn't save file" + f.getAbsolutePath(), e);
-                }
-                finally
-                {
-                	if (pw != null) {
-                		pw.close();
-                	}
+                } finally {
+                    if (pw != null) {
+                        pw.close();
+                    }
                 }
             } else {
                 error("Could not write to file " + f.getAbsolutePath(), null);
@@ -162,7 +161,7 @@ public class GUI implements CPDListener {
 
     private JPanel makeSettingsPanel(JButton browseButton, JButton goButton, JButton cxButton) {
         JPanel settingsPanel = new JPanel();
-        GridBagHelper helper = new GridBagHelper(settingsPanel, new double[] { 0.2, 0.7, 0.1, 0.1 });
+        GridBagHelper helper = new GridBagHelper(settingsPanel, new double[]{0.2, 0.7, 0.1, 0.1});
         helper.addLabel("Root source directory:");
         helper.add(rootDirectoryField);
         helper.add(browseButton, 2);
@@ -187,7 +186,7 @@ public class GUI implements CPDListener {
 
     private JPanel makeProgressPanel() {
         JPanel progressPanel = new JPanel();
-        final double[] weights = { 0.0, 0.8, 0.4, 0.2 };
+        final double[] weights = {0.0, 0.8, 0.4, 0.2};
         GridBagHelper helper = new GridBagHelper(progressPanel, weights);
         helper.addLabel("Tokenizing files:");
         helper.add(tokenizingFilesBar, 3);
@@ -215,11 +214,10 @@ public class GUI implements CPDListener {
     private void go() {
         try {
             if (!(new File(rootDirectoryField.getText())).exists()) {
-                JOptionPane.showMessageDialog(
-                    frame,
-                    "Can't read from that root source directory",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame,
+                        "Can't read from that root source directory",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -238,10 +236,10 @@ public class GUI implements CPDListener {
             tokenizingFilesBar.setMinimum(0);
             phaseLabel.setText("");
             if (rootDirectoryField.getText().endsWith(".class")
-                || rootDirectoryField.getText().endsWith(".php")
-                || rootDirectoryField.getText().endsWith(".java")
-                || rootDirectoryField.getText().endsWith(".cpp")
-                || rootDirectoryField.getText().endsWith(".c")) {
+                    || rootDirectoryField.getText().endsWith(".php")
+                    || rootDirectoryField.getText().endsWith(".java")
+                    || rootDirectoryField.getText().endsWith(".cpp")
+                    || rootDirectoryField.getText().endsWith(".c")) {
                 cpd.add(new File(rootDirectoryField.getText()));
             } else {
                 if (recurseCheckbox.isSelected()) {
@@ -259,14 +257,14 @@ public class GUI implements CPDListener {
                     long hours = (long) Math.floor(elapsedSeconds / 3600);
                     long minutes = (long) Math.floor((elapsedSeconds - (hours * 3600)) / 60);
                     long seconds = elapsedSeconds - ((minutes * 60) + (hours * 3600));
-                    timeField.setText(
-                        ""
+                    timeField.setText(""
                             + munge(String.valueOf(hours))
                             + ":"
                             + munge(String.valueOf(minutes))
                             + ":"
                             + munge(String.valueOf(seconds)));
                 }
+
                 private String munge(String in) {
                     if (in.length() < 2) {
                         in = "0" + in;
@@ -286,9 +284,8 @@ public class GUI implements CPDListener {
 
             String report = new SimpleRenderer().render(cpd.getMatches());
             if (report.length() == 0) {
-                JOptionPane.showMessageDialog(
-                    frame,
-                    "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
+                JOptionPane.showMessageDialog(frame,
+                        "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
             } else {
                 resultsTextArea.setText(report);
             }
@@ -305,15 +302,15 @@ public class GUI implements CPDListener {
 
     public String getPhaseText(int phase) {
         switch (phase) {
-            case CPDListener.INIT :
+            case CPDListener.INIT:
                 return "Initializing";
-            case CPDListener.HASH :
+            case CPDListener.HASH:
                 return "Hashing";
-            case CPDListener.MATCH :
+            case CPDListener.MATCH:
                 return "Matching";
-            case CPDListener.GROUPING :
+            case CPDListener.GROUPING:
                 return "Grouping";
-            case CPDListener.DONE :
+            case CPDListener.DONE:
                 return "Done";
             default :
                 return "Unknown";

@@ -27,8 +27,8 @@ public class MatchCollector {
         for (int i = 0; i < marks.size() - 1; i++) {
             TokenEntry mark1 = (TokenEntry) marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
-				TokenEntry mark2 = (TokenEntry) marks.get(j);
-				int diff = mark1.getIndex() - mark2.getIndex();
+                TokenEntry mark2 = (TokenEntry) marks.get(j);
+                int diff = mark1.getIndex() - mark2.getIndex();
                 if (-diff < minimumLength) {
                     continue;
                 }
@@ -48,11 +48,11 @@ public class MatchCollector {
             }
         }
     }
-    
+
     public List getMatches() {
-		ArrayList matchList = new ArrayList(startMap.values());
-		groupMatches(matchList);
-		return matchList;
+        ArrayList matchList = new ArrayList(startMap.values());
+        groupMatches(matchList);
+        return matchList;
     }
 
     /**
@@ -70,10 +70,10 @@ public class MatchCollector {
         for (int k = 0; k < pairMatches.size(); k++) {
             Match other = (Match) pairMatches.get(k);
             if (other.getFirstMark().getIndex() + other.getTokenCount() - mark1.getIndex()
-                > 0) {
+                    > 0) {
                 boolean ordered = other.getSecondMark().getIndex() - mark2.getIndex() < 0;
                 if ((ordered && (other.getEndIndex() - mark2.getIndex() > 0))
-                    || (!ordered && (match.getEndIndex() - other.getSecondMark().getIndex()) > 0)) {
+                        || (!ordered && (match.getEndIndex() - other.getSecondMark().getIndex()) > 0)) {
                     if (other.getTokenCount() >= match.getTokenCount()) {
                         add = false;
                         break;
@@ -158,7 +158,7 @@ public class MatchCollector {
         int index = 0;
         while (!matchEnded(ma.tokenAt(index, mark1), ma.tokenAt(index, mark2))) {
             index++;
-        } 
+        }
         return index;
     }
 

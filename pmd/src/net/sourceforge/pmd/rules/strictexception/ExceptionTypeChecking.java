@@ -15,8 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 
- * <p>
+ * <p/>
+ *
  * @author <a mailto:trond.andersen@nordea.com>Trond Andersen</a>
  * @version 1.0
  * @since 1.1?
@@ -26,7 +26,7 @@ public class ExceptionTypeChecking extends AbstractRule {
     public Object visit(ASTTryStatement catchStatment, Object object) {
         if (catchStatment.hasCatch()) {
             for (Iterator iter = catchStatment.getCatchBlocks().iterator(); iter.hasNext();) {
-                evaluateCatchClause((ASTCatch)iter.next(), (RuleContext)object);
+                evaluateCatchClause((ASTCatch) iter.next(), (RuleContext) object);
             }
         }
 
@@ -39,7 +39,7 @@ public class ExceptionTypeChecking extends AbstractRule {
         List myList = catchStmt.getBlock().findChildrenOfType(ASTInstanceOfExpression.class);
 
         for (Iterator i = myList.iterator(); i.hasNext();) {
-            evaluateInstanceOfExpression((ASTInstanceOfExpression)i.next(), exceptionParameter, ctx);
+            evaluateInstanceOfExpression((ASTInstanceOfExpression) i.next(), exceptionParameter, ctx);
         }
     }
 
@@ -48,7 +48,7 @@ public class ExceptionTypeChecking extends AbstractRule {
         if (!hasTypeEvaluation(instanceOfExpression)) {
             return;
         }
-        if (exceptionName.equals( getInstanceOfObjectReference(instanceOfExpression)) ) {
+        if (exceptionName.equals(getInstanceOfObjectReference(instanceOfExpression))) {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, instanceOfExpression.getBeginLine()));
         }
     }
@@ -56,21 +56,21 @@ public class ExceptionTypeChecking extends AbstractRule {
     private boolean hasTypeEvaluation(ASTInstanceOfExpression instanceOfExpression) {
         List typeList = instanceOfExpression.findChildrenOfType(ASTType.class);
         if (typeList != null && typeList.size() >= 1) {
-            ASTType theType = (ASTType)typeList.get(0);
+            ASTType theType = (ASTType) typeList.get(0);
             if (!(theType.jjtGetParent() instanceof ASTCastExpression)) {
                 return true;
             }
         }
-       return false;
+        return false;
     }
 
     private String getInstanceOfObjectReference(ASTInstanceOfExpression expression) {
         List primaryList = expression.findChildrenOfType(ASTPrimaryExpression.class);
         String objectReferenceName = null;
         if (primaryList.size() == 1) {
-            List someList = ((ASTPrimaryExpression)primaryList.get(0)).findChildrenOfType(ASTName.class);
+            List someList = ((ASTPrimaryExpression) primaryList.get(0)).findChildrenOfType(ASTName.class);
             if (someList.size() == 1) {
-                objectReferenceName = ((ASTName)someList.get(0)).getImage();
+                objectReferenceName = ((ASTName) someList.get(0)).getImage();
             }
         }
         return objectReferenceName;
@@ -78,7 +78,7 @@ public class ExceptionTypeChecking extends AbstractRule {
 
     private String getExceptionParameter(ASTCatch catchStmt) {
         List declarationList = catchStmt.getFormalParameter().findChildrenOfType(ASTVariableDeclaratorId.class);
-        return ((ASTVariableDeclaratorId)declarationList.get(0)).getImage();
+        return ((ASTVariableDeclaratorId) declarationList.get(0)).getImage();
     }
 
 }

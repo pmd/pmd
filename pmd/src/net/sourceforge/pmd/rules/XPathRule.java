@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -41,11 +41,11 @@ public class XPathRule extends AbstractRule {
     }
 
     private void init() throws JaxenException {
-        if(xpath == null) {
+        if (xpath == null) {
             String path = getStringProperty("xpath");
             String subst = getStringProperty("subst");
-            if(subst != null && subst.length() > 0) {
-				path = MessageFormat.format(path, new String[] {subst});
+            if (subst != null && subst.length() > 0) {
+                path = MessageFormat.format(path, new String[]{subst});
             }
             xpath = new BaseXPath(path, new DocumentNavigator());
         }
@@ -57,14 +57,17 @@ public class XPathRule extends AbstractRule {
                 super.printStackTrace();
                 ex.printStackTrace();
             }
+
             public void printStackTrace(PrintWriter writer) {
                 super.printStackTrace(writer);
                 ex.printStackTrace(writer);
             }
+
             public void printStackTrace(PrintStream stream) {
                 super.printStackTrace(stream);
                 ex.printStackTrace(stream);
             }
+
             public String getMessage() {
                 return super.getMessage() + ex.getMessage();
             }

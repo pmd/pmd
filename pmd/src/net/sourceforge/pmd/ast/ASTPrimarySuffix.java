@@ -36,11 +36,13 @@ public class ASTPrimarySuffix extends SimpleNode {
         } else {
             System.out.println(toString(prefix) + ":" + getImage());
         }
-       dumpChildren(prefix);
+        dumpChildren(prefix);
     }
 
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -52,7 +52,7 @@ public class CloseConnectionRule extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         // Quick exit if there's not an import java.sql.whatever;
-       if (!importJavaSQLPackageFound) {
+        if (!importJavaSQLPackageFound) {
             return data;
         }
 

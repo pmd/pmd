@@ -25,10 +25,10 @@ public class SummaryHTMLRenderer implements Renderer {
         buf.append("<th>Number of violations</th>");
         Map summary = report.getSummary();
         for (Iterator i = summary.keySet().iterator(); i.hasNext();) {
-            String ruleName = (String)i.next();
+            String ruleName = (String) i.next();
             buf.append("<tr>");
             buf.append("<td>" + ruleName + "</td>");
-            buf.append("<td align=center>" + String.valueOf(((Integer)summary.get(ruleName)).intValue()) + "</td>");
+            buf.append("<td align=center>" + String.valueOf(((Integer) summary.get(ruleName)).intValue()) + "</td>");
             buf.append("</tr>");
         }
         buf.append("</table>");

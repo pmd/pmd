@@ -1,7 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.jaxen;
+
 import net.sourceforge.pmd.ast.Node;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,31 +17,31 @@ public class AttributeAxisIterator implements Iterator {
     private Method[] methods;
     private int position;
     private Node node;
-    
+
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
         this.methods = contextNode.getClass().getMethods();
         this.position = 0;
         this.currObj = getNextAttribute();
     }
-    
+
     public Object next() {
-        if(currObj == null) {
+        if (currObj == null) {
             throw new IndexOutOfBoundsException();
         }
         Object ret = currObj;
         currObj = getNextAttribute();
         return ret;
     }
-    
+
     public boolean hasNext() {
         return currObj != null;
     }
-    
+
     public void remove() {
         throw new UnsupportedOperationException();
     }
-    
+
     private Attribute getNextAttribute() {
         while (position < methods.length) {
             Method method = methods[position];
@@ -48,8 +49,8 @@ public class AttributeAxisIterator implements Iterator {
                 if (isAttribute(method)) {
                     Class returnType = method.getReturnType();
                     if (Boolean.TYPE == returnType
-                        || String.class == returnType
-                        || Integer.TYPE == returnType) {
+                            || String.class == returnType
+                            || Integer.TYPE == returnType) {
                         Attribute attribute = getAttribute(node, method);
                         if (attribute != null) {
                             return attribute;
@@ -68,7 +69,7 @@ public class AttributeAxisIterator implements Iterator {
     }
 
     protected Attribute getAttribute(Node node, Method method)
-        throws IllegalAccessException, InvocationTargetException {
+            throws IllegalAccessException, InvocationTargetException {
         String name = method.getName();
         name = truncateMethodName(name);
         Object value = method.invoke(node, EMPTY_OBJ_ARRAY);
@@ -100,15 +101,15 @@ public class AttributeAxisIterator implements Iterator {
         String name = method.getName();
         Class returnType = method.getReturnType();
         return (method.getParameterTypes().length == 0)
-            && (Void.TYPE != returnType)
-            && !name.startsWith("jjt")
-            && !name.equals("toString")
-            && !name.equals("getScope")
-            && !name.equals("getClass")
-            && !name.equals("getFinallyBlock")
-            && !name.equals("getCatchBlocks")
-            && !name.equals("getTypeNameNode")
-            && !name.equals("getImportedNameNode")
-            && !name.equals("hashCode");
+                && (Void.TYPE != returnType)
+                && !name.startsWith("jjt")
+                && !name.equals("toString")
+                && !name.equals("getScope")
+                && !name.equals("getClass")
+                && !name.equals("getFinallyBlock")
+                && !name.equals("getCatchBlocks")
+                && !name.equals("getTypeNameNode")
+                && !name.equals("getImportedNameNode")
+                && !name.equals("hashCode");
     }
 }

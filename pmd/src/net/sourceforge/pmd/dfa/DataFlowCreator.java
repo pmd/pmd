@@ -1,12 +1,14 @@
 package net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.ast.ASTBreakStatement;
+import net.sourceforge.pmd.ast.ASTContinueStatement;
 import net.sourceforge.pmd.ast.ASTDoStatement;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTForInit;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTForUpdate;
 import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTSwitchLabel;
@@ -15,8 +17,6 @@ import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTContinueStatement;
-import net.sourceforge.pmd.ast.ASTReturnStatement;
 
 /**
  * @author raik

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -28,70 +28,58 @@ public class VariableNamingConventionsRule extends AbstractRule {
     private String[] memberPrefix;
     private String[] memberSuffix;
 
-    public Object visit (ASTCompilationUnit node, Object data)
-    {
+    public Object visit(ASTCompilationUnit node, Object data) {
         init();
         return super.visit(node, data);
     }
 
-    protected void init ()
-    {
+    protected void init() {
         staticPrefix = split(getStringProperty("staticPrefix"));
         staticSuffix = split(getStringProperty("staticSuffix"));
         memberPrefix = split(getStringProperty("memberPrefix"));
         memberSuffix = split(getStringProperty("memberSuffix"));
     }
 
-  public Object visit(ASTLocalVariableDeclaration node, Object data) {
-    return checkNames(node, data);
-  }
+    public Object visit(ASTLocalVariableDeclaration node, Object data) {
+        return checkNames(node, data);
+    }
 
-  public Object visit(ASTFieldDeclaration node, Object data) {
-    return checkNames(node, data);
-  }
+    public Object visit(ASTFieldDeclaration node, Object data) {
+        return checkNames(node, data);
+    }
 
-    public Object checkNames (AccessNode node, Object data)
-    {
+    public Object checkNames(AccessNode node, Object data) {
         ASTType childNodeType = (ASTType) node.jjtGetChild(0);
         String varType = "";
-        if (childNodeType.jjtGetChild(0) instanceof ASTName)
-        {
+        if (childNodeType.jjtGetChild(0) instanceof ASTName) {
             varType = ((ASTName) childNodeType.jjtGetChild(0)).getImage();
-        }
-        else if (childNodeType.jjtGetChild(0) instanceof ASTPrimitiveType)
-        {
+        } else if (childNodeType.jjtGetChild(0) instanceof ASTPrimitiveType) {
             varType = ((ASTPrimitiveType) childNodeType.jjtGetChild(0)).getImage();
         }
-        if (varType != null && varType.length() > 0)
-        {
+        if (varType != null && varType.length() > 0) {
             //Get the variable name
             ASTVariableDeclarator childNodeName = (ASTVariableDeclarator) node.jjtGetChild(1);
             ASTVariableDeclaratorId childNodeId = (ASTVariableDeclaratorId) childNodeName.jjtGetChild(0);
             String varName = childNodeId.getImage();
 
-            if (varName.equals("serialVersionUID"))
-            {
+            if (varName.equals("serialVersionUID")) {
                 return data;
             }
 
             // non static final class fields are OK
-            if (node.isFinal() && !node.isStatic() && !(node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration))
-            {
+            if (node.isFinal() && !node.isStatic() && !(node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration)) {
                 return data;
             }
 
             // final, non static, class, fields are OK
-            if (node.isFinal() && !node.isStatic() && !(node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration))
-            {
+            if (node.isFinal() && !node.isStatic() && !(node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration)) {
                 return data;
             }
 
             // static finals (and interface fields, which are implicitly static and final) are
             // checked for uppercase
-            if ((node.isStatic() && node.isFinal()) || node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration)
-            {
-                if (!varName.equals(varName.toUpperCase()))
-                {
+            if ((node.isStatic() && node.isFinal()) || node.jjtGetParent() instanceof ASTInterfaceMemberDeclaration) {
+                if (!varName.equals(varName.toUpperCase())) {
                     RuleContext ctx = (RuleContext) data;
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName.getBeginLine(), "Variables that are final and static should be in all caps."));
                 }
@@ -101,8 +89,7 @@ public class VariableNamingConventionsRule extends AbstractRule {
             String strippedVarName = null;
             if (node.isStatic()) {
                 strippedVarName = normalizeStaticVariableName(varName);
-            }
-            else {
+            } else {
                 strippedVarName = normalizeMemberVariableName(varName);
             }
 
@@ -118,17 +105,17 @@ public class VariableNamingConventionsRule extends AbstractRule {
         return data;
     }
 
-    private String normalizeMemberVariableName (String varName) {
+    private String normalizeMemberVariableName(String varName) {
         String name = stripPrefix(varName, memberPrefix);
         return stripSuffix(name, memberSuffix);
     }
 
-    private String normalizeStaticVariableName (String varName) {
+    private String normalizeStaticVariableName(String varName) {
         String name = stripPrefix(varName, staticPrefix);
         return stripSuffix(name, staticSuffix);
     }
 
-    private String stripSuffix (String varName, String[] suffix) {
+    private String stripSuffix(String varName, String[] suffix) {
         if (suffix != null) {
             for (int i = 0; i < suffix.length; i++) {
                 if (varName.endsWith(suffix[i])) {
@@ -140,7 +127,7 @@ public class VariableNamingConventionsRule extends AbstractRule {
         return varName;
     }
 
-    private String stripPrefix (String varName, String[] prefix) {
+    private String stripPrefix(String varName, String[] prefix) {
         if (prefix == null) {
             return varName;
         }
@@ -152,15 +139,14 @@ public class VariableNamingConventionsRule extends AbstractRule {
         return varName;
     }
 
-    protected String[] split (String str)
-    {
+    protected String[] split(String str) {
         if (str == null || str.length() == 0) {
             return null;
         }
 
         int index = str.indexOf(SEPARATOR);
         if (index == -1) {
-            return new String[] {str};
+            return new String[]{str};
         }
 
         List list = new ArrayList();
@@ -172,6 +158,6 @@ public class VariableNamingConventionsRule extends AbstractRule {
             index = str.indexOf(SEPARATOR, currPos);
         }
         list.add(str.substring(currPos));
-        return (String[])list.toArray(new String[list.size()]);
+        return (String[]) list.toArray(new String[list.size()]);
     }
 }

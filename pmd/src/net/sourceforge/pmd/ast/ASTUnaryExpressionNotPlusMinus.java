@@ -14,7 +14,9 @@ public class ASTUnaryExpressionNotPlusMinus extends SimpleNode {
     }
 
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -23,5 +25,5 @@ public class ASTUnaryExpressionNotPlusMinus extends SimpleNode {
         System.out.println(toString(prefix) + ":" + getImage());
         dumpChildren(prefix);
     }
-    
+
 }

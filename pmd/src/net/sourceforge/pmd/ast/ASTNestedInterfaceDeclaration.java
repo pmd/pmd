@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTNestedInterfaceDeclaration  extends AccessNode  {
+public class ASTNestedInterfaceDeclaration extends AccessNode {
     public ASTNestedInterfaceDeclaration(int id) {
         super(id);
     }
@@ -15,7 +15,9 @@ public class ASTNestedInterfaceDeclaration  extends AccessNode  {
         return (ASTUnmodifiedInterfaceDeclaration) jjtGetChild(0);
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

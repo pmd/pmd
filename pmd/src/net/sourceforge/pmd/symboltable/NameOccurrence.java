@@ -1,12 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTExpression;
 
 public class NameOccurrence {
 
@@ -41,14 +41,14 @@ public class NameOccurrence {
     }
 
     public SimpleNode getLocation() {
-      return location;
+        return location;
     }
 
     public boolean isOnRightHandSide() {
-        SimpleNode node = (SimpleNode)location.jjtGetParent().jjtGetParent().jjtGetParent();
-        if(node instanceof ASTExpression) {
-            SimpleNode parent = (SimpleNode)node.jjtGetParent();
-            if(node.jjtGetNumChildren() == 3) {
+        SimpleNode node = (SimpleNode) location.jjtGetParent().jjtGetParent().jjtGetParent();
+        if (node instanceof ASTExpression) {
+            SimpleNode parent = (SimpleNode) node.jjtGetParent();
+            if (node.jjtGetNumChildren() == 3) {
                 return true;
             }
         }
@@ -77,7 +77,7 @@ public class NameOccurrence {
             return false;
         }
 
-        if (((ASTAssignmentOperator)(primaryExpression.jjtGetChild(1))).isCompound()) {
+        if (((ASTAssignmentOperator) (primaryExpression.jjtGetChild(1))).isCompound()) {
             return false;
         }
         return true;

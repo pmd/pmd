@@ -6,7 +6,7 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
 
 
 /**
@@ -16,81 +16,75 @@ import java.awt.*;
  * @version $Id$
  */
 public class XPathPanel
-  extends JTabbedPane
-  implements ViewerModelListener
-{
-  private ViewerModel model;
-  private JTextArea   xPathArea;
+        extends JTabbedPane
+        implements ViewerModelListener {
+    private ViewerModel model;
+    private JTextArea xPathArea;
 
-  /**
-   * Constructs the panel
-   *
-   * @param model model to refer to
-   */
-  public XPathPanel( ViewerModel model )
-  {
-    super( JTabbedPane.BOTTOM );
+    /**
+     * Constructs the panel
+     *
+     * @param model model to refer to
+     */
+    public XPathPanel(ViewerModel model) {
+        super(JTabbedPane.BOTTOM);
 
-    this.model = model;
+        this.model = model;
 
-    init(  );
-  }
-
-  private void init(  )
-  {
-    model.addViewerModelListener( this );
-
-    xPathArea = new JTextArea(  );
-
-    setBorder(
-      BorderFactory.createTitledBorder(
-        BorderFactory.createEtchedBorder(  ), NLS.nls( "XPATH.PANEL.TITLE" ) ) );
-
-    add( new JScrollPane( xPathArea ), NLS.nls( "XPATH.PANEL.EXPRESSION" ) );
-    add( new EvaluationResultsPanel( model ), NLS.nls( "XPATH.PANEL.RESULTS" ) );
-
-    setPreferredSize( new Dimension( -1, 200 ) );
-  }
-
-  /**
-   * retrieves the XPath expression typed into the text area
-   *
-   * @return XPath expression
-   */
-  public String getXPathExpression(  )
-  {
-    return xPathArea.getText(  );
-  }
-
-  /**
-   * @see org.gruschko.pmd.viewer.model.ViewerModelListener#viewerModelChanged(org.gruschko.pmd.viewer.model.ViewerModelEvent)
-   */
-  public void viewerModelChanged( ViewerModelEvent e )
-  {
-    switch ( e.getReason(  ) )
-    {
-      case ViewerModelEvent.PATH_EXPRESSION_APPENDED :
-
-        if ( e.getSource(  ) != this )
-        {
-          xPathArea.append( (String)e.getParameter(  ) );
-        }
-
-        setSelectedIndex( 0 );
-
-        break;
-
-      case ViewerModelEvent.CODE_RECOMPILED :
-        setSelectedIndex( 0 );
-
-        break;
+        init();
     }
-  }
+
+    private void init() {
+        model.addViewerModelListener(this);
+
+        xPathArea = new JTextArea();
+
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), NLS.nls("XPATH.PANEL.TITLE")));
+
+        add(new JScrollPane(xPathArea), NLS.nls("XPATH.PANEL.EXPRESSION"));
+        add(new EvaluationResultsPanel(model), NLS.nls("XPATH.PANEL.RESULTS"));
+
+        setPreferredSize(new Dimension(-1, 200));
+    }
+
+    /**
+     * retrieves the XPath expression typed into the text area
+     *
+     * @return XPath expression
+     */
+    public String getXPathExpression() {
+        return xPathArea.getText();
+    }
+
+    /**
+     * @see org.gruschko.pmd.viewer.model.ViewerModelListener#viewerModelChanged(org.gruschko.pmd.viewer.model.ViewerModelEvent)
+     */
+    public void viewerModelChanged(ViewerModelEvent e) {
+        switch (e.getReason()) {
+            case ViewerModelEvent.PATH_EXPRESSION_APPENDED:
+
+                if (e.getSource() != this) {
+                    xPathArea.append((String) e.getParameter());
+                }
+
+                setSelectedIndex(0);
+
+                break;
+
+            case ViewerModelEvent.CODE_RECOMPILED:
+                setSelectedIndex(0);
+
+                break;
+        }
+    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.4  2004/09/27 19:42:52  tomcopeland
+ * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
+ *
  * Revision 1.3  2004/04/15 18:21:58  tomcopeland
  * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
  *

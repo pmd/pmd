@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -25,9 +25,8 @@ import java.util.Set;
  * coupled to. This is only a guage and isn't a hard and fast rule. The threshold
  * value is configurable and should be determined accordingly
  *
- * @since Feb 20, 2003
  * @author aglover
- *
+ * @since Feb 20, 2003
  */
 public class CouplingBetweenObjectsRule extends AbstractRule {
 
@@ -38,9 +37,9 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
     /**
      * handles the source file
      *
-     * @return Object
      * @param ASTCompilationUnit cu
-     * @param Object data
+     * @param Object             data
+     * @return Object
      */
     public Object visit(ASTCompilationUnit cu, Object data) {
         this.typesFoundSoFar = new HashSet();
@@ -61,9 +60,9 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
      * there is probably a better way to capture it; however, I don't know the
      * framework well enough yet...
      *
-     * @return Object
      * @param ASTClassDeclaration node
-     * @param Object data
+     * @param Object              data
+     * @return Object
      */
     public Object visit(ASTClassDeclaration node, Object data) {
         SimpleNode firstStmt = (SimpleNode) node.jjtGetChild(0);
@@ -74,9 +73,9 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
     /**
      * handles a return type of a method
      *
-     * @return Object
      * @param ASTResultType node
-     * @param Object data
+     * @param Object        data
+     * @return Object
      */
     public Object visit(ASTResultType node, Object data) {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
@@ -94,9 +93,9 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
     /**
      * handles a local variable found in a method block
      *
-     * @return Object
      * @param ASTLocalVariableDeclaration node
-     * @param Object data
+     * @param Object                      data
+     * @return Object
      */
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         this.handleASTTypeChildren(node);
@@ -106,9 +105,9 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
     /**
      * handles a method parameter
      *
-     * @return Object
      * @param ASTFormalParameter node
-     * @param Object data
+     * @param Object             data
+     * @return Object
      */
     public Object visit(ASTFormalParameter node, Object data) {
         this.handleASTTypeChildren(node);
@@ -119,9 +118,9 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
      * handles a field declaration - i.e. an instance variable. Method doesn't care if variable
      * is public/private/etc
      *
-     * @return Object
      * @param ASTFieldDeclaration node
-     * @param Object data
+     * @param Object              data
+     * @return Object
      */
     public Object visit(ASTFieldDeclaration node, Object data) {
         for (int x = 0; x < node.jjtGetNumChildren(); ++x) {
@@ -139,7 +138,6 @@ public class CouplingBetweenObjectsRule extends AbstractRule {
     /**
      * convience method to handle hiearchy. This is probably too much
      * work and will go away once I figure out the framework
-     *
      */
     private void handleASTTypeChildren(SimpleNode node) {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {

@@ -11,9 +11,13 @@ public class ASTPrimitiveType extends SimpleNode {
         super(p, id);
     }
 
-    public boolean isBoolean() {return getImage().equals("boolean");}
+    public boolean isBoolean() {
+        return getImage().equals("boolean");
+    }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

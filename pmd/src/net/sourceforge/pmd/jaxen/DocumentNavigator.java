@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -15,9 +15,9 @@ import java.util.Iterator;
 
 /**
  * @author daniels
- *
- * To change this generated comment go to
- * Window>Preferences>Java>Code Generation>Code Template
+ *         <p/>
+ *         To change this generated comment go to
+ *         Window>Preferences>Java>Code Generation>Code Template
  */
 public class DocumentNavigator extends DefaultNavigator {
 

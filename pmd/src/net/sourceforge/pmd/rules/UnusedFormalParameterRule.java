@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -21,7 +21,7 @@ public class UnusedFormalParameterRule extends AbstractRule {
             Map vars = node.getScope().getVariableDeclarations();
             for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration nameDecl = (VariableNameDeclaration) i.next();
-                if (!((List)vars.get(nameDecl)).isEmpty()){
+                if (!((List) vars.get(nameDecl)).isEmpty()) {
                     continue;
                 }
                 ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{nameDecl.getImage()})));

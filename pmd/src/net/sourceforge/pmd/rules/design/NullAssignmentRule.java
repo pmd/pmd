@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -12,18 +12,18 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 /**
  * @author dpeugh
- *
- * This checks for excessive Null Assignments.
- *
- * For instance:
- *
- * public void foo() {
- *   Object x = null; // OK
- *   // Some stuff
- *   x = new Object(); // Also OK
- *   // Some more stuff
- *   x = null; // BAD
- * }
+ *         <p/>
+ *         This checks for excessive Null Assignments.
+ *         <p/>
+ *         For instance:
+ *         <p/>
+ *         public void foo() {
+ *         Object x = null; // OK
+ *         // Some stuff
+ *         x = new Object(); // Also OK
+ *         // Some more stuff
+ *         x = null; // BAD
+ *         }
  */
 
 public class NullAssignmentRule extends AbstractRule {

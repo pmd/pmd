@@ -121,10 +121,6 @@ public class StatementExpressionEvaluator {
         return ret;
     }
 
-    /*
-     * gibt das vorherige zugriffsobjekt zur�ck. wenn dieses ein inkrementor
-     * ist wird weitergesucht
-     * */
     private SimpleNode getLastAccessObject(int i) {
         boolean isFirstLoop = true;
         while (i > 0) {

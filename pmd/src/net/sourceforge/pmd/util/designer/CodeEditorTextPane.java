@@ -18,7 +18,7 @@ public class CodeEditorTextPane extends JTextPane implements HasLines, ActionLis
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_astviewer";
 
     public CodeEditorTextPane() {
-        setPreferredSize(new Dimension(400,200));
+        setPreferredSize(new Dimension(400, 200));
         setText(loadCode());
     }
 
@@ -55,12 +55,12 @@ public class CodeEditorTextPane extends JTextPane implements HasLines, ActionLis
             br = new BufferedReader(new FileReader(new File(SETTINGS_FILE_NAME)));
             StringBuffer text = new StringBuffer();
             String hold;
-            while ( (hold = br.readLine()) != null) {
+            while ((hold = br.readLine()) != null) {
                 text.append(hold);
                 text.append(System.getProperty("line.separator"));
             }
             return text.toString();
-        }   catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return "";
         } finally {

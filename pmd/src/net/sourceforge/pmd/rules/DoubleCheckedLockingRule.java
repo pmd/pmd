@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.RuleContext;
@@ -28,22 +28,22 @@ import java.util.List;
 
 /**
  * void method() {
- *    if(x == null) {
- *        synchronized(this){
- *            if(x == null) {
- *                x = new | method();
- *            }
- *         }
- *  }
- *  1.  The error is when one uses the value assigned within a synchronized
- *      section, outside of a synchronized section.
- *      if(x == null) is outside of synchronized section
- *      x = new | method();
- *
- *
+ * if(x == null) {
+ * synchronized(this){
+ * if(x == null) {
+ * x = new | method();
+ * }
+ * }
+ * }
+ * 1.  The error is when one uses the value assigned within a synchronized
+ * section, outside of a synchronized section.
+ * if(x == null) is outside of synchronized section
+ * x = new | method();
+ * <p/>
+ * <p/>
  * Very very specific check for double checked locking.
  *
- * @author  CL Gilbert (dnoyeb@users.sourceforge.net)
+ * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
 public class DoubleCheckedLockingRule extends net.sourceforge.pmd.AbstractRule {
 

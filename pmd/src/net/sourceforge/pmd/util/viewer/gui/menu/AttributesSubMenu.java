@@ -18,42 +18,37 @@ import java.text.MessageFormat;
  * @version $Id$
  */
 public class AttributesSubMenu
-  extends JMenu
-{
-  private ViewerModel model;
-  private SimpleNode  node;
+        extends JMenu {
+    private ViewerModel model;
+    private SimpleNode node;
 
-  public AttributesSubMenu( ViewerModel model, SimpleNode node )
-  {
-    super(
-      MessageFormat.format(
-        NLS.nls( "AST.MENU.ATTRIBUTES" ), new Object[] { node.toString(  ) } ) );
+    public AttributesSubMenu(ViewerModel model, SimpleNode node) {
+        super(MessageFormat.format(NLS.nls("AST.MENU.ATTRIBUTES"), new Object[]{node.toString()}));
 
-    this.model   = model;
-    this.node    = node;
+        this.model = model;
+        this.node = node;
 
-    init(  );
-  }
-
-  private void init(  )
-  {
-    AttributeAxisIterator i = new AttributeAxisIterator( node );
-
-    while (i.hasNext())
-    {
-      Attribute attribute = (Attribute)i.next(  );
-
-      add(
-        new XPathFragmentAddingItem(
-          attribute.getName(  ) + " = " + attribute.getValue(  ), model,
-          AttributeToolkit.constructPredicate( attribute ) ) );
+        init();
     }
-  }
+
+    private void init() {
+        AttributeAxisIterator i = new AttributeAxisIterator(node);
+
+        while (i.hasNext()) {
+            Attribute attribute = (Attribute) i.next();
+
+            add(new XPathFragmentAddingItem(attribute.getName() + " = " + attribute.getValue(), model,
+                    AttributeToolkit.constructPredicate(attribute)));
+        }
+    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.5  2004/09/27 19:42:52  tomcopeland
+ * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
+ *
  * Revision 1.4  2004/04/15 18:21:58  tomcopeland
  * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
  *

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.ant;
 
 import net.sourceforge.pmd.PMD;
@@ -195,8 +195,8 @@ public class PMDTask extends Task {
 
     private void logRulesUsed(RuleSet rules) {
         log("Using these rulesets: " + ruleSetFiles, Project.MSG_VERBOSE);
-        for (Iterator i = rules.getRules().iterator();i.hasNext();) {
-            Rule rule = (Rule)i.next();
+        for (Iterator i = rules.getRules().iterator(); i.hasNext();) {
+            Rule rule = (Rule) i.next();
             log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
         }
     }

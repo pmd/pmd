@@ -15,7 +15,9 @@ public class ASTFormalParameters extends SimpleNode {
         return jjtGetNumChildren();
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

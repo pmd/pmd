@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -26,10 +26,10 @@ import java.util.ListIterator;
 /**
  * 1. Note all private constructors.
  * 2. Note all instantiations from outside of the class by way of the private
- *    constructor.
+ * constructor.
  * 3. Flag instantiations.
- *
- *
+ * <p/>
+ * <p/>
  * Parameter types can not be matched because they can come as exposed members
  * of classes.  In this case we have no way to know what the type is.  We can
  * make a best effort though which can filter some?
@@ -81,13 +81,21 @@ public class AccessorClassGenerationRule extends AbstractRule {
      *
      */
     private static class ClassData {
-        /** The name of this class */
+        /**
+         * The name of this class
+         */
         private String m_ClassName;
-        /** List of private constructors within this class */
+        /**
+         * List of private constructors within this class
+         */
         private List m_PrivateConstructors;
-        /** List of instantiations of objects within this class */
+        /**
+         * List of instantiations of objects within this class
+         */
         private List m_Instantiations;
-        /** List of outer class names that exist above this class */
+        /**
+         * List of outer class names that exist above this class
+         */
         private List m_ClassQualifyingNames;
 
         public ClassData(String className) {

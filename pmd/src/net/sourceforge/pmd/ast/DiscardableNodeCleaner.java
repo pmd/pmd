@@ -5,7 +5,7 @@ import java.util.List;
 
 public class DiscardableNodeCleaner {
 
-    private static final Class[] clazzes = new Class[] {
+    private static final Class[] clazzes = new Class[]{
         ASTEqualityExpression.class,
         ASTAndExpression.class,
         ASTInstanceOfExpression.class,
@@ -25,7 +25,7 @@ public class DiscardableNodeCleaner {
     };
 
     public void clean(ASTCompilationUnit root) {
-        for (int i = 0; i<clazzes.length; i++) {
+        for (int i = 0; i < clazzes.length; i++) {
             clean(root, clazzes[i]);
         }
     }
@@ -33,10 +33,10 @@ public class DiscardableNodeCleaner {
     private void clean(ASTCompilationUnit root, Class type) {
         List nodes = root.findChildrenOfType(type);
         for (Iterator i = nodes.iterator(); i.hasNext();) {
-            SimpleNode node = (SimpleNode)i.next();
+            SimpleNode node = (SimpleNode) i.next();
             if (node.isDiscardable()) {
-                SimpleNode parent = (SimpleNode)node.jjtGetParent();
-                SimpleNode kid = (SimpleNode)node.jjtGetChild(0);
+                SimpleNode parent = (SimpleNode) node.jjtGetParent();
+                SimpleNode kid = (SimpleNode) node.jjtGetChild(0);
                 kid.jjtSetParent(parent);
                 parent.jjtReplaceChild(node, kid);
             }

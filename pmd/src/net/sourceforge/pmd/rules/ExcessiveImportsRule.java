@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -13,9 +13,8 @@ import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
  * import. This is a unqiue situation and I'd like to create an audit type
  * rule that captures those.
  *
- * @since Feb 21, 2003
  * @author aglover
- *
+ * @since Feb 21, 2003
  */
 public class ExcessiveImportsRule extends ExcessiveNodeCountRule {
 
@@ -28,9 +27,10 @@ public class ExcessiveImportsRule extends ExcessiveNodeCountRule {
 
     /**
      * Hook method to count imports. This is a user defined value.
-     * @return Object
+     *
      * @param ASTImportDeclaration node
-     * @param Object data
+     * @param Object               data
+     * @return Object
      */
     public Object visit(ASTImportDeclaration node, Object data) {
         return new Integer(1);

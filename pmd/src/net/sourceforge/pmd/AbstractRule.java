@@ -4,11 +4,11 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 import java.util.Iterator;
 import java.util.List;

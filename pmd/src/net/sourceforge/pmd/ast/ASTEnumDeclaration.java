@@ -3,17 +3,19 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTEnumDeclaration extends AccessNode {
-  public ASTEnumDeclaration(int id) {
-    super(id);
-  }
+    public ASTEnumDeclaration(int id) {
+        super(id);
+    }
 
-  public ASTEnumDeclaration(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTEnumDeclaration(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

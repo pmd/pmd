@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.stat;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -14,7 +14,7 @@ import java.util.TreeSet;
 
 /**
  * @author David Dixon-Peugh
- * Aug 8, 2002 StatisticalRule.java
+ *         Aug 8, 2002 StatisticalRule.java
  */
 public abstract class StatisticalRule extends AbstractRule {
     public static double DELTA = 0.000005; // Within this range. . .
@@ -78,20 +78,20 @@ public abstract class StatisticalRule extends AbstractRule {
     }
 
     protected double getStdDev() {
-    	Iterator points = dataPoints.iterator();
-    	double mean = getMean();
-    	double deltaSq = 0.0;
-    	
-    	if (dataPoints.size() < 2) {
-    		return Double.NaN;
-    	}
-    	
-    	while (points.hasNext()) {
-    		DataPoint point = (DataPoint) points.next();	
-    		deltaSq += ((point.getScore() - mean) * (point.getScore() - mean));
-    	}
-    	
-    	return Math.sqrt( deltaSq / (dataPoints.size() - 1));
+        Iterator points = dataPoints.iterator();
+        double mean = getMean();
+        double deltaSq = 0.0;
+
+        if (dataPoints.size() < 2) {
+            return Double.NaN;
+        }
+
+        while (points.hasNext()) {
+            DataPoint point = (DataPoint) points.next();
+            deltaSq += ((point.getScore() - mean) * (point.getScore() - mean));
+        }
+
+        return Math.sqrt(deltaSq / (dataPoints.size() - 1));
     }
 
     protected SortedSet applyMinimumValue(SortedSet pointSet, double minValue) {

@@ -16,107 +16,97 @@ import java.util.Vector;
  * @version $Id$
  */
 public class ASTModel
-  implements TreeModel
-{
-  private SimpleNode root;
-  private Vector     listeners = new Vector( 1 );
+        implements TreeModel {
+    private SimpleNode root;
+    private Vector listeners = new Vector(1);
 
-  /**
-   * creates the tree model
-   *
-   * @param root tree's root
-   */
-  public ASTModel( SimpleNode root )
-  {
-    this.root = root;
-  }
-
-  /**
-   * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
-   */
-  public Object getChild( Object parent, int index )
-  {
-    return ( (SimpleNode)parent ).jjtGetChild( index );
-  }
-
-  /**
-   * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
-   */
-  public int getChildCount( Object parent )
-  {
-    return ( (SimpleNode)parent ).jjtGetNumChildren(  );
-  }
-
-  /**
-   * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object,
-   *      java.lang.Object)
-   */
-  public int getIndexOfChild( Object parent, Object child )
-  {
-    SimpleNode node = ( (SimpleNode)parent );
-
-    for ( int i = 0; i < node.jjtGetNumChildren(  ); i++ )
-      if ( node.jjtGetChild( i ).equals( child ) )
-      {
-        return i;
-      }
-
-    return -1;
-  }
-
-  /**
-   * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
-   */
-  public boolean isLeaf( Object node )
-  {
-    return ( (SimpleNode)node ).jjtGetNumChildren(  ) == 0;
-  }
-
-  /**
-   * @see javax.swing.tree.TreeModel#getRoot()
-   */
-  public Object getRoot(  )
-  {
-    return root;
-  }
-
-  /**
-   * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath,
-   *      java.lang.Object)
-   */
-  public void valueForPathChanged( TreePath path, Object newValue )
-  {
-    throw new UnsupportedOperationException(  );
-  }
-
-  /**
-   * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
-   */
-  public void addTreeModelListener( TreeModelListener l )
-  {
-    listeners.add( l );
-  }
-
-  /**
-   * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
-   */
-  public void removeTreeModelListener( TreeModelListener l )
-  {
-    listeners.remove( l );
-  }
-
-  protected void fireTreeModelEvent( TreeModelEvent e )
-  {
-    for ( int i = 0; i < listeners.size(  ); i++ )
-    {
-      ( (TreeModelListener)listeners.elementAt( i ) ).treeNodesChanged( e );
+    /**
+     * creates the tree model
+     *
+     * @param root tree's root
+     */
+    public ASTModel(SimpleNode root) {
+        this.root = root;
     }
-  }
+
+    /**
+     * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
+     */
+    public Object getChild(Object parent, int index) {
+        return ((SimpleNode) parent).jjtGetChild(index);
+    }
+
+    /**
+     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
+     */
+    public int getChildCount(Object parent) {
+        return ((SimpleNode) parent).jjtGetNumChildren();
+    }
+
+    /**
+     * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object,
+            *      java.lang.Object)
+     */
+    public int getIndexOfChild(Object parent, Object child) {
+        SimpleNode node = ((SimpleNode) parent);
+
+        for (int i = 0; i < node.jjtGetNumChildren(); i++)
+            if (node.jjtGetChild(i).equals(child)) {
+                return i;
+            }
+
+        return -1;
+    }
+
+    /**
+     * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
+     */
+    public boolean isLeaf(Object node) {
+        return ((SimpleNode) node).jjtGetNumChildren() == 0;
+    }
+
+    /**
+     * @see javax.swing.tree.TreeModel#getRoot()
+     */
+    public Object getRoot() {
+        return root;
+    }
+
+    /**
+     * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath,
+            *      java.lang.Object)
+     */
+    public void valueForPathChanged(TreePath path, Object newValue) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
+     */
+    public void addTreeModelListener(TreeModelListener l) {
+        listeners.add(l);
+    }
+
+    /**
+     * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
+     */
+    public void removeTreeModelListener(TreeModelListener l) {
+        listeners.remove(l);
+    }
+
+    protected void fireTreeModelEvent(TreeModelEvent e) {
+        for (int i = 0; i < listeners.size(); i++) {
+            ((TreeModelListener) listeners.elementAt(i)).treeNodesChanged(e);
+        }
+    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.3  2004/09/27 19:42:52  tomcopeland
+ * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
+ *
  * Revision 1.2  2003/09/23 20:51:06  tomcopeland
  * Cleaned up imports
  *

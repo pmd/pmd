@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.RuleContext;
@@ -37,126 +37,122 @@ import java.util.Set;
  * constructors.  It marks as dangerous any calls to dangerous private constructors
  * from non-private constructors.
  *
- *
- * @todo match parameter types.  Agressive strips off any package names.  Normal
- *       compares the names as is.
- *
- * @todo What about interface declarations which can have internal classes
- *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
+ * @todo match parameter types.  Agressive strips off any package names.  Normal
+ * compares the names as is.
+ * @todo What about interface declarations which can have internal classes
  */
 public final class ConstructorCallsOverridableMethodRule extends net.sourceforge.pmd.AbstractRule {
     /**
-     *		2: method();
-     *			ASTPrimaryPrefix
-     *				ASTName			image = "method"
-     *			ASTPrimarySuffix
-     *				*ASTArguments
-     *		3: a.method();
-     *			ASTPrimaryPrefix ->
-     *				ASTName			image = "a.method" ???
-     *			ASTPrimarySuffix -> ()
-     *				ASTArguments
-     *		3: this.method();
-     *			ASTPrimaryPrefix -> this image=null
-     *			ASTPrimarySuffix -> method
-     *			ASTPrimarySuffix -> ()
-     *				ASTArguments
-     *
-     *          super.method();
-     *			ASTPrimaryPrefix -> image = "method"
-     *			ASTPrimarySuffix -> image = null
-     *				ASTArguments ->
-     *
-     *          super.a.method();
-     *			ASTPrimaryPrefix -> image = "a"
-     *			ASTPrimarySuffix -> image = "method"
-     *			ASTPrimarySuffix -> image = null
-     *				ASTArguments ->
-
-     *
-     *		4: this.a.method();
-     *			ASTPrimaryPrefix -> image = null
-     *			ASTPrimarySuffix -> image = "a"
-     *			ASTPrimarySuffix -> image = "method"
-     *			ASTPrimarySuffix ->
-     *				ASTArguments
-     *
-     *      4: ClassName.this.method();
-     *			ASTPrimaryPrefix
-     *				ASTName	image = "ClassName"
-     *			ASTPrimarySuffix -> this image=null
-     *			ASTPrimarySuffix -> image = "method"
-     *			ASTPrimarySuffix -> ()
-     *				ASTArguments
-     *		5: ClassName.this.a.method();
-     *			ASTPrimaryPrefix
-     *				ASTName image = "ClassName"
-     *			ASTPrimarySuffix -> this image=null
-     *			ASTPrimarySuffix -> image="a"
-     *			ASTPrimarySuffix -> image="method"
-     *			ASTPrimarySuffix -> ()
-     *				ASTArguments
-     *      5: Package.ClassName.this.method();
-     *			ASTPrimaryPrefix
-     *				ASTName image ="Package.ClassName"
-     *			ASTPrimarySuffix -> this image=null
-     *			ASTPrimarySuffix -> image="method"
-     *			ASTPrimarySuffix -> ()
-     *				ASTArguments
-     *      6: Package.ClassName.this.a.method();
-     *			ASTPrimaryPrefix
-     *				ASTName image ="Package.ClassName"
-     *			ASTPrimarySuffix -> this image=null
-     *			ASTPrimarySuffix -> a
-     *			ASTPrimarySuffix -> method
-     *			ASTPrimarySuffix -> ()
-     *				ASTArguments
-     *      5: OuterClass.InnerClass.this.method();
-     *			ASTPrimaryPrefix
-     *				ASTName image = "OuterClass.InnerClass"
-     *			ASTPrimarySuffix -> this image=null
-     *			ASTPrimarySuffix -> method
-     *			ASTPrimarySuffix -> ()
-     *				ASTArguments
-     *      6: OuterClass.InnerClass.this.a.method();
-     *			ASTPrimaryPrefix
-     *				ASTName image = "OuterClass.InnerClass"
-     *			ASTPrimarySuffix -> this image=null
-     *			ASTPrimarySuffix -> a
-     *			ASTPrimarySuffix -> method
-     *			ASTPrimarySuffix -> ()
-     *				ASTArguments
-     *
-     *			OuterClass.InnerClass.this.a.method().method().method();
-     *			ASTPrimaryPrefix
-     *				ASTName image = "OuterClass.InnerClass"
-     *			ASTPrimarySuffix -> this		image=null
-     *			ASTPrimarySuffix -> a			image='a'
-     *			ASTPrimarySuffix -> method		image='method'
-     *			ASTPrimarySuffix -> ()			image=null
-     *				ASTArguments
-     *			ASTPrimarySuffix -> method		image='method'
-     *			ASTPrimarySuffix -> ()			image=null
-     *				ASTArguments
-     *			ASTPrimarySuffix -> method		image='method'
-     *			ASTPrimarySuffix -> ()			image=null
-     *				ASTArguments
-     *
-     *      3..n:	Class.InnerClass[0].InnerClass[n].this.method();
-     *				ASTPrimaryPrefix
-     *					ASTName image = "Class[0]..InnerClass[n]"
-     *				ASTPrimarySuffix -> image=null
-     *				ASTPrimarySuffix -> method
-     *				ASTPrimarySuffix -> ()
-     *					ASTArguments
-     *
-     *		super.aMethod();
-     *			ASTPrimaryPrefix -> aMethod
-     *			ASTPrimarySuffix -> ()
-     *
-     *		Evaluate right to left
-     *
+     * 2: method();
+     * ASTPrimaryPrefix
+     * ASTName			image = "method"
+     * ASTPrimarySuffix
+     * *ASTArguments
+     * 3: a.method();
+     * ASTPrimaryPrefix ->
+     * ASTName			image = "a.method" ???
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * 3: this.method();
+     * ASTPrimaryPrefix -> this image=null
+     * ASTPrimarySuffix -> method
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * <p/>
+     * super.method();
+     * ASTPrimaryPrefix -> image = "method"
+     * ASTPrimarySuffix -> image = null
+     * ASTArguments ->
+     * <p/>
+     * super.a.method();
+     * ASTPrimaryPrefix -> image = "a"
+     * ASTPrimarySuffix -> image = "method"
+     * ASTPrimarySuffix -> image = null
+     * ASTArguments ->
+     * <p/>
+     * <p/>
+     * 4: this.a.method();
+     * ASTPrimaryPrefix -> image = null
+     * ASTPrimarySuffix -> image = "a"
+     * ASTPrimarySuffix -> image = "method"
+     * ASTPrimarySuffix ->
+     * ASTArguments
+     * <p/>
+     * 4: ClassName.this.method();
+     * ASTPrimaryPrefix
+     * ASTName	image = "ClassName"
+     * ASTPrimarySuffix -> this image=null
+     * ASTPrimarySuffix -> image = "method"
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * 5: ClassName.this.a.method();
+     * ASTPrimaryPrefix
+     * ASTName image = "ClassName"
+     * ASTPrimarySuffix -> this image=null
+     * ASTPrimarySuffix -> image="a"
+     * ASTPrimarySuffix -> image="method"
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * 5: Package.ClassName.this.method();
+     * ASTPrimaryPrefix
+     * ASTName image ="Package.ClassName"
+     * ASTPrimarySuffix -> this image=null
+     * ASTPrimarySuffix -> image="method"
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * 6: Package.ClassName.this.a.method();
+     * ASTPrimaryPrefix
+     * ASTName image ="Package.ClassName"
+     * ASTPrimarySuffix -> this image=null
+     * ASTPrimarySuffix -> a
+     * ASTPrimarySuffix -> method
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * 5: OuterClass.InnerClass.this.method();
+     * ASTPrimaryPrefix
+     * ASTName image = "OuterClass.InnerClass"
+     * ASTPrimarySuffix -> this image=null
+     * ASTPrimarySuffix -> method
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * 6: OuterClass.InnerClass.this.a.method();
+     * ASTPrimaryPrefix
+     * ASTName image = "OuterClass.InnerClass"
+     * ASTPrimarySuffix -> this image=null
+     * ASTPrimarySuffix -> a
+     * ASTPrimarySuffix -> method
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * <p/>
+     * OuterClass.InnerClass.this.a.method().method().method();
+     * ASTPrimaryPrefix
+     * ASTName image = "OuterClass.InnerClass"
+     * ASTPrimarySuffix -> this		image=null
+     * ASTPrimarySuffix -> a			image='a'
+     * ASTPrimarySuffix -> method		image='method'
+     * ASTPrimarySuffix -> ()			image=null
+     * ASTArguments
+     * ASTPrimarySuffix -> method		image='method'
+     * ASTPrimarySuffix -> ()			image=null
+     * ASTArguments
+     * ASTPrimarySuffix -> method		image='method'
+     * ASTPrimarySuffix -> ()			image=null
+     * ASTArguments
+     * <p/>
+     * 3..n:	Class.InnerClass[0].InnerClass[n].this.method();
+     * ASTPrimaryPrefix
+     * ASTName image = "Class[0]..InnerClass[n]"
+     * ASTPrimarySuffix -> image=null
+     * ASTPrimarySuffix -> method
+     * ASTPrimarySuffix -> ()
+     * ASTArguments
+     * <p/>
+     * super.aMethod();
+     * ASTPrimaryPrefix -> aMethod
+     * ASTPrimarySuffix -> ()
+     * <p/>
+     * Evaluate right to left
      */
     private static class MethodInvocation {
         private String m_Name;
@@ -612,7 +608,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
      * another pass.  Keep passing until you make a clean pass in which no
      * methods are changed to unsafe.
      * For speed it is possible to limit the number of passes.
-     *
+     * <p/>
      * Impossible to tell type of arguments to method, so forget method matching
      * on types.  just use name and num of arguments.  will be some false hits,
      * but oh well.
@@ -650,6 +646,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
     /**
      * marks constructors dangerous if they call any dangerous methods
      * Requires only a single pass as methods are already marked
+     *
      * @todo optimize by having methods already evaluated somehow!?
      */
     private void evaluateDangerOfConstructors1(Map classConstructorMap, Set evaluatedMethods) {
@@ -774,7 +771,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
      * evaluation.  Non-private constructor's calls on private constructors
      * are added to a list for later safety evaluation.  Private constructors
      * are added to a list so their safety to be called can be later evaluated.
-     *
+     * <p/>
      * Note: We are not checking private constructor's calls on non-private
      * constructors because all non-private constructors will be evaluated for
      * safety anyway.  This means we wont flag a private constructor as unsafe
@@ -860,15 +857,15 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
     }
 
     /**
-     * @todo Need a better way to match the class and package name to the actual
-     *       method being called.
      * @return A method call on the class passed in, or null if no method call
      *         is found.
+     * @todo Need a better way to match the class and package name to the actual
+     * method being called.
      */
     private static MethodInvocation findMethod(ASTPrimaryExpression node, String className) {
         if (node.jjtGetNumChildren() > 0
-	    && node.jjtGetChild(0).jjtGetNumChildren() > 0
-	    && node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
+                && node.jjtGetChild(0).jjtGetNumChildren() > 0
+                && node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
             return null;
         }
         MethodInvocation meth = MethodInvocation.getMethod(node);
@@ -903,7 +900,7 @@ public final class ConstructorCallsOverridableMethodRule extends net.sourceforge
     }
 
     /**
-     *  ASTPrimaryPrefix has name in child node of ASTName
+     * ASTPrimaryPrefix has name in child node of ASTName
      */
     private static String getNameFromPrefix(ASTPrimaryPrefix node) {
         String name = null;

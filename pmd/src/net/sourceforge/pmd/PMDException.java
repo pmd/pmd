@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import java.io.PrintStream;
@@ -12,8 +12,8 @@ import java.io.PrintWriter;
  * severity.
  *
  * @author Donald A. Leckie
- * @since August 30, 2002
  * @version $Revision$, $Date$
+ * @since August 30, 2002
  */
 public class PMDException extends Exception {
 

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -23,7 +23,7 @@ public class UnusedPrivateFieldRule extends AbstractRule {
             if (!decl.getAccessNodeParent().isPrivate() || isOK(decl.getImage())) {
                 continue;
             }
-            if (!actuallyUsed((List)vars.get(decl))) {
+            if (!actuallyUsed((List) vars.get(decl))) {
                 ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
             }
         }
@@ -32,7 +32,7 @@ public class UnusedPrivateFieldRule extends AbstractRule {
 
     private boolean actuallyUsed(List usages) {
         for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence nameOccurrence = (NameOccurrence)j.next();
+            NameOccurrence nameOccurrence = (NameOccurrence) j.next();
             if (!nameOccurrence.isOnLeftHandSide()) {
                 return true;
             }

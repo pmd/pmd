@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class ZipDataSource implements DataSource {
     private ZipEntry zipEntry;
 
     /**
-     * @param zipFile the ZipFile 
+     * @param zipFile  the ZipFile
      * @param zipEntry the ZipEntry containing the file to read
      */
     public ZipDataSource(ZipFile zipFile, ZipEntry zipEntry) {

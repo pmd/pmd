@@ -1,12 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.stat;
 
 /**
  * @author David Dixon-Peugh
- *
- * This class holds all sorts of statistical information.
+ *         <p/>
+ *         This class holds all sorts of statistical information.
  */
 public class Metric {
     private String metricName = null;

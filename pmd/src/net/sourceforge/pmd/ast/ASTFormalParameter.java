@@ -11,7 +11,9 @@ public class ASTFormalParameter extends AccessNode implements Dimensionable {
         super(p, id);
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -31,14 +33,14 @@ public class ASTFormalParameter extends AccessNode implements Dimensionable {
         if (jjtGetNumChildren() == 0 || !(jjtGetChild(0) instanceof ASTType)) {
             return 0;
         }
-        return ((ASTType)jjtGetChild(0)).getArrayDepth();
+        return ((ASTType) jjtGetChild(0)).getArrayDepth();
     }
 
     private int checkDecl() {
         if (jjtGetNumChildren() < 2 || !(jjtGetChild(1) instanceof ASTVariableDeclarator)) {
             return 0;
         }
-        return ((ASTVariableDeclaratorId)(jjtGetChild(1).jjtGetChild(0))).getArrayDepth();
+        return ((ASTVariableDeclaratorId) (jjtGetChild(1).jjtGetChild(0))).getArrayDepth();
     }
 
     public void dump(String prefix) {

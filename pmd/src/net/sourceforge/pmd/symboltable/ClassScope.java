@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.Applier;
@@ -26,7 +26,7 @@ public class ClassScope extends AbstractScope {
 
     /**
      * This is only for anonymous inner classes
-     *
+     * <p/>
      * FIXME - should have name like Foo$1, not Anonymous$1
      * to get this working right, the parent scope needs
      * to be passed in when instantiating a ClassScope

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface Rule {
     void setName(String name);
 
     String getRuleSetName();
-    
+
     void setRuleSetName(String name);
 
     void setMessage(String message);
@@ -62,6 +62,6 @@ public interface Rule {
     boolean usesSymbolTable();
 
     void setUsesDFA();
-    
+
     boolean usesDFA();
 }

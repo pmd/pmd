@@ -56,7 +56,9 @@ public class ASTTryStatement extends SimpleNode {
         return blocks;
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

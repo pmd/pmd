@@ -12,7 +12,9 @@ public class ASTClassDeclaration extends AccessNode {
     }
 
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTFormalParameter;
@@ -19,18 +19,18 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isArray() {
-        return ((Dimensionable)(((ASTVariableDeclaratorId)node).getTypeNode().jjtGetParent())).isArray();
+        return ((Dimensionable) (((ASTVariableDeclaratorId) node).getTypeNode().jjtGetParent())).isArray();
     }
 
     public boolean isExceptionBlockParameter() {
-        return ((ASTVariableDeclaratorId)node).isExceptionBlockParameter();
+        return ((ASTVariableDeclaratorId) node).isExceptionBlockParameter();
     }
 
     public AccessNode getAccessNodeParent() {
         if (node.jjtGetParent() instanceof ASTFormalParameter) {
-            return (AccessNode)node.jjtGetParent();
+            return (AccessNode) node.jjtGetParent();
         }
-        return (AccessNode)node.jjtGetParent().jjtGetParent();
+        return (AccessNode) node.jjtGetParent().jjtGetParent();
     }
 
     public ASTVariableDeclaratorId getDeclaratorId() {

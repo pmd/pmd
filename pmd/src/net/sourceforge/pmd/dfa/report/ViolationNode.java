@@ -15,15 +15,15 @@ public class ViolationNode extends AbstractReportNode {
     }
 
     public boolean equalsNode(AbstractReportNode arg0) {
-        if(!(arg0 instanceof ViolationNode)) {
+        if (!(arg0 instanceof ViolationNode)) {
             return false;
         }
 
-        ViolationNode vn = (ViolationNode)arg0;
+        ViolationNode vn = (ViolationNode) arg0;
 
         return vn.getRuleViolation().getFilename().equals(this.getRuleViolation().getFilename()) &&
-            vn.getRuleViolation().getLine() == this.getRuleViolation().getLine() &&
-            vn.getRuleViolation().getVariableName().equals(this.getRuleViolation().getVariableName());
+                vn.getRuleViolation().getLine() == this.getRuleViolation().getLine() &&
+                vn.getRuleViolation().getVariableName().equals(this.getRuleViolation().getVariableName());
     }
 
 }

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -24,10 +24,9 @@ import java.text.MessageFormat;
 import java.util.Stack;
 
 /**
- *
  * @author Donald A. Leckie
- * @since January 14, 2003
  * @version $Revision$, $Date$
+ * @since January 14, 2003
  */
 public class CyclomaticComplexityRule extends AbstractRule {
 
@@ -44,11 +43,13 @@ public class CyclomaticComplexityRule extends AbstractRule {
         public void bumpDecisionPoints() {
             decisionPoints++;
         }
+
         public void bumpDecisionPoints(int size) {
             decisionPoints += size;
         }
+
         public int getComplexityAverage() {
-            return ((double) methodCount == 0) ? 1 : (int) (Math.rint((double)decisionPoints / (double) methodCount));
+            return ((double) methodCount == 0) ? 1 : (int) (Math.rint((double) decisionPoints / (double) methodCount));
         }
     }
 

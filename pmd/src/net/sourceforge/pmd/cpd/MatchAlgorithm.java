@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class MatchAlgorithm {
     private final static int MOD = 37;
     private int lastHash;
     private int lastMod = 1;
-    
+
     private List matches;
     private Map source;
     private Tokens tokens;
@@ -84,7 +84,7 @@ public class MatchAlgorithm {
             if (token != TokenEntry.EOF) {
                 int last = tokenAt(min, token).getIdentifier();
                 lastHash = MOD * lastHash + token.getIdentifier() - lastMod * last;
-				token.setHashCode(lastHash);
+                token.setHashCode(lastHash);
                 Object o = markGroups.get(token);
                 if (o == null) {
                     markGroups.put(token, token);
@@ -118,5 +118,5 @@ public class MatchAlgorithm {
     public TokenEntry tokenAt(int offset, TokenEntry m) {
         return (TokenEntry) code.get(offset + m.getIndex());
     }
-    
+
 }

@@ -14,7 +14,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -27,108 +27,96 @@ import java.util.LinkedList;
  * @version $Id$
  */
 public class ASTPanel
-  extends JPanel
-  implements ViewerModelListener, TreeSelectionListener
-{
-  private ViewerModel model;
-  private JTree       tree;
+        extends JPanel
+        implements ViewerModelListener, TreeSelectionListener {
+    private ViewerModel model;
+    private JTree tree;
 
-  /**
-   * constructs the panel
-   *
-   * @param model model to attach the panel to
-   */
-  public ASTPanel( ViewerModel model )
-  {
-    this.model = model;
+    /**
+     * constructs the panel
+     *
+     * @param model model to attach the panel to
+     */
+    public ASTPanel(ViewerModel model) {
+        this.model = model;
 
-    init(  );
-  }
-
-  private void init(  )
-  {
-    model.addViewerModelListener( this );
-
-    setBorder(
-      BorderFactory.createTitledBorder(
-        BorderFactory.createEtchedBorder(  ), NLS.nls( "AST.PANEL.TITLE" ) ) );
-
-    setLayout( new BorderLayout(  ) );
-
-    tree = new JTree( (TreeNode)null );
-
-    tree.addTreeSelectionListener( this );
-
-    tree.addMouseListener(
-      new MouseAdapter(  )
-      {
-        public void mouseReleased( MouseEvent e )
-        {
-          if ( e.isPopupTrigger(  ) )
-          {
-            TreePath path =
-              tree.getClosestPathForLocation( e.getX(  ), e.getY(  ) );
-            tree.setSelectionPath( path );
-
-            JPopupMenu menu =
-              new ASTNodePopupMenu(
-                model, (SimpleNode)path.getLastPathComponent(  ) );
-
-            menu.show( tree, e.getX(  ), e.getY(  ) );
-          }
-        }
-      } );
-
-    add( new JScrollPane( tree ), BorderLayout.CENTER );
-  }
-
-  /**
-   * @see org.gruschko.pmd.viewer.model.ViewerModelListener#viewerModelChanged(org.gruschko.pmd.viewer.model.ViewerModelEvent)
-   */
-  public void viewerModelChanged( ViewerModelEvent e )
-  {
-    switch ( e.getReason(  ) )
-    {
-      case ViewerModelEvent.CODE_RECOMPILED :
-        tree.setModel( new ASTModel( model.getRootNode(  ) ) );
-
-        break;
-
-      case ViewerModelEvent.NODE_SELECTED :
-
-        if ( e.getSource(  ) != this )
-        {
-          LinkedList list = new LinkedList(  );
-
-          for (
-            Node node = (Node)e.getParameter(  ); node != null;
-              node = node.jjtGetParent(  ) )
-            list.addFirst( node );
-
-          TreePath path = new TreePath( list.toArray(  ) );
-
-          tree.setSelectionPath( path );
-
-          tree.scrollPathToVisible( path );
-        }
-
-        break;
+        init();
     }
-  }
 
-  /**
-   * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
-   */
-  public void valueChanged( TreeSelectionEvent e )
-  {
-    model.selectNode(
-      (SimpleNode)e.getNewLeadSelectionPath(  ).getLastPathComponent(  ), this );
-  }
+    private void init() {
+        model.addViewerModelListener(this);
+
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), NLS.nls("AST.PANEL.TITLE")));
+
+        setLayout(new BorderLayout());
+
+        tree = new JTree((TreeNode) null);
+
+        tree.addTreeSelectionListener(this);
+
+        tree.addMouseListener(new MouseAdapter() {
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    TreePath path =
+                            tree.getClosestPathForLocation(e.getX(), e.getY());
+                    tree.setSelectionPath(path);
+
+                    JPopupMenu menu =
+                            new ASTNodePopupMenu(model, (SimpleNode) path.getLastPathComponent());
+
+                    menu.show(tree, e.getX(), e.getY());
+                }
+            }
+        });
+
+        add(new JScrollPane(tree), BorderLayout.CENTER);
+    }
+
+    /**
+     * @see org.gruschko.pmd.viewer.model.ViewerModelListener#viewerModelChanged(org.gruschko.pmd.viewer.model.ViewerModelEvent)
+     */
+    public void viewerModelChanged(ViewerModelEvent e) {
+        switch (e.getReason()) {
+            case ViewerModelEvent.CODE_RECOMPILED:
+                tree.setModel(new ASTModel(model.getRootNode()));
+
+                break;
+
+            case ViewerModelEvent.NODE_SELECTED:
+
+                if (e.getSource() != this) {
+                    LinkedList list = new LinkedList();
+
+                    for (
+                            Node node = (Node) e.getParameter(); node != null;
+                            node = node.jjtGetParent())
+                        list.addFirst(node);
+
+                    TreePath path = new TreePath(list.toArray());
+
+                    tree.setSelectionPath(path);
+
+                    tree.scrollPathToVisible(path);
+                }
+
+                break;
+        }
+    }
+
+    /**
+     * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+     */
+    public void valueChanged(TreeSelectionEvent e) {
+        model.selectNode((SimpleNode) e.getNewLeadSelectionPath().getLastPathComponent(), this);
+    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.4  2004/09/27 19:42:52  tomcopeland
+ * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
+ *
  * Revision 1.3  2004/04/15 18:21:58  tomcopeland
  * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
  *

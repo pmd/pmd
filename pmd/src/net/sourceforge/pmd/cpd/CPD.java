@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class CPD {
     }
 
     public void go() {
-		TokenEntry.clearImages();
+        TokenEntry.clearImages();
         matchAlgorithm = new MatchAlgorithm(source, tokens, minimumTileSize, listener);
         matchAlgorithm.findMatches();
     }
@@ -69,7 +69,7 @@ public class CPD {
     }
 
     public static void main(String[] args) {
-        if (args.length >3 || args.length < 2) {
+        if (args.length > 3 || args.length < 2) {
             usage();
             System.exit(1);
         }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Iterator;
 
 /**
  * @author raik
@@ -64,7 +63,7 @@ public class DataFlowNode implements IDataFlowNode {
 
     public void reverseParentPathsTo(IDataFlowNode destination) {
         while (!parents.isEmpty()) {
-            DataFlowNode parent = (DataFlowNode)parents.get(0);
+            DataFlowNode parent = (DataFlowNode) parents.get(0);
             parent.removePathToChild(this);
             parent.addPathToChild(destination);
         }

@@ -22,10 +22,11 @@ public class SimpleNode implements Node {
     private boolean discardable;
 
     private IDataFlowNode dataFlowNode;
+
     public IDataFlowNode getDataFlowNode() {
-        if(this.dataFlowNode == null) {
-            if(this.parent != null) {
-                return ((SimpleNode)parent).getDataFlowNode();
+        if (this.dataFlowNode == null) {
+            if (this.parent != null) {
+                return ((SimpleNode) parent).getDataFlowNode();
             }
             return null; //TODO wise?
         }
@@ -128,32 +129,34 @@ public class SimpleNode implements Node {
 
     /**
      * Traverses up the tree to find the first parent instance of type parentType
+     *
      * @param parentType class which you want to find.
      * @return Node of type parentType.  Returns null if none found.
      */
     public Node getFirstParentOfType(Class parentType) {
-      Node parentNode = jjtGetParent();
-      while (parentNode != null && parentNode.getClass() != parentType) {
-        parentNode = parentNode.jjtGetParent();
-      }
-      return parentNode;
+        Node parentNode = jjtGetParent();
+        while (parentNode != null && parentNode.getClass() != parentType) {
+            parentNode = parentNode.jjtGetParent();
+        }
+        return parentNode;
     }
 
     /**
      * Traverses up the tree to find all of the parent instances of type parentType
+     *
      * @param parentType classes which you want to find.
      * @return List of parentType instances found.
      */
     public List getParentsOfType(Class parentType) {
-      List parents = new ArrayList();
-      Node parentNode = jjtGetParent();
-      while (parentNode != null) {
-        if (parentNode.getClass() == parentType) {
-          parents.add(parentNode);
+        List parents = new ArrayList();
+        Node parentNode = jjtGetParent();
+        while (parentNode != null) {
+            if (parentNode.getClass() == parentType) {
+                parents.add(parentNode);
+            }
+            parentNode = parentNode.jjtGetParent();
         }
-        parentNode = parentNode.jjtGetParent();
-      }
-      return parents;
+        return parents;
     }
 
     public List findChildrenOfType(Class targetType) {
@@ -177,7 +180,7 @@ public class SimpleNode implements Node {
         if (node.getClass().equals(ASTNestedClassDeclaration.class) && !descendIntoNestedClasses) {
             return;
         }
-        if (node.getClass().equals(ASTClassBodyDeclaration.class) && ((ASTClassBodyDeclaration)node).isAnonymousInnerClass() && !descendIntoNestedClasses) {
+        if (node.getClass().equals(ASTClassBodyDeclaration.class) && ((ASTClassBodyDeclaration) node).isAnonymousInnerClass() && !descendIntoNestedClasses) {
             return;
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
@@ -201,7 +204,7 @@ public class SimpleNode implements Node {
     }
 
     public void jjtReplaceChild(Node old, Node newNode) {
-        for (int i=0; i<children.length; i++) {
+        for (int i = 0; i < children.length; i++) {
             if (children[i] == old) {
                 children[i] = newNode;
                 return;
@@ -229,12 +232,16 @@ public class SimpleNode implements Node {
         return (children == null) ? 0 : children.length;
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {

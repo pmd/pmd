@@ -13,32 +13,32 @@ import javax.swing.*;
  * @version $Id$
  */
 public class ASTNodePopupMenu
-  extends JPopupMenu
-{
-  private ViewerModel model;
-  private SimpleNode  node;
+        extends JPopupMenu {
+    private ViewerModel model;
+    private SimpleNode node;
 
-  public ASTNodePopupMenu( ViewerModel model, SimpleNode node )
-  {
-    this.model   = model;
-    this.node    = node;
+    public ASTNodePopupMenu(ViewerModel model, SimpleNode node) {
+        this.model = model;
+        this.node = node;
 
-    init(  );
-  }
+        init();
+    }
 
-  private void init(  )
-  {
-    add( new SimpleNodeSubMenu( model, node ) );
+    private void init() {
+        add(new SimpleNodeSubMenu(model, node));
 
-    addSeparator(  );
+        addSeparator();
 
-    add( new AttributesSubMenu( model, node ) );
-  }
+        add(new AttributesSubMenu(model, node));
+    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.5  2004/09/27 19:42:52  tomcopeland
+ * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
+ *
  * Revision 1.4  2004/04/15 18:21:58  tomcopeland
  * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
  *

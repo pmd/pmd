@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
@@ -10,8 +10,8 @@ import net.sourceforge.pmd.RuleViolation;
 import java.util.Iterator;
 
 /**
- * @version $Revision$ $Date$
  * @author Vladimir
+ * @version $Revision$ $Date$
  */
 public class VBHTMLRenderer implements Renderer {
 
@@ -62,7 +62,7 @@ public class VBHTMLRenderer implements Renderer {
             sb.append("<table border=\"0\" width=\"80%\">");
             sb.append("<tr id=TableHeader><td><font class=title>&nbsp;Problems found</font></td></tr>");
             colorize = false;
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 if (colorize) {
                     sb.append("<tr id=RowColor1>");
                 } else {

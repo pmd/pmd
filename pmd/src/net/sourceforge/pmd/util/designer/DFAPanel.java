@@ -43,7 +43,7 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
                 g.drawArc(x, y, NODE_DIAMETER, NODE_DIAMETER, 0, 360);
 
                 g.drawString(lines.getLine(inode.getLine()), x + 200, y + 15);
-                g.drawString(String.valueOf(inode.getIndex()), x + NODE_RADIUS-2, y + NODE_RADIUS+4);
+                g.drawString(String.valueOf(inode.getIndex()), x + NODE_RADIUS - 2, y + NODE_RADIUS + 4);
 
                 String exp = "";
                 List access = inode.getVariableAccess();
@@ -71,7 +71,7 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
                 for (int j = 0; j < inode.getChildren().size(); j++) {
                     IDataFlowNode n = (IDataFlowNode) inode.getChildren().get(j);
                     this.drawMyLine(inode.getIndex(), n.getIndex(), g);
-                    String output = (j==0 ? "" : "," ) + String.valueOf(n.getIndex());
+                    String output = (j == 0 ? "" : ",") + String.valueOf(n.getIndex());
                     g.drawString(output, x - 3 * NODE_DIAMETER + (j * 20), y + NODE_RADIUS - 2);
                 }
             }
@@ -134,14 +134,17 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
 
     private static class ElementWrapper {
         private ASTMethodDeclaration node;
+
         public ElementWrapper(ASTMethodDeclaration node) {
             this.node = node;
         }
+
         public ASTMethodDeclaration getNode() {
             return node;
         }
+
         public String toString() {
-            SimpleNode n = (SimpleNode)node.jjtGetChild(1);
+            SimpleNode n = (SimpleNode) node.jjtGetChild(1);
             return n.getImage();
         }
     }
@@ -175,13 +178,13 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent event) {
         ElementWrapper wrapper = null;
         if (nodes.size() == 1) {
-            wrapper = (ElementWrapper)nodes.get(0);
+            wrapper = (ElementWrapper) nodes.get(0);
         } else if (nodes.isEmpty()) {
             return;
         } else if (nodeList.getSelectedValue() == null) {
-            wrapper = (ElementWrapper)nodes.get(0);
+            wrapper = (ElementWrapper) nodes.get(0);
         } else {
-            wrapper = (ElementWrapper)nodeList.getSelectedValue();
+            wrapper = (ElementWrapper) nodeList.getSelectedValue();
         }
         dfaCanvas.setMethod(wrapper.getNode());
         repaint();
@@ -191,10 +194,10 @@ public class DFAPanel extends JPanel implements ListSelectionListener {
         dfaCanvas.setCode(lines);
         nodes.clear();
         for (Iterator i = newNodes.iterator(); i.hasNext();) {
-            nodes.addElement(new ElementWrapper((ASTMethodDeclaration)i.next()));
+            nodes.addElement(new ElementWrapper((ASTMethodDeclaration) i.next()));
         }
         nodeList.setSelectedIndex(0);
-        dfaCanvas.setMethod((SimpleNode)newNodes.get(0));
+        dfaCanvas.setMethod((SimpleNode) newNodes.get(0));
         repaint();
     }
 

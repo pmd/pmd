@@ -21,7 +21,8 @@ public class Match implements Comparable {
         private int first;
         private int second;
 
-        public MatchCode() {}
+        public MatchCode() {
+        }
 
         public MatchCode(TokenEntry m1, TokenEntry m2) {
             first = m1.getIndex();
@@ -91,11 +92,11 @@ public class Match implements Comparable {
         }
         return other.getFirstMark().getIndex() - getFirstMark().getIndex();
     }
-    
+
     public TokenEntry getFirstMark() {
         return marks[0];
     }
-    
+
     public TokenEntry getSecondMark() {
         return marks[1];
     }
@@ -114,9 +115,9 @@ public class Match implements Comparable {
         }
         return mc;
     }
-    
+
     public int getEndIndex() {
-        return marks[1].getIndex() + getTokenCount() -1;
+        return marks[1].getIndex() + getTokenCount() - 1;
     }
 
     public void setMarkSet(Set markSet) {

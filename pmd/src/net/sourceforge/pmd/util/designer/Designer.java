@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.util.designer;
 
 import net.sourceforge.pmd.PMD;
@@ -80,7 +80,7 @@ public class Designer {
                 for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
                     StringBuffer sb = new StringBuffer();
                     SimpleNode node = (SimpleNode) iter.next();
-                    String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.')+1);
+                    String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
                     String line = " at line " + String.valueOf(node.getBeginLine());
                     sb.append(name).append(line).append(System.getProperty("line.separator"));
                     xpathResults.addElement(sb.toString().trim());
@@ -133,12 +133,12 @@ public class Designer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        frame.setLocation((screenWidth/2) - frame.getWidth()/2, (screenHeight/2) - frame.getHeight()/2);
+        frame.setLocation((screenWidth / 2) - frame.getWidth() / 2, (screenHeight / 2) - frame.getHeight() / 2);
         frame.setVisible(true);
         frame.show();
 
-        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/2));
-        resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation()/2));
+        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation() / 2));
+        resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 2));
     }
 
     private JSmartPanel createASTPanel() {

@@ -10,7 +10,8 @@ import net.sourceforge.pmd.ast.ASTType;
 /**
  * PMD rule which is going to find <code>catch</code> statements
  * containing <code>throwable</code> as the type definition.
- * <p>
+ * <p/>
+ *
  * @author <a mailto:trondandersen@c2i.net>Trond Andersen</a>
  */
 public class AvoidCatchingThrowable extends AbstractRule {
@@ -31,12 +32,13 @@ public class AvoidCatchingThrowable extends AbstractRule {
 
     /**
      * Checking the catch statement
-     * @param aCatch CatchBlock
+     *
+     * @param aCatch      CatchBlock
      * @param ruleContext
      */
     private void evaluateCatch(ASTCatch aCatch, RuleContext ruleContext) {
-        ASTType type = (ASTType)aCatch.getFormalParameter().findChildrenOfType(ASTType.class).get(0);
-        ASTName name = (ASTName)type.findChildrenOfType(ASTName.class).get(0);
+        ASTType type = (ASTType) aCatch.getFormalParameter().findChildrenOfType(ASTType.class).get(0);
+        ASTName name = (ASTName) type.findChildrenOfType(ASTName.class).get(0);
 
         if (name.getImage().equals("Throwable")) {
             ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, name.getBeginLine()));

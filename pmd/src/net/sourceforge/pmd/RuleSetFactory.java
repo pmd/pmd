@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -27,6 +27,7 @@ public class RuleSetFactory {
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from
      * the "rulesets.properties" resource or from the "rulesets.filenames" property.
+     *
      * @return an iterator on RuleSet objects
      */
     public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
@@ -46,7 +47,8 @@ public class RuleSetFactory {
 
     /**
      * Create a ruleset from a name or from a list of name
-     * @param name name of rule set file loaded as a resource
+     *
+     * @param name        name of rule set file loaded as a resource
      * @param classLoader the classloader used to load the ruleset and subsequent rules
      * @return the new ruleset
      * @throws RuleSetNotFoundException
@@ -77,6 +79,7 @@ public class RuleSetFactory {
     /**
      * Create a ruleset from an inputsteam.
      * Same as createRuleSet(inputStream, ruleSetFactory.getClassLoader()).
+     *
      * @param inputStream an input stream  that contains a ruleset descripion
      * @return a new ruleset
      */
@@ -86,6 +89,7 @@ public class RuleSetFactory {
 
     /**
      * Create a ruleset from an input stream with a specified class loader
+     *
      * @param inputStream an input stream that contains a ruleset descripion
      * @param classLoader a class loader used to load rule classes
      * @return a new ruleset
@@ -121,6 +125,7 @@ public class RuleSetFactory {
 
     /**
      * Return the class loader used to load ruleset resources and rules
+     *
      * @return
      */
     public ClassLoader getClassLoader() {
@@ -128,7 +133,8 @@ public class RuleSetFactory {
     }
 
     /**
-     * Sets the class loader used to load ruleset resources and rules 
+     * Sets the class loader used to load ruleset resources and rules
+     *
      * @param loader a class loader
      */
     public void setClassLoader(ClassLoader loader) {
@@ -137,7 +143,8 @@ public class RuleSetFactory {
 
     /**
      * Try to load a resource with the specified class loader
-     * @param name a resource name (contains a ruleset description)
+     *
+     * @param name   a resource name (contains a ruleset description)
      * @param loader a class loader used to load that rule set description
      * @return an inputstream to that resource
      * @throws RuleSetNotFoundException
@@ -149,16 +156,17 @@ public class RuleSetFactory {
         }
         return in;
     }
-    
+
     /**
      * Parse a ruleset description node
-     * @param ruleSet the ruleset being constructed
+     *
+     * @param ruleSet         the ruleset being constructed
      * @param descriptionNode must be a description element node
      */
     private void parseDescriptionNode(RuleSet ruleSet, Node descriptionNode) {
         NodeList nodeList = descriptionNode.getChildNodes();
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0 ; i < nodeList.getLength(); i++) {
+        for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.TEXT_NODE) {
                 buffer.append(node.getNodeValue());
@@ -168,10 +176,11 @@ public class RuleSetFactory {
         }
         ruleSet.setDescription(buffer.toString());
     }
-    
+
     /**
      * Parse a rule node
-     * @param ruleSet the ruleset being constructed
+     *
+     * @param ruleSet     the ruleset being constructed
      * @param ruleElement must be a rule element node
      */
     private void parseRuleNode(RuleSet ruleSet, Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, RuleSetNotFoundException {
@@ -183,10 +192,11 @@ public class RuleSetFactory {
             parseExternallyDefinedRuleNode(ruleSet, ruleNode);
         }
     }
-    
+
     /**
      * Process a rule definition node
-     * @param ruleSet the ruleset being constructed
+     *
+     * @param ruleSet  the ruleset being constructed
      * @param ruleNode must be a rule element node
      */
     private void parseInternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -221,13 +231,14 @@ public class RuleSetFactory {
                 }
             }
         }
-        
+
         ruleSet.addRule(rule);
     }
-    
+
     /**
      * Process a reference to a rule
-     * @param ruleSet the ruleset being constructucted
+     *
+     * @param ruleSet  the ruleset being constructucted
      * @param ruleNode must be a ruke element node
      */
     private void parseExternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode) throws RuleSetNotFoundException {
@@ -239,11 +250,12 @@ public class RuleSetFactory {
             parseRuleNodeWithSimpleReference(ruleSet, ref);
         }
     }
-    
+
     /**
      * Parse a rule node with a simple reference
+     *
      * @param ruleSet the ruleset being constructed
-     * @param ref a reference to a rule
+     * @param ref     a reference to a rule
      */
     private void parseRuleNodeWithSimpleReference(RuleSet ruleSet, String ref) throws RuleSetNotFoundException {
         RuleSetFactory rsf = new RuleSetFactory();
@@ -254,34 +266,36 @@ public class RuleSetFactory {
 
     /**
      * Parse a reference rule node with excludes
-     * @param ruleSet the ruleset being constructed
+     *
+     * @param ruleSet     the ruleset being constructed
      * @param ruleElement must be a rule element
-     * @param ref the ruleset reference
-     */    
+     * @param ref         the ruleset reference
+     */
     private void parseRuleNodeWithExclude(RuleSet ruleSet, Element ruleElement, String ref) throws RuleSetNotFoundException {
         NodeList excludeNodes = ruleElement.getChildNodes();
         Set excludes = new HashSet();
-        for (int i=0; i<excludeNodes.getLength(); i++) {
+        for (int i = 0; i < excludeNodes.getLength(); i++) {
             Node node = excludeNodes.item(i);
             if ((node.getNodeType() == Node.ELEMENT_NODE) && (node.getNodeName().equals("exclude"))) {
                 Element excludeElement = (Element) node;
                 excludes.add(excludeElement.getAttribute("name"));
             }
         }
-        
+
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(ref));
         for (Iterator i = externalRuleSet.getRules().iterator(); i.hasNext();) {
             Rule rule = (Rule) i.next();
             if (!excludes.contains(rule.getName())) {
-                 ruleSet.addRule(rule);
+                ruleSet.addRule(rule);
             }
         }
     }
 
     /**
      * Process a rule descrtiprion node
-     * @param rule the rule being constructed
+     *
+     * @param rule            the rule being constructed
      * @param descriptionNode must be a description element node
      */
     private void parseDescriptionNode(Rule rule, Node descriptionNode) {
@@ -300,7 +314,8 @@ public class RuleSetFactory {
 
     /**
      * Process a rule example node
-     * @param rule the rule being constructed
+     *
+     * @param rule        the rule being constructed
      * @param exampleNode must be a example element node
      */
     private void parseExampleNode(Rule rule, Node exampleNode) {
@@ -316,10 +331,11 @@ public class RuleSetFactory {
         }
         rule.setExample(buffer.toString());
     }
-    
+
     /**
      * Parse a priority node
-     * @param rule the rule being constructed
+     *
+     * @param rule         the rule being constructed
      * @param priorityNode must be a priority element
      */
     private void parsePriorityNode(Rule rule, Node priorityNode) {
@@ -333,10 +349,11 @@ public class RuleSetFactory {
         }
         rule.setPriority(new Integer(buffer.toString().trim()).intValue());
     }
-    
+
     /**
      * Parse a properties node
-     * @param rule the rule being constructed
+     *
+     * @param rule           the rule being constructed
      * @param propertiesNode must be a properties element node
      */
     private void parsePropertiesNode(Rule rule, Node propertiesNode) {
@@ -348,10 +365,11 @@ public class RuleSetFactory {
             }
         }
     }
-    
+
     /**
      * Parse a property node
-     * @param rule the rule being constructed
+     *
+     * @param rule         the rule being constructed
      * @param propertyNode must be a property element node
      */
     private void parsePropertyNode(Rule rule, Node propertyNode) {
@@ -372,9 +390,10 @@ public class RuleSetFactory {
         }
         rule.addProperty(name, value);
     }
-    
+
     /**
      * Parse a value node
+     *
      * @param valueNode must be a value element node
      * @return the value
      */

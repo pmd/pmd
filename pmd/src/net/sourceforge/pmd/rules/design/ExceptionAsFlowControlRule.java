@@ -37,13 +37,13 @@ public class ExceptionAsFlowControlRule extends AbstractRule {
     }
 
     private String getThrowsName(ASTThrowStatement node) {
-		Node childNode = node;
-		while (childNode.jjtGetNumChildren() > 0) {
-			childNode = childNode.jjtGetChild(0);
-		}
-		if (childNode instanceof ASTName) {
+        Node childNode = node;
+        while (childNode.jjtGetNumChildren() > 0) {
+            childNode = childNode.jjtGetChild(0);
+        }
+        if (childNode instanceof ASTName) {
             return ((ASTName) childNode).getImage();
-		}
-		return null;
+        }
+        return null;
     }
 }

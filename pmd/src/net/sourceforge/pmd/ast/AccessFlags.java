@@ -2,7 +2,8 @@ package net.sourceforge.pmd.ast;
 
 public interface AccessFlags {
     // Stolen Shamelessly from BCEL
-    /** Access flags for classes, fields and methods.
+    /**
+     * Access flags for classes, fields and methods.
      */
     public final static short ACC_PUBLIC = 0x0001;
     public final static short ACC_PRIVATE = 0x0002;

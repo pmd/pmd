@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class Tokens {
     }
 
     private TokenEntry get(int index) {
-        return (TokenEntry)tokens.get(index);
+        return (TokenEntry) tokens.get(index);
     }
 
     public int size() {
@@ -34,7 +34,7 @@ public class Tokens {
         }
         return endTok.getBeginLine() - mark.getBeginLine() + 1;
     }
-    
+
     public List getTokens() {
         return tokens;
     }

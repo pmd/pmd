@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.ant;
 
 import net.sourceforge.pmd.renderers.CSVRenderer;
@@ -9,8 +9,8 @@ import net.sourceforge.pmd.renderers.PapariTextRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
-import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 import org.apache.tools.ant.BuildException;
 
@@ -58,7 +58,7 @@ public class Formatter {
             renderer = new YAHTMLRenderer();
         } else if (!type.equals("")) {
             try {
-                renderer = (Renderer)Class.forName(type).newInstance();
+                renderer = (Renderer) Class.forName(type).newInstance();
             } catch (Exception e) {
                 throw new BuildException("Unable to instantiate custom formatter: " + type);
             }

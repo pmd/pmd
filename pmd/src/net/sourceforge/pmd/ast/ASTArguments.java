@@ -19,7 +19,9 @@ public class ASTArguments extends SimpleNode {
         return this.jjtGetChild(0).jjtGetNumChildren();
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.renderers;
 
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.dfa.report.ReportHTMLPrintVisitor;
 import net.sourceforge.pmd.dfa.report.ReportTree;
-import net.sourceforge.pmd.Report;
 
 public class YAHTMLRenderer implements Renderer {
 

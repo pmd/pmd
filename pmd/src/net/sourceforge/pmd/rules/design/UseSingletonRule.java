@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -44,7 +44,7 @@ public class UseSingletonRule extends AbstractRule {
     }
 
     public Object visit(ASTUnmodifiedClassDeclaration decl, Object data) {
-        if (decl.jjtGetParent() instanceof ASTClassDeclaration && ((ASTClassDeclaration)decl.jjtGetParent()).isAbstract()) {
+        if (decl.jjtGetParent() instanceof ASTClassDeclaration && ((ASTClassDeclaration) decl.jjtGetParent()).isAbstract()) {
             isOK = true;
         }
         return super.visit(decl, data);

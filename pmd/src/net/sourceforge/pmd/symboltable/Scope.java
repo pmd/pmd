@@ -1,13 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.symboltable;
 
 import java.util.Map;
 
 /**
  * Provides methods which all scopes must implement
- *
+ * <p/>
  * See JLS 6.3 for a description of scopes
  */
 public interface Scope {

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.renderers.CSVRenderer;
@@ -42,13 +42,13 @@ public class CommandLineOptions {
 
         this.args = args;
 
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-debug")) {
                 debugEnabled = true;
             } else if (args[i].equals("-shortnames")) {
                 shortNamesEnabled = true;
             } else if (args[i].equals("-encoding")) {
-                encoding = args[i+1];
+                encoding = args[i + 1];
             } else if (args[i].equals("-jdk13")) {
                 jdk13 = true;
             }
@@ -79,7 +79,7 @@ public class CommandLineOptions {
         }
         if (!reportFormat.equals("")) {
             try {
-                return (Renderer)Class.forName(reportFormat).newInstance();
+                return (Renderer) Class.forName(reportFormat).newInstance();
             } catch (Exception e) {
                 throw new IllegalArgumentException("Can't find the custom format " + reportFormat + ": " + e.getClass().getName());
             }
@@ -122,24 +122,24 @@ public class CommandLineOptions {
 
     public String usage() {
         return PMD.EOL + PMD.EOL +
-            "Mandatory arguments:" + PMD.EOL +
-            "1) A java source code filename or directory" + PMD.EOL +
-            "2) A report format " + PMD.EOL +
-            "3) A ruleset filename or a comma-delimited string of ruleset filenames" + PMD.EOL +
-            PMD.EOL +
-            "For example: " + PMD.EOL +
-            "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml" + PMD.EOL +
-            PMD.EOL +
-            "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
-            "-debug: prints debugging information " + PMD.EOL +
-            "-jdk13: enables PMD to parse source code written using 'assert' as an identifier" + PMD.EOL +
-            "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
-            "-shortnames: prints shortened filenames in the report" + PMD.EOL +
-            PMD.EOL +
-            "For example: " + PMD.EOL +
-            "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk13 -debug" + PMD.EOL +
-            "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -encoding UTF-8" + PMD.EOL +
-            PMD.EOL;
+                "Mandatory arguments:" + PMD.EOL +
+                "1) A java source code filename or directory" + PMD.EOL +
+                "2) A report format " + PMD.EOL +
+                "3) A ruleset filename or a comma-delimited string of ruleset filenames" + PMD.EOL +
+                PMD.EOL +
+                "For example: " + PMD.EOL +
+                "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml" + PMD.EOL +
+                PMD.EOL +
+                "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
+                "-debug: prints debugging information " + PMD.EOL +
+                "-jdk13: enables PMD to parse source code written using 'assert' as an identifier" + PMD.EOL +
+                "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
+                "-shortnames: prints shortened filenames in the report" + PMD.EOL +
+                PMD.EOL +
+                "For example: " + PMD.EOL +
+                "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk13 -debug" + PMD.EOL +
+                "c:\\> java -jar pmd-1.9.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -encoding UTF-8" + PMD.EOL +
+                PMD.EOL;
     }
 }
 

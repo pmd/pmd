@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd;
 
 import java.util.HashSet;
@@ -39,7 +39,6 @@ public class RuleSet {
     }
 
     /**
-     *
      * @return true if any rule in the RuleSet needs the symbol table
      */
     public boolean usesSymbolTable() {
@@ -53,7 +52,6 @@ public class RuleSet {
     }
 
     /**
-     *
      * @return true if any rule in the RuleSet needs the DFA layer
      */
     public boolean usesDFA() {

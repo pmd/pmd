@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
@@ -26,7 +26,7 @@ public class XMLRenderer implements Renderer {
                 buf.append("<file name=\"");
                 StringUtil.appendXmlEscaped(buf, filename);
                 buf.append("\">")
-                   .append(PMD.EOL);
+                        .append(PMD.EOL);
             }
 
             buf.append("<violation line=\"").append(rv.getLine()).append("\"");
@@ -54,12 +54,12 @@ public class XMLRenderer implements Renderer {
         for (Iterator i = report.errors(); i.hasNext();) {
             Report.ProcessingError pe = (Report.ProcessingError) i.next();
             buf.append("<error ")
-               .append("filename=\"");
+                    .append("filename=\"");
             StringUtil.appendXmlEscaped(buf, pe.getFile());
             buf.append("\" msg=\"");
             StringUtil.appendXmlEscaped(buf, pe.getMsg());
             buf.append("\"/>")
-               .append(PMD.EOL);
+                    .append(PMD.EOL);
         }
 
         buf.append("</pmd>");

@@ -12,7 +12,9 @@ public class ASTLocalVariableDeclaration extends AccessNode implements Dimension
         super(p, id);
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -32,21 +34,21 @@ public class ASTLocalVariableDeclaration extends AccessNode implements Dimension
         if (jjtGetNumChildren() == 0 || !(jjtGetChild(0) instanceof ASTType)) {
             return 0;
         }
-        return ((ASTType)jjtGetChild(0)).getArrayDepth();
+        return ((ASTType) jjtGetChild(0)).getArrayDepth();
     }
 
     private int checkDecl() {
         if (jjtGetNumChildren() < 2 || !(jjtGetChild(1) instanceof ASTVariableDeclarator)) {
             return 0;
         }
-        return ((ASTVariableDeclaratorId)(jjtGetChild(1).jjtGetChild(0))).getArrayDepth();
+        return ((ASTVariableDeclaratorId) (jjtGetChild(1).jjtGetChild(0))).getArrayDepth();
     }
 
     public void dump(String prefix) {
         String out = "";
         if (isArray()) {
             out += "(array";
-            for (int i=0;i<getArrayDepth();i++) {
+            for (int i = 0; i < getArrayDepth(); i++) {
                 out += "[";
             }
             out += ")";

@@ -14,42 +14,41 @@ import java.awt.event.ActionListener;
  * @version $Id$
  */
 public class XPathFragmentAddingItem
-  extends JMenuItem
-  implements ActionListener
-{
-  private ViewerModel model;
-  private String      fragment;
+        extends JMenuItem
+        implements ActionListener {
+    private ViewerModel model;
+    private String fragment;
 
-  /**
-   * constructs the item
-   *
-   * @param caption menu item's caption
-   * @param model model to refer to
-   * @param fragment XPath expression fragment to be added upon action
-   */
-  public XPathFragmentAddingItem( 
-    String caption, ViewerModel model, String fragment )
-  {
-    super( caption );
+    /**
+     * constructs the item
+     *
+     * @param caption  menu item's caption
+     * @param model    model to refer to
+     * @param fragment XPath expression fragment to be added upon action
+     */
+    public XPathFragmentAddingItem(String caption, ViewerModel model, String fragment) {
+        super(caption);
 
-    this.model      = model;
-    this.fragment   = fragment;
+        this.model = model;
+        this.fragment = fragment;
 
-    addActionListener( this );
-  }
+        addActionListener(this);
+    }
 
-  /**
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
-  public void actionPerformed( ActionEvent e )
-  {
-    model.appendToXPathExpression( fragment, this );
-  }
+    /**
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent e) {
+        model.appendToXPathExpression(fragment, this);
+    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.4  2004/09/27 19:42:52  tomcopeland
+ * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
+ *
  * Revision 1.3  2004/04/15 18:21:58  tomcopeland
  * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
  *

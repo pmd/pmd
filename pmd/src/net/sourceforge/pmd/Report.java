@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.dfa.report.ReportTree;
+import net.sourceforge.pmd.stat.Metric;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -21,7 +21,9 @@ public class ASTIfStatement extends SimpleNode {
         return this.hasElse;
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor. *
+     */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

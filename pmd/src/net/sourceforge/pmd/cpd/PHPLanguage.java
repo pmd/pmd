@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
@@ -10,7 +10,7 @@ public class PHPLanguage implements Language {
 
     public static class PHPFileOrDirectoryFilter implements FilenameFilter {
         public boolean accept(File dir, String filename) {
-            return filename.endsWith("php") || filename.endsWith("class") ||(new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+            return filename.endsWith("php") || filename.endsWith("class") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
         }
     }
 

@@ -1,16 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.jaxen;
+
 import net.sourceforge.pmd.ast.Node;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
 /**
  * @author daniels
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ *         <p/>
+ *         To change this generated comment go to
+ *         Window>Preferences>Java>Code Generation>Code Template
  */
 public abstract class NodeIterator implements Iterator {
 
@@ -42,7 +44,7 @@ public abstract class NodeIterator implements Iterator {
 
     protected Node getPreviousSibling(Node contextNode) {
         Node parentNode = contextNode.jjtGetParent();
-        if(parentNode != null) {
+        if (parentNode != null) {
             int prevPosition = getPositionFromParent(contextNode) - 1;
             if (prevPosition >= 0) {
                 return parentNode.jjtGetChild(prevPosition);
@@ -63,7 +65,7 @@ public abstract class NodeIterator implements Iterator {
 
     protected Node getNextSibling(Node contextNode) {
         Node parentNode = contextNode.jjtGetParent();
-        if(parentNode != null) {
+        if (parentNode != null) {
             int nextPosition = getPositionFromParent(contextNode) + 1;
             if (nextPosition < parentNode.jjtGetNumChildren()) {
                 return parentNode.jjtGetChild(nextPosition);

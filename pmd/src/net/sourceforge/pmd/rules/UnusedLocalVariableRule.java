@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -46,7 +46,7 @@ public class UnusedLocalVariableRule extends AbstractRule {
                 if (decl.isArray()) {
                     continue;
                 }
-                List usages = (List)locals.get(decl);
+                List usages = (List) locals.get(decl);
                 if (!actuallyUsed(usages)) {
                     RuleContext ctx = ((RuleContext) data);
                     RuleViolation ruleViolation = createRuleViolation(ctx, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()}));
@@ -60,7 +60,7 @@ public class UnusedLocalVariableRule extends AbstractRule {
     private boolean actuallyUsed(List usages) {
         boolean used = false;
         for (Iterator j = usages.iterator(); j.hasNext() && !used;) {
-            NameOccurrence occ = (NameOccurrence)j.next();
+            NameOccurrence occ = (NameOccurrence) j.next();
             used = !occ.isOnLeftHandSide();
         }
         return used;

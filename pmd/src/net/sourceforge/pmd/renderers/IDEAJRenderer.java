@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
@@ -77,7 +77,7 @@ public class IDEAJRenderer implements Renderer {
     private String getFullyQualifiedClassName(String in, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(in);
         String className = classNameWithSlashes.replace(System.getProperty("file.separator").charAt(0), '.');
-        return className.substring(0, className.length()-5);
+        return className.substring(0, className.length() - 5);
     }
 
     private String getSimpleFileName(String in) {

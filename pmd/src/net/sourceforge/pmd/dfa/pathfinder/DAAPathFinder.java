@@ -42,7 +42,7 @@ public class DAAPathFinder {
     public void run() {
         this.phase1(this.rootNode);
     }
-	
+
     /*
      * Initialise the path search. Starts the searching.
      * Contains code which will be executed if the path search is succeeded.
@@ -95,13 +95,13 @@ public class DAAPathFinder {
         }
     }
 
-        private int getLimit() {
+    private int getLimit() {
 
-         if(this.isDoBranchNode()) {
-           return 1;
-         }
-         return 2;
+        if (this.isDoBranchNode()) {
+            return 1;
         }
+        return 2;
+    }
 
     /*
      * Decompose the path until it finds a node which branches are not all 
@@ -130,7 +130,7 @@ public class DAAPathFinder {
 
         return false;
     }
-	
+
     private void removeFromList() {
         this.currentPath.removeLast();
     }

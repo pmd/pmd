@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.stat;
 
 import net.sourceforge.pmd.Rule;
@@ -9,7 +9,7 @@ import java.util.Random;
 
 /**
  * @author David Dixon-Peugh
- * Aug 8, 2002 DataPoint.java
+ *         Aug 8, 2002 DataPoint.java
  */
 public class DataPoint implements java.lang.Comparable {
     private int lineNumber;
@@ -48,6 +48,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Returns the lineNumber.
+     *
      * @return int
      */
     public int getLineNumber() {
@@ -56,6 +57,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Sets the lineNumber.
+     *
      * @param lineNumber The lineNumber to set
      */
     public void setLineNumber(int lineNumber) {
@@ -64,6 +66,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Returns the message.
+     *
      * @return String
      */
     public String getMessage() {
@@ -72,6 +75,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Returns the rule.
+     *
      * @return Rule
      */
     public Rule getRule() {
@@ -80,6 +84,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Sets the message.
+     *
      * @param message The message to set
      */
     public void setMessage(String message) {
@@ -88,6 +93,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Sets the rule.
+     *
      * @param rule The rule to set
      */
     public void setRule(Rule rule) {
@@ -96,6 +102,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Returns the score.
+     *
      * @return double
      */
     public double getScore() {
@@ -104,6 +111,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Sets the score.
+     *
      * @param score The score to set
      */
     public void setScore(double score) {
@@ -112,6 +120,7 @@ public class DataPoint implements java.lang.Comparable {
 
     /**
      * Sets the score.
+     *
      * @param score The score to set
      */
     public void setScore(int score) {

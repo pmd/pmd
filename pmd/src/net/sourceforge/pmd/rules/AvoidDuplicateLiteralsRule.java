@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -38,7 +38,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
             Set result = new HashSet();
             StringBuffer currentToken = new StringBuffer();
             boolean inEscapeMode = false;
-            for (int i=0; i<in.length(); i++) {
+            for (int i = 0; i < in.length(); i++) {
                 if (inEscapeMode) {
                     inEscapeMode = false;
                     currentToken.append(in.charAt(i));
@@ -55,7 +55,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
                     currentToken.append(in.charAt(i));
                 }
             }
-            if (currentToken.length()>0) {
+            if (currentToken.length() > 0) {
                 result.add(currentToken.toString());
             }
             return result;
@@ -92,14 +92,13 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
-            }
-            finally {
-            	try {
-	            	if (reader != null)
-	            		reader.close();
-	            } catch (IOException ioe) {
-                	ioe.printStackTrace();
-	            }
+            } finally {
+                try {
+                    if (reader != null)
+                        reader.close();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
             }
         }
 
@@ -126,7 +125,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         }
 
         // skip any exceptions
-        if (exceptions.contains(node.getImage().substring(1, node.getImage().length()-1))) {
+        if (exceptions.contains(node.getImage().substring(1, node.getImage().length() - 1))) {
             return data;
         }
 

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package net.sourceforge.pmd.util;
 
 public class StringUtil {
@@ -44,18 +44,19 @@ public class StringUtil {
     /**
      * Appends to a StringBuffer the String src where non-ASCII and
      * XML special chars are escaped.
+     *
      * @param buf The destination XML stream
      * @param str The String to append to the stream
      */
     public static void appendXmlEscaped(StringBuffer buf, String src) {
         int l = src.length();
         char c;
-        for(int i=0; i<l; i++) {
+        for (int i = 0; i < l; i++) {
             c = src.charAt(i);
             if (c > '~') {// 126
                 if (c <= 255)
-                    buf.append(ENTITIES[c-126]);
-                else 
+                    buf.append(ENTITIES[c - 126]);
+                else
                     buf.append("&u").append(Integer.toHexString(c)).append(';');
             } else if (c == '&')
                 buf.append("&amp;");
@@ -71,10 +72,11 @@ public class StringUtil {
     }
 
     private static final String[] ENTITIES;
+
     static {
-        ENTITIES = new String[256-126];
-        for(int i=126; i<= 255; i++)
-            ENTITIES[i-126] = "&#" + i + ';';
+        ENTITIES = new String[256 - 126];
+        for (int i = 126; i <= 255; i++)
+            ENTITIES[i - 126] = "&#" + i + ';';
     }
 
 
