@@ -29,15 +29,11 @@ public class PMDAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action)  {
-		IPreferenceStore pref =
-			PMDPlugin.getDefault().getPreferenceStore();
-		
-		String rulesetFile =
-			pref.getString(PMDPreferencePage.P_RULESETS);
+		String[] rulesetFiles = PMDPlugin.getDefault().getRuleSetsPreference();
 		
 		PMDVisitor visitor = null;
 		try {
-			visitor = new PMDVisitor(rulesetFile);
+			visitor = new PMDVisitor(rulesetFiles);
 			PMDPlugin.getWorkspace().getRoot().accept( visitor );
 			
 		} catch (Exception e) {

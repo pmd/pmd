@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
@@ -20,6 +22,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
@@ -34,20 +37,30 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class PMDVisitor implements IResourceVisitor {
 	private PMD pmd = null;
 	private RuleSet ruleSet = null;
-		
+
 	/**
 	 * No Argument Constructor
 	 */
-	public PMDVisitor(String ruleSetFile) 
+	public PMDVisitor(String[] ruleSetFiles) 
 		throws IOException
 	{
 		try {
 			pmd = new PMD();
  			RuleSetFactory factory = new RuleSetFactory();
-			ruleSet = 
-				factory.createRuleSet(new FileInputStream(ruleSetFile));
+ 			
+			ruleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(ruleSetFiles[0]));
+			for (int i=1; i<ruleSetFiles.length; i++) {
+				RuleSet tmpRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(ruleSetFiles[i]));
+				ruleSet.addRuleSet(tmpRuleSet);
+			}
 		} catch (Throwable e) {
 			e.printStackTrace();
+			MessageDialog.openError(null, "PMD Error", "RuleSet construction problem: " + e.toString());
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			MessageDialog.openInformation(null, "PMD Error", sw.toString());
+
+
 		}
 				
 	}
@@ -60,13 +73,10 @@ public class PMDVisitor implements IResourceVisitor {
 		context.setSourceCodeFilename( file.getName() );
 		context.setReport( new Report() );
 
-		try {
-			pmd.processFile( input, ruleSet, context);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();	
-		}	
+		pmd.processFile( input, ruleSet, context);
 
 		Iterator iter = context.getReport().iterator();
+		file.deleteMarkers(null,false, IResource.DEPTH_ONE);
 		while (iter.hasNext()) {
 			RuleViolation violation = (RuleViolation) iter.next();
 			
@@ -83,6 +93,7 @@ public class PMDVisitor implements IResourceVisitor {
 	 * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource)
 	 */
 	public boolean visit(IResource resource) throws CoreException {
+
 		if ((resource instanceof IFile) &&
 			(((IFile) resource).getFileExtension() != null) &&
 			((IFile) resource).getFileExtension().equals("java")) {	

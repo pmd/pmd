@@ -10,9 +10,7 @@
       <library name="pmd-eclipse.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-0.5.jar">
-         <export name="*"/>
-      </library>
+      <library name="lib/pmd-0.8.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>

@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse;
 
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.jface.preference.*;
 import org.eclipse.core.resources.*;
 import java.util.*;
 
@@ -13,6 +14,12 @@ public class PMDPlugin extends AbstractUIPlugin {
 	private static PMDPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	
+	public static final String RULESETS_PREFERENCE = "net.sourceforge.pmd.eclipse.rulesets";
+
+	public static final String DEFAULT_RULESETS = "rulesets/basic.xml;rulesets/design.xml;rulesets/imports.xml;rulesets/unusedcode.xml";
+	
+	private static final String PREFERENCE_DELIMITER = ";";
 	
 	/**
 	 * The constructor.
@@ -59,5 +66,62 @@ public class PMDPlugin extends AbstractUIPlugin {
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
+	}
+	
+	/**
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeDefaultPreferences(IPreferenceStore)
+	 */
+	protected void initializeDefaultPreferences(IPreferenceStore store) {
+		store.setDefault(RULESETS_PREFERENCE, DEFAULT_RULESETS);
+		super.initializeDefaultPreferences(store);
+	}
+		
+	/**
+	 * Convert the supplied PREFERENCE_DELIMITER delimited
+	 * String to a String array.
+	 * @return String[]
+	 */
+	private String[] convert(String preferenceValue) {
+		StringTokenizer tokenizer =
+			new StringTokenizer(preferenceValue, PREFERENCE_DELIMITER);
+		int tokenCount = tokenizer.countTokens();
+		String[] elements = new String[tokenCount];
+		for (int i = 0; i < tokenCount; i++) {
+			elements[i] = tokenizer.nextToken();
+		}
+	
+		return elements;
+	}
+	
+	/**
+	 * Return the rulesets preference default
+	 * as an array of Strings.
+	 * @return String[]
+	 */
+	public String[] getDefaultRuleSetsPreference(){
+		return convert(getPreferenceStore().getDefaultString(RULESETS_PREFERENCE));
+	}
+	
+	/**
+	 * Return the rulesets preference as an array of
+	 * Strings.
+	 * @return String[]
+	 */
+	public String[] getRuleSetsPreference() {
+		return convert(getPreferenceStore().getString(RULESETS_PREFERENCE));
+	}
+		
+	/**
+	 * Set the bad words preference
+	 * @param String [] elements - the Strings to be 
+	 * 	converted to the preference value
+	 */
+	public void setRuleSetsPreference(String[] elements) {
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < elements.length; i++) {
+			buffer.append(elements[i]);
+			buffer.append(PREFERENCE_DELIMITER);
+		}
+		getPreferenceStore().setValue(RULESETS_PREFERENCE, buffer.toString());
 	}
 }
