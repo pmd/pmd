@@ -34,8 +34,6 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
     private Structure dataFlow;
 
-//	----------------------------------------------------------------------------
-
     public void compute(ASTMethodDeclaration node) {
         this.compute(node, "ASTMethodDeclaration");
     }
@@ -72,27 +70,20 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 //  CREATE NODES
 
     public Object visit(ASTStatementExpression node, Object data) {
-
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         dataFlow.addNewNode(node); // ASTStatementExpression
-
         return super.visit(node, data);
     }
 
     public Object visit(ASTVariableDeclarator node, Object data) {
-
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         dataFlow.addNewNode(node); // ASTVariableDeclarator
-
         return super.visit(node, data);
     }
 
     public Object visit(ASTExpression node, Object data) {
-
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
 
@@ -117,29 +108,20 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTForInit node, Object data) {
-
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         super.visit(node, data);
-
         dataFlow.pushOnStack(NodeType.FOR_INIT, dataFlow.getLast());
         this.addForExpressionNode(node, dataFlow);
-
         return data;
     }
 
     public Object visit(ASTForUpdate node, Object data) {
-
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         this.addForExpressionNode(node, dataFlow);
-
         super.visit(node, data);
-
         dataFlow.pushOnStack(NodeType.FOR_UPDATE, dataFlow.getLast());
-
         return data;
     }
 
@@ -208,17 +190,11 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
-// 	----------------------------------------------------------------------------
-// 	----------------------------------------------------------------------------
-// 	----------------------------------------------------------------------------
-
     public Object visit(ASTBreakStatement node, Object data) {
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         dataFlow.addNewNode(node); // ASTBreakStatement
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
-
         return super.visit(node, data);
     }
 
@@ -226,26 +202,18 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTContinueStatement node, Object data) {
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         dataFlow.addNewNode(node); // ASTContinueStatement
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
-
         return super.visit(node, data);
     }
 
     public Object visit(ASTReturnStatement node, Object data) {
-
         if (!(data instanceof Structure)) return data;
         Structure dataFlow = (Structure) data;
-
         dataFlow.addNewNode(node); // ASTReturnStatement
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
-
         return super.visit(node, data);
     }
-// 	----------------------------------------------------------------------------
-// 	----------------------------------------------------------------------------
-// 	----------------------------------------------------------------------------
 
     /*
      * The method handles the special "for" loop. It creates always an
