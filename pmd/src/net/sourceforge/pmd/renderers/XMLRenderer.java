@@ -9,11 +9,21 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
 import java.util.Iterator;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class XMLRenderer implements Renderer {
 
+    private String createVersionAttr() {
+        return "<pmd version=\"" + PMD.VERSION + "\"";
+    }
+    private String createTimestampAttr() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return " timestamp=\"" + sdf.format(new Date()) + "\"";
+    }
     public String render(Report report) {
-        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?>" + PMD.EOL + "<pmd>" + PMD.EOL);
+
+        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + ">" + PMD.EOL);
         String filename = null;
 
         // rule violations

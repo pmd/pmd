@@ -66,10 +66,10 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="rulesets/naming.xml" shortFilenames="true" failonerror="true">
+    <pmd rulesetfiles="rulesets/unusedcode.xml" shortFilenames="true" failonerror="true">
         <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
-        <fileset dir="/home/tom/data/pmd/pmd/src/">
-            <include name="net/sourceforge/pmd/renderers/*.java"/>
+        <fileset dir="/home/tom/tmp/com/">
+            <include name="**/*.java"/>
         </fileset>
     </pmd>
 </target>
