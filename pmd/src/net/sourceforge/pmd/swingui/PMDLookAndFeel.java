@@ -79,24 +79,25 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
      */
     protected void initSystemColorDefaults(UIDefaults table)
     {
-//J-
           super.initSystemColorDefaults(table);
 
-          String[] defaultSystemColors = {
-                       "pmdBlue", "#5A74AF",
-                       "pmdGray", "#C5C5C5",
-                        "pmdRed", "#CC4662",
-                      "pmdGreen", "#336666",
-                      "pmdCream", "#FFFCED",
-             "pmdTreeBackground", "#FFFFD9",
-            "pmdTableBackground", "#FFFFD9",
-                    "mediumGray", "#686868",
-                "mediumDarkGray", "#434343",
-                      "paleGray", "#AAAAAA",
+          String[] defaultSystemColors =
+          {
+                                   "pmdBlue", "#5A74AF",
+                                   "pmdGray", "#C5C5C5",
+                                    "pmdRed", "#CC4662",
+                                  "pmdGreen", "#336666",
+                                  "pmdCream", "#FFFCED",
+                         "pmdTreeBackground", "#F5F5F5",
+                        "pmdTableBackground", "#F5F5F5",
+                                "mediumGray", "#686868",
+                            "mediumDarkGray", "#434343",
+                                  "paleGray", "#AAAAAA",
+                  "pmdTableHeaderBackground", "#686868",
+                  "pmdTableHeaderForeground", "#FFFFFF",
           };
 
           loadSystemColors(table, defaultSystemColors, isNativeLookAndFeel());
-//J
     }
 
 
@@ -110,13 +111,20 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         super.initComponentDefaults(table);
 
         Class wlafClass = WindowsLookAndFeel.class;
+        Class plafClass = PMDLookAndFeel.class;
         Object[] defaults =
         {
-//J-
-        "Tree.openIcon",               LookAndFeel.makeIcon(wlafClass, "icons/TreeOpen.gif"),
-        "Tree.closedIcon",             LookAndFeel.makeIcon(wlafClass, "icons/TreeClosed.gif"),
-        "Tree.leafIcon",               LookAndFeel.makeIcon(wlafClass, "icons/TreeLeaf.gif"),
-//J
+            "Tree.openIcon",    LookAndFeel.makeIcon(plafClass, "icons/TreeOpen.gif"),
+            "Tree.closedIcon",  LookAndFeel.makeIcon(plafClass, "icons/TreeClosed.gif"),
+            "Tree.leafIcon",    LookAndFeel.makeIcon(plafClass, "icons/TreeLeaf.gif"),
+            "Document",         LookAndFeel.makeIcon(plafClass, "icons/Document.gif"),
+            "Save",             LookAndFeel.makeIcon(plafClass, "icons/Save.gif"),
+            "SaveAs",           LookAndFeel.makeIcon(plafClass, "icons/SaveAs.gif"),
+            "Print",            LookAndFeel.makeIcon(plafClass, "icons/Print.gif"),
+            "Copy",             LookAndFeel.makeIcon(plafClass, "icons/Copy.gif"),
+            "Edit",             LookAndFeel.makeIcon(plafClass, "icons/Edit.gif"),
+            "View",             LookAndFeel.makeIcon(plafClass, "icons/View.gif"),
+            "QuestionMark",     LookAndFeel.makeIcon(plafClass, "icons/QuestionMark.gif"),
         };
 
         table.putDefaults(defaults);

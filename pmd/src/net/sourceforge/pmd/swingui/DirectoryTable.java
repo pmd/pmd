@@ -51,6 +51,9 @@ class DirectoryTable extends JTable
         setColumnSelectionAllowed(false);
         setCellSelectionEnabled(true);
         setBackground(UIManager.getColor("pmdTableBackground"));
+        setRowHeight(20);
+        setSelectionBackground(Color.blue);
+        setSelectionForeground(Color.white);
 
         TableColumnModel columnModel = getColumnModel();
         JTableHeader tableHeader = getTableHeader();
@@ -72,6 +75,7 @@ class DirectoryTable extends JTable
         headerRenderer = new ColumnHeaderRenderer();
         cellRenderer = new DefaultTableCellRenderer();
 
+        cellRenderer.setIcon(UIManager.getIcon("Document"));
         headerRenderer.setHorizontalAlignment(JLabel.LEFT);
         column.setHeaderRenderer(headerRenderer);
         cellRenderer.setHorizontalAlignment(JLabel.LEFT);
@@ -126,6 +130,8 @@ class DirectoryTable extends JTable
 
         private Font m_boldFont;
         private Border m_border;
+        private Color m_background;
+        private Color m_foreground;
 
         /**
          *********************************************************************************
@@ -147,6 +153,8 @@ class DirectoryTable extends JTable
             emptyBorder = new EmptyBorder(0, 5, 0, 5);
             m_border = new CompoundBorder(etchedBorder, bevelBorder);
             m_border = new CompoundBorder(m_border, emptyBorder);
+            m_background = UIManager.getColor("pmdTableHeaderBackground");
+            m_foreground = UIManager.getColor("pmdTableHeaderForeground");
         }
 
         /**
@@ -172,8 +180,8 @@ class DirectoryTable extends JTable
 
             setFont(m_boldFont);
             setBorder(m_border);
-            setBackground(Color.blue);
-            setForeground(Color.white);
+            setBackground(m_background);
+            setForeground(m_foreground);
 
             return this;
         }
