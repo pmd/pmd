@@ -127,10 +127,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
      * TODO investigate CompilerPage as a replacement for RuleViolationPage; or could perhaps subclass it instead.
      */
     private void render(RuleContext ctx) {
-        if (!rvPage.isVisible()) {
-            rvPage.show();
-        }
-
+        rvPage.show();
         rvPage.clearAll();
         if (ctx.getReport().isEmpty()) {
             JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
