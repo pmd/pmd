@@ -29,7 +29,6 @@ public class ExcessiveLengthRule extends StatisticalRule {
             DataPoint point = new DataPoint();
             point.setLineNumber(node.getBeginLine());
             point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
-            point.setRule(this);
             point.setMessage(getMessage());
             addDataPoint(point);
         }

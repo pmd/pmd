@@ -11,12 +11,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
 /**
  * @author David Dixon-Peugh
  *         Aug 8, 2002 StatisticalRule.java
  */
 public abstract class StatisticalRule extends AbstractRule {
+
     public static double DELTA = 0.000005; // Within this range. . .
 
     private SortedSet dataPoints = new TreeSet();
@@ -39,7 +41,6 @@ public abstract class StatisticalRule extends AbstractRule {
         if (hasProperty("sigma")) {
             deviation = getStdDev();
             double sigma = getDoubleProperty("sigma");
-
             minimum = getMean() + (sigma * deviation);
         }
 
@@ -109,22 +110,19 @@ public abstract class StatisticalRule extends AbstractRule {
     }
 
     protected SortedSet applyTopScore(SortedSet points, int topScore) {
-        SortedSet RC = new TreeSet();
-        for (int i = 0; i < topScore; i++) {
-            DataPoint point = (DataPoint) points.last();
-            points.remove(point);
-
-            RC.add(point);
+        SortedSet s = new TreeSet();
+        Object[] arr = points.toArray();
+        for (int i=arr.length-1; i>=(arr.length - topScore); i--) {
+            s.add(arr[i]);
         }
-
-        return RC;
+        return s;
     }
 
-    protected void makeViolations(RuleContext ctx, Set dataPoints) {
-        Iterator points = dataPoints.iterator();
+    protected void makeViolations(RuleContext ctx, Set p) {
+        Iterator points = p.iterator();
         while (points.hasNext()) {
             DataPoint point = (DataPoint) points.next();
-            ctx.getReport().addRuleViolation(this.createRuleViolation(ctx, point.getLineNumber(), point.getMessage()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, point.getLineNumber(), point.getMessage()));
         }
     }
 }

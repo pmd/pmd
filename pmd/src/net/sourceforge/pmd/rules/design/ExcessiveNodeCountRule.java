@@ -41,7 +41,6 @@ public class ExcessiveNodeCountRule extends StatisticalRule {
             DataPoint point = new DataPoint();
             point.setLineNumber(node.getBeginLine());
             point.setScore(1.0 * numNodes);
-            point.setRule(this);
             point.setMessage(getMessage());
             addDataPoint(point);
         }

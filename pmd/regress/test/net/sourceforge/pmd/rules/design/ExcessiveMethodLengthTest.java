@@ -6,9 +6,12 @@ package test.net.sourceforge.pmd.rules.design;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.rules.design.LongMethodRule;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleViolation;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
+
+import java.util.Iterator;
 
 public class ExcessiveMethodLengthTest extends SimpleAggregatorTst  {
 
@@ -29,9 +32,21 @@ public class ExcessiveMethodLengthTest extends SimpleAggregatorTst  {
     }
 
     public void testReallyLongMethodWithLongerRange() throws Throwable {
-        LongMethodRule IUT = new LongMethodRule();
-        IUT.addProperty("minimum", "20");
-        runTestFromString(TEST2, 0, IUT);
+        Rule r = findRule("rulesets/codesize.xml", "ExcessiveMethodLength");
+        r.addProperty("minimum", "20");
+        runTestFromString(TEST2, 0, r);
+    }
+
+    public void testOverrideMinimumWithTopScore() throws Throwable {
+        Rule r = findRule("rulesets/codesize.xml", "ExcessiveMethodLength");
+        r.addProperty("minimum", "1");
+        r.addProperty("topscore", "2");
+        Report rpt = new Report();
+        runTestFromString(TEST5, r, rpt);
+        for (Iterator i = rpt.iterator(); i.hasNext();) {
+            RuleViolation rv = (RuleViolation)i.next();
+            assertTrue(rv.getLine() == 2 || rv.getLine() == 6);
+        }
     }
 
     private static final String TEST1 =
@@ -92,5 +107,26 @@ public class ExcessiveMethodLengthTest extends SimpleAggregatorTst  {
     "	  bar();" + PMD.EOL +
     "    } // > 10 lines - Not a violation" + PMD.EOL +
     "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    "    void foo1() {" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  baz();" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "    void foo2() {" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  baz();" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "    void foo3() {" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  baz();" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "    void foo4() {" + PMD.EOL +
+    "	  bar();" + PMD.EOL +
+    "	  baz();" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "}";
+
 }
 

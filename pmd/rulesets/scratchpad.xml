@@ -6,42 +6,14 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="SystemPrintln"
-         message="System.out.println is used"
-         class="net.sourceforge.pmd.rules.XPathRule">
-     <description>
-     System.(out|err).println is used, consider using a logger.
-     </description>
-     <properties>
-         <property name="xpath">
-             <value>
-                 <![CDATA[
-//Statement[
-child:://Name[
-    starts-with(@Image, 'System.out.print')
-    or
-    starts-with(@Image, 'System.err.print')
-    ]
-                ]]>
-             </value>
-         </property>
-     </properties>
-        <priority>2</priority>
-
-     <example>
- <![CDATA[
-class Foo{
-    Logger log = Logger.getLogger(Foo.class.getName());
-
-    public void testA () {
-        System.out.println("Entering test");
-        // Better use this
-        log.fine("Entering test");
-    }
-}
-]]>
-     </example>
-     </rule>
+  <rule
+   ref="rulesets/codesize.xml/ExcessiveMethodLength"
+   message="This is one of the 6 longest methods">
+      <properties>
+        <property name="topscore" value="6"/>
+        <property name="minimum" value="1"/>
+      </properties>
+  </rule>
    
 
 <!--
