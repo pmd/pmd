@@ -1,4 +1,5 @@
 ?????? - 1.04
+The Ant task has been updated; if you set "verbose=true" full stacktraces are printed.  Thx to Paul Roebuck for the suggestion.
 
 February 11, 2003 - 1.03
 Added new rules: CyclomaticComplexityRule, AssignmentInOperandRule
