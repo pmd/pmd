@@ -23,8 +23,7 @@ public class SymbolTableBuilderTest extends TestCase {
         SymbolTableBuilder stb = new SymbolTableBuilder();
         stb.initializeWith(c);
         SymbolTable table = stb.getSymbolTable();
-
-
+        //assertTrue(table.getUnusedNameDeclarations().hasNext());
     }
 
 }

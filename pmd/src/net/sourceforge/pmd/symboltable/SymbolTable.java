@@ -12,9 +12,13 @@ import java.util.*;
 
 public class SymbolTable {
 
-    private ContextManager cm = new ContextManager();
+    private ContextManager cm;
+    private LookupController lookupController;
 
     public SymbolTable() {
+        List scopes = new ArrayList();
+        cm = new ContextManager(scopes);
+        lookupController = new LookupController(scopes);
         cm.openScope();
     }
 
@@ -31,7 +35,7 @@ public class SymbolTable {
     }
 
     public void lookup(NameOccurrence nameOccurrence) {
-        cm.lookup(nameOccurrence);
+        lookupController.lookup(nameOccurrence);
     }
 
     public Iterator getUnusedNameDeclarations() {

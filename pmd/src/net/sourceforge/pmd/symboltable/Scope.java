@@ -9,41 +9,32 @@ import java.util.*;
 
 public class Scope {
 
-    private Map nameDeclarations = new HashMap();
+    private Map names = new HashMap();
 
     public void addDeclaration(NameDeclaration nameDecl) {
-        if (nameDeclarations.containsKey(nameDecl)) {
+        if (names.containsKey(nameDecl)) {
             throw new RuntimeException(nameDecl + " is already in the symbol table");
         }
-        nameDeclarations.put(nameDecl, new ArrayList());
+        names.put(nameDecl, new ArrayList());
     }
 
-    public boolean contains(NameOccurrence nameOccurrence) {
-        return nameDeclarations.containsKey(nameOccurrence.copyIntoNameDeclaration());
+    public boolean contains(NameOccurrence occurrence) {
+        return names.containsKey(occurrence.copyIntoNameDeclaration());
     }
 
-    public void addOccurrence(NameOccurrence nameOccurrence) {
-        List nameOccurrences = (List)nameDeclarations.get(nameOccurrence.copyIntoNameDeclaration());
-        nameOccurrences.add(nameOccurrence);
+    public void addOccurrence(NameOccurrence occurrence) {
+        List nameOccurrences = (List)names.get(occurrence.copyIntoNameDeclaration());
+        nameOccurrences.add(occurrence);
     }
 
     public Iterator getUnusedDeclarations() {
         List unused = new ArrayList();
-        for (Iterator i = nameDeclarations.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
             NameDeclaration nameDeclaration = (NameDeclaration)i.next();
-            if (((List)nameDeclarations.get(nameDeclaration)).isEmpty()) {
+            if (((List)names.get(nameDeclaration)).isEmpty()) {
                 unused.add(nameDeclaration);
             }
         }
         return unused.iterator();
-    }
-
-    public String toString() {
-        String x = "NameDeclaration table:";
-        for (Iterator i = nameDeclarations.keySet().iterator(); i.hasNext();) {
-            NameDeclaration nameDecl = (NameDeclaration)i.next();
-            x += nameDecl.getImage() + ",";
-        }
-        return x;
     }
 }
