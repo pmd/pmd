@@ -10,7 +10,7 @@ import net.sourceforge.pmd.RuleViolation;
 
 import java.util.Iterator;
 
-public class TextRendererForIDEAJ {
+public class IDEAJRenderer {
     protected String EOL = System.getProperty("line.separator", "\n");
 
 	public String render(Report report, String classAndMethod, String file) {
