@@ -99,7 +99,35 @@ CompilationUnit
     <li>If you get a FileNotFoundException, make sure that go.bat is pointing to the test-data directory where you put Example.java</li>
     </ul>
     </p>
-
+    <p>
+    So you can see in the example above that the AST for a WhileStatement looks kind of like this (excluding that expression gibberish for clarity):
+    </p>
+    <source>
+<![CDATA[
+WhileStatement
+ Expression
+ Statement
+  StatementExpression
+]]>
+    </source>
+    <p>
+    If you were to add curly braces and run the go.bat file again, you'd see that the AST would change a bit.  It'd look like this:
+    </p>
+    <source>
+<![CDATA[
+WhileStatement
+ Expression
+ Statement
+  Block
+   BlockStatement
+    Statement
+     StatementExpression
+]]>
+    </source>
+    <p>
+    Ah ha!  We see that the curly braces add a couple more AST elements - a Block and a BlockStatement.  So all we have
+    to do is write a rule to detect a WhileStatement that's not followed by a Block, and we've got it.
+    </p>
     </subsection>
 
     <subsection name="Write a rule class">
