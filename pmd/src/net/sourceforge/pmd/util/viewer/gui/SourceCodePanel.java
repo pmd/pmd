@@ -6,9 +6,6 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,6 +13,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
+import java.awt.BorderLayout;
+import java.awt.Color;
 
 
 /**
@@ -42,8 +41,8 @@ public class SourceCodePanel
   {
     model.addViewerModelListener( this );
 
-    setBorder( 
-      BorderFactory.createTitledBorder( 
+    setBorder(
+      BorderFactory.createTitledBorder(
         BorderFactory.createEtchedBorder(  ), NLS.nls( "SOURCE.PANEL.TITLE" ) ) );
 
     setLayout( new BorderLayout(  ) );
@@ -72,7 +71,7 @@ public class SourceCodePanel
     {
       final SimpleNode node = (SimpleNode)e.getParameter(  );
 
-      SwingUtilities.invokeLater( 
+      SwingUtilities.invokeLater(
         new Runnable(  )
         {
           public void run(  )
@@ -94,9 +93,9 @@ public class SourceCodePanel
                 ( sourceCodeArea.getLineStartOffset( node.getEndLine(  ) - 1 ) +
                 node.getEndColumn(  ) );
 
-              sourceCodeArea.getHighlighter(  ).addHighlight( 
+              sourceCodeArea.getHighlighter(  ).addHighlight(
                 startOffset, end,
-                new DefaultHighlighter.DefaultHighlightPainter( 
+                new DefaultHighlighter.DefaultHighlightPainter(
                   new Color( 79, 237, 111 ) ) );
 
               sourceCodeArea.moveCaretPosition( startOffset );
@@ -114,6 +113,9 @@ public class SourceCodePanel
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

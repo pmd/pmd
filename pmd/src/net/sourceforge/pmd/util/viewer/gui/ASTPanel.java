@@ -9,12 +9,6 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import java.awt.BorderLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import java.util.LinkedList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -24,6 +18,10 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.LinkedList;
 
 
 /**
@@ -55,8 +53,8 @@ public class ASTPanel
   {
     model.addViewerModelListener( this );
 
-    setBorder( 
-      BorderFactory.createTitledBorder( 
+    setBorder(
+      BorderFactory.createTitledBorder(
         BorderFactory.createEtchedBorder(  ), NLS.nls( "AST.PANEL.TITLE" ) ) );
 
     setLayout( new BorderLayout(  ) );
@@ -65,7 +63,7 @@ public class ASTPanel
 
     tree.addTreeSelectionListener( this );
 
-    tree.addMouseListener( 
+    tree.addMouseListener(
       new MouseAdapter(  )
       {
         public void mouseReleased( MouseEvent e )
@@ -77,7 +75,7 @@ public class ASTPanel
             tree.setSelectionPath( path );
 
             JPopupMenu menu =
-              new ASTNodePopupMenu( 
+              new ASTNodePopupMenu(
                 model, (SimpleNode)path.getLastPathComponent(  ) );
 
             menu.show( tree, e.getX(  ), e.getY(  ) );
@@ -106,7 +104,7 @@ public class ASTPanel
         {
           LinkedList list = new LinkedList(  );
 
-          for ( 
+          for (
             Node node = (Node)e.getParameter(  ); node != null;
               node = node.jjtGetParent(  ) )
             list.addFirst( node );
@@ -127,7 +125,7 @@ public class ASTPanel
    */
   public void valueChanged( TreeSelectionEvent e )
   {
-    model.selectNode( 
+    model.selectNode(
       (SimpleNode)e.getNewLeadSelectionPath(  ).getLastPathComponent(  ), this );
   }
 }
@@ -135,6 +133,9 @@ public class ASTPanel
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

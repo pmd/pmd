@@ -2,10 +2,9 @@ package net.sourceforge.pmd.util.viewer.gui.menu;
 
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 
+import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JMenuItem;
 
 
 /**
@@ -51,6 +50,9 @@ public class XPathFragmentAddingItem
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

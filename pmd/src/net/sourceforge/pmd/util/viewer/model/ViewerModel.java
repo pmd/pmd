@@ -5,20 +5,18 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
-
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
 import java.io.StringReader;
-
 import java.util.List;
 import java.util.Vector;
 
 
 /**
  * The model for the viewer gui
- * 
+ *
  * <p>
  * This is the model part of MVC
  * </p>
@@ -52,7 +50,7 @@ public class ViewerModel
 
   /**
    * commits source code to the model.
-   * 
+   *
    * <p>
    * all existing source will be replaced
    * </p>
@@ -69,7 +67,7 @@ public class ViewerModel
 
     rootNode = compilationUnit;
 
-    fireViewerModelEvent( 
+    fireViewerModelEvent(
       new ViewerModelEvent( this, ViewerModelEvent.CODE_RECOMPILED ) );
   }
 
@@ -96,8 +94,8 @@ public class ViewerModel
 
     evaluationResults = xpath.selectNodes( rootNode );
 
-    fireViewerModelEvent( 
-      new ViewerModelEvent( 
+    fireViewerModelEvent(
+      new ViewerModelEvent(
         evaluator, ViewerModelEvent.PATH_EXPRESSION_EVALUATED ) );
   }
 
@@ -120,7 +118,7 @@ public class ViewerModel
    */
   public void selectNode( SimpleNode node, Object selector )
   {
-    fireViewerModelEvent( 
+    fireViewerModelEvent(
       new ViewerModelEvent( selector, ViewerModelEvent.NODE_SELECTED, node ) );
   }
 
@@ -132,8 +130,8 @@ public class ViewerModel
    */
   public void appendToXPathExpression( String pathFragment, Object appender )
   {
-    fireViewerModelEvent( 
-      new ViewerModelEvent( 
+    fireViewerModelEvent(
+      new ViewerModelEvent(
         appender, ViewerModelEvent.PATH_EXPRESSION_APPENDED, pathFragment ) );
   }
 
@@ -174,6 +172,9 @@ public class ViewerModel
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

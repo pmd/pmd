@@ -2,12 +2,11 @@ package net.sourceforge.pmd.util.viewer.model;
 
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.Vector;
-
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import java.util.Vector;
 
 
 /**
@@ -118,6 +117,9 @@ public class ASTModel
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

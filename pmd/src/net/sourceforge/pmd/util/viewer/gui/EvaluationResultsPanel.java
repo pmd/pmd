@@ -5,16 +5,14 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 
-import java.awt.BorderLayout;
-
-import java.util.Vector;
-
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.BorderLayout;
+import java.util.Vector;
 
 
 /**
@@ -51,14 +49,14 @@ public class EvaluationResultsPanel
     list = new JList(  );
     list.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 
-    list.addListSelectionListener( 
+    list.addListSelectionListener(
       new ListSelectionListener(  )
       {
         public void valueChanged( ListSelectionEvent e )
         {
           if ( list.getSelectedValue(  ) != null )
           {
-            model.selectNode( 
+            model.selectNode(
               (SimpleNode)list.getSelectedValue(  ), EvaluationResultsPanel.this );
           }
         }
@@ -94,6 +92,9 @@ public class EvaluationResultsPanel
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

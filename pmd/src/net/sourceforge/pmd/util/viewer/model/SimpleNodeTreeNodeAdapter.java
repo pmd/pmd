@@ -2,12 +2,11 @@ package net.sourceforge.pmd.util.viewer.model;
 
 import net.sourceforge.pmd.ast.SimpleNode;
 
+import javax.swing.tree.TreeNode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-
-import javax.swing.tree.TreeNode;
 
 
 /**
@@ -28,7 +27,7 @@ public class SimpleNodeTreeNodeAdapter
    *
    * @param node underlying AST's node
    */
-  public SimpleNodeTreeNodeAdapter( 
+  public SimpleNodeTreeNodeAdapter(
     SimpleNodeTreeNodeAdapter parent, SimpleNode node )
   {
     this.parent   = parent;
@@ -120,8 +119,8 @@ public class SimpleNodeTreeNodeAdapter
 
       for ( int i = 0; i < node.jjtGetNumChildren(  ); i++ )
       {
-        children.add( 
-          new SimpleNodeTreeNodeAdapter( 
+        children.add(
+          new SimpleNodeTreeNodeAdapter(
             this, (SimpleNode)node.jjtGetChild( i ) ) );
       }
     }
@@ -139,6 +138,9 @@ public class SimpleNodeTreeNodeAdapter
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

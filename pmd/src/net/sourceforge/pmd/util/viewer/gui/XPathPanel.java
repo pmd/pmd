@@ -5,12 +5,11 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import java.awt.Dimension;
-
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import java.awt.Dimension;
 
 
 /**
@@ -46,8 +45,8 @@ public class XPathPanel
 
     xPathArea = new JTextArea(  );
 
-    setBorder( 
-      BorderFactory.createTitledBorder( 
+    setBorder(
+      BorderFactory.createTitledBorder(
         BorderFactory.createEtchedBorder(  ), NLS.nls( "XPATH.PANEL.TITLE" ) ) );
 
     add( new JScrollPane( xPathArea ), NLS.nls( "XPATH.PANEL.EXPRESSION" ) );
@@ -95,6 +94,9 @@ public class XPathPanel
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

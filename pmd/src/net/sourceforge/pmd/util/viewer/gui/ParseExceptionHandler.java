@@ -2,11 +2,6 @@ package net.sourceforge.pmd.util.viewer.gui;
 
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,6 +9,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 /**
@@ -55,10 +54,10 @@ public class ParseExceptionHandler
 
     JPanel messagePanel = new JPanel( new BorderLayout(  ) );
 
-    messagePanel.setBorder( 
-      BorderFactory.createCompoundBorder( 
+    messagePanel.setBorder(
+      BorderFactory.createCompoundBorder(
         BorderFactory.createRaisedBevelBorder(  ),
-        BorderFactory.createTitledBorder( 
+        BorderFactory.createTitledBorder(
           BorderFactory.createEtchedBorder(  ),
           NLS.nls( "COMPILE_ERROR.PANEL.TITLE" ) ) ) );
 
@@ -100,6 +99,9 @@ public class ParseExceptionHandler
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *

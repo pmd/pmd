@@ -7,9 +7,8 @@ import net.sourceforge.pmd.util.viewer.model.AttributeToolkit;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import java.text.MessageFormat;
-
 import javax.swing.JMenu;
+import java.text.MessageFormat;
 
 
 /**
@@ -26,8 +25,8 @@ public class AttributesSubMenu
 
   public AttributesSubMenu( ViewerModel model, SimpleNode node )
   {
-    super( 
-      MessageFormat.format( 
+    super(
+      MessageFormat.format(
         NLS.nls( "AST.MENU.ATTRIBUTES" ), new Object[] { node.toString(  ) } ) );
 
     this.model   = model;
@@ -44,8 +43,8 @@ public class AttributesSubMenu
     {
       Attribute attribute = (Attribute)i.next(  );
 
-      add( 
-        new XPathFragmentAddingItem( 
+      add(
+        new XPathFragmentAddingItem(
           attribute.getName(  ) + " = " + attribute.getValue(  ), model,
           AttributeToolkit.constructPredicate( attribute ) ) );
     }
@@ -55,6 +54,9 @@ public class AttributesSubMenu
 
 /*
  * $Log$
+ * Revision 1.3  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.2  2003/09/23 20:34:34  tomcopeland
  * Fixed some stuff PMD found
  *

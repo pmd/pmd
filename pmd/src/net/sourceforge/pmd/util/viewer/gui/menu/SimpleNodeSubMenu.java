@@ -5,9 +5,8 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-import java.text.MessageFormat;
-
 import javax.swing.JMenu;
+import java.text.MessageFormat;
 
 
 /**
@@ -63,6 +62,9 @@ public class SimpleNodeSubMenu
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/23 20:51:06  tomcopeland
+ * Cleaned up imports
+ *
  * Revision 1.1  2003/09/23 20:32:42  tomcopeland
  * Added Boris Gruschko's new AST/XPath viewer
  *
