@@ -1,4 +1,5 @@
 ???? 2002 - 0.9:
+Added new rule: SimplifyBooleanReturnsRule
 Added rule customization via XML parameters
 Fixed bug 592060 - Unused private instance variables handles explicitly referenced statics correctly
 Fixed bug 593849 - Unused private instance variables handles nested classes better.

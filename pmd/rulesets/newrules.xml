@@ -6,8 +6,31 @@ These are new ones for the next release
   </description>
 
 
+  <rule name="SimplifyBooleanReturnsRule"
+        message="Avoid unnecessary if..then..else statements when returning a boolean"
+        class="net.sourceforge.pmd.rules.SimplifyBooleanReturnsRule">
+    <description>
+Avoid unnecessary if..then..else statements when returning a boolean
+    </description>
+    <example>
+<![CDATA[
+public class Foo {
+  private int bar =2;
+  public boolean isBarEqualsTo(int x) {
+    // this bit of code
+    if (bar == x) {
+     return true;
+    } else {
+     return false;
+    }
+    // can be replaced with a simple
+    // return bar == x;
+  }
+}
+]]>
+    </example>
+  </rule>
 
-</ruleset>
-
+  </ruleset>
 
 
