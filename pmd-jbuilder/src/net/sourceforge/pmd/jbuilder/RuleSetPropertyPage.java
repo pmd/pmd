@@ -1,19 +1,3 @@
-package net.sourceforge.pmd.jbuilder;
-
-import com.borland.primetime.properties.*;
-import com.borland.primetime.help.HelpTopic;
-import javax.swing.*;
-import java.awt.*;
-import java.util.HashMap;
-import javax.swing.border.*;
-import javax.swing.ListModel;
-import javax.swing.DefaultListModel;
-import java.awt.event.*;
-import com.borland.primetime.ide.Browser;
-import com.borland.primetime.ide.MessageCategory;
-import java.util.Enumeration;
-
-
 /**
  * <p>Title: JBuilder OpenTool for PMD</p>
  * <p>Description: Provides an environemnt for using the PMD aplication from within JBuilder</p>
@@ -21,12 +5,30 @@ import java.util.Enumeration;
  * <p>Company: InfoEther</p>
  * @author David Craine
  * @version 1.0
+ *
+ * formatted with JxBeauty (c) johann.langhofer@nextra.at
  */
 
+
+package  net.sourceforge.pmd.jbuilder;
+
+import  com.borland.primetime.properties.*;
+import  com.borland.primetime.help.HelpTopic;
+import  javax.swing.*;
+import  java.awt.*;
+import  java.util.HashMap;
+import  javax.swing.border.*;
+import  javax.swing.ListModel;
+import  javax.swing.DefaultListModel;
+import  java.awt.event.*;
+import  com.borland.primetime.ide.Browser;
+import  com.borland.primetime.ide.MessageCategory;
+import  java.util.Enumeration;
+
+
+
 public class RuleSetPropertyPage extends PropertyPage {
-
     //static MessageCategory cat = new MessageCategory("test");
-
     private BorderLayout borderLayout1 = new BorderLayout();
     private JSplitPane jSplitPane1 = new JSplitPane();
     private Border border1;
@@ -48,19 +50,25 @@ public class RuleSetPropertyPage extends PropertyPage {
     private Border border3;
     private Border border4;
 
-    public RuleSetPropertyPage() {
-        try  {
+    /**
+     * Constuctor
+     */
+    public RuleSetPropertyPage () {
+        try {
             jbInit();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-
-    private void initRuleSplitPanes() {
-        //loop through the sets of rules and place them in the appropriate pane based upon setting
-        for (int i=0;i<RuleSetPropertyGroup.RULESET_NAMES.length; i++) {
+    /**
+     * Initialize the splitpanes that are used in this interface
+     * The left pane contains the list of available rule sets while the right pane
+     * contains the list of selected rule sets
+     */
+    private void initRuleSplitPanes () {
+        //loop through the sets of rules and place them in the appropriate pane based upon their setting
+        for (int i = 0; i < RuleSetPropertyGroup.RULESET_NAMES.length; i++) {
             ListEntry le = new ListEntry(RuleSetPropertyGroup.RULESET_NAMES[i], RuleSetPropertyGroup.PROPKEYS[i]);
             if (Boolean.valueOf(RuleSetPropertyGroup.PROPKEYS[i].getValue()).booleanValue())
                 dlmSelectedRuleSets.addElement(le);
@@ -69,69 +77,104 @@ public class RuleSetPropertyPage extends PropertyPage {
         }
     }
 
-
-    protected void jbInit() throws Exception {
-        border1 = BorderFactory.createEtchedBorder(Color.white,new Color(178, 178, 178));
-        titledBorder1 = new TitledBorder(border1,"Available Rule Sets");
-        border2 = BorderFactory.createEtchedBorder(Color.white,new Color(178, 178, 178));
-        titledBorder2 = new TitledBorder(border2,"Selected Rule Sets");
-        border3 = BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151));
-        border4 = BorderFactory.createCompoundBorder(border3,titledBorder1);
+    /**
+     * Initialize the interface components
+     * @exception Exception thows any exceptions that occur
+     */
+    protected void jbInit () throws Exception {
+        border1 = BorderFactory.createEtchedBorder(Color.white, new Color(178, 178, 178));
+        titledBorder1 = new TitledBorder(border1, "Available Rule Sets");
+        border2 = BorderFactory.createEtchedBorder(Color.white, new Color(178, 178, 178));
+        titledBorder2 = new TitledBorder(border2, "Selected Rule Sets");
+        border3 = BorderFactory.createEtchedBorder(Color.white, new Color(165, 163, 151));
+        border4 = BorderFactory.createCompoundBorder(border3, titledBorder1);
         this.setLayout(borderLayout1);
         jlistAvailableRuleSets.setModel(dlmAvailableRuleSets);
+        jlistAvailableRuleSets.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                jlistAvailableRuleSets_mouseClicked(e);
+            }
+        });
         jlistSelectedRuleSets.setModel(dlmSelectedRuleSets);
+        jlistSelectedRuleSets.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                jlistSelectedRuleSets_mouseClicked(e);
+            }
+        });
         jpAvailableRuleSets.setLayout(borderLayout2);
         jpSelectedRuleSets.setLayout(borderLayout3);
         jbSelectRuleSets.setText("Select ===>>>");
         jbSelectRuleSets.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed (ActionEvent e) {
                 jbSelectRuleSets_actionPerformed(e);
             }
         });
         jbDeselectRuleSets.setText("<<<===Remove");
         jbDeselectRuleSets.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed (ActionEvent e) {
                 jbDeselectRuleSets_actionPerformed(e);
             }
         });
         jpAvailableRuleSets.setBorder(titledBorder1);
         jpSelectedRuleSets.setBorder(titledBorder2);
-        this.add(jSplitPane1,  BorderLayout.CENTER);
+        this.add(jSplitPane1, BorderLayout.CENTER);
         jSplitPane1.add(jpAvailableRuleSets, JSplitPane.LEFT);
         jSplitPane1.add(jpSelectedRuleSets, JSplitPane.RIGHT);
         jpAvailableRuleSets.add(jspAvailableRuleSets, BorderLayout.CENTER);
         jpSelectedRuleSets.add(jspSelecedRuleSets, BorderLayout.CENTER);
         jspSelecedRuleSets.getViewport().add(jlistSelectedRuleSets, null);
         jspAvailableRuleSets.getViewport().add(jlistAvailableRuleSets, null);
-        jpAvailableRuleSets.add(jbSelectRuleSets,  BorderLayout.SOUTH);
-        jpSelectedRuleSets.add(jbDeselectRuleSets,  BorderLayout.SOUTH);
-
+        jpAvailableRuleSets.add(jbSelectRuleSets, BorderLayout.SOUTH);
+        jpSelectedRuleSets.add(jbDeselectRuleSets, BorderLayout.SOUTH);
         initRuleSplitPanes();
         jSplitPane1.setDividerLocation(200);
     }
 
-    public void writeProperties() {
+    /**
+     * Called by JBuilder when the user selects OK from the proeprties dialog
+     * We use this method to save the values of the properties based upon what list
+     * they ended up in when the user was finished
+     */
+    public void writeProperties () {
         //set the properties for the items items in the selected list to true
-        for (Enumeration e = dlmSelectedRuleSets.elements(); e.hasMoreElements(); ) {
+        for (Enumeration e = dlmSelectedRuleSets.elements(); e.hasMoreElements();) {
             ListEntry le = (ListEntry)e.nextElement();
             le.getProp().setValue("true");
         }
-
         //set the properties for the items items in the available list to false
-        for (Enumeration e = dlmAvailableRuleSets.elements(); e.hasMoreElements(); ) {
+        for (Enumeration e = dlmAvailableRuleSets.elements(); e.hasMoreElements();) {
             ListEntry le = (ListEntry)e.nextElement();
             le.getProp().setValue("false");
         }
-
-
-    }
-    public HelpTopic getHelpTopic() {
-        return null;
-    }
-    public void readProperties() {
     }
 
-    void jbSelectRuleSets_actionPerformed(ActionEvent e) {
+    /**
+     * get the Help TOpic
+     * @return help topic
+     */
+    public HelpTopic getHelpTopic () {
+        return  null;
+    }
+
+    /**
+     * Called by JBuilder to setup the initial property settings.
+     * We don't use this since we to all the property setup in the jbInit() method.
+     */
+    public void readProperties () {}
+
+    /**
+     * Called when the jbSelectRuleSets button is pressed
+     * @param e action event
+     */
+    void jbSelectRuleSets_actionPerformed (ActionEvent e) {
+        selectRules();
+    }
+
+    /**
+     * Find any rules that are selected in the available list and move them to
+     * the selected list
+     */
+    private void selectRules() {
         //get the selected elements in the selected list and move to the available list
         int selectedIndex = jlistAvailableRuleSets.getSelectedIndex();
         while (selectedIndex != -1) {
@@ -142,14 +185,24 @@ public class RuleSetPropertyPage extends PropertyPage {
         }
         jlistSelectedRuleSets.updateUI();
         jlistAvailableRuleSets.updateUI();
-
-
     }
 
-    void jbDeselectRuleSets_actionPerformed(ActionEvent e) {
+    /**
+     * Called when the jbDeselectRuleSets button is pressed
+     * @param e action event
+     */
+    void jbDeselectRuleSets_actionPerformed (ActionEvent e) {
+        deselectRules();
+    }
+
+    /**
+     * Find any rules that are selected in the selected list and move them to the
+     * available list
+     */
+    private void deselectRules() {
         //get the selected elements in the available list and move to the selected list
         int selectedIndex = jlistSelectedRuleSets.getSelectedIndex();
-        while(selectedIndex != -1) {
+        while (selectedIndex != -1) {
             ListEntry le = (ListEntry)dlmSelectedRuleSets.get(selectedIndex);
             dlmAvailableRuleSets.addElement(le);
             dlmSelectedRuleSets.remove(selectedIndex);
@@ -157,31 +210,72 @@ public class RuleSetPropertyPage extends PropertyPage {
         }
         jlistSelectedRuleSets.updateUI();
         jlistAvailableRuleSets.updateUI();
-
     }
 
+    /**
+     * Called when the user double-clicks an item in the jlistSelectedRuleSets list
+     * Move the item to the available list
+     * @param e mouse event
+     */
+    void jlistSelectedRuleSets_mouseClicked(MouseEvent e) {
+        if (e.getClickCount() >= 2)
+            deselectRules();
+   }
+
+   /**
+    * Called when the user double-clicks an item in the jlistAvailableRuleSets list
+    * move the item to the selected list
+    * @param e mouse event
+    */
+    void jlistAvailableRuleSets_mouseClicked(MouseEvent e) {
+        if (e.getClickCount() >= 2)
+            selectRules();
+    }
 }
 
 
+/**
+ * Wraps the entries that are places in the ListBox objects so that they can
+ * track the GlobalProperty that's associated with each entry.
+ */
 class ListEntry {
     GlobalProperty prop;
     String displayName;
 
-    public ListEntry(String name, GlobalProperty prop) {
+    /**
+     * Constructor
+     * @param name name as it is to appear in the list box
+     * @param prop the GlobalProperty associated with this name
+     */
+    public ListEntry (String name, GlobalProperty prop) {
         this.displayName = name;
         this.prop = prop;
     }
 
-    public GlobalProperty getProp() {
-        return prop;
+    /**
+     * get the GlobalProperty
+     * @return GlobalProperty object
+     */
+    public GlobalProperty getProp () {
+        return  prop;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    /**
+     * Get the display name
+     * @return display name
+     */
+    public String getDisplayName () {
+        return  displayName;
     }
 
-    public String toString() {
-        return displayName;
+    /**
+     * Use the display name as the string representation
+     * @return display name
+     */
+    public String toString () {
+        return  displayName;
     }
 }
+
+
 
