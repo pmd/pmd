@@ -12,7 +12,7 @@
     <li>Type run [filename] [report format] [ruleset file], i.e:</li>
     <br></br>
     <source>
-C:\tmp\pmd-1.2\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+C:\tmp\pmd-1.2.1\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
 &lt;?xml version="1.0"?&gt;&lt;pmd&gt;
 &lt;file name="c:\data\pmd\pmd\test-data\Unused1.java"&gt;
 &lt;violation line="5" rule="UnusedLocalVariable"&gt;
@@ -20,11 +20,11 @@ Avoid unused local variables such as 'fr'
 &lt;/violation&gt;
 &lt;/file&gt;&lt;/pmd&gt;
 
-C:\tmp\pmd-1.2\pmd\etc&gt;
+C:\tmp\pmd-1.2.1\pmd\etc&gt;
     </source>
        <li>If you are using JDK 1.3 or you just want to run PMD without the batch file, you can do a:</li>
        <source>
-C:\data\pmd\pmd>java -cp lib\pmd-1.2.jar;lib\xercesImpl-2.0.2.jar;
+C:\data\pmd\pmd>java -cp lib\pmd-1.2.1.jar;lib\xercesImpl-2.0.2.jar;
                     lib\xmlParserAPIs-2.0.2.jar;lib\jaxen-core-1.0-fcs.jar;lib\saxpath-1.0-fcs.jar
                      net.sourceforge.pmd.PMD
                      c:\j2sdk1.4.1_01\src\java\lang xml

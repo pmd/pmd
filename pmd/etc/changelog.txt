@@ -1,4 +1,5 @@
-???, 2003 - 1.3:
+August 1, 2003 - 1.2.1:
+Fixed bug 781077 - line number "-1" no longer appears for nodes with siblings.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 July 30, 2003 - 1.2:
