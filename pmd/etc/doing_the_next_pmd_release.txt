@@ -20,8 +20,7 @@ ant pmd
 
 Prepare binary release:
 rmdir /q /s c:\tmp\pmd
-mkdir c:\tmp\pmd
-mkdir c:\tmp\pmd\etc
+mkdir -p c:\tmp\pmd\etc
 mkdir c:\tmp\pmd\lib
 copy build.xml c:\tmp\pmd\etc
 copy run.bat c:\tmp\pmd\etc
@@ -29,9 +28,7 @@ copy ..\lib\pmd-0.8.jar c:\tmp\pmd\lib
 Zip it up, rename it pmd-bin-0.8.zip
 
 All is well, so time to tag:
-cvs add -kb pmd-0.8.jar
-cvs rm pmd-0.6.jar
-cvs ci -m ""
+cvs ci -m "preps for release"
 cd c:\data\pmd
 cvs rtag -D tomorrow "pmd_release_0_8" pmd
 
@@ -39,6 +36,7 @@ Prepare source release:
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
 cvs export -d c:\tmp\pmd -r pmd_release_0_8 pmd
+copy pmd\lib\pmd-0.8.jar c:\tmp\pmd\lib
 zip it up, rename it to pmd-src-0.8.zip
 
 if you see a bug and fix it, you can delete the release using:

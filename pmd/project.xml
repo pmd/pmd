@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>0.7</currentVersion>
+  <currentVersion>0.8</currentVersion>
   <logo>images/pmd_logo_small.jpg</logo>
   <organization>
     <name> </name>
@@ -20,7 +20,7 @@
 <ul>
   <li>Unused local variables</li>
   <li>Empty catch blocks</li>
-  <li>Unnecessary object creation</li>
+  <li>Unused parameters</li>
   <li>Empty 'if' statements</li>
   <li>Duplicate import statements</li>
   <li>Unused private methods</li>
@@ -46,9 +46,9 @@
 
   <versions>
     <version>
-      <id>0.7</id>
-      <name>0.7</name>
-      <tag>pmd_release_0_7</tag>
+      <id>0.8</id>
+      <name>0.8</name>
+      <tag>pmd_release_0_8</tag>
     </version>
     <version>
       <id>dev</id>
