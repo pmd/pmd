@@ -4,17 +4,14 @@
 package net.sourceforge.pmd.util;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.dfa.DataFlowFacade;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,20 +21,52 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author raik
  */
 public class DFAGrapher extends JFrame {
 
+    public static class SourceFile {
+        private String name;
+        private List code = new ArrayList();
+        public SourceFile(String name) {
+            this.name = name;
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(new File(name)));
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    code.add(line.trim());
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        public String getLine(int number) {
+            return (String)code.get(number-1);
+        }
+        public String toString() {
+            return name;
+        }
+
+    }
+            
     public static class DisplayDataFlowRule extends AbstractRule {
+        public DisplayDataFlowRule() {
+            super.setUsesDFA();
+            super.setUsesSymbolTable();
+        }
+        private SourceFile src;
+        public Object visit(ASTCompilationUnit acu, Object data) {
+            this.src = new SourceFile(((RuleContext)data).getSourceCodeFilename());
+            return super.visit(acu, data);
+        }
         public Object visit(ASTMethodDeclaration node, Object data) {
             super.visit(node, data);
-            RuleContext rc = (RuleContext) data;
-            new DFAGrapher(node, rc.getSourceCodeFilename());
+            new DFAGrapher(node, src);
             return data;
         }
     }
@@ -48,10 +77,10 @@ public class DFAGrapher extends JFrame {
         private int y = 50;
         private int radius = 10;
         private int d = 2 * radius;
-        private String sourceFile;
+        private SourceFile sourceFile;
         private int height;
 
-        public MyPanel(SimpleNode node, String sourceFile) {
+        public MyPanel(SimpleNode node, SourceFile sourceFile) {
             super();
             this.node = node;
             this.sourceFile = sourceFile;
@@ -60,23 +89,17 @@ public class DFAGrapher extends JFrame {
         public void paint(Graphics g) {
             this.setPreferredSize(new Dimension(600, height + 100));
             super.paint(g);
-            if (node == null) {
-                System.out.println("node == null");
-                return;
-            }
             List flow = node.getDataFlowNode().getFlow();
-            IDataFlowNode inode;
-
             for (int i = 0; i < flow.size(); i++) {
-                inode = (IDataFlowNode) flow.get(i);
+                IDataFlowNode inode = (IDataFlowNode) flow.get(i);
 
                 y = this.computeDrawPos(inode.getIndex());
 
                 g.drawArc(x, y, d, d, 0, 360);
                 if (height < y) height = y;
 
-                g.drawString(this.getLine(this.sourceFile, inode.getLine()), x + 200, y + 15);
-                g.drawString(String.valueOf(inode.getIndex()), x + radius, y + radius);
+                g.drawString(sourceFile.getLine(inode.getLine()), x + 200, y + 15);
+                g.drawString(String.valueOf(inode.getIndex()), x + radius-2, y + radius+4);
 
                 String exp = "";
                 List access = inode.getVariableAccess();
@@ -158,44 +181,20 @@ public class DFAGrapher extends JFrame {
                 }
             }
         }
-
-        // copied from Papari Renderer
-        /**
-         * Retrieves the requested line from the specified file.
-         *
-         * @param sourceFile the java or cpp source file
-         * @param line       line number to extract
-         * @return a trimmed line of source code
-         */
-        private String getLine(String sourceFile, int line) {
-            String code = null;
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(new File(sourceFile)));
-                for (int i = 0; line > i; i++) {
-                    code = br.readLine().trim();
-                }
-                br.close();
-            } catch (IOException ioErr) {
-                ioErr.printStackTrace();
-            }
-            return code;
-        }
     }
 
-    public DFAGrapher(SimpleNode node, String sourceFile) {
+    public DFAGrapher(SimpleNode node, SourceFile src) {
         this.setSize(600, 800);
-        this.setTitle("DFA graph for " + sourceFile);
+        this.setTitle("DFA graph for " + src);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
-        MyPanel p = new MyPanel(node, sourceFile);
-        JScrollPane scrollPane = new JScrollPane(p);
+        JScrollPane scrollPane = new JScrollPane(new MyPanel(node, src));
         this.getContentPane().add(scrollPane);
         this.setVisible(true);
     }
-
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -203,21 +202,11 @@ public class DFAGrapher extends JFrame {
             System.exit(1);
         }
         try {
-            Reader r = new FileReader(args[0]);
-            JavaParser parser = new TargetJDK1_4().createParser(r);
-            ASTCompilationUnit c = parser.CompilationUnit();
-            SymbolFacade stb = new SymbolFacade();
-            stb.initializeWith(c);
-            DataFlowFacade dff = new DataFlowFacade();
-            dff.initializeWith(c);
-            List acus = new ArrayList();
-            acus.add(c);
             RuleSet rs = new RuleSet();
             rs.addRule(new DisplayDataFlowRule());
             RuleContext ctx = new RuleContext();
             ctx.setSourceCodeFilename(args[0]);
-            rs.apply(acus, ctx);
-            r.close();
+            new PMD().processFile(new FileReader(args[0]), rs, ctx);
         } catch (Exception e) {
             e.printStackTrace();
         }
