@@ -19,19 +19,31 @@ public class TileWrapper implements Entry {
     public Integer jobID;
     public List occurrences;
     public Integer isDone;
+
     public Integer originalTilePosition;
+
     public Integer expansionIndex;
-    public Integer totalExpansions;
+    public Integer expansionsTotal;
 
     public TileWrapper() {}
 
-    public TileWrapper(Tile tile, List occurrences, Integer jobID, Integer isDone, Integer originalTilePosition, Integer expansionIndex, Integer totalExpansions) {
+    public TileWrapper(Tile tile, List occurrences, Integer jobID, Integer isDone, Integer originalTilePosition, Integer expansionIndex, Integer expansionsTotal) {
         this.tile = tile;
         this.jobID = jobID;
         this.occurrences = occurrences;
         this.isDone = isDone;
+
         this.originalTilePosition = originalTilePosition;
+
         this.expansionIndex = expansionIndex;
-        this.totalExpansions = totalExpansions;
+        this.expansionsTotal = expansionsTotal;
+    }
+
+    public String toString() {
+        return "TileWrapper " + tile.getImage() + ":" + jobID + ":" + occurrences.size() + ":" + isDone + ":" + getExpansionIndexPicture();
+    }
+
+    public String getExpansionIndexPicture() {
+        return "(" + originalTilePosition + "->" + expansionIndex + "/" + expansionsTotal + ")";
     }
 }

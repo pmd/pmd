@@ -52,11 +52,16 @@ public class DGST {
         int tilesSoFar=0;
         for (Iterator i = occ.getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
-            TileWrapper tw = new TileWrapper(tile, marshal(occ.getOccurrences(tile)), job.id, TileWrapper.NOT_DONE, new Integer(tilesSoFar), null, null);
+            TileWrapper tw = new TileWrapper(tile,
+                    marshal(occ.getOccurrences(tile)),
+                    job.id,
+                    TileWrapper.NOT_DONE,
+                    new Integer(tilesSoFar),
+                    null, null);
             space.write(tw, null, Lease.FOREVER);
             tilesSoFar++;
             if (tilesSoFar % 10 == 0) {
-                System.out.println("tilesSoFar = " + tilesSoFar);
+                System.out.println("Written " + tilesSoFar + " tiles so far");
             }
         }
     }
@@ -66,19 +71,34 @@ public class DGST {
         Occurrences occ = new Occurrences(new CPDNullListener());
         for (int i=0;i<originalOccurrencesCount; i++) {
 
-            // this gets tile x:1 - i.e., (5:1/3)
-            TileWrapper tw = (TileWrapper)space.take(new TileWrapper(null, null, job.id, TileWrapper.DONE, new Integer(i), new Integer(1), null), null, Lease.FOREVER);
-            addTileWrapperToOccurrences(tw, occ);
+            // this gets tile (6:0/3:4:0/2:3)
+            TileWrapper tw = (TileWrapper)space.take(new TileWrapper(null,
+                    null,
+                    job.id,
+                    TileWrapper.DONE,
+                    new Integer(i), null, null), null, Lease.FOREVER);
+            System.out.println("Took " + tw.getExpansionIndexPicture());
 
-            // now get tiles x:2..n - i.e., (5:2/3 and 5:3/3)
-            for (int j = tw.expansionIndex.intValue()+1; j<tw.totalExpansions.intValue()+1; j++) {
-                TileWrapper tw2 = (TileWrapper)space.take(new TileWrapper(null, null, job.id, TileWrapper.DONE, new Integer(i), new Integer(j), null), null, 100);
-                addTileWrapperToOccurrences(tw2, occ);
-            }
+            addAllExpansions(i, tw, occ);
         }
         System.out.println("DONE GATHERING");
 
         return occ;
+    }
+
+    private void addAllExpansions(int originalPosition, TileWrapper firstTileWrapper, Occurrences occ) throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {
+        addTileWrapperToOccurrences(firstTileWrapper, occ);
+        for (int i=1; i<firstTileWrapper.expansionsTotal.intValue(); i++) {
+            TileWrapper nextExpansion = (TileWrapper)space.take(new TileWrapper(null,
+                    null,
+                    firstTileWrapper.jobID,
+                    TileWrapper.DONE,
+                    new Integer(originalPosition),
+                    new Integer(i),
+                    firstTileWrapper.expansionsTotal), null, Lease.FOREVER);
+            System.out.println("Took " + nextExpansion.getExpansionIndexPicture());
+            addTileWrapperToOccurrences(nextExpansion, occ);
+        }
     }
 
     private void addTileWrapperToOccurrences(TileWrapper tw, Occurrences occ) {

@@ -30,11 +30,17 @@ public class Util {
 
     public static void main(String[] args) {
         try {
+            int objectCount = 0;
             if (args[0].equals("clear")) {
                 JavaSpace space = Util.findSpace(SPACE_SERVER);
                 Entry e = null;
                 while ( (e = space.take(null, null, 100)) != null) {
-                    //System.out.println("took " + e);
+                    objectCount++;
+                    if (objectCount % 100 == 0) {
+                        System.out.println(objectCount + " objects taken so far");
+                    }
+                    System.out.println("took " + e);
+
                 }
             } else {
                 System.out.println("Usage: clear");

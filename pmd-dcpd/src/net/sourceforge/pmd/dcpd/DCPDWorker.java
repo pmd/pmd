@@ -48,9 +48,12 @@ public class DCPDWorker {
             tsw = (TokenSetsWrapper)space.read(new TokenSetsWrapper(null, job.id), null, 100);
             System.out.println("Read a TokenSetsWrapper with " + tsw.tokenSets.size() + " token lists");
 
-            System.out.println("Starting expansion");
-            doExpansion();
-            System.out.println("Done");
+            while (true) {
+                System.out.println("Starting expansion");
+                doExpansion();
+                System.out.println("Done, sleeping");
+                Thread.currentThread().sleep(1000);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,15 +64,23 @@ public class DCPDWorker {
         Entry twQuery = space.snapshot(new TileWrapper(null, null, currentJob.id, TileWrapper.NOT_DONE, null, null, null));
 
         TileWrapper tileWrapper = null;
-        while ((tileWrapper = (TileWrapper)space.take(twQuery, null, 100)) != null) {
+        while ((tileWrapper = (TileWrapper)space.take(twQuery, null, 10)) != null) {
+            System.out.println("got " + tileWrapper.tile.getImage());
             Occurrences results = expand(tileWrapper);
+            int expansionIndex = 0;
             for (Iterator i = results.getTiles();i.hasNext();) {
                 Tile tile = (Tile)i.next();
                 List theseOccurrences = marshal(results.getOccurrences(tile));
-                for (int j=0; j<=theseOccurrences.size(); j++) {
-                    TileWrapper newTW = new TileWrapper(tile, theseOccurrences, currentJob.id, TileWrapper.DONE, tileWrapper.originalTilePosition, new Integer(j), new Integer(theseOccurrences.size()));
-                    space.write(newTW, null, Lease.FOREVER);
-                }
+                TileWrapper newTW = new TileWrapper(tile,
+                                                    theseOccurrences,
+                                                    currentJob.id,
+                                                    TileWrapper.DONE,
+                                                    tileWrapper.originalTilePosition,
+                                                    new Integer(expansionIndex),
+                                                    new Integer(results.size()));
+                space.write(newTW, null, Lease.FOREVER);
+                System.out.println("Wrote " + newTW.getExpansionIndexPicture());
+                expansionIndex++;
             }
         }
     }
