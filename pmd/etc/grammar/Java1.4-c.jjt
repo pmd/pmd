@@ -599,7 +599,7 @@ void ExplicitConstructorInvocation() :
 void Initializer() :
 {}
 {
-  [ "static" ] Block()
+  [ "static" {jjtThis.setStatic();} ] Block()
 }
 
 

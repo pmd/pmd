@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Bernd Jansen - grammer modification</li>
             <li>Jarle Naess - bug report</li>
             <li>Jeff Anderson - VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule</li>
             <li>Frank van Puffelen - documentation suggestions</li>

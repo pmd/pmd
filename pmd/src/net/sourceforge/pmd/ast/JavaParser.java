@@ -1635,6 +1635,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STATIC:
         jj_consume_token(STATIC);
+              jjtn000.setStatic();
         break;
       default:
         jj_la1[43] = jj_gen;

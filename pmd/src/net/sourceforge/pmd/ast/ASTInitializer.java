@@ -16,4 +16,14 @@ public class ASTInitializer extends SimpleNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    private boolean isStatic;
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic() {
+        isStatic = true;
+    }
 }
