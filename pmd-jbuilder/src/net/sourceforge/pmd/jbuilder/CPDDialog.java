@@ -9,7 +9,7 @@ import net.sourceforge.pmd.cpd.CPDListener;
 import net.sourceforge.pmd.cpd.CPD;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
-import net.sourceforge.pmd.cpd.Tile;
+//import net.sourceforge.pmd.cpd.Tile;
 
 public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
     private CPD cpd;
@@ -25,7 +25,7 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
     public CPDDialog(CPD cpd) {
         super("CPD Status Monitor");
         this.cpd = cpd;
-        cpd.setListener(this);
+        cpd.setCpdListener(this);
         try {
             jbInit();
         }
@@ -39,7 +39,7 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
     }
 
 
-    public boolean addedFile(int fileCount, File file) {
+    public void addedFile(int fileCount, File file) {
         if (firstFile) {
             firstFile = false;
             jLabel1.setText("Adding Files...");
@@ -48,7 +48,6 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
             progress = 0;
         }
         jProgressBar1.setValue(++progress);
-        return retCode;
     }
 
 
@@ -63,7 +62,7 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
     }
 
 
-    public boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
+    /*public boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
         if (firstNewTile) {
             firstNewTile = false;
             jLabel1.setText("Adding Tiles... ");
@@ -74,6 +73,11 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
 
         jProgressBar1.setValue(tilesSoFar);
         return retCode;
+    }*/
+
+    public void comparisonCountUpdate(long long0) {
+        jLabel1.setText("Doing comparisons... " + long0);
+        jProgressBar1.setValue((int)long0);
     }
 
     public boolean wasCancelled() {
