@@ -34,6 +34,9 @@ public class NameOccurrence {
 
     public List getQualifiers() {
         List names = new ArrayList();
+        if (qualifier != null) {
+            names.add(qualifier.getImage());
+        }
         for (StringTokenizer st = new StringTokenizer(node.getImage(), "."); st.hasMoreTokens();) {
             names.add(st.nextToken());
         }
@@ -44,8 +47,8 @@ public class NameOccurrence {
         this.qualifier = qualifier;
     }
 
-    public Qualifier getQualifier() {
-        return this.qualifier;
+    public boolean usesThisOrSuper() {
+        return qualifier != null;
     }
 
     public boolean equals(Object o) {

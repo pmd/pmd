@@ -15,10 +15,10 @@ public class LookupController {
         if (nameOccurrence.isQualified())  {
             List qualifiers = nameOccurrence.getQualifiers();
             for (Iterator i = qualifiers.iterator(); i.hasNext();) {
-                NameDeclaration decl = lookupRecurse();
+                NameDeclaration decl = lookup(nameOccurrence.getScope());
             }
         } else {
-            return lookupRecurse(nameOccurrence, startingScope);
+            return lookup(nameOccurrence, nameOccurrence.getScope());
         }
 */
         return lookup(nameOccurrence, nameOccurrence.getScope());

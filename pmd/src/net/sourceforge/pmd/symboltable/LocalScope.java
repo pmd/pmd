@@ -21,9 +21,13 @@ public class LocalScope extends AbstractScope {
     }
 
     protected NameDeclaration findHere(NameOccurrence occurrence) {
+        if (occurrence.usesThisOrSuper()) {
+            return null;
+        }
+        String objectName = (String)occurrence.getQualifiers().iterator().next();
         for (Iterator i = names.keySet().iterator(); i.hasNext();) {
             NameDeclaration nameDeclaration = (NameDeclaration)i.next();
-            if (nameDeclaration.getImage().equals(occurrence.getObjectName())) {
+            if (nameDeclaration.getImage().equals(objectName)) {
                 return nameDeclaration;
             }
         }

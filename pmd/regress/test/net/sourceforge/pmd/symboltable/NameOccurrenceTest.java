@@ -30,7 +30,7 @@ public class NameOccurrenceTest extends TestCase {
     public void testQualifiedWithThisOrSuper() {
         NameOccurrence occ = new NameOccurrence(NameDeclarationTest.FOO_NODE);
         occ.setQualifier(Qualifier.SUPER);
-        assertEquals(Qualifier.SUPER, occ.getQualifier());
+        assertTrue(occ.usesThisOrSuper());
     }
 
     public void testObjectName() {

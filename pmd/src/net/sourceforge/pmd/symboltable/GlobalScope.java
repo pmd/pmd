@@ -14,8 +14,7 @@ public class GlobalScope extends AbstractScope implements Scope {
         return Collections.EMPTY_LIST.iterator();
     }
 
-    public void addDeclaration(NameDeclaration decl) {
-    }
+    public void addDeclaration(NameDeclaration decl) {}
 
     public boolean contains(NameOccurrence occ) {
         return false;

@@ -16,7 +16,11 @@ public class Qualifier {
         this.image = image;
     }
 
-    public String toString() {
+    public String getImage() {
         return image;
+    }
+
+    public String toString() {
+        return getImage();
     }
 }

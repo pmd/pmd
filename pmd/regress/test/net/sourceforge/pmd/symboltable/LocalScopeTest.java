@@ -22,6 +22,17 @@ public class LocalScopeTest extends TestCase {
         assertTrue(scope.getUnusedDeclarations().hasNext());
     }
 
+    public void testNameWithThisOrSuperIsNotFlaggedAsUnused() {
+        LocalScope scope = new LocalScope();
+        NameOccurrence occ = new NameOccurrence(NameDeclarationTest.createNode("foo", 12));
+        occ.setQualifier(Qualifier.THIS);
+        scope.addOccurrence(occ);
+        NameOccurrence occ2 = new NameOccurrence(NameDeclarationTest.createNode("foo", 12));
+        occ2.setQualifier(Qualifier.SUPER);
+        scope.addOccurrence(occ2);
+        assertTrue(!scope.getUnusedDeclarations().hasNext());
+    }
+
     public void testUnused2() {
         LocalScope scope = new LocalScope();
         scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE));

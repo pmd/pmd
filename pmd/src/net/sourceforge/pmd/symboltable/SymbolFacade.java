@@ -26,8 +26,7 @@ public class SymbolFacade extends JavaParserVisitorAdapter {
         LookupController lookupController = new LookupController();
         if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTName) {
             SimpleNode child = (SimpleNode)node.jjtGetChild(0);
-            NameOccurrence occ = new NameOccurrence(child);
-            lookupController.lookup(occ);
+            lookupController.lookup(new NameOccurrence(child));
         } else {
             if (node.jjtGetParent() instanceof ASTPrimaryExpression) {
                 SimpleNode parent = (SimpleNode)node.jjtGetParent();
