@@ -188,7 +188,7 @@ public class PMD {
             "Please pass in a java source code filename or directory, a report format, " + EOL +
             "and a ruleset filename or a comma-delimited string of ruleset filenames." + EOL +
             "For example: " + EOL +
-            "c:\\> java -jar pmd-1.1.jar c:\\my\\source\\code html rulesets/unusedcode.xml," +
+            "c:\\> java -jar pmd-1.2.jar c:\\my\\source\\code html rulesets/unusedcode.xml," +
             "rulesets/imports.xml" + EOL);
     }
 }

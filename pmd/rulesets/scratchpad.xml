@@ -21,7 +21,7 @@ These are new rules that are still in progress
   </example>
 </rule>
 
-<rule name="IdempotentOperationsRule"
+<!--<rule name="IdempotentOperationsRule"
       message="NOT FULLY IMPLEMENTED - Avoid idempotent operations"
       class="net.sourceforge.pmd.rules.IdempotentOperationsRule">
   <description>
@@ -69,6 +69,6 @@ public class Foo {
 }
   ]]>
   </example>
-</rule>
+</rule>   !-->
 
 </ruleset>

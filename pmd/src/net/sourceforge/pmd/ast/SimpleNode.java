@@ -36,8 +36,10 @@ public class SimpleNode implements Node {
 
     public void jjtClose() {
         if (beginLine == -1 && (children == null || children.length == 0)) {
-            beginLine = parser.token.beginLine;
             beginColumn = parser.token.beginColumn;
+        }
+        if (beginLine == -1) {
+            beginLine = parser.token.beginLine;
         }
         endLine = parser.token.endLine;
         endColumn = parser.token.endColumn;

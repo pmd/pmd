@@ -10,6 +10,10 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Maik Schreiber - Bug report</li>
+            <li>Erik Lee - Bug report</li>
+            <li>Brandon Franklin - pmd-web suggestions</li>
+            <li>Joerg K. Wegner - pmd-web suggestions</li>
             <li>Chris Webster - fix (and test) for UnnecessaryConstructorRule, BooleanInstantiation rule</li>
             <li>Colin Simmonds - detailed bug reports</li>
             <li>Trond Andersen - AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking</li>

@@ -1,4 +1,4 @@
-update run.*, astviewer.*, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-1.2.jar
+update run.*, astviewer.*, cpd.jnlp, cpdgui.bat, build.xml, PMD.java to point to pmd-1.2.jar
 update xdocs/running.xml, integrations.xml, installing.xml to reflect pmd-1.2
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
