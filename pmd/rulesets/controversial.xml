@@ -110,6 +110,7 @@ most people really dislike :-)
                     <![CDATA[
     //UnmodifiedInterfaceDeclaration//MethodDeclaration
       [@Public = 'true' or @Abstract = 'true']
+      [count(//Block) = 0]
        [not (parent::ClassBodyDeclaration
         [parent::ClassBody
          [parent::UnmodifiedClassDeclaration

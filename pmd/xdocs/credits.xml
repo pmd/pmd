@@ -42,6 +42,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Conrad Roche - UnusedModifier bug report, other bug reports</li>
             <li>Miguel Griffa - SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
             <li>Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion</li>
             <li>Ken Foskey - C++ parser bug report, cpd.sh</li>
@@ -113,7 +114,6 @@
             <li>Jarle Naess - bug report</li>
             <li>Jeff Anderson - VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule</li>
             <li>Frank van Puffelen - documentation suggestions</li>
-            <li>Conrad Roche - bug report</li>
             <li>mcclain looney - patch for CPD GUI, bug reports</li>
             <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Pablo Casado - Bug report for UseSingletonRule</li>

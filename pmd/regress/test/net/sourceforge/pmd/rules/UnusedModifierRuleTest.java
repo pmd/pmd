@@ -19,27 +19,28 @@ public class UnusedModifierRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "wasted 'public' in interface method", 1, rule),
+           new TestDescriptor(TEST1, "Unneeded 'public' in interface method", 1, rule),
            new TestDescriptor(TEST2, "class, no problem", 0, rule),
-           new TestDescriptor(TEST3, "wasted 'abstract' in interface method", 1, rule),
+           new TestDescriptor(TEST3, "Unneeded 'abstract' in interface method", 1, rule),
            new TestDescriptor(TEST4, "all is well in interface method", 0, rule),
-           new TestDescriptor(TEST5, "wasted 'public' in interface field", 1, rule),
-           new TestDescriptor(TEST6, "wasted 'static' in interface field", 1, rule),
-           new TestDescriptor(TEST7, "wasted 'final' in interface field", 1, rule),
-           new TestDescriptor(TEST8, "wasted 'public static final' in interface field", 1, rule),
+           new TestDescriptor(TEST5, "Unneeded 'public' in interface field", 1, rule),
+           new TestDescriptor(TEST6, "Unneeded 'static' in interface field", 1, rule),
+           new TestDescriptor(TEST7, "Unneeded 'final' in interface field", 1, rule),
+           new TestDescriptor(TEST8, "Unneeded 'public static final' in interface field", 1, rule),
            new TestDescriptor(TEST9, "OK in interface field", 0, rule),
-           new TestDescriptor(TEST10, "wasted 'public' in class nested in interface", 1, rule),
-           new TestDescriptor(TEST11, "wasted 'static' in class nested in interface", 1, rule),
+           new TestDescriptor(TEST10, "Unneeded 'public' in class nested in interface", 1, rule),
+           new TestDescriptor(TEST11, "Unneeded 'static' in class nested in interface", 1, rule),
            new TestDescriptor(TEST12, "OK in class nested in interface", 0, rule),
-           new TestDescriptor(TEST13, "wasted 'public' in interface nested in interface", 1, rule),
-           new TestDescriptor(TEST14, "wasted 'static' in interface nested in interface", 1, rule),
+           new TestDescriptor(TEST13, "Unneeded 'public' in interface nested in interface", 1, rule),
+           new TestDescriptor(TEST14, "Unneeded 'static' in interface nested in interface", 1, rule),
            new TestDescriptor(TEST15, "OK in interface nested in interface", 0, rule),
-           new TestDescriptor(TEST16, "wasted 'static' in interface nested in class", 1, rule),
+           new TestDescriptor(TEST16, "Unneeded 'static' in interface nested in class", 1, rule),
            new TestDescriptor(TEST17, "OK in interface nested in class", 0, rule),
-           new TestDescriptor(TEST18, "wasted 'public static final' in interface field inside another interface", 2, rule),
+           new TestDescriptor(TEST18, "Unneeded 'public static final' in interface field inside another interface", 2, rule),
            new TestDescriptor(TEST19, "OK in interface field inside another interface", 0, rule),
            new TestDescriptor(TEST20, "Don't check methods in nested classes", 0, rule),
            new TestDescriptor(TEST21, "Don't check fields in nested classes", 0, rule),
+           new TestDescriptor(TEST22, "Don't check fields that are anonymous inner classes", 0, rule),
        });
     }
 
@@ -154,5 +155,12 @@ public class UnusedModifierRuleTest extends SimpleAggregatorTst {
     " class Bar {" + PMD.EOL +
     "  public int buz;" + PMD.EOL +
     " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST22 =
+    "interface Foo {" + PMD.EOL +
+    "   Test DFLT_IMPL = new Test() {" + PMD.EOL +
+    "   public int size() { return 0;}" + PMD.EOL +
+    " };" + PMD.EOL +
     "}";
 }
