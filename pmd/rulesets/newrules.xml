@@ -53,12 +53,38 @@ These are new rules for the next release
        <example>
 <![CDATA[
    public class Foo {
-       public void finalize() {
-       }
+       public void finalize() {}
    }
 ]]>
        </example>
      </rule>
+
+    <rule name="EmptyStaticInitializer"
+           message="Empty static initializer was found"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       An empty static initializer was found.
+       </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//ClassBodyDeclaration/Initializer[@Static='true']/Block[count(*)=0]
+]]>
+                 </value>
+             </property>
+         </properties>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+ public class Foo {
+  // why are there no statements in this static block?
+  static {}
+ }
+   ]]>
+       </example>
+     </rule>
+
 
 </ruleset>
 
