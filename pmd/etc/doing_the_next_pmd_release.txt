@@ -1,8 +1,8 @@
-update run.bat to point to pmd-0.7.jar
+update run.bat to point to pmd-0.8.jar
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
-update jar task to reflect pmd-0.7
-update xdocs/running.xml to reflect pmd-0.7
+update jar task to reflect pmd-0.8
+update xdocs/running.xml to reflect pmd-0.8
 update docs to mention GUI if it's in a presentable state
 update release number in project.xml
 
@@ -19,30 +19,31 @@ run c:\data\pmd\pmd\test-data\Unused1.java html rulesets/unusedcode.xml
 2) run the Ant 'pmd' task and get a report
 ant pmd
 
-Jar is built, so prepare binary release:
+Prepare binary release:
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
 mkdir c:\tmp\pmd\etc
 mkdir c:\tmp\pmd\lib
 copy build.xml c:\tmp\pmd\etc
 copy run.bat c:\tmp\pmd\etc
-copy ..\lib\pmd-0.7.jar c:\tmp\pmd\lib
-Zip it up, rename it pmd-bin-0.7.zip
+copy ..\lib\pmd-0.8.jar c:\tmp\pmd\lib
+Zip it up, rename it pmd-bin-0.8.zip
 
-cvs add -kb pmd-0.7.jar
+All is well, so time to tag:
+cvs add -kb pmd-0.8.jar
 cvs rm pmd-0.6.jar
 cvs ci -m ""
 cd c:\data\pmd
-cvs rtag -D tomorrow "pmd_release_0_7" pmd
+cvs rtag -D tomorrow "pmd_release_0_8" pmd
+
+Prepare source release:
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
-cvs export -d c:\tmp\pmd -r pmd_release_0_7 pmd
-zip it up, rename it to pmd-0.7.zip
-unzip it into c:\tmp\pmd-0.7
-clear classpath
+cvs export -d c:\tmp\pmd -r pmd_release_0_8 pmd
+zip it up, rename it to pmd-src-0.8.zip
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_0_7 pmd
+cvs rtag -d pmd_release_0_8 pmd
 and then retag everything
 
 FTP the zip file to SF
@@ -50,11 +51,13 @@ ftp upload.sourceforge.net
 generic userid/password: anonymous/tomcopeland@users.sourceforge.net
 cd incoming
 bin
-put pmd-0.7.zip
+put pmd-bin-0.8.zip
+put pmd-src-0.8.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-0.7.zip file
+Add the pmd-bin-0.8.zip file
+Add the pmd-src-0.8.zip file
 Classify the file
 
 SSH in to shell.sourceforge.net
