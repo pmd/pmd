@@ -102,7 +102,6 @@ public class RuleSetFactoryTest extends TestCase {
             "<priority>3</priority>" + EOL +
             "</rule></ruleset>";
 
-
     public void testSingleRuleWithPriority() {
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE_SET_WITH_PRIORITY.getBytes()));

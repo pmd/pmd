@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Gael Marziou - "exclude" rule feature request, bug reports</li>
             <li>Philippe T'Seyen - refactoring and cleanup of the CPD Ant task, an XML renderer (with unit tests!) for CPD</li>
             <li>Michael Montuori - bug reports on the Gel IDE plugin</li>
             <li>Michael Hosier - bug reports on the Gel IDE plugin</li>
@@ -52,7 +53,6 @@
             <li>Radim Kubacki - bug reports, pmd-netbeans feedback</li>
             <li>Stefan Bodewig - bug report</li>
             <li>Paul Kendall - enhanced EmptyCatchBlock rule</li>
-            <li>Gael Marziou - bug reports</li>
             <li>Sean Sullivan - rule suggestions</li>
             <li>Dale Vissar - rule suggestions</li>
             <li>Alina Copeland - pmd-web formulas, pmd-dcpd optimizations</li>

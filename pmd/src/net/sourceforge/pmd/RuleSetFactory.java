@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Set;
+import java.util.HashSet;
 
 public class RuleSetFactory {
 
@@ -114,15 +116,48 @@ public class RuleSetFactory {
         ruleSet.addRule(rule);
     }
 
+    /**
+     * Here's how to exclude rules:
+     *
+     * <rule ref="rulesets/braces.xml">
+     * <exclude name="WhileLoopsMustUseBracesRule"/>
+     * <exclude name="IfElseStmtsMustUseBracesRule"/>
+     * </rule>
+     *
+     */
     private void parseExternallyDefinedRule(RuleSet ruleSet, Node ruleNode) throws RuleSetNotFoundException {
         String referenceValue = ruleNode.getAttributes().getNamedItem("ref").getNodeValue();
-        if (!referenceValue.endsWith("xml")) {
-            ExternalRuleID externalRuleID = new ExternalRuleID(referenceValue);
-            RuleSetFactory rsf = new RuleSetFactory();
-            RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
-            ruleSet.addRule(externalRuleSet.getRuleByName(externalRuleID.getRuleName()));
+        if (referenceValue.endsWith("xml")) {
+            parseWithExcludes(ruleNode, referenceValue, ruleSet);
+        } else {
+            parseSimpleReference(referenceValue, ruleSet);
         }
-        throw new RuntimeException("Not impl yet!");
+    }
+
+    private void parseSimpleReference(String referenceValue, RuleSet ruleSet) throws RuleSetNotFoundException {
+        RuleSetFactory rsf = new RuleSetFactory();
+        ExternalRuleID externalRuleID = new ExternalRuleID(referenceValue);
+        RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
+        ruleSet.addRule(externalRuleSet.getRuleByName(externalRuleID.getRuleName()));
+    }
+
+    private void parseWithExcludes(Node ruleNode, String referenceValue, RuleSet ruleSet) throws RuleSetNotFoundException {
+        NodeList excludeNodes = ruleNode.getChildNodes();
+        Set excludes = new HashSet();
+        for (int i=0; i<excludeNodes.getLength(); i++) {
+            Node node = excludeNodes.item(i);
+            if (node.getAttributes() != null) {
+                excludes.add(node.getAttributes().getNamedItem("name").getNodeValue());
+            }
+        }
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(referenceValue));
+        for (Iterator i = externalRuleSet.getRules().iterator(); i.hasNext();) {
+            Rule rule = (Rule)i.next();
+            if (!excludes.contains(rule.getName())) {
+                 ruleSet.addRule(rule);
+            }
+        }
     }
 
     private void parseProperties(Node node, Rule rule) {
