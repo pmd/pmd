@@ -50,7 +50,7 @@
    <delete dir="staging"/>
    <mkdir dir="staging"/>
    <copy file="${lib}/dcpd.jar" toDir="staging"/>
-   <copy file="${lib}/pmd-0.9.jar" toDir="staging"/>
+   <copy file="${lib}/pmd-1.0rc1.jar" toDir="staging"/>
    <copy file="${lib}/runtimeonly/outrigger-dl.jar" toDir="staging"/>
    <copy file="${lib}/runtimeonly/reggie.jar" toDir="staging"/>
    <copy file="c:\jini-1_2_1\policy\policy.all" toDir="staging"/>

@@ -2,7 +2,7 @@
 
 CLASSPATH=/home/tom/dcpdworker/outrigger-dl.jar
 CLASSPATH=$CLASSPATH:/home/tom/dcpdworker/reggie.jar
-CLASSPATH=$CLASSPATH:/home/tom/dcpdworker/pmd-0.9.jar
+CLASSPATH=$CLASSPATH:/home/tom/dcpdworker/pmd-1.0rc1.jar
 CLASSPATH=$CLASSPATH:/home/tom/dcpdworker/dcpd.jar
 
 MAIN=net.sourceforge.pmd.dcpd.DCPDWorker
