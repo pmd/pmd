@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2002, Ole-Martin Mørk
+ *  Copyright (c) 2002-2003, Ole-Martin Mørk
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,

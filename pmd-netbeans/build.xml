@@ -4,6 +4,7 @@
 		<javac debug="on" debuglevel="source,lines" deprecation="on" destdir="build/classes" srcdir="src">
 			<include name="**/*.java"/>
 			<classpath>
+				<!-- Copy this from the netbeans installation directory -->
 				<pathelement path="lib/openide.jar"/>
 				<pathelement path="lib/pmd-1.03.jar"/>
 			</classpath>
@@ -22,34 +23,41 @@
 			<fileset dir="build/classes">
 				<include name="**/*"/>
 			</fileset>
-		  		</jar>
-		  	</target>
-		  	<target depends="jars" description="Prepare the module for distribution via Auto Update." name="nbm">
-		  		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib\nbantext.jar" name="makenbm"/>
-		  		<mkdir dir="build/temp_distribution/netbeans/modules/ext"/>
-		  		<copy file="build/pmd.jar" tofile="build/temp_distribution/netbeans/modules/pmd.jar"/>
-		  		<copy file="lib/pmd-1.03.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.03.jar"/>
-		 		<makenbm file="build/pmd.nbm" homepage="http://pmd.sourceforge.net/" module="build/pmd.jar" topdir="build/temp_distribution" needsrestart="false">
-		  			<license file="LICENSE.txt"/>
-		                         <!-- todo: better to include online help (JavaHelp) than put this here: -->
-		                         <notification>
-		                             <file location="README.txt"/>
-		                             <text>CHANGES</text>
-		                             <file location="CHANGES.txt"/>
-		                         </notification>
-		  		</makenbm>
-		  	</target>
-		  	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
-		  		<zip compress="true" destfile="build\pmd-netbeans-src-${VERSION}.zip">
-		  			<zipfileset dir=".">
-		  				<include name="*.txt"/>
-		  				<include name="build.xml"/>
-		  				<include name="src/**/*"/>
-		 				<include name="lib/"/>
-		  				<exclude name="**/.nbattrs"/>
-		  			</zipfileset>
-		  			<zipfileset dir="." fullpath="pmd.nbm" includes="build\pmd.nbm"/>
-  		</zip>
+		</jar>
+	</target>
+	<target depends="jars" description="Prepare the module for distribution via Auto Update." name="nbm">
+		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib\nbantext.jar" name="makenbm"/>
+		<mkdir dir="build/temp_distribution/netbeans/modules/ext"/>
+		<copy file="build/pmd.jar" tofile="build/temp_distribution/netbeans/modules/pmd.jar"/>
+		<copy file="lib/pmd-1.03.jar" tofile="build/temp_distribution/netbeans/modules/ext/pmd-1.03.jar"/>
+		<makenbm file="build/pmd.nbm" homepage="http://pmd.sourceforge.net/" module="build/pmd.jar" topdir="build/temp_distribution" needsrestart="false">
+			<license file="LICENSE.txt"/>
+			<!-- todo: better to include online help (JavaHelp) than put this here: -->
+			<notification>
+				<file location="README.txt"/>
+				<text>CHANGES</text>
+				<file location="CHANGES.txt"/>
+			</notification>
+		</makenbm>
+	</target>
+	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
+		<zip compress="true" destfile="build\pmd-netbeans-src-${VERSION}.zip">
+			<zipfileset dir=".">
+				<include name="*.txt"/>
+				<include name="build.xml"/>
+				<include name="src/**/*"/>
+				<include name="lib/pmd*.jar"/>
+				<include name="lib/nbantext.jar"/>
+				<exclude name="**/.nbattrs"/>
+			</zipfileset>
+			<zipfileset dir="." fullpath="pmd.nbm" includes="build\pmd.nbm"/>
+		</zip>
+		<zip compress="true" destfile="build\pmd-netbeans-bin-${VERSION}.zip">
+			<zipfileset dir=".">
+				<include name="*.txt"/>
+			</zipfileset>
+			<zipfileset dir="." fullpath="pmd.nbm" includes="build\pmd.nbm"/>
+		</zip>
 	</target>
 	<target description="Clean all build products." name="clean">
 		<delete dir="build"/>

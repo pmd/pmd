@@ -1,5 +1,9 @@
-Version 0.6.1
-- Updated pmd to version 1.02
+Version 0.7
+- Updated pmd to version 1.03
+- Sorted the ruleselection dialog
+- Applied patch 647994 from Jesse Glick
+- Applied patch 685035 from Gunnlaugur Thor Briem
+- Added some status messages, not output unless a rule violation exists
 
 Version 0.6
 - Fixed feature request 638427
