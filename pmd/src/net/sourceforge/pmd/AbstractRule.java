@@ -73,8 +73,10 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     public boolean equals(Object o) {
-        Rule r = (Rule) o;
-        return r.getName().equals(getName());
+        if (!(o instanceof Rule)) {
+            return false;
+        }
+        return ((Rule)o).getName().equals(getName());
     }
 
     public int hashCode() {
