@@ -107,18 +107,18 @@ public class PMDOpenTool {
         EditorManager.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
                 AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()));
         EditorManager.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
-               AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()));
+                AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()));
     }
 
     static void registerShortCuts() {
 
         EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
                 AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()),
-               E_ACTION_PMDCheck);
+                E_ACTION_PMDCheck);
 
         EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
-               AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()),
-               E_ACTION_PMDCheckProject);
+                AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()),
+                E_ACTION_PMDCheckProject);
     }
 
     /**
@@ -193,7 +193,7 @@ public class PMDOpenTool {
 
     //create EditorAction for performing a PMD Check
     public static EditorAction E_ACTION_PMDCheck =
-    new EditorAction("Displays PMD statistics about a Java File") {
+            new EditorAction("Displays PMD statistics about a Java File") {
         public void actionPerformed(ActionEvent e) {
             pmdCheck();
         }
@@ -201,7 +201,7 @@ public class PMDOpenTool {
 
     //create EditorAction for performing a PMD Check on a project
     public static EditorAction E_ACTION_PMDCheckProject =
-    new EditorAction("Displays PMD statistics about a Java File") {
+            new EditorAction("Displays PMD statistics about a Java File") {
         public void actionPerformed(ActionEvent e) {
             pmdCheckProject();
         }
@@ -235,6 +235,7 @@ public class PMDOpenTool {
         }
 
     };
+
     //create the project menu action for running a PMD check against all the java files within the active project
     public static BrowserAction B_ACTION_CPDProjectCheck = new BrowserAction ("CPD Check Project", 'P', "Run CPD on all the java files in the project",
             new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/cpd.gif"))) {
@@ -335,55 +336,59 @@ public class PMDOpenTool {
     }
 
     private static void pmdCPD() {
-         try {
-             Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
-             CPD cpd = new CPD();
-             cpd.setMinimumTileSize(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger());
-             Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
-             CPDDialog cpdd = new CPDDialog(cpd);
-             for (int i=0; i<nodes.length; i++ ) {
-                 if (nodes[i] instanceof PackageNode) {
-                     PackageNode node = (PackageNode)nodes[i];
-                     Node[] fileNodes = node.getDisplayChildren();
-                     for (int j=0; j<fileNodes.length; j++) {
-                         if (fileNodes[j] instanceof JavaFileNode) {
-                             try {
-                                 cpd.add(new File(fileNodes[j].getLongDisplayName()));
-                             }
-                             catch (Exception e){
-                             }
-                         }
-                     }
-                 }
-             }
-             cpd.go();
-             Results results = cpd.getResults();
-             int resultCount = 0;
-             if (results != null) {
-                 for (Iterator iter = results.getTiles(); iter.hasNext(); ) {
-                     Tile t = (Tile)iter.next();
-                     resultCount++;
-                     int tileLineCount = cpd.getLineCountFor(t);
-                     int dupCount = results.getOccurrenceCountFor(t);
-                     CPDMessage msg = CPDMessage.createMessage(String.valueOf(dupCount)+" duplicates in code set: " + resultCount, cpd.getImage(t));
-                     for (Iterator iter2 = results.getOccurrences(t); iter2.hasNext(); ) {
-                         TokenEntry te = (TokenEntry)iter2.next();
-                         msg.addChildMessage(te.getBeginLine(), tileLineCount, te.getTokenSrcID());
+        try {
+            Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
+            final CPD cpd = new CPD();
+            cpd.setMinimumTileSize(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger());
+            Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+            CPDDialog cpdd = new CPDDialog(cpd);
+            for (int i=0; i<nodes.length; i++ ) {
+                if (nodes[i] instanceof PackageNode) {
+                    PackageNode node = (PackageNode)nodes[i];
+                    Node[] fileNodes = node.getDisplayChildren();
+                    for (int j=0; j<fileNodes.length; j++) {
+                        if (fileNodes[j] instanceof JavaFileNode) {
+                            try {
+                                cpd.add(new File(fileNodes[j].getLongDisplayName()));
+                            }
+                            catch (Exception e){
+                            }
+                        }
+                    }
+                }
+            }
+            cpd.go();
+            if (cpdd.wasCancelled()) {  //if the dialog was cancelled by the user then let's get out of here
+                cpdd.close();
+                return;
+            }
+            Results results = cpd.getResults();
+            int resultCount = 0;
+            if (results != null) {
+                for (Iterator iter = results.getTiles(); iter.hasNext(); ) {
+                    Tile t = (Tile)iter.next();
+                    resultCount++;
+                    int tileLineCount = cpd.getLineCountFor(t);
+                    int dupCount = results.getOccurrenceCountFor(t);
+                    CPDMessage msg = CPDMessage.createMessage(String.valueOf(dupCount)+" duplicates in code set: " + resultCount, cpd.getImage(t));
+                    for (Iterator iter2 = results.getOccurrences(t); iter2.hasNext(); ) {
+                        TokenEntry te = (TokenEntry)iter2.next();
+                        msg.addChildMessage(te.getBeginLine(), tileLineCount, te.getTokenSrcID());
                     }
                     Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg);
-                 }
-             }
-             cpdd.close();
-         }
-         catch (Exception e) {
-             Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, e.toString());
-         }
+                }
+            }
+            cpdd.close();
+        }
+        catch (Exception e) {
+            Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, e.toString());
+        }
     }
 
     /**
-    * Main method for testing purposes
-    * @param args standard arguments
-    */
+     * Main method for testing purposes
+     * @param args standard arguments
+     */
     public static void main (String[] args) {
         //Report ret = PMDOpenTool.instanceCheck("package abc; \npublic class foo {\npublic void bar() {int i;}\n}");
         //System.out.println("PMD: " + ret);
@@ -596,7 +601,7 @@ class CodeFragmentMessage extends Message {
         }
         catch (Exception e){}
 
-     }
+    }
 
 }
 

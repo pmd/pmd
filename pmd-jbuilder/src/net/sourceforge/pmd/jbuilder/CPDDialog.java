@@ -11,7 +11,7 @@ import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
 import net.sourceforge.pmd.cpd.Tile;
 
-public class CPDDialog  extends JFrame implements CPDListener  {
+public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
     private CPD cpd;
     int progress = 0;
     boolean firstToken = true;
@@ -20,6 +20,7 @@ public class CPDDialog  extends JFrame implements CPDListener  {
     private VerticalFlowLayout verticalFlowLayout1 = new VerticalFlowLayout();
     private JLabel jLabel1 = new JLabel();
     private JProgressBar jProgressBar1 = new JProgressBar();
+    private boolean retCode = true;
 
     public CPDDialog(CPD cpd) {
         super("CPD Status Monitor");
@@ -33,10 +34,12 @@ public class CPDDialog  extends JFrame implements CPDListener  {
         }
     }
 
-    public void update(String msg) {
+    public boolean update(String msg) {
+        return retCode;
     }
 
-    public void addedFile(int fileCount, File file) {
+
+    public boolean addedFile(int fileCount, File file) {
         if (firstFile) {
             firstFile = false;
             jLabel1.setText("Adding Files...");
@@ -45,20 +48,22 @@ public class CPDDialog  extends JFrame implements CPDListener  {
             progress = 0;
         }
         jProgressBar1.setValue(++progress);
+        return retCode;
     }
 
 
-    public void addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
+    public boolean addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
         if (firstToken) {
             firstToken = false;
             jLabel1.setText("Adding Tokens...");
             jProgressBar1.setMaximum(tokenSetCount);
         }
         jProgressBar1.setValue(doneSoFar);
+        return retCode;
     }
 
 
-    public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
+    public boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
         if (firstNewTile) {
             firstNewTile = false;
             jLabel1.setText("Adding Tiles... ");
@@ -68,6 +73,11 @@ public class CPDDialog  extends JFrame implements CPDListener  {
             jProgressBar1.setMaximum(totalTiles);
 
         jProgressBar1.setValue(tilesSoFar);
+        return retCode;
+    }
+
+    public boolean wasCancelled() {
+        return !retCode;
     }
 
     public void close() {
@@ -95,6 +105,23 @@ public class CPDDialog  extends JFrame implements CPDListener  {
         int xpos = (Toolkit.getDefaultToolkit().getScreenSize().width - this.getSize().width)/2;
         int ypos = (Toolkit.getDefaultToolkit().getScreenSize().height - this.getSize().height)/2;
         this.setLocation(xpos, ypos);
+        this.addWindowListener(this);
         this.show();
+    }
+    public void windowOpened(WindowEvent e) {
+    }
+    public void windowClosing(WindowEvent e) {
+        retCode = false;
+    }
+    public void windowClosed(WindowEvent e) {
+
+    }
+    public void windowIconified(WindowEvent e) {
+    }
+    public void windowDeiconified(WindowEvent e) {
+    }
+    public void windowActivated(WindowEvent e) {
+    }
+    public void windowDeactivated(WindowEvent e) {
     }
 }
