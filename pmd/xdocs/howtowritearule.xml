@@ -18,7 +18,9 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
         Ant task as part of the core distribution.</li>
             <li>PMD has a slew of JUnit tests, so you'll need a <a href="http://www.junit.org/">JUnit 3.8.1 binary release</a>
                 if you want to run the tests.</li>
-            <li>The rules that have already been written are specified in the rulesets/ directory in the source distribution.</li>
+            <li>The rules that have already been written are specified in the rulesets/ directory in the
+                source distribution.  They're also in the jar file that's included with both the
+                source and binary distributions.</li>
         </ul>
     </p>
     </subsection>

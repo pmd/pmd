@@ -64,41 +64,83 @@
 
       </subsection>
       <subsection name="Examples">
+          <p>Running one ruleset to produce a HTML report</p>
 <source>
 <![CDATA[
-    <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="rulesets/imports.xml" shortFilenames="true">
-            <formatter type="html" toFile="pmd_report.html"/>
-            <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
-                <include name="**/*.java"/>
-            </fileset>
-        </pmd>
-    </target>
+<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
 
-    <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="rulesets/imports.xml,rulesets/unusedcode.xml" failonerror="no">
-            <formatter type="xml" toFile="c:\pmd_report.xml"/>
-            <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
-                <include name="**/*.java"/>
-            </fileset>
-        </pmd>
-    </target>
-
-    <target name="pmd">
-        <pmd rulesetfiles="rulesets/favorites.xml">
-            <classpath>
-                <pathelement path="/home/tom/tmp/"/>
-            </classpath>
-            <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
-            <fileset dir="/usr/local/java/src/java/lang/ref">
-                <include name="**/*.java"/>
-            </fileset>
-        </pmd>
-    </target>
+<target name="pmd">
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+    <pmd rulesetfiles="rulesets/imports.xml">
+        <formatter type="html" toFile="pmd_report.html"/>
+        <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
+            <include name="**/*.java"/>
+        </fileset>
+    </pmd>
+</target>
 ]]>
 </source>
+
+          <p>Running multiple rulesets to produce an XML report</p>
+
+<source>
+<![CDATA[
+<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+
+<target name="pmd">
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+    <pmd rulesetfiles="rulesets/imports.xml,rulesets/unusedcode.xml">
+        <formatter type="xml" toFile="c:\pmd_report.xml"/>
+        <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
+            <include name="**/*.java"/>
+        </fileset>
+    </pmd>
+</target>
+]]>
+</source>
+
+          <p>Using a custom renderer</p>
+
+<source>
+<![CDATA[
+<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+
+<target name="pmd">
+    <pmd rulesetfiles="rulesets/favorites.xml">
+        <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
+        <fileset dir="/usr/local/java/src/java/lang/ref">
+            <include name="**/*.java"/>
+        </fileset>
+    </pmd>
+</target>
+]]>
+</source>
+
+          <p>Using a classpath reference in the taskdef</p>
+
+<source>
+<![CDATA[
+<path id="pmd.classpath">
+    <pathelement location="${build}"/>
+    <fileset dir="/path/to/my/pmd/lib/">
+        <include name="*.jar"/>
+    </fileset>
+</path>
+
+<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="classpath.path"/>
+
+<target name="pmd">
+      <pmd rulesetfiles="rulesets/favorites.xml">
+          <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
+          <fileset dir="/usr/local/java/src/java/lang/ref">
+              <include name="**/*.java"/>
+          </fileset>
+      </pmd>
+  </target>
+]]>
+</source>
+
+
       </subsection>
    </section>
  </body>
