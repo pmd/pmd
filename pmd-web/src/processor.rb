@@ -41,7 +41,7 @@ class Job
 	def initialize(title, unix_name, mod, src )
 		@title = title
 		@unix_name = unix_name
-		@cvsroot = ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/" + unix_name
+		@cvsroot = ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/#{unix_name}"
 		@mod = mod
 		@src = src.strip
 	end
@@ -57,13 +57,11 @@ class Job
    `#{cmd}`
   end
   def run_pmd
-   cmd="java -Xmx512m -jar pmd-1.2.2.jar \"" + ROOT + "/" + @src + "\" html rulesets/unusedcode.xml -shortnames > " + report
+   cmd="java -Xmx512m -jar pmd-1.2.2.jar \"#{ROOT}/#{@src}\" html rulesets/unusedcode.xml -shortnames > #{report}"
    `#{cmd}`
    arr = IO.readlines(report)
    File.open(report, "w") {|f|
-	   arr.each do | x | 
-	    f << x if x["Error while parsing"] == nil 
-	   end
+	   arr.each {|x| f << x if x =~ /Error while parsing/ }
 		}
   end
   def run_cpd
@@ -195,9 +193,7 @@ if __FILE__ == $0
 		}
 	end
 	
-	if ARGV.include?("-copy")
-		jobs.each {|j| j.copy_up }
-	end
+	jobs.each {|j| j.copy_up } if ARGV.include?("-copy")
 
 	fm = Ikko::FragmentManager.new
 	fm.base_path="./"
