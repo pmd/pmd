@@ -119,7 +119,7 @@ public class PMD {
             rsnfe.printStackTrace();
         }
 
-        Renderer renderer;
+        Renderer renderer = null;
         if (reportFormat.equals("xml")) {
             renderer = new XMLRenderer();
         } else if (reportFormat.equals("ideaj")) {
@@ -128,6 +128,8 @@ public class PMD {
             renderer = new TextRenderer();
         } else if (reportFormat.equals("emacs")) {
             renderer = new EmacsRenderer();
+        } else if (reportFormat.equals("html")) {
+            renderer = new HTMLRenderer();
         } else if (!reportFormat.equals("")) {
             try {
                 renderer = (Renderer)Class.forName(reportFormat).newInstance();
@@ -136,7 +138,9 @@ public class PMD {
                 return;
             }
         } else {
-            renderer = new HTMLRenderer();
+            System.out.println("Please supply a renderer name");
+            usage();
+            return;
         }
         System.out.println(renderer.render(ctx.getReport()));
     }
