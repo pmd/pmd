@@ -1,5 +1,6 @@
 ???? 2002 - ???:
-Modified PMD to be built and used with JUnit 3.8.1 and Ant 1.5.
+PMD is now built and tested with JUnit 3.8.1 and Ant 1.5.
+Added some limited support for the IDEAJ IDE.
 Fixed bug 610018 - StringInstantiationRule now allows for String(byte[], int, int) usage.
 Fixed bug 610693 - UnusedPrivateInstanceVariable handles parameter shadowing better.
 
