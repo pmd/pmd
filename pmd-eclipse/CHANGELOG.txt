@@ -3,6 +3,14 @@ Change log for the PMD Eclipse plugin
 
 
 
+v2.2.1 - 01/02/2005
+
+Runtime
+-------
+. upgrade the core engine to PMD v2.2
+
+
+----------------------------------------------------------------------------------------
 v2.2.0 - 23/01/2005
 
 Runtime
