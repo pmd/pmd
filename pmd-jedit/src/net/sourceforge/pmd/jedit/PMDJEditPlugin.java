@@ -24,6 +24,7 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String MENU = "pmd-menu";
     public static final String PROPERTY_PREFIX = "plugin.net.sourceforge.pmd.jedit.";
     public static final String OPTION_PREFIX = "options.pmd.";
+    public static final String OPTION_RULESETS_PREFIX = "options.pmd.rulesets.";
 
     private static PMDJEditPlugin instance = new PMDJEditPlugin();
 
@@ -39,29 +40,19 @@ public class PMDJEditPlugin extends EBPlugin {
     public void createMenuItems(Vector menuItems) {
         menuItems.addElement(GUIUtilities.loadMenu(MENU));
     }
-
-    public void createOptionPanes(OptionsDialog dialog) {
-        OptionGroup grp = new OptionGroup("PMD");
-        grp.addOptionPane(new PMDOptionPane());
-        dialog.addOptionGroup(grp);
-    }
     // boilerplate JEdit code
 
     public void instanceCheck(View view) {
-        String text = view.getTextArea().getText();
-
         PMD pmd = new PMD();
-
         ReportFactory rf = new ReportFactory();
         RuleContext ctx = new RuleContext();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream("rulesets/unusedcode.xml"));
-
         ctx.setReport(rf.createReport("xml"));
         ctx.setSourceCodeFilename("this");
         try {
             // TODO switch to use StringReader once PMD 0.4 gets released
-            pmd.processFile(new StringBufferInputStream(text), rules, ctx);
+            pmd.processFile(new StringBufferInputStream(view.getTextArea().getText()), rules, ctx);
 
             StringBuffer msg = new StringBuffer();
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
@@ -78,7 +69,7 @@ public class PMDJEditPlugin extends EBPlugin {
     }
 
     public void instanceDisplayPreferencesDialog(View view) {
-
+        PMDOptionPane options = new PMDOptionPane();
     }
 
 
