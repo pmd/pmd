@@ -17,9 +17,8 @@ public class EmptyCatchBlockRule extends AbstractRule implements Rule {
         if (!node.hasCatch()) {
             return super.visit(node, data);
         }
-        ASTBlock catchBlock = (ASTBlock)node.jjtGetChild(2);
-        if (catchBlock.jjtGetNumChildren() == 0) {
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, catchBlock.getBeginLine()));
+        if (node.getCatchBlock().jjtGetNumChildren() == 0) {
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getCatchBlock().getBeginLine()));
         }
         return super.visit(node, data);
     }

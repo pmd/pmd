@@ -32,6 +32,13 @@ public class ASTTryStatement extends SimpleNode {
         return hasFinally;
     }
 
+    /**
+     * Call hasCatch() before you call this method
+     */
+    public ASTBlock getCatchBlock() {
+        return (ASTBlock)jjtGetChild(2);
+    }
+
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
