@@ -44,7 +44,7 @@ class Job
 		t.join  
 	end
 	def checkOutOK
-		return File.exists?(@sourceDirectory)
+		File.exists?(@sourceDirectory)
 	end
   def ncss
    cmd="#{JAVANCSS_BINARY} -ncss -recursive \"#{@sourceDirectory}\" > \"#{ncssReportFile}\""
@@ -56,7 +56,7 @@ class Job
    arr = IO.readlines(reportFile())
    newFile=File.open(reportFile(), "w")
    arr.each do | line | 
-    if (line["Error while parsing"] == nil) 
+    if line["Error while parsing"] == nil 
      newFile << line
     end
    end
@@ -67,9 +67,9 @@ class Job
    `#{cmd}`
   end
 	def copy_up
-		`scp #{ROOT}/#{reportFile} #{ROOT}/#{cpdReportFile} #{ROOT}/#{ncssReportFile} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
+		`scp #{reportFile} #{cpdReportFile} #{ncssReportFile} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
 		if File.exists?("lastruntime.txt")
-			`scp #{ROOT}/lastruntime.txt tomcopeland@pmd.sf.net:#{REMOTE_CGI_DIR}`
+			`scp lastruntime.txt tomcopeland@pmd.sf.net:#{REMOTE_CGI_DIR}`
 		end
 	end
 	def reportFile 
@@ -82,9 +82,9 @@ class Job
 		return "#{@unixName}_#{@moduleDirectory.sub(/ /, '')}_ncss.txt"
 	end
 	def clear
-		`rm -rf "#{ROOT}/#{@moduleDirectory}" #{ROOT}/#{reportFile} #{ROOT}/#{cpdReportFile} #{ROOT}/#{ncssReportFile}`
+		`rm -rf "#{@moduleDirectory}" #{ROOT}/#{reportFile} #{ROOT}/#{cpdReportFile} #{ROOT}/#{ncssReportFile}`
 		if File.exists?("#{ROOT}/lastruntime.txt")
-			`rm -rf #{ROOT}/lastruntime.txt`
+			`rm -rf lastruntime.txt`
 		end
 	end
 	def to_s
