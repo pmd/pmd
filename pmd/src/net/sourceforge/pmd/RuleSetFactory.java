@@ -23,6 +23,8 @@ public class RuleSetFactory {
      * Returns an Iterator of RuleSet objects
      */
     public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
+
+
         try {
             Properties props = new Properties();
             props.load(getClass().getClassLoader().getResourceAsStream("rulesets/rulesets.properties"));

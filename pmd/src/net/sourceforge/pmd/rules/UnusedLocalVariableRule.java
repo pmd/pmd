@@ -14,7 +14,7 @@ import net.sourceforge.pmd.*;
 
 public class UnusedLocalVariableRule extends AbstractRule implements Rule{
 
-    private Stack nameSpaces;
+    private Namespace nameSpace;
 
     /**
      * Skip interfaces because they don't have local variables.
@@ -27,10 +27,8 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
      * For the purpose of local variables, only an ASTCompilation unit creates a new namespace
      */
     public Object visit(ASTCompilationUnit node, Object data) {
-        nameSpaces = new Stack();
-        createNamespace(node, data);
-        nameSpaces.clear();
-        return data;
+        nameSpace = new Namespace();
+        return super.visit(node, data);
     }
 
     // these AST types trigger a new scope
@@ -49,7 +47,6 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
         if (!(node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration)) {
             return super.visit(node, data);
         }
-        Namespace nameSpace = (Namespace)nameSpaces.peek();
         nameSpace.peek().add(new Symbol(node.getImage(), node.getBeginLine()));
         return super.visit(node, data);
     }
@@ -60,8 +57,7 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
     public Object visit(ASTName node, Object data) {
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
             String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
-            Namespace group = (Namespace)nameSpaces.peek();
-            group.peek().recordPossibleUsageOf(new Symbol(img, node.getBeginLine()));
+            nameSpace.peek().recordPossibleUsageOf(new Symbol(img, node.getBeginLine()));
         }
         return super.visit(node, data);
     }
@@ -74,20 +70,12 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
     }
 
     private Object addTable(SimpleNode node, Object data) {
-        Namespace group = (Namespace)nameSpaces.peek();
-        group.addTable();
+        nameSpace.addTable();
         RuleContext ctx = (RuleContext)data;
         super.visit(node, ctx);
-        reportUnusedLocals(ctx, group.peek());
-        group.removeTable();
+        reportUnusedLocals(ctx, nameSpace.peek());
+        nameSpace.removeTable();
         return ctx;
-    }
-
-    private Object createNamespace(SimpleNode node, Object data) {
-        nameSpaces.push(new Namespace());
-        Object report = super.visit(node, data);
-        nameSpaces.pop();
-        return report;
     }
 
 }

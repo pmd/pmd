@@ -46,7 +46,7 @@ public class PMD {
     /**
      * @param fileContents - an InputStream to the Java code to analyse
      * @param ruleSet - the set of rules to process against the file
-     * @param ctx - the context in which PMD is operating.  This contains the Renderer and whatnot
+     * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
      */
     public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) {
         processFile(new InputStreamReader(fileContents), ruleSet, ctx);

@@ -32,17 +32,11 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
         return data;
     }
 
-    /**
-     * Reset state when we leave an ASTCompilationUnit
-     */
     public Object visit(ASTCompilationUnit node, Object data) {
-        depth = 0;
-
-        super.visit(node, data);
-
         nameSpaces.clear();
         depth = 0;
         trollingForDeclarations = false;
+        super.visit(node, data);
         return data;
     }
 
