@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -293,7 +295,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                                 for (int x = thisIndex + 1; x < i - 1; x++) {//everything after this is var name or method name
                                     ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
                                     if (child.isArguments() == false) { //skip the () of method calls
-                                        String name = getNameFromSuffix(child);
+                                        String name = child.getImage();
                                         //										System.out.println("Found suffix: " + suffixName);
                                         if (x == i - 2) {
                                             methodName = name;
@@ -328,7 +330,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                             for (int x = 1; x < i - 1; x++) {
                                 ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
                                 if (child.isArguments() == false) {
-                                    String name = getNameFromSuffix(child);
+                                    String name = child.getImage();
                                     if (x == i - 2) {
                                         methodName = name;
                                     } else {
@@ -532,21 +534,16 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
      * This check must be evaluated independelty for each class.  Inner classses
      * get their own EvalPackage in order to perform independent evaluation.
      */
- /*   private Object visitClassDec(AccessNode node, Object data) {
-        String className = ((ASTClassOrInterfaceDeclaration) node.jjtGetChild(0)).getImage();
-        //		System.out.println("Class is " + className);
-        //evaluate each level independently
+    private Object visitClassDec(ASTClassOrInterfaceDeclaration node, Object data) {
+        String className = node.getImage();
         if (!node.isFinal() && !node.isStatic()) {
             putEvalPackage(new EvalPackage(className));
         } else {
             putEvalPackage(nullEvalPackage);
         }
         //store any errors caught from other passes.
-        if (node instanceof ASTClassDeclaration) {
-            super.visit((ASTClassDeclaration) node, data);
-        } else {
-            super.visit((ASTNestedClassDeclaration) node, data);
-        }
+        super.visit((ASTClassOrInterfaceDeclaration) node, data);
+
         //skip this class if it has no evaluation package
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
             //evaluate danger of all methods in class
@@ -565,7 +562,6 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
                         if (meth.getName().equals(methName) && (meth.getArgumentCount() == count)) {
-                            //bad call
                             RuleContext ctx = (RuleContext) data;
                             ctx.getReport().addRuleViolation(createRuleViolation(ctx, meth.getASTPrimaryExpression()));
                         }
@@ -593,7 +589,6 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         removeCurrentEvalPackage();
         return data;
     }
-*/
     /**
      * Check the methods called on this class by each of the methods on this
      * class.  If a method calls an unsafe method, mark the calling method as
@@ -709,57 +704,25 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         return found;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////
-    //The Visited Methods
-
-    /**
-     * Work on each file independently.
-     */
     public Object visit(ASTCompilationUnit node, Object data) {
         clearEvalPackages();
-        //		try {
         return super.visit(node, data);
-        //		}
-        //		catch(Exception e){
-        //			e.printStackTrace();
-        //		}
     }
-    //for testing only
-    //	public Object visit(ASTPackageDeclaration node, Object data){
-    //		System.out.println("package= " + ((ASTName)node.jjtGetChild(0)).getImage());
-    //		return super.visit(node,data);
-    //	}
 
     /**
      * This check must be evaluated independelty for each class.  Inner classses
      * get their own EvalPackage in order to perform independent evaluation.
      */
-/*
-    public Object visit(ASTClassDeclaration node, Object data) {
-        return visitClassDec(node, data);
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (!node.isInterface()) {
+            return visitClassDec(node, data);
+        } else {
+            putEvalPackage(nullEvalPackage);
+            Object o = super.visit(node, data);//interface may have inner classes, possible? if not just skip whole interface
+            removeCurrentEvalPackage();
+            return o;
+        }
     }
-
-    public Object visit(ASTNestedClassDeclaration node, Object data) {
-        return visitClassDec(node, data);
-    }
-
-    public Object visit(ASTInterfaceDeclaration node, Object data) {
-        putEvalPackage(nullEvalPackage);
-        Object o = super.visit(node, data);//interface may have inner classes, possible? if not just skip whole interface
-        removeCurrentEvalPackage();
-        return o;
-    }
-
-    public Object visit(ASTNestedInterfaceDeclaration node, Object data) {
-        putEvalPackage(nullEvalPackage);
-        Object o = super.visit(node, data);//interface may have inner classes, possible? if not just skip whole interface
-        removeCurrentEvalPackage();
-        return o;
-    }
-    FIXME
-*/
 
 
     /**
@@ -823,11 +786,6 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
 
 
 
-    ////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////
-    //Helper methods to process visits
-
     private static void addCalledMethodsOfNode(AccessNode node, List calledMethods, String className) {
         List expressions = new ArrayList();
         node.findChildrenOfType(ASTPrimaryExpression.class, expressions, false);
@@ -890,11 +848,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                 }
             }
         }
-        if (found) {
-            return meth;
-        } else {
-            return null;
-        }
+
+        return found ? meth : null;
     }
 
     /**
@@ -912,10 +867,4 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         return name;
     }
 
-    /**
-     * ASTPrimarySuffix has name in itself
-     */
-    private static String getNameFromSuffix(ASTPrimarySuffix node) {
-        return node.getImage();
-    }
 }
