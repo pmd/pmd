@@ -88,8 +88,9 @@ class HTMLResultRenderer {
         m_writer.write(fileName);
         m_writer.write("\n<br>\n");
 
-        Color pmdGray = UIManager.getColor("pmdGray");
-        String hexValue = Integer.toHexString(pmdGray.getRGB());
+        //Color pmdGray = UIManager.getColor("pmdGray");
+        //String hexValue = Integer.toHexString(pmdGray.getRGB());
+        String hexValue = Integer.toHexString(Color.WHITE.getRGB());
 
         if (hexValue.startsWith("0x")) {
             hexValue = hexValue.substring(2);

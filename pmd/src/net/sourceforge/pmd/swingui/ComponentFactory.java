@@ -69,7 +69,7 @@ class ComponentFactory {
         }
 
         button = new JButton(title);
-        lineBorder = new LineBorder(background.darker(), 1, true);
+        lineBorder = new LineBorder(Color.DARK_GRAY, 1, true);
         bevelBorder = new BevelBorder(BevelBorder.RAISED);
         compoundBorder = new CompoundBorder(bevelBorder, lineBorder);
         etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);

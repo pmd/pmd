@@ -208,7 +208,7 @@ class PreferencesEditor extends JPanel {
         fontMetrics = button.getFontMetrics(button.getFont());
         width = fontMetrics.stringWidth(button.getText()) + 50;
         size = new Dimension(width, button.getHeight());
-        button.setSize(size);
+        //button.setSize(size);
         button.setPreferredSize(size);
         button.setMinimumSize(size);
         button.setMaximumSize(size);
