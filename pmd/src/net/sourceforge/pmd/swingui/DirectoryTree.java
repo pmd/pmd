@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
-import net.sourceforge.pmd.swingui.event.StatusBarEvent;
+import java.awt.Component;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -10,8 +10,11 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import java.awt.Component;
-import java.io.File;
+
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
+import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
 
 /**
  *
@@ -35,6 +38,7 @@ class DirectoryTree extends JTree
         setCellRenderer(new DirectoryTreeNodeRenderer());
         ((DirectoryTreeModel) getModel()).setDirectoryTree(this);
         setBackground(UIManager.getColor("pmdTreeBackground"));
+        ListenerList.addListener((SetupFilesEventListener) new SetupFilesEventHandler());
     }
 
     /**
@@ -50,16 +54,43 @@ class DirectoryTree extends JTree
     }
 
     /**
-     *******************************************************************************
-     *
-     * @param pmdViewer
-     * @param rootDirectories
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
      */
-    protected void setupFiles(PMDViewer pmdViewer, File[] rootDirectories)
+    private class SetupFilesEventHandler implements SetupFilesEventListener
     {
-        String name = "Locating root directories.  Please wait...";
-        SetupFilesThread setupFilesThread = new SetupFilesThread(name, rootDirectories);
-        setupFilesThread.start();
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void startSetup(SetupFilesEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void stopSetup(SetupFilesEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void setFileList(SetupFilesEvent event)
+        {
+            File[] directories = event.getFileList();
+            String name = "Locating root directories.";
+            SetupFilesThread setupFilesThread = new SetupFilesThread(name, directories);
+            setupFilesThread.start();
+        }
     }
 
     /**

@@ -10,6 +10,13 @@ public interface SetupFilesEventListener extends EventListener
      *
      * @param event
      */
+    public void setFileList(SetupFilesEvent event);
+
+    /**
+     ****************************************************************************
+     *
+     * @param event
+     */
     public void startSetup(SetupFilesEvent event);
 
     /**

@@ -174,7 +174,6 @@ class RulePropertyEditingPanel extends JPanel implements Constants
                 dataNode.setName(propertyName);
                 dataNode.setPropertyValue(valueText);
                 dataNode.setPropertyValueType(selectedItem);
-                enableData(false);
             }
         }
     }

@@ -152,7 +152,6 @@ class RuleSetEditingPanel extends JPanel
 
                 dataNode.setName(ruleSetName);
                 dataNode.setDescription(m_description.getText());
-                enableData(false);
             }
         }
     }

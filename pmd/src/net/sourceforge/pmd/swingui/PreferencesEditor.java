@@ -1,29 +1,41 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
+
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+
+/*
+*/
 
 /**
  *
@@ -31,28 +43,25 @@ import java.io.File;
  * @since September 8, 2002
  * @version $Revision$, $Date$
  */
-class PreferencesEditor extends JDialog
+class PreferencesEditor extends JPanel
 {
     private JTextArea m_currentPathToPMD;
     private JTextArea m_userPathToPMD;
     private JTextArea m_sharedPathToPMD;
     private JComboBox m_lowestPriorityForAnalysis;
+    private JMenuBar m_menuBar;
 
     /**
      ********************************************************************************
      *
      * @pmdViewer
      */
-    protected PreferencesEditor(PMDViewer pmdViewer) throws PMDException
+    protected PreferencesEditor() throws PMDException
     {
-        super(pmdViewer, "Preferences Editor", true);
+        super(new BorderLayout());
 
-        setSize(ComponentFactory.adjustWindowSize(800, 450));
-        setLocationRelativeTo(pmdViewer);
-        setResizable(true);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        getContentPane().add(createContentPanel());
+        add(createContentPanel(), BorderLayout.CENTER);
+        createMenuBar();
     }
 
     /**
@@ -63,10 +72,11 @@ class PreferencesEditor extends JDialog
     private JScrollPane createContentPanel() throws PMDException
     {
         JPanel contentPanel = new JPanel(new BorderLayout());
-        EmptyBorder emptyBorder = new EmptyBorder(10, 10, 10, 10);
-        contentPanel.setBorder(emptyBorder);
-        contentPanel.add(createDataPanel(), BorderLayout.CENTER);
-        contentPanel.add(createButtonPanel(), BorderLayout.SOUTH);
+        EmptyBorder emptyBorder = new EmptyBorder(100, 100, 100, 100);
+        EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
+        CompoundBorder compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
+        contentPanel.setBorder(compoundBorder);
+        contentPanel.add(createDataPanel(), BorderLayout.NORTH);
 
         return ComponentFactory.createScrollPane(contentPanel);
     }
@@ -83,6 +93,10 @@ class PreferencesEditor extends JDialog
         Preferences preferences;
 
         dataPanel = new JPanel(new GridBagLayout());
+        EmptyBorder emptyBorder = new EmptyBorder(10, 10, 10, 10);
+        EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
+        CompoundBorder compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
+        dataPanel.setBorder(compoundBorder);
         preferences = Preferences.getPreferences();
 
         row = 0;
@@ -258,15 +272,31 @@ class PreferencesEditor extends JDialog
     }
 
     /**
-     *******************************************************************************
+     *********************************************************************************
      *
      */
-    private JPanel createButtonPanel()
+    private void createMenuBar()
     {
-        ActionListener saveActionListener = new SaveButtonActionListener();
-        ActionListener cancelActionListener = new CancelButtonActionListener();
+       m_menuBar = new JMenuBar();
+       m_menuBar.add(new FileMenu());
+       m_menuBar.add(new HelpMenu());
+    }
 
-        return ComponentFactory.createSaveCancelButtonPanel(saveActionListener, cancelActionListener);
+    /**
+     *********************************************************************************
+     *
+     */
+    protected void setMenuBar()
+    {
+        PMDViewer.getViewer().setJMenuBar(m_menuBar);
+    }
+
+    /**
+     *********************************************************************************
+     *
+     */
+    public void adjustSplitPaneDividerLocation()
+    {
     }
 
     /**
@@ -274,7 +304,7 @@ class PreferencesEditor extends JDialog
      *******************************************************************************
      *******************************************************************************
      */
-    private class SaveButtonActionListener implements ActionListener
+    private class SaveActionListener implements ActionListener
     {
 
         /**
@@ -370,6 +400,67 @@ class PreferencesEditor extends JDialog
 
                 m_textArea.setText(file.getPath());
             }
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class FileMenu extends JMenu
+    {
+
+        /**
+         ********************************************************************
+         *
+         * @param menuBar
+         */
+        private FileMenu()
+        {
+            super("File");
+
+            setMnemonic('F');
+
+            Icon icon;
+            JMenuItem menuItem;
+
+            //
+            // Save menu item
+            //
+            icon = UIManager.getIcon("save");
+            menuItem = new JMenuItem("Save Changes", icon);
+            menuItem.addActionListener((ActionListener) new SaveActionListener());
+            menuItem.setMnemonic('S');
+            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+            add(menuItem);
+
+            //
+            // Separator
+            //
+            add(new JSeparator());
+
+            //
+            // Exit menu item
+            //
+            menuItem = new JMenuItem("Exit...");
+            menuItem.addActionListener((ActionListener) new ExitActionListener());
+            menuItem.setMnemonic('X');
+            add(menuItem);
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class ExitActionListener implements ActionListener
+    {
+
+        public void actionPerformed(ActionEvent event)
+        {
+            System.exit(0);
         }
     }
 }

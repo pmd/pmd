@@ -125,5 +125,23 @@ class RulesTreeModel
             RulesTreeNode parentNode = event.getParentNode();
             RulesTreeModel.this.reload(parentNode);
         }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void requestSelectedRule(RulesTreeModelEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void returnedSelectedRule(RulesTreeModelEvent event)
+        {
+        }
     }
 }

@@ -8,7 +8,7 @@ import java.util.EventListener;
  * @since December 13, 2002
  * @version $Revision$, $Date$
  */
-public interface RulesTreeModelEventListener extends EventListener
+public interface TextAnalysisResultsEventListener extends EventListener
 {
 
     /**
@@ -16,19 +16,12 @@ public interface RulesTreeModelEventListener extends EventListener
      *
      * @param event
      */
-    public void reload(RulesTreeModelEvent event);
+    public void requestTextAnalysisResults(TextAnalysisResultsEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void requestSelectedRule(RulesTreeModelEvent event);
-
-    /**
-     ****************************************************************************
-     *
-     * @param event
-     */
-    public void returnedSelectedRule(RulesTreeModelEvent event);
+    public void returnedTextAnalysisResults(TextAnalysisResultsEvent event);
 }

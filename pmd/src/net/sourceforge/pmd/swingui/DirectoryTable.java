@@ -1,8 +1,16 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
-import net.sourceforge.pmd.swingui.event.ListenerList;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -19,17 +27,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Vector;
+import javax.swing.UIManager;
+
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
 
 /**
  *
@@ -41,7 +45,6 @@ class DirectoryTable extends JTable
 {
 
     private boolean m_sortAscending = true;
-    private DirectoryTableEventHandler m_directoryTableEventHandler;
 
     /**
      ********************************************************************************
@@ -61,13 +64,12 @@ class DirectoryTable extends JTable
         setRowHeight(20);
         setSelectionBackground(Color.blue);
         setSelectionForeground(Color.white);
-        m_directoryTableEventHandler = new DirectoryTableEventHandler();
         getSelectionModel().addListSelectionListener(new ListSelectionHandler());
 
         TableColumnModel columnModel = getColumnModel();
         JTableHeader tableHeader = getTableHeader();
 
-        columnModel.setColumnMargin(10);
+        columnModel.setColumnMargin(2);
         tableHeader.addMouseListener(new TableHeaderMouseListener());
 
         //
@@ -113,6 +115,11 @@ class DirectoryTable extends JTable
         column.setHeaderRenderer(headerRenderer);
         cellRenderer.setHorizontalAlignment(JLabel.LEFT);
         column.setCellRenderer(cellRenderer);
+
+        //
+        // Listeners
+        //
+        ListenerList.addListener((DirectoryTableEventListener) new DirectoryTableEventHandler());
     }
 
     /**
@@ -159,9 +166,7 @@ class DirectoryTable extends JTable
             m_boldFont = new Font(oldFont.getName(), Font.BOLD, oldFont.getSize());
             bevelBorder = new BevelBorder(BevelBorder.RAISED);
             etchedBorder = new EtchedBorder(EtchedBorder.RAISED);
-            emptyBorder = new EmptyBorder(0, 5, 0, 5);
             m_border = new CompoundBorder(etchedBorder, bevelBorder);
-            m_border = new CompoundBorder(m_border, emptyBorder);
             m_background = UIManager.getColor("pmdTableHeaderBackground");
             m_foreground = UIManager.getColor("pmdTableHeaderForeground");
         }
@@ -347,7 +352,7 @@ class DirectoryTable extends JTable
 
                 if (file != null)
                 {
-                    DirectoryTableEvent.notifyFileSelected(this, file);
+                    DirectoryTableEvent.notifyFileSelectionChanged(this, file);
                 }
             }
         }
@@ -362,25 +367,32 @@ class DirectoryTable extends JTable
     {
 
         /**
-         ****************************************************************************
-         *
-         */
-        private DirectoryTableEventHandler()
-        {
-            ListenerList.addListener((DirectoryTableEventListener) this);
-        }
-
-        /**
-         ****************************************************************************
+         ******************************************************************************
          *
          * @param event
          */
         public void requestSelectedFile(DirectoryTableEvent event)
         {
+            File file = getSelectedFile();
+
+            if (file != null)
+            {
+                DirectoryTableEvent.notifySelectedFile(this, file);
+            }
         }
 
         /**
-         ****************************************************************************
+         ******************************************************************************
+         *
+         * @param event
+         */
+        public void fileSelectionChanged(DirectoryTableEvent event)
+        {
+
+        }
+
+        /**
+         ******************************************************************************
          *
          * @param event
          */

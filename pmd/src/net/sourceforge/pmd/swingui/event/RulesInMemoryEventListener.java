@@ -2,13 +2,7 @@ package net.sourceforge.pmd.swingui.event;
 
 import java.util.EventListener;
 
-/**
- *
- * @author Donald A. Leckie
- * @since December 13, 2002
- * @version $Revision$, $Date$
- */
-public interface RulesTreeModelEventListener extends EventListener
+public interface RulesInMemoryEventListener extends EventListener
 {
 
     /**
@@ -16,19 +10,19 @@ public interface RulesTreeModelEventListener extends EventListener
      *
      * @param event
      */
-    public void reload(RulesTreeModelEvent event);
+    public void requestAllRules(RulesInMemoryEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void requestSelectedRule(RulesTreeModelEvent event);
+    public void requestIncludedRules(RulesInMemoryEvent event);
 
     /**
      ****************************************************************************
      *
      * @param event
      */
-    public void returnedSelectedRule(RulesTreeModelEvent event);
+    public void returnedRules(RulesInMemoryEvent event);
 }

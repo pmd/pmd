@@ -153,7 +153,7 @@ public class PMDDirectory
             File ruleSetFile = (File) ruleSetFiles.next();
             RuleSet ruleSet = getRuleSet(ruleSetFile, true);
 
-            if (ruleSet != null)
+            if ((ruleSet != null) && ruleSet.include())
             {
                 Iterator allRules = ruleSet.getRules().iterator();
 

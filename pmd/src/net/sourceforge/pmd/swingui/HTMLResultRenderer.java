@@ -1,12 +1,14 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.Color;
+import java.io.StringWriter;
+import java.util.Iterator;
+
+import javax.swing.UIManager;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-
-import javax.swing.UIManager;
-import java.io.StringWriter;
-import java.util.Iterator;
 
 /**
  *
@@ -63,7 +65,20 @@ class HTMLResultRenderer
         }
         else
         {
-            writer.write("<table bgcolor=\"" + UIManager.getColor("PMDCream") + "\" border>\n");
+            Color pmdGray = UIManager.getColor("pmdGray");
+            String hexValue = Integer.toHexString(pmdGray.getRGB());
+
+            if (hexValue.startsWith("0x"))
+            {
+                hexValue = hexValue.substring(2);
+            }
+
+            if (hexValue.length() > 6)
+            {
+                hexValue = hexValue.substring(hexValue.length() - 6);
+            }
+
+            writer.write("<table bgcolor=\"#" + hexValue + "\" border>\n");
 
             //
             // Create the column headings.

@@ -65,7 +65,30 @@ public class DirectoryTableEvent extends EventObject
      *
      * @param dataNode
      */
-    public static void notifyFileSelected(Object source, File selectedFile)
+    public static void notifyFileSelectionChanged(Object source, File newFile)
+    {
+        if (source != null)
+        {
+            DirectoryTableEvent event = new DirectoryTableEvent(source, newFile);
+            List listenerList = ListenerList.getListeners(DirectoryTableEventListener.class);
+            Iterator listeners = listenerList.iterator();
+
+            while (listeners.hasNext())
+            {
+                DirectoryTableEventListener listener;
+
+                listener = (DirectoryTableEventListener) listeners.next();
+                listener.fileSelectionChanged(event);
+            }
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param dataNode
+     */
+    public static void notifySelectedFile(Object source, File selectedFile)
     {
         if ((source != null) && (selectedFile != null))
         {

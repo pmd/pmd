@@ -1,31 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleProperties;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
-import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
-import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.border.EtchedBorder;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -49,6 +23,32 @@ import java.util.EventObject;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.border.EtchedBorder;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.UIManager;
+
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleProperties;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
+import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
+import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
 
 /**
  *
@@ -59,10 +59,8 @@ import java.util.Set;
 class RulesTree extends JTree implements Constants
 {
 
-    private RulesEditor m_rulesEditor;
     private PMDDirectoryReturnedEventHandler m_pmdDirectoryReturnedEventHandler;
-    private RulesTreeMouseListener m_mouseListener;
-    private RulesEditingEventHandler m_rulesEditingEventHandler;
+    private Color m_background;
 
     // Constants
     private final String UNTITLED = "Untitled";
@@ -72,48 +70,30 @@ class RulesTree extends JTree implements Constants
      *
      * @param rulesEditor
      */
-    protected RulesTree(RulesEditor rulesEditor)
+    protected RulesTree()
     {
         super(new RulesTreeModel(RulesTreeNode.createRootNode()));
-
-        m_rulesEditor = rulesEditor;
 
         setRootVisible(true);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         setCellRenderer(new TreeNodeRenderer());
         setCellEditor(new TreeCellEditor());
-        setBackground(UIManager.getColor("pmdTreeBackground"));
-        m_mouseListener = new RulesTreeMouseListener();
-        addMouseListener(m_mouseListener);
+        m_background = UIManager.getColor("pmdTreeBackground");
+        setBackground(m_background);
+        addMouseListener(new RulesTreeMouseListener());
         m_pmdDirectoryReturnedEventHandler = new PMDDirectoryReturnedEventHandler();
-        m_rulesEditingEventHandler = new RulesEditingEventHandler();
+        ListenerList.addListener((RulesEditingEventListener) new RulesEditingEventHandler());
+        ListenerList.addListener((PMDDirectoryReturnedEventListener) m_pmdDirectoryReturnedEventHandler);
     }
 
     /**
-     *******************************************************************************
+     ******************************************************************************
      *
      */
-    protected void dispose()
+    public void updateUI()
     {
-        if (m_mouseListener != null)
-        {
-            removeMouseListener(m_mouseListener);
-        }
-
-        if (m_pmdDirectoryReturnedEventHandler != null)
-        {
-            m_pmdDirectoryReturnedEventHandler.dispose();
-        }
-
-        if (m_rulesEditingEventHandler != null)
-        {
-            m_rulesEditingEventHandler.dispose();
-        }
-
-        m_rulesEditor = null;
-        m_mouseListener = null;
-        m_pmdDirectoryReturnedEventHandler = null;
-        m_rulesEditingEventHandler = null;
+        super.updateUI();
+        setBackground(m_background);
     }
 
     /**
@@ -139,7 +119,7 @@ class RulesTree extends JTree implements Constants
 
         expandNode(rootNode);
         TreePath treePath = new TreePath(rootNode.getPath());
-        this.setSelectionPath(treePath);
+        setSelectionPath(treePath);
     }
 
     /**
@@ -482,6 +462,7 @@ class RulesTree extends JTree implements Constants
         {
             JCheckBoxMenuItem includeMenuItem = (JCheckBoxMenuItem) event.getSource();
             RulesTree.this.getSelectedNode().setInclude(includeMenuItem.isSelected());
+            RulesTree.this.updateUI();
             RulesTree.this.repaint();
         }
     }
@@ -544,7 +525,7 @@ class RulesTree extends JTree implements Constants
                 String[] args = {ruleSetName};
                 String message = MessageFormat.format(template, args);
 
-                if (MessageDialog.answerIsYes(m_rulesEditor, message))
+                if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message))
                 {
                     DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
                     treeModel.removeNodeFromParent(ruleSetNode);
@@ -578,7 +559,7 @@ class RulesTree extends JTree implements Constants
             {
                 String message = exception.getMessage();
                 Exception originalException = exception.getOriginalException();
-                MessageDialog.show(m_rulesEditor, message, originalException);
+                MessageDialog.show(PMDViewer.getViewer(), message, originalException);
 
                 return;
             }
@@ -626,7 +607,7 @@ class RulesTree extends JTree implements Constants
         private Rule getNewRuleFromUser()
         throws PMDException
         {
-            RulesClassSelectDialog dialog = new RulesClassSelectDialog(m_rulesEditor);
+            RulesClassSelectDialog dialog = new RulesClassSelectDialog(PMDViewer.getViewer());
             dialog.show();
 
             if (dialog.selectWasPressed())
@@ -648,21 +629,21 @@ class RulesTree extends JTree implements Constants
                     String template = "The selected class \"{0}\" must subclass the abstract rule class \"{1}\".";
                     String[] args = {clazz.getName(), abstractRuleClassName};
                     String message = MessageFormat.format(template, args);
-                    MessageDialog.show(m_rulesEditor, message);
+                    MessageDialog.show(PMDViewer.getViewer(), message);
                 }
                 catch (InstantiationException exception)
                 {
                     String template = "Could not instantiate class \"{0}\".";
                     String[] args = {clazz.getName()};
                     String message = MessageFormat.format(template, args);
-                    MessageDialog.show(m_rulesEditor, message, exception);
+                    MessageDialog.show(PMDViewer.getViewer(), message, exception);
                 }
                 catch (IllegalAccessException exception)
                 {
                     String template = "Encountered illegal access while instantiating class \"{0}\".";
                     String[] args = {clazz.getName()};
                     String message = MessageFormat.format(template, args);
-                    MessageDialog.show(m_rulesEditor, message, exception);
+                    MessageDialog.show(PMDViewer.getViewer(), message, exception);
                 }
             }
 
@@ -805,7 +786,7 @@ class RulesTree extends JTree implements Constants
             String[] args = {ruleName};
             String message = MessageFormat.format(template, args);
 
-            if (MessageDialog.answerIsYes(m_rulesEditor, message))
+            if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message))
             {
                 DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
                 treeModel.removeNodeFromParent(ruleNode);
@@ -865,7 +846,7 @@ class RulesTree extends JTree implements Constants
             String[] args = {propertyName};
             String message = MessageFormat.format(template, args);
 
-            if (MessageDialog.answerIsYes(m_rulesEditor, message))
+            if (MessageDialog.answerIsYes(PMDViewer.getViewer(), message))
             {
                 DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
                 treeModel.removeNodeFromParent(propertyNode);
@@ -1109,32 +1090,6 @@ class RulesTree extends JTree implements Constants
 
         /**
          ***************************************************************************
-         *
-         */
-        private PMDDirectoryReturnedEventHandler()
-        {
-            ListenerList.addListener((PMDDirectoryReturnedEventListener) this);
-        }
-
-        /**
-         ***************************************************************************
-         *
-         */
-        private void dispose()
-        {
-            ListenerList.removeListener((PMDDirectoryReturnedEventListener) this);
-
-            if (m_ruleSetList != null)
-            {
-                m_ruleSetList.clear();
-                m_ruleSetList = null;
-            }
-
-            m_ruleSetPath = null;
-        }
-
-        /**
-         ***************************************************************************
          */
         private String getRuleSetPath()
         {
@@ -1201,24 +1156,6 @@ class RulesTree extends JTree implements Constants
         /**
          ***************************************************************************
          *
-         */
-        private RulesEditingEventHandler()
-        {
-            ListenerList.addListener((RulesEditingEventListener) this);
-        }
-
-        /**
-         ***************************************************************************
-         *
-         */
-        private void dispose()
-        {
-            ListenerList.removeListener((RulesEditingEventListener) this);
-        }
-
-        /**
-         ***************************************************************************
-         *
          * @param event
          */
         public void saveData(RulesEditingEvent event)
@@ -1250,7 +1187,7 @@ class RulesTree extends JTree implements Constants
          */
         public void run()
         {
-//            RulesTree.this.updateUI();
+            RulesTree.this.updateUI();
         }
     }
 }

@@ -6,6 +6,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -18,7 +22,7 @@ import java.util.Vector;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class DirectoryTableModel extends DefaultTableModel implements TreeSelectionListener
+class DirectoryTableModel extends DefaultTableModel
 {
     private DateFormat m_dateFormat;
     private DecimalFormat m_decimalFormat;
@@ -38,8 +42,6 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
     {
         super(createData(), createColumnNames());
 
-        directoryTree.addTreeSelectionListener(this);
-
         DecimalFormatSymbols decimalFormatSymbols;
         StringBuffer buffer;
         String pattern;
@@ -54,10 +56,11 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
         buffer.append('#');
         buffer.append('#');
         buffer.append(decimalFormatSymbols.getDigit());
-        buffer.append(" bytes");
+        buffer.append(" lines");
 
         pattern = buffer.toString();
         m_decimalFormat = new DecimalFormat(pattern, decimalFormatSymbols);
+        new DirectoryTreeSelectionListener(directoryTree);
     }
 
     /**
@@ -116,83 +119,130 @@ class DirectoryTableModel extends DefaultTableModel implements TreeSelectionList
 
     /**
      *******************************************************************************
-     *
-     * @param directoryTree
+     *******************************************************************************
+     *******************************************************************************
      */
-    public void valueChanged(TreeSelectionEvent event)
-    {
-        TreePath treePath = event.getPath();
-        DirectoryTreeNode treeNode = (DirectoryTreeNode) treePath.getLastPathComponent();
-        Object userObject = treeNode.getUserObject();
-        Vector rows = getDataVector();
+     private class DirectoryTreeSelectionListener implements TreeSelectionListener
+     {
 
-        for (int n = 0; n < rows.size(); n++)
+        /**
+         *************************************************************************
+         *
+         */
+        private DirectoryTreeSelectionListener(DirectoryTree directoryTree)
         {
-            ((Vector) rows.get(n)).clear();
+            directoryTree.addTreeSelectionListener(this);
         }
 
-        rows.clear();
-
-        if (userObject instanceof File)
+        /**
+         ***************************************************************************
+         *
+         * @param directoryTree
+         */
+        public void valueChanged(TreeSelectionEvent event)
         {
-            File directory;
-            File[] files;
-            StringBuffer buffer = new StringBuffer(25);
+            TreePath treePath = event.getPath();
+            DirectoryTreeNode treeNode = (DirectoryTreeNode) treePath.getLastPathComponent();
+            Object userObject = treeNode.getUserObject();
+            Vector rows = getDataVector();
 
-            directory = (File) userObject;
-            files = directory.listFiles(new FilesFilter());
-
-            if (files != null)
+            for (int n = 0; n < rows.size(); n++)
             {
-                int largestSize = 0;
+                ((Vector) rows.get(n)).clear();
+            }
 
-                for (int n1 = 0; n1 < files.length; n1++)
+            rows.clear();
+
+            if (userObject instanceof File)
+            {
+                File directory;
+                File[] files;
+                StringBuffer buffer = new StringBuffer(25);
+
+                directory = (File) userObject;
+                files = directory.listFiles(new FilesFilter());
+
+                if (files != null)
                 {
-                    Vector row = new Vector(3);
-                    String fileName = files[n1].getName();
-                    String size = m_decimalFormat.format(files[n1].length());
-                    Date date = new Date(files[n1].lastModified());
-                    String lastModified = m_dateFormat.format(date);
-
-                    if (size.length() > largestSize)
+                    for (int n1 = 0; n1 < files.length; n1++)
                     {
-                        largestSize = size.length();
+                        Vector row = new Vector(3);
+                        String fileName = files[n1].getName();
+                        int lineCount = countLines(files[n1]);
+                        String size = m_decimalFormat.format(lineCount);
+                        Date date = new Date(files[n1].lastModified());
+                        String lastModified = m_dateFormat.format(date);
+
+                        row.add(fileName);
+                        row.add(size);
+                        row.add(lastModified);
+                        row.add(files[n1]);
+
+                        rows.add(row);
                     }
-
-                    row.add(fileName);
-                    row.add(size);
-                    row.add(lastModified);
-                    row.add(files[n1]);
-
-                    rows.add(row);
-                }
-
-                // Get the size with the most characters.
-                for (int n1 = 0; n1 < files.length; n1++)
-                {
-                    Vector row = (Vector) rows.get(n1);
-                    String size = (String) row.get(DirectoryTableModel.FILE_SIZE_COLUMN);
-
-                    buffer.setLength(0);
-
-                    int numberOfSpaces = largestSize - size.length();
-
-                    for (int n2 = 0; n2 < numberOfSpaces; n2++)
-                    {
-                        buffer.append(' ');
-                    }
-
-                    buffer.append(size);
-
-                    size = buffer.toString();
-
-                    row.set(DirectoryTableModel.FILE_SIZE_COLUMN, size);
                 }
             }
+
+            fireTableDataChanged();
         }
 
-        fireTableDataChanged();
-    }
+        /**
+         **************************************************************************
+         *
+         * @param file
+         *
+         * @return
+         */
+        private int countLines(File file)
+        {
+            int lineCount = 0;
+            InputStreamReader reader = null;
+
+            try
+            {
+                char[] buffer;
+
+                buffer = new char[10000];
+                reader = new InputStreamReader(new FileInputStream(file));
+
+                while (reader.ready())
+                {
+                    int numberOfChars = reader.read(buffer);
+
+                    for (int n = 0; n < numberOfChars; n++)
+                    {
+                        if (buffer[n] == '\n')
+                        {
+                            lineCount++;
+                        }
+                    }
+                }
+            }
+            catch (FileNotFoundException exception)
+            {
+                lineCount = 0;
+            }
+            catch (IOException exception)
+            {
+                lineCount = 0;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (IOException exception)
+                    {
+                    }
+                }
+            }
+
+            return lineCount;
+        }
+     }
 
     /**
      *******************************************************************************

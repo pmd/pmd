@@ -1,14 +1,20 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
-import net.sourceforge.pmd.swingui.event.RuleSetChangedEvent;
-import net.sourceforge.pmd.swingui.event.RuleSetEvent;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.Icon;
 import javax.swing.JDialog;
@@ -22,15 +28,19 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
+
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.RuleSetEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetEventListener;
+import net.sourceforge.pmd.swingui.event.RuleSetChangedEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetChangedEventListener;
+import net.sourceforge.pmd.swingui.event.RulesInMemoryEvent;
+import net.sourceforge.pmd.swingui.event.RulesInMemoryEventListener;
+import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
+import net.sourceforge.pmd.swingui.event.RulesTreeModelEventListener;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
 
 /**
  *
@@ -38,13 +48,14 @@ import java.util.List;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesEditor extends JDialog
+class RulesEditor extends JPanel
 {
 
     private RulesTree m_tree;
     private JSplitPane m_splitPane;
     private RuleEditingTabbedPane m_editingTabbedPane;
-    private boolean m_firstLayout = true;
+    private JMenuBar m_menuBar;
+    private JMenuItem m_printSelectedRuleMenuItem;
 
     /**
      *******************************************************************************
@@ -54,18 +65,9 @@ class RulesEditor extends JDialog
     protected RulesEditor()
         throws PMDException
     {
-        super(PMDViewer.getViewer(), "Rules Editor", true);
+        super(new BorderLayout());
 
-        PMDViewer pmdViewer = PMDViewer.getViewer();
-        int windowWidth = pmdViewer.getWidth();
-        int windowHeight = pmdViewer.getHeight();
-
-        setSize(ComponentFactory.adjustWindowSize(windowWidth, windowHeight));
-        setLocationRelativeTo(pmdViewer);
-        setResizable(true);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        m_tree = new RulesTree(this);
+        m_tree = new RulesTree();
         m_tree.buildTree();
 
         JScrollPane treeScrollPane;
@@ -77,9 +79,11 @@ class RulesEditor extends JDialog
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.add(splitPane, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
 
-        getContentPane().add(contentPanel);
         createMenuBar();
+
+        ListenerList.addListener((RulesInMemoryEventListener) new RulesInMemoryEventHandler());
     }
 
     /**
@@ -121,42 +125,54 @@ class RulesEditor extends JDialog
      */
     private void createMenuBar()
     {
-       JMenuBar menuBar = new JMenuBar();
-
-       setJMenuBar(menuBar);
-       menuBar.add(new FileMenu());
-       menuBar.add(new HelpMenu());
+       m_menuBar = new JMenuBar();
+       m_menuBar.add(new FileMenu());
+       m_menuBar.add(new HelpMenu());
     }
 
     /**
      *********************************************************************************
      *
      */
-    public void setVisible(boolean visible)
+    public void adjustSplitPaneDividerLocation()
     {
-        super.setVisible(visible);
-
-        if (visible && m_firstLayout)
-        {
-            m_splitPane.setDividerLocation(0.4);
-            validate();
-            repaint();
-            m_firstLayout = false;
-        }
+        m_splitPane.setDividerLocation(0.4);
     }
 
     /**
-     *******************************************************************************
+     *********************************************************************************
      *
      */
-    public void dispose()
+    protected void setMenuBar()
     {
-        if (m_tree != null)
-        {
-            m_tree.dispose();
-        }
+        PMDViewer.getViewer().setJMenuBar(m_menuBar);
+    }
 
-        super.dispose();
+    /**
+     ********************************************************************
+     *
+     */
+    protected void saveData()
+    {
+        m_editingTabbedPane.saveData();
+        saveData((RulesTreeNode) m_tree.getModel().getRoot());
+    }
+
+    /**
+     ********************************************************************
+     *
+     * @param treeNode
+     */
+    private void saveData(RulesTreeNode treeNode)
+    {
+        treeNode.saveData();
+
+        Enumeration children = treeNode.children();
+
+        while (children.hasMoreElements())
+        {
+            saveData((RulesTreeNode) children.nextElement());
+        }
     }
 
     /**
@@ -174,31 +190,9 @@ class RulesEditor extends JDialog
          */
         public void actionPerformed(ActionEvent event)
         {
-            m_editingTabbedPane.saveData();
-
-            RulesTreeNode rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
-
-            saveData(rootNode);
-            writeRuleSets(rootNode);
-            RulesEditor.this.setVisible(false);
+            saveData();
+            writeRuleSets((RulesTreeNode) m_tree.getModel().getRoot());
             RuleSetChangedEvent.notifyRuleSetsChanged(this);
-        }
-
-        /**
-         ********************************************************************
-         *
-         * @param treeNode
-         */
-        private void saveData(RulesTreeNode treeNode)
-        {
-            treeNode.saveData();
-
-            Enumeration children = treeNode.children();
-
-            while (children.hasMoreElements())
-            {
-                saveData((RulesTreeNode) children.nextElement());
-            }
         }
 
         /**
@@ -252,140 +246,6 @@ class RulesEditor extends JDialog
     }
 
     /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class AddDefaultRulesButtonActionListener
-        implements ActionListener, PMDDirectoryReturnedEventListener
-    {
-
-        private List m_defaultRuleSetList;
-
-        /**
-         ********************************************************************
-         *
-         */
-        private AddDefaultRulesButtonActionListener()
-        {
-            ListenerList.addListener((PMDDirectoryReturnedEventListener) this);
-        }
-
-        /**
-         ********************************************************************
-         *
-         * @param event
-         */
-        public void actionPerformed(ActionEvent event)
-        {
-            PMDDirectoryRequestEvent.notifyRequestDefaultRuleSets(this);
-            Iterator ruleSets = m_defaultRuleSetList.iterator();
-            RulesTreeNode rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
-
-            while (ruleSets.hasNext())
-            {
-                RuleSet ruleSet = (RuleSet) ruleSets.next();
-                String ruleSetName = ruleSet.getName();
-                RulesTreeNode ruleSetNode = rootNode.getChildNode(ruleSetName);
-
-                if (ruleSetNode == null)
-                {
-                    addNewRuleSet(rootNode, ruleSet);
-                }
-                else
-                {
-                    addRulesToRuleSet(ruleSetNode, ruleSet);
-                }
-            }
-        }
-
-        /**
-         ***********************************************************************
-         *
-         * @param rootNode
-         * @param ruleSet
-         */
-        private void addNewRuleSet(RulesTreeNode rootNode, RuleSet ruleSet)
-        {
-            RulesTreeNode ruleSetNode = new RulesTreeNode(ruleSet);
-            rootNode.add(ruleSetNode);
-            rootNode.sortChildren();
-            addRulesToRuleSet(ruleSetNode, ruleSet);
-        }
-
-        /**
-         ***********************************************************************
-         *
-         * @param ruleSetNode
-         * @param ruleSet
-         */
-        private void addRulesToRuleSet(RulesTreeNode ruleSetNode, RuleSet ruleSet)
-        {
-            Iterator rules = ruleSet.getRules().iterator();
-
-            while (rules.hasNext())
-            {
-                Rule rule = (Rule) rules.next();
-                String ruleName = rule.getName();
-                RulesTreeNode ruleNode = ruleSetNode.getChildNode(ruleName);
-
-                if (ruleNode == null)
-                {
-                    ruleNode = new RulesTreeNode(ruleSetNode, rule);
-                    ruleSetNode.add(ruleNode);
-                }
-            }
-
-            ruleSetNode.sortChildren();
-        }
-
-        /**
-         **********************************************************************
-         *
-         * PMDDirectoryReturnedEventListener
-         *
-         * @param event
-         */
-        public void returnedRuleSetPath(PMDDirectoryReturnedEvent event)
-        {
-        }
-
-        /**
-         ***********************************************************************
-         *
-         * PMDDirectoryReturnedEventListener
-         *
-         * @param event
-         */
-        public void returnedAllRuleSets(PMDDirectoryReturnedEvent event)
-        {
-        }
-
-        /**
-         ***********************************************************************
-         *
-         * PMDDirectoryReturnedEventListener
-         *
-         * @param event
-         */
-        public void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event)
-        {
-            m_defaultRuleSetList = event.getRuleSetList();
-        }
-
-        /**
-         *******************************************************************************
-         *
-         * PMDDirectoryReturnedEventListener
-         *
-         * @param event
-         */
-        public void returnedIncludedRules(PMDDirectoryReturnedEvent event)
-        {
-        }
-    }
-
-    /**
      *********************************************************************************
      *********************************************************************************
      *********************************************************************************
@@ -411,7 +271,7 @@ class RulesEditor extends JDialog
             // Save menu item
             //
             icon = UIManager.getIcon("save");
-            menuItem = new JMenuItem("Save", icon);
+            menuItem = new JMenuItem("Save Changes", icon);
             menuItem.addActionListener((ActionListener) new SaveActionListener());
             menuItem.setMnemonic('S');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
@@ -421,44 +281,10 @@ class RulesEditor extends JDialog
             // Save As menu item
             //
             icon = UIManager.getIcon("cancel");
-            menuItem = new JMenuItem("Cancel", icon);
+            menuItem = new JMenuItem("Cancel Changes", icon);
             menuItem.addActionListener((ActionListener) new CancelActionListener());
             menuItem.setMnemonic('C');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
-            add(menuItem);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class HelpMenu extends JMenu
-    {
-
-        /**
-         ********************************************************************
-         *
-         * @param menuBar
-         */
-        private HelpMenu()
-        {
-            super("Help");
-
-            setMnemonic('H');
-
-            Icon icon;
-            JMenuItem menuItem;
-
-            //
-            // Online Help menu item
-            //
-            icon = UIManager.getIcon("help");
-            menuItem = new JMenuItem("Online Help", icon);
-            menuItem.addActionListener(new HelpActionListener());
-            menuItem.setMnemonic('H');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK));
             add(menuItem);
 
             //
@@ -467,13 +293,48 @@ class RulesEditor extends JDialog
             add(new JSeparator());
 
             //
-            // About menu item
+            // Print Rules menu item
             //
-            menuItem = new JMenuItem("About...");
-            menuItem.addActionListener(new AboutActionListener());
+            icon = UIManager.getIcon("print");
+            menuItem = new JMenuItem("Print Rules...", icon);
+            menuItem.addActionListener((ActionListener) new PrintRulesActionListener());
+            menuItem.setMnemonic('R');
+            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
+            add(menuItem);
+
+            //
+            // Print Selected Rule menu item
+            //
+            icon = UIManager.getIcon("print");
+            m_printSelectedRuleMenuItem = new JMenuItem("Print Selected Rule...", icon);
+            m_printSelectedRuleMenuItem.addActionListener((ActionListener) new PrintRulesActionListener());
+            m_printSelectedRuleMenuItem.setMnemonic('E');
+            m_printSelectedRuleMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
+            add(m_printSelectedRuleMenuItem);
+
+            //
+            // Page Setup menu item
+            //
+            menuItem = new JMenuItem("Page Setup...");
+            menuItem.addActionListener((ActionListener) new PageSetupActionListener());
             menuItem.setMnemonic('A');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
             add(menuItem);
+
+            //
+            // Separator
+            //
+            add(new JSeparator());
+
+            //
+            // Exit menu item
+            //
+            menuItem = new JMenuItem("Exit...");
+            menuItem.addActionListener((ActionListener) new ExitActionListener());
+            menuItem.setMnemonic('X');
+            add(menuItem);
+
+            addMouseListener(new FileMenuMouseListener());
         }
     }
 
@@ -482,14 +343,12 @@ class RulesEditor extends JDialog
      *********************************************************************************
      *********************************************************************************
      */
-    private class AboutActionListener implements ActionListener
+    private class PrintRulesActionListener implements ActionListener
     {
 
         public void actionPerformed(ActionEvent event)
         {
-            PMDViewer.getViewer().setEnableViewer(false);
-            (new AboutPMD(RulesEditor.this)).setVisible(true);
-            PMDViewer.getViewer().setEnableViewer(true);
+            MessageDialog.show(PMDViewer.getViewer(), "Printing not available yet.");
         }
     }
 
@@ -498,12 +357,240 @@ class RulesEditor extends JDialog
      *********************************************************************************
      *********************************************************************************
      */
-    private class HelpActionListener implements ActionListener
+    private class PageSetupActionListener implements ActionListener
     {
 
         public void actionPerformed(ActionEvent event)
         {
-            MessageDialog.show(RulesEditor.this, "Online Help not available yet.");
+            MessageDialog.show(PMDViewer.getViewer(), "Page setup not available yet.");
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class ExitActionListener implements ActionListener
+    {
+
+        public void actionPerformed(ActionEvent event)
+        {
+            System.exit(0);
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class FileMenuMouseListener extends MouseAdapter
+                                        implements RulesTreeModelEventListener
+    {
+
+        private Rule m_rule;
+
+        /**
+         *****************************************************************************
+         *
+         * @param event
+         */
+        public void mouseEntered(MouseEvent event)
+        {
+            try
+            {
+                ListenerList.addListener((RulesTreeModelEventListener) this);
+                RulesTreeModelEvent.notifyRequestSelectedRule(this);
+                boolean enable = (m_rule != null);
+                m_printSelectedRuleMenuItem.setEnabled(enable);
+            }
+            finally
+            {
+                ListenerList.removeListener((RulesTreeModelEventListener) this);
+            }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void reload(RulesTreeModelEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void requestSelectedRule(RulesTreeModelEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void returnedSelectedRule(RulesTreeModelEvent event)
+        {
+            m_rule = event.getRule();
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class RulesInMemoryEventHandler implements RulesInMemoryEventListener
+    {
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void requestAllRules(RulesInMemoryEvent event)
+        {
+            RuleSet rules = new RuleSet();
+            RulesTreeNode rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
+            getRules(rootNode, rules, new IncludeAllRuleFilter());
+            RulesInMemoryEvent.notifyReturnedRules(this, rules);
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void requestIncludedRules(RulesInMemoryEvent event)
+        {
+            try
+            {
+                RuleSet rules = new RuleSet();
+                RulesTreeNode rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
+                int lowestPriority = Preferences.getPreferences().getLowestPriorityForAnalysis();
+                getRules(rootNode, rules, new IncludeSelectedRuleFilter(lowestPriority));
+                RulesInMemoryEvent.notifyReturnedRules(this, rules);
+            }
+            catch (PMDException pmdException)
+            {
+            }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        private void getRules(RulesTreeNode rootNode, RuleSet rules, RuleFilter ruleFilter)
+        {
+            Enumeration ruleSetNodes = rootNode.children();
+
+            while (ruleSetNodes.hasMoreElements())
+            {
+                RulesTreeNode ruleSetNode = (RulesTreeNode) ruleSetNodes.nextElement();
+
+                if (ruleFilter.include(ruleSetNode))
+                {
+                    Enumeration ruleNodes = ruleSetNode.children();
+
+                    while (ruleNodes.hasMoreElements())
+                    {
+                        RulesTreeNode ruleNode = (RulesTreeNode) ruleNodes.nextElement();
+
+                        if (ruleFilter.include(ruleNode))
+                        {
+                            rules.addRule(ruleNode.getRule());
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void returnedRules(RulesInMemoryEvent event)
+        {
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private abstract class RuleFilter
+    {
+
+        /**
+         ***************************************************************************
+         *
+         * @param rule
+         *
+         * @return
+         */
+        protected abstract boolean include(RulesTreeNode treeNode);
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class IncludeAllRuleFilter extends RuleFilter
+    {
+
+        /**
+         ***************************************************************************
+         *
+         * @param rule
+         *
+         * @return
+         */
+        protected boolean include(RulesTreeNode treeNode)
+        {
+            return true;
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class IncludeSelectedRuleFilter extends RuleFilter
+    {
+        private int m_lowestPriority;
+
+        /**
+         ***************************************************************************
+         *
+         * @param rule
+         *
+         * @return
+         */
+        private IncludeSelectedRuleFilter(int lowestPriority)
+        {
+            m_lowestPriority = lowestPriority;
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param rule
+         *
+         * @return
+         */
+        protected boolean include(RulesTreeNode treeNode)
+        {
+            return treeNode.include() && (treeNode.getPriority() <= m_lowestPriority);
         }
     }
 }

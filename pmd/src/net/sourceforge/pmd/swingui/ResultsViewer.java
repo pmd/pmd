@@ -1,28 +1,32 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.Component;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.UIManager;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
 import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
 import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEventListener;
 import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
-import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
 import net.sourceforge.pmd.swingui.event.RuleSetChangedEvent;
 import net.sourceforge.pmd.swingui.event.RuleSetChangedEventListener;
+import net.sourceforge.pmd.swingui.event.RulesInMemoryEvent;
+import net.sourceforge.pmd.swingui.event.RulesInMemoryEventListener;
 import net.sourceforge.pmd.swingui.event.StatusBarEvent;
-
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
-import javax.swing.text.html.HTMLEditorKit;
-import java.awt.Component;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
  *
@@ -38,7 +42,6 @@ class ResultsViewer extends JEditorPane
     private PMD m_pmd;
     private RuleSet m_ruleSet;
     private Report m_report;
-    private boolean m_loadRuleSets;
 
     /**
      ********************************************************************************
@@ -49,13 +52,14 @@ class ResultsViewer extends JEditorPane
 
         setEditorKit(new HTMLEditorKit());
         setEditable(false);
+        setBackground(UIManager.getColor("pmdGray"));
 
         m_pmd = new PMD();
         m_ruleSet = new RuleSet();
-        m_loadRuleSets = true;
         ListenerList.addListener((DirectoryTableEventListener) new DirectoryTableEventHandler());
-        ListenerList.addListener((PMDDirectoryReturnedEventListener) new PMDDirectoryReturnedEventHandler());
-        ListenerList.addListener((RuleSetChangedEventListener) new RuleSetChangedEventHandler());
+        ListenerList.addListener((RulesInMemoryEventListener) new RulesInMemoryEventHandler());
+        ListenerList.addListener((AnalyzeFileEventListener) new AnalyzeFileEventHandler());
+        ListenerList.addListener((HTMLAnalysisResultsEventListener) new HTMLAnalysisResultsEventHandler());
     }
 
     /**
@@ -90,12 +94,19 @@ class ResultsViewer extends JEditorPane
     private void loadRuleSets()
     throws PMDException
     {
-        if (m_loadRuleSets)
-        {
-            int priority = Preferences.getPreferences().getLowestPriorityForAnalysis();
-            PMDDirectoryRequestEvent.notifyRequestIncludedRules(this, priority);
-            m_loadRuleSets = false;
-        }
+        int priority = Preferences.getPreferences().getLowestPriorityForAnalysis();
+        RulesInMemoryEvent.notifyRequestIncludedRules(this, priority);
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @return
+     */
+    protected String getHTMLText(File file)
+    {
+
+        return m_htmlText;
     }
 
     /**
@@ -130,6 +141,18 @@ class ResultsViewer extends JEditorPane
         }
 
         return "";
+    }
+
+    /**
+     ********************************************************************************
+     *
+     */
+    protected void analyze()
+    {
+        if (m_selectedFile != null)
+        {
+            (new AnalyzeThread(m_selectedFile)).start();
+        }
     }
 
     /**
@@ -172,7 +195,7 @@ class ResultsViewer extends JEditorPane
          */
         protected void setup()
         {
-            AnalyzeFileEvent.notifyStartAnalysis(this, m_file);
+            PMDViewer.getViewer().setEnableViewer(false);
             StatusBarEvent.notifyStartAnimation(this);
         }
 
@@ -225,8 +248,8 @@ class ResultsViewer extends JEditorPane
          */
         protected void cleanup()
         {
-            AnalyzeFileEvent.notifyStopAnalysis(this, m_file);
             StatusBarEvent.notifyStopAnimation(this);
+            PMDViewer.getViewer().setEnableViewer(true);
         }
     }
 
@@ -235,7 +258,7 @@ class ResultsViewer extends JEditorPane
      ***************************************************************************
      ***************************************************************************
      */
-    private class PMDDirectoryReturnedEventHandler implements PMDDirectoryReturnedEventListener
+    private class RulesInMemoryEventHandler implements RulesInMemoryEventListener
     {
 
         /**
@@ -243,7 +266,7 @@ class ResultsViewer extends JEditorPane
          *
          * @param event
          */
-        public void returnedRuleSetPath(PMDDirectoryReturnedEvent event)
+        public void requestAllRules(RulesInMemoryEvent event)
         {
         }
 
@@ -252,7 +275,7 @@ class ResultsViewer extends JEditorPane
          *
          * @param event
          */
-        public void returnedAllRuleSets(PMDDirectoryReturnedEvent event)
+        public void requestIncludedRules(RulesInMemoryEvent event)
         {
         }
 
@@ -261,18 +284,9 @@ class ResultsViewer extends JEditorPane
          *
          * @param event
          */
-        public void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event)
+        public void returnedRules(RulesInMemoryEvent event)
         {
-        }
-
-        /**
-         *******************************************************************************
-         *
-         * @param event
-         */
-        public void returnedIncludedRules(PMDDirectoryReturnedEvent event)
-        {
-            m_ruleSet = event.getRuleSet();
+            m_ruleSet = event.getRules();
         }
     }
 
@@ -298,14 +312,23 @@ class ResultsViewer extends JEditorPane
          *
          * @param event
          */
+        public void fileSelectionChanged(DirectoryTableEvent event)
+        {
+            m_selectedFile = event.getSelectedFile();
+
+            if (m_selectedFile != null)
+            {
+                (new AnalyzeThread(m_selectedFile)).start();
+            }
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
         public void fileSelected(DirectoryTableEvent event)
         {
-            File file = event.getSelectedFile();
-
-            if (file != null)
-            {
-                (new AnalyzeThread(file)).start();
-            }
         }
     }
 
@@ -314,26 +337,58 @@ class ResultsViewer extends JEditorPane
      ***********************************************************************************
      ***********************************************************************************
      */
-    private class RuleSetChangedEventHandler implements RuleSetChangedEventListener
+    private class HTMLAnalysisResultsEventHandler implements HTMLAnalysisResultsEventListener
     {
 
         /**
-         *********************************************************************************
+         ****************************************************************************
          *
-         * @param ruleSet
+         * @param event
          */
-        public void ruleSetChanged(RuleSetChangedEvent event)
+        public void requestHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
         {
-            m_loadRuleSets = true;
+            if (m_htmlText == null)
+            {
+                m_htmlText = "";
+            }
+
+            HTMLAnalysisResultsEvent.notifyReturnedHTMLText(this, m_htmlText);
         }
 
         /**
-         *********************************************************************************
+         ****************************************************************************
          *
+         * @param event
          */
-        public void ruleSetsChanged(RuleSetChangedEvent event)
+        public void returnedHTMLAnalysisResults(HTMLAnalysisResultsEvent event)
         {
-            m_loadRuleSets = true;
+        }
+    }
+
+    /**
+     ***********************************************************************************
+     ***********************************************************************************
+     ***********************************************************************************
+     */
+    private class AnalyzeFileEventHandler implements AnalyzeFileEventListener
+    {
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void startAnalysis(AnalyzeFileEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void stopAnalysis(AnalyzeFileEvent event)
+        {
         }
     }
 }

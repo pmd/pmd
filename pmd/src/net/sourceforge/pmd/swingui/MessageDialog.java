@@ -68,8 +68,8 @@ class MessageDialog extends JDialog
      */
     private void initialize(Window parentWindow, String message)
     {
-        int dialogWidth = 400;
-        int dialogHeight = 400;
+        int dialogWidth = 600;
+        int dialogHeight = 150;
         Rectangle parentWindowBounds = parentWindow.getBounds();
         int x = parentWindowBounds.x + (parentWindowBounds.width - dialogWidth) / 2;
         int y = parentWindowBounds.y + (parentWindowBounds.height - dialogHeight) / 2;
@@ -235,14 +235,17 @@ class MessageDialog extends JDialog
         }
 
         MessageDialog dialog;
+        String title;
+
+        title = "Information";
 
         if (parentWindow instanceof Frame)
         {
-            dialog = new MessageDialog((Frame) parentWindow, "message", message);
+            dialog = new MessageDialog((Frame) parentWindow, title, message);
         }
         else
         {
-            dialog = new MessageDialog((Dialog) parentWindow, "message", message);
+            dialog = new MessageDialog((Dialog) parentWindow, title, message);
         }
 
         return dialog;

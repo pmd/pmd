@@ -229,7 +229,6 @@ class RuleEditingPanel extends JPanel
                 dataNode.setDescription(m_description.getText());
                 dataNode.setExample(m_example.getText());
                 dataNode.setPriority(m_priority.getSelectedIndex() + 1);
-                enableData(false);
             }
         }
     }

@@ -1,35 +1,30 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDDirectory;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
-import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
-import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
-import net.sourceforge.pmd.swingui.event.StatusBarEvent;
-import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Toolkit;
+import java.io.File;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
-import javax.swing.MenuElement;
-import javax.swing.SwingUtilities;
+import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+
+/*
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -49,6 +44,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+*/
+
+import net.sourceforge.pmd.PMDDirectory;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
+import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
+import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
+import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
+import net.sourceforge.pmd.PMDDirectory;
+import net.sourceforge.pmd.PMDException;
 
 /**
  *
@@ -59,26 +67,10 @@ import java.io.File;
 public class PMDViewer extends JFrame
 {
 
-    private JPanel m_contentPanel;
-    private DirectoryTree m_directoryTree;
-    private JLabel m_message;
-    private JPanel m_statusBar;
-    private JScrollPane m_directoryTreeScrollPane;
-    private DirectoryTable m_directoryTable;
-    private JScrollPane m_directoryTableScrollPane;
-    private JSplitPane m_directorySplitPane;
-    private ResultsViewer m_resultsViewer;
-    private JScrollPane m_resultsViewerScrollPane;
-    private JSplitPane m_mainSplitPane;
-    private StatusArea m_statusArea;
-    private PMDClipboard m_clipboardOwner = new PMDClipboard();
     private int m_disabledCounter;
     private boolean m_firstLayout = true;
-    private AnalyzeFileEventHandler m_analyzeFileEventHandler;
-    private StatusBarEventHandler m_statusBarEventHandler;
-    private SetupFilesEventHandler m_setupFilesEventHandler;
-    private JMenuItem m_copyHTMLResultsMenuItem;
-    private JMenuItem m_copyTextResultsMenuItem;
+    private TabbedPane m_tabbedPane;
+    private GlassPaneMouseListener m_glassPaneMouseListener;
     private static PMDViewer m_pmdViewer;
 
     /**
@@ -89,9 +81,12 @@ public class PMDViewer extends JFrame
     {
         super("PMD Viewer");
 
-        int windowMargin = 10;
-        Dimension windowSize = ComponentFactory.adjustWindowSize(1200, 1000);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension windowSize;
+        Dimension screenSize;
+
+        m_pmdViewer = this;
+        windowSize = ComponentFactory.adjustWindowSize(1200, 1000);
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         if (windowSize.width >= screenSize.width)
         {
@@ -110,19 +105,6 @@ public class PMDViewer extends JFrame
         setLocation(windowLocationX, windowLocationY);
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        createMenuBar();
-        createStatusBar(windowMargin);
-        createDirectoryTreeScrollPane();
-        createDirectoryTableScrollPane();
-        createDirectorySplitPane();
-        createResultsViewer();
-        createResultsViewerScrollPane();
-        createMainSplitPane();
-        createContentPanel(windowMargin);
-        getContentPane().add(m_contentPanel);
-
-        ImageIcon image = (ImageIcon) UIManager.get("pmdLogoImage");
-        setIconImage(image.getImage());
 
         try
         {
@@ -136,172 +118,33 @@ public class PMDViewer extends JFrame
             MessageDialog.show(this, message, exception);
         }
 
-        m_pmdViewer = this;
-        m_analyzeFileEventHandler = new AnalyzeFileEventHandler();
-        m_statusBarEventHandler = new StatusBarEventHandler();
-        m_setupFilesEventHandler = new SetupFilesEventHandler();
-        ListenerList.addListener((AnalyzeFileEventListener) m_analyzeFileEventHandler);
-        ListenerList.addListener((StatusBarEventListener) m_statusBarEventHandler);
-        ListenerList.addListener((SetupFilesEventListener) m_setupFilesEventHandler);
+        m_tabbedPane = new TabbedPane();
+        getContentPane().add(m_tabbedPane);
+
+        ImageIcon image = (ImageIcon) UIManager.get("pmdLogoImage");
+        setIconImage(image.getImage());
+
+        m_glassPaneMouseListener = new GlassPaneMouseListener();
+        ListenerList.addListener((SetupFilesEventListener) new SetupFilesEventHandler());
     }
 
     /**
      *********************************************************************************
      *
      */
-    private void createMenuBar()
+    public void setVisible(boolean visible)
     {
-       JMenuBar menuBar = new JMenuBar();
+        super.setVisible(visible);
 
-       setJMenuBar(menuBar);
-       menuBar.add(new FileMenu());
-       menuBar.add(new EditMenu());
-       menuBar.add(new HelpMenu());
+        if (visible && m_firstLayout)
+        {
+            m_tabbedPane.adjustSplitPaneDividerLocation();
+            validate();
+            repaint();
+            m_firstLayout = false;
+        }
     }
 
-    /**
-     *********************************************************************************
-     *
-     * @param windowMargin
-     */
-    private void createStatusBar(int windowMargin)
-    {
-        EmptyBorder emptyBorder;
-
-        //
-        // Status Bar
-        //
-        m_statusBar = new JPanel(new BorderLayout());
-        emptyBorder = new EmptyBorder(0, 0, windowMargin, 0);
-        m_statusBar.setBorder(emptyBorder);
-
-        //
-        // Status Bar Components Border
-        //
-        BevelBorder componentBorder = new BevelBorder(BevelBorder.LOWERED);
-
-        //
-        // Status Indicator
-        //
-        m_statusArea = new StatusArea(componentBorder);
-        m_statusBar.add(m_statusArea, BorderLayout.WEST);
-
-        //
-        // Message Area
-        //
-        JPanel messageArea = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        messageArea.setOpaque(true);
-        messageArea.setBackground(UIManager.getColor("pmdMessageAreaBackground"));
-        messageArea.setBorder(componentBorder);
-        m_statusBar.add(messageArea, BorderLayout.CENTER);
-
-        //
-        // Message
-        //
-        m_message = new JLabel();
-        m_message.setFont(new Font("Dialog", Font.BOLD, 12));
-        m_message.setBackground(UIManager.getColor("pmdMessageAreaBackground"));
-        m_message.setForeground(UIManager.getColor("pmdBlue"));
-        setDefaultMessage();
-        messageArea.add(m_message);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    private void createDirectoryTreeScrollPane()
-    {
-        Color background;
-
-        m_directoryTree = new DirectoryTree("File Directories");
-        m_directoryTreeScrollPane = ComponentFactory.createScrollPane(m_directoryTree);
-        background = UIManager.getColor("pmdTreeBackground");
-
-        m_directoryTreeScrollPane.getViewport().setBackground(background);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    private void createDirectoryTableScrollPane()
-    {
-        Color background;
-
-        m_directoryTable = new DirectoryTable(m_directoryTree, ".java");
-        m_directoryTableScrollPane = ComponentFactory.createScrollPane(m_directoryTable);
-        background = UIManager.getColor("pmdTableBackground");
-
-        m_directoryTableScrollPane.getViewport().setBackground(background);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    private void createDirectorySplitPane()
-    {
-        m_directorySplitPane = new JSplitPane();
-
-        m_directorySplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-        m_directorySplitPane.setResizeWeight(0.5);
-        m_directorySplitPane.setDividerSize(5);
-        m_directorySplitPane.setLeftComponent(m_directoryTreeScrollPane);
-        m_directorySplitPane.setRightComponent(m_directoryTableScrollPane);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    private void createResultsViewer()
-    {
-        m_resultsViewer = new ResultsViewer();
-
-        m_resultsViewer.setSelectionColor(Color.blue);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    private void createResultsViewerScrollPane()
-    {
-        m_resultsViewerScrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    private void createMainSplitPane()
-    {
-        m_mainSplitPane = new JSplitPane();
-
-        m_mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-        m_mainSplitPane.setResizeWeight(0.5);
-        m_mainSplitPane.setDividerSize(5);
-        m_mainSplitPane.setTopComponent(m_directorySplitPane);
-        m_mainSplitPane.setBottomComponent(m_resultsViewerScrollPane);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    private void createContentPanel(int margin)
-    {
-        m_contentPanel = new JPanel(new BorderLayout());
-
-        EtchedBorder outsideBorder = new EtchedBorder(EtchedBorder.RAISED);
-        EmptyBorder insideBorder = new EmptyBorder(margin, margin, margin, margin);
-        CompoundBorder compoundBorder = new CompoundBorder(outsideBorder, insideBorder);
-
-        m_contentPanel.setBorder(compoundBorder);
-        m_contentPanel.add(m_statusBar, BorderLayout.NORTH);
-        m_contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
-    }
     /**
      *********************************************************************************
      *
@@ -316,33 +159,34 @@ public class PMDViewer extends JFrame
      *********************************************************************************
      *
      */
-    protected void setDefaultMessage()
+    public static final void run()
     {
-        setMessage("Select a source file to view its analysis below.");
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    protected void setMessage(String message)
-    {
-        if (message == null)
+        try
         {
-            message = "";
+            LoadRootDirectories loadRootDirectories = new LoadRootDirectories();
+            loadRootDirectories.start();
+
+            // Setup the User Interface based on this computer's operating system.
+            // This must be done before calling Java and Swing classes that call the GUI.
+            String useLookAndFeel = "net.sourceforge.pmd.swingui.PMDLookAndFeel";
+
+            UIManager.setLookAndFeel(useLookAndFeel);
+
+            PMDViewer pmdViewer = new PMDViewer();
+            pmdViewer.setVisible(true);
+            SetupFilesEvent.notifySetFileList(pmdViewer, loadRootDirectories.getDirectories());
+
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
+        catch (Error error)
+        {
+            error.printStackTrace();
         }
 
-        m_message.setText(message);
-    }
-
-    /**
-     *********************************************************************************
-     *
-     * @param rootDirectories
-     */
-    private void setupFiles(File[] rootDirectories)
-    {
-        m_directoryTree.setupFiles(this, rootDirectories);
+        return;
     }
 
     /**
@@ -361,17 +205,14 @@ public class PMDViewer extends JFrame
                 Component glassPane = getGlassPane();
                 glassPane.setVisible(false);
                 glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-
+                glassPane.removeMouseListener(m_glassPaneMouseListener);
+                m_tabbedPane.setEnabled(true);
                 JMenuBar menuBar = getJMenuBar();
-                menuBar.setEnabled(true);
-                MenuElement[] menuElements = menuBar.getSubElements();
+                int menuCount = menuBar.getMenuCount();
 
-                for (int n = 0; n < menuElements.length; n++)
+                for (int n = 0; n < menuCount; n++)
                 {
-                    if (menuElements[n] instanceof JMenu)
-                    {
-                        ((JMenu) menuElements[n]).setEnabled(true);
-                    }
+                    menuBar.getMenu(n).setEnabled(true);
                 }
             }
         }
@@ -382,74 +223,18 @@ public class PMDViewer extends JFrame
                 Component glassPane = getGlassPane();
                 glassPane.setVisible(true);
                 glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
+                glassPane.addMouseListener(m_glassPaneMouseListener);
+                m_tabbedPane.setEnabled(false);
                 JMenuBar menuBar = getJMenuBar();
-                menuBar.setEnabled(false);
-                MenuElement[] menuElements = menuBar.getSubElements();
+                int menuCount = menuBar.getMenuCount();
 
-                for (int n = 0; n < menuElements.length; n++)
+                for (int n = 0; n < menuCount; n++)
                 {
-                    if (menuElements[n] instanceof JMenu)
-                    {
-                        ((JMenu) menuElements[n]).setEnabled(false);
-                    }
+                    menuBar.getMenu(n).setEnabled(false);
                 }
             }
 
             m_disabledCounter++;
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    public static final void run()
-    {
-        try
-        {
-            LoadRootDirectories loadRootDirectories = new LoadRootDirectories();
-            loadRootDirectories.start();
-
-            // Setup the User Interface based on this computer's operating system.
-            // This must be done before calling Java and Swing classes that call the GUI.
-            //String useLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-            String useLookAndFeel = "net.sourceforge.pmd.swingui.PMDLookAndFeel";
-
-            UIManager.setLookAndFeel(useLookAndFeel);
-
-            PMDViewer pmdViewer = new PMDViewer();
-            pmdViewer.setVisible(true);
-            pmdViewer.setupFiles(loadRootDirectories.getDirectories());
-
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-        catch (Error error)
-        {
-            error.printStackTrace();
-        }
-
-        return;
-    }
-
-    /**
-     *********************************************************************************
-     *
-     */
-    public void setVisible(boolean visible)
-    {
-        super.setVisible(visible);
-
-        if (visible && m_firstLayout)
-        {
-            m_mainSplitPane.setDividerLocation(0.4);
-            m_directorySplitPane.setDividerLocation(0.4);
-            validate();
-            repaint();
-            m_firstLayout = false;
         }
     }
 
@@ -468,808 +253,38 @@ public class PMDViewer extends JFrame
      *********************************************************************************
      *********************************************************************************
      */
-    private class StatusArea extends JPanel
-    {
-        private StatusActionThread m_actionThread;
-        private Color m_inactiveBackground;
-        private Color m_activeBackground;
-        private Color m_actionColor;
-        private int m_direction;
-        private int m_indicatorCurrentPosition;
-        private final int POSITION_INCREMENT = 5;
-        private final int START_MOVING = 0;
-        private final int MOVE_FORWARD = 1;
-        private final int MOVE_BACKWARD = 2;
-
-        /**
-         ****************************************************************************
-         *
-         * @param border
-         */
-        private StatusArea(Border border)
-        {
-            super(null);
-
-            m_inactiveBackground = Color.gray;
-            m_activeBackground = UIManager.getColor("pmdStatusAreaBackground");
-            m_actionColor = Color.red;
-
-            setOpaque(true);
-            setBackground(m_inactiveBackground);
-            setBorder(border);
-
-            Dimension size = new Dimension(160, 20);
-
-            setMinimumSize(size);
-            setMaximumSize(size);
-            setSize(size);
-            setPreferredSize(size);
-        }
-
-        /**
-         ****************************************************************************
-         *
-         */
-        private void startAction()
-        {
-            if (m_actionThread == null)
-            {
-                setBackground(m_activeBackground);
-                m_direction = START_MOVING;
-                m_actionThread = new StatusActionThread(this);
-                m_actionThread.start();
-            }
-        }
-
-        /**
-         ****************************************************************************
-         *
-         */
-        private void stopAction()
-        {
-            if (m_actionThread != null)
-            {
-                m_actionThread.stopAction();
-                m_actionThread = null;
-                setBackground(m_inactiveBackground);
-                repaint();
-            }
-        }
-
-        /**
-         ****************************************************************************
-         *
-         * @param graphics
-         */
-        public void paint(Graphics graphics)
-        {
-            super.paint(graphics);
-
-            if (getBackground() == m_activeBackground)
-            {
-                Rectangle totalArea;
-                Insets insets;
-                int indicatorWidth;
-                int indicatorHeight;
-                int indicatorY;
-                int indicatorX;
-                int totalAreaRight;
-
-                totalArea = getBounds();
-                insets = getInsets();
-                totalArea.x += insets.left;
-                totalArea.y += insets.top;
-                totalArea.width -= (insets.left + insets.right);
-                totalArea.height -= (insets.top + insets.bottom);
-                totalAreaRight = totalArea.x + totalArea.width;
-                indicatorWidth = totalArea.width / 3;
-                indicatorHeight = totalArea.height;
-                indicatorY = totalArea.y;
-
-                if (m_direction == MOVE_FORWARD)
-                {
-                    m_indicatorCurrentPosition += POSITION_INCREMENT;
-
-                    if (m_indicatorCurrentPosition >= totalAreaRight)
-                    {
-                        m_indicatorCurrentPosition = totalAreaRight - POSITION_INCREMENT;
-                        m_direction = MOVE_BACKWARD;
-                    }
-                }
-                else if (m_direction == MOVE_BACKWARD)
-                {
-                    m_indicatorCurrentPosition -= POSITION_INCREMENT;
-
-                    if (m_indicatorCurrentPosition < totalArea.x)
-                    {
-                        m_indicatorCurrentPosition = totalArea.x + POSITION_INCREMENT;
-                        m_direction = MOVE_FORWARD;
-                    }
-                }
-                else
-                {
-                    m_indicatorCurrentPosition = totalArea.x + POSITION_INCREMENT;
-                    m_direction = MOVE_FORWARD;
-                }
-
-                indicatorX = m_indicatorCurrentPosition;
-
-                Rectangle oldClip = graphics.getClipBounds();
-                Color oldColor = graphics.getColor();
-
-                graphics.setColor(m_activeBackground);
-                graphics.setClip(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
-                graphics.clipRect(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
-                graphics.fillRect(totalArea.x, totalArea.y, totalArea.width, totalArea.height);
-
-                if (m_direction == MOVE_FORWARD)
-                {
-                    int stopX = indicatorX - indicatorWidth;
-
-                    if (stopX < totalArea.x)
-                    {
-                        stopX = totalArea.x;
-                    }
-
-                    int y1 = indicatorY;
-                    int y2 = y1 + indicatorHeight;
-                    Color color = m_actionColor;
-
-                    for (int x = indicatorX; x > stopX; x--)
-                    {
-                        graphics.setColor(color);
-                        graphics.drawLine(x, y1, x, y2);
-                        color = brighter(color);
-                    }
-                }
-                else
-                {
-                    int stopX = indicatorX + indicatorWidth;
-
-                    if (stopX > totalAreaRight)
-                    {
-                        stopX = totalAreaRight;
-                    }
-
-                    int y1 = indicatorY;
-                    int y2 = indicatorY + indicatorHeight;
-                    Color color = m_actionColor;
-
-                    for (int x = indicatorX; x < stopX; x++)
-                    {
-                        graphics.setColor(color);
-                        graphics.drawLine(x, y1, x, y2);
-                        color = brighter(color);
-                    }
-                }
-
-                graphics.setColor(oldColor);
-
-                if (oldClip != null)
-                {
-                    graphics.clipRect(oldClip.x, oldClip.y, oldClip.width, oldClip.height);
-                    graphics.setClip(oldClip.x, oldClip.y, oldClip.width, oldClip.height);
-                }
-            }
-        }
-
-        /**
-         ****************************************************************************
-         *
-         * @param color
-         *
-         * @return
-         */
-        private Color brighter(Color color)
-        {
-            int red;
-            int green;
-            int blue;
-
-            red = color.getRed() + 5;
-            green = color.getGreen() + 5;
-            blue = color.getBlue() + 5;
-
-            if (red > 255)
-            {
-                red = 255;
-            }
-
-            if (green > 255)
-            {
-                green = 255;
-            }
-
-            if (blue > 255)
-            {
-                blue = 255;
-            }
-
-            return new Color(red, green, blue);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class StatusActionThread extends Thread
-    {
-        private StatusArea m_statusArea;
-        private boolean m_stopAction;
-        private int m_doNothing;
-        private final long ELAPSED_TIME = 25;
-
-        /**
-         ****************************************************************************
-         *
-         * @param statusArea
-         */
-        private StatusActionThread(StatusArea statusArea)
-        {
-            super("Status Action");
-
-            m_statusArea = statusArea;
-        }
-
-        /**
-         ****************************************************************************
-         *
-         */
-        public void run()
-        {
-            while (m_stopAction == false)
-            {
-                m_statusArea.repaint();
-
-                try
-                {
-                    sleep(ELAPSED_TIME);
-                }
-                catch (InterruptedException exception)
-                {
-                    m_doNothing++;
-                }
-            }
-        }
-
-        /**
-         ****************************************************************************
-         *
-         */
-        private void stopAction()
-        {
-            m_stopAction = true;
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class FileMenu extends JMenu
-    {
-
-        /**
-         ********************************************************************
-         *
-         * @param menuBar
-         */
-        private FileMenu()
-        {
-            super("File");
-
-            setMnemonic('F');
-
-            Icon icon;
-            JMenuItem menuItem;
-
-            //
-            // Save menu item
-            //
-            icon = UIManager.getIcon("save");
-            menuItem = new JMenuItem("Save", icon);
-            menuItem.addActionListener((ActionListener) new SaveActionListener());
-            menuItem.setMnemonic('S');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-            add(menuItem);
-
-            //
-            // Save As menu item
-            //
-            icon = UIManager.getIcon("saveAs");
-            menuItem = new JMenuItem("Save As...", icon);
-            menuItem.addActionListener((ActionListener) new SaveAsActionListener());
-            menuItem.setMnemonic('v');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_MASK));
-            add(menuItem);
-
-            //
-            // Separator
-            //
-            add(new JSeparator());
-
-            //
-            // Print menu item
-            //
-            icon = UIManager.getIcon("print");
-            menuItem = new JMenuItem("Print...", icon);
-            menuItem.addActionListener((ActionListener) new PrintActionListener());
-            menuItem.setMnemonic('P');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
-            add(menuItem);
-
-            //
-            // Page Setup menu item
-            //
-            menuItem = new JMenuItem("Page Setup...");
-            menuItem.addActionListener((ActionListener) new PageSetupActionListener());
-            menuItem.setMnemonic('L');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK));
-            add(menuItem);
-
-            //
-            // Separator
-            //
-            add(new JSeparator());
-
-            //
-            // Exit menu item
-            //
-            menuItem = new JMenuItem("Exit...");
-            menuItem.addActionListener((ActionListener) new ExitActionListener());
-            menuItem.setMnemonic('x');
-            add(menuItem);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class EditMenu extends JMenu
-    {
-
-        /**
-         ********************************************************************
-         *
-         * @param menuBar
-         */
-        private EditMenu()
-        {
-            super("Edit");
-
-            setMnemonic('E');
-
-            Icon icon;
-            JMenuItem menuItem;
-
-            //
-            // Copy Results menu item
-            //
-            icon = UIManager.getIcon("copy");
-            m_copyHTMLResultsMenuItem = new JMenuItem("Copy Results as HTML", icon);
-            m_copyHTMLResultsMenuItem.addActionListener((ActionListener) new CopyHTMLResultsActionListener());
-            m_copyHTMLResultsMenuItem.setMnemonic('C');
-            m_copyHTMLResultsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
-            m_copyHTMLResultsMenuItem.setEnabled(false);
-            add(m_copyHTMLResultsMenuItem);
-
-            //
-            // Copy Results menu item
-            //
-            icon = UIManager.getIcon("copy");
-            m_copyTextResultsMenuItem = new JMenuItem("Copy Results as Text", icon);
-            m_copyTextResultsMenuItem.addActionListener((ActionListener) new CopyTextResultsActionListener());
-            m_copyTextResultsMenuItem.setMnemonic('Y');
-            m_copyTextResultsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
-            m_copyTextResultsMenuItem.setEnabled(false);
-            add(m_copyTextResultsMenuItem);
-
-            //
-            // Separator
-            //
-            add(new JSeparator());
-
-            //
-            // Preferences menu item
-            //
-            icon = UIManager.getIcon("edit");
-            menuItem = new JMenuItem("Preferences...", icon);
-            menuItem.addActionListener((ActionListener) new EditPreferencesActionListener());
-            menuItem.setMnemonic('f');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_MASK));
-            add(menuItem);
-
-            //
-            // Rule Properties menu item
-            //
-            icon = UIManager.getIcon("edit");
-            menuItem = new JMenuItem("Rules...", icon);
-            menuItem.addActionListener((ActionListener) new EditRulesActionListener());
-            menuItem.setMnemonic('R');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
-            add(menuItem);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class HelpMenu extends JMenu
-    {
-
-        /**
-         ********************************************************************
-         *
-         * @param menuBar
-         */
-        private HelpMenu()
-        {
-            super("Help");
-
-            setMnemonic('H');
-
-            Icon icon;
-            JMenuItem menuItem;
-
-            //
-            // Online Help menu item
-            //
-            icon = UIManager.getIcon("help");
-            menuItem = new JMenuItem("Online Help", icon);
-            menuItem.addActionListener(new HelpActionListener());
-            menuItem.setMnemonic('H');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK));
-            add(menuItem);
-
-            //
-            // Separator
-            //
-            add(new JSeparator());
-
-            //
-            // About menu item
-            //
-            menuItem = new JMenuItem("About...");
-            menuItem.addActionListener(new AboutActionListener());
-            menuItem.setMnemonic('A');
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
-            add(menuItem);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class SaveActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            MessageDialog.show(PMDViewer.this, "What should we save?  The results?");
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class SaveAsActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            MessageDialog.show(PMDViewer.this, "What should we save?  The results?");
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class PrintActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            MessageDialog.show(PMDViewer.this, "Printing not available yet.");
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class PageSetupActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            MessageDialog.show(PMDViewer.this, "Page setup not available yet.");
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class ExitActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            System.exit(0);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class CopyHTMLResultsActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            String htmlText = m_resultsViewer.getHTMLText();
-
-            if (htmlText != null)
-            {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                StringSelection contents = new StringSelection(htmlText);
-                clipboard.setContents(contents, m_clipboardOwner);
-            }
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class CopyTextResultsActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            String text = m_resultsViewer.getPlainText();
-
-            if (text != null)
-            {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                StringSelection contents = new StringSelection(text);
-                clipboard.setContents(contents, m_clipboardOwner);
-            }
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class PMDClipboard implements ClipboardOwner
-    {
-
-        /**
-         ************************************************************************
-         *
-         */
-        public void lostOwnership(Clipboard clipboard, Transferable contents)
-        {
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class EditRulesActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
-                setEnableViewer(false);
-                RulesEditor rulesEditor = new RulesEditor();
-                rulesEditor.setVisible(true);
-                rulesEditor.dispose();
-                setEnableViewer(true);
-            }
-            catch (PMDException pmdException)
-            {
-                String message = pmdException.getMessage();
-                Exception exception = pmdException.getOriginalException();
-
-                MessageDialog.show(PMDViewer.this, message, exception);
-            }
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class EditPreferencesActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            try
-            {
-                setEnableViewer(false);
-                (new PreferencesEditor(PMDViewer.this)).setVisible(true);
-            }
-            catch (PMDException pmdException)
-            {
-                String message = pmdException.getMessage();
-                Exception exception = pmdException.getOriginalException();
-
-                MessageDialog.show(PMDViewer.this, message, exception);
-            }
-            finally
-            {
-                setEnableViewer(true);
-            }
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class HelpActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            MessageDialog.show(PMDViewer.this, "Online Help not available yet.");
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class AboutActionListener implements ActionListener
-    {
-
-        public void actionPerformed(ActionEvent event)
-        {
-            setEnableViewer(false);
-            (new AboutPMD(PMDViewer.this)).setVisible(true);
-            setEnableViewer(true);
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class Repaint implements Runnable
-    {
-        private Component m_component;
-
-        /**
-         *****************************************************************************
-         *
-         * @param component
-         */
-        private Repaint(Component component)
-        {
-            m_component = component;
-        }
-
-        /**
-         *****************************************************************************
-         *
-         */
-        public void run()
-        {
-            m_component.repaint();
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class AnalyzeFileEventHandler implements AnalyzeFileEventListener
-    {
-
-        /**
-         ****************************************************************************
-         *
-         * @param event
-         */
-        public void startAnalysis(AnalyzeFileEvent event)
-        {
-            PMDViewer.this.setEnableViewer(false);
-        }
-
-        /**
-         ****************************************************************************
-         *
-         * @param event
-         */
-        public void stopAnalysis(AnalyzeFileEvent event)
-        {
-            PMDViewer.this.setEnableViewer(true);
-
-            // Enable these two menu items when the first analysis is complete.
-            if (m_copyHTMLResultsMenuItem.isEnabled() == false)
-            {
-                m_copyHTMLResultsMenuItem.setEnabled(true);
-            }
-
-            if (m_copyTextResultsMenuItem.isEnabled() == false)
-            {
-                m_copyTextResultsMenuItem.setEnabled(true);
-            }
-        }
-    }
-
-    /**
-     *********************************************************************************
-     *********************************************************************************
-     *********************************************************************************
-     */
-    private class StatusBarEventHandler implements StatusBarEventListener
+    private class GlassPaneMouseListener extends MouseAdapter
     {
 
         /**
          *****************************************************************************
          *
-         * @param event
+         * Invoked when the mouse button has been clicked (pressed
+         * and released) on a component.
          */
-        public void startAnimation(StatusBarEvent event)
+        public void mouseClicked(MouseEvent event)
         {
-            m_statusArea.startAction();
-            m_message.setText("");
-            SwingUtilities.invokeLater(new Repaint(m_message));
+            event.consume();
         }
 
         /**
          *****************************************************************************
          *
-         * @param event
+         * Invoked when a mouse button has been pressed on a component.
          */
-        public void showMessage(StatusBarEvent event)
+        public void mousePressed(MouseEvent event)
         {
-            m_message.setText(event.getMessage());
-            SwingUtilities.invokeLater(new Repaint(m_message));
+            event.consume();
         }
 
         /**
          *****************************************************************************
          *
-         * @param event
+         * Invoked when a mouse button has been released on a component.
          */
-        public void stopAnimation(StatusBarEvent event)
+        public void mouseReleased(MouseEvent event)
         {
-            setDefaultMessage();
-            SwingUtilities.invokeLater(new Repaint(m_message));
-            m_statusArea.stopAction();
+            event.consume();
         }
     }
 
@@ -1299,6 +314,93 @@ public class PMDViewer extends JFrame
         public void stopSetup(SetupFilesEvent event)
         {
             PMDViewer.this.setEnableViewer(true);
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void setFileList(SetupFilesEvent event)
+        {
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class TabbedPane extends JTabbedPane implements ChangeListener
+    {
+        private AnalysisViewer m_analysisViewer;
+        private RulesEditor m_rulesEditor;
+        private PreferencesEditor m_preferencesEditor;
+        private Component m_currentTab;
+
+        /**
+         *****************************************************************************
+         *
+         */
+        private TabbedPane()
+        {
+            super();
+
+            try
+            {
+                m_analysisViewer = new AnalysisViewer();
+                m_rulesEditor = new RulesEditor();
+                m_preferencesEditor = new PreferencesEditor();
+
+                setFont(UIManager.getFont("tabFont"));
+                addTab("Analysis Viewer", m_analysisViewer);
+                addTab("Rules Editor", m_rulesEditor);
+                addTab("Preferences Editor", m_preferencesEditor);
+                addChangeListener(this);
+            }
+            catch (PMDException pmdException)
+            {
+            }
+        }
+
+        /**
+         *****************************************************************************
+         *
+         */
+        private void adjustSplitPaneDividerLocation()
+        {
+            m_analysisViewer.adjustSplitPaneDividerLocation();
+            m_rulesEditor.adjustSplitPaneDividerLocation();
+            m_preferencesEditor.adjustSplitPaneDividerLocation();
+        }
+
+        /**
+         *******************************************************************************
+         *
+         * @param event
+         */
+        public void stateChanged(ChangeEvent event)
+        {
+            if (m_currentTab == m_rulesEditor)
+            {
+                m_rulesEditor.saveData();
+            }
+
+            m_currentTab = getSelectedComponent();
+
+            if (m_currentTab == m_analysisViewer)
+            {
+                m_analysisViewer.setMenuBar();
+                m_analysisViewer.analyze();
+            }
+            else if (m_currentTab == m_rulesEditor)
+            {
+                m_rulesEditor.setMenuBar();
+            }
+            else if (m_currentTab == m_preferencesEditor)
+            {
+                m_preferencesEditor.setMenuBar();
+            }
         }
     }
 }

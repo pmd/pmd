@@ -14,7 +14,15 @@ import java.util.List;
 public class AnalyzeFileEvent extends EventObject
 {
     private File m_file;
-    private String m_message;
+
+    /**
+     *****************************************************************************
+     *
+     */
+    private AnalyzeFileEvent(Object source)
+    {
+        super(source);
+    }
 
     /**
      *****************************************************************************
@@ -30,17 +38,6 @@ public class AnalyzeFileEvent extends EventObject
     /**
      *****************************************************************************
      *
-     */
-    private AnalyzeFileEvent(Object source, String message)
-    {
-        super(source);
-
-        m_message = message;
-    }
-
-    /**
-     *****************************************************************************
-     *
      * @return
      */
     public File getFile()
@@ -51,16 +48,7 @@ public class AnalyzeFileEvent extends EventObject
     /**
      *****************************************************************************
      *
-     * @return
-     */
-    public String getMessage()
-    {
-        return m_message;
-    }
-
-    /**
-     *****************************************************************************
-     *
+     * @param source
      * @param file
      */
     public static final void notifyStartAnalysis(Object source, File file)
@@ -81,6 +69,7 @@ public class AnalyzeFileEvent extends EventObject
     /**
      *****************************************************************************
      *
+     * @param source
      * @param file
      */
     public static final void notifyStopAnalysis(Object source, File file)
