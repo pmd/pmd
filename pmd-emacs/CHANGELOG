@@ -1,0 +1,14 @@
+
+Version 0.1 -
+
+First version of PMD for Emacs
+
+Defined one function "pmd-current-buffer" which will
+run PMD on the current buffer, and write the output
+to *PMD*
+
+Output format is in XML.  I will work in trying to 
+get a better, easier to read format for everyone.
+
+Share and Enjoy!
+

@@ -1,0 +1,20 @@
+Installing PMD For Emacs:
+
+1) Download PMD-0.4 from SourceForge, and unpack into a directory.
+
+2) Copy src/elisp/pmd.el to a directory on your Elisp Path
+
+3) Inside your ".emacs" file, (require 'pmd)
+
+4) Set the following variables in ".emacs"
+   pmd-java - Java binary to run PMD with.
+   pmd-home - Directory where PMD was installed.
+   pmd-rulesets - Ruleset to use (must be in the PMD jar.)
+
+There is a customize group under PMD, which you can also
+use to customize PMD installation.
+
+Also, I'm sure there are others out there who know more about
+customizing Emacs than I do.  Feel free to chip in here and
+there.
+
