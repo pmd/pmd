@@ -4,7 +4,22 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class IfStmtsMustUseBracesRuleTest extends RuleTst {
+public class IfStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//IfStatement[count(*) < 3][not(Statement/Block)]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "simple failure case", 1, rule),
+           new TestDescriptor(TEST2, "ok", 0, rule),
+           new TestDescriptor(TEST3, "nested ifs", 1, rule),
+       });
+    }
 
     private static final String TEST1 =
     "public class IfStmtsMustUseBraces1 {" + CPD.EOL +
@@ -32,22 +47,4 @@ public class IfStmtsMustUseBracesRuleTest extends RuleTst {
     " }" + CPD.EOL +
     "}";
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//IfStatement[count(*) < 3][not(Statement/Block)]");
-    }
-
-    public void testSimpleBad() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-
-    public void testSimpleOK() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-
-    public void testNexted() throws Throwable {
-        runTestFromString(TEST3, 1, rule);
-    }
 }

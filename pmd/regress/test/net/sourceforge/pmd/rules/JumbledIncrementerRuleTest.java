@@ -4,7 +4,24 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class JumbledIncrementerRuleTest extends RuleTst {
+public class JumbledIncrementerRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty(
+            "xpath",
+            "//ForStatement[ForUpdate//Name/@Image = ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "", 1, rule),
+           new TestDescriptor(TEST2, "", 0, rule),
+           new TestDescriptor(TEST3, "", 0, rule),
+       });
+    }
 
     private static final String TEST1 =
     "public class JumbledIncrementerRule1 {" + CPD.EOL +
@@ -49,22 +66,4 @@ public class JumbledIncrementerRuleTest extends RuleTst {
     " } " + CPD.EOL +
     "}";
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty(
-            "xpath",
-            "//ForStatement[ForUpdate//Name/@Image = ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image]");
-    }
-
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
-    public void test3() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
-    }
 }

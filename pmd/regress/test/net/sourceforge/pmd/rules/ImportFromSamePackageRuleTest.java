@@ -3,7 +3,18 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.rules.ImportFromSamePackageRule;
 import net.sourceforge.pmd.cpd.CPD;
 
-public class ImportFromSamePackageRuleTest extends RuleTst {
+public class ImportFromSamePackageRuleTest extends SimpleAggregatorTst {
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "simple failure", 1, new ImportFromSamePackageRule()),
+           new TestDescriptor(TEST2, "class in default package importing from sub package", 0, new ImportFromSamePackageRule()),
+           new TestDescriptor(TEST3, "class in default package importing from other package", 0, new ImportFromSamePackageRule()),
+           new TestDescriptor(TEST4, "class not in default package importing from default package", 0, new ImportFromSamePackageRule()),
+           new TestDescriptor(TEST5, "class in default package importing from default package", 1, new ImportFromSamePackageRule()),
+           new TestDescriptor(TEST6, "importing from some package", 0, new ImportFromSamePackageRule()),
+       });
+    }
 
     private static final String TEST1 =
     "package foo;" + CPD.EOL +
@@ -33,22 +44,4 @@ public class ImportFromSamePackageRuleTest extends RuleTst {
     "import foo.bar.baz.*;" + CPD.EOL +
     "public class ImportFromSamePackage6{}";
 
-    public void testSimple() throws Throwable {
-        runTestFromString(TEST1, 1, new ImportFromSamePackageRule());
-    }
-    public void testDefaultPackageImportingFromSubPackage() throws Throwable {
-        runTestFromString(TEST2, 0, new ImportFromSamePackageRule());
-    }
-    public void testClassInDefaultPackageImportingFromOtherPackage() throws Throwable {
-        runTestFromString(TEST3, 0, new ImportFromSamePackageRule());
-    }
-    public void testClassNotInDefaultPackageImportingFromDefaultPackage() throws Throwable {
-        runTestFromString(TEST4, 0, new ImportFromSamePackageRule());
-    }
-    public void testClassInDefaultPackageImportingFromDefaultPackage() throws Throwable {
-        runTestFromString(TEST5, 1, new ImportFromSamePackageRule());
-    }
-    public void testImportingFromSubPackage() throws Throwable {
-        runTestFromString(TEST6, 0, new ImportFromSamePackageRule());
-    }
 }
