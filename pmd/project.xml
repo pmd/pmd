@@ -25,7 +25,7 @@ PMD scans Java source code and looks for potential problems:
   <li>Empty 'while' statements</li>
   <li>'if..else' statements without curly braces</li>
 </ul>
-<p>For a sample, here are the problems PMD found in the <a href="jdk14.XML">JDK 1.4 source code</a>. Yikes!</p>
+<p>For a sample, here are the problems PMD found in the <a href="jdk14.HTML">JDK 1.4 source code</a>. Yikes!</p>
 <p>You can get the current PMD release from <a href="http://sf.net/projects/pmd/">here</a></p>
   ]]>
   </description>
