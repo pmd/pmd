@@ -14,8 +14,8 @@
      some refactoring to do....</p>
      <p>To run CPD as a JNLP application, click <a href="cpd.jnlp">here</a>.</p>
      <p>As a reference point, running the CPD GUI against the JDK 1.4 java.net package on a
-     Pentium III with 512 MB of RAM took 6 minutes 22 seconds.  It found some nice <a href="cpd_java_net_dupes.txt">duplicates</a>,
-     though.</p>
+     Pentium III with 512 MB of RAM took 6 minutes 22 seconds.  It found some nice duplicates which
+     you can see <a href="cpd_java_net_dupes.txt">here</a> - the largest ones are at the bottom of the page.</p>
      <p>Future plans</p>
      <ul>
         <li>Make a PMD rule for CPD</li>
