@@ -9,7 +9,7 @@ initially created in response to discussions over UnnecessaryConstructorRule whi
 most people really dislike :-)
   </description>
 
-    <rule name="UnnecessaryConstructorRule"
+    <rule name="UnnecessaryConstructor"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
@@ -150,7 +150,7 @@ most people really dislike :-)
      </example>
      </rule>
 
-    <rule name="AssignmentInOperandRule"
+    <rule name="AssignmentInOperand"
       message="Avoid assigments in operands"
       class="net.sourceforge.pmd.rules.XPathRule">
   <description>
@@ -209,7 +209,7 @@ return 3;
   </example>
 </rule>
 
-    <rule name="DontImportSunRule"
+    <rule name="DontImportSun"
        message="Avoid importing anything from the 'sun.*' packages"
        class="net.sourceforge.pmd.rules.XPathRule">
        <description>
@@ -237,9 +237,9 @@ return 3;
        </example>
     </rule>
 
-    <rule name="SuspiciousOctalEscapeRule"
+    <rule name="SuspiciousOctalEscape"
        message="Suspicious decimal characters following octal escape in string literal"
-          class="net.sourceforge.pmd.rules.SuspiciousOctalEscapeRule">
+          class="net.sourceforge.pmd.rules.SuspiciousOctalEscape">
       <description>
       A suspicious octal escape sequence was found inside a String literal.
       The Java language specification (section 3.10.6) says an octal

@@ -4,7 +4,8 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTLiteral;
 
-public class SuspiciousOctalEscapeRule extends AbstractRule {
+public class SuspiciousOctalEscape extends AbstractRule {
+
     public Object visit(ASTLiteral node, Object data) {
         RuleContext ctx = (RuleContext) data;
         String image = node.getImage();

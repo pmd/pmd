@@ -1,15 +1,15 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.rules.SuspiciousOctalEscapeRule;
+import net.sourceforge.pmd.rules.SuspiciousOctalEscape;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class SuspiciousOctalEscapeRuleTest extends SimpleAggregatorTst {
+public class SuspiciousOctalEscapeTest extends SimpleAggregatorTst {
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "ok use of octal", 0, new SuspiciousOctalEscapeRule()),
-           new TestDescriptor(TEST2, "should be flagged", 1, new SuspiciousOctalEscapeRule()),
+           new TestDescriptor(TEST1, "ok use of octal", 0, new SuspiciousOctalEscape()),
+           new TestDescriptor(TEST2, "should be flagged", 1, new SuspiciousOctalEscape()),
        });
     }
 
