@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 */
-package test.net.sourceforge.pmd.rules;
+package test.net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule;

@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 */
-package test.net.sourceforge.pmd.rules;
+package test.net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
@@ -18,12 +18,12 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-               new TestDescriptor(TEST1, "TEST1", 1, rule),
-               new TestDescriptor(TEST2, "TEST2", 1, rule),
-               new TestDescriptor(TEST3, "TEST3", 0, rule),
-               new TestDescriptor(TEST4, "TEST4", 0, rule),
-               new TestDescriptor(TEST5, "TEST5", 0, rule),
-               new TestDescriptor(TEST6, "case where append is not a child of a BlockStatement, but instead is a child of an ExplicitConstructorInvocation", 0, rule),
+               new TestDescriptor(TEST1, "concating a literal to a method return value", 1, rule),
+               new TestDescriptor(TEST2, "same as TEST1, but in SB constructor", 1, rule),
+               new TestDescriptor(TEST3, "chained appends", 0, rule),
+               new TestDescriptor(TEST4, "concating two literals in SB constructor", 0, rule),
+               new TestDescriptor(TEST5, "concating two literals post-construction", 0, rule),
+               new TestDescriptor(TEST6, "case where concatenation is not a child of a BlockStatement, but instead is a child of an ExplicitConstructorInvocation", 0, rule),
        });
     }
 
