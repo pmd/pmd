@@ -102,6 +102,8 @@
         </resources>
     </build>
     <reports>
+        <report>maven-changes-plugin</report>
+        <report>maven-changelog-plugin</report>
         <report>maven-checkstyle-plugin</report>
         <report>maven-javadoc-plugin</report>
         <report>maven-pmd-plugin</report>
