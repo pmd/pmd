@@ -18,8 +18,9 @@ import java.util.List;
  * @author Will Sargent
  */
 public class ExceptionAsFlowControl extends AbstractRule {
+    
     public Object visit(ASTThrowStatement node, Object data) {
-        String throwName = getThrowsName(node);
+        String throwName = node.getFirstASTNameImage();
         for (Node parent = node.jjtGetParent(); parent != null; parent = parent.jjtGetParent()) {
             if (parent instanceof ASTTryStatement) {
                 List list = ((ASTTryStatement) parent).getCatchBlocks();
@@ -36,14 +37,4 @@ public class ExceptionAsFlowControl extends AbstractRule {
         return data;
     }
 
-    private String getThrowsName(ASTThrowStatement node) {
-        Node childNode = node;
-        while (childNode.jjtGetNumChildren() > 0) {
-            childNode = childNode.jjtGetChild(0);
-        }
-        if (childNode instanceof ASTName) {
-            return ((ASTName) childNode).getImage();
-        }
-        return null;
-    }
 }
