@@ -193,6 +193,40 @@ or @Image='finalize'
       </example>
     </rule>
 
+
+    <rule name="AvoidSynchronizedAtMethodLevel"
+          message="a method is marked synchronized, try using block level"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  It is preferrable to use synchronized in block level rather than in method level.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//MethodDeclaration[@Synchronized='true']
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+
+    // Try to avoid this
+	synchronized void foo() {
+	}
+	
+	// Prefer this:
+	void bar() {
+	    synchronized(mutex) {
+	    }
+	}
+
+]]>
+      </example>
+    </rule>
     </ruleset>
 
 
