@@ -420,7 +420,7 @@ not
          <properties>
              <property name="xpath">
                  <value>
-<![CDATA[//ClassBodyDeclaration/Initializer[@Static='true']/Block[count(*)=0]]]>
+<![CDATA[//ClassOrInterfaceBodyDeclaration/Initializer[@Static='true']/Block[count(*)=0]]]>
                  </value>
              </property>
          </properties>
