@@ -9,8 +9,10 @@ import java.io.IOException;
 
 public class GUI implements CPDListener {
 
-    public static void main(String[] args) {
-        new GUI();
+    private static class CancelListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
     }
 
     private class GoListener implements ActionListener {
@@ -25,12 +27,6 @@ public class GUI implements CPDListener {
                     go();
                 }
             }).start();
-        }
-    }
-
-    private class CancelListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            System.exit(0);
         }
     }
 
@@ -193,4 +189,9 @@ public class GUI implements CPDListener {
         tokenizingFilesBar.setValue(tokenizingFilesBar.getValue() + 1);
     }
     // CPDListener
+
+    public static void main(String[] args) {
+        new GUI();
+    }
+
 }
