@@ -11,7 +11,6 @@ import net.sourceforge.pmd.renderers.IDEAJRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.swingui.PMDViewer;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.File;

@@ -1,7 +1,5 @@
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.swingui.Constants;
-
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -11,7 +9,7 @@ import java.util.Properties;
  * @since October 1, 2002
  * @version $Revision$, $Date$
  */
-public class RuleProperties implements Constants {
+public class RuleProperties {
 
     private Properties m_properties = new Properties();
 
@@ -38,7 +36,7 @@ public class RuleProperties implements Constants {
     }
 
     public String getValue(String name) {
-        name = (name == null) ? EMPTY_STRING : name.trim();
+        name = (name == null) ? "" : name.trim();
 
         if (name.length() > 0) {
             String property = m_properties.getProperty(name);
@@ -50,11 +48,11 @@ public class RuleProperties implements Constants {
             }
         }
 
-        return EMPTY_STRING;
+        return "";
     }
 
     public String getValueType(String name) {
-        name = (name == null) ? EMPTY_STRING : name.trim();
+        name = (name == null) ? "" : name.trim();
 
         if (name.length() > 0) {
             String property = m_properties.getProperty(name);
@@ -68,7 +66,7 @@ public class RuleProperties implements Constants {
             }
         }
 
-        return EMPTY_STRING;
+        return "";
     }
 
     public boolean getBooleanValue(String name) {
@@ -102,11 +100,11 @@ public class RuleProperties implements Constants {
     }
 
     public void setValue(String name, String value) {
-        name = (name == null) ? EMPTY_STRING : name.trim();
+        name = (name == null) ? "" : name.trim();
 
         if (name.length() > 0) {
             if (value == null) {
-                value = EMPTY_STRING;
+                value = "";
             }
 
             String valueType = getValueType(name);
@@ -117,11 +115,11 @@ public class RuleProperties implements Constants {
     }
 
     public void setValueType(String name, String valueType) {
-        name = (name == null) ? EMPTY_STRING : name.trim();
+        name = (name == null) ? "" : name.trim();
 
         if (name.length() > 0) {
             if (valueType == null) {
-                valueType = EMPTY_STRING;
+                valueType = "";
             }
 
             String value = getValue(name);
