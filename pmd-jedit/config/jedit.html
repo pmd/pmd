@@ -1,32 +1,27 @@
 <html><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>PMD JEdit Plug-in Users' Guide</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><h1 class="title"><a name="d0e2"></a>PMD JEdit Plug-in Users' Guide</h1></div><div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><a href="#plugin-jedit-installation">Installation</a></dt><dd><dl><dt><a href="#plugin-jedit-installation-requirements">System requirements</a></dt><dt><a href="#plugin-jedit-installation-installation">Installation</a></dt></dl></dd><dt><a href="#plugin-jedit-integration">Integration</a></dt><dt><a href="#plugin-jedit-license">License</a></dt></dl></div><a class="indexterm" name="d0e17"></a><a class="indexterm" name="d0e20"></a><div class="sect1"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="plugin-jedit-installation"></a>Installation</h2></div></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="plugin-jedit-installation-requirements"></a>System requirements</h3></div></div><p>
-The PMD JEdit Plug-in requires at least JEdit 4.0final.
-</p><p>
-</p><p>
-Refer to the PMD user manual for the basic requirements to run PMD (You
-may find the latest version on the PMD website,
-<a href="http://pmd.sf.net/" target="_top">http://PMD.sf.net/</a>)
-</p></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="plugin-jedit-installation-installation"></a>Installation</h3></div></div><a class="indexterm" name="d0e43"></a><p>
-The Plug-in comes as a single <tt>.zip</tt> file.
-Unzipping this file into a directory of your choice (referred
-to as <i><tt>&lt;HOME_DIR&gt;</tt></i>) will produce two
-subdirectories <tt>/bin</tt> and <tt>/docs</tt>.
-</p><p>
-Further installation is simple: just copy the file
-<tt><i><tt>&lt;HOME_DIR&gt;</tt></i>/bin/PMD-jedit-bundle-<i><tt>&lt;version&gt;</tt></i>.jar</tt>
-into the <tt>/jars</tt> directory of your JEdit distribution.
-JEdit will then need to be restarted before PMD begins working.
-</p></div></div><div class="sect1"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="plugin-jedit-integration"></a>Integration</h2></div></div><p>
-The software adds a new menu item group into the <b>Plugins</b>
-menu of the editor view. Available is a new menu item:
-</p><div class="itemizedlist"><ul type="disc"><li><p>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>
+PMD JEdit Plug-in Users' Guide
+</title>
+<body>
+<h1>PMD JEdit Plug-in Users' Guide</h1>
+<hr><p>Installation</h2>
+<h3>System requirements</h3>
+<p>PMD is a Java source code analyzer.  The PMD JEdit Plugin requires at least JEdit 4.0final. <a href="http://pmd.sf.net/" target="_top">Here's</a> the PMD web site.</p>
+<h3>Installation</h3>
+<p>The Plugin comes as a single <tt>.zip</tt> file.
+Just unzip it into your JEdit directory and it'll put a couple of jar files into your jars directory, restart JEdit,
+and you'll be ready to go.</p>
+<h2>Integration</h2>
+<p>
+The software adds a new menu item group into the <b>Plugins</b> menu of the editor view.  There's one new menu item:
+</p>
+<ul>
+<li>
 <b>Plugins</b>-&gt;<b>PMD</b>-&gt;<b>Check active buffer</b> (<b>Ctrl-Shift-F11</b>).
-</p><p>
-Checks the contents of the active text area.
-</p>
-</p>
+Runs the currently displayed Java file through the PMD code checking rules and displays a pop up window with the results.</p>
 </li>
-<p></p></li></ul></div></div><div class="sect1"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="plugin-jedit-license"></a>License</h2></div></div><p>
-The JEdit Plug-in is free software, released under the Apache license.
-</p></div></div></body></html>
+</ul>
+<h2>License</h2>
+<p>The JEdit Plug-in is free software, released under the Apache license.</p>
+</body></html>

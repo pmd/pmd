@@ -30,8 +30,7 @@
 		</javac>
 	</target>
 
-
-	<target name="dist" depends="clean">
+    <target name="jar">
 		<jar jarfile="${lib}/${ant.project.name}.jar">
 			<fileset dir="${build}"/>
 			<fileset dir="${config}">
@@ -40,8 +39,22 @@
 				<include name="*.html"/>
 			</fileset>
 		</jar>
+    </target>
+
+
+	<target name="dist" depends="jar">
         <copy file="${lib}/${ant.project.name}.jar" todir="${jedit.install.dir}"/>
 	</target>
+
+    <target name="release">
+        <antcall target="clean"/>
+        <antcall target="jar"/>
+        <mkdir dir="tmp/jars"/>
+        <copy file="${lib}/${ant.project.name}.jar" todir="tmp/jars"/>
+        <copy file="${lib}/pmd-0.3.jar" todir="tmp/jars"/>
+        <zip zipfile="pmd-jedit-0.1.zip" basedir="tmp"/>
+        <delete dir="tmp"/>
+    </target>
 
 	<target name="clean" depends="delete,compile">
 	</target>
