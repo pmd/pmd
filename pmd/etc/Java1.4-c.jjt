@@ -576,9 +576,11 @@ void FormalParameter() :
 void ConstructorDeclaration() :
 {}
 {
-  [ "public" { ((AccessNode) jjtThis).setPublic( true ); }
+  [
+  "public" { ((AccessNode) jjtThis).setPublic( true ); }
   | "protected" { ((AccessNode) jjtThis).setProtected( true ); }
-  | "private" ] { ((AccessNode) jjtThis).setPrivate( true ); }
+  | "private"  { ((AccessNode) jjtThis).setPrivate( true ); }
+  ]
   <IDENTIFIER> FormalParameters() [ "throws" NameList() ]
   "{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]

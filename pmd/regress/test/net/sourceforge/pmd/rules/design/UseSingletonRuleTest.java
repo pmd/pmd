@@ -8,41 +8,27 @@ import net.sourceforge.pmd.rules.design.UseSingletonRule;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
-public class UseSingletonRuleTest
-    extends RuleTst implements ReportListener
+public class UseSingletonRuleTest extends RuleTst implements ReportListener
 {
 
-    public void testUseSingleton1()
-	throws Throwable 
-    {
-	Report report = process("UseSingleton1.java",
-				new UseSingletonRule());
-	assertEquals( 1, report.size() );
+    public void testAllStaticsPublicConstructor() throws Throwable {
+        runTest("UseSingleton1.java", 1, new UseSingletonRule());
     }
 
-    public void testUseSingleton2() 
-	throws Throwable 
-    {
-	Report report = process("UseSingleton2.java",
-				new UseSingletonRule());
-	assertEquals( 0, report.size() );
+    public void testOKDueToNonStaticMethod()  throws Throwable {
+        runTest("UseSingleton2.java", 0, new UseSingletonRule());
     }
 
-    public void testUseSingleton3() 
-	throws Throwable 
-    {
-	Report report = process("UseSingleton3.java",
-				new UseSingletonRule());
-	assertEquals( 1, report.size() );
+    public void testNoConstructorCoupleOfStatics()  throws Throwable {
+        runTest("UseSingleton3.java", 1, new UseSingletonRule());
     }
 
+    public void testNoConstructorOneStatic()  throws Throwable {
+        runTest("UseSingleton4.java", 0, new UseSingletonRule());
+    }
 
-    public void testUseSingleton4()
-	throws Throwable 
-    {
-	Report report = process("UseSingleton4.java",
-				new UseSingletonRule());
-	assertEquals( 0, report.size() );
+    public void testClassicSingleton()  throws Throwable {
+        runTest("UseSingleton5.java", 0, new UseSingletonRule());
     }
 
     public void testResetState() throws Throwable{
@@ -56,6 +42,7 @@ public class UseSingletonRuleTest
     }
 
     private int callbacks;
+
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         callbacks++;
     }

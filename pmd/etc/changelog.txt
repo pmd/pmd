@@ -1,3 +1,6 @@
+???????? - 1.03
+Fixed bug 672742 - grammar typo was hosing up ASTConstructorDeclaration which was hosing up UseSingletonRule
+
 January 22, 2003 - 1.02:
 Added new rules: ImportFromSamePackageRule, SwitchDensityRule, NullAssignmentRule, UnusedModifierRule, ForLoopShouldBeWhileLoopRule
 Updated LooseCouplingRule to check for usage of Vector; thx to Vladimir for the good catch.
