@@ -7,6 +7,7 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.reports.ReportFactory;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Rule;
 
@@ -21,7 +22,8 @@ public class ReportTest extends TestCase {
     }
 
     public void testBasic() {
-        Report r = new Report("xml");
+        ReportFactory rf = new ReportFactory();
+        Report r = rf.createReport("xml");
         r.addRuleViolation(new RuleViolation(new MockRule(), 5, "foo"));
         assertTrue(!r.isEmpty());
     }

@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.reports.ReportFactory;
 
 import java.io.*;
 import java.util.List;
@@ -63,7 +64,8 @@ public class PMD {
             throw new RuntimeException("File " + args[0] + " doesn't exist");
         }
         PMD pmd = new PMD();
-        Report report = new Report(args[1]);
+        ReportFactory rf = new ReportFactory();
+        Report report = rf.createReport(args[1]);
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         try {

@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd;
 
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.reports.ReportFactory;
 import net.sourceforge.pmd.ast.*;
 
 import java.io.StringReader;
@@ -105,7 +106,8 @@ public class RuleSetTest extends TestCase
 
 	RuleContext context = new RuleContext();
 	Set reportedValues = new HashSet();
-	Report report = new Report("xml");
+    ReportFactory rf = new ReportFactory();
+    Report report = rf.createReport("xml");
 
 	context.setReport( report );
 	IUT.apply( makeCompilationUnits(),

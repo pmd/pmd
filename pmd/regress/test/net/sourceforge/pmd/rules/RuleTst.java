@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.reports.ReportFactory;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.ast.*;
 
@@ -33,7 +34,9 @@ public class RuleTst
     {
         PMD p = new PMD();
         RuleContext ctx = new RuleContext();
-        ctx.setReport(new Report("xml"));
+        ReportFactory rf = new ReportFactory();
+        Report report = rf.createReport("xml");
+        ctx.setReport(report);
         p.processFile(fileName, getClass().getClassLoader().getResourceAsStream(fileName), rule, ctx);
         return ctx.getReport();
     }

@@ -10,7 +10,6 @@ import java.util.Stack;
 
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.reports.Report;
 
 public class UnusedLocalVariableRule extends AbstractRule implements Rule{
 

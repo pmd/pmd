@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.reports.Report;
+import net.sourceforge.pmd.reports.ReportFactory;
 import net.sourceforge.pmd.RuleContext;
 
 public class PMDTask extends Task {
@@ -56,7 +57,8 @@ public class PMDTask extends Task {
         }
 
         PMD pmd = new PMD();
-        Report report = new Report(format);
+        ReportFactory rf = new ReportFactory();
+        Report report = rf.createReport(format);
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
 
