@@ -35,11 +35,10 @@ import org.openide.text.Annotation;
 import org.openide.text.Line;
 
 /**
- * Just a class thats mission is to mark the line where the error is. It's using
+ * Just a class whose mission is to mark the line where the error is. It's using
  * pmd-annotation type to mark the line
- *
- * @author ole martin mørk
- * @created 3. november 2002
+ * PEND: investigate implications of static field here ... seems like we get
+ * multiple scanners interfering with each other because of this shared state.
  */
 public class PMDScanAnnotation extends Annotation implements PropertyChangeListener {
 
@@ -51,16 +50,20 @@ public class PMDScanAnnotation extends Annotation implements PropertyChangeListe
 	
 	public static final PMDScanAnnotation getNewInstance() {
 		PMDScanAnnotation pmd = new PMDScanAnnotation();
-		annotations.add( pmd );
+		synchronized(annotations) {
+			annotations.add( pmd );
+		}
 		return pmd;
 	}
 	
 	public static final void clearAll() {
-		Iterator iterator = annotations.iterator();
-		while( iterator.hasNext() ) {
-			((Annotation)iterator.next()).detach();
+		synchronized(annotations) {
+			Iterator iterator = annotations.iterator();
+			while( iterator.hasNext() ) {
+				((Annotation)iterator.next()).detach();
+			}
+			annotations.clear();
 		}
-		annotations.clear();
 	}
 
 	/**
