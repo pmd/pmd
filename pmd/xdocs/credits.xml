@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Christopher Judd - a nice patch to the XSLT that adds a summary</li>
             <li>John Meagher - suggested the rule 'MissingSerialVersionUID' and provided the implementation for it</li>
             <li>Bruno Juillet - patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Benoit Xhenseval - many bug reports (with good failure cases!), Ant task patch, XSLT patch, suggestion for improving XML report</li>
