@@ -21,7 +21,7 @@ public class Occurrences {
     public Occurrences(TokenSets tss, CPDListener listener) {
         for (Iterator j = tss.iterator();j.hasNext();) {
             TokenList ts = (TokenList)j.next();
-			listener.update("Adding token set " + ts.getID() + " to the initial frequency table");
+			listener.addingTokens(ts.getID());
             for (Iterator i = ts.iterator(); i.hasNext();) {
                 TokenEntry tok = (TokenEntry)i.next();
                 addTile(new Tile(tok), tok);

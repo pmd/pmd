@@ -10,4 +10,5 @@ import java.io.File;
 public interface CPDListener {
     public void update(String msg);
     public void addedFile(File file);
+    public void addingTokens(String tokenSrcID);
 }

@@ -87,7 +87,7 @@ public class CPD {
 
     public void go() {
 		listener.update("Starting to process " + tokenSets.size() + " files");
-        GST gst = new GST(this.tokenSets, minimumTileSize);
+        GST gst = new GST(tokenSets, minimumTileSize);
         results = gst.crunch(listener);
     }
 

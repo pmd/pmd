@@ -38,6 +38,7 @@ public class GUI implements CPDListener {
     //private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");
     private JTextField minimumLengthField= new JTextField("50");
     private JTextField addingFileField = new JTextField(50);
+    private JTextField initialFrequencyField = new JTextField(50);
     private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
     private JFrame f;
     public GUI() {
@@ -59,8 +60,15 @@ public class GUI implements CPDListener {
         inputPanel.add(buttonsPanel);
 
         JPanel progressPanel = new JPanel();
-        progressPanel.add(new JLabel("Adding files"));
-        progressPanel.add(addingFileField);
+        progressPanel.setLayout(new BorderLayout());
+        JPanel panel1 = new JPanel();
+        panel1.add(new JLabel("Tokenizing files"));
+        panel1.add(addingFileField);
+        progressPanel.add(panel1, BorderLayout.NORTH);
+        JPanel panel2 = new JPanel();
+        panel2.add(new JLabel("Adding tokens"));
+        panel2.add(initialFrequencyField);
+        progressPanel.add(panel2, BorderLayout.SOUTH);
 
         f.getContentPane().setLayout(new BorderLayout());
         f.getContentPane().add(inputPanel, BorderLayout.NORTH);
@@ -107,4 +115,7 @@ public class GUI implements CPDListener {
         addingFileField.setText(file.getAbsolutePath());
     }
 
+    public void addingTokens(String tokenSrcID) {
+        initialFrequencyField.setText(tokenSrcID);
+    }
 }
