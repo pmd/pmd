@@ -43,4 +43,12 @@ public class UseSingletonRuleTest
 				new UseSingletonRule());
 	assertEquals( 1, report.countViolationsInCurrentFile() );
     }
+
+    public void testUseSingleton4() 
+	throws Throwable 
+    {
+	Report report = process("design/UseSingleton4.java",
+				new UseSingletonRule());
+	assertEquals( 0, report.countViolationsInCurrentFile() );
+    }
 }
