@@ -42,8 +42,8 @@ public class PMD {
     }
 
     public static void main(String[] args) {
-        if (args.length == 0) {
-            throw new RuntimeException("Pass a filename in");
+        if (args.length != 2) {
+            throw new RuntimeException("Please pass in both a filename and a format");
         }
         File input = new File(args[0]);
         if (!input.exists()) {
