@@ -1,3 +1,6 @@
+Version 0.4
+Fixed bug in manifest.mf, so now people are able to upgrade the currently installed version
+
 Version 0.3
 - Changed default rulesets
 - Removed all known bugs:

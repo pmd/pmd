@@ -42,14 +42,14 @@
 		</makenbm>
 		<delete dir="build/temp_distribution"/>
 	</target>
-	<target depends="clean,nbm" description="Builds the distribution" name="distribution">
-		<zip compress="true" destfile="build\pmd-netbeans-bin.zip">
+	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
+		<zip compress="true" destfile="build\pmd-netbeans-bin-${VERSION}.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build\pmd.nbm"/>
 		</zip>
-		<zip compress="true" destfile="build\pmd-netbeans-src.zip">
+		<zip compress="true" destfile="build\pmd-netbeans-src-${VERSION}.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 				<include name="build.xml"/>
