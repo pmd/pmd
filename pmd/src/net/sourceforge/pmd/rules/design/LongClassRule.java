@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.rules.design;
 
+import net.sourceforge.pmd.stat.*;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 
@@ -11,18 +12,9 @@ import net.sourceforge.pmd.ast.*;
  * of code.
  */
 public class LongClassRule
-    extends AbstractRule
+    extends ExcessiveLengthRule
 {
-    public LongClassRule() { }
-
-    public Object visit( ASTClassDeclaration decl, Object data ) {
-		RuleContext ctx = (RuleContext) data;
-
-		if ((decl.getEndLine() - decl.getBeginLine()) > getIntProperty("minimumLength")) {
-		    ctx.getReport().addRuleViolation( createRuleViolation( ctx,
-								decl.getBeginLine(),
-								getMessage() ));
-		}
-		return null;
+    public LongClassRule() {
+	super( ASTClassDeclaration.class );
     }
 }
