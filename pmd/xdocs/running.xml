@@ -9,8 +9,8 @@
   <body>
    <section name="Running PMD via command line">
    <ul>
-    <li>Build PMD by going to the etc directory and typing 'ant clean'
-    <li>Type run 'filename', i.e.:
+    <li>Build PMD by going to the etc directory and typing 'ant clean'</li>
+    <li>Type run 'filename', i.e.:</li>
 <pre>
 C:\data\pmd\pmd\etc>run c:\data\pmd\pmd\test-data\Unused1.java
 C:\data\pmd\pmd\etc>set CLASSPATH=../build/
@@ -26,10 +26,10 @@ e&gt;
    </section>
    <section name="Running PMD via Ant">
    <ul>
-    <li>Build PMD by going to the etc directory and typing 'ant clean'
-    <li>Add a new Ant target to your build file - <a href="ant-task.html">here's an example</a>.
-    <li>Make sure the PMD class files are on your classpath.
-    <li>Run Ant like you normally do.
+    <li>Build PMD by going to the etc directory and typing 'ant clean'</li>
+    <li>Add a new Ant target to your build file - <a href="ant-task.html">here's an example</a>.</li>
+    <li>Make sure the PMD class files are on your classpath.</li>
+    <li>Run Ant like you normally do.</li>
    </ul>
    </section>
   </body>
