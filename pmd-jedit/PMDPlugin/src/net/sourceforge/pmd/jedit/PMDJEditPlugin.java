@@ -31,22 +31,24 @@ public class PMDJEditPlugin extends EBPlugin {
 
 	private static PMDJEditPlugin instance;
 
-	static {
+/* 	static {
 		instance = new PMDJEditPlugin();
 		instance.start();
 	}
-
+ */
 	private DefaultErrorSource errorSource;
 
 	// boilerplate JEdit code
 	public void start()
 	{
+		instance = this;
 		errorSource = new DefaultErrorSource(NAME);
 		//ErrorSource.registerErrorSource(errorSource);
 	}
 
 	public void stop()
 	{
+		instance = null;
 		unRegisterErrorSource();
  	}
 
