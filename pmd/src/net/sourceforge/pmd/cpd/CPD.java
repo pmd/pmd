@@ -116,14 +116,10 @@ public class CPD {
 
     public static void main(String[] args) {
         CPD cpd = new CPD();
-        //cpd.addListener(new ListenerImpl());
         cpd.setListener(new CPDNullListener());
         cpd.setMinimumTileSize(26);
         try {
-            //cpd.add(findFilesRecursively("c:\\data\\pmd\\pmd-cpd\\src\\net\\sourceforge\\pmd\\cpd"));
-            //cpd.add(new File("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\PlayHelper.java"));
-            //cpd.addRecursively("c:\\data\\cougaar\\core\\src\\org\\cougaar\\core\\adaptivity\\");
-            cpd.addRecursively("c:\\data\\cougaar\\core\\src\\org\\");
+            cpd.addRecursively("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\rules");
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return;

@@ -25,7 +25,8 @@ public class TokenList {
 
     public String getSlice(int startLine, int endLine) {
         StringBuffer sb = new StringBuffer();
-        for (int i=startLine; i<=endLine; i++) {
+        // TODO this check for i<code.size() should not be necessary
+        for (int i=startLine; (i<=endLine) && (i < code.size()) ; i++) {
             if (sb.length() !=0) {
                 sb.append(System.getProperty("line.separator"));
             }

@@ -29,15 +29,17 @@ public class GUI implements CPDListener {
             }).start();
         }
     }
+
     private class CancelListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
         }
     }
+
     private class BrowseListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             JFileChooser fc = new JFileChooser(rootDirectoryField.getText());
-            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             fc.showDialog(frame, "Select");
             if (fc.getSelectedFile() != null) {
                 rootDirectoryField.setText(fc.getSelectedFile().getAbsolutePath());
@@ -45,8 +47,8 @@ public class GUI implements CPDListener {
         }
     }
 
-    private JTextField rootDirectoryField= new JTextField("C:\\data\\datagrabber\\datagrabber\\src\\org\\cougaar\\mlm\\ui\\newtpfdd\\transit\\");
-    //private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\cpd\\");
+    //private JTextField rootDirectoryField= new JTextField("C:\\data\\datagrabber\\datagrabber\\src\\org\\cougaar\\mlm\\ui\\newtpfdd\\transit\\");
+    private JTextField rootDirectoryField= new JTextField("c:\\data\\pmd\\pmd\\src\\net\\sourceforge\\pmd\\rules\\");
 
     //private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     //private JTextField rootDirectoryField= new JTextField("c:\\data\\cougaar\\core\\src");

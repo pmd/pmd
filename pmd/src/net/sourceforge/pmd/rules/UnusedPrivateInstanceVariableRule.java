@@ -12,7 +12,7 @@ import java.text.MessageFormat;
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
 
-public class UnusedPrivateInstanceVariableRule extends AbstractRule {
+public class UnusedPrivateInstanceVariableRule extends UnusedCodeRule {
 
     private Stack nameSpaces = new Stack();
 
@@ -106,10 +106,4 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
         group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()));
     }
 
-    private void harvestUnused(RuleContext ctx, SymbolTable table) {
-        for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
-            Symbol symbol = (Symbol)i.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
-        }
-    }
 }

@@ -12,7 +12,7 @@ import java.text.MessageFormat;
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.*;
 
-public class UnusedLocalVariableRule extends AbstractRule implements Rule{
+public class UnusedLocalVariableRule extends UnusedCodeRule {
 
     private Namespace nameSpace;
 
@@ -62,18 +62,20 @@ public class UnusedLocalVariableRule extends AbstractRule implements Rule{
         return super.visit(node, data);
     }
 
+/*
     private void reportUnusedLocals(RuleContext ctx, SymbolTable table) {
         for (Iterator i = table.getUnusedSymbols(); i.hasNext();) {
             Symbol symbol = (Symbol)i.next();
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, symbol.getLine(), MessageFormat.format(getMessage(), new Object[] {symbol.getImage()})));
         }
     }
+*/
 
     private Object addTable(SimpleNode node, Object data) {
         nameSpace.addTable();
         RuleContext ctx = (RuleContext)data;
         super.visit(node, ctx);
-        reportUnusedLocals(ctx, nameSpace.peek());
+        harvestUnused(ctx, nameSpace.peek());
         nameSpace.removeTable();
         return ctx;
     }
