@@ -52,7 +52,7 @@
                 <include name="**/*.properties"/>
             </fileset>
         </copy>
-        <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF" excludes="test/**/*.class"/>
+        <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF"/>
     </target>
 
     <target name="pmd">
