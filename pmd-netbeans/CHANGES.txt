@@ -1,3 +1,7 @@
+Version 1.0
+- Updated pmd to version 2.1
+- Adapted to NB 4.0 APIs, did not test in earlier versions
+
 Version 0.95
 - Updated pmd to version 1.8 (somebody's been out of action for a while! :)
 - Adapted to NB 3.6 API, did not test in earlier versions (I don't *know* that

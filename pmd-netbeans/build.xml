@@ -1,129 +1,51 @@
 <project basedir="." default="nbm" name="PMD netbeans module">
 
-	<property name="pmd.jar" value="pmd-1.8.jar"/>
+    <property name="pmd.jar" value="pmd-2.1.jar"/>
+    <property name="VERSION" value="1.0"/>
 
-	<property file="build.ant.properties"/>
-	<property name="keystore" value="${user.home}/.pmdkeystore"/>
-	<property name="storepass" value="?"/>
+    <property file="build.ant.properties"/>
 
-	<target name="init">
-		<fail unless="nb.home" message="To resolve library dependencies, you must indicate a NetBeans home directory. Use ant -Dnb.home=XXX or define it in build.ant.properties"/>
-		<condition property="nb.home.exists">
-			<and>
-				<available file="${nb.home}/lib/openide.jar"/>
-				<available file="${nb.home}/lib/openide-loaders.jar"/>
-				<available file="${nb.home}/modules/autoload/openide-io.jar"/>
-				<available file="${nb.home}/modules/autoload/java-api.jar"/>
-				<available file="${nb.home}/modules/autoload/java-src-model.jar"/>
-			</and>
-		</condition>
-		<fail unless="nb.home.exists" message="The directory ${nb.home} does not exist or does not seem to be a NetBeans 3.6 installation"/>
-		
-		<property name="pmdmodule.jar" value="pmd.jar"/>
-		<path id="nb.cp">
-			<pathelement location="${nb.home}/lib/openide.jar"/>
-			<pathelement location="${nb.home}/lib/openide-loaders.jar"/>
-			<pathelement location="${nb.home}/modules/autoload/openide-io.jar"/>
-			<pathelement location="${nb.home}/modules/autoload/java-api.jar"/>
-			<pathelement location="${nb.home}/modules/autoload/java-src-model.jar"/>
-		</path>
-		<patternset id="pmd.files">
-			<include name="modules/${pmdmodule.jar}"/>
-			<include name="modules/ext/${pmd.jar}"/>
-			<include name="modules/ext/saxpath-1.0-fcs.jar"/>
-			<include name="modules/ext/jakarta-oro-2.0.jar"/>
-			<include name="modules/ext/jaxen-core-1.0-fcs.jar"/>
-		</patternset>
-	</target>
-	
-	<target name="init-deploy" depends="init">
-		<property name="nb36.user.dir" location="${user.home}/.netbeans/3.6"/>
-		<condition property="netbeans.deploy.dir" value="${nb36.user.dir}">
-			<and>
-				<available file="${nb36.user.dir}"/>
-				<not>
-					<isset property="netbeans.deploy.dir"/>
-				</not>
-			</and>
-		</condition>
-	</target>
+    <property name="nbm.homepage" value="http://pmd.sourceforge.net/"/>
+    <property name="dist.base" value="www.netbeans.org/example"/> <!-- XXX what should be here? -->
+    <property name="nbm.module.author" value="Ole-Martin Mørk and Gunnlaugur Þór Briem"/>
+    <property name="license.file" value="LICENSE.txt"/>
+    <property name="keystore" value="${user.home}/.pmdkeystore"/>
+        
+    <import file="../nbbuild/module-scripts/projectized.xml"/>
 
-	<target name="compile" depends="init" description="Compiles all java files and copies property files to the classes dir">
-		<mkdir dir="build/classes"/>
-		<javac debug="on" debuglevel="source,lines,vars" deprecation="true" destdir="build/classes" srcdir="src">
-			<include name="**/*.java"/>
-			<classpath>
-				<path refid="nb.cp"/>
-				<pathelement path="lib/${pmd.jar}"/>
-				<pathelement path="lib/jakarta-oro-2.0.jar"/>
-			</classpath>
-		</javac>
-		<copy todir="build/classes">
-			<fileset dir="src">
-				<include name="**/*"/>
-				<exclude name="**/*.java"/>
-				<exclude name="**/.nbattrs"/>
-				<exclude name="manifest.mf"/>
-			</fileset>
-		</copy>
-	</target>
+    <target name="files-init" depends="basic-init">
+        <patternset id="module.files">
+            <include name="${module.jar}"/>
+            <include name="${javahelp.jar}" if="has.javahelp"/>
+            <include name="${nb.system.dir}/Modules/${code.name.base.dashes}.xml"/>
 
-	<target depends="compile" description="Creates the jar" name="jars">
-		<mkdir dir="work"/>
-		<copy file="src/manifest.mf" tofile="work/manifest-filtered.mf">
-			<filterset>
-				<filter token="pmd.jar" value="${pmd.jar}"/>
-			</filterset>
-		</copy>
-		<jar compress="false" jarfile="build/${pmdmodule.jar}" manifest="work/manifest-filtered.mf">
-			<fileset dir="build/classes">
-				<include name="**/*"/>
-			</fileset>
-		</jar>
-		<delete dir="work"/>
-	</target>
+            <include name="${nb.modules.dir}/ext/${pmd.jar}"/>
+            <include name="${nb.modules.dir}/ext/saxpath-1.0-fcs.jar"/>
+            <include name="${nb.modules.dir}/ext/jakarta-oro-2.0.jar"/>
+            <include name="${nb.modules.dir}/ext/jaxen-core-1.0-fcs.jar"/>
+        </patternset>
+    </target>
+    
+    <target name="netbeans-extra" depends="init">
+        <mkdir dir="${netbeans.dest.dir}/${cluster.dir}/${nb.modules.dir}/ext"/>
+        <copy todir="${netbeans.dest.dir}/${cluster.dir}/${nb.modules.dir}/ext">
+          <fileset dir="lib">
+            <include name="${pmd.jar}"/>
+            <include name="saxpath-1.0-fcs.jar"/>
+            <include name="jakarta-oro-2.0.jar"/>
+            <include name="jaxen-core-1.0-fcs.jar"/>
+          </fileset>
+        </copy>
+    </target>
 
-	<target name="deploy" depends="init-deploy,jars">
-		<!--
-		If no deployment dir, then we fail rather than deploy globally; if you
-		do want to deploy globally, then set netbeans.deploy.dir explicitly.
-		-->
-		<fail unless="netbeans.deploy.dir" message="No NetBeans user directory to deploy into; either specify it in the property nb36.user.dir, or specify another NetBeans deployment directory (e.g. the install dir ${nb.home}) in the property netbeans.deploy.dir"/>
-		<mkdir dir="${netbeans.deploy.dir}/modules/ext"/>
-		<copy todir="${netbeans.deploy.dir}/modules/ext" taskname="Deploy libraries">
-			<fileset dir="lib">
-				<include name="${pmd.jar}"/>
-				<include name="saxpath-1.0-fcs.jar"/>
-				<include name="jakarta-oro-2.0.jar"/>
-				<include name="jaxen-core-1.0-fcs.jar"/>
-			</fileset>
-		</copy>
-		<copy file="build/${pmdmodule.jar}" todir="${netbeans.deploy.dir}/modules" taskname="Deploy PMD module jar"/>
-	</target>
-
-	<target name="nbm" depends="jars" description="Prepare the module for distribution via Auto Update.">
-		<taskdef classname="org.netbeans.nbbuild.MakeNBM" classpath="lib/nbantext-3.6.jar" name="makenbm"/>
-		<property name="tempdist.dir" location="build/temp_distribution"/>
-		<antcall target="deploy">
-			<param name="netbeans.deploy.dir" value="${tempdist.dir}/netbeans"/>
-		</antcall>
-		<makenbm file="build/pmd.nbm" homepage="http://pmd.sourceforge.net/" 
-		         module="build/${pmdmodule.jar}" topdir="${tempdist.dir}" 
-		         needsrestart="true" distribution="http://www.netbeans.org/example/pmd.nbm">
-			<license file="LICENSE.txt"/>
-			<signature keystore="${keystore}" storepass="${storepass}" alias="pmdkey"/>
-		</makenbm>
-	</target>
-	
 	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
 		<fail unless="VERSION" message="Must define VERSION property with the version number for this distribution!"/>
-		<zip compress="true" destfile="build/pmd-netbeans36-src-${VERSION}.zip">
+		<zip compress="true" destfile="build/pmd-netbeans40-${VERSION}-src.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 				<include name="build.xml"/>
 				<include name="src/**/*"/>
 				<include name="lib/${pmd.jar}"/>
-				<include name="lib/nbantext.jar"/>
 				<include name="lib/saxpath-1.0-fcs.jar"/>
 				<include name="lib/jaxen-core-1.0-fcs.jar"/>
 				<include name="lib/jakarta-oro-2.0.jar"/>
@@ -131,24 +53,12 @@
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
-		<zip compress="true" destfile="build/pmd-netbeans36-bin-${VERSION}.zip">
+		<zip compress="true" destfile="build/pmd-netbeans40-${VERSION}-bin.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
-	</target>
-	
-	<target name="clean-deploy" depends="init-deploy" if="netbeans.deploy.dir">
-		<delete>
-			<fileset dir="${netbeans.deploy.dir}">
-				<patternset refid="pmd.files"/>
-			</fileset>
-		</delete>
-	</target>
-	
-	<target description="Clean all build products." name="clean" depends="clean-deploy">
-		<delete dir="build"/>
 	</target>
 	
 </project>

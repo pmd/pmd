@@ -1,0 +1,7 @@
+---++ BUILDING 
+
+Cluster build harness is required to build the PMD plugin for NetBeans IDE. 
+Get it from http://wiki.java.net/bin/view/Netbeans/ModuleDevelopment40 and 
+configure to build a pmd-netbeans module into extra cluster. Example of 
+neceseary changes is in cluster-harness.diff file.
+
