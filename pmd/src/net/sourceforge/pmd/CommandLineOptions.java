@@ -145,7 +145,7 @@ public class CommandLineOptions {
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +
                 PMD.EOL +
                 "For example: " + PMD.EOL +
-                "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk 1.5 -debug" + PMD.EOL +
+                "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -targetjdk 1.5 -debug" + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -encoding UTF-8" + PMD.EOL +
                 PMD.EOL;
     }
