@@ -33,10 +33,15 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
         return this.getTallyOnAccessType((AccessNode)node.jjtGetParent());
     }
     /**
-     * Method counts ONLY public class attributes
+     * Method counts ONLY public class attributes which are not PUBLIC and
+     * static- these usually represent constants....
      */
     public Object visit(ASTFieldDeclaration node, Object data) {
-		return this.getTallyOnAccessType(node);
+		if(node.isFinal() && node.isStatic()){
+			return new Integer(0);
+		}else{
+			return this.getTallyOnAccessType(node);
+		}
     }
     /**
      * Method counts a node if it is public
