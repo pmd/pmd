@@ -10,6 +10,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.ASTFormalParameter;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -45,6 +46,11 @@ public class LooseCouplingRule extends AbstractRule {
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {
+        checkType(node, data);
+        return data;
+    }
+
+    public Object visit(ASTFormalParameter node, Object data) {
         checkType(node, data);
         return data;
     }

@@ -20,34 +20,31 @@ public class LooseCouplingRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        Report report = process("LooseCoupling1.java", rule);
-        assertEquals(1, report.size());
+        runTest("LooseCoupling1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        Report report = process("LooseCoupling2.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("LooseCoupling2.java", 0, rule);
     }
 
     public void test3() throws Throwable {
-        Report report = process("LooseCoupling3.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("LooseCoupling3.java", 0, rule);
     }
 
     public void test4() throws Throwable {
-        Report report = process("LooseCoupling4.java", rule);
-        assertTrue(report.isEmpty());
+        runTest("LooseCoupling4.java", 0, rule);
     }
     public void test5() throws Throwable {
-        Report report = process("LooseCoupling5.java", rule);
-        assertEquals(1, report.size());
+        runTest("LooseCoupling5.java", 1, rule);
     }
     public void test6() throws Throwable {
-        Report report = process("LooseCoupling6.java", rule);
-        assertEquals(2, report.size());
+        runTest("LooseCoupling6.java", 2, rule);
     }
     public void test7() throws Throwable {
-        Report report = process("LooseCoupling7.java", rule);
-        assertEquals(2, report.size());
+        runTest("LooseCoupling7.java", 2, rule);
+    }
+
+    public void test8() throws Throwable {
+        runTest("LooseCoupling8.java", 1, rule);
     }
 }
