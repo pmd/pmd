@@ -39,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDEclipseException;
@@ -46,7 +47,6 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.RuleSetWriter;
 import net.sourceforge.pmd.eclipse.WriterAbstractFactory;
 import net.sourceforge.pmd.eclipse.cmd.BuildProjectCommand;
-import net.sourceforge.pmd.eclipse.cmd.CommandException;
 import net.sourceforge.pmd.eclipse.cmd.UpdateProjectPropertiesCmd;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
@@ -73,6 +73,11 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2004/12/03 00:22:43  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
+ *
  * Revision 1.3  2004/11/28 20:31:39  phherlin
  * Continuing the refactoring experiment
  *

@@ -38,6 +38,7 @@ package net.sourceforge.pmd.eclipse.cmd;
 import java.util.Iterator;
 import java.util.Set;
 
+import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.PMDConstants;
@@ -55,6 +56,11 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/12/03 00:22:42  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
+ *
  * Revision 1.1  2004/11/21 21:39:45  phherlin
  * Applying Command and CommandProcessor patterns
  *
@@ -72,17 +78,15 @@ public class UpdateProjectRuleSetCmd extends DefaultCommand {
      */
     public UpdateProjectRuleSetCmd() {
         setReadOnly(false);
-        setOutputData(true);
+        setOutputProperties(true);
         setName("UpdateProjectRuleSet");
         setDescription("Update a project ruleset.");
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.cmd.DefaultCommand#execute()
+     * @see name.herlin.command.ProcessableCommand#execute()
      */
-    protected void execute() throws CommandException {
-        if (this.project == null) throw new MandatoryInputParameterMissingException("project");
-        if (this.projectRuleSet == null) throw new MandatoryInputParameterMissingException("projectRuleSet");
+    public void execute() throws CommandException {
 
         // Before updating, query the current ruleset
         QueryProjectRuleSetCmd queryCmd = new QueryProjectRuleSetCmd();
@@ -154,5 +158,20 @@ public class UpdateProjectRuleSetCmd extends DefaultCommand {
      */
     public boolean isNeedRebuild() {
         return needRebuild;
+    }
+    
+    /**
+     * @see name.herlin.command.Command#isReadyToExecute()
+     */
+    public boolean isReadyToExecute() {
+        return (this.project != null) && (this.projectRuleSet != null);
+    }
+    
+    /**
+     * @see name.herlin.command.Command#reset()
+     */
+    public void reset() {
+        this.project = null;
+        this.projectRuleSet = null;
     }
 }

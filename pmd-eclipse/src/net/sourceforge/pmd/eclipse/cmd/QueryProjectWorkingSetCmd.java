@@ -35,6 +35,8 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
+import name.herlin.command.CommandException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkingSet;
@@ -48,6 +50,11 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/12/03 00:22:42  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
+ *
  * Revision 1.1  2004/11/21 21:39:45  phherlin
  * Applying Command and CommandProcessor patterns
  *
@@ -63,17 +70,15 @@ public class QueryProjectWorkingSetCmd extends DefaultCommand {
      */
     public QueryProjectWorkingSetCmd() {
         setReadOnly(true);
-        setOutputData(true);
+        setOutputProperties(true);
         setName("QueryProjectWorkingSet");
         setDescription("Query the working set associated with a project.");
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.cmd.DefaultCommand#execute()
+     * @see name.herlin.command.ProcessableCommand#execute()
      */
-    protected void execute() throws CommandException {
-        if (project == null) throw new MandatoryInputParameterMissingException("project");
-
+    public void execute() throws CommandException {
         IWorkingSet workingSet = null;
 
         try {
@@ -107,5 +112,14 @@ public class QueryProjectWorkingSetCmd extends DefaultCommand {
      */
     public void setProject(IProject project) {
         this.project = project;
+        setReadyToExecute(true);
+    }
+    
+    /**
+     * @see name.herlin.command.Command#reset()
+     */
+    public void reset() {
+        this.project = null;
+        setReadyToExecute(false);
     }
 }

@@ -35,31 +35,38 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
+import name.herlin.command.ProcessableCommand;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 
 /**
- * This is a base implementation for a command.
- * This could be used as a root implementation for the simplest a command
- * which is a command that executes whitout any Command Processor.
- * Or this could be used as a base implementation for more complex form such as
- * Job Command.
+ * This is a base implementation for a command inside the PMD plugin.
+ * This must be used as a root implementation for all the plugin commands.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/12/03 00:22:42  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
+ *
  * Revision 1.1  2004/11/21 21:39:45  phherlin
  * Applying Command and CommandProcessor patterns
  *
  *
  */
-public abstract class DefaultCommand implements Command, PMDConstants, PMDPluginConstants {
+public abstract class DefaultCommand extends ProcessableCommand implements PMDConstants, PMDPluginConstants {
     private boolean readOnly;
+    private boolean outputProperties;
+    private boolean readyToExecute;
     private String description;
     private String name;
-    private boolean outputData;
+    private IProgressMonitor monitor;
 
     /**
      * @return Returns the readOnly.
@@ -67,49 +74,35 @@ public abstract class DefaultCommand implements Command, PMDConstants, PMDPlugin
     public boolean isReadOnly() {
         return readOnly;
     }
-    
+
     /**
      * @param readOnly The readOnly to set.
      */
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
-    
+
     /**
      * @return Returns the description.
      */
     public String getDescription() {
         return description;
     }
-    
+
     /**
      * @param description The description to set.
      */
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    /**
-     * @return Returns the outputData.
-     */
-    public boolean hasOutputData() {
-        return outputData;
-    }
-    
-    /**
-     * @param outputData The outputData to set.
-     */
-    public void setOutputData(boolean hasOutputData) {
-        this.outputData = hasOutputData;
-    }
-    
+
     /**
      * @return Returns the name.
      */
     public String getName() {
         return name;
     }
-    
+
     /**
      * @param name The name to set.
      */
@@ -118,18 +111,32 @@ public abstract class DefaultCommand implements Command, PMDConstants, PMDPlugin
     }
 
     /**
-     * By default a command is executed without a Command Processor
-     * @throws CommandException if a internal technical error occurred
+     * @param outputProperties The outputProperties to set.
      */
-    public void performExecute() throws CommandException {
-        execute();
+    public void setOutputProperties(boolean outputProperties) {
+        this.outputProperties = outputProperties;
     }
-    
+
     /**
-     * The implementation of the command logic
-     * @throws CommandException if a internal technical error occurred
+     * @return Returns the outputProperties.
      */
-    protected abstract void execute() throws CommandException;
+    public boolean hasOutputProperties() {
+        return outputProperties;
+    }
+
+    /**
+     * @return Returns the readyToExecute.
+     */
+    public boolean isReadyToExecute() {
+        return readyToExecute;
+    }
+
+    /**
+     * @param readyToExecute The readyToExecute to set.
+     */
+    public void setReadyToExecute(boolean readyToExecute) {
+        this.readyToExecute = readyToExecute;
+    }
 
     /**
      * Helper method to shorten message access
@@ -138,5 +145,76 @@ public abstract class DefaultCommand implements Command, PMDConstants, PMDPlugin
      */
     protected String getMessage(String key) {
         return PMDPlugin.getDefault().getMessage(key);
+    }
+    
+    /**
+     * @return Returns the monitor.
+     */
+    protected IProgressMonitor getMonitor() {
+        return this.monitor;
+    }
+    /**
+     * @param monitor The monitor to set.
+     */
+    protected void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
+    }
+    
+    /**
+     * delegate method for monitor.beginTask
+     * @see org.eclipse.core.runtime.IProgressMonitor#beginTask
+     */
+    protected void beginTask(String name, int totalWork) {
+        if (this.monitor != null) {
+            this.monitor.beginTask(name, totalWork);
+        }
+    }
+    
+    /**
+     * delegate method to monitor.done()
+     * @see org.eclipse.core.runtime.IProgressMonitor#done
+     */
+    protected void done() {
+        if (this.monitor != null) {
+            this.monitor.done();
+        }
+    }
+    
+    /**
+     * deletegate method for monitor.isCanceled()
+     * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
+     */
+    protected boolean isCanceled() {
+        return this.monitor == null ? false : this.monitor.isCanceled();
+    }
+    
+    /**
+     * delegate method for monitor.setTaskName()
+     * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName
+     */
+    protected void setTaskName(String name) {
+        if (this.monitor != null) {
+            this.monitor.setTaskName(name);
+        }
+    }
+    
+    /**
+     * delegate method for monitor.subTask()
+     * @see org.eclipse.core.runtime.IProgressMonitor#subTask
+     */
+    protected void subTask(String name) {
+        if (this.monitor != null) {
+            this.monitor.subTask(name);
+        }
+    }
+    
+    /**
+     * delegate method for monitor.worked()
+     * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
+     */
+    protected void worked(int work) {
+        if (this.monitor != null) {
+            this.monitor.worked(work);
+        }
     }
 }

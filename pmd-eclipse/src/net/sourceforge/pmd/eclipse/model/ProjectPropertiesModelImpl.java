@@ -35,8 +35,8 @@
  */
 package net.sourceforge.pmd.eclipse.model;
 
+import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.cmd.CommandException;
 import net.sourceforge.pmd.eclipse.cmd.QueryPmdEnabledPropertyCmd;
 import net.sourceforge.pmd.eclipse.cmd.QueryProjectRuleSetCmd;
 import net.sourceforge.pmd.eclipse.cmd.QueryProjectWorkingSetCmd;
@@ -58,6 +58,11 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/12/03 00:22:43  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
+ *
  * Revision 1.1  2004/11/28 20:31:38  phherlin
  * Continuing the refactoring experiment
  *

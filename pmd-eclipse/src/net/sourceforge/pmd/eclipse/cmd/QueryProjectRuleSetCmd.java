@@ -38,6 +38,7 @@ package net.sourceforge.pmd.eclipse.cmd;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -57,6 +58,11 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/12/03 00:22:42  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
+ *
  * Revision 1.1  2004/11/21 21:39:45  phherlin
  * Applying Command and CommandProcessor patterns
  *
@@ -67,13 +73,22 @@ public class QueryProjectRuleSetCmd extends DefaultCommand {
     private IProject project;
     private boolean fromProperties;
     private RuleSet projectRuleSet;
+    
+    /**
+     * Default constructor
+     *
+     */
+    public QueryProjectRuleSetCmd() {
+        setReadOnly(true);
+        setOutputProperties(true);
+        setName("QueryProjectRuleSet");
+        setDescription("Query a project rule set.");
+    }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.cmd.DefaultCommand#execute()
+     * @see name.herlin.command.ProcessableCommand#execute()
      */
-    protected void execute() throws CommandException {
-        if (this.project == null) throw new MandatoryInputParameterMissingException("project");
-
+    public void execute() throws CommandException {
         QueryRuleSetStoredInProjectPropertyCmd queryRuleSetStoredInProjectCmd = new QueryRuleSetStoredInProjectPropertyCmd();
         queryRuleSetStoredInProjectCmd.setProject(this.project);
         queryRuleSetStoredInProjectCmd.performExecute();
@@ -91,6 +106,7 @@ public class QueryProjectRuleSetCmd extends DefaultCommand {
      */
     public void setProject(IProject project) {
         this.project = project;
+        setReadyToExecute(true);
     }
     
     /**
@@ -105,6 +121,14 @@ public class QueryProjectRuleSetCmd extends DefaultCommand {
      */
     public RuleSet getProjectRuleSet() {
         return this.projectRuleSet;
+    }
+
+    /**
+     * @see name.herlin.command.Command#reset()
+     */
+    public void reset() {
+        this.project = null;
+        setReadyToExecute(false);
     }
 
     /**

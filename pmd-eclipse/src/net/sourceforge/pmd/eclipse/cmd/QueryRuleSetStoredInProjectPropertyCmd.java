@@ -35,6 +35,8 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
+import name.herlin.command.CommandException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
@@ -46,6 +48,11 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2004/12/03 00:22:42  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
+ *
  * Revision 1.1  2004/11/21 21:39:45  phherlin
  * Applying Command and CommandProcessor patterns
  *
@@ -61,17 +68,15 @@ public class QueryRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
      */
     public QueryRuleSetStoredInProjectPropertyCmd() {
         setReadOnly(true);
-        setOutputData(true);
+        setOutputProperties(true);
         setName("QueryRuleSetStoredInProjectProperty");
         setDescription("Query whether a project rule set is stored in a project instead of the plugin properties store.");
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.cmd.DefaultCommand#execute()
+     * @see name.herlin.command.ProcessableCommand#execute()
      */
-    protected void execute() throws CommandException {
-        if (this.project == null) throw new MandatoryInputParameterMissingException("project");
-
+    public void execute() throws CommandException {
         Boolean booleanProperty = Boolean.FALSE;
         boolean flSaveInSession = false;
 
@@ -109,5 +114,14 @@ public class QueryRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
      */
     public void setProject(IProject project) {
         this.project = project;
+        setReadyToExecute(true);
+    }
+    
+    /**
+     * @see name.herlin.command.Command#reset()
+     */
+    public void reset() {
+        this.project = null;
+        setReadyToExecute(false);
     }
 }

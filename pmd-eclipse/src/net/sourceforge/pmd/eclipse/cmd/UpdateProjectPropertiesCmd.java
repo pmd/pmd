@@ -35,14 +35,13 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
+import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
 import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.IWorkingSet;
 
 /**
@@ -52,6 +51,11 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2004/12/03 00:22:42  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
+ *
  * Revision 1.2  2004/11/28 20:31:37  phherlin
  * Continuing the refactoring experiment
  *
@@ -60,7 +64,7 @@ import org.eclipse.ui.IWorkingSet;
  *
  *
  */
-public class UpdateProjectPropertiesCmd extends JobCommand {
+public class UpdateProjectPropertiesCmd extends DefaultCommand {
     private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
@@ -74,50 +78,46 @@ public class UpdateProjectPropertiesCmd extends JobCommand {
      *
      */
     public UpdateProjectPropertiesCmd() {
-        super("Updating project properties");
         setReadOnly(false);
-        setOutputData(true);
+        setOutputProperties(true);
         setName("UpdateProjectProperties");
         setDescription("Update a project PMD specific properties.");
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.cmd.DefaultCommand#execute()
+     * @see name.herlin.command.ProcessableCommand#execute()
      */
-    protected IStatus execute() throws CommandException {
-        if (this.project == null) throw new MandatoryInputParameterMissingException("project");
-        if (this.projectRuleSet == null) throw new MandatoryInputParameterMissingException("projectRuleSet");
-
-        this.getMonitor().beginTask("Updating project properties", 4);
-        if (!this.getMonitor().isCanceled()) {
+    public void execute() throws CommandException {
+//        this.getMonitor().beginTask("Updating project properties", 4);
+//        if (!this.getMonitor().isCanceled()) {
             try {
                 ProjectPropertiesModel projectPropertyModel = ModelFactory.getFactory().getProperiesModelForProject(this.project);
 
-                this.getMonitor().subTask("Updating PMD enabling state");
+//                this.getMonitor().subTask("Updating PMD enabling state");
                 projectPropertyModel.setPmdEnabled(this.pmdEnabled);
-                this.getMonitor().worked(1);
+//                this.getMonitor().worked(1);
       
-                this.getMonitor().subTask("Updating project rule set");
+//                this.getMonitor().subTask("Updating project rule set");
                 projectPropertyModel.setProjectRuleSet(this.projectRuleSet);
-                this.getMonitor().worked(1);
+//                this.getMonitor().worked(1);
 
-                this.getMonitor().subTask("Updating project working set");
+//                this.getMonitor().subTask("Updating project working set");
                 projectPropertyModel.setProjectWorkingSet(this.projectWorkingSet);
-                this.getMonitor().worked(1);
+//                this.getMonitor().worked(1);
 
-                this.getMonitor().subTask("Updating rule set location state");
+//                this.getMonitor().subTask("Updating rule set location state");
                 projectPropertyModel.setRuleSetStoredInProject(this.ruleSetStoredInProject);
-                this.getMonitor().worked(1);
+//                this.getMonitor().worked(1);
 
                 this.needRebuild = projectPropertyModel.isNeedRebuild();
                 this.ruleSetFileExists = !projectPropertyModel.isRuleSetFileExist();
             } catch (ModelException e) {
                 throw new CommandException(e.getMessage(), e);
             }
-        }
+//        }
 
-        this.getMonitor().done();
-        return this.getMonitor().isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
+//        this.getMonitor().done();
+//        return this.getMonitor().isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
     }
 
     /**
@@ -167,5 +167,22 @@ public class UpdateProjectPropertiesCmd extends JobCommand {
      */
     public boolean isRuleSetFileExists() {
         return this.ruleSetFileExists;
+    }
+    
+    /**
+     * @see name.herlin.command.Command#reset()
+     */
+    public void reset() {
+        this.project = null;
+        this.pmdEnabled = false;
+        this.projectRuleSet = null;
+        this.ruleSetStoredInProject = false;
+    }
+    
+    /**
+     * @see name.herlin.command.Command#isReadyToExecute()
+     */
+    public boolean isReadyToExecute() {
+        return (this.project != null) && (this.projectRuleSet != null);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Created on 20 nov. 2004
+ * Created on 3 déc. 2004
  *
  * Copyright (c) 2004, PMD for Eclipse Development Team
  * All rights reserved.
@@ -35,43 +35,60 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+
+import name.herlin.command.CommandException;
+import name.herlin.command.CommandProcessor;
+import name.herlin.command.ProcessableCommand;
+import name.herlin.command.UnsetInputPropertiesException;
+import net.sourceforge.pmd.eclipse.PMDPlugin;
+
 /**
- * This the abstraction of a Command 
+ * This is a particular processor for Eclipse in order to handle long running
+ * commands.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2004/11/21 21:39:45  phherlin
- * Applying Command and CommandProcessor patterns
+ * Revision 1.1  2004/12/03 00:22:42  phherlin
+ * Continuing the refactoring experiment.
+ * Implement the Command framework.
+ * Refine the MVC pattern usage.
  *
  *
  */
-public interface Command {
+public class JobCommandProcessor implements CommandProcessor {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.JobCommandProcessor");
+
     /**
-     * To execute a command
-     * @throws CommandException if a technical or internal error occurred
+     * @see name.herlin.command.CommandProcessor#processCommand(name.herlin.command.ProcessableCommand)
      */
-    void performExecute() throws CommandException;
-    
-    /**
-     * @return the name of the Command
-     */
-    String getName();
-    
-    /**
-     * @return the description of the Command
-     */
-    String getDescription();
-    
-    /**
-     * 
-     * @return whether the command apply some modifications or not
-     */
-    boolean isReadOnly();
-    
-    /** 
-     * @return whether the command has a result or output data
-     */
-    boolean hasOutputData();
+    public void processCommand(final ProcessableCommand aCommand) throws CommandException {
+        log.debug("Begining a job command");
+
+        if (!aCommand.isReadyToExecute()) throw new UnsetInputPropertiesException();
+        
+        Job job = new Job(aCommand.getName()) {
+            protected IStatus run(IProgressMonitor monitor) {
+                try {
+                    ((DefaultCommand) aCommand).setMonitor(monitor);
+                    aCommand.execute();
+                } catch (CommandException e) {
+                    PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
+                }
+                
+                return Status.OK_STATUS;
+            }
+        };
+        
+        job.schedule();
+        log.debug("Ending a job command");
+    }
+
 }
