@@ -6,10 +6,7 @@
 package test.net.sourceforge.pmd.rules.design;
 
 import test.net.sourceforge.pmd.rules.RuleTst;
-import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.rules.design.LooseCouplingRule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
 
 public class LooseCouplingRuleTest extends RuleTst {
     private LooseCouplingRule rule;

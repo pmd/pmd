@@ -5,26 +5,19 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.rules.EmptyWhileStmtRule;
 import net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule;
-import net.sourceforge.pmd.Report;
 
 public class OverrideBothEqualsAndHashcodeRuleTest extends RuleTst {
     public void test1() throws Throwable{
-        Report report = process("OverrideBothEqualsAndHashcode1.java", new OverrideBothEqualsAndHashcodeRule());
-        assertEquals(1, report.size());
+        runTest("OverrideBothEqualsAndHashcode1.java", 1, new OverrideBothEqualsAndHashcodeRule());
     }
     public void test2() throws Throwable{
-        Report report = process("OverrideBothEqualsAndHashcode2.java", new OverrideBothEqualsAndHashcodeRule());
-        assertEquals(1, report.size());
+        runTest("OverrideBothEqualsAndHashcode2.java", 1, new OverrideBothEqualsAndHashcodeRule());
     }
     public void test3() throws Throwable{
-        Report report = process("OverrideBothEqualsAndHashcode3.java", new OverrideBothEqualsAndHashcodeRule());
-        assertEquals(0, report.size());
+        runTest("OverrideBothEqualsAndHashcode3.java", 0, new OverrideBothEqualsAndHashcodeRule());
     }
     public void test4() throws Throwable{
-        Report report = process("OverrideBothEqualsAndHashcode4.java", new OverrideBothEqualsAndHashcodeRule());
-        assertEquals(0, report.size());
+        runTest("OverrideBothEqualsAndHashcode4.java", 0, new OverrideBothEqualsAndHashcodeRule());
     }
 }

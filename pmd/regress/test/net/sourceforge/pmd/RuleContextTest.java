@@ -8,7 +8,6 @@ package test.net.sourceforge.pmd;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.renderers.Renderer;
 
 public class RuleContextTest extends TestCase {
 

@@ -2,12 +2,9 @@ package test.net.sourceforge.pmd.ast;
 
 import java.io.StringReader;
 
-import java.util.Set;
-import java.util.HashSet;
-
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 import net.sourceforge.pmd.ast.*;
 

@@ -5,10 +5,7 @@
  */
 package test.net.sourceforge.pmd.rules.design;
 
-import junit.framework.TestCase;
 import test.net.sourceforge.pmd.rules.RuleTst;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.design.PositionalIteratorRule;
 
 public class PositionalIteratorRuleTest extends RuleTst {

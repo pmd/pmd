@@ -7,12 +7,6 @@ package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.symboltable.*;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LookupControllerTest extends TestCase {
 

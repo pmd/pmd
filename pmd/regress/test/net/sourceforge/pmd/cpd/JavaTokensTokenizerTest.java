@@ -6,7 +6,6 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.cpd.CharacterTokenizer;
 import net.sourceforge.pmd.cpd.TokenList;
 import net.sourceforge.pmd.cpd.JavaTokensTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;

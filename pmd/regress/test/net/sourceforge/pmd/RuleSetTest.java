@@ -1,7 +1,6 @@
 package test.net.sourceforge.pmd;
 
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.ast.*;
 
 import java.io.StringReader;
@@ -22,7 +21,7 @@ public class RuleSetTest extends TestCase
 	"public class Test { }";
 
     public void testConstructor() {
-	RuleSet IUT = new RuleSet();
+        new RuleSet();
     }
 
     public void testAccessors() {

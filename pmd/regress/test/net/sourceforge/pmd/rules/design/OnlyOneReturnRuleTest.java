@@ -6,7 +6,6 @@
 package test.net.sourceforge.pmd.rules.design;
 
 import test.net.sourceforge.pmd.rules.RuleTst;
-import net.sourceforge.pmd.rules.design.PositionalIteratorRule;
 import net.sourceforge.pmd.rules.design.OnlyOneReturnRule;
 
 public class OnlyOneReturnRuleTest extends RuleTst {

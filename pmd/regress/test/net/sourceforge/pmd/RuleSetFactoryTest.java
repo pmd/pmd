@@ -11,7 +11,6 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
-import java.io.StringReader;
 import java.io.ByteArrayInputStream;
 import java.util.Iterator;
 import java.util.Set;

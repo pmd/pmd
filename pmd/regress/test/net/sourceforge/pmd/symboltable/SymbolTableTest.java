@@ -8,13 +8,6 @@ package test.net.sourceforge.pmd.symboltable;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.symboltable.*;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 public class SymbolTableTest extends TestCase {
 

@@ -7,17 +7,9 @@ package test.net.sourceforge.pmd.rules;
  * juicy code sharing.
  */
 
-import java.io.InputStream;
-
-import java.util.List;
-import java.util.ArrayList;
-
 import junit.framework.TestCase;
 
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.ast.*;
 
 public class RuleTst

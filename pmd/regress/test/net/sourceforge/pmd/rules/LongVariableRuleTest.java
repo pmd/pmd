@@ -4,7 +4,6 @@ import test.net.sourceforge.pmd.*;
 
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.rules.LongVariableRule;
-import net.sourceforge.pmd.renderers.Renderer;
 
 import junit.framework.*;
 

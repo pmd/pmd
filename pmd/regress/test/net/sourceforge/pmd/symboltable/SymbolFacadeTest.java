@@ -6,14 +6,6 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.ast.*;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
-import net.sourceforge.pmd.symboltable.SymbolTable;
-import net.sourceforge.pmd.symboltable.ContextManager;
-import net.sourceforge.pmd.symboltable.ContextManagerImpl;
-
-import java.io.Reader;
-import java.io.InputStreamReader;
 
 public class SymbolFacadeTest extends TestCase {
 

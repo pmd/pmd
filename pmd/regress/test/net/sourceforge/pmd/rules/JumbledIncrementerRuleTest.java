@@ -5,9 +5,7 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.rules.JumbledIncrementerRule;
-import net.sourceforge.pmd.ast.ASTForStatement;
 
 public class JumbledIncrementerRuleTest extends RuleTst {
 

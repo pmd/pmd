@@ -5,7 +5,6 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Report;

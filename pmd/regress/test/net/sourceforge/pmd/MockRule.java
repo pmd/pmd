@@ -5,7 +5,6 @@
  */
 package test.net.sourceforge.pmd;
 
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.*;
 
 import java.util.*;

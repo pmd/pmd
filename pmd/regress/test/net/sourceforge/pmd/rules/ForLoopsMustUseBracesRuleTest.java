@@ -6,7 +6,6 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.rules.WhileLoopsMustUseBracesRule;
 import net.sourceforge.pmd.rules.ForLoopsMustUseBracesRule;
 
 public class ForLoopsMustUseBracesRuleTest extends RuleTst {

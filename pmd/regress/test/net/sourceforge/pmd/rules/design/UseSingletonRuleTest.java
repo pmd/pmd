@@ -2,15 +2,7 @@ package test.net.sourceforge.pmd.rules.design;
 
 import test.net.sourceforge.pmd.rules.*;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import java.io.InputStream;
-
-import junit.framework.TestCase;
-
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.ast.*;
 import net.sourceforge.pmd.rules.design.*;
 import net.sourceforge.pmd.stat.Metric;

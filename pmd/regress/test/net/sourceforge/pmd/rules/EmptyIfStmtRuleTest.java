@@ -7,7 +7,6 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.rules.EmptyIfStmtRule;
 
 public class EmptyIfStmtRuleTest extends RuleTst {
