@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTExclusiveOrExpression extends SimpleNode {
   public ASTExclusiveOrExpression(int id) {
     super(id);

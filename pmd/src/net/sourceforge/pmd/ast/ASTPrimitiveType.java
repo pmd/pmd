@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTPrimitiveType extends SimpleNode {
   public ASTPrimitiveType(int id) {
     super(id);

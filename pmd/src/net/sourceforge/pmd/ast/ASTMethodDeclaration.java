@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTMethodDeclaration extends SimpleNode {
   public ASTMethodDeclaration(int id) {
     super(id);

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTSynchronizedStatement extends SimpleNode {
   public ASTSynchronizedStatement(int id) {
     super(id);

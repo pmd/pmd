@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTArrayDimsAndInits extends SimpleNode {
   public ASTArrayDimsAndInits(int id) {
     super(id);

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTFormalParameter extends SimpleNode {
   public ASTFormalParameter(int id) {
     super(id);

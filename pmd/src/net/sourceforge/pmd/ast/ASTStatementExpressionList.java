@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTStatementExpressionList extends SimpleNode {
   public ASTStatementExpressionList(int id) {
     super(id);

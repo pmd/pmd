@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTResultType extends SimpleNode {
   public ASTResultType(int id) {
     super(id);

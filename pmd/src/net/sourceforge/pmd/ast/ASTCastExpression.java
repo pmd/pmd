@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTCastExpression extends SimpleNode {
   public ASTCastExpression(int id) {
     super(id);

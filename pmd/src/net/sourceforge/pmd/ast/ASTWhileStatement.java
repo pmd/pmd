@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTWhileStatement extends SimpleNode {
   public ASTWhileStatement(int id) {
     super(id);

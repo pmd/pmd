@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTIfStatement extends SimpleNode {
   public ASTIfStatement(int id) {
     super(id);

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTLocalVariableDeclaration extends SimpleNode {
   public ASTLocalVariableDeclaration(int id) {
     super(id);

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTBooleanLiteral extends SimpleNode {
   public ASTBooleanLiteral(int id) {
     super(id);

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTAllocationExpression extends SimpleNode {
   public ASTAllocationExpression(int id) {
     super(id);

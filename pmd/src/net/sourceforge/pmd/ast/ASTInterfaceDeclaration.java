@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTInterfaceDeclaration extends SimpleNode {
   public ASTInterfaceDeclaration(int id) {
     super(id);

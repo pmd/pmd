@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTEqualityExpression extends SimpleNode {
   public ASTEqualityExpression(int id) {
     super(id);

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTTypeDeclaration extends SimpleNode {
   public ASTTypeDeclaration(int id) {
     super(id);

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTLiteral extends SimpleNode {
   public ASTLiteral(int id) {
     super(id);

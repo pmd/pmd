@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTCastLookahead extends SimpleNode {
   public ASTCastLookahead(int id) {
     super(id);

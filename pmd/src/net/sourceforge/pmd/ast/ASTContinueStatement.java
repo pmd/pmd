@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTContinueStatement extends SimpleNode {
   public ASTContinueStatement(int id) {
     super(id);

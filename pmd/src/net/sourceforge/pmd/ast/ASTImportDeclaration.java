@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTImportDeclaration extends SimpleNode {
   public ASTImportDeclaration(int id) {
     super(id);

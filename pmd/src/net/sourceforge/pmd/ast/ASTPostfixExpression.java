@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTPostfixExpression extends SimpleNode {
   public ASTPostfixExpression(int id) {
     super(id);

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTAssignmentOperator extends SimpleNode {
   public ASTAssignmentOperator(int id) {
     super(id);

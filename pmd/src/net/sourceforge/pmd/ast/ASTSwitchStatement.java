@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTSwitchStatement extends SimpleNode {
   public ASTSwitchStatement(int id) {
     super(id);

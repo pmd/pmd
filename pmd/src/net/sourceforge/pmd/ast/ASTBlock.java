@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTBlock extends SimpleNode {
   public ASTBlock(int id) {
     super(id);

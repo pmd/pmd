@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-
 public class ASTPrimaryExpression extends SimpleNode {
   public ASTPrimaryExpression(int id) {
     super(id);
