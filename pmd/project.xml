@@ -30,7 +30,7 @@
 </ul>
 <p>PMD has plugins for JEdit, JBuilder, Netbeans/Forte/Sun ONE, IntelliJ IDEA, Maven, Ant, Eclipse,
 Gel, and Emacs.  You can <a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a>.</p>
-<p>Thanks to the <a href="http://www.cougaar.org/index.html?referrer=pmd">Cougaar</a> program for sponsoring PMD!</p>
+<p>Thanks to the <a href="http://cougaar.org/index.php?referrer=pmd">Cougaar</a> program for sponsoring PMD!</p>
   ]]>
   </description>
   <shortDescription>PMD Source Checker</shortDescription>
