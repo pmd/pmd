@@ -1,0 +1,44 @@
+<project name="pmd-dcpd" default="compile" basedir="../">
+
+<property name="lib" value="lib\"/>
+<property name="compiletimelibsdir" value="${lib}/compiletimeonly"/>
+<property name="src" value="src\"/>
+<property name="build" value="build\"/>
+<property name="jar" value="pmd-dcpd-0.1.jar"/>
+<property name="build.compiler" value="jikes"/>
+
+<target name="delete">
+    <delete dir="${build}"/>
+    <delete file="${lib}\${jar}"/>
+    <mkdir dir="${build}"/>
+</target>
+
+<target name="compile">
+    <javac  deprecation="true"
+            debug="true"
+            optimize="false"
+            srcdir="${src}"
+            destdir="${build}">
+        <classpath>
+            <pathelement location="${compiletimelibsdir}/jini-core.jar"/>
+            <pathelement location="${compiletimelibsdir}/jini-ext.jar"/>
+            <pathelement location="${lib}/pmd-0.9.jar"/>
+        </classpath>
+    </javac>
+</target>
+
+<target name="rmic">
+    <rmic base="${build}" classname="net.sourceforge.pmd.dcpd.JobAddedListener" >
+        <classpath>
+            <pathelement location="${compiletimelibsdir}/jini-core.jar"/>
+            <pathelement location="${compiletimelibsdir}/jini-ext.jar"/>
+        </classpath>
+    </rmic>
+</target>
+
+<target name="clean" depends="delete,compile,rmic"/>
+
+
+
+</project>
+
