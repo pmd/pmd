@@ -35,6 +35,10 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.15  2004/12/03 00:23:40  phherlin
+ * Implement the NOPMD feature.
+ * For now, lets put the "NOPMD" string in hard in the source code.
+ *
  * Revision 1.14  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -180,7 +184,10 @@ public class PMDProcessor {
      */
     private void initialize() {
         pmdEngine = new PMD();
+        pmdEngine.setExcludeMarker("NOPMD");
+        
         pmdEngineJdk13 = new PMD(new TargetJDK1_3());
+        pmdEngineJdk13.setExcludeMarker("NOPMD");
     }
 
     /**
