@@ -1,0 +1,371 @@
+<?xml version="1.0"?>
+
+<project version="2">
+  <component class="com.intellij.ant.AntConfiguration" />
+  <component class="com.intellij.ant.AntManager">
+    <option name="OPEN_IN_TEXT_VIEW" value="false" />
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+  </component>
+  <component class="com.intellij.codeInsight.CodeInsightManager">
+    <disable_hints />
+  </component>
+  <component class="com.intellij.compiler.Compiler">
+    <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="COMPILE_IN_BACKGROUND" value="false" />
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="HIDE_WARNINGS" value="false" />
+  </component>
+  <component class="com.intellij.compiler.JavacSettings">
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="DEPRECATION" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+    <option name="MAXIMUM_HEAP_SIZE" value="128" />
+  </component>
+  <component class="com.intellij.compiler.JikesSettings">
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="DEPRECATION" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="GENERATE_MAKE_FILE_DEPENDENCIES" value="false" />
+    <option name="DO_FULL_DEPENDENCE_CHECK" value="false" />
+    <option name="IS_INCREMENTAL_MODE" value="false" />
+    <option name="IS_EMACS_ERRORS_MODE" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+    <option name="MAXIMUM_HEAP_SIZE" value="128" />
+  </component>
+  <component class="com.intellij.cvsSupport.CvsConfiguration">
+    <Checkout>
+      <option name="DATE_TAG" value="" />
+      <option name="REVISION_TAG" value="" />
+      <option name="PRUNE_EMPTY_DIRS" value="true" />
+      <option name="RESET_STICKY_TAGS" value="false" />
+      <option name="NON_RECURSIVE" value="false" />
+      <option name="CREATE_WORKING_DIR" value="" />
+      <option name="ADDITIONAL_OPTIONS" value="" />
+    </Checkout>
+    <Update>
+      <option name="DATE_TAG" value="" />
+      <option name="REVISION_TAG" value="" />
+      <option name="PRUNE_EMPTY_DIRS" value="true" />
+      <option name="RESET_STICKY_TAGS" value="false" />
+      <option name="NON_RECURSIVE" value="false" />
+      <option name="CREATE_MISSING_DIRECTORIES" value="true" />
+      <option name="DONT_CHANGE_FILES" value="false" />
+      <option name="QUIET_MODE" value="false" />
+      <option name="ADDITIONAL_OPTIONS" value="" />
+    </Update>
+    <Commit>
+      <option name="NON_RECURSIVE" value="false" />
+      <option name="REVISION_TAG" />
+      <option name="LOG_MESSAGE" />
+      <option name="ADDITIONAL_OPTIONS" />
+    </Commit>
+    <Diff>
+      <option name="REVISION_TAG" value="HEAD" />
+      <option name="DATE_TAG" value="" />
+      <option name="IGNORE_WHITESPACE" value="false" />
+    </Diff>
+    <Add>
+      <option name="ADD_AS_BINARY" value="false" />
+      <option name="LOG_MESSAGE" />
+    </Add>
+    <Status>
+      <option name="NON_RECURSIVE" value="false" />
+      <option name="INCLUDE_TAGS" value="false" />
+    </Status>
+    <Edit>
+      <option name="NON_RECURSIVE" value="false" />
+      <option name="FORCE_RECURSIVE" value="false" />
+      <option name="EDIT" value="false" />
+      <option name="UNEDIT" value="false" />
+      <option name="COMMIT" value="false" />
+      <option name="ALL" value="true" />
+      <option name="NONE" value="false" />
+    </Edit>
+    <Remove>
+      <option name="NON_RECURSIVE" value="false" />
+      <option name="FORCE_RECURSIVE" value="false" />
+      <option name="DELETE_FILE" value="false" />
+    </Remove>
+    <Log>
+      <option name="DEFAULT_BRANCH" value="false" />
+      <option name="NON_RECURSIVE" value="false" />
+      <option name="QUIET_MODE" value="true" />
+      <option name="ADDITIONAL_OPTIONS" value="" />
+    </Log>
+    <Editors>
+      <option name="NON_RECURSIVE" value="false" />
+      <option name="FORCE_RECURSIVE" value="false" />
+    </Editors>
+    <option name="CLIENT_PATH" value="" />
+    <option name="EXTERNAL_DIFF_PATH" value="" />
+    <option name="CVS_ENABLED" value="false" />
+    <option name="USE_EXTERNAL_DIFF" value="false" />
+    <option name="WORKING_FILES_READONLY" value="false" />
+    <option name="COMPRESSION_LEVEL" value="0" />
+    <option name="ADDITIONAL_OPTIONS" value="" />
+    <option name="REUSE_LAST_LOG_MESSAGE" value="false" />
+    <option name="PUT_FOCUS_INTO_LOG_MESSAGE" value="false" />
+    <option name="SHOW_PROJECT_ROOTS" value="true" />
+    <option name="SHOW_UPDATE_OPTIONS" value="true" />
+    <option name="SHOW_COMMIT_OPTIONS" value="true" />
+    <option name="SHOW_DIFF_OPTIONS" value="true" />
+    <option name="SHOW_ADD_OPTIONS" value="true" />
+    <option name="SHOW_STATUS_OPTIONS" value="true" />
+    <option name="SHOW_EDIT_OPTIONS" value="true" />
+    <option name="SHOW_UNEDIT_OPTIONS" value="true" />
+    <option name="SHOW_REMOVE_OPTIONS" value="true" />
+    <option name="SHOW_LOG_OPTIONS" value="true" />
+    <option name="SHOW_EDITORS_OPTIONS" value="true" />
+    <option name="HIDE_UNKNOWN_FILES" value="false" />
+    <option name="HIDE_MISSING_FILES" value="false" />
+    <option name="HIDE_UP_TO_DATE_FILES" value="false" />
+  </component>
+  <component class="com.intellij.cvsSupport.CvsManager">
+    <expanded_paths />
+  </component>
+  <component class="com.intellij.debugger.Debugger">
+    <line_breakpoints />
+    <exception_breakpoints>
+      <breakpoint_any>
+        <option name="ENABLED" value="false" />
+        <option name="SUSPEND_VM" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CONDITION" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="LOG_MESSAGE" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INVERSE_CLASS_FILLTERS" value="false" />
+        <option name="NOTIFY_CAUGHT" value="false" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+      </breakpoint_any>
+    </exception_breakpoints>
+    <field_breakpoints />
+    <method_breakpoints />
+  </component>
+  <component class="com.intellij.debugger.settings.DebuggerSettings">
+    <option name="TRACING_FILTERS_ENABLED" value="true" />
+    <option name="VALUE_LOOKUP_DELAY" value="700" />
+    <option name="DEBUGGER_TRANSPORT" value="0" />
+    <option name="FORCE_CLASSIC_VM" value="true" />
+    <option name="HIDE_DEBUGGER_ON_PROCESS_TERMINATION" value="false" />
+    <option name="SKIP_SYNTHETIC_METHODS" value="true" />
+    <option name="SKIP_CONSTRUCTORS" value="false" />
+    <default_breakpoint_settings>
+      <option name="ENABLED" value="true" />
+      <option name="SUSPEND_VM" value="true" />
+      <option name="COUNT_FILTER_ENABLED" value="false" />
+      <option name="COUNT_FILTER" value="0" />
+      <option name="CONDITION_ENABLED" value="false" />
+      <option name="CONDITION" />
+      <option name="LOG_ENABLED" value="false" />
+      <option name="LOG_EXPRESSION_ENABLED" value="false" />
+      <option name="LOG_MESSAGE" />
+      <option name="CLASS_FILTERS_ENABLED" value="false" />
+      <option name="INVERSE_CLASS_FILLTERS" value="false" />
+      <option name="NOTIFY_CAUGHT" value="true" />
+      <option name="NOTIFY_UNCAUGHT" value="true" />
+      <option name="WATCH_MODIFICATION" value="true" />
+      <option name="WATCH_ACCESS" value="true" />
+      <option name="WATCH_ENTRY" value="true" />
+      <option name="WATCH_EXIT" value="true" />
+    </default_breakpoint_settings>
+    <filter>
+      <option name="PATTERN" value="com.sun.*" />
+      <option name="ENABLED" value="true" />
+    </filter>
+    <filter>
+      <option name="PATTERN" value="java.*" />
+      <option name="ENABLED" value="true" />
+    </filter>
+    <filter>
+      <option name="PATTERN" value="javax.*" />
+      <option name="ENABLED" value="true" />
+    </filter>
+    <filter>
+      <option name="PATTERN" value="org.omg.*" />
+      <option name="ENABLED" value="true" />
+    </filter>
+    <filter>
+      <option name="PATTERN" value="sun.*" />
+      <option name="ENABLED" value="true" />
+    </filter>
+    <filter>
+      <option name="PATTERN" value="junit.*" />
+      <option name="ENABLED" value="true" />
+    </filter>
+  </component>
+  <component class="com.intellij.debugger.ui.DebuggerUI" />
+  <component class="com.intellij.execution.RunManager">
+    <option name="SHOW_SETTINGS_BEFORE_RUNNING" value="true" />
+    <option name="COMPILE_BEFORE_RUNNING" value="true" />
+    <activeType name="Application" />
+    <configuration name="&lt;template&gt;" type="Application" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="Applet" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/config/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="JUnit" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_RUNNER" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="Remote" default="true" selected="false">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5000" />
+    </configuration>
+  </component>
+  <component class="com.intellij.ide.SelectInManager" />
+  <component class="com.intellij.ide.bookmarks.BookmarkManager" />
+  <component class="com.intellij.ide.commander.Commander">
+    <leftPanel view="Project" active="true" />
+    <rightPanel view="Project" active="false" />
+    <splitter proportion="0.5" />
+  </component>
+  <component class="com.intellij.ide.desktop.IdeDocumentManager">
+    <recent_files>
+      <file_info url="file://$PROJECT_DIR$/src/net/sourceforge/pmd/jedit/PMDJEditPlugin.java" column="0" line="40" />
+      <file_info url="file://$PROJECT_DIR$/etc/build.xml" column="35" line="4" />
+      <file_info url="file://$PROJECT_DIR$/etc/changelog.txt" column="0" line="0" />
+    </recent_files>
+    <open_files>
+      <file_info url="file://$PROJECT_DIR$/src/net/sourceforge/pmd/jedit/PMDJEditPlugin.java" column="0" line="40" />
+      <file_info url="file://$PROJECT_DIR$/etc/build.xml" column="35" line="4" />
+      <file_info url="file://$PROJECT_DIR$/etc/changelog.txt" column="0" line="0" />
+      <file_info url="file://$PROJECT_DIR$/etc/doing_the_next_pmd_jedit_release.txt" column="0" line="0" />
+      <active_file url="file://$PROJECT_DIR$/etc/doing_the_next_pmd_jedit_release.txt" />
+    </open_files>
+  </component>
+  <component class="com.intellij.ide.hierarchy.HierarchyBrowserManager">
+    <option name="SHOW_PACKAGES" value="false" />
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="SORT_ALPHABETICALLY" value="false" />
+  </component>
+  <component class="com.intellij.ide.impl.ProjectWorkspace" />
+  <component class="com.intellij.ide.navigator.impl.ProjectNavigatorSettings">
+    <navigator id="ClasspathNavigator" flattenPackages="false" showMembers="false" />
+    <navigator id="ProjectNavigator" flattenPackages="false" showMembers="false">
+      <expanded_node type="directory" url="file://$PROJECT_DIR$" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/etc" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/config" />
+    </navigator>
+    <navigator id="SourcepathNavigator" flattenPackages="false" showMembers="false" />
+  </component>
+  <component class="com.intellij.ide.structureView.StructureViewFactory">
+    <option name="SORT_MODE" value="0" />
+    <option name="GROUP_OVERRIDINGS" value="true" />
+    <option name="GROUP_IMPLEMENTINGS" value="true" />
+    <option name="AUTOSCROLL_MODE" value="true" />
+    <option name="SHOW_METHODS" value="true" />
+    <option name="SHOW_FIELDS" value="true" />
+  </component>
+  <component class="com.intellij.ide.util.PropertiesComponent" />
+  <component class="com.intellij.javadoc.JavadocGenerationManager">
+    <option name="OUTPUT_DIRECTORY" />
+    <option name="OPTION_SCOPE" value="protected" />
+    <option name="OPTION_HIERARCHY" value="false" />
+    <option name="OPTION_NAVIGATOR" value="false" />
+    <option name="OPTION_INDEX" value="false" />
+    <option name="OPTION_SEPARATE_INDEX" value="false" />
+    <option name="OPTION_USE_1_1" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_USE" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_AUTHOR" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_VERSION" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="false" />
+    <option name="OPTION_DEPRECATED_LIST" value="false" />
+    <option name="OTHER_OPTIONS" />
+    <option name="HEAP_SIZE" />
+    <option name="OPEN_IN_BROWSER" value="false" />
+  </component>
+  <component class="com.intellij.projectRoots.ProjectRootContainer">
+    <jdk name="java version &quot;1.3.1_03&quot;" />
+    <root file="jar://$PROJECT_DIR$/lib/jedit.jar!/">
+      <property name="type" value="classPathEntry" />
+    </root>
+    <root file="file://$PROJECT_DIR$/build">
+      <property name="type" value="outputPath" />
+    </root>
+    <root file="jar://$PROJECT_DIR$/lib/pmd-0.3.jar!/">
+      <property name="type" value="classPathEntry" />
+    </root>
+    <root file="file://$PROJECT_DIR$">
+      <property name="type" value="projectFiles" />
+    </root>
+    <root file="file://$PROJECT_DIR$/src">
+      <property name="type" value="sourcePathEntry" />
+    </root>
+    <assert_keyword enabled="no" />
+  </component>
+  <component class="com.intellij.usageView.impl.UsageViewSettings">
+    <option name="EXPORT_FILE_NAME" value="$PROJECT_DIR$/report.txt" />
+    <option name="IS_EXPANDED" value="false" />
+    <option name="IS_SHOW_PACKAGES" value="true" />
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="IS_FILTER_DUPLICATED_LINE" value="false" />
+  </component>
+  <component class="com.intellij.vssSupport.VssConfiguration">
+    <CheckoutOptions>
+      <option name="COMMENT" value="" />
+      <option name="DO_NOT_GET_LATEST_VERSION" value="false" />
+      <option name="REPLACE_WRITABLE" value="false" />
+      <option name="RECURSIVE" value="false" />
+    </CheckoutOptions>
+    <CheckinOptions>
+      <option name="COMMENT" value="" />
+      <option name="KEEP_CHECKED_OUT" value="false" />
+      <option name="RECURSIVE" value="false" />
+    </CheckinOptions>
+    <AddOptions>
+      <option name="COMMENT" value="" />
+      <option name="STORE_ONLY_LATEST_VERSION" value="false" />
+      <option name="CHECK_OUT_IMMEDIATELY" value="false" />
+      <option name="FILE_TYPE" value="0" />
+    </AddOptions>
+    <UndocheckoutOptions>
+      <option name="MAKE_WRITABLE" value="false" />
+      <option name="REPLACE_LOCAL_COPY" value="0" />
+      <option name="RECURSIVE" value="false" />
+    </UndocheckoutOptions>
+    <DiffOptions>
+      <option name="IGNORE_WHITE_SPACE" value="false" />
+      <option name="IGNORE_CASE" value="false" />
+    </DiffOptions>
+    <GetOptions>
+      <option name="REPLACE_WRITABLE" value="0" />
+      <option name="MAKE_WRITABLE" value="false" />
+      <option name="RECURSIVE" value="false" />
+    </GetOptions>
+    <option name="ENABLED" value="false" />
+    <option name="CLIENT_PATH" value="" />
+    <option name="SRCSAFEINI_PATH" value="" />
+    <option name="USER_NAME" value="" />
+    <option name="PWD" value="" />
+    <option name="SHOW_CHECKOUT_OPTIONS" value="true" />
+    <option name="SHOW_CHECKIN_OPTIONS" value="true" />
+    <option name="SHOW_ADD_OPTIONS" value="true" />
+    <option name="SHOW_UNDOCHECKOUT_OPTIONS" value="true" />
+    <option name="SHOW_DIFF_OPTIONS" value="true" />
+    <option name="SHOW_GET_OPTIONS" value="true" />
+    <option name="USE_EXTERNAL_DIFF" value="false" />
+    <option name="EXTERNAL_DIFF_PATH" value="" />
+    <option name="REUSE_LAST_COMMENT" value="false" />
+    <option name="PUT_FOCUS_INTO_COMMENT" value="false" />
+  </component>
+</project>
+

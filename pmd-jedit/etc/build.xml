@@ -1,0 +1,49 @@
+<project name="PMDJEditPlugin" default="clean" basedir="../">
+
+	<property name="config" value="config/"/>
+	<property name="src" value="src/"/>
+	<property name="lib" value="lib/"/>
+	<property name="build" value="build/"/>
+	<property name="jedit.install.dir"  value="c:\jedit\jars"/>
+
+
+	<path id="project.class.path">
+		<pathelement location="${lib}/pmd.jar"/>
+		<pathelement location="${lib}/jedit.jar"/>
+		<pathelement location="${build}"/>
+	</path>
+
+
+    <target name="delete">
+        <delete file="${lib}/${ant.project.name}.jar"/>
+		<delete dir="${build}"/>
+        <mkdir dir="${build}"/>
+    </target>
+
+	<target name="compile">
+		<javac
+			srcdir="${src}"
+			destdir="${build}"
+			debug="on"
+			deprecation="on">
+			<classpath refid="project.class.path"/>
+		</javac>
+	</target>
+
+
+	<target name="dist" depends="clean">
+		<jar jarfile="${lib}/${ant.project.name}.jar">
+			<fileset dir="${build}"/>
+			<fileset dir="${config}">
+				<include name="*.props"/>
+				<include name="*.xml"/>
+				<include name="*.html"/>
+			</fileset>
+		</jar>
+        <copy file="${lib}/${ant.project.name}.jar" todir="${jedit.install.dir}"/>
+	</target>
+
+	<target name="clean" depends="delete,compile">
+	</target>
+
+</project>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE ACTIONS SYSTEM "actions.dtd">
+<ACTIONS>
+  <ACTION NAME="pmd.check">
+    <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.check(view);
+    </CODE>
+  </ACTION>
+</ACTIONS>

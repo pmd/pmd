@@ -1,0 +1,40 @@
+update the release date in the changelog
+
+ant release <-- new task, should create jar and zip it up into a pmd-jedit.zip that looks like:
+jars/pmd-0.3.jar
+jars/PMDJEditPlugin.jar
+
+so that it can be unzipped like an overlay
+
+cvs add -kb pmd-jedit-0.1.jar
+cvs rm pmd-jedit-0.1.jar
+cvs ci -m "adding new jar, removing old one"
+cd c:\data\pmd-jedit
+cvs rtag -D tomorrow "pmd_jedit_release_0_4" pmd-jedit
+rmdir /q /s c:\tmp\pmd-jedit
+mkdir c:\tmp\pmd-jedit
+cvs export -d c:\tmp\pmd-jedit -r pmd_jedit_release_0_1 pmd-jedit
+zip it up, rename it to pmd-jedit-0.1.zip
+unzip it into c:\jedit
+TESTS: Can you
+1) run jedit ok?
+2) open the options panel?
+3) run PMD on a file?
+
+if you see a bug and fix it, you can delete the release using:
+cvs rtag -d pmd_jedit_release_0_1 pmd
+and then retag everything
+
+FTP the zip file to SF
+ftp upload.sourceforge.net
+generic userid/password: anonymous/tomcopeland@users.sourceforge.net
+cd incoming
+bin
+put pmd-jedit-0.1.zip
+
+Go to Admin, Edit/Release Files, click on Add new release
+Paste stuff into the changelog/readme boxes
+Add the pmd-jedit-0.1.zip file
+Classify the file
+
+Submit some news saying "hey, new release of the JEdit plugin!"
