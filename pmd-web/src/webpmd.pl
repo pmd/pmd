@@ -19,7 +19,7 @@ sub default() {
  print "<center><a href=\"http://pmd.sourceforge.net/\"><img src=\"http://sourceforge.net/sflogo.php?group_id=56262&type=5\" alt=\"Project Ultra*Log @ DARPA\" border=\"0\" /></a></center>";
 
  print h3("<center>PMD-WEB</center>");
- print "PMD is a Java source code analysis tool - it checks your code for unused fields, empty try/catch/finally/if/while blocks, unused method parameters, and stuff like that.  There's much more info <a href=\"http://pmd.sf.net/\">here</a>.<p>This table contains the results of running PMD's <a href=\"http://pmd.sourceforge.net/rules/unusedcode.html\">unused code ruleset</a> against a bunch of Sourceforge projects."; 
+ print "PMD is a Java source code analysis tool - it checks your code for unused fields, empty try/catch/finally/if/while blocks, unused method parameters, and stuff like that.  There's much more info <a href=\"http://pmd.sf.net/\">here</a>.<p>This table contains the results of running PMD's <a href=\"http://pmd.sourceforge.net/rules/unusedcode.html\">unused code ruleset</a> against a bunch of Sourceforge projects.  The JavaNCSS column contains the lines of code analyzed as reported by the excellent <a href=\"http://www.kclee.com/clemens/java/javancss/\">JavaNCSS</a> utility."; 
  print "<p>Comments?  Questions?  Please post them <a href=\"http://sourceforge.net/forum/forum.php?forum_id=188192\">here</a>";
  print "<p><b>1/31/03: The jakarta.apache.org and xml.apache.org projects have been moved <a href=\"http://cvs.apache.org/~tcopeland/pmdweb/\">here</a></b>";
  print br();
@@ -68,20 +68,21 @@ sub loadProjectList() {
 
  @newprojects = sort { $b->getLocation() cmp $a->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
 
- my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>Problems found</th></tr>";
+ my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>JavaNCSS</th><th>Problems found</th></tr>";
  foreach $project (@newprojects) {
   my $jobLink=$project->getTitle();
   if (-e $project->getRptFile()) {
    $jobLink="<a href=\"@{[$project->getRptURL]}\">@{[$project->getTitle()]}</a>";
   }
   $result="${result}<tr><td>${jobLink}</td><td></td><td>@{[$project->getHomePage()]}</td>";
+  $result="${result}<td>@{[$project->getNCSS()]}</td>";
   my $color="red";
   if ($project->getLines < 11) {
    $color="#00ff00";
   } elsif ($project->getLines < 31) {
    $color="yellow";
   }
-  $result="${result}<td bgcolor=$color>@{[$project->getLines()]}</td>";
+  $result="${result}<td bgcolor=$color>@{[$project->getLines()]}</td></tr>";
  }
  $result = "${result}</table>";
  return $result;

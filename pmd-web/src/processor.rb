@@ -19,6 +19,7 @@ jobsDir.each { |candidate|
    job.checkout_code
    if (job.checkOutOK)
     job.run_pmd
+    job.ncss
     job.clear
    end
   end

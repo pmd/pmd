@@ -50,6 +50,11 @@ class Job
   return File.exists?(@sourceDirectory)
  end
   
+  def ncss
+   cmd="/home/users/t/to/tomcopeland/javancss/javancss18.38/bin/javancss -ncss -recursive \"#{@sourceDirectory}\" > \"#{ncssReportFile()}\""
+   `#{cmd}`
+  end
+ 
   def run_pmd
    cmd="java -jar pmd-1.03.jar \"#{@sourceDirectory}\" html rulesets/unusedcode.xml > \"#{reportFile()}\""
    `#{cmd}`
@@ -65,6 +70,10 @@ class Job
  
   def reportFile 
    return "/home/groups/p/pm/pmd/htdocs/reports/#{@unixName}_#{@moduleDirectory.sub(" ", "")}.html"
+  end
+  
+  def ncssReportFile 
+   return "/home/groups/p/pm/pmd/htdocs/reports/#{@unixName}_#{@moduleDirectory.sub(" ", "")}_ncss.txt"
   end
   
   def clear

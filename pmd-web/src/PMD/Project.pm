@@ -41,6 +41,19 @@ sub getLines() {
  }
  return sprintf("%0.f", $lines/4);
 }
+
+sub getNCSS() {
+ my $self=shift;
+ if (! -e getNCSSFile($self)) {
+  return "TBD";
+ }
+ open(FILE,getNCSSFile($self));
+ my @x = <FILE>;
+ close(FILE);
+ @splits = split(/:/,$x[0]);
+ return $splits[1];
+}
+
 sub getLocation() {
  my $self = shift;
  return $self->{LOCATION}
@@ -86,6 +99,14 @@ sub getRptFile() {
  my $self = shift;
  my $name = $self->getReportName();
  return "../htdocs/reports/${name}";
+}
+
+sub getNCSSFile() {
+ my $self = shift;
+ my $modwithoutspaces = $self->{MODULEDIR};
+ $modwithoutspaces=~s/\s+//g;
+ $name = "$self->{UNIXNAME}_${modwithoutspaces}_ncss.txt";
+ return "/home/groups/p/pm/pmd/htdocs/reports/${name}";
 }
 
 sub getReportName() {
