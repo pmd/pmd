@@ -100,7 +100,7 @@ public class AvailableListModel extends AbstractListModel {
 	 *
 	 * @param o The parameter to add to the list
 	 */
-	public void add( Object o ) {
+	public void addRule( Object o ) {
 		if( !list.contains( o ) ) {
 			list.add( ( Rule )o );
 			Collections.sort( list, new RuleComparator() );

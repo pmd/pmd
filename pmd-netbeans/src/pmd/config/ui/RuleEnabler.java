@@ -427,7 +427,7 @@ public class RuleEnabler extends JPanel {
 		if( object != null ) {
 			for( int i = 0; i < object.length; i++ ) {
 				SelectedListModel.getSelectedListModelInstance().remove( object[i] );
-				AvailableListModel.getInstance().add( object[i] );
+				AvailableListModel.getInstance().addRule( object[i] );
 			}
 			editor.firePropertyChange();
 			if( index >= SelectedListModel.getSelectedListModelInstance().getList().size() ) {
@@ -459,7 +459,7 @@ public class RuleEnabler extends JPanel {
 		if( object != null ) {
 			for( int i = 0; i < object.length; i++ ) {
 				AvailableListModel.getInstance().remove( object[i] );
-				SelectedListModel.getSelectedListModelInstance().add( object[i] );
+				SelectedListModel.getSelectedListModelInstance().addRule( object[i] );
 			}
 			editor.firePropertyChange();
 			if( index >= AvailableListModel.getInstance().getList().size() ) {
