@@ -11,6 +11,8 @@ import net.sourceforge.pmd.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
+import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
 
 public class NameOccurrence {
 
@@ -97,6 +99,23 @@ public class NameOccurrence {
     private boolean thirdChildHasDottedName(SimpleNode primaryExpression) {
         Node thirdChild = primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
         return thirdChild instanceof ASTName && ((ASTName)thirdChild).getImage().indexOf(".") == -1;
+    }
+
+    public boolean isSelfAssignment() {
+        if (location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreDecrementExpression || location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreIncrementExpression) {
+            return true;
+        }
+
+        if (location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTStatementExpression) {
+            ASTStatementExpression exp = (ASTStatementExpression)location.jjtGetParent().jjtGetParent().jjtGetParent();
+            if (exp.jjtGetNumChildren() >= 2 && exp.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+                ASTAssignmentOperator op = (ASTAssignmentOperator)exp.jjtGetChild(1);
+                if (op.isCompound()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Scope getScope() {

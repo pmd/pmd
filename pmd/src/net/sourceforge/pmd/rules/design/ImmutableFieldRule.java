@@ -12,6 +12,9 @@ import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
+import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
+import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -59,7 +62,7 @@ public class ImmutableFieldRule extends AbstractRule {
         for (Iterator j = usages.iterator(); j.hasNext();) {
             foundUsage = true;
             NameOccurrence occ = (NameOccurrence)j.next();
-            if (occ.isOnLeftHandSide() || occ.getLocation().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreDecrementExpression || occ.getLocation().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreIncrementExpression) {
+            if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 SimpleNode node = occ.getLocation();
                 SimpleNode constructor = (SimpleNode)node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
@@ -81,7 +84,7 @@ public class ImmutableFieldRule extends AbstractRule {
         }
         return rc;
     }
-    
+
     private boolean initializedInDeclaration(SimpleNode node) {
         return node.findChildrenOfType(ASTVariableInitializer.class).size() > 0;
     }
