@@ -1,0 +1,64 @@
+package test.net.sourceforge.pmd.rules;
+
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.rules.XPathRule;
+
+public class DefaultLabelNotLastInSwitchStmtRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = new XPathRule();
+        rule.addProperty("xpath", "//SwitchStatement[not(SwitchLabel[position() = last()][count(*) = 0])][SwitchLabel[count(*) = 0]");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "ok", 0, rule),
+           new TestDescriptor(TEST2, "bad", 1, rule),
+           new TestDescriptor(TEST3, "ok, no default", 0, rule),
+       });
+    }
+
+    private static final String TEST1 =
+    "public class Foo {" + PMD.EOL +
+    " void bar(int x) {" + PMD.EOL +
+    "  switch(x) { " + PMD.EOL +
+    "  case 1: " + PMD.EOL +
+    "   break; " + PMD.EOL +
+    "  default:" + PMD.EOL +
+    "   break;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " void bar(int x) {" + PMD.EOL +
+    "  switch(x) { " + PMD.EOL +
+    "  case 1: " + PMD.EOL +
+    "   break; " + PMD.EOL +
+    "  default:" + PMD.EOL +
+    "   break;" + PMD.EOL +
+    "  case 2: " + PMD.EOL +
+    "   break; " + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " void bar(int x) {" + PMD.EOL +
+    "  switch(x) { " + PMD.EOL +
+    "  case 1: " + PMD.EOL +
+    "   break; " + PMD.EOL +
+    "  case 2: " + PMD.EOL +
+    "   break; " + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+}

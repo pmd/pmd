@@ -7,6 +7,7 @@ import net.sourceforge.pmd.rules.XPathRule;
 import net.sourceforge.pmd.PMD;
 
 public class AvoidDollarSignsRuleTest extends SimpleAggregatorTst {
+
     private Rule rule;
 
     public void setUp() {
