@@ -39,6 +39,10 @@ public class MockRule implements Rule {
         return this.priority;
     }
 
+    public String getPriorityName() {
+        return null;
+    }
+
     public void setPriority(int priority) {}
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}

@@ -1,5 +1,18 @@
 package net.sourceforge.pmd.swingui;
 
+import net.sourceforge.pmd.PMDDirectory;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
+import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -7,20 +20,6 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
-
-import net.sourceforge.pmd.PMDDirectory;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.SetupFilesEvent;
-import net.sourceforge.pmd.swingui.event.SetupFilesEventListener;
 
 /**
  *

@@ -1,5 +1,9 @@
 package net.sourceforge.pmd.swingui;
 
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -12,10 +16,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
-import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
 
 /**
  *
@@ -226,7 +226,6 @@ class PrintAnalysisResults
         int printAreaRight = m_printAreaX + m_printAreaWidth;
         int dataAreaWidth = printAreaRight - basePrintLineInfo.m_dataX;
         StringBuffer buffer = new StringBuffer(500);
-        int startIndex = 0;
         boolean createPrintLineInfo = false;
 
         for (int n = 0; n < data.length; n++)
@@ -484,16 +483,15 @@ class PrintAnalysisResults
      */
     private class PrintLineInfo
     {
-        private String m_label;
-        private String m_data;
-        private int m_labelWidth;
-        private int m_dataWidth;
-        private int m_labelX;
-        private int m_dataX;
-        private Font m_labelFont;
-        private FontMetrics m_labelFontMetrics;
-        private Font m_dataFont;
-        private FontMetrics m_dataFontMetrics;
-
+        public String m_label;
+        public String m_data;
+        public int m_labelWidth;
+        public int m_dataWidth;
+        public int m_labelX;
+        public int m_dataX;
+        public Font m_labelFont;
+        public FontMetrics m_labelFontMetrics;
+        public Font m_dataFont;
+        public FontMetrics m_dataFontMetrics;
     }
 }
