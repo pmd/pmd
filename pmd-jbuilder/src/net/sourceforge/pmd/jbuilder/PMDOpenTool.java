@@ -68,11 +68,7 @@ public class PMDOpenTool {
             AcceleratorPropertyGroup accpropGrp = new AcceleratorPropertyGroup();
 
             //register the Keymap shortcuts
-            EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke('P', Event.CTRL_MASK | Event.SHIFT_MASK),
-                   E_ACTION_PMDCheck);
-
-            EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke('J', Event.CTRL_MASK | Event.SHIFT_MASK),
-                   E_ACTION_PMDCheckProject);
+            registerShortCuts();
 
             PropertyManager.registerPropertyGroup(apropGrp);
             PropertyManager.registerPropertyGroup(cpropGrp);
@@ -80,6 +76,25 @@ public class PMDOpenTool {
             PropertyManager.registerPropertyGroup(accpropGrp);
 
         }
+    }
+
+
+    static void clearShortCuts() {
+        EditorManager.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
+                AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()));
+        EditorManager.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
+               AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()));
+    }
+
+    static void registerShortCuts() {
+
+        EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
+                AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()),
+               E_ACTION_PMDCheck);
+
+        EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
+               AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()),
+               E_ACTION_PMDCheckProject);
     }
 
     /**

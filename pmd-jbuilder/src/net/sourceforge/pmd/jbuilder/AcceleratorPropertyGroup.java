@@ -23,6 +23,8 @@ import java.util.HashMap;
 import com.borland.primetime.ide.MessageCategory;
 import com.borland.primetime.ide.Browser;
 import java.util.Enumeration;
+import com.borland.primetime.properties.GlobalIntegerProperty;
+import java.awt.event.KeyEvent;
 
 
 
@@ -33,6 +35,18 @@ public class AcceleratorPropertyGroup
         implements PropertyGroup {
 
     public static AcceleratorPropertyGroup currentInstance = null;
+    static GlobalIntegerProperty PROP_CHECKFILE_KEY;
+    static GlobalIntegerProperty PROP_CHECKFILE_MOD;
+    static GlobalIntegerProperty PROP_CHECKPROJ_KEY;
+    static GlobalIntegerProperty PROP_CHECKPROJ_MOD;
+
+    static {
+        PROP_CHECKFILE_KEY = new GlobalIntegerProperty(Constants.RULESETS, "checkfilekey", 'P');
+        PROP_CHECKFILE_MOD = new GlobalIntegerProperty(Constants.RULESETS, "checkfilemod", KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK);
+        PROP_CHECKPROJ_KEY = new GlobalIntegerProperty(Constants.RULESETS, "checkprojkey", 'J');
+        PROP_CHECKPROJ_MOD = new GlobalIntegerProperty(Constants.RULESETS, "checkprojmod", KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK);
+
+    }
 
     /**
     * Standard Constructor
