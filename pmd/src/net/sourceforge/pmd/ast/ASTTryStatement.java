@@ -33,6 +33,19 @@ public class ASTTryStatement extends SimpleNode {
     }
 
     /**
+     * Call hasFinally() before you call this method
+     */
+    public ASTBlock getFinallyBlock() {
+        // assume this is a try..finally construct
+        int finallyNodeIndex = 1;
+        if (hasCatch()) {
+            // jump to the third child since there's a FormalParameter between the catch Block and the finally Block
+            finallyNodeIndex = 3;
+        }
+        return (ASTBlock)jjtGetChild(finallyNodeIndex);
+    }
+
+    /**
      * Call hasCatch() before you call this method
      */
     public ASTBlock getCatchBlock() {
