@@ -1,30 +1,43 @@
-create the JBuilder plugin jar file
-cvs add -kb pmd-jbuilder-0.1.jar
+update the release date in the changelog
+grab the latest pmd.jar file
+
+Create the binary release, i.e., zip upthe PMDOpentools.jar file
+move the zip file into c:\tmp
+
+Create the src release:
+cd lib
+cvs add -kb PMDOpenTools-0.2.jar
+cvs rm PMDOpenTools-0.1.jar
 cvs ci -m "adding new jar, removing old one"
 cd c:\data\pmd
-cvs rtag -D tomorrow "pmd_jbuilder_release_0_1" pmd-jbuilder
+rmdir /q /s pmd-jbuilder\build
+cvs rtag -D tomorrow "pmd_jbuilder_release_0_2" pmd-jbuilder
 rmdir /q /s c:\tmp\pmd-jbuilder
 mkdir c:\tmp\pmd-jbuilder
-cvs export -d c:\tmp\pmd -r pmd_jbuilder_release_0_1 pmd-jbuilder
-zip it up, rename it to pmd-jbuilder-0.1.zip
-unzip it into c:\tmp\pmd-jbuilder-0.1
+cvs export -d c:\tmp\pmd-jbuilder -r pmd_jbuilder_release_0_2 pmd-jbuilder
+zip it up, rename it to pmd-jbuilder-src-0.2.zip
+
+unzip binary release into the JBuilder lib/ext directory
 TESTS:
-1) does it work when dropped in the JBuilder plugin directory?
+1) Can you run jbuilder ok?
+2) Can you run it it on a file and find some unused code?
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_jbuilder_release_0_1 pmd-jbuilder
+cvs rtag -d pmd_jbuilder_release_0_2 pmd
 and then retag everything
 
 FTP the zip file to SF
 ftp upload.sourceforge.net
-generic userid/password: anonymous/dcraine@users.sourceforge.net
+generic userid/password: anonymous/dcraine@infoether.com
 cd incoming
 bin
-put pmd-jbuilder-0.1.zip
+put pmd-jbuilder-src-0.2.zip
+put pmd-jbuilder-bin-0.2.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jbuilder-0.1.zip file
+Add the pmd-jbuilder-src-0.2.zip file
+Add the pmd-jbuilder-bin-0.2.zip file
 Classify the file
 
-Submit some news saying "hey, new release of pmd-jbuilder!"
+Submit some news saying "hey, new release of the jbuilder plugin!"
