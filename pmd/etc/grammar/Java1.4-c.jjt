@@ -1001,37 +1001,22 @@ void Statement() :
   assertLookahead()
   } )
   AssertStatement()
-|
-  LOOKAHEAD(2)
+| LOOKAHEAD(2)
   LabeledStatement()
-|
-  Block()
-|
-  EmptyStatement()
-|
-  StatementExpression() ";"
-|
-  SwitchStatement()
-|
-  IfStatement()
-|
-  WhileStatement()
-|
-  DoStatement()
-|
-  ForStatement()
-|
-  BreakStatement()
-|
-  ContinueStatement()
-|
-  ReturnStatement()
-|
-  ThrowStatement()
-|
-  SynchronizedStatement()
-|
-  TryStatement()
+| Block()
+| EmptyStatement()
+| StatementExpression() ";"
+| SwitchStatement()
+| IfStatement()
+| WhileStatement()
+| DoStatement()
+| ForStatement()
+| BreakStatement()
+| ContinueStatement()
+| ReturnStatement()
+| ThrowStatement()
+| SynchronizedStatement()
+| TryStatement()
 }
 
 void LabeledStatement() :
@@ -1054,14 +1039,10 @@ void BlockStatement() :
 |
   LOOKAHEAD([ "final" ] Type() <IDENTIFIER>)
   LocalVariableDeclaration() ";"
-|
-  "final" TypeDeclaration()
-|
-  Statement()
-|
-  UnmodifiedClassDeclaration()
-|
-// added this choice point to handle inner interfaces. DW, 7/99
+| "final" TypeDeclaration()
+| Statement()
+| UnmodifiedClassDeclaration()
+| // added this choice point to handle inner interfaces. DW, 7/99
   UnmodifiedInterfaceDeclaration()
 }
 
@@ -1090,12 +1071,9 @@ void StatementExpression() :
   PreDecrementExpression()
 |
   PrimaryExpression()
-  [
-    "++"
-  |
-    "--"
-  |
-    AssignmentOperator() Expression()
+  [ "++"
+  | "--"
+  | AssignmentOperator() Expression()
   ]
 }
 
