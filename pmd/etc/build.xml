@@ -9,7 +9,7 @@
 <property name="regress" value="regress\"/>
 <property name="reports" value="reports\"/>
 <property name="version" value="1.04"/>
-<property name="jnlp_staging_area" value="c:\data\importscrubberjnlp\"/>
+<property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
 <path id="classpath.path">
 <pathelement location="${build}"/>
@@ -101,10 +101,15 @@
 
 <target name="dist" depends="clean,jar"/>
 
-<target name="cpdjnlp" depends="dist">
-    <signjar jar="${lib}\pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
-    <exec executable="pscp.exe" os="Windows 2000">
-        <arg line=" ${lib}\pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+<target name="cpdjnlp">
+    <signjar jar="${lib}/pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <echo message="Uploading jar file"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd/lib/pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+    </exec>
+    <echo message="Uploading cpd.jnlp"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd/etc/cpd.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
     </exec>
 </target>
 
