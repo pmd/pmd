@@ -17,6 +17,7 @@ will update documents on the Build Site.
        <classpath refid="maven-classpath" />
     </taskdef>
 
+<!--
     <taskdef
        name="quilt"
        classname="junit.quilt.ant.AntQuiltRunner">
@@ -28,6 +29,8 @@ will update documents on the Build Site.
         <pathelement location="lib/colt.jar" />
       </classpath>
     </taskdef>
+-->
+
   </target>
 
   <target name="pre-build"
