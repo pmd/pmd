@@ -18,6 +18,7 @@
     </menu>
     <menu name="Rule Sets">
       <item name="Basic Rules" href="/rules/basic.html" />
+      <item name="Naming Rules" href="/rules/naming.html" />
       <item name="Unused Code" href="/rules/unusedcode.html" />
       <item name="Design Patterns" href="/rules/design.html" />
       <item name="Coming soon" href="/rules/new_for_0_4.html" />
