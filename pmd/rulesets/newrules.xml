@@ -108,6 +108,8 @@ These are new rules for the next release
           message="user assertEquals(x, y) instead of assertTrue(x.equals(y))"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
+          This rule detects junit assertions in object equallity. These assertions 
+          should be made by more specific mehtods, like assertEquals.
       </description>
     <properties>
         <property name="xpath">
@@ -134,7 +136,20 @@ These are new rules for the next release
     </properties>
         <priority>3</priority>
       <example>
+<![CDATA[
+public class FooTest extends TestCase {
 
+    void testCode() {
+        Object a, b;
+
+        // bad usage
+        assertTrue(a.equals(b));
+
+        // good usage
+        assertEquals(a, b);        
+    }
+}
+]]>
       </example>
     </rule>
 
