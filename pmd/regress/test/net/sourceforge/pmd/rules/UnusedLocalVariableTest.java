@@ -24,21 +24,15 @@ public class UnusedLocalVariableTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        Report report = process("Unused1.java", rule);
-        assertEquals(1, report.size());
-        assertEquals(rule, ((RuleViolation)report.iterator().next()).getRule());
+        runTest("Unused1.java", 1, rule);
     }
 
     public void test2() throws Throwable {
-        Report report = process("Unused2.java", rule);
-        assertEquals(1, report.size());
-        assertEquals(rule, ((RuleViolation)report.iterator().next()).getRule());
+        runTest("Unused2.java", 1, rule);
     }
 
     public void test3() throws Throwable {
-        Report report = process("Unused3.java", rule);
-        assertEquals(1, report.size());
-        assertEquals(rule, ((RuleViolation)report.iterator().next()).getRule());
+        runTest("Unused3.java", 1, rule);
     }
 
     public void test4() throws Throwable {
@@ -46,9 +40,7 @@ public class UnusedLocalVariableTest extends RuleTst {
     }
 
     public void test5() throws Throwable {
-        Report report = process("Unused5.java", rule);
-        assertEquals(1, report.size());
-        assertEquals(rule, ((RuleViolation)report.iterator().next()).getRule());
+        runTest("Unused5.java", 1, rule);
     }
 
     public void test6() throws Throwable {

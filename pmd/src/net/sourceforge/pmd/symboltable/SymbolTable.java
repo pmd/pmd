@@ -16,9 +16,10 @@ public class SymbolTable {
     private LookupController lookupController;
 
     public SymbolTable() {
+        // this sharing of the scopes ArrayList seems evil.  Time will tell.
         List scopes = new ArrayList();
-        cm = new ContextManager(scopes);
         lookupController = new LookupController(scopes);
+        cm = new ContextManager(scopes);
         cm.openScope();
     }
 

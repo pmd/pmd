@@ -47,7 +47,7 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
      */
     public Object visit(ASTName node, Object data) {
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
-            table.lookup(new NameOccurrence(getEndName(node), node.getBeginLine()));
+            table.lookup(new NameOccurrence(node));
         }
         return super.visit(node, data);
     }
@@ -57,10 +57,6 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
         super.visit(node, null);
         table.leaveScope();
         return null;
-    }
-
-    private String getEndName(SimpleNode node) {
-        return (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
     }
 
 }

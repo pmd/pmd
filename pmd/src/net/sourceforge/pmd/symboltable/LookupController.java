@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.ast.SimpleNode;
+
 import java.util.List;
 
 public class LookupController {
@@ -28,5 +30,4 @@ public class LookupController {
             scope.addOccurrence(nameOccurrence);
         }
     }
-
 }

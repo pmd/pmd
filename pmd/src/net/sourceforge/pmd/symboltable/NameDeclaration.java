@@ -18,6 +18,10 @@ public class NameDeclaration {
         this.kind = kind;
     }
 
+    public Kind getKind() {
+        return kind;
+    }
+
     public int getLine() {
         return node.getBeginLine();
     }

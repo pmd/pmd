@@ -13,6 +13,7 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Kind;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.HashMap;
 import java.io.InputStreamReader;
@@ -20,13 +21,11 @@ import java.io.Reader;
 
 public class SymbolTableTest extends TestCase {
 
-    private static final NameDeclaration FOO = new NameDeclaration(NameDeclarationTest.createNode("foo", 10), Kind.UNKNOWN);
-
     public void testAdd() {
         SymbolTable s = new SymbolTable();
-        s.addDeclaration(FOO);
+        s.addDeclaration(NameDeclarationTest.FOO);
         try {
-            s.addDeclaration(FOO);
+            s.addDeclaration(NameDeclarationTest.FOO);
         } catch (RuntimeException e) {
             return; // cool
         }
@@ -45,38 +44,38 @@ public class SymbolTableTest extends TestCase {
 
     public void testRecordUsage() {
         SymbolTable s = new SymbolTable();
-        s.addDeclaration(FOO);
+        s.addDeclaration(NameDeclarationTest.FOO);
         assertTrue(s.getUnusedNameDeclarations().hasNext());
-        s.lookup(new NameOccurrence(FOO.getImage(), FOO.getLine()));
+        s.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
         assertTrue(!s.getUnusedNameDeclarations().hasNext());
     }
 
     public void testRecordOccurrence() {
         SymbolTable table = new SymbolTable();
         table.openScope();
-        table.lookup(new NameOccurrence("bar", 10));
+        table.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
         assertTrue(!table.getUnusedNameDeclarations().hasNext());
     }
 
     public void testRecordOccurrence2() {
         SymbolTable s = new SymbolTable();
-        s.lookup(new NameOccurrence("bar", 10));
+        s.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
         assertTrue(!s.getUnusedNameDeclarations().hasNext());
     }
 
     public void testRecordUsageParent() {
         SymbolTable parent = new SymbolTable();
-        parent.addDeclaration(FOO);
+        parent.addDeclaration(NameDeclarationTest.FOO);
         parent.openScope();
         parent.leaveScope();
-        assertEquals(FOO, parent.getUnusedNameDeclarations().next());
+        assertEquals(NameDeclarationTest.FOO, parent.getUnusedNameDeclarations().next());
     }
 
     public void testRecordUsageParent2() {
         SymbolTable parent = new SymbolTable();
-        parent.addDeclaration(FOO);
+        parent.addDeclaration(NameDeclarationTest.FOO);
         parent.openScope();
-        parent.lookup(new NameOccurrence(FOO.getImage(), FOO.getLine()));
+        parent.lookup(new NameOccurrence(NameDeclarationTest.FOO_NODE));
         assertTrue(!parent.getUnusedNameDeclarations().hasNext());
     }
 }

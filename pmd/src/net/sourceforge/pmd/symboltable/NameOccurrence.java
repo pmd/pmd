@@ -7,42 +7,36 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.SimpleNode;
 
-
 public class NameOccurrence {
 
-    private String image;
-    private int beginLine;
+    private SimpleNode node;
 
-    public NameOccurrence(String image, int beginLine) {
-        this.image = image;
-        this.beginLine = beginLine;
+    public NameOccurrence(SimpleNode node) {
+        this.node = node;
     }
 
     public int getBeginLine() {
-        return this.beginLine;
+        return node.getBeginLine();
     }
 
     public String getImage() {
-        return this.image;
+        return node.getImage();
     }
 
     public boolean equals(Object o) {
         NameOccurrence n = (NameOccurrence)o;
-        return n.getImage().equals(image);
+        return n.getImage().equals(node.getImage());
     }
 
     public int hashCode() {
-        return  image.hashCode();
+        return node.getImage().hashCode();
     }
 
     public String toString() {
-        return image + ":" + beginLine;
+        return node.getImage() + ":" + node.getBeginLine();
     }
 
     public NameDeclaration copyIntoNameDeclaration() {
-        SimpleNode node = new SimpleNode(1);
-        node.setImage(image);
-        node.testingOnly__setBeginLine(beginLine);
         return new NameDeclaration(node, Kind.UNKNOWN);
     }
 

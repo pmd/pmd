@@ -5,8 +5,13 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.ast.SimpleNode;
+
 import java.util.*;
 
+/**
+ * See JLS 6.3 for a description of scopes
+ */
 public class Scope {
 
     private Map names = new HashMap();
@@ -19,12 +24,29 @@ public class Scope {
     }
 
     public boolean contains(NameOccurrence occurrence) {
-        return names.containsKey(occurrence.copyIntoNameDeclaration());
+        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            if (nameDeclaration.getImage().equals(occurrence.getImage())) {
+                return true;
+            }
+            if (nameDeclaration.getKind().equals(Kind.LOCAL_VARIABLE) && nameDeclaration.getImage().equals(getObjectName(occurrence.getImage()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addOccurrence(NameOccurrence occurrence) {
-        List nameOccurrences = (List)names.get(occurrence.copyIntoNameDeclaration());
-        nameOccurrences.add(occurrence);
+        for (Iterator i = names.keySet().iterator(); i.hasNext();) {
+            NameDeclaration nameDeclaration = (NameDeclaration)i.next();
+            if (nameDeclaration.getImage().equals(occurrence.getImage())) {
+                List nameOccurrences = (List)names.get(nameDeclaration);
+                nameOccurrences.add(occurrence);
+            } else if (nameDeclaration.getKind().equals(Kind.LOCAL_VARIABLE) && nameDeclaration.getImage().equals(getObjectName(occurrence.getImage()))) {
+                List nameOccurrences = (List)names.get(nameDeclaration);
+                nameOccurrences.add(occurrence);
+            }
+        }
     }
 
     public Iterator getUnusedDeclarations() {
@@ -36,5 +58,9 @@ public class Scope {
             }
         }
         return unused.iterator();
+    }
+
+    private String getObjectName(String name) {
+        return (name.indexOf('.') == -1) ? name : name.substring(0, name.indexOf('.'));
     }
 }

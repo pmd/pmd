@@ -15,21 +15,27 @@ public class ScopeTest extends TestCase {
 
     public void testAdd() {
         Scope scope = new Scope();
-        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.createNode("foo", 10), Kind.LOCAL_VARIABLE));
-        assertTrue(scope.contains(new NameOccurrence("foo", 12)));
+        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE, Kind.LOCAL_VARIABLE));
+        assertTrue(scope.contains(new NameOccurrence(NameDeclarationTest.createNode("foo", 12))));
     }
 
     public void testUnused() {
         Scope scope = new Scope();
-        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.createNode("foo", 10), Kind.LOCAL_VARIABLE));
+        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE, Kind.LOCAL_VARIABLE));
         assertTrue(scope.getUnusedDeclarations().hasNext());
     }
 
     public void testUnused2() {
         Scope scope = new Scope();
-        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.createNode("foo", 10), Kind.LOCAL_VARIABLE));
-        scope.addOccurrence(new NameOccurrence("foo", 12));
+        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE, Kind.LOCAL_VARIABLE));
+        scope.addOccurrence(new NameOccurrence(NameDeclarationTest.createNode("foo", 12)));
         assertTrue(!scope.getUnusedDeclarations().hasNext());
     }
 
+    public void testUnused3() {
+        Scope scope = new Scope();
+        scope.addDeclaration(new NameDeclaration(NameDeclarationTest.FOO_NODE, Kind.LOCAL_VARIABLE));
+        scope.addOccurrence(new NameOccurrence(NameDeclarationTest.createNode("foo.toString()", 12)));
+        assertTrue(!scope.getUnusedDeclarations().hasNext());
+    }
 }
