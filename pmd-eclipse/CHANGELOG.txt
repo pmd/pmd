@@ -1,13 +1,19 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
-vV.R.M - release date
+v0.5.1 - release date
 
 Runtime
 -------
 . Fixing SWTException when PMD is run on a file with syntax error
   (thanks to Chris Grindstaff)
-  
+. Generalize above fix for all message dialog in the plugin
+. Adding logging facility to help support (using commons-logging and Log4J)
+. Removing error dialog when PMD is executed on a file with syntax error
+  (the PMD exception is logged as a warning)
+. Adding PMD actions on folder and package popup menus
+  (request nnnnnn from Vladimir Bossica)
+
 
 
 

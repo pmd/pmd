@@ -1,4 +1,29 @@
 Release notes for the PMD Eclipse Plugin
+----------------------------------------
+
+v0.5.1 - release date
+
+NEW : Adding a logging facility
+-------------------------------
+The logging support is based on Log4J from Apache (see: http://jakarta.apache.org/log4j).
+The default is to log at the warn level to the file "pmd-eclipse.log" using a rolling
+file appender of 10 MB and one backup file.
+The file is located in the {user.dir} directory which should be your Eclipse home
+directory
+To change these options, simply edit the "log4j.xml" file located in the plugin. Please
+read the Log4J doc to learn how to update this file.
+
+NEW : PMD actions from folder and package popups
+------------------------------------------------
+Now, PMD actions (check code and remove markers) are available from the popup menus of
+a folder (resource navigator view) and package (package explorer view).
+
+UPDATED :
+---------
+Now, no more error message is displayed when PMD is executed against a file with syntax
+errors.
+
+
 
 
 v0.5.0 - 19/03/2003
