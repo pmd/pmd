@@ -656,7 +656,7 @@ class Foo {
                 <value>
         <![CDATA[
     //AllocationExpression
-     [Name[@Image='SimpleDateFormat']]
+     [ClassOrInterfaceType[@Image='SimpleDateFormat']]
      [Arguments[@ArgumentCount=1]]
         ]]>
                     </value>
