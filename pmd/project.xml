@@ -3,10 +3,11 @@
   <pomVersion>3</pomVersion>
   <id>pmd</id>
   <name>PMD</name>
-  <currentVersion>0.4</currentVersion>
+  <currentVersion>0.1</currentVersion>
   <organization>
     <name>InfoEther</name>
-    <url>http://www.infoether.com/</url>
+    <url>http://pmd.sourceforge.net/</url>
+    <logo>http://sourceforge.net/sflogo.php?group_id=56262&amp;type=5</logo>
   </organization>
 
   <inceptionYear>2002</inceptionYear>
@@ -29,8 +30,8 @@ For example, here are the problems PMD found in the <a href="jdk14.XML">JDK 1.4 
   <url>http://pmd.sourceforge.net/</url>
   <issueTrackingUrl>http://www.sourceforge.net/tracker/?group_id=56262</issueTrackingUrl>
   <siteAddress>pmd.sourceforge.net</siteAddress>
-  <siteDirectory>/www/pmd.sourceforge.net/www/</siteDirectory>
-  <distributionDirectory>/www/pmd.sourceforge.net/builds/pmd</distributionDirectory>
+  <siteDirectory>/home/groups/p/pm/pmd/htdocs</siteDirectory>
+  <distributionDirectory>/home/groups/p/pm/pmd/</distributionDirectory>
 
   <repository>
     <connection>scm:cvs:pserver:anonymous@cvs.pmd.sourceforge.net:/cvsroot/pmd:pmd</connection>
