@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Maik Schreiber - AccessNode bug report, other bug reports</li>
             <li>Chad Loder - EmptyStaticInitializer, EmptyFinalizerMethod rule, DontImportSun rule, improvements to ASTBooleanLiteral</li>
             <li>Lokesh Gupta - improvements to the AST viewer</li>
             <li>Jesse Glick - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
@@ -67,7 +68,6 @@
             <li>George Menhorn - CPD bug reports and suggestions</li>
             <li>Paul Roebuck - Ant build improvement, several bug reports</li>
             <li>Jon A. Maxwell - Bug report</li>
-            <li>Maik Schreiber - Bug report</li>
             <li>Erik Lee - Bug report</li>
             <li>Joerg K. Wegner - pmd-web suggestions</li>
             <li>Chris Webster - fix (and test) for UnnecessaryConstructorRule, BooleanInstantiation rule</li>

@@ -119,10 +119,16 @@ public class AccessNode extends SimpleNode implements AccessFlags {
         return (accessFlags & ACC_SUPER) > 0;
     }
 
+    public boolean isPackagePrivate() {
+        return !isPrivate() && !isPublic() && !isProtected();
+    }
+
     public String collectDumpedModifiers(String prefix) {
         String out = toString(prefix) + ":";
+        if (isPackagePrivate()) {out += "(package private)";}
         if (isPrivate()) {out += "(private)";}
         if (isPublic()) {out += "(public)";}
+        if (isProtected()) {out += "(protected)";}
         if (isAbstract()) {out += "(abstract)";}
         if (isStatic()) {out += "(static)";}
         if (isFinal()) {out += "(final)";}
