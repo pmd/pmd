@@ -4,14 +4,16 @@ change config/pmd.props to reflect pmd-jedit release 2.0
 change config/jedit.html to reflect pmd-jedit release 2.0
 change the build.xml to reflect pmd-jedit release 2.0
 
-Do an 'ant dist':
+Create the binary release - 'ant release'
+mv pmd-jedit-bin-2.0.zip ~/tmp/
+Unzip it into jedit.home/jars
 TESTS:
 1) Can you run jedit ok?
 2) Can you run it it on a file and find some unused code?
 3) Are options persistant?
 4) Does CPD work?
 
-Create the release:
+Create the src release:
 cvs -q rtag -D tomorrow "pmd_jedit_release_2_0" pmd-jedit
 rm -rf ~/tmp/pmd-jedit
 mkdir -p ~/tmp/pmd-jedit
@@ -20,10 +22,10 @@ mv tmp/* ~/tmp/pmd-jedit
 rmdir tmp/
 cp pmd-jedit/lib/PMDJEditPlugin-2.0.jar ~/tmp/pmd-jedit/lib
 cd ~/tmp
-zip -q -r pmd-jedit-2.0.zip pmd-jedit
+zip -q -r pmd-jedit-src-2.0.zip pmd-jedit
 rm -rf pmd-jedit
 
-ncftpput upload.sourceforge.net incoming/ pmd-jedit-2.0.zip
+ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.0.zip pmd-jedit-bin-2.0.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
