@@ -21,8 +21,8 @@ unzip it into c:\tmp\pmd-0.3
 clear classpath
 TESTS: Can you
 1) run 1 file and get a report
-run c:\data\pmd\pmd\test-data\Unused1.java xml all
-run c:\data\pmd\pmd\test-data\Unused1.java html all
+run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+run c:\data\pmd\pmd\test-data\Unused1.java html rulesets/unusedcode.xml
 2) run the Ant 'pmd' task and get a report
 ant pmd
 

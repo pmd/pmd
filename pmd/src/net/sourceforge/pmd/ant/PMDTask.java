@@ -1,8 +1,14 @@
 package net.sourceforge.pmd.ant;
 
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.types.*;
-import java.util.*;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.types.FileSet;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 import java.io.*;
 
 import net.sourceforge.pmd.ast.JavaParser;
