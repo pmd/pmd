@@ -6,6 +6,7 @@
 <property name="build" value="build\"/>
 <property name="regress" value="regress\"/>
 <property name="version" value="0.1"/>
+<property name="pmd-jar-name" value="pmd-1.2.1.jar"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
 <path id="classpath.path">
@@ -69,7 +70,7 @@
 
 <target name="sign-all">
     <signjar jar="${lib}/pmd-swingui-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
-    <signjar jar="${lib}/pmd-1.2.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${lib}/${pmd-jar-name}" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <signjar jar="${lib}/jaxen-core-1.0-fcs.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <signjar jar="${lib}/saxpath-1.0-fcs.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <signjar jar="${lib}/xercesImpl-2.0.2.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
@@ -84,7 +85,7 @@
     </exec>
     <echo message="Uploading pmd jar file"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/pmd-1.2.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
+        <arg line=" /home/tom/data/pmd/pmd-swingui/lib/${pmd-jar-name} tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
     </exec>
     <echo message="Uploading jaxen-core-1.0-fcs.jar"/>
     <exec executable="scp" os="Linux">

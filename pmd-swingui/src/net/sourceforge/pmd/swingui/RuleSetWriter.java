@@ -4,9 +4,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleProperties;
 import net.sourceforge.pmd.RuleSet;
 
 /**
@@ -252,7 +252,8 @@ public class RuleSetWriter
         outputLine();
         indent();
 
-        RuleProperties properties = rule.getProperties();
+        Properties props = rule.getProperties();
+        RuleProperties properties = new RuleProperties(props);
         Enumeration keys = properties.keys();
 
         while (keys.hasMoreElements())

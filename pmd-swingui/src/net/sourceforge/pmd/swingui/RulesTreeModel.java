@@ -2,7 +2,6 @@ package net.sourceforge.pmd.swingui;
 
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleProperties;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
@@ -18,6 +17,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
+import java.util.Properties;
 
 /**
  *
@@ -200,17 +200,12 @@ class RulesTreeModel extends DefaultTreeModel {
      * @param ruleNode
      */
     private void loadProperties(RulesTreeNode ruleNode) {
-        Rule rule;
-        RuleProperties properties;
-        String[] propertyNames;
-        Enumeration keys;
-        int index;
-
-        rule = ruleNode.getRule();
-        properties = rule.getProperties();
-        propertyNames = new String[properties.size()];
-        keys = properties.keys();
-        index = 0;
+        Rule rule = ruleNode.getRule();
+        Properties props = rule.getProperties();
+        RuleProperties properties = new RuleProperties(props);
+        String[]  propertyNames = new String[properties.size()];
+        Enumeration keys = properties.keys();
+        int index = 0;
 
         while (keys.hasMoreElements()) {
             propertyNames[index] = (String) keys.nextElement();
