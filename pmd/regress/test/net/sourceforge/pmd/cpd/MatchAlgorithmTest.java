@@ -69,6 +69,7 @@ public class MatchAlgorithmTest extends TestCase {
     public void testIgnore() throws Throwable {
         JavaTokenizer tokenizer = new JavaTokenizer();
         tokenizer.setIgnoreLiterals(true);
+        tokenizer.setIgnoreIdentifiers(true);
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
         Tokens tokens = new Tokens();
         TokenEntry.clearImages();
