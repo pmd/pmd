@@ -132,10 +132,8 @@ public class RunPMDAction extends CookieAction {
 	{
 		RuleSet set = constructRuleSets();
 		PMD pmd = new PMD();
-		RuleContext ctx = new RuleContext();
-		Report report = new Report();
-		ctx.setReport( report );
 		
+		ArrayList list = new ArrayList( 100 );
 		for( int i = 0; i < dataobjects.size(); i++ ) {
 			DataObject dataobject = ( DataObject )dataobjects.get( i );
 			SourceCookie cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
@@ -147,21 +145,23 @@ public class RunPMDAction extends CookieAction {
 			
 			Reader reader = getSourceReader( dataobject );
 			String name = cookie.getSource().getClasses()[0].getName().getFullName();
-			ctx.setSourceCodeFilename( name );
 			
+			RuleContext ctx = new RuleContext();
+			Report report = new Report();
+			ctx.setReport( report );
+			ctx.setSourceCodeFilename( name );
 			pmd.processFile( reader, set, ctx );
-		}
 		
-		Iterator iterator = ctx.getReport().iterator();
-		ArrayList list = new ArrayList( ctx.getReport().size() );
-		while( iterator.hasNext() ) {
-			RuleViolation violation = ( RuleViolation )iterator.next();
-			StringBuffer buffer = new StringBuffer();
-			buffer.append( violation.getRule().getName() ).append( ", " );
-			buffer.append( violation.getDescription() );
-			Fault fault = new Fault( violation.getLine(), violation.getPackageName()+"."+violation.getClassName(), buffer.toString() );
-			list.add( fault );
-			FaultRegistry.getInstance().registerFault( fault, null );
+			Iterator iterator = ctx.getReport().iterator();
+			while( iterator.hasNext() ) {
+				RuleViolation violation = ( RuleViolation )iterator.next();
+				StringBuffer buffer = new StringBuffer();
+				buffer.append( violation.getRule().getName() ).append( ", " );
+				buffer.append( violation.getDescription() );
+				Fault fault = new Fault( violation.getLine(), violation.getPackageName()+"."+violation.getClassName(), buffer.toString() );
+				list.add( fault );
+				FaultRegistry.getInstance().registerFault( fault, dataobject );
+			}
 		}
 		Collections.sort( list );
 		return list;
