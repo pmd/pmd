@@ -23,9 +23,7 @@ sub default() {
  if (param("title")) {
   my $project = PMD::Project->new(param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
   addProject($project);
-  print p();
-  my $title = $project->getTitle();
-  print b("Added ${title} to the schedule");
+  print p(), b("Added "), b($project->getTitle()), b(" to the schedule"), p();
  } 
 
  print "PMD is run hourly (at 10 minutes past the hour) on these projects:";
@@ -54,6 +52,7 @@ sub printStats() {
  print b("Stats:"), br(), "There are ", getTimeUntil(), " minutes until the next run";
  open(FILE,"lastruntime.txt");
  my $lastruntime=<FILE>;
+ close(FILE);
  print br();
  print "The last run took ", sprintf("%.0f", $lastruntime/60), " minutes";
  print br();
@@ -72,53 +71,24 @@ sub loadProjectList() {
   if ($file =~ /txt/) {
    open(FILE,"jobs/${file}");
    my $jobdata=<FILE>;
-   my ($title,$unixname, $mod, $src) = split(":", $jobdata);
+   close(FILE);
+   my $p = PMD::Project->new($jobdata);
    my $jobtext="";
-   if (-e getReportFile($unixname, $mod)) {
-     my $reportURL=getReportURL(${unixname}, ${mod});
-    $jobtext="<a href=\"${reportURL}\")>${title}</a>";
+   if (-e $p->getRptFile()) {
+    my $reportURL=$p->getRptURL();
+    my $title = $p->getTitle();
+    $jobtext="<a href=\"${reportURL}\">$title</a>";
    } else {
-    $jobtext=$title;
+    $jobtext=$p->getTitle();
    }
-   my $lines = getLines(getReportFile($unixname, $mod));
+   my $lines = $p->getLines();
+   my $unixname = $p->getUnixName();
    $result="${result}<tr><td>${jobtext}</td><td></td><td><a href=\"http://${unixname}.sf.net/\">http://${unixname}.sf.net/</a></td><td>${lines}</td>";
   }
  }
  $result = "${result}</table>";
  return $result;
 }
-
-sub getReportURL() {
- my ($unixname, $mod) = @_;
- my $name = getReportFileName($unixname, $mod);
- return "http://pmd.sf.net/reports/${name}";
-}
-
-sub getReportFile() {
- my ($unixname, $mod) = @_;
- my $name = getReportFileName($unixname, $mod);
- return "../htdocs/reports/${name}";
-}
-
-sub getReportFileName() {
- my ($unixname, $mod) = @_;
- $mod=~s/\s+//g;
- return "${unixname}_${mod}.html";
-}
-
-sub getLines() {
- my ($filename) = @_;
- open(FILE,$filename);
- my @x = <FILE>;
- close(FILE);
- my $y = @x;
- my $lines = sprintf("%0.f", ($y-5)/4);
- if ($lines == "-0" || $lines == "-1") {
-  $lines = "0";
- }
- return $lines;
-}
-
 
 sub addProject() {
  my ($project) = @_;
