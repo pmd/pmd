@@ -24,18 +24,28 @@ public class BatchBuilder {
     public List buildBatches() {
         List batches = new ArrayList();
 
-        int batchesSoFar=0;
+        int currentBatchSize = 0;
+        int maxBatchSize = 10;
+
+        List wrappers = new ArrayList();
         for (Iterator i = occ.getTiles(); i.hasNext();) {
             Tile tile = (Tile)i.next();
             TileWrapper tileWrapper = new TileWrapper(tile, occ.getOccurrencesList(tile), null, null);
-            List wrappers = new ArrayList();
             wrappers.add(tileWrapper);
-            Batch batch = new Batch(job.id, wrappers, Batch.NOT_DONE, new Integer(batchesSoFar));
-            batches.add(batch);
-            batchesSoFar++;
-            if (batchesSoFar % 100 == 0) {
-                System.out.println("Planted " + batchesSoFar + " batches so far");
+            currentBatchSize++;
+
+            if (wrappers.size() > maxBatchSize) {
+                Batch batch = new Batch(job.id, wrappers, Batch.NOT_DONE, new Integer(batches.size()));
+                batches.add(batch);
+
+                currentBatchSize = 0;
+                wrappers = new ArrayList();
             }
+        }
+
+        if (currentBatchSize > 0) {
+            Batch batch = new Batch(job.id, wrappers, Batch.NOT_DONE, new Integer(batches.size()));
+            batches.add(batch);
         }
 
         return batches;
