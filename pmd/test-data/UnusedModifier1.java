@@ -1,3 +1,3 @@
 public interface UnusedModifier1 {
- public abstract void bar();
+ public void bar();
 }
