@@ -8,10 +8,8 @@
 
   <body>
    <section name="Copied and pasted code">
-     <subsection name="Copied and pasted code is usually bad">
      <p>But it can be hard to find, especially in a large project.  So we wrote a utility to
      find it for us.</p>
-     </subsection>
    </section>
   </body>
 </document>
