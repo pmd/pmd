@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="tom@infoether.com">Tom Copeland</author>
+    <title>Future directions for PMD</title>
+  </properties>
+
+  <body>
+  <section name="Future Directions">
+   <subsection name="Better symbol analysis">
+     <p>Currently PMD only looks at one source file at a time.  Instead, it
+     should resolve symbols across classes.  This will eliminate some open
+     bugs and enable a lot more rules to be written.  However, it'll taken some doing,
+     because it'll require parsing of class files.  Lots of work here.</p>
+   </subsection>
+      <subsection name="Data flow analysis (DFA)">
+          <p>A good DFA layer would let us write more complicated rules - stuff like
+ common subexpression elimination, loop invariant code motion (and code hoisting), shrink wrapping, and partial redundancy elimination.
+  The buzzword potential alone is astounding.  This is also a lot of work.  Good thesis material, though!</p>
+      </subsection>
+      <subsection name="Control Flow Graph (CFG)">
+          <p>Access to a CFG would let us detect some algebraic simplications.  We could also
+          do better dead-code detection.  Again, lots of PhD possibilities here.</p>
+      </subsection>
+      </section>
+  </body>
+</document>
+
+
