@@ -7,7 +7,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.jdbc.JDBCReportListener;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
@@ -161,23 +160,6 @@ public class PMDTask extends Task {
         RuleContext ctx = new RuleContext();
         Report report = new Report();
 
-	for (Iterator i = databases.iterator(); i.hasNext();) {
-	    try {
-		Database db = (Database) i.next();
-		if  (!db.getDriver().equals("")) {
-		    Class driverClass = Thread.currentThread().getContextClassLoader().
-			loadClass( db.getDriver() );
-		    DriverManager.registerDriver( (Driver) driverClass.newInstance() );
-		}
-		
-		JDBCReportListener listener =
-		    new JDBCReportListener( db.getUrl(), db.getUser(), 
-					    db.getPassword(), db.getProjectId() );
-		report.addListener( listener );
-	    } catch (Exception ex) {
-		throw new BuildException( ex );
-	    }
-	}
 
         ctx.setReport(report);
 
