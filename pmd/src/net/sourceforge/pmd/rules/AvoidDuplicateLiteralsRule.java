@@ -58,12 +58,9 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
                     currentToken.append(in.charAt(i));
                 }
             }
-
             if (currentToken.length()>0) {
                 result.add(currentToken.toString());
-                currentToken = new StringBuffer();
             }
-
             return result;
         }
     }
@@ -91,7 +88,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
             exceptions = new HashSet();
             try {
                 LineNumberReader reader = new LineNumberReader(new BufferedReader(new FileReader(new File(getStringProperty(EXCEPTION_FILE_NAME_PROPERTY)))));
-                String line = null;
+                String line ;
                 while ((line = reader.readLine()) != null) {
                     exceptions.add(line);
                 }

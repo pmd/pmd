@@ -52,20 +52,16 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      */
     public RuleSet createRuleSet(String name, ClassLoader classLoader) throws RuleSetNotFoundException {
-        RuleSet ruleSet = null;
         setClassLoader(classLoader);
-        
         if (name.indexOf(',') == -1) {
-            ruleSet = createRuleSet(tryToGetStreamTo(name, classLoader));
-        } else {
-            ruleSet = new RuleSet();
-            for (StringTokenizer st = new StringTokenizer(name, ","); st.hasMoreTokens();) {
-                String ruleSetName = st.nextToken().trim();
-                RuleSet tmpRuleSet = createRuleSet(ruleSetName, classLoader);
-                ruleSet.addRuleSet(tmpRuleSet);
-            }
+            return createRuleSet(tryToGetStreamTo(name, classLoader));
         }
-
+        RuleSet ruleSet = new RuleSet();
+        for (StringTokenizer st = new StringTokenizer(name, ","); st.hasMoreTokens();) {
+            String ruleSetName = st.nextToken().trim();
+            RuleSet tmpRuleSet = createRuleSet(ruleSetName, classLoader);
+            ruleSet.addRuleSet(tmpRuleSet);
+        }
         return ruleSet;
     }
 
