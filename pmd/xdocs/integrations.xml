@@ -34,6 +34,11 @@
       <td>0.8</td>
       <td>tomcopeland</td>
       <td><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">X</a></td></tr>
+  <tr><td>IntelliJ IDEA</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>tomcopeland</td>
+      <td>N/A</td></tr>
   <tr><td>Maven</td>
       <td>pmd-maven</td>
       <td>0.1</td>
@@ -118,6 +123,26 @@ The way I use the JEdit plugin is:</p>
 <li>Select Plugins->PMD->Check directory recursively</li>
 </ul>
 
+      </subsection>
+      <subsection name="IDEA">
+<p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA External Tool
+works OK.  Here's how to set it up:</p>
+<ul>
+<li>Open IDEA and go to Tools->IDE Options</li>
+<li>Select External Tools from the left side menu</li>
+<li>Click on the Add button</li>
+<li>Fill in the blocks</li>
+<ul>
+<li>Name: PMD</li>
+<li>Description: PMD doth help one clean the code</li>
+<li>Program: javaw</li>
+<li>For the next two parameters you'll need to plug in the location of your PMD installation, the rulesets you want to use, and your working directory</li>
+<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-1.0rc3.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml,rulesets/basic.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
+<li>Working directory: c:\</li>
+</ul>
+</ul>
+<p>That's pretty much it.  Now you can right click on a source directory and select PMD, it'll run recursively on the source files, and the results should
+be displayed in a window and hyperlinked into the correct file and line of code. </p>
       </subsection>
       <subsection name="Maven">
 <p>
