@@ -48,7 +48,6 @@
 	
 ;; 	Type ? in the *PMD* buffer for a list of key bindings for
 ;; 	pmd-mode and usage help.
-(require 'xml)
 
 (defgroup pmd nil "PMD"
   :group 'emacs)
@@ -74,65 +73,22 @@ else clear buffer each time."
   :type 'boolean
   :group 'pmd)
 
-(defvar pmd-mode-font-lock-keywords
-  (list ;;fontlock keywords
-   (list "\\(PMD output for\\) \\(.*$\\)"
-	 '(1 font-lock-type-face append)
-	 '(1 'bold append)
-	 '(2 font-lock-function-name-face append))
-   (list "\\(<violation.*>\\)"
-	 '(1 font-lock-variable-name-face append))
-   (list "\\(^[^<].*\\)"
-	 '(1 font-lock-warning-face append))
-   ))
+(defcustom pmd-version "1.02"
+  "The main library version, used to create the jar file name for the Java invocation."
+  :type 'string
+  :group 'pmd)
 
-;;set up keymap
-(if (and nil pmd-mode-map)
-    ()
-  (setq pmd-mode-map (make-sparse-keymap))
-
-  (let ((key ?1))
-    (while (<= key ?9)
-      (define-key pmd-mode-map (char-to-string key)
-'digit-argument)
-      (setq key (1+ key))))
-  (define-key pmd-mode-map "c" 'pmd-clear-display)
-  (define-key pmd-mode-map "q" 'pmd-quit)
-  (define-key pmd-mode-map "Q" 'pmd-quit-kill)
-  (define-key pmd-mode-map "p" 'pmd-prev-violation)
-  (define-key pmd-mode-map [up] 'pmd-prev-violation)
-  (define-key pmd-mode-map [?\C-p] 'pmd-prev-violation)
-  (define-key pmd-mode-map "n" 'pmd-next-violation)
-  (define-key pmd-mode-map [down] 'pmd-next-violation)
-  (define-key pmd-mode-map [?\C-n] 'pmd-next-violation)
-  (define-key pmd-mode-map "?" 'pmd-help)
-  (define-key pmd-mode-map [?\C-x ?`] 'pmd-goto-next-violation)
-  (define-key pmd-mode-map [?\C-m] 'pmd-goto-violation)
-  )
 
 (defun pmd-mode ()
   "Plugin for PMD (http://pmd.sourceforge.net).  Opens a buffer which \
-displays xml output of PMD when run on the Java file in the current buffer.
+displays the output of PMD when run on the Java file in the current buffer.
+Uses the standard compilation mode for navigation."
 
-Function                  Description               Keybinding
-\\[pmd-next-violation] -- Move point to next violation.        n | up
-\\[pmd-prev-violation] -- Move point to previous violation.    p | down
-\\[pmd-quit] -- Bury *PMD* buffer.                  q
-\\[pmd-quit-kill] -- Kill *PMD* buffer              Q
-\\[pmd-goto-violation] -- Go to the source code matching this violation.           RET
-\\[pmd-goto-next-violation] -- Go to the source code matching violation after point     C-x `
-\\[pmd-clear-display] -- Clear *PMD* buffer (for append mode)  c"
   (interactive)
   (kill-all-local-variables)
-  (use-local-map pmd-mode-map)
-  (make-local-variable 'font-lock-defaults)
-  (make-local-variable 'font-lock-verbose)
-  (setq major-mode 'pmd-mode
-	mode-name "PMD Mode"
-	font-lock-defaults '(pmd-mode-font-lock-keywords)
-	font-lock-verbose nil
-					;buffer-read-only t
-	truncate-lines nil))
+  (setq mode-name "PMD Mode" 
+   truncate-lines nil)
+  (compilation-mode))
 
 ;;-------------------------
 ;;Inner workings
@@ -142,86 +98,6 @@ Function                  Description               Keybinding
   "Help for `pmd-mode'."
   (interactive)
   (describe-function 'pmd-mode))
-
-
-(defun pmd-goto-violation ()
-  "Goto the line of the file in which the violation
-on the current
-line is found."
-  (interactive)
-  (block pmd-goto
-    ;(setq pmd-original-point (point))
-    (cond ((not (search-backward "<violation" nil t))
-	   (message "No violation on this line.")
-	   (goto-char pmd-original-point)
-	   (return-from pmd-goto)))
-    (set 'pmd-current-violation-tag (xml-parse-tag (point-max)))
-    (pmd-prev-violation)
-    (setq pmd-original-point (point))
-    (cond ((not (search-backward "<file" nil t))
-	   (message "Can't find file tag associated with this violation.")
-	   (goto-char pmd-original-point)
-	   (return-from pmd-goto)))
-    (set 'pmd-current-file-tag (xml-parse-tag
-(point-max)))
-    (goto-char pmd-original-point)
-    (other-window 1)
-    (find-file (xml-get-attribute pmd-current-file-tag 'name))
-    (goto-line (string-to-int (xml-get-attribute pmd-current-violation-tag 'line)))
-    ) ;end of pmd-goto block
-  )
-
-(defun pmd-prev-violation ()
-  "Go up one violation in the *PMD* buffer."
-  (interactive)
-  (block pmd-prev 
-    (cond ((not(search-backward "</violation" nil 1))
-	   (cond ((not (search-forward "</file" nil t))
-		  (message "Can't fine file tag associated with this violation.")
-		  (return-from pmd-prev)))
-	   (cond ((not (search-backward "</violation" nil 1))
-		  (message "No violations found.")
-		  (return-from pmd-prev)))))
-    (next-line -1)
-    (beginning-of-line)))
-
-(defun pmd-next-violation ()
-  "Go up one violation in the *PMD* buffer."
-  (interactive)
-  (block pmd-next
-    (cond ((not (search-forward "<violation" nil 1))
-	   (cond ((not (search-backward "<file" nil 1))
-		  (message "Can't fine file tag associated with this violation.")
-		  (return-from pmd-next)))
-	   (cond ((not (search-forward "<violation" nil 1))
-		  (message "No violations found.")
-		  (return pmd-next)))))
-    (next-line 1)
-    (beginning-of-line)))
-
-(defun pmd-goto-next-violation (&optional backwards)
-  "Go to next violation after point and show the location in the source code."
-  (interactive)
-  (if backwards
-      (pmd-prev-violation)
-    (pmd-next-violation))
-  (pmd-goto-violation))
-(defun pmd-quit ()
-  "Bury the pmd buffer."
-  (interactive)
-  (quit-window))
-
-(defun pmd-quit-kill ()
-  "Kill the pmd buffer."
-  (interactive)
-  (kill-buffer (current-buffer)))
-
-
-(defun pmd-clear-display ()
-  (interactive)
-  "Clear the *PMD* buffer of previous outputs."
-  (erase-buffer))
-
 
 ;;-------------------------
 ;; Main functions
@@ -241,7 +117,8 @@ line is found."
   (cond ((string-equal (file-name-extension
 (buffer-file-name)) "java")
 	 (let ((file-name         (buffer-file-name) )
-	       (pmd-jar           (concat pmd-home "/lib/pmd-1.01.jar")))
+;; Nascif: updated version
+	       (pmd-jar (concat pmd-home "/lib/pmd-" pmd-version ".jar"))) 
 	   (if (eq (count-windows) 1)
 	       (split-window-vertically))
 	   (other-window 1)
@@ -255,7 +132,7 @@ line is found."
 	   (insert-string (concat " PMD output for " pmd-rulesets "\n\n"))
 	   (insert (concat (shell-command-to-string 
 			    (concat pmd-java-home " -cp " pmd-jar " net.sourceforge.pmd.PMD "
-				    file-name " xml " pmd-rulesets )) "\n"))))
+				    file-name " emacs " pmd-rulesets )) "\n"))))
 	((not(string-equal (file-name-extension (buffer-file-name)) "java"))
 	 (message "File is not a Java file.  Aborting."))))
 
