@@ -56,7 +56,6 @@
         <antcall target="jar"/>
         <mkdir dir="tmp/jars"/>
         <copy file="${lib}/${ant.project.name}.jar" todir="tmp/jars"/>
-        <move file="tmp/jars/${ant.project.name}.jar" tofile="tmp/jars/${ant.project.name}-${pluginversion}.jar"/>
         <copy file="${lib}/${pmdjar}" todir="tmp/jars"/>
         <zip zipfile="pmd-jedit-bin-${pluginversion}.zip" basedir="tmp"/>
         <delete dir="tmp"/>
