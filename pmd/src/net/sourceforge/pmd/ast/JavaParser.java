@@ -2965,6 +2965,9 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case TRUE:
         jj_consume_token(TRUE);
+           jjtree.closeNodeScope(jjtn000, true);
+           jjtc000 = false;
+           jjtn000.setTrue();
         break;
       case FALSE:
         jj_consume_token(FALSE);

@@ -1,4 +1,6 @@
 ????, 2004 - 1.5:
+TODO - fix it so tests and rules don't duplicate the xpath expressions
+Added isTrue() to ASTBooleanLiteral.
 
 January 7, 2004 - 1.4:
 New rules: AbstractNamingRule, ProperCloneImplementationRule
@@ -11,7 +13,6 @@ Fixed a bug in OverrideBothEqualsAndHashcodeRule; it no longer reports a false p
 Implemented RFE 845348 - UnnecessaryReturn yields more useful line numbers now
 Added a ruleset DTD and a ruleset XML Schema.
 Added 'ExplicitExtends' and 'ExplicitImplements' attributes to UnmodifiedClassDeclaration nodes.
-TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 October 23, 2003 - 1.3:
 Relicensed under a BSD-style license.

@@ -11,9 +11,26 @@ public class ASTBooleanLiteral extends SimpleNode {
         super(p, id);
     }
 
+    private boolean isTrue;
+
+    public void setTrue() {
+        isTrue = true;
+    }
+
+    public boolean isTrue() {
+        return this.isTrue;
+    }
+
 
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public void dump(String prefix) {
+        String out = isTrue ? "true" : "false";
+        System.out.println(toString(prefix) + ":" + out);
+        dumpChildren(prefix);
+    }
+
 }

@@ -923,7 +923,7 @@ void Literal() :
 void BooleanLiteral() :
 {}
 {
-  "true"
+  "true" { jjtThis.setTrue(); }
 | "false"
 }
 
