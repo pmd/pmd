@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 */
-package test.net.sourceforge.pmd.rules;
+package test.net.sourceforge.pmd.rules.braces;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
@@ -26,25 +26,24 @@ public class IfStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class IfStmtsMustUseBraces1 {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
-    "  int x = 0;   " + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  if (true) x=2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class IfStmtsMustUseBraces2 {" + PMD.EOL +
-    " public void foo() {   " + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void foo() {   " + PMD.EOL +
     "  if (true) {" + PMD.EOL +
-    "   int x=2;" + PMD.EOL +
+    "   x=2;" + PMD.EOL +
     "  }" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class IfStmtsMustUseBraces3 {" + PMD.EOL +
-    " public void foo() {   " + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void foo() {   " + PMD.EOL +
     "  if (true) {" + PMD.EOL +
     "   if (true) bar();" + PMD.EOL +
     "  }" + PMD.EOL +
