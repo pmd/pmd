@@ -72,6 +72,22 @@ public class Foo {}
     </example>
     </rule>
 
+    <rule name="ImportFromSamePackage"
+         message="No need to import a type that's in the same package"
+         class="net.sourceforge.pmd.rules.ImportFromSamePackageRule">
+     <description>
+     No need to import a type that's in the same package.
+     </description>
+        <priority>3</priority>
+     <example>
+ <![CDATA[
+ package foo;
+ import foo.Buz; // no need for this
+ public class Bar{}
+ ]]>
+     </example>
+     </rule>
+
 </ruleset>
 
 

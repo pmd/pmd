@@ -12,19 +12,19 @@
     <li>Type run [filename] [report format] [ruleset file], i.e:</li>
     <br></br>
     <source>
-C:\tmp\pmd-1.01\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
-&lt;?xml version="1.01"?&gt;&lt;pmd&gt;
+C:\tmp\pmd-1.02\pmd\etc&gt;run c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+&lt;?xml version="1.02"?&gt;&lt;pmd&gt;
 &lt;file name="c:\data\pmd\pmd\test-data\Unused1.java"&gt;
 &lt;violation line="5" rule="UnusedLocalVariable"&gt;
 Avoid unused local variables such as 'fr'
 &lt;/violation&gt;
 &lt;/file&gt;&lt;/pmd&gt;
 
-C:\tmp\pmd-1.01\pmd\etc&gt;
+C:\tmp\pmd-1.02\pmd\etc&gt;
     </source>
        <li>Or, if you want to just run PMD without the batch file, you can do a:</li>
        <source>
-C:\data\pmd\pmd>java -cp lib\pmd-1.01.jar;lib\xercesImpl-2.0.2.jar;lib\xmlParser
+C:\data\pmd\pmd>java -cp lib\pmd-1.02.jar;lib\xercesImpl-2.0.2.jar;lib\xmlParser
 APIs-2.0.2.jar net.sourceforge.pmd.PMD c:\j2sdk1.4.1_01\src\java\lang xml rulese
 ts/imports.xml > report.xml
 
@@ -37,7 +37,7 @@ C:\data\pmd\pmd>
    <section name="Running PMD via Ant">
    <ul>
     <li>Add a new Ant target to your build file - <a href="ant-task.html">here's</a> some examples.</li>
-    <li>Make sure the pmd-1.01.jar file is on your classpath.</li>
+    <li>Make sure the pmd-1.02.jar file is on your classpath.</li>
     <li>Run Ant like you normally do.</li>
    </ul>
    </section>

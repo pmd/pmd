@@ -177,7 +177,73 @@ public class Foo {
     </example>
   </rule>
 
-<rule name="CyclomaticComplexityRule"
+    <rule name="SwitchDensity"
+          message="A high ratio of statements to labels in a switch statement.  Consider refactoring."
+          class="net.sourceforge.pmd.rules.design.SwitchDensityRule">
+      <description>
+ A high ratio of statements to labels in a switch statement implies that the switch
+ statement is doing too much work.  Consider moving the statements either into new
+ methods, or creating subclasses based on the switch variable.
+      </description>
+        <priority>3</priority>
+        <properties>
+         <property name="minimum" value="10"/>
+        </properties>
+      <example>
+ <![CDATA[
+   public class Foo {
+     private int x;
+     public void bar() {
+       switch (x) {
+         case 1: {
+           System.out.println("I am a fish.");
+           System.out.println("I am a fish.");
+           System.out.println("I am a fish.");
+           System.out.println("I am a fish.");
+           break;
+         }
+
+         case 2: {
+           System.out.println("I am a cow.");
+           System.out.println("I am a cow.");
+           System.out.println("I am a cow.");
+           System.out.println("I am a cow.");
+           break;
+         }
+       }
+     }
+   }
+ ]]>
+      </example>
+    </rule>
+
+    <rule name="NullAssignment"
+          message="Assigning an Object to null is a code smell.  Consider refactoring."
+          class="net.sourceforge.pmd.rules.design.NullAssignmentRule">
+      <description>
+ Assigning a "null" to a variable (outside of its declaration) is usually in
+ bad form.  Some times, the assignment is an indication that the programmer doesn't
+ completely understand what is going on in the code.
+      </description>
+        <priority>3</priority>
+      <example>
+ <![CDATA[
+ public class Foo {
+   public void bar() {
+     Object x = null; // This is OK.
+     x = new Object();
+     // Big, complex piece of code here.
+     x = null; // This is BAD.
+     // Big, complex piece of code here.
+   }
+ }
+
+ ]]>
+      </example>
+    </rule>
+
+
+    <rule name="CyclomaticComplexityRule"
       message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
       class="net.sourceforge.pmd.rules.CyclomaticComplexityRule">
    <description>

@@ -1,11 +1,11 @@
 Move rulesets/tmp.xml somewhere else
 
-update run.bat to point to pmd-1.01.jar
-update cpdgui.bat to point to pmd-1.01.jar
-update build.xml to reflect pmd-1.01
-update readme.txt to reflect pmd-1.01
-update xdocs/running.xml to reflect pmd-1.01
-update xdocs/integrations.xml to reflect pmd-1.01
+update run.bat to point to pmd-1.02.jar
+update cpdgui.bat to point to pmd-1.02.jar
+update build.xml to reflect pmd-1.02
+update readme.txt to reflect pmd-1.02
+update xdocs/running.xml to reflect pmd-1.02
+update xdocs/integrations.xml to reflect pmd-1.02
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
 update release number in project.xml
@@ -33,26 +33,26 @@ copy build.xml c:\tmp\pmd\etc
 copy cpdgui.bat c:\tmp\pmd\etc
 copy readme.txt c:\tmp\pmd\etc
 copy changelog.txt c:\tmp\pmd\etc
-copy ..\lib\pmd-1.01.jar c:\tmp\pmd\lib
+copy ..\lib\pmd-1.02.jar c:\tmp\pmd\lib
 copy ..\lib\xmlParserAPIs-2.0.2.jar c:\tmp\pmd\lib
 copy ..\lib\xercesImpl-2.0.2.jar c:\tmp\pmd\lib
 copy the docs directory over to c:\tmp\pmd -- how to do this on cmd line?
 copy all the test classes and data into the release 
-Zip it up, rename it pmd-bin-1.01.zip
+Zip it up, rename it pmd-bin-1.02.zip
 
 Time to tag:
-cvs -q rtag -D tomorrow "pmd_release_1_01" pmd
+cvs -q rtag -D tomorrow "pmd_release_1_02" pmd
 
 Prepare source release:
 rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
-cvs -q export -d c:\tmp\pmd -r pmd_release_1_01 pmd
-copy pmd\lib\pmd-1.01.jar c:\tmp\pmd\lib
+cvs -q export -d c:\tmp\pmd -r pmd_release_1_02 pmd
+copy pmd\lib\pmd-1.02.jar c:\tmp\pmd\lib
 copy the docs directory over to c:\tmp\pmd -- how to do this on cmd line?
-zip it up, rename it to pmd-src-1.01.zip
+zip it up, rename it to pmd-src-1.02.zip
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_1_01 pmd
+cvs rtag -d pmd_release_1_02 pmd
 and then retag everything
 
 FTP the zip file to SF
@@ -60,13 +60,13 @@ ftp upload.sourceforge.net
 generic userid/password: anonymous/tomcopeland@users.sourceforge.net
 cd incoming
 bin
-put pmd-bin-1.01.zip
-put pmd-src-1.01.zip
+put pmd-bin-1.02.zip
+put pmd-src-1.02.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-1.01.zip file
-Add the pmd-src-1.01.zip file
+Add the pmd-bin-1.02.zip file
+Add the pmd-src-1.02.zip file
 Classify the file
 
 Redo the web site
