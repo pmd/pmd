@@ -11,8 +11,8 @@ import net.sourceforge.pmd.cpd.Token;
 import net.sourceforge.pmd.cpd.Tile;
 import net.sourceforge.pmd.cpd.Occurrence;
 
-public class TokenSetTest extends TestCase{
-    public TokenSetTest(String name) {
+public class TokenListTest extends TestCase{
+    public TokenListTest(String name) {
         super(name);
     }
 
