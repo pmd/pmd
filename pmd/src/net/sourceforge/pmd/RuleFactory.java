@@ -80,6 +80,7 @@ public class RuleFactory {
         list.add(new UnusedLocalVariableRule());
         list.add(new UnusedPrivateInstanceVariableRule());
         list.add(new IfElseStmtsMustUseBracesRule());
+        list.addAll(createDesignRules());
         return list;
     }
 
