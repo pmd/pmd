@@ -41,7 +41,13 @@ public class ASTType extends SimpleNode {
 
     public void dump(String prefix) {
         String out = toString(prefix) + ":";
-        if (isArray()) {out += "(array)";}
+        if (isArray()) {
+            out += "(array";
+            for (int i=0;i<getDimensions();i++) {
+                out += "[";
+            }
+            out += ")";
+        }
         System.out.println(out);
         dumpChildren(prefix);
     }
