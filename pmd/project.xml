@@ -10,6 +10,8 @@
     <logo>http://sourceforge.net/sflogo.php?group_id=56262&amp;type=5</logo>
   </organization>
 
+  <logo>/images/pmd_logo_small.jpg</logo>
+
   <inceptionYear>2002</inceptionYear>
   <package>net.sourceforge.pmd</package>
 
@@ -143,6 +145,11 @@
     <dependency>
       <id>ant</id>
       <version>1.5</version>
+    </dependency>
+
+    <dependency>
+      <id>xml-apis</id>
+      <version>2.0.2</version>
     </dependency>
   </dependencies>
 
