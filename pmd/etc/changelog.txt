@@ -2,6 +2,7 @@
 Added new rule: UnusedImportsRule
 Fixed bug 597813 - Rule properties are now parsed correctly
 Fixed bug 597905 - UseSingletonRule now resets it's state correctly
+Moved several rules into a new ruleset - braces.
 Improved CPD by removing import statements and package statements from the token set.
 
 August 16 2002 - 0.9:
