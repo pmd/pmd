@@ -30,19 +30,23 @@ public class DCPD {
 
     public DCPD(String javaSpaceURL) {
         try {
+            long start = System.currentTimeMillis();
             System.out.println("Connecting to JavaSpace");
             space = Util.findSpace(javaSpaceURL);
 
             System.out.println("Tokenizing");
             job = new Job("java_lang", new Integer(1));
-            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\ref\\", true), job.id);
+            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true), job.id);
+            System.out.println("Tokenizing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Writing the TokenSetsWrapper to the space");
             space.write(tokenSetWrapper, null, Lease.FOREVER);
+            System.out.println("Writing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Crunching");
             DGST dgst = new DGST(space, job, tokenSetWrapper.tokenSets, 30);
             Results results = dgst.crunch(new CPDListenerImpl());
+            System.out.println("Crunching complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Cleaning up");
             space.take(tokenSetWrapper, null, 200);

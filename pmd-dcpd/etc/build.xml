@@ -5,7 +5,7 @@
 <property name="src" value="src\"/>
 <property name="build" value="build\"/>
 <property name="jar" value="dcpd.jar"/>
-<property name="clientzipfile" value="client.zip"/>
+<property name="workerzipfile" value="worker.zip"/>
 <property name="build.compiler" value="jikes"/>
 
 <target name="delete">
@@ -46,7 +46,7 @@
 </target>
 
 <target name="buildworker" depends="clean,jar">
-   <delete dir="${clientzipfile}"/>
+   <delete dir="${workerzipfile}"/>
    <delete dir="staging"/>
    <mkdir dir="staging"/>
    <copy file="${lib}/dcpd.jar" toDir="staging"/>
@@ -55,7 +55,7 @@
    <copy file="${lib}/runtimeonly/reggie.jar" toDir="staging"/>
    <copy file="c:\jini-1_2_1\policy\policy.all" toDir="staging"/>
    <copy file="etc/linuxclient_go.sh" toDir="staging"/>
-   <zip zipfile="${clientzipfile}" basedir="staging"/>
+   <zip zipfile="${workerzipfile}" basedir="staging"/>
 </target>
 
 

@@ -39,7 +39,8 @@ public class TilePlanter {
                     null, null);
             space.write(tw, null, Lease.FOREVER);
             //System.out.println("Scattering " + tw.tile.getImage() +  "->" + tw.occurrences.size());
-            if (tilesSoFar++ % 25 == 0) {
+            tilesSoFar++;
+            if (tilesSoFar % 100 == 0) {
                 System.out.println("Written " + tilesSoFar + " tiles so far");
             }
         }
