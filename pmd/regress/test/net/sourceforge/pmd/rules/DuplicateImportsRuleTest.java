@@ -31,4 +31,12 @@ public class DuplicateImportsRuleTest extends RuleTst {
         Report report = process("DuplicateImports2.java", rule);
         assertEquals(1, report.size());
     }
+    public void test3() throws Throwable {
+        Report report = process("DuplicateImports3.java", rule);
+        assertEquals(1, report.size());
+    }
+    public void test4() throws Throwable {
+        Report report = process("DuplicateImports4.java", rule);
+        assertTrue(report.isEmpty());
+    }
 }
