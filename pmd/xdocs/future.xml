@@ -15,11 +15,13 @@
      because it'll require parsing of class files.  Lots of work here.</p>
    </subsection>
       <subsection name="Data flow analysis (DFA)">
-          <p>Raik Schroeder, a graduate student at <a href="http://www.fh-stralsund.de/fh_stralsund/powerslave,id,223,nodeid,.html">Fachhochschule Stralsund</a>, is working on a DFA layer so we can write some more complicated rules - stuff like
+          <p>Raik Schroeder, a graduate student at
+              <a href="http://www.fh-stralsund.de/fh_stralsund/powerslave,id,223,nodeid,.html">Fachhochschule Stralsund</a>,
+ has written a DFA layer that should enable us to write some more complicated rules - stuff like
  common subexpression elimination, loop invariant code motion (and code hoisting), shrink wrapping, and partial redundancy elimination.
-              He's going to do something similar to the SymbolFacade - i.e., several visitors
-              which will add DataFlow nodes to the AST.  More on this as he makes further progress; seems
-              like things are moving forward nicely though.</p>
+The code is currently in CVS in the net.sourceforge.pmd.dfa package, and we're going through
+ it now figuring out what rules we can write that use it.  We should be able to
+          use it to simplify some current rules, as well. </p>
       </subsection>
       <subsection name="Control Flow Graph (CFG)">
           <p>Access to a CFG would let us detect some algebraic simplications.  We could also
