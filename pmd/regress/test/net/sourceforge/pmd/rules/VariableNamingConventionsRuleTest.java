@@ -11,6 +11,7 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "non-finals shouldn't have underscores", 1, new VariableNamingConventionsRule()),
            new TestDescriptor(TEST3, "variables names should start with lowercase character", 1, new VariableNamingConventionsRule()),
            new TestDescriptor(TEST4, "all is well", 0, new VariableNamingConventionsRule()),
+           new TestDescriptor(TEST5, "local finals are ok", 0, new VariableNamingConventionsRule()),
        });
     }
 
@@ -33,5 +34,12 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     " private int bar = 2;" + PMD.EOL +
     " private static final int FOO_BAR = 2;" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " private void bar() {" + PMD.EOL +
+    "  final int STATE_READING = 0;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 }
