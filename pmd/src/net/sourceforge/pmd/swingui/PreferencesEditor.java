@@ -31,8 +31,6 @@ import java.io.File;
  */
 class PreferencesEditor extends JDialog
 {
-    private PMDViewer m_pmdViewer;
-    private Preferences m_preferences;
     private JTextArea m_currentPathToPMD;
     private JTextArea m_userPathToPMD;
     private JTextArea m_sharedPathToPMD;
@@ -42,21 +40,12 @@ class PreferencesEditor extends JDialog
      *
      * @pmdViewer
      */
-    protected PreferencesEditor(PMDViewer pmdViewer)
+    protected PreferencesEditor(PMDViewer pmdViewer) throws PMDException
     {
         super(pmdViewer, "Preferences Editor", true);
 
-        m_pmdViewer = pmdViewer;
-        m_preferences = pmdViewer.getPreferences();
-
-        Dimension screenSize = getToolkit().getScreenSize();
-        int windowWidth = 800;
-        int windowHeight = 450;
-        int windowLocationX = (screenSize.width - windowWidth) / 2;
-        int windowLocationY = (screenSize.height - windowHeight) / 2;
-
-        setLocation(windowLocationX, windowLocationY);
-        setSize(windowWidth, windowHeight);
+        setSize(ComponentFactory.adjustWindowSize(800, 450));
+        setLocationRelativeTo(pmdViewer);
         setResizable(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -68,12 +57,11 @@ class PreferencesEditor extends JDialog
      *
      * @return
      */
-    private JScrollPane createContentPanel()
+    private JScrollPane createContentPanel() throws PMDException
     {
         JPanel contentPanel = new JPanel(new BorderLayout());
         EmptyBorder emptyBorder = new EmptyBorder(10, 10, 10, 10);
         contentPanel.setBorder(emptyBorder);
-
         contentPanel.add(createDataPanel(), BorderLayout.CENTER);
         contentPanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
@@ -85,29 +73,31 @@ class PreferencesEditor extends JDialog
      *
      * @return
      */
-    private JPanel createDataPanel()
+    private JPanel createDataPanel() throws PMDException
     {
         JPanel dataPanel;
         String directory;
         int row;
+        Preferences preferences;
 
         dataPanel = new JPanel(new GridBagLayout());
+        preferences = Preferences.getPreferences();
 
         row = 0;
         createLabel("Current Path to PMD", dataPanel, row, 0);
-        directory = m_preferences.getCurrentPathToPMD();
+        directory = preferences.getCurrentPathToPMD();
         m_currentPathToPMD = createTextArea(directory, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_currentPathToPMD);
 
         row++;
         createLabel("User Path to PMD", dataPanel, row, 0);
-        directory = m_preferences.getUserPathToPMD();
+        directory = preferences.getUserPathToPMD();
         m_userPathToPMD = createTextArea(directory, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_userPathToPMD);
 
         row++;
         createLabel("Shared Path to PMD", dataPanel, row, 0);
-        directory = m_preferences.getSharedPathToPMD();
+        directory = preferences.getSharedPathToPMD();
         m_sharedPathToPMD = createTextArea(directory, dataPanel, row, 1);
         createFileButton(dataPanel, row, 2, m_sharedPathToPMD);
 
@@ -250,19 +240,17 @@ class PreferencesEditor extends JDialog
          */
         public void actionPerformed(ActionEvent event)
         {
-            m_preferences.setCurrentPathToPMD(m_currentPathToPMD.getText());
-
-            m_preferences.setUserPathToPMD(m_userPathToPMD.getText());
-
-            m_preferences.setSharedPathToPMD(m_sharedPathToPMD.getText());
-
             try
             {
-                m_preferences.save();
+                Preferences preferences = Preferences.getPreferences();
+                preferences.setCurrentPathToPMD(m_currentPathToPMD.getText());
+                preferences.setUserPathToPMD(m_userPathToPMD.getText());
+                preferences.setSharedPathToPMD(m_sharedPathToPMD.getText());
+                preferences.save();
             }
             catch (PMDException exception)
             {
-                MessageDialog.show(m_pmdViewer, exception.getMessage(), exception);
+                MessageDialog.show(PMDViewer.getViewer(), exception.getMessage(), exception);
             }
 
             PreferencesEditor.this.setVisible(false);
@@ -331,7 +319,7 @@ class PreferencesEditor extends JDialog
             fileChooser.setApproveButtonText("Select");
             fileChooser.setMinimumSize(new Dimension(500, 500));
 
-            if (fileChooser.showOpenDialog(m_pmdViewer) == JFileChooser.APPROVE_OPTION)
+            if (fileChooser.showOpenDialog(PMDViewer.getViewer()) == JFileChooser.APPROVE_OPTION)
             {
                 file = fileChooser.getSelectedFile();
 

@@ -28,7 +28,7 @@ class HTMLResultRenderer
      */
     public String render(String fileName, Report report)
     {
-        StringWriter writer = new StringWriter(5000);
+        StringWriter writer = new StringWriter(25000);
         Iterator violations = report.iterator();
 
         //
@@ -103,7 +103,7 @@ class HTMLResultRenderer
                 }
                 else
                 {
-                    ruleMessage = ruleMessage.replace('\n', ' ').trim();
+                    removeNewLineCharacters(ruleMessage);
                 }
 
                 writer.write("<td align=\"left\" valign=\"top\">\n");
@@ -121,7 +121,7 @@ class HTMLResultRenderer
                 }
                 else
                 {
-                    description = description.replace('\n', ' ').trim();
+                    removeNewLineCharacters(description);
                 }
 
                 writer.write("<td align=\"left\" valign=\"top\">\n");
@@ -158,5 +158,38 @@ class HTMLResultRenderer
         writer.write("</html>\n");
 
         return writer.toString();
+    }
+
+    /**
+     ******************************************************************************
+     *
+     * @param text
+     *
+     * @return
+     */
+    private String removeNewLineCharacters(String text)
+    {
+        char[] chars = text.toCharArray();
+        int lastIndex = chars.length - 1;
+
+        for (int n = 0; n < chars.length; n++)
+        {
+            if (chars[n] == '\n')
+            {
+                if (n == lastIndex)
+                {
+                    chars[n] = ' ';
+                }
+                else
+                {
+                    if ((chars[n + 1] != '.') && (chars[n + 1] != ':'))
+                    {
+                        chars[n] = ' ';
+                    }
+                }
+            }
+        }
+
+        return String.valueOf(chars).trim();
     }
 }

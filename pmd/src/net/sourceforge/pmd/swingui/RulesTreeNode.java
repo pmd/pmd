@@ -1,10 +1,15 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.util.Enumeration;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.RulesTreeModelEvent;
+import net.sourceforge.pmd.UndefinedRule;
 
 /**
  *
@@ -12,7 +17,9 @@ import java.util.Enumeration;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData, IConstants
+public class RulesTreeNode
+    extends DefaultMutableTreeNode
+    implements IConstants
 {
     private RuleSet m_ruleSet;
     private Rule m_rule;
@@ -23,14 +30,14 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
     private String m_example;
     private String m_propertyValue;
     private String m_propertyValueType;
-    private byte m_flags;
+    private byte m_type;
+    private boolean m_include;
 
     // Constant
     private static final byte IS_ROOT = 0x01;
     private static final byte IS_RULE_SET = 0x02;
     private static final byte IS_RULE = 0x04;
     private static final byte IS_PROPERTY = 0x08;
-    private static final byte INCLUDE = (byte) 0x80;
 
     /**
      ***************************************************************************
@@ -42,8 +49,8 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
         super();
 
         m_name = trim(text);
-        m_flags |= IS_ROOT;
-        m_flags |= INCLUDE;
+        m_type = IS_ROOT;
+        m_include = true;
 
         setDisplayName();
     }
@@ -60,13 +67,8 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
         m_name = trim(ruleSet.getName());
         m_description = trim(ruleSet.getDescription());
         m_ruleSet = ruleSet;
-        m_flags |= IS_RULE_SET;
-
-        if (ruleSet.include())
-        {
-            m_flags |= INCLUDE;
-        }
-
+        m_type = IS_RULE_SET;
+        m_include = ruleSet.include();
         setDisplayName();
     }
 
@@ -86,13 +88,8 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
         m_example = trim(rule.getExample());
         m_ruleSet = ruleSetNode.getRuleSet();
         m_rule = rule;
-        m_flags |= IS_RULE;
-
-        if (rule.include())
-        {
-            m_flags |= INCLUDE;
-        }
-
+        m_type = IS_RULE;
+        m_include = rule.include();
         setDisplayName();
     }
 
@@ -111,10 +108,10 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
         m_name = trim(propertyName);
         m_propertyValue = trim(propertyValue);
         m_propertyValueType = trim(propertyValueType);
-        m_flags |= IS_PROPERTY;
+        m_type = IS_PROPERTY;
         m_rule = ruleNode.getRule();
         m_ruleSet = ((RulesTreeNode) ruleNode.getParent()).getRuleSet();
-
+        m_include = true;
         setDisplayName();
     }
 
@@ -125,7 +122,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      *
      * @return
      */
-    protected RulesTreeNode getChildNode(String childName)
+    public RulesTreeNode getChildNode(String childName)
     {
         Enumeration children = children();
 
@@ -197,11 +194,11 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      *
      * @return
      */
-    public IRulesEditingData getParentRuleData()
+    public RulesTreeNode getParentRuleData()
     {
         if (isProperty())
         {
-            return (IRulesEditingData) getParent();
+            return (RulesTreeNode) getParent();
         }
 
         return null;
@@ -212,16 +209,16 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      *
      * @return
      */
-    public IRulesEditingData getParentRuleSetData()
+    public RulesTreeNode getParentRuleSetData()
     {
         if (isProperty())
         {
-            return (IRulesEditingData) getParent().getParent();
+            return (RulesTreeNode) getParent().getParent();
         }
 
         if (isRule())
         {
-            return (IRulesEditingData) getParent();
+            return (RulesTreeNode) getParent();
         }
 
         return null;
@@ -252,7 +249,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      *
      * @return
      */
-    public IRulesEditingData getSibling(String name)
+    public RulesTreeNode getSibling(String name)
     {
         RulesTreeNode parentNode = (RulesTreeNode) getParent();
 
@@ -271,7 +268,42 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      */
     public boolean include()
     {
-        return (m_flags & INCLUDE) != 0;
+        return m_include;
+    }
+
+    /**
+     ***************************************************************************
+     *
+     * @return
+     */
+    public boolean includeAncestor()
+    {
+        boolean include = true;
+
+        if (include)
+        {
+            if (isRule())
+            {
+                RulesTreeNode ruleSetNode;
+
+                ruleSetNode = (RulesTreeNode) getParent();
+                include = ruleSetNode.include();
+            }
+            else if (isProperty())
+            {
+                RulesTreeNode ruleNode = (RulesTreeNode) getParent();
+
+                if (ruleNode.include())
+                {
+                    RulesTreeNode ruleSetNode;
+
+                    ruleSetNode = (RulesTreeNode) ruleNode.getParent();
+                    include = ruleSetNode.include();
+                }
+            }
+        }
+
+        return include;
     }
 
     /**
@@ -281,7 +313,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      */
     public boolean isProperty()
     {
-        return (m_flags & IS_PROPERTY) != 0;
+        return m_type == IS_PROPERTY;
     }
 
     /**
@@ -291,7 +323,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      */
     public boolean isRule()
     {
-        return (m_flags & IS_RULE) != 0;
+        return m_type == IS_RULE;
     }
 
     /**
@@ -301,7 +333,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      */
     public boolean isRuleSet()
     {
-        return (m_flags & IS_RULE_SET) != 0;
+        return m_type == IS_RULE_SET;
     }
 
     /**
@@ -311,7 +343,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      */
     public boolean isRoot()
     {
-        return (m_flags & IS_ROOT) != 0;
+        return m_type == IS_ROOT;
     }
 
     /**
@@ -319,7 +351,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      *
      * @return
      */
-    protected Rule getRule()
+    public Rule getRule()
     {
         return m_rule;
     }
@@ -329,7 +361,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      *
      * @return
      */
-    protected RuleSet getRuleSet()
+    public RuleSet getRuleSet()
     {
         return m_ruleSet;
     }
@@ -339,7 +371,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      *
      * @param newName
      */
-    protected void setDisplayName()
+    public void setDisplayName()
     {
         String displayName;
 
@@ -425,14 +457,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
      */
     public void setInclude(boolean include)
     {
-        if (include)
-        {
-            m_flags |= INCLUDE;
-        }
-        else
-        {
-            m_flags &= (~INCLUDE);
-        }
+        m_include = include;
     }
 
     /**
@@ -455,7 +480,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
         {
             m_ruleSet.setName(m_name);
             m_ruleSet.setDescription(m_description);
-            m_ruleSet.setInclude(include());
+            m_ruleSet.setInclude(m_include);
         }
         else if (isRule())
         {
@@ -463,7 +488,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
             m_rule.setMessage(m_message);
             m_rule.setDescription(m_description);
             m_rule.setExample(m_example);
-            m_rule.setInclude(include());
+            m_rule.setInclude(m_include);
         }
         else if (isProperty())
         {
@@ -499,6 +524,62 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
     }
 
     /**
+     ***************************************************************************
+     *
+     * @param event
+     */
+    public void sortChildren()
+    {
+        int childCount = getChildCount();
+        RulesTreeNode[] treeNodes = new RulesTreeNode[childCount];
+        boolean needToSort = false;
+
+        for (int n = 0; n < childCount; n++)
+        {
+            treeNodes[n] = (RulesTreeNode) getChildAt(n);
+
+            if ((n > 0) && (needToSort == false))
+            {
+                String previousNodeName = treeNodes[n - 1].getName();
+                String currentNodeName = treeNodes[n].getName();
+
+                if (currentNodeName.compareToIgnoreCase(previousNodeName) < 0)
+                {
+                    needToSort = true;
+                }
+            }
+        }
+
+        if (needToSort)
+        {
+            Arrays.sort(treeNodes, new SortComparator());
+            removeAllChildren();
+
+            for (int n = 0; n < treeNodes.length; n++)
+            {
+                add(treeNodes[n]);
+            }
+
+            RulesTreeModelEvent.notifyReload(this, this);
+        }
+
+        for (int n = 0; n < treeNodes.length; n++)
+        {
+            treeNodes[n] = null;
+        }
+    }
+
+    /**
+     *************************************************************************
+     *
+     * @return
+     */
+    protected boolean hasUndefinedRuleClass()
+    {
+        return isRule() && (m_rule instanceof UndefinedRule);
+    }
+
+    /**
      *************************************************************************
      *
      * @return
@@ -506,5 +587,42 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData,
     protected static final RulesTreeNode createRootNode()
     {
         return new RulesTreeNode("Rules");
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class SortComparator implements Comparator
+    {
+
+        /**
+         ***************************************************************************
+         *
+         * @param object1
+         * @param object2
+         *
+         * @return
+         */
+        public int compare(Object object1, Object object2)
+        {
+            String name1 = ((RulesTreeNode) object1).getName();
+            String name2 = ((RulesTreeNode) object2).getName();
+
+            return name1.compareToIgnoreCase(name2);
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param object
+         *
+         * @return
+         */
+        public boolean equals(Object object)
+        {
+            return object == this;
+        }
     }
 }

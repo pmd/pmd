@@ -1,21 +1,28 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.Component;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.text.html.HTMLEditorKit;
+
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.JobThreadEvent;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.RuleSetChangedEvent;
+import net.sourceforge.pmd.swingui.event.RuleSetChangedEventListener;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.text.html.HTMLEditorKit;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
  *
@@ -23,11 +30,10 @@ import java.io.FileNotFoundException;
  * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-class ResultsViewer extends JEditorPane implements ListSelectionListener, ChangeListener
+class ResultsViewer extends JEditorPane
 {
 
-    private PMDViewer m_pmdViewer;
-    private DirectoryTable m_directoryTable;
+    private File m_selectedFile;
     private String m_htmlText;
     private PMD m_pmd;
     private RuleSet m_ruleSet;
@@ -35,11 +41,14 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
     private boolean m_loadRuleSets;
     private AnalyzeThreadInUse m_analyzeThreadInUse;
     private JScrollPane m_parentScrollPane;
+    private PMDDirectoryReturnedEventHandler m_pmdDirectoryReturnedEventHandler;
+    private DirectoryTableEventHandler m_directoryTableEventHandler;
+    private RuleSetChangedEventHandler m_ruleSetChangedEventHandler;
 
     /**
      ********************************************************************************
      */
-    protected ResultsViewer(PMDViewer pmdViewer, DirectoryTable directoryTable)
+    protected ResultsViewer()
     {
         super();
 
@@ -47,25 +56,13 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
         setEditorKit(new HTMLEditorKit());
         setEditable(false);
 
-        m_pmdViewer = pmdViewer;
-        m_directoryTable = directoryTable;
         m_pmd = new PMD();
         m_ruleSet = new RuleSet();
         m_loadRuleSets = true;
         m_analyzeThreadInUse = new AnalyzeThreadInUse();
-
-        m_directoryTable.getSelectionModel().addListSelectionListener(this);
-        m_pmdViewer.addRuleSetChangeListener(this);
-    }
-
-    /**
-     ********************************************************************************
-     *
-     * @param parentScrollPane
-     */
-    protected void setParentScrollPane(JScrollPane parentScrollPane)
-    {
-        m_parentScrollPane = parentScrollPane;
+        ListenerList.addListener((DirectoryTableEventListener) new DirectoryTableEventHandler());
+        ListenerList.addListener((PMDDirectoryReturnedEventListener) new PMDDirectoryReturnedEventHandler());
+        ListenerList.addListener((RuleSetChangedEventListener) new RuleSetChangedEventHandler());
     }
 
     /**
@@ -75,43 +72,21 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
      */
     private void scrollToTop()
     {
-        m_parentScrollPane.getHorizontalScrollBar().setValue(0);
-        m_parentScrollPane.getVerticalScrollBar().setValue(0);
-        m_parentScrollPane.repaint();
-    }
+        Component component = getParent();
 
-    /**
-     ********************************************************************************
-     *
-     * @param event
-     */
-    public void valueChanged(ListSelectionEvent event)
-    {
-        // Swing may generate a changing event more than once.  All changing events, except
-        // the last event, with have the "value is adjusting" flag set true.  We want only
-        // the last event.
-        if (event.getValueIsAdjusting() == false)
+        while ((component instanceof JScrollPane) == false)
         {
-            if (m_analyzeThreadInUse.inUse() == false)
-            {
-                File file = m_directoryTable.getSelectedFile();
-
-                if (file != null)
-                {
-                    (new AnalyzeThread(file, m_analyzeThreadInUse)).start();
-                }
-            }
+            component = component.getParent();
         }
-    }
 
-    /**
-     ********************************************************************************
-     *
-     * @param event
-     */
-    public void stateChanged(ChangeEvent event)
-    {
-        m_loadRuleSets = true;
+        if (component != null)
+        {
+            JScrollPane parentScrollPane = (JScrollPane) component;
+
+            parentScrollPane.getHorizontalScrollBar().setValue(0);
+            parentScrollPane.getVerticalScrollBar().setValue(0);
+            parentScrollPane.repaint();
+        }
     }
 
     /**
@@ -124,7 +99,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
     {
         if (m_loadRuleSets)
         {
-            m_ruleSet = m_pmdViewer.getPMDDirectory().getIncludedRules();
+            PMDDirectoryRequestEvent.notifyRequestIncludedRules(this);
             m_loadRuleSets = false;
         }
     }
@@ -150,11 +125,13 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
         {
             synchronized(m_report)
             {
-                File file = m_directoryTable.getSelectedFile();
-                String filePath = file.getPath();
-                TextRenderer renderer = new TextRenderer();
+                if (m_selectedFile != null)
+                {
+                    String filePath = m_selectedFile.getPath();
+                    TextRenderer renderer = new TextRenderer();
 
-                return renderer.render(filePath, m_report);
+                    return renderer.render(filePath, m_report);
+                }
             }
         }
 
@@ -193,9 +170,8 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
          */
         protected void setup()
         {
-            m_pmdViewer.setEnableViewer(false);
-            m_directoryTable.getSelectionModel().removeListSelectionListener(m_resultsViewer);
-            addListener(m_pmdViewer);
+            PMDViewer.getViewer().setEnableViewer(false);
+            addListener(PMDViewer.getViewer().getJobThreadEventListener());
         }
 
         /**
@@ -240,7 +216,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
             }
             catch (FileNotFoundException exception)
             {
-                MessageDialog.show(m_pmdViewer, null, exception);
+                MessageDialog.show(PMDViewer.getViewer(), null, exception);
             }
             catch (Throwable throwable)
             {
@@ -253,9 +229,8 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
          */
         protected void cleanup()
         {
-            removeListener(m_pmdViewer);
-            m_directoryTable.getSelectionModel().addListSelectionListener(m_resultsViewer);
-            m_pmdViewer.setEnableViewer(true);
+            removeListener(PMDViewer.getViewer().getJobThreadEventListener());
+            PMDViewer.getViewer().setEnableViewer(true);
             m_analyzeThreadInUse.setInUse(false);
         }
     }
@@ -270,7 +245,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
         private boolean m_inUse;
 
         /**
-         ***************************************************************************
+         ***********************************************************************
          *
          * @param inUse
          */
@@ -280,13 +255,123 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener, Change
         }
 
         /**
-         ***************************************************************************
+         ***********************************************************************
          *
          * @return
          */
         protected boolean inUse()
         {
             return m_inUse;
+        }
+    }
+
+    /**
+     ***************************************************************************
+     ***************************************************************************
+     ***************************************************************************
+     */
+    private class PMDDirectoryReturnedEventHandler implements PMDDirectoryReturnedEventListener
+    {
+
+        /**
+         ***********************************************************************
+         *
+         * @param event
+         */
+        public void returnedRuleSetPath(PMDDirectoryReturnedEvent event)
+        {
+        }
+
+        /**
+         ***********************************************************************
+         *
+         * @param event
+         */
+        public void returnedAllRuleSets(PMDDirectoryReturnedEvent event)
+        {
+        }
+
+        /**
+         ***********************************************************************
+         *
+         * @param event
+         */
+        public void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event)
+        {
+        }
+
+        /**
+         *******************************************************************************
+         *
+         * @param event
+         */
+        public void returnedIncludedRules(PMDDirectoryReturnedEvent event)
+        {
+            m_ruleSet = event.getRuleSet();
+        }
+    }
+
+    /**
+     ***********************************************************************************
+     ***********************************************************************************
+     ***********************************************************************************
+     */
+    private class DirectoryTableEventHandler implements DirectoryTableEventListener
+    {
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
+        public void requestSelectedFile(DirectoryTableEvent event)
+        {
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
+        public void fileSelected(DirectoryTableEvent event)
+        {
+            if (m_analyzeThreadInUse.inUse() == false)
+            {
+                File file = event.getSelectedFile();
+
+                if (file != null)
+                {
+                    (new AnalyzeThread(file, m_analyzeThreadInUse)).start();
+                }
+            }
+        }
+    }
+
+    /**
+     ***********************************************************************************
+     ***********************************************************************************
+     ***********************************************************************************
+     */
+    private class RuleSetChangedEventHandler implements RuleSetChangedEventListener
+    {
+
+        /**
+         *********************************************************************************
+         *
+         * @param ruleSet
+         */
+        public void ruleSetChanged(RuleSetChangedEvent event)
+        {
+            m_loadRuleSets = true;
+        }
+
+        /**
+         *********************************************************************************
+         *
+         */
+        public void ruleSetsChanged(RuleSetChangedEvent event)
+        {
+            m_loadRuleSets = true;
         }
     }
 }

@@ -1,9 +1,10 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.BorderLayout;
+
+import javax.swing.border.EmptyBorder;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
-import java.awt.BorderLayout;
 
 /**
  *
@@ -11,7 +12,7 @@ import java.awt.BorderLayout;
  * @since September 8, 2002
  * @version $Revision$, $Date$
  */
-public class RuleAllEditingPanel extends JPanel
+class RuleAllEditingPanel extends JPanel
 {
     private RuleSetEditingPanel m_ruleSetPanel;
     private RuleEditingPanel m_rulePanel;
@@ -23,7 +24,7 @@ public class RuleAllEditingPanel extends JPanel
      *
      * @return
      */
-    public RuleAllEditingPanel()
+    protected RuleAllEditingPanel()
     {
         super(new BorderLayout());
 
@@ -50,46 +51,6 @@ public class RuleAllEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
-     * @return
-     */
-    public RuleSetEditingPanel getRuleSetEditingPanel()
-    {
-        return m_ruleSetPanel;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    public RuleEditingPanel getRuleEditingPanel()
-    {
-        return m_rulePanel;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    public RulePropertyEditingPanel getRulePropertyEditingPanel()
-    {
-        return m_rulePropertyPanel;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    protected boolean isEditing()
-    {
-        return m_isEditing;
-    }
-
-    /**
-     *******************************************************************************
-     *
      * @param isEditing
      */
     protected void setIsEditing(boolean isEditing)
@@ -98,73 +59,5 @@ public class RuleAllEditingPanel extends JPanel
         m_ruleSetPanel.setIsEditing(isEditing);
         m_rulePanel.setIsEditing(isEditing);
         m_rulePropertyPanel.setIsEditing(isEditing);
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @return
-     */
-    public IRulesEditingData[] getData()
-    {
-        IRulesEditingData ruleSetData;
-        IRulesEditingData ruleData;
-        IRulesEditingData propertyData;
-        IRulesEditingData[] data;
-
-        ruleSetData = m_ruleSetPanel.getData();
-        ruleData = m_rulePanel.getData();
-        propertyData = m_rulePropertyPanel.getData();
-
-        if (propertyData != null)
-        {
-            data = new IRulesEditingData[3];
-            data[0] = ruleSetData;
-            data[1] = ruleData;
-            data[2] = propertyData;
-        }
-        else if (ruleData != null)
-        {
-            data = new IRulesEditingData[2];
-            data[0] = ruleSetData;
-            data[1] = ruleData;
-        }
-        else if (ruleSetData != null)
-        {
-            data = new IRulesEditingData[1];
-            data[0] = ruleSetData;
-        }
-        else
-        {
-            data = new IRulesEditingData[0];
-        }
-
-        return data;
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param data
-     */
-    public void setData(IRulesEditingData data)
-    {
-        m_ruleSetPanel.setData(data);
-        m_rulePanel.setData(data);
-        m_rulePropertyPanel.setData(data);
-    }
-
-    /**
-     *******************************************************************************
-     *
-     */
-    public void saveData()
-    {
-        if (m_isEditing)
-        {
-            m_ruleSetPanel.saveData();
-            m_rulePanel.saveData();
-            m_rulePropertyPanel.saveData();
-        }
     }
 }

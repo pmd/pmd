@@ -19,11 +19,12 @@ import java.util.Properties;
 class Preferences
 {
 
-    private Properties m_preferences = new Properties();
+    private Properties m_properties = new Properties();
     private String m_defaultUserPathToPMD;
     private String m_defaultSharedPathToPMD;
     private String m_defaultCurrentPathToPMD;
     private String m_preferencesPath;
+    private static Preferences m_preferences;
 
     // Constants
     private final String USER_PATH_TO_PMD = "user_path_to_pmd";
@@ -38,8 +39,7 @@ class Preferences
      *
      * @return
      */
-    protected Preferences()
-    throws PMDException
+    private Preferences() throws PMDException
     {
         //
         // Default user rule set directory.
@@ -65,6 +65,21 @@ class Preferences
         getPreferencesPath();
     }
 
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    protected static final Preferences getPreferences() throws PMDException
+    {
+        if (m_preferences == null)
+        {
+            m_preferences = new Preferences();
+            m_preferences.load();
+        }
+
+        return m_preferences;
+    }
 
     /**
      *******************************************************************************
@@ -122,21 +137,21 @@ class Preferences
         {
             inputStream = new FileInputStream(file);
 
-            m_preferences.load(inputStream);
+            m_properties.load(inputStream);
 
-            if (m_preferences.containsKey(USER_PATH_TO_PMD) == false)
+            if (m_properties.containsKey(USER_PATH_TO_PMD) == false)
             {
-                m_preferences.setProperty(USER_PATH_TO_PMD, m_defaultUserPathToPMD);
+                m_properties.setProperty(USER_PATH_TO_PMD, m_defaultUserPathToPMD);
             }
 
-            if (m_preferences.containsKey(SHARED_PATH_TO_PMD) == false)
+            if (m_properties.containsKey(SHARED_PATH_TO_PMD) == false)
             {
-                m_preferences.setProperty(SHARED_PATH_TO_PMD, m_defaultSharedPathToPMD);
+                m_properties.setProperty(SHARED_PATH_TO_PMD, m_defaultSharedPathToPMD);
             }
 
-            if (m_preferences.containsKey(CURRENT_PATH_TO_PMD) == false)
+            if (m_properties.containsKey(CURRENT_PATH_TO_PMD) == false)
             {
-                m_preferences.setProperty(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
+                m_properties.setProperty(CURRENT_PATH_TO_PMD, m_defaultCurrentPathToPMD);
             }
 
             return true;
@@ -195,7 +210,7 @@ class Preferences
 
             outputStream = new FileOutputStream(m_preferencesPath);
 
-            m_preferences.store(outputStream, null);
+            m_properties.store(outputStream, null);
         }
         catch (FileNotFoundException exception)
         {
@@ -282,7 +297,7 @@ class Preferences
         key = name.toLowerCase();
         directory = encodePathToPMD(directory);
 
-        m_preferences.put(key, directory);
+        m_properties.put(key, directory);
 
         return true;
     }
@@ -379,7 +394,7 @@ class Preferences
     private String getPathToPMD(String pathName)
     {
         String key = trim(pathName).toLowerCase();
-        String directory = decodePathToPMD(m_preferences.getProperty(key));
+        String directory = decodePathToPMD(m_properties.getProperty(key));
 
         if (directory == null)
         {
@@ -427,7 +442,7 @@ class Preferences
     protected String getPreference(String name)
     {
         String key = trim(name).toLowerCase();
-        String value = m_preferences.getProperty(key);
+        String value = m_properties.getProperty(key);
 
         if (value == null)
         {
@@ -474,7 +489,7 @@ class Preferences
             return false;
         }
 
-        m_preferences.put(key, value);
+        m_properties.put(key, value);
 
         return true;
     }

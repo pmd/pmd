@@ -1,21 +1,23 @@
 package net.sourceforge.pmd.swingui;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.FlowLayout;
+import java.awt.Toolkit;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 /**
  *
@@ -33,9 +35,12 @@ class ComponentFactory
      */
     protected static final JPanel createButtonPanel()
     {
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 10));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        EmptyBorder emptyBorder = new EmptyBorder(3, 3, 3, 3);
         EtchedBorder etchedBorder = new EtchedBorder(EtchedBorder.RAISED);
-        buttonPanel.setBorder(etchedBorder);
+        CompoundBorder compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
+        buttonPanel.setBorder(compoundBorder);
+
 
         return buttonPanel;
     }
@@ -49,6 +54,18 @@ class ComponentFactory
      */
     protected static final JButton createButton(String title)
     {
+        return createButton(title, null, null);
+    }
+
+    /**
+     ******************************************************************************
+     *
+     * @param title
+     *
+     * @return
+     */
+    protected static final JButton createButton(String title, Color background, Color foreground)
+    {
         JButton button;
         BevelBorder bevelBorder;
         EtchedBorder etchedBorder;
@@ -56,15 +73,27 @@ class ComponentFactory
         LineBorder lineBorder;
         Dimension size;
 
+        if (background == null)
+        {
+            background = UIManager.getColor("standardButtonBackground");
+        }
+
+        if (foreground == null)
+        {
+            foreground = UIManager.getColor("standardButtonForeground");
+        }
+
         button = new JButton(title);
-        lineBorder = new LineBorder(Color.black, 1, true);
+        lineBorder = new LineBorder(background.darker(), 1, true);
         bevelBorder = new BevelBorder(BevelBorder.RAISED);
         compoundBorder = new CompoundBorder(bevelBorder, lineBorder);
         etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
         compoundBorder = new CompoundBorder(etchedBorder, compoundBorder);
         compoundBorder = new CompoundBorder(lineBorder, compoundBorder);
-        size = new Dimension(80, 35);
+        size = new Dimension(80, 30);
 
+        button.setBackground(background);
+        button.setForeground(foreground);
         button.setBorder(compoundBorder);
         button.setFont(UIManager.getFont("buttonFont"));
         button.setSize(size);
@@ -80,10 +109,9 @@ class ComponentFactory
      */
     protected static final JButton createSaveButton(ActionListener actionListener)
     {
-        JButton saveButton = ComponentFactory.createButton("Save");
-
-        saveButton.setForeground(Color.white);
-        saveButton.setBackground(UIManager.getColor("pmdGreen"));
+        Color background = UIManager.getColor("pmdGreen");
+        Color foreground = Color.white;
+        JButton saveButton = ComponentFactory.createButton("Save", background, foreground);
         saveButton.addActionListener(actionListener);
 
         return saveButton;
@@ -95,10 +123,9 @@ class ComponentFactory
      */
     protected static final JButton createCancelButton(ActionListener actionListener)
     {
-        JButton cancelButton = ComponentFactory.createButton("Cancel");
-
-        cancelButton.setForeground(Color.white);
-        cancelButton.setBackground(UIManager.getColor("pmdRed"));
+        Color background = UIManager.getColor("pmdRed");
+        Color foreground = Color.white;
+        JButton cancelButton = ComponentFactory.createButton("Cancel", background, foreground);
         cancelButton.addActionListener(actionListener);
 
         return cancelButton;
@@ -187,5 +214,28 @@ class ComponentFactory
         textArea.setOpaque(true);
 
         return textArea;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param windowWidth
+     * @param windowHeight
+     */
+    protected static final Dimension adjustWindowSize(int windowWidth, int windowHeight)
+    {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        if (windowWidth >= screenSize.width)
+        {
+            windowWidth = screenSize.width - 10;
+        }
+
+        if (windowHeight >= screenSize.height)
+        {
+            windowHeight = screenSize.height - 20;
+        }
+
+        return new Dimension(windowWidth, windowHeight);
     }
 }

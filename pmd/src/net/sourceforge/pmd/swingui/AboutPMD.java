@@ -1,7 +1,26 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.ProjectFile;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -11,25 +30,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+
+import net.sourceforge.pmd.ProjectFile;
 
 /**
  *
@@ -49,6 +51,26 @@ class AboutPMD extends JDialog
     {
         super(pmdViewer, "About PMD", true);
 
+        initialize();
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @pmdViewer
+     */
+    protected AboutPMD(JDialog dialog)
+    {
+        super(dialog, "About PMD", true);
+
+        initialize();
+    }
+
+    /**
+     ********************************************************************************
+     */
+    private void initialize()
+    {
         Dimension screenSize = getToolkit().getScreenSize();
         int windowWidth = 750;
         int windowHeight = 500;

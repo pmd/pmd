@@ -1,18 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -25,6 +12,26 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
 
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.UIManager;
+
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+
 /**
  *
  * @author Donald A. Leckie
@@ -35,6 +42,7 @@ class DirectoryTable extends JTable
 {
 
     private boolean m_sortAscending = true;
+    private DirectoryTableEventHandler m_directoryTableEventHandler;
 
     /**
      ********************************************************************************
@@ -55,6 +63,8 @@ class DirectoryTable extends JTable
         setRowHeight(20);
         setSelectionBackground(Color.blue);
         setSelectionForeground(Color.white);
+        m_directoryTableEventHandler = new DirectoryTableEventHandler();
+        getSelectionModel().addListSelectionListener(new ListSelectionHandler());
 
         TableColumnModel columnModel = getColumnModel();
         JTableHeader tableHeader = getTableHeader();
@@ -312,6 +322,72 @@ class DirectoryTable extends JTable
         public boolean equals(Object object)
         {
             return (object == this);
+        }
+    }
+
+    /**
+     ********************************************************************************
+     ********************************************************************************
+     ********************************************************************************
+     */
+    private class ListSelectionHandler implements ListSelectionListener
+    {
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void valueChanged(ListSelectionEvent event)
+        {
+            // Swing may generate a change event more than once.  All change events, except
+            // the last event, will have the "value is adjusting" flag set true.  We want only
+            // the last event.
+            if (event.getValueIsAdjusting() == false)
+            {
+                File file = getSelectedFile();
+
+                if (file != null)
+                {
+                    DirectoryTableEvent.notifyFileSelected(this, file);
+                }
+            }
+        }
+    }
+
+    /**
+     ********************************************************************************
+     ********************************************************************************
+     ********************************************************************************
+     */
+    private class DirectoryTableEventHandler implements DirectoryTableEventListener
+    {
+
+        /**
+         ****************************************************************************
+         *
+         */
+        private DirectoryTableEventHandler()
+        {
+            ListenerList.addListener((DirectoryTableEventListener) this);
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void requestSelectedFile(DirectoryTableEvent event)
+        {
+        }
+
+        /**
+         ****************************************************************************
+         *
+         * @param event
+         */
+        public void fileSelected(DirectoryTableEvent event)
+        {
         }
     }
 }

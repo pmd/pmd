@@ -1,28 +1,14 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.JTree;
-import javax.swing.UIManager;
-import javax.swing.border.EtchedBorder;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -32,7 +18,38 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.EventObject;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.border.EtchedBorder;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.UIManager;
+
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleProperties;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryRequestEventListener;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEvent;
+import net.sourceforge.pmd.swingui.event.PMDDirectoryReturnedEventListener;
+import net.sourceforge.pmd.swingui.event.RulesEditingEvent;
+import net.sourceforge.pmd.swingui.event.RulesEditingEventListener;
 
 
 /**
@@ -45,6 +62,9 @@ class RulesTree extends JTree implements IConstants
 {
 
     private RulesEditor m_rulesEditor;
+    private PMDDirectoryReturnedEventHandler m_pmdDirectoryReturnedEventHandler;
+    private RulesTreeMouseListener m_mouseListener;
+    private RulesEditingEventHandler m_rulesEditingEventHandler;
 
     // Constants
     private final String UNTITLED = "Untitled";
@@ -56,7 +76,7 @@ class RulesTree extends JTree implements IConstants
      */
     protected RulesTree(RulesEditor rulesEditor)
     {
-        super(new DefaultTreeModel(RulesTreeNode.createRootNode()));
+        super(new RulesTreeModel(RulesTreeNode.createRootNode()));
 
         m_rulesEditor = rulesEditor;
 
@@ -65,7 +85,164 @@ class RulesTree extends JTree implements IConstants
         setCellRenderer(new TreeNodeRenderer());
         setCellEditor(new TreeCellEditor());
         setBackground(UIManager.getColor("pmdTreeBackground"));
-        addMouseListener(new RulesTreeMouseListener());
+        m_mouseListener = new RulesTreeMouseListener();
+        addMouseListener(m_mouseListener);
+        m_pmdDirectoryReturnedEventHandler = new PMDDirectoryReturnedEventHandler();
+        m_rulesEditingEventHandler = new RulesEditingEventHandler();
+    }
+
+    /**
+     *******************************************************************************
+     *
+     */
+    protected void dispose()
+    {
+        if (m_mouseListener != null)
+        {
+            removeMouseListener(m_mouseListener);
+        }
+
+        if (m_pmdDirectoryReturnedEventHandler != null)
+        {
+            m_pmdDirectoryReturnedEventHandler.dispose();
+        }
+
+        if (m_rulesEditingEventHandler != null)
+        {
+            m_rulesEditingEventHandler.dispose();
+        }
+
+        m_rulesEditor = null;
+        m_mouseListener = null;
+        m_pmdDirectoryReturnedEventHandler = null;
+        m_rulesEditingEventHandler = null;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     */
+    protected void buildTree()
+        throws PMDException
+    {
+        RuleSet[] ruleSets;
+        RulesTreeNode rootNode;
+
+        ruleSets = loadRuleSets();
+        rootNode = (RulesTreeNode) getModel().getRoot();
+
+        for (int n1 = 0; n1 < ruleSets.length; n1++)
+        {
+            RulesTreeNode ruleSetNode = new RulesTreeNode(ruleSets[n1]);
+
+            rootNode.add(ruleSetNode);
+            loadRuleTreeNodes(ruleSetNode);
+        }
+
+        expandNode(rootNode);
+        TreePath treePath = new TreePath(rootNode.getPath());
+        this.setSelectionPath(treePath);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    private RuleSet[] loadRuleSets() throws PMDException
+    {
+        PMDDirectoryRequestEvent.notifyRequestAllRuleSets(this);
+
+        // The event is processed.  The requested rule set is assembled by another class
+        // that calls notifyReturnedAllRuleSets.  The list of rule sets is stored in the
+        // inner class PMDDirectoryReturnedEventHandler.  Then processing will then continue here.
+        //
+
+        List ruleSetList = m_pmdDirectoryReturnedEventHandler.getRuleSetList();
+
+        //
+        // Sort the rule sets by name in ascending order.
+        //
+        RuleSet[] ruleSets = new RuleSet[ruleSetList.size()];
+
+        ruleSetList.toArray(ruleSets);
+        Arrays.sort(ruleSets, new RuleSetNameComparator());
+
+        return ruleSets;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param ruleSetNode
+     */
+    private void loadRuleTreeNodes(RulesTreeNode ruleSetNode)
+    {
+        RuleSet ruleSet;
+        Set setOfRules;
+        Rule[] rules;
+
+        ruleSet = ruleSetNode.getRuleSet();
+        setOfRules = ruleSet.getRules();
+        rules = new Rule[setOfRules.size()];
+
+        setOfRules.toArray(rules);
+        Arrays.sort(rules, new RuleNameComparator());
+
+        for (int n = 0; n < rules.length; n++)
+        {
+            RulesTreeNode ruleNode = new RulesTreeNode(ruleSetNode, rules[n]);
+
+            ruleSetNode.add(ruleNode);
+            loadProperties(ruleNode);
+
+            rules[n] = null;
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param ruleNode
+     */
+    private void loadProperties(RulesTreeNode ruleNode)
+    {
+        Rule rule;
+        RuleProperties properties;
+        String[] propertyNames;
+        Enumeration keys;
+        int index;
+
+        rule = ruleNode.getRule();
+        properties = rule.getProperties();
+        propertyNames = new String[properties.size()];
+        keys = properties.keys();
+        index = 0;
+
+        while (keys.hasMoreElements())
+        {
+            propertyNames[index] = (String) keys.nextElement();
+            index++;
+        }
+
+        Arrays.sort(propertyNames, new PropertyNameComparator());
+
+        for (int n = 0; n < propertyNames.length; n++)
+        {
+            String propertyName;
+            String propertyValue;
+            String propertyValueType;
+            RulesTreeNode propertyNode;
+
+            propertyName = propertyNames[n];
+            propertyValue = properties.getValue(propertyName);
+            propertyValueType = properties.getValueType(propertyName);
+            propertyNode = new RulesTreeNode(ruleNode, propertyName, propertyValue, propertyValueType);
+
+            ruleNode.add(propertyNode);
+
+            propertyNames[n] = null;
+        }
     }
 
     /**
@@ -107,92 +284,6 @@ class RulesTree extends JTree implements IConstants
     }
 
     /**
-     ***************************************************************************
-     *
-     * @param event
-     */
-    protected void sortChildren(RulesTreeNode parentNode)
-    {
-        if (parentNode != null)
-        {
-            int childCount = parentNode.getChildCount();
-            RulesTreeNode[] treeNodes = new RulesTreeNode[childCount];
-            boolean needToSort = false;
-
-            for (int n = 0; n < childCount; n++)
-            {
-                treeNodes[n] = (RulesTreeNode) parentNode.getChildAt(n);
-
-                if ((n > 0) && (needToSort == false))
-                {
-                    String previousNodeName = treeNodes[n - 1].getName();
-                    String currentNodeName = treeNodes[n].getName();
-
-                    if (currentNodeName.compareToIgnoreCase(previousNodeName) < 0)
-                    {
-                        needToSort = true;
-                    }
-                }
-            }
-
-            if (needToSort)
-            {
-                Arrays.sort(treeNodes, new SortComparator());
-                parentNode.removeAllChildren();
-
-                for (int n = 0; n < treeNodes.length; n++)
-                {
-                    parentNode.add(treeNodes[n]);
-                }
-
-                ((DefaultTreeModel) getModel()).reload(parentNode);
-            }
-
-            for (int n = 0; n < treeNodes.length; n++)
-            {
-                treeNodes[n] = null;
-            }
-        }
-    }
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class SortComparator implements Comparator
-    {
-
-        /**
-         ***************************************************************************
-         *
-         * @param object1
-         * @param object2
-         *
-         * @return
-         */
-        public int compare(Object object1, Object object2)
-        {
-            String name1 = ((RulesTreeNode) object1).getName();
-            String name2 = ((RulesTreeNode) object2).getName();
-
-            return name1.compareToIgnoreCase(name2);
-        }
-
-        /**
-         ***************************************************************************
-         *
-         * @param object
-         *
-         * @return
-         */
-        public boolean equals(Object object)
-        {
-            return object == this;
-        }
-    }
-
-    /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
@@ -206,6 +297,7 @@ class RulesTree extends JTree implements IConstants
         private JMenuItem m_removeRuleMenuItem;
         private JMenuItem m_addPropertyMenuItem;
         private JMenuItem m_removePropertyMenuItem;
+        private JMenuItem m_includeMenuItem;
 
         /**
          ***********************************************************************
@@ -225,6 +317,7 @@ class RulesTree extends JTree implements IConstants
                 rulesTree = RulesTree.this;
                 location = event.getPoint();
                 treePath = rulesTree.getPathForLocation(location.x, location.y);
+                rulesTree.setSelectionPath(treePath);
                 treeNode = (RulesTreeNode) treePath.getLastPathComponent();
                 popupMenu = null;
 
@@ -247,7 +340,6 @@ class RulesTree extends JTree implements IConstants
 
                 if (popupMenu != null)
                 {
-                    rulesTree.getSelectionModel().setSelectionPath(treePath);
                     popupMenu.show(rulesTree, location.x, location.y);
                 }
             }
@@ -260,7 +352,7 @@ class RulesTree extends JTree implements IConstants
          */
         private JPopupMenu createRootPopupMenu()
         {
-            JPopupMenu popupMenu = createPopupMenu();
+            JPopupMenu popupMenu = createPopupMenu(false);
 
             m_addRuleSetMenuItem.setEnabled(true);
             m_removeRuleSetMenuItem.setEnabled(false);
@@ -279,7 +371,7 @@ class RulesTree extends JTree implements IConstants
          */
         private JPopupMenu createRuleSetPopupMenu()
         {
-            JPopupMenu popupMenu = createPopupMenu();
+            JPopupMenu popupMenu = createPopupMenu(true);
 
             m_addRuleSetMenuItem.setEnabled(false);
             m_removeRuleSetMenuItem.setEnabled(true);
@@ -298,7 +390,7 @@ class RulesTree extends JTree implements IConstants
          */
         private JPopupMenu createRulePopupMenu()
         {
-            JPopupMenu popupMenu = createPopupMenu();
+            JPopupMenu popupMenu = createPopupMenu(true);
 
             m_addRuleSetMenuItem.setEnabled(false);
             m_removeRuleSetMenuItem.setEnabled(false);
@@ -317,7 +409,7 @@ class RulesTree extends JTree implements IConstants
          */
         private JPopupMenu createPropertyPopupMenu()
         {
-            JPopupMenu popupMenu = createPopupMenu();
+            JPopupMenu popupMenu = createPopupMenu(false);
 
             m_addRuleSetMenuItem.setEnabled(false);
             m_removeRuleSetMenuItem.setEnabled(false);
@@ -334,7 +426,7 @@ class RulesTree extends JTree implements IConstants
          *
          * @return
          */
-        private JPopupMenu createPopupMenu()
+        private JPopupMenu createPopupMenu(boolean addInclude)
         {
             JPopupMenu popupMenu = new JPopupMenu();
 
@@ -366,7 +458,33 @@ class RulesTree extends JTree implements IConstants
             m_removePropertyMenuItem.addActionListener(new RemoveRulePropertyActionListener());
             popupMenu.add(m_removePropertyMenuItem);
 
+            if (addInclude)
+            {
+                popupMenu.add(new JSeparator());
+
+                m_includeMenuItem = new JCheckBoxMenuItem("Include");
+                m_includeMenuItem.addActionListener(new IncludeActionListener());
+                m_includeMenuItem.setSelected(RulesTree.this.getSelectedNode().include());
+                popupMenu.add(m_includeMenuItem);
+            }
+
             return popupMenu;
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class IncludeActionListener implements ActionListener
+    {
+
+        public void actionPerformed(ActionEvent event)
+        {
+            JCheckBoxMenuItem includeMenuItem = (JCheckBoxMenuItem) event.getSource();
+            RulesTree.this.getSelectedNode().setInclude(includeMenuItem.isSelected());
+            RulesTree.this.repaint();
         }
     }
 
@@ -405,7 +523,7 @@ class RulesTree extends JTree implements IConstants
                 rulesTree.expandNode(ruleSetNode);
             }
 
-            sortChildren(rootNode);
+            rootNode.sortChildren();
         }
     }
 
@@ -420,15 +538,19 @@ class RulesTree extends JTree implements IConstants
         public void actionPerformed(ActionEvent event)
         {
             RulesTreeNode ruleSetNode = RulesTree.this.getSelectedNode();
-            String ruleSetName = ruleSetNode.getName();
-            String template = "Do you really want to remove the rule set \"{0}\"?\nThe remove cannot be undone.";
-            String[] args = {ruleSetName};
-            String message = MessageFormat.format(template, args);
 
-            if (MessageDialog.answerIsYes(m_rulesEditor, message))
+            if (ruleSetNode != null)
             {
-                DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
-                treeModel.removeNodeFromParent(ruleSetNode);
+                String ruleSetName = ruleSetNode.getName();
+                String template = "Do you really want to remove the rule set \"{0}\"?\nThe remove cannot be undone.";
+                String[] args = {ruleSetName};
+                String message = MessageFormat.format(template, args);
+
+                if (MessageDialog.answerIsYes(m_rulesEditor, message))
+                {
+                    DefaultTreeModel treeModel = (DefaultTreeModel) RulesTree.this.getModel();
+                    treeModel.removeNodeFromParent(ruleSetNode);
+                }
             }
         }
     }
@@ -492,7 +614,7 @@ class RulesTree extends JTree implements IConstants
                     rulesTree.expandNode(ruleSetNode);
                 }
 
-                sortChildren(ruleSetNode);
+                ruleSetNode.sortChildren();
                 TreePath treePath = new TreePath(ruleNode.getPath());
                 rulesTree.setSelectionPath(treePath);
             }
@@ -506,8 +628,7 @@ class RulesTree extends JTree implements IConstants
         private Rule getNewRuleFromUser()
         throws PMDException
         {
-            PMDViewer pmdViewer = m_rulesEditor.getPMDViewer();
-            RulesClassSelectDialog dialog = new RulesClassSelectDialog(m_rulesEditor, pmdViewer);
+            RulesClassSelectDialog dialog = new RulesClassSelectDialog(m_rulesEditor);
             dialog.show();
 
             if (dialog.selectWasPressed())
@@ -726,7 +847,7 @@ class RulesTree extends JTree implements IConstants
                 rulesTree.expandNode(ruleNode);
             }
 
-            sortChildren(ruleNode);
+            ruleNode.sortChildren();
         }
     }
 
@@ -794,6 +915,8 @@ class RulesTree extends JTree implements IConstants
         private Icon m_defaultLeafIcon;
         private Icon m_defaultOpenIcon;
         private Icon m_documentIcon;
+        private Font m_plainFont;
+        private Font m_italicFont;
 
         /**
          ***************************************************************************
@@ -803,11 +926,17 @@ class RulesTree extends JTree implements IConstants
         {
             super();
 
+            Font font;
+
             m_defaultClosedIcon = getDefaultClosedIcon();
             m_defaultLeafIcon = getDefaultLeafIcon();
             m_defaultOpenIcon = getDefaultOpenIcon();
             m_documentIcon = UIManager.getIcon("document");
+            font = RulesTree.this.getFont();
+            m_plainFont = new Font(font.getName(), Font.PLAIN, font.getSize());
+            m_italicFont = new Font(font.getName(), Font.ITALIC, font.getSize());
             setBackgroundNonSelectionColor(UIManager.getColor("pmdTreeBackground"));
+            setBackgroundSelectionColor(Color.yellow);
         }
 
         /**
@@ -846,6 +975,28 @@ class RulesTree extends JTree implements IConstants
                 setOpenIcon(m_defaultOpenIcon);
             }
 
+            if (treeNode.hasUndefinedRuleClass())
+            {
+                setTextNonSelectionColor(Color.red);
+                setTextSelectionColor(Color.red);
+                setFont(m_plainFont);
+            }
+            else if (treeNode.include() && treeNode.includeAncestor())
+            {
+                setTextNonSelectionColor(Color.blue);
+                setTextSelectionColor(Color.blue);
+                setFont(m_plainFont);
+            }
+            else
+            {
+                setTextNonSelectionColor(Color.black);
+                setTextSelectionColor(Color.black);
+                setFont(m_italicFont);
+
+            }
+
+            updateUI();
+
             return super.getTreeCellRendererComponent(tree,
                                                       object,
                                                       isSelected,
@@ -853,6 +1004,255 @@ class RulesTree extends JTree implements IConstants
                                                       isLeaf,
                                                       row,
                                                       hasFocus);
+        }
+
+        /**
+         **************************************************************************
+         *
+         * @param graphics
+         */
+        public void paint(Graphics graphics)
+        {
+            int x = getX();
+            int y = getY();
+            int width = getWidth();
+            int height = getHeight();
+            graphics.clearRect(x, y, width, height);
+            super.paint(graphics);
+        }
+    }
+
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class RuleSetNameComparator implements Comparator
+    {
+
+        /**
+         ************************************************************************
+         *
+         * @param objectA
+         * @param objectB
+         *
+         * @return
+         */
+        public int compare(Object objectA, Object objectB)
+        {
+            String ruleSetNameA = ((RuleSet) objectA).getName();
+            String ruleSetNameB = ((RuleSet) objectB).getName();
+
+            return ruleSetNameA.compareToIgnoreCase(ruleSetNameB);
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class RuleNameComparator implements Comparator
+    {
+
+        /**
+         ************************************************************************
+         *
+         * @param objectA
+         * @param objectB
+         *
+         * @return
+         */
+        public int compare(Object objectA, Object objectB)
+        {
+            String ruleNameA = ((Rule) objectA).getName();
+            String ruleNameB = ((Rule) objectB).getName();
+
+            return ruleNameA.compareToIgnoreCase(ruleNameB);
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class PropertyNameComparator implements Comparator
+    {
+
+        /**
+         ************************************************************************
+         *
+         * @param objectA
+         * @param objectB
+         *
+         * @return
+         */
+        public int compare(Object objectA, Object objectB)
+        {
+            String propertyNameA = (String) objectA;
+            String propertyNameB = (String) objectB;
+
+            return propertyNameA.compareToIgnoreCase(propertyNameB);
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class PMDDirectoryReturnedEventHandler implements PMDDirectoryReturnedEventListener
+    {
+
+        private List m_ruleSetList;
+        private String m_ruleSetPath;
+
+        /**
+         ***************************************************************************
+         *
+         */
+        private PMDDirectoryReturnedEventHandler()
+        {
+            ListenerList.addListener((PMDDirectoryReturnedEventListener) this);
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
+        private void dispose()
+        {
+            ListenerList.removeListener((PMDDirectoryReturnedEventListener) this);
+
+            if (m_ruleSetList != null)
+            {
+                m_ruleSetList.clear();
+                m_ruleSetList = null;
+            }
+
+            m_ruleSetPath = null;
+        }
+
+        /**
+         ***************************************************************************
+         */
+        private String getRuleSetPath()
+        {
+            return m_ruleSetPath;
+        }
+
+        /**
+         ***************************************************************************
+         */
+        private List getRuleSetList()
+        {
+            return m_ruleSetList;
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
+        public void returnedRuleSetPath(PMDDirectoryReturnedEvent event)
+        {
+            m_ruleSetPath = event.getRuleSetPath();
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
+        public void returnedAllRuleSets(PMDDirectoryReturnedEvent event)
+        {
+            m_ruleSetList = event.getRuleSetList();
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
+        public void returnedDefaultRuleSets(PMDDirectoryReturnedEvent event)
+        {
+            m_ruleSetList = event.getRuleSetList();
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
+        public void returnedIncludedRules(PMDDirectoryReturnedEvent event)
+        {
+            m_ruleSetList = event.getRuleSetList();
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class RulesEditingEventHandler implements RulesEditingEventListener
+    {
+
+        /**
+         ***************************************************************************
+         *
+         */
+        private RulesEditingEventHandler()
+        {
+            ListenerList.addListener((RulesEditingEventListener) this);
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
+        private void dispose()
+        {
+            ListenerList.removeListener((RulesEditingEventListener) this);
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
+        public void saveData(RulesEditingEvent event)
+        {
+            SwingUtilities.invokeLater(new UpdateUI());
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param event
+         */
+        public void loadData(RulesEditingEvent event)
+        {
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class UpdateUI implements Runnable
+    {
+
+        /**
+         ***************************************************************************
+         *
+         */
+        public void run()
+        {
+//            RulesTree.this.updateUI();
         }
     }
 }

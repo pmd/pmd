@@ -1,5 +1,8 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.Component;
+import java.io.File;
+
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JTree;
@@ -7,8 +10,8 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import java.awt.Component;
-import java.io.File;
+
+import net.sourceforge.pmd.swingui.event.JobThreadEvent;
 
 /**
  *
@@ -56,7 +59,7 @@ class DirectoryTree extends JTree
     protected void setupFiles(PMDViewer pmdViewer, File[] rootDirectories)
     {
         String name = "Locating root directories.  Please wait...";
-        SetupFilesThread setupFilesThread = new SetupFilesThread(name, rootDirectories, pmdViewer);
+        SetupFilesThread setupFilesThread = new SetupFilesThread(name, rootDirectories);
         setupFilesThread.start();
     }
 
@@ -68,19 +71,17 @@ class DirectoryTree extends JTree
     private class SetupFilesThread extends JobThread
     {
         private File[] m_rootDirectories;
-        private PMDViewer m_pmdViewer;
 
         /**
          ****************************************************************************
          *
          * @param name
          */
-        private SetupFilesThread(String threadName, File[] rootDirectories, PMDViewer pmdViewer)
+        private SetupFilesThread(String threadName, File[] rootDirectories)
         {
             super(threadName);
 
             m_rootDirectories = rootDirectories;
-            m_pmdViewer = pmdViewer;
         }
 
         /**
@@ -89,8 +90,9 @@ class DirectoryTree extends JTree
          */
         protected void setup()
         {
-            m_pmdViewer.setEnableViewer(false);
-            addListener(m_pmdViewer);
+            PMDViewer pmdViewer = PMDViewer.getViewer();
+            pmdViewer.setEnableViewer(false);
+            addListener(pmdViewer.getJobThreadEventListener());
         }
 
         /**
@@ -101,7 +103,7 @@ class DirectoryTree extends JTree
         {
             JobThreadEvent event;
 
-            event = new JobThreadEvent(this, "Locating file directories.  Please wait...");
+            event = new JobThreadEvent(this, "Locating local and network file directories.  Please wait...");
             notifyJobThreadStatus(event);
             DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
             treeModel.setupFiles(m_rootDirectories);
@@ -114,8 +116,9 @@ class DirectoryTree extends JTree
          */
         protected void cleanup()
         {
-            removeListener(m_pmdViewer);
-            m_pmdViewer.setEnableViewer(true);
+            PMDViewer pmdViewer = PMDViewer.getViewer();
+            removeListener(pmdViewer.getJobThreadEventListener());
+            pmdViewer.setEnableViewer(true);
         }
     }
 

@@ -25,7 +25,6 @@ import java.io.File;
 class RulesClassSelectDialog extends JDialog
 {
 
-    private PMDViewer m_pmdViewer;
     private DirectoryTree m_tree;
     private DirectoryTable m_table;
     private JSplitPane m_splitPane;
@@ -39,30 +38,13 @@ class RulesClassSelectDialog extends JDialog
      *
      * @param parentWindow
      */
-    protected RulesClassSelectDialog(JDialog parentWindow, PMDViewer pmdViewer)
+    protected RulesClassSelectDialog(JDialog parentWindow)
         throws PMDException
     {
         super(parentWindow, "Rules Class File Selector", true);
 
-        m_pmdViewer = pmdViewer;
-        int windowWidth = 1200;
-        int windowHeight = 800;
-        Dimension screenSize = getToolkit().getScreenSize();
-
-        if (windowWidth >= screenSize.width)
-        {
-            windowWidth = screenSize.width - 10;
-        }
-
-        if (windowHeight >= screenSize.height)
-        {
-            windowHeight = screenSize.height - 20;
-        }
-
-        int windowLocationX = pmdViewer.getX();
-        int windowLocationY = pmdViewer.getY();
-        setLocation(windowLocationX, windowLocationY);
-        setSize(windowWidth, windowHeight);
+        setSize(ComponentFactory.adjustWindowSize(1200, 800));
+        setLocationRelativeTo(PMDViewer.getViewer());
         setResizable(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         createDirectoryTreeScrollPane();
@@ -126,11 +108,10 @@ class RulesClassSelectDialog extends JDialog
      *******************************************************************************
      *
      */
-    private void buildTree()
-        throws PMDException
+    private void buildTree() throws PMDException
     {
-        PMDDirectory pmdDirectory = m_pmdViewer.getPMDDirectory();
-        String rulesDirectoryPath = pmdDirectory.getRuleSetsDirectory();
+        PMDDirectory pmdDirectory = PMDDirectory.getDirectory();
+        String rulesDirectoryPath = pmdDirectory.getRuleSetsDirectoryPath();
         File[] rulesDirectory = { new File(rulesDirectoryPath) };
         ((DirectoryTreeModel) m_tree.getModel()).setupFiles(rulesDirectory);
         m_tree.expandRootNode();

@@ -109,6 +109,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
                                 "mediumGray", "#686868",
                             "mediumDarkGray", "#434343",
                                   "paleGray", "#AAAAAA",
+                  "standardButtonBackground", "#686868",
+                  "standardButtonForeground", "#FFFFFF",
                   "pmdTableHeaderBackground", "#686868",
                   "pmdTableHeaderForeground", "#FFFFFF",
                  "pmdEditingPanelBackground", String.valueOf(Color.lightGray.getRGB()),
@@ -132,6 +134,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         Object[] defaults =
         {
             "document",          LookAndFeel.makeIcon(plafClass, "icons/document.gif"),
+            "cancel",            LookAndFeel.makeIcon(plafClass, "icons/cancel.gif"),
             "save",              LookAndFeel.makeIcon(plafClass, "icons/save.gif"),
             "saveAs",            LookAndFeel.makeIcon(plafClass, "icons/saveAs.gif"),
             "print",             LookAndFeel.makeIcon(plafClass, "icons/print.gif"),
