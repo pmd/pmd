@@ -550,6 +550,42 @@ public Class Person {
    </example>
 
  </rule>
+
+    <rule name="UnnecessaryBooleanAssertion"
+          message="assertTrue(true) or similar statements are unnecessary"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+          A (junit test) asserttion with a boolean literal is unnecessary, since it always will eval to the same thing.
+          Consider using flow control (in case of assertTrue(false) or similar) or simply removing
+          statements like assertTrue(true) and assertFalse(false);
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+    //StatementExpression[
+.//Name[@Image='assertTrue' or  @Image='assertFalse']
+and
+.//Arguments//BooleanLiteral
+]
+]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class SimpleTest extends TestCase {
+    public void testX() {
+        code ... 
+        // Why on earth would you write this?
+        assertTrue(true);
+    }
+}
+]]>
+          </example>
+    </rule>
         
 </ruleset>
 
