@@ -5,10 +5,10 @@
 These are new ones for 0.4
   </description>
   <rule name="OverrideBothEqualsAndHashcodeRule"
-        message="Ensure you override both equals() and hashcode()"
+        message="Ensure you override both equals() and hashCode()"
         class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcodeRule">
     <description>
-Override both public boolean Object.equals(Object other), and public int Object.hashcode(), or override neither
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither
     </description>
 
     <example>
@@ -22,7 +22,7 @@ public class Bar {
 
 // and so is this
 public class Baz {
-    public int hashcode() {
+    public int hashCode() {
         // return some hash value
     }
 }
@@ -32,7 +32,7 @@ public class Foo {
     public boolean equals(Object other) {
         // do some comparison
     }
-    public int hashcode() {
+    public int hashCode() {
         // return some hash value
     }
 }
