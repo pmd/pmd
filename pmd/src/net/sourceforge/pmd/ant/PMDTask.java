@@ -14,6 +14,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
@@ -33,7 +34,6 @@ public class PMDTask extends Task {
     private List formatters = new ArrayList();
     private List filesets = new ArrayList();
     private boolean shortFilenames;
-    private boolean verbose;
     private boolean printToConsole;
     private String ruleSetFiles;
     private boolean failOnError;
@@ -54,10 +54,6 @@ public class PMDTask extends Task {
 
     public void setFailOnRuleViolation(boolean fail) {
         this.failOnRuleViolation = fail;
-    }
-
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
     }
 
     public void setPrintToConsole(boolean printToConsole) {
@@ -91,21 +87,17 @@ public class PMDTask extends Task {
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             if (classpath == null) {
-                printIfVerbose("Using the normal ClassLoader");
+                log("Using the normal ClassLoader", Project.MSG_VERBOSE);
                 rules = ruleSetFactory.createRuleSet(ruleSetFiles);
             } else {
-                printIfVerbose("Using the AntClassLoader");
+                log("Using the AntClassLoader", Project.MSG_VERBOSE);
                 rules = ruleSetFactory.createRuleSet(ruleSetFiles, new AntClassLoader(project, classpath));
             }
-        } catch (RuleSetNotFoundException rsnfe) {
-            throw new BuildException(rsnfe.getMessage());
+        } catch (RuleSetNotFoundException e) {
+            throw new BuildException(e.getMessage());
         }
 
-        printIfVerbose("Using these rulesets: " + ruleSetFiles);
-        for (Iterator i = rules.getRules().iterator();i.hasNext();) {
-            Rule rule = (Rule)i.next();
-            printIfVerbose("Using rule " + rule.getName());
-        }
+        logRulesUsed(rules);
 
         PMD pmd = new PMD();
         RuleContext ctx = new RuleContext();
@@ -116,7 +108,7 @@ public class PMDTask extends Task {
             String[] srcFiles = ds.getIncludedFiles();
             for (int j = 0; j < srcFiles.length; j++) {
                 File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
-                printIfVerbose("Processing file " + file.getAbsoluteFile().toString());
+                log("Processing file " + file.getAbsoluteFile().toString(), Project.MSG_VERBOSE);
                 ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
                 try {
                     pmd.processFile(new FileInputStream(file), rules, ctx);
@@ -125,9 +117,7 @@ public class PMDTask extends Task {
                         throw new BuildException(fnfe);
                     }
                 } catch (PMDException pmde) {
-                    if (verbose) {
-                        pmde.printStackTrace();
-                    }
+                    log(pmde.toString(), Project.MSG_VERBOSE);
                     if (failOnError) {
                         throw new BuildException(pmde);
                     }
@@ -136,7 +126,7 @@ public class PMDTask extends Task {
             }
         }
 
-        printIfVerbose("Problems found: " + ctx.getReport().size());
+        log(ctx.getReport().size() + " problems found", Project.MSG_VERBOSE);
 
         if (!ctx.getReport().isEmpty()) {
             for (Iterator i = formatters.iterator(); i.hasNext();) {
@@ -153,12 +143,20 @@ public class PMDTask extends Task {
 
             if (printToConsole) {
                 Renderer r = new TextRenderer();
-                log(r.render(ctx.getReport()));
+                log(r.render(ctx.getReport()), Project.MSG_INFO);
             }
 
             if (failOnRuleViolation) {
                 throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
             }
+        }
+    }
+
+    private void logRulesUsed(RuleSet rules) {
+        log("Using these rulesets: " + ruleSetFiles, Project.MSG_VERBOSE);
+        for (Iterator i = rules.getRules().iterator();i.hasNext();) {
+            Rule rule = (Rule)i.next();
+            log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
         }
     }
 
@@ -176,12 +174,6 @@ public class PMDTask extends Task {
 
         if (ruleSetFiles == null) {
             throw new BuildException("No rulesets specified");
-        }
-    }
-
-    private void printIfVerbose(String in) {
-        if (verbose) {
-            log(in);
         }
     }
 

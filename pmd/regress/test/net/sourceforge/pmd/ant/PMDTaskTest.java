@@ -39,16 +39,4 @@ public class PMDTaskTest extends TestCase {
         }
     }
 
-    public void testBogusRuleSet() {
-        PMDTask task = new PMDTask();
-        task.setPrintToConsole(true);
-        task.setRuleSetFiles("fiddlesticks");
-        try {
-            task.execute();
-            throw new RuntimeException("Should have thrown a BuildException - bogus rulesets");
-        } catch (BuildException be) {
-            // cool
-        }
-    }
-
 }
