@@ -30,12 +30,19 @@ public class RuleSetFactory {
             NodeList rules = root.getElementsByTagName("rule");
             for (int i =0; i<rules.getLength(); i++) {
                 Node ruleNode = (Node)rules.item(i);
-                Rule rule = (Rule)Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue()).newInstance();
-                rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
-                rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
+                Rule rule = null;
+                if (ruleNode.getAttributes().getNamedItem("ref") != null) {
+                    ExternalRuleID externalRuleID = new ExternalRuleID(ruleNode.getAttributes().getNamedItem("ref").getNodeValue());
+                    RuleSetFactory rsf = new RuleSetFactory();
+                    RuleSet externalRuleSet = rsf.createRuleSet(getClass().getClassLoader().getResourceAsStream(externalRuleID.getFilename()));
+                    rule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
+                } else {
+                    rule = (Rule)Class.forName(ruleNode.getAttributes().getNamedItem("class").getNodeValue()).newInstance();
+                    rule.setName(ruleNode.getAttributes().getNamedItem("name").getNodeValue());
+                    rule.setMessage(ruleNode.getAttributes().getNamedItem("message").getNodeValue());
+                }
                 ruleSet.addRule(rule);
             }
-
             return ruleSet;
         } catch (Exception e) {
             e.printStackTrace();

@@ -24,6 +24,16 @@ public class RuleSet
 	return rules;
     }
 
+    public Rule getRuleByName(String ruleName) {
+        for (Iterator i = rules.iterator(); i.hasNext();) {
+            Rule r = (Rule)i.next();
+            if (r.getName().equals(ruleName)) {
+                return r;
+            }
+        }
+        throw new RuntimeException("Couldn't find rule named " + ruleName + " in the ruleset " + name);
+    }
+
     public void addRuleSet(RuleSet ruleSet) {
         rules.addAll(ruleSet.getRules());
     }

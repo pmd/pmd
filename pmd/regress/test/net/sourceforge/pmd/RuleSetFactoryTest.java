@@ -28,6 +28,8 @@ public class RuleSetFactoryTest  extends TestCase {
                          "<rule name=\"MockRuleName1\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
                          "<rule name=\"MockRuleName2\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
                          "</ruleset>";
+    private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>" +
+                         "<ruleset name=\"test\"><rule ref=\"rulesets/basic.xml/EmptyCatchBlock\"/></ruleset>";
 
     public RuleSetFactoryTest(String name) {
         super(name);
@@ -40,6 +42,13 @@ public class RuleSetFactoryTest  extends TestCase {
         assertEquals(0, rs.size());
     }
 
+/*
+    public void testExternalReferences() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSet rs = rsf.createRuleSet(new ByteArrayInputStream(EXTERNAL_REFERENCE_RULE_SET.getBytes()));
+        assertEquals(1, rs.size());
+    }
+*/
 
     public void testCreateSingleRuleSet() {
         RuleSetFactory rsf = new RuleSetFactory();

@@ -1,2 +1,2 @@
-public class OverrideBothEqualsAndHashcode3 {
+public class OverrideBothEqualsAndHashcode4 {
 }

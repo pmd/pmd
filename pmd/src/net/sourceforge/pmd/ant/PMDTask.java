@@ -88,7 +88,7 @@ public class PMDTask extends Task {
         StringBuffer buf = new StringBuffer();
         if (!ctx.getReport().isEmpty()) {
             Renderer rend = null;
-            if (rend.equals("xml")) {
+            if (format.equals("xml")) {
                 rend = new XMLRenderer();
             } else {
                 rend = new HTMLRenderer();
