@@ -1,22 +1,14 @@
 package test.net.sourceforge.pmd.ast;
 
-import junit.framework.TestCase;
+import net.sourceforge.pmd.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTInstanceOfExpression;
-import net.sourceforge.pmd.ast.ASTRelationalExpression;
-import net.sourceforge.pmd.ast.DiscardableNodeCleaner;
-import net.sourceforge.pmd.ast.ASTClassDeclaration;
-import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTModifiers;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.ast.ASTRelationalExpression;
+import net.sourceforge.pmd.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.ast.DiscardableNodeCleaner;
 import test.net.sourceforge.pmd.testframework.ParserTst;
-
-import java.util.List;
-import java.util.Set;
-import java.io.StringReader;
 
 public class DiscardableNodeCleanerTest extends ParserTst {
 

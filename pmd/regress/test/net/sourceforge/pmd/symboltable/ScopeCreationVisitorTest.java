@@ -8,13 +8,11 @@ import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.BasicScopeCreationVisitor;
 import net.sourceforge.pmd.symboltable.GlobalScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
 
 import java.util.EmptyStackException;
-import java.util.Stack;
 
 public class ScopeCreationVisitorTest extends TestCase {
 

@@ -3,11 +3,8 @@
 */
 package test.net.sourceforge.pmd.ast;
 
-import junit.framework.TestCase;
-import net.sourceforge.pmd.ast.AccessNode;
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTClassDeclaration;
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.AccessNode;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.Set;

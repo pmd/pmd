@@ -15,8 +15,8 @@ import test.net.sourceforge.pmd.testframework.MockRule;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.StringReader;
 import java.io.IOException;
+import java.io.StringReader;
 
 public class XMLRendererTest extends TestCase {
 

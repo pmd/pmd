@@ -6,12 +6,12 @@ package test.net.sourceforge.pmd.symboltable;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
 import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.StringReader;
 
