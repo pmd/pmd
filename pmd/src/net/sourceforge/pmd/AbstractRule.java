@@ -5,12 +5,12 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Enumeration;
+import java.util.Properties;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
     private String name = getClass().getName();
-    private RuleProperties properties = new RuleProperties();
+    private Properties properties = new Properties();
     private String message;
     private String description;
     private String example;
@@ -38,23 +38,23 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     public void addProperty(String name, String value) {
-        properties.setValue(name, value);
+        properties.setProperty(name, value);
     }
 
     public double getDoubleProperty(String name) {
-        return properties.getDoubleValue(name);
+        return Double.parseDouble(properties.getProperty(name));
     }
 
     public int getIntProperty(String name) {
-        return properties.getIntegerValue(name);
+        return Integer.parseInt(properties.getProperty(name));
     }
 
     public boolean getBooleanProperty(String name) {
-        return properties.getBooleanValue(name);
+        return Boolean.valueOf(properties.getProperty(name)).booleanValue();
     }
 
     public String getStringProperty(String name) {
-        return properties.getValue(name);
+        return properties.getProperty(name);
     }
 
     public String getName() {
@@ -110,7 +110,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      *
      * @return An enumeration of property names
      */
-    public RuleProperties getProperties() {
+    public Properties getProperties() {
         return properties;
     }
 

@@ -1,6 +1,7 @@
 package net.sourceforge.pmd;
 
 import java.util.List;
+import java.util.Properties;
 
 public interface Rule {
     public static final int LOWEST_PRIORITY = 5;
@@ -36,7 +37,7 @@ public interface Rule {
 
     double getDoubleProperty(String name);
 
-    RuleProperties getProperties();
+    Properties getProperties();
 
     boolean include();
 
