@@ -25,7 +25,10 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
 
     public final Object visit(ASTAdditiveExpression node, Object data) {
         final ASTBlockStatement bs = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
-        
+        if (bs == null) {
+            return data;
+        }
+
         if (!concatsLiteralAndNonLiteral(node)) {
             return data;
         }
