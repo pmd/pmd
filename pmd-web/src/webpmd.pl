@@ -68,7 +68,7 @@ sub loadProjectList() {
 
  @newprojects = sort { $b->getLocation() cmp $a->getLocation() || $a->getTitle() cmp $b->getTitle() } @projects;
 
- my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>JavaNCSS</th><th>Problems found</th></tr>";
+ my $result="<table align=center><tr><th>Project</th><th></th><th>Home page</th><th>NCSS</th><th>Problems</th><th>Percentage Unused Code</th></tr>";
  foreach $project (@newprojects) {
   my $jobLink=$project->getTitle();
   if (-e $project->getRptFile()) {
@@ -76,13 +76,23 @@ sub loadProjectList() {
   }
   $result="${result}<tr><td>${jobLink}</td><td></td><td>@{[$project->getHomePage()]}</td>";
   $result="${result}<td>@{[$project->getNCSS()]}</td>";
+  my $ncss = $project->getNCSS();
+  if ($ncss == 0) {	
+   $ncss = 1;
+  }
+  my $rounded = (int(($project->getLines()/$ncss)*10000))/100;
   my $color="red";
-  if ($project->getLines < 11) {
+  if ($rounded < .2) {
    $color="#00ff00";
-  } elsif ($project->getLines < 31) {
+  } elsif ($rounded < .8 ) {
    $color="yellow";
   }
-  $result="${result}<td bgcolor=$color>@{[$project->getLines()]}</td></tr>";
+  $rounded = sprintf("%0.2f", $rounded);
+  if ($project->getNCSS() == "TBD") {
+   $rounded = "N/A";
+   $color = "white";
+  }
+  $result="${result}<td align=center>@{[$project->getLines()]}</td><td bgcolor=$color align=center>$rounded</td></tr>";
  }
  $result = "${result}</table>";
  return $result;
