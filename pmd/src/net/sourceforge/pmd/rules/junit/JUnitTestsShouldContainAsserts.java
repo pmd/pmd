@@ -15,15 +15,24 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
 
 public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule {
 
+    public Object visit(ASTInterfaceDeclaration decl, Object data) {
+        return data; // just skip interfaces
+    }
+
     public Object visit(ASTMethodDeclaration declaration, Object data) {
-        if (declaration.jjtGetNumChildren()==3) { // TODO can it not be 3???
+        if (!declaration.isPublic() || declaration.isAbstract() || declaration.isNative()) {
+            return data; // skip various inapplicable method variations
+        }
+
+        if (declaration.jjtGetNumChildren()==3) {
             ASTResultType resultType = (ASTResultType) declaration.jjtGetChild(0);
             ASTMethodDeclarator declarator = (ASTMethodDeclarator) declaration.jjtGetChild(1);
             ASTBlock block = (ASTBlock) declaration.jjtGetChild(2);
-            if (isTestCase(resultType, declarator)) {
+            if (resultType.isVoid() && declarator.getImage().startsWith("test")) {
                 if (!hasAssertStatement(block)) {
                     RuleContext ctx = (RuleContext)data;
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, declaration.getBeginLine()));
@@ -33,26 +42,6 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
 		return data;
 	}
 	
-	/**
-	 * Evalue node as a valid test method for junit.
-	 * The node is evaluated the following conditions: <br>
-	 * 1. image starts with test
-	 * 2. return type is void
-	 * TODO 3. scope is public 
-	 * @param resultType result type node of method
-	 *  
-     * @param node ASTMethodDeclarator node
-     * @return true if all three conditions match false, in any other case
-     */
-    private boolean isTestCase(ASTResultType resultType, ASTMethodDeclarator node) {
-        if (node.getImage()==null || !node.getImage().startsWith("test"))
-            return false;
-        // if return type is not void
-        if (resultType.jjtGetNumChildren()!=0)
-            return false;
-        return true;
-    }
-
     private boolean hasAssertStatement(ASTBlock block) {
         return containsAssert(block, false);
 	}

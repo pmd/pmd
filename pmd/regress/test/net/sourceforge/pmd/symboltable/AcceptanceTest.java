@@ -9,7 +9,9 @@ import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
+import net.sourceforge.pmd.symboltable.Scope;
 
 import java.io.StringReader;
 
@@ -36,6 +38,18 @@ public class AcceptanceTest extends TestCase {
         assertTrue(a.isStatic());
     }
 
+    public void testCatchBlocks() {
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST_CATCH_BLOCKS));
+        ASTCompilationUnit c = parser.CompilationUnit();
+        SymbolFacade stb = new SymbolFacade();
+        stb.initializeWith(c);
+        ASTBlock a = (ASTBlock)(c.findChildrenOfType(ASTBlock.class)).get(1);
+        Scope s = a.getScope();
+        System.out.println(s.getParent());
+
+
+    }
+
     private static final String TEST1 =
     "import java.io.*;" + PMD.EOL +
     "public class Foo  {" + PMD.EOL +
@@ -53,6 +67,17 @@ public class AcceptanceTest extends TestCase {
     private static final String TEST_STATIC_INITIALIZER =
     "public class Foo  {" + PMD.EOL +
     " static {} " + PMD.EOL +
+    "}" + PMD.EOL;
+
+    private static final String TEST_CATCH_BLOCKS =
+    "public class Foo  {" + PMD.EOL +
+    " void foo() { " + PMD.EOL +
+    "  try { " + PMD.EOL +
+    "  } catch (Exception e) { " + PMD.EOL +
+    "   e.printStackTrace(); " + PMD.EOL +
+    "   int x; " + PMD.EOL +
+    "  } " + PMD.EOL +
+    " } " + PMD.EOL +
     "}" + PMD.EOL;
 
 }

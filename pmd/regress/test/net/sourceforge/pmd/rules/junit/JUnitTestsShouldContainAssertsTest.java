@@ -19,6 +19,8 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "Two wrong", 2, new JUnitTestsShouldContainAsserts()),
            new TestDescriptor(TEST5, "Contains fail", 0, new JUnitTestsShouldContainAsserts()),
            new TestDescriptor(TEST6, "One wrong", 1, new JUnitTestsShouldContainAsserts()),
+           new TestDescriptor(TEST7, "Skip interfaces", 0, new JUnitTestsShouldContainAsserts()),
+           new TestDescriptor(TEST8, "Skip abstract methods", 0, new JUnitTestsShouldContainAsserts()),
        });
     }
 
@@ -79,6 +81,16 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
         " public void test2() {" + PMD.EOL +
         " 	fail();" + PMD.EOL +
         " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST7 =
+        "public interface Foo {" + PMD.EOL +
+        " public void setUp() throws Exception;" + PMD.EOL +
+        "}";
+
+    private static final String TEST8 =
+        "public class Foo {" + PMD.EOL +
+        " public abstract void setUp() throws Exception;" + PMD.EOL +
         "}";
 
 }

@@ -51,6 +51,6 @@ public class LocalScope extends AbstractScope {
     }
 
     public String toString() {
-        return "LocalScope variable names:" + super.glomNames(variableNames.keySet().iterator());
+        return "LocalScope variable names:" + glomNames(variableNames.keySet().iterator());
     }
 }
