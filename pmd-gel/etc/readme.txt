@@ -11,5 +11,5 @@ unused imports, and so forth.
 You can view all the PMD rules with examples and details at
 http://pmd.sf.net/.
 
-Future Tasks
+Future Plans
 Continue to respond to the Gel community's feedback

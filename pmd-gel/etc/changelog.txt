@@ -1,3 +1,6 @@
+August 06, 2003 - 0.4:
+Updated to pmd-1.2.1.
+
 April 28 2003 - 0.3:
 Completely rewritten by Paul King; thanks Paul!
 Now any ruleset can be selected.

@@ -1,5 +1,6 @@
-Change version in build.xml to 0.3
-cvs tag r0_3 pmd-gel
+Change version in build.xml to 0.4
+cvs tag r0_4 pmd-gel
 ant release
 upload zip file to sourceforge
 use readme.txt as release notes
+Post note to Gel email list
