@@ -25,7 +25,7 @@ public class Test {
         try {
             JavaSpace space = getSpace();
             add("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true);
-            Entry wrapper = convertTSS();
+            Entry wrapper = new TokenSetsWrapper(tokenSets);
             System.out.println("token count = " + tokenSets.tokenCount());
 
             long start = System.currentTimeMillis();
@@ -36,16 +36,12 @@ public class Test {
 
             start = System.currentTimeMillis();
             System.out.println("TAKING");
-            TSSWrapper result = (TSSWrapper)space.take(new TSSWrapper(), null, Long.MAX_VALUE);
+            TokenSetsWrapper result = (TokenSetsWrapper)space.take(new TokenSetsWrapper(), null, Long.MAX_VALUE);
             stop = System.currentTimeMillis();
             System.out.println("that took " + (stop - start) + " milliseconds");
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private Entry convertTSS() {
-        return new TSSWrapper(tokenSets);
     }
 
     private void add(String dir, boolean recurse) throws IOException {

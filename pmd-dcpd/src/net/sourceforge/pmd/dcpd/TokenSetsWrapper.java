@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TSSWrapper implements Entry {
+public class TokenSetsWrapper implements Entry {
 
     public TokenSets tss;
 
-    public TSSWrapper() {}
+    public TokenSetsWrapper() {}
 
-    public TSSWrapper(TokenSets tss) {
+    public TokenSetsWrapper(TokenSets tss) {
         this.tss = tss;
     }
 
