@@ -7,7 +7,7 @@ Fixed a bug in the rule override logic; it no longer requires the "class" attrib
 Added 'ignoreLiterals' and 'ignoreIdentifiers' boolean options to the CPD task.
 Cleaned up a good bit of the symbol table code; thanks much to Harald Gurres for the patch.
 CPD now contains a generic copy/paste checker for programs in any language
-
+Implemented RFE 1031950 - Support For Nested Ruleset Tags By The PMD Ant Task
 December 15, 2004 - 2.1:
 New rules: AvoidProtectedFieldInFinalClass, SystemPrintln
 Fixed bug 1050173 - ImmutableFieldRule no longer reports false positives for static fields.
