@@ -19,10 +19,11 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         literals.clear();
         super.visit(node, data);
+        int threshold = getIntProperty("threshold");
         for (Iterator i = literals.keySet().iterator(); i.hasNext();) {
             String key = (String)i.next();
             List occurrences = (List)literals.get(key);
-            if (occurrences.size() > 1) {
+            if (occurrences.size() >= threshold) {
                 Object[] args = new Object[] {new Integer(occurrences.size()), new Integer(((SimpleNode)occurrences.get(0)).getBeginLine())};
                 String msg = MessageFormat.format(getMessage(), args);
                 RuleContext ctx = (RuleContext)data;

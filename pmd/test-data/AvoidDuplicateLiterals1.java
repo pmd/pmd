@@ -1,6 +1,9 @@
 public class AvoidDuplicateLiterals1 {
  private void bar() {
-    buz("Howdy", "Howdy");
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
  }
- private void buz(String x, String y) {}
+ private void buz(String x) {}
 }

@@ -23,21 +23,24 @@ public class Foo {
     </rule>
 
     <rule name="AvoidDuplicateLiterals"
-        message="A String appears {0} times in this file; the first occurrence is on line {1}"
+        message="The same String literal appears {0} times in this file; the first occurrence is on line {1}"
         class="net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule">
     <description>
-Avoid Duplicate Literals detects when a duplicate literal Strings are embedded within your code.  Code like this can usually be
-improved by declaring the String as a constant field.
+Avoid Duplicate Literals detects you code contains duplicate literal Strings.   Code like this can usually beimproved by declaring the String as a constant field.
     </description>
+   <properties>
+    <property name="threshold" value="4"/>
+   </properties>
     <example>
 <![CDATA[
 public class Foo {
  private void bar() {
     buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
  }
- private void buz(String x) {
-    String x = "Howdy";
- }
+ private void buz(String x) {}
 }
 ]]>
     </example>
