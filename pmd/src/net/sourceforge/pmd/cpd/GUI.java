@@ -1,7 +1,7 @@
 /*
- * User: tom
- * Date: Aug 6, 2002
- * Time: 2:45:54 PM
+* User: tom
+* Date: Aug 6, 2002
+* Time: 2:45:54 PM
  */
 package net.sourceforge.pmd.cpd;
 
@@ -34,7 +34,7 @@ public class GUI implements CPDListener {
                     resultsTextArea.setText("");
                     go();
                 }
-            }).start();
+                }).start();
         }
     }
 
@@ -57,7 +57,7 @@ public class GUI implements CPDListener {
 
     private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
     private JTextField minimumLengthField= new JTextField("75");
-	private JTextField timeField = new JTextField(6);
+    private JTextField timeField = new JTextField(6);
 
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JProgressBar addingTokensBar = new JProgressBar();
@@ -166,10 +166,10 @@ public class GUI implements CPDListener {
             CPD cpd = new CPD();
             cpd.setListener(this);
             cpd.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
-						tilesOnThisPassBar.setMinimum(0);
+            tilesOnThisPassBar.setMinimum(0);
             tilesOnThisPassBar.setStringPainted(true);
-						addingTokensBar.setMinimum(0);
-						tokenizingFilesBar.setMinimum(0);
+            addingTokensBar.setMinimum(0);
+            tokenizingFilesBar.setMinimum(0);
             addingTokensBar.setStringPainted(true);
             if (rootDirectoryField.getText().endsWith(".java")) {
                 cpd.add(new File(rootDirectoryField.getText()));
@@ -180,8 +180,8 @@ public class GUI implements CPDListener {
                     cpd.addAllInDirectory(rootDirectoryField.getText());
                 }
             }
-			final long start = System.currentTimeMillis();
-			javax.swing.Timer t = new javax.swing.Timer(1000, new ActionListener() {
+            final long start = System.currentTimeMillis();
+            javax.swing.Timer t = new javax.swing.Timer(1000, new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     long now = System.currentTimeMillis();
                     long elapsedMillis = now-start;
@@ -192,11 +192,11 @@ public class GUI implements CPDListener {
                     timeField.setText("" + hours + ":" + minutes + ":" + seconds);
                 }
             });
-			t.start();
+            t.start();
 
             cpd.go();
-			t.stop();
-			currentTileField.setText("");
+            t.stop();
+            currentTileField.setText("");
             CPDRenderer renderer = new TextRenderer();
             String report = renderer.render(cpd);
             if (report.length() == 0) {
@@ -210,16 +210,18 @@ public class GUI implements CPDListener {
         }
     }
 
-    public void update(String msg) {
+    public boolean update(String msg) {
         //System.out.println(msg);
+        return true;
     }
 
-    public void addedFile(int fileCount, File file) {
+    public boolean addedFile(int fileCount, File file) {
         tokenizingFilesBar.setMaximum(fileCount);
         tokenizingFilesBar.setValue(tokenizingFilesBar.getValue()+1);
+        return true;
     }
 
-    public void addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
+    public boolean addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
         addingTokensBar.setMaximum(tokenSetCount);
         if (tokenSrcID.indexOf("/") != -1) {
             addingTokensBar.setString(findName(tokenSrcID, "/"));
@@ -231,9 +233,10 @@ public class GUI implements CPDListener {
             addingTokensBar.setString(tokenSrcID);
         }
         addingTokensBar.setValue(doneSoFar);
+        return true;
     }
 
-    public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
+    public boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
         addingTokensBar.setValue(addingTokensBar.getMaximum());
         addingTokensBar.setString("");
         if (tile.getImage().length() <= 20) {
@@ -243,8 +246,9 @@ public class GUI implements CPDListener {
         }
         tilesOnThisPassBar.setMaximum(totalTiles);
         tilesOnThisPassBar.setValue(tilesSoFar);
-		tilesOnThisPassBar.setString(tilesSoFar + "/" + totalTiles);
-	}
+        tilesOnThisPassBar.setString(tilesSoFar + "/" + totalTiles);
+        return true;
+    }
 
     private String findName(String name, String slash) {
         int lastSlash = name.lastIndexOf(slash)+1;
@@ -252,4 +256,3 @@ public class GUI implements CPDListener {
     }
 
 }
-

@@ -1,7 +1,7 @@
 /*
- * User: tom
- * Date: Jul 30, 2002
- * Time: 9:53:14 AM
+* User: tom
+* Date: Jul 30, 2002
+* Time: 9:53:14 AM
  */
 package net.sourceforge.pmd.cpd;
 
@@ -70,7 +70,7 @@ public class CPD {
 
 
     public void go() {
-		listener.update("Starting to process " + tokenSets.size() + " files");
+        if (!listener.update("Starting to process " + tokenSets.size() + " files")) return;
         GST gst = new GST(tokenSets, minimumTileSize);
         results = gst.crunch(listener);
     }
@@ -90,8 +90,8 @@ public class CPD {
             TokenList tl = tokenSets.getTokenList(firstToken);
             int endLine = firstToken.getBeginLine()+ results.getTileLineCount(tile, tokenSets);
             return tl.getSlice(firstToken.getBeginLine()-1, endLine-1);
-        } catch (Exception ex) {ex.printStackTrace(); }
-        return "";
+            } catch (Exception ex) {ex.printStackTrace(); }
+            return "";
     }
 
     public static void main(String[] args) {

@@ -19,16 +19,16 @@ public class GST {
         this.minimumTileSize = minimumTileSize;
         this.tokenSets = tokenSets;
     }
-		
+
 	public Results crunch(CPDListener listener) {
         Results results = new Results();
         Occurrences occ =new Occurrences(tokenSets, listener);
 
         while (!occ.isEmpty()) {
-			listener.update("Tiles left to be crunched " + occ.size());
+			if (!listener.update("Tiles left to be crunched " + occ.size())) return null;
 
             // add any tiles over the minimum size to the results
-			listener.update("Adding large tiles to results");
+			if (!listener.update("Adding large tiles to results")) return null;
             for (Iterator i = occ.getTiles(); i.hasNext();) {
                 Tile tile = (Tile)i.next();
                 if (tile.getTokenCount() >= minimumTileSize) {
@@ -68,7 +68,7 @@ public class GST {
                     Tile newTile = tile.copy();
                     newTile.add(token);
                     newOcc.addTile(newTile, tok);
-					listener.addedNewTile(newTile, tilesSoFar, totalTiles);
+					if (!listener.addedNewTile(newTile, tilesSoFar, totalTiles)) break;
                 }
             }
         }

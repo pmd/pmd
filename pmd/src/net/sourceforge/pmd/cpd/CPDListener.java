@@ -8,8 +8,8 @@ package net.sourceforge.pmd.cpd;
 import java.io.File;
 
 public interface CPDListener {
-    public void update(String msg);
-    public void addedFile(int fileCount, File file);
-    public void addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID);
-    public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles);
+    public boolean update(String msg);
+    public boolean addedFile(int fileCount, File file);
+    public boolean addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID);
+    public boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles);
 }

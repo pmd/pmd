@@ -26,7 +26,7 @@ public class Occurrences extends TileOccurrences implements Serializable {
         int totalCount = tss.tokenCount();
         for (Iterator j = tss.iterator();j.hasNext();) {
             TokenList ts = (TokenList)j.next();
-			listener.addingTokens(totalCount, doneSoFar, ts.getID());
+			if (!listener.addingTokens(totalCount, doneSoFar, ts.getID())) break;
             doneSoFar += ts.size();
             for (Iterator i = ts.iterator(); i.hasNext();) {
                 TokenEntry tok = (TokenEntry)i.next();
