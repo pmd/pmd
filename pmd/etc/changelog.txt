@@ -1,5 +1,5 @@
 ???? - 1.11:
-Added new rules: VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule, AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking
+Added new rules: VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule, AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking, BooleanInstantiation
 Fixed bug 583047 - ASTName column numbers are now correct
 Fixed bug 761048 - Symbol table now creates a scope level for anonymous inner classes
 Fixed bug 763529 - AccessorClassGenerationRule no longer crashes when given a final inner class
