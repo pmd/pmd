@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+*/
 package test.net.sourceforge.pmd.renderers;
 
 import junit.framework.Test;
@@ -34,6 +37,9 @@ public class RenderersTests
 
 /*
  * $Log$
+ * Revision 1.3  2003/11/20 16:53:10  tomcopeland
+ * Changing over license headers in the source code, cleaned up a test
+ *
  * Revision 1.2  2003/10/01 14:55:55  tomcopeland
  * Added unit tests for TextPad integration; thanks to Jeff Epstein
  *

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+*/
 package test.net.sourceforge.pmd.rules.junit;
 
 import junit.framework.Test;
@@ -35,6 +38,9 @@ public class JUnitRulesTests
 
 /*
  * $Log$
+ * Revision 1.2  2003/11/20 16:53:10  tomcopeland
+ * Changing over license headers in the source code, cleaned up a test
+ *
  * Revision 1.1  2003/09/29 14:32:32  tomcopeland
  * Committed regression test suites, thanks to Boris Gruschko
  *
