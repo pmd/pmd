@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Colin Simmonds - detailed bug reports</li>
             <li>Trond Andersen - AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking</li>
             <li>Bernd Jansen - grammer modification</li>
             <li>Jarle Naess - bug report</li>
@@ -38,7 +39,6 @@
             <li>Mario Claerhout - CPD optimizations and suggestions</li>
             <li>Sameer Nanda - CPD Ant task bug report</li>
             <li>Nanne Baars - grammar suggestions, rule suggestions</li>
-            <li>Colin Simmonds - bug report</li>
             <li>Adam Nemeth - bug fixes for UnnecessaryConstructorRule</li>
             <li>Mike Thome - rule suggestions</li>
             <li>Brian Ewins - a complete rewrite of CPD based on the Burrows-Wheeler transform</li>

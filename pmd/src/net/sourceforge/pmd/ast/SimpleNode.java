@@ -112,7 +112,10 @@ public class SimpleNode implements Node {
         if (node.getClass().equals(targetType)) {
             results.add(node);
         }
-        if (node.getClass().equals(ASTClassBody.class) && !descendIntoNestedClasses) {
+        if (node.getClass().equals(ASTNestedClassDeclaration.class) && !descendIntoNestedClasses) {
+            return;
+        }
+        if (node.getClass().equals(ASTClassBodyDeclaration.class) && ((ASTClassBodyDeclaration)node).isAnonymousInnerClass() && !descendIntoNestedClasses) {
             return;
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {

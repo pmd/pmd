@@ -10,7 +10,7 @@ public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//ConstructorDeclaration[1][count(//ConstructorDeclaration)=1][@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)]");
+        rule.addProperty("xpath", "//ClassDeclaration/UnmodifiedClassDeclaration/ClassBody[count(ClassBodyDeclaration/ConstructorDeclaration)=1]/ClassBodyDeclaration/ConstructorDeclaration[@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)] | //NestedClassDeclaration/UnmodifiedClassDeclaration/ClassBody[count(ClassBodyDeclaration/ConstructorDeclaration)=1]/ClassBodyDeclaration/ConstructorDeclaration[@Public='true'][not(FormalParameters/*)][not(BlockStatement)][not(NameList)]");
     }
 
     public void testAll() {
@@ -20,7 +20,12 @@ public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST3, "constructor with arguments", 0, rule),
            new TestDescriptor(TEST4, "constructor with contents", 0, rule),
            new TestDescriptor(TEST5, "constructor throws exception", 0, rule),
-           new TestDescriptor(TEST6, "two constructors", 0, rule)
+           new TestDescriptor(TEST6, "two constructors", 0, rule),
+           new TestDescriptor(TEST7, "inner class with unnecessary constructor", 1, rule),
+           new TestDescriptor(TEST8, "inner and outer both have unnecessary constructors", 2, rule),
+           new TestDescriptor(TEST9, "inner and outer, both ok", 0, rule),
+           new TestDescriptor(TEST10, "inner ok, outer bad", 1, rule),
+           new TestDescriptor(TEST11, "inner ok due to nonpublic constructor", 0, rule),
        });
     }
 
@@ -58,6 +63,42 @@ public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     " public UnnecessaryConstructor6(String foo) {}" + PMD.EOL +
     "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " public class Inner {" + PMD.EOL +
+    "  public Inner() {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST8 =
+    "public class Foo {" + PMD.EOL +
+    " public class Inner {" + PMD.EOL +
+    "  public Inner() {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    " public Foo() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST9 =
+    "public class Foo {" + PMD.EOL +
+    " public class Inner {" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST10 =
+    "public class Foo {" + PMD.EOL +
+    " public class Inner {" + PMD.EOL +
+    " }" + PMD.EOL +
+    " public Foo() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST11 =
+    "public class Foo {" + PMD.EOL +
+    " public class Inner {" + PMD.EOL +
+    "  private Inner() {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
 
 
 }

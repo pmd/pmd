@@ -11,10 +11,12 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AtLeastOneConstructorRule extends AbstractRule implements Rule {
+public class AtLeastOneConstructorRule extends AbstractRule {
 
     public Object visit(ASTClassDeclaration node, Object data) {
-        if (node.findChildrenOfType(ASTConstructorDeclaration.class).isEmpty()) {
+        List constructors = new ArrayList();
+        node.findChildrenOfType(ASTConstructorDeclaration.class, constructors, false);
+        if (constructors.isEmpty()) {
             RuleContext ctx = (RuleContext) data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
@@ -22,16 +24,13 @@ public class AtLeastOneConstructorRule extends AbstractRule implements Rule {
     }
 
     public Object visit(ASTNestedClassDeclaration node, Object data) {
-        return check(node, data);
-    }
-
-    private Object check(SimpleNode node, Object data) {
         List constructors = new ArrayList();
-        node.findChildrenOfType(ASTConstructorDeclaration.class, constructors, false);
+        ((SimpleNode)node.jjtGetChild(0)).findChildrenOfType(ASTConstructorDeclaration.class, constructors, false);
         if (constructors.isEmpty()) {
             RuleContext ctx = (RuleContext) data;
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
-        return data;
+        return super.visit(node, data);
     }
+
 }
