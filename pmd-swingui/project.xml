@@ -13,7 +13,7 @@
     </organization>
     <inceptionYear>2002</inceptionYear>
     <package>net.sourceforge.pmd.swingui</package>
-    <logo>images/pmd_logo_small.jpg</logo>
+    <logo>/images/pmd_logo_small.jpg</logo>
     <gumpRepositoryId>pmd-swingui</gumpRepositoryId>
     <description>PMD Swing UI provides a Swing user interface to use the PMD
         programming mistake detector.</description>

@@ -19,6 +19,10 @@ import javax.swing.border.TitledBorder;
 
 /**
  * This is the PMD Locator.
+ *
+ * @author Brant Gurganus
+ * @version 0.1
+ * @since 0.1
  */
 class PMDLocator extends JPanel {
     /**
@@ -33,6 +37,9 @@ class PMDLocator extends JPanel {
     private Preferences PREFS =
         Preferences.userNodeForPackage(PMDLocator.class);
         
+    /**
+     * This is the logger for the PMD Locator.
+     */
     private Logger LOGGER =
         Logger.getLogger("net.sourceforge.pmd.swingui.PMDLocator",
             "net.sourceforge.pmd.swingui.l10n.Logging");
