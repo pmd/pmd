@@ -6,7 +6,7 @@
 <property name="build" value="build\"/>
 <property name="regress" value="regress\"/>
 <property name="version" value="0.1"/>
-<property name="pmd-jar-name" value="pmd-1.2.1.jar"/>
+<property name="pmd-jar-name" value="pmd-1.3.jar"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
 <path id="classpath.path">
@@ -78,7 +78,7 @@
 </target>
 
 
-<target name="jnlp-all" depends="dist,sign-all">
+<target name="upload-all">
     <echo message="Uploading pmd-swing jar file"/>
     <exec executable="scp" os="Linux">
         <arg line=" /home/tom/data/pmd/pmd-swingui/lib/pmd-swingui-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"/>
