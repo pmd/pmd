@@ -1,0 +1,102 @@
+<project name="pmd" default="compile" basedir="../">
+
+<property name="lib" value="lib\"/>
+<property name="src" value="src\"/>
+<property name="build" value="build\"/>
+<property name="regress" value="regress\"/>
+<property name="reports" value="reports\"/>
+
+	<target name="delete">
+        <delete dir="${build}"/>
+        <delete file="${lib}\pmd.jar"/>
+        <mkdir dir="${build}"/>
+    </target>
+
+    <target name="compile">
+        <javac  deprecation="false"
+                debug="true"
+                optimize="false"
+                srcdir="${src}:${regress}"
+                destdir="${build}">
+        </javac>
+	</target>
+
+    <target name="jar">
+        <mkdir dir="${lib}"/>
+        <jar jarfile="${lib}\pmd.jar" basedir="${build}"/>
+    </target>
+
+    <target name="pmd">
+        <taskdef name="pmd" classname="com.infoether.pmd.PMDTask"/>
+        <pmd reportFile="c:\foo.txt" verbose="true" rulesettype="all">
+            <fileset dir="c:\data\pmd\pmd\src\">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
+
+    <target name="test">
+        <junit printsummary="yes" haltonfailure="yes">
+          <classpath>
+            <pathelement location="${build}" />
+            <pathelement path="${java.class.path}" />
+          </classpath>
+
+          <formatter type="plain" />
+
+          <batchtest fork="no" todir="${build}">
+            <fileset dir="${regress}">
+              <include name="test/**/*Test.java" />
+            </fileset>
+          </batchtest>
+        </junit>
+    </target>
+
+  <path id="quilt.classpath">
+    <pathelement location="${lib.repo}/quilt-0.4.jar" />
+    <pathelement location="${lib.repo}/bcel-5.1-dev.jar" />
+    <pathelement location="${lib.repo}/commons-graph.jar" />
+    <pathelement location="${lib.repo}/commons-collections.jar" />
+    <pathelement location="${lib.repo}/colt.jar" />
+  </path>
+
+    <target name="cover">
+        <taskdef name="quilt" classname="junit.quilt.ant.AntQuiltRunner" classpathref="quilt.classpath" />
+        <quilt reportdir="${reports}"
+                register="junit.quilt.cover.ball94.B94Registry"
+                reporter="junit.quilt.reports.XMLSummary"
+                packages="com.infoether.pmd">
+          <classpath>
+            <pathelement location="${build}" />
+          </classpath>
+
+            <fileset dir="${src}">
+              <include name="**/*Test.java" />
+            </fileset>
+        </quilt>
+    </target>
+
+    <target name="jjtree">
+        <mkdir dir="tmp"/>
+        <copy overwrite="yes" todir="tmp">
+            <fileset dir="src/com/infoether/pmd/ast" includes="SimpleNode.java,JavaParserVisitorAdapter.java"/>
+        </copy>
+        <delete>
+            <fileset dir="src/com/infoether/pmd/ast" includes="*.java,*.jj"/>
+        </delete>
+        <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/com/infoether/pmd/ast" javacchome="c:/javacc2.1"/>
+        <javacc target="src/com/infoether/pmd/ast/Java1.4-c.jj" outputdirectory="src/com/infoether/pmd/ast" javacchome="c:/javacc2.1"/>
+        <copy overwrite="yes" todir="src/com/infoether/pmd/ast">
+            <fileset dir="tmp" includes="*.java"/>
+        </copy>
+        <delete file="src/com/infoether/pmd/ast/Java1.4-c.jj"/>
+        <delete dir="tmp"/>
+    </target>
+
+	<target name="clean" depends="delete,compile"/>
+
+    <target name="dist" depends="clean,jar"/>
+
+
+</project>
+
