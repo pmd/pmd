@@ -31,23 +31,24 @@ public class ReportTest extends TestCase {
     }
 
     public void testBasic() {
-        Report r = new Report("foo", "xml");
+        Report r = new Report("xml", "foo");
         Rule rule = (Rule) Proxy.newProxyInstance(Rule.class.getClassLoader(), new Class[] {Rule.class },  new MyInv());
         r.addRuleViolation(new RuleViolation(rule, 5));
         assertTrue(!r.currentFileHasNoViolations());
     }
 
     public void testRenderXML() {
-        Report r = new Report("foo", "xml");
+        Report r = new Report("xml", "foo");
         InvocationHandler ih = new MyInv("foo");
         Rule rule = (Rule) Proxy.newProxyInstance(Rule.class.getClassLoader(), new Class[] {Rule.class },  ih);
         r.addRuleViolation(new RuleViolation(rule, 5));
-        assertTrue(r.render().indexOf("foo") != -1);
-        assertTrue(r.render().indexOf("<pmd>") != -1);
+        String rpt = r.render();
+        assertTrue(rpt.indexOf("foo") != -1);
+        assertTrue(rpt.indexOf("<pmd>") != -1);
     }
 
     public void testRenderText() {
-        Report r = new Report("foo", "text");
+        Report r = new Report("text", "foo");
         InvocationHandler ih = new MyInv("foo");
         Rule rule = (Rule) Proxy.newProxyInstance(Rule.class.getClassLoader(), new Class[] {Rule.class },  ih);
         r.addRuleViolation(new RuleViolation(rule, 5));

@@ -48,8 +48,8 @@ public class PMDTask extends Task {
         if (ruleSetType == null) {
             throw new BuildException("Rule set type must be 'general', 'all', or 'cougaar'; you specified " + ruleSetType);
         }
-        if (format == null || (!format.equals("text") && !format.equals("xml"))) {
-            throw new BuildException("Report format must be either 'text' or 'xml'; you specified " + format);
+        if (format == null || (!format.equals("text") && !format.equals("xml") && !format.equals("html"))) {
+            throw new BuildException("Report format must be either 'text', 'xml', or 'html'; you specified " + format);
         }
 
         PMD pmd = new PMD();

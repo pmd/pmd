@@ -1,6 +1,8 @@
 update the xdocs:
 +command line ui now takes a filename, format, rule set
-update the changelog.txt
++Ant task has moved
++update the project.xml; change it to 0.2
+update the changelog
 
 ant dist
 rename jar to pmd-0.2.jar

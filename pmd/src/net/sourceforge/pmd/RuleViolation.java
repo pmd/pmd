@@ -33,4 +33,11 @@ public class RuleViolation {
         buf.append("</ruleviolation>");
         return buf.toString();
     }
+
+    public String getHTML() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("<td>" + Integer.toString(line) + "</td>" + System.getProperty("line.separator"));
+        buf.append("<td>" + description + "</td>" + System.getProperty("line.separator"));
+        return buf.toString();
+    }
 }

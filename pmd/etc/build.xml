@@ -28,10 +28,10 @@
     </target>
 
     <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.PMDTask"/>
-        <pmd reportFile="c:\pmd.xml" verbose="false" rulesettype="general" format="xml">
-            <!--<fileset dir="c:\data\pmd\pmd\src">-->
-            <fileset dir="c:\j2sdk1.4.0\src">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+        <pmd reportFile="c:\pmd.html" verbose="false" rulesettype="general" format="html">
+            <fileset dir="c:\data\pmd\pmd\src">
+            <!--<fileset dir="c:\j2sdk1.4.0\src">-->
                 <include name="**/*.java"/>
             </fileset>
         </pmd>

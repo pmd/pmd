@@ -31,8 +31,10 @@ public class Report {
     public String render() {
         if (format.equals("text")) {
             return renderToText();
+        } else if (format.equals("xml")) {
+            return renderToXML();
         }
-        return renderToXML();
+        return renderToHTML();
     }
 
     private String renderToText() {
@@ -71,6 +73,25 @@ public class Report {
             buf.append("</file>" + System.getProperty("line.separator"));
         }
         buf.append("</pmd>");
+        return buf.toString();
+    }
+
+    private String renderToHTML() {
+        StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + System.getProperty("line.separator")+ "<table><tr>" + System.getProperty("line.separator")+ "<th>File</th><th>Line</th><th>Problem</th></tr>" + System.getProperty("line.separator"));
+        for (Iterator i = fileToViolationsMap.keySet().iterator(); i.hasNext();) {
+            String filename = (String)i.next();
+            List violations = (List)fileToViolationsMap.get(filename);
+            if (violations.isEmpty()) {
+                continue;
+            }
+            for (Iterator iterator = violations.iterator(); iterator.hasNext();) {
+                RuleViolation rv = (RuleViolation) iterator.next();
+                buf.append("<tr>" + System.getProperty("line.separator")+ "<td>" + filename + "</td>" + System.getProperty("line.separator"));
+                buf.append(rv.getHTML());
+                buf.append("</tr>" + System.getProperty("line.separator"));
+            }
+        }
+        buf.append("</table></body></html>");
         return buf.toString();
     }
 
