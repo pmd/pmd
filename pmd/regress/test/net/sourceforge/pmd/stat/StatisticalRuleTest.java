@@ -137,8 +137,7 @@ public class StatisticalRuleTest extends TestCase {
 
     }
 
-    /**
-     * This test verifies that the Stat rule creates a Metric,
+    /**                           * This test verifies that the Stat rule creates a Metric,
      * with the proper values.
      */
     public void testMetrics() throws Throwable {

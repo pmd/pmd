@@ -21,6 +21,7 @@ public class UnnecessaryFinalModifierTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "", 1, rule),
            new TestDescriptor(TEST5, "", 1, rule),
            new TestDescriptor(TEST6, "", 3, rule),
+           new TestDescriptor(TEST7, "final method in inner class of non-final outer class", 0, rule),
        });
     }
 
@@ -60,4 +61,11 @@ public class UnnecessaryFinalModifierTest extends SimpleAggregatorTst {
         " public void foo2() { }" + PMD.EOL +
         "}";
     
+    private static final String TEST7 =
+        "public final class Foo {" + PMD.EOL +
+        " public static class Bar {" + PMD.EOL +
+        "  public final void buz() {}" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
 }

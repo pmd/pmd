@@ -7,6 +7,39 @@ These are new rules for the next release
   </description>
 
 
+    <rule name="MissingSerialVersionUID"
+          message="Classes implementing Serializable should set a serialVersionUID"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+          Classes that are serializable should provide a serialVersionUID field.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//TypeDeclaration[
+//UnmodifiedClassDeclaration/NameList[Name/@Image="Serializable" or Name/@Image="java.io.Serializable"]
+and not(
+//ClassBodyDeclaration/FieldDeclaration[VariableDeclarator/VariableDeclaratorId/@Image='serialVersionUID'] )
+]
+]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+public class Foo implements java.io.Serializable {
+    String name;
+    // Define serialization id to avoid serialization related bugs
+    public static final long serialVersionUID = 4328743;
+}
+
+]]>
+          </example>
+    </rule>
+
     <rule name="UnnecessaryFinalModifier"
           message="Unnecessary final modifier in final class"
           class="net.sourceforge.pmd.rules.XPathRule">
