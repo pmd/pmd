@@ -1,5 +1,5 @@
 ???? 2002 - ????:
-Added new rules: StringToStringRule, AvoidReassigningParametersRule
+Added new rules: StringToStringRule, AvoidReassigningParametersRule, UnnecessaryConstructorRule
 Fixed bug 631010: AvoidDeeplyNestedIfStmtsRule works correctly with if..else stmts now
 Fixed bug 631605: OnlyOneReturn handles line spillover now.
 

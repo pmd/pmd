@@ -60,7 +60,7 @@
         <!--<pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/tmp.xml" format="html">-->
         <pmd reportFile="c:\jdk-1.4.html" rulesetfiles="rulesets/tmp.xml" format="html">
             <!--<fileset dir="c:\data\pmd\pmd\src\net\sourceforge\pmd\">-->
-            <fileset dir="c:\j2sdk1.4.1_01\src\java\lang">
+            <fileset dir="c:\j2sdk1.4.1_01\src\java\">
                 <include name="**/*.java"/>
                 <!--<exclude name="**/ast**/"/>-->
             </fileset>
@@ -82,6 +82,34 @@
 	  <formatter type="plain" />
         </junit>
     </target>
+
+
+    <target name="jjtree">
+        <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
+        <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
+        <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
+    </target>
+
+	<target name="clean" depends="delete,compile"/>
+
+    <target name="dist" depends="clean,jar"/>
+
+    <target name="cpdjnlp" depends="dist">
+        <signjar jar="${lib}\pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+        <exec executable="pscp.exe" os="Windows 2000">
+            <arg line=" ${lib}\pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+        </exec>
+    </target>
+
+<target name="run-cpd" depends="compile">
+ <java classname="net.sourceforge.pmd.cpd.GUI" fork="yes">
+	<classpath>
+ 	    <path refid="classpath.path"/>
+	</classpath>
+ </java>
+</target>
+
+
 
   <path id="quilt.classpath">
     <pathelement location="${lib.repo}/quilt-0.4.jar" />
@@ -107,12 +135,6 @@
         </quilt>
     </target>
 
-    <target name="jjtree">
-        <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
-        <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
-        <delete file="src/net/sourceforge/pmd/ast/Java1.4-c.jj"/>
-    </target>
-
     <target name="jjtree-2">
         <mkdir dir="tmp"/>
         <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/home/dpeugh/software/javacc2.1"/>
@@ -124,25 +146,6 @@
         <delete dir="tmp"/>
     </target>
 
-
-	<target name="clean" depends="delete,compile"/>
-
-    <target name="dist" depends="clean,jar"/>
-
-    <target name="cpdjnlp" depends="dist">
-        <signjar jar="${lib}\pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
-        <exec executable="pscp.exe" os="Windows 2000">
-            <arg line=" ${lib}\pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
-        </exec>
-    </target>
-
-<target name="run-cpd" depends="compile">
- <java classname="net.sourceforge.pmd.cpd.GUI" fork="yes">
-	<classpath>
- 	    <path refid="classpath.path"/>
-	</classpath>
- </java>
-</target>
 
 
 </project>
