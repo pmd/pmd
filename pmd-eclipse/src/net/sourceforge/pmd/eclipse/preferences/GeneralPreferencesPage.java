@@ -12,6 +12,11 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
  * @see PreferencePage
  */
 public class GeneralPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
+	/**
+	 * The constructor.
+	 */
+	public GeneralPreferencesPage() {
+	}
 
 	/**
 	 * Insert the method's description here.

@@ -85,8 +85,12 @@ public class PMDVisitor implements IResourceVisitor {
 		pmd.processFile( input, ruleSet, context);
 
 		Iterator iter = context.getReport().iterator();
-		file.deleteMarkers(PMD_VIOLATION, true, 
+		
+//		file.deleteMarkers(PMD_VIOLATION, true, 
+//							IResource.DEPTH_INFINITE);
+		file.deleteMarkers(PMDPlugin.PMD_MARKER, true, 
 							IResource.DEPTH_INFINITE);
+							
 		while (iter.hasNext()) {
 			RuleViolation violation = (RuleViolation) iter.next();
 			

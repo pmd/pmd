@@ -10,10 +10,10 @@ Jar up the files that get dumped into the bin directory after
 the build, and copy the following directory structure to the 
 $ECLIPSE_HOME/plugins directory:
 
-$ECLIPSE_HOME/plugins/net.sourceforge.pmd_0.2.0 (or current version)
+$ECLIPSE_HOME/plugins/net.sourceforge.pmd_0.3.0 (or current version)
   plugin.xml
   pmd-eclipse.jar                               
-  lib/pmd-0.8.jar (or most recent version of PMD.)
+  lib/pmd-0.9.jar (or most recent version of PMD.)
   icons/pmd-icon-32.gif
   icons/pmd-icon-16.gif
   

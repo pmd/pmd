@@ -20,6 +20,11 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class CPDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	Text minTileText;
 	Label minTileLabel;
+	/**
+	 * The constructor.
+	 */
+	public CPDPreferencePage() {
+	}
 
 	/**
 	 * Insert the method's description here.

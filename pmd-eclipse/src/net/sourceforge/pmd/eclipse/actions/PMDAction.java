@@ -25,6 +25,12 @@ import org.eclipse.ui.PlatformUI;
  * @see IWorkbenchWindowActionDelegate
  */
 public class PMDAction implements IWorkbenchWindowActionDelegate {
+
+	/**
+	 * The constructor.
+	 */
+	public PMDAction() {
+	}
 	
 
 	/**
