@@ -1,6 +1,6 @@
 ???? 2002 - 0.4:
 Added a JEdit plugin
-Added a new rule: OverrideBothEqualsAndHashcodeRule
+Added new rules: OverrideBothEqualsAndHashcodeRule, EmptyTryBlock
 Reports are now sorted by line number
 Added a simple GUI
 
