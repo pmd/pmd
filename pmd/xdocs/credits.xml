@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Mario Claerhout - CPD optimizations and suggestions</li>
             <li>Sameer Nanda - CPD Ant task bug report</li>
             <li>Nanne Baars - grammar suggestions, rule suggestions</li>
             <li>Colin Simmonds - bug report</li>
