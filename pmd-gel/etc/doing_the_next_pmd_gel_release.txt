@@ -1,4 +1,4 @@
 Change version in build.xml to 0.1
-cvs tag r0_1 pmd-gel 
+cvs tag r0_1 pmd-gel
 ant release
 Submit some news saying "hey, new release!"

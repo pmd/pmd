@@ -4,7 +4,7 @@
 <property name="src" value="src\"/>
 <property name="classes" value="classes\"/>
 <property name="build" value="classes\"/>
-<property name="version" value="0.1"/>
+<property name="version" value="0.2"/>
 
 <path id="classpath.path">
 <pathelement location="${build}"/>
@@ -37,7 +37,7 @@
 
 <target name="clean" depends="delete,compile"/>
 
-<target name="dist">
+<target name="dist" depends="clean,jar">
  <copy file="${lib}/pmd-gel-${version}.jar" toDir="c:\gel\plugin"/>
 </target>
 
@@ -46,7 +46,7 @@
  <copy file="${lib}/pmd-gel-${version}.jar" toDir="tmp/"/>
  <copy file="${lib}/jaxen-core-1.0-fcs.jar" toDir="tmp/"/>
  <copy file="${lib}/saxpath-1.0-fcs.jar" toDir="tmp/"/>
- <copy file="${lib}/pmd-1.04.jar" toDir="tmp/"/>
+ <copy file="${lib}/pmd-1.05.jar" toDir="tmp/"/>
  <copy file="${lib}/xercesImpl-2.0.2.jar" toDir="tmp/"/>
  <copy file="${lib}/xmlParserAPIs-2.0.2.jar" toDir="tmp/"/>
  <zip basedir="tmp/" zipfile="pmd-gel-${version}.zip"/>
@@ -54,5 +54,3 @@
 </target>
 
 </project>
-
-

@@ -1,6 +1,8 @@
-????? - 0.2:
-TODO add in the basic ruleset
-TODO update to pmd-1.05
+April 21 2003 - 0.2:
+Changed Color.RED to Color.red, thanks to Michael Montuori for the report.
+Modified to run on the currently open file if a project is not available
+Added in the rules from the "basic" ruleset
+Updated to pmd-1.05
 
-April 17 - 0.1:
+April 17 2003 - 0.1:
 Initial release

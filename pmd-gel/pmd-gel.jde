@@ -1,6 +1,6 @@
 <CLASS Type="TProject">
     <PROPERTY Name="Name">pmd-gel</PROPERTY>
-    <PROPERTY Name="FileName">C:\pmd\pmd-gel\pmd-gel.jde</PROPERTY>
+    <PROPERTY Name="FileName">C:\data\pmd\pmd-gel\pmd-gel.jde</PROPERTY>
     <PROPERTY Name="Managed">0</PROPERTY>
     <PROPERTY Name="Expanded">1</PROPERTY>
     <PROPERTY Name="CompileExtensions">gif,java,properties</PROPERTY>
@@ -8,28 +8,13 @@
     <PROPERTY Name="SmartFolder">0</PROPERTY>
     <PROPERTY Name="OpenFiles">
         <CLASS Type="TFiles">
-            <PROPERTY Name="CurrentIndex">2</PROPERTY>
-            <PROPERTY Name="LastFileName">C:\pmd\pmd-gel\etc\build.xml</PROPERTY>
+            <PROPERTY Name="CurrentIndex">0</PROPERTY>
                 <CLASS Type="TFile">
-                    <PROPERTY Name="CaretLeft">1</PROPERTY>
-                    <PROPERTY Name="CaretTop">457</PROPERTY>
-                    <PROPERTY Name="FileName">C:\Documents and Settings\CLOUDY PIG\Local Settings\Temporary Internet Files\Content.IE5\ZE1TCD1O\DialogDemo[1].java</PROPERTY>
-                    <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">192</PROPERTY>
-                </CLASS>
-                <CLASS Type="TFile">
-                    <PROPERTY Name="CaretLeft">1</PROPERTY>
-                    <PROPERTY Name="CaretTop">115</PROPERTY>
-                    <PROPERTY Name="FileName">C:\Documents and Settings\CLOUDY PIG\Local Settings\Temporary Internet Files\Content.IE5\91KU4EO7\CustomDialog[1].java</PROPERTY>
-                    <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">106</PROPERTY>
-                </CLASS>
-                <CLASS Type="TFile">
-                    <PROPERTY Name="CaretLeft">23</PROPERTY>
-                    <PROPERTY Name="CaretTop">27</PROPERTY>
+                    <PROPERTY Name="CaretLeft">2</PROPERTY>
+                    <PROPERTY Name="CaretTop">60</PROPERTY>
                     <PROPERTY Name="FileName">$(PROJECT)\src\net\sourceforge\pmd\gel\PMDPlugin.java</PROPERTY>
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">19</PROPERTY>
+                    <PROPERTY Name="WindowTop">50</PROPERTY>
                 </CLASS>
                 <CLASS Type="TFile">
                     <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
@@ -47,30 +32,6 @@
                     <PROPERTY Name="WindowLeft">1</PROPERTY>
                     <PROPERTY Name="WindowTop">1</PROPERTY>
                 </CLASS>
-                <CLASS Type="TFile">
-                    <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
-                    <PROPERTY Name="CaretLeft">18</PROPERTY>
-                    <PROPERTY Name="CaretTop">22</PROPERTY>
-                    <PROPERTY Name="FileName">C:\Gel\plugin\src\com\gexperts\gel\Editor.java</PROPERTY>
-                    <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">4</PROPERTY>
-                </CLASS>
-                <CLASS Type="TFile">
-                    <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
-                    <PROPERTY Name="CaretLeft">1</PROPERTY>
-                    <PROPERTY Name="CaretTop">1</PROPERTY>
-                    <PROPERTY Name="FileName">C:\Gel\plugin\src\com\gexperts\gel\Gel.java</PROPERTY>
-                    <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">4</PROPERTY>
-                </CLASS>
-                <CLASS Type="TFile">
-                    <PROPERTY Name="ProjectID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
-                    <PROPERTY Name="CaretLeft">25</PROPERTY>
-                    <PROPERTY Name="CaretTop">13</PROPERTY>
-                    <PROPERTY Name="FileName">C:\Gel\plugin\src\com\gexperts\gel\Project.java</PROPERTY>
-                    <PROPERTY Name="WindowLeft">1</PROPERTY>
-                    <PROPERTY Name="WindowTop">40</PROPERTY>
-                </CLASS>
         </CLASS>
     </PROPERTY>
     <PROPERTY Name="ID">{C34B000D-B5C9-415F-933A-552FB0590E44}</PROPERTY>
@@ -82,11 +43,12 @@
                     <PROPERTY Name="JavaDocPath"></PROPERTY>
                     <PROPERTY Name="ID">{2C0CB001-1F3B-416C-BACB-41C43430B5A6}</PROPERTY>
                     <PROPERTY Name="LibraryName">libs</PROPERTY>
+                    <PROPERTY Name="LibraryType">0</PROPERTY>
                     <PROPERTY Name="SourcePath"></PROPERTY>
                 </CLASS>
         </CLASS>
     </PROPERTY>
-    <PROPERTY Name="JDKID">{CF9CD614-D3E7-45B0-A566-57421C9333CC}</PROPERTY>
+    <PROPERTY Name="JDKID">{39092503-5AAE-4A31-9847-014A46DADA1E}</PROPERTY>
     <PROPERTY Name="DocPath">$(PROJECT)\docs</PROPERTY>
     <PROPERTY Name="OutputPath">$(PROJECT)\classes</PROPERTY>
     <PROPERTY Name="SourcePath">$(PROJECT)\src</PROPERTY>

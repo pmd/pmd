@@ -20,36 +20,43 @@ public class PMDPlugin implements GelAction {
 
     public void perform(Gel p0) {
         try {
-            int x =2;
-            int y =2;
-            int z =2;
-            int ssdsa =2;
-            int xasdsa =2;
+            int unusedLocalTest =2;
             PMD pmd = new PMD();
             RuleContext ctx = new RuleContext();
             RuleSetFactory rsf = new RuleSetFactory();
             RuleSet ruleSet = new RuleSet();
-            ruleSet.addRuleSet(rsf.createRuleSet("rulesets/unusedcode.xml"));
+            ruleSet.addRuleSet(rsf.createRuleSet("rulesets/unusedcode.xml,rulesets/basic.xml"));
             ctx.setReport(new Report());
-            for (Iterator iter = p0.getProject().getSourcePaths().iterator(); iter.hasNext();) {
-                String srcDir = (String)iter.next();
-                FileFinder ff = new FileFinder();
-                List files = ff.findFilesFrom(srcDir, new JavaFileOrDirectoryFilter(), true);
-                for (Iterator fileIter = files.iterator(); fileIter.hasNext();) {
-                    File fileName = (File)fileIter.next();
-                    ctx.setSourceCodeFilename(fileName.getAbsolutePath());
-                    Reader reader = new FileReader(fileName);
-                    pmd.processFile(reader, ruleSet, ctx);
+            if (p0.getProject() == null) {
+                String code = p0.getEditor().getContents();
+                String name = p0.getEditor().getFileName();
+                if (name == null) {
+                   name = "Unnamed.java";
                 }
+                ctx.setSourceCodeFilename(name);
+                Reader reader = new StringReader(code);
+                pmd.processFile(reader, ruleSet, ctx);
+            } else {
+                for (Iterator iter = p0.getProject().getSourcePaths().iterator(); iter.hasNext();) {
+                    String srcDir = (String)iter.next();
+                    FileFinder ff = new FileFinder();
+                    List files = ff.findFilesFrom(srcDir, new JavaLanguage.JavaFileOrDirectoryFilter(), true);
+                    for (Iterator fileIter = files.iterator(); fileIter.hasNext();) {
+                        File fileName = (File)fileIter.next();
+                        ctx.setSourceCodeFilename(fileName.getAbsolutePath());
+                        Reader reader = new FileReader(fileName);
+                        pmd.processFile(reader, ruleSet, ctx);
+                    }
+               }
            }
            if (ctx.getReport().isEmpty()) {
              JOptionPane.showMessageDialog(null, "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
            } else {
              createProblemFrame(ctx.getReport());
            }
-        } catch (Exception rsne) {
-             JOptionPane.showMessageDialog(null, "ERROR" + rsne.getMessage());
-            rsne.printStackTrace();
+        } catch (Exception e) {
+             JOptionPane.showMessageDialog(null, "ERROR " + e.getClass().getName() + ":" + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -78,8 +85,8 @@ public class PMDPlugin implements GelAction {
 
               }
             JList list = new JList(v);
-            list.setForeground(Color.RED);
-            list.setBackground(Color.WHITE);
+            list.setForeground(Color.red);
+            list.setBackground(Color.white);
             list.setVisibleRowCount(20);
 
             JPanel container = new JPanel(new BorderLayout());
