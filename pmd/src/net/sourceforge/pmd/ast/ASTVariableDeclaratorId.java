@@ -59,15 +59,7 @@ public class ASTVariableDeclaratorId extends SimpleNode {
     }
 
     public void dump(String prefix) {
-        String out = ":" + getImage();
-        if (arrayDepth > 0) {
-            out += "(array";
-            for (int i=0;i<arrayDepth;i++) {
-                out += "[";
-            }
-            out += ")";
-        }
-        System.out.println(toString(prefix) + out);
+        System.out.println(toString(prefix) + "(" + getImage() + ")");
         dumpChildren(prefix);
     }
 

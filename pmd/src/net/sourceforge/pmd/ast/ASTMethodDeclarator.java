@@ -22,7 +22,7 @@ public class ASTMethodDeclarator extends SimpleNode {
     }
 
     public void dump(String prefix) {
-        System.out.println(toString(prefix) + ":" + getImage());
+        System.out.println(toString(prefix) + "(" + getImage() + ")");
         dumpChildren(prefix);
     }
 }

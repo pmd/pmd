@@ -29,17 +29,4 @@ public class ASTType extends SimpleNode {
     public boolean isArray() {
         return arrayDepth > 0;
     }
-
-    public void dump(String prefix) {
-        String out = "";
-        if (arrayDepth > 0) {
-            out += "(array";
-            for (int i=0;i<arrayDepth;i++) {
-                out += "[";
-            }
-            out += ")";
-        }
-        System.out.println(toString(prefix) + out);
-        dumpChildren(prefix);
-    }
 }
