@@ -46,7 +46,6 @@ public class PMDTask extends Task {
             }
         }
         public void setToFile(String toFile) {this.toFile = toFile;}
-
         public void setIsReportFilePathAbsolute(boolean value) {this.isReportFilePathAbsolute = value;}
         public Renderer getRenderer() {return renderer;}
 
@@ -59,58 +58,8 @@ public class PMDTask extends Task {
         }
     }
 
-    public static class Database {
-	private String url = "";
-	private String user = "";
-	private String driver = "";
-	private String password = "";
-	private int projectId = 0;
-
-
-	public void setUrl(String url) {
-	    this.url = url;
-	}
-
-	public String getUrl() {
-	    return url;
-	}
-
-	public void setUser(String user) {
-	    this.user = user;
-	}
-	
-	public String getUser() {
-	    return user;
-	}
-
-	public void setPassword(String password) {
-	    this.password = password;
-	}
-	
-	public String getPassword() {
-	    return password;
-	}
-
-	public void setProjectId(int projectId) {
-	    this.projectId = projectId;
-	}
-	
-	public int getProjectId() {
-	    return projectId;
-	}
-
-	public void setDriver(String driver) {
-	    this.driver = driver;
-	}
-
-	public String getDriver() {
-	    return driver;
-	}
-    }
-
     private List formatters = new ArrayList();
     private List filesets  = new ArrayList();
-    private List databases = new ArrayList();
 
     private boolean shortFilenames;
     private boolean verbose;
@@ -151,10 +100,6 @@ public class PMDTask extends Task {
         formatters.add(f);
     }
 
-    public void addDatabase(Database d) {
-	databases.add(d);
-    }
-
     public void execute() throws BuildException {
         if (formatters.isEmpty()) {
             throw new BuildException("No formatter specified");
@@ -192,9 +137,13 @@ public class PMDTask extends Task {
 
                     pmd.processFile(new FileInputStream(file), rules, ctx);
                 } catch (FileNotFoundException fnfe) {
-                    throw new BuildException(fnfe);
+                    if (failOnError) {
+                        throw new BuildException(fnfe);
+                    }
                 } catch (PMDException pmde) {
-                    throw new BuildException(pmde);
+                    if (failOnError) {
+                        throw new BuildException(pmde);
+                    }
                 }
             }
         }

@@ -3,6 +3,7 @@ Added numbering to the HTMLRenderer; thx to Luke Francl for the code.
 Fixed bug 672742 - grammar typo was hosing up ASTConstructorDeclaration which was hosing up UseSingletonRule
 Fixed bug 674393 - OnlyOneReturn rule no longer counts returns that are inside anonymous inner classes as being inside the containing method.  Thx to C. Lamont Gilbert for the bug report.
 Fixed bug 674420 - AvoidReassigningParametersRule no longer counts parameter field reassignment as a violation.  Thx to C. Lamont Gilbert for the bug report.
+Fixed bug 673662 - The Ant task's "failOnError" attribute works again.
 Fixed bug in OverrideBothEqualsAndHashcodeRule - it no longer bails out with a NullPtrException on interfaces that declare a method signature "equals(Object)".  Thx to Don Leckie for catching that.
 Added an optional Ant task formatter attribute 'isReportFilePathAbsolute'. Thx to Andriy Rozeluk for the feedback.
 
