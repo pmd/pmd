@@ -1,4 +1,4 @@
-<project name="PMDJEditPlugin" default="compile" basedir="../">
+<project name="PMDJEditPlugin" default="jar" basedir="../">
 
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
@@ -15,6 +15,7 @@
 		<pathelement location="${jedit.jars.dir}/${pmdjar}"/>
 		<pathelement location="${jedit.home}/jedit.jar"/>
 		<pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
+		<pathelement location="${jedit.jars.dir}/CommonControls.jar"/>
 		<pathelement location="${lib}/jaxen-core-1.0-fcs.jar"/>
 		<pathelement location="${lib}/saxpath-1.0-fcs.jar"/>
 		<pathelement location="${build}"/>
