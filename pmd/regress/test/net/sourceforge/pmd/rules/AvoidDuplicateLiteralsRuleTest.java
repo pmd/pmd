@@ -1,8 +1,33 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule;
+import net.sourceforge.pmd.cpd.CPD;
 
 public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class AvoidDuplicateLiterals1 {" + CPD.EOL +
+    " private void bar() {" + CPD.EOL +
+    "    buz(\"Howdy\");" + CPD.EOL +
+    "    buz(\"Howdy\");" + CPD.EOL +
+    "    buz(\"Howdy\");" + CPD.EOL +
+    "    buz(\"Howdy\");" + CPD.EOL +
+    " }" + CPD.EOL +
+    " private void buz(String x) {}" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class AvoidDuplicateLiterals2 {" + CPD.EOL +
+    " private void bar() {" + CPD.EOL +
+    "    buz(2);" + CPD.EOL +
+    " }" + CPD.EOL +
+    " private void buz(int x) {}" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class AvoidDuplicateLiterals3 {" + CPD.EOL +
+    " private static final String FOO = \"foo\";" + CPD.EOL +
+    "}";
 
     private AvoidDuplicateLiteralsRule rule;
 
@@ -13,14 +38,14 @@ public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
     }
 
     public void testTwoLiteralStringArgs() throws Throwable {
-        runTestFromFile("AvoidDuplicateLiterals1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void testLiteralIntArg() throws Throwable {
-        runTestFromFile("AvoidDuplicateLiterals2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
 
     public void testLiteralFieldDecl() throws Throwable {
-        runTestFromFile("AvoidDuplicateLiterals3.java", 0, rule);
+        runTestFromString(TEST3, 0, rule);
     }
 }
