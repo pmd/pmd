@@ -73,6 +73,7 @@ public class CPD {
         if (!listener.update("Starting to process " + tokenSets.size() + " files")) return;
         GST gst = new GST(tokenSets, minimumTileSize);
         results = gst.crunch(listener);
+        if (results == null) results = new Results();  //just ot make sure we don't pass back a null Results
     }
 
     public Results getResults() {
