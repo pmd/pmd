@@ -5,16 +5,15 @@ package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class JUnitSpellingRuleTest extends RuleTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclarator[(not(@Image = 'setUp') and translate(@Image, 'SETuP', 'setUp') = 'setUp') or (not(@Image = 'tearDown') and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')][FormalParameters[count(*) = 0]]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/junit.xml", "JUnitSpelling");
     }
 
     public void testSetupMisspellings1() throws Throwable {
@@ -65,5 +64,4 @@ public class JUnitSpellingRuleTest extends RuleTst {
     "public class JUnitSpelling5 {" + PMD.EOL +
     " public void setup(String x) {}" + PMD.EOL +
     "}";
-
 }

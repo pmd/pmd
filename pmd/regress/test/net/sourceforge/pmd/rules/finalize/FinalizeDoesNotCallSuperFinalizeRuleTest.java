@@ -2,7 +2,7 @@ package test.net.sourceforge.pmd.rules.finalize;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -10,9 +10,8 @@ public class FinalizeDoesNotCallSuperFinalizeRuleTest extends SimpleAggregatorTs
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]/Block/BlockStatement[last()][not(Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image='finalize'])]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/finalizers.xml", "FinalizeDoesNotCallSuperFinalize");
     }
 
     public void testAll() {

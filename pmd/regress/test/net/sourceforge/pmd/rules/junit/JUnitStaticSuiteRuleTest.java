@@ -5,7 +5,7 @@ package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -13,9 +13,8 @@ public class JUnitStaticSuiteRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty("xpath", "//MethodDeclaration[not(@Static='true') or not(@Public='true')][MethodDeclarator/@Image='suite'][MethodDeclarator/FormalParameters/@ParameterCount=0]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/junit.xml", "JUnitStaticSuite");
     }
 
     public void testAll() {
