@@ -31,7 +31,7 @@
                 <include name="*.properties"/>
             </fileset>
         </copy>
-        <jar jarfile="${lib}\pmd-0.6.jar" basedir="${build}" excludes="test/**/*.class"/>
+        <jar jarfile="${lib}\pmd-0.7.jar" basedir="${build}" excludes="test/**/*.class"/>
     </target>
 
     <target name="pmd">

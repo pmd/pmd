@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-<ruleset name="new_for_0_7">
+<ruleset name="newrules">
   <description>
-These are new ones for 0.7
+These are new ones for the next release
   </description>
 
 

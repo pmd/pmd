@@ -48,6 +48,21 @@ public class Something {
     </example>
   </rule>
 
+    <rule name="UnusedPrivateMethod"
+        message="Avoid unused private methods such as ''{0}''"
+        class="net.sourceforge.pmd.rules.UnusedPrivateMethodRule">
+    <description>
+Unused Private Method detects when a private method is declared but is unused.
+    </description>
+    <example>
+<![CDATA[
+public class Something {
+ private void foo() {} // unused
+}
+]]>
+    </example>
+  </rule>
+
 
 
 </ruleset>

@@ -1,4 +1,6 @@
-???? 2002 - 0.7:
+???? 2002 - 0.8:
+
+July 25 2002 - 0.7:
 Added new rules: UnusedPrivateMethodRule, WhileLoopsMustUseBracesRule, ForLoopsMustUseBracesRule, LooseCouplingRule
 Fixed bug 583482 - EmptyCatchBlock and EmptyFinallyBlock no longer report an incorrect line number.
 
