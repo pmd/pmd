@@ -2,6 +2,10 @@
 <toc label="PMD Plugin Documentation">
 	<topic label="PMD Documentation" href="pmd/index.html"/>
 	<topic label="How to...">
+		<topic label="use the PMD plugin" href="howto/usepmd.html"/>
+		<topic label="configure the PMD plugin" href="howto/confpmd.html"/>
+		<topic label="detect suspect cut and paste" href="howto/usecpd.html"/>
 		<topic label="use custom rulesets" href="howto/fragment.html"/>
+		<topic label="report bugs" href="howto/reportbugs.html"/>
 	</topic>
 </toc>
