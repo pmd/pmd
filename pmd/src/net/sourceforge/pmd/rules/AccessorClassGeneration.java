@@ -12,6 +12,8 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -145,7 +147,10 @@ public class AccessorClassGeneration extends AbstractRule {
                 m_ArgumentCount = aa.getArgumentCount();
                 //Get name and strip off all superfluous data
                 //strip off package name if it is current package
-                ASTName an = (ASTName) node.jjtGetChild(0);
+                if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
+                    throw new RuntimeException("BUG: Expected a ASTClassOrInterfaceType, got a " + node.jjtGetChild(0).getClass());
+                }
+                ASTClassOrInterfaceType an = (ASTClassOrInterfaceType)node.jjtGetChild(0);
                 m_Name = stripString(aPackageName + ".", an.getImage());
 
                 //strip off outer class names
@@ -233,56 +238,55 @@ public class AccessorClassGeneration extends AbstractRule {
      */
     public Object visit(ASTPackageDeclaration node, Object data) {
         packageName = ((ASTName) node.jjtGetChild(0)).getImage();
-        //		System.out.println("Package is " + packageName);
         return super.visit(node, data);
     }
 
     /**
      * Outer interface visitation
      */
-/*
-    public Object visit(ASTInterfaceDeclaration node, Object data) {
-        String className = node.getUnmodifedInterfaceDeclaration().getImage();
-        //		System.out.println("interface = " + className);
-        classDataList.clear();
-        setClassID(0);
-        classDataList.add(getClassID(), new ClassData(className));
-        Object o = super.visit(node, data);
-        if (o != null) {
-            processRule((RuleContext) o);
-        } else {
-            processRule((RuleContext) data);
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            if (node.isNested()) {
+                String interfaceName = node.getImage();
+                int formerID = getClassID();
+                setClassID(classDataList.size());
+                ClassData newClassData = new ClassData(interfaceName);
+                //store the names of any outer classes of this class in the classQualifyingName List
+                ClassData formerClassData = (ClassData) classDataList.get(formerID);
+                newClassData.addClassQualifyingName(formerClassData.getClassName());
+                classDataList.add(getClassID(), newClassData);
+                Object o = super.visit(node, data);
+                setClassID(formerID);
+                return o;
+            } else {
+                String interfaceName = node.getImage();
+                classDataList.clear();
+                setClassID(0);
+                classDataList.add(getClassID(), new ClassData(interfaceName));
+                Object o = super.visit(node, data);
+                if (o != null) {
+                    processRule((RuleContext) o);
+                } else {
+                    processRule((RuleContext) data);
+                }
+                setClassID(-1);
+                return o;
+            }
+        } else if (node.isNested()) {
+            String className = node.getImage();
+            int formerID = getClassID();
+            setClassID(classDataList.size());
+            ClassData newClassData = new ClassData(className);
+            //store the names of any outer classes of this class in the classQualifyingName List
+            ClassData formerClassData = (ClassData) classDataList.get(formerID);
+            newClassData.addClassQualifyingName(formerClassData.getClassName());
+            classDataList.add(getClassID(), newClassData);
+            Object o = super.visit(node, data);
+            setClassID(formerID);
+            return o;
         }
-        setClassID(-1);
-        return o;
-    }
-*/
-
-    /**
-     * Inner interface visitation
-     */
-    /*public Object visit(ASTNestedInterfaceDeclaration node, Object data) {
-        String className = node.getUnmodifedInterfaceDeclaration().getImage();
-        //		System.out.println("interface = " + className);
-        int formerID = getClassID();
-        setClassID(classDataList.size());
-        ClassData newClassData = new ClassData(className);
-        //store the names of any outer classes of this class in the classQualifyingName List
-        ClassData formerClassData = (ClassData) classDataList.get(formerID);
-        newClassData.addClassQualifyingName(formerClassData.getClassName());
-        classDataList.add(getClassID(), newClassData);
-        Object o = super.visit(node, data);
-        setClassID(formerID);
-        return o;
-    }
-*/
-    /**
-     * Outer class declaration
-     */
-/*
-    public Object visit(ASTClassDeclaration node, Object data) {
-        String className = ((ASTUnmodifiedClassDeclaration) node.jjtGetChild(0)).getImage();
-        //		System.out.println("classname = " + className);
+        // outer classes
+        String className = node.getImage();
         classDataList.clear();
         setClassID(0);//first class
         classDataList.add(getClassID(), new ClassData(className));
@@ -295,24 +299,6 @@ public class AccessorClassGeneration extends AbstractRule {
         setClassID(-1);
         return o;
     }
-
-*/
-/*
-    public Object visit(ASTNestedClassDeclaration node, Object data) {
-        String className = ((ASTUnmodifiedClassDeclaration) node.jjtGetChild(0)).getImage();
-        //		System.out.println("classname = " + className);
-        int formerID = getClassID();
-        setClassID(classDataList.size());
-        ClassData newClassData = new ClassData(className);
-        //store the names of any outer classes of this class in the classQualifyingName List
-        ClassData formerClassData = (ClassData) classDataList.get(formerID);
-        newClassData.addClassQualifyingName(formerClassData.getClassName());
-        classDataList.add(getClassID(), newClassData);
-        Object o = super.visit(node, data);
-        setClassID(formerID);
-        return o;
-    }
-*/
 
     /**
      * Store all target constructors

@@ -124,23 +124,21 @@ public class JDKVersionTest extends TestCase  {
         p.CompilationUnit();
     }
 
-    public void testFieldsBug() throws Throwable {
-        JavaParser p = new TargetJDK1_4().createParser(new StringReader(FIELDS_BUG));
+    public void testVariousParserBugs() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(FIELDS_BUG));
+        p.CompilationUnit();
+        p = new TargetJDK1_5().createParser(new StringReader(GT_BUG));
+        p.CompilationUnit();
+        p = new TargetJDK1_5().createParser(new StringReader(ANNOTATIONS_BUG));
+        p.CompilationUnit();
+        p = new TargetJDK1_5().createParser(new StringReader(GENERICS_BUG));
         p.CompilationUnit();
     }
 
-    public void testGTBug() throws Throwable {
-        JavaParser p = new TargetJDK1_4().createParser(new StringReader(GT_BUG));
+    public void testNestedClassInMethodBug() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(INNER_BUG));
         p.CompilationUnit();
-    }
-
-    public void testAnnotationsBug() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATIONS_BUG));
-        p.CompilationUnit();
-    }
-
-    public void testGenericsBug() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_BUG));
+        p = new TargetJDK1_5().createParser(new StringReader(INNER_BUG2));
         p.CompilationUnit();
     }
 
@@ -257,4 +255,21 @@ FIXME
     "  return null;"  + PMD.EOL +
     " }" + PMD.EOL +
     "}";
+
+    private static final String INNER_BUG =
+    "public class Test {" + PMD.EOL +
+    "  void bar() {" + PMD.EOL +
+    "   final class Inner {};" + PMD.EOL +
+    "   Inner i = new Inner();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
+    private static final String INNER_BUG2 =
+    "public class Test {" + PMD.EOL +
+    "  void bar() {" + PMD.EOL +
+    "   class Inner {};" + PMD.EOL +
+    "   Inner i = new Inner();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
 }

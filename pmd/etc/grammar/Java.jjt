@@ -1116,7 +1116,7 @@ Token t = null;
 jjtThis.setModifiers(modifiers);
 }
 {
-  ( "class" | "interface" { jjtThis.setInterface(); } )
+  ( ["final"] "class" | "interface" { jjtThis.setInterface(); } )
   t=<IDENTIFIER> { jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
@@ -1741,7 +1741,7 @@ void BlockStatement():
 |
   Statement()
 |
-  ClassOrInterfaceDeclaration(0)
+  LOOKAHEAD( ["final"] "class") ClassOrInterfaceDeclaration(0)
 }
 
 void LocalVariableDeclaration() :

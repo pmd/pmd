@@ -23,6 +23,7 @@ public class AccessorClassGenerationTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "inner class has public constructor", 0, rule),
            new TestDescriptor(TEST3, "outer class has public constructor", 1, rule),
            new TestDescriptor(TEST4, "final inner class", 0, rule),
+
        });
     }
 
