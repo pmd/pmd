@@ -186,7 +186,7 @@ class PMDViewer extends JFrame {
      * {@link java.awt.event.KeyEvent}.  If the <code>name</code> is not
      * found in <code>KeyEvent</code>, an error is logged and the key code
      * returned is -1 which indicates no mnemonic according to
-     * {@link javax.swing.JButton#
+     * {@link javax.swing.JButton#setMnemonic}
      *
      * @param name key name from <code>KeyEvent</code>
      * @return the value of the constant named <code>name</code>
