@@ -45,14 +45,11 @@ public class CPDTask extends Task {
 	 */
 	public void execute() throws BuildException{
     	try{	
-    		this.validateFields();
-	    	CPD cpd = new CPD();
+    		validateFields();
+	    	CPD cpd = new CPD(tileSize);
 		    cpd.setCpdListener(new CPDNullListener());
-	        cpd.setMinimumTileSize(this.tileSize);
 	        cpd.addRecursively(this.codeLocation);
-	
 	        cpd.go();
-	        
 	        Writer wrtr = new BufferedWriter(new FileWriter(this.outputFile));
 	        wrtr.write(cpd.getReport());
 	        wrtr.close();

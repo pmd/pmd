@@ -146,10 +146,10 @@ public class GUI implements CPDListener {
 
     private void go() {
         try {
-            CPD cpd = new CPD();
+            CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()));
             cpd.setCpdListener(this);
-            cpd.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
             tokenizingFilesBar.setMinimum(0);
+            comparisonsField.setText("");
             if (rootDirectoryField.getText().endsWith(".java")) {
                 cpd.add(new File(rootDirectoryField.getText()));
             } else {

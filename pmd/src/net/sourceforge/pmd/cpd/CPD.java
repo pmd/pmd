@@ -13,12 +13,12 @@ public class CPD {
     private MatchListener matchListener;
     private TokenSets tokenSets = new TokenSets();
 
-    public void setCpdListener(CPDListener cpdListener) {
-        this.cpdListener = cpdListener;
+    public CPD(int minimumTileSize) {
+        this.mts = minimumTileSize;
     }
 
-    public void setMinimumTileSize(int mts) {
-        this.mts = mts;
+    public void setCpdListener(CPDListener cpdListener) {
+        this.cpdListener = cpdListener;
     }
 
     public void go() {
@@ -95,10 +95,10 @@ public class CPD {
             usage();
             System.exit(1);
         }
-        CPD cpd = new CPD();
-        cpd.setCpdListener(new CPDNullListener());
+
+        CPD cpd = new CPD(Integer.parseInt(args[0]));
         try {
-            cpd.setMinimumTileSize(Integer.parseInt(args[0]));
+            cpd.setCpdListener(new CPDNullListener());
             cpd.addRecursively(args[1]);
         } catch (Exception e) {
             e.printStackTrace();
