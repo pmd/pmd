@@ -515,7 +515,9 @@ public class CarTest {
        message="Too many fields"
        class="net.sourceforge.pmd.rules.design.TooManyFields">
    <description>
-
+    Classes that have too many fields could be redesigned to have less fields 
+    and some nested object grouping some of the information collected on the 
+    many fields.
    </description>
      <priority>3</priority>
    <properties>
