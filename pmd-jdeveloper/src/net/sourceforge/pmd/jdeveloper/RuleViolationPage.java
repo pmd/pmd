@@ -1,13 +1,13 @@
 package net.sourceforge.pmd.jdeveloper;
 
 import net.sourceforge.pmd.RuleViolation;
-import oracle.ide.Ide;
 import oracle.ide.layout.ViewId;
 import oracle.ide.log.AbstractLogPage;
-import oracle.ide.log.LogPage;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import java.awt.Component;
 
 public class RuleViolationPage extends AbstractLogPage {
 

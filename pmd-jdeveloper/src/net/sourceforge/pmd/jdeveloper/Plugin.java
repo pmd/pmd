@@ -8,7 +8,6 @@ import net.sourceforge.pmd.RuleViolation;
 import oracle.ide.ContextMenu;
 import oracle.ide.Ide;
 import oracle.ide.IdeAction;
-import oracle.ide.log.LogPage;
 import oracle.ide.addin.Addin;
 import oracle.ide.addin.Context;
 import oracle.ide.addin.ContextMenuListener;
@@ -21,7 +20,8 @@ import oracle.ide.panels.Navigable;
 import oracle.jdeveloper.model.JProject;
 import oracle.jdeveloper.model.JavaSourceNode;
 
-import javax.swing.*;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;

@@ -5,7 +5,8 @@ import oracle.ide.Ide;
 import oracle.ide.net.URLFactory;
 import oracle.jdeveloper.ceditor.CodeEditor;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 
 /**
  * This class was inspired by a class on Sun's web site in the JList tutorial section.  It's

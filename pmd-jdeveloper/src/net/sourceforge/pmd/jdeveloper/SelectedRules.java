@@ -5,7 +5,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
-import javax.swing.*;
+import javax.swing.JCheckBox;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;

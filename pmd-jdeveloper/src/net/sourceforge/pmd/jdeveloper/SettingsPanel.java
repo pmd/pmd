@@ -5,14 +5,44 @@ import oracle.ide.Ide;
 import oracle.ide.panels.DefaultTraversablePanel;
 import oracle.ide.panels.TraversableContext;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
 public class SettingsPanel extends DefaultTraversablePanel {
+
+
+    private class FindListener implements ActionListener {
+        public void actionPerformed(ActionEvent evt){
+            FileDialog fdlg = new FileDialog(new Frame(), "Find", FileDialog.LOAD);
+            fdlg.setVisible(true);
+            String selected = fdlg.getDirectory() + fdlg.getFile();
+            if (fdlg.getFile() == null) {
+                return;
+            }
+            selectedRulesSeparateFileNameField.setText(selected);
+        }
+    }
 
     public class CheckboxList extends JList {
 
@@ -119,6 +149,10 @@ public class SettingsPanel extends DefaultTraversablePanel {
         JPanel customStorageTextFieldPanel = new JPanel();
         customStorageTextFieldPanel.add(new JLabel("File:"));
         customStorageTextFieldPanel.add(selectedRulesSeparateFileNameField);
+        JButton findButton = new JButton("Find file");
+        findButton.addActionListener(new FindListener());
+        customStorageTextFieldPanel.add(findButton);
+
         customStoragePanel.add(customStorageTextFieldPanel, BorderLayout.SOUTH);
         topPanel.add(customStoragePanel, BorderLayout.CENTER);
         return topPanel;
