@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -157,7 +157,6 @@ class DirectoryTableModel extends DefaultTableModel
             {
                 File directory;
                 File[] files;
-                StringBuffer buffer = new StringBuffer(25);
 
                 directory = (File) userObject;
                 files = directory.listFiles(new FilesFilter());

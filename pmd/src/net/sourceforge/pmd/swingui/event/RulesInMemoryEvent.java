@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.swingui.event;
 
+import net.sourceforge.pmd.RuleSet;
+
+import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
-import java.util.EventObject;
-
-import net.sourceforge.pmd.RuleSet;
 
 public class RulesInMemoryEvent extends EventObject
 {

@@ -1,16 +1,8 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Vector;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -27,13 +19,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.UIManager;
-
-import net.sourceforge.pmd.swingui.event.AnalyzeFileEvent;
-import net.sourceforge.pmd.swingui.event.AnalyzeFileEventListener;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
-import net.sourceforge.pmd.swingui.event.ListenerList;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Vector;
 
 /**
  *
@@ -160,7 +156,6 @@ class DirectoryTable extends JTable
             Font oldFont;
             BevelBorder bevelBorder;
             EtchedBorder etchedBorder;
-            EmptyBorder emptyBorder;
 
             oldFont = getFont();
             m_boldFont = new Font(oldFont.getName(), Font.BOLD, oldFont.getSize());

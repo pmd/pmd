@@ -2,8 +2,8 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
 public class UnusedModifierRule extends AbstractRule {
 

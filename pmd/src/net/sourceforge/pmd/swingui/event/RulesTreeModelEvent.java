@@ -1,11 +1,11 @@
 package net.sourceforge.pmd.swingui.event;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.swingui.RulesTreeNode;
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.swingui.RulesTreeNode;
 
 /**
  *

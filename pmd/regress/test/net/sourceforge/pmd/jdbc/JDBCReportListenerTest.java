@@ -106,8 +106,7 @@ public class JDBCReportListenerTest extends TestCase {
 	MockConnection conx = new MockPMDConx(1, 5);
 	driver.setupConnect( conx );
 
-	JDBCReportListener listener = new JDBCReportListener("jdbc:mock:testLongConstructor",
-							     "tlc_user", "tlc_pw", 1);
+	new JDBCReportListener("jdbc:mock:testLongConstructor", "tlc_user", "tlc_pw", 1);
     }
 
     public void testPropConstructor() throws Throwable {
@@ -120,7 +119,7 @@ public class JDBCReportListenerTest extends TestCase {
 	props.put( JDBCReportListener.JDBC_PASSWORD, "tpc_pw" );
 	props.put( JDBCReportListener.JDBC_PROJECTID, "2");
 
-	JDBCReportListener listener = new JDBCReportListener(props);
+	new JDBCReportListener(props);
     }
 
     public void testSingleViolation() throws Throwable {
