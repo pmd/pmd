@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Dan Tullis - bug report</li>
             <li>George Menhorn - CPD bug reports and suggestions</li>
             <li>Paul Roebuck - Ant build improvement, several bug reports</li>
             <li>Jon A. Maxwell - Bug report</li>
