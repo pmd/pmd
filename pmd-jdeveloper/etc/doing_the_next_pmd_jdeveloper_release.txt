@@ -1,6 +1,6 @@
 update the release date in the changelog
-change the build.xml to reflect pmd-jdeveloper release 0.3
-change manifest.mf to reflect pmd-jdeveloper release 0.3
+change the build.xml to reflect pmd-jdeveloper release 0.4
+change manifest.mf to reflect pmd-jdeveloper release 0.4
 
 Create the binary release:
 ant release
@@ -11,22 +11,22 @@ TESTS:
 
 Create the src release:
 cd ~/data/pmd/
-cvs -q rtag -D tomorrow "pmd_jdeveloper_release_0_3" pmd-jdeveloper
+cvs -q rtag -D tomorrow "pmd_jdeveloper_release_0_4" pmd-jdeveloper
 rm -rf ~/tmp/pmd-jdeveloper
 mkdir -p ~/tmp/pmd-jdeveloper
-cvs -q export -d tmp -r pmd_jdeveloper_release_0_3 pmd-jdeveloper
+cvs -q export -d tmp -r pmd_jdeveloper_release_0_4 pmd-jdeveloper
 mv tmp/* ~/tmp/pmd-jdeveloper
 rmdir tmp/
-cp pmd-jdeveloper/lib/pmd-jdeveloper-0.3.jar ~/tmp/pmd-jdeveloper/lib
+cp pmd-jdeveloper/lib/pmd-jdeveloper-0.4.jar ~/tmp/pmd-jdeveloper/lib
 cd ~/tmp
-zip -q -r pmd-jdeveloper-src-0.3.zip pmd-jdeveloper
+zip -q -r pmd-jdeveloper-src-0.4.zip pmd-jdeveloper
 
-ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-0.3.zip pmd-jdeveloper-src-0.3.zip
+ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-0.4.zip pmd-jdeveloper-src-0.4.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jdeveloper-src-0.3.zip file
-Add the pmd-jdeveloper-bin-0.3.zip file
+Add the pmd-jdeveloper-src-0.4.zip file
+Add the pmd-jdeveloper-bin-0.4.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the jdeveloper plugin!"
