@@ -28,7 +28,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.TextPadRenderer;
-import test.net.sourceforge.pmd.MockRule;
+import test.net.sourceforge.pmd.testframework.MockRule;
 
 public class TextPadRendererTest extends TestCase  {
 

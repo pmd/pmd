@@ -52,7 +52,7 @@ public class RuleSetFactoryTest extends TestCase {
             "<rule " + EOL +
             "name=\"MockRuleName\" " + EOL +
             "message=\"avoid the mock rule\" " + EOL +
-            "class=\"test.net.sourceforge.pmd.MockRule\">" +
+            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
             "</rule></ruleset>";
 
     private static final String MULTIPLE_RULE_SET =
@@ -62,11 +62,11 @@ public class RuleSetFactoryTest extends TestCase {
             "testdesc" + EOL + "</description>" + EOL +
             "<rule name=\"MockRuleName1\" " + EOL +
             "message=\"avoid the mock rule\" " + EOL +
-            "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL +
+            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + EOL +
             "</rule>" + EOL +
             "<rule name=\"MockRuleName2\" " + EOL +
             "message=\"avoid the mock rule\" " + EOL +
-            "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL +
+            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + EOL +
             "</rule></ruleset>";
 
     private static final String RULE_WITH_PROPERTIES =
@@ -77,7 +77,7 @@ public class RuleSetFactoryTest extends TestCase {
             "</description>" + EOL +
             "<rule name=\"MockRuleName\" " + EOL +
             "message=\"avoid the mock rule\" " + EOL +
-            "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL +
+            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + EOL +
             "<description>" + EOL + "testdesc2" + EOL +
             "</description>" + EOL +
             "<properties>" + EOL +
@@ -97,7 +97,7 @@ public class RuleSetFactoryTest extends TestCase {
             "<priority>3</priority>" + EOL +
             "<rule name=\"MockRuleName\" " + EOL +
             "message=\"avoid the mock rule\" " + EOL +
-            "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL +
+            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + EOL +
             "<description>" + EOL +
             "testdesc2" + EOL +
             "</description>" + EOL +
@@ -120,7 +120,7 @@ public class RuleSetFactoryTest extends TestCase {
             "<rule " + EOL +
             "name=\"MockRuleName\" " + EOL +
             "message=\"avoid the mock rule\" " + EOL +
-            "class=\"test.net.sourceforge.pmd.MockRule\">" +
+            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
             "<priority>3</priority>" + EOL +
             "</rule></ruleset>";
 
@@ -202,7 +202,7 @@ public class RuleSetFactoryTest extends TestCase {
                              "<ruleset name=\"test\">\r\n<description>testdesc</description><rule ref=\"rulesets/basic.xml/EmptyCatchBlock\"/></ruleset>";
         private static final String SINGLE_RULE_NO_PROPS = "<?xml version=\"1.0\"?>" +
                              "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
-                             "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\">" +
+                             "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
                              "<properties></properties>" +
                              "</rule></ruleset>";
     */

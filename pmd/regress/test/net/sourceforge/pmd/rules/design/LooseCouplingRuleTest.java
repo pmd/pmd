@@ -24,8 +24,8 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.design.LooseCouplingRule;
-import test.net.sourceforge.pmd.rules.SimpleAggregatorTst;
-import test.net.sourceforge.pmd.rules.TestDescriptor;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class LooseCouplingRuleTest extends SimpleAggregatorTst {
 

@@ -24,6 +24,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.AccessorClassGenerationRule;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class AccessorClassGenerationRuleTest extends RuleTst {
 

@@ -24,7 +24,7 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.design.LongMethodRule;
-import test.net.sourceforge.pmd.rules.RuleTst;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class LongMethodRuleTest extends RuleTst {
 

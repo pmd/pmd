@@ -20,7 +20,9 @@ by
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.
  * </copyright>
  */
-package test.net.sourceforge.pmd.rules;
+package test.net.sourceforge.pmd.testframework;
+
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class SimpleAggregatorTst extends RuleTst {
 

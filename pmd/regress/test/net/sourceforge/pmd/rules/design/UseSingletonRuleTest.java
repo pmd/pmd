@@ -29,7 +29,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.rules.design.UseSingletonRule;
 import net.sourceforge.pmd.stat.Metric;
-import test.net.sourceforge.pmd.rules.RuleTst;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class UseSingletonRuleTest extends RuleTst implements ReportListener {
 

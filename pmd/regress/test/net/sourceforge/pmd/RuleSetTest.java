@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import test.net.sourceforge.pmd.testframework.MockRule;
+
 public class RuleSetTest extends TestCase {
     private String javaCode = "public class Test { }";
 

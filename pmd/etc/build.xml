@@ -55,7 +55,11 @@
 </target>
 
 <target name="jar" depends="copy,compile">
-    <jar jarfile="${lib}\pmd-${version}.jar" excludes="test/**/**" basedir="${build}" manifest="etc/MANIFEST.MF"/>
+    <jar
+        jarfile="${lib}\pmd-${version}.jar"
+        includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
+        basedir="${build}"
+        manifest="etc/MANIFEST.MF"/>
 </target>
 
 <target name="jarsrc" depends="copy,compile">

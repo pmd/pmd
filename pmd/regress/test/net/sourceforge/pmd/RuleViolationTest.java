@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import test.net.sourceforge.pmd.testframework.MockRule;
 
 public class RuleViolationTest extends TestCase {
 

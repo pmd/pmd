@@ -29,6 +29,8 @@ import net.sourceforge.pmd.rules.CyclomaticComplexityRule;
 
 import java.util.Iterator;
 
+import test.net.sourceforge.pmd.testframework.RuleTst;
+
 public class CyclomaticComplexityRuleTest extends RuleTst {
 
     private CyclomaticComplexityRule rule = new CyclomaticComplexityRule();

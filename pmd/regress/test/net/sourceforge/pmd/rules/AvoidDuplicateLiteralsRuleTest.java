@@ -27,6 +27,8 @@ import net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule;
 
 import java.util.Set;
 
+import test.net.sourceforge.pmd.testframework.RuleTst;
+
 public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
 
     public static final String TEST1 =

@@ -24,6 +24,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.UnnecessaryConversionTemporaryRule;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class UnnecessaryTemporariesRuleTest extends RuleTst {
 

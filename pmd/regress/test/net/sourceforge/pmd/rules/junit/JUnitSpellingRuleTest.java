@@ -25,7 +25,7 @@ package test.net.sourceforge.pmd.rules.junit;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.XPathRule;
-import test.net.sourceforge.pmd.rules.RuleTst;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class JUnitSpellingRuleTest extends RuleTst {
 

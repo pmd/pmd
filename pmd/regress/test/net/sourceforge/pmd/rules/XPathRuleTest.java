@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.XPathRule;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 /**
  * @author daniels

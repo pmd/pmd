@@ -24,6 +24,8 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.UnusedPrivateFieldRule;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
 

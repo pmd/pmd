@@ -33,6 +33,8 @@ import net.sourceforge.pmd.stat.Metric;
 
 import java.util.Iterator;
 
+import test.net.sourceforge.pmd.testframework.MockRule;
+
 public class ReportTest extends TestCase implements ReportListener {
 
     private boolean violationSemaphore;

@@ -23,6 +23,8 @@ by
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.ClassNamingConventionsRule;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class ClassNamingConventionsRuleTest extends SimpleAggregatorTst {
 

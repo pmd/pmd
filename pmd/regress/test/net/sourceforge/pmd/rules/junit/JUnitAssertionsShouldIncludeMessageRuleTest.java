@@ -24,7 +24,7 @@ package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.junit.JUnitAssertionsShouldIncludeMessageRule;
-import test.net.sourceforge.pmd.rules.RuleTst;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class JUnitAssertionsShouldIncludeMessageRuleTest extends RuleTst {
 

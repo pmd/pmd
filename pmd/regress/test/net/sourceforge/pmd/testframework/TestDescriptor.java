@@ -20,7 +20,7 @@ by
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.
  * </copyright>
  */
-package test.net.sourceforge.pmd.rules;
+package test.net.sourceforge.pmd.testframework;
 
 import net.sourceforge.pmd.Rule;
 

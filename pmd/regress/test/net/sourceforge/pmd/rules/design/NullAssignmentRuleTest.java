@@ -24,7 +24,7 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.rules.design.NullAssignmentRule;
-import test.net.sourceforge.pmd.rules.RuleTst;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class NullAssignmentRuleTest extends RuleTst {
 
