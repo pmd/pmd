@@ -30,6 +30,7 @@ public class RuleTst
 			   Rule rule )
 	throws Throwable
     {
+/*
 	// Set up the Context
 	RuleContext ctx = new RuleContext();
 	ctx.setReport( new Report("xml", fileName) );
@@ -49,18 +50,12 @@ public class RuleTst
 	
 	// Return the report.
 	return ctx.getReport();
+*/
+        PMD p = new PMD();
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(new Report("xml", fileName));
+        p.processFile(fileName, getClass().getClassLoader().getResourceAsStream(fileName), rule, ctx);
+        return ctx.getReport();
 
-    }
-
-    public Report process2(String file, Rule rule)  {
-        try {
-            PMD p = new PMD();
-            RuleContext ctx = new RuleContext();
-            ctx.setReport(new Report("xml", file));
-            p.processFile(file, getClass().getClassLoader().getResourceAsStream(file), rule, ctx);
-            return ctx.getReport();
-        } catch (FileNotFoundException fnfe) {
-            throw new RuntimeException("File " + file + " not found");
-        }
     }
 }

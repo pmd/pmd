@@ -17,45 +17,45 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
         super(name);
     }
 
-    public void testUnusedPrivateInstanceVar1() {
-        Report report = process2("UnusedPrivateInstanceVar1.java", new UnusedPrivateInstanceVariableRule());
+    public void testUnusedPrivateInstanceVar1() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar1.java", new UnusedPrivateInstanceVariableRule());
         assertEquals(1, report.countViolationsInCurrentFile());
         Iterator i =  report.violationsInCurrentFile();
         assertEquals(new UnusedPrivateInstanceVariableRule(), ((RuleViolation)i.next()).getRule());
     }
 
-    public void testUnusedPrivateInstanceVar2() {
-        Report report = process2("UnusedPrivateInstanceVar2.java", new UnusedPrivateInstanceVariableRule());
+    public void testUnusedPrivateInstanceVar2() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar2.java", new UnusedPrivateInstanceVariableRule());
         assertTrue(report.currentFileHasNoViolations());
     }
 
-    public void testUnusedPrivateInstanceVar3() {
-        Report report = process2("UnusedPrivateInstanceVar3.java", new UnusedPrivateInstanceVariableRule());
+    public void testUnusedPrivateInstanceVar3() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar3.java", new UnusedPrivateInstanceVariableRule());
         assertEquals(1, report.countViolationsInCurrentFile());
         Iterator i =  report.violationsInCurrentFile();
         assertEquals(new UnusedPrivateInstanceVariableRule(), ((RuleViolation)i.next()).getRule());
     }
 
-    public void testUnusedPrivateInstanceVar4() {
-        Report report = process2("UnusedPrivateInstanceVar4.java", new UnusedPrivateInstanceVariableRule());
+    public void testUnusedPrivateInstanceVar4() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar4.java", new UnusedPrivateInstanceVariableRule());
         assertTrue(report.currentFileHasNoViolations());
     }
 
-    public void testUnusedPrivateInstanceVar6() {
-        Report report = process2("UnusedPrivateInstanceVar6.java", new UnusedPrivateInstanceVariableRule());
+    public void testUnusedPrivateInstanceVar6() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar6.java", new UnusedPrivateInstanceVariableRule());
         assertTrue(report.currentFileHasNoViolations());
     }
-    public void testUnusedPrivateInstanceVar7() {
-        Report report = process2("UnusedPrivateInstanceVar7.java", new UnusedPrivateInstanceVariableRule());
+    public void testUnusedPrivateInstanceVar7() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar7.java", new UnusedPrivateInstanceVariableRule());
         assertTrue(report.currentFileHasNoViolations());
     }
-    public void testUnusedPrivateInstanceVar8() {
-        Report report = process2("UnusedPrivateInstanceVar8.java", new UnusedPrivateInstanceVariableRule());
+    public void testUnusedPrivateInstanceVar8() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar8.java", new UnusedPrivateInstanceVariableRule());
         assertTrue(report.currentFileHasNoViolations());
     }
 /*
 TODO - this tests unused variables in nested classes
-    public void testUnusedPrivateInstanceVar9() {
+    public void testUnusedPrivateInstanceVar9() throws Throwable {
         Report report = process("UnusedPrivateInstanceVar9.java");
         assertEquals(1, report.violationsInCurrentFile());
     }

@@ -14,12 +14,12 @@ public class IfElseStmtsMustUseBracesRuleTest extends RuleTst {
         super(name);
     }
 
-    public void testIfElseStmtsMustUseBraces1() {
-        Report report = process2("IfElseStmtsNeedBraces1.java", new IfElseStmtsMustUseBracesRule());
+    public void testIfElseStmtsMustUseBraces1() throws Throwable {
+        Report report = process("IfElseStmtsNeedBraces1.java", new IfElseStmtsMustUseBracesRule());
         assertEquals(1, report.countViolationsInCurrentFile());
     }
-    public void testIfElseStmtsMustUseBraces2() {
-        Report report = process2("IfElseStmtsNeedBraces2.java", new IfElseStmtsMustUseBracesRule());
+    public void testIfElseStmtsMustUseBraces2() throws Throwable {
+        Report report = process("IfElseStmtsNeedBraces2.java", new IfElseStmtsMustUseBracesRule());
         assertTrue(report.currentFileHasNoViolations());
     }
 
