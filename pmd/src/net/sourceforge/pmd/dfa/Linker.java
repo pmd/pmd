@@ -12,11 +12,11 @@ import java.util.List;
 public class Linker {
 
     private List braceStack;
-    private List cbrStack;
+    private List continueBreakReturnStack;
 
     public Linker(IProcessableStructure dataFlow) {
         this.braceStack = dataFlow.getBraceStack();
-        this.cbrStack = dataFlow.getContinueBreakReturnStack();
+        this.continueBreakReturnStack = dataFlow.getContinueBreakReturnStack();
     }
 
 //     ----------------------------------------------------------------------------
@@ -25,12 +25,7 @@ public class Linker {
      * Creates all the links between the data flow nodes.
      */
     public void computePaths() throws LinkerException, SequenceException {
-
-        if (this.braceStack == null || this.cbrStack == null) {
-            throw new LinkerException();
-        }
-
-        SequenceChecker sc = new SequenceChecker(this.braceStack);
+        SequenceChecker sc = new SequenceChecker(braceStack);
 
         /*
          * Returns true if there are more sequences, computes the first and
@@ -82,8 +77,8 @@ public class Linker {
             }
         }
 
-        while (!this.cbrStack.isEmpty()) {
-            StackObject so = (StackObject) cbrStack.get(0);
+        while (!this.continueBreakReturnStack.isEmpty()) {
+            StackObject so = (StackObject) continueBreakReturnStack.get(0);
             IDataFlowNode node = so.getDataFlowNode();
 
             switch (so.getType()) {
@@ -95,7 +90,7 @@ public class Linker {
                             (IDataFlowNode) node.getFlow().get(node.getFlow().size() - 1);
                     node.addPathToChild(lastNode);
 
-                    cbrStack.remove(0);
+                    continueBreakReturnStack.remove(0);
                     break;
 
                 case NodeType.BREAK_STATEMENT:
@@ -113,7 +108,7 @@ public class Linker {
                             IDataFlowNode last = (IDataFlowNode) bList.get(i + 1);
                             node.addPathToChild(last);
 
-                            cbrStack.remove(0);
+                            continueBreakReturnStack.remove(0);
                             break;
                         }
                     }
@@ -182,7 +177,7 @@ public class Linker {
                                        break;
                                    }
                                }
-*/cbrStack.remove(0); // delete this statement if you uncomment the stuff above
+*/continueBreakReturnStack.remove(0); // delete this statement if you uncomment the stuff above
             }
         }
     }

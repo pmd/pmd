@@ -31,11 +31,7 @@ public class GeneralFiddlingTest extends ParserTst {
     private static final String TEST1 =
         "class Foo {" + PMD.EOL +
         " void bar() {" + PMD.EOL +
-        "  int x = 0;" + PMD.EOL +
-        "  if (x == 0) {" + PMD.EOL +
-        "   x++;" + PMD.EOL +
-        "   x = 0;" + PMD.EOL +
-        "  }" + PMD.EOL +
+        "  for (int i=0; i<10; i++) {}" + PMD.EOL +
         " }"  + PMD.EOL +
         "}";
 
