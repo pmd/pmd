@@ -16,7 +16,7 @@ public class NameDeclaration {
         this.node = node;
     }
 
-    public void setExceptionBlockParameter(boolean isExceptionBlockParameter) {
+    public void setIsExceptionBlockParameter(boolean isExceptionBlockParameter) {
         this.isExceptionBlockParameter = isExceptionBlockParameter;
     }
 
