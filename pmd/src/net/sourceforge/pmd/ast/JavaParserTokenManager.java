@@ -379,7 +379,7 @@ private final int jjMoveStringLiteralDfa1_0(long active0, long active1)
 private final int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, long active1)
 {
    if (((active0 &= old0) | (active1 &= old1)) == 0L)
-      return jjStartNfa_0(0, old0, old1); 
+      return jjStartNfa_0(0, old0, old1);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(1, active0, active1);
@@ -451,7 +451,7 @@ private final int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, 
 private final int jjMoveStringLiteralDfa3_0(long old0, long active0, long old1, long active1)
 {
    if (((active0 &= old0) | (active1 &= old1)) == 0L)
-      return jjStartNfa_0(1, old0, old1); 
+      return jjStartNfa_0(1, old0, old1);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(2, active0, active1);
@@ -523,7 +523,7 @@ private final int jjMoveStringLiteralDfa3_0(long old0, long active0, long old1, 
 private final int jjMoveStringLiteralDfa4_0(long old0, long active0, long old1, long active1)
 {
    if (((active0 &= old0) | (active1 &= old1)) == 0L)
-      return jjStartNfa_0(2, old0, old1); 
+      return jjStartNfa_0(2, old0, old1);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(3, active0, 0L);
@@ -859,11 +859,6 @@ private final void jjCheckNAddStates(int start, int end)
       jjCheckNAdd(jjnextStates[start]);
    } while (start++ != end);
 }
-private final void jjCheckNAddStates(int start)
-{
-   jjCheckNAdd(jjnextStates[start]);
-   jjCheckNAdd(jjnextStates[start + 1]);
-}
 static final long[] jjbitVec0 = {
    0xfffffffffffffffeL, 0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL
 };
@@ -890,12 +885,11 @@ static final long[] jjbitVec8 = {
 };
 private final int jjMoveNfa_0(int startState, int curPos)
 {
-   int[] nextStates;
    int startsAt = 0;
    jjnewStateCnt = 57;
    int i = 1;
    jjstateSet[0] = startState;
-   int j, kind = 0x7fffffff;
+   int kind = 0x7fffffff;
    for (;;)
    {
       if (++jjround == 0x7fffffff)
@@ -1371,9 +1365,9 @@ private final int jjMoveStringLiteralDfa1_1(long active0)
    return 2;
 }
 static final int[] jjnextStates = {
-   50, 51, 53, 30, 31, 36, 37, 40, 41, 8, 49, 56, 19, 20, 22, 10, 
-   12, 45, 47, 2, 4, 5, 8, 19, 20, 24, 22, 32, 33, 8, 40, 41, 
-   8, 6, 7, 13, 14, 16, 21, 23, 25, 34, 35, 38, 39, 42, 43, 
+   50, 51, 53, 30, 31, 36, 37, 40, 41, 8, 49, 56, 19, 20, 22, 10,
+   12, 45, 47, 2, 4, 5, 8, 19, 20, 24, 22, 32, 33, 8, 40, 41,
+   8, 6, 7, 13, 14, 16, 21, 23, 25, 34, 35, 38, 39, 42, 43,
 };
 private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, long l2)
 {
@@ -1381,7 +1375,7 @@ private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, lo
    {
       case 0:
          return ((jjbitVec2[i2] & l2) != 0L);
-      default : 
+      default :
          if ((jjbitVec0[i1] & l1) != 0L)
             return true;
          return false;
@@ -1401,58 +1395,58 @@ private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, lo
          return ((jjbitVec7[i2] & l2) != 0L);
       case 61:
          return ((jjbitVec8[i2] & l2) != 0L);
-      default : 
+      default :
          if ((jjbitVec3[i1] & l1) != 0L)
             return true;
          return false;
    }
 }
 public static final String[] jjstrLiteralImages = {
-"", null, null, null, null, null, null, null, null, null, null, null, 
-"\141\142\163\164\162\141\143\164", "\142\157\157\154\145\141\156", "\142\162\145\141\153", "\142\171\164\145", 
-"\143\141\163\145", "\143\141\164\143\150", "\143\150\141\162", "\143\154\141\163\163", 
-"\143\157\156\163\164", "\143\157\156\164\151\156\165\145", "\144\145\146\141\165\154\164", 
-"\144\157", "\144\157\165\142\154\145", "\145\154\163\145", 
-"\145\170\164\145\156\144\163", "\146\141\154\163\145", "\146\151\156\141\154", 
-"\146\151\156\141\154\154\171", "\146\154\157\141\164", "\146\157\162", "\147\157\164\157", "\151\146", 
-"\151\155\160\154\145\155\145\156\164\163", "\151\155\160\157\162\164", "\151\156\163\164\141\156\143\145\157\146", 
-"\151\156\164", "\151\156\164\145\162\146\141\143\145", "\154\157\156\147", 
-"\156\141\164\151\166\145", "\156\145\167", "\156\165\154\154", "\160\141\143\153\141\147\145", 
-"\160\162\151\166\141\164\145", "\160\162\157\164\145\143\164\145\144", "\160\165\142\154\151\143", 
-"\162\145\164\165\162\156", "\163\150\157\162\164", "\163\164\141\164\151\143", "\163\165\160\145\162", 
-"\163\167\151\164\143\150", "\163\171\156\143\150\162\157\156\151\172\145\144", "\164\150\151\163", 
-"\164\150\162\157\167", "\164\150\162\157\167\163", "\164\162\141\156\163\151\145\156\164", 
-"\164\162\165\145", "\164\162\171", "\166\157\151\144", "\166\157\154\141\164\151\154\145", 
-"\167\150\151\154\145", "\163\164\162\151\143\164\146\160", "\141\163\163\145\162\164", null, null, 
-null, null, null, null, null, null, null, null, null, "\50", "\51", "\173", "\175", 
-"\133", "\135", "\73", "\54", "\56", "\75", "\76", "\74", "\41", "\176", "\77", "\72", 
-"\75\75", "\74\75", "\76\75", "\41\75", "\174\174", "\46\46", "\53\53", "\55\55", "\53", 
-"\55", "\52", "\57", "\46", "\174", "\136", "\45", "\74\74", "\76\76", "\76\76\76", 
-"\53\75", "\55\75", "\52\75", "\57\75", "\46\75", "\174\75", "\136\75", "\45\75", 
+"", null, null, null, null, null, null, null, null, null, null, null,
+"\141\142\163\164\162\141\143\164", "\142\157\157\154\145\141\156", "\142\162\145\141\153", "\142\171\164\145",
+"\143\141\163\145", "\143\141\164\143\150", "\143\150\141\162", "\143\154\141\163\163",
+"\143\157\156\163\164", "\143\157\156\164\151\156\165\145", "\144\145\146\141\165\154\164",
+"\144\157", "\144\157\165\142\154\145", "\145\154\163\145",
+"\145\170\164\145\156\144\163", "\146\141\154\163\145", "\146\151\156\141\154",
+"\146\151\156\141\154\154\171", "\146\154\157\141\164", "\146\157\162", "\147\157\164\157", "\151\146",
+"\151\155\160\154\145\155\145\156\164\163", "\151\155\160\157\162\164", "\151\156\163\164\141\156\143\145\157\146",
+"\151\156\164", "\151\156\164\145\162\146\141\143\145", "\154\157\156\147",
+"\156\141\164\151\166\145", "\156\145\167", "\156\165\154\154", "\160\141\143\153\141\147\145",
+"\160\162\151\166\141\164\145", "\160\162\157\164\145\143\164\145\144", "\160\165\142\154\151\143",
+"\162\145\164\165\162\156", "\163\150\157\162\164", "\163\164\141\164\151\143", "\163\165\160\145\162",
+"\163\167\151\164\143\150", "\163\171\156\143\150\162\157\156\151\172\145\144", "\164\150\151\163",
+"\164\150\162\157\167", "\164\150\162\157\167\163", "\164\162\141\156\163\151\145\156\164",
+"\164\162\165\145", "\164\162\171", "\166\157\151\144", "\166\157\154\141\164\151\154\145",
+"\167\150\151\154\145", "\163\164\162\151\143\164\146\160", "\141\163\163\145\162\164", null, null,
+null, null, null, null, null, null, null, null, null, "\50", "\51", "\173", "\175",
+"\133", "\135", "\73", "\54", "\56", "\75", "\76", "\74", "\41", "\176", "\77", "\72",
+"\75\75", "\74\75", "\76\75", "\41\75", "\174\174", "\46\46", "\53\53", "\55\55", "\53",
+"\55", "\52", "\57", "\46", "\174", "\136", "\45", "\74\74", "\76\76", "\76\76\76",
+"\53\75", "\55\75", "\52\75", "\57\75", "\46\75", "\174\75", "\136\75", "\45\75",
 "\74\74\75", "\76\76\75", "\76\76\76\75", };
 public static final String[] lexStateNames = {
-   "DEFAULT", 
-   "IN_FORMAL_COMMENT", 
-   "IN_MULTI_LINE_COMMENT", 
+   "DEFAULT",
+   "IN_FORMAL_COMMENT",
+   "IN_MULTI_LINE_COMMENT",
 };
 public static final int[] jjnewLexState = {
-   -1, -1, -1, -1, -1, -1, -1, 1, 2, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, 1, 2, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 };
 static final long[] jjtoToken = {
-   0xfffffffffffff001L, 0x1fffffffffff9d1L, 
+   0xfffffffffffff001L, 0x1fffffffffff9d1L,
 };
 static final long[] jjtoSkip = {
-   0x67eL, 0x0L, 
+   0x67eL, 0x0L,
 };
 static final long[] jjtoSpecial = {
-   0x67eL, 0x0L, 
+   0x67eL, 0x0L,
 };
 static final long[] jjtoMore = {
-   0x980L, 0x0L, 
+   0x980L, 0x0L,
 };
 private JavaCharStream input_stream;
 private final int[] jjrounds = new int[57];
@@ -1519,22 +1513,21 @@ int jjround;
 int jjmatchedPos;
 int jjmatchedKind;
 
-public final Token getNextToken() 
+public final Token getNextToken()
 {
-  int kind;
   Token specialToken = null;
   Token matchedToken;
   int curPos = 0;
 
   EOFLoop :
   for (;;)
-  {   
-   try   
-   {     
+  {
+   try
+   {
       curChar = input_stream.BeginToken();
-   }     
+   }
    catch(java.io.IOException e)
-   {        
+   {
       jjmatchedKind = 0;
       matchedToken = jjFillToken();
       matchedToken.specialToken = specialToken;
@@ -1597,7 +1590,7 @@ public final Token getNextToken()
               }
               SkipLexicalActions(matchedToken);
            }
-           else 
+           else
               SkipLexicalActions(null);
          if (jjnewLexState[jjmatchedKind] != -1)
            curLexState = jjnewLexState[jjmatchedKind];
@@ -1659,7 +1652,7 @@ final void MoreLexicalActions()
          jjimageLen = 0;
                    input_stream.backup(1);
          break;
-      default : 
+      default :
          break;
    }
 }
