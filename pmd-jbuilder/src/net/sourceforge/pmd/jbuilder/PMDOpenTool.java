@@ -43,6 +43,7 @@ public class PMDOpenTool {
     static MessageCategory msgCat = new MessageCategory("PMD Results");
     static MessageCategory cpdCat = new MessageCategory("CPD Results");
     public static ActionGroup GROUP_PMD = new ActionGroup("PMD", 'p', true);
+    public static ActionGroup GROUP_TOOLBAR_PMD = new ActionGroup("PMD", 'P', true);
     static Font fileNameMsgFont = new Font("Dialog", Font.BOLD, 12);
     static Font stdMsgFont = new Font("Dialog", Font.PLAIN, 12);
 
@@ -65,11 +66,14 @@ public class PMDOpenTool {
 
 
             GROUP_PMD.add(B_ACTION_PMDCheck);
+            GROUP_PMD.add(B_ACTION_PMDProjectCheck);
+            GROUP_PMD.add(B_ACTION_CPDProjectCheck);
             GROUP_PMD.add(B_ACTION_PMDConfig);
             JBuilderMenu.GROUP_Tools.add(GROUP_PMD);
-            JBuilderToolBar.GROUP_RunBar.add(B_ACTION_PMDCheck);
-            JBuilderToolBar.GROUP_RunBar.add(B_ACTION_PMDProjectCheck);
-            JBuilderToolBar.GROUP_RunBar.add(B_ACTION_CPDProjectCheck);
+            GROUP_TOOLBAR_PMD.add(B_ACTION_PMDCheck);
+            GROUP_TOOLBAR_PMD.add(B_ACTION_PMDProjectCheck);
+            GROUP_TOOLBAR_PMD.add(B_ACTION_CPDProjectCheck);
+            Browser.addToolBarGroup(GROUP_TOOLBAR_PMD);
             registerWithContentManager();
             registerWithProjectView();
 
@@ -82,6 +86,7 @@ public class PMDOpenTool {
             ActiveRuleSetPropertyGroup apropGrp = new ActiveRuleSetPropertyGroup();
             ConfigureRuleSetPropertyGroup cpropGrp = new ConfigureRuleSetPropertyGroup();
             AcceleratorPropertyGroup accpropGrp = new AcceleratorPropertyGroup();
+            CPDPropertyGroup cpdPropGrp = new CPDPropertyGroup();
 
             //register the Keymap shortcuts if they are enabled
             if (AcceleratorPropertyGroup.PROP_KEYS_ENABLED.getBoolean()) {
@@ -92,6 +97,7 @@ public class PMDOpenTool {
             PropertyManager.registerPropertyGroup(cpropGrp);
             PropertyManager.registerPropertyGroup(ipropGrp);
             PropertyManager.registerPropertyGroup(accpropGrp);
+            PropertyManager.registerPropertyGroup(cpdPropGrp);
 
         }
     }
@@ -332,7 +338,7 @@ public class PMDOpenTool {
          try {
              Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
              CPD cpd = new CPD();
-             cpd.setMinimumTileSize(25);
+             cpd.setMinimumTileSize(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger());
              Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
              CPDDialog cpdd = new CPDDialog(cpd);
              for (int i=0; i<nodes.length; i++ ) {
@@ -357,10 +363,11 @@ public class PMDOpenTool {
                  for (Iterator iter = results.getTiles(); iter.hasNext(); ) {
                      Tile t = (Tile)iter.next();
                      resultCount++;
-                     CPDMessage msg = CPDMessage.createMessage("Duplicate code set: " + resultCount);
+                     int tileLineCount = cpd.getLineCountFor(t);
+                     CPDMessage msg = CPDMessage.createMessage("Duplicate code set: " + resultCount, t.getImage());
                      for (Iterator iter2 = results.getOccurrences(t); iter2.hasNext(); ) {
                          TokenEntry te = (TokenEntry)iter2.next();
-                         msg.addChildMessage(te.getTokenSrcID(), te.getBeginLine(), 0, te.getTokenSrcID());
+                         msg.addChildMessage(te.getBeginLine(), tileLineCount, te.getTokenSrcID());
                     }
                     Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg);
                  }
@@ -451,14 +458,15 @@ class PMDMessage extends Message {
  * Wrapper for the OpenTools message object
  */
 class CPDMessage extends Message {
-    final LineMark MARK = new HighlightMark();
+    final static LineMark MARK = new HighlightMark(true);
     String filename;
     FileNode javaNode = null;
     int startline = 0;
-    int endline = 0;
+    int lineCount = 0;
     int column = 0;
     boolean isParent = true;
     ArrayList childMessages = new ArrayList();
+    String codeBlock = null;
 
     /**
      * Constructor
@@ -467,15 +475,16 @@ class CPDMessage extends Message {
      * @param node the node that the code belongs to
      */
 
-    private CPDMessage(String msg) {
+    private CPDMessage(String msg, String codeBlock) {
         super(msg);
+        this.codeBlock = codeBlock;
         this.setLazyFetchChildren(true);
     }
 
-    private CPDMessage (String msg, int startline, int endline, String fileName) {
+    private CPDMessage (String msg, int startline, int lineCount, String fileName) {
         super(msg);
         this.startline = startline;
-        this.endline = endline;
+        this.lineCount = lineCount;
         this.filename = fileName;
         try {
             File javaFile = new File(fileName);
@@ -486,15 +495,17 @@ class CPDMessage extends Message {
         }
     }
 
-    public static CPDMessage createMessage(String msg) {
-        CPDMessage cpdm = new CPDMessage(msg);
+    public static CPDMessage createMessage(String msg, String codeBlock) {
+        CPDMessage cpdm = new CPDMessage(msg, codeBlock);
         cpdm.isParent = true;
         return cpdm;
     }
 
 
-    public void addChildMessage (String msg, int startline, int endline, String fileName) {
+    public void addChildMessage (int startline, int endline, String fileName) {
         this.lazyFetchChildren = true;
+        String sep = System.getProperty("file.separator");
+        String msg = fileName.substring(fileName.lastIndexOf(sep.charAt(0))+1)+": line: " + String.valueOf(startline);
         CPDMessage cpdmsg =  new CPDMessage(msg, startline, endline, fileName);
         cpdmsg.isParent = false;
         childMessages.add(cpdmsg);
@@ -502,6 +513,8 @@ class CPDMessage extends Message {
     }
 
     public void fetchChildren(Browser browser) {
+        CodeFragmentMessage cfm = new CodeFragmentMessage(this.codeBlock);
+        browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, cfm);
         for (Iterator iter = childMessages.iterator(); iter.hasNext(); ) {
             browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, (CPDMessage)iter.next());
         }
@@ -529,6 +542,7 @@ class CPDMessage extends Message {
      * @param requestFocus whether or not the code window should receive focus
      */
     private void displayResult (Browser browser, boolean requestFocus) {
+        MARK.removeEditor();
         if (!isParent) {
             try {
                 if (requestFocus || browser.isOpenNode(javaNode)) {
@@ -537,10 +551,15 @@ class CPDMessage extends Message {
                             TextNodeViewer.class);
                     browser.setActiveViewer(javaNode, viewer, requestFocus);
                     EditorPane editor = viewer.getEditor();
-                    editor.gotoPosition(startline, column, false, EditorPane.CENTER_IF_NEAR_EDGE);
+                    editor.gotoPosition(startline, 0, false, EditorPane.CENTER_IF_NEAR_EDGE);
                     if (requestFocus) {
                         editor.requestFocus();
                     }
+                    /*EditorDocument ed = (EditorDocument)editor.getDocument();
+                    int[] lines = new int[lineCount];
+                    for (int i=0; i<lineCount; i++)
+                        lines[i] = startline+i-1;
+                    ed.setLightweightLineMarks(lines, MARK);*/
                     editor.setTemporaryMark(startline, MARK);
 
                 }
@@ -549,6 +568,20 @@ class CPDMessage extends Message {
             }
         }
     }
+}
+
+class CodeFragmentMessage extends Message {
+    String codeFragment = null;
+    public CodeFragmentMessage(String codeFragment) {
+        super("View Code");
+        this.setLazyFetchChildren(true);
+        this.codeFragment = codeFragment;
+
+    }
+    public void fetchChildren(Browser browser) {
+            browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, new Message(codeFragment));
+    }
+
 }
 
 /**
@@ -569,5 +602,9 @@ class HighlightMark extends LineMark {
      */
     public HighlightMark () {
         super(highlightStyle);
+    }
+
+    public HighlightMark(boolean isLightWeight) {
+        super(isLightWeight, highlightStyle);
     }
 }
