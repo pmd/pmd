@@ -65,6 +65,8 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
     private JTextArea exampleTextArea= new JTextArea(10, 50);
     private JCheckBox directoryPopupBox;
 	JTextField txtMinTileSize;
+	JTextField txtCustomRules;
+
 
     public PMDOptionPane() {
         super(PMDJEditPlugin.NAME);
@@ -80,11 +82,17 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
         addComponent(new JLabel("Please see http://pmd.sf.net/ for more information"));
 
-        JPanel rulesPanel = new JPanel();
+        JPanel rulesPanel = new JPanel(new BorderLayout());
         rulesPanel.setBorder(BorderFactory.createTitledBorder("Rules"));
         JList list = new CheckboxList(rules.getAllBoxes());
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         rulesPanel.add(new JScrollPane(list), BorderLayout.NORTH);
+		//Custom Rule Panel Defination.
+		JPanel pnlCustomRules = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		pnlCustomRules.add(new JLabel("Path to custom rules.xml files(seperated by comma)"));
+		pnlCustomRules.add((txtCustomRules = new JTextField(jEdit.getProperty("pmd.customRulesPath",""),30)));
+
+		rulesPanel.add(pnlCustomRules, BorderLayout.CENTER);
 
         JPanel textPanel = new JPanel();
         textPanel.setBorder(BorderFactory.createTitledBorder("Example"));
@@ -114,7 +122,6 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 		pnlSouth.add(directoryPopupBox);
 		pnlSouth.add(pnlTileSize);
         mainPanel.add(pnlSouth, BorderLayout.SOUTH);
-
         addComponent(mainPanel);
     }
 
@@ -125,5 +132,10 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         }
 
 		jEdit.setIntegerProperty("pmd.cpd.defMinTileSize",(txtMinTileSize.getText().length() == 0)?100:Integer.parseInt(txtMinTileSize.getText()));
+
+		if(txtCustomRules != null)
+		{
+			jEdit.setProperty("pmd.customRulesPath",txtCustomRules.getText());
+		}
     }
 }
