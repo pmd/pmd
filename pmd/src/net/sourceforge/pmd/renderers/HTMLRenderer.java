@@ -14,8 +14,15 @@ public class HTMLRenderer implements Renderer {
 
     public String render(Report report) {
         StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + PMD.EOL + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
+        buf.append(renderBody(report));
+        buf.append("</table></body></html>");
+        return buf.toString();
+    }
+
+    public StringBuffer renderBody(Report report) {
         boolean colorize = true;
         int violationCount = 1;
+        StringBuffer buf = new StringBuffer();
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append("<tr");
@@ -40,7 +47,6 @@ public class HTMLRenderer implements Renderer {
 
             violationCount++;
         }
-        buf.append("</table></body></html>");
-        return buf.toString();
+        return buf;
     }
 }

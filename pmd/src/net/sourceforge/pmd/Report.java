@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Report {
 
@@ -36,6 +38,24 @@ public class Report {
     private Set metrics = new HashSet();
     private List listeners = new ArrayList();
     private List errors = new ArrayList();
+
+    /**
+     *
+     * @return a Map summarizing the Report: String (rule name) ->Integer (count of violations)
+     */
+    public Map getSummary() {
+        Map summary = new HashMap();
+        for (Iterator i = violations.iterator(); i.hasNext();) {
+            RuleViolation rv = (RuleViolation)i.next();
+            if (!summary.containsKey(rv.getRule().getName())) {
+                summary.put(rv.getRule().getName(), new Integer(0));
+            }
+            Integer count = (Integer)summary.get(rv.getRule().getName());
+            count = new Integer(count.intValue() + 1);
+            summary.put(rv.getRule().getName(), count);
+        }
+        return summary;
+    }
 
     public void addListener(ReportListener listener) {
         listeners.add(listener);

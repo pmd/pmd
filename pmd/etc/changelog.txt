@@ -1,6 +1,7 @@
 ????, 2004 - 1.6:
-Moved to Ant 1.6 and JavaCC 3.2 for development.
 Fixed bug 895661 - XML reports containing error elements no longer have malformed XML.
+Moved to Ant 1.6 and JavaCC 3.2 for development.
+Added a new renderer - SummaryHTMLRenderer.
 
 February 2, 2004 - 1.5:
 New rules: DontImportSunRule, EmptyFinalizer, EmptyStaticInitializer, AvoidDollarSigns, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeDoesNotCallSuperFinalize, MethodWithSameNameAsEnclosingClass, ExplicitCallToFinalize, NonStaticInitializer, DefaultLabelNotLastInSwitchStmt, NonCaseLabelInSwitchStatement, SuspiciousHashcodeMethodName, EmptyStatementNotInLoop, SuspiciousOctalEscapeRule

@@ -8,6 +8,7 @@ import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import org.apache.tools.ant.BuildException;
 
 import java.io.BufferedWriter;
@@ -26,6 +27,8 @@ public class Formatter {
             renderer = new XMLRenderer();
         } else if (type.equals("html")) {
             renderer = new HTMLRenderer();
+        } else if (type.equals("summaryhtml")) {
+            renderer = new SummaryHTMLRenderer();
         } else if (type.equals("csv")) {
             renderer = new CSVRenderer();
         } else if (type.equals("text")) {
@@ -38,7 +41,7 @@ public class Formatter {
                 throw new BuildException("Unable to instantiate custom formatter: " + type);
             }
         } else {
-            throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'csv', or a class name; you specified " + type);
+            throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'summaryhtml', 'csv', or a class name; you specified " + type);
         }
     }
 

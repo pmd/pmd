@@ -27,12 +27,14 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.testframework.MockRule;
 
 import java.util.Iterator;
+import java.util.Map;
 
 public class ReportTest extends TestCase implements ReportListener {
 
@@ -122,4 +124,18 @@ public class ReportTest extends TestCase implements ReportListener {
         metricSemaphore = true;
     }
 
+    public void testSummary() {
+        Report r = new Report();
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("foo1");
+        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg"), 10, ctx));
+        ctx.setSourceCodeFilename("foo2");
+        Rule mr = new MockRule("rule1", "rule1", "msg");
+        r.addRuleViolation(new RuleViolation(mr, 20, ctx));
+        r.addRuleViolation(new RuleViolation(mr, 30, ctx));
+        Map summary = r.getSummary();
+        assertEquals(summary.keySet().size(), 2);
+        assertTrue(summary.values().contains(new Integer(1)));
+        assertTrue(summary.values().contains(new Integer(2)));
+    }
 }

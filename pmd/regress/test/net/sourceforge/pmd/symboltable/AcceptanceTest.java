@@ -11,9 +11,12 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.io.StringReader;
 import java.util.List;
+import java.util.Map;
+import java.util.Iterator;
 
 public class AcceptanceTest extends TestCase {
 
@@ -44,8 +47,7 @@ public class AcceptanceTest extends TestCase {
         SymbolFacade stb = new SymbolFacade();
         stb.initializeWith(c);
         List children = c.findChildrenOfType(ASTVariableDeclaratorId.class);
-        ASTVariableDeclaratorId var =  (ASTVariableDeclaratorId)children.get(0);
-        assertEquals(var.getTypeNameNode().getImage(), "String");
+        ASTVariableDeclaratorId v1 = (ASTVariableDeclaratorId)children.get(0);
     }
 
     private static final String TEST1 =
@@ -70,6 +72,7 @@ public class AcceptanceTest extends TestCase {
     private static final String TEST4 =
     "public class Foo  {" + PMD.EOL +
     " String bar; " + PMD.EOL +
+    " String baz; " + PMD.EOL +
     "}" + PMD.EOL;
 
 }

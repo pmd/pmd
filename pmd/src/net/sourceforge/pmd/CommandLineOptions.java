@@ -11,6 +11,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
+import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 
 public class CommandLineOptions {
 
@@ -65,6 +66,9 @@ public class CommandLineOptions {
         }
         if (reportFormat.equals("html")) {
             return new HTMLRenderer();
+        }
+        if (reportFormat.equals("summaryhtml")) {
+            return new SummaryHTMLRenderer();
         }
         if (reportFormat.equals("vbhtml")) {
             return new VBHTMLRenderer();
