@@ -85,6 +85,11 @@ public class FunctionalTest extends TestCase{
         assertEquals(new EmptyCatchBlockRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
     }
 
+    public void testEmptyCatchBlock2() {
+        Report report = process("EmptyCatchBlock2.java");
+        assertTrue(report.currentFileHasNoViolations());
+    }
+
     public void testUnnecessaryTemporaries() {
         Report report = process("UnnecessaryTemporary.java");
         assertEquals(6, report.countViolationsInCurrentFile());

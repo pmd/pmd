@@ -1,6 +1,7 @@
 ??? - 0.2:
 Added IfElseStmtsMustUseBracesRule
 Modified command line interface to accept a rule set
+Fixed bug in EmptyCatchBlockRule
 
 June 25 2002 - 0.1:
 Initial release
