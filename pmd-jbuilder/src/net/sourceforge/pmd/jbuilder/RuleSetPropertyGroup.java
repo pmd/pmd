@@ -16,6 +16,10 @@ import  com.borland.primetime.properties.PropertyGroup;
 import  com.borland.primetime.properties.PropertyPageFactory;
 import  com.borland.primetime.properties.GlobalProperty;
 import  com.borland.primetime.properties.PropertyPage;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSet;
+import java.util.Iterator;
+
 
 
 /**
@@ -34,19 +38,22 @@ public class RuleSetPropertyGroup
     public static final String RULESET_UNUSEDCODE = "unusedcode";
     public static final String RULESET_COUGAAR = "cougaar";
     public static final String RULESET_NAMING = "naming";
+    public static final String RULESET_IMPORTS = "imports";
     public static final Object RULESETS_TOPIC = new Object();
     public static final GlobalProperty PROPKEY_RULESET_DESIGN = new GlobalProperty(RULESETS, RULESET_DESIGN, "true");
     public static final GlobalProperty PROPKEY_RULESET_BASIC = new GlobalProperty(RULESETS, RULESET_BASIC, "true");
     public static final GlobalProperty PROPKEY_RULESET_UNUSEDCODE = new GlobalProperty(RULESETS, RULESET_UNUSEDCODE, "true");
     public static final GlobalProperty PROPKEY_RULESET_COUGAAR = new GlobalProperty(RULESETS, RULESET_COUGAAR, "true");
     public static final GlobalProperty PROPKEY_RULESET_NAMING = new GlobalProperty(RULESETS, RULESET_NAMING, "true");
+    public static final GlobalProperty PROPKEY_RULESET_IMPORTS = new GlobalProperty(RULESETS, RULESET_IMPORTS, "true");
     //make sure that these two arrays are synchronized
     public static final String[] RULESET_NAMES =  {
-        RULESET_BASIC, RULESET_DESIGN, RULESET_UNUSEDCODE, RULESET_COUGAAR, RULESET_NAMING
+        RULESET_BASIC, RULESET_DESIGN, RULESET_UNUSEDCODE, RULESET_COUGAAR, RULESET_NAMING, RULESET_IMPORTS
     };
     public static final GlobalProperty[] PROPKEYS =  {
-        PROPKEY_RULESET_BASIC, PROPKEY_RULESET_DESIGN, PROPKEY_RULESET_UNUSEDCODE, PROPKEY_RULESET_COUGAAR, PROPKEY_RULESET_NAMING
+        PROPKEY_RULESET_BASIC, PROPKEY_RULESET_DESIGN, PROPKEY_RULESET_UNUSEDCODE, PROPKEY_RULESET_COUGAAR, PROPKEY_RULESET_NAMING, PROPKEY_RULESET_IMPORTS
     };
+
 
     /**
      * END - RULE DEFINITION SECTION
@@ -56,7 +63,7 @@ public class RuleSetPropertyGroup
     * Standard Constructor
     */
     public RuleSetPropertyGroup () {
-    }
+   }
 
     /**
      * Called by JBuilder
