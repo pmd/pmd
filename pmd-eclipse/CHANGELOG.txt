@@ -2,6 +2,17 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
+v2.0.3 - 20/04/2004
+
+Runtime
+-------
+. Fixing UTF-8 issues in some source files
+. Upgrading to PMD v1.6
+. Upgrading to Eclipse v3M8
+
+
+
+----------------------------------------------------------------------------------------
 v2.0.2 - 19/12/2003
 
 Runtime
