@@ -19,7 +19,6 @@ public class LongMethodRule
 	RuleContext ctx = (RuleContext) data;
 
 	if ((decl.getEndLine() - decl.getBeginLine()) > 200) {
-	    String message = getMessage();
 	    ctx.getReport()
 		.addRuleViolation( createRuleViolation( ctx,
 							decl.getBeginLine(),

@@ -19,9 +19,7 @@ public class LongClassRule
 	RuleContext ctx = (RuleContext) data;
 
 	if ((decl.getEndLine() - decl.getBeginLine()) > 1000) {
-	    String message = getMessage();
-	    ctx.getReport()
-		.addRuleViolation( createRuleViolation( ctx,
+	    ctx.getReport().addRuleViolation( createRuleViolation( ctx,
 							decl.getBeginLine(),
 							getMessage() ));
 	}
