@@ -17,12 +17,18 @@ class MyThread < Thread
 end
 
 class Job
+
+	JAVANCSS_BINARY="/usr/local/javancss/bin/javancss"
+	ROOT="/home/tom/data/pmd/pmd-web/src"
+	REMOTE_REPORT_DIR="/home/groups/p/pm/pmd/htdocs/reports/"
+	REMOTE_CGI_DIR="/home/groups/p/pm/pmd/cgi-bin/"
+
 	attr_reader :unixName
 	def initialize(location, title, unixName, moduleDirectory, sourceDirectory )
 		@location = location
 		@title = title
 		@unixName = unixName
-		@cvsroot = ':pserver:anonymous@cvs1:/cvsroot/' + unixName
+		@cvsroot = ':pserver:anonymous@cvs.sourceforge.net:/cvsroot/' + unixName
 		@moduleDirectory = moduleDirectory
 		@sourceDirectory = sourceDirectory.strip
 	end
@@ -41,11 +47,11 @@ class Job
 		return File.exists?(@sourceDirectory)
 	end
   def ncss
-   cmd="/home/users/t/to/tomcopeland/javancss/javancss18.38/bin/javancss -ncss -recursive \"#{@sourceDirectory}\" > \"#{ncssReportFile}\""
+   cmd="#{JAVANCSS_BINARY} -ncss -recursive \"#{@sourceDirectory}\" > \"#{ncssReportFile}\""
    `#{cmd}`
   end
   def run_pmd
-   cmd="java -jar pmd-1.1.jar \"/home/users/t/to/tomcopeland/pmdweb/#{@sourceDirectory}\" html rulesets/unusedcode.xml -shortnames > \"#{reportFile}\""
+   cmd="java -jar pmd-1.2.2.jar \"#{ROOT}/#{@sourceDirectory}\" html rulesets/unusedcode.xml -shortnames > \"#{reportFile}\""
    `#{cmd}`
    arr = IO.readlines(reportFile())
    newFile=File.open(reportFile(), "w")
@@ -57,24 +63,27 @@ class Job
    newFile.close
   end
   def run_cpd
-   cmd="java -cp pmd-1.1.jar net.sourceforge.pmd.cpd.CPD 100 \"#{@sourceDirectory}\"  > \"#{cpdReportFile}\""
+   cmd="java -cp pmd-1.2.2.jar net.sourceforge.pmd.cpd.CPD 100 \"#{@sourceDirectory}\"  > \"#{cpdReportFile}\""
    `#{cmd}`
   end
+	def copy_up
+		`scp #{reportFile} #{cpdReportFile} #{ncssReportFile} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
+		`scp lastruntime.txt tomcopeland@pmd.sf.net:#{REMOTE_CGI_DIR}`
+	end
 	def reportFile 
-		return "/home/groups/p/pm/pmd/htdocs/reports/#{@unixName}_#{@moduleDirectory.sub(" ", "")}.html"
+		return "#{@unixName}_#{@moduleDirectory.sub(/ /, '')}.html"
 	end
 	def cpdReportFile 
-		return "/home/groups/p/pm/pmd/htdocs/reports/cpd_#{@unixName}_#{@moduleDirectory.sub(" ", "")}.txt"
+		return "cpd_#{@unixName}_#{@moduleDirectory.sub(/ /, '')}.txt"
 	end
 	def ncssReportFile 
-		return "/home/groups/p/pm/pmd/htdocs/reports/#{@unixName}_#{@moduleDirectory.sub(" ", "")}_ncss.txt"
+		return "#{@unixName}_#{@moduleDirectory.sub(/ /, '')}_ncss.txt"
 	end
 	def clear
-		`rm -rf "#{@moduleDirectory}"`
+		`rm -rf "#{@moduleDirectory}" #{reportFile} #{cpdReportFile} #{ncssReportFile} lastruntime.txt`
 	end
 	def to_s
 		return @location + ":" + @title + ":" + @unixName +":"+@moduleDirectory+":"+@sourceDirectory
 	end
 end
 end
-
