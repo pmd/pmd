@@ -1,4 +1,4 @@
-??? - 2.5
+16th August 2004 - 2.5
 - Updated to PMD 1.9
 - Removed Recursive Directory options and integrated them into FileChooser itself.
 - Complete redesign of the way PMD Rules and Copy/Paste Detector are used.
