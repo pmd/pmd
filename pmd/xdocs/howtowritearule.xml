@@ -20,7 +20,7 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
        public class Foo {
         public void bar() {
          while (baz)
-            Buz.doSomething();
+            buz.doSomething();
         }
        }
 ]]>
@@ -32,6 +32,7 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
     PMD uses a JJTree/JavaCC generated parser to parse the source code and produce an AST (Abstract Syntax Tree).
     This means that the code above looks like this:
     <source>
+<![CDATA[
 CompilationUnit
  TypeDeclaration
   ClassDeclaration
@@ -72,6 +73,7 @@ CompilationUnit
                Name
               PrimarySuffix
                Arguments
+]]>
     </source>
 
     </p>
