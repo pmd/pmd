@@ -267,6 +267,7 @@ public class PMDPlugin implements GelAction {
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setBorder(padding);
     JButton processButton = new JButton("Process");
+    processButton.setMnemonic('p');
     buttonsPanel.add(processButton);
     processButton.addActionListener(
       new ActionListener() {
@@ -279,6 +280,7 @@ public class PMDPlugin implements GelAction {
         }
       });
     JButton cancelButton = new JButton("Cancel");
+    cancelButton.setMnemonic('c');
     buttonsPanel.add(cancelButton);
     cancelButton.addActionListener(
       new ActionListener() {
