@@ -10,7 +10,7 @@ import net.sourceforge.pmd.rules.design.LongMethodRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class LongMethodRuleTest extends SimpleAggregatorTst  {
+public class ExcessiveMethodLengthTest extends SimpleAggregatorTst  {
 
     private Rule rule;
 
