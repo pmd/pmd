@@ -43,6 +43,26 @@ public class Foo {
     </example>
     </rule>
 
+  <rule name="SwitchStmtsShouldHaveDefault"
+        message="Switch statements should have a default label"
+        class="net.sourceforge.pmd.rules.SwitchStmtsShouldHaveDefaultRule">
+    <description>
+    Switch statements should have a default label.
+    </description>
+
+    <example>
+<![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  switch (x) {
+   case 2: int j = 8;
+  }
+ }
+}
+]]>
+    </example>
+    </rule>
 
   </ruleset>
 

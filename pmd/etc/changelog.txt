@@ -1,5 +1,5 @@
 ???? 2002 - 0.91:
-Added new rule: UnusedImportsRule, EmptySwitchStmtRule
+Added new rule: UnusedImportsRule, EmptySwitchStmtRule, SwitchStmtsShouldHaveDefaultRule
 Fixed bug 597813 - Rule properties are now parsed correctly
 Fixed bug 597905 - UseSingletonRule now resets it's state correctly
 Moved several rules into a new ruleset - braces.
