@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author>David Dixon-Peugh</author>
+  </properties>
+
+  <section>What does it mean?</section>
+<p>
+Here on the PMD project, we've been trying to find the
+meaning of the letters PMD.  Because frankly, we don't
+really know.  (We just think the letters sound good
+together.)
+</p>
+
+<p>
+However, in the spirit of the Computing Industry, we
+have come up with several "backronyms" to explain it.
+<table>
+  <th><td><b>P</b></td><td><b>M</b></td><td><b>D</b></td></th>
+  <tr><td>Pretty</td>
+      <td>Much</td>
+      <td>Done</td></tr>
+  <tr><td>Project</td>
+      <td>Mess</td>
+      <td>Detector</td></tr>
+  <tr><td>Project</td>
+      <td>Monitoring</td>
+      <td>Directives</td></tr>
+</table>
+</p>
+</section>
+
+</documentation>
