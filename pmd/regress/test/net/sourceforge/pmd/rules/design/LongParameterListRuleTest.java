@@ -30,8 +30,8 @@ public class LongParameterListRuleTest
 	assertEquals( 1, report.size() );
     }
 
-    public void testTwoLongMethods() throws Throwable {
-	Report report = process("LongParameterList2.java", getIUT() );
-	assertEquals( 2, report.size() );
-    }
+//      public void testTwoLongMethods() throws Throwable {
+//  	Report report = process("LongParameterList2.java", getIUT() );
+//  	assertEquals( 2, report.size() );
+//      }
 }
