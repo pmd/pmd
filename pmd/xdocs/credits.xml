@@ -11,6 +11,7 @@
         <subsection name="Individuals">
         <ul>
             <li>C. Lamont Gilbert - bug reports, feature requests, and documentation improvements</li>
+            <li>Vladimir Bossicard - numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Frédéric Harper - bug report and subsequent troubleshooting</li>
             <li>Mats Henricson - an XSLT script and several bug reports</li>
             <li>Jesse Glick - an excellent discussion on the UnnecessaryConstructorRule</li>
@@ -35,7 +36,6 @@
             <li>Peter Donald - design suggestions</li>
             <li>Liam Holohan - bug reports</li>
             <li>Rich Kilmer - logo design</li>
-            <li>Vladimir Bossicard - several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Nanne Baars - rule suggestions</li>
             <li>Ralph Schaer - bug reports and verification</li>
             <li>Damian O'Neill - Ant task patches</li>
