@@ -12,10 +12,15 @@ import java.util.Iterator;
 
 public class XMLRenderer implements Renderer {
 
+    /**
+     * The end of line string for this machine.
+     */
+    protected String EOL = System.getProperty("line.separator", "\n");
+
     public String render(Report report) {
-        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?><pmd>" + System.getProperty("line.separator"));
+        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?><pmd>" + EOL);
 	String filename = "*start*";
-	String lineSep = System.getProperty("line.separator");
+	String lineSep = EOL;
 
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();

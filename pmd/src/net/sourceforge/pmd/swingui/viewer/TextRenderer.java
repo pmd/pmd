@@ -18,6 +18,11 @@ class TextRenderer
 {
 
     /**
+     * The end of line string for this machine.
+     */
+    protected String EOL = System.getProperty("line.separator", "\n");
+
+    /**
      *******************************************************************************
      *
      * @param report
@@ -31,7 +36,7 @@ class TextRenderer
 
         outputText.append("Source File: ");
         outputText.append(fileName);
-        outputText.append(System.getProperty("line.separator"));
+        outputText.append(EOL);
 
         if (violations.hasNext() == false)
         {
@@ -46,17 +51,17 @@ class TextRenderer
             //
             // Line Number
             //
-            outputText.append(System.getProperty("line.separator"));
+            outputText.append(EOL);
             outputText.append("Line: ");
             outputText.append(ruleViolation.getLine());
-            outputText.append(System.getProperty("line.separator"));
+            outputText.append(EOL);
 
             //
             // Rule Name
             //
             outputText.append("Rule Name: ");
             outputText.append(rule.getName());
-            outputText.append(System.getProperty("line.separator"));
+            outputText.append(EOL);
 
             //
             // Rule Message
@@ -74,7 +79,7 @@ class TextRenderer
 
             outputText.append("Rule: ");
             outputText.append(ruleMessage);
-            outputText.append(System.getProperty("line.separator"));
+            outputText.append(EOL);
 
             //
             // Rule Description
@@ -92,7 +97,7 @@ class TextRenderer
 
             outputText.append("Description: ");
             outputText.append(description);
-            outputText.append(System.getProperty("line.separator"));
+            outputText.append(EOL);
 
             //
             // Rule Example
@@ -103,7 +108,7 @@ class TextRenderer
             {
                 outputText.append("Example: ");
                 outputText.append(example);
-                outputText.append(System.getProperty("line.separator"));
+                outputText.append(EOL);
             }
         }
 

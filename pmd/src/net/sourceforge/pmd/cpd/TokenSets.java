@@ -10,6 +10,11 @@ import java.io.Serializable;
 
 public class TokenSets extends AbstractSet implements Serializable {
 
+    /**
+     * The end of line string for this machine.
+     */
+    protected String EOL = System.getProperty("line.separator", "\n");
+
     private Map tokenMap = new HashMap();
 
     public TokenSets() {}
@@ -48,7 +53,7 @@ public class TokenSets extends AbstractSet implements Serializable {
         for (Iterator i = tokenMap.values().iterator(); i.hasNext();) {
             TokenList ts = (TokenList)i.next();
             sb.append(ts.toString());
-            sb.append(System.getProperty("line.separator"));
+            sb.append(EOL);
         }
         return sb.toString();
     }

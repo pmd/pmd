@@ -17,6 +17,11 @@ import java.util.List;
 public class CharacterTokenizer implements Tokenizer {
 
     /**
+     * The end of line string for this machine.
+     */
+    protected String EOL = System.getProperty("line.separator", "\n");
+
+    /**
      * You'll probably want to write a test for this before using it
      */
     public void tokenize(TokenList tokens, Reader input) throws IOException {
@@ -28,7 +33,7 @@ public class CharacterTokenizer implements Tokenizer {
         while ((currentLine = r.readLine()) != null) {
             lines.add(currentLine);
             sb.append(currentLine);
-            sb.append(System.getProperty("line.separator"));
+            sb.append(EOL);
             for (int i=0; i<currentLine.length(); i++) {
                 tokens.add(new TokenEntry(String.valueOf(currentLine.charAt(i)), position, tokens.getID(), lines.size()));
                 position++;

@@ -29,6 +29,11 @@ public class PMDTask extends Task {
     private String format;
     private boolean failOnError;
 
+    /**
+     * The end of line string for this machine.
+     */
+    protected String EOL = System.getProperty("line.separator", "\n");
+
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;
     }
@@ -99,7 +104,7 @@ public class PMDTask extends Task {
                 rend = new HTMLRenderer();
             }
             buf.append(rend.render(ctx.getReport()));
-            buf.append(System.getProperty("line.separator"));
+            buf.append(EOL);
         }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(reportFile)));

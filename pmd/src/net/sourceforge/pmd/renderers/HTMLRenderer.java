@@ -12,14 +12,19 @@ import java.util.Iterator;
 
 public class HTMLRenderer implements Renderer {
 
+    /**
+     * The end of line string for this machine.
+     */
+    protected String EOL = System.getProperty("line.separator", "\n");
+
     public String render(Report report) {
-        StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + System.getProperty("line.separator")+ "<table><tr>" + System.getProperty("line.separator")+ "<th>File</th><th>Line</th><th>Problem</th></tr>" + System.getProperty("line.separator"));
+        StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + EOL+ "<table><tr>" + EOL+ "<th>File</th><th>Line</th><th>Problem</th></tr>" + EOL);
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
-            buf.append("<tr>" + System.getProperty("line.separator")+ "<td>" + rv.getFilename() + "</td>" + System.getProperty("line.separator"));
-            buf.append("<td>" + Integer.toString(rv.getLine()) + "</td>" + System.getProperty("line.separator"));
-            buf.append("<td>" + rv.getDescription() + "</td>" + System.getProperty("line.separator"));
-            buf.append("</tr>" + System.getProperty("line.separator"));
+            buf.append("<tr>" + EOL+ "<td>" + rv.getFilename() + "</td>" + EOL);
+            buf.append("<td>" + Integer.toString(rv.getLine()) + "</td>" + EOL);
+            buf.append("<td>" + rv.getDescription() + "</td>" + EOL);
+            buf.append("</tr>" + EOL);
         }
         buf.append("</table></body></html>");
         return buf.toString();

@@ -19,61 +19,61 @@ import java.util.HashSet;
 
 public class RuleSetFactoryTest  extends TestCase {
 
-    private static final String SEP = System.getProperty("line.separator");
+    private static final String EOL = System.getProperty("line.separator", "\n");
 
     private static final String EMPTY_RULE_SET =
-                        "<?xml version=\"1.0\"?>" + SEP +
-                        "<ruleset name=\"test\">" + SEP +
-                        "<description>testdesc</description>" + SEP +
+                        "<?xml version=\"1.0\"?>" + EOL +
+                        "<ruleset name=\"test\">" + EOL +
+                        "<description>testdesc</description>" + EOL +
                         "</ruleset>";
 
     private static final String SINGLE_RULE_SET =
-                        "<?xml version=\"1.0\"?>" + SEP +
-                        "<ruleset name=\"test\">" + SEP +
-                        "<description>" + SEP +
-                        "testdesc" + SEP +
-                        "</description>" + SEP +
-                        "<rule " + SEP +
-                        "name=\"MockRuleName\" " + SEP +
-                        "message=\"avoid the mock rule\" " + SEP +
+                        "<?xml version=\"1.0\"?>" + EOL +
+                        "<ruleset name=\"test\">" + EOL +
+                        "<description>" + EOL +
+                        "testdesc" + EOL +
+                        "</description>" + EOL +
+                        "<rule " + EOL +
+                        "name=\"MockRuleName\" " + EOL +
+                        "message=\"avoid the mock rule\" " + EOL +
                         "class=\"test.net.sourceforge.pmd.MockRule\">" +
-                        "</rule>" + SEP +
+                        "</rule>" + EOL +
                         "</ruleset>";
 
     private static final String MULTIPLE_RULE_SET =
-                        "<?xml version=\"1.0\"?>" + SEP +
-                        "<ruleset name=\"test\">" + SEP +
-                        "<description>" + SEP +
-                        "testdesc" + SEP +
-                        "</description>" + SEP +
-                        "<rule name=\"MockRuleName1\" "  + SEP +
-                        "message=\"avoid the mock rule\" " + SEP +
-                        "class=\"test.net.sourceforge.pmd.MockRule\">" + SEP +
-                        "</rule>" + SEP +
-                        "<rule name=\"MockRuleName2\" "  + SEP +
-                        "message=\"avoid the mock rule\" " + SEP +
-                        "class=\"test.net.sourceforge.pmd.MockRule\">" + SEP +
-                        "</rule>" + SEP +
+                        "<?xml version=\"1.0\"?>" + EOL +
+                        "<ruleset name=\"test\">" + EOL +
+                        "<description>" + EOL +
+                        "testdesc" + EOL +
+                        "</description>" + EOL +
+                        "<rule name=\"MockRuleName1\" "  + EOL +
+                        "message=\"avoid the mock rule\" " + EOL +
+                        "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL +
+                        "</rule>" + EOL +
+                        "<rule name=\"MockRuleName2\" "  + EOL +
+                        "message=\"avoid the mock rule\" " + EOL +
+                        "class=\"test.net.sourceforge.pmd.MockRule\">" + EOL +
+                        "</rule>" + EOL +
                         "</ruleset>";
 
-    private static final String RULE_WITH_PROPERTIES = "<?xml version=\"1.0\"?>" + SEP +
-                        "<ruleset name=\"test\">" + SEP +
-                        "<description>" + SEP +
-                        "testdesc" + SEP +
-                        "</description>" + SEP +
-                        "<rule name=\"MockRuleName\" " + SEP +
-                        "message=\"avoid the mock rule\" " + SEP +
-                        "class=\"test.net.sourceforge.pmd.MockRule\">" +  SEP +
-                        "<description>" + SEP +
-                        "testdesc2" + SEP +
-                        "</description>" + SEP +
-                        "<properties>" + SEP +
-                        "<property name=\"fooBoolean\" value=\"true\"/>" + SEP +
-                        "<property name=\"fooDouble\" value=\"1.0\" />" + SEP +
-                        "<property name=\"foo\" value=\"bar\"/>" + SEP +
-                        "<property name=\"fooint\" value=\"2\"/>" + SEP +
-                        "</properties>" +  SEP +
-                        "</rule>" + SEP +
+    private static final String RULE_WITH_PROPERTIES = "<?xml version=\"1.0\"?>" + EOL +
+                        "<ruleset name=\"test\">" + EOL +
+                        "<description>" + EOL +
+                        "testdesc" + EOL +
+                        "</description>" + EOL +
+                        "<rule name=\"MockRuleName\" " + EOL +
+                        "message=\"avoid the mock rule\" " + EOL +
+                        "class=\"test.net.sourceforge.pmd.MockRule\">" +  EOL +
+                        "<description>" + EOL +
+                        "testdesc2" + EOL +
+                        "</description>" + EOL +
+                        "<properties>" + EOL +
+                        "<property name=\"fooBoolean\" value=\"true\"/>" + EOL +
+                        "<property name=\"fooDouble\" value=\"1.0\" />" + EOL +
+                        "<property name=\"foo\" value=\"bar\"/>" + EOL +
+                        "<property name=\"fooint\" value=\"2\"/>" + EOL +
+                        "</properties>" +  EOL +
+                        "</rule>" + EOL +
                         "</ruleset>";
 
     public RuleSetFactoryTest(String name) {

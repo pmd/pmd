@@ -19,6 +19,11 @@ public class JavaTokensTokenizer implements Tokenizer {
 
     private boolean discarding;
 
+    /**
+     * The end of line string for this machine.
+     */
+    protected String EOL = System.getProperty("line.separator", "\n");
+
     public void tokenize(TokenList tokens, Reader input) throws IOException {
         // first get a snapshot of the code
         List lines = new ArrayList();
@@ -28,7 +33,7 @@ public class JavaTokensTokenizer implements Tokenizer {
         while ((currentLine = r.readLine()) != null) {
             lines.add(currentLine);
             sb.append(currentLine);
-            sb.append(System.getProperty("line.separator"));
+            sb.append(EOL);
         }
         tokens.setCode(lines);
 

@@ -13,7 +13,13 @@ import net.sourceforge.pmd.cpd.Tile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TokenListTest extends TestCase{
+public class TokenListTest extends TestCase {
+
+    /**
+     * The end of line string for this machine.
+     */
+    protected String EOL = System.getProperty("line.separator", "\n");
+
     public TokenListTest(String name) {
         super(name);
     }
@@ -40,7 +46,7 @@ public class TokenListTest extends TestCase{
         list.add("}");
         tl.setCode(list);
         assertEquals(" public void bar() {}", tl.getSlice(1,1));
-        assertEquals(" public void bar() {}" +System.getProperty("line.separator") + " public void baz() {}", tl.getSlice(1,2));
+        assertEquals(" public void bar() {}" +EOL + " public void baz() {}", tl.getSlice(1,2));
     }
 
     public void testHasTokenAfter() {

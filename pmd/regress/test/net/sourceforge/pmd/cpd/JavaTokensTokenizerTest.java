@@ -15,7 +15,7 @@ import java.io.StringReader;
 
 public class JavaTokensTokenizerTest extends TestCase {
 
-    private static final String SEP = System.getProperty("line.separator");
+    private static final String EOL = System.getProperty("line.separator", "\n");
 
     public JavaTokensTokenizerTest(String name) {
         super(name);
@@ -33,12 +33,12 @@ public class JavaTokensTokenizerTest extends TestCase {
     public void test2() throws Throwable {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList tl = new TokenList("1");
-        String data = "public class Foo {" + SEP +
-                      "public void bar() {}" + SEP +
-                      "public void buz() {}" + SEP +
+        String data = "public class Foo {" + EOL +
+                      "public void bar() {}" + EOL +
+                      "public void buz() {}" + EOL +
                       "}";
         t.tokenize(tl, new StringReader(data));
-        assertEquals("public class Foo {"+ SEP + "public void bar() {}", tl.getSlice(0,1));
+        assertEquals("public class Foo {"+ EOL + "public void bar() {}", tl.getSlice(0,1));
     }
 
     public void testDiscardSemicolons() throws Throwable  {
@@ -52,7 +52,7 @@ public class JavaTokensTokenizerTest extends TestCase {
     public void testDiscardImports() throws Throwable {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList tl = new TokenList("1");
-        String data = "import java.io.File;" + SEP + "public class Foo {}";
+        String data = "import java.io.File;" + EOL + "public class Foo {}";
         t.tokenize(tl, new StringReader(data));
         assertEquals(5, tl.size());
     }
@@ -60,7 +60,7 @@ public class JavaTokensTokenizerTest extends TestCase {
     public void testDiscardPkgStmts() throws Throwable {
         Tokenizer t = new JavaTokensTokenizer();
         TokenList tl = new TokenList("1");
-        String data = "package foo.bar.baz;" + SEP + "public class Foo {}";
+        String data = "package foo.bar.baz;" + EOL + "public class Foo {}";
         t.tokenize(tl, new StringReader(data));
         assertEquals(5, tl.size());
     }
