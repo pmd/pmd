@@ -8,7 +8,7 @@ Updated AvoidDuplicateLiteralsRule to report the line number of the first occurr
 Modified Ant task to use a formatter element; this lets you render a report in several formats without having to rerun PMD.
 Added a new Ant task attribute - shortFilenames.
 Fixed bug 650623 - the Ant task now uses relative directories for the report file
-
+Fixed bug 656944 - PMD no longer prints errors to System.out, instead it just rethrows any exceptions
 
 November 07 2002 - 1.01:
 Fixed bug 633879: EmptyFinallyBlockRule now handles multiple catch blocks followed by a finally block.

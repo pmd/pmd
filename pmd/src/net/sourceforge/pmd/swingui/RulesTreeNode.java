@@ -17,7 +17,7 @@ import net.sourceforge.pmd.UndefinedRule;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class RulesTreeNode extends DefaultMutableTreeNode implements Constants
+public class RulesTreeNode extends DefaultMutableTreeNode implements Constants
 {
     private RuleSet m_ruleSet;
     private Rule m_rule;

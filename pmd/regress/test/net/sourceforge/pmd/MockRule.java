@@ -25,6 +25,7 @@ public class MockRule implements Rule {
     private RuleProperties properties = new RuleProperties();
     private String example;
     private boolean m_include;
+    private int priority;
 
     public String getExample() {
         return example;
@@ -34,6 +35,11 @@ public class MockRule implements Rule {
         this.example = example;
     }
 
+    public int getPriority() {
+        return this.priority;
+    }
+
+    public void setPriority(int priority) {}
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
     public String getName() {return name;}
