@@ -54,7 +54,6 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     }
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        RuleContext ctx = (RuleContext)data;
         if (!doingIDTraversal) {
             return super.visit(node, data);
         }
@@ -73,7 +72,6 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule implements R
     }
 
     public Object visit(ASTPrimarySuffix node, Object data) {
-        RuleContext ctx = (RuleContext)data;
         if (!doingIDTraversal && (node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
             recordPossibleUsage(node);
         }
