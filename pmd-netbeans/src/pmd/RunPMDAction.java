@@ -62,7 +62,6 @@ import org.openide.util.actions.CookieAction;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 import pmd.config.ConfigUtils;
 import pmd.scan.EditorChangeListener;
@@ -234,7 +233,7 @@ public class RunPMDAction extends CookieAction {
 		try {
 			StatusDisplayer.getDefault().setStatusText( "PMD checking for rule violations" );
 			List list = getDataObjects( node );
-			progressDlg = new ProgressDialog(WindowManager.getDefault().getMainWindow());
+			progressDlg = new ProgressDialog();
 			List violations = checkCookies( list, progressDlg );
 			progressDlg = null;
 			IOProvider ioProvider = (IOProvider)Lookup.getDefault().lookup( IOProvider.class );

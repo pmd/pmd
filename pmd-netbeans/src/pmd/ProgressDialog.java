@@ -26,7 +26,13 @@
  */
 package pmd;
 
+import java.awt.Frame;
 import java.util.ResourceBundle;
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
+
+import org.openide.ErrorManager;
+import org.openide.windows.WindowManager;
 
 /**
  * Non-modal dialog box displaying the progress of a PMD code scan operation and allowing the user to cancel
@@ -34,16 +40,41 @@ import java.util.ResourceBundle;
  *
  * @author  gthb
  */
-public class ProgressDialog extends javax.swing.JDialog implements RunPMDCallback {
+public class ProgressDialog extends JDialog implements RunPMDCallback {
 	
+	private final ResourceBundle bundle;
+
 	/** Creates a new ProgressDialog with the given frame as a parent.
 	 *
 	 * @param parent the parent of this dialog. Typically this would be
 	 *               <code>WindowManager.getDefault().getMainWindow()</code>.
 	 */
-	public ProgressDialog(java.awt.Frame parent) {
+	public ProgressDialog(Frame parent) {
 		super(parent, false);
+		bundle = ResourceBundle.getBundle("pmd/Bundle");
 		initComponents();
+	}
+	
+	/** Creates a new ProgressDialog with the default WindowManager's main window
+	 * (as returned by <code>WindowManager.getDefault().getMainWindow()</code>)
+	 * as a parent.
+	 */
+	public ProgressDialog() {
+		this(findParent());
+	}
+	
+	private static Frame findParent() {
+		final Frame[] frameReceiver = new Frame[1];
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					frameReceiver[0] = WindowManager.getDefault().getMainWindow();
+				}
+			});
+		} catch(Exception e) {
+			ErrorManager.getDefault().notify(e);
+		}
+		return frameReceiver[0];
 	}
 	
 	/**
@@ -70,33 +101,33 @@ public class ProgressDialog extends javax.swing.JDialog implements RunPMDCallbac
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        setTitle(java.util.ResourceBundle.getBundle("pmd/Bundle").getString("TEXT_dialogTitle"));
+        setTitle(bundle.getString("TEXT_dialogTitle"));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 closeDialog(evt);
             }
         });
 
-        progressBarLabel.setText(java.util.ResourceBundle.getBundle("pmd/Bundle").getString("LBL_progressBar"));
+        progressBarLabel.setText(bundle.getString("LBL_progressBar"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 12);
         getContentPane().add(progressBarLabel, gridBagConstraints);
 
         progressBar.setMinimum(1);
-        progressBar.setToolTipText(java.util.ResourceBundle.getBundle("pmd/Bundle").getString("HINT_progressBar"));
+        progressBar.setToolTipText(bundle.getString("HINT_progressBar"));
         progressBar.setPreferredSize(new java.awt.Dimension(320, 21));
         progressBar.setString(Integer.toString(progressBar.getValue()) + "/" + Integer.toString(progressBar.getMaximum()));
         progressBar.setStringPainted(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(12, 0, 0, 12);
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(12, 0, 0, 12);
         getContentPane().add(progressBar, gridBagConstraints);
 
         updateCancelButton();
-        cancelButton.setMnemonic(java.util.ResourceBundle.getBundle("pmd/Bundle").getString("MNM_cancelButton").charAt(0));
-        cancelButton.setText(java.util.ResourceBundle.getBundle("pmd/Bundle").getString("BTN_cancelButton"));
-        cancelButton.setToolTipText(java.util.ResourceBundle.getBundle("pmd/Bundle").getString("HINT_cancelButton"));
+        cancelButton.setMnemonic(bundle.getString("MNM_cancelButton").charAt(0));
+        cancelButton.setText(bundle.getString("BTN_cancelButton"));
+        cancelButton.setToolTipText(bundle.getString("HINT_cancelButton"));
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
@@ -106,8 +137,8 @@ public class ProgressDialog extends javax.swing.JDialog implements RunPMDCallbac
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(17, 0, 11, 11);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(17, 0, 11, 11);
         getContentPane().add(cancelButton, gridBagConstraints);
 
         pack();
@@ -133,7 +164,6 @@ public class ProgressDialog extends javax.swing.JDialog implements RunPMDCallbac
 	 * Updates the state of the Cancel button according to whether the operation is cancelled or not.
 	 */
 	private void updateCancelButton() {
-		ResourceBundle bundle = ResourceBundle.getBundle("pmd/Bundle");
 		if(isCancelled()) {
 			cancelButton.setEnabled(false);
 			cancelButton.setText(bundle.getString("BTN_cancelButton_cancelling"));
