@@ -1,9 +1,10 @@
-update run.bat to point to pmd-0.6.jar
+update run.bat to point to pmd-0.7.jar
 update the release date in the changelog
-move rules from "new_for_v_0_6.xml" into a real ruleset file
+move rules from "new_for_v_0_7.xml" into a real ruleset file
 cvs rm new_for_0_6.xml
 cvs add new_for_0_7.xml
-update jar task to reflect pmd-0.6
+update jar task to reflect pmd-0.7
+update xdocs/running.xml to reflect pmd-0.7
 update docs to mention GUI if it's in a presentable state
 update release number in project.xml
 

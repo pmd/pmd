@@ -26,7 +26,7 @@ public class EmptyFinallyBlockRule extends AbstractRule {
         SimpleNode finallyBlock = (SimpleNode)node.jjtGetChild(finallyNodeIndex);
         if (finallyBlock.jjtGetNumChildren() == 0) {
             RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, finallyBlock.getBeginLine()));
         }
         return super.visit(node, data);
     }

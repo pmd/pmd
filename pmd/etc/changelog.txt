@@ -1,4 +1,5 @@
 ???? 2002 - 0.7:
+Fixed bug 583482 - EmptyCatchBlock and EmptyFinallyBlock report the try statement line number.
 
 July 18 2002 - 0.6:
 Added new rules: ExcessiveClassLength, ExcessiveMethodLength
