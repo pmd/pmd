@@ -1,4 +1,4 @@
-????, 2005 - 2.4:
+????, 2005 - 3.0:
 New rules: MissingSerialVersionUID, UnnecessaryFinalModifier, AbstractClassDoesNotContainAbstractMethod, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, AvoidCallingFinalize, UseNotifyAllInsteadOfNotify, MissingBreakInSwitch, AvoidInstanceofChecksInCatchClause, AvoidFieldNameMatchingTypeName, AvoidFieldNameMatchingMethodName, AvoidNonConstructorMethodsWithClassName, TestClassWithoutTestCases, TooManyFields, CallSuperInConstructor, UnnecessaryBooleanAssertion, UseArrayListInsteadOfVector
 Fixed bug 994400 - False +: ConstructorCallsOverridableMethodRule, thanks ereissner for reporting it
 Fixed bug 1146116 - JUnitTestsShouldIncludeAssert crashes on inner Interface
