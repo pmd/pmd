@@ -17,7 +17,7 @@ These rules deal with different optimizations that generally apply to performanc
       <example>
   <![CDATA[
   public void foo () {
-   String a = "a"; //if a will no be assigned again it is better to do this:
+   String a = "a"; //if a will not be assigned again it is better to do this:
    final String b = "b";
    ...   
   }
@@ -26,7 +26,7 @@ These rules deal with different optimizations that generally apply to performanc
       </rule>
 
     <rule name="MethodArgumentCouldBeFinal"
-          message="A mehtod argument that is not assigned could be declared final"
+          message="A method argument that is not assigned could be declared final"
           class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal">
       <description>
       A method argumetn that is never assigned can be declared final.
