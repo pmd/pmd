@@ -54,11 +54,12 @@
 options {
   JAVA_UNICODE_ESCAPE = true;
   USER_CHAR_STREAM = true;
-  STATIC=false;
   MULTI=true;
   VISITOR=true;
   NODE_USES_PARSER=true;
   NODE_PACKAGE="net.sourceforge.pmd.ast";
+  DEBUG_TOKEN_MANAGER = false;
+  STATIC=false;
 }
 
 PARSER_BEGIN(JavaParser)
@@ -1094,21 +1095,17 @@ void EmptyStatement() :
 }
 
 void StatementExpression() :
-/*
- * The last expansion of this production accepts more than the legal
- * Java expansions for StatementExpression.  This expansion does not
- * use PostfixExpression for performance reasons.
- */
 {}
 {
   PreIncrementExpression()
 |
   PreDecrementExpression()
 |
+  LOOKAHEAD( PrimaryExpression() ("++" | "--") ) PostfixExpression()
+|
   PrimaryExpression()
-  [ "++" {jjtThis.setImage("++");}
-  | "--" {jjtThis.setImage("--");}
-  | AssignmentOperator() Expression()
+  [
+  AssignmentOperator() Expression()
   ]
 }
 

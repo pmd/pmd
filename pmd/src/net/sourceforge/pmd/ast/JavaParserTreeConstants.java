@@ -2,183 +2,184 @@
 
 package net.sourceforge.pmd.ast;
 
-public interface JavaParserTreeConstants {
-    public int JJTCOMPILATIONUNIT = 0;
-    public int JJTPACKAGEDECLARATION = 1;
-    public int JJTIMPORTDECLARATION = 2;
-    public int JJTTYPEDECLARATION = 3;
-    public int JJTCLASSDECLARATION = 4;
-    public int JJTUNMODIFIEDCLASSDECLARATION = 5;
-    public int JJTCLASSBODY = 6;
-    public int JJTNESTEDCLASSDECLARATION = 7;
-    public int JJTCLASSBODYDECLARATION = 8;
-    public int JJTENUMDECLARATION = 9;
-    public int JJTENUMELEMENT = 10;
-    public int JJTMETHODDECLARATIONLOOKAHEAD = 11;
-    public int JJTINTERFACEDECLARATION = 12;
-    public int JJTNESTEDINTERFACEDECLARATION = 13;
-    public int JJTUNMODIFIEDINTERFACEDECLARATION = 14;
-    public int JJTINTERFACEMEMBERDECLARATION = 15;
-    public int JJTFIELDDECLARATION = 16;
-    public int JJTVARIABLEDECLARATOR = 17;
-    public int JJTVARIABLEDECLARATORID = 18;
-    public int JJTVARIABLEINITIALIZER = 19;
-    public int JJTARRAYINITIALIZER = 20;
-    public int JJTMETHODDECLARATION = 21;
-    public int JJTMETHODDECLARATOR = 22;
-    public int JJTFORMALPARAMETERS = 23;
-    public int JJTFORMALPARAMETER = 24;
-    public int JJTCONSTRUCTORDECLARATION = 25;
-    public int JJTEXPLICITCONSTRUCTORINVOCATION = 26;
-    public int JJTINITIALIZER = 27;
-    public int JJTTYPE = 28;
-    public int JJTPRIMITIVETYPE = 29;
-    public int JJTRESULTTYPE = 30;
-    public int JJTNAME = 31;
-    public int JJTNAMELIST = 32;
-    public int JJTEXPRESSION = 33;
-    public int JJTASSIGNMENTOPERATOR = 34;
-    public int JJTCONDITIONALEXPRESSION = 35;
-    public int JJTCONDITIONALOREXPRESSION = 36;
-    public int JJTCONDITIONALANDEXPRESSION = 37;
-    public int JJTINCLUSIVEOREXPRESSION = 38;
-    public int JJTEXCLUSIVEOREXPRESSION = 39;
-    public int JJTANDEXPRESSION = 40;
-    public int JJTEQUALITYEXPRESSION = 41;
-    public int JJTINSTANCEOFEXPRESSION = 42;
-    public int JJTRELATIONALEXPRESSION = 43;
-    public int JJTSHIFTEXPRESSION = 44;
-    public int JJTADDITIVEEXPRESSION = 45;
-    public int JJTMULTIPLICATIVEEXPRESSION = 46;
-    public int JJTUNARYEXPRESSION = 47;
-    public int JJTPREINCREMENTEXPRESSION = 48;
-    public int JJTPREDECREMENTEXPRESSION = 49;
-    public int JJTUNARYEXPRESSIONNOTPLUSMINUS = 50;
-    public int JJTCASTLOOKAHEAD = 51;
-    public int JJTPOSTFIXEXPRESSION = 52;
-    public int JJTCASTEXPRESSION = 53;
-    public int JJTPRIMARYEXPRESSION = 54;
-    public int JJTPRIMARYPREFIX = 55;
-    public int JJTPRIMARYSUFFIX = 56;
-    public int JJTLITERAL = 57;
-    public int JJTBOOLEANLITERAL = 58;
-    public int JJTNULLLITERAL = 59;
-    public int JJTARGUMENTS = 60;
-    public int JJTARGUMENTLIST = 61;
-    public int JJTALLOCATIONEXPRESSION = 62;
-    public int JJTARRAYDIMSANDINITS = 63;
-    public int JJTSTATEMENT = 64;
-    public int JJTLABELEDSTATEMENT = 65;
-    public int JJTBLOCK = 66;
-    public int JJTBLOCKSTATEMENT = 67;
-    public int JJTLOCALVARIABLEDECLARATION = 68;
-    public int JJTEMPTYSTATEMENT = 69;
-    public int JJTSTATEMENTEXPRESSION = 70;
-    public int JJTSWITCHSTATEMENT = 71;
-    public int JJTSWITCHLABEL = 72;
-    public int JJTIFSTATEMENT = 73;
-    public int JJTWHILESTATEMENT = 74;
-    public int JJTDOSTATEMENT = 75;
-    public int JJTFORSTATEMENT = 76;
-    public int JJTFORINIT = 77;
-    public int JJTSTATEMENTEXPRESSIONLIST = 78;
-    public int JJTFORUPDATE = 79;
-    public int JJTBREAKSTATEMENT = 80;
-    public int JJTCONTINUESTATEMENT = 81;
-    public int JJTRETURNSTATEMENT = 82;
-    public int JJTTHROWSTATEMENT = 83;
-    public int JJTSYNCHRONIZEDSTATEMENT = 84;
-    public int JJTTRYSTATEMENT = 85;
-    public int JJTASSERTSTATEMENT = 86;
+public interface JavaParserTreeConstants
+{
+  public int JJTCOMPILATIONUNIT = 0;
+  public int JJTPACKAGEDECLARATION = 1;
+  public int JJTIMPORTDECLARATION = 2;
+  public int JJTTYPEDECLARATION = 3;
+  public int JJTCLASSDECLARATION = 4;
+  public int JJTUNMODIFIEDCLASSDECLARATION = 5;
+  public int JJTCLASSBODY = 6;
+  public int JJTNESTEDCLASSDECLARATION = 7;
+  public int JJTCLASSBODYDECLARATION = 8;
+  public int JJTENUMDECLARATION = 9;
+  public int JJTENUMELEMENT = 10;
+  public int JJTMETHODDECLARATIONLOOKAHEAD = 11;
+  public int JJTINTERFACEDECLARATION = 12;
+  public int JJTNESTEDINTERFACEDECLARATION = 13;
+  public int JJTUNMODIFIEDINTERFACEDECLARATION = 14;
+  public int JJTINTERFACEMEMBERDECLARATION = 15;
+  public int JJTFIELDDECLARATION = 16;
+  public int JJTVARIABLEDECLARATOR = 17;
+  public int JJTVARIABLEDECLARATORID = 18;
+  public int JJTVARIABLEINITIALIZER = 19;
+  public int JJTARRAYINITIALIZER = 20;
+  public int JJTMETHODDECLARATION = 21;
+  public int JJTMETHODDECLARATOR = 22;
+  public int JJTFORMALPARAMETERS = 23;
+  public int JJTFORMALPARAMETER = 24;
+  public int JJTCONSTRUCTORDECLARATION = 25;
+  public int JJTEXPLICITCONSTRUCTORINVOCATION = 26;
+  public int JJTINITIALIZER = 27;
+  public int JJTTYPE = 28;
+  public int JJTPRIMITIVETYPE = 29;
+  public int JJTRESULTTYPE = 30;
+  public int JJTNAME = 31;
+  public int JJTNAMELIST = 32;
+  public int JJTEXPRESSION = 33;
+  public int JJTASSIGNMENTOPERATOR = 34;
+  public int JJTCONDITIONALEXPRESSION = 35;
+  public int JJTCONDITIONALOREXPRESSION = 36;
+  public int JJTCONDITIONALANDEXPRESSION = 37;
+  public int JJTINCLUSIVEOREXPRESSION = 38;
+  public int JJTEXCLUSIVEOREXPRESSION = 39;
+  public int JJTANDEXPRESSION = 40;
+  public int JJTEQUALITYEXPRESSION = 41;
+  public int JJTINSTANCEOFEXPRESSION = 42;
+  public int JJTRELATIONALEXPRESSION = 43;
+  public int JJTSHIFTEXPRESSION = 44;
+  public int JJTADDITIVEEXPRESSION = 45;
+  public int JJTMULTIPLICATIVEEXPRESSION = 46;
+  public int JJTUNARYEXPRESSION = 47;
+  public int JJTPREINCREMENTEXPRESSION = 48;
+  public int JJTPREDECREMENTEXPRESSION = 49;
+  public int JJTUNARYEXPRESSIONNOTPLUSMINUS = 50;
+  public int JJTCASTLOOKAHEAD = 51;
+  public int JJTPOSTFIXEXPRESSION = 52;
+  public int JJTCASTEXPRESSION = 53;
+  public int JJTPRIMARYEXPRESSION = 54;
+  public int JJTPRIMARYPREFIX = 55;
+  public int JJTPRIMARYSUFFIX = 56;
+  public int JJTLITERAL = 57;
+  public int JJTBOOLEANLITERAL = 58;
+  public int JJTNULLLITERAL = 59;
+  public int JJTARGUMENTS = 60;
+  public int JJTARGUMENTLIST = 61;
+  public int JJTALLOCATIONEXPRESSION = 62;
+  public int JJTARRAYDIMSANDINITS = 63;
+  public int JJTSTATEMENT = 64;
+  public int JJTLABELEDSTATEMENT = 65;
+  public int JJTBLOCK = 66;
+  public int JJTBLOCKSTATEMENT = 67;
+  public int JJTLOCALVARIABLEDECLARATION = 68;
+  public int JJTEMPTYSTATEMENT = 69;
+  public int JJTSTATEMENTEXPRESSION = 70;
+  public int JJTSWITCHSTATEMENT = 71;
+  public int JJTSWITCHLABEL = 72;
+  public int JJTIFSTATEMENT = 73;
+  public int JJTWHILESTATEMENT = 74;
+  public int JJTDOSTATEMENT = 75;
+  public int JJTFORSTATEMENT = 76;
+  public int JJTFORINIT = 77;
+  public int JJTSTATEMENTEXPRESSIONLIST = 78;
+  public int JJTFORUPDATE = 79;
+  public int JJTBREAKSTATEMENT = 80;
+  public int JJTCONTINUESTATEMENT = 81;
+  public int JJTRETURNSTATEMENT = 82;
+  public int JJTTHROWSTATEMENT = 83;
+  public int JJTSYNCHRONIZEDSTATEMENT = 84;
+  public int JJTTRYSTATEMENT = 85;
+  public int JJTASSERTSTATEMENT = 86;
 
 
-    public String[] jjtNodeName = {
-        "CompilationUnit",
-        "PackageDeclaration",
-        "ImportDeclaration",
-        "TypeDeclaration",
-        "ClassDeclaration",
-        "UnmodifiedClassDeclaration",
-        "ClassBody",
-        "NestedClassDeclaration",
-        "ClassBodyDeclaration",
-        "EnumDeclaration",
-        "EnumElement",
-        "MethodDeclarationLookahead",
-        "InterfaceDeclaration",
-        "NestedInterfaceDeclaration",
-        "UnmodifiedInterfaceDeclaration",
-        "InterfaceMemberDeclaration",
-        "FieldDeclaration",
-        "VariableDeclarator",
-        "VariableDeclaratorId",
-        "VariableInitializer",
-        "ArrayInitializer",
-        "MethodDeclaration",
-        "MethodDeclarator",
-        "FormalParameters",
-        "FormalParameter",
-        "ConstructorDeclaration",
-        "ExplicitConstructorInvocation",
-        "Initializer",
-        "Type",
-        "PrimitiveType",
-        "ResultType",
-        "Name",
-        "NameList",
-        "Expression",
-        "AssignmentOperator",
-        "ConditionalExpression",
-        "ConditionalOrExpression",
-        "ConditionalAndExpression",
-        "InclusiveOrExpression",
-        "ExclusiveOrExpression",
-        "AndExpression",
-        "EqualityExpression",
-        "InstanceOfExpression",
-        "RelationalExpression",
-        "ShiftExpression",
-        "AdditiveExpression",
-        "MultiplicativeExpression",
-        "UnaryExpression",
-        "PreIncrementExpression",
-        "PreDecrementExpression",
-        "UnaryExpressionNotPlusMinus",
-        "CastLookahead",
-        "PostfixExpression",
-        "CastExpression",
-        "PrimaryExpression",
-        "PrimaryPrefix",
-        "PrimarySuffix",
-        "Literal",
-        "BooleanLiteral",
-        "NullLiteral",
-        "Arguments",
-        "ArgumentList",
-        "AllocationExpression",
-        "ArrayDimsAndInits",
-        "Statement",
-        "LabeledStatement",
-        "Block",
-        "BlockStatement",
-        "LocalVariableDeclaration",
-        "EmptyStatement",
-        "StatementExpression",
-        "SwitchStatement",
-        "SwitchLabel",
-        "IfStatement",
-        "WhileStatement",
-        "DoStatement",
-        "ForStatement",
-        "ForInit",
-        "StatementExpressionList",
-        "ForUpdate",
-        "BreakStatement",
-        "ContinueStatement",
-        "ReturnStatement",
-        "ThrowStatement",
-        "SynchronizedStatement",
-        "TryStatement",
-        "AssertStatement",
-    };
+  public String[] jjtNodeName = {
+    "CompilationUnit",
+    "PackageDeclaration",
+    "ImportDeclaration",
+    "TypeDeclaration",
+    "ClassDeclaration",
+    "UnmodifiedClassDeclaration",
+    "ClassBody",
+    "NestedClassDeclaration",
+    "ClassBodyDeclaration",
+    "EnumDeclaration",
+    "EnumElement",
+    "MethodDeclarationLookahead",
+    "InterfaceDeclaration",
+    "NestedInterfaceDeclaration",
+    "UnmodifiedInterfaceDeclaration",
+    "InterfaceMemberDeclaration",
+    "FieldDeclaration",
+    "VariableDeclarator",
+    "VariableDeclaratorId",
+    "VariableInitializer",
+    "ArrayInitializer",
+    "MethodDeclaration",
+    "MethodDeclarator",
+    "FormalParameters",
+    "FormalParameter",
+    "ConstructorDeclaration",
+    "ExplicitConstructorInvocation",
+    "Initializer",
+    "Type",
+    "PrimitiveType",
+    "ResultType",
+    "Name",
+    "NameList",
+    "Expression",
+    "AssignmentOperator",
+    "ConditionalExpression",
+    "ConditionalOrExpression",
+    "ConditionalAndExpression",
+    "InclusiveOrExpression",
+    "ExclusiveOrExpression",
+    "AndExpression",
+    "EqualityExpression",
+    "InstanceOfExpression",
+    "RelationalExpression",
+    "ShiftExpression",
+    "AdditiveExpression",
+    "MultiplicativeExpression",
+    "UnaryExpression",
+    "PreIncrementExpression",
+    "PreDecrementExpression",
+    "UnaryExpressionNotPlusMinus",
+    "CastLookahead",
+    "PostfixExpression",
+    "CastExpression",
+    "PrimaryExpression",
+    "PrimaryPrefix",
+    "PrimarySuffix",
+    "Literal",
+    "BooleanLiteral",
+    "NullLiteral",
+    "Arguments",
+    "ArgumentList",
+    "AllocationExpression",
+    "ArrayDimsAndInits",
+    "Statement",
+    "LabeledStatement",
+    "Block",
+    "BlockStatement",
+    "LocalVariableDeclaration",
+    "EmptyStatement",
+    "StatementExpression",
+    "SwitchStatement",
+    "SwitchLabel",
+    "IfStatement",
+    "WhileStatement",
+    "DoStatement",
+    "ForStatement",
+    "ForInit",
+    "StatementExpressionList",
+    "ForUpdate",
+    "BreakStatement",
+    "ContinueStatement",
+    "ReturnStatement",
+    "ThrowStatement",
+    "SynchronizedStatement",
+    "TryStatement",
+    "AssertStatement",
+  };
 }

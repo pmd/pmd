@@ -80,7 +80,7 @@
   </target>
 
 <target name="test" depends="requires-junit,compile">
-    <junit printsummary="yes" haltonfailure="yes" forkmode="perBatch">
+    <junit printsummary="yes" haltonfailure="yes" forkmode="perTest">
       <classpath>
         <path refid="classpath.path" />
         <pathelement location="${basedir}" />

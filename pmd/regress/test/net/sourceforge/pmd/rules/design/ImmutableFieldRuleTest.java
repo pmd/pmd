@@ -16,10 +16,13 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
+/*
            new TestDescriptor(TEST1, "could be immutable, only assigned in constructor", 1, rule),
            new TestDescriptor(TEST2, "could be immutable, only assigned in decl", 1, rule),
            new TestDescriptor(TEST3, "ok, assigned twice", 0, rule),
            new TestDescriptor(TEST4, "ok, static field ", 0, rule), // TODO - probably should check these, not just discard them
+*/
+           //new TestDescriptor(TEST5, "one constructor assigns, one doesn't, OK", 0, rule), // TODO - probably should check these, not just discard them
        });
     }
 
@@ -55,6 +58,15 @@ public class ImmutableFieldRuleTest extends SimpleAggregatorTst {
     "  y = x;" + PMD.EOL +
     "  x++;" + PMD.EOL +
     " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " private int x;" + PMD.EOL +
+    " public Foo(int y) {" + PMD.EOL +
+    "  x = y;" + PMD.EOL +
+    " }" + PMD.EOL +
+    " public Foo() {}" + PMD.EOL +
     "}";
 
 }

@@ -181,7 +181,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
              <value>
  <![CDATA[//ForStatement
  [
-  ForUpdate/StatementExpressionList/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
   =
   ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
  ]]]>

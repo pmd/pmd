@@ -19,9 +19,9 @@ public class JumbledIncrementerRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "", 1, rule),
-           new TestDescriptor(TEST2, "", 0, rule),
-           new TestDescriptor(TEST3, "", 0, rule),
+           new TestDescriptor(TEST1, "1", 1, rule),
+           new TestDescriptor(TEST2, "2", 0, rule),
+           new TestDescriptor(TEST3, "3", 0, rule),
            new TestDescriptor(TEST4, "using outer loop incrementor as array index is OK", 0, rule),
        });
     }
