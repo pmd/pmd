@@ -42,7 +42,6 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
 
     public Object visit(ASTClassBody node, Object data) {
         depth++;
-
         // first troll for declarations, but only in the top level class
         if (depth == 1) {
             trollingForDeclarations = true;
@@ -101,8 +100,10 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
 
     private void recordPossibleUsage(SimpleNode node) {
         String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(0, node.getImage().indexOf('.'));
+        String otherImg = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(node.getImage().indexOf('.')+1);
         Namespace group = (Namespace)nameSpaces.peek();
         group.peek().recordPossibleUsageOf(new Symbol(img, node.getBeginLine()));
+        group.peek().recordPossibleUsageOf(new Symbol(otherImg, node.getBeginLine()));
     }
 
     private void harvestUnused(RuleContext ctx, SymbolTable table) {

@@ -1,5 +1,6 @@
 ???? 2002 - 0.9:
 Added rule customization via XML parameters
+Fixed bug 592060 - Unused private instance variables handles explicitly referenced statics correctly
 
 July 30 2002 - 0.8:
 Added new rule: UnusedFormalParameterRule
