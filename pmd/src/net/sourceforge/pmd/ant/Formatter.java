@@ -24,8 +24,15 @@ public class Formatter {
             renderer = new HTMLRenderer();
         } else if (type.equals("text")) {
             renderer = new TextRenderer();
+        } else if (!type.equals("")) {
+            try {
+                renderer = (Renderer)Class.forName(type).newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new BuildException("Unable to instantiate custom formatter: " + type);
+            }
         } else {
-            throw new BuildException("Formatter type must be 'xml', 'text', or 'html'; you specified " + type);
+            throw new BuildException("Formatter type must be 'xml', 'text', 'html', or a class name; you specified " + type);
         }
     }
 

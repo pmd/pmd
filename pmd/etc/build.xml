@@ -60,9 +60,9 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
-        <formatter type="xml" toFile="foo.xml"/>
-        <fileset dir="/home/tom/data/pmd/pmd/src">
+    <pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml">
+        <formatter type="net.sourceforge.pmd.renderers.XMLRenderer" toFile="foo.xml"/>
+        <fileset dir="/usr/local/java/src/java/lang/ref">
             <include name="**/*.java"/>
         </fileset>
     </pmd>

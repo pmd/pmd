@@ -133,6 +133,13 @@ public class PMD {
             renderer = new TextRenderer();
         } else if (reportFormat.equals("emacs")) {
             renderer = new EmacsRenderer();
+        } else if (!reportFormat.equals("")) {
+            try {
+                renderer = (Renderer)Class.forName(reportFormat).newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
         } else {
             renderer = new HTMLRenderer();
         }
