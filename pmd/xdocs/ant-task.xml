@@ -135,7 +135,7 @@
     </fileset>
 </path>
 
-<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="classpath.path"/>
+<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
 
 <target name="pmd">
       <pmd rulesetfiles="rulesets/favorites.xml">
