@@ -9,6 +9,8 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetFactory;
 
 import java.io.StringReader;
 
@@ -16,6 +18,10 @@ public class RuleTst extends TestCase {
 
     public void runTestFromString(String code, int expectedResults, Rule rule) throws Throwable {
         assertEquals(expectedResults, processUsingStringReader(code, rule).size());
+    }
+
+    public Rule findRule(String rs, String r) throws RuleSetNotFoundException {
+        return new RuleSetFactory().createRuleSet(rs).getRuleByName(r);
     }
 
     public void runTestFromString(String code, Rule rule, Report report) throws Throwable {
