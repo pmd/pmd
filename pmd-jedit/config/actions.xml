@@ -3,7 +3,7 @@
 <ACTIONS>
   <ACTION NAME="pmd.check">
     <CODE>
-      net.sourceforge.pmd.jedit.PMDJEditPlugin.check(view);
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.check(buffer, view);
     </CODE>
   </ACTION>
   <ACTION NAME="pmd.options">

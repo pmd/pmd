@@ -7,7 +7,8 @@ package net.sourceforge.pmd.jedit;
 
 import org.gjt.sp.jedit.*;
 import org.gjt.sp.jedit.gui.OptionsDialog;
-
+import errorlist.ErrorSource;
+import errorlist.DefaultErrorSource;
 import javax.swing.*;
 import java.util.Vector;
 import java.util.Iterator;
@@ -25,11 +26,23 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String OPTION_PREFIX = "options.pmd.";
     public static final String OPTION_RULESETS_PREFIX = "options.pmd.rulesets.";
 
-    private static PMDJEditPlugin instance = new PMDJEditPlugin();
-
+    private static PMDJEditPlugin instance;
+    
+    static {
+	    instance = new PMDJEditPlugin();
+	    instance.start();
+    }
+    
+    private DefaultErrorSource errorSource;
+    
     // boilerplate JEdit code
-    public static void check(View view) {
-        instance.instanceCheck(view);
+    public void start() {
+	    errorSource = new DefaultErrorSource(NAME);
+	    ErrorSource.registerErrorSource(errorSource);
+    }
+    
+    public static void check(Buffer buffer, View view) {
+        instance.instanceCheck(buffer, view);
     }
 
     public static void displayPreferencesDialog(View view) {
@@ -41,7 +54,8 @@ public class PMDJEditPlugin extends EBPlugin {
     }
     // boilerplate JEdit code
 
-    public void instanceCheck(View view) {
+    public void instanceCheck(Buffer buffer, View view) {
+	errorSource.clear();
         RuleContext ctx = new RuleContext();
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         SelectedRuleSetsMap selectedRuleSets = new SelectedRuleSetsMap();
@@ -51,13 +65,16 @@ public class PMDJEditPlugin extends EBPlugin {
             rules.addRuleSet(ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream((String)i.next())));
         }
         ctx.setReport(new Report());
-        ctx.setSourceCodeFilename("this");
-        try {
-            pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
-            new PMDRuleViolationDialog(ctx.getReport());
-        } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
-        }
+        ctx.setSourceCodeFilename(buffer.getPath());
+	try {
+		pmd.processFile(new StringReader(view.getTextArea().getText()), rules, ctx);
+	} catch (FileNotFoundException fnfe) {}
+	for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+		RuleViolation rv = (RuleViolation)i.next();
+		String path = buffer.getPath();
+		DefaultErrorSource.DefaultError err = new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getLine()-1,0,0,rv.getDescription());
+		errorSource.addError(err);
+	}
     }
 
     public void instanceDisplayPreferencesDialog(View view) {

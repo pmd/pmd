@@ -12,6 +12,7 @@
 	<path id="project.class.path">
 		<pathelement location="${lib}/${pmdjar}"/>
 		<pathelement location="${lib}/jedit.jar"/>
+		<pathelement location="${lib}/ErrorList.jar"/>
 		<pathelement location="${build}"/>
 	</path>
 
