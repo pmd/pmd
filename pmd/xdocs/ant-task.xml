@@ -144,7 +144,8 @@ Detected OS: Linux
 parsing buildfile build.xml with URI = file:/home/tom/data/pmd/pmd/etc/build.xml
 Project base dir set to: /home/tom/data/pmd/pmd
 Build sequence for target `pmd' is [pmd]
-Complete build sequence is [pmd, copy, cppjavacc, cpd, delete, compile, clean, jar, dist, cpdjnlp, jjtree, javadoc, test, tomserver]
+Complete build sequence is [pmd, copy, cppjavacc, cpd, delete,
+ compile, clean, jar, dist, cpdjnlp, jjtree, javadoc, test, tomserver]
 
 pmd:
       [pmd] Using the normal ClassLoader
