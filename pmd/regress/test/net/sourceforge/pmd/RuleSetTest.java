@@ -29,6 +29,14 @@ public class RuleSetTest extends TestCase
 	RuleSet IUT = new RuleSet();
     }
 
+    public void testAccessors() {
+        RuleSet rs = new RuleSet();
+        rs.setName("foo");
+        assertEquals("foo", rs.getName());
+        rs.setDescription("bar");
+        assertEquals("bar",rs.getDescription());
+    }
+
     public void testGetRuleByName() {
         RuleSet rs = new RuleSet();
         MockRule mock = new MockRule("name", "desc");

@@ -19,18 +19,18 @@ import java.util.HashSet;
 
 public class RuleSetFactoryTest  extends TestCase {
 
-    private static final String EMPTY_RULE_SET = "<?xml version=\"1.0\"?><ruleset name=\"test\"></ruleset>";
+    private static final String EMPTY_RULE_SET = "<?xml version=\"1.0\"?><ruleset name=\"test\">\r\n<description>testdesc</description></ruleset>";
     private static final String SINGLE_RULE_SET = "<?xml version=\"1.0\"?>" +
-                         "<ruleset name=\"test\">" +
+                         "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
                          "<rule name=\"MockRuleName\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\">" +
                          "</rule></ruleset>";
     private static final String MULTIPLE_RULE_SET = "<?xml version=\"1.0\"?>" +
-                         "<ruleset name=\"test\">" +
+                         "<ruleset name=\"test\">\r\n<description>testdesc</description>" +
                          "<rule name=\"MockRuleName1\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
                          "<rule name=\"MockRuleName2\" message=\"avoid the mock rule\" class=\"test.net.sourceforge.pmd.MockRule\"></rule>" +
                          "</ruleset>";
     private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>" +
-                         "<ruleset name=\"test\"><rule ref=\"rulesets/basic.xml/EmptyCatchBlock\"/></ruleset>";
+                         "<ruleset name=\"test\">\r\n<description>testdesc</description><rule ref=\"rulesets/basic.xml/EmptyCatchBlock\"/></ruleset>";
 
     public RuleSetFactoryTest(String name) {
         super(name);

@@ -19,16 +19,20 @@ import java.util.*;
 
 public class RuleSetFactory {
 
-    public Iterator getRegistereredRuleSets() {
+    /**
+     * Returns an Iterator of RuleSet objects
+     */
+    public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
         try {
             Properties props = new Properties();
             props.load(getClass().getClassLoader().getResourceAsStream("rulesets/rulesets.properties"));
             String rulesetFilenames = props.getProperty("rulesets.filenames");
-            List names = new ArrayList();
+            List ruleSets = new ArrayList();
             for (StringTokenizer st = new StringTokenizer(rulesetFilenames, ","); st.hasMoreTokens();) {
-                names.add(st.nextToken());
+                RuleSet ruleSet = createRuleSet(st.nextToken());
+                ruleSets.add(ruleSet);
             }
-            return names.iterator();
+            return ruleSets.iterator();
         } catch (IOException ioe) {
             throw new RuntimeException("Couldn't find rulesets.properties; please ensure that the rulesets directory is on the classpath.  Here's the current classpath: " + System.getProperty("java.class.path"));
         }
@@ -46,6 +50,7 @@ public class RuleSetFactory {
 
             RuleSet ruleSet = new RuleSet();
             ruleSet.setName(root.getAttribute("name"));
+            ruleSet.setDescription(root.getChildNodes().item(1).getFirstChild().getNodeValue());
 
             NodeList rules = root.getElementsByTagName("rule");
             for (int i =0; i<rules.getLength(); i++) {
