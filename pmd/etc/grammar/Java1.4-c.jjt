@@ -467,7 +467,7 @@ void ClassBody() :
 void NestedClassDeclaration() :
 {}
 {
-  ( "static"       { jjtThis.setStatic(); }
+  ( "static"      { jjtThis.setStatic(); }
   | "abstract"    { jjtThis.setAbstract(); }
   | "final"       { jjtThis.setFinal(); }
   | "public"      { jjtThis.setPublic(); }

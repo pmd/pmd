@@ -84,7 +84,7 @@ public class RuleSetTest extends TestCase {
         RuleSet set1 = new RuleSet();
         set1.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
         RuleSet set2 = new RuleSet();
-        set2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+        set2.addRule(new MockRule("name2", "desc", "msg", "rulesetname"));
         set1.addRuleSet(set2);
         assertEquals("ruleset size wrong", 2, set1.size());
     }
@@ -92,42 +92,6 @@ public class RuleSetTest extends TestCase {
     public void testApply0Rules() throws Throwable {
         RuleSet IUT = new RuleSet();
         verifyRuleSet(IUT, 0, new HashSet());
-    }
-
-    public void testApply1Rule() throws Throwable {
-        RuleSet IUT = new RuleSet();
-
-        MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("filename");
-        RuleViolation violation = new RuleViolation(rule, 1, ctx);
-        rule.addViolation(violation);
-
-        IUT.addRule(rule);
-
-        verifyRuleSet(IUT, 1, Collections.singleton(violation));
-    }
-
-    public void testApplyNRule() throws Throwable {
-        RuleSet IUT = new RuleSet();
-
-        Random rand = new Random();
-        int numRules = rand.nextInt(10) + 1;
-        Set ruleViolations = new HashSet();
-
-        for (int i = 0; i < numRules; i++) {
-            MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
-            RuleContext ctx = new RuleContext();
-            ctx.setSourceCodeFilename("filename");
-            RuleViolation violation = new RuleViolation(rule, i, ctx);
-
-            ruleViolations.add(violation);
-            rule.addViolation(violation);
-
-            IUT.addRule(rule);
-        }
-
-        verifyRuleSet(IUT, numRules, ruleViolations);
     }
 
     protected void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {

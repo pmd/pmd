@@ -12,14 +12,14 @@ import java.util.Properties;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
-    private String name = getClass().getName();
-    private Properties properties = new Properties();
-    private String message;
-    private String description;
-    private String example;
-    private String ruleSetName;
-    private boolean m_include;
-    private int m_priority = LOWEST_PRIORITY;
+    protected String name = getClass().getName();
+    protected Properties properties = new Properties();
+    protected String message;
+    protected String description;
+    protected String example;
+    protected String ruleSetName;
+    protected boolean m_include;
+    protected int priority = LOWEST_PRIORITY;
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -115,78 +115,27 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         return new RuleViolation(this, lineNumber, specificDescription, ctx);
     }
 
-    /**
-     ********************************************************************************
-     *
-     * Gets an enumeration to enumerate through this rule's property names.
-     *
-     * @return An enumeration of property names
-     */
     public Properties getProperties() {
         return properties;
     }
 
-    /**
-     *********************************************************************************
-     *
-     * When the rule is to be included in the analysis, returns true; otherwise, returns false.
-     *
-     * @return True when the rule is included in analysis.
-     */
     public boolean include() {
         return m_include;
     }
 
-    /**
-     *********************************************************************************
-     *
-     * When the rule is to be included in the analysis, set to true; otherwise, set to false.
-     *
-     * @param include True when the rule is included in analysis.
-     */
     public void setInclude(boolean include) {
         m_include = include;
     }
 
-    /**
-     *********************************************************************************
-     *
-     * Returns the rule's priority that is used for including the rule in reports and analysis.
-     *
-     * @return A number between 1 and LOWEST_PRIORITY.
-     */
     public int getPriority() {
-        if ((m_priority < 0) || (m_priority > LOWEST_PRIORITY)) {
-            m_priority = LOWEST_PRIORITY;
-        }
-
-        return m_priority;
+        return priority;
     }
 
-    /**
-     *********************************************************************************
-     *
-     * Returns the rule's priority name that is used for including the rule in reports and analysis.
-     *
-     * @return A member of PRIORITIES.
-     */
     public String getPriorityName() {
         return PRIORITIES[getPriority() - 1];
     }
 
-    /**
-     *********************************************************************************
-     *
-     * A rule will specify a priority for inclusion in reports and analysis.  The default
-     * priority is "Low".
-     *
-     * @param The rule's priority of 1..LOWEST_PRIORITY.
-     */
     public void setPriority(int priority) {
-        if ((priority < 1) || (priority > LOWEST_PRIORITY)) {
-            m_priority = LOWEST_PRIORITY;
-        } else {
-            m_priority = priority;
-        }
+        this.priority = priority;
     }
 }
