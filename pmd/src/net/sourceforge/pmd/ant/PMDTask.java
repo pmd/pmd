@@ -64,7 +64,7 @@ public class PMDTask extends Task {
 
         RuleSet rules = null;
         try {
-            createRuleSets();
+            rules = createRuleSets();
         } catch (RuleSetNotFoundException rsnfe) {
             throw new BuildException(rsnfe.getMessage());
         }
