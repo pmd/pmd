@@ -13,6 +13,9 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.swingui.PMDViewer;
+import net.sourceforge.pmd.cpd.FileFinder;
+import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
+
 import javax.swing.*;
 import java.io.*;
 import java.util.List;
@@ -75,6 +78,15 @@ public class PMD {
             throw new RuntimeException("File " + inputFileName + " doesn't exist");
         }
 
+        List files = null;
+        if (!inputFile.isDirectory()) {
+            files = new ArrayList();
+            files.add(inputFile);
+        } else {
+            FileFinder finder = new FileFinder();
+            files = finder.findFilesFrom(inputFile.getAbsolutePath(), new JavaFileOrDirectoryFilter(), true);
+        }
+
         PMD pmd = new PMD();
 
         RuleContext ctx = new RuleContext();
@@ -82,18 +94,22 @@ public class PMD {
         RuleSet rules = ruleSetFactory.createRuleSet(pmd.getClass().getClassLoader().getResourceAsStream(ruleSetFilename));
         ctx.setReport(new Report());
 
+        try {
+            for (Iterator i = files.iterator(); i.hasNext();) {
+                File file = (File)i.next();
+                ctx.setSourceCodeFilename(file.getAbsolutePath());
+                pmd.processFile(new FileInputStream(file), rules, ctx);
+            }
+        } catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        }
+
         Renderer rend = null;
         if (reportFormat.equals("xml")) {
             rend = new XMLRenderer();
         } else {
             rend = new HTMLRenderer();
         }
-        ctx.setSourceCodeFilename(inputFile.getAbsolutePath());
-        try {
-            pmd.processFile(new FileInputStream(inputFile), rules, ctx);
-            System.out.println(rend.render(ctx.getReport()));
-        } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
-        }
+        System.out.println(rend.render(ctx.getReport()));
     }
 }
