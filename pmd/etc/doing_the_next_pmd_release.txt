@@ -1,6 +1,3 @@
---------> Update ant docs - remove verbose attribute and make a note about -verbose
---------> Update custom ruleset docs - add exclude example
-
 update run.bat to point to pmd-1.05.jar
 update run.sh to point to pmd-1.05.jar
 update cpdgui.bat to point to pmd-1.05.jar

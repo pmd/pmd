@@ -30,15 +30,21 @@ Say you want to pick specific rules from various rule sets.  You can do this by 
     <source>
 <![CDATA[
 <?xml version="1.0"?>
-
 <ruleset name="customruleset">
   <description>
   This ruleset checks my code for bad stuff
   </description>
+
+  <!-- Here's some rules we'll specify one at a time -->
   <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
-  <rule ref="rulesets/unusedcode.xml/UnusedPrivateInstanceVariable"/>
+  <rule ref="rulesets/unusedcode.xml/UnusedPrivateField"/>
   <rule ref="rulesets/imports.xml/DuplicateImports"/>
   <rule ref="rulesets/basic.xml/UnnecessaryConversionTemporaryRule"/>
+
+  <!-- Note we want everything from braces.xml except the WhileLoopsMustUseBracesRule -->
+  <rule ref="rulesets/braces.xml">
+    <exclude name="WhileLoopsMustUseBracesRule"/>
+  </rule>
 </ruleset>
 ]]>
     </source>
