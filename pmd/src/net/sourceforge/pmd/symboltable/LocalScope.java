@@ -9,9 +9,6 @@ import net.sourceforge.pmd.ast.*;
 
 import java.util.*;
 
-/**
- * See JLS 6.3 for a description of scopes
- */
 public class LocalScope implements Scope {
 
     private Map names = new HashMap();

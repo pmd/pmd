@@ -7,6 +7,9 @@ package net.sourceforge.pmd.symboltable;
 
 import java.util.Iterator;
 
+/**
+ * See JLS 6.3 for a description of scopes
+ */
 public interface Scope {
     public Iterator getUnusedDeclarations();
     public void addDeclaration(NameDeclaration decl);
