@@ -31,6 +31,7 @@ import net.sourceforge.pmd.dfa.IDataFlowNode;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * @author raik
@@ -75,7 +76,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     
     // ALSO ACCESS OBJECT
     public Object visit(ASTEqualityExpression node, Object data) {
-        Vector varAccess = new Vector();
+        List varAccess = new ArrayList();
         varAccess.add(node);
         super.visit(node, varAccess);
         data = this.computeVariableAccess(node, varAccess);
@@ -84,7 +85,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     // ALSO ACCESS OBJECT
     public Object visit(ASTRelationalExpression node, Object data) {
-        Vector varAccess = new Vector();
+        List varAccess = new ArrayList();
         varAccess.add(node);
         super.visit(node, varAccess);
         data = this.computeVariableAccess(node, varAccess);
@@ -93,7 +94,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     // ALSO ACCESS OBJECT
     public Object visit(ASTReturnStatement node, Object data) {
-        Vector varAccess = new Vector();
+        List varAccess = new ArrayList();
         varAccess.add(node);
         super.visit(node, varAccess);
         data = this.computeVariableAccess(node, varAccess);
@@ -102,7 +103,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     // ALSO ACCESS OBJECT
     public Object visit(ASTFormalParameter node, Object data) {
-        Vector varAccess = new Vector();
+        List varAccess = new ArrayList();
         varAccess.add(node);
         super.visit(node, varAccess);
         data = this.computeVariableAccess(node, varAccess);
@@ -111,7 +112,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     // ALSO ACCESS OBJECT
     public Object visit(ASTPrimaryPrefix node, Object data) {
-        Vector varAccess = new Vector();
+        List varAccess = new ArrayList();
         varAccess.add(node);
         super.visit(node, varAccess);
         data = this.computeVariableAccess(node, varAccess);
@@ -119,52 +120,42 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTStatementExpression node, Object data) {
-        Vector varAccess = new Vector();
+        List varAccess = new ArrayList();
         super.visit(node, varAccess);
         data = this.computeVariableAccess(node, varAccess);
         return data;
     }
 
     public Object visit(ASTVariableDeclarator node, Object data) {
-        Vector varAccess = new Vector();
+        List varAccess = new ArrayList();
         super.visit(node, varAccess);
         data = this.computeVariableAccess(node, varAccess);
         return data;
     }
 
-    private Object computeVariableAccess(SimpleNode node, Object data) {
-
-        Vector varAccess = (Vector) data;
-
-        StatementExpressionEvaluator see =
-                new StatementExpressionEvaluator(varAccess);
+    private Object computeVariableAccess(SimpleNode node, List data) {
+        StatementExpressionEvaluator see = new StatementExpressionEvaluator(data);
         IDataFlowNode dfn = node.getDataFlowNode();
 
         if (dfn == null) {
-
-            System.out.println("VariableAccessVisitor - " +
-                    node.getClass().getName() + " - IDataFlowNode == null");
+            System.out.println("VariableAccessVisitor - " + node.getClass().getName() + " - IDataFlowNode == null");
             return data; //TODO redefinition
         }
 
         dfn.setVariableAccess(see.computeAccess()); //TODO throw exception
 
-        List l = dfn.getVariableAccess();
         LinkedList ret = new LinkedList();
-        for (int i = 0; i < l.size(); i++) {
-            VariableAccess va = (VariableAccess) l.get(i);
+        for (int i = 0; i < dfn.getVariableAccess().size(); i++) {
+            VariableAccess va = (VariableAccess) dfn.getVariableAccess().get(i);
             ret.add(new VariableAccess(VariableAccess.UNDEFINITION, va.getVariableName()));
         }
         //System.out.println("l: "+ret);
         
         
-        // no dublicate values TODO refactoring
-        VariableAccess va;
+        // no duplicate values TODO refactoring
         for (int i = 0; i < ret.size(); i++) {
-            va = (VariableAccess) ret.get(i);
-
+            VariableAccess va = (VariableAccess) ret.get(i);
             boolean write = true;
-
             for (int j = 0; j < this.undefList.size(); j++) {
                 VariableAccess vaTmp = (VariableAccess) this.undefList.get(j);
                 if (va.getVariableName().equals(vaTmp.getVariableName())) {
@@ -176,7 +167,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                 this.undefList.add(va);
             }
         }
-        return l;
+        return dfn.getVariableAccess();
     }
 
 //  ----------------------------------------------------------------------------
@@ -186,7 +177,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         if (data != null) {
             Node n = node.jjtGetParent();
             if (!(n instanceof ASTType || n instanceof ASTAllocationExpression)) {
-                Vector v = (Vector) data;
+                List v = (List) data;
                 v.add(node);
             }
         }
@@ -195,7 +186,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (data != null) {
-            Vector v = (Vector) data;
+            List v = (List) data;
             v.add(node);
         }
         return super.visit(node, data);
@@ -208,38 +199,38 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     public Object visit(ASTArguments node, Object data) {
         if (data != null) { // because error do_while
-            Vector v = (Vector) data;
+            List v = (List) data;
             v.add(node);
         }
         return super.visit(node, data);
     }
 
     public Object visit(ASTAssignmentOperator node, Object data) {
-        Vector v = (Vector) data;
+        List v = (List) data;
         v.add(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTPostfixExpression node, Object data) {
-        Vector v = (Vector) data;
+        List v = (List) data;
         v.add(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTPreDecrementExpression node, Object data) {
-        Vector v = (Vector) data;
+        List v = (List) data;
         v.add(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTPreIncrementExpression node, Object data) {
-        Vector v = (Vector) data;
+        List v = (List) data;
         v.add(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTVariableInitializer node, Object data) {
-        Vector v = (Vector) data;
+        List v = (List) data;
         v.add(node);
         return super.visit(node, data);
     }
