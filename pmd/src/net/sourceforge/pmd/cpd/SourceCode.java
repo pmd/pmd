@@ -2,10 +2,9 @@ package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.PMD;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class SourceCode implements Serializable {
+public class SourceCode {
 
     private String fileName;
     private List code;

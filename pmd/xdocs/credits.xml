@@ -38,7 +38,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Jeff Anderson - some node finding utility code</li>
+            <li>Roelof Vuurboom - posted report of QStudio analysis of PMD</li>
+            <li>Jeff Anderson - node finding utility code</li>
             <li>Boris Gruschko - regression test suites, nifty AST/XPath viewer</li>
             <li>Jeff Epstein - put together the TextPad integration </li>
             <li>Trevor Harmon - rewrote XSLT script</li>
