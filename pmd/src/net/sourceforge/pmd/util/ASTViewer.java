@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.TargetJDK1_4;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
@@ -85,7 +86,7 @@ public class ASTViewer {
     private class ShowListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
             StringReader sr = new StringReader(codeEditorPane.getText());
-            JavaParser parser = new JavaParser(sr);
+            JavaParser parser = (new TargetJDK1_4()).createParser(sr);
             MyPrintStream ps = new MyPrintStream();
             System.setOut(ps);
             try {
@@ -118,7 +119,7 @@ public class ASTViewer {
                 return;
             }
             StringReader sr = new StringReader(codeEditorPane.getText());
-            JavaParser parser = new JavaParser(sr);
+            JavaParser parser = (new TargetJDK1_4()).createParser(sr);
             try {
                 XPath xpath = new BaseXPath(xpathQueryArea.getText(), new DocumentNavigator());
                 ASTCompilationUnit c = parser.CompilationUnit();

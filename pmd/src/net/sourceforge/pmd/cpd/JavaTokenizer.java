@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 import net.sourceforge.pmd.ast.JavaCharStream;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 import net.sourceforge.pmd.ast.Token;
+import net.sourceforge.pmd.TargetJDK1_4;
 
 import java.io.StringReader;
 
@@ -20,8 +21,7 @@ public class JavaTokenizer implements Tokenizer {
         keyword and goes back into "accumulate mode when it hits a semicolon.
         This could probably be turned into some objects.
         */
-        JavaCharStream javaStream = new JavaCharStream(new StringReader(sb.toString()));
-        JavaParserTokenManager tokenMgr = new JavaParserTokenManager(javaStream);
+        JavaParserTokenManager tokenMgr = new TargetJDK1_4().createJavaParserTokenManager(new StringReader(sb.toString()));
         Token currToken = tokenMgr.getNextToken();
         boolean discarding = false;
         int count = 0;

@@ -5,6 +5,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.JavaParser;
@@ -17,22 +18,19 @@ public class JDKVersionTest extends TestCase  {
     // enum keyword/identifier
     public void testEnumAsKeywordShouldFailWith14() throws Throwable {
         try {
-            TargetJDKVersion jdk = new TargetJDK1_4();
-            JavaParser p = jdk.createParser(new StringReader(JDK15_ENUM));
+            JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_ENUM));
             p.CompilationUnit();
             throw new Error("JDK 1.4 parser should have failed to parse enum used as keyword");
         } catch (ParseException e) {}    // cool
     }
 
     public void testEnumAsIdentifierShouldPassWith14() throws Throwable {
-        TargetJDKVersion jdk = new TargetJDK1_4();
-        JavaParser p = jdk.createParser(new StringReader(JDK14_ENUM));
+        JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK14_ENUM));
         p.CompilationUnit();
     }
 
     public void testEnumAsKeywordShouldPassWith15() throws Throwable {
-        TargetJDKVersion jdk = new TargetJDK1_5();
-        JavaParser p = jdk.createParser(new StringReader(JDK15_ENUM));
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_ENUM));
         p.CompilationUnit();
     }
 
@@ -48,15 +46,15 @@ public class JDKVersionTest extends TestCase  {
 
     // assert keyword/identifier
     public void testAssertAsKeywordVariantsSucceedWith1_4() {
-        new JavaParser(new StringReader(ASSERT_TEST1)).CompilationUnit();
-        new JavaParser(new StringReader(ASSERT_TEST2)).CompilationUnit();
-        new JavaParser(new StringReader(ASSERT_TEST3)).CompilationUnit();
-        new JavaParser(new StringReader(ASSERT_TEST4)).CompilationUnit();
+        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST1)).CompilationUnit();
+        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST2)).CompilationUnit();
+        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST3)).CompilationUnit();
+        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST4)).CompilationUnit();
     }
 
     public void testAssertAsVariableDeclIdentifierFailsWith1_4() {
         try {
-            new JavaParser(new StringReader(ASSERT_TEST5)).CompilationUnit();
+            (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST5)).CompilationUnit();
             throw new RuntimeException("Usage of assert as identifier should have failed with 1.4");
         } catch (ParseException pe) {
             // cool
@@ -65,7 +63,7 @@ public class JDKVersionTest extends TestCase  {
 
     public void testAssertAsMethodNameIdentifierFailsWith1_4() {
         try {
-            new JavaParser(new StringReader(ASSERT_TEST7)).CompilationUnit();
+            (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST7)).CompilationUnit();
             throw new RuntimeException("Usage of assert as identifier should have failed with 1.4");
         } catch (ParseException pe) {
             // cool
@@ -73,15 +71,13 @@ public class JDKVersionTest extends TestCase  {
     }
 
     public void testAssertAsIdentifierSucceedsWith1_3() {
-        JavaParser jp = new JavaParser(new StringReader(ASSERT_TEST5));
-        jp.setAssertAsIdentifier();
+        JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST5));
         jp.CompilationUnit();
     }
 
     public void testAssertAsKeywordFailsWith1_3() {
         try {
-            JavaParser jp = new JavaParser(new StringReader(ASSERT_TEST6));
-            jp.setAssertAsIdentifier();
+            JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST6));
             jp.CompilationUnit();
             throw new RuntimeException("Usage of assert as keyword should have failed with 1.3");
         } catch (ParseException pe) {

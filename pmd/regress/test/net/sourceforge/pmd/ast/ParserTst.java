@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
+import net.sourceforge.pmd.TargetJDK1_4;
 
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;
@@ -44,7 +45,7 @@ public class ParserTst extends TestCase {
 
     public Set getNodes(Class clazz, String javaCode) throws Throwable {
         Collector coll = new Collector(clazz);
-        JavaParser parser = new JavaParser(new StringReader(javaCode));
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);

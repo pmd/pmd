@@ -5,6 +5,7 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.TargetJDK1_4;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
@@ -59,14 +60,8 @@ public class ViewerModel
    */
   public void commitSource( String source )
   {
-    StringReader       reader = new StringReader( source );
-
-    JavaParser         parser = new JavaParser( reader );
-
-    ASTCompilationUnit compilationUnit = parser.CompilationUnit(  );
-
+    ASTCompilationUnit compilationUnit = new TargetJDK1_4().createParser(new StringReader( source )).CompilationUnit(  );
     rootNode = compilationUnit;
-
     fireViewerModelEvent(
       new ViewerModelEvent( this, ViewerModelEvent.CODE_RECOMPILED ) );
   }
@@ -172,6 +167,9 @@ public class ViewerModel
 
 /*
  * $Log$
+ * Revision 1.3  2004/04/12 17:23:29  tomcopeland
+ * Moving all explicit JavaParser creations over to a factory-ish sort of thing.  This makes the version of the parser explicit rather than assumed.
+ *
  * Revision 1.2  2003/09/23 20:51:06  tomcopeland
  * Cleaned up imports
  *

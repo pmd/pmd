@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.JavaParser;
@@ -21,28 +22,28 @@ import java.util.Iterator;
 public class AcceptanceTest extends TestCase {
 
     public void testClashingSymbols() {
-        JavaParser parser = new JavaParser(new StringReader(TEST1));
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST1));
         ASTCompilationUnit c = parser.CompilationUnit();
         SymbolFacade stb = new SymbolFacade();
         stb.initializeWith(c);
     }
 
     public void testInitializer() {
-        JavaParser parser = new JavaParser(new StringReader(TEST2));
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST2));
         ASTCompilationUnit c = parser.CompilationUnit();
         ASTInitializer a = (ASTInitializer)(c.findChildrenOfType(ASTInitializer.class)).get(0);
         assertFalse(a.isStatic());
     }
 
     public void testStaticInitializer() {
-        JavaParser parser = new JavaParser(new StringReader(TEST3));
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST3));
         ASTCompilationUnit c = parser.CompilationUnit();
         ASTInitializer a = (ASTInitializer)(c.findChildrenOfType(ASTInitializer.class)).get(0);
         assertTrue(a.isStatic());
     }
 
     public void testFindFieldDecl() {
-        JavaParser parser = new JavaParser(new StringReader(TEST4));
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST4));
         ASTCompilationUnit c = parser.CompilationUnit();
         SymbolFacade stb = new SymbolFacade();
         stb.initializeWith(c);

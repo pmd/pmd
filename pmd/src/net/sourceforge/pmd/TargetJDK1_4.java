@@ -4,9 +4,12 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.JavaParserTokenManager;
+import net.sourceforge.pmd.ast.JavaCharStream;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 
 public class TargetJDK1_4 implements TargetJDKVersion {
 
@@ -16,5 +19,9 @@ public class TargetJDK1_4 implements TargetJDKVersion {
 
     public JavaParser createParser(Reader in) {
         return new JavaParser(in);
+    }
+
+    public JavaParserTokenManager createJavaParserTokenManager(Reader in) {
+        return new JavaParserTokenManager(new JavaCharStream(in));
     }
 }
