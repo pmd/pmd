@@ -2,7 +2,6 @@ package net.sourceforge.pmd.dfa.report;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
-import org.apache.tools.ant.BuildException;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,17 +27,13 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
     /**
      * Writes the buffer to file.
      */
-    private void write(String filename, StringBuffer buf) {
+    private void write(String filename, StringBuffer buf) throws IOException {
         String fs = System.getProperty("file.separator");
         String baseDir = ".." + fs; // TODO output destination
 
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + fs + filename)));
-            bw.write(buf.toString(), 0, buf.length());
-            bw.close();
-        } catch (IOException ioe) {
-            throw new BuildException(ioe.getMessage());
-        }
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + fs + filename)));
+        bw.write(buf.toString(), 0, buf.length());
+        bw.close();
     }
 
     /**
@@ -126,7 +121,11 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
                     "</html>");
 
 
-            this.write(str + ".html", classBuf);
+            try {
+                this.write(str + ".html", classBuf);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while writing HTML report: " + e.getMessage());
+            }
             classBuf = new StringBuffer();
 
 
@@ -159,7 +158,11 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
         // The first node of result tree.
         if (node.getParent() == null) {
             this.packageBuf.append("</table> </body></html>");
-            this.write("index.html", this.packageBuf);
+            try {
+                this.write("index.html", this.packageBuf);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while writing HTML report: " + e.getMessage());
+            }
         }
     }
 }
