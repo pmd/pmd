@@ -19,7 +19,7 @@
              <li>Finally, it was rewritten by Steve Hawkins to use the
          <a href="http://www.nist.gov/dads/HTML/karpRabin.html">Karp-Rabin</a> string matching algorithm.</li>
          </ul>
-          <p>Each rewrite made it much faster, and now it can process the JDK java.* packages in about 4 seconds (on my Linux workstation, at least).</p>
+          <p>Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds (on my workstation, at least).</p>
      <p>Here's a <a href="images/screenshot_cpd.png">screenshot</a> of CPD after running on the JDK java.lang package.</p>
      <p>Note that CPD works with Java, C, C++, and PHP code.</p>
      <p>If you have <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>, you can <a href="cpd.jnlp">run CPD by clicking  here</a>.</p>
@@ -39,6 +39,11 @@
 </target>
 ]]>
        </source>
+       <p>There's a <code>ignoreLiterals="true"</code> option which makes CPD ignore literal
+ value differences when evaluating a duplicate block.  This means that <code>foo=42;</code> and <code>foo=43;</code>
+ will be seen as equivalent.  You may want to run PMD with this option off to start with and
+           then switch it on to see what it turns up.
+ </p>
        <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e., <code>ant -v -f mybuildfile.xml cpd</code>.</p>
        <p>There's also a JavaSpaces version available for splitting the CPD effort across a farm of machines.
        I usually post news on that <a href="http://cpd.jini.org/">here</a> and the releases are <a href="http://sf.net/projects/pmd/">here</a>.
