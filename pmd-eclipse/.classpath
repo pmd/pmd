@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
     <classpathentry kind="src" path="src/"/>
-    <classpathentry kind="lib" path="lib/pmd-0.9.jar"/>
     <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.0.0/resources.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.resources_2.0.0/resourcessrc.zip"/>
+        path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.0.1/resources.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.resources_2.0.1/resourcessrc.zip"/>
     <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.ui_2.0.0/workbench.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.ui_2.0.0/workbenchsrc.zip"/>
+        path="ECLIPSE_HOME/plugins/org.eclipse.ui_2.0.2/workbench.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.ui_2.0.2/workbenchsrc.zip"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.ui.win32_2.0.0/workbenchwin32.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_WIN32_SOURCE/org.eclipse.ui.win32_2.0.0/workbenchwin32src.zip"/>
     <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.swt.win32_2.0.0/ws/win32/swt.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_WIN32_SOURCE/org.eclipse.swt.win32_2.0.0/ws/win32/swtsrc.zip"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.3/xmlParserAPIs.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.3/xercesImpl.jar"/>
+        path="ECLIPSE_HOME/plugins/org.eclipse.swt.win32_2.0.2/ws/win32/swt.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_WIN32_SOURCE/org.eclipse.swt.win32_2.0.2/ws/win32/swtsrc.zip"/>
     <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_2.0.0/runtime.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.runtime_2.0.0/runtimesrc.zip"/>
+        path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_2.0.2/runtime.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.runtime_2.0.2/runtimesrc.zip"/>
     <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_2.0.0/boot.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.boot_2.0.0/bootsrc.zip"/>
+        path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_2.0.2/boot.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.boot_2.0.2/bootsrc.zip"/>
     <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+    <classpathentry kind="lib" path="lib/pmd-1.02.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

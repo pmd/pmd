@@ -82,12 +82,15 @@ public class PMDVisitor implements IResourceVisitor {
 			Common.PMD_DIALOG.setMessage(file.getName());
 		}
 
-		pmd.processFile( input, ruleSet, context);
+		try {
+			pmd.processFile( input, ruleSet, context);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
 
 		Iterator iter = context.getReport().iterator();
 		
-//		file.deleteMarkers(PMD_VIOLATION, true, 
-//							IResource.DEPTH_INFINITE);
 		file.deleteMarkers(PMDPlugin.PMD_MARKER, true, 
 							IResource.DEPTH_INFINITE);
 							
@@ -99,6 +102,7 @@ public class PMDVisitor implements IResourceVisitor {
 								 violation.getDescription() );
 			marker.setAttribute( IMarker.LINE_NUMBER,
 								 violation.getLine() );
+			marker.setAttribute(IMarker.TEXT,violation.getRule().getName());
 			
 		}
 	}
@@ -108,14 +112,19 @@ public class PMDVisitor implements IResourceVisitor {
 	 */
 	public boolean visit(IResource resource) throws CoreException {
 
-		if ((resource instanceof IFile) &&
-			(((IFile) resource).getFileExtension() != null) &&
-			((IFile) resource).getFileExtension().equals("java")) {	
-				runPMD( (IFile) resource );
-				return false;
+		try {
+			if ((resource instanceof IFile) &&
+				(((IFile) resource).getFileExtension() != null) &&
+				((IFile) resource).getFileExtension().equals("java")) {	
+					runPMD( (IFile) resource );
+					return false;
+			} 
+			else {
+				return true;
+			}
+		} catch (CoreException e) {
+			System.err.println(e);
+			return false;
 		} 
-		else {
-			return true;
-		}
 	}
 }

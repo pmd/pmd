@@ -10,7 +10,7 @@
       <library name="pmd-eclipse.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-0.9.jar"/>
+      <library name="lib/pmd-1.02.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
@@ -119,7 +119,7 @@
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
-            nameFilter="*"
+            nameFilter="*.java"
             id="net.sourceforge.pmd.eclipse.PMDCheckProjectContribution">
          <menu
                label="&amp;PMD"
@@ -137,6 +137,26 @@
                id="net.sourceforge.pmd.eclipse.PMDActionItem">
          </action>
       </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.java"
+            id="net.sourceforge.pmd.eclipse.PMDCheckProjectContribution">
+         <menu
+               label="New Submenu"
+               path="additions"
+               id="net.sourceforge.pmd.eclipse.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="New Action"
+               class="net.sourceforge.pmd.eclipse.actions.NewAction"
+               menubarPath="net.sourceforge.pmd.eclipse.menu1/group1"
+               enablesFor="multiple"
+               id="net.sourceforge.pmd.eclipse.newAction">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          id="mymarker"
@@ -146,20 +166,20 @@
          id="PMDMarker"
          point="org.eclipse.core.resources.markers">
       <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
-      <super
-            type="net.sourceforge,pmd.eclipse.mymarker">
+            type="org.eclipse.core.resources.taskmarker">
       </super>
       <persistent
-            value="false">
+            value="true">
       </persistent>
    </extension>
    <extension
          id="CPDMarker"
          point="org.eclipse.core.resources.markers">
       <super
-            type="org.eclipse.core.resources.problemmarker">
+            type="org.eclipse.core.resources.taskmarker">
+         <super
+               type="net.sourceforge,pmd.eclipse.mymarker">
+         </super>
       </super>
       <super
             type="net.sourceforge,pmd.eclipse.mymarker">

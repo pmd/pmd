@@ -1,4 +1,8 @@
-1.  DONE.  Clear out task list of previously entered PMD tasks when re-running PMD
+1.  DONE.  Clear out task list of previously entered PMD tasks when re-running PMD  ** Fixed
 2.  DONE.  Modify to allow allow ruleset selection from a drop-down list that is populated from
 the ruleset.properties file.  The user should still be allowed to type in a rule set as well.
-3.  DONE.  Update to use PMD 0.8
+3.  DONE.  Update to use PMD 1.02
+4.  DONE.  Update TODO.txt
+
+5.  Limit PMD to current project, instead of all.
+ 

@@ -142,7 +142,7 @@ public class CPDCheckProjectAction
 		/**
 		 * @see net.sourceforge.pmd.cpd.CPDListener#addedFile(int, File)
 		 */
-		public void addedFile(int fileCount, File file) {
+		public boolean addedFile(int fileCount, File file) {
 			if (firstFile) {
 				monitor.beginTask("Adding Files", fileCount);
 				firstFile = false;
@@ -150,12 +150,13 @@ public class CPDCheckProjectAction
 			if (file != null)
 				monitor.subTask(file.getName());
 			monitor.worked(1); 
+			return (file!=null);
 		}
 
 		/**
 		 * @see net.sourceforge.pmd.cpd.CPDListener#addingTokens(int, int, String)
 		 */
-		public void addingTokens(int tokenSetCount, int doneSoFar,String tokenSrcId) {
+		public boolean addingTokens(int tokenSetCount, int doneSoFar,String tokenSrcId) {
 			if (firstToken) {
 				monitor.beginTask("Adding Tokens", tokenSetCount);
 				firstToken = false;
@@ -165,20 +166,21 @@ public class CPDCheckProjectAction
 				tokenTracker = 0;
 				monitor.worked(TOKEN_LIMIT);
 			}
+			return true;
 
 		}
 
 		/**
 		 * @see net.sourceforge.pmd.cpd.CPDListener#update(String)
 		 */
-		public void update(String arg0) {
-
+		public boolean update(String arg0) {
+			return true;
 		}
 
 		/**
 		 * @see net.sourceforge.pmd.cpd.CPDListener#addedNewTile(Tile, int, int)
 		 */
-		public void addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
+		public boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
 			if (firstTile) {
 				monitor.beginTask("Adding Tiles", totalTiles);
 				firstTile = false;
@@ -186,6 +188,7 @@ public class CPDCheckProjectAction
 			if (tile != null)
 				monitor.subTask(tile.getImage());
 			monitor.worked(1);
+			return true;
 		}
 
 	}

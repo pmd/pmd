@@ -27,6 +27,13 @@ import org.eclipse.ui.PlatformUI;
 public class PMDAction implements IWorkbenchWindowActionDelegate {
 
 	/**
+	 * The constructor.
+	 */
+	public PMDAction() {
+	}
+	
+
+	/**
 	 * Insert the method's description here.
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
@@ -39,12 +46,19 @@ public class PMDAction implements IWorkbenchWindowActionDelegate {
 			Common.PMD_DIALOG = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),  "PMD Status", ProgressDialog.UNKNOWN);
 			Common.PMD_DIALOG.open();
 			PMDPlugin.getWorkspace().getRoot().accept( visitor );
-			Common.PMD_DIALOG.close();
-			Common.PMD_DIALOG = null;
+
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			
+		} finally
+		{
+			Common.PMD_DIALOG.close();
+			Common.PMD_DIALOG = null;		
 		}
+		
 	}
 
 	/**
