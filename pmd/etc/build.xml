@@ -84,7 +84,7 @@
         <delete>
             <fileset dir="src/net/sourceforge/pmd/ast" includes="*.java,*.jj"/>
         </delete>
-        <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/com/infoether/pmd/ast" javacchome="c:/javacc2.1"/>
+        <jjtree target="etc/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
         <javacc target="src/net/sourceforge/pmd/ast/Java1.4-c.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="c:/javacc2.1"/>
         <copy overwrite="yes" todir="src/net/sourceforge/pmd/ast">
             <fileset dir="tmp" includes="*.java"/>
