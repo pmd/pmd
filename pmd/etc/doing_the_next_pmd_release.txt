@@ -69,6 +69,7 @@ if you see a bug and fix it, you can delete the release using:
 cvs rtag -d pmd_release_3_0 pmd
 and then retag everything
 
+ncftpput upload.sourceforge.net incoming/ pmd-src-3.0.zip pmd-bin-3.0.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
