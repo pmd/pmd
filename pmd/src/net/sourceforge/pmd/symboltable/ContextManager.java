@@ -16,14 +16,8 @@ public class ContextManager {
         return (Scope)scopes.get(scopes.size()-1);
     }
 
-    public void recordOccurrence(NameOccurrence nameOccurrence) {
-        if (occursInHigherScope(nameOccurrence, scopes.size()-1)) {
-            return;
-        }
-        if (!getCurrentScope().contains(nameOccurrence) ) {
-            return;
-        }
-        getCurrentScope().addOccurrence(nameOccurrence);
+    public void lookup(NameOccurrence nameOccurrence) {
+        lookup(nameOccurrence, scopes.size()-1);
     }
 
     public void openScope() {
@@ -34,14 +28,13 @@ public class ContextManager {
         scopes.remove(scopes.size()-1);
     }
 
-    private boolean occursInHigherScope(NameOccurrence nameOccurrence, int startingDepth) {
-        if (!((Scope)scopes.get(startingDepth)).contains(nameOccurrence) && startingDepth>1) {
-            return occursInHigherScope(nameOccurrence, startingDepth-1);
+    private void lookup(NameOccurrence nameOccurrence, int startingDepth) {
+        Scope scope = (Scope)scopes.get(startingDepth);
+        if (!scope.contains(nameOccurrence) && startingDepth>1) {
+            lookup(nameOccurrence, startingDepth-1);
         }
-        if (((Scope)scopes.get(startingDepth)).contains(nameOccurrence)) {
-            ((Scope)scopes.get(startingDepth)).addOccurrence(nameOccurrence);
-            return true;
+        if (scope.contains(nameOccurrence)) {
+            scope.addOccurrence(nameOccurrence);
         }
-        return false;
     }
 }

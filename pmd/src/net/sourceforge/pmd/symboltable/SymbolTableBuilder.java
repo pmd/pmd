@@ -37,7 +37,7 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
             node.setScope(table.getCurrentScope());
-            table.add(new NameDeclaration(node, Kind.LOCAL_VARIABLE));
+            table.addDeclaration(new NameDeclaration(node, Kind.LOCAL_VARIABLE));
         }
         return super.visit(node, data);
     }
@@ -47,7 +47,7 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
      */
     public Object visit(ASTName node, Object data) {
         if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
-            table.recordOccurrence(new NameOccurrence(getEndName(node), node.getBeginLine()));
+            table.lookup(new NameOccurrence(getEndName(node), node.getBeginLine()));
         }
         return super.visit(node, data);
     }

@@ -26,12 +26,12 @@ public class SymbolTable {
         cm.leaveScope();
     }
 
-    public void add(NameDeclaration nameDecl) {
+    public void addDeclaration(NameDeclaration nameDecl) {
         cm.getCurrentScope().addDeclaration(nameDecl);
     }
 
-    public void recordOccurrence(NameOccurrence nameOccurrence) {
-        cm.recordOccurrence(nameOccurrence);
+    public void lookup(NameOccurrence nameOccurrence) {
+        cm.lookup(nameOccurrence);
     }
 
     public Iterator getUnusedNameDeclarations() {
