@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Vladimir Bossicard - test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Ron Sidi - bug reports</li>
             <li>David Koontz - suggestions for tweaking PMD command line options</li>
             <li>Jesse Glick - patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
@@ -69,7 +70,6 @@
             <li>Conrad Roche - bug report</li>
             <li>mcclain looney - patch for CPD GUI, bug reports</li>
             <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
-            <li>Vladimir Bossicard - VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Pablo Casado - Bug report for UseSingletonRule</li>
             <li>Nicolai Czempin - Various rule suggestions, additional PMD backronyms</li>
             <li>Frank Hardisty - BeanMembersShouldSerializeRule</li>
