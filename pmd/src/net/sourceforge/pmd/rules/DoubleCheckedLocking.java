@@ -18,6 +18,8 @@ import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTReferenceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,20 +45,23 @@ import java.util.List;
  */
 public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
 
-    private boolean interfaceSkipper;
+    private boolean insideInterface;
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (interfaceSkipper == true) {//skip methods in interfaces
+        if (insideInterface) {
             return super.visit(node, data);
         }
-        ASTResultType rt = (ASTResultType) node.jjtGetChild(0);
-        if (rt.isVoid() == true) {
+
+        ASTResultType rt = (ASTResultType)node.jjtGetChild(0);
+        if (rt.isVoid()) {
             return super.visit(node, data);
         }
-        ASTType t = (ASTType) rt.jjtGetChild(0);
-        if (t.jjtGetNumChildren() == 0 || !(t.jjtGetChild(0) instanceof ASTName)) {
+
+        ASTType typeNode = (ASTType) rt.jjtGetChild(0);
+        if (typeNode.jjtGetNumChildren() == 0 || !(typeNode.jjtGetChild(0) instanceof ASTReferenceType)) {
             return super.visit(node, data);
         }
+
         String returnVariableName = null;
         List finder = new ArrayList();
         GET_RETURN_VARIABLE_NAME:{
@@ -139,40 +144,13 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
         return false;
     }
 
-/*
-FIXME
-    public Object visit(ASTClassDeclaration node, Object data) {
-        boolean temp = interfaceSkipper;
-        interfaceSkipper = false;
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        boolean temp = insideInterface;
+        insideInterface = node.isInterface();
         Object o = super.visit(node, data);
-        interfaceSkipper = temp;
+        insideInterface = temp;
         return o;
     }
-
-public Object visit(ASTNestedClassDeclaration node, Object data) {
-        boolean temp = interfaceSkipper;
-        interfaceSkipper = false;
-        Object o = super.visit(node, data);
-        interfaceSkipper = temp;
-        return o;
-    }
-
-    public Object visit(ASTInterfaceDeclaration node, Object data) {
-        boolean temp = interfaceSkipper;
-        interfaceSkipper = true;
-        Object o = super.visit(node, data);
-        interfaceSkipper = temp;
-        return o;
-    }
-
-    public Object visit(ASTNestedInterfaceDeclaration node, Object data) {
-        boolean temp = interfaceSkipper;
-        interfaceSkipper = true;
-        Object o = super.visit(node, data);
-        interfaceSkipper = temp;
-        return o;
-    }
-*/
 
     public boolean matchName(ASTPrimaryExpression ape, String name) {
         if ((ape.jjtGetNumChildren() == 1) && (ape.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
@@ -187,30 +165,8 @@ public Object visit(ASTNestedClassDeclaration node, Object data) {
 
     public String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
         if ((pp.jjtGetNumChildren() == 1) && (pp.jjtGetChild(0) instanceof ASTName)) {
-            String name2 = ((ASTName) pp.jjtGetChild(0)).getImage();
-            return name2;
+            return ((ASTName) pp.jjtGetChild(0)).getImage();
         }
         return null;
     }
-    //Testing Section
-    //    public Object visit(ASTCompilationUnit node, Object data) {
-    //		interfaceSkipper = false; //safety
-    //		try {
-    //			return super.visit(node,data);
-    //		}
-    //		catch(Exception e){
-    //			e.printStackTrace();
-    //			throw new RuntimeException(e.getMessage());
-    //		}
-    //    }
-    //	public Object visit(ASTMethodDeclarator node, Object data) {
-    //		System.out.println("method = " + node.getImage());
-    //		return super.visit(node,data);
-    //	}
-    //
-    //	public Object visit(ASTPackageDeclaration node, Object data){
-    //		String name = ((ASTName)node.jjtGetChild(0)).getImage();
-    //		System.out.println("package = " + name);
-    //		return super.visit(node, data);
-    //	}
 }
