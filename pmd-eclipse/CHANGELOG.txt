@@ -2,6 +2,16 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
+v2.0.2 - 19/12/2003
+
+Runtime
+-------
+. Fixing malformed UTF-8 characters in generated xml files
+  (thanks to Jacques Lebourgeois)
+
+
+
+----------------------------------------------------------------------------------------
 v2.0.1 - 09/12/2003
 
 Runtime

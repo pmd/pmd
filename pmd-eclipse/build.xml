@@ -29,16 +29,16 @@
 		<antcall target="gather.bin.parts">
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
-		<zip zipfile="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.1.v3.jar" basedir="${temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3" filesonly="false" whenempty="skip"/>
+		<zip zipfile="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.2.v3.jar" basedir="${temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3" filesonly="false" whenempty="skip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
-		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3">
+		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3"/>
+		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3">
 			<fileset dir="${build.result.folder}" includes="CHANGELOG.txt,LICENSE.txt,README.txt,RELNOTES.txt,TODO.txt,about.ini,doc.zip,icons/,lib/,log4j.dtd,log4j.xml,messages.properties,nl/,plugin.properties,plugin.xml,plugin_fr.properties,toc.xml,welcome.xml,pmd-eclipse.jar"			/>
 		</copy>
-		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3">
+		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3">
 			<fileset dir="${basedir}" includes="CHANGELOG.txt,LICENSE.txt,README.txt,RELNOTES.txt,TODO.txt,about.ini,doc.zip,icons/,lib/,log4j.dtd,log4j.xml,messages.properties,nl/,plugin.properties,plugin.xml,plugin_fr.properties,toc.xml,welcome.xml,pmd-eclipse.jar"			/>
 		</copy>
 	</target>
@@ -80,23 +80,23 @@
 	</target>
 
 	<target name="gather.sources" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
-		<copy file="${build.result.folder}/pmd-eclipsesrc.zip" todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
-		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3">
+		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3"/>
+		<copy file="${build.result.folder}/pmd-eclipsesrc.zip" todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3"/>
+		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3">
 			<fileset dir="${basedir}" includes="build.properties,build.xml,src/"			/>
 		</copy>
 	</target>
 
 	<target name="gather.logs" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
-		<copy file="${temp.folder}/pmd-eclipse.jar.bin.log" todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.1.v3"/>
+		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3"/>
+		<copy file="${temp.folder}/pmd-eclipse.jar.bin.log" todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_2.0.2.v3"/>
 	</target>
 
 	<target name="clean" depends="init" description="Clean the plug-in: net.sourceforge.pmd.eclipse of all the zips, jars and logs created.">
 		<delete file="${build.result.folder}/pmd-eclipse.jar"/>
 		<delete file="${build.result.folder}/pmd-eclipsesrc.zip"/>
-		<delete file="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.1.v3.jar"/>
-		<delete file="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.1.v3.zip"/>
+		<delete file="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.2.v3.jar"/>
+		<delete file="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.2.v3.zip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
@@ -119,7 +119,7 @@
 		<delete>
 			<fileset dir="${temp.folder}" includes="**/*.bin.log"			/>
 		</delete>
-		<zip zipfile="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.1.v3.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip"/>
+		<zip zipfile="${plugin.destination}/net.sourceforge.pmd.eclipse_2.0.2.v3.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
