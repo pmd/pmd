@@ -43,7 +43,7 @@ public class Benchmark {
     }
 
     private static final String JAVA_SRC_DIR = "/usr/local/java/src/java/lang/";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
         Set results = new TreeSet();
@@ -54,30 +54,9 @@ public class Benchmark {
         RuleSetFactory factory = new RuleSetFactory();
         Iterator i = factory.getRegisteredRuleSets();
         while (i.hasNext()) {
-            RuleSet ruleSet = (RuleSet)i.next();
-            Set rules = ruleSet.getRules();
-            for (Iterator j = rules.iterator(); j.hasNext();) {
-                Rule rule = (Rule)j.next();
-                if (DEBUG) System.out.println("Starting " + rule.getName());
-                RuleSet working = new RuleSet();
-                working.addRule(rule);
-
-                PMD p = new PMD();
-                RuleContext ctx = new RuleContext();
-                long start = System.currentTimeMillis();
-                for (Iterator k = files.iterator(); k.hasNext();) {
-                    File file = (File)k.next();
-                    FileReader reader = new FileReader(file);
-                    ctx.setSourceCodeFilename(file.getName());
-                    p.processFile(reader, working, ctx);
-                    reader.close();
-                }
-                long end = System.currentTimeMillis();
-                long elapsed = end - start;
-                results.add(new Result(elapsed, rule));
-                if (DEBUG) System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
-            }
+            stress((RuleSet)i.next(), files, results);
         }
+        stress(factory.createRuleSet("rulesets/newrules.xml"), files, results);
 
         System.out.println("=========================================================");
         System.out.println("Rule\t\t\t\t\t\tTime in ms");
@@ -93,5 +72,31 @@ public class Benchmark {
             System.out.println(out.toString());
         }
         System.out.println("=========================================================");
+    }
+
+    private static void stress(RuleSet ruleSet, List files, Set results) throws PMDException, IOException {
+        Set rules = ruleSet.getRules();
+        for (Iterator j = rules.iterator(); j.hasNext();) {
+            Rule rule = (Rule)j.next();
+            if (DEBUG) System.out.println("Starting " + rule.getName());
+
+            RuleSet working = new RuleSet();
+            working.addRule(rule);
+
+            PMD p = new PMD();
+            RuleContext ctx = new RuleContext();
+            long start = System.currentTimeMillis();
+            for (Iterator k = files.iterator(); k.hasNext();) {
+                File file = (File)k.next();
+                FileReader reader = new FileReader(file);
+                ctx.setSourceCodeFilename(file.getName());
+                p.processFile(reader, working, ctx);
+                reader.close();
+            }
+            long end = System.currentTimeMillis();
+            long elapsed = end - start;
+            results.add(new Result(elapsed, rule));
+            if (DEBUG) System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
+        }
     }
 }
