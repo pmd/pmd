@@ -38,10 +38,34 @@ public class PMDOpenTool {
     static MessageCategory cpdCat = new MessageCategory("CPD Results");
     public static ActionGroup GROUP_MENU_PMD = new ActionGroup("PMD", 'p', true);
     public static ActionGroup GROUP_PROJECT_PMD = new ActionGroup("PMD", 'p', true);
+    public static ActionGroup GROUP_PACKAGE_PMD = new ActionGroup("PMD", 'p', true);
     public static ActionGroup GROUP_TOOLBAR_PMD = new ActionGroup("PMD", 'P', true);
     static Font fileNameMsgFont = new Font("Dialog", Font.BOLD, 12);
     static Font stdMsgFont = new Font("Dialog", Font.PLAIN, 12);
+    static ImageIcon IMAGE_CHECK_PROJECT;
+    static ImageIcon IMAGE_CHECK_SELECTED_PACKAGE;
+    static ImageIcon IMAGE_CPD;
+    static ImageIcon IMAGE_CHECK_FILE;
+    static ImageIcon IMAGE_CHECK_SELECTED_FILE;
+    static ImageIcon IMAGE_CONFIGURE_PMD;
+    static ImageIcon IMAGE_CPD_SELECTED_PACKAGE;
 
+    static {
+        try {
+            IMAGE_CHECK_PROJECT = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkProject.gif"));
+            IMAGE_CHECK_SELECTED_PACKAGE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkSelectedPackage.gif"));
+            IMAGE_CPD = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/cpd.gif"));
+            IMAGE_CHECK_FILE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkFile.gif"));
+            IMAGE_CHECK_SELECTED_FILE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkSelectedFile.gif"));
+            IMAGE_CONFIGURE_PMD = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/configurePMD.gif"));
+            IMAGE_CPD_SELECTED_PACKAGE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/cpdSelectedPackage.gif"));
+        }
+        catch (Exception e) {
+            MessageDialog md = new MessageDialog(null, "Error Loading PMD Images", e.toString());
+            md.show();
+        }
+
+    }
 
     /**
      * Default constructor
@@ -58,45 +82,49 @@ public class PMDOpenTool {
      */
     public static void initOpenTool (byte majorVersion, byte minorVersion) {
         if (majorVersion == PrimeTime.CURRENT_MAJOR_VERSION) {
+            try {
+                GROUP_MENU_PMD.add(B_ACTION_PMDCheckCurrentFile);
+                GROUP_MENU_PMD.add(B_ACTION_PMDProjectCheck);
+                GROUP_MENU_PMD.add(B_ACTION_CPDProjectCheck);
+                GROUP_MENU_PMD.add(B_ACTION_PMDConfig);
+                JBuilderMenu.GROUP_Tools.add(GROUP_MENU_PMD);
+                GROUP_TOOLBAR_PMD.add(B_ACTION_PMDCheckCurrentFile);
+                GROUP_TOOLBAR_PMD.add(B_ACTION_PMDProjectCheck);
+                GROUP_TOOLBAR_PMD.add(B_ACTION_CPDProjectCheck);
+                Browser.addToolBarGroup(GROUP_TOOLBAR_PMD);
+                registerWithContentManager();
+                registerWithProjectView();
 
-            GROUP_MENU_PMD.add(B_ACTION_PMDCheck);
-            GROUP_MENU_PMD.add(B_ACTION_PMDProjectCheck);
-            GROUP_MENU_PMD.add(B_ACTION_CPDProjectCheck);
-            GROUP_MENU_PMD.add(B_ACTION_PMDConfig);
-            JBuilderMenu.GROUP_Tools.add(GROUP_MENU_PMD);
-            GROUP_TOOLBAR_PMD.add(B_ACTION_PMDCheck);
-            GROUP_TOOLBAR_PMD.add(B_ACTION_PMDProjectCheck);
-            GROUP_TOOLBAR_PMD.add(B_ACTION_CPDProjectCheck);
-            Browser.addToolBarGroup(GROUP_TOOLBAR_PMD);
-            registerWithContentManager();
-            registerWithProjectView();
+                /**
+                 * Unfortunately for now, the order in which these are instantiated is important
+                 * The ActiveRuleSetPropertyGroup relies upon the ImportedRuleSetPropertyGroup already
+                 * being construted before it builds itself.  It's ugly but it works.
+                 */
+                ImportedRuleSetPropertyGroup ipropGrp = new ImportedRuleSetPropertyGroup();
+                ActiveRuleSetPropertyGroup apropGrp = new ActiveRuleSetPropertyGroup();
+                ConfigureRuleSetPropertyGroup cpropGrp = new ConfigureRuleSetPropertyGroup();
+                AcceleratorPropertyGroup accpropGrp = new AcceleratorPropertyGroup();
+                CPDPropertyGroup cpdPropGrp = new CPDPropertyGroup();
 
-            /**
-             * Unfortunately for now, the order in which these are instantiated is important
-             * The ActiveRuleSetPropertyGroup relies upon the ImportedRuleSetPropertyGroup already
-             * being construted before it builds itself.  It's ugly but it works.
-             */
-            ImportedRuleSetPropertyGroup ipropGrp = new ImportedRuleSetPropertyGroup();
-            ActiveRuleSetPropertyGroup apropGrp = new ActiveRuleSetPropertyGroup();
-            ConfigureRuleSetPropertyGroup cpropGrp = new ConfigureRuleSetPropertyGroup();
-            AcceleratorPropertyGroup accpropGrp = new AcceleratorPropertyGroup();
-            CPDPropertyGroup cpdPropGrp = new CPDPropertyGroup();
-
-            //register the Keymap shortcuts if they are enabled
-            if (minorVersion > 1) {  //accelerators don't seem to work in OpenTools 4.1
-                if (AcceleratorPropertyGroup.PROP_KEYS_ENABLED.getBoolean()) {
-                    registerShortCuts();
+                //register the Keymap shortcuts if they are enabled
+                if (minorVersion > 1) {  //accelerators don't seem to work in OpenTools 4.1
+                    if (AcceleratorPropertyGroup.PROP_KEYS_ENABLED.getBoolean()) {
+                        registerShortCuts();
+                    }
                 }
-            }
 
-            PropertyManager.registerPropertyGroup(apropGrp);
-            PropertyManager.registerPropertyGroup(cpropGrp);
-            PropertyManager.registerPropertyGroup(ipropGrp);
-            if (minorVersion > 1) { //accelerators don't seem to work in OpenTools 4.1
-                PropertyManager.registerPropertyGroup(accpropGrp);
+                PropertyManager.registerPropertyGroup(apropGrp);
+                PropertyManager.registerPropertyGroup(cpropGrp);
+                PropertyManager.registerPropertyGroup(ipropGrp);
+                if (minorVersion > 1) { //accelerators don't seem to work in OpenTools 4.1
+                    PropertyManager.registerPropertyGroup(accpropGrp);
+                }
+                PropertyManager.registerPropertyGroup(cpdPropGrp);
             }
-            PropertyManager.registerPropertyGroup(cpdPropGrp);
-
+            catch (Exception e) {
+                MessageDialog md = new MessageDialog(null, "PMDOpenTool Loading Error", e.toString());
+                md.show();
+            }
         }
     }
 
@@ -112,7 +140,7 @@ public class PMDOpenTool {
 
         EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
                 AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()),
-                E_ACTION_PMDCheck);
+                E_ACTION_PMDCheckCurrentFile);
 
         EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
                 AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()),
@@ -127,7 +155,7 @@ public class PMDOpenTool {
         ContextActionProvider cap = new ContextActionProvider() {
 
             public Action getContextAction (Browser browser, Node[] nodes) {
-                return  B_ACTION_PMDCheck;
+                return  B_ACTION_PMDCheckCurrentFile;
             }
         };
         ContentManager.registerContextActionProvider(cap);
@@ -136,12 +164,21 @@ public class PMDOpenTool {
     private static void registerWithProjectView() {
         GROUP_PROJECT_PMD.add(B_ACTION_PMDProjectCheck);
         GROUP_PROJECT_PMD.add(B_ACTION_CPDProjectCheck);
+        GROUP_PACKAGE_PMD.add(B_ACTION_PMDPackageCheck);
+        GROUP_PACKAGE_PMD.add(B_ACTION_CPDPackageCheck);
 
         ContextActionProvider cap1 = new ContextActionProvider() {
             public Action getContextAction (Browser browser, Node[] nodes) {
                 Node node = browser.getProjectView().getSelectedNode();
-                if (node instanceof JBProject || node instanceof PackageNode)
+                if (node instanceof JBProject) {  //used to check across an entire project
                     return GROUP_PROJECT_PMD;
+                }
+                else if (node instanceof PackageNode) {   //used to check against a single package
+                    return GROUP_PACKAGE_PMD;
+                }
+                else if (node instanceof JavaFileNode) {
+                    return B_ACTION_PMDCheckSelectedFile;
+                }
                 return null;
             }
         };
@@ -194,7 +231,7 @@ public class PMDOpenTool {
 
 
     //create EditorAction for performing a PMD Check
-    public static EditorAction E_ACTION_PMDCheck =
+    public static EditorAction E_ACTION_PMDCheckCurrentFile =
             new EditorAction("Displays PMD statistics about a Java File") {
         public void actionPerformed(ActionEvent e) {
             pmdCheck();
@@ -210,19 +247,32 @@ public class PMDOpenTool {
     };
 
     //create the Menu action item for initiating the PMD check
-    public static BrowserAction B_ACTION_PMDCheck =
+    public static BrowserAction B_ACTION_PMDCheckCurrentFile =
             // A new action with short menu string, mnemonic, and long menu string
-    new BrowserAction("PMD Check File", 'P', "Displays PMD statistics about a Java File", new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkFile.gif"))) {
-
+    new BrowserAction("PMD Check File", 'P', "Displays PMD statistics about a Java File", IMAGE_CHECK_FILE) {
         // The function called when the menu is selected
         public void actionPerformed (Browser browser) {
             pmdCheck();
         }
     };
 
+    //create the Menu action item for initiating the PMD check
+    public static BrowserAction B_ACTION_PMDCheckSelectedFile =
+            // A new action with short menu string, mnemonic, and long menu string
+    new BrowserAction("PMD Check File", 'P', "Displays PMD statistics about a Java File", IMAGE_CHECK_SELECTED_FILE) {
+        // The function called when the menu is selected
+        public void actionPerformed (Browser browser) {
+            try {
+                browser.setActiveNode(browser.getProjectView().getSelectedNode(), true);
+                pmdCheck();
+            }
+            catch (Exception e) {}
+        }
+    };
+
     //Create the menu action item for configuring PMD
     public static BrowserAction B_ACTION_PMDConfig = new BrowserAction("Configure PMD",
-            'C', "Configure the PMD Settings") {
+            'C', "Configure the PMD Settings", IMAGE_CONFIGURE_PMD) {
         public void actionPerformed (Browser browser) {
             PropertyManager.showPropertyDialog(browser, "PMD Options", Constants.RULESETS_TOPIC,
                     PropertyDialog.getLastSelectedPage());
@@ -230,8 +280,7 @@ public class PMDOpenTool {
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project",
-            new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkProject.gif"))) {
+    public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project", IMAGE_CHECK_PROJECT) {
         public void actionPerformed(Browser browser) {
             pmdCheckProject();
         }
@@ -239,12 +288,30 @@ public class PMDOpenTool {
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction B_ACTION_CPDProjectCheck = new BrowserAction ("CPD Check Project", 'P', "Run CPD on all the java files in the project",
-            new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/cpd.gif"))) {
+    public static BrowserAction B_ACTION_PMDPackageCheck = new BrowserAction ("PMD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CHECK_SELECTED_PACKAGE) {
+        public void actionPerformed(Browser browser) {
+            RuleSet rules = constructRuleSets();
+            PackageNode node = (PackageNode)browser.getProjectView().getSelectedNode();
+            pmdCheckPackage(node, rules);
+        }
+
+    };
+
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_CPDPackageCheck = new BrowserAction ("CPD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CPD_SELECTED_PACKAGE) {
+        public void actionPerformed(Browser browser) {
+            pmdCPD((PackageNode)browser.getProjectView().getSelectedNode());
+        }
+
+    };
+
+
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_CPDProjectCheck = new BrowserAction ("CPD Check Project", 'P', "Run CPD on all the java files in the project", IMAGE_CPD) {
         public void actionPerformed(Browser browser) {
             Runnable r = new Runnable() {
                 public void run() {
-                    pmdCPD();
+                    pmdCPD(null);
                 }
             };
             Thread t = new Thread(r);
@@ -363,19 +430,25 @@ public class PMDOpenTool {
         }
     }
 
-    private static void pmdCPD() {
+    private static void pmdCPD(PackageNode startingNode) {
         try {
             Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
             final CPD cpd = new CPD();
             cpd.setMinimumTileSize(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger());
-            Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
             CPDDialog cpdd = new CPDDialog(cpd);
-            for (int i=0; i<nodes.length; i++ ) {
-                if (nodes[i] instanceof PackageNode) {
-                    PackageNode node = (PackageNode)nodes[i];
-                    String packageName = node.getName();
-                    if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
-                        pmdCPDPackage(node, cpd);
+
+            if (startingNode != null) {   //rub cpd across the provided node
+                pmdCPDPackage(startingNode, cpd);
+            }
+            else {  //otherwise, traverse all the nodes looking for package nodes
+                Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+                for (int i=0; i<nodes.length; i++ ) {
+                    if (nodes[i] instanceof PackageNode) {
+                        PackageNode node = (PackageNode)nodes[i];
+                        String packageName = node.getName();
+                        if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
+                            pmdCPDPackage(node, cpd);
+                        }
                     }
                 }
             }
