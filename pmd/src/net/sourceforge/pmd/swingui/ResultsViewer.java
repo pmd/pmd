@@ -28,6 +28,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 class ResultsViewer extends JEditorPane implements ListSelectionListener
 {
 
+    private PMDViewer m_pmdViewer;
     private DirectoryTable m_directoryTable;
     private PMD m_pmd;
     private RuleContext m_ruleContext;
@@ -36,13 +37,14 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
     /**
      ********************************************************************************
      */
-    protected ResultsViewer(DirectoryTable directoryTable)
+    protected ResultsViewer(PMDViewer pmdViewer, DirectoryTable directoryTable)
     {
         super();
 
         setEditorKit(new HTMLEditorKit());
         setEditable(false);
 
+        m_pmdViewer = pmdViewer;
         m_directoryTable = directoryTable;
         m_pmd = new PMD();
         m_ruleContext = new RuleContext();
@@ -58,14 +60,14 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
         {
             String message = "Could not get registered rule sets.";
 
-            MessageDialog.show(message, exception);
+            MessageDialog.show(m_pmdViewer, message, exception);
         }
 
         if (ruleSets.hasNext() == false)
         {
             String message = "There are no rule sets.";
 
-            MessageDialog.show(message);
+            MessageDialog.show(m_pmdViewer, message);
         }
 
         while (ruleSets.hasNext())
@@ -97,7 +99,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
 
                 AnalyzeThread analyzeThread = new AnalyzeThread("Analyze", file);
 
-                MessageDialog.show("Analyzing.  Please wait...", analyzeThread);
+                MessageDialog.show(m_pmdViewer, "Analyzing.  Please wait...", analyzeThread);
             }
         }
     }
@@ -155,7 +157,7 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
             }
             catch (FileNotFoundException exception)
             {
-                MessageDialog.show(null, exception);
+                MessageDialog.show(m_pmdViewer, null, exception);
             }
         }
     }

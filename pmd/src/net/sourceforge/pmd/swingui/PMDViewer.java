@@ -7,9 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.Font;
-import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,6 +25,8 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
+import net.sourceforge.pmd.PMDException;
+
 /**
  *
  * @author Donald A. Leckie
@@ -34,6 +36,7 @@ import javax.swing.UIManager;
 public class PMDViewer extends JFrame
 {
 
+    private Preferences m_preferences;
     private DirectoryTree m_directoryTree;
     private JLabel m_selectSourceFileLabel;
     private JScrollPane m_directoryTreeScrollPane;
@@ -112,8 +115,8 @@ public class PMDViewer extends JFrame
         m_selectSourceFileLabel = new JLabel();
 
         m_selectSourceFileLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-        m_selectSourceFileLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-        m_selectSourceFileLabel.setText("Select a source file to view its analysis results below.");
+        m_selectSourceFileLabel.setBorder(new EmptyBorder(0, 0, 5, 0));
+        m_selectSourceFileLabel.setText("Select a source file to view its analysis below.");
     }
 
     /**
@@ -124,15 +127,11 @@ public class PMDViewer extends JFrame
     {
         Color background;
 
-        m_directoryTree = new DirectoryTree();
-        m_directoryTreeScrollPane = new JScrollPane(m_directoryTree);
+        m_directoryTree = new DirectoryTree(this);
+        m_directoryTreeScrollPane = ComponentFactory.createScrollPane(m_directoryTree);
         background = UIManager.getColor("pmdTreeBackground");
 
-        m_directoryTreeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        m_directoryTreeScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         m_directoryTreeScrollPane.getViewport().setBackground(background);
-        m_directoryTreeScrollPane.setAutoscrolls(true);
-        m_directoryTreeScrollPane.setBorder(BorderFactory.createEtchedBorder());
     }
 
     /**
@@ -144,14 +143,10 @@ public class PMDViewer extends JFrame
         Color background;
 
         m_directoryTable = new DirectoryTable(m_directoryTree);
-        m_directoryTableScrollPane = new JScrollPane(m_directoryTable);
+        m_directoryTableScrollPane = ComponentFactory.createScrollPane(m_directoryTable);
         background = UIManager.getColor("pmdTableBackground");
 
-        m_directoryTableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        m_directoryTableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         m_directoryTableScrollPane.getViewport().setBackground(background);
-        m_directoryTableScrollPane.setAutoscrolls(true);
-        m_directoryTableScrollPane.setBorder(BorderFactory.createEtchedBorder());
     }
 
     /**
@@ -175,7 +170,7 @@ public class PMDViewer extends JFrame
      */
     private void createResultsViewer()
     {
-        m_resultsViewer = new ResultsViewer(m_directoryTable);
+        m_resultsViewer = new ResultsViewer(this, m_directoryTable);
 
         m_resultsViewer.setSelectionColor(Color.blue);
     }
@@ -186,13 +181,7 @@ public class PMDViewer extends JFrame
      */
     private void createResultsViewerScrollPane()
     {
-        m_resultsViewerScrollPane = new JScrollPane(m_resultsViewer);
-
-        m_resultsViewerScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        m_resultsViewerScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        m_resultsViewerScrollPane.getViewport().setBackground(Color.white);
-        m_resultsViewerScrollPane.setAutoscrolls(true);
-        m_resultsViewerScrollPane.setBorder(BorderFactory.createEtchedBorder());
+        m_resultsViewerScrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
     }
 
     /**
@@ -218,15 +207,32 @@ public class PMDViewer extends JFrame
     {
         JPanel contentPanel = new JPanel(new BorderLayout());
 
-        Border outsideBorder = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-        Border insideBorder = BorderFactory.createEmptyBorder(margin, margin, margin, margin);
-        Border compoundBorder = BorderFactory.createCompoundBorder(outsideBorder, insideBorder);
+        EtchedBorder outsideBorder = new EtchedBorder(EtchedBorder.RAISED);
+        EmptyBorder insideBorder = new EmptyBorder(margin, margin, margin, margin);
+        CompoundBorder compoundBorder = new CompoundBorder(outsideBorder, insideBorder);
 
         contentPanel.setBorder(compoundBorder);
         contentPanel.add(m_selectSourceFileLabel, BorderLayout.NORTH);
         contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
 
         return contentPanel;
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * @return
+     */
+    protected Preferences getPreferences()
+    {
+        if (m_preferences == null)
+        {
+            m_preferences = new Preferences();
+
+            m_preferences.load();
+        }
+
+        return m_preferences;
     }
 
     /**
@@ -242,11 +248,10 @@ public class PMDViewer extends JFrame
     /**
      *********************************************************************************
      *
-     * @param args
      */
     private void setupFiles()
     {
-        m_directoryTree.setupFiles();
+        m_directoryTree.setupFiles(this);
     }
 
     /**
@@ -316,7 +321,7 @@ public class PMDViewer extends JFrame
             //
             // Save menu item
             //
-            icon = UIManager.getIcon("Save");
+            icon = UIManager.getIcon("save");
             menuItem = new JMenuItem("Save", icon);
             menuItem.addActionListener((ActionListener) new SaveActionListener());
             menuItem.setMnemonic('S');
@@ -326,7 +331,7 @@ public class PMDViewer extends JFrame
             //
             // Save As menu item
             //
-            icon = UIManager.getIcon("SaveAs");
+            icon = UIManager.getIcon("saveAs");
             menuItem = new JMenuItem("Save As...", icon);
             menuItem.addActionListener((ActionListener) new SaveAsActionListener());
             menuItem.setMnemonic('v');
@@ -341,7 +346,7 @@ public class PMDViewer extends JFrame
             //
             // Print menu item
             //
-            icon = UIManager.getIcon("Print");
+            icon = UIManager.getIcon("print");
             menuItem = new JMenuItem("Print...", icon);
             menuItem.addActionListener((ActionListener) new PrintActionListener());
             menuItem.setMnemonic('P');
@@ -397,7 +402,7 @@ public class PMDViewer extends JFrame
             //
             // Copy Results menu item
             //
-            icon = UIManager.getIcon("Copy");
+            icon = UIManager.getIcon("copy");
             menuItem = new JMenuItem("Copy Results", icon);
             menuItem.addActionListener((ActionListener) new CopyResultsActionListener());
             menuItem.setMnemonic('C');
@@ -412,9 +417,9 @@ public class PMDViewer extends JFrame
             //
             // Rule Properties menu item
             //
-            icon = UIManager.getIcon("Edit");
-            menuItem = new JMenuItem("Rule Properties...", icon);
-            menuItem.addActionListener((ActionListener) new EditRulePropertiesActionListener());
+            icon = UIManager.getIcon("edit");
+            menuItem = new JMenuItem("Rules...", icon);
+            menuItem.addActionListener((ActionListener) new EditRulesActionListener());
             menuItem.setMnemonic('R');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
             add(menuItem);
@@ -422,7 +427,7 @@ public class PMDViewer extends JFrame
             //
             // Preferences menu item
             //
-            icon = UIManager.getIcon("Edit");
+            icon = UIManager.getIcon("edit");
             menuItem = new JMenuItem("Preferences...", icon);
             menuItem.addActionListener((ActionListener) new EditPreferencesActionListener());
             menuItem.setMnemonic('f');
@@ -456,7 +461,7 @@ public class PMDViewer extends JFrame
             //
             // Copy Results menu item
             //
-            icon = UIManager.getIcon("View");
+            icon = UIManager.getIcon("view");
             menuItem = new JMenuItem("Rules", icon);
             menuItem.addActionListener((ActionListener) new ViewRulesActionListener());
             menuItem.setMnemonic('U');
@@ -490,7 +495,7 @@ public class PMDViewer extends JFrame
             //
             // Copy Results menu item
             //
-            icon = UIManager.getIcon("QuestionMark");
+            icon = UIManager.getIcon("help");
             menuItem = new JMenuItem("Online Help", icon);
             menuItem.addActionListener((ActionListener) new HelpActionListener());
             menuItem.setMnemonic('H');
@@ -575,6 +580,7 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            System.exit(0);
         }
     }
 
@@ -596,11 +602,22 @@ public class PMDViewer extends JFrame
      *********************************************************************************
      *********************************************************************************
      */
-    private class EditRulePropertiesActionListener implements ActionListener
+    private class EditRulesActionListener implements ActionListener
     {
 
         public void actionPerformed(ActionEvent event)
         {
+            try
+            {
+                (new RulesEditor(PMDViewer.this)).setVisible(true);
+            }
+            catch (PMDException pmdException)
+            {
+                String message = pmdException.getMessage();
+                Exception exception = pmdException.getOriginalException();
+
+                MessageDialog.show(PMDViewer.this, message, exception);
+            }
         }
     }
 
@@ -614,6 +631,7 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            Preferences preferences = getPreferences();
         }
     }
 

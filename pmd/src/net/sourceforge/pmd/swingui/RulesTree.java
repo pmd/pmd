@@ -1,84 +1,79 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
+import java.util.EventObject;
+
 import javax.swing.border.EtchedBorder;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.UIManager;
 
 /**
  *
  * @author Donald A. Leckie
- * @since August 17, 2002
+ * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-class DirectoryTree extends JTree
+class RulesTree extends JTree
 {
 
     /**
-     *******************************************************************************
+     ***************************************************************************
      *
      */
-    protected DirectoryTree(PMDViewer pmdViewer)
+    protected RulesTree()
     {
-        super(new DirectoryTreeModel());
+        super(new DefaultTreeModel(RulesTreeNode.createRootNode()));
 
         setRootVisible(true);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        setCellRenderer(new DirectoryTreeNodeRenderer());
-        ((DirectoryTreeModel) getModel()).setDirectoryTree(this);
+        setCellRenderer(new TreeNodeRenderer());
+        setCellEditor(new TreeCellEditor());
         setBackground(UIManager.getColor("pmdTreeBackground"));
     }
 
     /**
-     *******************************************************************************
+     ***************************************************************************
      *
      */
-    protected void setupFiles(PMDViewer pmdViewer)
+    protected void expandNode(RulesTreeNode node)
     {
-        String message = "Locating file directories.  Please wait...";
-        SetupFilesThread setupFilesThread = new SetupFilesThread(message);
+        TreePath treePath = new TreePath(node.getPath());
 
-        MessageDialog.show(pmdViewer, message, setupFilesThread);
+        expandPath(treePath);
     }
 
     /**
-     ********************************************************************************
-     ********************************************************************************
-     ********************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
      */
-    private class SetupFilesThread extends JobThread
+    private class TreeCellEditor extends DefaultTreeCellEditor
     {
-
-        /**
-         ****************************************************************************
-         *
-         * @param name
-         */
-        private SetupFilesThread(String threadName)
-        {
-            super(threadName);
-        }
 
         /**
          ***************************************************************************
          *
          */
-        protected void process()
+        private TreeCellEditor()
         {
-            DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
+            super(RulesTree.this, (DefaultTreeCellRenderer) RulesTree.this.getCellRenderer());
+        }
 
-            treeModel.setupFiles();
-
-            DirectoryTreeNode treeNode = (DirectoryTreeNode) treeModel.getRoot();
-            TreePath treePath = new TreePath(treeNode.getPath());
-
-            expandPath(treePath);
+        /**
+         ***************************************************************************
+         *
+         * @return
+         */
+        public boolean isCellEditable(EventObject event)
+        {
+            return false;
         }
     }
 
@@ -87,24 +82,26 @@ class DirectoryTree extends JTree
      ********************************************************************************
      ********************************************************************************
      */
-    private class DirectoryTreeNodeRenderer extends DefaultTreeCellRenderer
+    private class TreeNodeRenderer extends DefaultTreeCellRenderer
     {
 
         private Icon m_defaultClosedIcon;
         private Icon m_defaultLeafIcon;
         private Icon m_defaultOpenIcon;
+        private Icon m_documentIcon;
 
         /**
          ***************************************************************************
          *
          */
-        protected DirectoryTreeNodeRenderer()
+        protected TreeNodeRenderer()
         {
             super();
 
             m_defaultClosedIcon = getDefaultClosedIcon();
             m_defaultLeafIcon = getDefaultLeafIcon();
             m_defaultOpenIcon = getDefaultOpenIcon();
+            m_documentIcon = UIManager.getIcon("document");
             setBackgroundNonSelectionColor(UIManager.getColor("pmdTreeBackground"));
         }
 
@@ -129,35 +126,17 @@ class DirectoryTree extends JTree
                                                       int row,
                                                       boolean hasFocus)
         {
-            DirectoryTreeNode treeNode = (DirectoryTreeNode) object;
+            RulesTreeNode treeNode = (RulesTreeNode) object;
             Object userObject = treeNode.getUserObject();
 
-            if (userObject instanceof String)
+            if (treeNode.isProperty())
             {
-                // The root node will display either an open or closed icon.
                 setClosedIcon(m_defaultClosedIcon);
-                setLeafIcon(m_defaultClosedIcon);
-                setOpenIcon(m_defaultOpenIcon);
-            }
-            else if (((File) userObject).isFile())
-            {
-                // A file cannot have any children; therefore, the default icon settings are used.
-                setClosedIcon(m_defaultClosedIcon);
-                setLeafIcon(m_defaultLeafIcon);
+                setLeafIcon(m_documentIcon);
                 setOpenIcon(m_defaultOpenIcon);
             }
             else
             {
-                // A directory may or may not have children.  The following conditions are used:
-                //
-                //   For a file
-                //      files are not viewed in the tree
-                //   For a directory
-                //      has no children --- use closed folder icon
-                //      has children
-                //         is expanded --- use open folder icon
-                //         is collapsed --- use closed folder icon
-                //
                 setClosedIcon(m_defaultClosedIcon);
                 setLeafIcon(m_defaultClosedIcon);
                 setOpenIcon(m_defaultOpenIcon);

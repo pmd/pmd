@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.swingui;
 
 import java.awt.Color;
+import java.awt.Font;
 import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
 
@@ -95,6 +96,8 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
                                   "paleGray", "#AAAAAA",
                   "pmdTableHeaderBackground", "#686868",
                   "pmdTableHeaderForeground", "#FFFFFF",
+                 "pmdEditingPanelBackground", String.valueOf(Color.lightGray.getRGB()),
+                    "disabledTextBackground", "#F5F5F5",
           };
 
           loadSystemColors(table, defaultSystemColors, isNativeLookAndFeel());
@@ -114,17 +117,21 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         Class plafClass = PMDLookAndFeel.class;
         Object[] defaults =
         {
-            "Tree.openIcon",    LookAndFeel.makeIcon(plafClass, "icons/TreeOpen.gif"),
-            "Tree.closedIcon",  LookAndFeel.makeIcon(plafClass, "icons/TreeClosed.gif"),
-            "Tree.leafIcon",    LookAndFeel.makeIcon(plafClass, "icons/TreeLeaf.gif"),
-            "Document",         LookAndFeel.makeIcon(plafClass, "icons/Document.gif"),
-            "Save",             LookAndFeel.makeIcon(plafClass, "icons/Save.gif"),
-            "SaveAs",           LookAndFeel.makeIcon(plafClass, "icons/SaveAs.gif"),
-            "Print",            LookAndFeel.makeIcon(plafClass, "icons/Print.gif"),
-            "Copy",             LookAndFeel.makeIcon(plafClass, "icons/Copy.gif"),
-            "Edit",             LookAndFeel.makeIcon(plafClass, "icons/Edit.gif"),
-            "View",             LookAndFeel.makeIcon(plafClass, "icons/View.gif"),
-            "QuestionMark",     LookAndFeel.makeIcon(plafClass, "icons/QuestionMark.gif"),
+            "document",         LookAndFeel.makeIcon(plafClass, "icons/document.gif"),
+            "save",             LookAndFeel.makeIcon(plafClass, "icons/save.gif"),
+            "saveAs",           LookAndFeel.makeIcon(plafClass, "icons/saveAs.gif"),
+            "print",            LookAndFeel.makeIcon(plafClass, "icons/print.gif"),
+            "copy",             LookAndFeel.makeIcon(plafClass, "icons/copy.gif"),
+            "edit",             LookAndFeel.makeIcon(plafClass, "icons/edit.gif"),
+            "view",             LookAndFeel.makeIcon(plafClass, "icons/view.gif"),
+            "help",             LookAndFeel.makeIcon(plafClass, "icons/help.gif"),
+            "labelFont",        new Font("Dialog", Font.BOLD, 12),
+            "dataFont",         new Font("Dialog", Font.PLAIN, 12),
+            "codeFont",         new Font("Monospaced", Font.PLAIN, 12),
+            "tabFont",          new Font("SansSerif", Font.BOLD, 12),
+            "titleFont",        new Font("SansSerif", Font.BOLD, 14),
+            "buttonFont",       new Font("SansSerif", Font.BOLD, 12),
+            "messageFont",      new Font("Dialog", Font.PLAIN, 12),
         };
 
         table.putDefaults(defaults);

@@ -75,7 +75,7 @@ class DirectoryTable extends JTable
         headerRenderer = new ColumnHeaderRenderer();
         cellRenderer = new DefaultTableCellRenderer();
 
-        cellRenderer.setIcon(UIManager.getIcon("Document"));
+        cellRenderer.setIcon(UIManager.getIcon("document"));
         headerRenderer.setHorizontalAlignment(JLabel.LEFT);
         column.setHeaderRenderer(headerRenderer);
         cellRenderer.setHorizontalAlignment(JLabel.LEFT);
