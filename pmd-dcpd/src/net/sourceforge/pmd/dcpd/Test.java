@@ -18,7 +18,6 @@ import java.util.Iterator;
 
 public class Test {
 
-    private List files = new ArrayList();
     private TokenSets tokenSets = new TokenSets();
 
     public Test() {
@@ -26,7 +25,6 @@ public class Test {
             JavaSpace space = getSpace();
             add("C:\\j2sdk1.4.0_01\\src\\java\\lang\\", true);
             Entry wrapper = new TokenSetsWrapper(tokenSets);
-            System.out.println("token count = " + tokenSets.tokenCount());
 
             long start = System.currentTimeMillis();
             System.out.println("WRITING");
