@@ -15,7 +15,7 @@
      because it'll require parsing of class files.  Lots of work here.</p>
    </subsection>
       <subsection name="Data flow analysis (DFA)">
-          <p>Raik Schroeder is working on a DFA layer so we can write some more complicated rules - stuff like
+          <p>Raik Schroeder, a graduate student at <a href="http://www.fh-stralsund.de/fh_stralsund/powerslave,id,223,nodeid,.html">Fachhochschule Stralsund</a>, is working on a DFA layer so we can write some more complicated rules - stuff like
  common subexpression elimination, loop invariant code motion (and code hoisting), shrink wrapping, and partial redundancy elimination.
               He's going to do something similar to the SymbolFacade - i.e., several visitors
               which will add DataFlow nodes to the AST.  More on this as he makes further progress; seems
