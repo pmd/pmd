@@ -18,18 +18,14 @@ import java.util.ArrayList;
 import java.io.*;
 
 import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.cpd.FileFinder;
+import net.sourceforge.pmd.cpd.JavaFileOrDirectoryFilter;
 
 public class PMDJEditPlugin extends EditPlugin {
 
     public static final String NAME = "PMD";
     public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
     public static final String OPTION_UI_DIRECTORY_POPUP = "options.pmd.ui.directorypopup";
-
-    public static class JavaFileOrDirectoryFilter implements FilenameFilter {
-      public boolean accept(File dir, String filename) {
-          return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
-      }
-    }
 
     private static PMDJEditPlugin instance;
 
@@ -66,14 +62,14 @@ public class PMDJEditPlugin extends EditPlugin {
                 JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            process(findFilesInDirectory(dir));
+            process(findFiles(dir, false));
         } else {
             final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
             if(browser == null) {
                 JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            process(findFilesInDirectory(browser.getDirectory()));
+            process(findFiles(browser.getDirectory(), false));
         }
     }
 
@@ -89,14 +85,14 @@ public class PMDJEditPlugin extends EditPlugin {
                 JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            process(findFilesRecursively(dir));
+            process(findFiles(dir, true));
         } else {
             final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
             if(browser == null) {
                 JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            process(findFilesRecursively(browser.getDirectory()));
+            process(findFiles(browser.getDirectory(), true));
         }
     }
 
@@ -176,29 +172,8 @@ public class PMDJEditPlugin extends EditPlugin {
         }
     }
 
-    private List findFilesInDirectory(String dir) {
-      List result = new ArrayList();
-      scanDirectory(new File(dir), result, false);
-      return result;
-    }
-
-     private List findFilesRecursively(String dir) {
-      File root = new File(dir);
-      List list = new ArrayList();
-      scanDirectory(root, list, true);
-      return list;
-    }
-
-    private void scanDirectory(File dir, List list, boolean recurse) {
-      FilenameFilter filter = new JavaFileOrDirectoryFilter();
-      String[] possibles = dir.list(filter);
-      for (int i=0; i<possibles.length; i++) {
-         File tmp = new File(dir + System.getProperty("file.separator") + possibles[i]);
-         if (recurse && tmp.isDirectory()) {
-            scanDirectory(tmp, list, true);
-         } else {
-            list.add(new File(dir + System.getProperty("file.separator") + possibles[i]));
-         }
-      }
+    private List findFiles(String dir, boolean recurse) {
+        FileFinder f  = new FileFinder();
+        return f.findFilesFrom(dir, new JavaFileOrDirectoryFilter(), recurse);
     }
 }
