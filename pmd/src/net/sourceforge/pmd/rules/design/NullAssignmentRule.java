@@ -10,22 +10,6 @@ import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-/**
- * @author dpeugh
- *         <p/>
- *         This checks for excessive Null Assignments.
- *         <p/>
- *         For instance:
- *         <p/>
- *         public void foo() {
- *         Object x = null; // OK
- *         // Some stuff
- *         x = new Object(); // Also OK
- *         // Some more stuff
- *         x = null; // BAD
- *         }
- */
-
 public class NullAssignmentRule extends AbstractRule {
 
     public Object visit(ASTStatementExpression expr, Object data) {
