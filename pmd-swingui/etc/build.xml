@@ -1,0 +1,71 @@
+<project name="pmd" default="compile" basedir="../">
+
+<property name="lib" value="lib\"/>
+<property name="src" value="src\"/>
+<property name="resources" value="resources\"/>
+<property name="build" value="build\"/>
+<property name="regress" value="regress\"/>
+<property name="version" value="0.1"/>
+<property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
+
+<path id="classpath.path">
+<pathelement location="${build}"/>
+<fileset dir="${lib}">
+<include name="*.jar"/>
+</fileset>
+</path>
+
+<target name="delete">
+    <delete dir="${build}"/>
+    <mkdir dir="${build}"/>
+</target>
+
+<target name="compile">
+    <mkdir dir="${build}"/>
+    <javac  deprecation="false"
+            debug="true"
+            optimize="false"
+            srcdir="${src}:${regress}"
+            destdir="${build}">
+<classpath>
+    <path refid="classpath.path"/>
+</classpath>
+    </javac>
+</target>
+
+<target name="copy">
+    <mkdir dir="${lib}"/>
+    <copy todir="${build}">
+        <fileset dir="${resources}">
+            <include name="**/*.gif"/>
+            <include name="**/*.jpg"/>
+            <include name="**/*.properties"/>
+        </fileset>
+    </copy>
+</target>
+
+<target name="jar" depends="copy,compile">
+    <jar jarfile="${lib}\pmd-swingui-${version}.jar" basedir="${build}"/>
+</target>
+
+<target name="clean" depends="delete,compile"/>
+
+<target name="dist" depends="clean,jar"/>
+
+<target name="pmdswinguinlp" depends="dist">
+    <signjar jar="${lib}/pmd-swingui-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <echo message="Uploading jar file"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd/lib/pmd-swingui-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+    </exec>
+    <echo message="Uploading cpd.jnlp"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/data/pmd/pmd/etc/cpd.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+    </exec>
+</target>
+
+</project>
+
+
+
+

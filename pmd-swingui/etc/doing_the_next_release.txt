@@ -1,0 +1,40 @@
+update the release date in the changelog
+
+Prepare binary release:
+rm -rf ~/tmp/pmd-swingui-1.1
+mkdir -p ~/tmp/pmd-swingui-1.1/etc
+mkdir ~/tmp/pmd-swingui-1.1/lib
+cp ../LICENSE.txt build.xml changelog.txt ~/tmp/pmd-swingui-1.1/etc
+cp ../lib/pmd-1.1.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd-1.1/lib/
+cd ~/tmp
+zip -q -r pmd-swingui-bin-1.1.zip pmd-swingui-1.1/
+cd -
+
+Time to tag:
+
+cd ../../
+cvs -q rtag -D tomorrow "pmd_swingui_release_1_1" pmd-swingui
+
+Prepare source release:
+rm -rf ~/tmp/pmd-swingui-1.1
+mkdir tmp
+cvs -q export -d tmp/ -r pmd_swingui_release_1_1 pmd-swingui
+mv tmp ~/tmp/pmd-swingui-1.1
+cd ~/tmp/
+zip -q -r pmd-swingui-src-1.1.zip pmd-swingui-1.1/
+
+if you see a bug and fix it, you can delete the release using:
+cvs rtag -d pmd_swingui_release_1_1 pmd
+and then retag everything
+
+ncftpput upload.sourceforge.net incoming/ pmd-swingui-src-1.1.zip pmd-swingui-bin-1.1.zip
+
+Go to Admin, Edit/Release Files, click on Add new release
+Paste stuff into the changelog/readme boxes
+Add the pmd-swingui-bin-1.1.zip file
+Add the pmd-swingui-src-1.1.zip file
+Classify the file
+
+Redo the web site
+
+Submit some news saying "hey, new release!"
