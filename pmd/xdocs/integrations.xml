@@ -56,7 +56,7 @@ and has some nice features to it.
 Eclipse Integration will fill the TODO list of the project with
 each Rule Violation that PMD detects.  These violations are marked
 in the code with the Task icon on the left hand side of the editor.
-</p>
+p>
 <p>
 The Eclipse integration was written with the version 2.0 of Eclipse,
 so I'm not certain if it will work on earlier versions.

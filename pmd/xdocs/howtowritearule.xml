@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<document>
+<properties>
+    <author email="tomcopeland@users.sourceforge.net">Tom Copeland</author>
+    <title>How to write a PMD rule</title>
+</properties>
+<body>
+    <section name="How to write a PMD rule">
+<p>Writing PMD rules is cool because you don't have to wait for us to get around to implementing feature requests.</p>
+
+    <subsection name="Figure out what you want to look for">
+    <p>First, figure out what you're looking for.  Let's use "While loops must use braces" as an example.
+    You've seen this before a thousand times so you know what it looks like:</p>
+    <pre>
+       public class Foo {
+        public void bar() {
+         while (baz)
+            Buz.doSomething();
+        }
+       }
+    </pre>
+    </subsection>
+
+    <subsection name="Write a test-data example and look at the AST">
+    <p>PMD uses a JJTree/JavaCC generated parser to parse the source code and produce an AST (Abstract Syntax Tree).  This means that
+    the code above looks like this:</p>
+    <pre>
+    </pre>
+    </subsection>
+
+    <subsection name="Write a rule class">
+    </subsection>
+
+    <subsection name="Put the EmptyWhileLoop rule in a ruleset file">
+    </subsection>
+
+    <subsection name="Run PMD using your new ruleset">
+    </subsection>
+
+    <subsection name="Write code to add rule violations where appropriate">
+    </subsection>
+
+    <subsection name="Repeat as necessary">
+    </subsection>
+
+    </section>
+</body>
+</document>
