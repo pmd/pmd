@@ -28,7 +28,7 @@ public class ASTAssignmentOperator extends SimpleNode {
     }
 
     public void dump(String prefix) {
-        System.out.println(toString(prefix) + ":" + getImage() + (isCompound ? "(compound)" : "simple"));
+        System.out.println(toString(prefix) + ":" + getImage() + (isCompound ? "(compound)" : "(simple)"));
         dumpChildren(prefix);
     }
 }
