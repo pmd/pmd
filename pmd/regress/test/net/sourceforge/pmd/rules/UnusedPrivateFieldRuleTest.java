@@ -170,7 +170,7 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
     private static final String TEST17 =
     "public class Foo {" + PMD.EOL +
     " private int x;" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  Foo foo = new Foo();  " + PMD.EOL +
     "  foo.x = 2;" + PMD.EOL +
     " }" + PMD.EOL +
@@ -180,5 +180,4 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     " private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField(\"foo\", String.class)};" + PMD.EOL +
     "}";
-
 }

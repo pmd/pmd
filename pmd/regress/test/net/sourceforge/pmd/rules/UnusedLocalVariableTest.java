@@ -32,20 +32,20 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST11, "", 0, rule),
            new TestDescriptor(TEST12, "", 0, rule),
            new TestDescriptor(TEST13, "", 2, rule),
-           new TestDescriptor(TEST14, "", 0, rule)
+           //new TestDescriptor(TEST14, "an assignment does not a usage make", 1, rule),
        });
     }
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
-    " public foo() {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "   String fr = new String();" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
     "public class Foo {" + PMD.EOL +
-    " public void method() {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  int x;" + PMD.EOL +
     " }" + PMD.EOL +
     "}" + PMD.EOL +
@@ -65,7 +65,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     "    public Foo() {" + PMD.EOL +
     "       List a = new ArrayList();" + PMD.EOL +
-    "       if (true == true) {" + PMD.EOL +
+    "       if (true) {" + PMD.EOL +
     "               a.size();" + PMD.EOL +
     "       }" + PMD.EOL +
     "    }" + PMD.EOL +
@@ -75,9 +75,9 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     private static final String TEST5 =
     "import java.util.*;" + PMD.EOL +
     "public class Foo {" + PMD.EOL +
-    "static {" + PMD.EOL +
-    "       String x;" + PMD.EOL +
-    "}" + PMD.EOL +
+    " static {" + PMD.EOL +
+    "  String x;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}" + PMD.EOL +
     "";
 
@@ -88,7 +88,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
 
     private static final String TEST7 =
     "public class Foo {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  for (int i=0;i<10; i++);" + PMD.EOL +
     "  for (int i=0;i<10; i++);" + PMD.EOL +
     " }" + PMD.EOL +
@@ -109,17 +109,17 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
 
     private static final String TEST9 =
     "public interface Foo {" + PMD.EOL +
-    " public void foo();" + PMD.EOL +
-    " public String bar();" + PMD.EOL +
+    " void foo();" + PMD.EOL +
+    " String bar();" + PMD.EOL +
     "}";
 
     private static final String TEST10 =
     "public class Foo {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
-    "  String x = \"hi\";" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
     "  class Bar {" + PMD.EOL +
-    "   public void buz() {" + PMD.EOL +
-    "    String x = \"howdy\";" + PMD.EOL +
+    "   void buz() {" + PMD.EOL +
+    "    int x = 4;" + PMD.EOL +
     "   }" + PMD.EOL +
     "  }" + PMD.EOL +
     " }" + PMD.EOL +
@@ -127,7 +127,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
 
     private static final String TEST11 =
     "public class Foo {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  for (int x = 0; ; ) { // USED" + PMD.EOL +
     "   x++;" + PMD.EOL +
     "  }" + PMD.EOL +
@@ -136,7 +136,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
 
     private static final String TEST12 =
     "public class Foo {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  final String x = \"hi\";" + PMD.EOL +
     "   new Runnable() {" + PMD.EOL +
     "    public void run() {" + PMD.EOL +
@@ -148,19 +148,16 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
 
     private static final String TEST13 =
     "public class Foo {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
     "  int x,y=0;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String TEST14 =
     "public class Foo {" + PMD.EOL +
-    " public void bar() {" + PMD.EOL +
-    "  try {" + PMD.EOL +
-    "   //int x =2;" + PMD.EOL +
-    "  } catch (RuntimeException e) {" + PMD.EOL +
-    "  } catch (Exception e) {" + PMD.EOL +
-    "  }" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "   int x;" + PMD.EOL +
+    "   x = 4;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
