@@ -9,12 +9,15 @@ import net.sourceforge.pmd.rules.IfStmtsMustUseBracesRule;
 
 public class IfStmtsMustUseBracesRuleTest extends RuleTst {
 
-
-    public void test1() throws Throwable {
+    public void testSimpleBad() throws Throwable {
         runTest("IfStmtsMustUseBraces1.java", 1, new IfStmtsMustUseBracesRule());
     }
 
-    public void test2() throws Throwable {
+    public void testSimpleOK() throws Throwable {
         runTest("IfStmtsMustUseBraces2.java", 0, new IfStmtsMustUseBracesRule());
+    }
+
+    public void testNexted() throws Throwable {
+        runTest("IfStmtsMustUseBraces3.java", 1, new IfStmtsMustUseBracesRule());
     }
 }

@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Michael Sutherland - bug report</li>
             <li>Andrew Glover - ExcessivePublicCountRule, CouplingBetweenObjectsRule, ExcessiveImportsRule, documentation tweaks</li>
             <li>Egon Willighagen - pmd-web suggestion</li>
             <li>Carl Gilbert - DoubleCheckedLockingRule, ConstructorCallsOverridableMethodRule, bug reports, feature requests, and documentation improvements</li>

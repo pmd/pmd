@@ -28,6 +28,5 @@ public class EmptyCatchBlockRuleTest extends RuleTst {
     public void testEmptyTryAndFinally() throws Throwable {
         runTest("EmptyCatchBlock5.java", 0, new EmptyCatchBlockRule());
     }
-
 }
 

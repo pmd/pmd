@@ -34,6 +34,6 @@ public class IfStmtsMustUseBracesRule extends BracesRule {
             lineNumberOfLastViolation = node.getBeginLine();
         }
 
-        return null;
+        return super.visit(node, data);
     }
 }
