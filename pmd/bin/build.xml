@@ -174,7 +174,7 @@
 <target name="tomserver" depends="dist">
     <echo message="Uploading jar file"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/data/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:Sites/"/>
+        <arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:Sites/"/>
     </exec>
 </target>
 

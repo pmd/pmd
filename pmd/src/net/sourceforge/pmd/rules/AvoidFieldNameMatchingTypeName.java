@@ -8,15 +8,15 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 
-public class AvoidFieldNamesMatchingTypeName extends AbstractRule {
-	
+public class AvoidFieldNameMatchingTypeName extends AbstractRule {
+
 	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
 		    return data;
         }
         return super.visit(node, data);
 	}
-	
+
 	public Object visit(ASTFieldDeclaration node, Object data) {
 		String varName = node.getVariableName();
 		if (varName!=null) {
