@@ -99,14 +99,14 @@ public class MotifPMDLookAndFeel extends MotifLookAndFeel {
         Object[] defaults = {"document", LookAndFeel.makeIcon(plafClass, "icons/document.gif"),
                              "cancel", LookAndFeel.makeIcon(plafClass, "icons/cancel.gif"),
                              "save", LookAndFeel.makeIcon(plafClass, "icons/save.gif"),
-                             "saveAs", LookAndFeel.makeIcon(plafClass, "icons/saveAs.gif"),
+                             "saveAs", LookAndFeel.makeIcon(plafClass, "icons/saveas.gif"),
                              "print", LookAndFeel.makeIcon(plafClass, "icons/print.gif"),
                              "copy", LookAndFeel.makeIcon(plafClass, "icons/copy.gif"),
                              "edit", LookAndFeel.makeIcon(plafClass, "icons/edit.gif"),
                              "view", LookAndFeel.makeIcon(plafClass, "icons/view.gif"),
                              "help", LookAndFeel.makeIcon(plafClass, "icons/help.gif"),
-                             "pmdLogo", LookAndFeel.makeIcon(plafClass, "icons/pmdLogo.gif"),
-                             "pmdLogoImage", getImageIcon("icons/pmdLogo.jpg"),
+                             "pmdLogo", LookAndFeel.makeIcon(plafClass, "icons/pmdlogo.gif"),
+                             "pmdLogoImage", getImageIcon("icons/pmdlogo.jpg"),
                              "labelFont", new Font("Dialog", Font.BOLD, 12),
                              "label14Font", new Font("Dialog", Font.BOLD, 14),
                              "label16Font", new Font("Dialog", Font.BOLD, 16),
@@ -119,7 +119,7 @@ public class MotifPMDLookAndFeel extends MotifLookAndFeel {
                              "serif12Font", new Font("Serif", Font.PLAIN, 12),
                              "serif14Font", new Font("Serif", Font.PLAIN, 14),
                              "viewerProperties", loadViewerProperties(),
-
+/*
                              // These are all the icons defined in the WindowsLookAndFeel.  We redefine them
                              // here because of the way they are defined in that class: in terms of the return
                              // value of getClass().  I.e., getClass() just returns the handle to the invoking
@@ -128,11 +128,23 @@ public class MotifPMDLookAndFeel extends MotifLookAndFeel {
                              // Since we've just called the superclass method, the icons have been installed
                              // incorrectly in the table.  Reinstall them using the correct class.
 
-                             "Tree.openIcon", LookAndFeel.makeIcon(lafClass, "icons/TreeOpen.gif"), "Tree.closedIcon", LookAndFeel.makeIcon(lafClass, "icons/TreeClosed.gif"), "Tree.leafIcon", LookAndFeel.makeIcon(lafClass, "icons/TreeLeaf.gif"),
+                             "Tree.openIcon", LookAndFeel.makeIcon(lafClass, "icons/TreeOpen.gif"),
+                             "Tree.closedIcon", LookAndFeel.makeIcon(lafClass, "icons/TreeClosed.gif"),
+                             "Tree.leafIcon", LookAndFeel.makeIcon(lafClass, "icons/TreeLeaf.gif"),
 
-                             "FileChooser.newFolderIcon", LookAndFeel.makeIcon(lafClass, "icons/NewFolder.gif"), "FileChooser.upFolderIcon", LookAndFeel.makeIcon(lafClass, "icons/UpFolder.gif"), "FileChooser.homeFolderIcon", LookAndFeel.makeIcon(lafClass, "icons/HomeFolder.gif"), "FileChooser.detailsViewIcon", LookAndFeel.makeIcon(lafClass, "icons/DetailsView.gif"), "FileChooser.listViewIcon", LookAndFeel.makeIcon(lafClass, "icons/ListView.gif"),
+                             "FileChooser.newFolderIcon", LookAndFeel.makeIcon(lafClass, "icons/NewFolder.gif"),
+                             "FileChooser.upFolderIcon", LookAndFeel.makeIcon(lafClass, "icons/UpFolder.gif"),
+                             "FileChooser.homeFolderIcon", LookAndFeel.makeIcon(lafClass, "icons/HomeFolder.gif"),
+                             "FileChooser.detailsViewIcon", LookAndFeel.makeIcon(lafClass, "icons/DetailsView.gif"),
+                             "FileChooser.listViewIcon", LookAndFeel.makeIcon(lafClass, "icons/ListView.gif"),
 
-                             "FileView.directoryIcon", LookAndFeel.makeIcon(lafClass, "icons/Directory.gif"), "FileView.fileIcon", LookAndFeel.makeIcon(lafClass, "icons/File.gif"), "FileView.computerIcon", LookAndFeel.makeIcon(lafClass, "icons/Computer.gif"), "FileView.hardDriveIcon", LookAndFeel.makeIcon(lafClass, "icons/HardDrive.gif"), "FileView.floppyDriveIcon", LookAndFeel.makeIcon(lafClass, "icons/FloppyDrive.gif"), };
+                             "FileView.directoryIcon", LookAndFeel.makeIcon(lafClass, "icons/Directory.gif"),
+                             "FileView.fileIcon", LookAndFeel.makeIcon(lafClass, "icons/File.gif"),
+                             "FileView.computerIcon", LookAndFeel.makeIcon(lafClass, "icons/Computer.gif"),
+                             "FileView.hardDriveIcon", LookAndFeel.makeIcon(lafClass, "icons/HardDrive.gif"),
+                             "FileView.floppyDriveIcon", LookAndFeel.makeIcon(lafClass, "icons/FloppyDrive.gif"),
+        */
+        };
 
         table.putDefaults(defaults);
     }
