@@ -1,0 +1,10 @@
+ant dist
+rename jar to pmd-0.1.jar
+cvs add -kb pmd-0.1.jar
+cvs rtag -D tomorrow "pmd_release_0_1"
+cvs export -d c:\tmp -P -r pmd_release_0_1
+cd c:\tmp
+zip it up
+unzip it into c:\tmp2
+clear classpath, put pmd.jar in classpath
+can you 1) run 1 file and get a report 2) run the Ant 'pmd' task and get a report
