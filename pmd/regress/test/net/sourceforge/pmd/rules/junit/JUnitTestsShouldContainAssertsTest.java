@@ -28,6 +28,7 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST8, "Skip abstract methods", 0, rule),
            new TestDescriptor(TEST9, "Another fail() case", 0, rule),
            new TestDescriptor(TEST10, "BUG 1105633 - False +: JUnit testcases could have fail() instead of assert", 0, rule),
+		   new TestDescriptor(BUG_1146116, "BUG 1146116 PMDException with inner interfaces", 0, rule),
        });
     }
 
@@ -119,4 +120,14 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
         "  }" +  PMD.EOL +
         " }" +  PMD.EOL +
         "}";
+    
+    private static final String BUG_1146116 = "package at.herold.anthilltest;" + PMD.EOL +  
+	"public class TestJunitRuleException {" +  PMD.EOL + 
+	"   interface I1 { " +  PMD.EOL + 
+	"      public void meth(); // this is ok" + PMD.EOL +  
+	"   }" + PMD.EOL +  
+	"   interface I2 {" +  PMD.EOL + 
+	"      public void meth() throws Exception; // this causes PMDException" + PMD.EOL +  
+	"   }" + PMD.EOL +  
+	"}";
 }
