@@ -11,7 +11,6 @@ public class ASTEqualityExpression extends SimpleNode {
         super(p, id);
     }
 
-
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

@@ -898,8 +898,8 @@ void MultiplicativeExpression() #void :
 void UnaryExpression() :
 {}
 {
-  ( "+" {jjtThis.setPositive();} | "-" {jjtThis.setNegative();} ) UnaryExpression()
-| PreIncrementExpression()
+  ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) UnaryExpression()
+| PreIncrementExpression() 
 | PreDecrementExpression()
 | UnaryExpressionNotPlusMinus()
 }

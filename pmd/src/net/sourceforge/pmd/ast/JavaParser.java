@@ -2570,11 +2570,11 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PLUS:
           jj_consume_token(PLUS);
-         jjtn000.setPositive();
+         jjtn000.setImage("+");
           break;
         case MINUS:
           jj_consume_token(MINUS);
-                                        jjtn000.setNegative();
+                                        jjtn000.setImage("-");
           break;
         default:
           jj_la1[73] = jj_gen;
