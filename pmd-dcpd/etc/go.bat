@@ -10,7 +10,6 @@ set MEMORY_ARG=-Xms128M -Xmx384M
 set POLICY_ARG=-Djava.security.policy=c:\jini-1_2_1\policy\policy.all
 set SPACENAME_ARG=-Dcom.sun.jini.outrigger.spacename=JavaSpaces
 set GROUP_ARG=-Dcom.sun.jini.lookup.groups=public
-rem set CODEBASE=-Djava.rmi.server.codebase=http://mordor:8081/space-examples-dl.jar
 set CODEBASE=-Djava.rmi.server.codebase=http://mordor:8081/dcpd.jar
 
 java %MEMORY_ARG% %POLICY_ARG% %SPACENAME_ARG% %GROUP_ARG% -cp %CLASSPATH% %CODEBASE% %MAIN%

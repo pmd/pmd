@@ -21,10 +21,14 @@ public class DCPDWorker {
     public DCPDWorker() {
         try {
             space = Util.findSpace("mordor");
-            space.notify(new Job("test"), null, new JobAddedListener(space), Lease.FOREVER, null);
+            space.notify(new Job("test"), null, new JobAddedListener(space, this), Lease.FOREVER, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void jobAdded(Job job) {
+        System.out.println("GOT A JOB NAMED " + job.name);
     }
 
     public static void main(String[] args) {

@@ -15,27 +15,20 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class JobAddedListener extends UnicastRemoteObject implements RemoteEventListener {
 
-    public JavaSpace space;
+    protected JavaSpace space;
+    protected DCPDWorker worker;
 
     public JobAddedListener() throws RemoteException {}
 
-    public JobAddedListener(JavaSpace space)  throws RemoteException  {
+    public JobAddedListener(JavaSpace space, DCPDWorker worker)  throws RemoteException  {
         this.space = space;
+        this.worker = worker;
     }
 
     public void notify(RemoteEvent event) throws UnknownEventException, RemoteException {
-        System.out.println("HOWDY!");
         try {
-            if (space == null) {
-                System.out.println("SPACE IS NULL");
-            } else {
-                Job job = (Job)space.take(new Job("test"), null, 1000);
-                if (job == null) {
-                    System.out.println("No job found");
-                } else {
-                    System.out.println("job = " + job.name);
-                }
-            }
+            Job job = (Job)space.take(new Job("test"), null, 1000);
+            worker.jobAdded(job);
         } catch (Exception e) {
             e.printStackTrace();
         }
