@@ -43,9 +43,8 @@ public class GUI implements CPDListener {
 
     private JTextField expandingTileField = new JTextField(50);
     private JCheckBox recurseCheckbox = new JCheckBox("Recurse?", true);
-    private JFrame f;
     public GUI() {
-        f = new JFrame("PMD Cut and Paste Detector");
+        JFrame f = new JFrame("PMD Cut and Paste Detector");
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(4,2));
         inputPanel.add(new JLabel("Enter a root src directory"));
@@ -98,17 +97,8 @@ public class GUI implements CPDListener {
                 cpd.addAllInDirectory(rootDirectoryField.getText());
             }
             cpd.go();
-            Results results = cpd.getResults();
-            for (Iterator i = results.getTiles(); i.hasNext();) {
-                Tile tile = (Tile)i.next();
-                System.out.println("=============================================================");
-                System.out.println("A " + cpd.getLineCountFor(tile) + " line (" + tile.getTokenCount() + " tokens) duplication in these files:");
-                for (Iterator j = cpd.getResults().getOccurrences(tile); j.hasNext();) {
-                    TokenEntry tok = (TokenEntry)j.next();
-                    System.out.println(tok.getBeginLine() + "\t" + tok.getTokenSrcID());
-                }
-                System.out.println(cpd.getImage(tile));
-            }
+            CPDRenderer renderer = new TextRenderer();
+            System.out.println(renderer.render(cpd));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

@@ -143,17 +143,8 @@ public class CPD {
         cpd.setMinimumTileSize(26);
         cpd.go();
         System.out.println((System.currentTimeMillis() - start));
-        Results results = cpd.getResults();
-        for (Iterator i = results.getTiles(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
-            System.out.println("=============================================================");
-            System.out.println("A " + cpd.getLineCountFor(tile) + " line (" + tile.getTokenCount() + " tokens) duplication in these files:");
-            for (Iterator j = cpd.getResults().getOccurrences(tile); j.hasNext();) {
-                TokenEntry tok = (TokenEntry)j.next();
-                System.out.println(tok.getBeginLine() + "\t" + tok.getTokenSrcID());
-            }
-            System.out.println(cpd.getImage(tile));
-        }
+        CPDRenderer renderer = new TextRenderer();
+        System.out.println(renderer.render(cpd));
     }
 
 }
