@@ -1,4 +1,5 @@
 ???????? - 1.03
+Added new rule: AssignmentInOperandRule
 Added numbering to the HTMLRenderer; thx to Luke Francl for the code.
 Fixed bug 672742 - grammar typo was hosing up ASTConstructorDeclaration which was hosing up UseSingletonRule
 Fixed bug 674393 - OnlyOneReturn rule no longer counts returns that are inside anonymous inner classes as being inside the containing method.  Thx to C. Lamont Gilbert for the bug report.

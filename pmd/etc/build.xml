@@ -57,9 +57,9 @@
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="rulesets/imports.xml" shortFilenames="false" failOnRuleViolation="true">
-            <formatter type="xml" toFile="foo.html"/>
-            <fileset dir="C:\j2sdk1.4.1_01\src\java\lang">
+        <pmd rulesetfiles="rulesets/tmp.xml" shortFilenames="false">
+            <formatter type="html" toFile="foo.html"/>
+            <fileset dir="C:\j2sdk1.4.1_01\src\java\">
                 <include name="**/*.java"/>
             </fileset>
         </pmd>
