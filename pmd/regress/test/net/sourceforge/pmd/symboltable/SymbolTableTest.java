@@ -33,13 +33,13 @@ public class SymbolTableTest extends TestCase {
 
     public void testParent() {
         SymbolTable parent = new SymbolTable();
-        SymbolTable child = new SymbolTable(parent);
+        SymbolTable child = new SymbolTable(parent, 1);
         assertEquals(child.getParent(), parent);
     }
 
-    public void testParentContains2() {
+    public void testParentContains() {
         SymbolTable parent = new SymbolTable();
-        SymbolTable child = new SymbolTable(parent);
+        SymbolTable child = new SymbolTable(parent, 1);
         child.add(new Symbol("bar", 12));
         child.add(new Symbol("baz", 12));
         assertTrue(!parent.getUnusedSymbols().hasNext());
@@ -56,7 +56,7 @@ public class SymbolTableTest extends TestCase {
 
     public void testRecordPossibleUsage() {
         SymbolTable parent = new SymbolTable();
-        SymbolTable child = new SymbolTable(parent);
+        SymbolTable child = new SymbolTable(parent, 1);
         child.recordPossibleUsageOf(new Symbol("bar", 10), null);
         assertTrue(!parent.getUnusedSymbols().hasNext());
     }
@@ -70,14 +70,14 @@ public class SymbolTableTest extends TestCase {
     public void testRecordUsageParent() {
         SymbolTable parent = new SymbolTable();
         parent.add(FOO);
-        SymbolTable child = new SymbolTable(parent);
+        SymbolTable child = new SymbolTable(parent, 1);
         assertEquals(FOO, parent.getUnusedSymbols().next());
     }
 
     public void testRecordUsageParent2() {
         SymbolTable parent = new SymbolTable();
         parent.add(FOO);
-        SymbolTable child = new SymbolTable(parent);
+        SymbolTable child = new SymbolTable(parent, 1);
         child.recordPossibleUsageOf(FOO, null);
         assertTrue(!parent.getUnusedSymbols().hasNext());
     }

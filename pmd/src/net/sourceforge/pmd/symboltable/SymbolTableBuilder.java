@@ -13,6 +13,8 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
     private SymbolTable table;
     private SymbolTable tablePtr;
 
+    private int depth;
+
     public void initializeWith(ASTCompilationUnit node) {
         node.jjtAccept(this, null);
     }
@@ -24,9 +26,11 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
     /**
      * Skip interfaces because they don't have local variables.
      */
+/*
     public Object visit(ASTInterfaceDeclaration node, Object data) {
         return data;
     }
+*/
 
     // these AST types trigger a new scope
     public Object visit(ASTBlock node, Object data){return openScope(node);}
@@ -35,6 +39,7 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
     public Object visit(ASTFieldDeclaration node, Object data){return openScope(node);}
     public Object visit(ASTTryStatement node, Object data){return openScope(node);}
     public Object visit(ASTForStatement node, Object data){return openScope(node);}
+    public Object visit(ASTIfStatement node, Object data){return openScope(node);}
     // these AST types trigger a new scope
 
     /**
@@ -42,7 +47,8 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
      */
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
-            tablePtr.add(new Symbol(node.getImage(), node.getBeginLine()));
+            Symbol symbol = new Symbol(node.getImage(), node.getBeginLine());
+            tablePtr.add(symbol);
             SimpleNode simple = (SimpleNode)node;
             simple.setSymbolTable(tablePtr);
         }
@@ -60,15 +66,16 @@ public class SymbolTableBuilder extends JavaParserVisitorAdapter {
     }
 
     private Object openScope(SimpleNode node) {
-        table = new SymbolTable(table);
+        table = new SymbolTable(tablePtr, depth);
         tablePtr = table;
+        depth++;
         super.visit(node, null);
-        tablePtr = table.getParent();
+        tablePtr = tablePtr.getParent();
+        depth--;
         return null;
     }
 
     private String getEndName(String name) {
         return (name.indexOf('.') == -1) ? name : name.substring(0, name.indexOf('.'));
     }
-
 }

@@ -13,15 +13,20 @@ import java.util.*;
 public class SymbolTable {
 
     private SymbolTable parent;
+    private int depth;
 
     // a Map of Symbols to the Nodes from which they are referenced
     // symbol->List(Node,Node,...)
+    // TODO
+    // a single SymbolDeclaration can be referenced by several SymbolOccurrences - should these be objects?
+    // TODO
     private Map symbols = new HashMap();
 
     public SymbolTable() {}
 
-    public SymbolTable(SymbolTable parent) {
+    public SymbolTable(SymbolTable parent, int depth) {
         this.parent = parent;
+        this.depth = depth;
     }
 
     public SymbolTable getParent() {
@@ -57,6 +62,15 @@ public class SymbolTable {
             }
         }
         return unused.iterator();
+    }
+
+    public String toString() {
+        String x = "Symbol table:" +depth+":";
+        for (Iterator i = symbols.keySet().iterator(); i.hasNext();) {
+            Symbol symbol = (Symbol)i.next();
+            x += symbol.getImage() + ",";
+        }
+        return x;
     }
 
 }

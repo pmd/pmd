@@ -42,7 +42,7 @@ public class Namespace {
         if (tables.empty()) {
             tables.push(new SymbolTable());
         } else {
-            tables.push(new SymbolTable((SymbolTable)tables.peek()));
+            tables.push(new SymbolTable((SymbolTable)tables.peek(), Integer.MAX_VALUE)); // TODO
         }
     }
 
