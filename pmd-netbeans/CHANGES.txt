@@ -1,3 +1,6 @@
+- Display progress in a dialog and allow cancel (Feature Request 687119)
+- Let modules register extra rulesets (Radim Kubacki's patch 690601, thanks!)
+- Made rule properties editable, finally :), completing task 75427.
 - Improved reporting of PMD execution errors
 
 Version 0.8
