@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractListModel;
-import javax.swing.JOptionPane;
 
 import net.sourceforge.pmd.Rule;
 import pmd.config.ConfigUtils;

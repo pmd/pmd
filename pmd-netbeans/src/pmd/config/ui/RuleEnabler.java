@@ -30,7 +30,6 @@ import java.beans.PropertyEditorSupport;
 import javax.swing.JPanel;
 import net.sourceforge.pmd.Rule;
 import java.awt.event.MouseEvent;
-import javax.swing.JOptionPane;
 
 /** The JPanel used to edit the Rule property
  * @author ole martin mørk
