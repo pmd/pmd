@@ -25,7 +25,7 @@ public class Report {
     }
 
     public Iterator iterator() {
-        sort();
+        Collections.sort(violations, new RuleViolation.RuleViolationComparator());
         return violations.iterator();
     }
 
@@ -33,7 +33,4 @@ public class Report {
         return violations.size();
     }
 
-    private void sort() {
-        Collections.sort(violations, new RuleViolation.RuleViolationComparator());
-    }
 }
