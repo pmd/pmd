@@ -51,6 +51,7 @@ public class PMDJEditPlugin extends EditPlugin {
 	public static final String NAME = "PMD";
 	public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
 	public static final String OPTION_UI_DIRECTORY_POPUP = "options.pmd.ui.directorypopup";
+	public static final String DEFAULT_TILE_MINSIZE_PROPERTY = "pmd.cpd.defMinTileSize";
 	//private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
 
 	private static PMDJEditPlugin instance;
@@ -77,22 +78,26 @@ public class PMDJEditPlugin extends EditPlugin {
 	}
 	// boilerplate JEdit code
 
-    public static void checkDirectory(View view) {
-        instance.instanceCheckDirectory(view);
-    }
+	public static void checkDirectory(View view) {
+		instance.instanceCheckDirectory(view);
+	}
 
 	public void instanceCheckDirectory(View view) {
-		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
+		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP))
+		{
 			final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan", NAME, JOptionPane.QUESTION_MESSAGE);
-			if (dir == null) {
-				return;
+			if (dir != null)
+			{
+				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() )
+				{
+					JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				process(findFiles(dir, false));
 			}
-			if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
-				JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			process(findFiles(dir, false));
-		} else {
+		}
+		else
+		{
 			final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
 			if(browser == null) {
 				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
@@ -102,51 +107,54 @@ public class PMDJEditPlugin extends EditPlugin {
 		}
 	}
 
-    // check all open buffers
-    public static void checkAllOpenBuffers(View view) {
-        instance.instanceCheckAllOpenBuffers(view);
-    }
+	// check all open buffers
+	public static void checkAllOpenBuffers(View view) {
+		instance.instanceCheckAllOpenBuffers(view);
+	}
 
-    public void instanceCheckAllOpenBuffers(View view) {
-        // I'm putting the files in a Set to work around some
-        // odd behavior in jEdit - the buffer.getNext()
-        // seems to iterate over the files twice.
-        Set fileSet = new HashSet();
-        for (int i=0; i<jEdit.getBufferCount(); i++ ) {
-            Buffer buffer = jEdit.getFirstBuffer();
-            while (buffer != null) {
-                //System.out.println("file = " + buffer.getFile());
-                if (buffer.getName().endsWith(".java")) {
-                    fileSet.add(buffer.getFile());
-                }
-                buffer = buffer.getNext();
-            }
-        }
+	public void instanceCheckAllOpenBuffers(View view) {
+		// I'm putting the files in a Set to work around some
+		// odd behavior in jEdit - the buffer.getNext()
+		// seems to iterate over the files twice.
+		Set fileSet = new HashSet();
+		for (int i=0; i<jEdit.getBufferCount(); i++ ) {
+			Buffer buffer = jEdit.getFirstBuffer();
+			while (buffer != null) {
+				//System.out.println("file = " + buffer.getFile());
+				if (buffer.getName().endsWith(".java")) {
+					fileSet.add(buffer.getFile());
+				}
+				buffer = buffer.getNext();
+			}
+		}
 
-        List files = new ArrayList();
-        files.addAll(fileSet);
-        process(files);
-    }
-    // check all open buffers
+		List files = new ArrayList();
+		files.addAll(fileSet);
+		process(files);
+	}
+	// check all open buffers
 
 
-    // check directory recursively
+	// check directory recursively
 	public static void checkDirectoryRecursively(View view) {
 		instance.instanceCheckDirectoryRecursively(view);
 	}
 
 	public void instanceCheckDirectoryRecursively(View view) {
-		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) {
+		if (jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_UI_DIRECTORY_POPUP)) 
+		{
 			final String dir = JOptionPane.showInputDialog(jEdit.getFirstView(), "Please type in a directory to scan recursively", NAME, JOptionPane.QUESTION_MESSAGE);
-			if (dir == null) {
-				return;
+			if (dir != null) 
+			{
+				if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
+					JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				process(findFiles(dir, true));
 			}
-			if (!(new File(dir)).exists() || !(new File(dir)).isDirectory() ) {
-				JOptionPane.showMessageDialog(jEdit.getFirstView(), dir + " is not a valid directory name", NAME, JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			process(findFiles(dir, true));
-		} else {
+		}
+		else
+		{
 			final VFSBrowser browser = (VFSBrowser)view.getDockableWindowManager().getDockable("vfs.browser");
 			if(browser == null) {
 				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Can't run PMD on a directory unless the file browser is open", NAME, JOptionPane.ERROR_MESSAGE);
@@ -155,27 +163,27 @@ public class PMDJEditPlugin extends EditPlugin {
 			process(findFiles(browser.getDirectory(), true));
 		}
 	}
-    // check directory recursively
+	// check directory recursively
 
-    // clear error list
-    public static void clearErrorList() {
-        instance.instanceClearErrorList();
-    }
+	// clear error list
+	public static void clearErrorList() {
+		instance.instanceClearErrorList();
+	}
 
 	public void instanceClearErrorList() {
-        errorSource.clear();
+		errorSource.clear();
 	}
-    // clear error list
+	// clear error list
 
 	private void process(final List files) {
 		new Thread(new Runnable () {
-					   public void run() {
-						   processFiles(files);
-					   }
-				   }).start();
+			           public void run() {
+				           processFiles(files);
+			           }
+		           }).start();
 	}
 
-    // check current buffer
+	// check current buffer
 	public static void check(Buffer buffer, View view) {
 		instance.instanceCheck(buffer, view);
 	}
@@ -258,10 +266,10 @@ public class PMDJEditPlugin extends EditPlugin {
 	public static void CPDCurrentFile(View view) throws IOException
 	{
 		/* if(!view.getBuffer().getMode().getName().equals("java"))
-		{
+	{
 			JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
 			return;
-		} */
+	} */
 		instance.errorSource.clear();
 		CPD cpd = null;
 		//Log.log(Log.DEBUG, PMDJEditPlugin.class , "See mode " + view.getBuffer().getMode().getName());
@@ -270,17 +278,17 @@ public class PMDJEditPlugin extends EditPlugin {
 		if (modeName.equals("java"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing java");
-			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new JavaLanguage());
+			cpd = new CPD(jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100),new JavaLanguage());
 		}
 		else if (modeName.equals("php"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing PHP");
-			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new PHPLanguage());
+			cpd = new CPD(jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100),new PHPLanguage());
 		}
 		else if (modeName.equals("c") || modeName.equals("c++"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing C/C++");
-			cpd = new CPD(jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100),new CPPLanguage());
+			cpd = new CPD(jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100),new CPPLanguage());
 		}
 		else
 		{
@@ -331,7 +339,7 @@ public class PMDJEditPlugin extends EditPlugin {
 		catch(NumberFormatException e)
 		{
 			//use the default.
-			tilesize = jEdit.getIntegerProperty("pmd.cpd.defMinTileSize",100);
+			tilesize = jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100);
 		}
 
 		CPD cpd = new CPD(tilesize, new JavaLanguage());

@@ -17,7 +17,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.BorderLayout;
 import java.util.Vector;
-import org.gjt.sp.util.Log;
 //End of Imports
 
 /**
@@ -46,18 +45,19 @@ public class CPDDuplicateCodeViewer  extends JPanel
 										  public void valueChanged(TreeSelectionEvent e)
 										  {
 											  DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-											  if (node == null) return;
-
-											  //System.out.println("Node is " + node +" class "+ node.getClass());
-											  if (node.isLeaf() && node instanceof Duplicate)
+											  if (node != null)
 											  {
-												  Duplicate duplicate = (Duplicate)node;
-												  gotoDuplicate(duplicate);
-												  //System.out.println("Got!! " + duplicate);
-											  }
-											  else
-											  {
-												  //System.out.println("Something else. Please check ");
+												  //System.out.println("Node is " + node +" class "+ node.getClass());
+												  if (node.isLeaf() && node instanceof Duplicate)
+												  {
+													  Duplicate duplicate = (Duplicate)node;
+													  gotoDuplicate(duplicate);
+													  //System.out.println("Got!! " + duplicate);
+												  }
+												  else
+												  {
+													  //System.out.println("Something else. Please check ");
+												  }
 											  }
 										  }
 									  });
@@ -75,29 +75,25 @@ public class CPDDuplicateCodeViewer  extends JPanel
 
 	public void gotoDuplicate(final Duplicate duplicate)
 	{
-		if(duplicate == null)
+		if(duplicate != null)
 		{
-			return;
-		}
-
-		final Buffer buffer = jEdit.openFile(view,duplicate.getFilename());
-
-		VFSManager.runInAWTThread(new Runnable()
-		{
-			public void run()
+			final Buffer buffer = jEdit.openFile(view,duplicate.getFilename());
+	
+			VFSManager.runInAWTThread(new Runnable()
 			{
-				view.setBuffer(buffer);
-
-				int start = buffer.getLineStartOffset(duplicate.getBeginLine());
-				int end = buffer.getLineEndOffset(duplicate.getEndLine()-2);
-				//Log.log(Log.DEBUG, this.getClass(), "Start Line "+ duplicate.getBeginLine() + " End Line "+ duplicate.getEndLine() + " Start " + start + " End "+ end);
-				//Since an AIOOB Exception is thrown if the end is the end of file. we do a -1 from end to fix it.
-				view.getTextArea().setSelection(new Selection.Range(start,end -1));
-				view.getTextArea().moveCaretPosition(start);
-			}
-		});
-
-
+				public void run()
+				{
+					view.setBuffer(buffer);
+	
+					int start = buffer.getLineStartOffset(duplicate.getBeginLine());
+					int end = buffer.getLineEndOffset(duplicate.getEndLine()-2);
+					//Log.log(Log.DEBUG, this.getClass(), "Start Line "+ duplicate.getBeginLine() + " End Line "+ duplicate.getEndLine() + " Start " + start + " End "+ end);
+					//Since an AIOOB Exception is thrown if the end is the end of file. we do a -1 from end to fix it.
+					view.getTextArea().setSelection(new Selection.Range(start,end -1));
+					view.getTextArea().moveCaretPosition(start);
+				}
+			});
+		}
 	}
 
 	public DefaultMutableTreeNode getRoot()

@@ -4,9 +4,9 @@
 	<property name="src" value="src/"/>
 	<property name="lib" value="lib/"/>
 	<property name="build" value="build/"/>
-	<property name="pmdjar" value="pmd-1.05.jar"/>
+	<property name="pmdjar" value="pmd-1.1.jar"/>
 	<property name="pluginversion" value="2.1"/>
-	<property name="jedit.home" value="c:\Program Files\jEdit 4.1pre9"/>
+	<property name="jedit.home" value="c:\Program Files\jEdit 4.1"/>
 	<property name="jedit.jars.dir" value="${jedit.home}\jars"/>
 	<property name="jedit.install.dir"  value="${jedit.jars.dir}"/>
 
