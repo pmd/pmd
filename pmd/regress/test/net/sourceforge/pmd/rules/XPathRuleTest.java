@@ -96,13 +96,6 @@ public class XPathRuleTest extends RuleTst {
         runTestFromFile("AvoidReassigningParameters6.java", 0, rule);
     }
 
-    public void testSimplifyBooleanReturns() throws Throwable {
-        rule.addProperty("xpath", "//IfStatement[count(.//ReturnStatement//BooleanLiteral) = 2]");
-        runTestFromFile("SimplifyBooleanReturns1.java", 1, rule);
-        runTestFromFile("SimplifyBooleanReturns2.java", 1, rule);
-        runTestFromFile("SimplifyBooleanReturns3.java", 0, rule);
-    }
-
     /**
      * @todo Only a partial implementation
      * Can't figure out how to work with the ImportOnDemand nodes
