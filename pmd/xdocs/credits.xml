@@ -10,6 +10,8 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Richard Jenson - CPD on Win32 troubleshooting</li>
+            <li>Daniel Bruguier - CPD on Win32 troubleshooting</li>
             <li>Mario Claerhout - CPD optimizations and suggestions</li>
             <li>Sameer Nanda - CPD Ant task bug report</li>
             <li>Nanne Baars - grammar suggestions, rule suggestions</li>
