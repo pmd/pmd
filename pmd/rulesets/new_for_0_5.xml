@@ -18,7 +18,7 @@ These are new ones for 0.5
   </rule>
 
   <rule name="DuplicateImports"
-        message="Avoid duplicate imports"
+        message="Avoid duplicate imports such as ''{0}''"
         class="net.sourceforge.pmd.rules.DuplicateImportsRule">
     <description>
     Avoid duplicate import statements.

@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTName;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.text.MessageFormat;
 
 public class DuplicateImportsRule extends AbstractRule {
 
@@ -30,7 +31,8 @@ public class DuplicateImportsRule extends AbstractRule {
         if (inImportCtx) {
             if (allImports.contains(node.getImage())) {
                 RuleContext ctx = (RuleContext)data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+                String msg = MessageFormat.format(getMessage(), new Object[] {node.getImage()});
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), msg));
             } else {
                 allImports.add(node.getImage());
             }
