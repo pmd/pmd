@@ -11,8 +11,15 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
 </p>
     <subsection name="Get a development environment set up first">
     <p>
-    In order to do rules, it'll help if you can modify the PMD source.
-    So download the latest PMD source release and unzip it somewhere on your computer.
+        <ul>
+            <li>In order to do rules, it'll help if you can modify the PMD source.
+    So download the latest PMD source release and unzip it somewhere on your computer.</li>
+            <li>You'll also need an Ant 1.5.1 jar file to compile against because PMD includes an
+        Ant task as part of the core distribution.  You can get Ant binary
+        releases <a href="http://ant.apache.org/bindownload.cgi">here</a>.</li>
+            <li>PMD has a slew of JUnit tests, so you'll need a JUnit 3.8.1 binary release.  You
+                can get that from <a href="http://www.junit.org/">here</a>.</li>
+        </ul>
     </p>
     </subsection>
     <subsection name="Figure out what you want to look for">
@@ -72,7 +79,7 @@ CompilationUnit
     <p>
     You can generate this yourself by:
     <ul>
-    <li>Run the batch file etc/astviewer.bat</li>
+    <li>Run the batch file etc/astviewer.bat (note that you'll need a pmd.jar file in your CLASSPATH somewhere to use this utility)</li>
     <li>Paste the code into the left pane and click the button at the bottom of the screen</li>
     </ul>
     </p>
