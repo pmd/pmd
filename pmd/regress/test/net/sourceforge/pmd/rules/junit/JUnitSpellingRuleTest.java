@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
@@ -8,36 +9,36 @@ import test.net.sourceforge.pmd.rules.RuleTst;
 public class JUnitSpellingRuleTest extends RuleTst {
 
     private static final String TEST1 =
-    "public class JUnitSpelling1 {" + CPD.EOL +
-    " // these should be 'setUp'" + CPD.EOL +
-    " public void setup() {}" + CPD.EOL +
-    " public void SetUp() {}" + CPD.EOL +
+    "public class JUnitSpelling1 {" + PMD.EOL +
+    " // these should be 'setUp'" + PMD.EOL +
+    " public void setup() {}" + PMD.EOL +
+    " public void SetUp() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class JUnitSpelling2 {" + CPD.EOL +
-    " // these should be 'tearDown'" + CPD.EOL +
-    " public void TearDown() {}" + CPD.EOL +
-    " public void teardown() {}" + CPD.EOL +
+    "public class JUnitSpelling2 {" + PMD.EOL +
+    " // these should be 'tearDown'" + PMD.EOL +
+    " public void TearDown() {}" + PMD.EOL +
+    " public void teardown() {}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class JUnitSpelling3 {" + CPD.EOL +
-    " // these are OK" + CPD.EOL +
-    " public void setUp() {}" + CPD.EOL +
-    " public void tearDown() {}" + CPD.EOL +
+    "public class JUnitSpelling3 {" + PMD.EOL +
+    " // these are OK" + PMD.EOL +
+    " public void setUp() {}" + PMD.EOL +
+    " public void tearDown() {}" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class JUnitSpelling4 {" + CPD.EOL +
-    " // these are OK" + CPD.EOL +
-    " public void utility() {}" + CPD.EOL +
-    " public void foobr() {}" + CPD.EOL +
+    "public class JUnitSpelling4 {" + PMD.EOL +
+    " // these are OK" + PMD.EOL +
+    " public void utility() {}" + PMD.EOL +
+    " public void foobr() {}" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class JUnitSpelling5 {" + CPD.EOL +
-    " public void setup(String x) {}" + CPD.EOL +
+    "public class JUnitSpelling5 {" + PMD.EOL +
+    " public void setup(String x) {}" + PMD.EOL +
     "}";
 
     private Rule rule;

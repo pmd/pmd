@@ -2,67 +2,68 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.design.OnlyOneReturnRule;
+import net.sourceforge.pmd.PMD;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class OnlyOneReturnRuleTest extends RuleTst {
 
     private static final String TEST1 =
-    "public class OnlyOneReturn1 {" + CPD.EOL +
-    " public String foo(int x) {    " + CPD.EOL +
-    "  if (x > 0) {" + CPD.EOL +
-    "   return \"hey\";" + CPD.EOL +
-    "  }" + CPD.EOL +
-    "  return \"hi\";" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class OnlyOneReturn1 {" + PMD.EOL +
+    " public String foo(int x) {    " + PMD.EOL +
+    "  if (x > 0) {" + PMD.EOL +
+    "   return \"hey\";" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "  return \"hi\";" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 
     private static final String TEST2 =
-    "public class OnlyOneReturn2 {" + CPD.EOL +
-    " public String foo(int x) {    " + CPD.EOL +
-    "  return \"hi\";" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class OnlyOneReturn2 {" + PMD.EOL +
+    " public String foo(int x) {    " + PMD.EOL +
+    "  return \"hi\";" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class OnlyOneReturn3 {" + CPD.EOL +
-    " public void foo(int x) {      " + CPD.EOL +
-    "  int y =2;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class OnlyOneReturn3 {" + PMD.EOL +
+    " public void foo(int x) {      " + PMD.EOL +
+    "  int y =2;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class OnlyOneReturn4 {" + CPD.EOL +
-    " public void foo(int x) {      " + CPD.EOL +
-    "  if (x>2) {" + CPD.EOL +
-    "    return;" + CPD.EOL +
-    "  }" + CPD.EOL +
-    "  int y =2;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class OnlyOneReturn4 {" + PMD.EOL +
+    " public void foo(int x) {      " + PMD.EOL +
+    "  if (x>2) {" + PMD.EOL +
+    "    return;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "  int y =2;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class OnlyOneReturn5 {" + CPD.EOL +
-    " public int foo(int x) {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "   x += 2;" + CPD.EOL +
-    "   return x;" + CPD.EOL +
-    "  } finally {" + CPD.EOL +
-    "   System.err.println(\"WunderBuggy!\");" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class OnlyOneReturn5 {" + PMD.EOL +
+    " public int foo(int x) {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "   x += 2;" + PMD.EOL +
+    "   return x;" + PMD.EOL +
+    "  } finally {" + PMD.EOL +
+    "   System.err.println(\"WunderBuggy!\");" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public class OnlyOneReturn6 {" + CPD.EOL +
-    " public int foo() {" + CPD.EOL +
-    "  FileFilter f = new FileFilter() {" + CPD.EOL +
-    "   public boolean accept(File file) {" + CPD.EOL +
-    "    return false;" + CPD.EOL +
-    "   }" + CPD.EOL +
-    "  };" + CPD.EOL +
-    "  return 2;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class OnlyOneReturn6 {" + PMD.EOL +
+    " public int foo() {" + PMD.EOL +
+    "  FileFilter f = new FileFilter() {" + PMD.EOL +
+    "   public boolean accept(File file) {" + PMD.EOL +
+    "    return false;" + PMD.EOL +
+    "   }" + PMD.EOL +
+    "  };" + PMD.EOL +
+    "  return 2;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 

@@ -2,57 +2,58 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.AvoidReassigningParametersRule;
+import net.sourceforge.pmd.PMD;
 
 public class AvoidReassigningParametersRuleTest extends RuleTst {
 
     public static final String TEST1 =
-    "public class AvoidReassigningParameters1 {" + CPD.EOL +
-    " private void foo(String bar) {" + CPD.EOL +
-    "  bar = \"something else\";" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class AvoidReassigningParameters1 {" + PMD.EOL +
+    " private void foo(String bar) {" + PMD.EOL +
+    "  bar = \"something else\";" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     public static final String TEST2 =
-    "public class AvoidReassigningParameters2 {" + CPD.EOL +
-    " private void foo(String bar) {}" + CPD.EOL +
+    "public class AvoidReassigningParameters2 {" + PMD.EOL +
+    " private void foo(String bar) {}" + PMD.EOL +
     "}";
 
     public static final String TEST3 =
-    "public class AvoidReassigningParameters3 {" + CPD.EOL +
-    " private int bar;" + CPD.EOL +
-    " private void foo(String bar) {" + CPD.EOL +
-    "  bar = \"hi\";" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class AvoidReassigningParameters3 {" + PMD.EOL +
+    " private int bar;" + PMD.EOL +
+    " private void foo(String bar) {" + PMD.EOL +
+    "  bar = \"hi\";" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     public static final String TEST4 =
-    "public class AvoidReassigningParameters4 {" + CPD.EOL +
-    " private int bar;" + CPD.EOL +
-    " private void foo(String bar) {" + CPD.EOL +
-    "  this.bar = \"hi\";" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class AvoidReassigningParameters4 {" + PMD.EOL +
+    " private int bar;" + PMD.EOL +
+    " private void foo(String bar) {" + PMD.EOL +
+    "  this.bar = \"hi\";" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     public static final String TEST5 =
-    "public class AvoidReassigningParameters5 {" + CPD.EOL +
-    "" + CPD.EOL +
-    " private class Foo {" + CPD.EOL +
-    "  public String bar;" + CPD.EOL +
-    " }" + CPD.EOL +
-    "" + CPD.EOL +
-    " private void foo(String bar) {" + CPD.EOL +
-    "  Foo f = new Foo();" + CPD.EOL +
-    "  f.bar = bar;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class AvoidReassigningParameters5 {" + PMD.EOL +
+    "" + PMD.EOL +
+    " private class Foo {" + PMD.EOL +
+    "  public String bar;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "" + PMD.EOL +
+    " private void foo(String bar) {" + PMD.EOL +
+    "  Foo f = new Foo();" + PMD.EOL +
+    "  f.bar = bar;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     public static final String TEST6 =
-    "import java.awt.*;" + CPD.EOL +
-    "" + CPD.EOL +
-    "public class AvoidReassigningParameters6 {" + CPD.EOL +
-    " private void foo(GridBagConstraints gbc) {" + CPD.EOL +
-    "  gbc.gridx = 2;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "import java.awt.*;" + PMD.EOL +
+    "" + PMD.EOL +
+    "public class AvoidReassigningParameters6 {" + PMD.EOL +
+    " private void foo(GridBagConstraints gbc) {" + PMD.EOL +
+    "  gbc.gridx = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private AvoidReassigningParametersRule rule;

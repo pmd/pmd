@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -22,29 +23,29 @@ public class IfStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class IfStmtsMustUseBraces1 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  int x = 0;   " + CPD.EOL +
-    "  if (true) x=2;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class IfStmtsMustUseBraces1 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  int x = 0;   " + PMD.EOL +
+    "  if (true) x=2;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class IfStmtsMustUseBraces2 {" + CPD.EOL +
-    " public void foo() {   " + CPD.EOL +
-    "  if (true) {" + CPD.EOL +
-    "   int x=2;" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class IfStmtsMustUseBraces2 {" + PMD.EOL +
+    " public void foo() {   " + PMD.EOL +
+    "  if (true) {" + PMD.EOL +
+    "   int x=2;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class IfStmtsMustUseBraces3 {" + CPD.EOL +
-    " public void foo() {   " + CPD.EOL +
-    "  if (true) {" + CPD.EOL +
-    "   if (true) bar();" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class IfStmtsMustUseBraces3 {" + PMD.EOL +
+    " public void foo() {   " + PMD.EOL +
+    "  if (true) {" + PMD.EOL +
+    "   if (true) bar();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 }

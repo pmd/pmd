@@ -10,8 +10,6 @@ import java.util.Map;
 
 public class CPD {
 
-    public static final String EOL = System.getProperty("line.separator", "\n");
-
     private Map source = new HashMap();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();

@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -25,39 +26,39 @@ public class EmptyFinallyBlockRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class EmptyFinallyBlock1 {" + CPD.EOL +
-    "    public void foo() {" + CPD.EOL +
-    "       try {" + CPD.EOL +
-    "       } catch (Exception e) {} finally {}" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class EmptyFinallyBlock1 {" + PMD.EOL +
+    "    public void foo() {" + PMD.EOL +
+    "       try {" + PMD.EOL +
+    "       } catch (Exception e) {} finally {}" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class EmptyFinallyBlock2 {" + CPD.EOL +
-    "    public void foo() {" + CPD.EOL +
-    "       try {" + CPD.EOL +
-    "       } finally {}" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class EmptyFinallyBlock2 {" + PMD.EOL +
+    "    public void foo() {" + PMD.EOL +
+    "       try {" + PMD.EOL +
+    "       } finally {}" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class EmptyFinallyBlock3 {" + CPD.EOL +
-    "    public void foo() {" + CPD.EOL +
-    "       try {" + CPD.EOL +
-    "       } finally {int x =2;}" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class EmptyFinallyBlock3 {" + PMD.EOL +
+    "    public void foo() {" + PMD.EOL +
+    "       try {" + PMD.EOL +
+    "       } finally {int x =2;}" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class EmptyFinallyBlock4 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "  } catch (IOException e ){" + CPD.EOL +
-    "  } catch (Exception e ) {" + CPD.EOL +
-    "  } catch (Throwable t ) {" + CPD.EOL +
-    "  } finally{" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class EmptyFinallyBlock4 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "  } catch (IOException e ){" + PMD.EOL +
+    "  } catch (Exception e ) {" + PMD.EOL +
+    "  } catch (Throwable t ) {" + PMD.EOL +
+    "  } finally{" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 }

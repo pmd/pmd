@@ -1,26 +1,27 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class SimplifyBooleanExpressionsRuleTest extends RuleTst {
     private static final String TEST1 =
-    "public class SimplifyBooleanExpressions1 {" + CPD.EOL +
-    " private boolean foo = (isFoo() == true);" + CPD.EOL +
-    " public boolean isFoo() {return foo;}" + CPD.EOL +
+    "public class SimplifyBooleanExpressions1 {" + PMD.EOL +
+    " private boolean foo = (isFoo() == true);" + PMD.EOL +
+    " public boolean isFoo() {return foo;}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class SimplifyBooleanExpressions2 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  boolean bar = (new String().length() >2) == false;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class SimplifyBooleanExpressions2 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  boolean bar = (new String().length() >2) == false;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class SimplifyBooleanExpressions3 {" + CPD.EOL +
-    " boolean bar = true;" + CPD.EOL +
+    "public class SimplifyBooleanExpressions3 {" + PMD.EOL +
+    " boolean bar = true;" + PMD.EOL +
     "}";
 
     private Rule rule;

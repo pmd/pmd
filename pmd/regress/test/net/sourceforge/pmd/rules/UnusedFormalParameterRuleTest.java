@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.UnusedFormalParameterRule;
+import net.sourceforge.pmd.PMD;
 
 public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
 
@@ -22,27 +23,27 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "class UnusedFormalParam1 {" + CPD.EOL +
-    "    private void testMethod(String param1) {" + CPD.EOL +
-    "        //System.out.println(param1);" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "class UnusedFormalParam1 {" + PMD.EOL +
+    "    private void testMethod(String param1) {" + PMD.EOL +
+    "        //System.out.println(param1);" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "class UnusedFormalParam2 {" + CPD.EOL +
-    "    private void foo (String s) " + CPD.EOL +
-    "    {String str = s.toString();}" + CPD.EOL +
+    "class UnusedFormalParam2 {" + PMD.EOL +
+    "    private void foo (String s) " + PMD.EOL +
+    "    {String str = s.toString();}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "class UnusedFormalParam3 {" + CPD.EOL +
-    "    private void t1(String s) {" + CPD.EOL +
-    "        s.toString();" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "class UnusedFormalParam3 {" + PMD.EOL +
+    "    private void t1(String s) {" + PMD.EOL +
+    "        s.toString();" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public interface Foo {" + CPD.EOL +
-    " void foo(String bar);" + CPD.EOL +
+    "public interface Foo {" + PMD.EOL +
+    " void foo(String bar);" + PMD.EOL +
     "}";
 }

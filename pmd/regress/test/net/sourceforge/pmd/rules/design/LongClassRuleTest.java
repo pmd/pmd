@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.design.LongClassRule;
+import net.sourceforge.pmd.PMD;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class LongClassRuleTest extends RuleTst {
@@ -27,30 +28,30 @@ public class LongClassRuleTest extends RuleTst {
     }
 
     private static final String TEST0 =
-    "public class LongMethod1 {" + CPD.EOL +
-    "    public static void main(String args[]) {" + CPD.EOL +
-    "	System.err.println(\"This is short.\");" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class LongMethod1 {" + PMD.EOL +
+    "    public static void main(String args[]) {" + PMD.EOL +
+    "	System.err.println(\"This is short.\");" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST1 =
-    "public class LongClass1" + CPD.EOL +
-    "{" + CPD.EOL +
-    "    public void method0() {" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "	System.err.println(\"This is a long class.\");" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class LongClass1" + PMD.EOL +
+    "{" + PMD.EOL +
+    "    public void method0() {" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "	System.err.println(\"This is a long class.\");" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 }
 

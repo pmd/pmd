@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -35,37 +36,37 @@ public class OverrideBothEqualsAndHashcodeRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class OverrideBothEqualsAndHashcode1 {" + CPD.EOL +
-    " public int hashCode() {}" + CPD.EOL +
+    "public class OverrideBothEqualsAndHashcode1 {" + PMD.EOL +
+    " public int hashCode() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class OverrideBothEqualsAndHashcode2 {" + CPD.EOL +
-    " public boolean equals(Object other) {}" + CPD.EOL +
+    "public class OverrideBothEqualsAndHashcode2 {" + PMD.EOL +
+    " public boolean equals(Object other) {}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class OverrideBothEqualsAndHashcode3 {" + CPD.EOL +
-    " public boolean equals(Object other) {}" + CPD.EOL +
-    " public int hashCode() {}" + CPD.EOL +
+    "public class OverrideBothEqualsAndHashcode3 {" + PMD.EOL +
+    " public boolean equals(Object other) {}" + PMD.EOL +
+    " public int hashCode() {}" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class OverrideBothEqualsAndHashcode4 {" + CPD.EOL +
+    "public class OverrideBothEqualsAndHashcode4 {" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class OverrideBothEqualsAndHashcode5 {" + CPD.EOL +
-    " public boolean equals(String o) {" + CPD.EOL +
-    "  return true;" + CPD.EOL +
-    " }" + CPD.EOL +
-    " public int hashCode() {" + CPD.EOL +
-    "  return 0;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class OverrideBothEqualsAndHashcode5 {" + PMD.EOL +
+    " public boolean equals(String o) {" + PMD.EOL +
+    "  return true;" + PMD.EOL +
+    " }" + PMD.EOL +
+    " public int hashCode() {" + PMD.EOL +
+    "  return 0;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public interface OverrideBothEqualsAndHashcode6 {" + CPD.EOL +
-    " public boolean equals(Object o);" + CPD.EOL +
+    "public interface OverrideBothEqualsAndHashcode6 {" + PMD.EOL +
+    " public boolean equals(Object o);" + PMD.EOL +
     "}";
 }

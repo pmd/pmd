@@ -2,6 +2,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 
 import java.util.Iterator;
@@ -19,7 +20,7 @@ public class VBHTMLRenderer implements Renderer {
 
         StringBuffer sb = new StringBuffer(header());
         String filename = null;
-        String lineSep = CPD.EOL;
+        String lineSep = PMD.EOL;
 
         boolean colorize = false;
 
@@ -80,13 +81,13 @@ public class VBHTMLRenderer implements Renderer {
         StringBuffer sb = new StringBuffer();
         sb.append("<html><head><title>PMD</title></head>");
         sb.append("<style type=\"text/css\">");
-        sb.append("<!--" + CPD.EOL);
-        sb.append("body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }" + CPD.EOL);
-        sb.append(".title { font-family: verdana, arial, helvetica,geneva; font-size: 12px; font-weight:bold; color: white; }" + CPD.EOL);
-        sb.append(".body { font-family: verdana, arial, helvetica, geneva; font-size: 12px; font-weight:plain; color: black; }" + CPD.EOL);
-        sb.append("#TableHeader { background-color: #003366; }" + CPD.EOL);
-        sb.append("#RowColor1 { background-color: #eeeeee; }" + CPD.EOL);
-        sb.append("#RowColor2 { background-color: white; }" + CPD.EOL);
+        sb.append("<!--" + PMD.EOL);
+        sb.append("body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }" + PMD.EOL);
+        sb.append(".title { font-family: verdana, arial, helvetica,geneva; font-size: 12px; font-weight:bold; color: white; }" + PMD.EOL);
+        sb.append(".body { font-family: verdana, arial, helvetica, geneva; font-size: 12px; font-weight:plain; color: black; }" + PMD.EOL);
+        sb.append("#TableHeader { background-color: #003366; }" + PMD.EOL);
+        sb.append("#RowColor1 { background-color: #eeeeee; }" + PMD.EOL);
+        sb.append("#RowColor2 { background-color: white; }" + PMD.EOL);
         sb.append("-->");
         sb.append("</style>");
         sb.append("<body><center>");

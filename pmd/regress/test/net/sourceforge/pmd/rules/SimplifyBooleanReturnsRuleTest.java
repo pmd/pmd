@@ -2,38 +2,39 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.SimplifyBooleanReturnsRule;
+import net.sourceforge.pmd.PMD;
 
 public class SimplifyBooleanReturnsRuleTest extends RuleTst {
 
     private static final String TEST1 =
-    "public class SimplifyBooleanReturns1 {" + CPD.EOL +
-    " public void foo() {   " + CPD.EOL +
-    "  if (true) {" + CPD.EOL +
-    "   return true;" + CPD.EOL +
-    "  } else {" + CPD.EOL +
-    "  return false;" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class SimplifyBooleanReturns1 {" + PMD.EOL +
+    " public void foo() {   " + PMD.EOL +
+    "  if (true) {" + PMD.EOL +
+    "   return true;" + PMD.EOL +
+    "  } else {" + PMD.EOL +
+    "  return false;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class SimplifyBooleanReturns2 {" + CPD.EOL +
-    " public boolean foo() {        " + CPD.EOL +
-    "  if (true) " + CPD.EOL +
-    "   return true;" + CPD.EOL +
-    "   else " + CPD.EOL +
-    "  return false;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class SimplifyBooleanReturns2 {" + PMD.EOL +
+    " public boolean foo() {        " + PMD.EOL +
+    "  if (true) " + PMD.EOL +
+    "   return true;" + PMD.EOL +
+    "   else " + PMD.EOL +
+    "  return false;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class SimplifyBooleanReturns3 {" + CPD.EOL +
-    " public Object foo() { " + CPD.EOL +
-    "  if (!true) {" + CPD.EOL +
-    "   return null;" + CPD.EOL +
-    "  } else  {}" + CPD.EOL +
-    "  return null;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class SimplifyBooleanReturns3 {" + PMD.EOL +
+    " public Object foo() { " + PMD.EOL +
+    "  if (!true) {" + PMD.EOL +
+    "   return null;" + PMD.EOL +
+    "  } else  {}" + PMD.EOL +
+    "  return null;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     public void test1() throws Throwable {

@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PMD {
+    public static final String EOL = System.getProperty("line.separator", "\n");
 
     /**
      * @param reader - a Reader to the Java code to analyse

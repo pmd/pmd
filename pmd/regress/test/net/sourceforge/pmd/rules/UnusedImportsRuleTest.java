@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.UnusedImportsRule;
+import net.sourceforge.pmd.PMD;
 
 public class UnusedImportsRuleTest extends SimpleAggregatorTst {
 
@@ -22,27 +23,27 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "import java.io.File;" + CPD.EOL +
+    "import java.io.File;" + PMD.EOL +
     "public class UnusedImports1 {}";
 
     private static final String TEST2 =
-    "import java.io.File;" + CPD.EOL +
-    "public class UnusedImports2 {" + CPD.EOL +
-    " private File file;" + CPD.EOL +
+    "import java.io.File;" + PMD.EOL +
+    "public class UnusedImports2 {" + PMD.EOL +
+    " private File file;" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "import java.io.File;" + CPD.EOL +
-    "import java.util.List;" + CPD.EOL +
-    "public class UnusedImports3 {" + CPD.EOL +
+    "import java.io.File;" + PMD.EOL +
+    "import java.util.List;" + PMD.EOL +
+    "public class UnusedImports3 {" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "import java.security.AccessController;" + CPD.EOL +
-    "public class UnusedImports4 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  AccessController.doPrivileged(null);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "import java.security.AccessController;" + PMD.EOL +
+    "public class UnusedImports4 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  AccessController.doPrivileged(null);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 

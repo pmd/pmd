@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.DoubleCheckedLockingRule;
+import net.sourceforge.pmd.PMD;
 
 public class DoubleCheckedLockingRuleTest extends SimpleAggregatorTst {
 
@@ -14,27 +15,27 @@ public class DoubleCheckedLockingRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class DoubleCheckedLockingRule1 {" + CPD.EOL +
-    " public void foo() {}" + CPD.EOL +
+    "public class DoubleCheckedLockingRule1 {" + PMD.EOL +
+    " public void foo() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class DoubleCheckedLockingRule2 {" + CPD.EOL +
-    "      Object baz;" + CPD.EOL +
-    "      Object bar() {" + CPD.EOL +
-    "        if(baz == null) { //baz may be non-null yet not fully created" + CPD.EOL +
-    "          synchronized(this){" + CPD.EOL +
-    "            if(baz == null){" + CPD.EOL +
-    "              baz = new Object();" + CPD.EOL +
-    "            }" + CPD.EOL +
-    "          }" + CPD.EOL +
-    "        }" + CPD.EOL +
-    "        return baz;" + CPD.EOL +
-    "      }" + CPD.EOL +
+    "public class DoubleCheckedLockingRule2 {" + PMD.EOL +
+    "      Object baz;" + PMD.EOL +
+    "      Object bar() {" + PMD.EOL +
+    "        if(baz == null) { //baz may be non-null yet not fully created" + PMD.EOL +
+    "          synchronized(this){" + PMD.EOL +
+    "            if(baz == null){" + PMD.EOL +
+    "              baz = new Object();" + PMD.EOL +
+    "            }" + PMD.EOL +
+    "          }" + PMD.EOL +
+    "        }" + PMD.EOL +
+    "        return baz;" + PMD.EOL +
+    "      }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public interface DoubleCheckedLockingRule3 {" + CPD.EOL +
-    " void foo();" + CPD.EOL +
+    "public interface DoubleCheckedLockingRule3 {" + PMD.EOL +
+    " void foo();" + PMD.EOL +
     "}";
 }

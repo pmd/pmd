@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.rules.RuleTst;
@@ -8,18 +9,18 @@ import test.net.sourceforge.pmd.rules.RuleTst;
 public class JUnitStaticSuiteRuleTest extends RuleTst {
 
     private static final String TEST1 =
-    "public class JUnitStaticSuite1 {" + CPD.EOL +
-    " public TestSuite suite() {}" + CPD.EOL +
+    "public class JUnitStaticSuite1 {" + PMD.EOL +
+    " public TestSuite suite() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class JUnitStaticSuite2 {" + CPD.EOL +
-    " public static TestSuite suite() {}" + CPD.EOL +
+    "public class JUnitStaticSuite2 {" + PMD.EOL +
+    " public static TestSuite suite() {}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class JUnitStaticSuite3 {" + CPD.EOL +
-    " private static TestSuite suite() {}" + CPD.EOL +
+    "public class JUnitStaticSuite3 {" + PMD.EOL +
+    " private static TestSuite suite() {}" + PMD.EOL +
     "}";
 
     private Rule rule;

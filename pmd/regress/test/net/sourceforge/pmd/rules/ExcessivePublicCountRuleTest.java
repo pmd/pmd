@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.ExcessivePublicCountRule;
+import net.sourceforge.pmd.PMD;
 
 public class ExcessivePublicCountRuleTest extends RuleTst {
 
@@ -22,16 +23,16 @@ public class ExcessivePublicCountRuleTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class ExcessivePublicCountRule1 {" + CPD.EOL +
-    " public int foo;" + CPD.EOL +
+    "public class ExcessivePublicCountRule1 {" + PMD.EOL +
+    " public int foo;" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class ExcessivePublicCountRule2 {" + CPD.EOL +
-    " public int foo;" + CPD.EOL +
-    " public int bif;" + CPD.EOL +
-    " public int baz;" + CPD.EOL +
-    " public int bof;" + CPD.EOL +
+    "public class ExcessivePublicCountRule2 {" + PMD.EOL +
+    " public int foo;" + PMD.EOL +
+    " public int bif;" + PMD.EOL +
+    " public int baz;" + PMD.EOL +
+    " public int bof;" + PMD.EOL +
     "}";
 
 }

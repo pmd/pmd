@@ -5,6 +5,7 @@ import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.JavaTokenizer;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
+import net.sourceforge.pmd.PMD;
 
 import java.io.StringReader;
 
@@ -19,6 +20,6 @@ public class SourceCodeTest extends TestCase {
 
         assertEquals(MatchAlgorithmTest.LINE_1, sourceCode.getSlice(0,0));
         assertEquals(MatchAlgorithmTest.LINE_2, sourceCode.getSlice(1,1));
-        assertEquals(MatchAlgorithmTest.LINE_1 + CPD.EOL + MatchAlgorithmTest.LINE_2, sourceCode.getSlice(0,1));
+        assertEquals(MatchAlgorithmTest.LINE_1 + PMD.EOL + MatchAlgorithmTest.LINE_2, sourceCode.getSlice(0,1));
     }
 }

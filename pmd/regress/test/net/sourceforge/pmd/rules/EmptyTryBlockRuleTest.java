@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -22,34 +23,34 @@ public class EmptyTryBlockRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class EmptyTryBlock1 {" + CPD.EOL +
-    "       public void foo() {" + CPD.EOL +
-    "               try {" + CPD.EOL +
-    "               } catch (Exception e) {" + CPD.EOL +
-    "                       e.printStackTrace();" + CPD.EOL +
-    "               }" + CPD.EOL +
-    "       }" + CPD.EOL +
+    "public class EmptyTryBlock1 {" + PMD.EOL +
+    "       public void foo() {" + PMD.EOL +
+    "               try {" + PMD.EOL +
+    "               } catch (Exception e) {" + PMD.EOL +
+    "                       e.printStackTrace();" + PMD.EOL +
+    "               }" + PMD.EOL +
+    "       }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class EmptyTryBlock2 {" + CPD.EOL +
-    "       public void foo() {" + CPD.EOL +
-    "               try {" + CPD.EOL +
-    "               } finally {" + CPD.EOL +
-    "                       int x = 5;" + CPD.EOL +
-    "               }" + CPD.EOL +
-    "       }" + CPD.EOL +
+    "public class EmptyTryBlock2 {" + PMD.EOL +
+    "       public void foo() {" + PMD.EOL +
+    "               try {" + PMD.EOL +
+    "               } finally {" + PMD.EOL +
+    "                       int x = 5;" + PMD.EOL +
+    "               }" + PMD.EOL +
+    "       }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class EmptyTryBlock3 {" + CPD.EOL +
-    "       public void foo() {" + CPD.EOL +
-    "               try {" + CPD.EOL +
-    "                       int f =2;" + CPD.EOL +
-    "               } finally {" + CPD.EOL +
-    "                       int x = 5;" + CPD.EOL +
-    "               }" + CPD.EOL +
-    "       }" + CPD.EOL +
+    "public class EmptyTryBlock3 {" + PMD.EOL +
+    "       public void foo() {" + PMD.EOL +
+    "               try {" + PMD.EOL +
+    "                       int f =2;" + PMD.EOL +
+    "               } finally {" + PMD.EOL +
+    "                       int x = 5;" + PMD.EOL +
+    "               }" + PMD.EOL +
+    "       }" + PMD.EOL +
     "}";
 
 }

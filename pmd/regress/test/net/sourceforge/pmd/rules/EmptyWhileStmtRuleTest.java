@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -20,14 +21,14 @@ public class EmptyWhileStmtRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    "    public void bar() {" + CPD.EOL +
-    "       while (true == true) {" + CPD.EOL +
-    "       }" + CPD.EOL +
-    "       while (true == true) {" + CPD.EOL +
-    "               String x = \"\";" + CPD.EOL +
-    "       }" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "    public void bar() {" + PMD.EOL +
+    "       while (true == true) {" + PMD.EOL +
+    "       }" + PMD.EOL +
+    "       while (true == true) {" + PMD.EOL +
+    "               String x = \"\";" + PMD.EOL +
+    "       }" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
 }

@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.CyclomaticComplexityRule;
 
@@ -50,79 +51,79 @@ public class CyclomaticComplexityRuleTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class CyclomaticComplexity1 {" + CPD.EOL +
-    " public void foo() {}" + CPD.EOL +
+    "public class CyclomaticComplexity1 {" + PMD.EOL +
+    " public void foo() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class CyclomaticComplexity2 {" + CPD.EOL +
-    " public void example() {" + CPD.EOL +
-    "  int x = 0;" + CPD.EOL +
-    "  int a = 0;" + CPD.EOL +
-    "  int b = 0;" + CPD.EOL +
-    "  int c = 0;" + CPD.EOL +
-    "  int d = 0;" + CPD.EOL +
-    "  int a1 = 0;" + CPD.EOL +
-    "  int a2 = 0;" + CPD.EOL +
-    "  int b1 = 0;" + CPD.EOL +
-    "  int b2 = 0;" + CPD.EOL +
-    "  int z = 0;" + CPD.EOL +
-    "  int h = 0;" + CPD.EOL +
-    "  int e = 0;" + CPD.EOL +
-    "  int f = 0;" + CPD.EOL +
-    "" + CPD.EOL +
-    "  if (a == b) {" + CPD.EOL +
-    "   if (a1 == b1) {" + CPD.EOL +
-    "     x=2;" + CPD.EOL +
-    "   } else if (a2 == b2) {" + CPD.EOL +
-    "     x=2;" + CPD.EOL +
-    "   }" + CPD.EOL +
-    "            else" + CPD.EOL +
-    "            {" + CPD.EOL +
-    "                x=2;" + CPD.EOL +
-    "            }" + CPD.EOL +
-    "        }" + CPD.EOL +
-    "       else if (c == d)" + CPD.EOL +
-    "        {" + CPD.EOL +
-    "           while (c == d)" + CPD.EOL +
-    "            {" + CPD.EOL +
-    "                x=2;" + CPD.EOL +
-    "            }" + CPD.EOL +
-    "        }" + CPD.EOL +
-    "       else if (e == f)" + CPD.EOL +
-    "        {" + CPD.EOL +
-    "           for (int n = 0; n < h; n++)" + CPD.EOL +
-    "            {" + CPD.EOL +
-    "                x=2;" + CPD.EOL +
-    "            }" + CPD.EOL +
-    "        }" + CPD.EOL +
-    "        else" + CPD.EOL +
-    "        {" + CPD.EOL +
-    "            switch (z)" + CPD.EOL +
-    "            {" + CPD.EOL +
-    "               case 1:" + CPD.EOL +
-    "                x=2;" + CPD.EOL +
-    "                    break;" + CPD.EOL +
-    "" + CPD.EOL +
-    "              case 2:" + CPD.EOL +
-    "                x=2;" + CPD.EOL +
-    "                    break;" + CPD.EOL +
-    "" + CPD.EOL +
-    "              case 3:" + CPD.EOL +
-    "                x=2;" + CPD.EOL +
-    "                    break;" + CPD.EOL +
-    "" + CPD.EOL +
-    "              default:" + CPD.EOL +
-    "                x=2;" + CPD.EOL +
-    "                    break;" + CPD.EOL +
-    "            }" + CPD.EOL +
-    "        }" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class CyclomaticComplexity2 {" + PMD.EOL +
+    " public void example() {" + PMD.EOL +
+    "  int x = 0;" + PMD.EOL +
+    "  int a = 0;" + PMD.EOL +
+    "  int b = 0;" + PMD.EOL +
+    "  int c = 0;" + PMD.EOL +
+    "  int d = 0;" + PMD.EOL +
+    "  int a1 = 0;" + PMD.EOL +
+    "  int a2 = 0;" + PMD.EOL +
+    "  int b1 = 0;" + PMD.EOL +
+    "  int b2 = 0;" + PMD.EOL +
+    "  int z = 0;" + PMD.EOL +
+    "  int h = 0;" + PMD.EOL +
+    "  int e = 0;" + PMD.EOL +
+    "  int f = 0;" + PMD.EOL +
+    "" + PMD.EOL +
+    "  if (a == b) {" + PMD.EOL +
+    "   if (a1 == b1) {" + PMD.EOL +
+    "     x=2;" + PMD.EOL +
+    "   } else if (a2 == b2) {" + PMD.EOL +
+    "     x=2;" + PMD.EOL +
+    "   }" + PMD.EOL +
+    "            else" + PMD.EOL +
+    "            {" + PMD.EOL +
+    "                x=2;" + PMD.EOL +
+    "            }" + PMD.EOL +
+    "        }" + PMD.EOL +
+    "       else if (c == d)" + PMD.EOL +
+    "        {" + PMD.EOL +
+    "           while (c == d)" + PMD.EOL +
+    "            {" + PMD.EOL +
+    "                x=2;" + PMD.EOL +
+    "            }" + PMD.EOL +
+    "        }" + PMD.EOL +
+    "       else if (e == f)" + PMD.EOL +
+    "        {" + PMD.EOL +
+    "           for (int n = 0; n < h; n++)" + PMD.EOL +
+    "            {" + PMD.EOL +
+    "                x=2;" + PMD.EOL +
+    "            }" + PMD.EOL +
+    "        }" + PMD.EOL +
+    "        else" + PMD.EOL +
+    "        {" + PMD.EOL +
+    "            switch (z)" + PMD.EOL +
+    "            {" + PMD.EOL +
+    "               case 1:" + PMD.EOL +
+    "                x=2;" + PMD.EOL +
+    "                    break;" + PMD.EOL +
+    "" + PMD.EOL +
+    "              case 2:" + PMD.EOL +
+    "                x=2;" + PMD.EOL +
+    "                    break;" + PMD.EOL +
+    "" + PMD.EOL +
+    "              case 3:" + PMD.EOL +
+    "                x=2;" + PMD.EOL +
+    "                    break;" + PMD.EOL +
+    "" + PMD.EOL +
+    "              default:" + PMD.EOL +
+    "                x=2;" + PMD.EOL +
+    "                    break;" + PMD.EOL +
+    "            }" + PMD.EOL +
+    "        }" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class CyclomaticComplexity3 {" + CPD.EOL +
-    " public CyclomaticComplexity3() {}" + CPD.EOL +
+    "public class CyclomaticComplexity3 {" + PMD.EOL +
+    " public CyclomaticComplexity3() {}" + PMD.EOL +
     "}";
 
 }

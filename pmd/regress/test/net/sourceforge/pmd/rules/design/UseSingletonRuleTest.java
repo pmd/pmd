@@ -4,6 +4,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.design.UseSingletonRule;
 import net.sourceforge.pmd.stat.Metric;
@@ -56,52 +57,52 @@ public class UseSingletonRuleTest extends RuleTst implements ReportListener {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    " // Should trigger UseSingleton rule?" + CPD.EOL +
-    " public Foo() { }" + CPD.EOL +
-    " public static void doSomething() {}" + CPD.EOL +
-    " public static void main(String args[]) {" + CPD.EOL +
-    "  doSomething();" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " // Should trigger UseSingleton rule?" + PMD.EOL +
+    " public Foo() { }" + PMD.EOL +
+    " public static void doSomething() {}" + PMD.EOL +
+    " public static void main(String args[]) {" + PMD.EOL +
+    "  doSomething();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class UseSingleton2" + CPD.EOL +
-    "{" + CPD.EOL +
-    "    // Should not trigger UseSingleton rule." + CPD.EOL +
-    "    public UseSingleton2() { }" + CPD.EOL +
-    "    public void doSomething() { }" + CPD.EOL +
-    "    public static void main(String args[]) { }" + CPD.EOL +
+    "public class UseSingleton2" + PMD.EOL +
+    "{" + PMD.EOL +
+    "    // Should not trigger UseSingleton rule." + PMD.EOL +
+    "    public UseSingleton2() { }" + PMD.EOL +
+    "    public void doSomething() { }" + PMD.EOL +
+    "    public static void main(String args[]) { }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class UseSingleton3" + CPD.EOL +
-    "{" + CPD.EOL +
-    "    // Should trigger it." + CPD.EOL +
-    "    public static void doSomething1() { }" + CPD.EOL +
-    "    public static void doSomething2() { }" + CPD.EOL +
-    "    public static void doSomething3() { }" + CPD.EOL +
+    "public class UseSingleton3" + PMD.EOL +
+    "{" + PMD.EOL +
+    "    // Should trigger it." + PMD.EOL +
+    "    public static void doSomething1() { }" + PMD.EOL +
+    "    public static void doSomething2() { }" + PMD.EOL +
+    "    public static void doSomething3() { }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class UseSingleton4" + CPD.EOL +
-    "{" + CPD.EOL +
-    "    public UseSingleton4() { }" + CPD.EOL +
+    "public class UseSingleton4" + PMD.EOL +
+    "{" + PMD.EOL +
+    "    public UseSingleton4() { }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class UseSingleton5 {" + CPD.EOL +
-    " private UseSingleton5() {}" + CPD.EOL +
-    " public static UseSingleton5 get() {" + CPD.EOL +
-    "  return null;" + CPD.EOL +
-    " }     " + CPD.EOL +
+    "public class UseSingleton5 {" + PMD.EOL +
+    " private UseSingleton5() {}" + PMD.EOL +
+    " public static UseSingleton5 get() {" + PMD.EOL +
+    "  return null;" + PMD.EOL +
+    " }     " + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public abstract class Foo {" + CPD.EOL +
-    "    public static void doSomething1() { }" + CPD.EOL +
-    "    public static void doSomething2() { }" + CPD.EOL +
-    "    public static void doSomething3() { }" + CPD.EOL +
+    "public abstract class Foo {" + PMD.EOL +
+    "    public static void doSomething1() { }" + PMD.EOL +
+    "    public static void doSomething2() { }" + PMD.EOL +
+    "    public static void doSomething3() { }" + PMD.EOL +
     "}";
 
 }

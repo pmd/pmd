@@ -8,6 +8,7 @@ import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.MatchAlgorithm;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
+import net.sourceforge.pmd.PMD;
 
 import java.io.StringReader;
 import java.util.HashMap;
@@ -25,11 +26,11 @@ public class MatchAlgorithmTest extends TestCase {
 
     public static String getSampleCode() {
         return
-            LINE_1 + CPD.EOL +
-            LINE_2 + CPD.EOL +
-            LINE_3 + CPD.EOL +
-            LINE_4 + CPD.EOL +
-            LINE_5 + CPD.EOL +
+            LINE_1 + PMD.EOL +
+            LINE_2 + PMD.EOL +
+            LINE_3 + PMD.EOL +
+            LINE_4 + PMD.EOL +
+            LINE_5 + PMD.EOL +
             LINE_6;
     }
 

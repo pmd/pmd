@@ -6,6 +6,7 @@ import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
+import net.sourceforge.pmd.PMD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class XMLRendererTest extends TestCase
     match.setSourceCodeSlice("code fragment");
     list.add(match);
     String report = renderer.render(list.iterator());
-    assertEquals("<?xml version=\"1.0\"?><pmd-cpd><duplication lines=\"6\" tokens=\"75\"><file line=\"48\" path=\"/var/Foo.java\"/><file line=\"73\" path=\"/var/Foo.java\"/><codefragment><![CDATA[" + CPD.EOL + "code fragment" + CPD.EOL + "]]></codefragment></duplication></pmd-cpd>", report);
+    assertEquals("<?xml version=\"1.0\"?><pmd-cpd><duplication lines=\"6\" tokens=\"75\"><file line=\"48\" path=\"/var/Foo.java\"/><file line=\"73\" path=\"/var/Foo.java\"/><codefragment><![CDATA[" + PMD.EOL + "code fragment" + PMD.EOL + "]]></codefragment></duplication></pmd-cpd>", report);
   }
 
   public void testRender_MultipleMatch()
@@ -48,7 +49,7 @@ public class XMLRendererTest extends TestCase
     list.add(match1);
     list.add(match2);
     String report = renderer.render(list.iterator());
-    assertEquals("<?xml version=\"1.0\"?><pmd-cpd><duplication lines=\"6\" tokens=\"75\"><file line=\"48\" path=\"/var/Foo.java\"/><file line=\"73\" path=\"/var/Foo.java\"/><codefragment><![CDATA[" + CPD.EOL + "code fragment" + CPD.EOL + "]]></codefragment></duplication><duplication lines=\"7\" tokens=\"76\"><file line=\"49\" path=\"/var/Foo2.java\"/><file line=\"74\" path=\"/var/Foo2.java\"/><codefragment><![CDATA[" + CPD.EOL + "code fragment 2" + CPD.EOL + "]]></codefragment></duplication></pmd-cpd>", report);
+    assertEquals("<?xml version=\"1.0\"?><pmd-cpd><duplication lines=\"6\" tokens=\"75\"><file line=\"48\" path=\"/var/Foo.java\"/><file line=\"73\" path=\"/var/Foo.java\"/><codefragment><![CDATA[" + PMD.EOL + "code fragment" + PMD.EOL + "]]></codefragment></duplication><duplication lines=\"7\" tokens=\"76\"><file line=\"49\" path=\"/var/Foo2.java\"/><file line=\"74\" path=\"/var/Foo2.java\"/><codefragment><![CDATA[" + PMD.EOL + "code fragment 2" + PMD.EOL + "]]></codefragment></duplication></pmd-cpd>", report);
   }
 }
 

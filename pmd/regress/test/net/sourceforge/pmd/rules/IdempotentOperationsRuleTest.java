@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.IdempotentOperationsRule;
+import net.sourceforge.pmd.PMD;
 
 public class IdempotentOperationsRuleTest extends SimpleAggregatorTst {
 
@@ -14,19 +15,19 @@ public class IdempotentOperationsRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    " private void bar() { " + CPD.EOL +
-    "  int x = 2;" + CPD.EOL +
-    "  x = x;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private void bar() { " + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
+    "  x = x;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class Foo {" + CPD.EOL +
-    " private void bar() { " + CPD.EOL +
-    "  int[] x = {2,3};" + CPD.EOL +
-    "  x[0] = x[1];" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private void bar() { " + PMD.EOL +
+    "  int[] x = {2,3};" + PMD.EOL +
+    "  x[0] = x[1];" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 }

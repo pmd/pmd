@@ -3,6 +3,7 @@ package net.sourceforge.pmd.cpd;
 import net.sourceforge.pmd.ast.JavaCharStream;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 import net.sourceforge.pmd.ast.Token;
+import net.sourceforge.pmd.PMD;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -22,7 +23,7 @@ public class JavaTokenizer implements Tokenizer {
         while ((currentLine = r.readLine()) != null) {
             lines.add(currentLine);
             sb.append(currentLine);
-            sb.append(CPD.EOL);
+            sb.append(PMD.EOL);
         }
         tokens.setCode(lines);
 

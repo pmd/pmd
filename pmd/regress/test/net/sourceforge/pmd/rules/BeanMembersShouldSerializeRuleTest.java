@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.BeanMembersShouldSerializeRule;
 
@@ -25,43 +26,43 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    " private String foo;" + CPD.EOL +
-    " private String bar = foo;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private String foo;" + PMD.EOL +
+    " private String bar = foo;" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class Foo {" + CPD.EOL +
-    " private static String foo;" + CPD.EOL +
-    " private String bar = Foo.foo;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private static String foo;" + PMD.EOL +
+    " private String bar = Foo.foo;" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class Foo {" + CPD.EOL +
-    " private transient String foo;" + CPD.EOL +
-    " private String bar = Foo.foo;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private transient String foo;" + PMD.EOL +
+    " private String bar = Foo.foo;" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class Foo {" + CPD.EOL +
-    " private String foo;" + CPD.EOL +
-    " private String bar = Foo.foo;" + CPD.EOL +
-    " public String getFoo() {return foo;}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private String foo;" + PMD.EOL +
+    " private String bar = Foo.foo;" + PMD.EOL +
+    " public String getFoo() {return foo;}" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class Foo {" + CPD.EOL +
-    " private String foo;" + CPD.EOL +
-    " private String bar = Foo.foo;" + CPD.EOL +
-    " public void setFoo(Foo foo) {this.foo = foo;}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private String foo;" + PMD.EOL +
+    " private String bar = Foo.foo;" + PMD.EOL +
+    " public void setFoo(Foo foo) {this.foo = foo;}" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public class Foo {" + CPD.EOL +
-    " private String foo;" + CPD.EOL +
-    " private String bar = Foo.foo;" + CPD.EOL +
-    " public void setFoo(Foo foo) {this.foo = foo;}" + CPD.EOL +
-    " public String getFoo() {return foo;}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private String foo;" + PMD.EOL +
+    " private String bar = Foo.foo;" + PMD.EOL +
+    " public void setFoo(Foo foo) {this.foo = foo;}" + PMD.EOL +
+    " public String getFoo() {return foo;}" + PMD.EOL +
     "}";
 
 }

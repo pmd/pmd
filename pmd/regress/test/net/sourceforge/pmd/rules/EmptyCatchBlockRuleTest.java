@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -32,75 +33,75 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
     }
 
     public static final String TEST1 =
-    "import java.io.*;" + CPD.EOL +
-    "public class Foo {" + CPD.EOL +
-    " public Foo() {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "   FileReader fr = new FileReader(\"/dev/null\");" + CPD.EOL +
-    "  } catch (Exception e) {}" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "   FileReader fr = new FileReader(\"/dev/null\");" + CPD.EOL +
-    "  } catch (Exception e) {" + CPD.EOL +
-    "   e.printStackTrace();" + CPD.EOL +
-    "   // this shouldn't show up on the report" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "import java.io.*;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public Foo() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "   FileReader fr = new FileReader(\"/dev/null\");" + PMD.EOL +
+    "  } catch (Exception e) {}" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "   FileReader fr = new FileReader(\"/dev/null\");" + PMD.EOL +
+    "  } catch (Exception e) {" + PMD.EOL +
+    "   e.printStackTrace();" + PMD.EOL +
+    "   // this shouldn't show up on the report" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class Foo {" + CPD.EOL +
-    "    public Foo() {" + CPD.EOL +
-    "       try {" + CPD.EOL +
-    "       } catch (RuntimeException e) {e.getMessage();}" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "    public Foo() {" + PMD.EOL +
+    "       try {" + PMD.EOL +
+    "       } catch (RuntimeException e) {e.getMessage();}" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class Foo {" + CPD.EOL +
-    " private void foo() {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "  } finally {" + CPD.EOL +
-    "   try {" + CPD.EOL +
-    "    int x =2;" + CPD.EOL +
-    "   } catch (Exception e) {}" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private void foo() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "  } finally {" + PMD.EOL +
+    "   try {" + PMD.EOL +
+    "    int x =2;" + PMD.EOL +
+    "   } catch (Exception e) {}" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class Foo {" + CPD.EOL +
-    " private void foo() {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "  } catch (Exception e) {" + CPD.EOL +
-    "  } catch (Throwable t) {" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private void foo() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "  } catch (Exception e) {" + PMD.EOL +
+    "  } catch (Throwable t) {" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "  } catch (Exception e) {" + CPD.EOL +
-    "   blah.blah();" + CPD.EOL +
-    "  } finally {}" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "  } catch (Exception e) {" + PMD.EOL +
+    "   blah.blah();" + PMD.EOL +
+    "  } finally {}" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "  } catch (InterruptedException e) {}" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "  } catch (InterruptedException e) {}" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST7 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "  } catch (CloneNotSupportedException e) {}" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "  } catch (CloneNotSupportedException e) {}" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 }
 

@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -24,40 +25,40 @@ public class LongVariableRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class LongVariableParam {" + CPD.EOL +
-    "    public static void main(String argsWithExtraMustard[]) { " + CPD.EOL +
-    "       // a should trigger it." + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class LongVariableParam {" + PMD.EOL +
+    "    public static void main(String argsWithExtraMustard[]) { " + PMD.EOL +
+    "       // a should trigger it." + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class LongVariableNone {" + CPD.EOL +
-    "    public static void main(String args[]) {" + CPD.EOL +
-    "       int bugleDeWump = -1;" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class LongVariableNone {" + PMD.EOL +
+    "    public static void main(String args[]) {" + PMD.EOL +
+    "       int bugleDeWump = -1;" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class LongVariableLocal {" + CPD.EOL +
-    "" + CPD.EOL +
-    "    public static void main(String args[]) {" + CPD.EOL +
-    "       int abcdefghijklmnopqrstuvwxyz = -1; " + CPD.EOL +
-    "       // Should trigger ShortVariable rule." + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class LongVariableLocal {" + PMD.EOL +
+    "" + PMD.EOL +
+    "    public static void main(String args[]) {" + PMD.EOL +
+    "       int abcdefghijklmnopqrstuvwxyz = -1; " + PMD.EOL +
+    "       // Should trigger ShortVariable rule." + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class LongVariableFor {" + CPD.EOL +
-    "    public static void main(String args[]) {" + CPD.EOL +
-    "       for (int interestingIntIterator = 0; " + CPD.EOL +
-    "            interestingIntIterator < 10; " + CPD.EOL +
-    "            interestingIntIterator++) { } // Should trigger." + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class LongVariableFor {" + PMD.EOL +
+    "    public static void main(String args[]) {" + PMD.EOL +
+    "       for (int interestingIntIterator = 0; " + PMD.EOL +
+    "            interestingIntIterator < 10; " + PMD.EOL +
+    "            interestingIntIterator++) { } // Should trigger." + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class LongVariableField {" + CPD.EOL +
-    "    private int abcdefghijklmnopqrstuvwxyz; // Should cause a problem." + CPD.EOL +
+    "public class LongVariableField {" + PMD.EOL +
+    "    private int abcdefghijklmnopqrstuvwxyz; // Should cause a problem." + PMD.EOL +
     "}";
 
 }

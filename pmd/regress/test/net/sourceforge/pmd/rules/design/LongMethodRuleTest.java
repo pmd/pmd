@@ -4,6 +4,7 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.design.LongMethodRule;
+import net.sourceforge.pmd.PMD;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class LongMethodRuleTest extends RuleTst {
@@ -33,64 +34,64 @@ public class LongMethodRuleTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class LongMethod1 {" + CPD.EOL +
-    "    public static void main(String args[]) {" + CPD.EOL +
-    "	System.err.println(\"This is short.\");" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class LongMethod1 {" + PMD.EOL +
+    "    public static void main(String args[]) {" + PMD.EOL +
+    "	System.err.println(\"This is short.\");" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class LongMethod2 {" + CPD.EOL +
-    "    public static void main(String args[]) {" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "	System.err.println(\"This is long.\");" + CPD.EOL +
-    "    } // 11 lines - violation" + CPD.EOL +
+    "public class LongMethod2 {" + PMD.EOL +
+    "    public static void main(String args[]) {" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "	System.err.println(\"This is long.\");" + PMD.EOL +
+    "    } // 11 lines - violation" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class LongMethod2 {" + CPD.EOL +
-    "    public static void main(String args[]) {" + CPD.EOL +
-    "	System.err.println(\"This is long, but not a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, but not a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, but not a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, but not a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, but not a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, but not a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, but not a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, but not a violation\");" + CPD.EOL +
-    "    } // 9 lines - Not a violation" + CPD.EOL +
+    "public class LongMethod2 {" + PMD.EOL +
+    "    public static void main(String args[]) {" + PMD.EOL +
+    "	System.err.println(\"This is long, but not a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, but not a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, but not a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, but not a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, but not a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, but not a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, but not a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, but not a violation\");" + PMD.EOL +
+    "    } // 9 lines - Not a violation" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class LongMethod2 {" + CPD.EOL +
-    "    public static void main(String args[]) {" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "	System.err.println(\"This is long, and is a violation\");" + CPD.EOL +
-    "    } // > 10 lines - Not a violation" + CPD.EOL +
+    "public class LongMethod2 {" + PMD.EOL +
+    "    public static void main(String args[]) {" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "	System.err.println(\"This is long, and is a violation\");" + PMD.EOL +
+    "    } // > 10 lines - Not a violation" + PMD.EOL +
     "}";
 }
 

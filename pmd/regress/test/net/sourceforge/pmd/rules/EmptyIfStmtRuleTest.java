@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -20,14 +21,14 @@ public class EmptyIfStmtRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class EmptyIfStmtRule {" + CPD.EOL +
-    "    public EmptyIfStmtRule() {" + CPD.EOL +
-    "       if (null == null) {" + CPD.EOL +
-    "       }" + CPD.EOL +
-    "       if (null != null) {" + CPD.EOL +
-    "               this.toString();" + CPD.EOL +
-    "       }" + CPD.EOL +
-    "    }" + CPD.EOL +
+    "public class EmptyIfStmtRule {" + PMD.EOL +
+    "    public EmptyIfStmtRule() {" + PMD.EOL +
+    "       if (null == null) {" + PMD.EOL +
+    "       }" + PMD.EOL +
+    "       if (null != null) {" + PMD.EOL +
+    "               this.toString();" + PMD.EOL +
+    "       }" + PMD.EOL +
+    "    }" + PMD.EOL +
     "}";
 
 

@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.MethodNamingConventionsRule;
+import net.sourceforge.pmd.PMD;
 
 public class MethodNamingConventionsRuleTest extends SimpleAggregatorTst {
 
@@ -14,17 +15,17 @@ public class MethodNamingConventionsRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    " void Bar() {}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void Bar() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class Foo {" + CPD.EOL +
-    " void bar_foo() {}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void bar_foo() {}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class Foo {" + CPD.EOL +
-    " void foo() {}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void foo() {}" + PMD.EOL +
     "}";
 }

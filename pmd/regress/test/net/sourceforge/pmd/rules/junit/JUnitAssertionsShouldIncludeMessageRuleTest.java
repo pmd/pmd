@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.junit.JUnitAssertionsShouldIncludeMessageRule;
+import net.sourceforge.pmd.PMD;
 import test.net.sourceforge.pmd.rules.RuleTst;
 
 public class JUnitAssertionsShouldIncludeMessageRuleTest extends RuleTst {
@@ -41,80 +42,80 @@ public class JUnitAssertionsShouldIncludeMessageRuleTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class JUnitAssertionsShouldIncludeMessageRule1 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertEquals(\"1 == 1\", 1, 1);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule1 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertEquals(\"1 == 1\", 1, 1);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class JUnitAssertionsShouldIncludeMessageRule2 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertEquals(1, 1);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule2 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertEquals(1, 1);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class JUnitAssertionsShouldIncludeMessageRule3 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertTrue(\"foo\", \"foo\".equals(\"foo\"));" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule3 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertTrue(\"foo\", \"foo\".equals(\"foo\"));" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class JUnitAssertionsShouldIncludeMessageRule4 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertTrue(\"foo\".equals(\"foo\"));" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule4 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertTrue(\"foo\".equals(\"foo\"));" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class JUnitAssertionsShouldIncludeMessageRule5 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertNull(\"it's not null\", null);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule5 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertNull(\"it's not null\", null);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public class JUnitAssertionsShouldIncludeMessageRule6 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertNull(null);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule6 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertNull(null);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST7 =
-    "public class JUnitAssertionsShouldIncludeMessageRule7 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertSame(\"not same!\", null, null);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule7 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertSame(\"not same!\", null, null);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST8 =
-    "public class JUnitAssertionsShouldIncludeMessageRule8 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertSame(null, null);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule8 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertSame(null, null);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST9 =
-    "public class JUnitAssertionsShouldIncludeMessageRule9 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertNotNull(\"foo\", null);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule9 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertNotNull(\"foo\", null);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST10 =
-    "public class JUnitAssertionsShouldIncludeMessageRule10 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  assertNotNull(null);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule10 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertNotNull(null);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST11 =
-    "public class JUnitAssertionsShouldIncludeMessageRule11 {" + CPD.EOL +
-    " public void test1() {" + CPD.EOL +
-    "  this.test1(\"foo\");" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class JUnitAssertionsShouldIncludeMessageRule11 {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  this.test1(\"foo\");" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 }

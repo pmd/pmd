@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.PMD;
+
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
@@ -18,7 +20,7 @@ public class PHPTokenizer implements Tokenizer {
         while ((currentLine = r.readLine()) != null) {
             lines.add(currentLine);
             sb.append(currentLine);
-            sb.append(CPD.EOL);
+            sb.append(PMD.EOL);
             for (int i=0;i<currentLine.length(); i++) {
                 char tok =currentLine.charAt(i);
                 if (    !Character.isWhitespace(tok) &&

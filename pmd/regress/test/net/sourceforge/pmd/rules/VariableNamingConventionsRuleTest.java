@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.VariableNamingConventionsRule;
+import net.sourceforge.pmd.PMD;
 
 public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
 
@@ -15,23 +16,23 @@ public class VariableNamingConventionsRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    " private static final int foo = 2;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private static final int foo = 2;" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class Foo {" + CPD.EOL +
-    " private int foo_bar = 2;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private int foo_bar = 2;" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class Foo {" + CPD.EOL +
-    " private int Ubar = 2;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private int Ubar = 2;" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class Foo {" + CPD.EOL +
-    " private int bar = 2;" + CPD.EOL +
-    " private static final int FOO_BAR = 2;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private int bar = 2;" + PMD.EOL +
+    " private static final int FOO_BAR = 2;" + PMD.EOL +
     "}";
 }

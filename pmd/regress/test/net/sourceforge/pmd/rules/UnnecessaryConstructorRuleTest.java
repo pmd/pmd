@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -25,38 +26,38 @@ public class UnnecessaryConstructorRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class UnnecessaryConstructor1 {" + CPD.EOL +
-    " public UnnecessaryConstructor1() {}" + CPD.EOL +
+    "public class UnnecessaryConstructor1 {" + PMD.EOL +
+    " public UnnecessaryConstructor1() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class UnnecessaryConstructor2 {" + CPD.EOL +
-    " private UnnecessaryConstructor2() {}" + CPD.EOL +
+    "public class UnnecessaryConstructor2 {" + PMD.EOL +
+    " private UnnecessaryConstructor2() {}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class UnnecessaryConstructor3 {" + CPD.EOL +
-    " public UnnecessaryConstructor3(int x) {}" + CPD.EOL +
+    "public class UnnecessaryConstructor3 {" + PMD.EOL +
+    " public UnnecessaryConstructor3(int x) {}" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class UnnecessaryConstructor4 {" + CPD.EOL +
-    " public UnnecessaryConstructor4() {  " + CPD.EOL +
-    "  int x = 2;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class UnnecessaryConstructor4 {" + PMD.EOL +
+    " public UnnecessaryConstructor4() {  " + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class UnnecessaryConstructor5 {" + CPD.EOL +
-    " public UnnecessaryConstructor5() throws IOException {  " + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class UnnecessaryConstructor5 {" + PMD.EOL +
+    " public UnnecessaryConstructor5() throws IOException {  " + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public class UnnecessaryConstructor6 {" + CPD.EOL +
-    " public UnnecessaryConstructor6() {" + CPD.EOL +
-    " }" + CPD.EOL +
-    " public UnnecessaryConstructor6(String foo) {}" + CPD.EOL +
+    "public class UnnecessaryConstructor6 {" + PMD.EOL +
+    " public UnnecessaryConstructor6() {" + PMD.EOL +
+    " }" + PMD.EOL +
+    " public UnnecessaryConstructor6(String foo) {}" + PMD.EOL +
     "}";
 
 

@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.design.LooseCouplingRule;
+import net.sourceforge.pmd.PMD;
 import test.net.sourceforge.pmd.rules.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.rules.TestDescriptor;
 
@@ -29,70 +30,70 @@ public class LooseCouplingRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "import java.util.*;" + CPD.EOL +
-    "public class LooseCoupling1 {" + CPD.EOL +
-    " public HashSet getFoo() {" + CPD.EOL +
-    "  return new HashSet();" + CPD.EOL +
-    " }" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class LooseCoupling1 {" + PMD.EOL +
+    " public HashSet getFoo() {" + PMD.EOL +
+    "  return new HashSet();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "import java.util.*;" + CPD.EOL +
-    "public class LooseCoupling2 {" + CPD.EOL +
-    " public Map getFoo() {" + CPD.EOL +
-    "  return new HashMap();" + CPD.EOL +
-    " }" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class LooseCoupling2 {" + PMD.EOL +
+    " public Map getFoo() {" + PMD.EOL +
+    "  return new HashMap();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class LooseCoupling3 {" + CPD.EOL +
-    " public void foo() {}" + CPD.EOL +
+    "public class LooseCoupling3 {" + PMD.EOL +
+    " public void foo() {}" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "import java.util.*;" + CPD.EOL +
-    "public class LooseCoupling1 {" + CPD.EOL +
-    " private Set fooSet = new HashSet(); // OK" + CPD.EOL +
-    " public Set getFoo() {" + CPD.EOL +
-    "  return fooSet;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class LooseCoupling1 {" + PMD.EOL +
+    " private Set fooSet = new HashSet(); // OK" + PMD.EOL +
+    " public Set getFoo() {" + PMD.EOL +
+    "  return fooSet;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "import java.util.*;" + CPD.EOL +
-    "public class LooseCoupling5 {" + CPD.EOL +
-    " private HashSet fooSet = new HashSet(); // NOT OK" + CPD.EOL +
-    " public Set getFoo() {" + CPD.EOL +
-    "  return fooSet;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class LooseCoupling5 {" + PMD.EOL +
+    " private HashSet fooSet = new HashSet(); // NOT OK" + PMD.EOL +
+    " public Set getFoo() {" + PMD.EOL +
+    "  return fooSet;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "import java.util.*;" + CPD.EOL +
-    "public class LooseCoupling1 {" + CPD.EOL +
-    " private HashSet fooSet = new HashSet(); // NOT OK" + CPD.EOL +
-    " public HashSet getFoo() { // NOT OK" + CPD.EOL +
-    "  return fooSet;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class LooseCoupling1 {" + PMD.EOL +
+    " private HashSet fooSet = new HashSet(); // NOT OK" + PMD.EOL +
+    " public HashSet getFoo() { // NOT OK" + PMD.EOL +
+    "  return fooSet;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST7 =
-    "import java.util.*;" + CPD.EOL +
-    "public class LooseCoupling7 {" + CPD.EOL +
-    " private HashSet fooSet = new HashSet();" + CPD.EOL +
-    " private HashMap fooMap = new HashMap();" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class LooseCoupling7 {" + PMD.EOL +
+    " private HashSet fooSet = new HashSet();" + PMD.EOL +
+    " private HashMap fooMap = new HashMap();" + PMD.EOL +
     "}";
 
     private static final String TEST8 =
-    "import java.util.*;" + CPD.EOL +
-    "public class LooseCoupling8 {" + CPD.EOL +
-    " public void foo(HashMap bar) {}" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class LooseCoupling8 {" + PMD.EOL +
+    " public void foo(HashMap bar) {}" + PMD.EOL +
     "}";
 
     private static final String TEST9 =
-    "import java.util.*;" + CPD.EOL +
-    "public class LooseCoupling9 {" + CPD.EOL +
-    " public void foo(Vector bar) {}" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class LooseCoupling9 {" + PMD.EOL +
+    " public void foo(Vector bar) {}" + PMD.EOL +
     "}";
 
 }

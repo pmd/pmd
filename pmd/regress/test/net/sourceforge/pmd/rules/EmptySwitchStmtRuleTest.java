@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -21,21 +22,21 @@ public class EmptySwitchStmtRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class EmptySwitchStmt1 {" + CPD.EOL +
-    " public void bar() {" + CPD.EOL +
-    "  int x = 2;" + CPD.EOL +
-    "  switch (x) {}" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class EmptySwitchStmt1 {" + PMD.EOL +
+    " public void bar() {" + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
+    "  switch (x) {}" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class EmptySwitchStmt2 {" + CPD.EOL +
-    " public void bar() {" + CPD.EOL +
-    "  int x = 2;" + CPD.EOL +
-    "  switch (x) {" + CPD.EOL +
-    "   case 2: int y=4;" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class EmptySwitchStmt2 {" + PMD.EOL +
+    " public void bar() {" + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
+    "  switch (x) {" + PMD.EOL +
+    "   case 2: int y=4;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 

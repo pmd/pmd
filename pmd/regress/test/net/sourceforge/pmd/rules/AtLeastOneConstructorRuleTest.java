@@ -2,29 +2,30 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.AtLeastOneConstructorRule;
+import net.sourceforge.pmd.PMD;
 
 public class AtLeastOneConstructorRuleTest extends RuleTst {
 
     private static final String TEST1 =
-    "public class AtLeastOneConstructorRule1 {" + CPD.EOL +
-    " public AtLeastOneConstructorRule1() {}" + CPD.EOL +
+    "public class AtLeastOneConstructorRule1 {" + PMD.EOL +
+    " public AtLeastOneConstructorRule1() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class AtLeastOneConstructorRule2 {" + CPD.EOL +
+    "public class AtLeastOneConstructorRule2 {" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class AtLeastOneConstructorRule3 {" + CPD.EOL +
-    " public class Foo {}" + CPD.EOL +
-    " public AtLeastOneConstructorRule3() {}" + CPD.EOL +
+    "public class AtLeastOneConstructorRule3 {" + PMD.EOL +
+    " public class Foo {}" + PMD.EOL +
+    " public AtLeastOneConstructorRule3() {}" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class AtLeastOneConstructorRule4 {" + CPD.EOL +
-    " public class Foo { " + CPD.EOL +
-    "  public Foo() {}" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class AtLeastOneConstructorRule4 {" + PMD.EOL +
+    " public class Foo { " + PMD.EOL +
+    "  public Foo() {}" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 

@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -24,43 +25,43 @@ public class ForLoopsMustUseBracesRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class ForLoopsNeedBraces1 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  for (int i=0; i<42;i++)" + CPD.EOL +
-    "       foo();" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class ForLoopsNeedBraces1 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  for (int i=0; i<42;i++)" + PMD.EOL +
+    "       foo();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class ForLoopsNeedBraces2 {" + CPD.EOL +
-    " public void foo() {   " + CPD.EOL +
-    "  for (int i=0; i<42;i++) {" + CPD.EOL +
-    "       foo();" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class ForLoopsNeedBraces2 {" + PMD.EOL +
+    " public void foo() {   " + PMD.EOL +
+    "  for (int i=0; i<42;i++) {" + PMD.EOL +
+    "       foo();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class ForLoopsNeedBraces3 {" + CPD.EOL +
-    " public void foo() {   " + CPD.EOL +
-    "  for (int i=0; i<42;) " + CPD.EOL +
-    "       foo();" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class ForLoopsNeedBraces3 {" + PMD.EOL +
+    " public void foo() {   " + PMD.EOL +
+    "  for (int i=0; i<42;) " + PMD.EOL +
+    "       foo();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class ForLoopsNeedBraces4 {" + CPD.EOL +
-    " public void foo() {   " + CPD.EOL +
-    "  for (int i=0;;) " + CPD.EOL +
-    "       foo();" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class ForLoopsNeedBraces4 {" + PMD.EOL +
+    " public void foo() {   " + PMD.EOL +
+    "  for (int i=0;;) " + PMD.EOL +
+    "       foo();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class ForLoopsNeedBraces5 {" + CPD.EOL +
-    " public void foo() {   " + CPD.EOL +
-    "  for (;;) " + CPD.EOL +
-    "       foo();" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class ForLoopsNeedBraces5 {" + PMD.EOL +
+    " public void foo() {   " + PMD.EOL +
+    "  for (;;) " + PMD.EOL +
+    "       foo();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 }

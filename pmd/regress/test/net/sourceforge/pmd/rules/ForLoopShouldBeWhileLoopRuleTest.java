@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -24,29 +25,29 @@ public class ForLoopShouldBeWhileLoopRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class ForLoopShouldBeWhileLoop1 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  int x = 2;" + CPD.EOL +
-    "  for (;x<5;) { " + CPD.EOL +
-    "   x++;" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class ForLoopShouldBeWhileLoop1 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
+    "  for (;x<5;) { " + PMD.EOL +
+    "   x++;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class ForLoopShouldBeWhileLoop2 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  for (int x=2;x<5;) { " + CPD.EOL +
-    "   x++;" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class ForLoopShouldBeWhileLoop2 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  for (int x=2;x<5;) { " + PMD.EOL +
+    "   x++;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class ForLoopShouldBeWhileLoop3 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  for (;;) {}" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class ForLoopShouldBeWhileLoop3 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  for (;;) {}" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 }

@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
+import net.sourceforge.pmd.PMD;
 
 public class UnusedLocalVariableTest extends SimpleAggregatorTst {
 
@@ -32,131 +33,131 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    " public foo() {" + CPD.EOL +
-    "   String fr = new String();" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public foo() {" + PMD.EOL +
+    "   String fr = new String();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class Foo {" + CPD.EOL +
-    " public void method() {" + CPD.EOL +
-    "  int x;" + CPD.EOL +
-    " }" + CPD.EOL +
-    "}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void method() {" + PMD.EOL +
+    "  int x;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}" + PMD.EOL +
     "";
 
     private static final String TEST3 =
-    "import java.util.*;" + CPD.EOL +
-    "public class Foo {" + CPD.EOL +
-    "    public Foo() {" + CPD.EOL +
-    "       List a = new ArrayList();" + CPD.EOL +
-    "    }" + CPD.EOL +
-    "}" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "    public Foo() {" + PMD.EOL +
+    "       List a = new ArrayList();" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "}" + PMD.EOL +
     "";
 
     private static final String TEST4 =
-    "import java.util.*;" + CPD.EOL +
-    "public class Foo {" + CPD.EOL +
-    "    public Foo() {" + CPD.EOL +
-    "       List a = new ArrayList();" + CPD.EOL +
-    "       if (true == true) {" + CPD.EOL +
-    "               a.size();" + CPD.EOL +
-    "       }" + CPD.EOL +
-    "    }" + CPD.EOL +
-    "}" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "    public Foo() {" + PMD.EOL +
+    "       List a = new ArrayList();" + PMD.EOL +
+    "       if (true == true) {" + PMD.EOL +
+    "               a.size();" + PMD.EOL +
+    "       }" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "}" + PMD.EOL +
     "";
 
     private static final String TEST5 =
-    "import java.util.*;" + CPD.EOL +
-    "public class Foo {" + CPD.EOL +
-    "static {" + CPD.EOL +
-    "       String x;" + CPD.EOL +
-    "}" + CPD.EOL +
-    "}" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    "static {" + PMD.EOL +
+    "       String x;" + PMD.EOL +
+    "}" + PMD.EOL +
+    "}" + PMD.EOL +
     "";
 
     private static final String TEST6 =
-    "public class Foo {" + CPD.EOL +
-    " public int x;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public int x;" + PMD.EOL +
     "}";
 
     private static final String TEST7 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  for (int i=0;i<10; i++);" + CPD.EOL +
-    "  for (int i=0;i<10; i++);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  for (int i=0;i<10; i++);" + PMD.EOL +
+    "  for (int i=0;i<10; i++);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 
     private static final String TEST8 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  final String x = \"baf\";" + CPD.EOL +
-    "   new Runnable() {" + CPD.EOL +
-    "    public void run() {" + CPD.EOL +
-    "     System.out.println(x);" + CPD.EOL +
-    "    }" + CPD.EOL +
-    "   };  " + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  final String x = \"baf\";" + PMD.EOL +
+    "   new Runnable() {" + PMD.EOL +
+    "    public void run() {" + PMD.EOL +
+    "     System.out.println(x);" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "   };  " + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST9 =
-    "public interface Foo {" + CPD.EOL +
-    " public void foo();" + CPD.EOL +
-    " public String bar();" + CPD.EOL +
+    "public interface Foo {" + PMD.EOL +
+    " public void foo();" + PMD.EOL +
+    " public String bar();" + PMD.EOL +
     "}";
 
     private static final String TEST10 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  String x = \"hi\";" + CPD.EOL +
-    "  class Bar {" + CPD.EOL +
-    "   public void buz() {" + CPD.EOL +
-    "    String x = \"howdy\";" + CPD.EOL +
-    "   }" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  String x = \"hi\";" + PMD.EOL +
+    "  class Bar {" + PMD.EOL +
+    "   public void buz() {" + PMD.EOL +
+    "    String x = \"howdy\";" + PMD.EOL +
+    "   }" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST11 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  for (int x = 0; ; ) { // USED" + CPD.EOL +
-    "   x++;" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  for (int x = 0; ; ) { // USED" + PMD.EOL +
+    "   x++;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST12 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  final String x = \"hi\";" + CPD.EOL +
-    "   new Runnable() {" + CPD.EOL +
-    "    public void run() {" + CPD.EOL +
-    "     x.toString();" + CPD.EOL +
-    "    }" + CPD.EOL +
-    "   };" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  final String x = \"hi\";" + PMD.EOL +
+    "   new Runnable() {" + PMD.EOL +
+    "    public void run() {" + PMD.EOL +
+    "     x.toString();" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "   };" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST13 =
-    "public class Foo {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  int x,y=0;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  int x,y=0;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST14 =
-    "public class Foo {" + CPD.EOL +
-    " public void bar() {" + CPD.EOL +
-    "  try {" + CPD.EOL +
-    "   //int x =2;" + CPD.EOL +
-    "  } catch (RuntimeException e) {" + CPD.EOL +
-    "  } catch (Exception e) {" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void bar() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "   //int x =2;" + PMD.EOL +
+    "  } catch (RuntimeException e) {" + PMD.EOL +
+    "  } catch (Exception e) {" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 }

@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.UnusedPrivateFieldRule;
+import net.sourceforge.pmd.PMD;
 
 public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
 
@@ -35,145 +36,145 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
        });
     }
     private static final String TEST1 =
-    "public class UnusedPrivateField1 {" + CPD.EOL +
-    "private String foo;" + CPD.EOL +
+    "public class UnusedPrivateField1 {" + PMD.EOL +
+    "private String foo;" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class UnusedPrivateField2 {" + CPD.EOL +
-    " " + CPD.EOL +
-    " private String foo;" + CPD.EOL +
-    " private String bar = foo;" + CPD.EOL +
-    " " + CPD.EOL +
-    " public void buz() {" + CPD.EOL +
-    "  bar = null;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class UnusedPrivateField2 {" + PMD.EOL +
+    " " + PMD.EOL +
+    " private String foo;" + PMD.EOL +
+    " private String bar = foo;" + PMD.EOL +
+    " " + PMD.EOL +
+    " public void buz() {" + PMD.EOL +
+    "  bar = null;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class UnusedPrivateField3 {" + CPD.EOL +
-    "" + CPD.EOL +
-    " private String foo;" + CPD.EOL +
-    "" + CPD.EOL +
-    " public void baz() {" + CPD.EOL +
-    "  Runnable r = new Runnable() {" + CPD.EOL +
-    "   public void run() {" + CPD.EOL +
-    "    String foo = \"buz\";" + CPD.EOL +
-    "   }" + CPD.EOL +
-    "  };   " + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class UnusedPrivateField3 {" + PMD.EOL +
+    "" + PMD.EOL +
+    " private String foo;" + PMD.EOL +
+    "" + PMD.EOL +
+    " public void baz() {" + PMD.EOL +
+    "  Runnable r = new Runnable() {" + PMD.EOL +
+    "   public void run() {" + PMD.EOL +
+    "    String foo = \"buz\";" + PMD.EOL +
+    "   }" + PMD.EOL +
+    "  };   " + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class UnusedPrivateField4 {" + CPD.EOL +
-    " public void bar() {" + CPD.EOL +
-    "  foo[0] = 0;" + CPD.EOL +
-    " }" + CPD.EOL +
-    " private int[] foo;" + CPD.EOL +
+    "public class UnusedPrivateField4 {" + PMD.EOL +
+    " public void bar() {" + PMD.EOL +
+    "  foo[0] = 0;" + PMD.EOL +
+    " }" + PMD.EOL +
+    " private int[] foo;" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class UnusedPrivateField5 {" + CPD.EOL +
-    " private String foo;" + CPD.EOL +
-    " public void bar() {   " + CPD.EOL +
-    "  this.foo = null;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class UnusedPrivateField5 {" + PMD.EOL +
+    " private String foo;" + PMD.EOL +
+    " public void bar() {   " + PMD.EOL +
+    "  this.foo = null;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST6 =
-    "public class UnusedPrivateField6 {" + CPD.EOL +
-    " private static final String FOO = \"foo\";" + CPD.EOL +
-    "  public Runnable bar() {      " + CPD.EOL +
-    "   return new Runnable() {" + CPD.EOL +
-    "    public void run() {" + CPD.EOL +
-    "     FOO.toString();" + CPD.EOL +
-    "    }" + CPD.EOL +
-    "   };" + CPD.EOL +
-    "  }" + CPD.EOL +
+    "public class UnusedPrivateField6 {" + PMD.EOL +
+    " private static final String FOO = \"foo\";" + PMD.EOL +
+    "  public Runnable bar() {      " + PMD.EOL +
+    "   return new Runnable() {" + PMD.EOL +
+    "    public void run() {" + PMD.EOL +
+    "     FOO.toString();" + PMD.EOL +
+    "    }" + PMD.EOL +
+    "   };" + PMD.EOL +
+    "  }" + PMD.EOL +
     "}";
 
     private static final String TEST7 =
-    "public interface UnusedPrivateField7 {" + CPD.EOL +
-    " public static final String FOO = \"FOO\"; " + CPD.EOL +
-    " public boolean equals(Object another);" + CPD.EOL +
-    " public int hashCode();" + CPD.EOL +
-    " public String toString();" + CPD.EOL +
+    "public interface UnusedPrivateField7 {" + PMD.EOL +
+    " public static final String FOO = \"FOO\"; " + PMD.EOL +
+    " public boolean equals(Object another);" + PMD.EOL +
+    " public int hashCode();" + PMD.EOL +
+    " public String toString();" + PMD.EOL +
     "}";
 
     private static final String TEST8 =
-    "public class UnusedPrivateField8 {" + CPD.EOL +
-    " public static class Services {" + CPD.EOL +
-    "  private String x;    " + CPD.EOL +
-    " }" + CPD.EOL +
-    "}" + CPD.EOL +
+    "public class UnusedPrivateField8 {" + PMD.EOL +
+    " public static class Services {" + PMD.EOL +
+    "  private String x;    " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}" + PMD.EOL +
     "";
 
     private static final String TEST9 =
-    "public class UnusedPrivateField9 {" + CPD.EOL +
-    " private int x;" + CPD.EOL +
-    " private class Bar {" + CPD.EOL +
-    "  public void baz() {" + CPD.EOL +
-    "   x = 2;" + CPD.EOL +
-    "  }" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class UnusedPrivateField9 {" + PMD.EOL +
+    " private int x;" + PMD.EOL +
+    " private class Bar {" + PMD.EOL +
+    "  public void baz() {" + PMD.EOL +
+    "   x = 2;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST10 =
-    "public class UnusedPrivateField10 {" + CPD.EOL +
-    " private static String foo;" + CPD.EOL +
+    "public class UnusedPrivateField10 {" + PMD.EOL +
+    " private static String foo;" + PMD.EOL +
     "}";
 
     private static final String TEST11 =
-    "public class Foo {" + CPD.EOL +
-    " private static final int BAR = 2;" + CPD.EOL +
-    " int x = Foo.BAR;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private static final int BAR = 2;" + PMD.EOL +
+    " int x = Foo.BAR;" + PMD.EOL +
     "}";
 
     private static final String TEST12 =
-    "public class Foo {" + CPD.EOL +
-    " public class Foo {}" + CPD.EOL +
-    " private int x;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public class Foo {}" + PMD.EOL +
+    " private int x;" + PMD.EOL +
     "}";
 
     private static final String TEST13 =
-    "public class Foo {" + CPD.EOL +
-    " public class Foo {private int x;}" + CPD.EOL +
-    " public class Bar {private int x;}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public class Foo {private int x;}" + PMD.EOL +
+    " public class Bar {private int x;}" + PMD.EOL +
     "}";
 
     private static final String TEST14 =
-    "public class Foo {" + CPD.EOL +
-    " private int value;" + CPD.EOL +
-    " public int doSomething(int value) { " + CPD.EOL +
-    "  return value + 1; " + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private int value;" + PMD.EOL +
+    " public int doSomething(int value) { " + PMD.EOL +
+    "  return value + 1; " + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST15 =
-    "public class Foo {" + CPD.EOL +
-    " private int x; " + CPD.EOL +
-    " public UnusedPrivateField17(int x) {" + CPD.EOL +
-    "  this.x=x;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private int x; " + PMD.EOL +
+    " public UnusedPrivateField17(int x) {" + PMD.EOL +
+    "  this.x=x;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST16 =
-    "public class Foo {" + CPD.EOL +
-    " public static final String FOO = \"foo\";" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public static final String FOO = \"foo\";" + PMD.EOL +
     "}";
 
     private static final String TEST17 =
-    "public class Foo {" + CPD.EOL +
-    " private int x;" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  Foo foo = new Foo();  " + CPD.EOL +
-    "  foo.x = 2;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private int x;" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  Foo foo = new Foo();  " + PMD.EOL +
+    "  foo.x = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST18 =
-    "public class Foo {" + CPD.EOL +
-    " private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField(\"foo\", String.class)};" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField(\"foo\", String.class)};" + PMD.EOL +
     "}";
 
 }

@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.PMD;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,10 +18,10 @@ import java.util.Set;
 public class SimpleNodeTest extends ParserTst {
 
     private static final String METHOD_DIFF_LINES =
-    "public class Test {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  int x;" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class Test {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  int x;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     public void testMethodDiffLines() throws Throwable {
@@ -30,8 +31,8 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     private static final String METHOD_SAME_LINE =
-    "public class Test {" + CPD.EOL +
-    " public void foo() {}" + CPD.EOL +
+    "public class Test {" + PMD.EOL +
+    " public void foo() {}" + PMD.EOL +
     "}";
 
     public void testMethodSameLine() throws Throwable {
@@ -49,7 +50,7 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     private static final String QUALIFIED_NAME =
-    "import java.io.File;" + CPD.EOL +
+    "import java.io.File;" + PMD.EOL +
     "public class Foo{}";
 
     public void testNames() throws Throwable {

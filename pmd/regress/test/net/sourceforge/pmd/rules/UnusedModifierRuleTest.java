@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -23,23 +24,23 @@ public class UnusedModifierRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public interface Foo {" + CPD.EOL +
-    " public void bar();" + CPD.EOL +
+    "public interface Foo {" + PMD.EOL +
+    " public void bar();" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public abstract class Foo {" + CPD.EOL +
-    " public abstract void bar();" + CPD.EOL +
+    "public abstract class Foo {" + PMD.EOL +
+    " public abstract void bar();" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public interface Foo {" + CPD.EOL +
-    " abstract void bar();" + CPD.EOL +
+    "public interface Foo {" + PMD.EOL +
+    " abstract void bar();" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public interface Foo {" + CPD.EOL +
-    " void bar();" + CPD.EOL +
+    "public interface Foo {" + PMD.EOL +
+    " void bar();" + PMD.EOL +
     "}";
 
 }

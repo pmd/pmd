@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -24,28 +25,28 @@ public class FinalFieldCouldBeStaticRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    " public final int BAR = 42;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public final int BAR = 42;" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class Foo {" + CPD.EOL +
-    " public static final int BAR = 42;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public static final int BAR = 42;" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class Foo {" + CPD.EOL +
-    " public int BAR = 42;" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public int BAR = 42;" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class Foo {" + CPD.EOL +
-    " public final String BAR = \"42\";" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public final String BAR = \"42\";" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
-    "public class Foo {" + CPD.EOL +
-    " public final Thread BAR = new Thread();" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public final Thread BAR = new Thread();" + PMD.EOL +
     "}";
 
 }

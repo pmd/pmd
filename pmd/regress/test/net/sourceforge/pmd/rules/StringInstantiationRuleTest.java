@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -23,30 +24,30 @@ public class StringInstantiationRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class StringInstantiation1 {" + CPD.EOL +
-    " private String bar = new String(\"bar\");" + CPD.EOL +
-    " private String baz = new String();" + CPD.EOL +
+    "public class StringInstantiation1 {" + PMD.EOL +
+    " private String bar = new String(\"bar\");" + PMD.EOL +
+    " private String baz = new String();" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class StringInstantiation2 {" + CPD.EOL +
-    " private String[] bar = new String[5];" + CPD.EOL +
+    "public class StringInstantiation2 {" + PMD.EOL +
+    " private String[] bar = new String[5];" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class StringInstantiation3 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  byte[] bytes = new byte[50];" + CPD.EOL +
-    "  String bar = new String(bytes, 0, bytes.length);" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class StringInstantiation3 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  byte[] bytes = new byte[50];" + PMD.EOL +
+    "  String bar = new String(bytes, 0, bytes.length);" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
-    "public class StringInstantiation4 {" + CPD.EOL +
-    " public void foo() {" + CPD.EOL +
-    "  byte[] bytes = new byte[50];" + CPD.EOL +
-    "  String bar = new String(bytes, 0, bytes.length, \"some-encoding\");" + CPD.EOL +
-    " }" + CPD.EOL +
+    "public class StringInstantiation4 {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  byte[] bytes = new byte[50];" + PMD.EOL +
+    "  String bar = new String(bytes, 0, bytes.length, \"some-encoding\");" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
 

@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
@@ -22,18 +23,18 @@ public class FinalizeShouldBeProtectedRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + CPD.EOL +
-    " public void finalize() {}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void finalize() {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class Foo {" + CPD.EOL +
-    " public void finalize(int x) {}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public void finalize(int x) {}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "public class Foo {" + CPD.EOL +
-    " protected void finalize() {}" + CPD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " protected void finalize() {}" + PMD.EOL +
     "}";
 
 }

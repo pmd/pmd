@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.PMD;
+
 import java.util.Iterator;
 
 /**
@@ -37,7 +39,7 @@ public class XMLRenderer implements Renderer
       String codeFragment = match.getSourceCodeSlice();
       if (codeFragment != null)
       {
-        buffer.append("<codefragment><![CDATA[" + CPD.EOL + codeFragment + CPD.EOL + "]]></codefragment>");
+        buffer.append("<codefragment><![CDATA[" + PMD.EOL + codeFragment + PMD.EOL + "]]></codefragment>");
       }
       buffer.append("</duplication>");
     }

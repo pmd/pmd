@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.ExcessiveImportsRule;
 
@@ -21,16 +22,16 @@ public class ExcessiveImportsRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "import java.util.Vector;" + CPD.EOL +
-    "import java.util.Vector;" + CPD.EOL +
-    "import java.util.Vector;" + CPD.EOL +
-    "import java.util.Vector;" + CPD.EOL +
-    "import java.util.Vector;" + CPD.EOL +
-    "import java.util.Vector;" + CPD.EOL +
+    "import java.util.Vector;" + PMD.EOL +
+    "import java.util.Vector;" + PMD.EOL +
+    "import java.util.Vector;" + PMD.EOL +
+    "import java.util.Vector;" + PMD.EOL +
+    "import java.util.Vector;" + PMD.EOL +
+    "import java.util.Vector;" + PMD.EOL +
     "public class Foo{}";
 
     private static final String TEST2 =
-    "import java.util.Vector;" + CPD.EOL +
+    "import java.util.Vector;" + PMD.EOL +
     "public class Foo{}";
 
 

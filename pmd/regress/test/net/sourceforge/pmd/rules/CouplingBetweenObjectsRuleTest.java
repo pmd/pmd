@@ -1,22 +1,23 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.CouplingBetweenObjectsRule;
 
 public class CouplingBetweenObjectsRuleTest extends RuleTst {
 
     private static final String TEST1 =
-    "import java.util.*;" + CPD.EOL +
-    "" + CPD.EOL +
-    "public class CouplingBetweenObjects1 {" + CPD.EOL +
-    " public List foo() {return null;}" + CPD.EOL +
-    " public ArrayList foo() {return null;}" + CPD.EOL +
-    " public Vector foo() {return null;}" + CPD.EOL +
+    "import java.util.*;" + PMD.EOL +
+    "" + PMD.EOL +
+    "public class CouplingBetweenObjects1 {" + PMD.EOL +
+    " public List foo() {return null;}" + PMD.EOL +
+    " public ArrayList foo() {return null;}" + PMD.EOL +
+    " public Vector foo() {return null;}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "public class CouplingBetweenObjects2 {" + CPD.EOL +
+    "public class CouplingBetweenObjects2 {" + PMD.EOL +
     "}";
 
 
