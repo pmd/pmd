@@ -52,7 +52,6 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -66,11 +65,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.IWorkingSetManager;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 /**
@@ -80,6 +75,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.14  2004/11/21 21:38:43  phherlin
+ * Continue applying MVC.
+ *
  * Revision 1.13  2004/11/18 23:54:27  phherlin
  * Refactoring to apply MVC.
  * The goal is to test the refactoring before a complete refactoring for all GUI
@@ -131,9 +129,11 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * Displaying error dialog in a thread safe way
  *
  */
-public class PMDPropertyPage extends PropertyPage {
+public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.properties.PMDPropertyPage");
     private PMDPropertyPageController controller;
+    private PMDPropertyPageModel model;
+    private IProject project;
     private Button enablePMDButton;
     protected TableViewer availableRulesTableViewer;
     private IWorkingSet selectedWorkingSet;
@@ -154,12 +154,14 @@ public class PMDPropertyPage extends PropertyPage {
      */
     protected Control createContents(Composite parent) {
         log.info("PMD properties editing requested");
-        controller.setElement(this.getElement());
+        this.project = (IProject) this.getElement().getAdapter(IProject.class);
+        this.controller.setProject(this.project);
+        this.model = controller.getPropertyPageModel();
 
         Composite composite = null;
         noDefaultAndApplyButton();
 
-        if (((IProject) getElement()).isAccessible()) {
+        if ((this.project.isAccessible()) && (this.model != null)) {
             composite = new Composite(parent, SWT.NONE);
 
             GridLayout layout = new GridLayout();
@@ -195,7 +197,7 @@ public class PMDPropertyPage extends PropertyPage {
             data.grabExcessHorizontalSpace = true;
             separator.setLayoutData(data);
 
-            buildLabel(composite, PMDConstants.MSGKEY_PROPERTY_LABEL_SELECT_RULE);
+            buildLabel(composite, MSGKEY_PROPERTY_LABEL_SELECT_RULE);
             Table availableRulesTable = buildAvailableRulesTableViewer(composite);
             data = new GridData();
             data.grabExcessHorizontalSpace = true;
@@ -219,8 +221,8 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildEnablePMDButton(Composite parent) {
         Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(PMDConstants.MSGKEY_PROPERTY_BUTTON_ENABLE));
-        button.setSelection(controller.isPMDEnabled());
+        button.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_ENABLE));
+        button.setSelection(model.isPmdEnabled());
 
         return button;
     }
@@ -231,8 +233,8 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildStoreRuleSetInProjectButton(Composite parent) {
         Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(PMDConstants.MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT));
-        button.setSelection(controller.isRuleSetStoredInProject());
+        button.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT));
+        button.setSelection(model.isRuleSetStoredInProject());
 
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -249,7 +251,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Label buildLabel(Composite parent, String msgKey) {
         Label label = new Label(parent, SWT.NONE);
-        label.setText(msgKey == null ? "" : getMessage(msgKey));
+        label.setText(msgKey == null ? "" : this.getMessage(msgKey));
         return label;
     }
 
@@ -257,13 +259,13 @@ public class PMDPropertyPage extends PropertyPage {
      * Build a label
      */
     private Label buildSelectedWorkingSetLabel(Composite parent) {
-        this.selectedWorkingSet = controller.getProjectWorkingSet();
+        this.selectedWorkingSet = model.getProjectWorkingSet();
 
         Label label = new Label(parent, SWT.NONE);
         label.setText(
             this.selectedWorkingSet == null
-                ? getMessage(PMDConstants.MSGKEY_PROPERTY_LABEL_NO_WORKINGSET)
-                : (getMessage(PMDConstants.MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET) + selectedWorkingSet.getName()));
+                ? this.getMessage(MSGKEY_PROPERTY_LABEL_NO_WORKINGSET)
+                : (this.getMessage(MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET) + selectedWorkingSet.getName()));
 
         return label;
     }
@@ -278,17 +280,17 @@ public class PMDPropertyPage extends PropertyPage {
         Table ruleTable = availableRulesTableViewer.getTable();
         TableColumn ruleNameColumn = new TableColumn(ruleTable, SWT.LEFT);
         ruleNameColumn.setResizable(true);
-        ruleNameColumn.setText(getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_NAME));
+        ruleNameColumn.setText(this.getMessage(MSGKEY_PREF_RULESET_COLUMN_NAME));
         ruleNameColumn.setWidth(200);
 
         TableColumn rulePriorityColumn = new TableColumn(ruleTable, SWT.LEFT);
         rulePriorityColumn.setResizable(true);
-        rulePriorityColumn.setText(getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
+        rulePriorityColumn.setText(this.getMessage(MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
         rulePriorityColumn.setWidth(110);
 
         TableColumn ruleDescriptionColumn = new TableColumn(ruleTable, SWT.LEFT);
         ruleDescriptionColumn.setResizable(true);
-        ruleDescriptionColumn.setText(getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION));
+        ruleDescriptionColumn.setText(this.getMessage(MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION));
         ruleDescriptionColumn.setWidth(200);
 
         ruleTable.setLinesVisible(true);
@@ -317,7 +319,7 @@ public class PMDPropertyPage extends PropertyPage {
         });
 
         populateAvailableRulesTable();
-        ruleTable.setEnabled(!controller.isRuleSetStoredInProject());
+        ruleTable.setEnabled(!model.isRuleSetStoredInProject());
 
         return ruleTable;
     }
@@ -328,7 +330,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private void buildSelectWorkingSetButton(Composite parent) {
         Button workingSetButton = new Button(parent, SWT.PUSH);
-        workingSetButton.setText(getMessage(PMDConstants.MSGKEY_PROPERTY_BUTTON_SELECT_WORKINGSET));
+        workingSetButton.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_SELECT_WORKINGSET));
         workingSetButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 selectWorkingSet();
@@ -342,7 +344,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildDeselectWorkingSetButton(Composite parent) {
         Button button = new Button(parent, SWT.PUSH);
-        button.setText(getMessage(PMDConstants.MSGKEY_PROPERTY_BUTTON_DESELECT_WORKINGSET));
+        button.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_DESELECT_WORKINGSET));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 deselectWorkingSet();
@@ -359,7 +361,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private void populateAvailableRulesTable() {
         availableRulesTableViewer.setInput(controller.getAvailableRules());
-        RuleSet activeRuleSet = controller.getProjectRules();
+        RuleSet activeRuleSet = model.getProjectRuleSet();
         if (activeRuleSet != null) {
             Set activeRules = activeRuleSet.getRules();
 
@@ -378,6 +380,10 @@ public class PMDPropertyPage extends PropertyPage {
      */
     public boolean performOk() {
         log.info("Properties editing accepted");
+        this.model.setPmdEnabled(this.enablePMDButton.getSelection());
+        this.model.setProjectWorkingSet(this.selectedWorkingSet);
+        this.model.setProjectRuleSet(this.getProjectRuleSet());
+        this.model.setRuleSetStoredInProject(this.ruleSetStoredInProjectButton.getSelection());
         return controller.performOk();
     }
 
@@ -388,80 +394,32 @@ public class PMDPropertyPage extends PropertyPage {
         log.info("Properties editing canceled");
         return super.performCancel();
     }
+
+    /**
+     * @return a RuleSet object from the selected table item
+     */
+    private RuleSet getProjectRuleSet() {
+        RuleSet ruleSet = new RuleSet();
+        TableItem[] rulesList = this.availableRulesTableViewer.getTable().getItems();
+
+        for (int i = 0; i < rulesList.length; i++) {
+            if (rulesList[i].getChecked()) {
+                Rule rule = (Rule) rulesList[i].getData();
+                ruleSet.addRule(rule);
+                log.debug("Adding rule " + rule.getName() + " in the project ruleset");
+            }
+        }
+        
+        return ruleSet;
+    }
     
-    /**
-     * Return the store rule set in project check box state
-     * @return whether the user has checked the store rule set in project
-     *         check box 
-     */
-    public boolean isRuleSetStoredInProject() {
-        return this.ruleSetStoredInProjectButton.getSelection();
-    }
-
-    /**
-     * Check if PMD is enabled
-     * @return the state of the Enable PMD check box
-     */
-    public boolean isPMDEnabled() {
-        return this.enablePMDButton.getSelection();
-    }
-    
-    /**
-     * @return the rules table content
-     */
-    public TableItem[] getRulesList() {
-        return this.availableRulesTableViewer.getTable().getItems();
-    }
-
-    /**
-     * @return
-     */
-    public IWorkingSet getSelectedWorkingSet() {
-        return selectedWorkingSet;
-    }
-
-    /**
-     * @param string
-     */
-    public void setSelectedWorkingSet(IWorkingSet workingSet) {
-        selectedWorkingSet = workingSet;
-        selectedWorkingSetLabel.setText(
-            workingSet == null
-                ? getMessage(PMDConstants.MSGKEY_PROPERTY_LABEL_NO_WORKINGSET)
-                : (getMessage(PMDConstants.MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET) + selectedWorkingSet.getName()));
-        deselectWorkingSetButton.setEnabled(workingSet != null);
-    }
-
-    /**
-     * Helper method to shorten message access
-     * @param key a message key
-     * @return requested message
-     */
-    protected String getMessage(String key) {
-        return PMDPlugin.getDefault().getMessage(key);
-    }
-
     /**
      * Help user to select a working set for PMD
      *
      */
     protected void selectWorkingSet() {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkingSetManager workingSetManager = workbench.getWorkingSetManager();
-        IWorkingSetSelectionDialog selectionDialog = workingSetManager.createWorkingSetSelectionDialog(getShell(), false);
-        if (selectedWorkingSet != null) {
-            selectionDialog.setSelection(new IWorkingSet[] { selectedWorkingSet });
-        }
-
-        if (selectionDialog.open() == Window.OK) {
-            if (selectionDialog.getSelection().length != 0) {
-                setSelectedWorkingSet(selectionDialog.getSelection()[0]);
-                log.info("Working set " + getSelectedWorkingSet().getName() + " selected");
-            } else {
-                setSelectedWorkingSet(null);
-                log.info("Deselect working set");
-            }
-        }
+        log.info("Select working set");
+        this.setSelectedWorkingSet(this.controller.selectWorkingSet(this.selectedWorkingSet));
     }
 
     /**
@@ -469,9 +427,30 @@ public class PMDPropertyPage extends PropertyPage {
      *
      */
     protected void deselectWorkingSet() {
-        setSelectedWorkingSet(null);
         log.info("Deselect working set");
-        deselectWorkingSetButton.setEnabled(false);
+        setSelectedWorkingSet(null);
+    }
+
+    /**
+     * Process the change of the selected working set
+     * @param a newly selected working set
+     */
+    private void setSelectedWorkingSet(IWorkingSet workingSet) {
+        this.selectedWorkingSet = workingSet;
+        this.selectedWorkingSetLabel.setText(
+            this.selectedWorkingSet == null
+                ? this.getMessage(MSGKEY_PROPERTY_LABEL_NO_WORKINGSET)
+                : (this.getMessage(MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET) + this.selectedWorkingSet.getName()));
+        deselectWorkingSetButton.setEnabled(this.selectedWorkingSet != null);
+    }
+
+    /**
+     * Helper method to shorten message access
+     * @param key a message key
+     * @return requested message
+     */
+    private String getMessage(String key) {
+        return PMDPlugin.getDefault().getMessage(key);
     }
 
 }
