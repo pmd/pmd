@@ -66,7 +66,7 @@ public class TextAnalysisResultsEvent extends EventObject
      *
      * @param source
      */
-    public static final void notifyReturnedTextText(Object source, String htmlText)
+    public static final void notifyReturnedText(Object source, String htmlText)
     {
         TextAnalysisResultsEvent event = new TextAnalysisResultsEvent(source, htmlText);
         List listenerList = ListenerList.getListeners(TextAnalysisResultsEventListener.class);

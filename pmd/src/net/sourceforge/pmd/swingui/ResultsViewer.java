@@ -1,5 +1,15 @@
 package net.sourceforge.pmd.swingui;
 
+import java.awt.Component;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.UIManager;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -15,15 +25,8 @@ import net.sourceforge.pmd.swingui.event.ListenerList;
 import net.sourceforge.pmd.swingui.event.RulesInMemoryEvent;
 import net.sourceforge.pmd.swingui.event.RulesInMemoryEventListener;
 import net.sourceforge.pmd.swingui.event.StatusBarEvent;
-
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-import javax.swing.text.html.HTMLEditorKit;
-import java.awt.Component;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
 
 /**
  *
@@ -38,7 +41,7 @@ class ResultsViewer extends JEditorPane
     private String m_htmlText;
     private PMD m_pmd;
     private RuleSet m_ruleSet;
-    private Report m_report;
+    private RuleContext m_ruleContext;
 
     /**
      ********************************************************************************
@@ -59,8 +62,8 @@ class ResultsViewer extends JEditorPane
         //
         ListenerList.addListener((DirectoryTableEventListener) new DirectoryTableEventHandler());
         ListenerList.addListener((RulesInMemoryEventListener) new RulesInMemoryEventHandler());
-        ListenerList.addListener((AnalyzeFileEventListener) new AnalyzeFileEventHandler());
         ListenerList.addListener((HTMLAnalysisResultsEventListener) new HTMLAnalysisResultsEventHandler());
+        ListenerList.addListener((TextAnalysisResultsEventListener) new TextAnalysisResultsEventHandler());
     }
 
     /**
@@ -127,16 +130,16 @@ class ResultsViewer extends JEditorPane
      */
     protected String getPlainText()
     {
-        if (m_report != null)
+        if (m_ruleContext != null)
         {
-            synchronized(m_report)
+            synchronized(m_ruleContext)
             {
                 if (m_selectedFile != null)
                 {
                     String filePath = m_selectedFile.getPath();
                     TextRenderer renderer = new TextRenderer();
 
-                    return renderer.render(filePath, m_report);
+                    return renderer.render(filePath, m_ruleContext.getReport());
                 }
             }
         }
@@ -216,17 +219,17 @@ class ResultsViewer extends JEditorPane
                 StatusBarEvent.notifyShowMessage(this, "Analyzing.  Please wait...");
 
                 loadRuleSets();
-                RuleContext ruleContext = new RuleContext();
-                ruleContext.setSourceCodeFilename(m_file.getPath());
-                ruleContext.setReport(new Report());
-                m_pmd.processFile(new FileInputStream(m_file), m_ruleSet, ruleContext);
+                m_ruleContext = new RuleContext();
+                m_ruleContext.setSourceCodeFilename(m_file.getPath());
+                m_ruleContext.setReport(new Report());
+                m_pmd.processFile(new FileInputStream(m_file), m_ruleSet, m_ruleContext);
 
                 StatusBarEvent.notifyShowMessage(this, "Rendering analysis results into HTML page.  Please wait...");
 
                 HTMLResultRenderer renderer;
 
                 renderer = new HTMLResultRenderer();
-                m_htmlText = renderer.render(m_file.getPath(), ruleContext.getReport());
+                m_htmlText = renderer.render(m_file.getPath(), m_ruleContext.getReport());
 
                 StatusBarEvent.notifyShowMessage(this, "Storing HTML page into viewer.  Please wait...");
                 setText(m_htmlText);
@@ -371,7 +374,7 @@ class ResultsViewer extends JEditorPane
      ***********************************************************************************
      ***********************************************************************************
      */
-    private class AnalyzeFileEventHandler implements AnalyzeFileEventListener
+    private class TextAnalysisResultsEventHandler implements TextAnalysisResultsEventListener
     {
 
         /**
@@ -379,8 +382,9 @@ class ResultsViewer extends JEditorPane
          *
          * @param event
          */
-        public void startAnalysis(AnalyzeFileEvent event)
+        public void requestTextAnalysisResults(TextAnalysisResultsEvent event)
         {
+            TextAnalysisResultsEvent.notifyReturnedText(this, getPlainText());
         }
 
         /**
@@ -388,7 +392,7 @@ class ResultsViewer extends JEditorPane
          *
          * @param event
          */
-        public void stopAnalysis(AnalyzeFileEvent event)
+        public void returnedTextAnalysisResults(TextAnalysisResultsEvent event)
         {
         }
     }

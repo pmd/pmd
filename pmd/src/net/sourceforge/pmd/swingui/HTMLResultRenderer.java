@@ -1,13 +1,14 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
-
-import javax.swing.UIManager;
 import java.awt.Color;
 import java.io.StringWriter;
 import java.util.Iterator;
+
+import javax.swing.UIManager;
+
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleViolation;
 
 /**
  *
@@ -84,6 +85,7 @@ class HTMLResultRenderer
             writer.write("<tr>\n");
             writer.write("<th><b>Line<br>No.</b></th>\n");
             writer.write("<th><b>Rule</b></th>\n");
+            writer.write("<th><b>Priority</b></th>\n");
             writer.write("<th><b>Description</b></th>\n");
             writer.write("<th><b>Example</b></th>\n");
             writer.write("</tr>\n");
@@ -102,10 +104,10 @@ class HTMLResultRenderer
                 // Line Number
                 //
                 writer.write("<td align=\"center\" valign=\"top\">\n");
-                writer.write("<font size=\"3\">");
+                writer.write("<font size=\"3\">\n");
                 writer.write(String.valueOf(ruleViolation.getLine()));
-                writer.write("</font>");
-                writer.write("\n</td>\n");
+                writer.write("\n</font>\n");
+                writer.write("</td>\n");
 
                 //
                 // Rule Message
@@ -122,10 +124,19 @@ class HTMLResultRenderer
                 }
 
                 writer.write("<td align=\"left\" valign=\"top\">\n");
-                writer.write("<font size=\"3\">");
+                writer.write("<font size=\"3\">\n");
                 writer.write(ruleMessage);
-                writer.write("</font>");
-                writer.write("\n</td>\n");
+                writer.write("\n</font>\n");
+                writer.write("</td>\n");
+
+                //
+                // Rule Priority
+                //
+                writer.write("<td align=\"left\" valign=\"top\">\n");
+                writer.write("<font size=\"3\">\n");
+                writer.write(rule.getPriorityName());
+                writer.write("\n</font>\n");
+                writer.write("</td>\n");
 
                 //
                 // Rule Description
@@ -142,10 +153,10 @@ class HTMLResultRenderer
                 }
 
                 writer.write("<td align=\"left\" valign=\"top\">\n");
-                writer.write("<font size=\"3\">");
+                writer.write("<font size=\"3\">\n");
                 writer.write(description);
-                writer.write("</font>");
-                writer.write("\n</td>\n");
+                writer.write("\n</font>\n");
+                writer.write("</td>\n");
 
                 //
                 // Rule Example

@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.swingui;
 
+import java.util.Iterator;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-
-import java.util.Iterator;
 
 /**
  *
@@ -16,11 +16,6 @@ import java.util.Iterator;
  */
 class TextRenderer
 {
-
-    /**
-     * The end of line string for this machine.
-     */
-    protected String EOL = System.getProperty("line.separator", "\n");
 
     /**
      *******************************************************************************
@@ -36,7 +31,7 @@ class TextRenderer
 
         outputText.append("Source File: ");
         outputText.append(fileName);
-        outputText.append(EOL);
+        outputText.append('\n');
 
         if (violations.hasNext() == false)
         {
@@ -51,17 +46,10 @@ class TextRenderer
             //
             // Line Number
             //
-            outputText.append(EOL);
+            outputText.append('\n');
             outputText.append("Line: ");
             outputText.append(ruleViolation.getLine());
-            outputText.append(EOL);
-
-            //
-            // Rule Name
-            //
-            outputText.append("Rule Name: ");
-            outputText.append(rule.getName());
-            outputText.append(EOL);
+            outputText.append('\n');
 
             //
             // Rule Message
@@ -79,7 +67,14 @@ class TextRenderer
 
             outputText.append("Rule: ");
             outputText.append(ruleMessage);
-            outputText.append(EOL);
+            outputText.append('\n');
+
+            //
+            // Rule Priority
+            //
+            outputText.append("Rule Priority: ");
+            outputText.append(rule.getPriorityName());
+            outputText.append('\n');
 
             //
             // Rule Description
@@ -97,7 +92,7 @@ class TextRenderer
 
             outputText.append("Description: ");
             outputText.append(description);
-            outputText.append(EOL);
+            outputText.append('\n');
 
             //
             // Rule Example
@@ -108,7 +103,7 @@ class TextRenderer
             {
                 outputText.append("Example: ");
                 outputText.append(example);
-                outputText.append(EOL);
+                outputText.append('\n');
             }
         }
 

@@ -1,16 +1,35 @@
 package net.sourceforge.pmd.swingui;
 
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
-import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
-import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEvent;
-import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEventListener;
-import net.sourceforge.pmd.swingui.event.ListenerList;
-import net.sourceforge.pmd.swingui.event.StatusBarEvent;
-import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
-import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
-import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -24,35 +43,17 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileFilter;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEvent;
+import net.sourceforge.pmd.swingui.event.DirectoryTableEventListener;
+import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.HTMLAnalysisResultsEventListener;
+import net.sourceforge.pmd.swingui.event.ListenerList;
+import net.sourceforge.pmd.swingui.event.StatusBarEvent;
+import net.sourceforge.pmd.swingui.event.StatusBarEventListener;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEvent;
+import net.sourceforge.pmd.swingui.event.TextAnalysisResultsEventListener;
 
 /**
  *
@@ -710,7 +711,7 @@ class AnalysisViewer extends JPanel
 
         public void actionPerformed(ActionEvent event)
         {
-            MessageDialog.show(PMDViewer.getViewer(), "Printing not available yet.");
+            (new PrintAnalysisResults()).print();
         }
     }
 
@@ -758,13 +759,21 @@ class AnalysisViewer extends JPanel
          */
         public void actionPerformed(ActionEvent event)
         {
-            HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
-
-            if ((m_htmlText != null) && (m_htmlText.length() > 0))
+            try
             {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                StringSelection contents = new StringSelection(m_htmlText);
-                clipboard.setContents(contents, m_clipboardOwner);
+                ListenerList.addListener((HTMLAnalysisResultsEventListener) this);
+                HTMLAnalysisResultsEvent.notifyRequestHTMLText(this);
+
+                if ((m_htmlText != null) && (m_htmlText.length() > 0))
+                {
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    StringSelection contents = new StringSelection(m_htmlText);
+                    clipboard.setContents(contents, m_clipboardOwner);
+                }
+            }
+            finally
+            {
+                ListenerList.removeListener((HTMLAnalysisResultsEventListener) this);
             }
         }
 
@@ -799,13 +808,21 @@ class AnalysisViewer extends JPanel
 
         public void actionPerformed(ActionEvent event)
         {
-            TextAnalysisResultsEvent.notifyRequestText(this);
-
-            if ((m_text != null) && (m_text.length() > 0))
+            try
             {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                StringSelection contents = new StringSelection(m_text);
-                clipboard.setContents(contents, m_clipboardOwner);
+                ListenerList.addListener((TextAnalysisResultsEventListener) this);
+                TextAnalysisResultsEvent.notifyRequestText(this);
+
+                if ((m_text != null) && (m_text.length() > 0))
+                {
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    StringSelection contents = new StringSelection(m_text);
+                    clipboard.setContents(contents, m_clipboardOwner);
+                }
+            }
+            finally
+            {
+                ListenerList.removeListener((TextAnalysisResultsEventListener) this);
             }
         }
 
@@ -963,6 +980,7 @@ class AnalysisViewer extends JPanel
             m_saveMenuItem.addActionListener((ActionListener) new SaveActionListener());
             m_saveMenuItem.setMnemonic('S');
             m_saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+            m_saveMenuItem.setDisabledIcon(icon);
             add(m_saveMenuItem);
 
             //
@@ -973,6 +991,7 @@ class AnalysisViewer extends JPanel
             m_saveAsMenuItem.addActionListener((ActionListener) new SaveAsActionListener());
             m_saveAsMenuItem.setMnemonic('A');
             m_saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));
+            m_saveAsMenuItem.setDisabledIcon(icon);
             add(m_saveAsMenuItem);
 
             //
@@ -984,10 +1003,11 @@ class AnalysisViewer extends JPanel
             // Print Analysis menu item
             //
             icon = UIManager.getIcon("print");
-            m_printAnalysisMenuItem = new JMenuItem("Print Analysis...", icon);
+            m_printAnalysisMenuItem = new JMenuItem("Print Analysis Results...", icon);
             m_printAnalysisMenuItem.addActionListener((ActionListener) new PrintAnalysisActionListener());
             m_printAnalysisMenuItem.setMnemonic('P');
             m_printAnalysisMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
+            m_printAnalysisMenuItem.setDisabledIcon(icon);
             add(m_printAnalysisMenuItem);
 
             //
@@ -997,6 +1017,7 @@ class AnalysisViewer extends JPanel
             menuItem.addActionListener((ActionListener) new PageSetupActionListener());
             menuItem.setMnemonic('U');
             menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_MASK));
+            menuItem.setDisabledIcon(icon);
             add(menuItem);
 
             //
@@ -1040,22 +1061,24 @@ class AnalysisViewer extends JPanel
             // Copy Results menu item
             //
             icon = UIManager.getIcon("copy");
-            m_copyHTMLResultsMenuItem = new JMenuItem("Copy Results as HTML", icon);
+            m_copyHTMLResultsMenuItem = new JMenuItem("Copy Analysis Results as HTML", icon);
             m_copyHTMLResultsMenuItem.addActionListener((ActionListener) new CopyHTMLResultsActionListener());
             m_copyHTMLResultsMenuItem.setMnemonic('C');
             m_copyHTMLResultsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
             m_copyHTMLResultsMenuItem.setEnabled(false);
+            m_copyHTMLResultsMenuItem.setDisabledIcon(icon);
             add(m_copyHTMLResultsMenuItem);
 
             //
             // Copy Results menu item
             //
             icon = UIManager.getIcon("copy");
-            m_copyTextResultsMenuItem = new JMenuItem("Copy Results as Text", icon);
+            m_copyTextResultsMenuItem = new JMenuItem("Copy Analysis Results as Text", icon);
             m_copyTextResultsMenuItem.addActionListener((ActionListener) new CopyTextResultsActionListener());
             m_copyTextResultsMenuItem.setMnemonic('Y');
             m_copyTextResultsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
             m_copyTextResultsMenuItem.setEnabled(false);
+            m_copyTextResultsMenuItem.setDisabledIcon(icon);
             add(m_copyTextResultsMenuItem);
 
             addMouseListener(new EditMenuMouseListener());
