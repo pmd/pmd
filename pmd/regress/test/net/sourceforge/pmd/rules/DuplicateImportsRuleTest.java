@@ -1,8 +1,36 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.DuplicateImportsRule;
+import net.sourceforge.pmd.cpd.CPD;
 
 public class DuplicateImportsRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "import java.io.File;" + CPD.EOL +
+    "import java.util.*;" + CPD.EOL +
+    "import java.io.File;" + CPD.EOL +
+    "" + CPD.EOL +
+    "public class DuplicateImports {}";
+
+    private static final String TEST2 =
+    "import java.io.*;" + CPD.EOL +
+    "import java.io.*;" + CPD.EOL +
+    "" + CPD.EOL +
+    "public class DuplicateImports2 {}";
+
+    private static final String TEST3 =
+    "import java.util.*;" + CPD.EOL +
+    "import java.net.*;" + CPD.EOL +
+    "import java.io.*;" + CPD.EOL +
+    "import java.io.File;" + CPD.EOL +
+    "" + CPD.EOL +
+    "public class DuplicateImports3 {}";
+
+    private static final String TEST4 =
+    "import javax.servlet.*;" + CPD.EOL +
+    "import javax.servlet.http.*;" + CPD.EOL +
+    "" + CPD.EOL +
+    "public class DuplicateImports4 {}";
 
     private DuplicateImportsRule rule;
 
@@ -12,18 +40,18 @@ public class DuplicateImportsRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTestFromFile("DuplicateImports.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTestFromFile("DuplicateImports2.java", 1, rule);
+        runTestFromString(TEST2, 1, rule);
     }
 
     public void test3() throws Throwable {
-        runTestFromFile("DuplicateImports3.java", 1, rule);
+        runTestFromString(TEST3, 1, rule);
     }
 
     public void test4() throws Throwable {
-        runTestFromFile("DuplicateImports4.java", 0, rule);
+        runTestFromString(TEST4, 0, rule);
     }
 }

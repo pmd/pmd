@@ -1,9 +1,29 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class EmptySwitchStmtRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class EmptySwitchStmt1 {" + CPD.EOL +
+    " public void bar() {" + CPD.EOL +
+    "  int x = 2;" + CPD.EOL +
+    "  switch (x) {}" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class EmptySwitchStmt2 {" + CPD.EOL +
+    " public void bar() {" + CPD.EOL +
+    "  int x = 2;" + CPD.EOL +
+    "  switch (x) {" + CPD.EOL +
+    "   case 2: int y=4;" + CPD.EOL +
+    "  }" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
 
     private Rule rule;
 
@@ -13,10 +33,10 @@ public class EmptySwitchStmtRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTestFromFile("EmptySwitchStmt1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTestFromFile("EmptySwitchStmt2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
 }

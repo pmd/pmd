@@ -1,9 +1,22 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class EmptyWhileStmtRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "public class EmptyWhileStmtRule {" + CPD.EOL +
+    "    public EmptyWhileStmtRule() {" + CPD.EOL +
+    "       while (true == true) {" + CPD.EOL +
+    "       }" + CPD.EOL +
+    "       while (true == true) {" + CPD.EOL +
+    "               String x = \"\";" + CPD.EOL +
+    "       }" + CPD.EOL +
+    "    }" + CPD.EOL +
+    "}";
+
 
     private Rule rule;
 
@@ -13,7 +26,7 @@ public class EmptyWhileStmtRuleTest extends RuleTst {
     }
 
     public void testEmptyWhileStmtRule() throws Throwable {
-        runTestFromFile("EmptyWhileStmtRule.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
 

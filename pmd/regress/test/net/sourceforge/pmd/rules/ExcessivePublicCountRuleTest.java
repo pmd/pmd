@@ -20,7 +20,7 @@ public class ExcessivePublicCountRuleTest extends RuleTst {
 
     private ExcessivePublicCountRule rule;
 
-    public ExcessivePublicCountRuleTest() {
+    public void setUp() {
         rule = new ExcessivePublicCountRule();
     }
 

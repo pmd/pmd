@@ -1,9 +1,26 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class DontImportJavaLangRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "import java.lang.String;" + CPD.EOL +
+    "" + CPD.EOL +
+    "public class DontImportJavaLang1 {}";
+
+    private static final String TEST2 =
+    "import java.lang.*;" + CPD.EOL +
+    "" + CPD.EOL +
+    "public class DontImportJavaLang2 {}";
+
+    private static final String TEST3 =
+    "import java.lang.ref.*;" + CPD.EOL +
+    "import java.lang.reflect.*;" + CPD.EOL +
+    "" + CPD.EOL +
+    "public class DontImportJavaLang3 {}";
 
     private Rule rule;
 
@@ -16,14 +33,14 @@ public class DontImportJavaLangRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTestFromFile("DontImportJavaLang1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTestFromFile("DontImportJavaLang2.java", 1, rule);
+        runTestFromString(TEST2, 1, rule);
     }
 
     public void test3() throws Throwable {
-        runTestFromFile("DontImportJavaLang3.java", 0, rule);
+        runTestFromString(TEST3, 0, rule);
     }
 }
