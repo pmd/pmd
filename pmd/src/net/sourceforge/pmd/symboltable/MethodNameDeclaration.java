@@ -8,7 +8,7 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
-public class MethodNameDeclaration extends VariableNameDeclaration {
+public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     public MethodNameDeclaration(ASTMethodDeclarator node) {
         super(node);

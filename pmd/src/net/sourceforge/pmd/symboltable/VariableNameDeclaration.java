@@ -8,16 +8,10 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
-public class VariableNameDeclaration {
-
-    protected SimpleNode node;
+public class VariableNameDeclaration extends AbstractNameDeclaration {
 
     public VariableNameDeclaration(SimpleNode node) {
-        this.node = node;
-    }
-
-    public SimpleNode getNode() {
-        return node;
+        super(node);
     }
 
     public boolean isExceptionBlockParameter() {
@@ -25,14 +19,6 @@ public class VariableNameDeclaration {
             return ((ASTVariableDeclaratorId)node).isExceptionBlockParameter();
         }
         return false;
-    }
-
-    public int getLine() {
-        return node.getBeginLine();
-    }
-
-    public String getImage() {
-        return node.getImage();
     }
 
     public boolean equals(Object o) {
