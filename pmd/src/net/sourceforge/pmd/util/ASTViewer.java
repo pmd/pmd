@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.Vector;
 
 public class ASTViewer {
 
@@ -106,8 +107,10 @@ public class ASTViewer {
 
     private class XPathListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
+            xpathResults.clear();
             if (xpathQueryArea.getText().length() == 0) {
-                xpathResultArea.setText("XPath query field is empty");
+                xpathResults.addElement("XPath query field is empty");
+                xpathResultPanel.repaint();
                 codeEditorPane.requestFocus();
                 return;
             }
@@ -116,22 +119,24 @@ public class ASTViewer {
             try {
                 XPath xpath = new BaseXPath(xpathQueryArea.getText(), new DocumentNavigator());
                 ASTCompilationUnit c = parser.CompilationUnit();
-                StringBuffer sb = new StringBuffer();
                 for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
+                    StringBuffer sb = new StringBuffer();
                     SimpleNode node = (SimpleNode) iter.next();
                     String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.')+1);
                     String line = " at line " + String.valueOf(node.getBeginLine());
                     sb.append(name).append(line).append(System.getProperty("line.separator"));
+                    xpathResults.addElement(sb.toString().trim());
                 }
-                xpathResultArea.setText(sb.toString());
-                if (sb.length() == 0) {
-                    xpathResultArea.setText("No results returned " + System.currentTimeMillis());
+                if (xpathResults.isEmpty()) {
+                    xpathResults.addElement("No matching nodes " + System.currentTimeMillis());
                 }
             } catch (ParseException pe) {
-                xpathResultArea.setText(pe.fillInStackTrace().getMessage());
+                xpathResults.addElement(pe.fillInStackTrace().getMessage());
             } catch (JaxenException je) {
-                xpathResultArea.setText(je.fillInStackTrace().getMessage());
+                xpathResults.addElement(je.fillInStackTrace().getMessage());
             }
+            xpathResultPanel.repaint();
+            xpathResultList.repaint();
             xpathQueryArea.requestFocus();
         }
     }
@@ -140,14 +145,17 @@ public class ASTViewer {
 
     private JTextPane codeEditorPane = new JTextPane();
     private JTextArea astArea = new JTextArea();
-    private JTextArea xpathResultArea = new JTextArea();
-    private JTextArea xpathQueryArea = new JTextArea(15, 70);
+    private DefaultListModel xpathResults = new DefaultListModel();
+    private JList xpathResultList = new JList(xpathResults);
+    private JTextArea xpathQueryArea = new JTextArea(10, 30);
     private JFrame frame = new JFrame("AST Viewer");
+    private JPanel xpathResultPanel;
 
     public ASTViewer() {
-        JSmartPanel codePanel = new JSmartPanel();
-        JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
-        codePanel.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
+        JPanel controlPanel = new JPanel();
+        codeEditorPane.setPreferredSize(new Dimension(400,200));
+        controlPanel.add(createCodeEditPanel());
+        controlPanel.add(createXPathQueryPanel());
 
         JSmartPanel astPanel = new JSmartPanel();
         astArea.setRows(20);
@@ -155,27 +163,16 @@ public class ASTViewer {
         JScrollPane astScrollPane = new JScrollPane(astArea);
         astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
 
-        JSmartPanel xpathResultPanel = new JSmartPanel();
-        xpathResultArea.setRows(20);
-        xpathResultArea.setColumns(20);
-        JScrollPane xpathResultScrollPane = new JScrollPane(xpathResultArea);
-        xpathResultPanel.add(xpathResultScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
-
-        JButton goButton = new JButton("Go");
-        goButton.setMnemonic('g');
-        goButton.addActionListener(new ShowListener());
-        goButton.addActionListener(new SaveListener());
-        goButton.addActionListener(new XPathListener());
-
-        JPanel controlPanel = new JPanel();
-        controlPanel.add(new JLabel("XPath Query (if any) ->"));
-        xpathQueryArea.setBorder(BorderFactory.createLineBorder(Color.black));
-        controlPanel.add(new JScrollPane(xpathQueryArea));
-        controlPanel.add(goButton);
+        xpathResultPanel = new JPanel();
+        xpathResults.addElement("No results yet");
+        xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
+        xpathResultList.setFixedCellWidth(300);
+        JScrollPane xpathResultListScrollPane = new JScrollPane();
+        xpathResultListScrollPane.getViewport().setView(xpathResultList);
+        xpathResultPanel.add(xpathResultListScrollPane);
 
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
-        JSplitPane upperSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, resultsSplitPane);
-        JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperSplitPane, controlPanel);
+        JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, resultsSplitPane);
 
         frame.getContentPane().add(containerSplitPane);
 
@@ -187,10 +184,36 @@ public class ASTViewer {
         frame.setVisible(true);
         frame.show();
 
-        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/3));
-        upperSplitPane.setDividerLocation(upperSplitPane.getMaximumDividerLocation() / 3);
+        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/2));
+        resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation()/2));
         codeEditorPane.setText(loadText());
-        codeEditorPane.setSize(upperSplitPane.getMaximumDividerLocation() / 3, containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation()/4));
+    }
+
+    private JSmartPanel createCodeEditPanel() {
+        JPanel top = new JPanel();
+        top.setLayout(new BorderLayout());
+        JSmartPanel panel = new JSmartPanel();
+        JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
+        panel.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
+        return panel;
+    }
+
+    private JPanel createXPathQueryPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(new JLabel("XPath Query (if any)"), BorderLayout.NORTH);
+        xpathQueryArea.setBorder(BorderFactory.createLineBorder(Color.black));
+        JScrollPane jScrollPane = new JScrollPane(xpathQueryArea);
+        jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        panel.add(jScrollPane, BorderLayout.CENTER);
+        JButton goButton = new JButton("Go");
+        goButton.setMnemonic('g');
+        goButton.addActionListener(new ShowListener());
+        goButton.addActionListener(new SaveListener());
+        goButton.addActionListener(new XPathListener());
+        panel.add(goButton, BorderLayout.SOUTH);
+        return panel;
     }
 
     private String loadText() {
