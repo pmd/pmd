@@ -1,7 +1,8 @@
 update the xdocs:
 +command line ui now takes a filename, format, rule set
 +Ant task has moved
-+update the project.xml; change it to 0.2
++update the project.xml; change the version to 0.2
+update run.bat to point to pmd-0.2.jar
 update the changelog
 
 ant dist
@@ -10,12 +11,12 @@ cvs add -kb pmd-0.2.jar
 cvs rm pmd-0.1.jar
 cvs ci -m "adding new jar, removing old one"
 cvs rtag -D tomorrow "pmd_release_0_2" pmd
+rmdir /q /s c:\tmp\pmd
 mkdir c:\tmp\pmd
 cvs export -d c:\tmp\pmd -r pmd_release_0_2 pmd
-cd c:\tmp
-zip it up
-unzip it into c:\tmp2
-clear classpath, put pmd.jar in classpath
+zip it up, rename it to pmd-0.2.zip
+unzip it into c:\tmp\pmd-0.2
+clear classpath, put pmd-0.2.jar in classpath
 TESTS: Can you
 1) run 1 file and get a report
 run c:\data\pmd\pmd\test-data\Unused1.java xml all
@@ -25,7 +26,7 @@ ant pmd
 
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_0_2_pmd
+cvs rtag -d pmd_release_0_2 pmd
 and then retag everything
 
 
