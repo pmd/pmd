@@ -7,10 +7,7 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTResultType;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
+import net.sourceforge.pmd.ast.*;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -40,26 +37,11 @@ public class LooseCouplingRule extends AbstractRule {
         implClassNames.add("java.util.TreeMap");
     }
 
-    public Object visit(ASTResultType node, Object data) {
-        if (node.isVoid()) {
-            return data;
-        }
-        return checkType(node, data);
-    }
-
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        return checkType(node, data);
-    }
-
-    public Object visit(ASTFormalParameter node, Object data) {
-        return checkType(node, data);
-    }
-
-    private Object checkType(SimpleNode node, Object data) {
-        SimpleNode name = (SimpleNode)node.jjtGetChild(0).jjtGetChild(0);
-        if (implClassNames.contains(name.getImage())) {
+    public Object visit(ASTName node, Object data) {
+        Node parent = node.jjtGetParent().jjtGetParent();
+        if (implClassNames.contains(node.getImage()) && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter || parent instanceof ASTResultType)) {
             RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, name.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {name.getImage()})));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[] {node.getImage()})));
         }
         return data;
     }
