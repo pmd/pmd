@@ -1,6 +1,8 @@
 <project basedir="." default="nbm" name="PMD netbeans module">
 
 	<property name="pmd.jar" value="pmd-1.05.jar"/>
+	<property name="keystore" value="${user.home}/.keystore"/>
+	<property name="storepass" value="?"/>
 
 	<target description="Compiles all java files and copies property files to the classes dir" name="compile">
 		<mkdir dir="build/classes"/>
@@ -57,6 +59,7 @@
 				<text>CHANGES</text>
 				<file location="CHANGES.txt"/>
 			</notification>
+			<signature keystore="${keystore}" storepass="${storepass}" alias="pmdkey"/>
 		</makenbm>
 	</target>
 	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
