@@ -12,7 +12,7 @@ public class CPD {
 
     private int minimumTileSize;
     private TokenSets tokenSets = new TokenSets();
-    private MatchAlgorithm matchAlgorithm;
+    private MatchAlgorithm matchAlgorithm = new MatchAlgorithm();
     private CPDListener listener = new CPDNullListener();
 
     public CPD(int minimumTileSize) {
@@ -24,12 +24,11 @@ public class CPD {
     }
 
     public void go() {
-        matchAlgorithm = new MatchAlgorithm(listener);
         for (Iterator i = tokenSets.iterator(); i.hasNext();) {
             TokenList tl = (TokenList)i.next();
             for (Iterator j = tl.iterator();j.hasNext();) {
                 TokenEntry te = (TokenEntry)j.next();
-                matchAlgorithm.add(te, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()));
+                matchAlgorithm.add(te, new Locator(te.getTokenSrcID(), te.getBeginLine(), te.getIndex()), listener);
             }
         }
         matchAlgorithm.findMatches(minimumTileSize);

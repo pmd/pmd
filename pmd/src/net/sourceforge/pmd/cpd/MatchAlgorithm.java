@@ -10,40 +10,20 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class MatchAlgorithm {
-    // using a treemap means I don't actually sort my flyweight tokens.
+
     private Map pool = new TreeMap();
     private List code = new ArrayList();
     private List marks = new ArrayList();
-    // separate what the token is from where it is. Locator is only used if we need to see the code at that location.
-
     private List matchesList = new ArrayList();
-    private CPDListener cpdListener;
 
-    public MatchAlgorithm(CPDListener cpdListener) {
-        this.cpdListener = cpdListener;
-    }
-
-    public void add(TokenEntry token, Locator locator) {
-        pool.put(token, token);
+    public void add(TokenEntry token, Locator locator, CPDListener cpdListener) {
+        if (!pool.containsKey(token)) {
+            pool.put(token, token);
+        }
         code.add(token);
         marks.add(new Mark(code, code.size(), locator, cpdListener));
-/*
-        MyToken flyweight = (MyToken)pool.get(token);
-        if (flyweight == null) {
-            pool.put(token, token);
-            flyweight = token;
-        }
-        code.add(flyweight);
-        if (flyweight.isMarkToken()) {
-            marks.add(new Mark(code, code.size(), locator));
-        }
-*/
     }
 
-    /**
-       Should return something, or notify someone with locators - that
-       kind of thing ;)
-    */
     public void findMatches(int min) {
        /*
          Assign sort codes to all the pooled code. This should speed
@@ -54,9 +34,8 @@ public class MatchAlgorithm {
            TokenEntry token = (TokenEntry)iter.next();
            token.setSortCode(count++);
        }
-       // use quicksort on the marks, same as the perl version
-       Collections.sort(marks);
 
+       Collections.sort(marks);
 
        Set soFar = new HashSet();
        for (int i = 1; i < marks.size();  i++) {
