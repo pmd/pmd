@@ -27,7 +27,11 @@ public interface Node {
     public void jjtAddChild(Node n, int i);
 
     /** This method returns a child node.  The children are numbered
-     from zero, left to right. */
+     * from zero, left to right.
+     *
+     * @param i the child index. Must be nonnegative and less than
+     *          {@link #jjtGetNumChildren}.
+     */
     public Node jjtGetChild(int i);
 
     /** Return the number of children the node has. */
