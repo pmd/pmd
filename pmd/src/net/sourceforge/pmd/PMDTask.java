@@ -45,7 +45,16 @@ public class PMDTask extends Task {
         if (ruleSetType == null) {
             throw new BuildException("No rule set type specified");
         }
+        if (format == null) {
+            throw new BuildException("No report format specified");
+        }
+
         StringBuffer buf = new StringBuffer();
+
+        if (format.equals("xml")) {
+            buf.append("<pmd>" + System.getProperty("line.separator"));
+        }
+
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
@@ -66,6 +75,10 @@ public class PMDTask extends Task {
                     buf.append(System.getProperty("line.separator"));
                 }
             }
+        }
+
+        if (format.equals("xml")) {
+            buf.append("</pmd>");
         }
 
         try {

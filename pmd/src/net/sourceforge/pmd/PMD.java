@@ -60,6 +60,6 @@ public class PMD {
         }
         PMD pmd = new PMD();
         Report report = pmd.processFile(input, RuleFactory.ALL);
-        System.out.println(report.renderToXML());
+        System.out.println("<pmd>" + report.renderToXML() + "</pmd>");
     }
 }

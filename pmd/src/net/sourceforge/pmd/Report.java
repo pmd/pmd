@@ -27,18 +27,12 @@ public class Report {
     }
 
     public String renderToXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer("<file>" + System.getProperty("line.separator") + "<name>" + filename + "</name>");
         for (Iterator iterator = violations.iterator(); iterator.hasNext();) {
-            if (buf.length() != 0) {
-                buf.append(System.getProperty("line.separator"));
-            }
-            RuleViolation violation = (RuleViolation) iterator.next();
-            buf.append("<ruleviolation>");
-            buf.append("<file>" + filename + "</file>");
-            buf.append(violation.getXML());
-            buf.append("</ruleviolation>");
+            buf.append(((RuleViolation) iterator.next()).getXML());
         }
-        return "<pmd>" + System.getProperty("line.separator") + buf.toString() + System.getProperty("line.separator") + "</pmd>";
+        buf.append("</file>" + System.getProperty("line.separator"));
+        return buf.toString();
     }
 
     public boolean empty() {

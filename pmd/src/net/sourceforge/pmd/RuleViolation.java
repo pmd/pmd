@@ -27,8 +27,10 @@ public class RuleViolation {
 
     public String getXML() {
         StringBuffer buf = new StringBuffer();
+        buf.append("<ruleviolation>");
         buf.append("<line>" + Integer.toString(line) + "</line>");
         buf.append("<description>" + description + "</description>");
+        buf.append("</ruleviolation>");
         return buf.toString();
     }
 }
