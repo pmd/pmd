@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.XPathRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -13,15 +14,8 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    public void setUp() {
-        rule = new XPathRule();
-        rule.addProperty(
-            "xpath",
-            "//TryStatement[@Catch='true'][FormalParameter/Type/Name[@Image != 'InterruptedException']][FormalParameter/Type/Name[@Image != 'CloneNotSupportedException']]"
-                + "/Block"
-                + "[position() > 1]"
-                + "[count(*) = 0]"
-                + "[../@Finally='false' or following-sibling::Block]");
+    public void setUp() throws RuleSetNotFoundException {
+        rule = findRule("rulesets/basic.xml", "EmptyCatchBlock");
     }
 
     public void testAll() {
