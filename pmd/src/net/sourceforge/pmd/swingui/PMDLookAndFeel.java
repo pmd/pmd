@@ -82,7 +82,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
     {
         super.initClassDefaults(table);
 
-        String pkgName = "net.sourceforge.pmd.swingui";
+        //String pkgName = "net.sourceforge.pmd.swingui";
     }
 
     /**

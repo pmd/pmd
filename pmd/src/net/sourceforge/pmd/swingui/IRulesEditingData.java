@@ -70,6 +70,13 @@ public interface IRulesEditingData
      *
      * @return
      */
+    public IRulesEditingData getSibling(String name);
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
     public boolean include();
 
     /**

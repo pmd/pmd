@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.swingui;
 
-import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -159,7 +158,6 @@ public class PMDViewer extends JFrame implements JobThreadListener
      */
     private void createStatusBar(int windowMargin)
     {
-        BevelBorder bevelBorder;
         EmptyBorder emptyBorder;
 
         //

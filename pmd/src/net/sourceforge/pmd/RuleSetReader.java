@@ -24,7 +24,6 @@ public class RuleSetReader
 {
 
     private RuleSet m_ruleSet;
-    private String m_ruleSetDirectoryPath;
     private boolean m_onlyIfIncluded;
 
     // Constants

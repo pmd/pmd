@@ -5,14 +5,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.awt.Window;
+import java.text.MessageFormat;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.FocusManager;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -43,6 +48,7 @@ public class RuleSetEditingPanel extends JPanel
     private boolean m_enabled;
     private IRulesEditingData m_currentData;
     private boolean m_isEditing;
+    private String m_originalName;
 
     /**
      *******************************************************************************
@@ -71,6 +77,8 @@ public class RuleSetEditingPanel extends JPanel
         // Rule Set Name Text
         m_name = new JTextField();
         m_name.setFont(UIManager.getFont("dataFont"));
+        m_name.addFocusListener(new RuleSetNameFocusListener());
+        m_name.setRequestFocusEnabled(true);
         panel.add(m_name);
 
         // Rule Set Description Label
@@ -107,7 +115,19 @@ public class RuleSetEditingPanel extends JPanel
     {
         if (m_isEditing && (m_currentData != null))
         {
-            m_currentData.setName(m_name.getText());
+            String ruleSetName = m_name.getText();
+
+            if (ruleSetName.equalsIgnoreCase(m_originalName) == false)
+            {
+                if (m_currentData.getSibling(ruleSetName) != null)
+                {
+                    ruleSetName = m_originalName;
+                }
+
+//                ((RulesEditor) getParentWindow()).validateTree();
+            }
+
+            m_currentData.setName(ruleSetName);
             m_currentData.setDescription(m_description.getText());
             m_currentData.setInclude(m_include.isSelected());
         }
@@ -165,7 +185,7 @@ public class RuleSetEditingPanel extends JPanel
             m_name.setText(data.getName());
             m_description.setText(data.getDescription());
             m_include.setSelected(data.include());
-
+            m_originalName = data.getName();
             m_currentData = data;
         }
     }
@@ -203,6 +223,23 @@ public class RuleSetEditingPanel extends JPanel
         }
 
         m_enabled = enable;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    private Window getParentWindow()
+    {
+        Component component = getParent();
+
+        while ((component != null) && ((component instanceof Window) == false))
+        {
+            component = component.getParent();
+        }
+
+        return (Window) component;
     }
 
     /**
@@ -491,4 +528,55 @@ public class RuleSetEditingPanel extends JPanel
             return null;
         }
     }
+
+    /**
+     ************************************************************************************
+     ************************************************************************************
+     ************************************************************************************
+     */
+
+     private class RuleSetNameFocusListener implements FocusListener
+     {
+
+        /**
+         **************************************************************************
+         *
+         * @param event
+         */
+        public void focusGained(FocusEvent event)
+        {
+        }
+
+        /**
+         **************************************************************************
+         *
+         * @param event
+         */
+        public void focusLost(FocusEvent event)
+        {
+            String ruleSetName = m_name.getText().trim();
+
+            if (ruleSetName.length() == 0)
+            {
+                String message = "The rule set name is missing.";
+                m_name.removeFocusListener(this);
+                MessageDialog.show(getParentWindow(), message);
+                m_name.addFocusListener(this);
+                m_name.requestFocus();
+            }
+            else if (ruleSetName.equalsIgnoreCase(m_originalName) == false)
+            {
+                if (m_currentData.getSibling(ruleSetName) != null)
+                {
+                    String template = "Another rule set already has the name \"{0}\".";
+                    String[] args = {ruleSetName};
+                    String message = MessageFormat.format(template, args);
+                    m_name.removeFocusListener(this);
+                    MessageDialog.show(getParentWindow(), message);
+                    m_name.addFocusListener(this);
+                    m_name.requestFocus();
+                }
+            }
+        }
+     }
 }

@@ -5,10 +5,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.awt.Window;
+import java.text.MessageFormat;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -52,6 +56,7 @@ public class RuleEditingPanel extends JPanel
     private boolean m_enabled;
     private IRulesEditingData m_currentData;
     private boolean m_isEditing;
+    private String m_originalName;
 
     /**
      *******************************************************************************
@@ -227,7 +232,7 @@ public class RuleEditingPanel extends JPanel
             m_description.setText(data.getDescription());
             m_example.setText(data.getExample());
             m_include.setSelected(data.include());
-
+            m_originalName = data.getName();
             m_currentData = data;
         }
     }
@@ -279,6 +284,23 @@ public class RuleEditingPanel extends JPanel
         }
 
         m_enabled = enable;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    private Window getParentWindow()
+    {
+        Component component = getParent();
+
+        while ((component != null) && ((component instanceof Window) == false))
+        {
+            component = component.getParent();
+        }
+
+        return (Window) component;
     }
 
     /**
@@ -682,4 +704,51 @@ public class RuleEditingPanel extends JPanel
             return null;
         }
     }
+
+    /**
+     ************************************************************************************
+     ************************************************************************************
+     ************************************************************************************
+     */
+
+     private class RuleSetNameFocusListener implements FocusListener
+     {
+
+        /**
+         **************************************************************************
+         *
+         * @param event
+         */
+        public void focusGained(FocusEvent event)
+        {
+        }
+
+        /**
+         **************************************************************************
+         *
+         * @param event
+         */
+        public void focusLost(FocusEvent event)
+        {
+            String ruleName = m_name.getText().trim();
+
+            if (ruleName.length() == 0)
+            {
+                String message = "The rule name is missing.";
+                MessageDialog.show(getParentWindow(), message);
+                m_name.requestFocus();
+            }
+            else if (ruleName.equalsIgnoreCase(m_originalName) == false)
+            {
+                if (m_currentData.getSibling(ruleName) != null)
+                {
+                    String template = "Another rule already has the name \"{0}\".";
+                    String[] args = {ruleName};
+                    String message = MessageFormat.format(template, args);
+                    MessageDialog.show(getParentWindow(), message);
+                    m_name.requestFocus();
+                }
+            }
+        }
+     }
 }

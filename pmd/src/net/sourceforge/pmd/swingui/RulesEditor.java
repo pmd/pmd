@@ -58,7 +58,6 @@ class RulesEditor extends JDialog
         m_pmdViewer = pmdViewer;
         int windowWidth = pmdViewer.getWidth();
         int windowHeight = pmdViewer.getHeight();
-        int windowMargin = 10;
         Dimension screenSize = getToolkit().getScreenSize();
 
         if (windowWidth >= screenSize.width)
@@ -270,6 +269,7 @@ class RulesEditor extends JDialog
     {
         return m_pmdViewer;
     }
+
 
     /**
      *******************************************************************************

@@ -350,7 +350,6 @@ class RulesTree extends JTree
                                                       boolean hasFocus)
         {
             RulesTreeNode treeNode = (RulesTreeNode) object;
-            Object userObject = treeNode.getUserObject();
 
             if (treeNode.isProperty())
             {

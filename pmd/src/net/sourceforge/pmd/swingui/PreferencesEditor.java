@@ -91,7 +91,6 @@ class PreferencesEditor extends JDialog
     private JPanel createDataPanel()
     {
         JPanel dataPanel;
-        JTextArea textArea;
         String directory;
         int row;
 
@@ -254,8 +253,6 @@ class PreferencesEditor extends JDialog
          */
         public void actionPerformed(ActionEvent event)
         {
-            String key;
-
             m_preferences.setCurrentPathToPMD(m_currentPathToPMD.getText());
 
             m_preferences.setUserPathToPMD(m_userPathToPMD.getText());
@@ -336,9 +333,6 @@ class PreferencesEditor extends JDialog
             int windowWidth = fileChooser.getWidth();
             int windowHeight = fileChooser.getHeight();
             Dimension screenSize = getToolkit().getScreenSize();
-            int windowLocationX = (screenSize.width - windowWidth) / 2;
-            int windowLocationY = (screenSize.height - windowHeight) / 2;
-            //fileChooser.setLocation(x, y);
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileChooser.setApproveButtonText("Select");
             fileChooser.setMinimumSize(new Dimension(500, 500));

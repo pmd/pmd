@@ -35,7 +35,6 @@ class Preferences
     private final String SHARED_PATH_TO_PMD = "shared_path_to_pmd";
     private final String CURRENT_PATH_TO_PMD = "current_path_to_pmd";
     private final String UNIVERSAL_SEPARATOR = "&US;";
-    private final String RULE_SET_DIRECTORY_MARK = "&RSDM;";
     private final String PREFERENCES_FILE_NAME = "user.preferences";
 
 
@@ -47,8 +46,6 @@ class Preferences
     protected Preferences()
     throws PMDException
     {
-        StringBuffer path = new StringBuffer(100);
-
         //
         // Default user rule set directory.
         //
@@ -288,7 +285,7 @@ class Preferences
         String key;
 
         key = name.toLowerCase();
-        directory = encodePathToPMD(name, directory);
+        directory = encodePathToPMD(directory);
 
         m_preferences.put(key, directory);
 
@@ -303,7 +300,7 @@ class Preferences
      *
      * @return
      */
-    private String encodePathToPMD(String name, String directory)
+    private String encodePathToPMD(String directory)
     {
         if (directory != null)
         {
@@ -335,7 +332,6 @@ class Preferences
         if (value != null)
         {
             StringBuffer buffer = new StringBuffer(value);
-            int beginIndex = 0;
             int universalSeparatorLength = UNIVERSAL_SEPARATOR.length();
 
             for (int n = 0; n < buffer.length(); n++)
@@ -369,12 +365,14 @@ class Preferences
      *
      * @return
      */
+    /*
     private boolean isDeletable(String key)
     {
         return (SHARED_PATH_TO_PMD.equalsIgnoreCase(key) == false) &&
                (USER_PATH_TO_PMD.equalsIgnoreCase(key) == false) &&
                (CURRENT_PATH_TO_PMD.equalsIgnoreCase(key) == false);
     }
+    */
 
     /**
      *******************************************************************************

@@ -99,7 +99,7 @@ public class PMDDirectory
         classpath = System.getProperty(key);
         classpath = classpath + ";" + m_ruleSetsDirectory;
         System.setProperty(key, classpath);
-        loadPropertiesFile(pathToPMD);
+        loadPropertiesFile();
     }
 
     /**
@@ -360,7 +360,7 @@ public class PMDDirectory
      *
      * @param pathToPMD
      */
-    private void loadPropertiesFile(String pathToPMD)
+    private void loadPropertiesFile()
     throws PMDException
     {
         String propertiesFileName;
@@ -423,7 +423,7 @@ public class PMDDirectory
      ********************************************************************************
      *
      */
-    private void savePropertiesFile()
+    public void savePropertiesFile()
     throws PMDException
     {
         FileOutputStream outputStream;

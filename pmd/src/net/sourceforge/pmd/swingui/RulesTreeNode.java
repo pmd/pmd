@@ -257,6 +257,23 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
     }
 
     /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    public IRulesEditingData getSibling(String name)
+    {
+        RulesTreeNode parentNode = (RulesTreeNode) getParent();
+
+        if (parentNode != null)
+        {
+            return parentNode.getChildNode(name);
+        }
+
+        return null;
+    }
+
+    /**
      ***************************************************************************
      *
      * @return

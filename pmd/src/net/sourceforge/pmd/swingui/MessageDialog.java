@@ -81,7 +81,6 @@ class MessageDialog extends JDialog
 
         setBounds(x, y, dialogWidth, dialogHeight);
 
-        BevelBorder bevelBorder;
         EtchedBorder etchedBorder;
         EmptyBorder emptyBorder;
         CompoundBorder compoundBorder;

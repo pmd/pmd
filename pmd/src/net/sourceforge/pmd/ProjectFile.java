@@ -141,7 +141,6 @@ public class ProjectFile
      */
     private void loadProperties()
     {
-        ProjectFile projectFile;
         InputStream inputStream;
         InputSource inputSource;
 
