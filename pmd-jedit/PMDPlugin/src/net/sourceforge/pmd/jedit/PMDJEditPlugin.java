@@ -42,6 +42,7 @@ public class PMDJEditPlugin extends EBPlugin {
 	public void start()
 	{
 		instance = this;
+		//Log.log(Log.DEBUG,this,"Instance created.");
 		errorSource = new DefaultErrorSource(NAME);
 		//ErrorSource.registerErrorSource(errorSource);
 	}
