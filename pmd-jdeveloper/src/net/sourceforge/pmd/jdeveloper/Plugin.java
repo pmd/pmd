@@ -8,6 +8,10 @@ import net.sourceforge.pmd.RuleViolation;
 import oracle.ide.ContextMenu;
 import oracle.ide.Ide;
 import oracle.ide.IdeAction;
+import oracle.ide.AddinManager;
+import oracle.ide.editor.EditorManager;
+import oracle.ide.navigator.NavigatorManager;
+import oracle.ide.log.LogManager;
 import oracle.ide.addin.Addin;
 import oracle.ide.addin.Context;
 import oracle.ide.addin.ContextMenuListener;
@@ -30,7 +34,7 @@ import java.util.Iterator;
 public class Plugin implements Addin, Controller, ContextMenuListener {
 
     public static final String CHECK_CMD = "net.sourceforge.pmd.jdeveloper.Check";
-    public static final int CHECK_CMD_ID = Ide.newCmd("PMDJDeveloperPlugin.CHECK_CMD_ID");
+    public static final int CHECK_CMD_ID = Ide.createCmdID("PMDJDeveloperPlugin.CHECK_CMD_ID");
     public static final String TITLE = "PMD";
 
     private static final int UNUSED = -1;
@@ -46,21 +50,21 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
 
     // Addin
     public void initialize() {
-        IdeAction action = IdeAction.get(CHECK_CMD_ID, Ide.getAddinManager().getCommand(CHECK_CMD_ID, CHECK_CMD), TITLE, TITLE, null, null, null, true);
-        action.setController(this);
+        IdeAction action = IdeAction.get(CHECK_CMD_ID, AddinManager.getAddinManager().getCommand(CHECK_CMD_ID, CHECK_CMD), TITLE, TITLE, null, null, null, true);
+        action.addController(this);
         checkItem = Ide.getMenubar().createMenuItem(action);
         checkItem.setText(TITLE);
         checkItem.setMnemonic('P');
-        Ide.getNavigatorManager().addContextMenuListener(this, null);
-        Ide.getEditorManager().getContextMenu().addContextMenuListener(this, null);
+        NavigatorManager.getWorkspaceNavigatorManager().addContextMenuListener(this, null);
+        EditorManager.getEditorManager().getContextMenu().addContextMenuListener(this, null);
         IdeSettings.registerUI(new Navigable(TITLE, SettingsPanel.class, new Navigable[] {}));
         Ide.getVersionInfo().addComponent(TITLE, " JDeveloper Extension " + getVersion());
         rvPage = new RuleViolationPage();
     }
 
     public void shutdown() {
-        Ide.getNavigatorManager().removeContextMenuListener(this);
-        Ide.getEditorManager().getContextMenu().removeContextMenuListener(this);
+        NavigatorManager.getWorkspaceNavigatorManager().removeContextMenuListener(this);
+        EditorManager.getEditorManager().getContextMenu().removeContextMenuListener(this);
     }
 
     public float version() {
@@ -85,8 +89,8 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
 
     public boolean handleEvent(IdeAction ideAction, Context context) {
         if (!added) {
-            Ide.getLogManager().addPage(rvPage);
-            Ide.getLogManager().showLog();
+            LogManager.getLogManager().addPage(rvPage);
+            LogManager.getLogManager().showLog();
             added = true;
         }
         if (ideAction.getCommandId() == CHECK_CMD_ID) {
@@ -108,7 +112,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                             continue;
                         }
                         Document candidate = (Document)obj;
-                        if (candidate.getLongLabel().endsWith(".java")) {
+                        if (candidate.getLongLabel().endsWith(".java") && new File(candidate.getLongLabel()).exists()) {
                             ctx.setSourceCodeFilename(candidate.getLongLabel());
                             FileInputStream fis = new FileInputStream(new File(candidate.getLongLabel()));
                             pmd.processFile(fis, rs.getSelectedRules(), ctx);
@@ -142,7 +146,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         rvPage.clearAll();
         if (ctx.getReport().isEmpty()) {
             JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
-            Ide.getLogManager().getMsgPage().show();
+            LogManager.getLogManager().getMsgPage().show();
         } else {
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                 rvPage.add((RuleViolation)i.next());

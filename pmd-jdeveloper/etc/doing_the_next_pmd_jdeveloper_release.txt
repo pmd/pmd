@@ -1,5 +1,5 @@
 update the release date in the changelog
-change the build.xml to reflect pmd-jdeveloper release 0.9
+change the build.xml to reflect pmd-jdeveloper release 1.0
 
 Create the binary release:
 ant release
@@ -16,16 +16,16 @@ mkdir -p ~/tmp/pmd-jdeveloper
 cvs -q export -d tmp -r pmd_jdeveloper_release_0_9 pmd-jdeveloper
 mv tmp/* ~/tmp/pmd-jdeveloper
 rmdir tmp/
-cp pmd-jdeveloper/lib/pmd-jdeveloper-0.9.jar ~/tmp/pmd-jdeveloper/lib
+cp pmd-jdeveloper/lib/pmd-jdeveloper-1.0.jar ~/tmp/pmd-jdeveloper/lib
 cd ~/tmp
-zip -q -r pmd-jdeveloper-src-0.9.zip pmd-jdeveloper
-ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-0.9.zip pmd-jdeveloper-src-0.9.zip
+zip -q -r pmd-jdeveloper-src-1.0.zip pmd-jdeveloper
+ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-1.0.zip pmd-jdeveloper-src-1.0.zip
 rm -rf pmd-jdeveloper/
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jdeveloper-src-0.9.zip file
-Add the pmd-jdeveloper-bin-0.9.zip file
+Add the pmd-jdeveloper-src-1.0.zip file
+Add the pmd-jdeveloper-bin-1.0.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the jdeveloper plugin!"

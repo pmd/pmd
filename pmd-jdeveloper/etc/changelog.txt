@@ -1,5 +1,8 @@
+April 15, 2004 - 1.0:
+Updated to work with JDeveloper 10g final.
+
 March 17, 2004 - 0.9:
-Updated to work with JDeveloper 9.0.5 - i.e., 10g.
+Updated to work with JDeveloper 9.0.5 preview.
 
 March 16, 2004 - 0.8:
 Updated PMD version to 1.6.

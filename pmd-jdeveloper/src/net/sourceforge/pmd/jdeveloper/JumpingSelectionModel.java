@@ -2,6 +2,7 @@ package net.sourceforge.pmd.jdeveloper;
 
 import net.sourceforge.pmd.RuleViolation;
 import oracle.ide.Ide;
+import oracle.ide.editor.EditorManager;
 import oracle.ide.net.URLFactory;
 import oracle.jdeveloper.ceditor.CodeEditor;
 
@@ -30,8 +31,8 @@ public class JumpingSelectionModel extends DefaultListSelectionModel {
         int newIndex = getMinSelectionIndex();
         if (oldIndex != newIndex) {
             RuleViolation rv = ((RuleViolationWrapper)model.getElementAt(newIndex)).getRuleViolation();
-            Ide.getEditorManager().openDefaultEditorInFrame(URLFactory.newFileURL(rv.getFilename()));
-            ((CodeEditor)Ide.getEditorManager().getCurrentEditor()).gotoLine(rv.getLine(), 0, false);
+            EditorManager.getEditorManager().openDefaultEditorInFrame(URLFactory.newFileURL(rv.getFilename()));
+            ((CodeEditor)EditorManager.getEditorManager().getCurrentEditor()).gotoLine(rv.getLine(), 0, false);
         }
     }
 }
