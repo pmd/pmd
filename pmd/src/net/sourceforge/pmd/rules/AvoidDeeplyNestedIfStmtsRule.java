@@ -24,7 +24,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractRule {
         super.visit(node, data);
         if (depth == getIntProperty("problemDepth")) {
             RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
         }
         depth--;
         return data;

@@ -35,10 +35,10 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
         
         if (bs.isAllocation()) {
             if (isAllocatedStringBuffer(node)) {
-                addViolation((RuleContext) data, node.getBeginLine());
+                addViolation((RuleContext) data, node);
             }
         } else if (isInStringBufferAppend(node)) {
-            addViolation((RuleContext) data, node.getBeginLine());
+            addViolation((RuleContext) data, node);
         }
         return data;
     }
