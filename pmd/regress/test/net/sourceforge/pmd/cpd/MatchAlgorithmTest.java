@@ -58,5 +58,6 @@ public class MatchAlgorithmTest extends TestCase {
         assertEquals(2, mark2.getBeginLine());
         assertEquals(3, mark1.getBeginLine());
         assertTrue("Foo.java" == mark1.getTokenSrcID() && "Foo.java" == mark2.getTokenSrcID());
+        assertEquals(LINE_3, match.getSourceCodeSlice());
     }
 }

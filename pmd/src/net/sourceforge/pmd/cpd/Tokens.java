@@ -29,8 +29,6 @@ public class Tokens {
         if (endTok.equals(TokenEntry.EOF)) {
             endTok = get(mark.getIndexIntoTokenArray() + match.getTokenCount() - 1);
         }
-        return endTok.getBeginLine() - mark.getBeginLine();
+        return endTok.getBeginLine() - mark.getBeginLine() - 1;
     }
-
-
 }
