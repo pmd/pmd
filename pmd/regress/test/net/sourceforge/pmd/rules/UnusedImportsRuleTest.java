@@ -1,8 +1,34 @@
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.UnusedImportsRule;
+import net.sourceforge.pmd.cpd.CPD;
 
 public class UnusedImportsRuleTest extends RuleTst {
+
+    private static final String TEST1 =
+    "import java.io.File;" + CPD.EOL +
+    "public class UnusedImports1 {}";
+
+    private static final String TEST2 =
+    "import java.io.File;" + CPD.EOL +
+    "public class UnusedImports2 {" + CPD.EOL +
+    " private File file;" + CPD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "import java.io.File;" + CPD.EOL +
+    "import java.util.List;" + CPD.EOL +
+    "public class UnusedImports3 {" + CPD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "import java.security.AccessController;" + CPD.EOL +
+    "public class UnusedImports4 {" + CPD.EOL +
+    " public void foo() {" + CPD.EOL +
+    "  AccessController.doPrivileged(null);" + CPD.EOL +
+    " }" + CPD.EOL +
+    "}";
+
 
     private UnusedImportsRule rule;
 
@@ -12,18 +38,18 @@ public class UnusedImportsRuleTest extends RuleTst {
     }
 
     public void test1() throws Throwable {
-        runTestFromFile("UnusedImports1.java", 1, rule);
+        runTestFromString(TEST1, 1, rule);
     }
 
     public void test2() throws Throwable {
-        runTestFromFile("UnusedImports2.java", 0, rule);
+        runTestFromString(TEST2, 0, rule);
     }
 
     public void test3() throws Throwable {
-        runTestFromFile("UnusedImports3.java", 2, rule);
+        runTestFromString(TEST3, 2, rule);
     }
 
     public void test4() throws Throwable {
-        runTestFromFile("UnusedImports4.java", 0, rule);
+        runTestFromString(TEST4, 0, rule);
     }
 }
