@@ -36,7 +36,7 @@
          </menu>
          <action
                label="&amp;PMD"
-               icon="icons/sample.gif"
+               icon="icons/pmd-icon-16.gif"
                tooltip="Run PMD"
                class="net.sourceforge.pmd.eclipse.actions.PMDAction"
                menubarPath="sampleMenu/sampleGroup"
