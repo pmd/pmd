@@ -25,7 +25,7 @@ public class OnlyOneReturnRule extends AbstractRule {
         }
 
         List returnNodes = new ArrayList();
-        findReturns(node, returnNodes);
+        node.findChildrenOfType(ASTReturnStatement.class, returnNodes);
         if (returnNodes.size() > 1) {
             RuleContext ctx = (RuleContext)data;
             for (Iterator i = returnNodes.iterator(); i.hasNext();) {
@@ -45,21 +45,5 @@ public class OnlyOneReturnRule extends AbstractRule {
             }
         }
         return data;
-    }
-
-    private void findReturns(Node node, List returnNodes) {
-        if (node instanceof ASTReturnStatement) {
-            returnNodes.add(node);
-        }
-        for (int i=0; i<node.jjtGetNumChildren(); i++) {
-            Node child = (Node)node.jjtGetChild(i);
-            if (child.jjtGetNumChildren()>0) {
-                findReturns(child, returnNodes);
-            } else {
-                if (child instanceof ASTReturnStatement) {
-                    returnNodes.add(child);
-                }
-            }
-        }
     }
 }

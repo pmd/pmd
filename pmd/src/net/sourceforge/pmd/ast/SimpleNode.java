@@ -3,6 +3,8 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.symboltable.Scope;
 
+import java.util.List;
+
 public class SimpleNode implements Node {
   protected Node parent;
   protected Node[] children;
@@ -97,6 +99,26 @@ public class SimpleNode implements Node {
     public int getEndColumn() {
         return endColumn;
     }
+    public void findChildrenOfType(Class targetType, List results) {
+        findChildrenOfType(this, targetType, results);
+    }
+
+    private void findChildrenOfType(Node node, Class targetType, List results) {
+        if (node.getClass().equals(targetType)) {
+            results.add(node);
+        }
+        for (int i=0; i<node.jjtGetNumChildren(); i++) {
+            Node child = (Node)node.jjtGetChild(i);
+            if (child.jjtGetNumChildren()>0) {
+                findChildrenOfType(child, targetType, results);
+            } else {
+                if (child.getClass().equals(targetType)) {
+                    results.add(child);
+                }
+            }
+        }
+    }
+
     // NEW STUFF
 
   public void jjtSetParent(Node n) { parent = n; }

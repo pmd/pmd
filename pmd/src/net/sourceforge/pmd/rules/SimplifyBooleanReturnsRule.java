@@ -96,8 +96,7 @@ public class SimplifyBooleanReturnsRule extends AbstractRule {
     private SimpleNode getLastChild(SimpleNode node) {
         if (node.jjtGetNumChildren() == 0) {
             return node;
-        } else {
-            return getLastChild((SimpleNode)node.jjtGetChild(0));
         }
+        return getLastChild((SimpleNode)node.jjtGetChild(0));
     }
 }

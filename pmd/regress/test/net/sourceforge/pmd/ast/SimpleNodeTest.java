@@ -4,12 +4,14 @@ import net.sourceforge.pmd.ast.*;
 
 import java.util.Set;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleNodeTest
     extends ParserTst
 {
 
-    public void testMethodDiffLines() 
+    public void testMethodDiffLines()
 	throws Throwable
     {
 	String javaCode = "public class Test {\n";
@@ -26,7 +28,7 @@ public class SimpleNodeTest
 		    2, 3, 4, 2 );
     }
 
-    public void testMethodSameColumn() 
+    public void testMethodSameColumn()
 	throws Throwable
     {
 	String javaCode = "public class Test {\n";
@@ -42,7 +44,7 @@ public class SimpleNodeTest
 		    2, 1, 3, 1 );
     }
 
-    public void testMethodSameLine() 
+    public void testMethodSameLine()
 	throws Throwable
     {
 	String javaCode = "public class Test {\n";
@@ -68,7 +70,7 @@ public class SimpleNodeTest
 	assertTrue( iter.hasNext() );
 	verifyNode( (SimpleNode) iter.next(),
 		    1, 8, 1, 20 );
-	
+
     }
 
     public void testNames() throws Throwable {
@@ -117,6 +119,36 @@ public class SimpleNodeTest
 		      endLine, node.getEndLine() );
 	assertEquals( "Wrong Column provide for End: ",
 		      endCol, node.getEndColumn() );
-	
+
+    }
+
+    public void testFindChildrenOfType() {
+        ASTBlock block = new ASTBlock(2);
+        block.jjtAddChild(new ASTReturnStatement(1), 0);
+
+        List nodes = new ArrayList();
+        block.findChildrenOfType(ASTReturnStatement.class, nodes);
+        assertEquals(1, nodes.size());
+    }
+
+    public void testFindChildrenOfTypeMultiple() {
+        ASTBlock block = new ASTBlock(1);
+        block.jjtAddChild(new ASTBlockStatement(2), 0);
+        block.jjtAddChild(new ASTBlockStatement(3), 1);
+
+        List nodes = new ArrayList();
+        block.findChildrenOfType(ASTBlockStatement.class, nodes);
+        assertEquals(2, nodes.size());
+    }
+
+    public void testFindChildrenOfTypeRecurse() {
+        ASTBlock block = new ASTBlock(1);
+        ASTBlock childBlock = new ASTBlock(2);
+        block.jjtAddChild(childBlock, 0);
+        childBlock.jjtAddChild(new ASTMethodDeclaration(3), 0);
+
+        List nodes = new ArrayList();
+        block.findChildrenOfType(ASTMethodDeclaration.class, nodes);
+        assertEquals(1, nodes.size());
     }
 }
