@@ -21,7 +21,7 @@ public class TokenSetsTest extends TestCase {
         TokenList ts = new TokenList("foo");
         ts.add(tok);
         tss.add(ts);
-        assertEquals(ts, tss.getTokenSet(tok));
+        assertEquals(ts, tss.getTokenList(tok));
         assertTrue(tss.iterator().hasNext());
     }
 }

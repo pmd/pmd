@@ -31,6 +31,4 @@ public class TokenListTest extends TestCase{
     public void testHasTokenAfter() {
         assertTrue(GSTTest.createHelloTokenSet("foo").hasTokenAfter(new Tile(new Token('h', 0, "foo")), new Token('h', 0, "foo")));
     }
-
-
 }

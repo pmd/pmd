@@ -52,10 +52,6 @@ public class CPD {
         return results;
     }
 
-    public String toString() {
-        return tokenSets.toString();
-    }
-
     public static void main(String[] args) {
         boolean timing = Boolean.valueOf(args[0]).booleanValue();
         long start = System.currentTimeMillis();

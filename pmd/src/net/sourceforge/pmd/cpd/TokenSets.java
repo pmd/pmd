@@ -9,44 +9,38 @@ import java.util.*;
 
 public class TokenSets extends AbstractSet {
 
-    private Set tokenSets = new HashSet();
+    private Map tokenMap = new HashMap();
 
     public TokenSets() {}
 
-    public TokenSets(TokenList ts) {
-        tokenSets.add(ts);
+    public TokenSets(TokenList tokens) {
+        tokenMap.put(tokens.getID(), tokens);
     }
 
-    public void add(TokenList ts) {
-        tokenSets.add(ts);
+    public void add(TokenList tokens) {
+        tokenMap.put(tokens.getID(), tokens);
     }
 
     public int size() {
-        return tokenSets.size();
+        return tokenMap.size();
+    }
+
+    public Iterator iterator() {
+        return tokenMap.values().iterator();
+    }
+
+    public TokenList getTokenList(Token tok) {
+        return (TokenList)tokenMap.get(tok.getTokenSrcID());
     }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        for (Iterator i = tokenSets.iterator(); i.hasNext();) {
+        for (Iterator i = tokenMap.values().iterator(); i.hasNext();) {
             TokenList ts = (TokenList)i.next();
             sb.append(ts.toString());
             sb.append(System.getProperty("line.separator"));
         }
         return sb.toString();
-    }
-
-    public Iterator iterator() {
-        return tokenSets.iterator();
-    }
-
-    public TokenList getTokenSet(Token tok) {
-        for (Iterator i = iterator(); i.hasNext();) {
-            TokenList ts = (TokenList)i.next();
-            if (ts.getID().equals(tok.getTokenSrcID())) {
-                return ts;
-            }
-        }
-        throw new RuntimeException("Couldn't find token set " + tok.getTokenSrcID());
     }
 
 }
