@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="net.sourceforge.pmd.core"
+   name="%plugin.name"
+   version="1.3.2"
+   provider-name="%plugin.provider">
+
+   <runtime>
+      <library name="core.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/pmd-1.3.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/jaxen-core-1.0-fcs.jar"/>
+      <library name="lib/saxpath-1.0-fcs.jar"/>
+   </runtime>
+   <requires>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+   </requires>
+
+
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+
+</plugin>
