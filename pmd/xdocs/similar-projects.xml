@@ -11,6 +11,8 @@
    <section name="Similar to PMD">
      <subsection name="Open Source">
        <ul>
+         <li><a href="http://www.cs.umd.edu/~pugh/java/bugs/">FindBugs</a> - bytecode analyzer, lots of rules, responsive developers</li>
+         <li><a href="http://www.ovmj.org/jamit/index.html">Jamit</a> - bytecode analyzer, nice <a href="http://www.ovmj.org/jamit/data2_classes.php3">graphs</a></li>
          <li><a href="http://csdl.ics.hawaii.edu/Research/JWiz/JWiz.html">JWiz</a> - Research project, checks some neat stuff, like if you create a Button without adding an ActionListener to it.  Neat.</li>
          <li><a href="http://doctorj.org">DoctorJ</a> - Written in C++.  Uses Lex and YACC.  Checks Javadoc, syntax and calculates metrics.</li>
          <li><a href="http://www.alphaworks.ibm.com/tech/toad">Toad</a> - All kinds of stuff from Big Blue.</li>
@@ -23,6 +25,7 @@
      </subsection>
      <subsection name="Commercial">
        <ul>
+         <li><a href="http://www.mmsindia.com/jstyle.html">JStyle</a> - $995, nice folks, lots of metrics and rules</li>
          <li><a href="http://www.redhillconsulting.com.au/products/simian/index.html">Simian</a> - fast, works with Java, C#, C, CPP, COBOL, JSP, HTML</li>
          <li><a href="http://www.instantiations.com/codepro/default.htm">CodePro Studio</a> - $589, works with Eclipse, lots of rules</li>
          <li><a href="http://www.kodein.net/index.html">KodeIn</a> - $75, lots of rules, uses JavaCC.</li>
