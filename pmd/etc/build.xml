@@ -11,20 +11,31 @@
 <property name="jnlp_staging_area" value="c:\data\importscrubberjnlp\"/>
 <property name="build.compiler" value="jikes"/>
 
-	<target name="delete">
+  <path id="classpath.path">
+   <pathelement location="${build}"/>
+   <fileset dir="${lib}">
+    <include name="*.jar"/>
+   </fileset>
+  </path>
+
+    <target name="delete">
         <delete dir="${build}"/>
         <delete file="${lib}\pmd.jar"/>
         <mkdir dir="${build}"/>
     </target>
 
     <target name="compile">
+        <mkdir dir="${build}"/>
         <javac  deprecation="false"
                 debug="true"
                 optimize="false"
                 srcdir="${src}:${regress}"
                 destdir="${build}">
+	<classpath>
+ 	    <path refid="classpath.path"/>
+	</classpath>
         </javac>
-	</target>
+    </target>
 
     <target name="jar">
         <mkdir dir="${lib}"/>
@@ -60,6 +71,7 @@
               <include name="test/**/*Test.java" />
             </fileset>
           </batchtest>
+	  <formatter type="plain" />
         </junit>
     </target>
 
@@ -115,6 +127,15 @@
             <arg line=" ${lib}\pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
         </exec>
     </target>
+
+<target name="run-cpd" depends="compile">
+ <java classname="net.sourceforge.pmd.cpd.GUI" fork="yes">
+	<classpath>
+ 	    <path refid="classpath.path"/>
+	</classpath>
+ </java>
+</target>
+
 
 </project>
 
