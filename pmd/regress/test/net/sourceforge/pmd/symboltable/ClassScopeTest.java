@@ -18,7 +18,7 @@ public class ClassScopeTest extends TestCase {
         ClassScope s = new ClassScope("Foo");
         SimpleNode node = new SimpleNode(1);
         node.setImage("bar");
-        s.addDeclaration(new NameDeclaration(node));
+        s.addVariableDeclaration(new NameDeclaration(node));
         assertTrue(s.getUnusedDeclarations().hasNext());
     }
 
@@ -33,7 +33,7 @@ public class ClassScopeTest extends TestCase {
         ClassScope s = new ClassScope("Foo");
         SimpleNode node = new SimpleNode(1);
         node.setImage("X");
-        s.addDeclaration(new NameDeclaration(node));
+        s.addVariableDeclaration(new NameDeclaration(node));
 
         SimpleNode node2 = new SimpleNode(2);
         node2.setImage("Foo.X");

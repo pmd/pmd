@@ -14,7 +14,7 @@ public class DeclarationFinder extends JavaParserVisitorAdapter {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         NameDeclaration decl = new NameDeclaration(node);
-        node.getScope().addDeclaration(decl);
+        node.getScope().addVariableDeclaration(decl);
         return super.visit(node, data);
     }
 

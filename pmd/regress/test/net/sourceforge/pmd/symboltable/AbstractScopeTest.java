@@ -56,7 +56,7 @@ public class AbstractScopeTest extends TestCase {
         SimpleNode node = new SimpleNode(1);
         node.setImage("foo");
         NameDeclaration decl = new NameDeclaration(node);
-        scope.addDeclaration(decl);
+        scope.addVariableDeclaration(decl);
         assertTrue(scope.contains(new NameOccurrence(new SimpleNode(1), "foo")));
     }
 }

@@ -7,11 +7,13 @@ package net.sourceforge.pmd.symboltable;
 
 import java.util.*;
 
+/**
+ * This class is only used during the initial construction
+ * of the symbol table.  After that the AST provides part of the traversal mechanism
+ * and the individual scopes provide pointers to their parent scopes
+ */
 public class SymbolTable {
 
-    // this is really only used during the initial construction
-    // of the symbol table.  After that the AST provides part of the traversal mechanism,
-    // and the individual scopes provide the other part
     private Stack scopes = new Stack();
 
     public Scope peek() {

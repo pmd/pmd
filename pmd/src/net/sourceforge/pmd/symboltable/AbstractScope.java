@@ -7,6 +7,9 @@ package net.sourceforge.pmd.symboltable;
 
 import java.util.*;
 
+/**
+ * Provides behavior common to all Scopes
+ */
 public abstract class AbstractScope implements Scope {
 
     private Scope parent;
@@ -25,7 +28,7 @@ public abstract class AbstractScope implements Scope {
         return parent;
     }
 
-    public void addDeclaration(NameDeclaration nameDecl) {
+    public void addVariableDeclaration(NameDeclaration nameDecl) {
         if (names.containsKey(nameDecl)) {
             throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
         }

@@ -48,7 +48,7 @@ public class LocalScopeTest extends TestCase {
         ASTVariableDeclaratorId node = new MyASTVariableDeclaratorId(1);
         NameDeclaration decl = new NameDeclaration(node);
         LocalScope scope = new LocalScope();
-        scope.addDeclaration(decl);
+        scope.addVariableDeclaration(decl);
         assertTrue(!scope.getUnusedDeclarations().hasNext());
     }
 

@@ -11,13 +11,13 @@ import java.util.*;
 
 public class LocalScope extends AbstractScope {
 
-    public void addDeclaration(NameDeclaration nameDecl) {
+    public void addVariableDeclaration(NameDeclaration nameDecl) {
         if (nameDecl.isExceptionBlockParameter()) {
             // this declaration needs to go somewhere... should this be delegated to the next
             // highest LocalScope?
             return;
         }
-        super.addDeclaration(nameDecl);
+        super.addVariableDeclaration(nameDecl);
     }
 
     protected NameDeclaration findHere(NameOccurrence occurrence) {
