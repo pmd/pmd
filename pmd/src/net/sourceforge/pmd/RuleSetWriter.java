@@ -3,6 +3,7 @@ package net.sourceforge.pmd;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class RuleSetWriter
      * @throws FileNotFoundException
      */
     public RuleSetWriter(String fileName)
-        throws FileNotFoundException
+        throws PMDException
     {
         try
         {
@@ -40,14 +41,14 @@ public class RuleSetWriter
         }
         catch (FileNotFoundException exception)
         {
-            String message;
+            String template = "Could not create file \"{0}\".  The file path may be incorrect.";
+            Object[] args = {fileName};
+            String message = MessageFormat.format(template, args);
+            PMDException pmdException = new PMDException(message, exception);
 
-            message = "Could not create file \""
-                    + fileName
-                    + "\".  The file path may be incorrect.";
-            exception = new FileNotFoundException(message);
+            pmdException.fillInStackTrace();
 
-            throw exception;
+            throw pmdException;
         }
     }
 
@@ -116,7 +117,7 @@ public class RuleSetWriter
         // include="yes"
         setupNewLine();
         m_line.append("include=\"");
-        m_line.append(rule.isInclude() ? "yes" : "no");
+        m_line.append(rule.isInclude() ? "true" : "false");
         m_line.append("\" >");
         writeLine();
         m_indent -= 6;
