@@ -68,7 +68,7 @@ public class ASTViewer {
             JavaParser parser = new JavaParser(sr);
             try {
                 if (xpathQueryField.getText().length() == 0) {
-                    astArea.setText("XPath query field is empty");
+                    xpathResultArea.setText("XPath query field is empty");
                     xpathQueryField.requestFocus();
                     return;
                 }
@@ -81,14 +81,14 @@ public class ASTViewer {
                     String line = " at line " + String.valueOf(node.getBeginLine());
                     sb.append(name).append(line).append(System.getProperty("line.separator"));
                 }
-                astArea.setText(sb.toString());
+                xpathResultArea.setText(sb.toString());
                 if (sb.length() == 0) {
-                    astArea.setText("No results returned " + System.currentTimeMillis());
+                    xpathResultArea.setText("No results returned " + System.currentTimeMillis());
                 }
             } catch (ParseException pe) {
-                astArea.setText(pe.fillInStackTrace().getMessage());
+                xpathResultArea.setText(pe.fillInStackTrace().getMessage());
             } catch (JaxenException je) {
-                astArea.setText(je.fillInStackTrace().getMessage());
+                xpathResultArea.setText(je.fillInStackTrace().getMessage());
             }
             xpathQueryField.requestFocus();
         }
@@ -96,6 +96,7 @@ public class ASTViewer {
 
     private JTextPane codeEditorPane = new JTextPane();
     private JTextArea astArea = new JTextArea();
+    private JTextArea xpathResultArea = new JTextArea();
     private JFrame frame = new JFrame("AST Viewer");
     private JTextField xpathQueryField = new JTextField(40);
 
@@ -105,34 +106,43 @@ public class ASTViewer {
         codePanel.add(codeScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
 
         JSmartPanel astPanel = new JSmartPanel();
-        astArea.setRows(40);
-        astArea.setColumns(40);
+        astArea.setRows(20);
+        astArea.setColumns(20);
         JScrollPane astScrollPane = new JScrollPane(astArea);
         astPanel.add(astScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
 
-        JButton showButton = new JButton("Show AST");
-        showButton.setMnemonic('s');
+        JSmartPanel xpathResultPanel = new JSmartPanel();
+        xpathResultArea.setRows(10);
+        xpathResultArea.setColumns(20);
+        JScrollPane xpathResultScrollPane = new JScrollPane(xpathResultArea);
+        xpathResultPanel.add(xpathResultScrollPane, 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0));
+
+        JButton showButton = new JButton("Go");
+        showButton.setMnemonic('g');
         showButton.addActionListener(new ShowListener());
+        showButton.addActionListener(new XPathListener());
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(xpathQueryField);
-        JButton xPathButton = new JButton("Run XPath query");
-        xPathButton.setMnemonic('r');
-        xPathButton.addActionListener(new XPathListener());
-        controlPanel.add(xPathButton);
         controlPanel.add(showButton);
 
-        frame.getContentPane().setLayout(new BorderLayout());
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, astPanel);
-        frame.getContentPane().add(splitPane, BorderLayout.NORTH);
-        frame.getContentPane().add(controlPanel, BorderLayout.SOUTH);
+        JSplitPane otherSP = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codePanel, otherSP);
+        JSplitPane yetAnotherSP = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitPane, controlPanel);
 
-        frame.setSize(1000, 800);
-        frame.setVisible(true);
+        frame.getContentPane().add(yetAnotherSP);
+
+        frame.setSize(1000, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        frame.setLocation((screenWidth/2) - frame.getWidth()/2, (screenHeight/2) - frame.getHeight()/2);
+        frame.setVisible(true);
         frame.show();
 
-        splitPane.setDividerLocation(splitPane.getMaximumDividerLocation() / 2);
+        yetAnotherSP.setDividerLocation(yetAnotherSP.getMaximumDividerLocation() - (yetAnotherSP.getMaximumDividerLocation()/4));
+        splitPane.setDividerLocation(splitPane.getMaximumDividerLocation() / 3);
+        codeEditorPane.setSize(splitPane.getMaximumDividerLocation() / 3, yetAnotherSP.getMaximumDividerLocation() - (yetAnotherSP.getMaximumDividerLocation()/4));
     }
 
     public static void main(String[] args) {
