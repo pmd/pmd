@@ -146,7 +146,7 @@ public class Designer implements ClipboardOwner {
     private JList xpathResultList = new JList(xpathResults);
     private JTextArea xpathQueryArea = new JTextArea(10, 30);
     private JFrame frame = new JFrame("PMD Rule Designer");
-    private DFAPanel dfaPanel;
+    private final DFAPanel dfaPanel = new DFAPanel();;
     private JRadioButtonMenuItem jdk14MenuItem;
     private JRadioButtonMenuItem jdk15MenuItem;
 
@@ -163,18 +163,15 @@ public class Designer implements ClipboardOwner {
         };
 
     public Designer() {
-        JPanel controlPanel = new JPanel();
-        
-        controlPanel.add(createCodeEditPanel());
-        controlPanel.add(createXPathQueryPanel());
+        JSplitPane controlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditPanel(), createXPathQueryPanel());
+        controlPanel.setContinuousLayout(true);
 
         JComponent astPanel = createASTPanel();
         JComponent xpathResultPanel = createXPathResultPanel();
 
-        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);
-
-        dfaPanel = new DFAPanel();
-
+        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);        
+        resultsSplitPane.setContinuousLayout(true);
+        
         JTabbedPane tabbed = new JTabbedPane();
         tabbed.addTab("Abstract Syntax Tree / XPath", resultsSplitPane);
         tabbed.addTab("Data Flow Analysis", dfaPanel);
@@ -190,19 +187,9 @@ public class Designer implements ClipboardOwner {
         } 
 
         JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, tabbed);
-
-        JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("JDK");
-        ButtonGroup group = new ButtonGroup();
-        jdk14MenuItem = new JRadioButtonMenuItem("JDK 1.4");
-        jdk14MenuItem.setSelected(true);
-        group.add(jdk14MenuItem);
-        menu.add(jdk14MenuItem);
-        jdk15MenuItem = new JRadioButtonMenuItem("JDK 1.5");
-        jdk15MenuItem.setSelected(true);
-        group.add(jdk15MenuItem);
-        menu.add(jdk15MenuItem);
-        menuBar.add(menu);
+        containerSplitPane.setContinuousLayout(true);
+        
+        JMenuBar menuBar = createMenuBar();
 
         frame.setJMenuBar(menuBar);
         frame.getContentPane().add(containerSplitPane);
@@ -218,6 +205,23 @@ public class Designer implements ClipboardOwner {
 
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() - (containerSplitPane.getMaximumDividerLocation() / 2));
         resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 2));
+        
+    }
+
+    private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("JDK");
+        ButtonGroup group = new ButtonGroup();
+        jdk14MenuItem = new JRadioButtonMenuItem("JDK 1.4");
+        jdk14MenuItem.setSelected(true);
+        group.add(jdk14MenuItem);
+        menu.add(jdk14MenuItem);
+        jdk15MenuItem = new JRadioButtonMenuItem("JDK 1.5");
+        jdk15MenuItem.setSelected(true);
+        group.add(jdk15MenuItem);
+        menu.add(jdk15MenuItem);
+        menuBar.add(menu);
+        return menuBar;
     }
 
     private JComponent createASTPanel() {
@@ -239,29 +243,34 @@ public class Designer implements ClipboardOwner {
     private JComponent createCodeEditPanel() {
         codeEditorPane = new CodeEditorTextPane();
         JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
-        //p.add(codeScrollPane);
         codeEditorPane.addMouseListener(codeEditPanelMouseListener);
-        
         return codeScrollPane;
     }
 
     private JPanel createXPathQueryPanel() {
         JPanel p = new JPanel();
         p.setLayout(new BorderLayout());
-        p.add(new JLabel("XPath Query (if any)"), BorderLayout.NORTH);
         xpathQueryArea.setBorder(BorderFactory.createLineBorder(Color.black));
         JScrollPane scrollPane = new JScrollPane(xpathQueryArea);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        final JButton b = createGoButton();
+        
+        p.add(new JLabel("XPath Query (if any)"), BorderLayout.NORTH);
         p.add(scrollPane, BorderLayout.CENTER);
+        p.add(b, BorderLayout.SOUTH);
+        
+        return p;
+    }
+
+    private JButton createGoButton() {
         JButton b = new JButton("Go");
         b.setMnemonic('g');
         b.addActionListener(new ShowListener());
         b.addActionListener(codeEditorPane);
         b.addActionListener(new XPathListener());
         b.addActionListener(new DFAListener());
-        p.add(b, BorderLayout.SOUTH);
-        return p;
+        return b;
     }
 
     public static void main(String[] args) {
