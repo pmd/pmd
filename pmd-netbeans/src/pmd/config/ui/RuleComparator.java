@@ -16,9 +16,10 @@ import net.sourceforge.pmd.Rule;
 public class RuleComparator implements Comparator{
 	
 	public int compare(Object rule1, Object rule2) {
+		int compared = 0;
 		if( rule1 instanceof Rule && rule2 instanceof Rule ) {
-			return ( (Rule)rule1).getName().compareTo( ( (Rule)rule1).getName() );
+			compared =  ( (Rule)rule1).getName().compareTo( ( (Rule)rule2).getName() );
 		}
-		return 0;
+		return compared;
 	}	
 }

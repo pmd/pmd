@@ -6,7 +6,7 @@
       description_key="LBL_pmd_annotation"
       localizing_bundle="pmd.Bundle"
       visible="true"
-      glyph="nbresloc:/pmd/resources/MyActionIcon.gif"
+      glyph="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif"
       highlight="#FF8080"
       type="linepart"
 />

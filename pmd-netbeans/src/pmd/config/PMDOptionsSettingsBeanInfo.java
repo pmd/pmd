@@ -30,10 +30,9 @@ import java.awt.Image;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.beans.PropertyEditorManager;
 import java.beans.SimpleBeanInfo;
 
-import org.openide.TopManager;
+import org.openide.ErrorManager;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import pmd.config.ui.RuleEditor;
@@ -52,7 +51,6 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 	 * @return the description of the rulesets property
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyEditorManager.registerEditor( PMDOptionsSettingsBeanInfo.class, RuleEditor.class );
 		PropertyDescriptor descriptor[] = new PropertyDescriptor[1];
 		try {
 			PropertyDescriptor rules = new PropertyDescriptor( "rules", PMDOptionsSettings.class, "getRules", "setRules" );
@@ -62,7 +60,7 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 			descriptor[0] = rules;
 		}
 		catch( IntrospectionException ie ) {
-			TopManager.getDefault().getErrorManager().notify( ie );
+			ErrorManager.getDefault().notify( ie );
 		}
 		return descriptor;
 	}
@@ -77,7 +75,7 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 	public Image getIcon( int type ) {
 		Image img;
 		if( type == BeanInfo.ICON_COLOR_16x16 || type == BeanInfo.ICON_MONO_16x16 ) {
-			img = Utilities.loadImage( "pmd/resources/MyActionIcon.gif" );
+			img = Utilities.loadImage( "pmd/resources/PMDOptionsSettingsIcon.gif" );
 		}
 		else {
 			img = Utilities.loadImage( "pmd/resources/PMDOptionsSettingsIcon32.gif" );

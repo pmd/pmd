@@ -103,6 +103,7 @@ public class AvailableListModel extends AbstractListModel {
 	public void add( Object o ) {
 		if( !list.contains( o ) ) {
 			list.add( ( Rule )o );
+			Collections.sort( list, new RuleComparator() );
 			fireIntervalAdded( this, list.size(), list.size() );
 		}
 	}
@@ -116,6 +117,7 @@ public class AvailableListModel extends AbstractListModel {
 	public void remove( Object o ) {
 		int i = list.indexOf( o );
 		list.remove( o );
+		Collections.sort( list, new RuleComparator() );
 		fireIntervalRemoved( this, i, i );
 	}
 
@@ -136,6 +138,7 @@ public class AvailableListModel extends AbstractListModel {
 	public void addAll( Collection coll ) {
 		int i = list.size();
 		list.addAll( coll );
+		Collections.sort( list, new RuleComparator() );
 		fireIntervalAdded( this, i, list.size() );
 	}
 

@@ -37,13 +37,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMDException;
 
+import org.openide.ErrorManager;
 import org.openide.TopManager;
 import org.openide.cookies.EditorCookie;
 import org.openide.cookies.SourceCookie;
@@ -55,11 +56,9 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
 import org.openide.windows.InputOutput;
-import org.openide.windows.OutputWriter;
 
 import pmd.config.ConfigUtils;
 import pmd.config.PMDOptionsSettings;
-
 
 /**
  * Action that can always be invoked and work procedurally.
@@ -68,11 +67,6 @@ import pmd.config.PMDOptionsSettings;
  * @created 17. oktober 2002
  */
 public class RunPMDAction extends CookieAction {
-
-	/** Indicates if any violations has been printed */
-	private boolean printed = false;
-
-
 	/**
 	 * Gets the name of this action
 	 *
@@ -89,7 +83,7 @@ public class RunPMDAction extends CookieAction {
 	 * @return the name of the icon
 	 */
 	protected String iconResource() {
-		return "/pmd/resources/MyActionIcon.gif";
+		return "/pmd/resources/PMDOptionsSettingsIcon.gif";
 	}
 
 
@@ -127,48 +121,50 @@ public class RunPMDAction extends CookieAction {
 	/**
 	 * Runs pmd on the specified cookie
 	 *
-	 * @param dataobject the dataobject to check
-	 * @param listener the listener to be used as listener for the output window
-	 * @param writer the writer to use to write to the output window
+	 * @param dataobjects Description of the Parameter
+	 * @return Description of the Return Value
 	 * @exception IOException If the method can't read the files it should check or
 	 *      can't write to the output window
+	 * @exception PMDException Description of the Exception
 	 */
-	private void checkCookie( DataObject dataobject, PMDOutputListener listener, OutputWriter writer )
-		 throws IOException, PMDException {
-		SourceCookie cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
-
-		//The file is not a java file
-		if( cookie == null ) {
-			return;
-		}
-		Reader reader = getSourceReader( dataobject );
-		String name = cookie.getSource().getClasses()[0].getName().getFullName();
+	private List checkCookies( List dataobjects )
+		 throws IOException, PMDException 
+	{
+		RuleSet set = constructRuleSets();
 		PMD pmd = new PMD();
 		RuleContext ctx = new RuleContext();
 		Report report = new Report();
 		ctx.setReport( report );
-		ctx.setSourceCodeFilename( name );
-		RuleSet set = constructRuleSets();
-		pmd.processFile( reader, set, ctx );
-		Iterator iterator = ctx.getReport().iterator();
-		if( !ctx.getReport().isEmpty() ) {
+		
+		for( int i = 0; i < dataobjects.size(); i++ ) {
+			DataObject dataobject = ( DataObject )dataobjects.get( i );
+			SourceCookie cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
 
-			ArrayList list = new ArrayList( ctx.getReport().size() );
-			while( iterator.hasNext() ) {
-				RuleViolation violation = ( RuleViolation )iterator.next();
-				StringBuffer buffer = new StringBuffer();
-				buffer.append( violation.getRule().getName() ).append( ", " );
-				buffer.append( violation.getDescription() );
-				Fault fault = new Fault( violation.getLine(), name, buffer.toString() );
-				list.add( fault );
-				FaultRegistry.getInstance().registerFault( fault, dataobject );
+			//The file is not a java file
+			if( cookie == null ) {
+				continue;
 			}
-			Collections.sort( list );
-			for( int i = 0; i < list.size(); i++ ) {
-				writer.println( String.valueOf( list.get( i ) ), listener );
-			}
-			printed = true;
+			
+			Reader reader = getSourceReader( dataobject );
+			String name = cookie.getSource().getClasses()[0].getName().getFullName();
+			ctx.setSourceCodeFilename( name );
+			
+			pmd.processFile( reader, set, ctx );
 		}
+		
+		Iterator iterator = ctx.getReport().iterator();
+		ArrayList list = new ArrayList( ctx.getReport().size() );
+		while( iterator.hasNext() ) {
+			RuleViolation violation = ( RuleViolation )iterator.next();
+			StringBuffer buffer = new StringBuffer();
+			buffer.append( violation.getRule().getName() ).append( ", " );
+			buffer.append( violation.getDescription() );
+			Fault fault = new Fault( violation.getLine(), violation.getPackageName()+"."+violation.getClassName(), buffer.toString() );
+			list.add( fault );
+			FaultRegistry.getInstance().registerFault( fault, null );
+		}
+		Collections.sort( list );
+		return list;
 	}
 
 
@@ -182,43 +178,29 @@ public class RunPMDAction extends CookieAction {
 		listener.detach();
 		FaultRegistry.getInstance().clearRegistry();
 		try {
-			printed = false;
-			InputOutput io = TopManager.getDefault().getIO( "PMD output", false );
-			io.select();
-			io.getOut().reset();
-			for( int i = 0; i < node.length; i++ ) {
-				SourceCookie cookie = ( SourceCookie )node[i].getCookie( SourceCookie.class );
-
-				//Checks to see if it's a java source file
-				if( cookie != null ) {
-					checkCookie( ( DataObject )node[i].getCookie( DataObject.class ), listener, io.getOut() );
-				}
-				//Or if it's a folder
-				else {
-					DataFolder folder = ( DataFolder )node[i].getCookie( DataFolder.class );
-					Enumeration enumeration = folder.children( true );
-					while( enumeration.hasMoreElements() ) {
-						DataObject dataobject = ( DataObject )enumeration.nextElement();
-						cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
-						if( cookie != null ) {
-							checkCookie( dataobject, listener, io.getOut() );
-						}
-					}
-				}
-			}
-			if( !printed ) {
-				io.getOut().println( "Everything ok", null );
+			
+			TopManager.getDefault().setStatusText( "PMD checking for rule violations" );
+			List list = getDataObjects( node );
+			List violations = checkCookies( list );
+			if( violations.isEmpty() ) {
+				TopManager.getDefault().setStatusText( "PMD found no rule violations" );
 			}
 			else {
-				io.getOut().println( "Finished", null );
+				InputOutput io = TopManager.getDefault().getIO( "PMD output", false );
+				io.select();
+				io.getOut().reset();
+				for( int i = 0; i < violations.size(); i++ ) {
+					io.getOut().println( String.valueOf( violations.get( i ) ), listener );
+				}
+				TopManager.getDefault().setStatusText( "PMD found rule violations" );
 			}
 
 		}
 		catch( IOException e ) {
-			TopManager.getDefault().getErrorManager().notify( e );
+			ErrorManager.getDefault().notify( e );
 		}
 		catch( PMDException e ) {
-			TopManager.getDefault().getErrorManager().notify( e );
+			ErrorManager.getDefault().notify( e );
 		}
 
 	}
@@ -264,5 +246,37 @@ public class RunPMDAction extends CookieAction {
 			reader = new InputStreamReader( file.getInputStream() );
 		}
 		return reader;
+	}
+
+
+	/**
+	 * Gets the dataObjects attribute of the RunPMDAction object
+	 *
+	 * @param node Description of the Parameter
+	 * @return The dataObjects value
+	 */
+	private List getDataObjects( Node[] node ) {
+		ArrayList list = new ArrayList();
+		for( int i = 0; i < node.length; i++ ) {
+			SourceCookie cookie = ( SourceCookie )node[i].getCookie( SourceCookie.class );
+
+			//Checks to see if it's a java source file
+			if( cookie != null ) {
+				list.add( ( DataObject )node[i].getCookie( DataObject.class ) );
+			}
+			//Or if it's a folder
+			else {
+				DataFolder folder = ( DataFolder )node[i].getCookie( DataFolder.class );
+				Enumeration enumeration = folder.children( true );
+				while( enumeration.hasMoreElements() ) {
+					DataObject dataobject = ( DataObject )enumeration.nextElement();
+					cookie = ( SourceCookie )dataobject.getCookie( SourceCookie.class );
+					if( cookie != null ) {
+						list.add( dataobject );
+					}
+				}
+			}
+		}
+		return list;
 	}
 }

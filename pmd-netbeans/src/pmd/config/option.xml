@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
 <settings version="1.0">
-    <module name="pmd" spec="0.1"/>
+    <module name="pmd"/>
     <instanceof class="org.openide.options.SystemOption"/>
     <instanceof class="pmd.config.PMDOptionsSettings"/>
     <instance class="pmd.config.PMDOptionsSettings"/>

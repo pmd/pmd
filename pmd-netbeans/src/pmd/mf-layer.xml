@@ -4,29 +4,23 @@
 	<folder name="Services">
 		<file name="pmd-config-option.settings" url="config/option.xml">
 			<attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.config.Bundle"/>
-			<attr name="SystemFileSystem.icon" urlvalue="nbresloc:/pmd/resources/MyActionIcon.gif"/>
-			<attr name="name" stringvalue="PMD Settings"/>
+			<attr name="SystemFileSystem.icon" urlvalue="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif"/>
 		</file>
 	</folder>
 	<folder name="UI">
 		<folder name="Services">
 			<folder name="IDEConfiguration">
 				<folder name="ServerAndExternalToolSettings">
-					<!-- Note: line break in file contents necessary: -->
 					<file name="pmd-config-option.shadow">
-						<attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.config.Bundle"/><![CDATA[Services/pmd-config-option.settings
-SystemFileSystem
-]]>
+                                                <attr name="originalFile" stringvalue="Services/pmd-config-option.settings"/>
 					</file>
 				</folder>
 			</folder>
 		</folder>
 	</folder>
 	<folder name="Actions">
-        <folder name="pmd-netbeans">
-            <file name="pmd-RunPMDAction.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.Bundle"/>
-            </file>
+        <folder name="Tools">
+            <file name="pmd-RunPMDAction.instance"/>
         </folder>
 	</folder>
       <folder name="Editors">

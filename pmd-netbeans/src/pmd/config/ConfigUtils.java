@@ -27,12 +27,14 @@
 package pmd.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import pmd.config.ui.RuleComparator;
 
 /**
  * @author ole martin mørk
@@ -55,6 +57,7 @@ public class ConfigUtils {
 				list.add( rule );
 			}
 		}
+		Collections.sort( list, new RuleComparator() );
 		return list;
 	}
 
@@ -96,6 +99,7 @@ public class ConfigUtils {
 		catch( RuleSetNotFoundException e ) {
 			e.printStackTrace();
 		}
+		Collections.sort( list, new RuleComparator() );
 		return list;
 	}
 }

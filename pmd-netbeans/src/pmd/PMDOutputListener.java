@@ -26,6 +26,7 @@
  */
 package pmd;
 
+import org.openide.TopManager;
 import org.openide.cookies.LineCookie;
 import org.openide.loaders.DataObject;
 import org.openide.text.Line;
@@ -65,7 +66,7 @@ public class PMDOutputListener implements OutputListener {
 	}
 
 
-	/** Removes the marking of the line.  */
+	/** Removes the marking of the line. */
 	public void detach() {
 		annotation.detach();
 	}
@@ -83,10 +84,12 @@ public class PMDOutputListener implements OutputListener {
 		Set lineset = cookie.getLineSet();
 		int lineNum = Fault.getLineNum( outputEvent.getLine() );
 		Line line = lineset.getOriginal( lineNum - 1 );
-		annotation.setErrorMessage( Fault.getErrorMessage( outputEvent.getLine() ) );
+		String msg = Fault.getErrorMessage( outputEvent.getLine() );
+		annotation.setErrorMessage( msg );
 		annotation.attach( line );
 		line.addPropertyChangeListener( annotation );
 		line.show( Line.SHOW_GOTO );
+		TopManager.getDefault().setStatusText( msg );
 	}
 
 

@@ -29,6 +29,7 @@ package pmd.config.ui;
 import java.beans.PropertyEditorSupport;
 import javax.swing.JPanel;
 import net.sourceforge.pmd.Rule;
+import java.awt.event.MouseEvent;
 
 /** The JPanel used to edit the Rule property
  * @author ole martin mørk
@@ -38,12 +39,12 @@ public class RuleEnabler extends JPanel {
 	private final PropertyEditorSupport editor;
 	/** Creates a new editor
 	 * @param editor The object to be notified of changes in the property
-	 */	
+	 */
 	public RuleEnabler( PropertyEditorSupport editor ) {
 		this.editor = editor;
 		initComponents();
 	}
-	
+
 	/** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
@@ -118,7 +119,7 @@ public class RuleEnabler extends JPanel {
         availableList.setCellRenderer(new ListCell());
         availableList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                availableListValueChanged(evt);
+                availableListValueChanged();
             }
         });
 
@@ -146,7 +147,7 @@ public class RuleEnabler extends JPanel {
         chosenList.setCellRenderer(new ListCell());
         chosenList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                chosenListValueChanged(evt);
+                chosenListValueChanged();
             }
         });
 
@@ -195,7 +196,7 @@ public class RuleEnabler extends JPanel {
         chooseOne.setText(">");
         chooseOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chooseOneActionPerformed(evt);
+                chooseOneActionPerformed();
             }
         });
 
@@ -210,7 +211,7 @@ public class RuleEnabler extends JPanel {
         choseAll.setText(">>");
         choseAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                choseAllActionPerformed(evt);
+                choseAllActionPerformed();
             }
         });
 
@@ -224,7 +225,7 @@ public class RuleEnabler extends JPanel {
         removeOne.setText("<");
         removeOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeOneActionPerformed(evt);
+                removeOneActionPerformed();
             }
         });
 
@@ -238,7 +239,7 @@ public class RuleEnabler extends JPanel {
         removeAll.setText("<<");
         removeAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeAllActionPerformed(evt);
+                removeAllActionPerformed();
             }
         });
 
@@ -367,26 +368,26 @@ public class RuleEnabler extends JPanel {
 
 	/** Fired when the user clicks on the chosenList list
 	 * @param evt the event fired
-	 */	
-	private void chosenListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chosenListMouseClicked
+	 */
+	private void chosenListMouseClicked(MouseEvent evt) {//GEN-FIRST:event_chosenListMouseClicked
 		if( evt.getClickCount() >= 2 ) {
-			removeOneActionPerformed( null );
+			removeOneActionPerformed();
 		}
 	}//GEN-LAST:event_chosenListMouseClicked
 
 	/** Fired when the user clicks on the availableList list
 	 * @param evt the event fired
-	 */	
-	private void availableListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableListMouseClicked
+	 */
+	private void availableListMouseClicked(MouseEvent evt) {//GEN-FIRST:event_availableListMouseClicked
 		if( evt.getClickCount() >= 2 ) {
-			chooseOneActionPerformed( null );
+			chooseOneActionPerformed();
 		}
 	}//GEN-LAST:event_availableListMouseClicked
 
 	/** Called when the user selects a value in the chosenList
 	 * @param evt the event fired
-	 */	
-	private void chosenListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_chosenListValueChanged
+	 */
+	private void chosenListValueChanged() {//GEN-FIRST:event_chosenListValueChanged
 		Rule rule =  (Rule)chosenList.getSelectedValue();
 		if( rule != null ) {
 			example.setText( rule.getExample().trim());
@@ -397,8 +398,8 @@ public class RuleEnabler extends JPanel {
 
 	/** Called when the user selects a value in the availableList
 	 * @param evt the event fired
-	 */	
-	private void availableListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_availableListValueChanged
+	 */
+	private void availableListValueChanged() {//GEN-FIRST:event_availableListValueChanged
 		Rule rule =  (Rule)availableList.getSelectedValue();
 		if( rule != null ) {
 			example.setText( rule.getExample().trim() );
@@ -409,8 +410,8 @@ public class RuleEnabler extends JPanel {
 
 	/** Called when the user clicks on the removeAll button
 	 * @param evt the event fired
-	 */	
-	private void removeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllActionPerformed
+	 */
+	private void removeAllActionPerformed() {//GEN-FIRST:event_removeAllActionPerformed
 		AvailableListModel.getInstance().addAll( SelectedListModel.getSelectedListModelInstance().getList() );
 		SelectedListModel.getSelectedListModelInstance().removeAll();
 		editor.firePropertyChange();
@@ -419,8 +420,8 @@ public class RuleEnabler extends JPanel {
 
 	/** Called when the user clicks the removeOne button
 	 * @param evt the event fired
-	 */	
-	private void removeOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeOneActionPerformed
+	 */
+	private void removeOneActionPerformed() {//GEN-FIRST:event_removeOneActionPerformed
 		int index = chosenList.getSelectedIndex();
 		Object object[] = chosenList.getSelectedValues();
 		if( object != null ) {
@@ -436,14 +437,14 @@ public class RuleEnabler extends JPanel {
 				chosenList.setSelectedIndex( index );
 				chosenList.requestFocus();
 			}
-		}	
-		
+		}
+
 	}//GEN-LAST:event_removeOneActionPerformed
 
 	/** Called when the user clicks on chooseAll button
 	 * @param evt the event fired
-	 */	
-	private void choseAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choseAllActionPerformed
+	 */
+	private void choseAllActionPerformed() {//GEN-FIRST:event_choseAllActionPerformed
 		SelectedListModel.getSelectedListModelInstance().addAll( AvailableListModel.getInstance().getList() );
 		AvailableListModel.getInstance().removeAll();
 		editor.firePropertyChange();
@@ -451,8 +452,8 @@ public class RuleEnabler extends JPanel {
 
 	/** Called when the user clicks on chooseOne button
 	 * @param evt the event fired
-	 */	
-	private void chooseOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseOneActionPerformed
+	 */
+	private void chooseOneActionPerformed() {//GEN-FIRST:event_chooseOneActionPerformed
 		int index = availableList.getSelectedIndex();
 		Object object[] = availableList.getSelectedValues();
 		if( object != null ) {
@@ -465,14 +466,14 @@ public class RuleEnabler extends JPanel {
 				index = AvailableListModel.getInstance().getList().size() - 1;
 			}
 			if( index >= 0 ) {
-				availableList.setSelectedIndex( index );			
+				availableList.setSelectedIndex( index );
 				availableList.requestFocus();
 			}
 		}
-		
+
 	}//GEN-LAST:event_chooseOneActionPerformed
 
-	
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSeparator topSeparator;
     private javax.swing.JButton removeAll;
@@ -501,5 +502,5 @@ public class RuleEnabler extends JPanel {
     private javax.swing.JButton removeOne;
     private javax.swing.JList chosenList;
     // End of variables declaration//GEN-END:variables
-	
+
 }
