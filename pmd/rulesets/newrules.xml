@@ -6,7 +6,29 @@ These are new rules for the next release
   </description>
 
 
-
+  <rule name="CloseConnectionRule"
+        message="Ensures that Connection objects are always closed after use"
+        class="net.sourceforge.pmd.rules.CloseConnectionRule">
+    <description>
+      Ensures that Connection objects are always closed after use
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
+           public void foo() {
+             Connection c = pool.getConnection();
+             try {
+               // do stuff
+             } catch (SQLException ex) {
+               // handle exception
+             } finally {
+               // oops, should close the connection using 'close'!
+               // c.close();
+             }
+           }
+  ]]>
+    </example>
+  </rule>
 
 </ruleset>
 

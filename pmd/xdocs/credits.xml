@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Gabe Johnson - CloseConnectionRule</li>
             <li>Roelof Vuurboom - posted report of QStudio analysis of PMD</li>
             <li>Jeff Anderson - node finding utility code</li>
             <li>Boris Gruschko - regression test suites, nifty AST/XPath viewer</li>

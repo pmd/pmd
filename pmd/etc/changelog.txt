@@ -1,4 +1,5 @@
 ???? 2003 - 1.3:
+Added new rule: CloseConnectionRule
 Fixed bug 782246 - FinalFieldCouldBeStatic no longer flags fields in interfaces.
 Fixed bug 782235 - "ant -version" now prints more details when a file errors out.
 Fixed bug 779874 - LooseCouplingRule no longer triggers on ArrayList
