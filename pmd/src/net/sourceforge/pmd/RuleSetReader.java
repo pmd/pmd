@@ -27,6 +27,7 @@ public class RuleSetReader
 
     // Constants
     private final String REJECT_NOT_INCLUDED = "Reject not included";
+    private final String EMPTY_STRING = "";
 
     /**
      *****************************************************************************
@@ -196,8 +197,8 @@ public class RuleSetReader
                 className = attributes.getValue("class");
                 includeText = attributes.getValue("include");
                 ruleName = (ruleName == null) ? "Unknown" : ruleName.trim();
-                message = (message == null) ? "" : message.trim();
-                className = (className == null) ? "" : className.trim();
+                message = (message == null) ? EMPTY_STRING : message.trim();
+                className = (className == null) ? EMPTY_STRING : className.trim();
                 includeText = (includeText == null) ? "true" : includeText.trim();
                 include = includeText.equalsIgnoreCase("true");
 
@@ -213,7 +214,7 @@ public class RuleSetReader
                     Object[] args = {ruleName, m_ruleSet.getName()};
                     String msg = MessageFormat.format(template, args);
                     PMDException pmdException = new PMDException(msg);
-                    SAXException saxException = new SAXException("", pmdException);
+                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
                     pmdException.fillInStackTrace();
                     throw saxException;
                 }
@@ -231,7 +232,7 @@ public class RuleSetReader
                     Object[] args = {className};
                     String msg = MessageFormat.format(template, args);
                     PMDException pmdException = new PMDException(msg, exception);
-                    SAXException saxException = new SAXException("", pmdException);
+                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
                     pmdException.fillInStackTrace();
                     throw saxException;
                 }
@@ -241,7 +242,7 @@ public class RuleSetReader
                     Object[] args = {className, ruleName, m_ruleSet.getName()};
                     String msg = MessageFormat.format(template, args);
                     PMDException pmdException = new PMDException(msg, exception);
-                    SAXException saxException = new SAXException("", pmdException);
+                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
                     pmdException.fillInStackTrace();
                     throw saxException;
                 }
@@ -251,7 +252,7 @@ public class RuleSetReader
                     Object[] args = {className, ruleName, m_ruleSet.getName()};
                     String msg = MessageFormat.format(template, args);
                     PMDException pmdException = new PMDException(msg, exception);
-                    SAXException saxException = new SAXException("", pmdException);
+                    SAXException saxException = new SAXException(EMPTY_STRING, pmdException);
                     pmdException.fillInStackTrace();
                     throw saxException;
                 }
@@ -265,13 +266,16 @@ public class RuleSetReader
             {
                 String name = attributes.getValue("name");
                 String value = attributes.getValue("value");
+                String type = attributes.getValue("type");
 
-                name = (name == null) ? "" : name.trim();
-                value = (value == null) ? "" : value;
+                name = (name == null) ? EMPTY_STRING : name.trim();
+                value = (value == null) ? EMPTY_STRING : value;
+                type = (type == null) ? EMPTY_STRING : type;
 
                 if (name.length() > 0)
                 {
-                    m_rule.addProperty(name, value);
+                    m_rule.getProperties().setValue(name, value);
+                    m_rule.getProperties().setValueType(name, type);
                 }
             }
         }

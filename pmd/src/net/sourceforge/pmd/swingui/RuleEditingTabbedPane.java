@@ -5,6 +5,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 import javax.swing.UIManager;
 
@@ -14,7 +15,7 @@ import javax.swing.UIManager;
  * @since August 29, 2002
  * @version $Revision$, $Date$
  */
-public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionListener, ChangeListener
+public class RuleEditingTabbedPane extends JTabbedPane
 {
 
     private RulesTree m_rulesTree;
@@ -22,6 +23,8 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
     private RuleEditingPanel m_rulePanel;
     private RulePropertyEditingPanel m_rulePropertyPanel;
     private RuleAllEditingPanel m_ruleAllPanel;
+    private boolean m_changeListenerIsEnabled;
+    private boolean m_selectionListenerIsEnabled;
 
     /**
      *******************************************************************************
@@ -37,6 +40,8 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
         m_ruleSetPanel = new RuleSetEditingPanel();
         m_rulePanel = new RuleEditingPanel();
         m_rulePropertyPanel = new RulePropertyEditingPanel();
+        m_changeListenerIsEnabled = true;
+        m_selectionListenerIsEnabled = true;
 
         addTab("All", m_ruleAllPanel);
         addTab("Rule Set", m_ruleSetPanel);
@@ -45,8 +50,9 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
         setFont(UIManager.getFont("tabFont"));
 
         m_ruleAllPanel.setIsEditing(true);
-        rulesTree.addTreeSelectionListener(this);
-        addChangeListener(this);
+
+        rulesTree.addTreeSelectionListener(new RulesTreeSelectionListener());
+        addChangeListener(new RulesTreeChangeListener());
     }
 
     /**
@@ -86,52 +92,165 @@ public class RuleEditingTabbedPane extends JTabbedPane implements TreeSelectionL
     /**
      *******************************************************************************
      *
-     * @param event
+     * @return
      */
-    public void stateChanged(ChangeEvent event)
+    private IRulesEditingData[] getData()
     {
-        saveData();
-        Object selectedComponent = getSelectedComponent();
-        m_ruleAllPanel.setIsEditing(selectedComponent == m_ruleAllPanel);
-        m_ruleSetPanel.setIsEditing(selectedComponent == m_ruleSetPanel);
-        m_rulePanel.setIsEditing(selectedComponent == m_rulePanel);
-        m_rulePropertyPanel.setIsEditing(selectedComponent == m_rulePropertyPanel);
-        setData(getSelectedTreeNode());
+        IRulesEditingData[] data;
+
+        if (m_ruleAllPanel.isEditing())
+        {
+            data = m_ruleAllPanel.getData();
+        }
+        else if (m_ruleSetPanel.isEditing())
+        {
+            data = new IRulesEditingData[1];
+            data[0] = m_ruleSetPanel.getData();
+        }
+        else if (m_rulePanel.isEditing())
+        {
+            data = new IRulesEditingData[1];
+            data[0] = m_rulePanel.getData();
+        }
+        else if (m_rulePropertyPanel.isEditing())
+        {
+            data = new IRulesEditingData[1];
+            data[0] = m_rulePropertyPanel.getData();
+        }
+        else
+        {
+            data = new IRulesEditingData[0];
+        }
+
+        return data;
     }
 
     /**
      *******************************************************************************
-     *
-     * @param event
+     *******************************************************************************
+     *******************************************************************************
      */
-    public void valueChanged(TreeSelectionEvent event)
+    private class RulesTreeChangeListener implements ChangeListener
     {
-        TreePath treePath = event.getPath();
-        Object component = treePath.getLastPathComponent();
 
-        if (component instanceof RulesTreeNode)
+        /**
+         *******************************************************************************
+         *
+         * @param event
+         */
+        public void stateChanged(ChangeEvent event)
         {
-            RulesTreeNode treeNode = (RulesTreeNode) component;
-
-            saveData();
-
-            if (getSelectedComponent() != m_ruleAllPanel)
+            if (m_changeListenerIsEnabled)
             {
-                if (treeNode.isRuleSet())
+                IRulesEditingData[] currentData = getData();
+
+                saveData();
+
+                Object selectedComponent = getSelectedComponent();
+                m_ruleAllPanel.setIsEditing(selectedComponent == m_ruleAllPanel);
+                m_ruleSetPanel.setIsEditing(selectedComponent == m_ruleSetPanel);
+                m_rulePanel.setIsEditing(selectedComponent == m_rulePanel);
+                m_rulePropertyPanel.setIsEditing(selectedComponent == m_rulePropertyPanel);
+                setData(getSelectedTreeNode());
+                SwingUtilities.invokeLater(new SortChildren(currentData));
+            }
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class RulesTreeSelectionListener implements TreeSelectionListener
+    {
+
+        /**
+         *******************************************************************************
+         *
+         * @param event
+         */
+        public void valueChanged(TreeSelectionEvent event)
+        {
+            if (m_selectionListenerIsEnabled)
+            {
+                TreePath treePath = event.getPath();
+                Object component = treePath.getLastPathComponent();
+
+                if (component instanceof RulesTreeNode)
                 {
-                    setSelectedComponent(m_ruleSetPanel);
-                }
-                else if (treeNode.isRule())
-                {
-                    setSelectedComponent(m_rulePanel);
-                }
-                else if (treeNode.isProperty())
-                {
-                    setSelectedComponent(m_rulePropertyPanel);
+                    IRulesEditingData[] currentData = getData();
+
+                    saveData();
+
+                    RulesTreeNode treeNode = (RulesTreeNode) component;
+
+                    if (getSelectedComponent() != m_ruleAllPanel)
+                    {
+                        if (treeNode.isRuleSet())
+                        {
+                            setSelectedComponent(m_ruleSetPanel);
+                        }
+                        else if (treeNode.isRule())
+                        {
+                            setSelectedComponent(m_rulePanel);
+                        }
+                        else if (treeNode.isProperty())
+                        {
+                            setSelectedComponent(m_rulePropertyPanel);
+                        }
+                    }
+
+                    setData(treeNode);
+                    SwingUtilities.invokeLater(new SortChildren(currentData));
                 }
             }
+        }
+    }
 
-            setData(treeNode);
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class SortChildren implements Runnable
+    {
+
+        private IRulesEditingData[] m_childData;
+
+        /**
+         ***************************************************************************
+         *
+         * @param currentData
+         */
+        private SortChildren(IRulesEditingData[] childData)
+        {
+            m_childData = childData;
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
+        public void run()
+        {
+            if (m_childData != null)
+            {
+                TreePath selectedPath = m_rulesTree.getSelectionPath();
+                m_changeListenerIsEnabled = false;
+                m_selectionListenerIsEnabled = false;
+                m_rulesTree.removeSelectionPath(selectedPath);
+
+                for (int n = 0; n < m_childData.length; n++)
+                {
+                    RulesTreeNode childNode = (RulesTreeNode) m_childData[n];
+                    m_rulesTree.sortChildren((RulesTreeNode) childNode.getParent());
+                }
+
+                m_rulesTree.setSelectionPath(selectedPath);
+                m_changeListenerIsEnabled = true;
+                m_selectionListenerIsEnabled = true;
+            }
         }
     }
 }

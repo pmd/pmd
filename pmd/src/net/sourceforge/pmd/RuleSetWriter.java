@@ -221,20 +221,23 @@ public class RuleSetWriter
         outputLine();
         indent();
 
-        Properties properties = rule.getProperties();
+        RuleProperties properties = rule.getProperties();
         Enumeration keys = properties.keys();
 
         while (keys.hasMoreElements())
         {
-            String propertyName = (String) keys.nextElement();
-            String propertyValue = properties.getProperty(propertyName);
+            String name = (String) keys.nextElement();
+            String value = properties.getValue(name);
+            String valueType = properties.getValueType(name);
 
             // <property name="xxxxx" value="yyyyy" />
             setupNewLine();
             m_line.append("<property name=\"");
-            m_line.append(propertyName);
+            m_line.append(name);
             m_line.append("\" value=\"");
-            m_line.append(propertyValue);
+            m_line.append(value);
+            m_line.append("\" type=\"");
+            m_line.append(valueType);
             m_line.append("\"/>");
             outputLine();
         }

@@ -70,6 +70,13 @@ public interface IRulesEditingData
      *
      * @return
      */
+    public String getPropertyValueType();
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
     public IRulesEditingData getSibling(String name);
 
     /**
@@ -141,6 +148,13 @@ public interface IRulesEditingData
      * @return
      */
     public void setPropertyValue(String value);
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    public void setPropertyValueType(String value);
 
     /**
      *******************************************************************************

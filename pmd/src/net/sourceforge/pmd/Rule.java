@@ -13,12 +13,12 @@ public interface Rule {
     public void setExample(String example);
     public void apply(List astCompilationUnits, RuleContext ctx);
     public boolean hasProperty(String name);
-    public void addProperty(String name, String value);
+    public void addProperty(String name, String property);
     public int getIntProperty(String name);
     public boolean getBooleanProperty(String name);
     public String getStringProperty(String name);
     public double getDoubleProperty(String name);
-    public Properties getProperties();
+    public RuleProperties getProperties();
     public boolean include();
     public void setInclude(boolean include);
 }

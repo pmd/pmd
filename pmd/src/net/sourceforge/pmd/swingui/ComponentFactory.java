@@ -70,6 +70,7 @@ class ComponentFactory
         button.setFont(UIManager.getFont("buttonFont"));
         button.setSize(size);
         button.setPreferredSize(size);
+        button.setOpaque(true);
 
         return button;
     }
@@ -184,6 +185,7 @@ class ComponentFactory
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setBorder(compoundBorder);
+        textArea.setOpaque(true);
 
         return textArea;
     }

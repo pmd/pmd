@@ -5,15 +5,24 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.awt.Window;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.JComponent;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -32,9 +41,20 @@ public class RulePropertyEditingPanel extends JPanel
     private JTextField m_name;
     private JLabel m_valueLabel;
     private JTextField m_value;
+    private JLabel m_valueTypeLabel;
+    private JComboBox m_valueType;
     private boolean m_enabled;
     private IRulesEditingData m_currentData;
     private boolean m_isEditing;
+    private String m_originalName;
+    private String m_originalValue;
+    private FocusListener m_focusListener = new PropertyNameFocusListener();
+
+    // Constants
+    private final String BOOLEAN = "Boolean";
+    private final String DECIMAL_NUMBER = "Decimal Number";
+    private final String INTEGER = "Integer";
+    private final String STRING = "String";
 
     /**
      *******************************************************************************
@@ -62,23 +82,43 @@ public class RulePropertyEditingPanel extends JPanel
         m_nameLabel = new JLabel("Name");
         m_nameLabel.setFont(UIManager.getFont("labelFont"));
         m_nameLabel.setHorizontalAlignment(JLabel.RIGHT);
+        m_nameLabel.setOpaque(true);
         panel.add(m_nameLabel);
 
         // Property Name Text
         m_name = new JTextField();
         m_name.setFont(UIManager.getFont("dataFont"));
+        m_name.addFocusListener(m_focusListener);
+        m_name.setRequestFocusEnabled(true);
+        m_name.setOpaque(true);
         panel.add(m_name);
 
         // Property Value Label
         m_valueLabel = new JLabel("Value");
         m_valueLabel.setFont(UIManager.getFont("labelFont"));
         m_valueLabel.setHorizontalAlignment(JLabel.RIGHT);
+        m_valueLabel.setOpaque(true);
         panel.add(m_valueLabel);
 
         // Property Value Text
         m_value = new JTextField();
         m_value.setFont(UIManager.getFont("dataFont"));
+        m_value.setOpaque(true);
         panel.add(m_value);
+
+        // Property Value Type Label
+        m_valueTypeLabel = new JLabel("Type");
+        m_valueTypeLabel.setFont(UIManager.getFont("labelFont"));
+        m_valueTypeLabel.setHorizontalAlignment(JLabel.RIGHT);
+        m_valueTypeLabel.setOpaque(true);
+        panel.add(m_valueTypeLabel);
+
+        // Property Value Type
+        String[] items = {STRING, BOOLEAN, DECIMAL_NUMBER, INTEGER};
+        m_valueType = new JComboBox(items);
+        m_valueType.setEditable(false);
+        m_valueType.setOpaque(true);
+        panel.add(m_valueType);
 
         enableData(false);
     }
@@ -91,15 +131,182 @@ public class RulePropertyEditingPanel extends JPanel
     {
         if (m_isEditing && (m_currentData != null))
         {
-            m_currentData.setName(m_name.getText());
-            m_currentData.setPropertyValue(m_value.getText());
+            // Test for valid property name.
+            String propertyName = m_name.getText();
+
+            if (propertyName.equalsIgnoreCase(m_originalName) == false)
+            {
+                if (m_currentData.getSibling(propertyName) != null)
+                {
+                    String template = "Another property already has the name \"{0}\".  The change will not be applied.";
+                    String[] args = {propertyName};
+                    String message = MessageFormat.format(template, args);
+                    boolean hasFocus = m_name.hasFocus();
+
+                    m_name.removeFocusListener(m_focusListener);
+                    MessageDialog.show(getParentWindow(), message);
+                    m_name.addFocusListener(m_focusListener);
+
+                    if (hasFocus)
+                    {
+                        m_name.requestFocus();
+                    }
+
+                    propertyName = m_originalName;
+                }
+            }
+
+            // Test for valid value.
+            String valueText = m_value.getText();
+            String selectedItem = (String) m_valueType.getSelectedItem();
+
+            if (selectedItem.equalsIgnoreCase(BOOLEAN))
+            {
+                valueText = saveBoolean(valueText);
+            }
+            else if (selectedItem.equalsIgnoreCase(DECIMAL_NUMBER))
+            {
+                valueText = saveDecimalNumber(valueText);
+            }
+            else if (selectedItem.equalsIgnoreCase(INTEGER))
+            {
+                valueText = saveInteger(valueText);
+            }
+
+            m_currentData.setName(propertyName);
+            m_currentData.setPropertyValue(valueText);
+            m_currentData.setPropertyValueType(selectedItem);
+            enableData(false);
         }
     }
 
     /**
      *******************************************************************************
      *
-     * @param data
+     * @param valueText
+     */
+    private String saveBoolean(String valueText)
+    {
+        boolean originalValue;
+        boolean newValue;
+
+        try
+        {
+            originalValue = Boolean.getBoolean(m_originalValue);
+        }
+        catch (NumberFormatException exception)
+        {
+            originalValue = true;
+        }
+
+        try
+        {
+            newValue = Boolean.getBoolean(valueText);
+            valueText = String.valueOf(newValue);
+        }
+        catch (NumberFormatException exception)
+        {
+            String template = "New property of \"{0}\" is not a boolean.  The change will not be applied.";
+            String[] args = {valueText};
+            String message = MessageFormat.format(template, args);
+
+            m_name.removeFocusListener(m_focusListener);
+            MessageDialog.show(getParentWindow(), message);
+            m_name.addFocusListener(m_focusListener);
+
+            newValue = originalValue;
+            valueText = m_originalValue;
+        }
+
+        return valueText;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param valueText
+     */
+    private String saveDecimalNumber(String valueText)
+    {
+        double originalValue;
+        double newValue;
+
+        try
+        {
+            originalValue = Double.parseDouble(m_originalValue);
+        }
+        catch (NumberFormatException exception)
+        {
+            originalValue = 0.0;
+        }
+
+        try
+        {
+            newValue = Double.parseDouble(valueText);
+            valueText = String.valueOf(newValue);
+        }
+        catch (NumberFormatException exception)
+        {
+            String template = "New property of \"{0}\" is not a decimal number.  The change will not be applied.";
+            String[] args = {valueText};
+            String message = MessageFormat.format(template, args);
+
+            m_name.removeFocusListener(m_focusListener);
+            MessageDialog.show(getParentWindow(), message);
+            m_name.addFocusListener(m_focusListener);
+
+            newValue = originalValue;
+            valueText = m_originalValue;
+        }
+
+        return valueText;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param valueText
+     */
+    private String saveInteger(String valueText)
+    {
+        int originalValue;
+        int newValue;
+
+        try
+        {
+            originalValue = Integer.parseInt(m_originalValue);
+        }
+        catch (NumberFormatException exception)
+        {
+            originalValue = 0;
+        }
+
+        try
+        {
+            newValue = Integer.parseInt(valueText);
+            valueText = String.valueOf(newValue);
+        }
+        catch (NumberFormatException exception)
+        {
+            String template = "New property of \"{0}\" is not an integer.  The change will not be applied.";
+            String[] args = {valueText};
+            String message = MessageFormat.format(template, args);
+
+            m_name.removeFocusListener(m_focusListener);
+            MessageDialog.show(getParentWindow(), message);
+            m_name.addFocusListener(m_focusListener);
+
+            newValue = originalValue;
+            valueText = m_originalValue;
+        }
+
+        return valueText;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param isEditing
      */
     protected void setIsEditing(boolean isEditing)
     {
@@ -109,11 +316,35 @@ public class RulePropertyEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
+     * @return
+     */
+    protected boolean isEditing()
+    {
+        return m_isEditing;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    public IRulesEditingData getData()
+    {
+        return m_currentData;
+    }
+
+    /**
+     *******************************************************************************
+     *
      * @param data
      */
     public void setData(IRulesEditingData data)
     {
-        if (data.isRuleSet())
+        if (data == null)
+        {
+            enableData(false);
+        }
+        else if (data.isRuleSet())
         {
             enableData(false);
         }
@@ -145,9 +376,15 @@ public class RulePropertyEditingPanel extends JPanel
                 enableData(true);
             }
 
-            m_name.setText(data.getName());
-            m_value.setText(data.getPropertyValue());
+            String name = data.getName();
+            String valueType = data.getPropertyValueType();
 
+            m_name.setText(name);
+            m_value.setText(data.getPropertyValue());
+            m_valueType.setSelectedItem(valueType);
+
+            m_originalName = name;
+            m_originalValue = valueType;
             m_currentData = data;
         }
     }
@@ -160,13 +397,20 @@ public class RulePropertyEditingPanel extends JPanel
     {
         if (enable)
         {
+            // Just to be sure the focus listener isn't set.
+            m_name.removeFocusListener(m_focusListener);
+            m_name.addFocusListener(m_focusListener);
             m_name.setEnabled(true);
             m_name.setBackground(Color.white);
             m_value.setEnabled(true);
             m_value.setBackground(Color.white);
+            m_valueType.setEnabled(true);
+            m_valueType.setBackground(Color.white);
         }
         else
         {
+            m_name.removeFocusListener(m_focusListener);
+
             Color background = UIManager.getColor("disabledTextBackground");
 
             m_name.setText("");
@@ -177,10 +421,31 @@ public class RulePropertyEditingPanel extends JPanel
             m_value.setEnabled(false);
             m_value.setBackground(background);
 
+            m_valueType.setSelectedIndex(0);
+            m_valueType.setEnabled(false);
+            m_valueType.setBackground(background);
+
             m_currentData = null;
         }
 
         m_enabled = enable;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    private Window getParentWindow()
+    {
+        Component component = getParent();
+
+        while ((component != null) && ((component instanceof Window) == false))
+        {
+            component = component.getParent();
+        }
+
+        return (Window) component;
     }
 
     /**
@@ -320,12 +585,26 @@ public class RulePropertyEditingPanel extends JPanel
             valueLabelWidth = fontMetrics.stringWidth(m_valueLabel.getText());
             valueLabelHeight = fontMetrics.getHeight();
 
+            // Calculate Value Type Label
+            int valueTypeLabelWidth;
+            int valueTypeLabelHeight;
+
+            font = m_valueTypeLabel.getFont();
+            fontMetrics = m_valueTypeLabel.getFontMetrics(font);
+            valueTypeLabelWidth = fontMetrics.stringWidth(m_valueTypeLabel.getText());
+            valueTypeLabelHeight = fontMetrics.getHeight();
+
             // Calculate first column width.
             int firstColumnWidth = nameLabelWidth;
 
             if (valueLabelWidth > firstColumnWidth)
             {
                 firstColumnWidth = valueLabelWidth;
+            }
+
+            if (valueTypeLabelWidth > firstColumnWidth)
+            {
+                firstColumnWidth = valueTypeLabelWidth;
             }
 
             //
@@ -359,6 +638,16 @@ public class RulePropertyEditingPanel extends JPanel
             valueWidth = insets.left + insets.right;
             valueHeight = fontMetrics.getHeight() + insets.top + insets.bottom;
 
+            // Calculate Value Type Popup Menu
+            int valueTypeWidth;
+            int valueTypeHeight;
+
+            font = m_value.getFont();
+            fontMetrics = m_valueType.getFontMetrics(font);
+            insets = m_valueType.getBorder().getBorderInsets(m_valueType);
+            valueTypeWidth = insets.left + insets.right;
+            valueTypeHeight = 20;
+
             // Calculate second column width.
             int secondColumnWidth = containerSize.width
                                   - containerInsets.left
@@ -369,6 +658,7 @@ public class RulePropertyEditingPanel extends JPanel
             // Calculate Line Heights
             int firstLineHeight = (nameHeight > nameLabelHeight) ? nameHeight : nameLabelHeight;
             int secondLineHeight = (valueHeight > valueLabelHeight) ? valueHeight : valueLabelHeight;
+            int thirdLineHeight = (valueTypeHeight > valueTypeLabelHeight) ? valueTypeHeight : valueTypeLabelHeight;
 
             if (computePanelSize)
             {
@@ -381,6 +671,8 @@ public class RulePropertyEditingPanel extends JPanel
                                 + firstLineHeight
                                 + lineSpacing
                                 + secondLineHeight
+                                + lineSpacing
+                                + thirdLineHeight
                                 + containerInsets.bottom;
 
                 return new Dimension(panelWidth, panelHeight);
@@ -413,7 +705,67 @@ public class RulePropertyEditingPanel extends JPanel
             y = containerInsets.top + firstLineHeight + lineSpacing;
             m_value.setBounds(x, y, secondColumnWidth, valueHeight);
 
+            // Layout Value Type Label
+            x = containerInsets.left;
+            y = containerInsets.top + firstLineHeight + lineSpacing + secondLineHeight + lineSpacing;
+            m_valueTypeLabel.setBounds(x, y, firstColumnWidth, valueTypeLabelHeight);
+
+            // Layout Value Type Popup Menu
+            x = containerInsets.left + firstColumnWidth + columnSpacing;
+            y = containerInsets.top + firstLineHeight + lineSpacing + secondLineHeight + lineSpacing;
+            m_valueType.setBounds(x, y, secondColumnWidth, valueTypeHeight);
+
             return null;
+        }
+    }
+
+    /**
+     ************************************************************************************
+     ************************************************************************************
+     ************************************************************************************
+     */
+     private class PropertyNameFocusListener implements FocusListener
+     {
+
+        /**
+         **************************************************************************
+         *
+         * @param event
+         */
+        public void focusGained(FocusEvent event)
+        {
+        }
+
+        /**
+         **************************************************************************
+         *
+         * @param event
+         */
+        public void focusLost(FocusEvent event)
+        {
+            String propertyName = m_name.getText().trim();
+
+            if (propertyName.length() == 0)
+            {
+                String message = "The property name is missing.";
+                m_name.removeFocusListener(this);
+                MessageDialog.show(getParentWindow(), message);
+                m_name.addFocusListener(this);
+                m_name.requestFocus();
+            }
+            else if (propertyName.equalsIgnoreCase(m_originalName) == false)
+            {
+                if (m_currentData.getSibling(propertyName) != null)
+                {
+                    String template = "Another property already has the name \"{0}\".";
+                    String[] args = {propertyName};
+                    String message = MessageFormat.format(template, args);
+                    m_name.removeFocusListener(this);
+                    MessageDialog.show(getParentWindow(), message);
+                    m_name.addFocusListener(this);
+                    m_name.requestFocus();
+                }
+            }
         }
     }
 }

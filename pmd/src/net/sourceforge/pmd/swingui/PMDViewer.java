@@ -3,6 +3,7 @@ package net.sourceforge.pmd.swingui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
@@ -45,6 +46,7 @@ import javax.swing.JTree;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import javax.swing.MenuElement;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -364,9 +366,21 @@ public class PMDViewer extends JFrame implements JobThreadListener
             if (m_disabledCounter == 0)
             {
                 Component glassPane = getGlassPane();
+                JMenuBar menuBar = getJMenuBar();
+                MenuElement[] menuElements = menuBar.getSubElements();
 
                 glassPane.setVisible(false);
                 glassPane.removeMouseListener(m_glassPaneMouseListener);
+                glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                menuBar.setEnabled(true);
+
+                for (int n = 0; n < menuElements.length; n++)
+                {
+                    if (menuElements[n] instanceof JMenu)
+                    {
+                        ((JMenu) menuElements[n]).setEnabled(true);
+                    }
+                }
             }
         }
         else
@@ -374,9 +388,21 @@ public class PMDViewer extends JFrame implements JobThreadListener
             if (m_disabledCounter == 0)
             {
                 Component glassPane = getGlassPane();
+                JMenuBar menuBar = getJMenuBar();
+                MenuElement[] menuElements = menuBar.getSubElements();
 
                 glassPane.setVisible(true);
                 glassPane.addMouseListener(m_glassPaneMouseListener);
+                glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                menuBar.setEnabled(false);
+
+                for (int n = 0; n < menuElements.length; n++)
+                {
+                    if (menuElements[n] instanceof JMenu)
+                    {
+                        ((JMenu) menuElements[n]).setEnabled(false);
+                    }
+                }
             }
 
             m_disabledCounter++;

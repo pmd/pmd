@@ -13,6 +13,8 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Window;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -57,6 +59,7 @@ public class RuleEditingPanel extends JPanel
     private IRulesEditingData m_currentData;
     private boolean m_isEditing;
     private String m_originalName;
+    private FocusListener m_focusListener = new RuleNameFocusListener();
 
     /**
      *******************************************************************************
@@ -84,17 +87,22 @@ public class RuleEditingPanel extends JPanel
         m_nameLabel = new JLabel("Name");
         m_nameLabel.setFont(UIManager.getFont("labelFont"));
         m_nameLabel.setHorizontalAlignment(JLabel.RIGHT);
+        m_nameLabel.setOpaque(true);
         panel.add(m_nameLabel);
 
         // Rule Name Text
         m_name = new JTextField();
         m_name.setFont(UIManager.getFont("dataFont"));
+        m_name.addFocusListener(m_focusListener);
+        m_name.setRequestFocusEnabled(true);
+        m_name.setOpaque(true);
         panel.add(m_name);
 
         // Rule Class Name Label
         m_classNameLabel = new JLabel("Class Name");
         m_classNameLabel.setFont(UIManager.getFont("labelFont"));
         m_classNameLabel.setHorizontalAlignment(JLabel.RIGHT);
+        m_classNameLabel.setOpaque(true);
         panel.add(m_classNameLabel);
 
         // Rule Class Name Text
@@ -103,14 +111,17 @@ public class RuleEditingPanel extends JPanel
         m_className.setBackground(UIManager.getColor("disabledTextBackground"));
         m_className.setForeground(Color.black);
         m_className.setSelectedTextColor(Color.black);
+        m_className.setDisabledTextColor(Color.black);
         m_className.setEditable(false);
         m_className.setEnabled(false);
+        m_className.setOpaque(true);
         panel.add(m_className);
 
         // Rule Message Label
         m_messageLabel = new JLabel("Message");
         m_messageLabel.setFont(UIManager.getFont("labelFont"));
         m_messageLabel.setHorizontalAlignment(JLabel.RIGHT);
+        m_messageLabel.setOpaque(true);
         panel.add(m_messageLabel);
 
         // Rule Message Text
@@ -168,19 +179,60 @@ public class RuleEditingPanel extends JPanel
     {
         if (m_isEditing && (m_currentData != null))
         {
-            m_currentData.setName(m_name.getText());
+            String ruleName = m_name.getText();
+
+            if (ruleName.length() == 0)
+            {
+                String message = "The rule name is missing.  The change will not be applied.";
+                boolean hasFocus = m_name.hasFocus();
+
+                m_name.removeFocusListener(m_focusListener);
+                MessageDialog.show(getParentWindow(), message);
+                m_name.addFocusListener(m_focusListener);
+
+                if (hasFocus)
+                {
+                    m_name.requestFocus();
+                }
+
+                ruleName = m_originalName;
+            }
+            else if (ruleName.equalsIgnoreCase(m_originalName) == false)
+            {
+                if (m_currentData.getSibling(ruleName) != null)
+                {
+                    String template = "Another rule already has the name \"{0}\".  The change will not be applied.";
+                    String[] args = {ruleName};
+                    String message = MessageFormat.format(template, args);
+                    boolean hasFocus = m_name.hasFocus();
+
+                    m_name.removeFocusListener(m_focusListener);
+                    MessageDialog.show(getParentWindow(), message);
+                    m_name.addFocusListener(m_focusListener);
+
+                    if (hasFocus)
+                    {
+                        m_name.requestFocus();
+                    }
+
+                    ruleName = m_originalName;
+                }
+            }
+
+            m_currentData.setName(ruleName);
             m_currentData.setClassName(m_className.getText());
             m_currentData.setMessage(m_message.getText());
             m_currentData.setDescription(m_description.getText());
             m_currentData.setExample(m_example.getText());
             m_currentData.setInclude(m_include.isSelected());
+            enableData(false);
         }
     }
 
     /**
      *******************************************************************************
      *
-     * @param data
+     * @param isEditing
      */
     protected void setIsEditing(boolean isEditing)
     {
@@ -190,11 +242,35 @@ public class RuleEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
+     * @return
+     */
+    protected boolean isEditing()
+    {
+        return m_isEditing;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    public IRulesEditingData getData()
+    {
+        return m_currentData;
+    }
+
+    /**
+     *******************************************************************************
+     *
      * @param data
      */
     public void setData(IRulesEditingData data)
     {
-        if (data.isRuleSet())
+        if (data == null)
+        {
+            enableData(false);
+        }
+        else if (data.isRuleSet())
         {
             enableData(false);
         }
@@ -245,6 +321,9 @@ public class RuleEditingPanel extends JPanel
     {
         if (enable)
         {
+            // Just to be sure the focus listener isn't already set.
+            m_name.removeFocusListener(m_focusListener);
+            m_name.addFocusListener(m_focusListener);
             m_name.setEnabled(true);
             m_name.setBackground(Color.white);
             m_message.setEnabled(true);
@@ -257,6 +336,8 @@ public class RuleEditingPanel extends JPanel
         }
         else
         {
+            m_name.removeFocusListener(m_focusListener);
+
             Color background = UIManager.getColor("disabledTextBackground");
 
             m_name.setText("");
@@ -711,7 +792,7 @@ public class RuleEditingPanel extends JPanel
      ************************************************************************************
      */
 
-     private class RuleSetNameFocusListener implements FocusListener
+     private class RuleNameFocusListener implements FocusListener
      {
 
         /**
@@ -735,7 +816,9 @@ public class RuleEditingPanel extends JPanel
             if (ruleName.length() == 0)
             {
                 String message = "The rule name is missing.";
+                m_name.removeFocusListener(this);
                 MessageDialog.show(getParentWindow(), message);
+                m_name.addFocusListener(this);
                 m_name.requestFocus();
             }
             else if (ruleName.equalsIgnoreCase(m_originalName) == false)
@@ -745,7 +828,9 @@ public class RuleEditingPanel extends JPanel
                     String template = "Another rule already has the name \"{0}\".";
                     String[] args = {ruleName};
                     String message = MessageFormat.format(template, args);
+                    m_name.removeFocusListener(this);
                     MessageDialog.show(getParentWindow(), message);
+                    m_name.addFocusListener(this);
                     m_name.requestFocus();
                 }
             }

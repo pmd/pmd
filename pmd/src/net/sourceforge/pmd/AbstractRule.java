@@ -10,7 +10,8 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
 import java.util.List;
 import java.util.Iterator;
-import java.util.Properties;
+import java.util.Map;
+import java.io.File;
 
 public abstract class AbstractRule
     extends JavaParserVisitorAdapter
@@ -18,7 +19,7 @@ public abstract class AbstractRule
 {
 
     private String name = getClass().getName();
-    private Properties properties = new Properties();
+    private RuleProperties properties = new RuleProperties();
     private String message;
     private String description;
     private String example;
@@ -44,24 +45,24 @@ public abstract class AbstractRule
         return properties.containsKey( name );
     }
 
-    public void addProperty(String name, String value) {
-        properties.put(name, value);
+    public void addProperty(String name, String property) {
+        properties.setProperty(name, property);
     }
 
     public double getDoubleProperty(String name) {
-        return Double.parseDouble(properties.getProperty(name));
+        return properties.getDoubleValue(name);
     }
 
     public int getIntProperty(String name) {
-        return Integer.parseInt(properties.getProperty(name));
+        return properties.getIntegerValue(name);
     }
 
     public boolean getBooleanProperty(String name) {
-        return Boolean.valueOf(properties.getProperty(name)).booleanValue();
+        return properties.getBooleanValue(name);
     }
 
     public String getStringProperty(String name) {
-        return properties.getProperty(name);
+        return properties.getValue(name);
     }
 
     public String getName() {
@@ -115,7 +116,7 @@ public abstract class AbstractRule
      *
      * @return An enumeration of property names
      */
-    public Properties getProperties()
+    public RuleProperties getProperties()
     {
         return properties;
     }

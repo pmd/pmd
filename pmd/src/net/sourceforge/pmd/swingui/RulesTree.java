@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Point;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.EventObject;
 
@@ -24,6 +26,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.UIManager;
 
+import net.sourceforge.pmd.RuleSet;
+
+
 /**
  *
  * @author Donald A. Leckie
@@ -33,13 +38,18 @@ import javax.swing.UIManager;
 class RulesTree extends JTree
 {
 
+    private RulesEditor m_rulesEditor;
+
     /**
      ***************************************************************************
      *
+     * @param rulesEditor
      */
-    protected RulesTree()
+    protected RulesTree(RulesEditor rulesEditor)
     {
         super(new DefaultTreeModel(RulesTreeNode.createRootNode()));
+
+        m_rulesEditor = rulesEditor;
 
         setRootVisible(true);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
@@ -74,6 +84,92 @@ class RulesTree extends JTree
     }
 
     /**
+     ***************************************************************************
+     *
+     * @param event
+     */
+    protected void sortChildren(RulesTreeNode parentNode)
+    {
+        if (parentNode != null)
+        {
+            int childCount = parentNode.getChildCount();
+            RulesTreeNode[] treeNodes = new RulesTreeNode[childCount];
+            boolean needToSort = false;
+
+            for (int n = 0; n < childCount; n++)
+            {
+                treeNodes[n] = (RulesTreeNode) parentNode.getChildAt(n);
+
+                if ((n > 0) && (needToSort == false))
+                {
+                    String previousNodeName = treeNodes[n - 1].getName();
+                    String currentNodeName = treeNodes[n].getName();
+
+                    if (currentNodeName.compareToIgnoreCase(previousNodeName) < 0)
+                    {
+                        needToSort = true;
+                    }
+                }
+            }
+
+            if (needToSort)
+            {
+                Arrays.sort(treeNodes, new SortComparator());
+                parentNode.removeAllChildren();
+
+                for (int n = 0; n < treeNodes.length; n++)
+                {
+                    parentNode.add(treeNodes[n]);
+                }
+
+                ((DefaultTreeModel) getModel()).reload(parentNode);
+            }
+
+            for (int n = 0; n < treeNodes.length; n++)
+            {
+                treeNodes[n] = null;
+            }
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class SortComparator implements Comparator
+    {
+
+        /**
+         ***************************************************************************
+         *
+         * @param object1
+         * @param object2
+         *
+         * @return
+         */
+        public int compare(Object object1, Object object2)
+        {
+            String name1 = ((RulesTreeNode) object1).getName();
+            String name2 = ((RulesTreeNode) object2).getName();
+
+            return name1.compareToIgnoreCase(name2);
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @param object
+         *
+         * @return
+         */
+        public boolean equals(Object object)
+        {
+            return object == this;
+        }
+    }
+
+    /**
      *******************************************************************************
      *******************************************************************************
      *******************************************************************************
@@ -81,7 +177,9 @@ class RulesTree extends JTree
     private class RulesTreeMouseListener extends MouseAdapter
     {
 
+        private JMenuItem m_addRuleSetMenuItem;
         private JMenuItem m_deleteRuleSetMenuItem;
+        private JMenuItem m_addRuleMenuItem;
         private JMenuItem m_deleteRuleMenuItem;
         private JMenuItem m_addPropertyMenuItem;
         private JMenuItem m_deletePropertyMenuItem;
@@ -95,8 +193,15 @@ class RulesTree extends JTree
         {
             if (event.isPopupTrigger())
             {
-                RulesTreeNode treeNode = RulesTree.this.getSelectedNode();
-                JPopupMenu popupMenu = null;
+                Point location;
+                TreePath treePath;
+                RulesTreeNode treeNode;
+                JPopupMenu popupMenu;
+
+                location = event.getPoint();
+                treePath = RulesTree.this.getPathForLocation(location.x, location.y);
+                treeNode = (RulesTreeNode) treePath.getLastPathComponent();
+                popupMenu = null;
 
                 if (treeNode.isRoot())
                 {
@@ -110,10 +215,13 @@ class RulesTree extends JTree
                 {
                     popupMenu = createRulePopupMenu();
                 }
+                else if (treeNode.isProperty())
+                {
+                    popupMenu = createPropertyPopupMenu();
+                }
 
                 if (popupMenu != null)
                 {
-                    Point location = event.getPoint();
                     popupMenu.show(RulesTree.this, location.x, location.y);
                 }
             }
@@ -128,7 +236,9 @@ class RulesTree extends JTree
         {
             JPopupMenu popupMenu = createPopupMenu();
 
+            m_addRuleSetMenuItem.setEnabled(true);
             m_deleteRuleSetMenuItem.setEnabled(false);
+            m_addRuleMenuItem.setEnabled(false);
             m_deleteRuleMenuItem.setEnabled(false);
             m_addPropertyMenuItem.setEnabled(false);
             m_deletePropertyMenuItem.setEnabled(false);
@@ -145,7 +255,9 @@ class RulesTree extends JTree
         {
             JPopupMenu popupMenu = createPopupMenu();
 
+            m_addRuleSetMenuItem.setEnabled(false);
             m_deleteRuleSetMenuItem.setEnabled(true);
+            m_addRuleMenuItem.setEnabled(true);
             m_deleteRuleMenuItem.setEnabled(false);
             m_addPropertyMenuItem.setEnabled(false);
             m_deletePropertyMenuItem.setEnabled(false);
@@ -162,7 +274,9 @@ class RulesTree extends JTree
         {
             JPopupMenu popupMenu = createPopupMenu();
 
+            m_addRuleSetMenuItem.setEnabled(false);
             m_deleteRuleSetMenuItem.setEnabled(false);
+            m_addRuleMenuItem.setEnabled(false);
             m_deleteRuleMenuItem.setEnabled(true);
             m_addPropertyMenuItem.setEnabled(true);
             m_deletePropertyMenuItem.setEnabled(false);
@@ -179,9 +293,11 @@ class RulesTree extends JTree
         {
             JPopupMenu popupMenu = createPopupMenu();
 
+            m_addRuleSetMenuItem.setEnabled(false);
             m_deleteRuleSetMenuItem.setEnabled(false);
+            m_addRuleMenuItem.setEnabled(false);
             m_deleteRuleMenuItem.setEnabled(false);
-            m_addPropertyMenuItem.setEnabled(true);
+            m_addPropertyMenuItem.setEnabled(false);
             m_deletePropertyMenuItem.setEnabled(true);
 
             return popupMenu;
@@ -196,11 +312,19 @@ class RulesTree extends JTree
         {
             JPopupMenu popupMenu = new JPopupMenu();
 
+            m_addRuleSetMenuItem = new JMenuItem("Add Rule Set");
+            m_addRuleSetMenuItem.addActionListener(new AddRuleSetActionListener());
+            popupMenu.add(m_addRuleSetMenuItem);
+
             m_deleteRuleSetMenuItem = new JMenuItem("Delete Rule Set");
             m_deleteRuleSetMenuItem.addActionListener(new DeleteRuleSetActionListener());
             popupMenu.add(m_deleteRuleSetMenuItem);
 
             popupMenu.add(new JSeparator());
+
+            m_addRuleMenuItem = new JMenuItem("Add Rule");
+            m_addRuleMenuItem.addActionListener(new AddRuleActionListener());
+            popupMenu.add(m_addRuleMenuItem);
 
             m_deleteRuleMenuItem = new JMenuItem("Delete Rule");
             m_deleteRuleMenuItem.addActionListener(new DeleteRuleActionListener());
@@ -225,7 +349,33 @@ class RulesTree extends JTree
      *******************************************************************************
      *******************************************************************************
      */
+    private class AddRuleSetActionListener implements ActionListener
+    {
+
+        public void actionPerformed(ActionEvent event)
+        {
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
     private class DeleteRuleSetActionListener implements ActionListener
+    {
+
+        public void actionPerformed(ActionEvent event)
+        {
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *******************************************************************************
+     *******************************************************************************
+     */
+    private class AddRuleActionListener implements ActionListener
     {
 
         public void actionPerformed(ActionEvent event)

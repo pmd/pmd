@@ -82,7 +82,17 @@ public class RuleAllEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
-     * @param data
+     * @return
+     */
+    protected boolean isEditing()
+    {
+        return m_isEditing;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param isEditing
      */
     protected void setIsEditing(boolean isEditing)
     {
@@ -90,6 +100,48 @@ public class RuleAllEditingPanel extends JPanel
         m_ruleSetPanel.setIsEditing(isEditing);
         m_rulePanel.setIsEditing(isEditing);
         m_rulePropertyPanel.setIsEditing(isEditing);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    public IRulesEditingData[] getData()
+    {
+        IRulesEditingData ruleSetData;
+        IRulesEditingData ruleData;
+        IRulesEditingData propertyData;
+        IRulesEditingData[] data;
+
+        ruleSetData = m_ruleSetPanel.getData();
+        ruleData = m_rulePanel.getData();
+        propertyData = m_rulePropertyPanel.getData();
+
+        if (propertyData != null)
+        {
+            data = new IRulesEditingData[3];
+            data[0] = ruleSetData;
+            data[1] = ruleData;
+            data[2] = propertyData;
+        }
+        else if (ruleData != null)
+        {
+            data = new IRulesEditingData[2];
+            data[0] = ruleSetData;
+            data[1] = ruleData;
+        }
+        else if (ruleSetData != null)
+        {
+            data = new IRulesEditingData[1];
+            data[0] = ruleSetData;
+        }
+        else
+        {
+            data = new IRulesEditingData[0];
+        }
+
+        return data;
     }
 
     /**

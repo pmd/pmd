@@ -30,6 +30,7 @@ import javax.swing.UIManager;
 import net.sourceforge.pmd.PMDDirectory;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleProperties;
 import net.sourceforge.pmd.RuleSet;
 
 /**
@@ -106,7 +107,7 @@ class RulesEditor extends JDialog
         RulesTreeNode rootNode;
 
         ruleSets = loadRuleSets();
-        m_tree = new RulesTree();
+        m_tree = new RulesTree(this);
         rootNode = (RulesTreeNode) m_tree.getModel().getRoot();
 
         for (int n1 = 0; n1 < ruleSets.length; n1++)
@@ -179,7 +180,7 @@ class RulesEditor extends JDialog
     private void loadProperties(RulesTreeNode ruleNode)
     {
         Rule rule;
-        Properties properties;
+        RuleProperties properties;
         String[] propertyNames;
         Enumeration keys;
         int index;
@@ -202,11 +203,13 @@ class RulesEditor extends JDialog
         {
             String propertyName;
             String propertyValue;
+            String propertyValueType;
             RulesTreeNode propertyNode;
 
             propertyName = propertyNames[n];
-            propertyValue = (String) properties.getProperty(propertyName);
-            propertyNode = new RulesTreeNode(ruleNode, propertyName, propertyValue);
+            propertyValue = properties.getValue(propertyName);
+            propertyValueType = properties.getValueType(propertyName);
+            propertyNode = new RulesTreeNode(ruleNode, propertyName, propertyValue, propertyValueType);
 
             ruleNode.add(propertyNode);
 
@@ -268,6 +271,16 @@ class RulesEditor extends JDialog
     protected PMDViewer getPMDViewer()
     {
         return m_pmdViewer;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @return
+     */
+    protected RuleEditingTabbedPane getEditingTabbedPane()
+    {
+        return m_editingTabbedPane;
     }
 
 
@@ -435,24 +448,5 @@ class RulesEditor extends JDialog
         {
             RulesEditor.this.setVisible(false);
         }
-    }
-
-    /**
-     *******************************************************************************
-     *******************************************************************************
-     *******************************************************************************
-     */
-    private class TreeNodeMenuPopup extends JPopupMenu
-    {
-        // Add rule set
-        // Remove rule set
-        // Activate Rule Set
-        // Deactivate Rule Set
-        // Add rule
-        // Activate Rule
-        // Deactivate Rule
-        // Remove Rule
-        // Add property
-        // Remove property
     }
 }

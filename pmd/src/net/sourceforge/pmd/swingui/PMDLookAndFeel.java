@@ -195,7 +195,11 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
         try
         {
             InputStream inputStream = getClass().getResourceAsStream("pmdViewer.properties");
-            properties.load(inputStream);
+
+            if (inputStream != null)
+            {
+                properties.load(inputStream);
+            }
         }
         catch (IOException exception)
         {

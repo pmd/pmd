@@ -23,6 +23,7 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
     private String m_description;
     private String m_example;
     private String m_propertyValue;
+    private String m_propertyValueType;
     private byte m_flags;
 
     // Constant
@@ -124,12 +125,16 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
      *
      * @param name
      */
-    protected RulesTreeNode(RulesTreeNode ruleNode, String propertyName, String propertyValue)
+    protected RulesTreeNode(RulesTreeNode ruleNode,
+                            String propertyName,
+                            String propertyValue,
+                            String propertyValueType)
     {
         super();
 
         m_name = trim(propertyName);
         m_propertyValue = trim(propertyValue);
+        m_propertyValueType = trim(propertyValueType);
         m_flags |= IS_PROPERTY;
         m_rule = ruleNode.getRule();
         m_ruleSet = ((RulesTreeNode) ruleNode.getParent()).getRuleSet();
@@ -254,6 +259,16 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
     public String getPropertyValue()
     {
         return m_propertyValue;
+    }
+
+    /**
+     ***************************************************************************
+     *
+     * @return
+     */
+    public String getPropertyValueType()
+    {
+        return m_propertyValueType;
     }
 
     /**
@@ -422,6 +437,16 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
      *
      * @param newName
      */
+    public void setPropertyValueType(String newValue)
+    {
+        m_propertyValueType = trim(newValue);
+    }
+
+    /**
+     **************************************************************************
+     *
+     * @param newName
+     */
     public void setInclude(boolean include)
     {
         if (include)
@@ -466,7 +491,8 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
         }
         else if (isProperty())
         {
-            m_rule.addProperty(m_name, m_propertyValue);
+            m_rule.getProperties().setValue(m_name, m_propertyValue);
+            m_rule.getProperties().setValueType(m_name, m_propertyValueType);
         }
     }
 
