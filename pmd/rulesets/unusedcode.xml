@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="basic">
+<ruleset name="unusedcode">
   <description>
 The Unused Code Ruleset contains a collection of rules that find unused code.
   </description>

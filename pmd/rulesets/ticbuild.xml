@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+
+<ruleset name="ticbuild">
+  <description>
+  These are rules which apply to the build at https://cvs.ultralog.net
+  </description>
+
+  <rule name="EmptyCatchBlock"
+        message="Avoid empty catch blocks"
+        class="net.sourceforge.pmd.rules.EmptyCatchBlockRule">
+    <description>
+Empty Catch Block, will find instances where an exception is caught,
+but nothing is done.  In most circumstances, this swallows an exception
+which should either be acted on or reported.
+    </description>
+
+    <example>
+<![CDATA[
+  public void doSomething() {
+    try {
+      FileInputStream fis = new FileInputStream("/tmp/bugger");
+    } catch (IOException ioe) { }
+  }
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyIfStmt"
+        message="Avoid empty 'if' statements"
+        class="net.sourceforge.pmd.rules.EmptyIfStmtRule">
+    <description>
+Empty If Statement, will find instances where a condition is checked,
+but nothing is done about it.
+    </description>
+    <example>
+<![CDATA[
+  if (absValue < 1) {
+     // Do Nothing
+  }
+]]>
+     </example>
+  </rule>
+
+  <rule name="EmptyWhileStmt"
+        message="Avoid empty 'while' statements"
+        class="net.sourceforge.pmd.rules.EmptyWhileStmtRule">
+     <description>
+Empty While Statement, will find all instances where a while statement
+does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
+it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+     </description>
+
+     <example>
+<![CDATA[
+while (a == b) {
+  // Do Nothing.
+}
+]]>
+     </example>
+  </rule>
+
+  <rule name="IfElseStmtsMustUseBracesRule"
+        message="Avoid using 'if...else' statements without curly braces"
+        class="net.sourceforge.pmd.rules.IfElseStmtsMustUseBracesRule">
+    <description>
+    Avoid using if..else statements without using curly braces
+    </description>
+
+    <example>
+<![CDATA[
+  public void doSomething() {
+    if (foo)
+        x=x+1;
+    else
+        x=x-1;
+  }
+]]>
+    </example>
+  </rule>
+
+  <rule name="UnnecessaryConversionTemporaryRule"
+        message="Avoid unnecessary temporaries when converting primitives to Strings"
+        class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporaryRule">
+    <description>
+    Avoid unnecessary temporaries when converting primitives to Strings
+    </description>
+
+    <example>
+<![CDATA[
+  public String convert(int x) {
+    return new Integer(x).toString();
+  }
+]]>
+    </example>
+  </rule>
+
+
+  <rule name="UseSingletonRule"
+        message="All methods are static.  Consider using Singleton instead."
+        class="net.sourceforge.pmd.rules.design.UseSingletonRule">
+    <description>
+    If you have a class that has nothing but static methods, consider making it a Singleton
+    </description>
+
+    <example>
+<![CDATA[
+public class MaybeASingleton {
+    public static void foo() {
+     // etc
+    }
+    public static void bar() {
+     // etc
+    }
+}
+]]>
+    </example>
+  </rule>
+</ruleset>
+
+
+

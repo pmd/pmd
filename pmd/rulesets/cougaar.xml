@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="basic">
+<ruleset name="cougaar">
   <description>
   These rules are specific to Cougaar
   </description>
