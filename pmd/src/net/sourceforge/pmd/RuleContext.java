@@ -10,7 +10,7 @@ import net.sourceforge.pmd.reports.Report;
 public class RuleContext {
 
     private Report report;
-    private String filename;
+    private String sourceCodeFilename;
 
     public Report getReport() {
         return report;
@@ -20,12 +20,12 @@ public class RuleContext {
         this.report = report;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getSourceCodeFilename() {
+        return sourceCodeFilename;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setSourceCodeFilename(String filename) {
+        this.sourceCodeFilename = filename;
     }
 
 

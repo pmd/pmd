@@ -57,11 +57,11 @@ public abstract class AbstractRule
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber) {
-        return new RuleViolation(this, lineNumber, ctx.getFilename());
+        return new RuleViolation(this, lineNumber, ctx.getSourceCodeFilename());
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, String specificDescription) {
-        return new RuleViolation(this, lineNumber, specificDescription, ctx.getFilename());
+        return new RuleViolation(this, lineNumber, specificDescription, ctx.getSourceCodeFilename());
     }
 
 }

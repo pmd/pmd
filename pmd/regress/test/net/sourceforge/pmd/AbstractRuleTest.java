@@ -25,7 +25,7 @@ public class AbstractRuleTest extends TestCase {
     public void testCreateRV() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
-        ctx.setFilename("filename");
+        ctx.setSourceCodeFilename("filename");
         RuleViolation rv = r.createRuleViolation(ctx, 5);
         assertEquals(5, rv.getLine());
         assertEquals("filename", rv.getFilename());
@@ -36,7 +36,7 @@ public class AbstractRuleTest extends TestCase {
     public void testCreateRV2() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
-        ctx.setFilename("filename");
+        ctx.setSourceCodeFilename("filename");
         RuleViolation rv = r.createRuleViolation(ctx, 5, "specificdescription");
         assertEquals(5, rv.getLine());
         assertEquals("filename", rv.getFilename());

@@ -27,8 +27,8 @@ public class RuleContextTest extends TestCase {
 
     public void testFilename() {
         RuleContext ctx = new RuleContext();
-        assertNull(ctx.getFilename());
-        ctx.setFilename("foo");
-        assertEquals("foo", ctx.getFilename());
+        assertNull(ctx.getSourceCodeFilename());
+        ctx.setSourceCodeFilename("foo");
+        assertEquals("foo", ctx.getSourceCodeFilename());
     }
 }

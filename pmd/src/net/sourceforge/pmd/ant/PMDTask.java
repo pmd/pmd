@@ -69,7 +69,7 @@ public class PMDTask extends Task {
                 try {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                     if (verbose) System.out.println(file.getAbsoluteFile());
-                    ctx.setFilename(file.getAbsolutePath());
+                    ctx.setSourceCodeFilename(file.getAbsolutePath());
                     pmd.processFile(file, ruleSetFile, ctx);
                 } catch (FileNotFoundException fnfe) {
                     throw new BuildException(fnfe);

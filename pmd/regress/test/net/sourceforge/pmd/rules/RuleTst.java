@@ -37,7 +37,10 @@ public class RuleTst
         ReportFactory rf = new ReportFactory();
         Report report = rf.createReport("xml");
         ctx.setReport(report);
-        p.processFile(fileName, getClass().getClassLoader().getResourceAsStream(fileName), rule, ctx);
+        ctx.setSourceCodeFilename(fileName);
+        RuleSet rules = new RuleSet();
+        rules.addRule(rule);
+        p.processFile(getClass().getClassLoader().getResourceAsStream(fileName), rules, ctx);
         return ctx.getReport();
     }
 }
