@@ -190,31 +190,28 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     </ul>
         <p>The whole ruleset file should look something like this:</p>
         <source>
-        <![CDATA[
-        <?xml version="1.0"?>
-            <rule name="WhileLoopsMustUseBracesRule"
+
+        &lt;?xml version="1.0"?>
+            &lt;rule name="WhileLoopsMustUseBracesRule"
                   message="Avoid using 'while' statements without curly braces"
                   class="net.sourceforge.pmd.rules.XPathRule">
-              <description>
+              &lt;description>
               Avoid using 'while' statements without using curly braces
-              </description>
-                <priority>3</priority>
+              &lt;/description>
+                &lt;priority>3&lt;/priority>
 
-              <example>
-
+              &lt;example>
+        &lt;![CDATA[
             public void doSomething() {
               while (true)
                   x++;
             }
+        ]]&gt;
+              &lt;/example>
+            &lt;/rule>
+        &lt;/ruleset>
 
-              </example>
-            </rule>
-        </ruleset>
-        ]]>
         </source>
-        <p>OK, well, it won't look exactly like that - you'll need to wrap
-        the example in a CDATA tag.  But I couldn't figure out how to do that without Maven getting confused.
-            If you know how to do this, please let me know.</p>
     </subsection>
 
     <subsection name="Run PMD using your new ruleset">
