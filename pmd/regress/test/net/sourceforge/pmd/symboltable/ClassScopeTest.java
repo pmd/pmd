@@ -6,7 +6,6 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.Scope;
 
 public class ClassScopeTest extends TestCase {
 
@@ -41,6 +40,7 @@ public class ClassScopeTest extends TestCase {
         assertEquals("Foo", s.getClassName());
     }
 
+    // FIXME - these will break when this goes from Anonymous$1 to Foo$1
     public void testAnonymousInnerClassName() {
         ClassScope s = new ClassScope();
         assertEquals("Anonymous$1", s.getClassName());

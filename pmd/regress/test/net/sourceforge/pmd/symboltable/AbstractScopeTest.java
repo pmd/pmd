@@ -4,11 +4,11 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.AbstractScope;
+import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.ClassScope;
 
 import java.util.Iterator;
 

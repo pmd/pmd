@@ -1,6 +1,9 @@
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTClassBody;
+import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTForStatement;
@@ -10,11 +13,7 @@ import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
-import net.sourceforge.pmd.ast.ASTClassBody;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
 
 import java.util.HashSet;
 import java.util.Set;

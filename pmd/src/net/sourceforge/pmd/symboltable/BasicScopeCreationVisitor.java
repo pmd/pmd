@@ -1,8 +1,6 @@
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTClassBody;
 import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
@@ -15,9 +13,6 @@ import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.Node;
-
-import java.util.Stack;
 
 /**
  * Serves as a sort of adaptor between the AST nodes and the symbol table scopes
