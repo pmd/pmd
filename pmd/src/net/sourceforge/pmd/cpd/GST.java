@@ -32,7 +32,7 @@ public class GST {
             for (Iterator i = occ.getTiles(); i.hasNext();) {
                 Tile tile = (Tile)i.next();
                 if (tile.getTokenCount() >= minimumTileSize) {
-                    for (Iterator j = occ.getTokens(tile); j.hasNext();) {
+                    for (Iterator j = occ.getOccurrences(tile); j.hasNext();) {
                         results.addTile(tile, (Token)j.next());
                         results.consolidate();
                     }
@@ -53,7 +53,7 @@ public class GST {
     }
 
     private void expandTile(Occurrences oldOcc, Occurrences newOcc, Tile tile) {
-        for (Iterator i = oldOcc.getTokens(tile); i.hasNext();) {
+        for (Iterator i = oldOcc.getOccurrences(tile); i.hasNext();) {
             Token tok = (Token)i.next();
             TokenList tokenSet = tokenSets.getTokenSet(tok);
             if (tokenSet.hasTokenAfter(tile, tok)) {

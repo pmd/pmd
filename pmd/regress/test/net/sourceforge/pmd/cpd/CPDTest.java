@@ -51,6 +51,19 @@ public class CPDTest extends TestCase{
         }
     }
 
+    public void testBasic3() throws Throwable {
+        CPD cpd = new CPD();
+        cpd.add("1", "helloworld");
+        cpd.add("2", "hellothere");
+        cpd.add("3", "elloworld");
+        cpd.go(4);
+        Results results = cpd.getResults();
+        Tile tile = new Tile(getHelloTokens());
+        for (Iterator i = results.getOccurrences(tile); i.hasNext();) {
+            Token tok = (Token)i.next();
+        }
+    }
+
     private List getHelloTokens() {
         List tokens = new ArrayList();
         Token tok = new Token('h', 0, "1");

@@ -97,6 +97,30 @@ public class CPD {
                 System.out.println(j.next());
             }
         }
+
+/*
+        try {
+        CPD cpd = new CPD();
+        cpd.add("1", "helloworld");
+        cpd.add("2", "hellothere");
+        cpd.add("3", "elloworld");
+        cpd.add("4", "ahelloworld");
+        cpd.go(4);
+        Results results = cpd.getResults();
+        for (Iterator i = results.getTiles(); i.hasNext();) {
+            Tile tile = (Tile)i.next();
+            System.out.println("NEW TILE");
+
+            for (Iterator j = results.getOccurrences(tile); j.hasNext();) {
+                j.next();
+                System.out.println(tile.getImage());
+            }
+        }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+*/
     }
 
     private static List findFilesRecursively(String dir) {
@@ -118,5 +142,20 @@ public class CPD {
         }
      }
    }
+
+    private static List getHelloTokens() {
+        List tokens = new ArrayList();
+        Token tok = new Token('h', 0, "1");
+        tokens.add(tok);
+        Token tok1 = new Token('e', 1, "1");
+        tokens.add(tok1);
+        Token tok3 = new Token('l', 2, "1");
+        tokens.add(tok3);
+        Token tok4 = new Token('l', 3, "1");
+        tokens.add(tok4);
+        Token tok5 = new Token('o', 4, "1");
+        tokens.add(tok5);
+        return tokens;
+    }
 
 }
