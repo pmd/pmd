@@ -17,8 +17,4 @@ public class Locator {
     public int getTokenIndex() {
         return this.tokenIndex;
     }
-
-    public String toString() {
-        return file + ":" + tokenIndex;
-    }
 }

@@ -22,11 +22,12 @@ public class Mark {
         return offset;
     }
 
-    public TokenEntry tokenAt(int i) {
-        if (i < 0) {
-            return (TokenEntry)code.get((code.size() + i + offset) % code.size());
+    public TokenEntry tokenAt(int index) {
+        if (index < 0) {
+            return (TokenEntry)code.get((code.size() + index + offset) % code.size());
         } else {
-            return (TokenEntry)code.get((i + offset) % code.size());
+            return (TokenEntry)code.get((index + offset) % code.size());
         }
     }
+
 }

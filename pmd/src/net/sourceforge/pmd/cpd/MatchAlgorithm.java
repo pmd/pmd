@@ -21,7 +21,7 @@ public class MatchAlgorithm {
         if (!pool.containsKey(token)) {
             pool.put(token, token);
         }
-        code.add(token);
+        code.add(pool.get(token));
         marks.add(new Mark(code, code.size(), locator));
         this.cpdListener = cpdListener;
     }
