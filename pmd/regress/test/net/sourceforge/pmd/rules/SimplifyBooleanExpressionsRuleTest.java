@@ -6,9 +6,10 @@ package test.net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class SimplifyBooleanExpressionsRuleTest extends RuleTst {
+public class SimplifyBooleanExpressionsRuleTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
@@ -16,14 +17,13 @@ public class SimplifyBooleanExpressionsRuleTest extends RuleTst {
         rule = findRule("rulesets/design.xml", "SimplifyBooleanExpressions");
     }
 
-    public void testInFieldAssignment() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-    public void testInMethodBody() throws Throwable {
-        runTestFromString(TEST2, 1, rule);
-    }
-    public void testOK() throws Throwable {
-        runTestFromString(TEST3, 0, rule);
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "in field assignment", 1, rule),
+           new TestDescriptor(TEST2, "in method body", 1, rule),
+           new TestDescriptor(TEST3, "ok", 0, rule),
+           new TestDescriptor(TEST4, "two cases in an && expression", 2, rule),
+       });
     }
 
     private static final String TEST1 =
@@ -42,5 +42,20 @@ public class SimplifyBooleanExpressionsRuleTest extends RuleTst {
     private static final String TEST3 =
     "public class Foo {" + PMD.EOL +
     " boolean bar = true;" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  if (getFoo() == false && " + PMD.EOL +
+    "  isBar() == true) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  if (getFoo() == false && isBar() == true) {}" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 }

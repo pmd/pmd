@@ -11,14 +11,19 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.text.MessageFormat;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class UnusedLocalVariableRule extends AbstractRule {
 
+    private Set visited = new HashSet();
+
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
+        if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration && !visited.contains(node.jjtGetParent().jjtGetParent())) {
+            visited.add(node.jjtGetParent().jjtGetParent());
             Map locals = node.getScope().getVariableDeclarations();
             for (Iterator i = locals.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration decl = (VariableNameDeclaration) i.next();

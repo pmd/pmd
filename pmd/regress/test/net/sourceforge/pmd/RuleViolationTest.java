@@ -81,7 +81,7 @@ public class RuleViolationTest extends TestCase {
         ctx.setSourceCodeFilename("filename");
         RuleViolation r1 = new RuleViolation(rule, 10, "description", ctx);
         RuleViolation r2 = new RuleViolation(rule, 10, "description", ctx);
-        assertEquals(0, comp.compare(r1, r2));
-        assertEquals(0, comp.compare(r2, r1));
+        assertEquals(1, comp.compare(r1, r2));
+        assertEquals(1, comp.compare(r2, r1));
     }
 }

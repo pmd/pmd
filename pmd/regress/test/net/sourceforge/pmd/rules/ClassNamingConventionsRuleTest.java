@@ -21,7 +21,7 @@ public class ClassNamingConventionsRuleTest extends SimpleAggregatorTst {
     "public class foo {};";
 
     private static final String TEST2 =
-    "public class foo_bar {};";
+    "public class Foo_bar {};";
 
     private static final String TEST3 =
     "public class FooBar {};";

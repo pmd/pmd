@@ -26,6 +26,11 @@ public class RuleViolation {
             if (r1.getDescription() != null && r2.getDescription() != null && !r1.getDescription().equals(r2.getDescription())) {
                 return r1.getDescription().compareTo(r2.getDescription());
             }
+
+            if (r1.getLine() == r2.getLine()) {
+                return 1;
+            }
+            
             // line number diff maps nicely to compare()
             return r1.getLine() - r2.getLine();
         }
@@ -61,5 +66,9 @@ public class RuleViolation {
 
     public String getFilename() {
         return filename;
+    }
+
+    public String toString() {
+        return getFilename() + ":" + getRule() + ":" + getDescription() + ":" + getLine();
     }
 }

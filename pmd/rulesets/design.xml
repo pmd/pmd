@@ -66,10 +66,9 @@ public class Foo {
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-//Expression/EqualityExpression
- /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-                  ]]>
+<![CDATA[
+//EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+]]>
               </value>
           </property>
       </properties>
