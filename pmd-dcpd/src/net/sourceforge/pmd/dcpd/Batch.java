@@ -9,7 +9,7 @@ import net.jini.core.entry.Entry;
 
 import java.util.List;
 
-public class Chunk implements Entry {
+public class Batch implements Entry {
 
     // routing information
     public static final Integer DONE = new Integer( 1 );
@@ -21,9 +21,9 @@ public class Chunk implements Entry {
     public Integer jobID;
     public Integer sequenceID;
 
-    public Chunk() {}
+    public Batch() {}
 
-    public Chunk(Integer jobID, List tileWrappers, Integer isDone, Integer sequenceID) {
+    public Batch(Integer jobID, List tileWrappers, Integer isDone, Integer sequenceID) {
         this.jobID = jobID;
         this.tileWrappers = tileWrappers;
         this.isDone = isDone;

@@ -33,8 +33,8 @@ public class TilePlanter {
             TileWrapper tw = new TileWrapper(tile, occ.getOccurrencesList(tile), null, null);
             List wrappers = new ArrayList();
             wrappers.add(tw);
-            Chunk chunk = new Chunk(job.id, wrappers, Chunk.NOT_DONE, new Integer(tilesSoFar));
-            space.write(chunk, null, Lease.FOREVER);
+            Batch batch = new Batch(job.id, wrappers, Batch.NOT_DONE, new Integer(tilesSoFar));
+            space.write(batch, null, Lease.FOREVER);
             //System.out.println("Scattering " + tw.tile.getImage() +  "->" + tw.occurrences.size());
             tilesSoFar++;
             if (tilesSoFar % 100 == 0) {

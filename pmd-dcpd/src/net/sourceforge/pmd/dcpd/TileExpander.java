@@ -28,15 +28,15 @@ public class TileExpander {
     }
 
     public void expandAvailableTiles() throws RemoteException, UnusableEntryException, TransactionException, InterruptedException{
-        Entry twQuery = space.snapshot(new Chunk(tsw.jobID, null, Chunk.NOT_DONE, null));
+        Entry twQuery = space.snapshot(new Batch(tsw.jobID, null, Batch.NOT_DONE, null));
 
-        Chunk chunk = null;
+        Batch batch = null;
         int total = 0;
-        while ((chunk = (Chunk)space.take(twQuery, null, 10)) != null) {
+        while ((batch = (Batch)space.take(twQuery, null, 10)) != null) {
             total++;
             List wrappers = new ArrayList();
-            for (int j=0; j<chunk.tileWrappers.size(); j++) {
-                TileWrapper tileWrapperToExpand = (TileWrapper)chunk.tileWrappers.get(j);
+            for (int j=0; j<batch.tileWrappers.size(); j++) {
+                TileWrapper tileWrapperToExpand = (TileWrapper)batch.tileWrappers.get(j);
                 //System.out.println("Expanding " + tileWrapperToExpand.tile.getImage());
                 Occurrences results = expand(tileWrapperToExpand, j);
                 int expansionIndex = 0;
@@ -48,8 +48,8 @@ public class TileExpander {
                     expansionIndex++;
                 }
             }
-            Chunk chunkToWrite = new Chunk(tsw.jobID, wrappers, Chunk.DONE, chunk.sequenceID);
-            space.write(chunkToWrite, null, Lease.FOREVER);
+            Batch batchToWrite = new Batch(tsw.jobID, wrappers, Batch.DONE, batch.sequenceID);
+            space.write(batchToWrite, null, Lease.FOREVER);
         }
         if (total>0) System.out.println("Expanded " + total + " tiles");
     }
