@@ -35,10 +35,6 @@ public class CPDTask extends Task {
 	private String codeLocation;
 	private String outputFile;
 
-	public CPDTask() {
-		super();
-	}
-
 	/**
 	 * Method actually runs CPD.
 	 * 
