@@ -25,8 +25,7 @@
       <item name="Finding copied and pasted code" href="/cpd.html" />
     </menu>
     <menu name="Demo">
-<!--      <item name="Coming Soon!  Your Project Here" href="/coming-soon.html" />
-      <item name="Latest PMD" href="/demo/pmd.html" /> -->
+      <item name="Run PMD on a Sourceforge project" href="http://pmd.sf.net/cgi-bin/webpmd.pl" /> -->
       <item name="JDK 1.4 (java.text)" href="/demo/jdk-1.4.html" />
     </menu>
     <menu name="Rule Sets">
