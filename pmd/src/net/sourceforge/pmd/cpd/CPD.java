@@ -28,8 +28,15 @@ public class CPD {
         this.listener = listener;
     }
 
+
+    public void add(List files) throws IOException {
+        for (Iterator i = files.iterator(); i.hasNext();) {
+            add((File)i.next());
+        }
+    }
+
     public void add(File file) throws IOException {
-		listener.update("Adding file " + file.getAbsolutePath());
+		listener.addedFile(file);
         Tokenizer t = new JavaTokensTokenizer();
         TokenList ts = new TokenList(file.getAbsolutePath());
         FileReader fr = new FileReader(file);
@@ -77,11 +84,6 @@ public class CPD {
         tokenSets.add(ts);
     }
 
-    public void add(List files) throws IOException {
-        for (Iterator i = files.iterator(); i.hasNext();) {
-            add((File)i.next());
-        }
-    }
 
     public void go() {
 		listener.update("Starting to process " + tokenSets.size() + " files");

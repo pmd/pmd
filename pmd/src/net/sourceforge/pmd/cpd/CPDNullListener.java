@@ -5,6 +5,9 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.io.File;
+
 public class CPDNullListener implements CPDListener{
     public void update(String msg) {}
+    public void addedFile(File file) {}
 }
