@@ -20,7 +20,6 @@ import oracle.ide.model.Project;
 import oracle.ide.panels.Navigable;
 import oracle.jdeveloper.model.JProject;
 import oracle.jdeveloper.model.JavaSourceNode;
-import oracle.jdeveloper.compiler.CompilerPage;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
