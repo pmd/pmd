@@ -2,6 +2,7 @@
 
 <document>
   <properties>
+    <author email="dpeugh@users.sourceforge.net">David Dixon-Peugh</author>
     <author email="tom@infoether.com">Tom Copeland</author>
     <title>Ant Task</title>
   </properties>
@@ -15,7 +16,6 @@
 <table border="1" cellpadding="2" cellspacing="0">
   <tr>
     <td valign="top"><b>Attribute</b></td>
-
     <td valign="top"><b>Description</b></td>
     <td align="center" valign="top"><b>Required</b></td>
   </tr>
@@ -27,18 +27,24 @@
   </tr>
   <tr>
     <td valign="top">verbose</td>
- 	<td valign="top">Verbose output - just the name of each file processed.</td>
-    <td valign="top" align="center">Yes</td>
+ 	<td valign="top">Verbose output - names of files processed, rule counts, etc.</td>
+    <td valign="top" align="center">No</td>
   </tr>
   <tr>
-    <td valign="top">rulesettype</td>
-    <td valign="top">The set of rules to use (all, general, cougaar)</td>
+    <td valign="top">rulesetfiles</td>
+    <td valign="top">A comma delimited list of ruleset files ('rulesets/basic.xml,rulesets/design.xml').  If you write
+    your own ruleset files, they must be on the classpath.</td>
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>
     <td valign="top">format</td>
-    <td valign="top">The report format (xml, text, html)</td>
+    <td valign="top">The report format (xml, html)</td>
     <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">failonerror</td>
+    <td valign="top">Whether on not to fail the build if PMD finds any problems</td>
+    <td valign="top" align="center">No</td>
   </tr>
 </table>
 
@@ -48,7 +54,16 @@
 <![CDATA[
 <target name="pmd">
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
-  <pmd reportFile="C:\foo.xml" verbose="false" rulesettype="general" format="xml">
+  <pmd reportFile="C:\foo.xml" rulesetfiles="rulesets/unusedcode.xml" format="xml">
+    <fileset dir="C:\j2sdk1.4.0\src\">
+      <include name="**/*.java"/>
+    </fileset>
+  </pmd>
+</target>
+
+<target name="pmd">
+  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
+  <pmd reportFile="C:\foo.xml" verbose="false" rulesetfiles="rulesets/design.xml" format="xml" failonerror="no">
     <fileset dir="C:\j2sdk1.4.0\src\">
       <include name="**/*.java"/>
     </fileset>

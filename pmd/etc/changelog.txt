@@ -1,8 +1,10 @@
 July 03 2002 - 0.3:
 Added new rules: UseSingletonRule, ShortVariableRule, LongVariableRule, ShortMethodNameRule
-Removed the 'text' report format.
-Moved rules into RuleSets which are defined in XML files in the ruleset directory.
-Added a 'failonerror' attribute to the Ant task.
+Moved rules into RuleSets which are defined in XML files in the ruleset directory
+Ant task:
+-Added a 'failonerror' attribute
+-Changed 'rulesettype' to 'rulesetfiles'
+-Removed 'text' report format; only 'html' and 'xml' are available now
 
 June 27 2002 - 0.2:
 Added new rules: IfElseStmtsMustUseBracesRule, EmptyWhileStmtRule
