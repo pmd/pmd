@@ -382,7 +382,7 @@ void ClassDeclaration() :
 void UnmodifiedClassDeclaration() :
 { Token t = null; }
 {
-  "class" t=<IDENTIFIER> 
+  "class" t=<IDENTIFIER>
   {
      ((ASTUnmodifiedClassDeclaration) jjtThis).setClassName( t.image );
   }
@@ -842,13 +842,16 @@ void PrimaryExpression() :
 }
 
 void PrimaryPrefix() :
-{}
+{
+  String s = null;
+  Token t = null;
+}
 {
   Literal()
 |
   "this" {jjtThis.setUsesThisModifier();}
 |
-  "super"  {jjtThis.setUsesSuperModifier();} "." <IDENTIFIER>
+  "super"  {jjtThis.setUsesSuperModifier();} "." t=<IDENTIFIER> {s = t.image;} {jjtThis.setImage(s);}
 |
   "(" Expression() ")"
 |
