@@ -22,6 +22,7 @@
   <li>Empty catch blocks</li>
   <li>Unnecessary object creation</li>
   <li>Empty 'if' statements</li>
+  <li>Duplicate import statements</li>
   <li>Classes which could be Singletons</li>
   <li>Short/long variable and method names</li>
 </ul>
