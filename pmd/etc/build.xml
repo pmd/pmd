@@ -8,6 +8,7 @@
 <property name="regress" value="regress\"/>
 <property name="reports" value="reports\"/>
 <property name="version" value="0.8"/>
+<property name="build.compiler" value="jikes"/>
 
 	<target name="delete">
         <delete dir="${build}"/>

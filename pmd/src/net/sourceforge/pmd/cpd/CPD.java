@@ -19,7 +19,6 @@ public class CPD {
     }
 
     private TokenSets tokenSets = new TokenSets();
-    private Occurrences occ = new Occurrences();
     private Occurrences results;
 
     public void add(File file) throws IOException {
@@ -39,8 +38,7 @@ public class CPD {
     }
 
     public void go(int minimumTileSize) {
-        occ.addInitial(tokenSets);
-        GST gst = new GST(this.tokenSets, this.occ, minimumTileSize);
+        GST gst = new GST(this.tokenSets, minimumTileSize);
         gst.crunch();
         results = gst.getResults();
     }

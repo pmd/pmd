@@ -21,11 +21,9 @@ public class GSTTest extends TestCase {
         TokenSets tss = new TokenSets();
         tss.add(ts1);
         tss.add(ts2);
-        Occurrences occ = new Occurrences();
-        occ.addInitial(tss);
-        GST gst = new GST(tss, occ, 5);
+        GST gst = new GST(tss, 5);
         gst.crunch();
-        occ = gst.getResults();
+        Occurrences occ = gst.getResults();
         assertEquals(1, occ.size());
         Iterator tiles = occ.getTiles();
         assertTrue(tiles.hasNext());

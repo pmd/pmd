@@ -11,15 +11,15 @@ import java.util.List;
 public class GST {
 
     private int minimumTileSize;
-    private Occurrences occurrences;
+    private Occurrences occurrences =new Occurrences();
     private TokenSets tokenSets;
 
     private Occurrences results = new Occurrences();
 
-    public GST(TokenSets tokenSets, Occurrences occurrences, int minimumTileSize) {
+    public GST(TokenSets tokenSets, int minimumTileSize) {
         this.minimumTileSize = minimumTileSize;
-        this.occurrences = occurrences;
         this.tokenSets = tokenSets;
+        occurrences.addInitial(tokenSets);
     }
 
     public void crunch() {
