@@ -10,7 +10,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.*;
 
-public class IfElseStmtsMustUseBracesRule extends AbstractRule {
+public class IfElseStmtsMustUseBracesRule extends BracesRule {
 
     private int lineNumberOfLastViolation;
 
@@ -29,10 +29,7 @@ public class IfElseStmtsMustUseBracesRule extends AbstractRule {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
             lineNumberOfLastViolation = node.getBeginLine();
         }
-        return super.visit(node,data);
-    }
 
-    private boolean hasBlockAsFirstChild(SimpleNode node) {
-        return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
+        return super.visit(node,data);
     }
 }

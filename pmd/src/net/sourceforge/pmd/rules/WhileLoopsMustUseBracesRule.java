@@ -12,7 +12,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 
-public class WhileLoopsMustUseBracesRule extends AbstractRule {
+public class WhileLoopsMustUseBracesRule extends BracesRule {
 
     public Object visit(ASTWhileStatement node, Object data) {
         RuleContext ctx = (RuleContext)data;
@@ -22,10 +22,6 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
             ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine()));
         }
         return super.visit(node,data);
-    }
-
-    private boolean hasBlockAsFirstChild(SimpleNode node) {
-        return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
     }
 
 }

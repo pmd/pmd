@@ -12,7 +12,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTForStatement;
 
-public class ForLoopsMustUseBracesRule  extends AbstractRule {
+public class ForLoopsMustUseBracesRule  extends BracesRule {
 
     public Object visit(ASTForStatement node, Object data) {
         RuleContext ctx = (RuleContext)data;
@@ -24,7 +24,4 @@ public class ForLoopsMustUseBracesRule  extends AbstractRule {
         return super.visit(node,data);
     }
 
-    private boolean hasBlockAsFirstChild(SimpleNode node) {
-        return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
-    }
 }
