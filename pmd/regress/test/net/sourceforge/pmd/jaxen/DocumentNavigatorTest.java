@@ -163,16 +163,4 @@ public class DocumentNavigatorTest extends RuleTst {
         List matches = xPath.selectNodes(rule.importDeclaration);
         assertEquals(1, matches.size());        
     }
-
-    public void testXPath3() throws JaxenException {
-        BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
-        List matches = xPath.selectNodes(rule.typeDeclaration);
-        assertEquals(80, matches.size());
-    }
-    
-    public void testXPath4() throws JaxenException {
-        BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
-        List matches = xPath.selectNodes(rule.compilationUnit);
-        assertEquals(83, matches.size());
-    }    
 }

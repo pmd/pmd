@@ -859,10 +859,10 @@ void AndExpression() #void :
   EqualityExpression() ( "&" EqualityExpression() )*
 }
 
-void EqualityExpression() #void :
+void EqualityExpression() :
 {}
 {
-  InstanceOfExpression() ( ( "==" | "!=" ) InstanceOfExpression() )*
+  InstanceOfExpression() ( ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression() )*
 }
 
 void InstanceOfExpression() :

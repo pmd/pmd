@@ -28,7 +28,7 @@ public class IdempotentOperationsRule extends AbstractRule {
             return super.visit(node, data);
         }
 
-        SimpleNode rhs = (SimpleNode)node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        SimpleNode rhs = (SimpleNode)node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
         if (!(rhs instanceof ASTName)) {
             return super.visit(node, data);
         }
@@ -37,8 +37,7 @@ public class IdempotentOperationsRule extends AbstractRule {
             return super.visit(node, data);
         }
 
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node.getBeginLine(), "Avoid idempotent operations"));
+        ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, node.getBeginLine(), "Avoid idempotent operations"));
         return data;
     }
 }

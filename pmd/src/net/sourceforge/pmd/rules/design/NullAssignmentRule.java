@@ -35,7 +35,7 @@ public class NullAssignmentRule extends AbstractRule {
 
         if (expr.jjtGetChild(1) instanceof ASTAssignmentOperator) {
             SimpleNode curr = (SimpleNode) expr.jjtGetChild(2);
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 8; i++) {
                 if (curr.jjtGetNumChildren() != 0) {
                     curr = (SimpleNode) curr.jjtGetChild(0);
                 }

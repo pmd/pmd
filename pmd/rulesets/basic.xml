@@ -495,7 +495,7 @@ public class Bar {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//IfStatement/Expression/ConditionalAndExpression
+//IfStatement/Expression/ConditionalAndExpression/EqualityExpression
  [InstanceOfExpression/UnaryExpression
  /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
  [count(InstanceOfExpression)=1]

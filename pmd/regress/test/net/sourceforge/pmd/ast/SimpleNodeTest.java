@@ -135,6 +135,8 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(1, nodes.size());
     }
 
+
+
     private void verifyNode(SimpleNode node, int beginLine, int beginCol, int endLine, int endCol) {
         assertEquals("Wrong beginning line: ", beginLine, node.getBeginLine());
         assertEquals("Wrong beginning column: ", beginCol, node.getBeginColumn());

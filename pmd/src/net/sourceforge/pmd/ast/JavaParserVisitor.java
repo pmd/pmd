@@ -41,6 +41,7 @@ public interface JavaParserVisitor
   public Object visit(ASTExpression node, Object data);
   public Object visit(ASTAssignmentOperator node, Object data);
   public Object visit(ASTConditionalAndExpression node, Object data);
+  public Object visit(ASTEqualityExpression node, Object data);
   public Object visit(ASTInstanceOfExpression node, Object data);
   public Object visit(ASTUnaryExpression node, Object data);
   public Object visit(ASTPreIncrementExpression node, Object data);

@@ -1,5 +1,6 @@
 ????, 2004 - 1.8:
 New rule: ExceptionAsFlowControlRule
+GRAMMAR CHANGE - added ASTEqualityExpression notes, with image of "==" or "!="
 
 April 22, 2004 - 1.7:
 Moved development environment to Maven 1.0-RC2.
