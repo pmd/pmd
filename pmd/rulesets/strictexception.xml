@@ -73,9 +73,9 @@ try {
     </rule>
 
 
-    <rule name="ExceptionAsFlowControlRule"
+    <rule name="ExceptionAsFlowControl"
           message="Avoid using exceptions as flow control"
-          class="net.sourceforge.pmd.rules.design.ExceptionAsFlowControlRule">
+          class="net.sourceforge.pmd.rules.design.ExceptionAsFlowControl">
       <description>
           Using Exceptions as flow control leads to GOTOish code.
       </description>
@@ -100,7 +100,7 @@ try {
     </rule>
 
 
-<rule name="AvoidCatchingNPERule"
+<rule name="AvoidCatchingNPE"
     message="Avoid catching NullPointerException; consider removing the cause of the NPE."
     class="net.sourceforge.pmd.rules.XPathRule">
     <description>
@@ -127,7 +127,7 @@ try {
     </properties>
   </rule>
 
-  <rule name="AvoidThrowingCertainExceptionTypesRule"
+  <rule name="AvoidThrowingCertainExceptionTypes"
       message="Avoid throwing certain exception types."
       class="net.sourceforge.pmd.rules.XPathRule">
     <description>

@@ -7,9 +7,9 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="CloseConnectionRule"
+    <rule name="CloseConnection"
           message="Ensures that Connection objects are always closed after use"
-          class="net.sourceforge.pmd.rules.CloseConnectionRule">
+          class="net.sourceforge.pmd.rules.CloseConnection">
       <description>
         Ensures that Connection objects are always closed after use
       </description>
@@ -103,7 +103,7 @@ public class Foo {
 
     <rule name="StringConcatenation"
            message="Consider replacing String concatenation inside loops with a StringBuffer"
-           class="net.sourceforge.pmd.rules.StringConcatenationRule">
+               class="net.sourceforge.pmd.rules.StringConcatenationRule">
        <description>
        Consider replacing String concatenation inside loops with a StringBuffer
        </description>

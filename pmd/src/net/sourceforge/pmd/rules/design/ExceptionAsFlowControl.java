@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Will Sargent
  */
-public class ExceptionAsFlowControlRule extends AbstractRule {
+public class ExceptionAsFlowControl extends AbstractRule {
     public Object visit(ASTThrowStatement node, Object data) {
         String throwName = getThrowsName(node);
         for (Node parent = node.jjtGetParent(); parent != null; parent = parent.jjtGetParent()) {
