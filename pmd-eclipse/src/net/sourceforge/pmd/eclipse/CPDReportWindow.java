@@ -10,12 +10,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * A window to show the CPD report
+ * 
  * @author David Craine
+ * @author Philippe Herlin
+ * @version $Revision$
+ * 
+ * $Log$
+ * Revision 1.3  2003/03/17 23:31:44  phherlin
+ * minor cleaning
  *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generat ion.
  */
 public class CPDReportWindow extends ApplicationWindow {
 	private Label label;
