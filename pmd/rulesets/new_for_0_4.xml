@@ -40,6 +40,26 @@ public class Foo {
     </example>
   </rule>
 
+  <rule name="EmptyTryBlock"
+        message="Avoid empty try blocks"
+        class="net.sourceforge.pmd.rules.EmptyTryBlockRule">
+    <description>
+Avoid empty try blocks
+    </description>
+
+    <example>
+<![CDATA[
+// this is bad
+public boolean equals(Object o) {
+    try {
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+]]>
+    </example>
+  </rule>
+
 </ruleset>
 
 
