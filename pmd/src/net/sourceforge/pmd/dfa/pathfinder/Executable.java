@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface Executable {
 
-    public void execute(List path);
+    void execute(List path);
 }

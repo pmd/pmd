@@ -12,12 +12,15 @@ public interface ViewerModelListener {
      *
      * @param e DOCUMENT ME!
      */
-    public void viewerModelChanged(ViewerModelEvent e);
+    void viewerModelChanged(ViewerModelEvent e);
 }
 
 
 /*
  * $Log$
+ * Revision 1.3  2004/12/22 20:52:12  tomcopeland
+ * Fixing some stuff PMD found
+ *
  * Revision 1.2  2004/09/27 19:42:52  tomcopeland
  * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
  *

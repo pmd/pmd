@@ -10,11 +10,11 @@ This ruleset also serves as an example of how to do a custom ruleset.
 
   <rule ref="rulesets/basic.xml"/>
 
-<rule ref="rulesets/basic.xml/EmptyCatchBlock" message="Must handle exceptions" class="net.sourceforge.pmd.rules.XPathRule">
+<rule ref="rulesets/basic.xml/EmptyCatchBlock" message="Must handle exceptions">
      <priority>2</priority>
   </rule>
 
-<rule ref="rulesets/unusedcode.xml"/>
+  <rule ref="rulesets/unusedcode.xml"/>
 
   <rule ref="rulesets/braces.xml/WhileLoopsMustUseBraces"/>
   <rule ref="rulesets/braces.xml/ForLoopsMustUseBraces"/>

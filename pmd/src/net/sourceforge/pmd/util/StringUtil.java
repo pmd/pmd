@@ -75,8 +75,9 @@ public class StringUtil {
 
     static {
         ENTITIES = new String[256 - 126];
-        for (int i = 126; i <= 255; i++)
+        for (int i = 126; i <= 255; i++) {
             ENTITIES[i - 126] = "&#" + i + ';';
+        }
     }
 
 

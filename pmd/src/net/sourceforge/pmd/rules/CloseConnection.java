@@ -74,8 +74,7 @@ public class CloseConnection extends AbstractRule {
         String target = id.getImage() + ".close";
         Node n = var;
 
-        while (!((n = n.jjtGetParent()) instanceof ASTBlock))
-            ;
+        while (!((n = n.jjtGetParent()) instanceof ASTBlock)) {}
 
         ASTBlock top = (ASTBlock) n;
 

@@ -555,12 +555,10 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         //skip this class if it has no evaluation package
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
             //evaluate danger of all methods in class
-            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass) == true)
-                ;
+            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) {}
             //evaluate danger of constructors
             evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass, getCurrentEvalPackage().allMethodsOfClass.keySet());
-            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass) == true)
-                ;
+            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) {}
 
             //get each method called on this object from a non-private constructor, if its dangerous flag it
             for (Iterator it = getCurrentEvalPackage().calledMethods.iterator(); it.hasNext();) {

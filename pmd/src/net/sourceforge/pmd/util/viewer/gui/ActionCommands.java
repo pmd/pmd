@@ -7,13 +7,16 @@ package net.sourceforge.pmd.util.viewer.gui;
  * @version $Id$
  */
 public interface ActionCommands {
-    public static final String COMPILE_ACTION = "Compile";
-    public static final String EVALUATE_ACTION = "Evaluate";
+    String COMPILE_ACTION = "Compile";
+    String EVALUATE_ACTION = "Evaluate";
 }
 
 
 /*
  * $Log$
+ * Revision 1.3  2004/12/22 20:52:12  tomcopeland
+ * Fixing some stuff PMD found
+ *
  * Revision 1.2  2004/09/27 19:42:52  tomcopeland
  * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
  *

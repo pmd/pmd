@@ -33,7 +33,6 @@ public class DataFlowNode implements IDataFlowNode {
         this.dataFlow = dataFlow;
         this.node = node;
         this.type = new BitSet();
-        this.variableAccess = null;
 
         if (this.node != null) {
             node.setDataFlowNode(this);
