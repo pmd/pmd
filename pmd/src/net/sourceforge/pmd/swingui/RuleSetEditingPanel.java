@@ -86,7 +86,7 @@ public class RuleSetEditingPanel extends JPanel
         panel.add(m_descriptionScrollPane);
 
         // Rule Set Active Label
-        m_includeLabel = new JLabel("Active");
+        m_includeLabel = new JLabel("Include");
         m_includeLabel.setFont(UIManager.getFont("labelFont"));
         m_includeLabel.setHorizontalAlignment(JLabel.RIGHT);
         panel.add(m_includeLabel);
@@ -154,7 +154,7 @@ public class RuleSetEditingPanel extends JPanel
                 m_name.setBackground(Color.white);
                 m_description.setEnabled(true);
                 m_description.setBackground(Color.white);
-                m_include.setEnabled(true);
+//                m_include.setEnabled(true);
                 m_enabled = true;
             }
 
