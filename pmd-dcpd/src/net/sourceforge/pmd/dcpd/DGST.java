@@ -32,10 +32,11 @@ public class DGST {
     public Results crunch(CPDListener listener) {
         Occurrences occ = new Occurrences(tokenSets, listener);
         try {
-            scatter(occ);
+            TileScatterer scatterer = new TileScatterer(space, job);
+            scatterer.scatter(occ);
             space.write(job, null, Lease.FOREVER);
             expand(occ);
-            System.out.println("DONE");
+            System.out.println("Done");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,7 +49,8 @@ public class DGST {
             occ = tg.gather(occ.size());
             addToResults(occ);
             System.out.println("************* Scatter..gather complete; tile count now " + occ.size());
-            scatter(occ);
+            TileScatterer scatterer = new TileScatterer(space, job);
+            scatterer.scatter(occ);
         }
     }
 
@@ -62,27 +64,6 @@ public class DGST {
                 }
             }
         }
-    }
-
-    private void scatter(Occurrences occ) throws TransactionException, RemoteException {
-        System.out.println("Scattering");
-        int tilesSoFar=0;
-        for (Iterator i = occ.getTiles(); i.hasNext();) {
-            Tile tile = (Tile)i.next();
-            TileWrapper tw = new TileWrapper(tile,
-                    marshal(occ.getOccurrences(tile)),
-                    job.id,
-                    TileWrapper.NOT_DONE,
-                    new Integer(tilesSoFar),
-                    null, null);
-            space.write(tw, null, Lease.FOREVER);
-            //System.out.println("Scattering " + tw);
-            tilesSoFar++;
-            if (tilesSoFar % 25 == 0) {
-                System.out.println("Written " + tilesSoFar + " tiles so far");
-            }
-        }
-        System.out.println("Done scattering");
     }
 
     private List marshal(Iterator i) {
