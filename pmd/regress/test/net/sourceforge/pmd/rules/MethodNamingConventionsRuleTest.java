@@ -1,8 +1,7 @@
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.rules.VariableNamingConventionsRule;
-import net.sourceforge.pmd.rules.MethodNamingConventionsRule;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.rules.MethodNamingConventionsRule;
 
 public class MethodNamingConventionsRuleTest extends SimpleAggregatorTst {
 

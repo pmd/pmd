@@ -44,6 +44,18 @@ public class Foo {
         </rule>
 
 
+    <rule name="ClassNamingConventionsRule"
+          message="Class names should begin with an uppercase character and not include underscores"
+          class="net.sourceforge.pmd.rules.ClassNamingConventionsRule">
+      <description> Class names should always begin with an upper case character, and should not contain underscores.
+      </description>
+      <priority>1</priority>
+      <example>
+<![CDATA[
+public class Foo {}
+]]>
+      </example>
+    </rule>
 
   </ruleset>
 

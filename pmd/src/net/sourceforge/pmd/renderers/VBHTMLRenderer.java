@@ -1,11 +1,10 @@
 package net.sourceforge.pmd.renderers;
 
-import java.util.Iterator;
-
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.renderers.Renderer;
+
+import java.util.Iterator;
 
 /**
  * @version $Revision$ $Date$
