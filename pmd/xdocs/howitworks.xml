@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author>Tom Copeland</author>
+    <title>How it works</title>
+  </properties>
+
+  <body>
+  <section name="How it works">
+<p>
+PMD checks source code against rules and produces a report.  Like this:
+<ul>
+<li>Something passes a file name and a RuleSet into PMD</li>
+<li>PMD hands an InputStream to the file off to a JavaCC-generated parser</li>
+<li>PMD gets a reference to an Abstract Syntax Tree back from the parser</li>
+<li>Each Rule in the RuleSet gets to traverse the AST and check for problems</li>
+<li>The Report is now filled with RuleViolations, and those get printed out in XML or HTML or whatever</li>
+</ul>
+</p>
+
+<p>A paucity of detail, I'm sure you'd agree.  If you think this document can be
+improved, please post <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a> and let me know how.  Thanks!
+</p>
+
+</section>
+</body>
+</document>

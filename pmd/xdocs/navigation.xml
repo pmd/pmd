@@ -19,14 +19,15 @@
       <item name="Integration points" href="/integrations.html" />
       <item name="How to write a PMD rule" href="/howtowritearule.html" />
       <item name="How to make a rule set" href="/howtomakearuleset.html" />
+      <item name="How PMD works" href="/howitworks.html" />
       <item name="Finding copied and pasted code" href="/cpd.html" />
       <item name="Similar projects" href="/similar-projects.html" />
       <item name="Credits" href="/credits.html" />
       <item name="Scrubbed by PMD" href="/scrubbed-by.html" />
       <item name="What does 'PMD' mean?" href="/meaning.html" />
     </menu>
-    <menu name="Demo">
-      <item name="Run PMD on a Sourceforge project" href="http://pmd.sf.net/cgi-bin/webpmd.pl" /> -->
+    <menu name="For example">
+      <item name="Run PMD on a Sourceforge project" href="http://pmd.sf.net/cgi-bin/webpmd.pl" />
     </menu>
     <menu name="Rule Sets">
       <item name="Basic" href="/rules/basic.html" />
