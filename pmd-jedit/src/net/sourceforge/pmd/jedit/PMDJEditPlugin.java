@@ -18,7 +18,6 @@ import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaLanguage;
 import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.SimpleRenderer;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.EditPlugin;
 import org.gjt.sp.jedit.GUIUtilities;
@@ -27,40 +26,25 @@ import org.gjt.sp.jedit.browser.VFSBrowser;
 import org.gjt.sp.jedit.gui.OptionsDialog;
 import org.gjt.sp.jedit.jEdit;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 
 public class PMDJEditPlugin extends EditPlugin {
-
-/*
-    This is unused... do we need it? --Tom
-
-    public static class MatchInfo
-    {
-        public int lineno;
-        public String filename;
-
-        MatchInfo(int lineno, String filename) {
-            this.lineno = lineno;
-            this.filename = filename;
-        }
-
-        public String toString() {
-            return (filename+":"+lineno);
-        }
-    }
-*/
 
 	public static final String NAME = "PMD";
 	public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
