@@ -42,6 +42,27 @@ These rules deal with different optimizations that generally apply to performanc
       </example>
       </rule>
 
+
+  <rule name="AvoidInstantiatingObjectsInLoops"
+        message="Avoid instantianing new objects inside loops"
+        class="net.sourceforge.pmd.rules.optimization.AvoidInstantiatingObjectsInLoops">
+    <description>
+Detects when a new object is created inside a loop
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+public class Something {
+  public static void main( String as[] ) {  
+    for (int i = 0; i < 10; i++) {
+      Foo f = new Foo(); //Avoid this whenever you can it's really expensive
+    }
+  }
+}
+]]>
+    </example>
+  </rule>
+  
     <!-- 
     other optimization shuold be like avoiding 
     "" + int
