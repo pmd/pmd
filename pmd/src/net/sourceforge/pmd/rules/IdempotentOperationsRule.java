@@ -9,10 +9,10 @@ import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class IdempotentOperationsRule extends AbstractRule {
 

@@ -13,20 +13,19 @@ import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Enumeration;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class PMD {
 
@@ -148,28 +147,6 @@ public class PMD {
                 e.printStackTrace();
             }
         }
-    }
-
-    static String glomName(boolean shortNames, String inputFileName, File file) {
-        if (shortNames && inputFileName.indexOf(',') == -1) {
-            if ((new File(inputFileName)).isDirectory()) {
-                return trimAnyPathSep(file.getAbsolutePath().substring(inputFileName.length()));
-            } else {
-                if (inputFileName.indexOf(System.getProperty("file.separator").charAt(0)) == -1) {
-                    return inputFileName;
-                }
-                return trimAnyPathSep(inputFileName.substring(inputFileName.lastIndexOf(System.getProperty("file.separator"))));
-            }
-        } else {
-            return file.getAbsolutePath();
-        }
-    }
-
-    private static String trimAnyPathSep(String name) {
-        if (name.startsWith(System.getProperty("file.separator"))) {
-            name = name.substring(1);
-        }
-        return name;
     }
 
     private static List collectFilesFromOneName(String inputFileName) {

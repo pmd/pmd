@@ -5,11 +5,9 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTStatement;
 
 import java.util.Iterator;
 import java.util.List;

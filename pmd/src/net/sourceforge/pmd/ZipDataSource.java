@@ -3,11 +3,10 @@
 */
 package net.sourceforge.pmd;
 
-import java.io.InputStream;
 import java.io.IOException;
-
-import java.util.zip.ZipFile;
+import java.io.InputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * DataSource implementation to read data from an entry
@@ -18,7 +17,6 @@ public class ZipDataSource implements DataSource {
     private ZipEntry zipEntry;
 
     /**
-     * Constructor.
      * @param zipFile the ZipFile 
      * @param zipEntry the ZipEntry containing the file to read
      */

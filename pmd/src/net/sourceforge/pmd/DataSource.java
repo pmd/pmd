@@ -3,8 +3,8 @@
 */
 package net.sourceforge.pmd;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Represents a source file to be analyzed.
