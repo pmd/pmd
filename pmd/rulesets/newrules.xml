@@ -5,7 +5,23 @@
 These are new ones for the next release
   </description>
 
+  <rule name="JUnitSpelling"
+        message="You may have misspelled the JUnit framework ''{0}'' method as ''{1}''"
+        class="net.sourceforge.pmd.rules.JUnitSpellingRule">
+    <description>
+    Some JUnit framework methods are easy to misspell.
+    </description>
 
+    <example>
+<![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+ public void setup() {} // oops, should be setUp
+ public void TearDown() {} // oops, should be tearDown
+}
+]]>
+    </example>
+    </rule>
 
   </ruleset>
 
