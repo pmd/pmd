@@ -81,6 +81,7 @@ public class TileExpander {
                 // this tile has been processed... so let's just put a one occurrence tile in there
                 Tile newTile = tileWrapper.tile.copy();
                 newOcc.addTile(newTile, tok);
+                System.out.println("EOF HERE!!!! " + newOcc.getOccurrenceCountFor(newTile));
             }
         }
         return newOcc;
