@@ -1,8 +1,10 @@
 ???? - 1.11:
 Added new rules: VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule
-Fixed bug 583047 - columns were wrong on ASTName nodes
+Fixed bug 583047 - ASTName column numbers are now correct
+Fixed bug 761048 - Symbol table now creates a scope level for anonymous inner classes
 ASTViewer now shows node images and modifiers
 ASTViewer now saves last edited text to ~/.pmd_astviewer
+Moved the PMD Swing UI into a separate module - pmd-swingui.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 June 19, 2003 - 1.1:

@@ -12,6 +12,8 @@ import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
+import net.sourceforge.pmd.ast.ASTClassBody;
 
 import java.util.HashSet;
 import java.util.Set;

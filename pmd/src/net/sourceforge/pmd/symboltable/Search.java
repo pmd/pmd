@@ -31,7 +31,7 @@ public class Search {
     private NameDeclaration searchUpward(NameOccurrence nameOccurrence, Scope scope) {
         if (!scope.contains(nameOccurrence) && scope.getParent() != null) {
             if (TRACE)
-                System.out.println("moving up fm " + getClsName(scope.getClass()) + " to " + getClsName(scope.getParent().getClass()));
+                System.out.println("moving up fm " + scope + " to " + scope.getParent());
             return searchUpward(nameOccurrence, scope.getParent());
         }
         if (scope.contains(nameOccurrence)) {

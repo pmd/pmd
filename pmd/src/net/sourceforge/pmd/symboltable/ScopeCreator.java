@@ -12,6 +12,9 @@ import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedInterfaceDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
+import net.sourceforge.pmd.ast.ASTClassBody;
+import net.sourceforge.pmd.ast.ASTAllocationExpression;
 
 import java.util.Stack;
 
@@ -26,6 +29,11 @@ public class ScopeCreator extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+        openScope(node);
+        return data;
+    }
+
+    public Object visit(ASTClassBodyDeclaration node, Object data) {
         openScope(node);
         return data;
     }
@@ -82,7 +90,21 @@ public class ScopeCreator extends JavaParserVisitorAdapter {
     }
 
     private void openScope(SimpleNode node) {
-        Scope scope = sf.createScope(node);
+        // special case - anonymous inner class - blahh
+        if (node instanceof ASTClassBodyDeclaration) {
+            if (node.jjtGetParent() instanceof ASTClassBody && node.jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression) {
+                Scope scope = new ClassScope();
+                processScope(scope, node);
+            } else {
+                super.visit(node, null);
+            }
+        } else {
+            Scope scope = sf.createScope(node);
+            processScope(scope, node);
+        }
+    }
+
+    private void processScope(Scope scope, SimpleNode node) {
         push(scope);
         node.setScope((Scope) scopes.peek());
         super.visit(node, null);

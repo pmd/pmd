@@ -7,10 +7,18 @@ import java.util.List;
 
 public class ClassScope extends AbstractScope {
 
+    private static int anonymousCounter = 1;
+
     private String className;
 
     public ClassScope(String className) {
         this.className = className;
+        anonymousCounter = 0;
+    }
+
+    public ClassScope() {
+        this.className = "Anonymous$" + String.valueOf(anonymousCounter);
+        anonymousCounter++;
     }
 
     public Scope getEnclosingClassScope() {
@@ -41,7 +49,6 @@ public class ClassScope extends AbstractScope {
             return (NameDeclaration) variableNames.keySet().iterator().next();
         }
 
-
         List images = new ArrayList();
         images.add(occurrence.getImage());
         if (occurrence.getImage().startsWith(className)) {
@@ -53,12 +60,11 @@ public class ClassScope extends AbstractScope {
     }
 
     public String toString() {
-        return "ClassScope:" + super.glomNames();
+        return "ClassScope:" + className + ":" + super.glomNames();
     }
 
     private String clipClassName(String in) {
         int firstDot = in.indexOf('.');
         return in.substring(firstDot + 1);
     }
-
 }

@@ -4,9 +4,13 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.ast.ASTClassBodyDeclaration;
+import net.sourceforge.pmd.ast.ASTClassBody;
+import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.symboltable.GlobalScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.symboltable.ScopeCreator;
+import net.sourceforge.pmd.symboltable.ClassScope;
 
 public class ScopeCreatorTest extends TestCase {
     public void testScopesAreCreated() {
@@ -26,6 +30,7 @@ public class ScopeCreatorTest extends TestCase {
 
         assertTrue(ifNode.getScope() instanceof LocalScope);
     }
+
 
     /*
        public void testPush() {
