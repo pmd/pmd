@@ -9,7 +9,7 @@ Version 0.3
 - Updated pmd to version 1.0. Checkout the new rulesets.
 - Fixed bug 633424
 - Fixed bug 633426
-
+- Made it possible to select several folders or javafiles and run pmd
 
 Version 0.2
 Fixed bug in manifest.mf to make it work on unix plattform.
