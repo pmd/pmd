@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<ruleset name="basic">
+  <description>
+The Unused Code Ruleset contains a collection of rules that find unused code.
+  </description>
+
+  <rule name="UnusedLocalVariable"
+        message="Avoid unused local variables"
+        class="net.sourceforge.pmd.rules.UnusedLocalVariableRule">
+    <description>
+Unused Local Variables: detects when a variable is declared, but not
+used (except for possibly initial assignment)
+    </description>
+
+    <example>
+<![CDATA[
+public int doSomething() {
+  int i = 5; // Unused
+  int j = 6;
+
+  j += 3;
+  return j;
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="UnusedPrivateInstanceVariable"
+        message="Avoid unused private instance variables"
+        class="net.sourceforge.pmd.rules.UnusedPrivateInstanceVariableRule">
+    <description>
+Unused Private Instance Variable: detects when a private field is declared
+that is not used by the class.
+    </description>
+    <example>
+<![CDATA[
+public class Something {
+  private int i = 5; // Unused
+  private int j = 6;
+
+  public int addOne() {
+    return j++;
+  }
+
+}
+]]>
+    </example>
+  </rule>
+
+</ruleset>
+
+
+
