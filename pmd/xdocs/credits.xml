@@ -10,6 +10,7 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Frank van Puffelen - documentation suggestions</li>
             <li>Conrad Roche - bug report</li>
             <li>mcclain looney - patch for CPD GUI, bug reports</li>
             <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>

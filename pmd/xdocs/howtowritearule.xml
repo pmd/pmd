@@ -130,6 +130,27 @@ WhileStatement
     to do is write a rule to detect a <code>WhileStatement</code> that
         has a <code>Statement</code> that's not followed by a <code>Block</code>, and we've got a rule violation.
     </p>
+        <p>
+           By the way, all this structural information - i.e., the fact that a Statement may be
+            followed a Block - is concisely defined in the
+            <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd/etc/grammar/Java1.4-c.jjt?rev=1.3&amp;content-type=text/vnd.viewcvs-markup">EBNF grammar</a>.
+            So, for example, the Statement definition looks like this:
+<source>
+<![CDATA[
+void Statement() :
+{}
+{
+  LOOKAHEAD(2)
+  LabeledStatement()
+| Block() | EmptyStatement() | StatementExpression() ";" | SwitchStatement() | IfStatement()
+| WhileStatement() | DoStatement() | ForStatement()
+| BreakStatement() | ContinueStatement() | ReturnStatement() | ThrowStatement()
+| SynchronizedStatement() | TryStatement() | AssertStatement()
+}
+]]>
+</source>
+            showing that a Statement may be followed by all sorts of stuff.
+        </p>
     </subsection>
 
     <subsection name="Write a rule class">
@@ -250,11 +271,15 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
 
     <subsection name="Writing a rule as an XPath expression">
         <p>Recently Dan Sheppard integrated an XPath engine into PMD, so now you can write rules as
-        XPath expressions.  The XPath expression for our WhileLoopsMustUseBracesRule looks like this:</p>
+        XPath expressions.  For example, the XPath expression for our WhileLoopsMustUseBracesRule looks like this:</p>
         <source>
             //WhileStatement[not(Statement/Block)]
         </source>
         <p>Concise, eh?  Here's an <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">article</a> with a lot more detail.</p>
+        <p>>Note that access modifiers are held as attributes, so, for example,
+                <source>//FieldDeclaration[@Private='true']</source>
+                finds all private fields.  You can see the code
+            that determines all the attributes <a href="http://pmd.sourceforge.net/xref/net/sourceforge/pmd/jaxen/AttributeAxisIterator.html">here</a></p>
     </subsection>
 
     <subsection name="Bundle it up">
