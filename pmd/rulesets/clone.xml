@@ -41,5 +41,71 @@ class Foo{
      </example>
      </rule>
 
+    <rule name="CloneThrowsCloneNotSupportedException"
+         message="clone() method should throw CloneNotSupportedException"
+         class="net.sourceforge.pmd.rules.XPathRule">
+         <description>
+        The method clone() should throw a CloneNotSupportedException
+         </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+                     <![CDATA[
+ //ClassDeclaration
+  [@Final = 'false']
+  [.//MethodDeclaration/MethodDeclarator/@Image = 'clone']
+  [count(.//MethodDeclaration/MethodDeclarator/FormalParameters/*) = 0]
+  [not(contains(.//MethodDeclaration/NameList/Name/@Image,'CloneNotSupportedException'))]
+                     ]]>
+                 </value>
+             </property>
+         </properties>
+         <priority>3</priority>
+         <example>
+             <![CDATA[
+ public class MyClass implements Cloneable{
+     public Object clone() // will cause an error {
+          MyClass clone = (MyClass)super.clone();
+          ...
+          return clone;
+     }
+ }
+    ]]>
+         </example>
+     </rule>
+
+    <rule name="CloneMethodMustImplementCloneable"
+        message="clone() method should be implemented only if implementing Cloneable interface"
+        class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+       The method clone() should only be implemented if the class implements Cloneable interface
+        </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassDeclaration
+ [not(contains(./UnmodifiedClassDeclaration/NameList/Name/@Image, 'Cloneable'))]
+ [.//MethodDeclaration/MethodDeclarator
+  [@Image = 'clone']
+  [count(/FormalParameters/*)=0]
+ ]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class MyClass  {
+   // will cause an error
+   public Object clone() throws CloneNotSupportedException {
+    ...
+   }
+}
+   ]]>
+        </example>
+    </rule>
 
 </ruleset>
+
