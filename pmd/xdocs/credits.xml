@@ -10,10 +10,10 @@
     <section name="Credits">
         <subsection name="Individuals">
         <ul>
+            <li>Andrew Glover - CouplingBetweenObjectsRule, ExcessiveImportsRule. documentation tweaks</li>
             <li>Carl Gilbert - DoubleCheckedLockingRule, ConstructorCallsOverridableMethodRule, bug reports, feature requests, and documentation improvements</li>
             <li>Vladimir Bossicard - numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Didier Duquennoy - pmd-netbeans feedback</li>
-            <li>Andrew Glover - documentation tweaks</li>
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Gunnlaugur Thor Briem - bug report on JavaCC parser's use of java.lang.Error</li>
             <li>Frédéric Harper - bug report and subsequent troubleshooting</li>

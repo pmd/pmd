@@ -44,5 +44,9 @@ public class JUnitAssertionsShouldIncludeMessageRuleTest extends RuleTst {
         super.runTest("JUnitAssertionsShouldIncludeMessageRule10.java", 1, new JUnitAssertionsShouldIncludeMessageRule());
     }
 
+    public void testFindBug() throws Throwable {
+        super.runTest("JUnitAssertionsShouldIncludeMessageRule11.java", 0, new JUnitAssertionsShouldIncludeMessageRule());
+    }
+
 
 }

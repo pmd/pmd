@@ -44,7 +44,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractRule implem
     private void check(RuleContext ctx, ASTArguments node, int args, String targetMethodName) {
         if (node.getArgumentCount() == args && node.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
             ASTPrimaryExpression primary = (ASTPrimaryExpression)node.jjtGetParent().jjtGetParent();
-            if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix && primary.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
+            if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix && primary.jjtGetChild(0).jjtGetNumChildren() > 0 && primary.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
                 ASTName name = (ASTName)primary.jjtGetChild(0).jjtGetChild(0);
                 if (name.getImage().equals(targetMethodName)) {
                     ctx.getReport().addRuleViolation(createRuleViolation(ctx, name.getBeginLine()));
