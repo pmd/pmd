@@ -23,13 +23,14 @@ ant pmd
 Regenerate the web site
 
 Prepare binary release:
-rm -rf ~/tmp/pmd
-mkdir -p ~/tmp/pmd/etc ~/tmp/pmd/lib
-cp run.bat run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.bat ~/tmp/pmd/etc
+rm -rf ~/tmp/pmd-1.05
+mkdir -p ~/tmp/pmd-1.05/etc ~/tmp/pmd/lib
+cp run.bat run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.bat astviewer.sh ~/tmp/pmd-1.05/etc
 cp ../lib/pmd-1.05.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd/lib
-cp -R xslt/ ~/tmp/pmd/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd
-zip -q -r ~/tmp/pmd-bin-1.05.zip ~/tmp/pmd/  // TODO need to add a -b in here
+cp -R xslt/ ~/tmp/pmd-1.05/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd-1.05
+cd ~/tmp
+zip -q -r pmd-bin-1.05.zip pmd-1.05/
 
 Time to tag:
 cvs -q rtag -D tomorrow "pmd_release_1_05" pmd
