@@ -13,4 +13,8 @@ public class StringUtilTest extends TestCase {
         assertEquals("faaaa", StringUtil.replaceString("foo", 'o', "aa"));
     }
 
+    public void testReplaceStringWithString() {
+        assertEquals("foo]]&gt;bar", StringUtil.replaceString("foo]]>bar", "]]>", "]]&gt;"));
+    }
+
 }

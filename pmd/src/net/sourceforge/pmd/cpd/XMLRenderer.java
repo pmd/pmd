@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.StringUtil;
 
 import java.util.Iterator;
 
@@ -44,6 +45,6 @@ public class XMLRenderer implements Renderer
       buffer.append("</duplication>");
     }
     buffer.append("</pmd-cpd>");
-    return buffer.toString();
+    return StringUtil.replaceString(buffer.toString(), "]]>", "]]&gt;");
   }
 }

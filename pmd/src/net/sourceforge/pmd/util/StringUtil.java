@@ -16,4 +16,18 @@ public class StringUtil {
         return desc.toString();
     }
 
+    public static String replaceString(String inputString, String oldString, String newString) {
+        StringBuffer desc = new StringBuffer();
+        int index = inputString.indexOf(oldString);
+        int last = 0;
+        while (index != -1) {
+            desc.append(inputString.substring(last, index));
+            desc.append(newString);
+            last = index + oldString.length();
+            index = inputString.indexOf(oldString, last);
+        }
+        desc.append(inputString.substring(last));
+        return desc.toString();
+    }
+
 }
