@@ -106,6 +106,10 @@ public class PMDTask extends Task {
                         throw new BuildException(fnfe);
                     }
                 } catch (PMDException pmde) {
+                    if (verbose) {
+                        pmde.printStackTrace();
+                        pmde.getOriginalException().printStackTrace();
+                    }
                     if (failOnError) {
                         throw new BuildException(pmde);
                     }

@@ -1,3 +1,5 @@
+>>>>>>>>>>>>>>>>> Update ant docs to reflect verbose attribute change
+
 Move rulesets/tmp.xml somewhere else
 update run.bat to point to pmd-1.03.jar
 update cpdgui.bat to point to pmd-1.03.jar
@@ -37,6 +39,7 @@ copy ..\lib\xmlParserAPIs-2.0.2.jar c:\tmp\pmd\lib
 copy ..\lib\xercesImpl-2.0.2.jar c:\tmp\pmd\lib
 copy the docs directory over to c:\tmp\pmd -- how to do this on cmd line?
 copy the test-data directory over to c:\tmp\pmd
+copy the xslt directory over to c:\tmp\pmd
 Zip it up, rename it pmd-bin-1.03.zip
 
 Time to tag:
