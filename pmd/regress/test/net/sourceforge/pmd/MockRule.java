@@ -68,7 +68,7 @@ public class MockRule implements Rule {
         return properties;
     }
 
-    public boolean isInclude()
+    public boolean include()
     {
         return true;
     }

@@ -40,9 +40,9 @@ public class RuleSetReadWriteTest extends TestCase
         try
         {
             loadTestFile();
-            m_ruleSetIn = (new RuleSetReader(m_inputStream)).read();
+            m_ruleSetIn = (new RuleSetReader()).read(m_inputStream, "foo");
             write();
-            m_ruleSetOut = (new RuleSetReader(m_inputStream)).read();
+            m_ruleSetOut = (new RuleSetReader()).read(m_inputStream, "foo");
             compare();
         }
         catch (PMDException pmdException)
@@ -116,7 +116,7 @@ public class RuleSetReadWriteTest extends TestCase
             {
                 assertEquals("Rule messages are equal.", ruleIn.getMessage(), ruleOut.getMessage());
                 assertEquals("Rule class are equal.", ruleIn.getClass().getName(), ruleOut.getClass().getName());
-                assertEquals("Rule includes are equal.", ruleIn.isInclude(), ruleOut.isInclude());
+                assertEquals("Rule includes are equal.", ruleIn.include(), ruleOut.include());
                 assertEquals("Rule descriptions are equal.", ruleIn.getDescription(), ruleOut.getDescription());
                 assertEquals("Rule examples are equal.", ruleIn.getExample(), ruleOut.getExample());
 
