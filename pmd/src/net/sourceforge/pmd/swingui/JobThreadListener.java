@@ -15,21 +15,21 @@ interface JobThreadListener extends EventListener
     /**
      *******************************************************************************
      *
-     * @parameter event
+     * @param event
      */
     public void jobThreadStarted(JobThreadEvent event);
 
     /**
      *******************************************************************************
      *
-     * @parameter event
+     * @param event
      */
     public void jobThreadFinished(JobThreadEvent event);
 
     /**
      *******************************************************************************
      *
-     * @parameter event
+     * @param event
      */
     public void jobThreadStatus(JobThreadEvent event);
 }

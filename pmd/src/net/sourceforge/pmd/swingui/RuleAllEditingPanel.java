@@ -13,11 +13,12 @@ import javax.swing.JScrollPane;
  * @since September 8, 2002
  * @version $Revision$, $Date$
  */
-class RuleAllEditingPanel extends JPanel
+public class RuleAllEditingPanel extends JPanel
 {
     private RuleSetEditingPanel m_ruleSetPanel;
     private RuleEditingPanel m_rulePanel;
     private RulePropertyEditingPanel m_rulePropertyPanel;
+    private boolean m_isEditing;
 
     /**
      *******************************************************************************
@@ -53,7 +54,7 @@ class RuleAllEditingPanel extends JPanel
      *
      * @return
      */
-    protected RuleSetEditingPanel getRuleSetEditingPanel()
+    public RuleSetEditingPanel getRuleSetEditingPanel()
     {
         return m_ruleSetPanel;
     }
@@ -63,7 +64,7 @@ class RuleAllEditingPanel extends JPanel
      *
      * @return
      */
-    protected RuleEditingPanel getRuleEditingPanel()
+    public RuleEditingPanel getRuleEditingPanel()
     {
         return m_rulePanel;
     }
@@ -73,7 +74,7 @@ class RuleAllEditingPanel extends JPanel
      *
      * @return
      */
-    protected RulePropertyEditingPanel getRulePropertyEditingPanel()
+    public RulePropertyEditingPanel getRulePropertyEditingPanel()
     {
         return m_rulePropertyPanel;
     }
@@ -81,11 +82,39 @@ class RuleAllEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
+     * @param data
      */
-    protected void saveData()
+    protected void setIsEditing(boolean isEditing)
     {
-        m_ruleSetPanel.saveData();
-        m_rulePanel.saveData();
-        m_rulePropertyPanel.saveData();
+        m_isEditing = isEditing;
+        m_ruleSetPanel.setIsEditing(isEditing);
+        m_rulePanel.setIsEditing(isEditing);
+        m_rulePropertyPanel.setIsEditing(isEditing);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param data
+     */
+    public void setData(IRulesEditingData data)
+    {
+        m_ruleSetPanel.setData(data);
+        m_rulePanel.setData(data);
+        m_rulePropertyPanel.setData(data);
+    }
+
+    /**
+     *******************************************************************************
+     *
+     */
+    public void saveData()
+    {
+        if (m_isEditing)
+        {
+            m_ruleSetPanel.saveData();
+            m_rulePanel.saveData();
+            m_rulePropertyPanel.saveData();
+        }
     }
 }

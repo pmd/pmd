@@ -2,6 +2,7 @@ package net.sourceforge.pmd.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -31,11 +32,10 @@ import javax.swing.UIManager;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-class MessageDialog extends JDialog implements JobThreadListener
+class MessageDialog extends JDialog
 {
 
     private JTextArea m_messageArea;
-    private JobThread m_jobThread;
 
     /**
      *******************************************************************************
@@ -121,70 +121,6 @@ class MessageDialog extends JDialog implements JobThreadListener
 
         buttonPanel.add(closeButton);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @parameter event
-     */
-    public void jobThreadStarted(JobThreadEvent event)
-    {
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @parameter event
-     */
-    public void jobThreadFinished(JobThreadEvent event)
-    {
-        setVisible(false);
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @parameter event
-     */
-    public void jobThreadStatus(JobThreadEvent event)
-    {
-        m_messageArea.setText(event.getMessage());
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param title
-     * @param job
-     */
-    protected static void show(Window parentWindow, String message, JobThread jobThread)
-    {
-        if (jobThread != null)
-        {
-            if (message == null)
-            {
-                message = "No message.";
-            }
-
-            MessageDialog dialog;
-
-            if (parentWindow instanceof Frame)
-            {
-                dialog = new MessageDialog((Frame) parentWindow, "Message", message);
-            }
-            else
-            {
-                dialog = new MessageDialog((Dialog) parentWindow, "Message", message);
-            }
-
-            dialog.m_jobThread = jobThread;
-
-            jobThread.addListener(dialog);
-            jobThread.start();
-            dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-            dialog.setVisible(true);
-        }
     }
 
     /**

@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.swingui;
 
+import java.util.Enumeration;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import net.sourceforge.pmd.Rule;
@@ -24,6 +26,10 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
     private byte m_flags;
 
     // Constant
+    protected static final char RULE_SET_TYPE = 'S';
+    protected static final char RULE_TYPE = 'R';
+    protected static final char PROPERTY_TYPE = 'P';
+    private static final char ROOT_TYPE = 'O';
     private static final byte IS_ROOT = 0x01;
     private static final byte IS_RULE_SET = 0x02;
     private static final byte IS_RULE = 0x04;
@@ -36,12 +42,30 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
      *
      * @param name
      */
-    protected RulesTreeNode(String text)
+    protected RulesTreeNode(String text, char nodeType)
     {
         super();
 
+        switch (nodeType)
+        {
+            case ROOT_TYPE:
+                m_flags |= IS_ROOT;
+                break;
+
+            case RULE_SET_TYPE:
+                m_flags |= IS_RULE_SET;
+                break;
+
+            case RULE_TYPE:
+                m_flags |= IS_RULE;
+                break;
+
+            case PROPERTY_TYPE:
+                m_flags |= IS_PROPERTY;
+                break;
+        }
+
         m_name = trim(text);
-        m_flags |= IS_ROOT;
         m_flags |= INCLUDE;
 
         setDisplayName();
@@ -113,6 +137,49 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
         m_ruleSet = ((RulesTreeNode) ruleNode.getParent()).getRuleSet();
 
         setDisplayName();
+    }
+
+    /**
+     ***************************************************************************
+     *
+     * @param newChildNode
+     */
+    protected void addNode(RulesTreeNode newChildNode)
+    {
+        String newChildNodeName = newChildNode.m_name;
+
+        if (getChildCount() == 0)
+        {
+            add(newChildNode);
+        }
+        else
+        {
+
+        }
+    }
+
+    /**
+     ***************************************************************************
+     *
+     * @param childName
+     *
+     * @return
+     */
+    protected RulesTreeNode getChildNode(String childName)
+    {
+        Enumeration children = children();
+
+        while (children.hasMoreElements())
+        {
+            RulesTreeNode childNode = (RulesTreeNode) children.nextElement();
+
+            if (childNode.getName().equalsIgnoreCase(childName))
+            {
+                return childNode;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -218,16 +285,6 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
     public boolean include()
     {
         return (m_flags & INCLUDE) != 0;
-    }
-
-    /**
-     ***************************************************************************
-     *
-     * @return
-     */
-    protected boolean isEditable()
-    {
-        return false;
     }
 
     /**
@@ -449,6 +506,6 @@ class RulesTreeNode extends DefaultMutableTreeNode implements IRulesEditingData
      */
     protected static final RulesTreeNode createRootNode()
     {
-        return new RulesTreeNode("Rules");
+        return new RulesTreeNode("Rules", ROOT_TYPE);
     }
 }

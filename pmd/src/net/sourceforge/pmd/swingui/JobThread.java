@@ -12,7 +12,7 @@ import java.util.ArrayList;
 abstract class JobThread extends Thread
 {
 
-    private List m_listeners;
+    private List m_listeners = new ArrayList();
 
     /**
      *********************************************************************************
@@ -31,11 +31,6 @@ abstract class JobThread extends Thread
      */
     protected void addListener(JobThreadListener listener)
     {
-        if (m_listeners == null)
-        {
-            m_listeners = new ArrayList();
-        }
-
         m_listeners.add(listener);
     }
 
@@ -106,14 +101,28 @@ abstract class JobThread extends Thread
      */
     public void run()
     {
+        setup();
         notifyJobThreadStarted(new JobThreadEvent(this));
         process();
         notifyJobThreadFinished(new JobThreadEvent(this));
+        cleanup();
     }
 
     /**
      ***************************************************************************
      *
      */
+    protected abstract void setup();
+
+    /**
+     ***************************************************************************
+     *
+     */
     protected abstract void process();
+
+    /**
+     ***************************************************************************
+     *
+     */
+    protected abstract void cleanup();
 }

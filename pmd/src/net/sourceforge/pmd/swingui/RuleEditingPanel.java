@@ -51,6 +51,7 @@ public class RuleEditingPanel extends JPanel
     private JCheckBox m_include;
     private boolean m_enabled;
     private IRulesEditingData m_currentData;
+    private boolean m_isEditing;
 
     /**
      *******************************************************************************
@@ -146,43 +147,16 @@ public class RuleEditingPanel extends JPanel
         m_include = new JCheckBox("");
         panel.add(m_include);
 
-        disableData();
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param event
-     */
-    public void valueChanged(IRulesEditingData data)
-    {
-        saveData();
-
-        if (data.isRuleSet())
-        {
-            disableData();
-        }
-        else if (data.isRule())
-        {
-            setData(data);
-        }
-        else if (data.isProperty())
-        {
-            setData(data.getParentRuleData());
-        }
-        else
-        {
-            disableData();
-        }
+        enableData(false);
     }
 
     /**
      *******************************************************************************
      *
      */
-    protected void saveData()
+    public void saveData()
     {
-        if (m_currentData != null)
+        if (m_isEditing && (m_currentData != null))
         {
             m_currentData.setName(m_name.getText());
             m_currentData.setClassName(m_className.getText());
@@ -196,25 +170,50 @@ public class RuleEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
-     * @param treeNode
+     * @param data
      */
-    private void setData(IRulesEditingData data)
+    protected void setIsEditing(boolean isEditing)
+    {
+        m_isEditing = isEditing;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param data
+     */
+    public void setData(IRulesEditingData data)
+    {
+        if (data.isRuleSet())
+        {
+            enableData(false);
+        }
+        else if (data.isRule())
+        {
+            setData_(data);
+        }
+        else if (data.isProperty())
+        {
+            setData_(data.getParentRuleData());
+        }
+        else
+        {
+            enableData(false);
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param data
+     */
+    private void setData_(IRulesEditingData data)
     {
         if (data != null)
         {
             if (m_enabled == false)
             {
-                m_name.setEnabled(true);
-                m_name.setBackground(Color.white);
-                m_className.setEnabled(true);
-                m_className.setBackground(Color.white);
-                m_message.setEnabled(true);
-                m_message.setBackground(Color.white);
-                m_description.setEnabled(true);
-                m_description.setBackground(Color.white);
-                m_example.setEnabled(true);
-                m_example.setBackground(Color.white);
-                m_include.setEnabled(true);
+                enableData(true);
             }
 
             m_name.setText(data.getName());
@@ -224,7 +223,6 @@ public class RuleEditingPanel extends JPanel
             m_example.setText(data.getExample());
             m_include.setSelected(data.include());
 
-            m_enabled = true;
             m_currentData = data;
         }
     }
@@ -233,35 +231,53 @@ public class RuleEditingPanel extends JPanel
      *******************************************************************************
      *
      */
-    private void disableData()
+    private void enableData(boolean enable)
     {
-        Color background = UIManager.getColor("disabledTextBackground");
+        if (enable)
+        {
+            m_name.setEnabled(true);
+            m_name.setBackground(Color.white);
+            m_className.setEnabled(true);
+            m_className.setBackground(Color.white);
+            m_message.setEnabled(true);
+            m_message.setBackground(Color.white);
+            m_description.setEnabled(true);
+            m_description.setBackground(Color.white);
+            m_example.setEnabled(true);
+            m_example.setBackground(Color.white);
+            m_include.setEnabled(true);
+        }
+        else
+        {
+            Color background = UIManager.getColor("disabledTextBackground");
 
-        m_name.setText("");
-        m_name.setEnabled(false);
-        m_name.setBackground(background);
+            m_name.setText("");
+            m_name.setEnabled(false);
+            m_name.setBackground(background);
 
-        m_message.setText("");
-        m_message.setEnabled(false);
-        m_message.setBackground(background);
+            m_message.setText("");
+            m_message.setEnabled(false);
+            m_message.setBackground(background);
 
-        m_className.setText("");
-        m_className.setEnabled(false);
-        m_className.setBackground(background);
+            m_className.setText("");
+            m_className.setEnabled(false);
+            m_className.setBackground(background);
 
-        m_description.setText("");
-        m_description.setEnabled(false);
-        m_description.setBackground(background);
+            m_description.setText("");
+            m_description.setEnabled(false);
+            m_description.setBackground(background);
 
-        m_example.setText("");
-        m_example.setEnabled(false);
-        m_example.setBackground(background);
+            m_example.setText("");
+            m_example.setEnabled(false);
+            m_example.setBackground(background);
 
-        m_include.setSelected(false);
-        m_include.setEnabled(false);
+            m_include.setSelected(false);
+            m_include.setEnabled(false);
 
-        m_currentData = null;
-        m_enabled = false;
+            m_currentData = null;
+        }
+
+        m_enabled = enable;
     }
 
     /**

@@ -34,6 +34,7 @@ public class RulePropertyEditingPanel extends JPanel
     private JTextField m_value;
     private boolean m_enabled;
     private IRulesEditingData m_currentData;
+    private boolean m_isEditing;
 
     /**
      *******************************************************************************
@@ -79,43 +80,16 @@ public class RulePropertyEditingPanel extends JPanel
         m_value.setFont(UIManager.getFont("dataFont"));
         panel.add(m_value);
 
-        disableData();
-    }
-
-    /**
-     *******************************************************************************
-     *
-     * @param event
-     */
-    public void valueChanged(IRulesEditingData data)
-    {
-        saveData();
-
-        if (data.isRuleSet())
-        {
-            disableData();
-        }
-        else if (data.isRule())
-        {
-            disableData();
-        }
-        else if (data.isProperty())
-        {
-            setData(data);
-        }
-        else
-        {
-            disableData();
-        }
+        enableData(false);
     }
 
     /**
      *******************************************************************************
      *
      */
-    protected void saveData()
+    public void saveData()
     {
-        if (m_currentData != null)
+        if (m_isEditing && (m_currentData != null))
         {
             m_currentData.setName(m_name.getText());
             m_currentData.setPropertyValue(m_value.getText());
@@ -125,19 +99,50 @@ public class RulePropertyEditingPanel extends JPanel
     /**
      *******************************************************************************
      *
-     * @param treeNode
+     * @param data
      */
-    private void setData(IRulesEditingData data)
+    protected void setIsEditing(boolean isEditing)
+    {
+        m_isEditing = isEditing;
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param data
+     */
+    public void setData(IRulesEditingData data)
+    {
+        if (data.isRuleSet())
+        {
+            enableData(false);
+        }
+        else if (data.isRule())
+        {
+            enableData(false);
+        }
+        else if (data.isProperty())
+        {
+            setData_(data);
+        }
+        else
+        {
+            enableData(false);
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param data
+     */
+    private void setData_(IRulesEditingData data)
     {
         if (data != null)
         {
             if (m_enabled == false)
             {
-                m_name.setEnabled(true);
-                m_name.setBackground(Color.white);
-                m_value.setEnabled(true);
-                m_value.setBackground(Color.white);
-                m_enabled = true;
+                enableData(true);
             }
 
             m_name.setText(data.getName());
@@ -151,20 +156,31 @@ public class RulePropertyEditingPanel extends JPanel
      *******************************************************************************
      *
      */
-    private void disableData()
+    private void enableData(boolean enable)
     {
-        Color background = UIManager.getColor("disabledTextBackground");
+        if (enable)
+        {
+            m_name.setEnabled(true);
+            m_name.setBackground(Color.white);
+            m_value.setEnabled(true);
+            m_value.setBackground(Color.white);
+        }
+        else
+        {
+            Color background = UIManager.getColor("disabledTextBackground");
 
-        m_name.setText("");
-        m_name.setEnabled(false);
-        m_name.setBackground(background);
+            m_name.setText("");
+            m_name.setEnabled(false);
+            m_name.setBackground(background);
 
-        m_value.setText("");
-        m_value.setEnabled(false);
-        m_value.setBackground(background);
+            m_value.setText("");
+            m_value.setEnabled(false);
+            m_value.setBackground(background);
 
-        m_currentData = null;
-        m_enabled = false;
+            m_currentData = null;
+        }
+
+        m_enabled = enable;
     }
 
     /**

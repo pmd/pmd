@@ -2,6 +2,7 @@ package net.sourceforge.pmd.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
@@ -10,14 +11,24 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Shape;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -32,6 +43,7 @@ import javax.swing.JTree;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import net.sourceforge.pmd.PMDException;
@@ -42,12 +54,13 @@ import net.sourceforge.pmd.PMDException;
  * @since August 17, 2002
  * @version $Revision$, $Date$
  */
-public class PMDViewer extends JFrame
+public class PMDViewer extends JFrame implements JobThreadListener
 {
 
     private Preferences m_preferences;
     private DirectoryTree m_directoryTree;
-    private JLabel m_selectSourceFileLabel;
+    private JLabel m_message;
+    private JPanel m_messageArea;
     private JScrollPane m_directoryTreeScrollPane;
     private DirectoryTable m_directoryTable;
     private JScrollPane m_directoryTableScrollPane;
@@ -55,7 +68,10 @@ public class PMDViewer extends JFrame
     private ResultsViewer m_resultsViewer;
     private JScrollPane m_resultsViewerScrollPane;
     private JSplitPane m_mainSplitPane;
-    private PMDClipboard m_clipboardOwner;
+    private PMDClipboard m_clipboardOwner = new PMDClipboard();
+    private List m_ruleSetChangeListeners = new ArrayList();
+    private int m_disabledCounter;
+    private GlassPaneMouseListener m_glassPaneMouseListener = new GlassPaneMouseListener();
 
     /**
      *******************************************************************************
@@ -64,8 +80,6 @@ public class PMDViewer extends JFrame
     private PMDViewer()
     {
         super("PMD Viewer");
-
-        m_clipboardOwner = new PMDClipboard();
 
         int windowWidth = 1200;
         int windowHeight = 1000;
@@ -90,7 +104,7 @@ public class PMDViewer extends JFrame
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         createMenuBar();
-        createSelectSourceFileLabel();
+        createMessageArea(windowMargin);
         createDirectoryTreeScrollPane();
         createDirectoryTableScrollPane();
         createDirectorySplitPane();
@@ -120,14 +134,34 @@ public class PMDViewer extends JFrame
     /**
      *********************************************************************************
      *
+     * @param windowMargin
      */
-    private void createSelectSourceFileLabel()
+    private void createMessageArea(int windowMargin)
     {
-        m_selectSourceFileLabel = new JLabel();
+        EtchedBorder etchedBorder;
+        CompoundBorder compoundBorder;
+        EmptyBorder emptyBorder;
 
-        m_selectSourceFileLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-        m_selectSourceFileLabel.setBorder(new EmptyBorder(0, 0, 5, 0));
-        m_selectSourceFileLabel.setText("Select a source file to view its analysis below.");
+        m_messageArea = new JPanel(new BorderLayout());
+        emptyBorder = new EmptyBorder(2, 2, 2, 2);
+        etchedBorder = new EtchedBorder(EtchedBorder.LOWERED);
+        compoundBorder = new CompoundBorder(etchedBorder, emptyBorder);
+        compoundBorder = new CompoundBorder(etchedBorder, compoundBorder);
+        emptyBorder = new EmptyBorder(0, 0, windowMargin, 0);
+        compoundBorder = new CompoundBorder(emptyBorder, compoundBorder);
+        m_messageArea.setBorder(compoundBorder);
+
+        JPanel innerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        innerPanel.setOpaque(true);
+        innerPanel.setBackground(UIManager.getColor("pmdMessageAreaBackground"));
+        m_messageArea.add(innerPanel, BorderLayout.CENTER);
+
+        m_message = new JLabel();
+        m_message.setFont(new Font("Dialog", Font.BOLD, 12));
+        m_message.setBackground(UIManager.getColor("pmdMessageAreaBackground"));
+        m_message.setForeground(UIManager.getColor("pmdBlue"));
+        setDefaultMessage();
+        innerPanel.add(m_message);
     }
 
     /**
@@ -193,6 +227,7 @@ public class PMDViewer extends JFrame
     private void createResultsViewerScrollPane()
     {
         m_resultsViewerScrollPane = ComponentFactory.createScrollPane(m_resultsViewer);
+        m_resultsViewer.setParentScrollPane(m_resultsViewerScrollPane);
     }
 
     /**
@@ -223,7 +258,7 @@ public class PMDViewer extends JFrame
         CompoundBorder compoundBorder = new CompoundBorder(outsideBorder, insideBorder);
 
         contentPanel.setBorder(compoundBorder);
-        contentPanel.add(m_selectSourceFileLabel, BorderLayout.NORTH);
+        contentPanel.add(m_messageArea, BorderLayout.NORTH);
         contentPanel.add(m_mainSplitPane,  BorderLayout.CENTER);
 
         return contentPanel;
@@ -249,11 +284,141 @@ public class PMDViewer extends JFrame
     /**
      *********************************************************************************
      *
+     */
+    protected void setDefaultMessage()
+    {
+        setMessage("Select a source file to view its analysis below.");
+    }
+
+    /**
+     *********************************************************************************
+     *
+     */
+    protected void setMessage(String message)
+    {
+        if (message == null)
+        {
+            message = "";
+        }
+
+        m_message.setText(message);
+    }
+
+    /**
+     *********************************************************************************
+     *
      * @param rootDirectories
      */
     private void setupFiles(File[] rootDirectories)
     {
         m_directoryTree.setupFiles(this, rootDirectories);
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * @param enable
+     */
+    protected void setEnableViewer(boolean enable)
+    {
+        if (enable)
+        {
+            m_disabledCounter--;
+
+            if (m_disabledCounter == 0)
+            {
+                Component glassPane = getGlassPane();
+
+                glassPane.setVisible(false);
+                glassPane.removeMouseListener(m_glassPaneMouseListener);
+            }
+        }
+        else
+        {
+            if (m_disabledCounter == 0)
+            {
+                Component glassPane = getGlassPane();
+
+                glassPane.setVisible(true);
+                glassPane.addMouseListener(m_glassPaneMouseListener);
+            }
+
+            m_disabledCounter++;
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * @param listener
+     */
+    protected void addRuleSetChangeListener(ChangeListener listener)
+    {
+        if ((listener != null) && (m_ruleSetChangeListeners.contains(listener) == false))
+        {
+            m_ruleSetChangeListeners.add(listener);
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *
+     * @param listener
+     */
+    protected void removeRuleSetChangeListener(ChangeListener listener)
+    {
+        if (listener != null)
+        {
+            m_ruleSetChangeListeners.remove(listener);
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *
+     */
+    private void notifyRuleSetChangeListeners()
+    {
+        Iterator iterator = m_ruleSetChangeListeners.iterator();
+        ChangeEvent changeEvent = new ChangeEvent(this);
+
+        while (iterator.hasNext())
+        {
+            ((ChangeListener) iterator.next()).stateChanged(changeEvent);
+        }
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param event
+     */
+    public void jobThreadStarted(JobThreadEvent event)
+    {
+        m_message.setText(event.getMessage());
+        SwingUtilities.invokeLater(new MessageAreaRepaint());
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param event
+     */
+    public void jobThreadFinished(JobThreadEvent event)
+    {
+        setDefaultMessage();
+        SwingUtilities.invokeLater(new MessageAreaRepaint());
+    }
+
+    /**
+     *******************************************************************************
+     *
+     * @param event
+     */
+    public void jobThreadStatus(JobThreadEvent event)
+    {
+        m_message.setText(event.getMessage());
+        SwingUtilities.invokeLater(new MessageAreaRepaint());
     }
 
     /**
@@ -297,6 +462,53 @@ public class PMDViewer extends JFrame
     public static void main(String[] args)
     {
         run();
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class GlassPaneMouseListener implements MouseListener
+    {
+
+        /**
+         * Invoked when the mouse has been clicked on a component.
+         */
+        public void mouseClicked(MouseEvent event)
+        {
+            event.consume();
+        }
+
+        /**
+         * Invoked when a mouse button has been pressed on a component.
+         */
+        public void mousePressed(MouseEvent event)
+        {
+            event.consume();
+        }
+
+        /**
+         * Invoked when a mouse button has been released on a component.
+         */
+        public void mouseReleased(MouseEvent event)
+        {
+            event.consume();
+        }
+
+        /**
+         * Invoked when the mouse enters a component.
+         */
+        public void mouseEntered(MouseEvent event)
+        {
+        }
+
+        /**
+         * Invoked when the mouse exits a component.
+         */
+        public void mouseExited(MouseEvent event)
+        {
+        }
     }
 
     /**
@@ -630,7 +842,10 @@ public class PMDViewer extends JFrame
         {
             try
             {
+                setEnableViewer(false);
                 (new RulesEditor(PMDViewer.this)).setVisible(true);
+                notifyRuleSetChangeListeners();
+                setEnableViewer(true);
             }
             catch (PMDException pmdException)
             {
@@ -652,7 +867,9 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            setEnableViewer(false);
             (new PreferencesEditor(PMDViewer.this)).setVisible(true);
+            setEnableViewer(true);
         }
     }
 
@@ -680,7 +897,23 @@ public class PMDViewer extends JFrame
 
         public void actionPerformed(ActionEvent event)
         {
+            setEnableViewer(false);
             (new AboutPMD(PMDViewer.this)).setVisible(true);
+            setEnableViewer(true);
+        }
+    }
+
+    /**
+     *********************************************************************************
+     *********************************************************************************
+     *********************************************************************************
+     */
+    private class MessageAreaRepaint implements Runnable
+    {
+
+        public void run()
+        {
+            m_message.repaint();
         }
     }
 }
@@ -708,9 +941,25 @@ class LoadRootDirectories extends JobThread
      ************************************************************************
      *
      */
+    protected void setup()
+    {
+    }
+
+    /**
+     ************************************************************************
+     *
+     */
     protected void process()
     {
         m_fileSystemRoots = File.listRoots();
+    }
+
+    /**
+     ************************************************************************
+     *
+     */
+    protected void cleanup()
+    {
     }
 
     /**

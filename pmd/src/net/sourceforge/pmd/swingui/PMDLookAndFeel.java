@@ -105,6 +105,7 @@ public class PMDLookAndFeel extends WindowsLookAndFeel
                                   "pmdCream", "#FFFCED",
                          "pmdTreeBackground", "#F5F5F5",
                         "pmdTableBackground", "#F5F5F5",
+                  "pmdMessageAreaBackground", "#F5F5F5",
                                 "mediumGray", "#686868",
                             "mediumDarkGray", "#434343",
                                   "paleGray", "#AAAAAA",

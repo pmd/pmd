@@ -42,10 +42,10 @@ class DirectoryTree extends JTree
      */
     protected void setupFiles(PMDViewer pmdViewer, File[] rootDirectories)
     {
-        String message = "Locating file directories.  Please wait...";
-        SetupFilesThread setupFilesThread = new SetupFilesThread(message, rootDirectories);
+        String name = "Locating file directories.  Please wait...";
+        SetupFilesThread setupFilesThread = new SetupFilesThread(name, rootDirectories, pmdViewer);
 
-        MessageDialog.show(pmdViewer, message, setupFilesThread);
+        setupFilesThread.start();
     }
 
     /**
@@ -55,18 +55,30 @@ class DirectoryTree extends JTree
      */
     private class SetupFilesThread extends JobThread
     {
-        File[] m_rootDirectories;
+        private File[] m_rootDirectories;
+        private PMDViewer m_pmdViewer;
 
         /**
          ****************************************************************************
          *
          * @param name
          */
-        private SetupFilesThread(String threadName, File[] rootDirectories)
+        private SetupFilesThread(String threadName, File[] rootDirectories, PMDViewer pmdViewer)
         {
             super(threadName);
 
             m_rootDirectories = rootDirectories;
+            m_pmdViewer = pmdViewer;
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
+        protected void setup()
+        {
+            m_pmdViewer.setEnableViewer(false);
+            addListener(m_pmdViewer);
         }
 
         /**
@@ -75,14 +87,28 @@ class DirectoryTree extends JTree
          */
         protected void process()
         {
-            DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
+            JobThreadEvent event;
 
+            event = new JobThreadEvent(this, "Locating file directories.  Please wait...");
+            notifyJobThreadStatus(event);
+
+            DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
             treeModel.setupFiles(m_rootDirectories);
 
             DirectoryTreeNode treeNode = (DirectoryTreeNode) treeModel.getRoot();
             TreePath treePath = new TreePath(treeNode.getPath());
 
             expandPath(treePath);
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
+        protected void cleanup()
+        {
+            removeListener(m_pmdViewer);
+            m_pmdViewer.setEnableViewer(true);
         }
     }
 

@@ -1,23 +1,33 @@
 package net.sourceforge.pmd.swingui;
 
 import java.awt.Font;
+import java.awt.Point;
 import java.io.FileInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.text.html.HTMLEditorKit;
+
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetList;
+import net.sourceforge.pmd.RuleSetReader;
 
 /**
  *
@@ -25,15 +35,18 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
  * @since August 27, 2002
  * @version $Revision$, $Date$
  */
-class ResultsViewer extends JEditorPane implements ListSelectionListener
+class ResultsViewer extends JEditorPane implements ListSelectionListener, ChangeListener
 {
 
     private PMDViewer m_pmdViewer;
     private DirectoryTable m_directoryTable;
-    private PMD m_pmd;
-    private RuleContext m_ruleContext;
-    private RuleSet m_ruleSet;
     private String m_htmlText;
+    private PMD m_pmd;
+    private RuleSet m_ruleSet;
+    private Report m_report;
+    private boolean m_loadRuleSets;
+    private AnalyzeThreadInUse m_analyzeThreadInUse;
+    private JScrollPane m_parentScrollPane;
 
     /**
      ********************************************************************************
@@ -49,35 +62,34 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
         m_pmdViewer = pmdViewer;
         m_directoryTable = directoryTable;
         m_pmd = new PMD();
-        m_ruleContext = new RuleContext();
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        Iterator ruleSets = null;
         m_ruleSet = new RuleSet();
+        m_loadRuleSets = true;
+        m_analyzeThreadInUse = new AnalyzeThreadInUse();
 
-        try
-        {
-            ruleSets = ruleSetFactory.getRegisteredRuleSets();
-        }
-        catch (RuleSetNotFoundException exception)
-        {
-            String message = "Could not get registered rule sets.";
+        m_directoryTable.getSelectionModel().addListSelectionListener(this);
+        m_pmdViewer.addRuleSetChangeListener(this);
+    }
 
-            MessageDialog.show(m_pmdViewer, message, exception);
-        }
+    /**
+     ********************************************************************************
+     *
+     * @param parentScrollPane
+     */
+    protected void setParentScrollPane(JScrollPane parentScrollPane)
+    {
+        m_parentScrollPane = parentScrollPane;
+    }
 
-        if (ruleSets.hasNext() == false)
-        {
-            String message = "There are no rule sets.";
-
-            MessageDialog.show(m_pmdViewer, message);
-        }
-
-        while (ruleSets.hasNext())
-        {
-            m_ruleSet.addRuleSet((RuleSet) ruleSets.next());
-        }
-
-        directoryTable.getSelectionModel().addListSelectionListener(this);
+    /**
+     ********************************************************************************
+     *
+     * @param event
+     */
+    private void scrollToTop()
+    {
+        m_parentScrollPane.getHorizontalScrollBar().setValue(0);
+        m_parentScrollPane.getVerticalScrollBar().setValue(0);
+        m_parentScrollPane.repaint();
     }
 
     /**
@@ -92,17 +104,120 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
         // the last event.
         if (event.getValueIsAdjusting() == false)
         {
-            File file = m_directoryTable.getSelectedSourceFile();
-
-            if (file != null)
+            if (m_analyzeThreadInUse.inUse() == false)
             {
-                m_ruleContext.setSourceCodeFilename(file.getPath());
-                m_ruleContext.setReport(new Report());
+                File file = m_directoryTable.getSelectedSourceFile();
 
-                AnalyzeThread analyzeThread = new AnalyzeThread("Analyze", file);
-
-                MessageDialog.show(m_pmdViewer, "Analyzing.  Please wait...", analyzeThread);
+                if (file != null)
+                {
+                    (new AnalyzeThread(file, m_analyzeThreadInUse)).start();
+                }
             }
+        }
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @param event
+     */
+    public void stateChanged(ChangeEvent event)
+    {
+        m_loadRuleSets = true;
+    }
+
+    /**
+     ********************************************************************************
+     *
+     * @param event
+     */
+    private void loadRuleSets()
+    {
+        if (m_loadRuleSets)
+        {
+            m_ruleSet = new RuleSet();
+            String[] ruleSetNames = null;
+
+            String directoryPath = m_pmdViewer.getPreferences().getCurrentRuleSetDirectory();
+
+            try
+            {
+                ruleSetNames = RuleSetList.getIncludedRuleSetNames(directoryPath);
+            }
+            catch (PMDException pmdException)
+            {
+                Exception exception = pmdException.getOriginalException();
+                String message = pmdException.getMessage();
+
+                MessageDialog.show(m_pmdViewer, message, exception);
+
+                return;
+            }
+
+            for (int n = 0; n < ruleSetNames.length; n++)
+            {
+                String ruleSetPath = directoryPath + File.separator + ruleSetNames[n] + ".xml";
+                File file = new File(ruleSetPath);
+
+                if (file.exists())
+                {
+                    FileInputStream inputStream = null;
+
+                    try
+                    {
+                        RuleSet ruleSet;
+                        RuleSet tempRuleSet;
+
+                        inputStream = new FileInputStream(file);
+                        ruleSet = (new RuleSetReader(inputStream)).read();
+                        tempRuleSet = new RuleSet();
+                        tempRuleSet.setName(ruleSet.getName());
+                        tempRuleSet.setDescription(ruleSet.getDescription());
+
+                        Iterator rules = ruleSet.getRules().iterator();
+
+                        while (rules.hasNext())
+                        {
+                            Rule rule = (Rule) rules.next();
+
+                            if (rule.isInclude())
+                            {
+                                tempRuleSet.addRule(rule);
+                            }
+                        }
+
+                        m_ruleSet.addRuleSet(tempRuleSet);
+                    }
+                    catch (FileNotFoundException exception)
+                    {
+                        // Should not reach here because we already tested for the file's existence.
+                        exception.printStackTrace();
+                    }
+                    catch (PMDException pmdException)
+                    {
+                        Exception exception = pmdException.getOriginalException();
+                        String message = pmdException.getMessage();
+
+                        MessageDialog.show(m_pmdViewer, message, exception);
+                    }
+                    finally
+                    {
+                        if (inputStream != null)
+                        {
+                            try
+                            {
+                                inputStream.close();
+                            }
+                            catch (IOException exception)
+                            {
+                                inputStream = null;
+                            }
+                        }
+                    }
+                }
+            }
+
+            m_loadRuleSets = false;
         }
     }
 
@@ -123,11 +238,19 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
      */
     protected String getPlainText()
     {
-        File file = m_directoryTable.getSelectedSourceFile();
-        String filePath = file.getPath();
-        TextRenderer renderer = new TextRenderer();
+        if (m_report != null)
+        {
+            synchronized(m_report)
+            {
+                File file = m_directoryTable.getSelectedSourceFile();
+                String filePath = file.getPath();
+                TextRenderer renderer = new TextRenderer();
 
-        return renderer.render(filePath, m_ruleContext.getReport());
+                return renderer.render(filePath, m_report);
+            }
+        }
+
+        return "";
     }
 
     /**
@@ -139,18 +262,32 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
     {
         private File m_file;
         private ResultsViewer m_resultsViewer;
+        private AnalyzeThreadInUse m_analyzeThreadInUse;
 
         /**
          ****************************************************************************
          *
-         * @param name
+         * @param threadName
          */
-        private AnalyzeThread(String threadName, File file)
+        private AnalyzeThread(File file, AnalyzeThreadInUse analyzeThreadInUse)
         {
-            super(threadName);
+            super("Analyze");
 
             m_file = file;
+            m_analyzeThreadInUse = analyzeThreadInUse;
+            m_analyzeThreadInUse.setInUse(true);
             m_resultsViewer = ResultsViewer.this;
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
+        protected void setup()
+        {
+            m_pmdViewer.setEnableViewer(false);
+            m_directoryTable.getSelectionModel().removeListSelectionListener(m_resultsViewer);
+            addListener(m_pmdViewer);
         }
 
         /**
@@ -159,31 +296,89 @@ class ResultsViewer extends JEditorPane implements ListSelectionListener
          */
         protected void process()
         {
+            if (m_file == null)
+            {
+                return;
+            }
+
             try
             {
-                m_pmd.processFile(new FileInputStream(m_file),
-                                  m_resultsViewer.m_ruleSet,
-                                  m_resultsViewer.m_ruleContext);
-
                 JobThreadEvent event;
 
-                event = new JobThreadEvent(this, "Rendering analysis results into HTML page.  Please wait...");
+                event = new JobThreadEvent(this, "Analyzing.  Please wait...");
+                notifyJobThreadStatus(event);
 
+                loadRuleSets();
+                RuleContext ruleContext = new RuleContext();
+                ruleContext.setSourceCodeFilename(m_file.getPath());
+                ruleContext.setReport(new Report());
+                m_pmd.processFile(new FileInputStream(m_file), m_ruleSet, ruleContext);
+
+                event = new JobThreadEvent(this, "Rendering analysis results into HTML page.  Please wait...");
                 notifyJobThreadStatus(event);
 
                 HTMLResultRenderer renderer;
 
                 renderer = new HTMLResultRenderer();
-                m_htmlText = renderer.render(m_file.getPath(), m_ruleContext.getReport());
-                event = new JobThreadEvent(this, "Storing HTML page into viewer.  Please wait...");
+                m_htmlText = renderer.render(m_file.getPath(), ruleContext.getReport());
 
+                event = new JobThreadEvent(this, "Storing HTML page into viewer.  Please wait...");
                 notifyJobThreadStatus(event);
                 setText(m_htmlText);
+
+                m_resultsViewer.scrollToTop();
+                event = new JobThreadEvent(this, "Finished");
+                notifyJobThreadStatus(event);
             }
             catch (FileNotFoundException exception)
             {
                 MessageDialog.show(m_pmdViewer, null, exception);
             }
+            catch (Throwable throwable)
+            {
+            }
+        }
+
+        /**
+         ***************************************************************************
+         *
+         */
+        protected void cleanup()
+        {
+            removeListener(m_pmdViewer);
+            m_directoryTable.getSelectionModel().addListSelectionListener(m_resultsViewer);
+            m_pmdViewer.setEnableViewer(true);
+            m_analyzeThreadInUse.setInUse(false);
+        }
+    }
+
+    /**
+     ***************************************************************************
+     ***************************************************************************
+     ***************************************************************************
+     */
+    class AnalyzeThreadInUse
+    {
+        private boolean m_inUse;
+
+        /**
+         ***************************************************************************
+         *
+         * @param inUse
+         */
+        protected void setInUse(boolean inUse)
+        {
+            m_inUse = inUse;
+        }
+
+        /**
+         ***************************************************************************
+         *
+         * @return
+         */
+        protected boolean inUse()
+        {
+            return m_inUse;
         }
     }
 }
