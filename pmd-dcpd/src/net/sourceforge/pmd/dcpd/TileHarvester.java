@@ -41,7 +41,7 @@ public class TileHarvester {
     }
 
     private void addTileWrapperToOccurrences(TileWrapper tw, Occurrences occ) {
-        if (tw.occurrences.size() > 1 && !occ.containsAnyTokensIn(tw.tile)) {
+        if (!occ.containsAnyTokensIn(tw.tile)) {
             for (int i=0; i<tw.occurrences.size(); i++) {
                 occ.addTile(tw.tile, (TokenEntry)tw.occurrences.get(i));
             }

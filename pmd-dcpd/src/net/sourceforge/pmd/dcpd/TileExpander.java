@@ -44,6 +44,10 @@ public class TileExpander {
                 int expansionIndex = 0;
                 for (Iterator i = results.getTiles();i.hasNext();) {
                     Tile tile = (Tile)i.next();
+                    // here's where we drop solo tiles
+                    if (results.getOccurrenceCountFor(tile) == 1) {
+                        continue;
+                    }
                     TileWrapper tileWrapperToWrite = new TileWrapper(tile, results.getOccurrencesList(tile), new Integer(expansionIndex), new Integer(results.size()));
                     wrappers.add(tileWrapperToWrite);
                     //System.out.println("Wrote " + tileWrapperToWrite + "; occurrences = " + tileWrapperToWrite.occurrences.size());
