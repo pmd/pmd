@@ -1,5 +1,5 @@
 ????? - 2.1:
-New rules: AvoidProtectedFieldInFinalClass
+New rules: AvoidProtectedFieldInFinalClass, SystemPrintln 
 Fixed bug 1050173 - ImmutableFieldRule no longer reports false positives for static fields.
 Fixed bug 1050286 - ImmutableFieldRule no longer reports false positives for classes which have multiple constructors only a subset of which set certain fields. 
 Fixed bug 1055346 - ImmutableFieldRule no longer reports false positive on preinc/predecrement/postfix expressions.
