@@ -28,7 +28,7 @@
     <td valign="top">rulesetfiles</td>
     <td valign="top">A comma delimited list of ruleset files ('rulesets/basic.xml,rulesets/design.xml').  If you write
     your own ruleset files, you can put them on the classpath and plug them in here.</td>
-    <td valign="top" align="center">Yes</td>
+    <td valign="top" align="center">Yes, unless the ruleset nested element is used</td>
   </tr>
   <tr>
     <td valign="top">failonerror</td>
@@ -190,6 +190,25 @@ Total time: 2 seconds
 <target name="pmd">
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
   <pmd rulesetfiles="rulesets/imports.xml" shortFilenames="true">
+      <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+      <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
+          <include name="java/lang/*.java"/>
+      </fileset>
+  </pmd>
+</target>
+]]>
+</source>
+
+
+<p>Using the ruleset nested element</p>
+<source>
+<![CDATA[
+<target name="pmd">
+  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+  <pmd shortFilenames="true">
+       <ruleset>rulesets/favorites.xml</ruleset>
+       <ruleset>rulesets/basic.xml</ruleset>
+      
       <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
       <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
           <include name="java/lang/*.java"/>
