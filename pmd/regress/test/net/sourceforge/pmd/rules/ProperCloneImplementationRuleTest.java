@@ -14,7 +14,7 @@ public class ProperCloneImplementationRuleTest extends SimpleAggregatorTst{
   private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "ProperCloneImplementationRule");
+        rule = findRule("rulesets/clone.xml", "ProperCloneImplementationRule");
     }
 
   public void testAll() {
