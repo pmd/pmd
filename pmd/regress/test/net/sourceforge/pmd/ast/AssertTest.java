@@ -1,8 +1,8 @@
 package test.net.sourceforge.pmd.ast;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.JavaParser;
 
 import java.io.StringReader;
 

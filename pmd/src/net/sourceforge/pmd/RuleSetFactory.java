@@ -1,7 +1,6 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.rules.XPathRule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

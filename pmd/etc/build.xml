@@ -102,22 +102,6 @@
     </junit>
 </target>
 
-<target name="jaxentest" depends="compile">
-    <junit printsummary="yes" haltonfailure="yes">
-      <classpath>
-        <path refid="classpath.path" />
-        <pathelement location="${basedir}" />
-      </classpath>
-      <batchtest fork="no" todir="${build}">
-        <fileset dir="${regress}">
-            <include name="test/**/cpd/**/MatchAlgorithmTest.java" />
-          <include name="test/**/jaxen/**/*Test.java" />
-        </fileset>
-      </batchtest>
-  <formatter type="plain" />
-    </junit>
-</target>
-
 <target name="cpdtest" depends="compile">
     <junit printsummary="yes" haltonfailure="yes">
       <classpath>

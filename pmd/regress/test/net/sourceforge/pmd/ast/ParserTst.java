@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
-import net.sourceforge.pmd.PMD;
 
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;
