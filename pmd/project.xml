@@ -92,9 +92,9 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
     </developer>
 
     <developer>
-      <name>Don Leckie</name>
-      <id>donleckie</id>
-      <email>donleckie@users.sourceforge.net</email>
+			<name>Andrey Lumyanski</name>
+      <id>a_lumyanski</id>
+			<email>a_lumyanski@users.sourceforge.net</email>
       <roles><role>Developer</role></roles>
     </developer>
 
@@ -107,9 +107,9 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
     </developer>
 
       <developer>
-        <name>Tom Burke</name>
-        <id>tomburke</id>
-        <email>tomburke@users.sourceforge.net</email>
+        <name>Miguel Griffa</name>
+        <id>mikkey</id>
+        <email>mikkey@users.sourceforge.net</email>
         <roles><role>Developer</role></roles>
       </developer>
 
@@ -133,6 +133,28 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
         <email>jigerjava@users.sourceforge.net</email>
         <roles><role>Developer</role></roles>
       </developer>
+
+      <developer>
+        <name>Radim Kubacki</name>
+        <id>kubacki</id>
+        <email>kubacki@users.sourceforge.net</email>
+        <roles><role>Developer</role></roles>
+      </developer>
+			
+			<developer>
+        <name>Brant Langer Gurganus</name>
+        <id>brantgurga</id>
+        <email>brantgurga@users.sourceforge.net</email>
+        <roles><role>Developer</role></roles>
+			</developer>
+
+			<developer>
+        <name>Nascif Abousalh Neto</name>
+        <id>nascif</id>
+				<email>nascif@users.sourceforge.net</email>
+        <roles><role>Developer</role></roles>
+			</developer>
+
 
    </developers>
 
