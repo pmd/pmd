@@ -101,7 +101,10 @@ public class PMDJEditPlugin extends EBPlugin {
 				BufferUpdate bu = (BufferUpdate)ebmess;
 				if (bu.getWhat() == BufferUpdate.SAVED)
 				{
-					instance.check(bu.getBuffer(),bu.getView());
+					if(bu.getBuffer().getMode().getName().equals("java"))
+					{
+						instance.check(bu.getBuffer(),bu.getView());
+					}
 				}
 			}
 		}
