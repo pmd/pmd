@@ -23,7 +23,7 @@ public class ReportTest extends TestCase implements ReportListener {
 	
     public void testBasic() {
         Report r = new Report();
-        r.addRuleViolation(new RuleViolation(new MockRule(), 5, "foo"));
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 5, "foo"));
         assertTrue(!r.isEmpty());
     }
 
@@ -57,8 +57,8 @@ public class ReportTest extends TestCase implements ReportListener {
     // Files are grouped together now.
     public void testSortedReport_File() {
         Report r = new Report();
-        r.addRuleViolation(new RuleViolation(new MockRule(), 10, "foo"));
-        r.addRuleViolation(new RuleViolation(new MockRule(), 20, "bar"));
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 10, "foo"));
+        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 20, "bar"));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue(result.indexOf("bar") < result.indexOf("foo"));
@@ -66,9 +66,9 @@ public class ReportTest extends TestCase implements ReportListener {
 
     public void testSortedReport_Line() {
         Report r = new Report();
-        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2"), 
+        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg"),
 					     10, "foo1"));
-        r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1"), 
+        r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1", "msg"),
 					     20, "foo2"));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
@@ -79,7 +79,7 @@ public class ReportTest extends TestCase implements ReportListener {
         Report rpt  = new Report();
         rpt.addListener(this);
         violationSemaphore = false;
-        rpt.addRuleViolation(new RuleViolation(new MockRule(), 5, "file"));
+        rpt.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg"), 5, "file"));
         assertTrue(violationSemaphore);
         
         metricSemaphore = false;

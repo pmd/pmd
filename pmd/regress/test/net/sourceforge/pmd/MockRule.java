@@ -12,10 +12,10 @@ import java.util.*;
 public class MockRule implements Rule {
 
     private String name;
-    private String desc;
+    private String description;
+    private String message;
     private Set violations = new HashSet();
     private RuleProperties properties = new RuleProperties();
-    private String description;
     private String example;
     private boolean m_include;
 
@@ -27,13 +27,12 @@ public class MockRule implements Rule {
         this.example = example;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() {return description;}
+    public void setDescription(String description) {this.description = description;}
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+    public String getMessage() {return message;}
+    public void setMessage(String message) {this.message = message;}
 
     public boolean hasProperty( String name ) {
         return properties.containsKey( name );
@@ -74,18 +73,17 @@ public class MockRule implements Rule {
         m_include = include;
     }
 
-
+    /**
+     * For use by RuleSetFactory only!
+     */
     public MockRule() {}
 
-    public MockRule(String name, String desc) {
+    public MockRule(String name, String description, String message) {
         this.name = name;
-        this.desc = desc;
+        this.description = description;
+        this.message = message;
     }
 
-    public void setName(String name) {this.name = name;}
-    public String getName() {return name;}
-    public String getMessage() {return desc;}
-    public void setMessage(String description) {this.desc = description;}
 
     public void addViolation( RuleViolation violation ) {
     violations.add( violation );

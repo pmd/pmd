@@ -9,7 +9,7 @@ import net.sourceforge.pmd.RuleViolation;
 public class RuleViolationTest extends TestCase {
 
     public void testConstructor1() {
-        Rule rule = new MockRule("name", "desc");
+        Rule rule = new MockRule("name", "desc", "msg");
         RuleViolation r = new RuleViolation(rule, 2, "filename");
         assertEquals(rule, r.getRule());
         assertEquals(2, r.getLine());
@@ -17,7 +17,7 @@ public class RuleViolationTest extends TestCase {
     }
 
     public void testConstructor2() {
-        Rule rule = new MockRule("name", "desc");
+        Rule rule = new MockRule("name", "desc", "msg");
         RuleViolation r = new RuleViolation(rule, 2, "description", "filename");
         assertEquals(rule, r.getRule());
         assertEquals(2, r.getLine());
@@ -26,7 +26,7 @@ public class RuleViolationTest extends TestCase {
     }
 
     public void testComparatorWithDifferentFilenames() {
-        Rule rule = new MockRule("name", "desc");
+        Rule rule = new MockRule("name", "desc", "msg");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleViolation r1 = new RuleViolation(rule, 10, "description", "filename1");
         RuleViolation r2 = new RuleViolation(rule, 20, "description", "filename2");
@@ -35,7 +35,7 @@ public class RuleViolationTest extends TestCase {
     }
 
     public void testComparatorWithSameFileDifferentLines() {
-        Rule rule = new MockRule("name", "desc");
+        Rule rule = new MockRule("name", "desc", "msg");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleViolation r1 = new RuleViolation(rule, 10, "description", "filename");
         RuleViolation r2 = new RuleViolation(rule, 20, "description", "filename");
@@ -44,7 +44,7 @@ public class RuleViolationTest extends TestCase {
     }
 
     public void testComparatorWithSameFileSameLines() {
-        Rule rule = new MockRule("name", "desc");
+        Rule rule = new MockRule("name", "desc", "msg");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleViolation r1 = new RuleViolation(rule, 10, "description", "filename");
         RuleViolation r2 = new RuleViolation(rule, 10, "description", "filename");

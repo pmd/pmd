@@ -15,8 +15,8 @@ public class XMLRendererTest
     extends TestCase
 {
     private XMLRenderer IUT = null;
-    private MockRule RULE1 = new MockRule( "RULE1", "RULE1" );
-    private MockRule RULE2 = new MockRule( "RULE2", "RULE2" );
+    private MockRule RULE1 = new MockRule( "RULE1", "RULE1", "msg" );
+    private MockRule RULE2 = new MockRule( "RULE2", "RULE2", "msg" );
 
     public XMLRendererTest( String name ) {
 	super( name );
@@ -182,8 +182,6 @@ public class XMLRendererTest
 	//     </violation>
         //   </file>
         // </pmd>
-
-	System.err.println( rendered );
 
 	List expectedStrings = new ArrayList();
 	expectedStrings.add("<pmd>");
