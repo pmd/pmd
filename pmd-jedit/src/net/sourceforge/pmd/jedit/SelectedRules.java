@@ -59,7 +59,6 @@ public class SelectedRules
 
 		String customRuleSetPath = jEdit.getProperty("pmd.customRulesPath");
 
-		System.out.println("See custom rules path " + customRuleSetPath);
 		if(!(customRuleSetPath == null))
 		{
 			StringTokenizer strtok = new StringTokenizer(customRuleSetPath, ",");
