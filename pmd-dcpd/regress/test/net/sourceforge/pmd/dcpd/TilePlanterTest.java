@@ -9,11 +9,11 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.cpd.TokenSets;
 import net.sourceforge.pmd.cpd.Occurrences;
 import net.sourceforge.pmd.dcpd.Job;
-import net.sourceforge.pmd.dcpd.TileScatterer;
+import net.sourceforge.pmd.dcpd.TilePlanter;
 
-public class TileScattererTest extends TestCase {
+public class TilePlanterTest extends TestCase {
 
-    public TileScattererTest(String name) {
+    public TilePlanterTest(String name) {
         super(name);
     }
 
@@ -23,10 +23,9 @@ public class TileScattererTest extends TestCase {
         Job job = new Job("foo", new Integer(1));
         Occurrences occ = new Occurrences(tokenSets);
 
-        TileScatterer scatterer = new TileScatterer(space, job);
+        TilePlanter scatterer = new TilePlanter(space, job);
         scatterer.scatter(occ);
 
         assertEquals(6, space.getWrittenEntries().size());
-
     }
 }

@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-public class TileGathererTest extends TestCase {
+public class TileHarvesterTest extends TestCase {
 
-    public TileGathererTest(String name) {
+    public TileHarvesterTest(String name) {
         super(name);
     }
 
@@ -28,7 +28,7 @@ public class TileGathererTest extends TestCase {
         Occurrences occ = new Occurrences(tokenSets);
 
         // do the expansion from 1 to 2 tokens and write those expansions
-        // back to the mock space so TileGatherer can read them
+        // back to the mock space so TileHarvester can read them
         int tilesSoFar=0;
         List tilesToWrite = new ArrayList();
         for (Iterator i = occ.getTiles(); i.hasNext();) {
@@ -48,7 +48,7 @@ public class TileGathererTest extends TestCase {
         space.setTileWrappers(space.getWrittenEntries());
 
         // now the test
-        TileGatherer tileGatherer = new TileGatherer(space, job);
+        TileHarvester tileGatherer = new TileHarvester(space, job);
         Occurrences newOcc = tileGatherer.gather(occ.size());
         assertEquals(2, newOcc.size());
     }
