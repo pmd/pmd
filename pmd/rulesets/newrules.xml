@@ -452,7 +452,7 @@ public class Foo {
 
 
     <rule name="AbstractClassWithoutAbstractMethod"
-          message="The abstract class {0} does not have any abstract methods"
+          message="The abstract class does not have any abstract methods"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
       The abstract class does not contain any abstract methods. An abstract class suggests 
