@@ -56,7 +56,6 @@ public class RuleSet {
         Iterator rs = rules.iterator();
         while (rs.hasNext()) {
             Rule rule = (Rule) rs.next();
-
             rule.apply(acuList, ctx);
         }
     }

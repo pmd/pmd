@@ -7,8 +7,13 @@ import net.sourceforge.pmd.util.Applier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ClassScope extends AbstractScope {
+
+    protected Map methodNames = new HashMap();
+    protected Map variableNames = new HashMap();
 
     // FIXME - this breaks give sufficiently nested code
     private static int anonymousInnerClassCounter = 1;
@@ -30,6 +35,28 @@ public class ClassScope extends AbstractScope {
         //this.className = getParent().getEnclosingClassScope().getClassName() + "$" + String.valueOf(anonymousInnerClassCounter);
         this.className = "Anonymous$" + String.valueOf(anonymousInnerClassCounter);
         anonymousInnerClassCounter++;
+    }
+
+    public void addDeclaration(VariableNameDeclaration variableDecl) {
+        if (variableNames.containsKey(variableDecl)) {
+            throw new RuntimeException("Variable " + variableDecl + " is already in the symbol table");
+        }
+        variableNames.put(variableDecl, new ArrayList());
+    }
+
+    public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
+        NameDeclaration decl = findVariableHere(occurrence);
+        if (decl != null && !occurrence.isThisOrSuper()) {
+            List nameOccurrences = (List) variableNames.get(decl);
+            nameOccurrences.add(occurrence);
+        }
+        return decl;
+    }
+
+    public Map getVariableDeclarations() {
+        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
+        Applier.apply(f, variableNames.keySet().iterator());
+        return f.getUsed();
     }
 
     public ClassScope getEnclosingClassScope() {
@@ -75,7 +102,10 @@ public class ClassScope extends AbstractScope {
     }
 
     public String toString() {
-        return "ClassScope:" + className + ":" + super.glomNames();
+        String res = "ClassScope:" + className + ":";
+        res += "\nmethods: " + super.glomNames(methodNames.keySet().iterator());
+        res += "\nvariables: " + super.glomNames(variableNames.keySet().iterator());
+        return res;
     }
 
     private String clipClassName(String in) {

@@ -38,6 +38,8 @@ public class Search {
             return searchUpward(nameOccurrence, scope.getParent());
         }
         if (scope.contains(nameOccurrence)) {
+            if (TRACE)
+                System.out.println("found it!");
             return scope.addVariableNameOccurrence(nameOccurrence);
         }
         return null;

@@ -19,7 +19,6 @@ public class AvoidReassigningParametersRule extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
         Scope scope = node.getScope();
-        //Map params = scope.getVariableDeclarations(true);
         Map params = scope.getVariableDeclarations();
         for (Iterator i = params.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
@@ -27,9 +26,7 @@ public class AvoidReassigningParametersRule extends AbstractRule {
             for (Iterator j = usages.iterator(); j.hasNext();) {
                 NameOccurrence occ = (NameOccurrence) j.next();
                 if (occ.isOnLeftHandSide() && occ.getNameForWhichThisIsAQualifier() == null && !decl.isArray()) {
-                    RuleContext ctx = (RuleContext) data;
-                    String msg = MessageFormat.format(getMessage(), new Object[]{decl.getImage()});
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getLine(), msg));
+                    ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getLine(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
                 }
             }
         }

@@ -3,28 +3,38 @@
 */
 package net.sourceforge.pmd.symboltable;
 
-import java.util.Collections;
+import net.sourceforge.pmd.util.Applier;
+
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
 
 public class GlobalScope extends AbstractScope implements Scope {
+
+    protected Map classes = new HashMap();
 
     public ClassScope getEnclosingClassScope() {
         throw new RuntimeException("getEnclosingClassScope() called on GlobalScope");
     }
 
-    public void addDeclaration(MethodNameDeclaration decl) {
-        throw new RuntimeException("addMethodDeclaration() called on GlobalScope");
+    public void addDeclaration(ClassNameDeclaration classDecl) {
+        classes.put(classDecl, new ArrayList());
     }
 
-    public Map getUnusedVariableDeclarations() {
-        return Collections.EMPTY_MAP;
+    public void addDeclaration(MethodNameDeclaration decl) {
+        throw new RuntimeException("GlobalScope.addDeclaration(MethodNameDeclaration decl) called");
     }
 
     public void addDeclaration(VariableNameDeclaration decl) {
+        throw new RuntimeException("GlobalScope.addDeclaration(VariableNameDeclaration decl) called");
     }
 
-    public boolean contains(NameOccurrence occ) {
-        return false;
+    public Map getClassDeclarations() {
+        return classes;
+    }
+
+    public Map getVariableDeclarations() {
+        throw new RuntimeException("GlobalScope.getVariableDeclarations() called");
     }
 
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occ) {
@@ -32,11 +42,13 @@ public class GlobalScope extends AbstractScope implements Scope {
     }
 
     public String toString() {
-        return "GlobalScope:" + super.glomNames();
+        return "GlobalScope class names:" + super.glomNames(classes.keySet().iterator());
     }
 
     protected NameDeclaration findVariableHere(NameOccurrence occ) {
-        return null;
+        ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
+        Applier.apply(finder, classes.keySet().iterator());
+        return finder.getDecl();
     }
 
 }

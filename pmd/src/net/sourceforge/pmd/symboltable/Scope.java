@@ -19,6 +19,17 @@ public interface Scope {
     Map getVariableDeclarations();
 
     /**
+     * Returns a Map (VariableNameDeclaration->List(NameOccurrence,NameOccurrence)) of declarations that
+     * exist at this scope
+     */
+    Map getClassDeclarations();
+
+    /**
+     * Add a class declaration to this scope
+     */
+    void addDeclaration(ClassNameDeclaration decl);
+
+    /**
      * Add a variable declaration to this scope
      */
     void addDeclaration(VariableNameDeclaration decl);

@@ -7,13 +7,13 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public class UnusedLocalVariableRule extends AbstractRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {

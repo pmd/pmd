@@ -1,18 +1,18 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.symboltable.VariableUsageFinderFunction;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableUsageFinderFunction;
 import net.sourceforge.pmd.util.Applier;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VariableUsageFinderFunctionTest extends TestCase {
 

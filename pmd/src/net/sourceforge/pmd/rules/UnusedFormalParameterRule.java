@@ -10,8 +10,8 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public class UnusedFormalParameterRule extends AbstractRule {
 

@@ -19,8 +19,8 @@ public class AvoidReassigningParametersRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "bad", 1, rule),
-           new TestDescriptor(TEST2, "ok", 0, rule),
+           new TestDescriptor(TEST1, "reassigned parameter, bad", 1, rule),
+           new TestDescriptor(TEST2, "one parameter, not reassigned, good", 0, rule),
            new TestDescriptor(TEST3, "instance variable and parameter have same name", 1, rule),
            new TestDescriptor(TEST4, "qualified instance variable same name as parameter", 0, rule),
            new TestDescriptor(TEST5, "qualified name same as parameter", 0, rule),
@@ -31,29 +31,29 @@ public class AvoidReassigningParametersRuleTest extends SimpleAggregatorTst {
 
     public static final String TEST1 =
     "public class Foo {" + PMD.EOL +
-    " private void foo(String bar) {" + PMD.EOL +
-    "  bar = \"something else\";" + PMD.EOL +
+    " void foo(int bar) {" + PMD.EOL +
+    "  bar = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     public static final String TEST2 =
     "public class Foo {" + PMD.EOL +
-    " private void foo(String bar) {}" + PMD.EOL +
+    " void foo(int bar) {}" + PMD.EOL +
     "}";
 
     public static final String TEST3 =
     "public class Foo {" + PMD.EOL +
     " private int bar;" + PMD.EOL +
-    " private void foo(String bar) {" + PMD.EOL +
-    "  bar = \"hi\";" + PMD.EOL +
+    " void foo(float bar) {" + PMD.EOL +
+    "  bar = 2.2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     public static final String TEST4 =
     "public class Foo {" + PMD.EOL +
     " private int bar;" + PMD.EOL +
-    " private void foo(String bar) {" + PMD.EOL +
-    "  this.bar = \"hi\";" + PMD.EOL +
+    " void foo(float bar) {" + PMD.EOL +
+    "  this.bar = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
@@ -62,24 +62,22 @@ public class AvoidReassigningParametersRuleTest extends SimpleAggregatorTst {
     " private class Foo {" + PMD.EOL +
     "  public String bar;" + PMD.EOL +
     " }" + PMD.EOL +
-    " private void foo(String bar) {" + PMD.EOL +
+    " void foo(String bar) {" + PMD.EOL +
     "  Foo f = new Foo();" + PMD.EOL +
     "  f.bar = bar;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     public static final String TEST6 =
-    "import java.awt.*;" + PMD.EOL +
     "public class Foo {" + PMD.EOL +
-    " private void foo(GridBagConstraints gbc) {" + PMD.EOL +
-    "  gbc.gridx = 2;" + PMD.EOL +
+    " void foo(Bar bar) {" + PMD.EOL +
+    "  bar.buz = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     public static final String TEST7 =
-    "import java.awt.*;" + PMD.EOL +
     "public class Foo {" + PMD.EOL +
-    " private void foo(Bar[] bar) {" + PMD.EOL +
+    " void foo(Bar[] bar) {" + PMD.EOL +
     "  bar[0] = 2;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";

@@ -5,7 +5,29 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.Applier;
 
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+
 public class LocalScope extends AbstractScope {
+
+    protected Map variableNames = new HashMap();
+
+    public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
+        NameDeclaration decl = findVariableHere(occurrence);
+        if (decl != null && !occurrence.isThisOrSuper()) {
+            List nameOccurrences = (List) variableNames.get(decl);
+            nameOccurrences.add(occurrence);
+        }
+        return decl;
+    }
+
+    public Map getVariableDeclarations() {
+        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
+        Applier.apply(f, variableNames.keySet().iterator());
+        return f.getUsed();
+    }
 
     public void addDeclaration(VariableNameDeclaration nameDecl) {
         if (nameDecl.isExceptionBlockParameter()) {
@@ -13,7 +35,10 @@ public class LocalScope extends AbstractScope {
             // highest LocalScope?
             return;
         }
-        super.addDeclaration(nameDecl);
+        if (variableNames.containsKey(nameDecl)) {
+            throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
+        }
+        variableNames.put(nameDecl, new ArrayList());
     }
 
     public NameDeclaration findVariableHere(NameOccurrence occurrence) {
@@ -26,6 +51,6 @@ public class LocalScope extends AbstractScope {
     }
 
     public String toString() {
-        return "LocalScope:" + super.glomNames();
+        return "LocalScope variable names:" + super.glomNames(variableNames.keySet().iterator());
     }
 }

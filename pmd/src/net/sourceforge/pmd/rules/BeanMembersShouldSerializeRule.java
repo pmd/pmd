@@ -6,9 +6,9 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
-import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.ast.ASTResultType;
+import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.text.MessageFormat;

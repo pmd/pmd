@@ -8,12 +8,10 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTInitializer;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.StringReader;
-import java.util.List;
 
 public class AcceptanceTest extends TestCase {
 
