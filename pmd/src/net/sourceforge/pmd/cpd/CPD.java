@@ -41,7 +41,7 @@ public class CPD {
     }
 
     public void go(int minimumTileSize) {
-        generateInitialOccurrenceTable();
+        occ.addInitial(tokenSets);
         GST gst = new GST(this.tokenSets, this.occ, minimumTileSize);
         gst.crunch();
         results = gst.getResults();
@@ -53,12 +53,6 @@ public class CPD {
 
     public String toString() {
         return tokenSets.toString();
-    }
-
-    private void generateInitialOccurrenceTable() {
-        for (Iterator i = tokenSets.iterator(); i.hasNext();) {
-            occ.addInitial((TokenSet)i.next());
-        }
     }
 
     public static void main(String[] args) {

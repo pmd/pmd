@@ -11,6 +11,12 @@ public class TokenSets {
 
     Set tokenSets = new HashSet();
 
+    public TokenSets() {}
+
+    public TokenSets(TokenSet ts) {
+        tokenSets.add(ts);
+    }
+
     public void add(TokenSet ts) {
         tokenSets.add(ts);
     }

@@ -30,18 +30,7 @@ public class TokenSetTest extends TestCase{
     }
 
     public void testHasTokenAfter() {
-        TokenSet ts = new TokenSet("foo");
-        Token tok = new Token('h', 0, "foo");
-        ts.add(tok);
-        Token tok1 = new Token('e', 1, "foo");
-        ts.add(tok1);
-        Token tok3 = new Token('l', 2, "foo");
-        ts.add(tok3);
-        Token tok4 = new Token('l', 3, "foo");
-        ts.add(tok4);
-        Token tok5 = new Token('o', 4, "foo");
-        ts.add(tok5);
-        assertTrue(ts.hasTokenAfter(new Tile(tok), new Occurrence("foo", tok)));
+        assertTrue(GSTTest.createHelloTokenSet("foo").hasTokenAfter(new Tile(new Token('h', 0, "foo")), new Occurrence("foo", new Token('h', 0, "foo"))));
     }
 
 

@@ -12,12 +12,15 @@ public class Occurrences {
     private List tiles = new ArrayList();
     private Map occurrences = new HashMap();
 
-    public void addInitial(TokenSet ts) {
-        for (Iterator i = ts.iterator(); i.hasNext();) {
-            Token tok = (Token)i.next();
-            Tile tile = new Tile(tok);
-            Occurrence occ = new Occurrence(ts.getID(), tok);
-            addTile(tile, occ);
+    public void addInitial(TokenSets tss) {
+        for (Iterator j = tss.iterator();j.hasNext();) {
+            TokenSet ts = (TokenSet)j.next();
+            for (Iterator i = ts.iterator(); i.hasNext();) {
+                Token tok = (Token)i.next();
+                Tile tile = new Tile(tok);
+                Occurrence occ = new Occurrence(ts.getID(), tok);
+                addTile(tile, occ);
+            }
         }
     }
 
