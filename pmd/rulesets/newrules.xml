@@ -50,7 +50,7 @@ public class Bar {
           <property name="xpath">
               <value>
                   <![CDATA[
-//Expression/PrimaryExpression[position()>1]/PrimaryPrefix/Literal/BooleanLiteral
+//Expression/ConditionalAndExpression/PrimaryExpression[position()>1]/PrimaryPrefix/Literal/BooleanLiteral
                   ]]>
               </value>
           </property>

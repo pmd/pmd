@@ -42,11 +42,11 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     }
 
     public Object visit(ASTLiteral node, Object data) {
-        if (!hasFourParents(node)) {
+        if (!hasFiveParents(node)) {
             return data;
         }
 
-        if (!(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList)) {
+        if (!(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTArgumentList)) {
             return data;
         }
 
@@ -67,9 +67,9 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         return data;
     }
 
-    private boolean hasFourParents(Node node) {
+    private boolean hasFiveParents(Node node) {
         Node currentNode = node;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             if (currentNode instanceof ASTCompilationUnit) {
                 return false;
             }

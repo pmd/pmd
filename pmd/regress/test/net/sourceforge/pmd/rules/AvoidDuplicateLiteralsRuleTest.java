@@ -1,8 +1,3 @@
-/*
- * User: tom
- * Date: Nov 4, 2002
- * Time: 10:42:01 AM
- */
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule;
@@ -14,6 +9,7 @@ public class AvoidDuplicateLiteralsRuleTest extends RuleTst {
     public void setUp() {
         rule = new AvoidDuplicateLiteralsRule();
         rule.setMessage("avoid ''{0}'' and ''{1}''");
+        rule.addProperty("threshold", "2");
     }
 
     public void testTwoLiteralStringArgs() throws Throwable {
