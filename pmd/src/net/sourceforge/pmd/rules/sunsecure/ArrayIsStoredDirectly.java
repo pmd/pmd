@@ -66,23 +66,44 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
             final ASTBlockStatement b = (ASTBlockStatement) it.next();
             if (b.containsChildOfType(ASTAssignmentOperator.class)) {
                 final ASTStatementExpression se = (ASTStatementExpression) b.getFirstChildOfType(ASTStatementExpression.class);
+                if (se == null) {
+                    continue;
+                }
+                if (!(se.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
+                    continue;
+                }
                 ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
                 String assignedVar = getFirstNameImage(pe);
                 if (assignedVar==null) {
                     assignedVar = ((ASTPrimarySuffix)se.getFirstChildOfType(ASTPrimarySuffix.class)).getImage();
                 }
-                
-                if (!isLocalVariable(assignedVar, (ASTMethodDeclaration) pe.getFirstParentOfType(ASTMethodDeclaration.class))) {
-                    
+
+                ASTMethodDeclaration n = (ASTMethodDeclaration) pe.getFirstParentOfType(ASTMethodDeclaration.class);
+                if (n == null) {
+                    continue;
+                }
+                if (!isLocalVariable(assignedVar, n)) {
+                    if (se.jjtGetNumChildren() < 3) {
+                        continue;
+                    }
                     ASTExpression e = (ASTExpression) se.jjtGetChild(2);
                     String val = getFirstNameImage(e);
                     if (val==null) {
-                        val = ((ASTPrimarySuffix)se.getFirstChildOfType(ASTPrimarySuffix.class)).getImage();
+                        ASTPrimarySuffix foo = (ASTPrimarySuffix)se.getFirstChildOfType(ASTPrimarySuffix.class);
+                        if (foo == null) {
+                            continue;
+                        }
+                        val = foo.getImage();
                     }
-                    
-                    if (val.equals(varName) 
-                            && !isLocalVariable(varName, (ASTMethodDeclaration) parameter.getFirstParentOfType(ASTMethodDeclaration.class))) {
-                        return true;
+                    if (val == null) {
+                        continue;
+                    }
+
+                    if (val.equals(varName)) {
+                        ASTMethodDeclaration md = (ASTMethodDeclaration) parameter.getFirstParentOfType(ASTMethodDeclaration.class);
+                        if (!isLocalVariable(varName, md)) {
+                            return true;
+                        }
                     }
                 }
             }            

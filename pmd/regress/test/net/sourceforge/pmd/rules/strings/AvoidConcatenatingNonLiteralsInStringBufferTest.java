@@ -24,6 +24,7 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
                new TestDescriptor(TEST4, "concating two literals in SB constructor", 0, rule),
                new TestDescriptor(TEST5, "concating two literals post-construction", 0, rule),
                new TestDescriptor(TEST6, "case where concatenation is not a child of a BlockStatement, but instead is a child of an ExplicitConstructorInvocation", 0, rule),
+               // FIXME new TestDescriptor(TEST7, "usage of the StringBuffer constructor that takes an int", 0, rule),
        });
     }
 
@@ -69,6 +70,13 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
        "public class Foo {" + PMD.EOL +
        " public Foo() {" + PMD.EOL +
        "  super(\"CauseMsg:\" + ex.getMessage(), ex); " + PMD.EOL +
+       " }" + PMD.EOL +
+       "}";
+
+   private static final String TEST7 =
+       "public class Foo {" + PMD.EOL +
+       " public void bar() {" + PMD.EOL +
+       "  StringBuffer buf = new StringBuffer(high + (high/chunk) +1);" + PMD.EOL +
        " }" + PMD.EOL +
        "}";
 
