@@ -42,7 +42,9 @@ public class AcceleratorPropertyPage extends PropertyPage {
     private JLabel jLabel2 = new JLabel();
     private JLabel jLabel3 = new JLabel();
     private int[][]keys = new int[2][2];
-    private JCheckBox jCheckBox1 = new JCheckBox();  //data structure to hold keycode and modifier info for 2 distinct actions
+    private JCheckBox jCheckBox1 = new JCheckBox();
+    private JTextField jTextField1 = new JTextField();
+    private JLabel jLabel4 = new JLabel();  //data structure to hold keycode and modifier info for 2 distinct actions
 
     /**
      * Constuctor
@@ -65,7 +67,9 @@ public class AcceleratorPropertyPage extends PropertyPage {
         this.setLayout(verticalFlowLayout1);
         jLabel1.setText("Select the Action");
         jPanel2.setLayout(flowLayout1);
+        jTextField2.setEnabled(false);
         jTextField2.setPreferredSize(new Dimension(60, 21));
+        jTextField2.setEditable(false);
         jTextField3.setEnabled(false);
         jTextField3.setPreferredSize(new Dimension(60, 21));
         jTextField3.setEditable(false);
@@ -87,15 +91,19 @@ public class AcceleratorPropertyPage extends PropertyPage {
                 jCheckBox1_itemStateChanged(e);
             }
         });
+        jLabel4.setText("enter");
+        jTextField1.setPreferredSize(new Dimension(60, 21));
         this.add(jPanel1, null);
         jPanel1.add(jLabel1, null);
         jPanel1.add(jComboBox1, null);
         this.add(jPanel3, null);
         jPanel3.add(jLabel2, null);
         jPanel3.add(jLabel3, null);
+        jPanel3.add(jLabel4, null);
         this.add(jPanel2, null);
         jPanel2.add(jTextField3, null);
         jPanel2.add(jTextField2, null);
+        jPanel2.add(jTextField1, null);
         this.add(jCheckBox1, null);
     }
 
@@ -125,7 +133,7 @@ public class AcceleratorPropertyPage extends PropertyPage {
         int selectedItem = jComboBox1.getSelectedIndex();
         jTextField2.setText(KeyEvent.getKeyText(keys[selectedItem][0]));
         jTextField3.setText(KeyEvent.getKeyModifiersText(keys[selectedItem][1]));
-        jTextField2.addKeyListener(new KeyAdapter() {
+        jTextField1.addKeyListener(new KeyAdapter() {
              public void keyPressed(KeyEvent e)
              {
                  int item = jComboBox1.getSelectedIndex();
@@ -135,7 +143,7 @@ public class AcceleratorPropertyPage extends PropertyPage {
                  {
                      jTextField2.setText(KeyEvent.getKeyText(keys[item][0]));
                      jTextField3.setText(KeyEvent.getKeyModifiersText(keys[item][1]));
-                     //jTextField2.setText("");
+                     jTextField1.setText("");
 
                  }
              }
@@ -145,7 +153,7 @@ public class AcceleratorPropertyPage extends PropertyPage {
                  int item = jComboBox1.getSelectedIndex();
                  jTextField2.setText(KeyEvent.getKeyText(keys[item][0]));
                  jTextField3.setText(KeyEvent.getKeyModifiersText(keys[item][1]));
-                 //jTextField2.setText("");
+                 jTextField1.setText("");
              }
 
         });
