@@ -1,3 +1,5 @@
+Move rulesets/tmp.xml somewhere else
+
 update run.bat to point to pmd-1.01.jar
 update cpdgui.bat to point to pmd-1.01.jar
 update build.xml to reflect pmd-1.01

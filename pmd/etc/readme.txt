@@ -38,7 +38,7 @@ HOW TO RUN PMD FROM THE COMMAND LINE (UNIX)
 -download the binary release
 -unzip it
 
-[build@ul020-dmz tmp_pmd]$ unzip -q pmd-bin-1.0.zip
+[build@ul020-dmz tmp_pmd]$ unzip -q pmd-bin-1.01.zip
 
 -cd into the pmd/etc/ directory
 
@@ -46,7 +46,7 @@ HOW TO RUN PMD FROM THE COMMAND LINE (UNIX)
 
 -run PMD on a Java source file
 
-[build@ul020-dmz etc]$ java -jar ../lib/pmd-1.0.jar Foo.java html rulesets/unusedcode.xml
+[build@ul020-dmz etc]$ java -jar ../lib/pmd-1.01.jar Foo.java html rulesets/unusedcode.xml
 <html><head><title>PMD</title></head><body>
 <table><tr>
 <th>File</th><th>Line</th><th>Problem</th></tr>
