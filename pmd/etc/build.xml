@@ -57,6 +57,10 @@
     <jar jarfile="${lib}\pmd-${version}.jar" basedir="${build}" manifest="etc/MANIFEST.MF"/>
 </target>
 
+<target name="jarsrc" depends="copy,compile">
+    <jar jarfile="${lib}\pmd-src-${version}.jar" basedir="${src}"/>
+</target>
+
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     <pmd rulesetfiles="rulesets/imports.xml">

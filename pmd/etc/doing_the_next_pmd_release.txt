@@ -32,13 +32,17 @@ cd -
 
 Time to tag:
 
+cd ../../
 cvs -q rtag -D tomorrow "pmd_release_1_1" pmd
 
 Prepare source release:
 rm -rf ~/tmp/pmd-1.1
 mkdir tmp
-cvs -q export -d /home/tom/tmp/pmd-1.1 -r pmd_release_1_1 pmd
-<<<<Run a new Ant target that creates a src jar>>>
+cvs -q export -d tmp/ -r pmd_release_1_1 pmd
+cd pmd/etc
+ant jarsrc
+cd ../../
+cp pmd/lib/pmd-src-1.1.jar tmp/lib/
 mv tmp ~/tmp/pmd-1.1
 cp pmd/lib/pmd-1.1.jar ~/tmp/pmd-1.1/lib
 cp -R pmd/target/docs ~/tmp/pmd-1.1/
