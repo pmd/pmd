@@ -48,6 +48,7 @@
 				<include name="*.html"/>
 			</fileset>
 		</jar>
+		<copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="${jedit.jars.dir}"></copy>
     </target>
 
 
