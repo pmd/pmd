@@ -12,11 +12,11 @@ public class CPD {
 
     public static final String EOL = System.getProperty("line.separator", "\n");
 
-    private int minimumTileSize;
-    private Map tokenSets = new HashMap();
-    private MatchAlgorithm matchAlgorithm = new MatchAlgorithm();
+    private Map source = new HashMap();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
+    private int minimumTileSize;
+    private MatchAlgorithm matchAlgorithm;
 
     public CPD(int minimumTileSize) {
         this.minimumTileSize = minimumTileSize;
@@ -27,10 +27,8 @@ public class CPD {
     }
 
     public void go() {
+        matchAlgorithm = new MatchAlgorithm(source, tokens);
         matchAlgorithm.setListener(listener);
-        for (Iterator i = tokens.iterator(); i.hasNext();) {
-            matchAlgorithm.add((TokenEntry)i.next());
-        }
         matchAlgorithm.findMatches(minimumTileSize);
     }
 
@@ -43,29 +41,13 @@ public class CPD {
         StringBuffer rpt = new StringBuffer();
         for (Iterator i = matchAlgorithm.matches(); i.hasNext();) {
             Match match = (Match)i.next();
-
-            rpt.append("=====================================================================");
-            rpt.append(EOL);
-
-            boolean printedHeader = false;
+            rpt.append("=====================================================================" + EOL);
+            rpt.append("Found a " + match.getLineCount() + " line (" + match.getTokenCount() + " tokens) duplication in the following files: " + EOL);
             for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
                 Mark mark = (Mark)occurrences.next();
-
-                SourceCode sourceCode = (SourceCode)tokenSets.get(mark.getFile());
-                if (!printedHeader) {
-                    rpt.append("Found a " + tokens.getLineCount(mark, match) + " line (" + match.getTokenCount() + " tokens) duplication in the following files: ");
-                    rpt.append(EOL);
-                    printedHeader = true;
-                }
-
-                rpt.append("Starting at line " + mark.getBeginLine() + " of " + mark.getFile());
-                rpt.append(EOL);
-
-                if (!occurrences.hasNext()) {
-                    rpt.append(sourceCode.getSlice(mark.getBeginLine()-1, mark.getBeginLine() + tokens.getLineCount(mark, match)));
-                    rpt.append(EOL);
-                }
+                rpt.append("Starting at line " + mark.getBeginLine() + " of " + mark.getFile() + EOL);
             }
+            rpt.append(match.getSourceCodeSlice() + EOL);
         }
         return rpt.toString();
     }
@@ -102,7 +84,7 @@ public class CPD {
         FileReader reader = new FileReader(file);
         tokenizer.tokenize(sourceCode, tokens, reader);
         reader.close();
-        tokenSets.put(sourceCode.getFileName(), sourceCode);
+        source.put(sourceCode.getFileName(), sourceCode);
     }
 
     public static void main(String[] args) {

@@ -13,7 +13,17 @@ public class MatchAlgorithm {
     private List code = new ArrayList();
     private List marks = new ArrayList();
     private List matches;
+    private Map source;
+    private Tokens tokens;
     private CPDListener cpdListener;
+
+    public MatchAlgorithm(Map sourceCode, Tokens tokens) {
+        this.source = sourceCode;
+        this.tokens = tokens;
+        for (Iterator i = tokens.iterator(); i.hasNext();) {
+            add((TokenEntry)i.next());
+        }
+    }
 
     public void setListener(CPDListener listener) {
         this.cpdListener = listener;
@@ -44,6 +54,18 @@ public class MatchAlgorithm {
         MatchCollector coll = new MatchCollector(marks, code, mc);
         matches = coll.collect(min);
         Collections.sort(matches);
+
+        for (Iterator i = matches(); i.hasNext();) {
+            Match match = (Match)i.next();
+            for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
+                Mark mark = (Mark)occurrences.next();
+                SourceCode sourceCode = (SourceCode)source.get(mark.getFile());
+                match.setLineCount(tokens.getLineCount(mark, match));
+                if (!occurrences.hasNext()) {
+                    match.setSourceCodeSlice(sourceCode.getSlice(mark.getBeginLine()-1, mark.getBeginLine() + tokens.getLineCount(mark, match)));
+                }
+            }
+        }
     }
 
     public Iterator matches() {
