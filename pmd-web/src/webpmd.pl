@@ -3,6 +3,7 @@ $| =1;
 
 use CGI qw(:standard escapeHTML);
 use CGI::Carp qw(fatalsToBrowser);
+use Time::localtime;
 
 $query = new CGI();
 print $query->header();
@@ -13,6 +14,9 @@ sub nopage() {
 
 sub default() {
  print start_html("Run PMD on your Sourceforge project");
+ 
+ print h3("<center>PMD-WEB</center>");
+
  if (param("title")) {
   addProject(param("title"),param("unixname"), param("moduledirectory"), param("srcdir"));
   print p();
@@ -21,8 +25,21 @@ sub default() {
  } 
  print p("PMD is run hourly on these projects:");
  print p(loadProjectList());
- #print p("Stats:");
- print p("Want to run PMD on your Sourceforge project?  Fill in the blanks and hit go");
+
+ print hr(); 
+ print b("Stats:");
+ print br(), br(); 
+ my $tm = localtime;
+ my $timeuntil = $tm->min; 
+ print "There are ${timeuntil} minutes until the next hourly run";
+ open(FILE,"lastruntime.txt");
+ my $lastruntime=<FILE>;
+ print br();
+ print "The last run took ${lastruntime} seconds";
+ print br();
+ 
+ print hr(); 
+ print p("Want to run PMD every hour on your Java Sourceforge project?  Fill in the blanks and hit go");
  print start_form();
  print p(), "Project title (i.e., PMD): ", textfield(-name=>'title',-default=>'',-override=>1);
  print p(), "Project's Unix name (i.e., pmd): ", textfield(-name=>'unixname',-default=>'',-override=>1);

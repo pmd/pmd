@@ -5,6 +5,7 @@ Dir.chdir("/home/groups/p/pm/pmd/cgi-bin");
 require 'pmd.rb'
 
 jobsDir = Dir.new("jobs")
+start=Time.now
 jobsDir.each { |candidate| 
  begin 	
   if candidate[".txt"] 
@@ -21,5 +22,7 @@ jobsDir.each { |candidate|
   puts "Exiting with error: #{$!}"
  end
 }
+stop=Time.now
 
+`echo #{stop-start} > lastruntime.txt`
 
