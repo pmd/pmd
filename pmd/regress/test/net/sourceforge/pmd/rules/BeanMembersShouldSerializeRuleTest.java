@@ -26,6 +26,7 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "getter, no setter", 1, rule),
            new TestDescriptor(TEST5, "setter, no getter", 1, rule),
            new TestDescriptor(TEST6, "both accessors, yay!", 0, rule),
+           new TestDescriptor(TEST7, "setFoo and isFoo is OK for booleans", 0, rule),
        });
     }
 
@@ -67,6 +68,13 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
     " private String bar = Foo.foo;" + PMD.EOL +
     " public void setFoo(Foo foo) {this.foo = foo;}" + PMD.EOL +
     " public String getFoo() {return foo;}" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " private boolean foo;" + PMD.EOL +
+    " public void setFoo(boolean foo) {this.foo = foo;}" + PMD.EOL +
+    " public boolean isFoo() {return foo;}" + PMD.EOL +
     "}";
 
 }

@@ -2,6 +2,7 @@
 Some minor performance optimizations - removed some unnecessary casts from the grammar, simplified some XPath rules.
 Implemented RFE 743460: The XML report now contains the ruleset name.
 Postfix expressions (i.e., x++) are now available in the grammar.  To access them, search for StatementExpressions with an image of "++" or "--" - i.e., in XPath, //StatementExpression[@Image="++"].  This is an odd hack and hopefully will get cleared up later.
+Fixed bug 962782 - BeanMembersShouldSerializeRule no longer reports set/is as being a violation.  
 
 May 19, 2004 - 1.8:
 New rules: ExceptionAsFlowControlRule, BadComparisonRule, AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, OptimizableToArrayCallRule

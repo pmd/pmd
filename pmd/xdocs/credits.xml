@@ -40,6 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many pmd-web ideas</li>
             <li>Radim Kubacki - OptimizableToArrayCallRule suggestion, bug reports, pmd-netbeans feedback</li>
             <li>Will Sargent - AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Mike Thome - BadComparisonRule suggestion</li>
@@ -58,7 +59,6 @@
             <li>Jesse Glick - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
             <li>Philippe Couton - OverrideBothEqualsAndHashcodeRule bug report, UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
-            <li>Brandon Franklin - many pmd-web ideas</li>
             <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
             <li>Andriy Rozeluk - Suggestions for improving UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
