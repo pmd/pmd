@@ -67,7 +67,7 @@ class Job
   end
   
   def to_s
-   return @unixName +":"+@moduleDirectory+":"+@sourceDirectory
+   return @title + ":" + @unixName +":"+@moduleDirectory+":"+@sourceDirectory
   end
 end
 

@@ -10,12 +10,13 @@ jobsDir.each { |candidate|
  begin 	
   if candidate[".txt"] 
    title,unixname,moduleDir,srcDir = File.new("jobs/#{candidate}").read.split(":") 
+   if ARGV.length != 0 && ARGV[0] != moduleDir
+    next
+   end
    job = PMD::Job.new(title,unixname,moduleDir,srcDir)
-   puts "Checking out code"
+   puts "Processing #{job}"
    job.checkout_code
-   puts "Running PMD"
    job.run_pmd
-   puts "Cleaning up"
    job.clear
   end
  rescue
