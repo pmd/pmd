@@ -18,7 +18,15 @@ public class SimpleNode implements Node {
     parser = p;
   }
 
-    public void jjtOpen() {}
+    public void jjtOpen() {
+	if (parser.token.next != null) {
+	    beginLine = parser.token.next.beginLine;
+	    beginColumn = parser.token.next.beginColumn;
+	} else {
+	    beginLine = 0;
+	    beginColumn = 0;
+	}
+    }
 
     // NEW STUFF
     private String image;
@@ -26,12 +34,31 @@ public class SimpleNode implements Node {
     public void setImage(String image) { this.image = image;}
 
     private int beginLine;
+    private int endLine;
+    private int beginColumn;
+    private int endColumn;
+
     public void jjtClose() {
-      beginLine = parser.token.beginLine;
+      endLine = parser.token.endLine;
+      endColumn = parser.token.endColumn;
     }
+
     public int getBeginLine() {
         return beginLine;
     }
+    
+    public int getBeginColumn() {
+	return beginColumn;
+    }
+
+    public int getEndLine() {
+	return endLine;
+    }
+
+    public int getEndColumn() {
+	return endColumn;
+    }
+
     // NEW STUFF
 
   public void jjtSetParent(Node n) { parent = n; }
