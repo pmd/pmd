@@ -1,2 +1,0 @@
-???? - 0.1:
-Initial release of the PMD Swing UI as a separate module.
