@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
             <li>Philippe Couton - OverrideBothEqualsAndHashcodeRule bug report, UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
             <li>Brandon Franklin - many pmd-web ideas</li>
             <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
