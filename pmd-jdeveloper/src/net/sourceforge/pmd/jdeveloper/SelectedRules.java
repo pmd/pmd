@@ -62,7 +62,7 @@ public class SelectedRules {
         return foo;
     }
 
-    public void save(SettingsStorage settings) {
+    public void save(SettingsStorage settings) throws SettingsException {
         for (Iterator i = rules.keySet().iterator(); i.hasNext();) {
             Rule rule = (Rule)i.next();
             settings.save("pmd.rule." + rule.getName(), String.valueOf(get(rule).isSelected()));
@@ -82,8 +82,16 @@ public class SelectedRules {
 
     private JCheckBox createCheckBox(String name, SettingsStorage settings) {
         JCheckBox box = new JCheckBox(name);
-        box.setSelected(Boolean.valueOf(settings.load("pmd.rule." + name)).booleanValue());
+        try {
+            box.setSelected(load(settings, name));
+        } catch (SettingsException se) {
+            System.out.println("Can't load settings so this rule will not be enabled");
+        }
         return box;
+    }
+
+    private boolean load(SettingsStorage settings, String name) throws SettingsException {
+        return Boolean.valueOf(settings.load("pmd.rule." + name)).booleanValue();
     }
 
 }

@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class SettingsPanel extends DefaultTraversablePanel {
 
@@ -66,7 +67,7 @@ public class SettingsPanel extends DefaultTraversablePanel {
 
     public static SettingsStorage createSettingsStorage() {
         if (Boolean.valueOf(Ide.getProperty(RULE_SELECTIONS_STORED_SEPARATELY)).booleanValue()) {
-            //return new
+            return new FileStorage(new File(Ide.getProperty(RULE_SELECTIONS_FILENAME)));
         }
         return new IDEStorage();
     }
@@ -126,6 +127,10 @@ public class SettingsPanel extends DefaultTraversablePanel {
     public void onExit(TraversableContext tc) {
         Ide.setProperty(RULE_SELECTIONS_STORED_SEPARATELY, String.valueOf(selectedRulesStoredSeparatelyBox.isSelected()));
         Ide.setProperty(RULE_SELECTIONS_FILENAME, selectedRulesSeparateFileNameField.getText());
-        rules.save(createSettingsStorage());
+        try {
+            rules.save(createSettingsStorage());
+        } catch (SettingsException se) {
+            JOptionPane.showMessageDialog(null, "Can't save selected rules to the file " + selectedRulesSeparateFileNameField.getText() + ":" + se.getMessage(), "Can't save settings", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
