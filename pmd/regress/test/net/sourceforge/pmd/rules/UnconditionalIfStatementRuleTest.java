@@ -12,7 +12,7 @@ public class UnconditionalIfStatementRuleTest extends SimpleAggregatorTst {
 
     public void setUp() {
         rule = new XPathRule();
-        rule.addProperty("xpath", "//IfStatement/Expression/ConditionalAndExpression/InstanceOfExpression/UnaryExpression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral");
+        rule.addProperty("xpath", "//IfStatement/Expression/ConditionalAndExpression[InstanceOfExpression/UnaryExpression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral][count(InstanceOfExpression)=1]");
     }
 
     public void testAll() {
@@ -20,7 +20,7 @@ public class UnconditionalIfStatementRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "if (true)", 1, rule),
            new TestDescriptor(TEST2, "if (false)", 1, rule),
            new TestDescriptor(TEST3, "no constant folding", 0, rule),
-           new TestDescriptor(TEST4, "short circuit operator", 1, rule)
+           new TestDescriptor(TEST4, "short circuit operator", 0, rule)
        });
     }
 
@@ -46,7 +46,6 @@ public class UnconditionalIfStatementRuleTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
-    // FIXME - this shouldn't be flagged
     private static final String TEST4 =
     "public class Foo {" + PMD.EOL +
     " void bar(Object x, boolean y) {" + PMD.EOL +

@@ -38,7 +38,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Steve Hawkins - improvements and optimizations to CPD, CPD CSVRenderer</li>
+            <li>Steve Hawkins - improvements and optimizations to CPD - now it runs about 4 times faster!  CPD CSVRenderer</li>
             <li>Curt Cox - some additions to the 'Similar Projects' page</li>
             <li>Michael Griffel - bug fix for XMLRenderer</li>
             <li>Doug Tillman - correction to finalizers.xml examples</li>

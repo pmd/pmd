@@ -54,7 +54,7 @@ public class AccessorClassGenerationRuleTest extends RuleTst {
     "        new Foo3();//Causes generation of accessor" + PMD.EOL +
     "      }" + PMD.EOL +
     "    }" + PMD.EOL +
-    "    private Foo3(){" + PMD.EOL +
+    "    private Foo3() {" + PMD.EOL +
     "    }" + PMD.EOL +
     "}";
 

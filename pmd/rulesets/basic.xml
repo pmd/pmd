@@ -497,8 +497,9 @@ public class Bar {
                 <value>
                     <![CDATA[
 //IfStatement/Expression/ConditionalAndExpression
- /InstanceOfExpression/UnaryExpression
- /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+ [InstanceOfExpression/UnaryExpression
+ /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
+ [count(InstanceOfExpression)=1]
                     ]]>
                 </value>
             </property>
