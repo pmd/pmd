@@ -823,17 +823,17 @@ void AssignmentOperator() :
 {}
 {
       "="     {jjtThis.setImage("=");}
-    | "*="    {jjtThis.setImage("*=");}
-    | "/="    {jjtThis.setImage("/=");}
-    | "%="    {jjtThis.setImage("%=");}
-    | "+="    {jjtThis.setImage("+=");}
-    | "-="    {jjtThis.setImage("-=");}
-    | "<<="   {jjtThis.setImage("<<=");}
-    | ">>="   {jjtThis.setImage(">>=");}
-    | ">>>="  {jjtThis.setImage(">>>=");}
-    | "&="    {jjtThis.setImage("&=");}
-    | "^="    {jjtThis.setImage("^=");}
-    | "|="    {jjtThis.setImage("|=");}
+    | "*="    {jjtThis.setImage("*="); jjtThis.setCompound();}
+    | "/="    {jjtThis.setImage("/="); jjtThis.setCompound();}
+    | "%="    {jjtThis.setImage("%="); jjtThis.setCompound();}
+    | "+="    {jjtThis.setImage("+="); jjtThis.setCompound();}
+    | "-="    {jjtThis.setImage("-="); jjtThis.setCompound();}
+    | "<<="   {jjtThis.setImage("<<="); jjtThis.setCompound();}
+    | ">>="   {jjtThis.setImage(">>="); jjtThis.setCompound();}
+    | ">>>="  {jjtThis.setImage(">>>="); jjtThis.setCompound();}
+    | "&="    {jjtThis.setImage("&="); jjtThis.setCompound();}
+    | "^="    {jjtThis.setImage("^="); jjtThis.setCompound();}
+    | "|="    {jjtThis.setImage("|="); jjtThis.setCompound();}
 }
 
 void ConditionalExpression() :

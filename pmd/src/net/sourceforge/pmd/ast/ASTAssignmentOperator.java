@@ -11,6 +11,16 @@ public class ASTAssignmentOperator extends SimpleNode {
         super(p, id);
     }
 
+    private boolean isCompound;
+
+    public void setCompound() {
+        isCompound = true;
+    }
+
+    public boolean isCompound() {
+        return this.isCompound;
+    }
+
 
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -18,7 +28,7 @@ public class ASTAssignmentOperator extends SimpleNode {
     }
 
     public void dump(String prefix) {
-        System.out.println(toString(prefix) + ":" + getImage());
+        System.out.println(toString(prefix) + ":" + getImage() + (isCompound ? "(compound)" : "simple"));
         dumpChildren(prefix);
     }
 }

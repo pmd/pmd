@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UnusedLocalVariableRule extends AbstractRule {
+
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration) {
             Map unused = node.getScope().getVariableDeclarations();

@@ -2148,67 +2148,67 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         jj_consume_token(STARASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("*=");
+               jjtn000.setImage("*="); jjtn000.setCompound();
         break;
       case SLASHASSIGN:
         jj_consume_token(SLASHASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("/=");
+               jjtn000.setImage("/="); jjtn000.setCompound();
         break;
       case REMASSIGN:
         jj_consume_token(REMASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("%=");
+               jjtn000.setImage("%="); jjtn000.setCompound();
         break;
       case PLUSASSIGN:
         jj_consume_token(PLUSASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("+=");
+               jjtn000.setImage("+="); jjtn000.setCompound();
         break;
       case MINUSASSIGN:
         jj_consume_token(MINUSASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("-=");
+               jjtn000.setImage("-="); jjtn000.setCompound();
         break;
       case LSHIFTASSIGN:
         jj_consume_token(LSHIFTASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("<<=");
+               jjtn000.setImage("<<="); jjtn000.setCompound();
         break;
       case RSIGNEDSHIFTASSIGN:
         jj_consume_token(RSIGNEDSHIFTASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage(">>=");
+               jjtn000.setImage(">>="); jjtn000.setCompound();
         break;
       case RUNSIGNEDSHIFTASSIGN:
         jj_consume_token(RUNSIGNEDSHIFTASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage(">>>=");
+               jjtn000.setImage(">>>="); jjtn000.setCompound();
         break;
       case ANDASSIGN:
         jj_consume_token(ANDASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("&=");
+               jjtn000.setImage("&="); jjtn000.setCompound();
         break;
       case XORASSIGN:
         jj_consume_token(XORASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("^=");
+               jjtn000.setImage("^="); jjtn000.setCompound();
         break;
       case ORASSIGN:
         jj_consume_token(ORASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
                 jjtc000 = false;
-               jjtn000.setImage("|=");
+               jjtn000.setImage("|="); jjtn000.setCompound();
         break;
       default:
         jj_la1[55] = jj_gen;
