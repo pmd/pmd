@@ -58,17 +58,6 @@ public class XPathRuleTest extends RuleTst {
 //    }
 
 
- /*   public void testJUnitSpellingRule() throws Throwable {
-        rule.addProperty(
-            "xpath",
-            "//MethodDeclarator[(not(@Image = 'setUp') and translate(@Image, 'SETuP', 'setUp') = 'setUp') or (not(@Image = 'tearDown') and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')][FormalParameters[count(*) = 0]]");
-        runTest("junit/JUnitSpelling1.java", 2, rule);
-        runTest("junit/JUnitSpelling2.java", 2, rule);
-        runTest("junit/JUnitSpelling3.java", 0, rule);
-        runTest("junit/JUnitSpelling4.java", 0, rule);
-        runTest("junit/JUnitSpelling5.java", 0, rule);
-    }
-*/
     public void testAssignmentInOperand() throws Throwable {
         rule.addProperty(
             "xpath",
