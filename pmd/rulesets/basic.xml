@@ -20,8 +20,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
                   <![CDATA[
     //TryStatement
     [@Catch='true']
-    [FormalParameter/Type/Name[@Image != 'InterruptedException']]
-    [FormalParameter/Type/Name[@Image != 'CloneNotSupportedException']]
+    [FormalParameter/Type/Name[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']]
     /Block[position() > 1]
     [count(*) = 0]
     [../@Finally='false' or following-sibling::Block]
