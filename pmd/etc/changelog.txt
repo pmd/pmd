@@ -11,6 +11,7 @@ Modified grammer to provide information on whether an initializer block is stati
 ASTViewer now shows node images and modifiers
 ASTViewer now saves last edited text to ~/.pmd_astviewer
 Moved the PMD Swing UI into a separate module - pmd-swingui.
+Updated license.txt to point to new location.
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 
 June 19, 2003 - 1.1:
