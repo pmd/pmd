@@ -151,7 +151,7 @@ class DirectoryTree extends JTree
          */
         protected void process()
         {
-            StatusBarEvent.notifyShowMessage(this, "Locating local and network file directories.  Please wait...");
+            StatusBarEvent.notifyShowMessage(this, "Locating root directories.  Please wait...");
             DirectoryTreeModel treeModel = (DirectoryTreeModel) getModel();
             treeModel.setupFiles(m_rootDirectories);
             expandRootNode();
