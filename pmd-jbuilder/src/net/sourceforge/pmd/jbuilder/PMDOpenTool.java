@@ -78,7 +78,11 @@ public class PMDOpenTool {
     private static void registerWithProjectView() {
         ContextActionProvider cap = new ContextActionProvider() {
             public Action getContextAction (Browser browser, Node[] nodes) {
-                return  ACTION_PMDProjectCheck;
+                //Browser.getActiveBrowser().getMessageView().addMessage(msgCat, browser.getProjectView().getSelectedNode().toString());
+                Node node = browser.getProjectView().getSelectedNode();
+                if (node instanceof JBProject || node instanceof PackageNode)
+                    return  ACTION_PMDProjectCheck;
+                return null;
             }
         };
         ProjectView.registerContextActionProvider(cap);
