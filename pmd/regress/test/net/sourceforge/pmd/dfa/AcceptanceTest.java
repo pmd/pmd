@@ -110,6 +110,12 @@ public class AcceptanceTest extends ParserTst {
     public void test_28() throws Throwable {
         assertTrue(check(TEST28_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST28)));
     }
+    public void test_29() throws Throwable {
+        assertTrue(check(TEST29_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST29)));
+    }
+    public void test_30() throws Throwable {
+        assertTrue(check(TEST30_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST30)));
+    }
 
     /**
      *  first dimension: the index of a node
@@ -689,4 +695,51 @@ public class AcceptanceTest extends ParserTst {
             "  }" + PMD.EOL +
             " }" + PMD.EOL +
             " }";
+
+    private static final int[][] TEST29_NODES = {
+               {1},
+               {2},
+               {3,4,5},
+               {6},
+               {6},
+               {6},
+               {}
+
+        };
+    public static final String TEST29 =
+        "public class Foo {" + PMD.EOL +
+        " private void test_29() {" + PMD.EOL +
+        "  switch(x) {" + PMD.EOL +
+        "   case 1:" + PMD.EOL +
+        "    break; " + PMD.EOL +
+        "   default: " + PMD.EOL +
+        "    break;" + PMD.EOL +
+        "   case 2:" + PMD.EOL +
+        "    break;" + PMD.EOL +
+        "  }" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final int[][] TEST30_NODES = {
+               {1},
+               {2},
+               {3},
+               {4,7},
+               {5,6},
+               {4},
+               {3},
+               {}
+        };
+    public static final String TEST30 =
+        "public class Foo {" + PMD.EOL +
+        " private void test_30() {" + PMD.EOL +
+        "  int x = 0;" + PMD.EOL +
+        "  while (true) {" + PMD.EOL +
+        "   while (x>0) {" + PMD.EOL +
+        "     x++;" + PMD.EOL +
+        "   }" + PMD.EOL +
+        "   continue;" + PMD.EOL +
+        "  }" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
 }

@@ -83,8 +83,9 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                        SimpleNode snode = n.getSimpleNode();
                        if(snode == null) continue;
 
-                       if(!scopeSet.contains(snode.getScope().getVariableDeclarations()))
+                       if(!scopeSet.contains(snode.getScope().getVariableDeclarations())) {
                                scopeSet.add(snode.getScope().getVariableDeclarations());
+                       }
                }
 
                /*

@@ -19,6 +19,8 @@ public interface IDataFlowNode {
 
     List getFlow();
 
+    SimpleNode getSimpleNode();
+
     void setVariableAccess(List variableAccess);
 
     void addPathToChild(IDataFlowNode child);
@@ -27,5 +29,4 @@ public interface IDataFlowNode {
 
     void reverseParentPathsTo(IDataFlowNode destination);
 
-    SimpleNode getSimpleNode();    
 }

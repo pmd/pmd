@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     protected int priority = LOWEST_PRIORITY;
     private String packageName;
     private String className;
+    private String methodName;
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -115,15 +117,15 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber) {
-        return new RuleViolation(this, lineNumber, ctx, packageName, className);
+        return new RuleViolation(this, lineNumber, ctx, packageName, className, methodName);
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, String specificDescription) {
-        return new RuleViolation(this, lineNumber, specificDescription, ctx, packageName, className);
+        return new RuleViolation(this, lineNumber, specificDescription, ctx, packageName, className, methodName);
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, int lineNumber2, String variableName, String specificDescription) {
-        return new RuleViolation(this, lineNumber, lineNumber2, variableName, specificDescription, ctx, packageName, className);
+        return new RuleViolation(this, lineNumber, lineNumber2, variableName, specificDescription, ctx, packageName, className, methodName);
     }
 
     public Properties getProperties() {
@@ -157,6 +159,11 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
         className = node.getImage();
+        return super.visit(node, data);
+    }
+
+    public Object visit(ASTMethodDeclarator node, Object data) {
+        methodName = node.getImage();
         return super.visit(node, data);
     }
 

@@ -10,6 +10,8 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.VBHTMLRenderer;
+import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 import org.apache.tools.ant.BuildException;
 
 import java.io.BufferedWriter;
@@ -50,6 +52,10 @@ public class Formatter {
             renderer = new CSVRenderer();
         } else if (type.equals("text")) {
             renderer = new TextRenderer();
+        } else if (type.equals("vbhtml")) {
+            renderer = new VBHTMLRenderer();
+        } else if (type.equals("yahtml")) {
+            renderer = new YAHTMLRenderer();
         } else if (!type.equals("")) {
             try {
                 renderer = (Renderer)Class.forName(type).newInstance();
@@ -57,7 +63,7 @@ public class Formatter {
                 throw new BuildException("Unable to instantiate custom formatter: " + type);
             }
         } else {
-            throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'summaryhtml', 'papari', 'csv', or a class name; you specified " + type);
+            throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'summaryhtml', 'papari', 'csv', 'vbhtml', 'yahtml', or a class name; you specified " + type);
         }
         return renderer;
     }

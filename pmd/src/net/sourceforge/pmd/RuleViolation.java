@@ -43,17 +43,18 @@ public class RuleViolation {
     private int line2 = -1;
     private String packageName;
     private String className;
+    private String methodName;
     private String variableName;
 
-    public RuleViolation(Rule rule, int line, RuleContext ctx, String packageName, String className) {
-        this(rule, line, rule.getMessage(), ctx, packageName, className);
+    public RuleViolation(Rule rule, int line, RuleContext ctx, String packageName, String className, String methodName) {
+        this(rule, line, rule.getMessage(), ctx, packageName, className, methodName);
     }
 
-    public RuleViolation(Rule rule, int line, String specificDescription, RuleContext ctx, String packageName, String className) {
-        this(rule, line, -1, "", specificDescription, ctx, packageName, className);
+    public RuleViolation(Rule rule, int line, String specificDescription, RuleContext ctx, String packageName, String className, String methodName) {
+        this(rule, line, -1, "", specificDescription, ctx, packageName, className, methodName);
     }
 
-    public RuleViolation(Rule rule, int line, int line2, String variableName, String specificDescription, RuleContext ctx, String packageName, String className) {
+    public RuleViolation(Rule rule, int line, int line2, String variableName, String specificDescription, RuleContext ctx, String packageName, String className, String methodName) {
         this.line = line;
         this.line2 = line2;
         this.rule = rule;
@@ -61,6 +62,7 @@ public class RuleViolation {
         this.filename = ctx.getSourceCodeFilename();
         this.packageName = packageName;
         this.className = className;
+        this.methodName = methodName;
         this.variableName = variableName;
     }
 
@@ -89,6 +91,10 @@ public class RuleViolation {
 
     public String getClassName() {
         return className;
+    }
+
+    public String getMethodName() {
+        return methodName;
     }
 
     public int getLine2() {

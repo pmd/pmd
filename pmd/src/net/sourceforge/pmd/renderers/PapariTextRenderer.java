@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * <p>A console renderer with optional color support under *nix systems.</p>
@@ -106,12 +107,19 @@ public class PapariTextRenderer implements Renderer
                 buf.append( this.yellowBold  + "*" + this.colorReset  + " file: " + this.whiteBold + this.getRelativePath(fileName) + this.colorReset + PMD.EOL);
             }
 
-            buf.append(this.green + "    src:  " + this.cyan + fileName.substring( fileName.lastIndexOf(File.separator)+1)+ this.colorReset + ":" + this.cyan + rv.getLine() + this.colorReset + PMD.EOL);
+            buf.append(this.green + "    src:  " + this.cyan + fileName.substring( fileName.lastIndexOf(File.separator)+1)+ this.colorReset + ":" + this.cyan + rv.getLine() + ":" + rv.getLine2() + this.colorReset + PMD.EOL);
             buf.append(this.green + "    rule: " + this.colorReset + rv.getRule().getName() + PMD.EOL);
             buf.append(this.green + "    msg:  " + this.colorReset + rv.getDescription() + PMD.EOL);
             buf.append(this.green + "    code: " + this.colorReset + this.getLine( fileName, rv.getLine() ) + PMD.EOL + PMD.EOL);
 
         }
+                Map summary = report.getCountSummary();
+                buf.append(PMD.EOL+PMD.EOL);
+                buf.append("Summary:"+PMD.EOL+PMD.EOL);
+                for (Iterator i = summary.keySet().iterator(); i.hasNext();) {
+                    String key = (String)i.next();
+                    buf.append(key+" : "+String.valueOf(((Integer)summary.get(key)).intValue())+PMD.EOL);
+                }
 
         // iterating errors
         for (Iterator i = report.errors(); i.hasNext();)

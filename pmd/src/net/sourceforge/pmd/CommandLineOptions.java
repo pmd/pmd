@@ -13,6 +13,7 @@ import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
 import java.io.InputStreamReader;
 
@@ -69,11 +70,11 @@ public class CommandLineOptions {
             return new CSVRenderer();
         } else if (reportFormat.equals("html")) {
             return new HTMLRenderer();
-        }
-        if (reportFormat.equals("summaryhtml")) {
+        } else if (reportFormat.equals("yahtml")) {
+            return new YAHTMLRenderer();
+        } else if (reportFormat.equals("summaryhtml")) {
             return new SummaryHTMLRenderer();
-        }
-        if (reportFormat.equals("vbhtml")) {
+        } else if (reportFormat.equals("vbhtml")) {
             return new VBHTMLRenderer();
         }
         if (!reportFormat.equals("")) {

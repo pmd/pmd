@@ -34,7 +34,7 @@ public class RuleViolationTest extends TestCase {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        RuleViolation r = new RuleViolation(rule, 2, ctx, "package", "class");
+        RuleViolation r = new RuleViolation(rule, 2, ctx, "package", "class", "method");
         assertEquals("object mismatch", rule, r.getRule());
         assertEquals("line number is wrong", 2, r.getLine());
         assertEquals("filename is wrong", "filename", r.getFilename());

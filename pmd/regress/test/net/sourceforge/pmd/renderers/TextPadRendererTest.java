@@ -26,7 +26,7 @@ public class TextPadRendererTest extends TestCase  {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("Foo.java");
         Report rep = new Report();
-        rep.addRuleViolation(new RuleViolation(new MockRule("DontImportJavaLang", "Avoid importing anything from the package 'java.lang'", "Avoid importing anything from the package 'java.lang'", "rulesetname"), 3,ctx, "package", "class"));
+        rep.addRuleViolation(new RuleViolation(new MockRule("DontImportJavaLang", "Avoid importing anything from the package 'java.lang'", "Avoid importing anything from the package 'java.lang'", "rulesetname"), 3,ctx, "package", "class", "method"));
         String actual = (new TextPadRenderer()).render(rep);
         String expected = PMD.EOL + "Foo.java(3,  DontImportJavaLang):  Avoid importing anything from the package 'java.lang'" ;
         assertEquals(expected, actual);

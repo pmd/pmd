@@ -33,6 +33,20 @@ public class VariableAccess {
     }
 
     public String toString() {
-        return "AccessType: " + this.accessType + " | VariableName: " + this.variableName;
+             String ret;
+             switch(this.accessType) {
+               case 0:
+                 ret = "d(";
+                 break;
+               case 1:
+                 ret = "r(";
+                 break;
+               case 2:
+                 ret = "u(";
+                 break;
+               default:
+                 ret = "";
+             }
+             return ret + this.variableName+")";
     }
 }

@@ -23,7 +23,7 @@ public class DAAPathFinder {
     private DefaultMutableTreeNode stack = new DefaultMutableTreeNode();
     private int maxPaths;
 
-    private class PathElement {
+    private static class PathElement {
         int currentChild;
         IDataFlowNode node;
         IDataFlowNode pseudoRef;
@@ -63,7 +63,7 @@ public class DAAPathFinder {
             // EXTRA CODE ENDE
             flag = false;
         } while (i < this.maxPaths && this.phase3());
-        System.out.println("found: " + i + " path(s)");
+        //System.out.println("found: " + i + " path(s)");
     }
 
     /*
@@ -94,6 +94,14 @@ public class DAAPathFinder {
 
         }
     }
+
+        private int getLimit() {
+
+         if(this.isDoBranchNode()) {
+           return 1;
+         }
+         return 2;
+        }
 
     /*
      * Decompose the path until it finds a node which branches are not all 
@@ -142,18 +150,12 @@ public class DAAPathFinder {
 
     private boolean isEndNode() {
         IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
-        if (inode.getChildren().size() == 0) {
-            return true;
-        }
-        return false;
+        return inode.getChildren().size() == 0;
     }
 
     private boolean isBranch() {
         IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
-        if (inode.getChildren().size() > 1) {
-            return true;
-        }
-        return false;
+        return inode.getChildren().size() > 1;
     }
 
     private boolean isFirstDoStatement() {
@@ -347,10 +349,8 @@ public class DAAPathFinder {
         for (int i = 0; i < childCount; i++) {
             child = (DefaultMutableTreeNode) level.getChildAt(i);
             PathElement pe = (PathElement) child.getUserObject();
-            if (this.isPseudoPathElement(pe)) {
-                if (pe.pseudoRef.equals(inode)) {
-                    return true;
-                }
+            if (isPseudoPathElement(pe) && pe.pseudoRef.equals(inode)) {
+                return true;
             }
         }
         return false;
@@ -427,8 +427,9 @@ public class DAAPathFinder {
             DefaultMutableTreeNode tNode =
                     (DefaultMutableTreeNode) treeNode.getParent().getChildAt(i);
             PathElement e = (PathElement) tNode.getUserObject();
-            if (!this.isPseudoPathElement(e))
+            if (!this.isPseudoPathElement(e)) {
                 counter++;
+            }
         }
         return counter;
     }
@@ -441,9 +442,6 @@ public class DAAPathFinder {
 
     private boolean isPseudoPathElement(PathElement pe) {
         if (pe == null) return false;
-        if (pe.pseudoRef == null) {
-            return false;
-        }
-        return true;
+        return pe.pseudoRef != null;
     }
 }

@@ -4,6 +4,7 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.dfa.report.ReportTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,19 +35,24 @@ public class Report {
         }
     }
 
+
+    /*
+     * The idea is to store the violations in a tree instead of a list, to do
+     * better and faster sort and filter mechanism and to visualize the result
+     * als tree. (ide plugins).
+     * */
+    private ReportTree violationTree = new ReportTree();
+
+    // Note that this and the above data structure are both being maintained for a bit
     private Set violations = new TreeSet(new RuleViolation.RuleViolationComparator());
     private Set metrics = new HashSet();
     private List listeners = new ArrayList();
     private List errors = new ArrayList();
 
 
-    /**
-     * @return a Map summarizing the Report:
-     *         String (Package.Class) ->Integer (count of violations)
-     */
     public Map getCountSummary() {
         Map summary = new HashMap();
-        for (Iterator iter = violations.iterator(); iter.hasNext();) {
+        for (Iterator iter = violationTree.iterator(); iter.hasNext();) {
             RuleViolation rv = (RuleViolation) iter.next();
             String key = rv.getPackageName() + "." + rv.getClassName();
             Object o = summary.get(key);
@@ -60,6 +66,11 @@ public class Report {
         }
         return summary;
     }
+
+    public ReportTree getViolationTree() {
+        return this.violationTree;
+    }
+
 
     /**
      * @return a Map summarizing the Report: String (rule name) ->Integer (count of violations)
@@ -84,6 +95,7 @@ public class Report {
 
     public void addRuleViolation(RuleViolation violation) {
         violations.add(violation);
+        violationTree.addRuleViolation(violation);
         for (Iterator i = listeners.iterator(); i.hasNext();) {
             ReportListener listener = (ReportListener) i.next();
             listener.ruleViolationAdded(violation);
@@ -111,7 +123,15 @@ public class Report {
     }
 
     public boolean isEmpty() {
-        return violations.isEmpty();
+        return !violations.iterator().hasNext();
+    }
+
+    public boolean treeIsEmpty() {
+        return !violationTree.iterator().hasNext();
+    }
+
+    public Iterator treeIterator() {
+        return violationTree.iterator();
     }
 
     public Iterator iterator() {
@@ -120,6 +140,10 @@ public class Report {
 
     public Iterator errors() {
         return errors.iterator();
+    }
+
+    public int treeSize() {
+        return violationTree.size();
     }
 
     public int size() {

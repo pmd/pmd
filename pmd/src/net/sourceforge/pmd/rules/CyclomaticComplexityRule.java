@@ -30,62 +30,56 @@ import java.util.Stack;
  * @version $Revision$, $Date$
  */
 public class CyclomaticComplexityRule extends AbstractRule {
-    private Stack m_entryStack = new Stack();
 
-    /**
-     **************************************************************************
-     *
-     * @param node
-     * @param data
-     *
-     * @return
-     */
+    private static class Entry {
+        private SimpleNode node;
+        private int decisionPoints = 1;
+        public int highestDecisionPoints;
+        public int methodCount;
+
+        private Entry(SimpleNode node) {
+            this.node = node;
+        }
+
+        public void bumpDecisionPoints() {
+            decisionPoints++;
+        }
+        public void bumpDecisionPoints(int size) {
+            decisionPoints += size;
+        }
+        public int getComplexityAverage() {
+            return ((double) methodCount == 0) ? 1 : (int) (Math.rint((double)decisionPoints / (double) methodCount));
+        }
+    }
+
+    private Stack entryStack = new Stack();
+
     public Object visit(ASTIfStatement node, Object data) {
-        Entry entry = (Entry) m_entryStack.peek();
-        entry.m_decisionPoints++;
+        Entry entry = (Entry) entryStack.peek();
+        entry.bumpDecisionPoints();
         super.visit(node, data);
-
         return data;
     }
 
-    /**
-     **************************************************************************
-     *
-     * @param node
-     * @param data
-     *
-     * @return
-     */
     public Object visit(ASTForStatement node, Object data) {
-        Entry entry = (Entry) m_entryStack.peek();
-        entry.m_decisionPoints++;
+        Entry entry = (Entry) entryStack.peek();
+        entry.bumpDecisionPoints();
         super.visit(node, data);
-
         return data;
     }
 
-    /**
-     **************************************************************************
-     *
-     * @param node
-     * @param data
-     *
-     * @return
-     */
     public Object visit(ASTSwitchStatement node, Object data) {
-        Entry entry = (Entry) m_entryStack.peek();
+        Entry entry = (Entry) entryStack.peek();
 
         int childCount = node.jjtGetNumChildren();
         int lastIndex = childCount - 1;
 
         for (int n = 0; n < lastIndex; n++) {
             Node childNode = node.jjtGetChild(n);
-
             if (childNode instanceof ASTSwitchLabel) {
                 childNode = node.jjtGetChild(n + 1);
-
                 if (childNode instanceof ASTBlockStatement) {
-                    entry.m_decisionPoints++;
+                    entry.bumpDecisionPoints();
                 }
             }
         }
@@ -95,163 +89,83 @@ public class CyclomaticComplexityRule extends AbstractRule {
         return data;
     }
 
-    /**
-     **************************************************************************
-     *
-     * @param node
-     * @param data
-     *
-     * @return
-     */
     public Object visit(ASTWhileStatement node, Object data) {
-        Entry entry = (Entry) m_entryStack.peek();
-        entry.m_decisionPoints++;
+        Entry entry = (Entry) entryStack.peek();
+        entry.bumpDecisionPoints();
         super.visit(node, data);
-
         return data;
     }
 
-    /**
-     **************************************************************************
-     *
-     * @param node
-     * @param data
-     *
-     * @return
-     */
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
-        m_entryStack.push(new Entry(node));
+        entryStack.push(new Entry(node));
         super.visit(node, data);
-        Entry classEntry = (Entry) m_entryStack.pop();
-        double decisionPoints = (double) classEntry.m_decisionPoints;
-        double methodCount = (double) classEntry.m_methodCount;
-        int complexityAverage = (methodCount == 0) ? 1 : (int) (Math.rint(decisionPoints / methodCount));
-
-        if ((complexityAverage >= getIntProperty("reportLevel")) || (classEntry.m_highestDecisionPoints >= getIntProperty("reportLevel"))) {
-            // The {0} "{1}" has a cyclomatic complexity of {2}.
+        Entry classEntry = (Entry) entryStack.pop();
+        if ((classEntry.getComplexityAverage() >= getIntProperty("reportLevel")) || (classEntry.highestDecisionPoints >= getIntProperty("reportLevel"))) {
             RuleContext ruleContext = (RuleContext) data;
-            String template = getMessage();
-            String className = node.getImage();
-            String complexityHighest = String.valueOf(classEntry.m_highestDecisionPoints);
-            String complexity = String.valueOf(complexityAverage) + " (Highest = " + complexityHighest + ")";
-            String[] args = {"class", className, complexity};
-            String message = MessageFormat.format(template, args);
-            int lineNumber = node.getBeginLine();
-            RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
+            String[] args = {"class", node.getImage(), String.valueOf(classEntry.getComplexityAverage()) + " (Highest = " + String.valueOf(classEntry.highestDecisionPoints) + ")"};
+            RuleViolation ruleViolation = createRuleViolation(ruleContext, node.getBeginLine(), MessageFormat.format(getMessage(), args));
             ruleContext.getReport().addRuleViolation(ruleViolation);
         }
-
         return data;
     }
 
-    /**
-     **************************************************************************
-     *
-     * @param node
-     * @param data
-     *
-     * @return
-     */
     public Object visit(ASTMethodDeclaration node, Object data) {
         Node parentNode = node.jjtGetParent();
-
         while (parentNode != null) {
             if (parentNode instanceof ASTInterfaceDeclaration) {
                 return data;
             }
-
             parentNode = parentNode.jjtGetParent();
         }
 
-        m_entryStack.push(new Entry(node));
+        entryStack.push(new Entry(node));
         super.visit(node, data);
-        Entry methodEntry = (Entry) m_entryStack.pop();
-        int methodDecisionPoints = methodEntry.m_decisionPoints;
-        Entry classEntry = (Entry) m_entryStack.peek();
-        classEntry.m_methodCount++;
-        classEntry.m_decisionPoints += methodDecisionPoints;
+        Entry methodEntry = (Entry) entryStack.pop();
+        int methodDecisionPoints = methodEntry.decisionPoints;
+        Entry classEntry = (Entry) entryStack.peek();
+        classEntry.methodCount++;
+        classEntry.bumpDecisionPoints(methodDecisionPoints);
 
-        if (methodDecisionPoints > classEntry.m_highestDecisionPoints) {
-            classEntry.m_highestDecisionPoints = methodDecisionPoints;
+        if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+            classEntry.highestDecisionPoints = methodDecisionPoints;
         }
 
         ASTMethodDeclarator methodDeclarator = null;
-
         for (int n = 0; n < node.jjtGetNumChildren(); n++) {
             Node childNode = node.jjtGetChild(n);
-
             if (childNode instanceof ASTMethodDeclarator) {
                 methodDeclarator = (ASTMethodDeclarator) childNode;
                 break;
             }
         }
 
-        if (methodEntry.m_decisionPoints >= getIntProperty("reportLevel")) {
-            // The {0} "{1}" has a cyclomatic complexity of {2}.
+        if (methodEntry.decisionPoints >= getIntProperty("reportLevel")) {
             RuleContext ruleContext = (RuleContext) data;
-            String[] args = {"method", (methodDeclarator == null) ? "" : methodDeclarator.getImage(), String.valueOf(methodEntry.m_decisionPoints)};
+            String[] args = {"method", (methodDeclarator == null) ? "" : methodDeclarator.getImage(), String.valueOf(methodEntry.decisionPoints)};
             ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, node.getBeginLine(), MessageFormat.format(getMessage(), args)));
         }
 
         return data;
     }
 
-    /**
-     **************************************************************************
-     *
-     * @param node
-     * @param data
-     *
-     * @return
-     */
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        m_entryStack.push(new Entry(node));
+        entryStack.push(new Entry(node));
         super.visit(node, data);
-        Entry constructorEntry = (Entry) m_entryStack.pop();
-        int constructorDecisionPointCount = constructorEntry.m_decisionPoints;
-        Entry classEntry = (Entry) m_entryStack.peek();
-        classEntry.m_methodCount++;
-        classEntry.m_decisionPoints += constructorDecisionPointCount;
-
-        if (constructorDecisionPointCount > classEntry.m_highestDecisionPoints) {
-            classEntry.m_highestDecisionPoints = constructorDecisionPointCount;
+        Entry constructorEntry = (Entry) entryStack.pop();
+        int constructorDecisionPointCount = constructorEntry.decisionPoints;
+        Entry classEntry = (Entry) entryStack.peek();
+        classEntry.methodCount++;
+        classEntry.decisionPoints += constructorDecisionPointCount;
+        if (constructorDecisionPointCount > classEntry.highestDecisionPoints) {
+            classEntry.highestDecisionPoints = constructorDecisionPointCount;
         }
-
-        if (constructorEntry.m_decisionPoints >= getIntProperty("reportLevel")) {
-            // The {0} "{1}" has a cyclomatic complexity of {2}.
+        if (constructorEntry.decisionPoints >= getIntProperty("reportLevel")) {
             RuleContext ruleContext = (RuleContext) data;
-            String template = getMessage();
-            String constructorName = classEntry.m_node.getImage();
-            String complexity = String.valueOf(constructorDecisionPointCount);
-            String[] args = {"constructor", constructorName, complexity};
-            String message = MessageFormat.format(template, args);
-            int lineNumber = node.getBeginLine();
-            RuleViolation ruleViolation = createRuleViolation(ruleContext, lineNumber, message);
+            String[] args = {"constructor", classEntry.node.getImage(), String.valueOf(constructorDecisionPointCount)};
+            RuleViolation ruleViolation = createRuleViolation(ruleContext, node.getBeginLine(), MessageFormat.format(getMessage(), args));
             ruleContext.getReport().addRuleViolation(ruleViolation);
         }
-
         return data;
     }
 
-    /**
-     ***************************************************************************
-     ***************************************************************************
-     ***************************************************************************
-     */
-    private static class Entry {
-        // ASTUnmodifedClassDeclaration or ASTMethodDeclarator or ASTConstructorDeclaration
-        private SimpleNode m_node;
-        public int m_decisionPoints = 1;
-        public int m_highestDecisionPoints;
-        public int m_methodCount;
-
-        /**
-         ***********************************************************************
-         *
-         * @param node
-         */
-        private Entry(SimpleNode node) {
-            m_node = node;
-        }
-    }
 }
