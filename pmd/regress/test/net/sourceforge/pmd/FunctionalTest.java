@@ -23,11 +23,6 @@ public class FunctionalTest extends TestCase{
 
 
 /*
-    public void testUnnecessaryTemporaries() {
-        Report report = process("UnnecessaryTemporary.java");
-        assertEquals(6, report.countViolationsInCurrentFile());
-        assertEquals(new UnnecessaryConversionTemporaryRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
-    }
 
     public void testProps() {
         Report report = process("ContainsSystemGetProps.java");
@@ -71,42 +66,6 @@ public class FunctionalTest extends TestCase{
         assertEquals(new EmptyWhileStmtRule(), ((RuleViolation)report.violationsInCurrentFile().next()).getRule());
     }
 
-    public void testUnusedPrivateInstanceVar1() {
-        Report report = process("UnusedPrivateInstanceVar1.java");
-        assertEquals(1, report.countViolationsInCurrentFile());
-        Iterator i =  report.violationsInCurrentFile();
-        assertEquals(new UnusedPrivateInstanceVariableRule(), ((RuleViolation)i.next()).getRule());
-    }
-
-    public void testUnusedPrivateInstanceVar2() {
-        Report report = process("UnusedPrivateInstanceVar2.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
-
-    public void testUnusedPrivateInstanceVar3() {
-        Report report = process("UnusedPrivateInstanceVar3.java");
-        assertEquals(1, report.countViolationsInCurrentFile());
-        Iterator i =  report.violationsInCurrentFile();
-        assertEquals(new UnusedPrivateInstanceVariableRule(), ((RuleViolation)i.next()).getRule());
-    }
-
-    public void testUnusedPrivateInstanceVar4() {
-        Report report = process("UnusedPrivateInstanceVar4.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
-
-    public void testUnusedPrivateInstanceVar6() {
-        Report report = process("UnusedPrivateInstanceVar6.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
-    public void testUnusedPrivateInstanceVar7() {
-        Report report = process("UnusedPrivateInstanceVar7.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
-    public void testUnusedPrivateInstanceVar8() {
-        Report report = process("UnusedPrivateInstanceVar8.java");
-        assertTrue(report.currentFileHasNoViolations());
-    }
 
     public void testIfElseStmtsMustUseBraces1() {
         Report report = process("IfElseStmtsNeedBraces1.java");
