@@ -1,4 +1,7 @@
 ???? ?? ???? - 1.02:
+Added JDBCReportListener to write stuff to a database.
+Created <database /> tag in Ant.
+Added db/mysql/tables.sql to set up the database.
 Added new rules: ImportFromSamePackageRule, SwitchDensityRule, NullAssignmentRule
 Updated LooseCouplingRule to check for usage of Vector; thx to Vladimir for the good catch.
 Updated AvoidDuplicateLiteralsRule to report the line number of the first occurrence of the duplicate String.
