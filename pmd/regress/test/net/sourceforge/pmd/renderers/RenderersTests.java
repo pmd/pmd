@@ -24,6 +24,7 @@ public class RenderersTests
 
     //$JUnit-BEGIN$
     suite.addTestSuite( XMLRendererTest.class );
+    suite.addTestSuite( TextPadRendererTest.class );
 
     //$JUnit-END$
     return suite;
@@ -33,6 +34,9 @@ public class RenderersTests
 
 /*
  * $Log$
+ * Revision 1.2  2003/10/01 14:55:55  tomcopeland
+ * Added unit tests for TextPad integration; thanks to Jeff Epstein
+ *
  * Revision 1.1  2003/09/29 14:32:32  tomcopeland
  * Committed regression test suites, thanks to Boris Gruschko
  *

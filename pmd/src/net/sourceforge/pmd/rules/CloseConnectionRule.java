@@ -16,6 +16,7 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.ArrayList;
 
 
 /**
@@ -60,13 +61,12 @@ public class CloseConnectionRule extends AbstractRule {
     // What are the chances of a Connection being instantiated in a
     // for-loop init block? Anyway, I'm lazy!    
       String target = id.getImage() + ".close";
-      ASTBlock top = null;
       Node n = var;
 
       while (!((n = n.jjtGetParent()) instanceof ASTBlock))
         ;
 
-      top = (ASTBlock) n;
+      ASTBlock top = (ASTBlock) n;
 
       List tryblocks = new Vector();
       top.findChildrenOfType(ASTTryStatement.class, tryblocks, true);
@@ -81,15 +81,10 @@ public class CloseConnectionRule extends AbstractRule {
 
         if ((t.getBeginLine() > id.getBeginLine()) && (t.hasFinally())) {
           ASTBlock f = t.getFinallyBlock();
-          List names = new Vector();
+          List names = new ArrayList();
           f.findChildrenOfType(ASTName.class, names, true);
-
-          ASTName name;
-
           for (Iterator it2 = names.iterator(); it2.hasNext();) {
-            name = (ASTName) it2.next();
-
-            if (name.getImage().equals(target)) {
+              if (((ASTName) it2.next()).getImage().equals(target)) {
               closed = true;
             }
           }
