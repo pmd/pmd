@@ -15,6 +15,9 @@ method entry.  The decision points are 'if', 'while', 'for', and 'case labels'. 
 1-4 (low complexity)   5-7 (moderate complexity)   8-10 (high complexity)   10+ (very high complexity)
    </description>
    <priority>3</priority>
+   <properties>
+      <property name="reportLevel" value="1"/>
+   </properties>
    <example>
 <![CDATA[
 Cyclomatic Complexity = 12
