@@ -85,6 +85,36 @@ These are new rules for the next release
        </example>
      </rule>
 
+    <rule name="AvoidDollarSigns"
+           message="Avoid using dollar signs in variable/method/class/interface names"
+           class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+       Avoid using dollar signs in variable/method/class/interface names.
+       </description>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//UnmodifiedClassDeclaration[contains(@Image, '$')]
+|
+//VariableDeclaratorId[contains(@Image, '$')]
+|
+//UnmodifiedInterfaceDeclaration[contains(@Image, '$')]
+|
+//MethodDeclarator[contains(@Image, '$')]
+ ]]>
+                 </value>
+             </property>
+         </properties>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+ public class Fo$o {  // yikes!
+ }
+   ]]>
+       </example>
+     </rule>
+
 
 </ruleset>
 
