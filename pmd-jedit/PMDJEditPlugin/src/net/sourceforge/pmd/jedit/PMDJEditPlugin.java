@@ -5,45 +5,17 @@
  */
 package net.sourceforge.pmd.jedit;
 
-import errorlist.DefaultErrorSource;
-import errorlist.ErrorSource;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.cpd.FileFinder;
-import net.sourceforge.pmd.cpd.JavaLanguage;
-import net.sourceforge.pmd.cpd.PHPLanguage;
-import net.sourceforge.pmd.cpd.CPPLanguage;
-import net.sourceforge.pmd.cpd.Mark;
-import net.sourceforge.pmd.cpd.Match;
-import org.gjt.sp.jedit.Buffer;
-import org.gjt.sp.jedit.View;
-import org.gjt.sp.jedit.jEdit;
+import errorlist.*;
+import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.cpd.*;
+import org.gjt.sp.jedit.*;
 import org.gjt.sp.jedit.browser.*;
 import org.gjt.sp.jedit.io.*;
 
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import org.gjt.sp.jedit.EBPlugin;
-import org.gjt.sp.jedit.EBMessage;
-import org.gjt.sp.jedit.msg.BufferUpdate;
+import javax.swing.*;
+import java.io.*;
+import java.util.*;
+import org.gjt.sp.jedit.msg.*;
 
 
 public class PMDJEditPlugin extends EBPlugin {
