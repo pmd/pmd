@@ -4,6 +4,6 @@ public class Unused1 {
 	try {
 		FileReader fr = new FileReader("/dev/null");
 		// howdy
-	} catch (Exception e) {e=null;}
+	} catch (Exception e) {}
     }
 }

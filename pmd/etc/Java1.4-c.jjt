@@ -391,7 +391,14 @@ void ClassBody() :
 void NestedClassDeclaration() :
 {}
 {
-  ( "static" | "abstract" | "final" | "public" | "protected" | "private" | "strictfp")*
+  ("static"       { ((AccessNode) jjtThis).setStatic( true ); }
+  | "abstract"    { ((AccessNode) jjtThis).setAbstract( true ); }
+  | "final"       { ((AccessNode) jjtThis).setFinal( true ); }
+  | "public"      { ((AccessNode) jjtThis).setPublic( true ); }
+  | "protected"   { ((AccessNode) jjtThis).setProtected( true ); }
+  | "private"     { ((AccessNode) jjtThis).setPrivate( true ); }
+  | "strictfp"    { ((AccessNode) jjtThis).setStrict( true ); }
+  )*
   UnmodifiedClassDeclaration()
 }
 

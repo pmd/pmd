@@ -1,10 +1,11 @@
 public class Unused9 {
-public void foo() {
-	String x = "baf";
-	bar(new Runnable() {
-	public void run() {String x = "buz";}
-});	
-}
-public void bar(Runnable r) {
-}
+	public void foo() {
+		final String x = "baf";
+		new Runnable() {
+			public void run() {
+				System.out.println(x);
+			}
+		};	
+	}
+
 }
