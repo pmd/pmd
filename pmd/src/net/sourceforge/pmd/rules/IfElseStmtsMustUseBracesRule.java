@@ -14,10 +14,6 @@ public class IfElseStmtsMustUseBracesRule extends AbstractRule implements Rule {
 
     private int lineNumberOfLastViolation;
 
-    public String getMessage() {
-        return "Avoid using IF...ELSE statements without curly braces";
-    }
-
     /**
      * If..else stmt structure seems to be like this:
      * IfStmt

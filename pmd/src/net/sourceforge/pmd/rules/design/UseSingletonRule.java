@@ -13,12 +13,6 @@ public class UseSingletonRule
     private boolean isOK = false;
     private int methodCount = 0;
 
-    public UseSingletonRule() { }
-
-    public String getMessage() {
-	return "All methods are static.  Consider using Singleton instead.";
-    }
-
     public Object visit( ASTMethodDeclaration decl, Object data ) {
 	methodCount ++;
 	if (isOK) return data;

@@ -151,6 +151,63 @@ public class Something {
 ]]>
     </example>
   </rule>
+
+  <rule name="IfElseStmtsMustUseBracesRule"
+        message="Avoid using 'if...else' statements without curly braces"
+        class="net.sourceforge.pmd.rules.IfElseStmtsMustUseBracesRule">
+    <description>
+    Avoid using if..else statements without using curly braces
+    </description>
+
+    <example>
+<![CDATA[
+  public void doSomething() {
+    if (foo)
+        x=x+1;
+    else
+        x=x-1;
+  }
+]]>
+    </example>
+  </rule>
+
+  <rule name="UnnecessaryConversionTemporaryRule"
+        message="Avoid unnecessary temporaries when converting primitives to Strings"
+        class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporaryRule">
+    <description>
+    Avoid unnecessary temporaries when converting primitives to Strings
+    </description>
+
+    <example>
+<![CDATA[
+  public String convert(int x) {
+    return new Integer(x).toString();
+  }
+]]>
+    </example>
+  </rule>
+
+
+  <rule name="UseSingletonRule"
+        message="All methods are static.  Consider using Singleton instead."
+        class="net.sourceforge.pmd.rules.design.UseSingletonRule">
+    <description>
+    If you have a class that has nothing but static methods, consider making it a Singleton
+    </description>
+
+    <example>
+<![CDATA[
+public class MaybeASingleton {
+    public static void foo() {
+     // etc
+    }
+    public static void bar() {
+     // etc
+    }
+}
+]]>
+    </example>
+  </rule>
 </ruleset>
 
 

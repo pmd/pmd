@@ -27,10 +27,6 @@ public class UnnecessaryConversionTemporaryRule extends AbstractRule implements 
         primitiveTypes.add("Float");
     }
 
-    public String getMessage() {
-        return "Avoid unnecessary temporaries when converting primitives to Strings";
-    }
-
     public Object visit(ASTPrimaryExpression node, Object data) {
         RuleContext ctx = (RuleContext)data;
         if (node.jjtGetNumChildren() == 0 || ((SimpleNode)node.jjtGetChild(0)).jjtGetNumChildren() == 0 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
