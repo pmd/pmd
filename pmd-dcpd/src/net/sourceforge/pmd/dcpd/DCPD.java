@@ -36,7 +36,7 @@ public class DCPD {
 
             System.out.println("Tokenizing");
             job = new Job("java_lang", new Integer(1));
-            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang\\ref", true), job.id);
+            tokenSetWrapper = new TokenSetsWrapper(loadTokens("C:\\j2sdk1.4.0_01\\src\\java\\lang", true), job.id);
             System.out.println("Tokenizing complete, " + (System.currentTimeMillis()-start) + " elapsed ms");
 
             System.out.println("Writing the TokenSetsWrapper to the space");
