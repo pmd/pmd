@@ -42,8 +42,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Eric Olander - noticed missing image in Postfix nodes, ImmutableFieldRule</li>
             <li>Elliotte Rusty Harold - UseLocaleWithCaseConversions rule suggestion</li>
-            <li>Eric Olander - ImmutableFieldRule</li>
             <li>Miguel Griffa - LoggerIsNotStaticFinalRule, MoreThanOneLoggerRule, XPath rule tutorial, SuspiciousConstantFieldName, JUnitTestsShouldContainAssertsRule</li>
             <li>Conrad Roche - UnusedModifier bug report, other bug reports</li>
             <li>Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion</li>
