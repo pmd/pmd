@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="JUnit Rules">
+<ruleset name="Strings Rules">
   <description>
 These rules deal with different problems that can occur with String manipulation.
   </description>
