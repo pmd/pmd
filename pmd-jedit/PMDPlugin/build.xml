@@ -73,7 +73,6 @@
         <delete dir="tmp"/>
     </target>
 
-	<target name="clean" depends="delete,compile">
-	</target>
+	<target name="clean" depends="delete,compile" />
 
 </project>

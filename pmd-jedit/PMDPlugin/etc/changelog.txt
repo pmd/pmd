@@ -4,6 +4,7 @@
 - Updated to pmd 1.5
 - Added option to export PMD results to files in various formats such as HTML, XML, Text, CSV etc.
 - Added a new feature to show Progressbar when working on Large file sets.
+- Progressbar color configured via jEdit Properties.
 
 October 31st 2003 - 2.3
 1. Updated to PMD 1.3

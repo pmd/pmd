@@ -608,7 +608,8 @@ public class PMDJEditPlugin extends EBPlugin {
 			setLayout(new BorderLayout());
 			pBar = new JProgressBar(min,max);
 			pBar.setBorder(new EmptyBorder(pBar.getInsets()));
-			pBar.setForeground(Color.orange);
+			pBar.setForeground(jEdit.getColorProperty("pmd.progressbar.foreground"));
+			pBar.setBackground(jEdit.getColorProperty("pmd.progressbar.background"));
 			pBar.setStringPainted(true);
 			add(pBar, BorderLayout.CENTER);
 			view.getStatus().add(pBar, BorderLayout.EAST);
