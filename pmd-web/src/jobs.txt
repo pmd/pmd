@@ -117,3 +117,4 @@ XmlWriter:xmlwriter:xmlwriter:xmlwriter/src/java
 WebOS:xtremesuite:WebOS:WebOS/src/java
 Horst:horst:TrainGame:TrainGame/src
 MX4J:mx4j:mx4j:mx4j/src/core
+JGraphT:jgrapht:src:src
