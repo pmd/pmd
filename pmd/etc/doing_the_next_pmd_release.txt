@@ -1,6 +1,7 @@
 update the xdocs:
 -added new ruleset to Ant task - design
 -modified Ant task - removed 'text' format report
+-modified Ant task - changed 'rulesettype' to 'rulesetfile'
 -run.bat/sh third param is a rule set file
 update run.bat to point to pmd-0.3.jar
 update the changelog
@@ -24,7 +25,7 @@ clear classpath
 TESTS: Can you
 1) run 1 file and get a report
 run c:\data\pmd\pmd\test-data\Unused1.java xml all
-run c:\data\pmd\pmd\test-data\Unused1.java text all
+run c:\data\pmd\pmd\test-data\Unused1.java html all
 2) run the Ant 'pmd' task and get a report
 ant pmd
 

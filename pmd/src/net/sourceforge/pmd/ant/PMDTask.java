@@ -12,22 +12,21 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.reports.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleFactory;
 
 public class PMDTask extends Task {
 
     private List filesets  = new ArrayList();
     private String reportFile;
     private boolean verbose;
-    private String ruleSetType;
+    private String ruleSetFile;
     private String format;
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
     }
 
-    public void setRuleSetType(String ruleSetType) {
-        this.ruleSetType = ruleSetType;
+    public void setRuleSetFile(String ruleSetFile) {
+        this.ruleSetFile = ruleSetFile;
     }
 
     public void addFileset(FileSet set) {
@@ -47,10 +46,6 @@ public class PMDTask extends Task {
             throw new BuildException("No report file specified");
         }
 
-        RuleFactory ruleFactory = new RuleFactory();
-        if (ruleSetType == null || !ruleFactory.containsRuleSet(ruleSetType)) {
-            throw new BuildException("Rule set type must be one of: " + ruleFactory.getConcatenatedRuleSetList() + "; you specified " + ruleSetType);
-        }
         if (format == null || (!format.equals("xml") && !format.equals("html"))) {
             throw new BuildException("Report format must be either 'xml', or 'html'; you specified " + format);
         }
@@ -69,7 +64,7 @@ public class PMDTask extends Task {
                     File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                     if (verbose) System.out.println(file.getAbsoluteFile());
                     ctx.setFilename(file.getAbsolutePath());
-                    pmd.processFile(file, ruleSetType, ctx);
+                    pmd.processFile(file, ruleSetFile, ctx);
                 } catch (FileNotFoundException fnfe) {
                     throw new BuildException(fnfe);
                 }
