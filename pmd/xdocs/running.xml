@@ -22,6 +22,11 @@ Avoid unused local variables such as 'fr'
 
 C:\tmp\pmd-1.8\pmd\etc&gt;
     </source>
+       <p>Note that the PMD binary distribution includes the ruleset files
+       inside the jar file - even though the "rulesets/unusedcode.xml" parameter
+ above looks like a filesystem reference, it's really being used by a getResourceAsStream() call
+ to load it out of the PMD jar file.  And the same applies to the example below.</p>
+
        <li>If you are using JDK 1.3 or you just want to run PMD without the batch file, you can do a:</li>
        <source>
 C:\data\pmd\pmd>java -cp lib\pmd-1.8.jar;lib\xercesImpl-2.0.2.jar;

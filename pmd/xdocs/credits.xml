@@ -40,6 +40,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Phil Shaw - documentation suggestions</li>
             <li>Todd Wright - XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
             <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>

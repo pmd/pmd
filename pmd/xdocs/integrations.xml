@@ -63,6 +63,12 @@
   </tr>
   </table>
       </subsection>
+        <subsection name="General comments">
+            <p>A general note - most plugins include the PMD jar file, which has the rulesets
+            inside it.  So even though the rulesets parameter that some plugins
+            use (i.e., "rulesets/unusedcode.xml") looks like a filesystem reference, it's really
+            being used by a getResourceAsStream() call to load it out of the PMD jar file.</p>
+        </subsection>
       <subsection name="Eclipse">
 <p>
 Integration into Eclipse is accomplished through the extensive
