@@ -570,7 +570,7 @@ void FormalParameters() :
 void FormalParameter() :
 {}
 {
-  [ "final" {((AccessNode)jjtThis).setFinal();} ] Type() VariableDeclaratorId()
+  [ "final" {jjtThis.setFinal();} ] Type() VariableDeclaratorId()
 }
 
 void ConstructorDeclaration() :
@@ -1044,7 +1044,7 @@ void BlockStatement() :
 void LocalVariableDeclaration() :
 {}
 {
-  [ "final" {((ASTLocalVariableDeclaration)jjtThis).setFinal();} ] Type() VariableDeclarator() ( "," VariableDeclarator() )*
+  [ "final" {jjtThis.setFinal();} ] Type() VariableDeclarator() ( "," VariableDeclarator() )*
 }
 
 void EmptyStatement() :
