@@ -185,10 +185,15 @@ public class GUI implements CPDListener {
 						t.stop();
 						currentTileField.setText("");
             CPDRenderer renderer = new TextRenderer();
-            resultsTextArea.setText(renderer.render(cpd));
+            String report = renderer.render(cpd);
+            if (report.length() == 0) {
+                JOptionPane.showMessageDialog(frame, "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
+            } else {
+                resultsTextArea.setText(report);
+            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Halted due to " + ioe.getClass().getName() + "; " + ioe.getMessage());
+            JOptionPane.showMessageDialog(frame, "Halted due to " + ioe.getClass().getName() + "; " + ioe.getMessage());
         }
     }
 
