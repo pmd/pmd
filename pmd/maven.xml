@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<project default="java:jar"
+  	xmlns:j="jelly:core"
+  	xmlns:m="maven"
+  	xmlns:dvsl="dvsl"
+  	xmlns:maven="jelly:org.apache.maven.jelly.tags.project.MavenTagLibrary">
+         
+  	<goal name="pmd:ruleset-docs" prereqs="init-dvsl-tag">
+  		<mkdir dir="${maven.gen.docs}/rules" />
+	    <dvsl:dvsl
+	    	  extension=".xml"
+	    	  includes="**/*.xml"
+		      basedir="${rulesets.dir}"
+		      style="${dvsl.dir}/rule-format.dvsl"
+		      destdir="${maven.gen.docs}/rules">
+    	</dvsl:dvsl>
+  	</goal>
+ </project>
+ 
