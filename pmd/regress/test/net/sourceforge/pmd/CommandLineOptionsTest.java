@@ -32,6 +32,8 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
+import java.io.InputStreamReader;
+
 public class CommandLineOptionsTest extends TestCase {
 
     public void testDebug() {
@@ -49,6 +51,13 @@ public class CommandLineOptionsTest extends TestCase {
     public void testShortNames() {
         CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-shortnames"});
         assertTrue(opt.shortNamesEnabled());
+    }
+
+    public void testEncoding() {
+        CommandLineOptions opt = new CommandLineOptions(new String[] {"file", "format", "ruleset"});
+        assertTrue(opt.getEncoding().equals((new InputStreamReader(System.in)).getEncoding()));
+        opt = new CommandLineOptions(new String[] {"file", "format", "ruleset", "-encoding", "UTF-8"});
+        assertTrue(opt.getEncoding().equals("UTF-8"));
     }
 
     public void testInputFileName() {

@@ -39,6 +39,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
             <li>Choi Ki Soo - Found bug in XMLRenderer</li>
             <li>wedemann - Found bug in RuleSetFactory XPath message variable plugging</li>
             <li>Lori Olson - Found copy/paste bug in rule descriptions</li>

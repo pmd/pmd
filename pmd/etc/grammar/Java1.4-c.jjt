@@ -53,6 +53,7 @@
 
 options {
   JAVA_UNICODE_ESCAPE = true;
+  USER_CHAR_STREAM = true;
   STATIC=false;
   MULTI=true;
   VISITOR=true;

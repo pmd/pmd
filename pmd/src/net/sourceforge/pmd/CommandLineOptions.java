@@ -14,6 +14,8 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
+import java.io.InputStreamReader;
+
 public class CommandLineOptions {
 
     private boolean debugEnabled;
@@ -23,6 +25,7 @@ public class CommandLineOptions {
     private String inputFileName;
     private String reportFormat;
     private String ruleSets;
+    private String encoding = new InputStreamReader(System.in).getEncoding();
 
     private String[] args;
 
@@ -43,6 +46,8 @@ public class CommandLineOptions {
                 debugEnabled = true;
             } else if (args[i].equals("-shortnames")) {
                 shortNamesEnabled = true;
+            } else if (args[i].equals("-encoding")) {
+                encoding = args[i+1];
             } else if (args[i].equals("-jdk13")) {
                 jdk13 = true;
             }
@@ -90,6 +95,10 @@ public class CommandLineOptions {
         return this.inputFileName;
     }
 
+    public String getEncoding() {
+        return this.encoding;
+    }
+
     public String getReportFormat() {
         return this.reportFormat;
     }
@@ -111,8 +120,7 @@ public class CommandLineOptions {
     }
 
     public String usage() {
-        return PMD.EOL +
-            PMD.EOL +
+        return PMD.EOL + PMD.EOL +
             "Mandatory arguments:" + PMD.EOL +
             "1) A java source code filename or directory" + PMD.EOL +
             "2) A report format " + PMD.EOL +
@@ -124,10 +132,12 @@ public class CommandLineOptions {
             "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
             "-debug: prints debugging information " + PMD.EOL +
             "-jdk13: enables PMD to parse source code written using 'assert' as an identifier" + PMD.EOL +
+            "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
             "-shortnames: prints shortened filenames in the report" + PMD.EOL +
             PMD.EOL +
             "For example: " + PMD.EOL +
             "c:\\> java -jar pmd-1.6.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -jdk13 -debug" + PMD.EOL +
+            "c:\\> java -jar pmd-1.6.jar c:\\my\\source\\code html rulesets/unusedcode.xml,rulesets/imports.xml -encoding UTF-8" + PMD.EOL +
             PMD.EOL;
     }
 }

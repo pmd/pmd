@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,11 +62,25 @@ public class PMD {
 
     /**
      * @param fileContents - an InputStream to the Java code to analyse
+     * @param encoding - the source code's character set encoding
      * @param ruleSet - the set of rules to process against the file
      * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
      */
+    public void processFile(InputStream fileContents, String encoding, RuleSet ruleSet, RuleContext ctx) throws PMDException {
+        try {
+            processFile(new InputStreamReader(fileContents, encoding), ruleSet, ctx);
+        } catch (UnsupportedEncodingException uee) {
+            throw new PMDException("Unsupported encoding exception: " + uee.getMessage());
+        }
+    }
+
+    /**
+     * @param fileContents - an InputStream to the Java code to analyse
+     * @param ruleSet - the set of rules to process against the source code
+     * @param ctx - the context in which PMD is operating.  This contains the Report and whatnot
+     */
     public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws PMDException {
-        processFile(new InputStreamReader(fileContents), ruleSet, ctx);
+        processFile(fileContents, System.getProperty("file.encoding"), ruleSet, ctx);
     }
 
     public static void main(String[] args) {
@@ -95,7 +110,7 @@ public class PMD {
                 File file = (File) i.next();
                 ctx.setSourceCodeFilename(glomName(opts.shortNamesEnabled(), opts.getInputFileName(), file));
                 try {
-                    pmd.processFile(new FileInputStream(file), rules, ctx);
+                    pmd.processFile(new FileInputStream(file), opts.getEncoding(), rules, ctx);
                 } catch (PMDException pmde) {
                     if (opts.debugEnabled()) {
                         pmde.getReason().printStackTrace();

@@ -1459,25 +1459,23 @@ static final long[] jjtoSpecial = {
 static final long[] jjtoMore = {
    0x980L, 0x0L, 
 };
-protected JavaCharStream input_stream;
+protected CharStream input_stream;
 private final int[] jjrounds = new int[57];
 private final int[] jjstateSet = new int[114];
 StringBuffer image;
 int jjimageLen;
 int lengthOfMatch;
 protected char curChar;
-public JavaParserTokenManager(JavaCharStream stream)
+public JavaParserTokenManager(CharStream stream)
 {
-   if (JavaCharStream.staticFlag)
-      throw new RuntimeException("ERROR: Cannot use a static CharStream class with a non-static lexical analyzer.");
    input_stream = stream;
 }
-public JavaParserTokenManager(JavaCharStream stream, int lexState)
+public JavaParserTokenManager(CharStream stream, int lexState)
 {
    this(stream);
    SwitchTo(lexState);
 }
-public void ReInit(JavaCharStream stream)
+public void ReInit(CharStream stream)
 {
    jjmatchedPos = jjnewStateCnt = 0;
    curLexState = defaultLexState;
@@ -1491,7 +1489,7 @@ private final void ReInitRounds()
    for (i = 57; i-- > 0;)
       jjrounds[i] = 0x80000000;
 }
-public void ReInit(JavaCharStream stream, int lexState)
+public void ReInit(CharStream stream, int lexState)
 {
    ReInit(stream);
    SwitchTo(lexState);

@@ -65,6 +65,11 @@
       <td valign="top">A property name to plug the number of rule violations into when the task finishes</td>
       <td valign="top" align="center">No</td>
     </tr>
+    <tr>
+      <td valign="top">encoding</td>
+      <td valign="top">The character set encoding (i.e., UTF-8) to use when reading the source code files</td>
+      <td valign="top" align="center">No</td>
+    </tr>
 </table>
 
       </subsection>

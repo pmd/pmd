@@ -76,9 +76,24 @@
     </pmd>
 </target>
 
+    <target name="asttest" depends="compile">
+        <junit printsummary="yes" haltonfailure="yes">
+          <classpath>
+            <path refid="classpath.path" />
+            <pathelement location="${basedir}" />
+          </classpath>
+          <batchtest fork="no" todir="${build}">
+            <fileset dir="${regress}">
+              <include name="test/**/ast/**/*Test.java" />
+            </fileset>
+          </batchtest>
+      <formatter type="plain" />
+        </junit>
+    </target>
+
   <target name="requires-junit">
     <available classname="junit.framework.Test" property="junit.available"/>
-    <fail unless="junit.available" message="JUnit not available. Place a copy in CLASSPATH."/>
+    <fail unless="junit.available" message="Could find JUnit... please place a junit.jar file in the CLASSPATH."/>
   </target>
 
 <target name="test" depends="requires-junit,compile">
@@ -96,7 +111,7 @@
     </junit>
 </target>
 
-<target name="symtabtest" depends="compile">
+ <target name="symtabtest" depends="compile">
     <junit printsummary="yes" haltonfailure="yes">
       <classpath>
         <path refid="classpath.path" />
@@ -110,22 +125,6 @@
   <formatter type="plain" />
     </junit>
 </target>
-
-<target name="cpdtest" depends="compile">
-    <junit printsummary="yes" haltonfailure="yes">
-      <classpath>
-        <path refid="classpath.path" />
-        <pathelement location="${basedir}" />
-      </classpath>
-      <batchtest fork="no" todir="${build}">
-        <fileset dir="${regress}">
-          <include name="test/**/cpd/**/*Test.java" />
-        </fileset>
-      </batchtest>
-  <formatter type="plain" />
-    </junit>
-</target>
-
 
 <target name="jjtree">
     <jjtree target="etc/grammar/Java1.4-c.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>

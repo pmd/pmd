@@ -40,6 +40,7 @@ public class PMDTask extends Task {
     private boolean shortFilenames;
     private boolean printToConsole;
     private String ruleSetFiles;
+    private String encoding = System.getProperty("file.encoding");
     private boolean failOnError;
     private boolean failOnRuleViolation;
     private boolean targetJDK13;
@@ -72,6 +73,10 @@ public class PMDTask extends Task {
 
     public void setRuleSetFiles(String ruleSetFiles) {
         this.ruleSetFiles = ruleSetFiles;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     public void setFailuresPropertyName(String failuresPropertyName) {
@@ -142,7 +147,7 @@ public class PMDTask extends Task {
                 log("Processing file " + file.getAbsoluteFile().toString(), Project.MSG_VERBOSE);
                 ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
                 try {
-                    pmd.processFile(new FileInputStream(file), rules, ctx);
+                    pmd.processFile(new FileInputStream(file), encoding, rules, ctx);
                 } catch (FileNotFoundException fnfe) {
                     if (failOnError) {
                         throw new BuildException(fnfe);

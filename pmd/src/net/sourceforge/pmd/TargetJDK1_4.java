@@ -13,11 +13,11 @@ import java.io.Reader;
 public class TargetJDK1_4 implements TargetJDKVersion {
 
     public JavaParser createParser(InputStream in) {
-        return new JavaParser(in);
+        return new JavaParser(new JavaCharStream(in));
     }
 
     public JavaParser createParser(Reader in) {
-        return new JavaParser(in);
+        return new JavaParser(new JavaCharStream(in));
     }
 
     public JavaParserTokenManager createJavaParserTokenManager(Reader in) {

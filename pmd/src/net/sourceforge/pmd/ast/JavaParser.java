@@ -7654,7 +7654,6 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
   }
 
   public JavaParserTokenManager token_source;
-  JavaCharStream jj_input_stream;
   public Token token, jj_nt;
   private int jj_ntk;
   private Token jj_scanpos, jj_lastpos;
@@ -7689,9 +7688,8 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
-  public JavaParser(java.io.InputStream stream) {
-    jj_input_stream = new JavaCharStream(stream, 1, 1);
-    token_source = new JavaParserTokenManager(jj_input_stream);
+  public JavaParser(CharStream stream) {
+    token_source = new JavaParserTokenManager(stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
@@ -7699,30 +7697,8 @@ jjtree.openNodeScope(jjtn000);boolean hasElse = false;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  public void ReInit(java.io.InputStream stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jjtree.reset();
-    jj_gen = 0;
-    for (int i = 0; i < 117; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-  }
-
-  public JavaParser(java.io.Reader stream) {
-    jj_input_stream = new JavaCharStream(stream, 1, 1);
-    token_source = new JavaParserTokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 117; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-  }
-
-  public void ReInit(java.io.Reader stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
-    token_source.ReInit(jj_input_stream);
+  public void ReInit(CharStream stream) {
+    token_source.ReInit(stream);
     token = new Token();
     jj_ntk = -1;
     jjtree.reset();
