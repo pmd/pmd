@@ -1,4 +1,4 @@
-????? - 1.05:
+April 17 - 1.05:
 Added new rules: ReturnFromFinallyBlock, SimplifyBooleanExpressions
 Added a new Ant task for CPD; thanks to Andy Glover for the code.
 Added ability to specify a class name as a renderer on the command line or in the formatter "type" attribute of the Ant task.

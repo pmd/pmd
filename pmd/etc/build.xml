@@ -8,7 +8,7 @@
 <property name="test-data" value="test-data\"/>
 <property name="regress" value="regress\"/>
 <property name="reports" value="reports\"/>
-<property name="version" value="1.04"/>
+<property name="version" value="1.05"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
 <path id="classpath.path">

@@ -1,23 +1,9 @@
-TODO--------------- update docs to include new CPD task
-TODO--------------- update Ant docs to reflect ability to accept classpath
-    <pmd rulesetfiles="rulesets/favorites.xml">
-        <classpath>
-            <pathelement path="/home/tom/tmp/"/>
-        </classpath>
-        <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
-        <fileset dir="/usr/local/java/src/java/lang/ref">
-            <include name="**/*.java"/>
-        </fileset>
-    </pmd>
-
-
-Move rulesets/tmp.xml somewhere else
-update run.bat to point to pmd-1.04.jar
-update run.sh to point to pmd-1.04.jar
-update cpdgui.bat to point to pmd-1.04.jar
-update build.xml to reflect pmd-1.04
-update xdocs/running.xml to reflect pmd-1.04
-update xdocs/integrations.xml to reflect pmd-1.04
+update run.bat to point to pmd-1.05.jar
+update run.sh to point to pmd-1.05.jar
+update cpdgui.bat to point to pmd-1.05.jar
+update build.xml to reflect pmd-1.05
+update xdocs/running.xml to reflect pmd-1.05
+update xdocs/integrations.xml to reflect pmd-1.05
 update the release date in the changelog
 move rules from "newrules.xml" into a real ruleset file
 update release number in project.xml
@@ -40,32 +26,32 @@ Prepare binary release:
 rm -rf ~/tmp/pmd
 mkdir -p ~/tmp/pmd/etc ~/tmp/pmd/lib
 cp run.bat run.sh gui.bat build.xml cpdgui.bat changelog.txt astviewer.bat ~/tmp/pmd/etc
-cp ../lib/pmd-1.04.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd/lib
+cp ../lib/pmd-1.05.jar ../lib/xmlParserAPIs-2.0.2.jar ../lib/xercesImpl-2.0.2.jar ../lib/jaxen-core-1.0-fcs.jar ../lib/saxpath-1.0-fcs.jar  ~/tmp/pmd/lib
 cp -R xslt/ ~/tmp/pmd/etc/xslt/
 cp -R ../target/docs ~/tmp/pmd
-zip -q -r ~/tmp/pmd-bin-1.04.zip ~/tmp/pmd/  // TODO need to add a -b in here
+zip -q -r ~/tmp/pmd-bin-1.05.zip ~/tmp/pmd/  // TODO need to add a -b in here
 
 Time to tag:
-cvs -q rtag -D tomorrow "pmd_release_1_04" pmd
+cvs -q rtag -D tomorrow "pmd_release_1_05" pmd
 
 Prepare source release:
 rm -rf ~/tmp/pmd
 mkdir -p ~/tmp/pmd
-cvs -q export -d /home/tom/tmp/pmd -r pmd_release_1_04 pmd
-cp pmd/lib/pmd-1.04.jar ~/tmp/pmd/lib
+cvs -q export -d /home/tom/tmp/pmd -r pmd_release_1_05 pmd
+cp pmd/lib/pmd-1.05.jar ~/tmp/pmd/lib
 cp -R pmd/target/docs ~/tmp/pmd/
-zip -q -r ~/tmp/pmd-src-1.04.zip ~/tmp/pmd // TODO need to add a -b in here
+zip -q -r ~/tmp/pmd-src-1.05.zip ~/tmp/pmd // TODO need to add a -b in here
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_1_04 pmd
+cvs rtag -d pmd_release_1_05 pmd
 and then retag everything
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-1.04.zip pmd-bin-1.04.zip
+ncftpput upload.sourceforge.net incoming/ pmd-src-1.05.zip pmd-bin-1.05.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-1.04.zip file
-Add the pmd-src-1.04.zip file
+Add the pmd-bin-1.05.zip file
+Add the pmd-src-1.05.zip file
 Classify the file
 
 Redo the web site
