@@ -36,6 +36,7 @@ class Job
 	ROOT="/home/tom/data/pmd/pmd-web/src"
 	REMOTE_REPORT_DIR="/home/groups/p/pm/pmd/htdocs/reports/"
 	attr_reader :unix_name, :mod, :title, :src
+	attr_accessor :barrels
 	def initialize(title, unix_name, mod, src )
 		@title = title
 		@unix_name = unix_name
@@ -170,6 +171,7 @@ if __FILE__ == $0
 	        m.add_barrel Point.new((x*600)+300, 1100)
 	        m.add_barrel Point.new((x*600)+300, 500)
 			}
+			j.barrels = pmd.nooks * 2
 			m.create_wad(j.wad + ".tmp")
 			cmd = "./bsp " + j.wad + ".tmp -o " + j.wad + " && rm -f " + j.wad + ".tmp"
 			`#{cmd}`
@@ -191,7 +193,7 @@ if __FILE__ == $0
 			"pmd"=>j.pmd_lines.to_s,
 			"pctg"=>fm["pctg.frag", {"color"=>j.color, "pctg"=>j.pctg.to_s}], 
 			"dupe"=>fm["cpd.frag", {"file"=>j.cpd_file, "dupes"=>j.cpd_lines.to_s}],
-			"doom"=>fm["doom.frag", {"file"=>j.wad}]
+			"doom"=>fm["doom.frag", {"file"=>j.wad, "barrels"=>j.barrels}]
 		}] unless !File.exists?(j.report) || !File.exists?(j.ncss_report) || j.ncss == 0
 	}
 	File.open("scoreboard.html", "w") {|f| f.syswrite(out)}
