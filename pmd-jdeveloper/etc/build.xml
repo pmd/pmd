@@ -33,14 +33,15 @@
 		</javac>
 	</target>
 
-    <target name="jar">
+    <target name="jar" depends="compile">
+        <replace file="${etc}/manifest.mf" token="#pluginversion#" value="${pluginversion}"/>
 		<jar jarfile="${lib}/${ant.project.name}-${pluginversion}.jar" manifest="${etc}\manifest.mf">
-			<fileset dir="${build}"/>
+			<fileset dir="${build}" excludes="**/*.di,**/*.i"/>
 		</jar>
     </target>
 
 
-	<target name="dist" depends="compile,jar">
+	<target name="dist" depends="jar">
         <mkdir dir="${jdeveloper.install.dir}/lib"/>
         <copy file="${lib}/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper.install.dir}/lib"/>
         <copy file="${lib}/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>

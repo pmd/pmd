@@ -9,10 +9,10 @@ TESTS:
 3) Are options persistant?
 
 Create the src release:
-cvs -q rtag -D tomorrow "pmd_jdeveloper_release_1_4" pmd-jdeveloper
+cvs -q rtag -D tomorrow "pmd_jdeveloper_release_0_1" pmd-jdeveloper
 rmdir /q /s c:\tmp\pmd-jdeveloper
 mkdir c:\tmp\pmd-jdeveloper
-cvs -q export -d c:\tmp\pmd-jdeveloper -r pmd_jdeveloper_release_1_4 pmd-jdeveloper
+cvs -q export -d c:\tmp\pmd-jdeveloper -r pmd_jdeveloper_release_0_1 pmd-jdeveloper
 copy pmd-jdeveloper\lib\pmd-jdeveloper-0.1.jar c:\tmp\pmd-jdeveloper\lib
 cd c:\tmp
 "c:\program files\winzip\wzzip.exe" -r -p pmd-jdeveloper-src-0.1.zip pmd-jdeveloper
