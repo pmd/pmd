@@ -30,10 +30,9 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
+import test.net.sourceforge.pmd.testframework.MockRule;
 
 import java.util.Iterator;
-
-import test.net.sourceforge.pmd.testframework.MockRule;
 
 public class ReportTest extends TestCase implements ReportListener {
 

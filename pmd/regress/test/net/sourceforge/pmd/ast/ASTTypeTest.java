@@ -2,13 +2,11 @@ package test.net.sourceforge.pmd.ast;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.JavaParser;
 
 import java.io.StringReader;
-import java.util.Set;
-import java.util.List;
 
 public class ASTTypeTest extends TestCase{
 

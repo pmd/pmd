@@ -2,7 +2,6 @@ package test.net.sourceforge.pmd.rules;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import test.net.sourceforge.pmd.rules.design.DesignRulesTests;
 import test.net.sourceforge.pmd.rules.junit.JUnitRulesTests;
 import test.net.sourceforge.pmd.rules.strictexception.StrictExceptionRulesTests;
@@ -95,6 +94,9 @@ public class RulesTests
 
 /*
  * $Log$
+ * Revision 1.2  2003/11/13 20:28:03  tomcopeland
+ * Implemented AbstractNamingRule
+ *
  * Revision 1.1  2003/09/29 14:32:32  tomcopeland
  * Committed regression test suites, thanks to Boris Gruschko
  *

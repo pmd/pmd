@@ -22,7 +22,7 @@ by
  */
 package test.net.sourceforge.pmd.testframework;
 
-import test.net.sourceforge.pmd.testframework.RuleTst;
+
 
 public class SimpleAggregatorTst extends RuleTst {
 

@@ -28,6 +28,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.JavaParser;
+import test.net.sourceforge.pmd.testframework.MockRule;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -37,8 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
-import test.net.sourceforge.pmd.testframework.MockRule;
 
 public class RuleSetTest extends TestCase {
     private String javaCode = "public class Test { }";

@@ -50,18 +50,15 @@ public class DontImportJavaLangRuleTest extends SimpleAggregatorTst {
 
     private static final String TEST1 =
     "import java.lang.String;" + PMD.EOL +
-    "" + PMD.EOL +
     "public class DontImportJavaLang1 {}";
 
     private static final String TEST2 =
     "import java.lang.*;" + PMD.EOL +
-    "" + PMD.EOL +
     "public class DontImportJavaLang2 {}";
 
     private static final String TEST3 =
     "import java.lang.ref.*;" + PMD.EOL +
     "import java.lang.reflect.*;" + PMD.EOL +
-    "" + PMD.EOL +
     "public class DontImportJavaLang3 {}";
 
 }

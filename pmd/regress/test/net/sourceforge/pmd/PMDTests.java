@@ -2,7 +2,6 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import test.net.sourceforge.pmd.ant.AntTests;
 import test.net.sourceforge.pmd.ast.ASTTests;
 import test.net.sourceforge.pmd.cpd.CPDTests;
@@ -59,6 +58,9 @@ public class PMDTests
 
 /*
  * $Log$
+ * Revision 1.2  2003/11/13 20:28:02  tomcopeland
+ * Implemented AbstractNamingRule
+ *
  * Revision 1.1  2003/09/29 14:32:30  tomcopeland
  * Committed regression test suites, thanks to Boris Gruschko
  *
