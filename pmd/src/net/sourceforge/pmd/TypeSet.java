@@ -84,6 +84,8 @@ public class TypeSet {
             primitiveTypes.put("long", long.class);
             primitiveTypes.put("boolean", boolean.class);
             primitiveTypes.put("byte", byte.class);
+            primitiveTypes.put("short", short.class);
+            primitiveTypes.put("char", char.class);
         }
         public Class resolve(String name) throws ClassNotFoundException {
             if (!primitiveTypes.containsKey(name)) {

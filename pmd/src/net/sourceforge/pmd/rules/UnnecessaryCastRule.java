@@ -6,25 +6,45 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.TypeSet;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTCastExpression;
+import net.sourceforge.pmd.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 
 public class UnnecessaryCastRule extends AbstractRule {
 
-/*
-    public Object visit(ASTCastExpression node, Object data) {
-        System.out.println("CAST");
-        return super.visit(node, data);
-    }
-    public Object visit(ASTName node, Object data) {
+    private boolean inCastCtx;
 
+
+    // TODO look for things that involve casts:
+    // AssignmentExpression: int x = (int)2;
+    // ArgumentList: System.out.println((int)2);
+
+    public Object visit(ASTCastExpression node, Object data) {
+        inCastCtx = true;
+        super.visit(node,data);
+        inCastCtx = false;
+        return data;
+    }
+
+    public Object visit(ASTName node, Object data) {
         try {
-        System.out.println("name = " + node.getImage());
-            //Class.forName()
-        System.out.println(System.getProperty("java.class.path"));
+            if (inCastCtx) {
+                TypeSet t = new TypeSet();
+                System.out.println(t.findClass(node.getImage()));
+            }
         } catch (Exception e) {}
         return super.visit(node, data);
     }
-*/
 
+    public Object visit(ASTPrimitiveType node, Object data) {
+        try {
+            if (inCastCtx) {
+                TypeSet t = new TypeSet();
+                System.out.println(t.findClass(node.getImage()));
+            }
+        } catch (Exception e) {}
+        return super.visit(node, data);
+    }
 }

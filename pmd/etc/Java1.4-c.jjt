@@ -594,22 +594,23 @@ void Type() :
 void PrimitiveType() :
 {}
 {
-  "boolean"
+  "boolean" {jjtThis.setImage("boolean");}
 |
-  "char"
+  "char" {jjtThis.setImage("char");}
 |
-  "byte"
+  "byte" {jjtThis.setImage("byte");}
 |
-  "short"
+  "short" {jjtThis.setImage("short");}
 |
-  "int"
+  "int" {jjtThis.setImage("int");}
 |
-  "long"
+  "long" {jjtThis.setImage("long");}
 |
-  "float"
+  "float" {jjtThis.setImage("float");}
 |
-  "double"
+  "double" {jjtThis.setImage("double");}
 }
+
 
 void ResultType() :
 {}

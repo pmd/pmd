@@ -5,7 +5,17 @@
 These are new ones for 0.5
   </description>
 
+  <rule name="UnnecessaryCast"
+        message="Avoid unnecessary casts"
+        class="net.sourceforge.pmd.rules.UnnecessaryCastRule">
+    <description>
+    </description>
 
+    <example>
+<![CDATA[
+]]>
+    </example>
+  </rule>
 </ruleset>
 
 
