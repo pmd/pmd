@@ -77,7 +77,7 @@ public class UnusedPrivateInstanceVariableRule extends AbstractRule {
             return super.visit(node, data);
         }
         AccessNode grandparentAccessNode = (AccessNode)grandparent;
-        if (!grandparentAccessNode.isPrivate() || grandparentAccessNode.isStatic()) {
+        if (!grandparentAccessNode.isPrivate() || (node.getImage() != null && node.getImage().equals("serialVersionUID"))) {
             return super.visit(node, data);
         }
         Namespace group = (Namespace)nameSpaces.peek();

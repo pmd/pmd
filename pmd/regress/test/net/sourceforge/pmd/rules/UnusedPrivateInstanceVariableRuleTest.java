@@ -76,4 +76,14 @@ public class UnusedPrivateInstanceVariableRuleTest extends RuleTst {
         Report report = process("UnusedPrivateInstanceVar10.java", rule);
         assertTrue(report.isEmpty());
     }
+
+    public void test11() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar11.java", rule);
+        assertEquals(1, report.size());
+    }
+
+    public void test12() throws Throwable {
+        Report report = process("UnusedPrivateInstanceVar12.java", rule);
+        assertTrue(report.isEmpty());
+    }
 }
