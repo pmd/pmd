@@ -2,7 +2,6 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 
 public class SymbolTableTestRule extends AbstractRule implements Rule {

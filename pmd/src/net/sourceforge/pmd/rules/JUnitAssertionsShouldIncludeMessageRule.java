@@ -1,19 +1,16 @@
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTArgumentList;
 import net.sourceforge.pmd.ast.ASTArguments;
+import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 public class JUnitAssertionsShouldIncludeMessageRule extends AbstractRule implements Rule {
 

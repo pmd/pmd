@@ -6,9 +6,29 @@
 
 package net.sourceforge.pmd.rules;
 
-import java.util.*;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTArguments;
+import net.sourceforge.pmd.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTNestedClassDeclaration;
+import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.ast.ASTUnmodifiedClassDeclaration;
+import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Searches through all methods and constructors called from constructors.  It

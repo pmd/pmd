@@ -5,6 +5,17 @@
  */
 package net.sourceforge.pmd.util;
 
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ParseException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -14,18 +25,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
 import java.io.StringReader;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ParseException;
 
 public class ASTViewer {
 
