@@ -31,7 +31,7 @@
     <javac  deprecation="false"
             debug="true"
             optimize="false"
-            srcdir="${src}:${regress}"
+            srcdir="${src}"
             destdir="${build}">
 <classpath>
     <path refid="classpath.path"/>
@@ -57,7 +57,7 @@
 <target name="jar" depends="copy,compile">
     <jar
         jarfile="${lib}\pmd-${version}.jar"
-        includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
+        includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**"
         basedir="${build}"
         manifest="etc/MANIFEST.MF"/>
 </target>
