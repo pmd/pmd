@@ -13,6 +13,9 @@ Dir.new("jobs").each { |candidate|
 		if ARGV.length != 0 && ARGV[0] != moduleDir
 			next
 		end
+		#if moduleDir != "columba"
+		#	next
+		#end
 		job = PMD::Job.new(location,title,unixname,moduleDir,srcDir)
 		puts "Processing #{job}"
 		job.clear
