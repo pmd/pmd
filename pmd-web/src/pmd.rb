@@ -1,8 +1,6 @@
-#
-# pmd.rb - This is the basics of what we need
-# to represent a project.  
-#
-module PMD
+#!/usr/local/bin/ruby
+
+require '/home/tom/data/pmd/pmd-web/src/ikko.rb'
 
 # add timeout thingy to the Thread class, thx to Rich Kilmer for the code
 class MyThread < Thread
@@ -17,13 +15,11 @@ class MyThread < Thread
 end
 
 class Job
-
 	JAVANCSS_BINARY="/usr/local/javancss/bin/javancss"
 	ROOT="/home/tom/data/pmd/pmd-web/src"
 	REMOTE_REPORT_DIR="/home/groups/p/pm/pmd/htdocs/reports/"
 	REMOTE_CGI_DIR="/home/groups/p/pm/pmd/cgi-bin/"
-
-	attr_reader :unixName
+	attr_reader :unixName, :moduleDir
 	def initialize(location, title, unixName, moduleDirectory, sourceDirectory )
 		@location = location
 		@title = title
@@ -91,4 +87,32 @@ class Job
 		return @location + ":" + @title + ":" + @unixName +":"+@moduleDirectory+":"+@sourceDirectory
 	end
 end
+
+if __FILE__ == $0
+	Dir.chdir(Job::ROOT)
+	ENV['JAVA_HOME']="/usr/local/java"
+	ENV['PATH']="#{ENV['PATH']}:#{ENV['JAVA_HOME']}/bin"
+	File.read("jobs.txt").each_line {|jobtext|
+		job = Job.new(*jobtext.split(":"))
+		if ARGV.length != 0 && ARGV[0] != job.moduleDir
+			next
+		end
+		puts "Processing #{job}"
+=begin
+			job.clear
+			job.checkout_code
+			if job.checkOutOK
+				job.run_pmd
+				job.run_cpd
+				job.ncss
+				job.copy_up
+				job.clear
+			end
+=end
+	}
+	fm = Ikko::FragmentManager.new
+	fm.base_path="./"
+	out = fm["header.frag", {"lastruntime"=>Time.now}]
+	File.open("index.html", "w") {|f| f.syswrite(out)}
 end
+
