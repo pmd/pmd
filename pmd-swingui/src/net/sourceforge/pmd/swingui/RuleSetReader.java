@@ -152,6 +152,7 @@ class RuleSetReader implements IConstants
 
         private StringBuffer m_buffer = new StringBuffer(500);
         private Rule m_rule;
+        private RuleProperties properties;
         private boolean m_doingRuleSet;
         private boolean m_doingRule;
 
@@ -211,6 +212,7 @@ class RuleSetReader implements IConstants
 
                 m_doingRule = true;
                 m_rule = null;
+                properties = null;
                 ruleName = attributes.getValue("name");
                 message = attributes.getValue("message");
                 className = attributes.getValue("class");
@@ -241,6 +243,7 @@ class RuleSetReader implements IConstants
 
                     ruleClass = Class.forName(className);
                     m_rule = (Rule) ruleClass.newInstance();
+                    properties = new RuleProperties(m_rule.getProperties());
                 }
                 catch (ClassNotFoundException classNotFoundException)
                 {
@@ -286,8 +289,8 @@ class RuleSetReader implements IConstants
                 {
                     if (m_rule != null)
                     {
-                        m_rule.getProperties().setValue(name, value);
-                        m_rule.getProperties().setValueType(name, type);
+                        properties.setValue(name, value);
+                        properties.setValueType(name, type);
                     }
                 }
             }

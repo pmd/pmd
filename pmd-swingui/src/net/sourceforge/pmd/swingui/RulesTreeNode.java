@@ -18,6 +18,7 @@ import java.util.Enumeration;
 public class RulesTreeNode extends DefaultMutableTreeNode implements IConstants {
     private RuleSet m_ruleSet;
     private Rule m_rule;
+    private RuleProperties properties;
     private String m_className;
     private String m_name;
     private String m_message;
@@ -81,6 +82,7 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements IConstants 
         m_example = trim(rule.getExample());
         m_ruleSet = ruleSetNode.getRuleSet();
         m_rule = rule;
+        properties = new RuleProperties(rule.getProperties());
         m_type = IS_RULE;
         m_include = rule.include();
         m_priority = rule.getPriority();
@@ -453,8 +455,8 @@ public class RulesTreeNode extends DefaultMutableTreeNode implements IConstants 
             m_rule.setInclude(m_include);
             m_rule.setPriority(m_priority);
         } else if (isProperty()) {
-            m_rule.getProperties().setValue(m_name, m_propertyValue);
-            m_rule.getProperties().setValueType(m_name, m_propertyValueType);
+            properties.setValue(m_name, m_propertyValue);
+            properties.setValueType(m_name, m_propertyValueType);
         }
     }
 
