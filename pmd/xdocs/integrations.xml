@@ -116,7 +116,7 @@ and syntax highlighting functionality.  Things to do:
 </p>
 <ul>
 <li>Clean up the threading so the GUI doesn't freeze while PMD is working</li>
-<li>Modify PMD so that it can stream new RuleViolations to the plugin
+<li>Modify PMD so that it can stream new RuleViolations to the plugin</li>
 </ul>
       </subsection>
       <subsection name="Maven">
