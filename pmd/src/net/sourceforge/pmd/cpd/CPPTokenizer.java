@@ -20,16 +20,13 @@ public class CPPTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuffer sb = sourceCode.getCodeBuffer();
         try {
-            // now tokenize it
             if (!initted) {
                 new CPPParser(new StringReader(sb.toString()));
                 initted = true;
             }
             CPPParser.ReInit(new StringReader(sb.toString()));
             Token currToken = CPPParserTokenManager.getNextToken();
-            int count = 0;
             while (currToken.image.length() > 0) {
-                count++;
                 tokenEntries.add(new TokenEntry(currToken.image, sourceCode.getFileName(), currToken.beginLine));
                 currToken = CPPParserTokenManager.getNextToken();
             }
