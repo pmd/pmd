@@ -290,9 +290,10 @@ public class Foo {
 <![CDATA[
 //FieldDeclaration
  [@Final='false']
- [parent::ClassBodyDeclaration]
- //VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]
-]]>
+ [../../../../ClassOrInterfaceDeclaration[@Interface='false']]
+ /VariableDeclarator
+ /VariableDeclaratorId[upper-case(@Image)=@Image]
+ ]]>
                 </value>
             </property>
         </properties>
