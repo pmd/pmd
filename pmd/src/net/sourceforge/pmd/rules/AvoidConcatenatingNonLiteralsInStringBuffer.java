@@ -8,10 +8,10 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTStatement;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 
 /*
  * How this rule works:

@@ -5,35 +5,37 @@
  */
 package test.net.sourceforge.pmd.ast;
 
-import junit.framework.TestCase;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTExpression;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 /**
  * 
  * @author mgriffa
  */
-public class ASTThrowStatementTest extends TestCase {
+public class ASTThrowStatementTest extends ParserTst {
 
-    public final void testGetFirstASTNameImageNull() {
-        ASTThrowStatement ts = new ASTThrowStatement(0);
-        
-        assertNull(ts.getFirstClassOrInterfaceTypeImage());
+    public final void testGetFirstASTNameImageNull() throws Throwable {
+        ASTThrowStatement t = (ASTThrowStatement)getNodes(ASTThrowStatement.class, NULL_NAME).iterator().next();
+        assertNull(t.getFirstClassOrInterfaceTypeImage());
     }
 
-    public final void testGetFirstASTNameImageNew() {
-        ASTThrowStatement ts = new ASTThrowStatement(0);
-        ASTAllocationExpression ao = new ASTAllocationExpression(1);
-        ts.jjtAddChild(ao, 0);
-        ASTExpression e = new ASTExpression(2);
-        ao.jjtAddChild(e, 0);
-        ASTName n = new ASTName(3);
-        n.setImage("MyName");
-        ao.jjtAddChild(n, 0);
-        
-        assertEquals("MyName", ts.getFirstClassOrInterfaceTypeImage());
+    public final void testGetFirstASTNameImageNew() throws Throwable {
+        ASTThrowStatement t = (ASTThrowStatement)getNodes(ASTThrowStatement.class, OK_NAME).iterator().next();
+        assertEquals("FooException", t.getFirstClassOrInterfaceTypeImage());
     }
 
+    private static final String NULL_NAME =
+    "public class Test {" + PMD.EOL +
+    "  void bar() {" + PMD.EOL +
+    "   throw e;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
+    private static final String OK_NAME =
+    "public class Test {" + PMD.EOL +
+    "  void bar() {" + PMD.EOL +
+    "   throw new FooException();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
 }

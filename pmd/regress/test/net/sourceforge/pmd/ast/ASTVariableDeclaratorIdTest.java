@@ -3,12 +3,12 @@
 */
 package test.net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.PMD;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class ASTVariableDeclaratorIdTest extends ParserTst {
