@@ -9,6 +9,8 @@ public class RuleContext {
 
     private Report report;
     private String sourceCodeFilename;
+    private String packageName;
+    private String className;
 
     public Report getReport() {
         return report;
@@ -24,5 +26,21 @@ public class RuleContext {
 
     public void setSourceCodeFilename(String filename) {
         this.sourceCodeFilename = filename;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 }

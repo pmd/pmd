@@ -16,6 +16,10 @@ public class RuleViolation {
             if (!r1.getFilename().equals(r2.getFilename())) {
                 return r1.getFilename().compareTo( r2.getFilename() );
             }
+
+            if (r1.getLine() != r2.getLine())
+                return r1.getLine() - r2.getLine();
+
             if (r1.getDescription() != null && r2.getDescription() != null && !r1.getDescription().equals(r2.getDescription())) {
                 return r1.getDescription().compareTo(r2.getDescription());
             }
@@ -28,16 +32,20 @@ public class RuleViolation {
     private Rule rule;
     private String description;
     private String filename;
+    private String packageName;
+    private String className;
 
-    public RuleViolation(Rule rule, int line, String filename) {
-        this(rule, line, rule.getMessage(), filename);
+    public RuleViolation(Rule rule, int line, RuleContext ctx) {
+        this(rule, line, rule.getMessage(), ctx);
     }
 
-    public RuleViolation(Rule rule, int line, String specificDescription, String filename) {
+    public RuleViolation(Rule rule, int line, String specificDescription, RuleContext ctx) {
         this.line = line;
         this.rule = rule;
         this.description = specificDescription;
-        this.filename = filename;
+        this.filename = ctx.getSourceCodeFilename();
+        this.packageName = ctx.getPackageName();
+        this.className = ctx.getClassName();
     }
 
     public Rule getRule() {
@@ -54,5 +62,13 @@ public class RuleViolation {
 
     public String getFilename() {
         return filename;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public String getClassName() {
+        return className;
     }
 }

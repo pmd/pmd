@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.RuleContext;
+
 
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(SimpleNode node, Object data) {
@@ -20,6 +22,10 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     public Object visit(ASTPackageDeclaration node, Object data) {
+        if (data != null) {
+            String packageName = ((ASTName)node.jjtGetChild(0)).getImage();
+            ((RuleContext)data).setPackageName(packageName);
+        }
 	return visit( (SimpleNode) node, data );
     }
 
@@ -36,6 +42,9 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+        if (data != null) {
+            ((RuleContext)data).setClassName(node.getImage());
+        }
 	return visit( (SimpleNode) node, data );
     }
 
@@ -64,6 +73,9 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     public Object visit(ASTUnmodifiedInterfaceDeclaration node, Object data) {
+        if (data != null) {
+            ((RuleContext)data).setClassName(node.getImage());
+        }
 	return visit( (SimpleNode) node, data );
     }
 
