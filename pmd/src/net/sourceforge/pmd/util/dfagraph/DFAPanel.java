@@ -5,34 +5,40 @@ import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
+import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: tom
- * Date: Sep 20, 2004
- * Time: 5:45:45 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DFAPanel extends JPanel {
+
     private SimpleNode node;
     private int x = 150;
     private int y = 50;
     private int radius = 10;
     private int d = 2 * radius;
-    private SourceFile sourceFile;
     private int height;
+    private DFAGrapher.HasLines lines;
 
-    public DFAPanel(SimpleNode node, SourceFile sourceFile) {
+    public DFAPanel(SimpleNode node, DFAGrapher.HasLines lines) {
         super();
+        if (node == null) {
+            return;
+        }
+        this.lines = lines;
         this.node = node;
-        this.sourceFile = sourceFile;
+    }
+
+    public void resetTo(SimpleNode node, DFAGrapher.HasLines lines) {
+        this.lines = lines;
+        this.node = node;
     }
 
     public void paint(Graphics g) {
-        this.setPreferredSize(new Dimension(600, height + 100));
+        //this.setPreferredSize(new Dimension(600, height + 100));
         super.paint(g);
-        java.util.List flow = node.getDataFlowNode().getFlow();
+        if (node == null) {
+            return;
+        }
+        List flow = node.getDataFlowNode().getFlow();
         for (int i = 0; i < flow.size(); i++) {
             IDataFlowNode inode = (IDataFlowNode) flow.get(i);
 
@@ -41,7 +47,7 @@ public class DFAPanel extends JPanel {
             g.drawArc(x, y, d, d, 0, 360);
             if (height < y) height = y;
 
-            g.drawString(sourceFile.getLine(inode.getLine()), x + 200, y + 15);
+            g.drawString(lines.getLine(inode.getLine()), x + 200, y + 15);
             g.drawString(String.valueOf(inode.getIndex()), x + radius-2, y + radius+4);
 
             String exp = "";

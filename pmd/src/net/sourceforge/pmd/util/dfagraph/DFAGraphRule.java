@@ -9,7 +9,6 @@ import java.util.List;
 
 public class DFAGraphRule extends AbstractRule {
 
-    private SourceFile src;
     private List methods;
     private List constructors;
 
@@ -21,15 +20,12 @@ public class DFAGraphRule extends AbstractRule {
     public List getMethods() {
         return this.methods;
     }
+
     public List getConstructors() {
         return this.constructors;
     }
-    public SourceFile getSrc() {
-        return this.src;
-    }
 
     public Object visit(ASTCompilationUnit acu, Object data) {
-        this.src = new SourceFile(((RuleContext)data).getSourceCodeFilename());
         methods = acu.findChildrenOfType(ASTMethodDeclaration.class);
         constructors = acu.findChildrenOfType(ASTMethodDeclaration.class);
         return data;
