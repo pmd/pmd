@@ -85,13 +85,10 @@ public class ConstructorCallsOverridableMethodRuleTest extends SimpleAggregatorT
     "}";
 
     private static final String TEST8 =
-    "package example;" + PMD.EOL +
-    "import java.util.HashMap;" + PMD.EOL +
-    "import java.util.Map;" + PMD.EOL +
-    "public class ConvertPARRequestContainer {" + PMD.EOL +
-    " public ConvertPARRequestContainer() {" + PMD.EOL +
-    "  updateConfigButtonsInfo();" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " public Foo() {" + PMD.EOL +
+    "  bar();" + PMD.EOL +
     " }" + PMD.EOL +
-    " private void updateConfigButtonsInfo() {}" + PMD.EOL +
+    " private void bar() {}" + PMD.EOL +
     "}";
 }
