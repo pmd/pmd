@@ -79,6 +79,47 @@ public abstract class Foo {
       </example>
     </rule>
 
+
+    <rule name="MissingStaticMethodInNonInstantiatableClass"
+          message="Class cannot be instantiated and does not provide any static method"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  A class that has private constructors and does not have any static method cannot be used.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+    //ClassDeclaration[
+        ( count(.//ConstructorDeclaration)>0 and count(.//ConstructorDeclaration) = count(.//ConstructorDeclaration[@Private='true']) )
+        and 
+        count(.//MethodDeclaration[@Static='true'])=0
+        ]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+/* This class is unusable, since it cannot be 
+ instantiated (private constructor),
+ and no static method can be called. 
+ */
+public class Foo {
+
+    private Foo() {}
+    
+	void foo() {
+	}
+	
+}
+
+]]>
+      </example>
+    </rule>
+
     </ruleset>
 
 
