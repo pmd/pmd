@@ -15,6 +15,7 @@ public class UnusedFormalParameterRuleTest  extends RuleTst {
         rule = new UnusedFormalParameterRule();
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
+
     public void testOneParam() throws Throwable {
         runTest("UnusedFormalParam1.java", 1, rule);
     }
