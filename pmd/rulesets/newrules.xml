@@ -5,6 +5,33 @@
 These are new rules for the next release
   </description>
 
+    <rule name="DontImportSunRule"
+       message="Avoid importing anything from the 'sun.*' packages"
+       class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+          Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
+       </description>
+       <properties>
+          <property name="xpath">
+               <value>
+<![CDATA[
+   //ImportDeclaration
+   [starts-with(Name/@Image, 'sun.')]
+   [not(starts-with(Name/@Image, 'sun.misc.Signal'))]
+]]>
+
+               </value>
+          </property>
+       </properties>
+       <priority>4</priority>
+
+       <example>
+<![CDATA[
+   import sun.misc.foo;
+   public class Foo {}
+]]>
+       </example>
+    </rule>
 
 </ruleset>
 

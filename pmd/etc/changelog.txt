@@ -1,4 +1,5 @@
 ????, 2004 - 1.5:
+New rules: DontImportSunRule
 TODO - fix it so tests and rules don't duplicate the xpath expressions
 Added isTrue() to ASTBooleanLiteral.
 
