@@ -47,7 +47,7 @@ public class RuleSetFactory {
 
         RuleSet ruleSet = new RuleSet();
         for (StringTokenizer st = new StringTokenizer(name, ","); st.hasMoreTokens();) {
-            String ruleSetName = st.nextToken();
+            String ruleSetName = st.nextToken().trim();
             RuleSet tmpRuleSet = createRuleSet(ruleSetName);
             ruleSet.addRuleSet(tmpRuleSet);
         }
