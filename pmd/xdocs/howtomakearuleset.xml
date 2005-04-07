@@ -39,7 +39,7 @@ Say you want to pick specific rules from various rule sets and customize them.  
   <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
   <rule ref="rulesets/unusedcode.xml/UnusedPrivateField"/>
   <rule ref="rulesets/imports.xml/DuplicateImports"/>
-  <rule ref="rulesets/basic.xml/UnnecessaryConversionTemporaryRule"/>
+  <rule ref="rulesets/basic.xml/UnnecessaryConversionTemporary"/>
 
   <!-- We want to customize this rule a bit, change the message and raise the priority  -->
   <rule
