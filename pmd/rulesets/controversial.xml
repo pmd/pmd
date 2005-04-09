@@ -95,7 +95,7 @@ most people really dislike :-)
 
     <rule name="UnusedModifier"
          message="Avoid modifiers which are implied by the context"
-         class="net.sourceforge.pmd.rules.XPathRule">
+         class="net.sourceforge.pmd.rules.UnusedModifier">
      <description>
      Fields in interfaces are automatically public static final, and
      methods are public abstract.
@@ -104,22 +104,6 @@ most people really dislike :-)
      For historical reasons, modifiers which are implied by the context
      are accepted by the compiler, but are superfluous.
      </description>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-    //ClassOrInterfaceDeclaration[@Interface='true']/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
-      [@Public = 'true' or @Abstract = 'true']
-      [count(//Block) = 0]
-|   //ClassOrInterfaceDeclaration[@Interface='true']/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-      [@Public = 'true' or @Static = 'true' or @Final = 'true']
-|   //ClassOrInterfaceDeclaration[@Interface='true']//ClassOrInterfaceDeclaration[@Interface='false'][@Nested='true'][@Public = 'true' or @Static = 'true']
-|   //ClassOrInterfaceDeclaration[@Interface='true']//ClassOrInterfaceDeclaration[@Interface='true'][@Public = 'true' or @Static = 'true']
-|   //ClassOrInterfaceDeclaration[@Interface='false']//ClassOrInterfaceDeclaration[@Interface='true'][@Nested='true'][@Static = 'true']
-                    ]]>
-                </value>
-            </property>
-        </properties>
         <priority>3</priority>
      <example>
  <![CDATA[
