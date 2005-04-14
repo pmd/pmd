@@ -7,6 +7,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.PMD;
 
 public class SimplifyStartsWithTest extends SimpleAggregatorTst {
+
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {

@@ -107,17 +107,16 @@ first -->
 
 
     <rule name="SystemPrintln"
-         message="System.out.println is used"
+         message="System.out.print is used"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>
-     System.(out|err).println is used, consider using a logger.
+     System.(out|err).print is used, consider using a logger.
      </description>
      <properties>
          <property name="xpath">
              <value>
                  <![CDATA[
-//Statement[
-child:://Name[
+//Name[
     starts-with(@Image, 'System.out.print')
     or
     starts-with(@Image, 'System.err.print')

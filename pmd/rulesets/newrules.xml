@@ -205,5 +205,37 @@ public class FooTest extends TestCase {
       </example>
     </rule>
 
+    <rule name="UseStringBufferForStringAppends"
+              message="Prefer StringBuffer over += for concatenating strings"
+              class="net.sourceforge.pmd.rules.XPathRule">
+           <description>
+      Finds usages of += for appending strings.
+           </description>
+          <properties>
+              <property name="xpath">
+                  <value>
+                      <![CDATA[
+    //StatementExpression[PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::MethodDeclaration//LocalVariableDeclaration[./Type/Name[@Image = 'String']]/VariableDeclarator/VariableDeclaratorId/@Image]]//AssignmentOperator[@Compound='true']
+
+                      ]]>
+                  </value>
+              </property>
+          </properties>
+            <priority>3</priority>
+
+           <example>
+      <![CDATA[
+         String a;
+
+         a = "foo";
+         a += " bar";
+
+         // better would be:
+         StringBuffer a = new StringBuffer("foo");
+         a.append(" bar);
+      ]]>
+           </example>
+        </rule>
+
 </ruleset>
 
