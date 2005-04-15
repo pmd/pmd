@@ -215,8 +215,12 @@ public class FooTest extends TestCase {
               <property name="xpath">
                   <value>
                       <![CDATA[
-    //StatementExpression[PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::MethodDeclaration//LocalVariableDeclaration[./Type/Name[@Image = 'String']]/VariableDeclarator/VariableDeclaratorId/@Image]]//AssignmentOperator[@Compound='true']
-
+//StatementExpression
+    [PrimaryExpression/PrimaryPrefix/Name
+        [@Image = ancestor::MethodDeclaration//LocalVariableDeclaration
+            [./Type//ClassOrInterfaceType[@Image =
+'String']]/VariableDeclarator/VariableDeclaratorId/@Image]]
+    //AssignmentOperator[@Compound='true']
                       ]]>
                   </value>
               </property>

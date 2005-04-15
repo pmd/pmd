@@ -43,10 +43,10 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Eric Olander - UseStringBufferForStringAppends, CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Christophe Mourette - Reported JDK 1.3 problem with XMLRenderer</li>
             <li>Wim Deblauwe - SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
 			<li>Alex Givant - caught documentation bug</li>
-            <li>Eric Olander - CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Luke Francl - suggested UnnecessaryParentheses rule, numerous <b>high quality</b> feature suggestions and bug reports</li>
             <li>David Hovemeyer - reported missing labelled stmt images, a nice patch to let PMD process code in jar/zip files</li>
             <li>Peter 'Bruno' Kofler - reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
