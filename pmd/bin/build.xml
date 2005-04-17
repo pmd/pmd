@@ -9,8 +9,7 @@
 <property name="version" value="3.0"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
-<path id="classpath.path">
-    <pathelement location="${build}"/>
+<path id="dependencies.path">
     <pathelement location="${build}"/>
     <fileset dir="${lib}">
         <include name="jaxen-core-1.0-fcs.jar"/>
@@ -33,9 +32,9 @@
             optimize="false"
             srcdir="${src}:${regress}"
             destdir="${build}">
-<classpath>
-    <path refid="classpath.path"/>
-</classpath>
+    <classpath>
+    <path refid="dependencies.path"/>
+    </classpath>
     </javac>
 </target>
 
@@ -82,10 +81,7 @@
 
 <target name="test" depends="requires-junit,compile"  description="Runs the unit tests">
     <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
-      <classpath>
-        <path refid="classpath.path" />
-        <pathelement location="${basedir}" />
-      </classpath>
+      <classpath><path refid="dependencies.path" /></classpath>
       <batchtest fork="yes" todir="${build}">
         <fileset dir="${regress}">
           <include name="test/**/*Test.java" />
@@ -97,10 +93,7 @@
 
  <target name="symtabtest" depends="compile" description="Runs the unit tests for the symboltable package">
     <junit printsummary="yes" haltonfailure="yes">
-      <classpath>
-        <path refid="classpath.path" />
-        <pathelement location="${basedir}" />
-      </classpath>
+      <classpath><path refid="dependencies.path" /></classpath>
       <batchtest fork="no" todir="${build}">
         <fileset dir="${regress}">
           <include name="test/**/symboltable/**/*Test.java" />
@@ -112,10 +105,7 @@
 
  <target name="cpdtest" depends="compile" description="Runs the unit tests for the CPD package">
     <junit printsummary="yes" haltonfailure="yes">
-      <classpath>
-        <path refid="classpath.path" />
-        <pathelement location="${basedir}" />
-      </classpath>
+      <classpath><path refid="dependencies.path" /></classpath>
       <batchtest fork="no" todir="${build}">
         <fileset dir="${regress}">
           <include name="test/**/cpd/**/*Test.java" />
