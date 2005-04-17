@@ -20,13 +20,13 @@
     </fileset>
 </path>
 
-<target name="delete">
+<target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
     <delete dir="${build}"/>
     <delete file="${lib}\pmd-${version}.jar"/>
     <mkdir dir="${build}"/>
 </target>
 
-<target name="compile">
+<target name="compile" description="Compiles the code">
     <mkdir dir="${build}"/>
     <javac  deprecation="false"
             debug="true"
@@ -39,7 +39,7 @@
     </javac>
 </target>
 
-<target name="copy">
+<target name="copy" description="Copies the rulesets directory contents into the build directory">
     <mkdir dir="${lib}"/>
     <copy todir="${build}rulesets">
         <fileset dir="${rulesets}">
@@ -54,18 +54,18 @@
     </copy>
 </target>
 
-<target name="jar" depends="copy,compile">
+<target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
     <jar
         jarfile="${lib}\pmd-${version}.jar"
         includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**"
         basedir="${build}"/>
 </target>
 
-<target name="jarsrc" depends="copy,compile">
+<target name="jarsrc" depends="copy,compile"  description="Jars up the source directory">
     <jar jarfile="${lib}\pmd-src-${version}.jar" basedir="${src}"/>
 </target>
 
-<target name="pmd">
+<target name="pmd" description="Runs PMD">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     <pmd targetjdk="1.5" rulesetfiles="rulesets/unusedcode.xml" shortFilenames="true" failonerror="false">
         <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
@@ -75,12 +75,12 @@
     </pmd>
 </target>
 
-  <target name="requires-junit">
+  <target name="requires-junit"  description="Ensures JUnit is available">
     <available classname="junit.framework.Test" property="junit.available"/>
     <fail unless="junit.available" message="Could find JUnit... please place a junit.jar file in the CLASSPATH."/>
   </target>
 
-<target name="test" depends="requires-junit,compile">
+<target name="test" depends="requires-junit,compile"  description="Runs the unit tests">
     <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
       <classpath>
         <path refid="classpath.path" />
@@ -95,7 +95,7 @@
     </junit>
 </target>
 
- <target name="symtabtest" depends="compile">
+ <target name="symtabtest" depends="compile" description="Runs the unit tests for the symboltable package">
     <junit printsummary="yes" haltonfailure="yes">
       <classpath>
         <path refid="classpath.path" />
@@ -110,7 +110,7 @@
     </junit>
 </target>
 
- <target name="cpdtest" depends="compile">
+ <target name="cpdtest" depends="compile" description="Runs the unit tests for the CPD package">
     <junit printsummary="yes" haltonfailure="yes">
       <classpath>
         <path refid="classpath.path" />
@@ -125,7 +125,7 @@
     </junit>
 </target>
 
-<target name="jjtree">
+<target name="jjtree" description="Generates the Java parser and AST source filesr">
     <delete file="src/net/sourceforge/pmd/ast/JavaParser.java"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParserConstants.java"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParserTreeConstants.java"/>
@@ -141,7 +141,7 @@
     <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
 </target>
 
-<target name="cppjavacc">
+<target name="cppjavacc" description="Generates the C++ grammar">
     <delete>
         <fileset dir="src/net/sourceforge/pmd/cpd/cppast">
             <include name="*.java"/>
@@ -155,11 +155,11 @@
     <replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException"/>
 </target>
 
-<target name="clean" depends="delete,compile,copy"/>
+<target name="clean" depends="delete,compile,copy" description="Does a complete recompile"/>
 
-<target name="dist" depends="clean,jar"/>
+<target name="dist" depends="clean,jar" description="Recompiles and jars"/>
 
-<target name="cpdjnlp" depends="dist">
+<target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
     <signjar jar="${lib}/pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <echo message="Uploading jar file"/>
     <exec executable="scp" os="Linux">
@@ -171,7 +171,7 @@
     </exec>
 </target>
 
-<target name="tomserver" depends="dist">
+<target name="tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
     <echo message="Uploading jar file"/>
     <exec executable="scp" os="Linux">
         <arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:Sites/"/>
@@ -179,7 +179,7 @@
 </target>
 
 
-<target name="cpd">
+<target name="cpd" description="Runs CPD">
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
     <!-- ignoreIdentifiers="true" -->
     <cpd ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt">
@@ -189,7 +189,7 @@
     </cpd>
 </target>
 
-<target name="javadoc">
+<target name="javadoc" description="Generates Javadocs">
 	<mkdir dir="docs/api"/>
 
 	<javadoc packagenames="com.*, net.*, org.*"
