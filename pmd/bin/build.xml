@@ -1,17 +1,16 @@
 <project name="pmd" default="compile" basedir="../">
 
-<property name="bin" value="bin\"/>
-<property name="lib" value="lib\"/>
-<property name="src" value="src\"/>
-<property name="build" value="build\"/>
+<property name="dir.lib" value="lib\"/>
+<property name="dir.src" value="src\"/>
+<property name="dir.build" value="build\"/>
 <property name="rulesets" value="rulesets\"/>
 <property name="regress" value="regress\"/>
 <property name="version" value="3.0"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
 <path id="dependencies.path">
-    <pathelement location="${build}"/>
-    <fileset dir="${lib}">
+    <pathelement location="${dir.build}"/>
+    <fileset dir="${dir.lib}">
         <include name="jaxen-core-1.0-fcs.jar"/>
         <include name="saxpath-1.0-fcs.jar"/>
         <include name="xercesImpl-2.6.2.jar"/>
@@ -20,18 +19,18 @@
 </path>
 
 <target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
-    <delete dir="${build}"/>
-    <delete file="${lib}\pmd-${version}.jar"/>
-    <mkdir dir="${build}"/>
+    <delete dir="${dir.build}"/>
+    <delete file="${dir.lib}\pmd-${version}.jar"/>
+    <mkdir dir="${dir.build}"/>
 </target>
 
 <target name="compile" description="Compiles the code">
-    <mkdir dir="${build}"/>
+    <mkdir dir="${dir.build}"/>
     <javac  deprecation="false"
             debug="true"
             optimize="false"
-            srcdir="${src}:${regress}"
-            destdir="${build}">
+            srcdir="${dir.src}:${regress}"
+            destdir="${dir.build}">
     <classpath>
     <path refid="dependencies.path"/>
     </classpath>
@@ -39,15 +38,15 @@
 </target>
 
 <target name="copy" description="Copies the rulesets directory contents into the build directory">
-    <mkdir dir="${lib}"/>
-    <copy todir="${build}rulesets">
+    <mkdir dir="${dir.lib}"/>
+    <copy todir="${dir.build}rulesets">
         <fileset dir="${rulesets}">
             <include name="*.xml"/>
             <include name="*.properties"/>
         </fileset>
     </copy>
-    <copy todir="${build}net/sourceforge/pmd/util/viewer/resources">
-        <fileset dir="${src}net/sourceforge/pmd/util/viewer/resources">
+    <copy todir="${dir.build}net/sourceforge/pmd/util/viewer/resources">
+        <fileset dir="${dir.src}net/sourceforge/pmd/util/viewer/resources">
             <include name="*.properties"/>
         </fileset>
     </copy>
@@ -55,13 +54,13 @@
 
 <target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
     <jar
-        jarfile="${lib}\pmd-${version}.jar"
+        jarfile="${dir.lib}\pmd-${version}.jar"
         includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**"
-        basedir="${build}"/>
+        basedir="${dir.build}"/>
 </target>
 
 <target name="jarsrc" depends="copy,compile"  description="Jars up the source directory">
-    <jar jarfile="${lib}\pmd-src-${version}.jar" basedir="${src}"/>
+    <jar jarfile="${dir.lib}\pmd-src-${version}.jar" basedir="${dir.src}"/>
 </target>
 
 <target name="pmd" description="Runs PMD">
@@ -82,7 +81,7 @@
 <target name="test" depends="requires-junit,compile"  description="Runs the unit tests">
     <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
       <classpath><path refid="dependencies.path" /></classpath>
-      <batchtest fork="yes" todir="${build}">
+      <batchtest fork="yes" todir="${dir.build}">
         <fileset dir="${regress}">
           <include name="test/**/*Test.java" />
         </fileset>
@@ -94,7 +93,7 @@
  <target name="symtabtest" depends="compile" description="Runs the unit tests for the symboltable package">
     <junit printsummary="yes" haltonfailure="yes">
       <classpath><path refid="dependencies.path" /></classpath>
-      <batchtest fork="no" todir="${build}">
+      <batchtest fork="no" todir="${dir.build}">
         <fileset dir="${regress}">
           <include name="test/**/symboltable/**/*Test.java" />
         </fileset>
@@ -106,7 +105,7 @@
  <target name="cpdtest" depends="compile" description="Runs the unit tests for the CPD package">
     <junit printsummary="yes" haltonfailure="yes">
       <classpath><path refid="dependencies.path" /></classpath>
-      <batchtest fork="no" todir="${build}">
+      <batchtest fork="no" todir="${dir.build}">
         <fileset dir="${regress}">
           <include name="test/**/cpd/**/*Test.java" />
         </fileset>
@@ -150,7 +149,7 @@
 <target name="dist" depends="clean,jar" description="Recompiles and jars"/>
 
 <target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
-    <signjar jar="${lib}/pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${dir.lib}/pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
     <echo message="Uploading jar file"/>
     <exec executable="scp" os="Linux">
         <arg line=" /home/tom/data/pmd/pmd/lib/pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
@@ -183,11 +182,11 @@
 	<mkdir dir="docs/api"/>
 
 	<javadoc packagenames="com.*, net.*, org.*"
-		sourcepath="src"
+		sourcepath="${dir.src}"
 		destdir="docs/api"
 		doctitle="PMD API">
 		<classpath>
-			<fileset dir="lib">
+			<fileset dir="${dir.lib}">
 				<include name="*.jar"/>
 			</fileset>
 		</classpath>
