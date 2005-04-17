@@ -3,8 +3,8 @@
 <property name="dir.lib" value="lib\"/>
 <property name="dir.src" value="src\"/>
 <property name="dir.build" value="build\"/>
-<property name="rulesets" value="rulesets\"/>
-<property name="regress" value="regress\"/>
+<property name="dir.rulesets" value="rulesets\"/>
+<property name="dir.regress" value="regress\"/>
 <property name="version" value="3.0"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
@@ -29,7 +29,7 @@
     <javac  deprecation="false"
             debug="true"
             optimize="false"
-            srcdir="${dir.src}:${regress}"
+            srcdir="${dir.src}:${dir.regress}"
             destdir="${dir.build}">
     <classpath>
     <path refid="dependencies.path"/>
@@ -40,7 +40,7 @@
 <target name="copy" description="Copies the rulesets directory contents into the build directory">
     <mkdir dir="${dir.lib}"/>
     <copy todir="${dir.build}rulesets">
-        <fileset dir="${rulesets}">
+        <fileset dir="${dir.rulesets}">
             <include name="*.xml"/>
             <include name="*.properties"/>
         </fileset>
@@ -82,7 +82,7 @@
     <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
       <classpath><path refid="dependencies.path" /></classpath>
       <batchtest fork="yes" todir="${dir.build}">
-        <fileset dir="${regress}">
+        <fileset dir="${dir.regress}">
           <include name="test/**/*Test.java" />
         </fileset>
       </batchtest>
@@ -94,7 +94,7 @@
     <junit printsummary="yes" haltonfailure="yes">
       <classpath><path refid="dependencies.path" /></classpath>
       <batchtest fork="no" todir="${dir.build}">
-        <fileset dir="${regress}">
+        <fileset dir="${dir.regress}">
           <include name="test/**/symboltable/**/*Test.java" />
         </fileset>
       </batchtest>
@@ -106,7 +106,7 @@
     <junit printsummary="yes" haltonfailure="yes">
       <classpath><path refid="dependencies.path" /></classpath>
       <batchtest fork="no" todir="${dir.build}">
-        <fileset dir="${regress}">
+        <fileset dir="${dir.regress}">
           <include name="test/**/cpd/**/*Test.java" />
         </fileset>
       </batchtest>
