@@ -229,7 +229,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         context.getReport().addRuleViolation(createRuleViolation(context, pp));
     }
 
-    /** 
+    /**
      * Gets the Image of the first parent node of type ASTClassOrInterfaceDeclaration or <code>null</code>
      *  
      * @param node the node which will be searched

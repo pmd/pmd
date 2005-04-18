@@ -40,14 +40,23 @@ These are new rules that are still in progress
                   <value>
                       <![CDATA[
 //Expression
- /ConditionalAndExpression
-  [EqualityExpression[@Image='!=']
+ [ConditionalOrExpression
+ [EqualityExpression[@Image='==']
   //NullLiteral
-and
+  and
+  UnaryExpressionNotPlusMinus
+   [@Image='!']//InstanceOfExpression[PrimaryExpression
+     //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
+      //PrimaryPrefix/Name/@Image]]
+or
+ConditionalAndExpression
+ [EqualityExpression[@Image='!=']//NullLiteral
+ and
 InstanceOfExpression
  [PrimaryExpression
   //Name/@Image = ancestor::ConditionalAndExpression
-   /EqualityExpression//PrimaryPrefix/Name/@Image]]]]>
+   /EqualityExpression//PrimaryPrefix/Name/@Image]]
+ ]]>
                   </value>
               </property>
           </properties>
@@ -64,7 +73,6 @@ class Foo {
 }      ]]>
            </example>
         </rule>
-
     <!--
 
 

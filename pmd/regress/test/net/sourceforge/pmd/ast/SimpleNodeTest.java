@@ -225,6 +225,13 @@ public class SimpleNodeTest extends ParserTst {
         assertTrue(c.containsChildOfType(ASTFieldDeclaration.class));
     }
 
+    public void testXPathNodeSelect() throws Throwable {
+        ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration)getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
+        List nodes = c.findChildNodesWithXPath("//FieldDeclaration");
+        assertEquals(2, nodes.size());
+        assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);
+    }
+
     private void verifyNode(SimpleNode node, int beginLine, int beginCol, int endLine, int endCol) {
         assertEquals("Unexpected beginning line: ", beginLine, node.getBeginLine());
         assertEquals("Unexpected beginning column: ", beginCol, node.getBeginColumn());
@@ -295,6 +302,12 @@ public class SimpleNodeTest extends ParserTst {
     "  void bar() {" + PMD.EOL +
     "   foo(new Fuz() { int x = 2;});" + PMD.EOL +
     "  }" + PMD.EOL +
+    "}";
+
+    private static final String TEST_XPATH =
+    "public class Test {" + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
+    "  int y = 42;" + PMD.EOL +
     "}";
 
 }
