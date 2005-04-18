@@ -29,6 +29,41 @@ These are new rules that are still in progress
       </rule>
 
 
+    <rule name="SimplifyConditional"
+              message="No need to check for null before an instanceof"
+              class="net.sourceforge.pmd.rules.XPathRule">
+           <description>
+      No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
+           </description>
+          <properties>
+              <property name="xpath">
+                  <value>
+                      <![CDATA[
+//Expression
+ /ConditionalAndExpression
+  [EqualityExpression[@Image='!=']
+  //NullLiteral
+and
+InstanceOfExpression
+ [PrimaryExpression
+  //Name/@Image = ancestor::ConditionalAndExpression
+   /EqualityExpression//PrimaryPrefix/Name/@Image]]]]>
+                  </value>
+              </property>
+          </properties>
+            <priority>3</priority>
+
+           <example>
+      <![CDATA[
+class Foo {
+ void bar(Object x) {
+  if (x != null && x instanceof Bar) {
+   // just drop the "x != null" check
+  }
+ }
+}      ]]>
+           </example>
+        </rule>
 
     <!--
 
