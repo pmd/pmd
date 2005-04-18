@@ -56,7 +56,12 @@
     <jar
         jarfile="${dir.lib}\pmd-${version}.jar"
         includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**"
-        basedir="${dir.build}"/>
+        basedir="${dir.build}">
+        <manifest>
+            <attribute name="Main-Class" value="net.sourceforge.pmd.PMD"/>
+            <attribute name="Class-Path" value="jaxen-core-1.0-fcs.jar saxpath-1.0-fcs.jar"/>
+        </manifest>
+    </jar>  
 </target>
 
 <target name="jarsrc" depends="copy,compile"  description="Jars up the source directory">
