@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.QualifiedName;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/04/20 23:15:32  phherlin
+ * Implement reports generation RFE#1177802
+ *
  * Revision 1.3  2005/01/31 23:39:37  phherlin
  * Upgrading to PMD 2.2
  *
@@ -88,5 +91,11 @@ public interface PMDPluginConstants {
     public static final String REVIEW_MARKER = "// @PMD:REVIEWED:";
     public static final String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     public static final String REVIEW_ADDITIONAL_COMMENT_PREFERENCE = PLUGIN_ID + ".review_additional_comment";
+    
+    public static final String REPORT_FOLDER = "reports";
+    public static final String HTML_REPORT_NAME = "pmd-report.html";
+    public static final String CSV_REPORT_NAME = "pmd-report.csv";
+    public static final String XML_REPORT_NAME = "pmd-report.xml";
+    public static final String TXT_REPORT_NAME = "pmd-report.txt";
 
 }
