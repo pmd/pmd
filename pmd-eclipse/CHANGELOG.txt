@@ -2,7 +2,15 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
+v3.0.0 - 21/04/2005
 
+Runtime
+-------
+. upgrade the core engine to PMD v3.0
+. implement reports generation (RFE#1177802)
+
+
+----------------------------------------------------------------------------------------
 v2.2.1 - 01/02/2005
 
 Runtime

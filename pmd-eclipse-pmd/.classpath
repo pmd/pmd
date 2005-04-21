@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry exported="true" kind="lib" path="lib/jaxen-core-1.0-fcs.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/saxpath-1.0-fcs.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pmd-2.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pmd-3.0.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

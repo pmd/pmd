@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="2.3.1.v3"
+   version="3.0.0"
    provider-name="%plugin.provider">
 
    <runtime>
@@ -13,7 +13,7 @@
       <library name="lib/saxpath-1.0-fcs.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-2.3.jar">
+      <library name="lib/pmd-3.0.jar">
          <export name="*"/>
       </library>
    </runtime>
