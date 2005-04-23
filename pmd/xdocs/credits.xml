@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Tom Parker - AtLeastOneConstructor bug report</li>
             <li>Wouter Zelle - initial implementation of SimplifyConditional</li>
             <li>Eric Olander - SimplifyConditional fix, UseStringBufferForStringAppends, CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Christophe Mourette - Reported JDK 1.3 problem with XMLRenderer</li>
