@@ -5397,13 +5397,14 @@ jjtn000.setModifiers(modifiers);
 /* Annotation Types. */
   final public void AnnotationTypeDeclaration(int modifiers) throws ParseException {
  /*@bgen(jjtree) AnnotationTypeDeclaration */
-  ASTAnnotationTypeDeclaration jjtn000 = new ASTAnnotationTypeDeclaration(this, JJTANNOTATIONTYPEDECLARATION);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+ASTAnnotationTypeDeclaration jjtn000 = new ASTAnnotationTypeDeclaration(this, JJTANNOTATIONTYPEDECLARATION);
+boolean jjtc000 = true;
+jjtree.openNodeScope(jjtn000);Token t;
     try {
       jj_consume_token(AT);
       jj_consume_token(INTERFACE);
-      jj_consume_token(IDENTIFIER);
+      t = jj_consume_token(IDENTIFIER);
+                                  jjtn000.setImage(t.image);
       AnnotationTypeBody();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6692,6 +6693,12 @@ jjtn000.setModifiers(modifiers);
     return false;
   }
 
+  final private boolean jj_3_48() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
   final private boolean jj_3R_152() {
     if (jj_scan_token(LBRACE)) return true;
     Token xsp;
@@ -6709,15 +6716,16 @@ jjtn000.setModifiers(modifiers);
     return false;
   }
 
-  final private boolean jj_3_48() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
   final private boolean jj_3R_261() {
     if (jj_scan_token(COMMA)) return true;
     if (jj_3R_260()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_47() {
+    if (jj_3R_63()) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -6734,13 +6742,6 @@ jjtn000.setModifiers(modifiers);
   final private boolean jj_3R_64() {
     if (jj_scan_token(LBRACKET)) return true;
     if (jj_scan_token(RBRACKET)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_47() {
-    if (jj_3R_63()) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 

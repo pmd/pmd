@@ -196,14 +196,8 @@
         <table>
           <tr><td><center><img src="images/darpa.jpg"/></center></td>
               <td><a href="http://www.darpa.mil/">DARPA</a> for funding
-                  the Ultra*Log effort which spawned PMD.</td></tr>
-          <tr><td><center><img src="images/ultralog.gif"/></center></td>
-              <td><a href="http://www.ultralog.net/">Ultra*Log</a> for
-                  letting us build PMD to help the code get better.</td></tr>
-          <tr><td><center><img src="images/cougaar.jpg"/></center></td>
-              <td><a href="http://www.cougaar.org/">Cougaar</a> is an
-                  agent architecture Ultra*Log is based on.  (Which needs
-                  quite a bit of PMD also.)</td></tr>
+                  the Ultra*Log and <a href="http://cougaar.org/">Cougaar</a>
+                effort which spawned PMD.</td></tr>
           <tr><td><center><img src="http://sourceforge.net/sflogo.php?group_id=56262"/></center></td>
               <td><a href="http://sourceforge.net/">SourceForge</a> for
                   providing hosting services for PMD.</td></tr>
@@ -215,6 +209,10 @@
             <tr><td><center><img src="images/qasystems_logo.jpg"/></center></td>
                 <td><a href="http://www.qa-systems.com/products/qstudioforjava/">QA-Systems</a> for sending in some
                     handy utilities for PMD and shipping PMD inside their QStudio product
+                    </td></tr>
+            <tr><td></td>
+                <td><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technologies</a> for
+                using PMD inside their Convergence product
                     </td></tr>
         </table>
         </subsection>

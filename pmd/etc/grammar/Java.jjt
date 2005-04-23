@@ -1992,9 +1992,11 @@ void  MemberValueArrayInitializer():
 /* Annotation Types. */
 
 void AnnotationTypeDeclaration(int modifiers):
-{}
 {
-  "@" "interface" <IDENTIFIER> AnnotationTypeBody()
+Token t;
+}
+{
+  "@" "interface" t=<IDENTIFIER> {jjtThis.setImage(t.image);} AnnotationTypeBody()
 }
 
 void AnnotationTypeBody():

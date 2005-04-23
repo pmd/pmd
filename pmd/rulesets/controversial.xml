@@ -166,6 +166,7 @@ return 3;
 <![CDATA[
 //ClassOrInterfaceDeclaration
  [not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)]
+ [@Interface='false']
 ]]>
                 </value>
             </property>

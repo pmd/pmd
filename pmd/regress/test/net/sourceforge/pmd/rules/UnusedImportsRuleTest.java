@@ -24,15 +24,29 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "one used single type import", 0, rule),
            new TestDescriptor(TEST3, "2 unused single-type imports", 2, rule),
            new TestDescriptor(TEST4, "1 used single type import", 0, rule),
-           new TestDescriptor(TEST5, "1 import stmt, used only in throws clause", 0, rule)
+           new TestDescriptor(TEST5, "1 import stmt, used only in throws clause", 0, rule),
        });
     }
 
-    public void testGenericsBug() throws Throwable {
+    public void testForLoop() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST6, rule, rpt);
+        assertEquals(0, rpt.size());
+    }
+
+    public void testGenerics() throws Throwable {
         Report rpt = new Report();
         runTestFromString15(TEST7, rule, rpt);
         assertEquals(0, rpt.size());
     }
+
+/* FIXME
+    public void testAnnotations() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST8, rule, rpt);
+        assertEquals(0, rpt.size());
+    }
+*/
 
     private static final String TEST1 =
     "import java.io.File;" + PMD.EOL +
@@ -65,9 +79,9 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST6 =
-    "import java.util.Arrays;" + PMD.EOL +
+    "import java.util.ArrayList;" + PMD.EOL +
     "public class Foo {" + PMD.EOL +
-    " public void foo() {" + PMD.EOL +
+    " public void foo(ArrayList list) {" + PMD.EOL +
     "  for (String s : list) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
@@ -76,6 +90,12 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
     "import foo.TestInterfaceTwo;" + PMD.EOL +
     "public class Foo {" + PMD.EOL +
     " private List<TestInterfaceTwo> x = new ArrayList<TestInterfaceTwo>();" + PMD.EOL +
+    "}";
+
+    private static final String TEST8 =
+    "import java.lang.annotation.Retention;" + PMD.EOL +
+    "@Retention()" + PMD.EOL +
+    "public @interface Foo {" + PMD.EOL +
     "}";
 
 

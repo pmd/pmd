@@ -25,6 +25,7 @@ public class AtLeastOneConstructorRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "inner ok, outer bad", 1, rule),
            new TestDescriptor(TEST5, "inner and outer both bad", 2, rule),
            new TestDescriptor(TEST6, "inner and outer both ok", 0, rule),
+           new TestDescriptor(TEST7, "skip interfaces", 0, rule),
        });
     }
 
@@ -62,5 +63,8 @@ public class AtLeastOneConstructorRuleTest extends SimpleAggregatorTst {
     " public Foo() {}" + PMD.EOL +
     "}";
 
+    private static final String TEST7 =
+    "public interface Foo {" + PMD.EOL +
+    "}";
 
 }
