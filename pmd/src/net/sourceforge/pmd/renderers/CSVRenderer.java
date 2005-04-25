@@ -15,7 +15,10 @@ public class CSVRenderer implements Renderer {
         StringBuffer buf = new StringBuffer(quoteAndCommify("Problem"));
         buf.append(quoteAndCommify("File"));
         buf.append(quoteAndCommify("Line"));
-        buf.append(quote("Description"));
+        buf.append(quoteAndCommify("Priority"));
+        buf.append(quoteAndCommify("Description"));
+        buf.append(quoteAndCommify("Rule set"));
+        buf.append(quote("Rule"));
         buf.append(PMD.EOL);
 
         int violationCount = 1;
@@ -23,8 +26,11 @@ public class CSVRenderer implements Renderer {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(quoteAndCommify(Integer.toString(violationCount)));
             buf.append(quoteAndCommify(rv.getFilename()));
+            buf.append(quoteAndCommify(Integer.toString(rv.getRule().getPriority())));
             buf.append(quoteAndCommify(Integer.toString(rv.getLine())));
-            buf.append(quote(StringUtil.replaceString(rv.getDescription(), '\"', "'")));
+            buf.append(quoteAndCommify(StringUtil.replaceString(rv.getDescription(), '\"', "'")));
+            buf.append(quoteAndCommify(rv.getRule().getRuleSetName()));
+            buf.append(quote(rv.getRule().getName()));
             buf.append(PMD.EOL);
             violationCount++;
         }

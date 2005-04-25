@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Payal Subhash - Tweaks to CSVRenderer</li>
             <li>Tom Parker - AtLeastOneConstructor bug report</li>
             <li>Wouter Zelle - initial implementation of SimplifyConditional</li>
             <li>Eric Olander - SimplifyConditional fix, UseStringBufferForStringAppends, CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
