@@ -13,6 +13,7 @@ import java.util.Iterator;
 public class CSVRenderer implements Renderer {
     public String render(Report report) {
         StringBuffer buf = new StringBuffer(quoteAndCommify("Problem"));
+        buf.append(quoteAndCommify("Package"));
         buf.append(quoteAndCommify("File"));
         buf.append(quoteAndCommify("Line"));
         buf.append(quoteAndCommify("Priority"));
@@ -25,6 +26,7 @@ public class CSVRenderer implements Renderer {
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(quoteAndCommify(Integer.toString(violationCount)));
+            buf.append(quoteAndCommify(rv.getPackageName()));
             buf.append(quoteAndCommify(rv.getFilename()));
             buf.append(quoteAndCommify(Integer.toString(rv.getRule().getPriority())));
             buf.append(quoteAndCommify(Integer.toString(rv.getLine())));

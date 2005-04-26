@@ -99,6 +99,10 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         this.message = message;
     }
 
+    public void setPackageName(String name) {
+        this.packageName = name;
+    }
+
     public boolean equals(Object o) {
         if (!(o instanceof Rule)) {
             return false;
