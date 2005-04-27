@@ -38,6 +38,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST17, "local variable used in postfix expression as child of StatementExpression", 1, rule),
            new TestDescriptor(TEST18, "local variable used in postfix expression on right hand side", 0, rule),
            new TestDescriptor(TEST19, "local variable, object ref, public field of which is incremented via in postfix expression", 0, rule),
+           new TestDescriptor(TEST20, "local used in right shift", 0, rule),
        });
     }
 
@@ -202,6 +203,15 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     " void bar() {" + PMD.EOL +
     "   Baz b = getBaz();" + PMD.EOL +
     "   b.x++; " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST20 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "   int x = 2;" + PMD.EOL +
+    "   int y = 4 >> x;" + PMD.EOL +
+    "   foo(y);" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }

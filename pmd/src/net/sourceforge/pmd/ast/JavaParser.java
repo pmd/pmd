@@ -2777,8 +2777,10 @@ jjtn000.setModifiers(modifiers);
           jj_la1[69] = jj_gen;
           if (jj_2_20(1)) {
             RSIGNEDSHIFT();
+                       jjtn000.setImage("<<");jjtn000.setUnDiscardable();
           } else if (jj_2_21(1)) {
             RUNSIGNEDSHIFT();
+                         jjtn000.setImage("<<");jjtn000.setUnDiscardable();
           } else {
             jj_consume_token(-1);
             throw new ParseException();
