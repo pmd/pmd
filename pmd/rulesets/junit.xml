@@ -155,10 +155,13 @@ public class CarTest {
           <property name="xpath">
               <value>
     <![CDATA[
-    //StatementExpression[
+//StatementExpression
+[
 .//Name[@Image='assertTrue' or  @Image='assertFalse']
 and
-.//Arguments//BooleanLiteral
+PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
+ /Expression/PrimaryExpression/PrimaryPrefix
+  /Literal/BooleanLiteral
 ]
 ]]>
               </value>
