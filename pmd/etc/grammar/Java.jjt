@@ -1534,8 +1534,8 @@ void ShiftExpression() :
   AdditiveExpression() {checkForDiscard(jjtThis);}
    (
     ( "<<" {jjtThis.setImage("<<");jjtThis.setUnDiscardable();}
-     | RSIGNEDSHIFT() {jjtThis.setImage("<<");jjtThis.setUnDiscardable();}
-     | RUNSIGNEDSHIFT() {jjtThis.setImage("<<");jjtThis.setUnDiscardable();}
+     | RSIGNEDSHIFT() {jjtThis.setUnDiscardable();}
+     | RUNSIGNEDSHIFT() {jjtThis.setUnDiscardable();}
     ) AdditiveExpression() )*
 }
 
