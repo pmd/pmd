@@ -2007,6 +2007,7 @@ void TokenLexicalActions(Token matchedToken)
      matchedToken.kind = GT;
      ((Token.GTToken)matchedToken).realKind = RUNSIGNEDSHIFT;
      input_stream.backup(2);
+     matchedToken.image = ">";
          break;
       case 120 :
         if (image == null)
@@ -2016,6 +2017,7 @@ void TokenLexicalActions(Token matchedToken)
      matchedToken.kind = GT;
      ((Token.GTToken)matchedToken).realKind = RSIGNEDSHIFT;
      input_stream.backup(1);
+     matchedToken.image = ">";
          break;
       default : 
          break;

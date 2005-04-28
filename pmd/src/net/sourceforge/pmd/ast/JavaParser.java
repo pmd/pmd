@@ -5968,16 +5968,6 @@ jjtree.openNodeScope(jjtn000);Token t;
     finally { jj_save(47, xla); }
   }
 
-  final private boolean jj_3R_293() {
-    if (jj_3R_297()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_19()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
   final private boolean jj_3R_319() {
     if (jj_scan_token(GE)) return true;
     return false;
@@ -8772,6 +8762,16 @@ jjtree.openNodeScope(jjtn000);Token t;
   final private boolean jj_3R_235() {
     if (jj_scan_token(SC_OR)) return true;
     if (jj_3R_194()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_293() {
+    if (jj_3R_297()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_19()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
