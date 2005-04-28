@@ -9,7 +9,8 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTDoStatement;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTThrowStatement;
+import net.sourceforge.pmd.ast.ASTReturnStatement;
 
 public class AvoidInstantiatingObjectsInLoops extends AbstractOptimizationRule {
 
@@ -22,22 +23,30 @@ public class AvoidInstantiatingObjectsInLoops extends AbstractOptimizationRule {
 
 
     public Object visit(ASTAllocationExpression node, Object data) {
-        if (insideLoop(node)) {
+        if (insideLoop(node) && fourthParentNotThrow(node) && fourthParentNotReturn(node)) {
             addViolation((RuleContext) data, node);
         }
         return data;
     }
 
+    private boolean fourthParentNotThrow(ASTAllocationExpression node) {
+        return !(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTThrowStatement);
+    }
+
+    private boolean fourthParentNotReturn(ASTAllocationExpression node) {
+        return !(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTReturnStatement);
+    }
+
     private boolean insideLoop(ASTAllocationExpression node) {
-        Node doNode = node.getFirstParentOfType(ASTDoStatement.class);
-        Node whileNode = node.getFirstParentOfType(ASTWhileStatement.class);
-        Node forNode = node.getFirstParentOfType(ASTForStatement.class);
-        if (doNode!=null)
+        if (node.getFirstParentOfType(ASTDoStatement.class)!=null) {
             return true;
-        if (whileNode!=null)
+        }
+        if (node.getFirstParentOfType(ASTWhileStatement.class)!=null) {
             return true;
-        if (forNode!=null)
+        }
+        if (node.getFirstParentOfType(ASTForStatement.class)!=null) {
             return true;
+        }
         return false;
     }
 }
