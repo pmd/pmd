@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require_gem 'ikko'
-require '/home/tom/data/rubyforge/ruby-doom/lib/doom.rb'
+require_gem 'ruby-doom'
 
 # add timeout thingy to the Thread class, thx to Rich Kilmer for the code
 class MyThread < Thread
@@ -34,7 +34,7 @@ end
 
 class Job
 	JAVANCSS_BINARY="/usr/local/javancss/bin/javancss"
-	ROOT="/home/tom/data/pmd/pmd-web/src"
+	ROOT="/home/tom/pmd/pmd-web/src"
 	REMOTE_REPORT_DIR="/home/groups/p/pm/pmd/htdocs/reports/"
 	attr_reader :unix_name, :mod, :title, :src
 	attr_accessor :barrels
@@ -58,7 +58,7 @@ class Job
    `#{cmd}`
   end
   def run_pmd
-		cmd="java -Xmx512m -jar pmd-1.2.2.jar \"#{ROOT}/#{@src}\" html rulesets/unusedcode.xml -shortnames > #{report}"
+		cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-core-1.0-fcs.jar:/home/tom/pmd/pmd/lib/saxpath-1.0-fcs.jar:/home/tom/pmd/pmd-web/src/pmd-3.0.jar net.sourceforge.pmd.PMD \"#{ROOT}/#{@src}\" html unusedcode -shortnames > #{report}"
    `#{cmd}`
    arr = IO.readlines(report)
    File.read(report) {|f|
@@ -66,7 +66,7 @@ class Job
 		}
   end
   def run_cpd
-   cmd="java -Xmx512m -cp pmd-1.2.2.jar net.sourceforge.pmd.cpd.CPD 100 " + @src + " > " + cpd_file
+   cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-core-1.0-fcs.jar:/home/tom/pmd/pmd/lib/saxpath-1.0-fcs.jar:/home/tom/pmd/pmd-web/src/pmd-3.0.jar net.sourceforge.pmd.cpd.CPD 100 " + @src + " > " + cpd_file
    `#{cmd}`
   end
 	def copy_up
@@ -150,7 +150,7 @@ if __FILE__ == $0
 	}
 
 	if ARGV.include?("-build") 
-		jobs.each {|job|
+		jobs.each do |job|
 			if ARGV.include?("-job") && job.mod != ARGV.at(ARGV.index("-job")+1)
 				puts "Skipping " + job.mod
 				next
@@ -164,7 +164,7 @@ if __FILE__ == $0
 				job.copy_up
 				job.clear
 			end
-		}
+		end
 	end
 
 	jobs.sort! {|x,y| 
