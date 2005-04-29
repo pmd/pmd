@@ -70,7 +70,6 @@ Merkwelt:merkwelt:merkwelt:merkwelt/src
 Metrics:metrics:net.sourceforge.metrics:net.sourceforge.metrics/src
 MFlow:mflow:mflow:mflow/src
 Middlegen:middlegen:middlegen:middlegen/src
-Milkbox:milkbox:netty:netty/src
 Mirage:blijf:mirage:mirage/src
 MP3 Tagmaster:mp3tagmaster:mp3tagmaster:mp3tagmaster/src
 MyPod:mypod:myPod:myPod/src
