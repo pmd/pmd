@@ -157,12 +157,16 @@ if __FILE__ == $0
 			end
 			puts "Processing " + job.to_s
 			job.checkout_code
-			if File.exists?(job.src)
-				job.run_pmd
-				job.run_cpd
-				job.run_ncss
-				job.copy_up
-				job.clear
+			if File.exists?(job.src) 
+				if Dir.glob("#{job.src}/**/*.java").empty?
+					puts "Skipping #{job} because no source files got checked out"
+				else
+					job.run_pmd
+					job.run_cpd
+					job.run_ncss
+					job.copy_up
+					job.clear
+				end
 			end
 		end
 	end
