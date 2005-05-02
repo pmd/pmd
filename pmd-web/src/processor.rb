@@ -180,7 +180,7 @@ if __FILE__ == $0
 	}
 
 	if ARGV.include?("-doom")
-		jobs.each {|j|
+		jobs.each do |j|
 			begin
 				pmd = PMDMap.new(j.pmd_lines)
 				p = Path.new(0, 1000)
@@ -190,17 +190,17 @@ if __FILE__ == $0
 				p.add("n400/")
 				m = SimpleLineMap.new(p)
 				m.set_player(Point.new(50,900))
-				0.upto(pmd.nooks-1) {|x|
-		        m.add_barrel Point.new((x*600)+300, 1100)
-		        m.add_barrel Point.new((x*600)+300, 500)
-				}
+				0.upto(pmd.nooks-1) do |x|
+		        m.add_barrel(Point.new((x*600)+300, 1100))
+		        m.add_barrel(Point.new((x*600)+300, 500))
+				end
 				j.barrels = pmd.nooks * 2
 				m.create_wad(j.wad + ".tmp")
 				cmd = "./bsp " + j.wad + ".tmp -o " + j.wad + " && rm -f " + j.wad + ".tmp"
 				`#{cmd}`
 			rescue 
 			end
-		}
+		end
 	end
 	
 	jobs.each {|j| j.copy_up } if ARGV.include?("-copy")
