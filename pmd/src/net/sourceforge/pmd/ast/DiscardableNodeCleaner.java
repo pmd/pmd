@@ -27,14 +27,12 @@ public class DiscardableNodeCleaner {
 
     public void clean(ASTCompilationUnit root) {
         for (int i = 0; i < clazzes.length; i++) {
-            clean(root, clazzes[i]);
+            List nodes = root.findChildrenOfType(clazzes[i]);
+            for (Iterator i1 = nodes.iterator(); i1.hasNext();) {
+                SimpleNode n = (SimpleNode) i1.next();
+                n.discardIfNecessary();
+            }
         }
     }
 
-    private void clean(ASTCompilationUnit root, Class type) {
-        List nodes = root.findChildrenOfType(type);
-        for (Iterator i = nodes.iterator(); i.hasNext();) {
-            ((SimpleNode) i.next()).discardIfNecessary();
-        }
-    }
 }

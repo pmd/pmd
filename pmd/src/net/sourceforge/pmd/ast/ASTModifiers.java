@@ -16,18 +16,20 @@ public class ASTModifiers extends SimpleNode {
     }
 
     public void discardIfNecessary() {
-        SimpleNode node = (SimpleNode)jjtGetParent();
-        if (!(node.jjtGetChild(0) instanceof ASTModifiers)) {
-            throw new RuntimeException("removeASTModifiersChild called but first child is not an ASTModifiers");
-        }
-        // TODO - can we just always discard the first node?
-        if (node.jjtGetNumChildren() == 2) {
-            // conventional forloop syntax
-            node.children = new Node[] {node.children[1]};
-        }
-        if (node.jjtGetNumChildren() == 4) {
+        SimpleNode parent = (SimpleNode)jjtGetParent();
+        if (parent.jjtGetNumChildren() == 2) {
+            if (jjtGetNumChildren() == 1 && jjtGetChild(0) instanceof ASTAnnotation) {
+                // odd annotation case
+                super.discardIfNecessary();
+            } else {
+                // conventional forloop syntax
+                parent.children = new Node[] {parent.children[1]};
+            }
+        } else if (parent.jjtGetNumChildren() == 4) {
             // JDK 1.5 forloop syntax
-            node.children = new Node[] {node.children[1], node.children[2], node.children[3]};
+            parent.children = new Node[] {parent.children[1], parent.children[2], parent.children[3]};
+        } else {
+            throw new RuntimeException("ASTModifiers.discardIfNecessary didn't see expected children");
         }
     }
 

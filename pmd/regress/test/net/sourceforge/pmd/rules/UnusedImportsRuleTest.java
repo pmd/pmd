@@ -40,13 +40,11 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
         assertEquals(0, rpt.size());
     }
 
-/* FIXME
     public void testAnnotations() throws Throwable {
         Report rpt = new Report();
         runTestFromString15(TEST8, rule, rpt);
         assertEquals(0, rpt.size());
     }
-*/
 
     private static final String TEST1 =
     "import java.io.File;" + PMD.EOL +

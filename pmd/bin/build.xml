@@ -70,8 +70,8 @@
 
 <target name="pmd" description="Runs PMD">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd targetjdk="1.5" rulesetfiles="rulesets/unusedcode.xml" shortFilenames="true" failonerror="false">
-        <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+    <pmd rulesetfiles="rulesets/unusedcode.xml" shortFilenames="true">
+        <formatter type="text" toFile="rpt.txt"/>
         <fileset dir="/home/tom/tmp/">
             <include name="Foo.java"/>
         </fileset>

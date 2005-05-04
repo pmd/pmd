@@ -5,6 +5,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -93,7 +94,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
             if (node.jjtGetNumChildren() > 0) {
                 ASTArguments args = (ASTArguments) node.jjtGetChild(0);
-                removeIfUsed(node, node.getImage(), args.getArgumentCount());
+                removeIfUsed(node, args.getArgumentCount());
                 return super.visit(node, data);
             }
             // to handle this.foo()
@@ -130,7 +131,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
                 return super.visit(node, data);
             }
             ASTArguments args = (ASTArguments) actualMethodNode.jjtGetChild(0);
-            removeIfUsed(node, node.getImage(), args.getArgumentCount());
+            removeIfUsed(node, args.getArgumentCount());
             // what about Outer.this.foo()?
         }
         return super.visit(node, data);
@@ -143,20 +144,21 @@ public class UnusedPrivateMethodRule extends AbstractRule {
                 ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primaryExpression.jjtGetChild(1);
                 if (primarySuffix.jjtGetNumChildren() > 0 && (primarySuffix.jjtGetChild(0) instanceof ASTArguments)) {
                     ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
-                    removeIfUsed(node, node.getImage(), arguments.getArgumentCount());
+                    removeIfUsed(node, arguments.getArgumentCount());
                 }
             }
         }
         return super.visit(node, data);
     }
 
-    private final void removeIfUsed(SimpleNode node, String nodeImage, int args) {
-        String img = (nodeImage.indexOf('.') == -1) ? nodeImage : nodeImage.substring(nodeImage.indexOf('.') + 1, nodeImage.length());
+    private final void removeIfUsed(SimpleNode node, int args) {
+        String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(node.getImage().indexOf('.') + 1, node.getImage().length());
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
             ASTMethodDeclarator methodNode = (ASTMethodDeclarator) i.next();
             // are name and number of parameters the same?
-            if (methodNode.getImage().equals(img) && methodNode.getParameterCount() == args
-                    && !methodCalledFromItself(node, nodeImage)) {
+            if (methodNode.getImage().equals(img)
+                    && methodNode.getParameterCount() == args
+                    && !methodCalledFromItself(node, node.getImage())) {
                 // TODO should check parameter types here, this misses some unused methods, probably causing bug 1114754 http://sourceforge.net/tracker/index.php?func=detail&aid=1114754&group_id=56262&atid=479921
                 i.remove();
             }
@@ -185,9 +187,9 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         }
     }
 
-    /*
-    TODO this uses the symbol table
-        public Object visit(ASTUnmodifiedClassDeclaration node, Object data) {
+/*
+////    TODO this uses the symbol table
+        public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
             for (Iterator i = node.getScope().getUnusedMethodDeclarations();i.hasNext();) {
                 VariableNameDeclaration decl = (VariableNameDeclaration)i.next();
 
@@ -201,6 +203,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             }
             return super.visit(node, data);
         }
+*/
 
-    */
+
 }

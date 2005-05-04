@@ -1996,6 +1996,7 @@ void  MemberValueArrayInitializer():
 void AnnotationTypeDeclaration(int modifiers):
 {
 Token t;
+jjtThis.setModifiers(modifiers);
 }
 {
   "@" "interface" t=<IDENTIFIER> {jjtThis.setImage(t.image);} AnnotationTypeBody()
@@ -2014,9 +2015,7 @@ void AnnotationTypeMemberDeclaration():
 {
  modifiers = Modifiers()
  (
-   LOOKAHEAD( Type() <IDENTIFIER> "(")
-   Type() <IDENTIFIER> "(" ")"
-   [ DefaultValue() ] ";"
+   LOOKAHEAD( Type() <IDENTIFIER> "(" )   Type() <IDENTIFIER> "(" ")"   [ DefaultValue() ] ";"
   |
    ClassOrInterfaceDeclaration(modifiers)
   |

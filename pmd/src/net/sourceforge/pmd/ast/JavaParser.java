@@ -5402,6 +5402,7 @@ jjtn000.setModifiers(modifiers);
 ASTAnnotationTypeDeclaration jjtn000 = new ASTAnnotationTypeDeclaration(this, JJTANNOTATIONTYPEDECLARATION);
 boolean jjtc000 = true;
 jjtree.openNodeScope(jjtn000);Token t;
+jjtn000.setModifiers(modifiers);
     try {
       jj_consume_token(AT);
       jj_consume_token(INTERFACE);

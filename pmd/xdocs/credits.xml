@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>ajbanck - Reported problem with JDK 1.5 annotation handling</li>
             <li>Eric Olander - SingularField, SimplifyConditional fix, UseStringBufferForStringAppends, CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Tomas Gustavsson - reported pmd-web breakage</li>
             <li>Tom Parker - AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>

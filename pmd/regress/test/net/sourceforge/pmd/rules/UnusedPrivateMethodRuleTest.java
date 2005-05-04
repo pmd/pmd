@@ -27,7 +27,8 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST6, "calling private method using 'this' modifier", 0, rule),
            new TestDescriptor(TEST7, "simple unused private static method", 1, rule),
            new TestDescriptor(TEST8, "readResolve/writeReplace/etc are OK", 0, rule),
-           new TestDescriptor(BUG_1038229, "Private methods called only by themselves, BUG 1038229", 1, rule),
+           new TestDescriptor(TEST9, "Private methods called only by themselves, BUG 1038229", 1, rule),
+           //new TestDescriptor(TEST10, "private with same name as public, different method signature", 0, rule),
            //new TestDescriptor(BUG_1114754, "False +, BUG 1114754", 0, rule), //FIXME
        });
     }
@@ -97,12 +98,20 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
     " private void writeObject() {}" + PMD.EOL +
     "}";
 
-    private static final String BUG_1038229 =
-        "public class Foo {" + PMD.EOL +
-        " private void bar() {" + PMD.EOL +
-        " bar(); " + PMD.EOL +
-        " }" + PMD.EOL +
-        "}";
+    private static final String TEST9 =
+    "public class Foo {" + PMD.EOL +
+    " private void bar() {" + PMD.EOL +
+    "  bar(); " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST10 =
+    "public class Foo {" + PMD.EOL +
+    " public void bar(int x) {" + PMD.EOL +
+    "  bar(); " + PMD.EOL +
+    " }" + PMD.EOL +
+    " private void bar() {}" + PMD.EOL +
+    "}";
 
     private static final String BUG_1114754 =
         "public class Foo {" + PMD.EOL +

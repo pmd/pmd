@@ -18,11 +18,11 @@ public class MissingSerialVersionUIDTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-               new TestDescriptor(TEST1, "TEST1", 0, rule),
-               new TestDescriptor(TEST2, "TEST2", 1, rule),
+               new TestDescriptor(TEST1, "Happy case", 0, rule),
+               new TestDescriptor(TEST2, "Simple failure case", 1, rule),
                new TestDescriptor(TEST3, "TEST3", 1, rule),
                new TestDescriptor(TEST4, "TEST4", 0, rule),
-               new TestDescriptor(TEST5, "TEST5", 0, rule),
+               new TestDescriptor(TEST5, "TEST5", 0, rule)
        });
     }
 
