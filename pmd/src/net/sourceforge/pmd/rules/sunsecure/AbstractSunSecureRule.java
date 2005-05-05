@@ -69,6 +69,7 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
     }
     
     /**
+     * TODO modify usages to use symbol table
      * Tells if the variable name is a local variable declared in the method.
      * @param vn the variable name
      * @param node the ASTMethodDeclaration where the local variable name will be searched
