@@ -22,6 +22,8 @@ public class BooleanInstantiationRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "simple failure case", 1, rule),
            new TestDescriptor(TEST2, "new java.lang.Boolean", 1, rule),
            new TestDescriptor(TEST3, "ok", 0, rule),
+           new TestDescriptor(TEST4, "don't use Boolean.valueOf() with literal", 2, rule),
+           new TestDescriptor(TEST5, "valueOf() with variable is fine", 0, rule),
        });
     }
 
@@ -38,6 +40,17 @@ public class BooleanInstantiationRuleTest extends SimpleAggregatorTst {
     private static final String TEST3 =
     "public class Foo {" + PMD.EOL +
     " Boolean b = Boolean.TRUE;" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " Boolean b = Boolean.valueOf(true);" + PMD.EOL +
+    " Boolean b = Boolean.valueOf(false);" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " Boolean b = Boolean.valueOf(x);" + PMD.EOL +
     "}";
 
 }

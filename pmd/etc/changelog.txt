@@ -10,7 +10,8 @@ Fixed bug 1190508 - UnnecessaryBooleanAssertion no longer fires on nested boolea
 Fixed bug 1190461 - UnusedLocal no longer misses usages which are on the RHS of a right bit shift operator.
 Fixed bug 1188371 - AvoidInstantiatingObjectsInLoops no longer fires on instantiations in loops when the 'new' keyword is preceded by a 'return' or a 'throw'.
 Fixed bug 1187325 - UnusedImports no longer reports a false positive on imports which are used inside an Annotation.
-Fixed bug 1189720 - PMD no longers fails to parse generics that use 'member selectors'.
+Fixed bug 1189720 - PMD no longer fails to parse generics that use 'member selectors'.
+Implemented RFE 1193979 - BooleanInstantiation now catches cases like Boolean.valueOf(true)
 Implemented RFE 1171095 - LabeledStatement nodes now contain the image of the label.
 Modified command line parameters; removed -jdk15 and -jdk13 parameters and added a -'targetjdk [1.3|1.4|1.5]' parameter.
 Modified CSVRenderer to include more columns.

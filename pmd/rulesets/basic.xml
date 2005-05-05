@@ -514,20 +514,25 @@ not
      </rule>
 
     <rule name="BooleanInstantiation"
-       message="Avoid instantiating Boolean objects; you can usually invoke Boolean.valueOf() instead."
+       message="Avoid instantiating Boolean objects; you can usually invoke Boolean.TRUE instead."
        class="net.sourceforge.pmd.rules.XPathRule">
    <description>
-   Avoid instantiating Boolean objects, instead use Boolean.valueOf().
+   Avoid instantiating Boolean objects, instead use Boolean.TRUE or Boolean.FALSE.
    </description>
       <properties>
           <property name="xpath">
               <value>
 <![CDATA[
-//AllocationExpression[not (ArrayDimsAndInits)
-                       and
-                       (ClassOrInterfaceType/@Image='Boolean'
-                       or
-                       ClassOrInterfaceType/@Image='java.lang.Boolean')]
+//PrimaryExpression
+[
+PrimaryPrefix/AllocationExpression[not (ArrayDimsAndInits) and (ClassOrInterfaceType/@Image='Boolean' or ClassOrInterfaceType/@Image='java.lang.Boolean')]
+or
+(
+PrimaryPrefix/Name[@Image='Boolean.valueOf']
+and
+PrimarySuffix/Arguments//BooleanLiteral
+)
+]
 ]]>
               </value>
           </property>
@@ -536,7 +541,7 @@ not
    <example>
    <![CDATA[
 public class Foo {
- private Boolean bar = new Boolean("true"); // just do a Boolean bar = Boolean.TRUE or Boolean.valueOf(true);
+ private Boolean bar = new Boolean("true"); // just do a Boolean bar = Boolean.TRUE;
 }
    ]]>
    </example>

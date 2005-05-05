@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Andriy Rozeluk - Suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Andreas Ehn - Reported bug with JDK 1.5 generics parsing</li>
             <li>ajbanck - Reported bug with JDK 1.5 annotation handling</li>
             <li>Eric Olander - SingularField, SimplifyConditional fix, UseStringBufferForStringAppends, CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
@@ -116,7 +117,6 @@
             <li>Jesse Glick - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
             <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
-            <li>Andriy Rozeluk - Suggestions for improving UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
             <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
             <li>Pieter Bloemendaal - AvoidReassigningParametersRule bug report</li>
