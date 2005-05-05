@@ -342,10 +342,10 @@ public class Foo {
 
 
   <rule name="CloseConnection"
-        message="Ensures that Connection objects are always closed after use"
+        message="Ensure that Connection objects are always closed after use"
         class="net.sourceforge.pmd.rules.CloseConnection">
     <description>
-      Ensures that Connection objects are always closed after use
+      Ensure that Connection objects are always closed after use
     </description>
     <priority>3</priority>
     <example>
