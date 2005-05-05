@@ -43,13 +43,13 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Fred Hartman - Reported exact location of bug in TooManyFields, fixed bug in UnnecessaryBooleanAssertion</li>
             <li>Andriy Rozeluk - Suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Andreas Ehn - Reported bug with JDK 1.5 generics parsing</li>
             <li>ajbanck - Reported bug with JDK 1.5 annotation handling</li>
             <li>Eric Olander - SingularField, SimplifyConditional fix, UseStringBufferForStringAppends, CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Tomas Gustavsson - reported pmd-web breakage</li>
             <li>Tom Parker - AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
-            <li>Fred Hartman - Fixed bug in UnnecessaryBooleanAssertion</li>
             <li>Payal Subhash - Tweaks to CSVRenderer</li>
             <li>Wouter Zelle - initial implementation of SimplifyConditional</li>
             <li>Christophe Mourette - Reported JDK 1.3 problem with XMLRenderer</li>

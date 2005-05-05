@@ -17,21 +17,16 @@ import java.util.Map;
 
 
 public class TooManyFields extends AbstractRule {
-    private Map stats ;
-    private Map nodes ;
+
+    private static final int DEFAULT_MAXFIELDS = 15;
+
+    private Map stats;
+    private Map nodes;
     private int maxFields;
-    
-    
-    public TooManyFields() {
-        super();
-        if (hasProperty("maxfields")) {
-            maxFields = getIntProperty("maxfields");
-        } else {
-            maxFields = 10;
-        }        
-    }
-    
+
     public Object visit(ASTCompilationUnit node, Object data) {
+        maxFields = hasProperty("maxfields") ? getIntProperty("maxfields") :  DEFAULT_MAXFIELDS;
+
         stats = new HashMap(5);
         nodes = new HashMap(5);
 

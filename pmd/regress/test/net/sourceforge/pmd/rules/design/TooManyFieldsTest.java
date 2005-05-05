@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.Report;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -17,8 +18,8 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
     }
     public void testAll() {
        runTests(new TestDescriptor[] {
-               new TestDescriptor(TEST1, "3 fields, max is 10", 0, rule),
-               new TestDescriptor(TEST2, "11 fields, bad", 1, rule),
+               new TestDescriptor(TEST1, "3 fields, max is 15", 0, rule),
+               new TestDescriptor(TEST2, "16 fields, bad", 1, rule),
                new TestDescriptor(TEST3, "12 fields, but 6 in inner and 6 in outer", 0, rule),
                new TestDescriptor(TEST4, "outer class, inner interface, both OK", 0, rule),
                new TestDescriptor(TEST5, "interface with 10 fields", 0, rule),
@@ -26,6 +27,13 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
        });
     }
     
+    public void testPropertySetting() throws Throwable {
+        Report rpt = new Report();
+        rule.addProperty("maxfields", "2");
+        runTestFromString(TEST7, rule, rpt);
+        assertEquals(1, rpt.size());
+    }
+
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
@@ -47,6 +55,11 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
     " int a9; " + PMD.EOL +
     " int a10; " + PMD.EOL +
     " int a11; " + PMD.EOL +
+    " int a12; " + PMD.EOL +
+    " int a13; " + PMD.EOL +
+    " int a14; " + PMD.EOL +
+    " int a15; " + PMD.EOL +
+    " int a16; " + PMD.EOL +
     "}";
 
     private static final String TEST3 =
@@ -112,6 +125,10 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
     "  int b10; " + PMD.EOL +
     "  int b11; " + PMD.EOL +
     "  int b12; " + PMD.EOL +
+    "  int b13; " + PMD.EOL +
+    "  int b14; " + PMD.EOL +
+    "  int b15; " + PMD.EOL +
+    "  int b16; " + PMD.EOL +
     " }" + PMD.EOL +
     " public class Bar2 {" + PMD.EOL +
     "  int b1; " + PMD.EOL +
@@ -126,6 +143,19 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
     "  int b10; " + PMD.EOL +
     "  int b11; " + PMD.EOL +
     "  int b12; " + PMD.EOL +
+    "  int b13; " + PMD.EOL +
+    "  int b14; " + PMD.EOL +
+    "  int b15; " + PMD.EOL +
+    "  int b16; " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " public class Bar1 {" + PMD.EOL +
+    "  int b1; " + PMD.EOL +
+    "  int b2; " + PMD.EOL +
+    "  int b3; " + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
