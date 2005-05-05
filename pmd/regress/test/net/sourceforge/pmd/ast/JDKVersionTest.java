@@ -142,9 +142,14 @@ public class JDKVersionTest extends TestCase  {
         p.CompilationUnit();
     }
 
+    public void testGenericsAnnotationBug() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_BUG_2));
+        p.CompilationUnit();
+    }
+
 /*
 FIXME
-    public void testGenericsAnnotationBug() throws Throwable {
+    public void testGenericsAnnotationBug2() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_ANNOTATION_BUG));
         p.CompilationUnit();
     }
@@ -269,6 +274,13 @@ FIXME
     "  void bar() {" + PMD.EOL +
     "   class Inner {};" + PMD.EOL +
     "   Inner i = new Inner();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
+    private static final String GENERICS_BUG_2 =
+    "public class Test {" + PMD.EOL +
+    "  List<String> test() {" + PMD.EOL +
+    "   return Collections.<String>emptyList();" + PMD.EOL +
     "  }" + PMD.EOL +
     "}";
 

@@ -91,8 +91,9 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST8 =
-    "import java.lang.annotation.Retention;" + PMD.EOL +
-    "@Retention()" + PMD.EOL +
+    "import foo.annotation.Retention;" + PMD.EOL +
+    "import foo.annotation.RetentionPolicy;" + PMD.EOL +
+    "@Retention(RetentionPolicy.RUNTIME)" + PMD.EOL +
     "public @interface Foo {" + PMD.EOL +
     "}";
 

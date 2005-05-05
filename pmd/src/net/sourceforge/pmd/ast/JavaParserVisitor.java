@@ -65,6 +65,7 @@ public interface JavaParserVisitor
   public Object visit(ASTPostfixExpression node, Object data);
   public Object visit(ASTCastExpression node, Object data);
   public Object visit(ASTPrimaryExpression node, Object data);
+  public Object visit(ASTMemberSelector node, Object data);
   public Object visit(ASTPrimaryPrefix node, Object data);
   public Object visit(ASTPrimarySuffix node, Object data);
   public Object visit(ASTLiteral node, Object data);

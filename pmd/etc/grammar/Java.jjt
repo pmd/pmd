@@ -1612,6 +1612,14 @@ void PrimaryExpression() :
   PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
 }
 
+void MemberSelector():
+{
+Token t;
+}
+{
+  "." TypeArguments() t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+}
+
 void PrimaryPrefix() :
 {Token t;}
 {
@@ -1628,6 +1636,7 @@ void PrimarySuffix() :
 {Token t;}
 { LOOKAHEAD(2) "." "this"
 | LOOKAHEAD(2) "." "super"
+| LOOKAHEAD(3) MemberSelector()
 | LOOKAHEAD(2) "." AllocationExpression()
 | "[" Expression() "]" {jjtThis.setIsArrayDereference();}
 | "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
