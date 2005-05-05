@@ -46,6 +46,13 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
         assertEquals(0, rpt.size());
     }
 
+    public void testAnnotations2() throws Throwable {
+        Report rpt = new Report();
+        System.out.println(TEST9);
+        runTestFromString15(TEST9, rule, rpt);
+        assertEquals(0, rpt.size());
+    }
+
     private static final String TEST1 =
     "import java.io.File;" + PMD.EOL +
     "public class Foo {}";
@@ -97,5 +104,11 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
     "public @interface Foo {" + PMD.EOL +
     "}";
 
+    private static final String TEST9 =
+    "import foo.FooAnnotation1;" + PMD.EOL +
+    "import foo.FooAnnotation2;" + PMD.EOL +
+    "@FooAnnotation1" + PMD.EOL +
+    "@FooAnnotation2" + PMD.EOL +
+    "public class Foo {}";
 
 }

@@ -17,14 +17,10 @@ public class ASTModifiers extends SimpleNode {
 
     public void discardIfNecessary() {
         SimpleNode parent = (SimpleNode)jjtGetParent();
-        if (parent.jjtGetNumChildren() == 2) {
-            if (jjtGetNumChildren() == 1 && jjtGetChild(0) instanceof ASTAnnotation) {
-                // odd annotation case
-                super.discardIfNecessary();
-            } else {
-                // conventional forloop syntax
-                parent.children = new Node[] {parent.children[1]};
-            }
+        if (jjtGetNumChildren() > 0  && jjtGetChild(0) instanceof ASTAnnotation) {
+            super.discardIfNecessary();
+        } else if (parent.jjtGetNumChildren() == 2) {
+            parent.children = new Node[] {parent.children[1]};
         } else if (parent.jjtGetNumChildren() == 4) {
             // JDK 1.5 forloop syntax
             parent.children = new Node[] {parent.children[1], parent.children[2], parent.children[3]};
