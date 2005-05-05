@@ -25,16 +25,11 @@ public class AcceptanceTest extends TestCase {
     }
 
     public void testInitializer() {
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST_NON_STATIC_INITIALIZER));
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST_INITIALIZERS));
         ASTCompilationUnit c = parser.CompilationUnit();
         ASTInitializer a = (ASTInitializer)(c.findChildrenOfType(ASTInitializer.class)).get(0);
         assertFalse(a.isStatic());
-    }
-
-    public void testStaticInitializer() {
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST_STATIC_INITIALIZER));
-        ASTCompilationUnit c = parser.CompilationUnit();
-        ASTInitializer a = (ASTInitializer)(c.findChildrenOfType(ASTInitializer.class)).get(0);
+        a = (ASTInitializer)(c.findChildrenOfType(ASTInitializer.class)).get(1);
         assertTrue(a.isStatic());
     }
 
@@ -46,8 +41,6 @@ public class AcceptanceTest extends TestCase {
         ASTBlock a = (ASTBlock)(c.findChildrenOfType(ASTBlock.class)).get(1);
         Scope s = a.getScope();
         System.out.println(s.getParent());
-
-
     }
 
     private static final String TEST1 =
@@ -59,13 +52,9 @@ public class AcceptanceTest extends TestCase {
     " }" + PMD.EOL  +
     "}" + PMD.EOL;
 
-    private static final String TEST_NON_STATIC_INITIALIZER =
+    private static final String TEST_INITIALIZERS =
     "public class Foo  {" + PMD.EOL +
     " {} " + PMD.EOL +
-    "}" + PMD.EOL;
-
-    private static final String TEST_STATIC_INITIALIZER =
-    "public class Foo  {" + PMD.EOL +
     " static {} " + PMD.EOL +
     "}" + PMD.EOL;
 
