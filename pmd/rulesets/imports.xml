@@ -46,6 +46,9 @@ public class Foo {}
  [starts-with(Name/@Image, 'java.lang')]
  [not(starts-with(Name/@Image, 'java.lang.ref'))]
  [not(starts-with(Name/@Image, 'java.lang.reflect'))]
+ [not(starts-with(Name/@Image, 'java.lang.annotation'))]
+ [not(starts-with(Name/@Image, 'java.lang.instrument'))]
+ [not(starts-with(Name/@Image, 'java.lang.management'))]
                 ]]>
               </value>
           </property>

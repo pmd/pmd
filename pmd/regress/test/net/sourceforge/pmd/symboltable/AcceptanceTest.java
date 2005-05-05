@@ -15,30 +15,25 @@ import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.StringReader;
 
-public class AcceptanceTest extends TestCase {
+public class AcceptanceTest extends STBBaseTst {
 
+/*
     public void testClashingSymbols() {
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST1));
-        ASTCompilationUnit c = parser.CompilationUnit();
-        SymbolFacade stb = new SymbolFacade();
-        stb.initializeWith(c);
+        parseCode(TEST1);
     }
 
     public void testInitializer() {
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST_INITIALIZERS));
-        ASTCompilationUnit c = parser.CompilationUnit();
-        ASTInitializer a = (ASTInitializer)(c.findChildrenOfType(ASTInitializer.class)).get(0);
+        parseCode(TEST_INITIALIZERS);
+        ASTInitializer a = (ASTInitializer)(acu.findChildrenOfType(ASTInitializer.class)).get(0);
         assertFalse(a.isStatic());
-        a = (ASTInitializer)(c.findChildrenOfType(ASTInitializer.class)).get(1);
+        a = (ASTInitializer)(acu.findChildrenOfType(ASTInitializer.class)).get(1);
         assertTrue(a.isStatic());
     }
+*/
 
     public void testCatchBlocks() {
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST_CATCH_BLOCKS));
-        ASTCompilationUnit c = parser.CompilationUnit();
-        SymbolFacade stb = new SymbolFacade();
-        stb.initializeWith(c);
-        ASTBlock a = (ASTBlock)(c.findChildrenOfType(ASTBlock.class)).get(1);
+        parseCode(TEST_CATCH_BLOCKS);
+        ASTBlock a = (ASTBlock)(acu.findChildrenOfType(ASTBlock.class)).get(1);
         Scope s = a.getScope();
         System.out.println(s.getParent());
     }
@@ -62,9 +57,10 @@ public class AcceptanceTest extends TestCase {
     "public class Foo  {" + PMD.EOL +
     " void foo() { " + PMD.EOL +
     "  try { " + PMD.EOL +
-    "  } catch (Exception e) { " + PMD.EOL +
-    "   e.printStackTrace(); " + PMD.EOL +
     "   int x; " + PMD.EOL +
+    "  } catch (Exception e) { " + PMD.EOL +
+    "   //e.printStackTrace(); " + PMD.EOL +
+    "   //int x; " + PMD.EOL +
     "  } " + PMD.EOL +
     " } " + PMD.EOL +
     "}" + PMD.EOL;

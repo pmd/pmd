@@ -29,5 +29,4 @@ public abstract class STBBaseTst extends TestCase {
         stb = new SymbolFacade();
         stb.initializeWith(acu);
     }
-
 }

@@ -18,9 +18,7 @@ public class ScopeCreationVisitorTest extends STBBaseTst {
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
-    "  if (x>2) {" + PMD.EOL +
-    "  } " + PMD.EOL +
+    "  if (x>2) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}" + PMD.EOL;
-
 }
