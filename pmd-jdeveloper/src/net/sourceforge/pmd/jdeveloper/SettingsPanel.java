@@ -137,7 +137,7 @@ public class SettingsPanel extends DefaultTraversablePanel {
         selectedRulesStoredSeparatelyBox.setSelected(Boolean.valueOf(Ide.getProperty(RULE_SELECTIONS_STORED_SEPARATELY)).booleanValue());
 
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(new JLabel("Please see http://pmd.sf.net/ for more information"), BorderLayout.NORTH);
+        topPanel.add(new JLabel("                        InfoEther(tm) PMD JDeveloper plugin"), BorderLayout.NORTH);
         JPanel customStoragePanel = new JPanel(new BorderLayout());
         customStoragePanel.setBorder(BorderFactory.createTitledBorder("Settings storage"));
 
