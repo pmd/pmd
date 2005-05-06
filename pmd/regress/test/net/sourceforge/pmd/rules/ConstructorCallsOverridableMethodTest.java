@@ -9,10 +9,12 @@ import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
-	private Rule rule = null;
+	private Rule rule;
+
 	public void setUp() {
 		rule = findRule("rulesets/design.xml", "ConstructorCallsOverridableMethod");
 	}
+
     public void testAll() {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "calling public method from constructor", 1, rule),
@@ -23,7 +25,7 @@ public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST6, "calling method on literal bug", 0, rule),
            new TestDescriptor(TEST7, "method in anonymous inner class is ok", 0, rule),
            new TestDescriptor(TEST8, "bug report 975407", 0, rule),
-		   new TestDescriptor(BUG_994400, "bug report 994400, reports violation on abstract method", 0, rule),
+		   new TestDescriptor(TEST9, "ignore abstract methods", 0, rule),
 		   //FIXME new TestDescriptor(BUG_985989, "bug report 985989, ", 1, rule),
        });
     }
@@ -97,14 +99,15 @@ public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
     " private void bar() {}" + PMD.EOL +
     "}";
 
-    private static final String BUG_994400 =
-        "public class Foo {" + PMD.EOL +
-        " public Foo() {" + PMD.EOL +
-        "  bar();" + PMD.EOL +
-        " }" + PMD.EOL +
-        " abstract void bar() {}" + PMD.EOL +
-        "}";
-    private static final String BUG_985989 = "public class Test {" + PMD.EOL + 
+    private static final String TEST9 =
+    "public class Foo {" + PMD.EOL +
+    " public Foo() {" + PMD.EOL +
+    "  bar();" + PMD.EOL +
+    " }" + PMD.EOL +
+    " abstract void bar() {}" + PMD.EOL +
+    "}";
+
+    private static final String BUG_985989 = "public class Test {" + PMD.EOL +
     		"public static class SeniorClass {" + PMD.EOL + 
     		"  public SeniorClass(){" + PMD.EOL + 
     		"    toString(); //may throw NullPointerException if overridden" + PMD.EOL + 
@@ -130,3 +133,6 @@ public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
     		"" + PMD.EOL + 
     		"}";
 }
+
+
+

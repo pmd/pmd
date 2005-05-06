@@ -35,7 +35,7 @@ import java.util.Set;
  * from non-private constructors.
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
- * @todo match parameter types.  Agressive strips off any package names.  Normal
+ * @todo match parameter types.  Aggressively strips off any package names.  Normal
  * compares the names as is.
  * @todo What about interface declarations which can have internal classes
  */
@@ -420,9 +420,9 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
 
     private final class ConstructorHolder {
         private ASTConstructorDeclaration m_Cd;
-        private boolean m_Dangerous = false;
+        private boolean m_Dangerous;
         private ConstructorInvocation m_Ci;
-        private boolean m_CiInitialized = false;
+        private boolean m_CiInitialized;
 
         public ConstructorHolder(ASTConstructorDeclaration cd) {
             m_Cd = cd;
@@ -453,7 +453,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         private void initCI() {
             List expressions = new ArrayList();
             m_Cd.findChildrenOfType(ASTExplicitConstructorInvocation.class, expressions); //only 1...
-            if (expressions.size() > 0) {
+            if (!expressions.isEmpty()) {
                 ASTExplicitConstructorInvocation eci = (ASTExplicitConstructorInvocation) expressions.get(0);
                 m_Ci = new ConstructorInvocation(eci);
                 //System.out.println("Const call " + eci.getImage()); //super or this???
