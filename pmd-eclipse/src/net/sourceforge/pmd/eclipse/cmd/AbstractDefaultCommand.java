@@ -37,7 +37,8 @@ package net.sourceforge.pmd.eclipse.cmd;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import name.herlin.command.ProcessableCommand;
+import name.herlin.command.CommandException;
+import name.herlin.command.AbstractProcessableCommand;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
@@ -50,6 +51,12 @@ import net.sourceforge.pmd.eclipse.PMDPluginConstants;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.2  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -60,13 +67,14 @@ import net.sourceforge.pmd.eclipse.PMDPluginConstants;
  *
  *
  */
-public abstract class DefaultCommand extends ProcessableCommand implements PMDConstants, PMDPluginConstants {
+public abstract class AbstractDefaultCommand extends AbstractProcessableCommand implements PMDConstants, PMDPluginConstants {
     private boolean readOnly;
     private boolean outputProperties;
     private boolean readyToExecute;
     private String description;
     private String name;
     private IProgressMonitor monitor;
+    private int stepsCount;
 
     /**
      * @return Returns the readOnly.
@@ -78,7 +86,7 @@ public abstract class DefaultCommand extends ProcessableCommand implements PMDCo
     /**
      * @param readOnly The readOnly to set.
      */
-    public void setReadOnly(boolean readOnly) {
+    public void setReadOnly(final boolean readOnly) {
         this.readOnly = readOnly;
     }
 
@@ -92,7 +100,7 @@ public abstract class DefaultCommand extends ProcessableCommand implements PMDCo
     /**
      * @param description The description to set.
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -106,14 +114,14 @@ public abstract class DefaultCommand extends ProcessableCommand implements PMDCo
     /**
      * @param name The name to set.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     /**
      * @param outputProperties The outputProperties to set.
      */
-    public void setOutputProperties(boolean outputProperties) {
+    public void setOutputProperties(final boolean outputProperties) {
         this.outputProperties = outputProperties;
     }
 
@@ -134,37 +142,62 @@ public abstract class DefaultCommand extends ProcessableCommand implements PMDCo
     /**
      * @param readyToExecute The readyToExecute to set.
      */
-    public void setReadyToExecute(boolean readyToExecute) {
+    public void setReadyToExecute(final boolean readyToExecute) {
         this.readyToExecute = readyToExecute;
     }
+
+    /**
+     * @return Returns the number of steps for that command
+     */
+    public int getStepsCount() {
+        return stepsCount;
+    }
+    
+    /**
+     * @param stepsCount The number of steps for that command
+     */
+    public void setStepsCount(final int stepsCount) {
+        this.stepsCount = stepsCount;
+    }
+    
+    /**
+     * @return Returns the monitor.
+     */
+    public IProgressMonitor getMonitor() {
+        return this.monitor;
+    }
+    
+    /**
+     * @param monitor The monitor to set.
+     */
+    public void setMonitor(final IProgressMonitor monitor) {
+        this.monitor = monitor;
+    }
+    
+    /**
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
+     */
+    public abstract void execute() throws CommandException;
+
+    /**
+     * @see name.herlin.command.Command#reset()
+     */
+    public abstract void reset();
 
     /**
      * Helper method to shorten message access
      * @param key a message key
      * @return requested message
      */
-    protected String getMessage(String key) {
+    protected String getMessage(final String key) {
         return PMDPlugin.getDefault().getMessage(key);
-    }
-    
-    /**
-     * @return Returns the monitor.
-     */
-    protected IProgressMonitor getMonitor() {
-        return this.monitor;
-    }
-    /**
-     * @param monitor The monitor to set.
-     */
-    protected void setMonitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
     }
     
     /**
      * delegate method for monitor.beginTask
      * @see org.eclipse.core.runtime.IProgressMonitor#beginTask
      */
-    protected void beginTask(String name, int totalWork) {
+    protected void beginTask(final String name, final int totalWork) {
         if (this.monitor != null) {
             this.monitor.beginTask(name, totalWork);
         }
@@ -192,7 +225,7 @@ public abstract class DefaultCommand extends ProcessableCommand implements PMDCo
      * delegate method for monitor.setTaskName()
      * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName
      */
-    protected void setTaskName(String name) {
+    protected void setTaskName(final String name) {
         if (this.monitor != null) {
             this.monitor.setTaskName(name);
         }
@@ -202,7 +235,7 @@ public abstract class DefaultCommand extends ProcessableCommand implements PMDCo
      * delegate method for monitor.subTask()
      * @see org.eclipse.core.runtime.IProgressMonitor#subTask
      */
-    protected void subTask(String name) {
+    protected void subTask(final String name) {
         if (this.monitor != null) {
             this.monitor.subTask(name);
         }
@@ -212,7 +245,7 @@ public abstract class DefaultCommand extends ProcessableCommand implements PMDCo
      * delegate method for monitor.worked()
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
      */
-    protected void worked(int work) {
+    protected void worked(final int work) {
         if (this.monitor != null) {
             this.monitor.worked(work);
         }

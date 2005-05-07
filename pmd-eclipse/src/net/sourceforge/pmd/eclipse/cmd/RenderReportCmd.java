@@ -62,12 +62,18 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.1  2005/04/20 23:16:20  phherlin
  * Implement reports generation RFE#1177802
  *
  *
  */
-public class RenderReportCmd extends DefaultCommand {
+public class RenderReportCmd extends AbstractDefaultCommand {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.RenderReportCmd");
     private IProject project;
     private Renderer renderer;
@@ -85,25 +91,25 @@ public class RenderReportCmd extends DefaultCommand {
     }
     
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
         try {
             log.debug("Starting RenderReport command");
             log.debug("   Create a report object");
-            Report report = this.createReport(this.project);
+            final Report report = this.createReport(this.project);
             
             log.debug("   Render the report");
-            String reportString = this.renderer.render(report);
+            final String reportString = this.renderer.render(report);
 
             log.debug("   Getting the report folder");
-            IFolder folder = this.project.getFolder(PMDPluginConstants.REPORT_FOLDER);
+            final IFolder folder = this.project.getFolder(PMDPluginConstants.REPORT_FOLDER);
             if (!folder.exists()) {
                 folder.create(true, true, this.getMonitor());
             }
             
             log.debug("   Creating the report file");
-            IFile reportFile = folder.getFile(this.reportName);
+            final IFile reportFile = folder.getFile(this.reportName);
             if (reportFile.exists()) {
                 reportFile.setContents(new ByteArrayInputStream(reportString.getBytes()), true, false, this.getMonitor());
             } else {
@@ -122,28 +128,28 @@ public class RenderReportCmd extends DefaultCommand {
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-       this.project = null;
-       this.renderer = null;
+       this.setProject(null);
+       this.setRenderer(null);
     }
 
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
     }
     
     /**
      * @param renderer The renderer to set.
      */
-    public void setRenderer(Renderer renderer) {
+    public void setRenderer(final Renderer renderer) {
         this.renderer = renderer;
     }
     
     /**
      * @param reportName The reportName to set.
      */
-    public void setReportName(String reportName) {
+    public void setReportName(final String reportName) {
         this.reportName = reportName;
     }
     
@@ -159,18 +165,22 @@ public class RenderReportCmd extends DefaultCommand {
      * @param project
      * @return
      */
-    private Report createReport(IProject project) throws CoreException {
-        Report report = new Report();
+    private Report createReport(final IProject project) throws CoreException {
+        final Report report = new Report();
         
-        IMarker[] markers = this.project.findMarkers(PMDPluginConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+        final IMarker[] markers = project.findMarkers(PMDPluginConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
         for (int i = 0; i < markers.length; i++) {
-            String ruleName = markers[i].getAttribute(PMDPluginConstants.KEY_MARKERATT_RULENAME, "");
-            Rule rule = PMDPlugin.getDefault().getRuleSet().getRuleByName(ruleName);
-            int lineNumber = markers[i].getAttribute(IMarker.LINE_NUMBER, 0);
-            String message = markers[i].getAttribute(IMarker.MESSAGE, "");
-            RuleContext ruleContext = new RuleContext();
+            final String ruleName = markers[i].getAttribute(PMDPluginConstants.KEY_MARKERATT_RULENAME, "");
+            final Rule rule = PMDPlugin.getDefault().getRuleSet().getRuleByName(ruleName);
+            final int lineNumber = markers[i].getAttribute(IMarker.LINE_NUMBER, 0);
+            final String message = markers[i].getAttribute(IMarker.MESSAGE, "");
+
+            // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:15
+            final RuleContext ruleContext = new RuleContext();
             ruleContext.setSourceCodeFilename(markers[i].getResource().getProjectRelativePath().toString());
-            RuleViolation ruleViolation = new RuleViolation(rule, lineNumber, message, ruleContext);
+
+            // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
+            final RuleViolation ruleViolation = new RuleViolation(rule, lineNumber, message, ruleContext);
             report.addRuleViolation(ruleViolation);
         }
         

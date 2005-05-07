@@ -29,7 +29,8 @@ import java.util.ResourceBundle;
  * environment.
  * @see name.herlin.command.CommandProcessor for more details on processor.
  */
-public abstract class ProcessableCommand implements Command {
+public abstract class AbstractProcessableCommand implements Command {
+    private CommandProcessor commandProcessor;
 
     /**
      * Impementation method of a processable command. Developers of concrete
@@ -52,15 +53,16 @@ public abstract class ProcessableCommand implements Command {
         if (!isReadyToExecute()) {
             throw new UnsetInputPropertiesException();
         }
-
-        CommandProcessorStrategy strategy = getCommandProcessorStrategy();
-        CommandProcessor processor = strategy.getCommandProcessor(this);
-        if (processor == null) {
-            throw new UnregisteredCommandException("Processor cannot be found for that command");
-        }
         
-        processor.processCommand(this);
+        this.getCommandProcessor().processCommand(this);
         
+    }
+    
+    /**
+     * @see Command#join()
+     */
+    public void join() throws CommandException {
+        this.getCommandProcessor().waitCommandToFinish(this);
     }
 
     /**
@@ -74,6 +76,31 @@ public abstract class ProcessableCommand implements Command {
     }
     
     /**
+     * @see name.herlin.command.Command#getDescription()
+     */
+    public abstract String getDescription();
+
+    /**
+     * @see name.herlin.command.Command#getName()
+     */
+    public abstract String getName();
+
+    /**
+     * @see name.herlin.command.Command#isReadOnly()
+     */
+    public abstract boolean isReadOnly();
+
+    /**
+     * @see name.herlin.command.Command#isReadyToExecute()
+     */
+    public abstract boolean isReadyToExecute();
+
+    /**
+     * @see name.herlin.command.Command#reset()
+     */
+    public abstract void reset();
+
+    /**
      * @return the current strategy to compute the best processor for that
      * command. The default is to find a concrete strategy in the strategy
      * bundle. If none found (or if the class cannot be loaded or instantiated)
@@ -85,19 +112,23 @@ public abstract class ProcessableCommand implements Command {
     protected CommandProcessorStrategy getCommandProcessorStrategy() {
         CommandProcessorStrategy strategy = null;
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle(CommandProcessorStrategy.COMMAND_PROCESSOR_STRATEGY_BUNDLE);
-            String strategyClassName = bundle.getString(CommandProcessorStrategy.KEY_COMMAND_PROCESSOR_STRATEGY_CLASS);
-            Class strategyClass = Class.forName(strategyClassName);
+            final ResourceBundle bundle = ResourceBundle.getBundle(CommandProcessorStrategy.COMMAND_PROCESSOR_STRATEGY_BUNDLE);
+            final String strategyClassName = bundle.getString(CommandProcessorStrategy.STRATEGY_CLASS_KEY);
+            final Class strategyClass = Class.forName(strategyClassName);
             
             strategy = (CommandProcessorStrategy) strategyClass.newInstance();
             
         } catch (ClassNotFoundException e) {
+            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
             // ignored
         } catch (InstantiationException e) {
+            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
             // ignored
         } catch (IllegalAccessException e) {
+            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
             // ignored
         } catch (MissingResourceException e) {
+            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
             // ignored
         } finally {
             if (strategy == null) {
@@ -107,5 +138,20 @@ public abstract class ProcessableCommand implements Command {
         
         return strategy;
 
+    }
+    
+    /**
+     * @return the command processor for that command 
+     */
+    protected CommandProcessor getCommandProcessor() throws CommandException {
+        if (this.commandProcessor == null) {
+            final CommandProcessorStrategy strategy = getCommandProcessorStrategy();
+            this.commandProcessor = strategy.getCommandProcessor(this);
+            if (this.commandProcessor == null) {
+                throw new UnregisteredCommandException("Processor cannot be found for that command");
+            }
+        }
+        
+        return this.commandProcessor;
     }
 }

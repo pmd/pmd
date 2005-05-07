@@ -36,6 +36,12 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/07 13:32:06  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.2  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *

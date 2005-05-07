@@ -35,33 +35,31 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-
 import name.herlin.command.CommandException;
 import name.herlin.command.CommandProcessor;
 import name.herlin.command.AbstractProcessableCommand;
 import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+
 /**
  * This is a particular processor for Eclipse in order to handle long running
- * commands.
+ * commands. It runs commands in a Workspace Runnable
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/07 13:32:04  phherlin
+ * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
  * Fix Bug 1144793
@@ -74,69 +72,50 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
  *
  *
  */
-public class JobCommandProcessor implements CommandProcessor {
-    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.JobCommandProcessor");
-    private final Map jobs = Collections.synchronizedMap(new HashMap());
+public class RunnableCommandProcessor implements CommandProcessor, IWorkspaceRunnable {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.RunnableCommandProcessor");
+    private AbstractProcessableCommand command;
 
     /**
      * @see name.herlin.command.CommandProcessor#processCommand(name.herlin.command.AbstractProcessableCommand)
      */
     public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
-        log.debug("Begining a job command");
+        log.debug("Begining workspace runnable command " + aCommand.getName());
 
-        if (!aCommand.isReadyToExecute()) {
-            throw new UnsetInputPropertiesException();
-        }
-        
-        final Job job = new Job(aCommand.getName()) {
-            protected IStatus run(IProgressMonitor monitor) {
-                try {
-                    ((AbstractDefaultCommand) aCommand).setMonitor(monitor);
-                    aCommand.execute();
-                } catch (CommandException e) {
-                    PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
-                }
-                
-                return Status.OK_STATUS;
+        try {
+            if (!aCommand.isReadyToExecute()) {
+                throw new UnsetInputPropertiesException();
             }
-        };
-        
-        job.schedule();
-        this.addJob(aCommand, job);
-        log.debug("Ending a job command");
+            
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            this.command = aCommand;
+            workspace.run(this, workspace.getRoot(), IWorkspace.AVOID_UPDATE, ((AbstractDefaultCommand) aCommand).getMonitor());
+        } catch (CoreException e) {
+            throw new CommandException(e);
+        } finally {
+            log.debug("Ending workspace runnable command " + aCommand.getName());
+        }
+
     }
 
     /**
      * @see name.herlin.command.CommandProcessor#waitCommandToFinish(name.herlin.command.AbstractProcessableCommand)
      */
     public void waitCommandToFinish(final AbstractProcessableCommand aCommand) throws CommandException {
-        final Job job = (Job) this.jobs.get(aCommand);
-        if (job != null) {
-            try {
-                job.join();
-            } catch (InterruptedException e) {
-                throw new CommandException(e);
-            }
-        }
-
+        // do noting
     }
     
     /**
-     * Add a job to the map. Also, clear all finished jobs
-     * @param command for which to keep the job 
-     * @param job a job to keep until it is finished
+     * Process the command as a batch
+     * @param monitor
+     * @throws CoreException
      */
-    private void addJob(final AbstractProcessableCommand command, final Job job) {
-        this.jobs.put(command, job);
-        
-        // clear terminated command
-        final Iterator i = this.jobs.keySet().iterator();
-        while (i.hasNext()) {
-            final AbstractProcessableCommand aCommand = (AbstractProcessableCommand) i.next();
-            final Job aJob = (Job) this.jobs.get(aCommand);
-            if ((aJob == null) || (aJob.getResult() != null)) {
-                this.jobs.remove(aCommand);
-            }
+    public void run(final IProgressMonitor monitor) throws CoreException {
+        try {
+            this.command.execute();
+        } catch (CommandException e) {
+            PMDPlugin.getDefault().logError("Error executing command " + this.command.getName(), e);
+            throw new CoreException(new Status(IStatus.ERROR, PMDPlugin.PLUGIN_ID, 0, e.getMessage(), e));
         }
     }
 }

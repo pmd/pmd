@@ -47,6 +47,12 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/07 13:32:05  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.1  2004/11/28 20:31:38  phherlin
  * Continuing the refactoring experiment
  *
@@ -70,7 +76,7 @@ public class PMDPropertyPageBean {
     /**
      * @param pmdEnabled The pmdEnabled to set.
      */
-    public void setPmdEnabled(boolean pmdEnabled) {
+    public void setPmdEnabled(final boolean pmdEnabled) {
         this.pmdEnabled = pmdEnabled;
     }
     /**
@@ -82,7 +88,7 @@ public class PMDPropertyPageBean {
     /**
      * @param projectRuleSet The projectRuleSet to set.
      */
-    public void setProjectRuleSet(RuleSet projectRuleSet) {
+    public void setProjectRuleSet(final RuleSet projectRuleSet) {
         this.projectRuleSet = projectRuleSet;
     }
     /**
@@ -94,7 +100,7 @@ public class PMDPropertyPageBean {
     /**
      * @param ruleSetStoredInProject The ruleSetStoredInProject to set.
      */
-    public void setRuleSetStoredInProject(boolean ruleSetStoredInProject) {
+    public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
     }
     /**
@@ -106,7 +112,7 @@ public class PMDPropertyPageBean {
     /**
      * @param projectWorkingSet The projectWorkingSet to set.
      */
-    public void setProjectWorkingSet(IWorkingSet selectedWorkingSet) {
+    public void setProjectWorkingSet(final IWorkingSet selectedWorkingSet) {
         this.projectWorkingSet = selectedWorkingSet;
     }
 }

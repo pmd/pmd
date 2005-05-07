@@ -35,6 +35,10 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -42,10 +46,15 @@ import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.PMDConstants;
+import net.sourceforge.pmd.eclipse.PMDEclipseException;
+import net.sourceforge.pmd.eclipse.RuleSetWriter;
+import net.sourceforge.pmd.eclipse.WriterAbstractFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -56,6 +65,12 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.2  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -66,7 +81,7 @@ import org.eclipse.core.runtime.CoreException;
  *
  *
  */
-public class UpdateProjectRuleSetCmd extends DefaultCommand {
+public class UpdateProjectRuleSetCmd extends AbstractDefaultCommand {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.UpdateProjectRuleSetCmd");
     private IProject project;
     private RuleSet projectRuleSet;
@@ -77,6 +92,7 @@ public class UpdateProjectRuleSetCmd extends DefaultCommand {
      *
      */
     public UpdateProjectRuleSetCmd() {
+        super();
         setReadOnly(false);
         setOutputProperties(true);
         setName("UpdateProjectRuleSet");
@@ -84,72 +100,52 @@ public class UpdateProjectRuleSetCmd extends DefaultCommand {
     }
 
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
 
         // Before updating, query the current ruleset
-        QueryProjectRuleSetCmd queryCmd = new QueryProjectRuleSetCmd();
+        final QueryProjectRuleSetCmd queryCmd = new QueryProjectRuleSetCmd();
         queryCmd.setProject(this.project);
-        queryCmd.setFromProperties(true);
         queryCmd.execute();
         
         // Now store the ruleset
         try {
-            StringBuffer ruleSelectionList = new StringBuffer();
-            Iterator i = this.projectRuleSet.getRules().iterator();
-            while (i.hasNext()) {
-                Rule rule = (Rule) i.next();
-                ruleSelectionList.append(rule.getName()).append(LIST_DELIMITER);
-            }
+            final IFile ruleSetFile = this.project.getFile(".ruleset");
+            final OutputStream out = new FileOutputStream(ruleSetFile.getLocation().toOSString());
+            final RuleSetWriter writer = WriterAbstractFactory.getFactory().getRuleSetWriter();
+            writer.write(out, this.projectRuleSet);
+            out.flush();
+            out.close();
+            ruleSetFile.refreshLocal(IResource.DEPTH_INFINITE, this.getMonitor());
             
             log.debug("Storing ruleset for project " + this.project.getName());
-            this.project.setPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET, ruleSelectionList.toString());
-            log.debug("   list : " + ruleSelectionList.toString());
             this.project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, this.projectRuleSet);
+            
+            this.needRebuild = this.checkIfRebuidNeeded(queryCmd.getProjectRuleSet(), this.projectRuleSet);
 
         } catch (CoreException e) {
             throw new CommandException(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
-        }
-        
-        // Finally, compare to the initial list whether the ruleset has really changed
-        if (queryCmd.getProjectRuleSet() != null) {
-            
-            // 1-if a rule has been deselected
-            Iterator i = queryCmd.getProjectRuleSet().getRules().iterator();
-            Set selectedRules = this.projectRuleSet.getRules();
-            while ((i.hasNext()) && (!this.needRebuild)) {
-                Rule rule = (Rule) i.next();
-                if (!selectedRules.contains(rule)) {
-                    this.needRebuild = true;
-                }
-            }
-            
-            // 1-if a rule has been selected
-            i = this.projectRuleSet.getRules().iterator();
-            Set previousRules = queryCmd.getProjectRuleSet().getRules();
-            while ((i.hasNext()) && (!this.needRebuild)) {
-                Rule rule = (Rule) i.next();
-                if (!previousRules.contains(rule)) {
-                    this.needRebuild = true;
-                }
-            }
-        } else {
-            this.needRebuild = true;
+        } catch (FileNotFoundException e) {
+            throw new CommandException(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
+        } catch (PMDEclipseException e) {
+            throw new CommandException(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
+        } catch (IOException e) {
+            throw new CommandException(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
         }
     }
 
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
     }
     
     /**
      * @param projectRuleSet The projectRuleSet to set.
      */
-    public void setProjectRuleSet(RuleSet projectRuleSet) {
+    public void setProjectRuleSet(final RuleSet projectRuleSet) {
         this.projectRuleSet = projectRuleSet;
     }
     
@@ -171,7 +167,44 @@ public class UpdateProjectRuleSetCmd extends DefaultCommand {
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.project = null;
-        this.projectRuleSet = null;
+        this.setProject(null);
+        this.setProjectRuleSet(null);
+    }
+    
+    /**
+     * Check if a project really needs to be rebuilt
+     * @param oldRuleSet the old project ruleset
+     * @param newRuleSet the new project ruleset
+     * @return if the project needs to be rebuilt
+     */
+    private boolean checkIfRebuidNeeded(final RuleSet oldRuleSet, final RuleSet newRuleSet) {
+        boolean needRebuild = false;
+
+        if (oldRuleSet == null) {
+            needRebuild = true;
+        } else {
+            
+            // 1-if a rule has been deselected
+            final Iterator i = oldRuleSet.getRules().iterator();
+            final Set selectedRules = newRuleSet.getRules();
+            while ((i.hasNext()) && (!needRebuild)) {
+                final Rule rule = (Rule) i.next();
+                if (!selectedRules.contains(rule)) {
+                    needRebuild = true;
+                }
+            }
+            
+            // 2-if a rule has been selected
+            final Iterator j = newRuleSet.getRules().iterator();
+            final Set previousRules = oldRuleSet.getRules();
+            while ((j.hasNext()) && (!needRebuild)) {
+                final Rule rule = (Rule) j.next();
+                if (!previousRules.contains(rule)) {
+                    needRebuild = true;
+                }
+            }
+        }
+        
+        return needRebuild;
     }
 }

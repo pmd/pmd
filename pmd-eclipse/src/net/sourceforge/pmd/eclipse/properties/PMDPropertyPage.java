@@ -48,7 +48,6 @@ import net.sourceforge.pmd.eclipse.preferences.RuleSetContentProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -75,6 +74,12 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.16  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.15  2004/11/28 20:31:38  phherlin
  * Continuing the refactoring experiment
  *
@@ -145,18 +150,11 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     protected Button ruleSetStoredInProjectButton;
 
     /**
-     * Constructor for SamplePropertyPage.
-     */
-    public PMDPropertyPage() {
-        super();
-        controller = new PMDPropertyPageController(this);
-    }
-
-    /**
      * @see PreferencePage#createContents(Composite)
      */
-    protected Control createContents(Composite parent) {
+    protected Control createContents(final Composite parent) {
         log.info("PMD properties editing requested");
+        this.controller = new PMDPropertyPageController(this.getShell());
         this.project = (IProject) this.getElement().getAdapter(IProject.class);
         this.controller.setProject(this.project);
         this.model = controller.getPropertyPageBean();
@@ -167,7 +165,7 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
         if ((this.project.isAccessible()) && (this.model != null)) {
             composite = new Composite(parent, SWT.NONE);
 
-            GridLayout layout = new GridLayout();
+            final GridLayout layout = new GridLayout();
             composite.setLayout(layout);
 
             enablePMDButton = buildEnablePMDButton(composite);
@@ -184,8 +182,8 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
             data.grabExcessHorizontalSpace = true;
             selectedWorkingSetLabel.setLayoutData(data);
 
-            Composite workingSetPanel = new Composite(composite, SWT.NONE);
-            RowLayout rowLayout = new RowLayout();
+            final Composite workingSetPanel = new Composite(composite, SWT.NONE);
+            final RowLayout rowLayout = new RowLayout();
             rowLayout.type = SWT.HORIZONTAL;
             rowLayout.justify = true;
             rowLayout.pack = false;
@@ -201,7 +199,7 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
             separator.setLayoutData(data);
 
             buildLabel(composite, MSGKEY_PROPERTY_LABEL_SELECT_RULE);
-            Table availableRulesTable = buildAvailableRulesTableViewer(composite);
+            final Table availableRulesTable = buildAvailableRulesTableViewer(composite);
             data = new GridData();
             data.grabExcessHorizontalSpace = true;
             data.grabExcessVerticalSpace = true;
@@ -222,8 +220,8 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
      * Create the enable PMD checkbox
      * @param parent the parent composite
      */
-    private Button buildEnablePMDButton(Composite parent) {
-        Button button = new Button(parent, SWT.CHECK);
+    private Button buildEnablePMDButton(final Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
         button.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_ENABLE));
         button.setSelection(model.isPmdEnabled());
 
@@ -234,14 +232,14 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
      * Create the checkbox for storing configuration in a project file
      * @param parent the parent composite
      */
-    private Button buildStoreRuleSetInProjectButton(Composite parent) {
-        Button button = new Button(parent, SWT.CHECK);
+    private Button buildStoreRuleSetInProjectButton(final Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
         button.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT));
         button.setSelection(model.isRuleSetStoredInProject());
 
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                Table ruleTable = availableRulesTableViewer.getTable();
+                final Table ruleTable = availableRulesTableViewer.getTable();
                 ruleTable.setEnabled(!ruleSetStoredInProjectButton.getSelection());
             }
         });       
@@ -252,8 +250,8 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     /**
      * Build a label
      */
-    private Label buildLabel(Composite parent, String msgKey) {
-        Label label = new Label(parent, SWT.NONE);
+    private Label buildLabel(final Composite parent, final String msgKey) {
+        final Label label = new Label(parent, SWT.NONE);
         label.setText(msgKey == null ? "" : this.getMessage(msgKey));
         return label;
     }
@@ -261,10 +259,10 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     /**
      * Build a label
      */
-    private Label buildSelectedWorkingSetLabel(Composite parent) {
+    private Label buildSelectedWorkingSetLabel(final Composite parent) {
         this.selectedWorkingSet = model.getProjectWorkingSet();
 
-        Label label = new Label(parent, SWT.NONE);
+        final Label label = new Label(parent, SWT.NONE);
         label.setText(
             this.selectedWorkingSet == null
                 ? this.getMessage(MSGKEY_PROPERTY_LABEL_NO_WORKINGSET)
@@ -276,22 +274,22 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     /**
      * Build rule table viewer
      */
-    private Table buildAvailableRulesTableViewer(Composite parent) {
-        int tableStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION | SWT.CHECK;
+    private Table buildAvailableRulesTableViewer(final Composite parent) {
+        final int tableStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION | SWT.CHECK;
         availableRulesTableViewer = new TableViewer(parent, tableStyle);
 
-        Table ruleTable = availableRulesTableViewer.getTable();
-        TableColumn ruleNameColumn = new TableColumn(ruleTable, SWT.LEFT);
+        final Table ruleTable = availableRulesTableViewer.getTable();
+        final TableColumn ruleNameColumn = new TableColumn(ruleTable, SWT.LEFT);
         ruleNameColumn.setResizable(true);
         ruleNameColumn.setText(this.getMessage(MSGKEY_PREF_RULESET_COLUMN_NAME));
         ruleNameColumn.setWidth(200);
 
-        TableColumn rulePriorityColumn = new TableColumn(ruleTable, SWT.LEFT);
+        final TableColumn rulePriorityColumn = new TableColumn(ruleTable, SWT.LEFT);
         rulePriorityColumn.setResizable(true);
         rulePriorityColumn.setText(this.getMessage(MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
         rulePriorityColumn.setWidth(110);
 
-        TableColumn ruleDescriptionColumn = new TableColumn(ruleTable, SWT.LEFT);
+        final TableColumn ruleDescriptionColumn = new TableColumn(ruleTable, SWT.LEFT);
         ruleDescriptionColumn.setResizable(true);
         ruleDescriptionColumn.setText(this.getMessage(MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION));
         ruleDescriptionColumn.setWidth(200);
@@ -331,8 +329,8 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
      * Build the working set selection button
      * @param parent
      */
-    private void buildSelectWorkingSetButton(Composite parent) {
-        Button workingSetButton = new Button(parent, SWT.PUSH);
+    private void buildSelectWorkingSetButton(final Composite parent) {
+        final Button workingSetButton = new Button(parent, SWT.PUSH);
         workingSetButton.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_SELECT_WORKINGSET));
         workingSetButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -345,8 +343,8 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
      * Build the working set deselect button
      * @param parent
      */
-    private Button buildDeselectWorkingSetButton(Composite parent) {
-        Button button = new Button(parent, SWT.PUSH);
+    private Button buildDeselectWorkingSetButton(final Composite parent) {
+        final Button button = new Button(parent, SWT.PUSH);
         button.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_DESELECT_WORKINGSET));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -364,13 +362,13 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
      */
     private void populateAvailableRulesTable() {
         availableRulesTableViewer.setInput(controller.getAvailableRules());
-        RuleSet activeRuleSet = model.getProjectRuleSet();
+        final RuleSet activeRuleSet = model.getProjectRuleSet();
         if (activeRuleSet != null) {
-            Set activeRules = activeRuleSet.getRules();
+            final Set activeRules = activeRuleSet.getRules();
 
-            TableItem[] itemList = availableRulesTableViewer.getTable().getItems();
+            final TableItem[] itemList = availableRulesTableViewer.getTable().getItems();
             for (int i = 0; i < itemList.length; i++) {
-                Object rule = itemList[i].getData();
+                final Object rule = itemList[i].getData();
                 if (activeRules.contains(rule)) {
                     itemList[i].setChecked(true);
                 }
@@ -402,14 +400,14 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
      * @return a RuleSet object from the selected table item
      */
     private RuleSet getProjectRuleSet() {
-        RuleSet ruleSet = new RuleSet();
-        TableItem[] rulesList = this.availableRulesTableViewer.getTable().getItems();
+        final RuleSet ruleSet = new RuleSet();
+        final TableItem[] rulesList = this.availableRulesTableViewer.getTable().getItems();
 
         for (int i = 0; i < rulesList.length; i++) {
             if (rulesList[i].getChecked()) {
-                Rule rule = (Rule) rulesList[i].getData();
+                final Rule rule = (Rule) rulesList[i].getData();
                 ruleSet.addRule(rule);
-                log.debug("Adding rule " + rule.getName() + " in the project ruleset");
+//                log.debug("Adding rule " + rule.getName() + " in the project ruleset");
             }
         }
         
@@ -438,7 +436,7 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
      * Process the change of the selected working set
      * @param a newly selected working set
      */
-    private void setSelectedWorkingSet(IWorkingSet workingSet) {
+    private void setSelectedWorkingSet(final IWorkingSet workingSet) {
         this.selectedWorkingSet = workingSet;
         this.selectedWorkingSetLabel.setText(
             this.selectedWorkingSet == null
@@ -452,7 +450,7 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
      * @param key a message key
      * @return requested message
      */
-    private String getMessage(String key) {
+    private String getMessage(final String key) {
         return PMDPlugin.getDefault().getMessage(key);
     }
 

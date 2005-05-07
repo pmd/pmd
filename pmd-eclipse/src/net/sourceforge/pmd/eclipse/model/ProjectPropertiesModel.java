@@ -48,12 +48,18 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.1  2004/11/28 20:31:38  phherlin
  * Continuing the refactoring experiment
  *
  *
  */
-public interface ProjectPropertiesModel {
+public interface ProjectPropertiesModel extends PMDPluginModel {
     /**
      * @return the related project
      */

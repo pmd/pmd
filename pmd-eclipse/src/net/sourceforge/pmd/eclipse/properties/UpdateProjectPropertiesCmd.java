@@ -33,10 +33,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.cmd;
+package net.sourceforge.pmd.eclipse.properties;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
 import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
@@ -51,6 +52,12 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/05/07 13:32:05  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.3  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -64,7 +71,7 @@ import org.eclipse.ui.IWorkingSet;
  *
  *
  */
-public class UpdateProjectPropertiesCmd extends DefaultCommand {
+public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
     private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
@@ -78,6 +85,7 @@ public class UpdateProjectPropertiesCmd extends DefaultCommand {
      *
      */
     public UpdateProjectPropertiesCmd() {
+        super();
         setReadOnly(false);
         setOutputProperties(true);
         setName("UpdateProjectProperties");
@@ -85,73 +93,55 @@ public class UpdateProjectPropertiesCmd extends DefaultCommand {
     }
 
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
-//        this.getMonitor().beginTask("Updating project properties", 4);
-//        if (!this.getMonitor().isCanceled()) {
             try {
-                ProjectPropertiesModel projectPropertyModel = ModelFactory.getFactory().getProperiesModelForProject(this.project);
-
-//                this.getMonitor().subTask("Updating PMD enabling state");
-                projectPropertyModel.setPmdEnabled(this.pmdEnabled);
-//                this.getMonitor().worked(1);
-      
-//                this.getMonitor().subTask("Updating project rule set");
-                projectPropertyModel.setProjectRuleSet(this.projectRuleSet);
-//                this.getMonitor().worked(1);
-
-//                this.getMonitor().subTask("Updating project working set");
-                projectPropertyModel.setProjectWorkingSet(this.projectWorkingSet);
-//                this.getMonitor().worked(1);
-
-//                this.getMonitor().subTask("Updating rule set location state");
-                projectPropertyModel.setRuleSetStoredInProject(this.ruleSetStoredInProject);
-//                this.getMonitor().worked(1);
-
-                this.needRebuild = projectPropertyModel.isNeedRebuild();
-                this.ruleSetFileExists = !projectPropertyModel.isRuleSetFileExist();
+                final ProjectPropertiesModel projectPropertiesModel = ModelFactory.getFactory().getProperiesModelForProject(this.project);
+                projectPropertiesModel.setMonitor(this.getMonitor());
+                projectPropertiesModel.setPmdEnabled(this.pmdEnabled);
+                projectPropertiesModel.setProjectRuleSet(this.projectRuleSet);
+                projectPropertiesModel.setProjectWorkingSet(this.projectWorkingSet);
+                projectPropertiesModel.setRuleSetStoredInProject(this.ruleSetStoredInProject);
+                this.needRebuild = projectPropertiesModel.isNeedRebuild();
+                this.ruleSetFileExists = !projectPropertiesModel.isRuleSetFileExist();
             } catch (ModelException e) {
                 throw new CommandException(e.getMessage(), e);
             }
-//        }
-
-//        this.getMonitor().done();
-//        return this.getMonitor().isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
     }
 
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
     }
 
     /**
      * @param pmdEnabled The pmdEnabled to set.
      */
-    public void setPmdEnabled(boolean pmdEnabled) {
+    public void setPmdEnabled(final boolean pmdEnabled) {
         this.pmdEnabled = pmdEnabled;
     }
     
     /**
      * @param projectRuleSet The projectRuleSet to set.
      */
-    public void setProjectRuleSet(RuleSet projectRuleSet) {
+    public void setProjectRuleSet(final RuleSet projectRuleSet) {
         this.projectRuleSet = projectRuleSet;
     }
     
     /**
      * @param projectWorkingSet The projectWorkingSet to set.
      */
-    public void setProjectWorkingSet(IWorkingSet projectWorkingSet) {
+    public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) {
         this.projectWorkingSet = projectWorkingSet;
     }
     
     /**
      * @param ruleSetStoredInProject The ruleSetStoredInProject to set.
      */
-    public void setRuleSetStoredInProject(boolean ruleSetStoredInProject) {
+    public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
     }
 
@@ -173,10 +163,10 @@ public class UpdateProjectPropertiesCmd extends DefaultCommand {
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.project = null;
-        this.pmdEnabled = false;
-        this.projectRuleSet = null;
-        this.ruleSetStoredInProject = false;
+        this.setProject(null);
+        this.setPmdEnabled(false);
+        this.setProjectRuleSet(null);
+        this.setRuleSetStoredInProject(false);
     }
     
     /**

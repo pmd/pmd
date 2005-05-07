@@ -32,21 +32,22 @@ import java.util.ResourceBundle;
  * the framework default command processor.
  */
 public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy {
-    private CommandProcessor defaultCommandProcessor = new DefaultCommandProcessor();
-    private Map registeredCommandProcessors = new Hashtable();
+    private final CommandProcessor defaultCommandProcessor = new DefaultCommandProcessor();
+    private final Map registeredCommandProcessors = new Hashtable();
 
     /**
      * Default constructor. Load registered command from bundle.
      */
     public DefaultCommandProcessorStrategy() {
-        loadBundle();
+        super();
+        this.loadBundle();
     }
 
     /**
      * @param aCommand a command for which to finf a processor
      * @return a processor for the specified command according to the strategy.
      */
-    public CommandProcessor getCommandProcessor(ProcessableCommand aCommand) {
+    public CommandProcessor getCommandProcessor(final AbstractProcessableCommand aCommand) {
         CommandProcessor aProcessor = getRegisteredCommandProcessor(aCommand); 
 
         if (aProcessor == null) {
@@ -65,20 +66,23 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
      * @param aCommand a command to search in the registered command map.
      * @return a command processor from a registered command
      */
-    protected CommandProcessor getRegisteredCommandProcessor(ProcessableCommand aCommand) {
+    protected CommandProcessor getRegisteredCommandProcessor(final AbstractProcessableCommand aCommand) {
         CommandProcessor aProcessor = null;
 
         try {
-            String processorClassName = (String) registeredCommandProcessors.get(aCommand.getName());
+            final String processorClassName = (String) registeredCommandProcessors.get(aCommand.getName());
             if (processorClassName != null) {
-                Class clazz = Class.forName(processorClassName);
+                final Class clazz = Class.forName(processorClassName);
                 aProcessor = (CommandProcessor) clazz.newInstance();
             }
         } catch (ClassNotFoundException e) {
+            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:09
             // ignore
         } catch (InstantiationException e) {
+            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:09
             // ignore
         } catch (IllegalAccessException e) {
+            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:09
             // ignore
         }
 
@@ -92,14 +96,15 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
      */
     private void loadBundle() {
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle(COMMAND_PROCESSOR_STRATEGY_BUNDLE);
-            Enumeration e = bundle.getKeys();
+            final ResourceBundle bundle = ResourceBundle.getBundle(COMMAND_PROCESSOR_STRATEGY_BUNDLE);
+            final Enumeration e = bundle.getKeys();
             while (e.hasMoreElements()) {
-                String key = (String) e.nextElement();
-                String value = bundle.getString(key);
+                final String key = (String) e.nextElement();
+                final String value = bundle.getString(key);
                 this.registeredCommandProcessors.put(key, value);
             }
         } catch (RuntimeException e) {
+            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:10
             // ignore bundle not found
         }
     }

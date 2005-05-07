@@ -35,21 +35,15 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
-import java.util.Iterator;
-import java.util.StringTokenizer;
-
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.eclipse.PMDConstants;
-import net.sourceforge.pmd.eclipse.PMDPlugin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 
 /**
  * Query the rule set configured for a specific project.
@@ -58,6 +52,12 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.2  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -68,10 +68,9 @@ import org.eclipse.core.runtime.CoreException;
  *
  *
  */
-public class QueryProjectRuleSetCmd extends DefaultCommand {
+public class QueryProjectRuleSetCmd extends AbstractDefaultCommand {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.QueryProjectRuleSetCmd");
     private IProject project;
-    private boolean fromProperties;
     private RuleSet projectRuleSet;
     
     /**
@@ -79,6 +78,7 @@ public class QueryProjectRuleSetCmd extends DefaultCommand {
      *
      */
     public QueryProjectRuleSetCmd() {
+        super();
         setReadOnly(true);
         setOutputProperties(true);
         setName("QueryProjectRuleSet");
@@ -86,36 +86,20 @@ public class QueryProjectRuleSetCmd extends DefaultCommand {
     }
 
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
-        QueryRuleSetStoredInProjectPropertyCmd queryRuleSetStoredInProjectCmd = new QueryRuleSetStoredInProjectPropertyCmd();
-        queryRuleSetStoredInProjectCmd.setProject(this.project);
-        queryRuleSetStoredInProjectCmd.performExecute();
-        boolean ruleSetStoredInProject = queryRuleSetStoredInProjectCmd.isRuleSetStoredInProject();
-
-        if ((this.fromProperties) || (!ruleSetStoredInProject)) {
-            getRuleSetFromProperties();
-        } else {
-            getRuleSetFromProject();
-        }
+        this.getRuleSetFromProject();
     }
 
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
-        setReadyToExecute(true);
+        setReadyToExecute(project != null);
     }
     
-    /**
-     * @param fromProperties The fromProperties to set.
-     */
-    public void setFromProperties(boolean fromProperties) {
-        this.fromProperties = fromProperties;
-    }
-
     /**
      * @return Returns the projectRuleSet.
      */
@@ -127,52 +111,7 @@ public class QueryProjectRuleSetCmd extends DefaultCommand {
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.project = null;
-        setReadyToExecute(false);
-    }
-
-    /**
-     * Get the rulset configured for the project
-     */
-    private void getRuleSetFromProperties() throws CommandException {
-        log.debug("Searching a ruleset for project " + this.project.getName() + " in properties");
-        boolean flSaveInSession = false;
-        RuleSet configuredRuleSet = PMDPlugin.getDefault().getRuleSet();
-
-        try {
-            // Try to load the ruleset from the session properties
-            // If not available query the rules list from presistent store and 
-            // ask the instantiation of a RuleSet object from that list
-            this.projectRuleSet = (RuleSet) this.project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
-            if (this.projectRuleSet == null) {
-                String activeRulesList = this.project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
-                if (activeRulesList != null) {
-                    this.projectRuleSet = getRuleSetFromRuleList(activeRulesList);
-                    flSaveInSession = true;
-                }
-            }
-
-            // If meanwhile, rules have been deleted from preferences
-            // delete them also from the project ruleset
-            if ((this.projectRuleSet != null) && (this.projectRuleSet != configuredRuleSet)) {
-                Iterator i = this.projectRuleSet.getRules().iterator();
-                while (i.hasNext()) {
-                    Object rule = i.next();
-                    if (!configuredRuleSet.getRules().contains(rule)) {
-                        i.remove();
-                        flSaveInSession = true;
-                    }
-                }
-            }
-
-            // If needed store modified ruleset in session properties
-            if (flSaveInSession) {
-                this.project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, this.projectRuleSet);
-            }
-            
-        } catch (CoreException e) {
-            throw new CommandException("Error when searching for project ruleset. Using the full ruleset.", e);
-        }
+        this.setProject(null);
     }
 
     /**
@@ -181,14 +120,14 @@ public class QueryProjectRuleSetCmd extends DefaultCommand {
      */
     private void getRuleSetFromProject() throws CommandException {
         log.debug("Searching a ruleset for project " + this.project.getName() + " in the project file");
-        IFile ruleSetFile = this.project.getFile(".ruleset");
+        final IFile ruleSetFile = this.project.getFile(".ruleset");
         if (ruleSetFile.exists()) {
             try {
                 this.projectRuleSet = (RuleSet) this.project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
-                Long oldModificationStamp = (Long) this.project.getSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP);
-                long newModificationStamp = ruleSetFile.getModificationStamp();
+                final Long oldModificationStamp = (Long) this.project.getSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP);
+                final long newModificationStamp = ruleSetFile.getModificationStamp();
                 if ((oldModificationStamp == null) || (oldModificationStamp.longValue() != newModificationStamp)) {
-                    RuleSetFactory ruleSetFactory = new RuleSetFactory();
+                    final RuleSetFactory ruleSetFactory = new RuleSetFactory();
                     this.projectRuleSet = ruleSetFactory.createRuleSet(ruleSetFile.getContents());
                     this.project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, this.projectRuleSet);
                     this.project.setSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP, new Long(newModificationStamp));
@@ -197,29 +136,5 @@ public class QueryProjectRuleSetCmd extends DefaultCommand {
                 throw new CommandException(getMessage(PMDConstants.MSGKEY_ERROR_LOADING_RULESET), e);
             }
         }
-    }
-
-    /**
-     * Get a sub ruleset from a rule list
-     * @param ruleList a list composed of rule names seperated by a delimiter
-     * @return a rule set composed only of the rules imported in the plugin
-     */
-    private RuleSet getRuleSetFromRuleList(String ruleList) {
-        RuleSet subRuleSet = new RuleSet();
-        RuleSet ruleSet = PMDPlugin.getDefault().getRuleSet();
-
-        StringTokenizer st = new StringTokenizer(ruleList, LIST_DELIMITER);
-        while (st.hasMoreTokens()) {
-            try {
-                Rule rule = ruleSet.getRuleByName(st.nextToken());
-                if (rule != null) {
-                    subRuleSet.addRule(rule);
-                }
-            } catch (RuntimeException e) {
-                PMDPlugin.getDefault().logError("Ignored runtime exception from PMD : ", e);
-            }
-        }
-
-        return subRuleSet;
     }
 }

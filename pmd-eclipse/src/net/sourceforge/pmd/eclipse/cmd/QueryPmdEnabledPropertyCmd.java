@@ -48,6 +48,12 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.2  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -58,7 +64,7 @@ import org.eclipse.core.runtime.CoreException;
  *
  *
  */
-public class QueryPmdEnabledPropertyCmd extends DefaultCommand {
+public class QueryPmdEnabledPropertyCmd extends AbstractDefaultCommand {
     private IProject project;
     private boolean pmdEnabled;
     
@@ -67,6 +73,7 @@ public class QueryPmdEnabledPropertyCmd extends DefaultCommand {
      *
      */
     public QueryPmdEnabledPropertyCmd() {
+        super();
         setReadOnly(true);
         setOutputProperties(true);
         setName("QueryPmdEnabledProperty");
@@ -74,7 +81,7 @@ public class QueryPmdEnabledPropertyCmd extends DefaultCommand {
     }
 
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {        
         boolean fEnabled = false;
@@ -97,16 +104,15 @@ public class QueryPmdEnabledPropertyCmd extends DefaultCommand {
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
-        setReadyToExecute(true);
+        setReadyToExecute(project != null);
     }
     
     /**
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.project = null;
-        setReadyToExecute(false);
+        this.setProject(null);
     }
 }

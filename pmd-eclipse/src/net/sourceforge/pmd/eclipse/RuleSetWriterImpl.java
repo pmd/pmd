@@ -34,6 +34,12 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2005/05/07 13:32:06  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.5  2005/01/31 23:39:37  phherlin
  * Upgrading to PMD 2.2
  *
@@ -114,7 +120,7 @@ public class RuleSetWriterImpl implements RuleSetWriter {
         Iterator rules = ruleSet.getRules().iterator();
         while (rules.hasNext()) {
             Rule rule = (Rule) rules.next();
-            log.debug("Serializing rule " + rule.getName());
+//            log.debug("Serializing rule " + rule.getName());
             Element ruleElement = getRuleElement(doc, rule);
             ruleSetElement.appendChild(ruleElement);
         }

@@ -1,4 +1,12 @@
-package net.sourceforge.pmd.eclipse;
+package net.sourceforge.pmd.eclipse.cmd;
+
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.eclipse.PMDPlugin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,7 +22,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 
  * @author Philippe Herlin
  * @version $Revision$
+ * 
  * $Log$
+ * Revision 1.1  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.6  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -31,28 +46,30 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * Adding logging
  *
  */
-public class PMDDeltaVisitor extends PMDAbstractVisitor implements IResourceDeltaVisitor {
-    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDDeltaVisitor");
+public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.DeltaVisitor");
 
     /**
      * Default construtor
      */
-    public PMDDeltaVisitor() {
+    public DeltaVisitor() {
+        super();
     }
 
     /**
      * Constructor with monitor
      */
-    public PMDDeltaVisitor(IProgressMonitor monitor) {
-        setMonitor(monitor);
+    public DeltaVisitor(final IProgressMonitor monitor) {
+        super();
+        this.setMonitor(monitor);
     }
 
     /**
      * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
      */
-    public boolean visit(IResourceDelta delta) throws CoreException {
+    public boolean visit(final IResourceDelta delta) throws CoreException {
+        final IProgressMonitor monitor = getMonitor();
         boolean fProcessChildren = true;
-        IProgressMonitor monitor = getMonitor();
 
         if ((monitor == null) || ((monitor != null) && (!monitor.isCanceled()))) {
             if (delta.getKind() == IResourceDelta.ADDED) {
@@ -80,7 +97,7 @@ public class PMDDeltaVisitor extends PMDAbstractVisitor implements IResourceDelt
      * Visit added resource
      * @param resource a new resource
      */
-    private void visitAdded(IResource resource) {
+    private void visitAdded(final IResource resource) {
         processResource(resource);
     }
 
@@ -88,7 +105,7 @@ public class PMDDeltaVisitor extends PMDAbstractVisitor implements IResourceDelt
      * Visit changed resource
      * @param resource a changed resource
      */
-    private void visitChanged(IResource resource) {
+    private void visitChanged(final IResource resource) {
         processResource(resource);
     }
 
@@ -96,8 +113,8 @@ public class PMDDeltaVisitor extends PMDAbstractVisitor implements IResourceDelt
      * Process a targeted resource
      * @param resource the resource to process
      */
-    private void processResource(IResource resource) {
-        IFile file = (IFile) resource.getAdapter(IFile.class);
+    private void processResource(final IResource resource) {
+        final IFile file = (IFile) resource.getAdapter(IFile.class);
         if ((file != null)
             && (file.getFileExtension() != null)
             && (file.getFileExtension().equals("java"))) {
@@ -107,7 +124,20 @@ public class PMDDeltaVisitor extends PMDAbstractVisitor implements IResourceDelt
             }            
                 
             if (isFileInWorkingSet(file)) {
-                PMDProcessor.getInstance().run(file, isUseTaskMarker(), getAccumulator());
+                try {
+                    final Reader input = new InputStreamReader(file.getContents());
+                    final RuleContext context = new RuleContext();
+                    context.setSourceCodeFilename(file.getName());
+                    context.setReport(new Report());
+                    this.getPmdEngine().processFile(input, this.getRuleSet(), context);
+
+                    resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                    updateMarkers(file, context, this.isUseTaskMarker(), this.getAccumulator());
+                } catch (CoreException e) {
+                    log.error("Core exception visiting " + resource.getName(), e); //TODO: complete message
+                } catch (PMDException e) {
+                    log.error("PMD exception visiting " + resource.getName(), e); // TODO: complete message
+                }
             } else {
                 log.debug("The file " + file.getName() + " is not in the working set");
             }

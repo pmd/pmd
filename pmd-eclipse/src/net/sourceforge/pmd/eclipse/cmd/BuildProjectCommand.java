@@ -36,6 +36,7 @@
 package net.sourceforge.pmd.eclipse.cmd;
 
 import name.herlin.command.CommandException;
+import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
 import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
@@ -50,6 +51,12 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.3  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -63,12 +70,14 @@ import org.eclipse.core.runtime.CoreException;
  *
  *
  */
-public class BuildProjectCommand extends DefaultCommand {
+public class BuildProjectCommand extends AbstractDefaultCommand {
     private IProject project;
+    
     /**
      * @param name
      */
     public BuildProjectCommand() {
+        super();
         setReadOnly(false);
         setOutputProperties(false);
         setName("BuildProject");
@@ -76,15 +85,17 @@ public class BuildProjectCommand extends DefaultCommand {
     }
 
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
         try {
             this.project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
             
-            ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
+            final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
             model.setNeedRebuild(false);
         } catch (CoreException e) {
+            throw new CommandException(e);
+        } catch (ModelException e) {
             throw new CommandException(e);
         }
     }
@@ -92,16 +103,15 @@ public class BuildProjectCommand extends DefaultCommand {
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
-        setReadyToExecute(true);
+        setReadyToExecute(project != null);
     }
     
     /**
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.project = null;
-        setReadyToExecute(false);
+        this.setProject(null);
     }
 }

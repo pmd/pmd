@@ -38,8 +38,6 @@ package net.sourceforge.pmd.eclipse.cmd;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.builder.PMDNature;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -52,6 +50,12 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.3  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -65,8 +69,7 @@ import org.eclipse.core.runtime.CoreException;
  *
  *
  */
-public class UpdatePmdEnabledPropertyCmd extends DefaultCommand {
-    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.UpdatePmdEnabledPropertyCmd");
+public class UpdatePmdEnabledPropertyCmd extends AbstractDefaultCommand {
     private IProject project;
     private boolean pmdEnabled;
     private boolean needRebuild;
@@ -76,6 +79,7 @@ public class UpdatePmdEnabledPropertyCmd extends DefaultCommand {
      *
      */
     public UpdatePmdEnabledPropertyCmd() {
+        super();
         setReadOnly(false);
         setOutputProperties(true);
         setName("UpdatePmdEnabledProperty");
@@ -83,7 +87,7 @@ public class UpdatePmdEnabledPropertyCmd extends DefaultCommand {
     }
 
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
         if (this.pmdEnabled) {
@@ -96,16 +100,16 @@ public class UpdatePmdEnabledPropertyCmd extends DefaultCommand {
     /**
      * @param pmdEnabled The pmdEnabled to set.
      */
-    public void setPmdEnabled(boolean pmdEnabled) {
+    public void setPmdEnabled(final boolean pmdEnabled) {
         this.pmdEnabled = pmdEnabled;
     }
     
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
-        setReadyToExecute(true);
+        setReadyToExecute(project != null);
     }
     
     /**
@@ -119,8 +123,7 @@ public class UpdatePmdEnabledPropertyCmd extends DefaultCommand {
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.project = null;
-        setReadyToExecute(false);
+        this.setProject(null);
     }
     
     /**
@@ -130,10 +133,8 @@ public class UpdatePmdEnabledPropertyCmd extends DefaultCommand {
     private void addNature() throws CommandException {
         try {
             if (!this.project.hasNature(PMDNature.PMD_NATURE)) {
-                log.info("Adding PMD nature to the project " + this.project.getName());
-
-                IProjectDescription description = this.project.getDescription();
-                String[] natureIds = description.getNatureIds();
+                final IProjectDescription description = this.project.getDescription();
+                final String[] natureIds = description.getNatureIds();
                 String[] newNatureIds = new String[natureIds.length + 1];
                 System.arraycopy(natureIds, 0, newNatureIds, 0, natureIds.length);
                 newNatureIds[natureIds.length] = PMDNature.PMD_NATURE;
@@ -153,8 +154,8 @@ public class UpdatePmdEnabledPropertyCmd extends DefaultCommand {
     private void removeNature() throws CommandException {
         try {
             if (this.project.hasNature(PMDNature.PMD_NATURE)) {
-                IProjectDescription description = this.project.getDescription();
-                String[] natureIds = description.getNatureIds();
+                final IProjectDescription description = this.project.getDescription();
+                final String[] natureIds = description.getNatureIds();
                 String[] newNatureIds = new String[natureIds.length - 1];
                 for (int i = 0, j = 0; i < natureIds.length; i++) {
                     if (!natureIds[i].equals(PMDNature.PMD_NATURE)) {

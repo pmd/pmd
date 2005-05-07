@@ -1,5 +1,5 @@
 /*
- * Created on 24 nov. 2004
+ * Created on 5 f�vr. 2005
  *
  * Copyright (c) 2004, PMD for Eclipse Development Team
  * All rights reserved.
@@ -35,53 +35,49 @@
  */
 package net.sourceforge.pmd.eclipse.model;
 
+import net.sourceforge.pmd.eclipse.PMDPlugin;
+import net.sourceforge.pmd.eclipse.PMDPluginConstants;
+
+import org.eclipse.jface.preference.IPreferenceStore;
+
 /**
- * This is the default exception thrown by public model method
+ * This is the implementation class for the preferences model.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/07 13:32:04  phherlin
+ * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
  * Fix Bug 1144793
  * Fix Bug 1190624 (at least try)
  *
- * Revision 1.1  2004/11/28 20:31:38  phherlin
- * Continuing the refactoring experiment
- *
  *
  */
-public class ModelException extends Exception {
+public class PreferencesModelImpl extends DefaultModel implements PreferencesModel, PMDPluginConstants {
+    private final IPreferenceStore preferenceStore = PMDPlugin.getDefault().getPreferenceStore();
+    private String reviewAdditionalComment;
 
     /**
-     * Default constructor
+     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getReviewAdditionalComment()
      */
-    public ModelException() {
-        super();
+    public String getReviewAdditionalComment() {
+        if (this.reviewAdditionalComment == null) {
+            preferenceStore.setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
+            this.reviewAdditionalComment = preferenceStore.getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
+        }
+
+        return reviewAdditionalComment;
     }
 
     /**
-     * @param message a message for the exception
+     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setReviewAdditionalComment(java.lang.String)
      */
-    public ModelException(String message) {
-        super(message);
-    }
+    public void setReviewAdditionalComment(final String comment) {
+        this.reviewAdditionalComment = comment;
+        preferenceStore.setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, comment);
 
-    /**
-     * @param message a message for the exception
-     * @param cause a root cause
-     */
-    public ModelException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * @param cause a root cause
-     */
-    public ModelException(Throwable cause) {
-        super(cause);
     }
 
 }

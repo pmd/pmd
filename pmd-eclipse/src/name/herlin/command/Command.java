@@ -65,4 +65,10 @@ public interface Command extends java.io.Serializable {
      */
     String getDescription();
     
+    /**
+     * Wait until that command is finished
+     *
+     */
+    void join() throws CommandException;
+    
 }

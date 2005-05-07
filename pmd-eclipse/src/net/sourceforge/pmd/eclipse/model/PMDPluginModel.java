@@ -1,7 +1,7 @@
 /*
- * Created on 24 nov. 2004
+ * Created on 1 mai 2005
  *
- * Copyright (c) 2004, PMD for Eclipse Development Team
+ * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,53 +35,35 @@
  */
 package net.sourceforge.pmd.eclipse.model;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 /**
- * This is the default exception thrown by public model method
+ * This interface is a maker for all plugin models; these models
+ * must manage a progress monitor to keep users informed of their activities.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/07 13:32:04  phherlin
+ * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
  * Fix Bug 1144793
  * Fix Bug 1190624 (at least try)
  *
- * Revision 1.1  2004/11/28 20:31:38  phherlin
- * Continuing the refactoring experiment
- *
  *
  */
-public class ModelException extends Exception {
-
+public interface PMDPluginModel {
     /**
-     * Default constructor
+     * @return the progress monitor currently managed by the model
      */
-    public ModelException() {
-        super();
-    }
-
+    IProgressMonitor getMonitor();
+    
     /**
-     * @param message a message for the exception
+     * Set a progress monitor to the model. Should be called before any model
+     * call.
+     * @param monitor a progress monitor
      */
-    public ModelException(String message) {
-        super(message);
-    }
-
-    /**
-     * @param message a message for the exception
-     * @param cause a root cause
-     */
-    public ModelException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * @param cause a root cause
-     */
-    public ModelException(Throwable cause) {
-        super(cause);
-    }
+    void setMonitor(IProgressMonitor monitor);
 
 }

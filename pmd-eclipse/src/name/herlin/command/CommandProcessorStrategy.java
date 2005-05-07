@@ -36,21 +36,20 @@ package name.herlin.command;
 public interface CommandProcessorStrategy {
     /**
      * Name of the bundle. This is "properties.CommandProcessorStrategy" by
-     * default. This <i>constant</i> is not final to let client change the
-     * bundle name at initialization time.
+     * default.
      */
-    public static String COMMAND_PROCESSOR_STRATEGY_BUNDLE = "properties.CommandProcessorStrategy";
+    String COMMAND_PROCESSOR_STRATEGY_BUNDLE = "properties.CommandProcessorStrategy";
     
     /**
      * Key of the concrete strategy class. The value is "strategy.class". It
      * cannot be changed.
      */
-    public static final String KEY_COMMAND_PROCESSOR_STRATEGY_CLASS = "strategy.class";
+    String STRATEGY_CLASS_KEY = "strategy.class";
     
     /**
      * @param aCommand a processable command instance.
      * @return a command processor for this command according to the strategy.
      */
-    public CommandProcessor getCommandProcessor(ProcessableCommand aCommand);
+    CommandProcessor getCommandProcessor(AbstractProcessableCommand aCommand);
     
 }

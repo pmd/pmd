@@ -35,8 +35,12 @@
  */
 package net.sourceforge.pmd.eclipse.model;
 
+import java.util.Iterator;
+
 import name.herlin.command.CommandException;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.cmd.QueryPmdEnabledPropertyCmd;
 import net.sourceforge.pmd.eclipse.cmd.QueryProjectRuleSetCmd;
 import net.sourceforge.pmd.eclipse.cmd.QueryProjectWorkingSetCmd;
@@ -58,6 +62,12 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.2  2004/12/03 00:22:43  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -68,9 +78,9 @@ import org.eclipse.ui.IWorkingSet;
  *
  *
  */
-public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
+public class ProjectPropertiesModelImpl extends DefaultModel implements ProjectPropertiesModel {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.model.ProjectPropertiesModelImpl");
-    private IProject project;
+    private final IProject project;
     private boolean needRebuild;
     private boolean ruleSetFileExist;
     
@@ -86,7 +96,8 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     /**
      * The default constructor takes a project as an argument
      */
-    public ProjectPropertiesModelImpl(IProject project) {
+    public ProjectPropertiesModelImpl(final IProject project) {
+        super();
         this.project = project;
     }
 
@@ -103,8 +114,9 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     public boolean isPmdEnabled() throws ModelException {
         if (!this.pmdEnabledInit) {
             try {
-                QueryPmdEnabledPropertyCmd cmd = new QueryPmdEnabledPropertyCmd();
+                final QueryPmdEnabledPropertyCmd cmd = new QueryPmdEnabledPropertyCmd();
                 cmd.setProject(this.project);
+                cmd.setMonitor(this.getMonitor());
                 cmd.performExecute();
                 this.pmdEnabled = cmd.isPmdEnabled();
                 this.pmdEnabledInit = true;
@@ -119,17 +131,17 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     /**
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setPmdEnabled(boolean)
      */
-    public void setPmdEnabled(boolean pmdEnabled) throws ModelException {
+    public void setPmdEnabled(final boolean pmdEnabled) throws ModelException {
         log.info("Enable PMD for project " + this.project.getName() + " : " + pmdEnabled);
         try {
-            UpdatePmdEnabledPropertyCmd cmd = new UpdatePmdEnabledPropertyCmd();
+            final UpdatePmdEnabledPropertyCmd cmd = new UpdatePmdEnabledPropertyCmd();
             cmd.setPmdEnabled(pmdEnabled);
             cmd.setProject(this.project);
+            cmd.setMonitor(this.getMonitor());
             cmd.performExecute();
             this.pmdEnabled = pmdEnabled;
             this.pmdEnabledInit = true;
             this.needRebuild |= cmd.isNeedRebuild();
-            log.debug("   Project need rebuild : " + this.needRebuild);
         } catch (CommandException e) {
             throw new ModelException(e.getMessage(), e);
         }
@@ -139,16 +151,31 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#getProjectRuleSet()
      */
     public RuleSet getProjectRuleSet() throws ModelException {
+        final RuleSet pluginRuleSet = PMDPlugin.getDefault().getRuleSet();
+        boolean flNeedSave = false;
+        
         if (!this.projectRuleSetInit) {        
             try {
-                QueryProjectRuleSetCmd cmd = new QueryProjectRuleSetCmd();
-                cmd.setProject(this.project);
+                final QueryProjectRuleSetCmd cmd = new QueryProjectRuleSetCmd();
+                cmd.setProject(this.getProject());
+                cmd.setMonitor(this.getMonitor());
                 cmd.performExecute();
                 this.projectRuleSet = cmd.getProjectRuleSet();
+                if (this.projectRuleSet == null) {
+                    this.projectRuleSet = pluginRuleSet;
+                    flNeedSave = true;
+                }
+
                 this.projectRuleSetInit = true;
+
             } catch (CommandException e) {
-                throw new ModelException(e.getMessage(), e);
+                throw new ModelException(e);
             }
+        }
+        
+        flNeedSave |= this.synchronizeRuleSet();
+        if (flNeedSave) {
+            this.setProjectRuleSet(projectRuleSet);
         }
         
         return this.projectRuleSet;
@@ -157,17 +184,17 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     /**
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setProjectRuleSet(net.sourceforge.pmd.RuleSet)
      */
-    public void setProjectRuleSet(RuleSet projectRuleSet) throws ModelException {
+    public void setProjectRuleSet(final RuleSet projectRuleSet) throws ModelException {
         log.info("Set rule set for project " + this.project.getName());
         try {
-            UpdateProjectRuleSetCmd cmd = new UpdateProjectRuleSetCmd();
+            final UpdateProjectRuleSetCmd cmd = new UpdateProjectRuleSetCmd();
             cmd.setProject(this.project);
             cmd.setProjectRuleSet(projectRuleSet);
+            cmd.setMonitor(this.getMonitor());
             cmd.performExecute();
             this.projectRuleSet = projectRuleSet;
             this.projectRuleSetInit = true;
             this.needRebuild |= cmd.isNeedRebuild();
-            log.debug("   Project need rebuild : " + this.needRebuild);
         } catch (CommandException e) {
             throw new ModelException(e.getMessage(), e);
         }
@@ -179,8 +206,9 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     public boolean isRuleSetStoredInProject() throws ModelException {
         if (!this.ruleSetStoredInProjectInit) {
             try {
-                QueryRuleSetStoredInProjectPropertyCmd cmd = new QueryRuleSetStoredInProjectPropertyCmd();
+                final QueryRuleSetStoredInProjectPropertyCmd cmd = new QueryRuleSetStoredInProjectPropertyCmd();
                 cmd.setProject(this.project);
+                cmd.setMonitor(this.getMonitor());
                 cmd.performExecute();
                 this.ruleSetStoredInProject = cmd.isRuleSetStoredInProject();
                 this.ruleSetStoredInProjectInit = true;
@@ -195,18 +223,18 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     /**
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setRuleSetStoredInProject(boolean)
      */
-    public void setRuleSetStoredInProject(boolean ruleSetStoredInProject) throws ModelException {
+    public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws ModelException {
         log.info("Set rule set stored in project for project " + this.project.getName() + " : " + ruleSetStoredInProject);
         try {
-            UpdateRuleSetStoredInProjectPropertyCmd cmd = new UpdateRuleSetStoredInProjectPropertyCmd();
+            final UpdateRuleSetStoredInProjectPropertyCmd cmd = new UpdateRuleSetStoredInProjectPropertyCmd();
             cmd.setProject(this.project);
             cmd.setRuleSetStoredInProject(ruleSetStoredInProject);
+            cmd.setMonitor(this.getMonitor());
             cmd.performExecute();
             this.ruleSetStoredInProject = ruleSetStoredInProject;
             this.ruleSetStoredInProjectInit = true;
             this.needRebuild |= cmd.isNeedRebuild();
             this.ruleSetFileExist = cmd.isRuleSetFileExists();
-            log.debug("   Project need rebuild : " + this.needRebuild);
         } catch (CommandException e) {
             throw new ModelException(e.getMessage(), e);
         }
@@ -218,8 +246,9 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     public IWorkingSet getProjectWorkingSet() throws ModelException {
         if (!this.projectWorkingSetInit) {
             try {
-                QueryProjectWorkingSetCmd cmd = new QueryProjectWorkingSetCmd();
+                final QueryProjectWorkingSetCmd cmd = new QueryProjectWorkingSetCmd();
                 cmd.setProject(this.project);
+                cmd.setMonitor(this.getMonitor());
                 cmd.performExecute();
                 this.projectWorkingSet = cmd.getProjectWorkingSet();
                 this.projectWorkingSetInit = true;
@@ -234,17 +263,17 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     /**
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setProjectWorkingSet(org.eclipse.ui.IWorkingSet)
      */
-    public void setProjectWorkingSet(IWorkingSet projectWorkingSet) throws ModelException {
+    public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) throws ModelException {
         log.info("Set working set for project " + this.project.getName() + " : " + (projectWorkingSet == null ? "none" : projectWorkingSet.getName()));
         try {
-            UpdateProjectWorkingSetCmd cmd = new UpdateProjectWorkingSetCmd();
+            final UpdateProjectWorkingSetCmd cmd = new UpdateProjectWorkingSetCmd();
             cmd.setProject(this.project);
             cmd.setProjectWorkingSet(projectWorkingSet);
+            cmd.setMonitor(this.getMonitor());
             cmd.performExecute();
             this.projectWorkingSet = projectWorkingSet;
             this.projectWorkingSetInit = true;
             this.needRebuild |= cmd.isNeedRebuild();
-            log.debug("   Project need rebuild : " + this.needRebuild);
         } catch (CommandException e) {
             throw new ModelException(e.getMessage(), e);
         }
@@ -263,7 +292,7 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
     /**
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setNeedRebuild()
      */
-    public void setNeedRebuild(boolean needRebuild) {
+    public void setNeedRebuild(final boolean needRebuild) {
         this.needRebuild = needRebuild;
     }
     
@@ -272,5 +301,44 @@ public class ProjectPropertiesModelImpl implements ProjectPropertiesModel {
      */
     public boolean isRuleSetFileExist() {
         return this.ruleSetFileExist;
+    }
+    
+    /**
+     * Check the project ruleset against the plugin ruleset and synchronize
+     * if necessary
+     * @return whether the rulset should be saved.
+     *
+     */
+    private boolean synchronizeRuleSet() {
+        final RuleSet pluginRuleSet = PMDPlugin.getDefault().getRuleSet();
+        boolean flNeedSave = false;
+
+        // 1-If rules have been deleted from preferences
+        // delete them also from the project ruleset
+        if ((this.projectRuleSet != null) && (this.projectRuleSet != pluginRuleSet)) {
+            final Iterator i = this.projectRuleSet.getRules().iterator();
+            while (i.hasNext()) {
+                final Object rule = i.next();
+                if (!pluginRuleSet.getRules().contains(rule)) {
+                    i.remove();
+                    flNeedSave = true;
+                }
+            }
+        }
+
+        // 2-If rules have been added from preferences
+        // add them to the project ruleset
+        if ((this.projectRuleSet != null) && (this.projectRuleSet != pluginRuleSet)) {
+            final Iterator i = pluginRuleSet.getRules().iterator();
+            while (i.hasNext()) {
+                final Rule rule = (Rule) i.next();
+                if (!this.projectRuleSet.getRules().contains(rule)) {
+                    this.projectRuleSet.addRule(rule);
+                    flNeedSave = true;
+                }
+            }
+        }
+        
+        return flNeedSave;
     }
 }

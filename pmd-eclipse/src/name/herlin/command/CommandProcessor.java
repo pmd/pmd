@@ -37,6 +37,12 @@ public interface CommandProcessor extends Remote {
      * @param aCommand is the processable command to execute
      * @throws CommandException if any unexpected condition is met.
      */
-    public void processCommand(ProcessableCommand aCommand) throws CommandException;
+    void processCommand(AbstractProcessableCommand aCommand) throws CommandException;
     
+    /**
+     * Wait for a command to finish
+     * @param aCommand is the processable command to wait for
+     * @throws CommandException if any unexpected condition is met.
+     */
+    void waitCommandToFinish(AbstractProcessableCommand aCommand) throws CommandException;
 }

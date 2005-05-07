@@ -47,26 +47,34 @@ import org.eclipse.core.resources.IProject;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.1  2004/11/28 20:31:38  phherlin
  * Continuing the refactoring experiment
  *
  *
  */
 public class ModelFactory {
-    private static final ModelFactory modelFactory = new ModelFactory();
-    private Map projectPropertiesModels = new HashMap();
+    private static final ModelFactory SELF = new ModelFactory();
+    private final Map projectPropertiesModels = new HashMap();
+    private final PreferencesModel preferencesModel = new PreferencesModelImpl();
 
     /**
      * Default private constructor. The ModelFactory is a singleton
      */
-    public ModelFactory() {
+    private ModelFactory() {
+        super();
     }
     
     /**
      * @return the default implementation
      */
     public static ModelFactory getFactory() {
-        return modelFactory;
+        return SELF;
     }
     
     /**
@@ -74,14 +82,30 @@ public class ModelFactory {
      * @param project the project for which properties are requested
      * @return The PMD related properties for that project
      */
-    public synchronized ProjectPropertiesModel getProperiesModelForProject(IProject project) {
-        ProjectPropertiesModel model = (ProjectPropertiesModel) this.projectPropertiesModels.get(project.getName());
-        if (model == null) {
-            model = new ProjectPropertiesModelImpl(project);
-            this.projectPropertiesModels.put(project.getName(), model);
+    public ProjectPropertiesModel getProperiesModelForProject(final IProject project) throws ModelException {
+        if (project == null) {
+            throw new ModelException("A project cannot be null");
+        }
+        
+        ProjectPropertiesModel model;
+        synchronized (this.projectPropertiesModels) {
+            model = (ProjectPropertiesModel) this.projectPropertiesModels.get(project.getName());
+            if (model == null) {
+                model = new ProjectPropertiesModelImpl(project);
+                this.projectPropertiesModels.put(project.getName(), model);
+            }
         }
         
         return model;
     }
+ 
+    /**
+     * Method factory for Preferences Model.
+     * @return the plugin preferences model
+     */
+    public PreferencesModel getPreferencesModel() {
+        return this.preferencesModel;
+    }
+ 
 
 }

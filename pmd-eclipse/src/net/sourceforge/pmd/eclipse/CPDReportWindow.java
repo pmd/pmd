@@ -17,6 +17,12 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2005/05/07 13:32:06  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.4  2003/03/18 23:28:36  phherlin
  * *** keyword substitution change ***
  *
@@ -44,24 +50,25 @@ public class CPDReportWindow extends ApplicationWindow {
 		super.configureShell(newShell);
 		
 		entryTable = new Composite(newShell, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		entryTable.setLayout(layout);
+		entryTable.setLayout(new GridLayout());
 		
 		//create text area label
 		label = new Label(entryTable, SWT.NULL);
 		label.setText("Duplicate Code View");
-		GridData data = new GridData(GridData.FILL_HORIZONTAL);
-		data.horizontalSpan = 2;
+		GridData data = new GridData();
+		data.grabExcessHorizontalSpace = true;
+        data.horizontalAlignment = GridData.FILL;
 		label.setLayoutData(data);
 
 		//create text area		
 		text = new Text(entryTable, SWT.MULTI|SWT.V_SCROLL|SWT.H_SCROLL);
 	
 		text.setEditable(false);
-		data = new GridData(GridData.FILL_BOTH);
-		data.horizontalSpan = 2;
-		data.verticalSpan = 10;
+		data = new GridData();
+        data.grabExcessHorizontalSpace = true;
+        data.grabExcessVerticalSpace = true;
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.FILL;
 		text.setLayoutData(data);
 
 	}

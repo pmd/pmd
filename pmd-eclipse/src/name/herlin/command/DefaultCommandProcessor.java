@@ -20,24 +20,42 @@
  */
 package name.herlin.command;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Default command processor implementation. This processor simply call the
  * execute method of the command.
  */
 
 public class DefaultCommandProcessor implements CommandProcessor {
-    
+    private static final Log log = LogFactory.getLog("name.herlin.command.DefaultCommandProcessor");
+
     /**
      * Execute the command.
-     * @param aCommand the command to execute
-     * @throws CommandException if an unexpected condidition occurred.
+     * 
+     * @param aCommand
+     *            the command to execute
+     * @throws CommandException
+     *             if an unexpected condidition occurred.
      */
-    public void processCommand(ProcessableCommand aCommand) throws CommandException {
+    public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
+        log.debug("Beginning command " + aCommand.getName());
         if (aCommand.isReadyToExecute()) {
             aCommand.execute();
         } else {
             throw new UnsetInputPropertiesException();
         }
+
+        log.debug("Ending command " + aCommand.getName());
     }
-    
+
+    /**
+     * @see name.herlin.command.CommandProcessor#waitCommandToFinish(name.herlin.command.AbstractProcessableCommand)
+     */
+    public void waitCommandToFinish(final AbstractProcessableCommand aCommand) throws CommandException {
+        // Do nothing because a default command executes synchronously
+        // So when this method is executed the command has already terminated
+
+    }
 }

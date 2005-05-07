@@ -1,5 +1,5 @@
 /*
- * Created on 24 nov. 2004
+ * Created on 5 f�vr. 2005
  *
  * Copyright (c) 2004, PMD for Eclipse Development Team
  * All rights reserved.
@@ -36,52 +36,32 @@
 package net.sourceforge.pmd.eclipse.model;
 
 /**
- * This is the default exception thrown by public model method
+ * This interface specifies the model of PMD preferences.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/07 13:32:04  phherlin
+ * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
  * Fix Bug 1144793
  * Fix Bug 1190624 (at least try)
  *
- * Revision 1.1  2004/11/28 20:31:38  phherlin
- * Continuing the refactoring experiment
- *
  *
  */
-public class ModelException extends Exception {
-
+public interface PreferencesModel extends PMDPluginModel {
     /**
-     * Default constructor
+     * The comment text that will be added to review tags
+     * @return
      */
-    public ModelException() {
-        super();
-    }
-
+    String getReviewAdditionalComment();
+    
     /**
-     * @param message a message for the exception
+     * Set the comment text that will be added to review tags.
+     * This is a dynamic message. Substitutions strings are 0 for the user name
+     * and 1 for the current date and time.
+     * @param comment the review additional comment
      */
-    public ModelException(String message) {
-        super(message);
-    }
-
-    /**
-     * @param message a message for the exception
-     * @param cause a root cause
-     */
-    public ModelException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * @param cause a root cause
-     */
-    public ModelException(Throwable cause) {
-        super(cause);
-    }
-
+    void setReviewAdditionalComment(String comment);
 }

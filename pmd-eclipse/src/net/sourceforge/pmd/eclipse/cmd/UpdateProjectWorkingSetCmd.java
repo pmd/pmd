@@ -51,6 +51,12 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.2  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -61,7 +67,7 @@ import org.eclipse.ui.IWorkingSet;
  *
  *
  */
-public class UpdateProjectWorkingSetCmd extends DefaultCommand {
+public class UpdateProjectWorkingSetCmd extends AbstractDefaultCommand {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.UpdateProjectWorkingSetCmd");
     private IProject project;
     private IWorkingSet projectWorkingSet;
@@ -71,6 +77,7 @@ public class UpdateProjectWorkingSetCmd extends DefaultCommand {
      * Default constructor. Initialize command attributes. 
      */
     public UpdateProjectWorkingSetCmd() {
+        super();
         setReadOnly(false);
         setOutputProperties(true);
         setName("UpdateProjectWorkingSet");
@@ -78,13 +85,13 @@ public class UpdateProjectWorkingSetCmd extends DefaultCommand {
     }
 
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
         log.debug("Set the working set " + this.projectWorkingSet + " for project " + this.project.getName());
         
         // First query the previous active working set
-        QueryProjectWorkingSetCmd queryCmd = new QueryProjectWorkingSetCmd();
+        final QueryProjectWorkingSetCmd queryCmd = new QueryProjectWorkingSetCmd();
         queryCmd.setProject(this.project);
         queryCmd.execute();
 
@@ -98,13 +105,13 @@ public class UpdateProjectWorkingSetCmd extends DefaultCommand {
         }
         
         // Now, check whether the property has changed to know if rebuild is necessary
-        boolean bothNotNull = (queryCmd.getProjectWorkingSet() != null) && (this.projectWorkingSet != null);
+        final boolean bothNotNull = (queryCmd.getProjectWorkingSet() != null) && (this.projectWorkingSet != null);
         log.debug("both working set are not null : " + bothNotNull);
         
-        boolean fl1 = (queryCmd.getProjectWorkingSet() == null) && (this.projectWorkingSet !=null);
+        final boolean fl1 = (queryCmd.getProjectWorkingSet() == null) && (this.projectWorkingSet !=null);
         log.debug("no previous working set, new one selected : " + fl1);
         
-        boolean fl2 = (queryCmd.getProjectWorkingSet() != null) && (this.projectWorkingSet ==null);
+        final boolean fl2 = (queryCmd.getProjectWorkingSet() != null) && (this.projectWorkingSet ==null);
         log.debug("previous working set selected, no working set selected now : " + fl2);
         
         this.needRebuild = fl1 | fl2 | (bothNotNull && (!queryCmd.getProjectWorkingSet().getName().equals(this.projectWorkingSet.getName())));
@@ -121,15 +128,15 @@ public class UpdateProjectWorkingSetCmd extends DefaultCommand {
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
-        setReadyToExecute(true);
+        setReadyToExecute(project != null);
     }
     
     /**
      * @param projectWorkingSet The projectWorkingSet to set.
      */
-    public void setProjectWorkingSet(IWorkingSet projectWorkingSet) {
+    public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) {
         this.projectWorkingSet = projectWorkingSet;
     }
     
@@ -137,8 +144,7 @@ public class UpdateProjectWorkingSetCmd extends DefaultCommand {
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.project = null;
-        this.projectWorkingSet = null;
-        setReadyToExecute(false);
+        this.setProject(null);
+        this.setProjectWorkingSet(null);
     }
 }

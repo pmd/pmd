@@ -49,6 +49,12 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/05/07 13:32:04  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.3  2004/12/03 00:22:42  phherlin
  * Continuing the refactoring experiment.
  * Implement the Command framework.
@@ -62,7 +68,7 @@ import org.eclipse.core.runtime.CoreException;
  *
  *
  */
-public class UpdateRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
+public class UpdateRuleSetStoredInProjectPropertyCmd extends AbstractDefaultCommand {
     private IProject project;
     private boolean ruleSetStoredInProject;
     private boolean ruleSetFileExists;
@@ -73,6 +79,7 @@ public class UpdateRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
      *
      */
     public UpdateRuleSetStoredInProjectPropertyCmd() {
+        super();
         setReadOnly(false);
         setOutputProperties(true);
         setName("UpdateRuleSetStoredInProjectProperty");
@@ -80,25 +87,25 @@ public class UpdateRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
     }
 
     /**
-     * @see name.herlin.command.ProcessableCommand#execute()
+     * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
         
         // First query the current value
-        QueryRuleSetStoredInProjectPropertyCmd queryCmd = new QueryRuleSetStoredInProjectPropertyCmd();
+        final QueryRuleSetStoredInProjectPropertyCmd queryCmd = new QueryRuleSetStoredInProjectPropertyCmd();
         queryCmd.setProject(this.project);
         queryCmd.execute();
         
         // Then, update the property
         try {
-            Boolean property = new Boolean(this.ruleSetStoredInProject);
+            final Boolean property = Boolean.valueOf(this.ruleSetStoredInProject);
             this.project.setPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT, property.toString());
             this.project.setSessionProperty(SESSION_PROPERTY_STORE_RULESET_PROJECT, property);
             if (this.ruleSetStoredInProject) {
                 this.project.setSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP, null);
             }
 
-            IFile ruleSetFile = this.project.getFile(".ruleset");
+            final IFile ruleSetFile = this.project.getFile(".ruleset");
             this.ruleSetFileExists = ruleSetFile.exists();
             
         } catch (CoreException e) {
@@ -126,15 +133,15 @@ public class UpdateRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
     /**
      * @param project The project to set.
      */
-    public void setProject(IProject project) {
+    public void setProject(final IProject project) {
         this.project = project;
-        setReadyToExecute(true);
+        setReadyToExecute(project != null);
     }
     
     /**
      * @param ruleSetStoredInProject The ruleSetStoredInProject to set.
      */
-    public void setRuleSetStoredInProject(boolean ruleSetStoredInProject) {
+    public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
     }
     
@@ -142,8 +149,8 @@ public class UpdateRuleSetStoredInProjectPropertyCmd extends DefaultCommand {
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.project = null;
-        this.ruleSetStoredInProject = false;
+        this.setProject(null);
+        this.setRuleSetStoredInProject(false);
         setReadyToExecute(false);
     }
 }

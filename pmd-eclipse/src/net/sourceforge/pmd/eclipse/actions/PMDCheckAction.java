@@ -3,10 +3,10 @@ package net.sourceforge.pmd.eclipse.actions;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
+import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
-import net.sourceforge.pmd.eclipse.PMDVisitor;
-import net.sourceforge.pmd.eclipse.PMDVisitorRunner;
+import net.sourceforge.pmd.eclipse.cmd.ReviewCodeCmd;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +32,12 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2005/05/07 13:32:06  phherlin
+ * Continuing refactoring
+ * Fix some PMD violations
+ * Fix Bug 1144793
+ * Fix Bug 1190624 (at least try)
+ *
  * Revision 1.10  2003/11/30 22:57:37  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -61,7 +67,7 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class PMDCheckAction implements IObjectActionDelegate {
-    protected static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDCheckAction");
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.PMDCheckAction");
     private IWorkbenchPart targetPart;
 
     /**
@@ -126,8 +132,6 @@ public class PMDCheckAction implements IObjectActionDelegate {
         * @see org.eclipse.jface.operation.IRunnableWithProgress#run(IProgressMonitor)
         */
         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-            PMDVisitor visitor = new PMDVisitor(monitor);
-            visitor.setUseTaskMarker(true);
 
             if (sel instanceof IStructuredSelection) {
                 IStructuredSelection structuredSel = (IStructuredSelection) sel;
@@ -143,7 +147,12 @@ public class PMDCheckAction implements IObjectActionDelegate {
                             IAdaptable adaptable = (IAdaptable) element;
                             IResource resource = (IResource) adaptable.getAdapter(IResource.class);
                             if (resource != null) {
-                                new PMDVisitorRunner().run(resource, visitor);
+                                ReviewCodeCmd cmd = new ReviewCodeCmd();
+                                cmd.setResource(resource);
+                                cmd.setTaskMarker(true);
+                                cmd.setMonitor(monitor);
+                                cmd.performExecute();
+                                
                             } else {
                                 log.warn("The selected object cannot adapt to a resource");
                                 log.debug("   -> selected object : " + element);
@@ -152,7 +161,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
                             log.warn("The selected object is not adaptable");
                             log.debug("   -> selected object : " + element);
                         }                        
-                    } catch (CoreException e) {
+                    } catch (CommandException e) {
                         PMDPlugin.getDefault().showError(
                             PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION),
                             e);
