@@ -6,6 +6,27 @@ IMPORTANT : SINCE v2.0 THE INSTALLATION PROCEDURE HAS BEEN CHANGED.
             FOR INSTRUCTIONS.
             
 
+v3.0RC2 (alias v3.0.1) - 07/05/2005
+-----------------------------------
+
+FIXED : Tested on Eclipse 3.1M6
+-------------------------------
+The problem for Eclipse v3.1 Mx version has been solved.
+Because of this, now the project ruleset is always stored as a file (.ruleset) inside the project
+itself. This file is created "lazyly": it will not be created unless necessary; so don't panic if
+you cannot see it.
+
+FIXED (maybe?) : CPD report window for Mac users
+------------------------------------------------
+The way the window is created has been changed. This should fix the problem.
+
+UPDATED: Xerces Implementation re-packaged inside the core plugin
+-----------------------------------------------------------------
+When migrating for Eclipse v3 (and then Java 1.4), a special plugin for Xerces was created.
+This has been forgiven and the XercesImpl.jar is now packaged inside the PMD Core plugin.
+
+
+----------------------------------------------------------------------------------------
 v3.0RC1 (alias v3.0.0) - 21/04/2005
 -----------------------------------
 
@@ -207,7 +228,7 @@ For more information, read the how to chapter about using the plugin.
 
 UPDATED : Grouping menu items
 -----------------------------
-(request and patch from Christian Jäckel)
+(request and patch from Christian Jï¿½ckel)
 In order to be less intrusive in the context menu of the package and navigator views, PMD
 menu items are now grouped in a submenu. This submenu is displayed by selecting the unique
 entry "PMD" in the context menu of the desired view.

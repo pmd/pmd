@@ -2,6 +2,21 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
+v3.0.1 - 07/05/2005
+
+Runtime
+-------
+. Fix Bug#1144793
+. Fix Bug#1190624 (try)
+. Fix PMD violations
+. Continue refactoring
+
+Development
+-----------
+. Forgive the Xerces plungin and repackage the xercesImpl.jar inside the PMD Core plugin.
+
+
+----------------------------------------------------------------------------------------
 v3.0.0 - 21/04/2005
 
 Runtime
