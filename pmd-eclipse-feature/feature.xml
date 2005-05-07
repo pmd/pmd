@@ -2,12 +2,12 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="3.0.0"
+      version="3.0.1"
       provider-name="%feature.provider_name"
       image="pmd_logo_small.jpg">
 
    <description url="%description.url">
-      
+      PMD For Eclipse
    </description>
 
    <copyright>
@@ -33,20 +33,14 @@
 
    <plugin
          id="net.sourceforge.pmd.core"
-         download-size="0"
-         install-size="0"
-         version="3.0.0"/>
+         download-size="5 193 557"
+         install-size="5 193 728 "
+         version="3.0.1"/>
 
    <plugin
          id="net.sourceforge.pmd.eclipse"
-         download-size="0"
-         install-size="0"
-         version="3.0.0"/>
-
-   <plugin
-         id="org.apache.xerces"
-         download-size="0"
-         install-size="0"
-         version="2.6.2"/>
+         download-size="596 038"
+         install-size="598 016"
+         version="3.0.1"/>
 
 </feature>

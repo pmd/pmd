@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="3.0.0"
+   version="3.0.1"
    provider-name="%plugin.provider">
 
    <runtime>
@@ -13,13 +13,13 @@
       <library name="lib/saxpath-1.0-fcs.jar">
          <export name="*"/>
       </library>
+      <library name="lib/xercesImpl.jar">
+         <export name="*"/>
+      </library>
       <library name="lib/pmd-3.0.jar">
          <export name="*"/>
       </library>
    </runtime>
-   <requires>
-      <import plugin="org.apache.xerces"/>
-   </requires>
 
    <extension
          point="org.eclipse.help.toc">

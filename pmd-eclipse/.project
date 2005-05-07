@@ -22,7 +22,7 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>com.ibm.sse.model.structuredbuilder</name>
+			<name>net.sourceforge.pmd.eclipse.pmdBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -30,7 +30,6 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
-		<nature>com.ibm.etools.beaninfo.BeaninfoNature</nature>
-		<nature>com.ibm.etools.java.JavaMOFNature</nature>
+		<nature>net.sourceforge.pmd.eclipse.pmdNature</nature>
 	</natures>
 </projectDescription>

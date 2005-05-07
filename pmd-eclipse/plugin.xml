@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="3.0.0"
+   version="3.0.1"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
@@ -25,7 +25,6 @@
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.apache.xerces"/>
       <import plugin="net.sourceforge.pmd.core"/>
    </requires>
 
