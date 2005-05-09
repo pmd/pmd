@@ -37,6 +37,7 @@
         <ul>
             <li>Raik Schroeder - data flow analyis layer, YAHTMLRenderer</li>
             <li>Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching</li>
+            <li>Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching</li>
             <li>Dan Sheppard - XPath engine integration concept and implementation</li>
             <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform</li>
         </ul>

@@ -19,35 +19,47 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "one parameter", 1, rule),
-           new TestDescriptor(TEST2, "fully qualified parameter", 0, rule),
-           new TestDescriptor(TEST3, "one parameter with a method call", 0, rule),
-           new TestDescriptor(TEST4, "interface", 0, rule)
+           new TestDescriptor(TEST1, "failure case", 1, rule),
+           new TestDescriptor(TEST2, "method called on param", 0, rule),
+           new TestDescriptor(TEST3, "assignment to param", 0, rule),
+           new TestDescriptor(TEST4, "interface", 0, rule),
+           new TestDescriptor(TEST5, "flag public methods now", 1, rule),
+           new TestDescriptor(TEST6, "skip native methods", 0, rule)
        });
     }
 
     private static final String TEST1 =
-    "class UnusedFormalParam1 {" + PMD.EOL +
-    "    private void testMethod(String param1) {" + PMD.EOL +
-    "        //System.out.println(param1);" + PMD.EOL +
-    "    }" + PMD.EOL +
+    "class Foo {" + PMD.EOL +
+    " private void bar(String x) {}" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
-    "class UnusedFormalParam2 {" + PMD.EOL +
-    "    private void foo (String s) " + PMD.EOL +
-    "    {String str = s.toString();}" + PMD.EOL +
+    "class Foo {" + PMD.EOL +
+    " private void foo (String s) {" + PMD.EOL +
+    "  String str = s.toString();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-    "class UnusedFormalParam3 {" + PMD.EOL +
-    "    private void t1(String s) {" + PMD.EOL +
-    "        s.toString();" + PMD.EOL +
-    "    }" + PMD.EOL +
+    "class Foo {" + PMD.EOL +
+    " private void bar(int s) {" + PMD.EOL +
+    "  s = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
     "public interface Foo {" + PMD.EOL +
-    " void foo(String bar);" + PMD.EOL +
+    " void foo(int x);" + PMD.EOL +
     "}";
+
+    private static final String TEST5 =
+    "class Foo {" + PMD.EOL +
+    " public void bar(int s) {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "class Foo {" + PMD.EOL +
+    " public native void bar(int s);" + PMD.EOL +
+    "}";
+
 }
