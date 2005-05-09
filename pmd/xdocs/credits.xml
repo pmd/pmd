@@ -43,7 +43,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>ajbanck - Reported bug with JDK 1.5 annotation handling</li>
+            <li>Oto 'tapik' Buchta - Patched XMLRenderer for UTF8 support</li>
+            <li>Arent-Jan Banck - Reported bug with JDK 1.5 annotation handling</li>
             <li>Fred Hartman - Reported exact location of bug in TooManyFields, fixed bug in UnnecessaryBooleanAssertion</li>
             <li>Andriy Rozeluk - Suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Andreas Ehn - Reported bug with JDK 1.5 generics parsing</li>

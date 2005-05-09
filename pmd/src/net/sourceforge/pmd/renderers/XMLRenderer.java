@@ -23,7 +23,7 @@ public class XMLRenderer implements Renderer {
     }
     public String render(Report report) {
 
-        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + ">" + PMD.EOL);
+        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + ">" + PMD.EOL);
         String filename = null;
 
         // rule violations

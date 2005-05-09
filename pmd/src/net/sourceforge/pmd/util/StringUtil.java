@@ -5,6 +5,15 @@ package net.sourceforge.pmd.util;
 
 public class StringUtil {
 
+    private static final String[] ENTITIES;
+
+    static {
+        ENTITIES = new String[256 - 126];
+        for (int i = 126; i <= 255; i++) {
+            ENTITIES[i - 126] = "&#" + i + ';';
+        }
+    }
+
     public static String replaceString(String d, char oldChar, String newString) {
         String fixedNew = newString;
         if (fixedNew == null) {
@@ -49,15 +58,23 @@ public class StringUtil {
      * @param src The String to append to the stream
      */
     public static void appendXmlEscaped(StringBuffer buf, String src) {
-        int l = src.length();
+        appendXmlEscaped(buf, src, System.getProperty("net.sourceforge.pmd.supportUTF8","no").equals("yes"));
+    }
+
+    private static void appendXmlEscaped(StringBuffer buf, String src, boolean supportUTF8) {
         char c;
-        for (int i = 0; i < l; i++) {
+        for (int i = 0; i < src.length(); i++) {
             c = src.charAt(i);
             if (c > '~') {// 126
-                if (c <= 255)
-                    buf.append(ENTITIES[c - 126]);
-                else
-                    buf.append("&u").append(Integer.toHexString(c)).append(';');
+                if (!supportUTF8) {
+                    if (c <= 255) {
+                        buf.append(ENTITIES[c - 126]);
+                    } else {
+                        buf.append("&u").append(Integer.toHexString(c)).append(';');
+                    }
+                } else {
+                    buf.append(c);
+                }
             } else if (c == '&')
                 buf.append("&amp;");
             else if (c == '"')
@@ -70,15 +87,5 @@ public class StringUtil {
                 buf.append(c);
         }
     }
-
-    private static final String[] ENTITIES;
-
-    static {
-        ENTITIES = new String[256 - 126];
-        for (int i = 126; i <= 255; i++) {
-            ENTITIES[i - 126] = "&#" + i + ';';
-        }
-    }
-
 
 }
