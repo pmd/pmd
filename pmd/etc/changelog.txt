@@ -16,6 +16,7 @@ Fixed bug 1196238 - UnusedImports no longer reports false positives for various 
 Implemented RFE 1193979 - BooleanInstantiation now catches cases like Boolean.valueOf(true)
 Implemented RFE 1171095 - LabeledStatement nodes now contain the image of the label.
 Implemented RFE 1176401 - UnusedFormalParameter now flags public methods.
+Implemented RFE 994338 - The msg produced by ConstructorCallsOverridableMethod now includes the offending method name. 
 Modified command line parameters; removed -jdk15 and -jdk13 parameters and added a -'targetjdk [1.3|1.4|1.5]' parameter.
 Modified CSVRenderer to include more columns.
 Optimized rules: FinalFieldCouldBeStatic (115 seconds to 7 seconds), SuspiciousConstantFieldName (48 seconds to 14 seconds), UnusedModifer (49 seconds to 4 seconds)

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.text.MessageFormat;
 
 /**
  * Searches through all methods and constructors called from constructors.  It
@@ -563,7 +564,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         int count = h.getASTMethodDeclarator().getParameterCount();
                         if (meth.getName().equals(methName) && (meth.getArgumentCount() == count)) {
                             RuleContext ctx = (RuleContext) data;
-                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, meth.getASTPrimaryExpression()));
+                            String msg = MessageFormat.format(getMessage(), new Object[]{meth.getName()});
+                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, meth.getASTPrimaryExpression(), msg));
                         }
                     }
                 }
