@@ -28,6 +28,7 @@ public class ImmutableFieldTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST10, "predecrement", 0, rule),
            new TestDescriptor(TEST11, "compound assignment 2", 0, rule),
            new TestDescriptor(TEST12, "rhs 2", 0, rule),
+           // TODO if assignment in constructor is in try block, it need not be final
        });
     }
 
