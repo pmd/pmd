@@ -30,7 +30,7 @@ Freenet:freenet:freenet:freenet/src
 FreeTTS:freetts:FreeTTS:FreeTTS
 SUSHI - Universal Student Help Interface:fugu:sushi:sushi/WEB-INF/src
 Geotools:geotools:geotools2:geotools2/geotools-src
-Hermes JMS:hermesjms:Hermes2:Hermes2/src/java
+Hermes JMS:hermesjms:Hermes4:Hermes4/src/java
 Hibernate:hibernate:Hibernate:Hibernate/cirrus/
 htmlparser:htmlparser:htmlparser:htmlparser/src
 Import Scrubber:importscrubber:importscrubber:importscrubber/src/net
