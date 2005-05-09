@@ -1,18 +1,18 @@
 ????, 2005 - 3.1:
 New rules: SimplifyStartsWith [put in optimizations ruleset], UnnecessaryParentheses [put in controversial ruleset], CollapsibleIfStatements [put in basic ruleset], UseAssertEqualsInsteadOfAssertTrue[put in junit ruleset],  UseAssertSameInsteadOfAssertTrue [put in junit ruleset], UseStringBufferForStringAppends [put in optimizations ruleset], SimplifyConditional [design ruleset?], SingularField [controversial ruleset]
-Fixed bug 1169731 - UnusedImports no longer reports false positives on types used inside generics.  This bug also resulted in a bug in ForLoopShouldBeWhileLoop being fixed, thanks Wim!
-Fixed bug 1170109 - The Ant task now supports an optional 'targetjdk' attribute that accepts values of '1.3', '1.4', or '1.5'.
 Fixed bug 1170535 - LongVariable now report variables longer than 17 characters, not 12.
 Fixed bug 1182755 - SystemPrintln no longer overreports problems.
-Fixed bug 1183032 - The XMLRenderer no longer throws a SimpleDateFormat exception when run with JDK 1.3.
 Fixed bug 1188372 - AtLeastOneConstructor no longer fires on interfaces.
 Fixed bug 1190508 - UnnecessaryBooleanAssertion no longer fires on nested boolean literals.
 Fixed bug 1190461 - UnusedLocal no longer misses usages which are on the RHS of a right bit shift operator.
 Fixed bug 1188371 - AvoidInstantiatingObjectsInLoops no longer fires on instantiations in loops when the 'new' keyword is preceded by a 'return' or a 'throw'.
-Fixed bug 1187325 - UnusedImports no longer reports a false positive on imports which are used inside an Annotation.
-Fixed bug 1189720 - PMD no longer fails to parse generics that use 'member selectors'.
 Fixed bug 1190526 - TooManyFields now accepts a property setting correctly, and default lower bound is 15 vs 10.
 Fixed bug 1196238 - UnusedImports no longer reports false positives for various JDK 1.5 java.lang subpackages.
+Fixed bug 1169731 - UnusedImports no longer reports false positives on types used inside generics.  This bug also resulted in a bug in ForLoopShouldBeWhileLoop being fixed, thanks Wim!
+Fixed bug 1187325 - UnusedImports no longer reports a false positive on imports which are used inside an Annotation.
+Fixed bug 1189720 - PMD no longer fails to parse generics that use 'member selectors'.
+Fixed bug 1170109 - The Ant task now supports an optional 'targetjdk' attribute that accepts values of '1.3', '1.4', or '1.5'.
+Fixed bug 1183032 - The XMLRenderer no longer throws a SimpleDateFormat exception when run with JDK 1.3.
 Implemented RFE 1193979 - BooleanInstantiation now catches cases like Boolean.valueOf(true)
 Implemented RFE 1171095 - LabeledStatement nodes now contain the image of the label.
 Implemented RFE 1176401 - UnusedFormalParameter now flags public methods.
