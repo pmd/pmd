@@ -1040,8 +1040,8 @@ or (  ./AllocationExpression
               <value><![CDATA[
 //ClassOrInterfaceDeclaration
  [@Abstract='true'
-  and
-  count( .//MethodDeclaration[@Abstract='true'] )=0 ]
+  and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
+  [count(ImplementsList)=0]
               ]]>
               </value>
           </property>

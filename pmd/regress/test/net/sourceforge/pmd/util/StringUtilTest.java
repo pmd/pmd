@@ -28,14 +28,14 @@ public class StringUtilTest extends TestCase {
         assertEquals("f", StringUtil.replaceString("foo", 'o', null));
     }
 
-    public void testUTF8Supported() {
+    public void testUTF8NotSupported() {
         System.setProperty("net.sourceforge.pmd.supportUTF8","no");
         StringBuffer sb = new StringBuffer();
         String test = "é";
         StringUtil.appendXmlEscaped(sb, test);
         assertEquals("&#233;", sb.toString());
     }
-    public void testUTF8() {
+    public void testUTF8Supported() {
         System.setProperty("net.sourceforge.pmd.supportUTF8","yes");
         StringBuffer sb = new StringBuffer();
         String test = "é";
