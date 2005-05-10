@@ -182,6 +182,82 @@ public class SimpleTest extends TestCase {
           </example>
     </rule>
 
+    <rule name="UseAssertEqualsInsteadOfAssertTrue"
+          message="user assertEquals(x, y) instead of assertTrue(x.equals(y))"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+          This rule detects JUnit assertions in object equality. These assertions
+          should be made by more specific methods, like assertEquals.
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+
+//PrimaryExpression[
+    PrimaryPrefix/Name[@Image = 'assertTrue']
+][
+    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
+    [ends-with(@Image, '.equals')]
+]
+
+ ]]>
+            </value>
+        </property>
+    </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class FooTest extends TestCase {
+    void testCode() {
+        Object a, b;
+        assertTrue(a.equals(b)); // bad usage
+        assertEquals(a, b); // good usage
+    }
+}
+]]>
+      </example>
+    </rule>
+
+
+    <rule name="UseAssertSameInsteadOfAssertTrue"
+          message="user assertSame(x, y) instead of assertTrue(x==y)"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+          This rule detects JUnit assertions in object references equality. These assertions
+          should be made by more specific methods, like assertSame, assertNotSame.
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+
+//PrimaryExpression [
+    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
+]
+[PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression[
+        @Image = '==' or  @Image = '!='
+    ]
+]
+
+ ]]>
+            </value>
+        </property>
+    </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class FooTest extends TestCase {
+    void testCode() {
+        Object a, b;
+        assertTrue(a==b); // bad usage
+        assertSame(a, b);  // good usage
+    }
+}
+]]>
+      </example>
+    </rule>
+
 </ruleset>
 
 

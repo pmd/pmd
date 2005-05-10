@@ -96,6 +96,76 @@ public class SimpleTest extends TestCase {
           </example>
     </rule>
 
+    <rule name="SimplifyStartsWith"
+          message="This call to String.startsWith can be rewritten using String.charAt(0)"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+//PrimaryExpression
+ [PrimaryPrefix/Name
+  [ends-with(@Image, '.startsWith')]]
+ [PrimarySuffix/Arguments/ArgumentList
+  /Expression/PrimaryExpression/PrimaryPrefix
+  /Literal
+   [string-length(@Image)=3]
+   [starts-with(@Image, '"')]
+   [ends-with(@Image, '"')]
+ ]
+ ]]>
+            </value>
+        </property>
+    </properties>
+        <priority>3</priority>
+      <example>
+  <![CDATA[public class Foo {
+      boolean checkIt(String x) {
+          return x.startsWith("a");
+      }
+  }]]>
+      </example>
+    </rule>
+
+    <rule name="UseStringBufferForStringAppends"
+              message="Prefer StringBuffer over += for concatenating strings"
+              class="net.sourceforge.pmd.rules.XPathRule">
+           <description>
+      Finds usages of += for appending strings.
+           </description>
+          <properties>
+              <property name="xpath">
+                  <value>
+                      <![CDATA[
+//StatementExpression
+    [PrimaryExpression/PrimaryPrefix/Name
+        [@Image = ancestor::MethodDeclaration//LocalVariableDeclaration
+            [./Type//ClassOrInterfaceType[@Image =
+'String']]/VariableDeclarator/VariableDeclaratorId/@Image]]
+    //AssignmentOperator[@Compound='true']
+                      ]]>
+                  </value>
+              </property>
+          </properties>
+            <priority>3</priority>
+
+           <example>
+      <![CDATA[
+         String a;
+
+         a = "foo";
+         a += " bar";
+
+         // better would be:
+         StringBuffer a = new StringBuffer("foo");
+         a.append(" bar);
+      ]]>
+           </example>
+        </rule>
+
     <!-- 
     other optimization shuold be like avoiding 
     "" + int

@@ -5,7 +5,7 @@
 <property name="dir.build" value="build\"/>
 <property name="dir.rulesets" value="rulesets\"/>
 <property name="dir.regress" value="regress\"/>
-<property name="version" value="3.0"/>
+<property name="version" value="3.1"/>
 <property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
 
 <path id="dependencies.path">

@@ -580,4 +580,37 @@ public final class Foo {
       </example>
     </rule>
 
+    <rule name="CollapsibleIfStatements"
+          message="These nested if statements could be combined"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+//IfStatement[@Else='false']/Statement
+ /IfStatement[@Else='false']
+ |
+//IfStatement[@Else='false']/Statement
+ /Block[count(BlockStatement)=1]/BlockStatement
+  /Statement/IfStatement[@Else='false']]]>
+            </value>
+        </property>
+    </properties>
+        <priority>3</priority>
+      <example>
+  <![CDATA[public class Foo {
+      void bar() {
+          if (x) {
+           if (y) {
+             // do stuff
+           }
+          }
+      }
+  }]]>
+      </example>
+    </rule>
+
 </ruleset>

@@ -10,8 +10,7 @@ public class UseStringBufferForStringAppendsTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        // on release this can go in optimizations ruleset
-        rule = findRule("rulesets/newrules.xml", "UseStringBufferForStringAppends");
+        rule = findRule("rulesets/optimizations.xml", "UseStringBufferForStringAppends");
     }
 
     public void testAll() {

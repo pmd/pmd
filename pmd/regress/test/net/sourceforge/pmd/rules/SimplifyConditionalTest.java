@@ -10,8 +10,7 @@ public class SimplifyConditionalTest extends SimpleAggregatorTst{
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        // put in design ruleset
-        rule = findRule("rulesets/newrules.xml", "SimplifyConditional");
+        rule = findRule("rulesets/design.xml", "SimplifyConditional");
     }
 
     public void testAll() {

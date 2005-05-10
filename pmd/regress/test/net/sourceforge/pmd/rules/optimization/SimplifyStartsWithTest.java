@@ -11,8 +11,7 @@ public class SimplifyStartsWithTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        // on release this can go in optimizations ruleset
-        rule = findRule("rulesets/newrules.xml", "SimplifyStartsWith");
+        rule = findRule("rulesets/optimizations.xml", "SimplifyStartsWith");
     }
 
     public void testAll() {

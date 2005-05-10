@@ -13,7 +13,7 @@ public class UseAssertEqualsInsteadOfAssertTrueTest extends SimpleAggregatorTst 
     private Rule rule;
     
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "UseAssertEqualsInsteadOfAssertTrue");
+        rule = findRule("rulesets/junit.xml", "UseAssertEqualsInsteadOfAssertTrue");
     }
     public void testAll() throws Throwable {
 

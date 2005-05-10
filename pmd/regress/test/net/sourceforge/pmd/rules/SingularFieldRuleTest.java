@@ -10,8 +10,7 @@ public class SingularFieldRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        // put in controversial ruleset
-        rule = findRule("rulesets/newrules.xml", "SingularField");
+        rule = findRule("rulesets/controversial.xml", "SingularField");
     }
 
     public void testAll() {
