@@ -59,6 +59,9 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/10 21:49:26  phherlin
+ * Fix new violations detected by PMD 3.1
+ *
  * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -101,6 +104,7 @@ public class RunnableCommandProcessor implements CommandProcessor, IWorkspaceRun
     /**
      * @see name.herlin.command.CommandProcessor#waitCommandToFinish(name.herlin.command.AbstractProcessableCommand)
      */
+    // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:46
     public void waitCommandToFinish(final AbstractProcessableCommand aCommand) throws CommandException {
         // do noting
     }
@@ -110,6 +114,7 @@ public class RunnableCommandProcessor implements CommandProcessor, IWorkspaceRun
      * @param monitor
      * @throws CoreException
      */
+    // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:48
     public void run(final IProgressMonitor monitor) throws CoreException {
         try {
             this.command.execute();

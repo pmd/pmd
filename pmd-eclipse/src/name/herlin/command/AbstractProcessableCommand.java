@@ -30,6 +30,7 @@ import java.util.ResourceBundle;
  * @see name.herlin.command.CommandProcessor for more details on processor.
  */
 public abstract class AbstractProcessableCommand implements Command {
+    // @PMD:REVIEWED:SingularField: by Herlin on 10/05/05 23:24
     private CommandProcessor commandProcessor;
 
     /**

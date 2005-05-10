@@ -72,6 +72,9 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/10 21:49:18  phherlin
+ * Fix new violations detected by PMD 3.1
+ *
  * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -321,6 +324,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             return fVisitChildren;
         }
         
+        // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:46
         public boolean visit(final IResourceDelta delta) {
             count++;
             return true;

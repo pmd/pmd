@@ -74,6 +74,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.17  2005/05/10 21:49:27  phherlin
+ * Fix new violations detected by PMD 3.1
+ *
  * Revision 1.16  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -141,7 +144,6 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.properties.PMDPropertyPage");
     private PMDPropertyPageController controller;
     private PMDPropertyPageBean model;
-    private IProject project;
     private Button enablePMDButton;
     protected TableViewer availableRulesTableViewer;
     private IWorkingSet selectedWorkingSet;
@@ -155,14 +157,14 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     protected Control createContents(final Composite parent) {
         log.info("PMD properties editing requested");
         this.controller = new PMDPropertyPageController(this.getShell());
-        this.project = (IProject) this.getElement().getAdapter(IProject.class);
-        this.controller.setProject(this.project);
+        final IProject project = (IProject) this.getElement().getAdapter(IProject.class);
+        this.controller.setProject(project);
         this.model = controller.getPropertyPageBean();
 
         Composite composite = null;
         noDefaultAndApplyButton();
 
-        if ((this.project.isAccessible()) && (this.model != null)) {
+        if ((project.isAccessible()) && (this.model != null)) {
             composite = new Composite(parent, SWT.NONE);
 
             final GridLayout layout = new GridLayout();

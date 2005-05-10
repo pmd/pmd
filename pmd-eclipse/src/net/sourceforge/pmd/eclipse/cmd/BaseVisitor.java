@@ -57,6 +57,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/10 21:49:26  phherlin
+ * Fix new violations detected by PMD 3.1
+ *
  * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -233,16 +236,15 @@ public class BaseVisitor {
                         final String ruleName = tail.substring(0, tail.indexOf(':'));
                         pendingReviews.push(ruleName);
                         findLine = true;
-                    } else if (!comment && findLine) {
-                        if (!line.equals("") && !line.startsWith("//")) {
-                            findLine = false;
-                            while (!pendingReviews.empty()) {
-                                // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 18:36
-                                final Review review = new Review();
-                                review.ruleName = (String) pendingReviews.pop();
-                                review.lineNumber = lineNumber;
-                                reviewsList.add(review);
-                            }
+                    } else if (!comment && findLine && !line.equals("") && !line.startsWith("//")) {
+                        findLine = false;
+                        while (!pendingReviews.empty()) {
+                            // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops:
+                            // by Herlin on 01/05/05 18:36
+                            final Review review = new Review();
+                            review.ruleName = (String) pendingReviews.pop();
+                            review.lineNumber = lineNumber;
+                            reviewsList.add(review);
                         }
                     }
                 }

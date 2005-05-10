@@ -68,6 +68,9 @@ import org.eclipse.ui.progress.IProgressService;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2005/05/10 21:49:29  phherlin
+ * Fix new violations detected by PMD 3.1
+ *
  * Revision 1.5  2005/05/07 13:32:05  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -91,7 +94,6 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
     private final Shell shell;
     private IProject project;
     private PMDPropertyPageBean propertyPageBean;
-    private ProjectPropertiesModel projectPropertiesModel;
     private boolean rebuildNeeded;
 
     /**
@@ -132,13 +134,13 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
 
         if (this.propertyPageBean == null) {
             try {
-                this.projectPropertiesModel = ModelFactory.getFactory().getProperiesModelForProject(this.project);
+                final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
 
                 this.propertyPageBean = new PMDPropertyPageBean();
-                this.propertyPageBean.setPmdEnabled(this.projectPropertiesModel.isPmdEnabled());
-                this.propertyPageBean.setProjectWorkingSet(this.projectPropertiesModel.getProjectWorkingSet());
-                this.propertyPageBean.setProjectRuleSet(this.projectPropertiesModel.getProjectRuleSet());
-                this.propertyPageBean.setRuleSetStoredInProject(this.projectPropertiesModel.isRuleSetStoredInProject());
+                this.propertyPageBean.setPmdEnabled(model.isPmdEnabled());
+                this.propertyPageBean.setProjectWorkingSet(model.getProjectWorkingSet());
+                this.propertyPageBean.setProjectRuleSet(model.getProjectRuleSet());
+                this.propertyPageBean.setRuleSetStoredInProject(model.isRuleSetStoredInProject());
             } catch (ModelException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
             }

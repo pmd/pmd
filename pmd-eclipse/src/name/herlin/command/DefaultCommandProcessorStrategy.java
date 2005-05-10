@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
  * the framework default command processor.
  */
 public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy {
-    private final CommandProcessor defaultCommandProcessor = new DefaultCommandProcessor();
+    private static final CommandProcessor DEFAULT_COMMAND_PROCESSOR = new DefaultCommandProcessor();
     private final Map registeredCommandProcessors = new Hashtable();
 
     /**
@@ -55,7 +55,7 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
         }
 
         if (aProcessor == null) {
-            aProcessor = this.defaultCommandProcessor;
+            aProcessor = DEFAULT_COMMAND_PROCESSOR;
         }
 
         return aProcessor;
@@ -70,7 +70,7 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
         CommandProcessor aProcessor = null;
 
         try {
-            final String processorClassName = (String) registeredCommandProcessors.get(aCommand.getName());
+            final String processorClassName = (String) this.registeredCommandProcessors.get(aCommand.getName());
             if (processorClassName != null) {
                 final Class clazz = Class.forName(processorClassName);
                 aProcessor = (CommandProcessor) clazz.newInstance();

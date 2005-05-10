@@ -47,6 +47,9 @@ import org.eclipse.core.resources.IProject;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/10 21:49:29  phherlin
+ * Fix new violations detected by PMD 3.1
+ *
  * Revision 1.2  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -60,7 +63,11 @@ import org.eclipse.core.resources.IProject;
  */
 public class ModelFactory {
     private static final ModelFactory SELF = new ModelFactory();
+
+    // @PMD:REVIEWED:SingularField: by Herlin on 10/05/05 23:42
     private final Map projectPropertiesModels = new HashMap();
+
+    // @PMD:REVIEWED:SingularField: by Herlin on 10/05/05 23:42
     private final PreferencesModel preferencesModel = new PreferencesModelImpl();
 
     /**
