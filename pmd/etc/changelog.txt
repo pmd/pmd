@@ -1,3 +1,6 @@
+????, 2005 - 3.2:
+
+
 May 10, 2005 - 3.1:
 New rules: SimplifyStartsWith, UnnecessaryParentheses, CollapsibleIfStatements, UseAssertEqualsInsteadOfAssertTrue,  UseAssertSameInsteadOfAssertTrue, UseStringBufferForStringAppends, SimplifyConditional, SingularField
 Fixed bug 1170535 - LongVariable now report variables longer than 17 characters, not 12.

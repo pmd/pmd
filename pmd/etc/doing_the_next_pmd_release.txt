@@ -78,7 +78,7 @@ Add the pmd-src-3.1.zip file
 Classify the file
 
 Redo the web site
-cd ~/data/pmd/pmd
+cd ~/pmd/pmd
 ./docs.sh upload
 
 Submit some news saying "hey, new release!"
