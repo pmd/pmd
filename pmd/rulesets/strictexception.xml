@@ -127,15 +127,12 @@ try {
     </properties>
   </rule>
 
-  <rule name="AvoidThrowingCertainExceptionTypes"
-      message="Avoid throwing certain exception types."
+  <rule name="AvoidThrowingRawExceptionTypes"
+      message="Avoid throwing raw exception types"
       class="net.sourceforge.pmd.rules.XPathRule">
     <description>
- 1) Avoid throwing certain exception types.  Rather than throw a raw RuntimeException, Throwable,
+Avoid throwing certain exception types.  Rather than throw a raw RuntimeException, Throwable,
  Exception, or Error, use a subclassed exception or error instead.
- 2) Avoid throwing a NullPointerException - it's confusing because most people will assume that the
- VM threw NPE.  Consider using InvalidArgumentException("Null parameter") which will be clearly seen as
-a programmer initiated exception..  Use IllegalArgumentException or IllegalStateException instead.
     </description>
  <example>
       <![CDATA[
@@ -152,12 +149,36 @@ throw new Exception();
  @Image='Throwable' |
  @Image='Exception' |
  @Image='Error' |
- @Image='RuntimeException' |
- @Image='NullPointerException']
+ @Image='RuntimeException']
  ]]>
         </value>
       </property>
     </properties>
   </rule>
+
+    <rule name="AvoidThrowingNullPointerException"
+        message="Avoid throwing null pointer exceptions"
+        class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+Avoid throwing a NullPointerException - it's confusing because most people will assume that the
+   VM threw NPE.  Consider using InvalidArgumentException("Null parameter") which will be clearly seen as
+  a programmer initiated exception..  Use IllegalArgumentException or IllegalStateException instead.
+      </description>
+   <example>
+        <![CDATA[
+  throw new NullPointerException();
+  ]]>
+      </example>
+      <priority> 1 </priority>
+      <properties>
+        <property name="xpath">
+          <value>
+              <![CDATA[
+  //AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
+   ]]>
+          </value>
+        </property>
+      </properties>
+    </rule>
 
 </ruleset>
