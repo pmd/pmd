@@ -162,6 +162,13 @@ and
 PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/PrimaryExpression/PrimaryPrefix
   /Literal/BooleanLiteral
+or
+(
+.//Name[@Image='assertTrue' or  @Image='assertFalse']
+and
+PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
+ /Expression/UnaryExpressionNotPlusMinus[@Image='!']
+)
 ]
 ]]>
               </value>

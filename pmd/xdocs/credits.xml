@@ -43,7 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Tom Parker - Suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
+            <li>Tom Parker - Suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
             <li>Oto 'tapik' Buchta - Patched XMLRenderer for UTF8 support</li>
             <li>Arent-Jan Banck - Reported bug with JDK 1.5 annotation handling</li>
             <li>Fred Hartman - Reported exact location of bug in TooManyFields, fixed bug in UnnecessaryBooleanAssertion</li>
