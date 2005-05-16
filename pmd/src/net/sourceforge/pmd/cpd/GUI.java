@@ -280,12 +280,9 @@ public class GUI implements CPDListener {
                     long now = System.currentTimeMillis();
                     long elapsedMillis = now - start;
                     long elapsedSeconds = elapsedMillis / 1000;
-                    long hours = (long) Math.floor(elapsedSeconds / 3600);
-                    long minutes = (long) Math.floor((elapsedSeconds - (hours * 3600)) / 60);
-                    long seconds = elapsedSeconds - ((minutes * 60) + (hours * 3600));
+                    long minutes = (long) Math.floor(elapsedSeconds / 60);
+                    long seconds = elapsedSeconds - (minutes * 60);
                     timeField.setText(""
-                            + munge(String.valueOf(hours))
-                            + ":"
                             + munge(String.valueOf(minutes))
                             + ":"
                             + munge(String.valueOf(seconds)));

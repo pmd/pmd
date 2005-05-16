@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class ResourceLoader {
 
-    // Single static method, so we shouldn't allow an instance to be created
+    // Only static methods, so we shouldn't allow an instance to be created
     private ResourceLoader() {
     }
 
@@ -23,7 +23,7 @@ public class ResourceLoader {
      * a URL, and then finally seeing if it is on the classpath.
      */
     public static InputStream loadResourceAsStream(String name) throws RuleSetNotFoundException {
-        InputStream stream = ResourceLoader.loadResourceAsStream(name, new ResourceLoader().getClass().getClassLoader());
+        InputStream stream = ResourceLoader.loadResourceAsStream(name, ResourceLoader.class.getClassLoader());
         if (stream == null) {
             throw new RuleSetNotFoundException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
         }
