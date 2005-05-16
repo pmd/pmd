@@ -3,7 +3,7 @@ change config/pmd.props to reflect actual pmd.jar file version
 change config/pmd.props to reflect the new pmd-jedit release version.
 change config/jedit.html to reflect the new pmd-jedit release version.
 change the build.xml to reflect pmd-jedit release
-update doing_the_next_pmd_jedit_release.txt to the new release version
+update doing_the_next_pmd_jedit_release.txt(this file) to the new pmd-jedit release version
 comit the above changes FIRST!!
 
 Create the binary release - 'ant release'
