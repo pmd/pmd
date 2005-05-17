@@ -1269,6 +1269,7 @@ void ArrayInitializer() :
 void MethodDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);}
 {
+  [ TypeParameters() ]
   ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }

@@ -131,7 +131,7 @@ public class JDKVersionTest extends TestCase  {
         p.CompilationUnit();
         p = new TargetJDK1_5().createParser(new StringReader(ANNOTATIONS_BUG));
         p.CompilationUnit();
-        p = new TargetJDK1_5().createParser(new StringReader(GENERICS_BUG));
+        p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_FIELD));
         p.CompilationUnit();
     }
 
@@ -142,18 +142,26 @@ public class JDKVersionTest extends TestCase  {
         p.CompilationUnit();
     }
 
-    public void testGenericsAnnotationBug() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_BUG_2));
+    public void testGenericsInMethodCall() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_METHOD_CALL));
         p.CompilationUnit();
     }
 
-/*
-FIXME
-    public void testGenericsAnnotationBug2() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERICS_ANNOTATION_BUG));
+    public void testGenericINAnnotation() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_ANNOTATION));
         p.CompilationUnit();
     }
-*/
+
+    public void testGenericReturnType() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_RETURN_TYPE));
+        p.CompilationUnit();
+    }
+
+//    public void testMultipleGenerics() throws Throwable {
+//        JavaParser p = new TargetJDK1_5().createParser(new StringReader(MULTIPLE_GENERICS));
+//        p.CompilationUnit();
+//    }
+
 
     private static final String ASSERT_TEST1 =
     "public class Foo {" + PMD.EOL +
@@ -249,14 +257,14 @@ FIXME
     "public @interface Foo {" + PMD.EOL +
     "}";
 
-    private static final String GENERICS_BUG =
+    private static final String GENERIC_IN_FIELD =
     "public class Foo {" + PMD.EOL +
     " Class<Double> foo = (Class<Double>)clazz;" + PMD.EOL +
     "}";
 
-    private static final String GENERICS_ANNOTATION_BUG =
+    private static final String GENERIC_IN_ANNOTATION =
     "public class Foo {" + PMD.EOL +
-    " public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {\n"  + PMD.EOL +
+    " public <A extends Annotation> A foo(Class<A> c) {"  + PMD.EOL +
     "  return null;"  + PMD.EOL +
     " }" + PMD.EOL +
     "}";
@@ -277,11 +285,23 @@ FIXME
     "  }" + PMD.EOL +
     "}";
 
-    private static final String GENERICS_BUG_2 =
+    private static final String GENERIC_IN_METHOD_CALL =
     "public class Test {" + PMD.EOL +
     "  List<String> test() {" + PMD.EOL +
     "   return Collections.<String>emptyList();" + PMD.EOL +
     "  }" + PMD.EOL +
     "}";
 
+    private static final String GENERIC_RETURN_TYPE =
+    "public class Test {" + PMD.EOL +
+    "  public static <String> String test(String x) {" + PMD.EOL +
+    "   return x;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
+    // See java/lang/concurrent/ConcurrentHashMap
+    private static final String MULTIPLE_GENERICS =
+    "public class Foo<K,V> {" + PMD.EOL +
+    "  public <A extends K, B extends V> Foo(Bar<A,B> t) {}" + PMD.EOL +
+    "}";
 }
