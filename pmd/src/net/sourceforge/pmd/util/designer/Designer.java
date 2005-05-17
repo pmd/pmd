@@ -204,6 +204,16 @@ public class Designer implements ClipboardOwner {
         group.add(jdk15MenuItem);
         menu.add(jdk15MenuItem);
         menuBar.add(menu);
+
+        JMenu actionsMenu = new JMenu("Actions");
+        JMenuItem copyXMLItem = new JMenuItem("Copy xml to clipboard");
+        copyXMLItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                copyXmlToClipboard();
+            }
+        });
+        actionsMenu.add(copyXMLItem);
+        menuBar.add(actionsMenu);
         return menuBar;
     }
 
@@ -258,6 +268,7 @@ public class Designer implements ClipboardOwner {
     public static void main(String[] args) {
         new Designer();
     }
+
     private final void popUpMenu(MouseEvent e) {
         JPopupMenu menu = new JPopupMenu();
         JMenuItem mi = new JMenuItem("Copy xml");
