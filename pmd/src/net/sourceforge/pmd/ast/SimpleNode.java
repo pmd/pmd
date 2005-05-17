@@ -285,7 +285,11 @@ public class SimpleNode implements Node , IPositionProvider {
      * @return a String with an XML representation of this node and its children
      */
     public String asXml() {
-        final String cn = getClass().getName();
+        String cn = getClass().getName();
+        if (cn.indexOf('.') != -1) {
+            cn = cn.substring(cn.lastIndexOf('.')+1);
+        }
+
         final StringBuffer sb = new StringBuffer();
         
         sb.append('<');
