@@ -1,5 +1,6 @@
 ????, 2005 - 3.2:
 Fixed bug 1201577 - PMD now correctly parses method declarations that return generic types.
+Fixed bug which caused MissingSerialVersionUID to trigger on all interfaces that implemented other interfaces.
 Implemented RFE 1188604 - AvoidThrowingCertainExceptionTypes has been split into AvoidThrowingRawExceptionTypes and AvoidThrowingNullPointerException.
 Implemented RFE 1188369 - UnnecessaryBooleanAssertion now checks for things like 'assertTrue(!foo)'.  These should be changed to 'assertFalse(foo)' for clarity.
 

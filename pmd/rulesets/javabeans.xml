@@ -53,9 +53,11 @@ provide getFoo and setFoo methods.
               <value>
     <![CDATA[
 //TypeDeclaration[
-//ClassOrInterfaceDeclaration/ImplementsList[ClassOrInterfaceType/@Image=("Serializable" or "java.io.Serializable")]
+//ClassOrInterfaceDeclaration
+ /ImplementsList[ClassOrInterfaceType/@Image='Serializable' or ClassOrInterfaceType/@Image='java.io.Serializable']
 and not(
-//ClassOrInterfaceBodyDeclaration/FieldDeclaration[VariableDeclarator/VariableDeclaratorId/@Image='serialVersionUID'] )
+//ClassOrInterfaceBodyDeclaration
+ /FieldDeclaration[VariableDeclarator/VariableDeclaratorId/@Image='serialVersionUID']
 ]]>
               </value>
           </property>
