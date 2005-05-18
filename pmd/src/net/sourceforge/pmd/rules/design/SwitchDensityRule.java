@@ -46,7 +46,7 @@ public class SwitchDensityRule extends StatisticalRule {
             if (labels == 0) {
                 return 0;
             }
-            return 1.0 * (stmts / labels);
+            return (double)stmts / (double)labels;
         }
     }
 

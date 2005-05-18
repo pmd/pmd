@@ -203,7 +203,7 @@ public class SimpleNodeTest extends ParserTst {
     public void testAsXml() {
         ASTBlock b = new ASTBlock(1);
         String x = b.asXml();
-        assertEquals("<net.sourceforge.pmd.ast.ASTBlock id=\"1\"></net.sourceforge.pmd.ast.ASTBlock>", x);
+        assertEquals("<ASTBlock id=\"1\"></ASTBlock>", x);
     }
 
     public void testContainsNoInner() throws Throwable {

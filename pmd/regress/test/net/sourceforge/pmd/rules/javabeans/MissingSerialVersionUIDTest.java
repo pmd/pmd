@@ -20,9 +20,10 @@ public class MissingSerialVersionUIDTest extends SimpleAggregatorTst {
        runTests(new TestDescriptor[] {
                new TestDescriptor(TEST1, "Happy case", 0, rule),
                new TestDescriptor(TEST2, "Simple failure case", 1, rule),
-               new TestDescriptor(TEST3, "TEST3", 1, rule),
+               new TestDescriptor(TEST3, "failure using java.io.Serializable", 1, rule),
                new TestDescriptor(TEST4, "TEST4", 0, rule),
-               new TestDescriptor(TEST5, "TEST5", 0, rule)
+               new TestDescriptor(TEST5, "TEST5", 0, rule),
+               new TestDescriptor(TEST6, "interface", 0, rule)
        });
     }
 
@@ -47,4 +48,9 @@ public class MissingSerialVersionUIDTest extends SimpleAggregatorTst {
         "public class Foo implements java.io.Serializable {" + PMD.EOL +
         "public static final long serialVersionUID = 43L;" + PMD.EOL +
         "}";
+
+    private static final String TEST6 =
+    "public interface Foo implements Bar{" + PMD.EOL +
+    " void getName();" + PMD.EOL +
+    "}";
 }
