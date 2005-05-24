@@ -120,3 +120,5 @@ Matra:matra:matra-java:matra-java/com/
 Kaprekar:kaprekar:kaprekar-java:kaprekar-java/com/
 Lipidia:lipidia:src:src/
 EJBCA:ejbca:ejbca:ejbca/src/java
+Schemalizer:schemalizer:schemalizer:schemalizer/src/
+Tamarin:tamarin:tamarin:tamarin/src/
