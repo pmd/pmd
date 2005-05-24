@@ -30,10 +30,7 @@ public class LanguageFactory {
             return new PHPLanguage();
         } else if (language.equals(RUBY_KEY)) {
             return new RubyLanguage();
-        } else {
-	    // try any....
-	    return new AnyLanguage(language);
         }
-        //throw new RuntimeException("Can't create language " + language);        
+	    return new AnyLanguage(language);
     }
 }

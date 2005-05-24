@@ -8,8 +8,7 @@ import java.util.List;
 
 public class RubyTokenizer implements Tokenizer {
     private boolean downcaseString = true;   
-    //private boolean downcaseString = false;
-    
+
     public void tokenize(SourceCode tokens, Tokens tokenEntries) {
         List code = tokens.getCode();
         for (int i = 0; i < code.size(); i++) {
@@ -18,7 +17,6 @@ public class RubyTokenizer implements Tokenizer {
             while (loc < currentLine.length()) {
                 StringBuffer token = new StringBuffer();
                 loc = getTokenFromLine(currentLine,token,loc);
-                //System.out.println("Token for ;"+ tokens.getFileName()+" ;line:" + i + ";loc:" + loc + ";" + token.toString());
                 if (token.length() > 0 && !isIgnorableString(token.toString())) {
                     if (downcaseString) {
                         token = new StringBuffer(token.toString().toLowerCase());               

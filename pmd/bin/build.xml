@@ -72,8 +72,8 @@
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     <pmd rulesetfiles="rulesets/unusedcode.xml" shortFilenames="true">
         <formatter type="text" toFile="rpt.txt"/>
-        <fileset dir="/home/tom/tmp/">
-            <include name="Foo.java"/>
+        <fileset dir="/home/tom/tmp/pmd/">
+            <include name="ConnectionResponse.java"/>
         </fileset>
     </pmd>
 </target>
@@ -124,8 +124,8 @@
     <delete file="src/net/sourceforge/pmd/ast/JavaParserConstants.java"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParserTreeConstants.java"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java"/>
-    <jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
-    <javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc-3.2/"/>
+    <jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc/"/>
+    <javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc/"/>
     <delete file="src/net/sourceforge/pmd/ast/Java.jj"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)"/>
@@ -145,7 +145,7 @@
             <exclude name="SymtabManager.java"/>
         </fileset>
     </delete>
-    <javacc target="../etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="/usr/local/javacc-3.2/"/>
+    <javacc target="../etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="/usr/local/javacc/"/>
     <replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException"/>
 </target>
 

@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Glen Cordrey - Reported bug involved JavaCC string handling</li>
             <li>Dave Brosius - a couple of nice patches to clean up some string handling inefficiencies, non-static class usages, and unclosed streams/readers - found with Findbugs, I daresay :-)</li>
             <li>Tom Parker - Suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
             <li>Oto 'tapik' Buchta - Patched XMLRenderer for UTF8 support</li>
