@@ -1,34 +1,20 @@
 <project basedir="." default="nbm" name="PMD netbeans module">
 
-    <property name="pmd.jar" value="pmd-2.1.jar"/>
+    <property file="nbproject/suite-locator.properties"/>
+    <property file="${suite.properties}"/>
+    <fail unless="netbeans.dest.dir">You must set suite.properties to a file defining netbeans.dest.dir</fail>
+    <import file="${harness.dir}/build.xml"/>
+
+    <property name="pmd.jar" value="pmd-3.1.jar"/>
     <property name="VERSION" value="1.0"/>
 
     <property file="build.ant.properties"/>
 
-    <property name="nbm.homepage" value="http://pmd.sourceforge.net/"/>
-    <property name="dist.base" value="www.netbeans.org/example"/> <!-- XXX what should be here? -->
-    <property name="nbm.module.author" value="Ole-Martin Mørk and Gunnlaugur Þór Briem"/>
-    <property name="license.file" value="LICENSE.txt"/>
     <property name="keystore" value="${user.home}/.pmdkeystore"/>
         
-    <import file="../nbbuild/module-scripts/projectized.xml"/>
-
-    <target name="files-init" depends="basic-init">
-        <patternset id="module.files">
-            <include name="${module.jar}"/>
-            <include name="${javahelp.jar}" if="has.javahelp"/>
-            <include name="${nb.system.dir}/Modules/${code.name.base.dashes}.xml"/>
-
-            <include name="${nb.modules.dir}/ext/${pmd.jar}"/>
-            <include name="${nb.modules.dir}/ext/saxpath-1.0-fcs.jar"/>
-            <include name="${nb.modules.dir}/ext/jakarta-oro-2.0.jar"/>
-            <include name="${nb.modules.dir}/ext/jaxen-core-1.0-fcs.jar"/>
-        </patternset>
-    </target>
-    
     <target name="netbeans-extra" depends="init">
-        <mkdir dir="${netbeans.dest.dir}/${cluster.dir}/${nb.modules.dir}/ext"/>
-        <copy todir="${netbeans.dest.dir}/${cluster.dir}/${nb.modules.dir}/ext">
+        <mkdir dir="${netbeans.dest.dir}/${cluster.dir}/modules/ext"/>
+        <copy todir="${netbeans.dest.dir}/${cluster.dir}/modules/ext">
           <fileset dir="lib">
             <include name="${pmd.jar}"/>
             <include name="saxpath-1.0-fcs.jar"/>
@@ -49,7 +35,6 @@
 				<include name="lib/saxpath-1.0-fcs.jar"/>
 				<include name="lib/jaxen-core-1.0-fcs.jar"/>
 				<include name="lib/jakarta-oro-2.0.jar"/>
-				<exclude name="**/.nbattrs"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>

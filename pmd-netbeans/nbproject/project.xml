@@ -2,7 +2,7 @@
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
-        <data xmlns="http://www.netbeans.org/ns/nb-module-project/1">
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/2">
             <code-name-base>pmd</code-name-base>
             <path>pmd-netbeans</path>
             <module-dependencies>
@@ -18,6 +18,7 @@
                     <code-name-base>org.openide.src</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
+                    <run-dependency/>
                 </dependency>
                 <dependency>
                     <code-name-base>org.openide</code-name-base>
@@ -44,6 +45,30 @@
                 </dependency>
             </module-dependencies>
             <public-packages/>
+            <class-path-extension>
+                <!-- Deployed path, relative to dir containing module: -->
+                <runtime-relative-path>ext/jakarta-oro-2.0.jar</runtime-relative-path>
+                <!-- Path of library in your own sources, relative to project basedir: -->
+                <binary-origin>lib/jakarta-oro-2.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <!-- Deployed path, relative to dir containing module: -->
+                <runtime-relative-path>ext/jaxen-core-1.0-fcs.jar</runtime-relative-path>
+                <!-- Path of library in your own sources, relative to project basedir: -->
+                <binary-origin>lib/jaxen-core-1.0-fcs.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <!-- Deployed path, relative to dir containing module: -->
+                <runtime-relative-path>ext/saxpath-1.0-fcs.jar</runtime-relative-path>
+                <!-- Path of library in your own sources, relative to project basedir: -->
+                <binary-origin>lib/saxpath-1.0-fcs.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <!-- Deployed path, relative to dir containing module: -->
+                <runtime-relative-path>ext/pmd-3.1.jar</runtime-relative-path>
+                <!-- Path of library in your own sources, relative to project basedir: -->
+                <binary-origin>lib/pmd-3.1.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>

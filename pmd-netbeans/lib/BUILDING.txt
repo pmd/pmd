@@ -1,7 +1,11 @@
 ---++ BUILDING 
 
-Cluster build harness is required to build the PMD plugin for NetBeans IDE. 
-Get it from http://wiki.java.net/bin/view/Netbeans/ModuleDevelopment40 and 
-configure to build a pmd-netbeans module into extra cluster. Example of 
-neceseary changes is in cluster-harness.diff file.
+The trunk version of NetBeans IDE is used to develop the PMD plugin
+using the new plugin development support.
+
+Read the documentation of this support to get details about the 
+configuration. For a quick setup it should be enough to copy
+the 'pmdsuite.properties.template' file into pmdsuite.properties' edit its 
+content according to comments.
+
 

@@ -1,16 +1,9 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Specification-Version: 1.0
-Created-By: Ole-Martin Mørk and Gunnlaugur Þór Briem
-Class-Path: ext/pmd-2.1.jar ext/jaxen-core-1.0-fcs.jar ext/saxpath-1.0-fcs.jar ext/jakarta-oro-2.0.jar
+OpenIDE-Module-Specification-Version: 1.1
+Created-By: Ole-Martin Mørk and Gunnlaugur Þór Briem and Radim Kubacki
 OpenIDE-Module: pmd
 OpenIDE-Module-Layer: pmd/mf-layer.xml
-OpenIDE-Module-IDE-Dependencies: IDE/1 > 4.29
 OpenIDE-Module-Localizing-Bundle: pmd/Bundle.properties
-OpenIDE-Module-Module-Dependencies: 
- org.netbeans.api.java/1,
- org.openide.io > 1.0,
- org.openide.src,
- org.openide.loaders
 OpenIDE-Module-Requires: 
  org.openide.windows.IOProvider
 
