@@ -6,7 +6,7 @@
     <import file="${harness.dir}/build.xml"/>
 
     <property name="pmd.jar" value="pmd-3.1.jar"/>
-    <property name="VERSION" value="1.0"/>
+    <property name="VERSION" value="1.1"/>
 
     <property file="build.ant.properties"/>
 
@@ -29,7 +29,10 @@
 		<zip compress="true" destfile="build/pmd-netbeans40-${VERSION}-src.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
+				<include name="manifest.mf"/>
+				<include name="pmdsuite.properties.template"/>
 				<include name="build.xml"/>
+				<include name="nbproject/*.*"/>
 				<include name="src/**/*"/>
 				<include name="lib/${pmd.jar}"/>
 				<include name="lib/saxpath-1.0-fcs.jar"/>

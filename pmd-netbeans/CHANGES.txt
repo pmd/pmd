@@ -1,3 +1,8 @@
+Version 1.1
+- Updated pmd to version 3.1
+- The sources were updated to use new plugin development support planned 
+  present in recent development builds of NetBeans
+
 Version 1.0
 - Updated pmd to version 2.1
 - Adapted to NB 4.0 APIs, did not test in earlier versions
