@@ -98,7 +98,7 @@ public class CloseConnection extends AbstractRule {
             ASTTryStatement t = (ASTTryStatement) it.next();
 
             if ((t.getBeginLine() > id.getBeginLine()) && (t.hasFinally())) {
-                ASTBlock f = t.getFinallyBlock();
+                ASTBlock f = (ASTBlock)t.getFinally().jjtGetChild(0);
                 List names = new ArrayList();
                 f.findChildrenOfType(ASTName.class, names, true);
                 for (Iterator it2 = names.iterator(); it2.hasNext();) {

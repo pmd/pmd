@@ -1904,8 +1904,22 @@ void TryStatement() :
 {}
 {
   "try" Block()
-  ( "catch" {jjtThis.setHasCatch();} "(" FormalParameter() ")" Block() )*
-  [ "finally" {jjtThis.setHasFinally();} Block() ]
+  ( CatchStatement() )*
+  [ FinallyStatement() ]
+}
+
+void CatchStatement() :
+{}
+{
+  "catch"
+  "(" FormalParameter() ")"
+  Block()
+}
+
+void FinallyStatement() :
+{}
+{
+    "finally" Block()
 }
 
 void AssertStatement() :

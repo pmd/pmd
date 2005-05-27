@@ -51,6 +51,7 @@ public class LocalScopeTest extends STBBaseTst {
         assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
+/*
     public void testExceptionParamNameIsDiscarded() {
         ASTVariableDeclaratorId node = new MyASTVariableDeclaratorId(1);
         VariableNameDeclaration decl = new VariableNameDeclaration(node);
@@ -58,6 +59,7 @@ public class LocalScopeTest extends STBBaseTst {
         scope.addDeclaration(decl);
         assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
+*/
 
     public void testLocalVariableDeclarationFound() {
         parseCode(TEST1);

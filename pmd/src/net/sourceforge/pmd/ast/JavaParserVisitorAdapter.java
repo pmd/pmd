@@ -441,4 +441,12 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTTryStatement node, Object data) {
         return visit((SimpleNode) node, data);
     }
+
+    public Object visit(ASTFinallyStatement node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
+
+    public Object visit(ASTCatchStatement node, Object data) {
+        return visit((SimpleNode) node, data);
+    }
 }

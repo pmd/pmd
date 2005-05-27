@@ -6,7 +6,7 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="ConstructorCallsOverridableMethod"
+    <!--<rule name="ConstructorCallsOverridableMethod"
           message="Overridable method ''{0}'' called during construction"
           class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethod">
       <description>
@@ -43,8 +43,8 @@ These are new rules that are still in progress
   ]]>
       </example>
     </rule>
+    -->
 
-<!--
     <rule name="FooRule"
           message="foo?" symboltable="true"
           class="net.sourceforge.pmd.rules.FooRule">
@@ -66,7 +66,6 @@ These are new rules that are still in progress
   ]]>
       </example>
       </rule>
-    -->
 
 
     <!--

@@ -97,6 +97,8 @@ public interface JavaParserVisitor
   public Object visit(ASTThrowStatement node, Object data);
   public Object visit(ASTSynchronizedStatement node, Object data);
   public Object visit(ASTTryStatement node, Object data);
+  public Object visit(ASTCatchStatement node, Object data);
+  public Object visit(ASTFinallyStatement node, Object data);
   public Object visit(ASTAssertStatement node, Object data);
   public Object visit(ASTRUNSIGNEDSHIFT node, Object data);
   public Object visit(ASTRSIGNEDSHIFT node, Object data);

@@ -16,6 +16,8 @@ import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTCatchStatement;
+import net.sourceforge.pmd.ast.ASTFinallyStatement;
 
 import java.util.Stack;
 
@@ -131,6 +133,18 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTBlock node, Object data) {
+        createLocalScope(node);
+        cont(node);
+        return data;
+    }
+
+    public Object visit(ASTCatchStatement node, Object data) {
+        createLocalScope(node);
+        cont(node);
+        return data;
+    }
+
+    public Object visit(ASTFinallyStatement node, Object data) {
         createLocalScope(node);
         cont(node);
         return data;

@@ -109,7 +109,7 @@ a block whose last statement is NOT a call to super.finalize -->
    /Block
       /BlockStatement[last()]
       [not(Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image='finalize'])]
-      [not(Statement/TryStatement[@Finally='true']
+      [not(Statement/TryStatement/FinallyStatement
        /Block/BlockStatement/Statement/StatementExpression
         /PrimaryExpression/PrimaryPrefix[@Image='finalize'])]
 ]]>

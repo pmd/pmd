@@ -19,9 +19,9 @@ public class EmptyFinallyBlockRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "", 1, rule),
-           new TestDescriptor(TEST2, "", 1, rule),
-           new TestDescriptor(TEST3, "", 0, rule),
+           new TestDescriptor(TEST1, "empty try/catch/finally", 1, rule),
+           new TestDescriptor(TEST2, "try/finally, no catch", 1, rule),
+           new TestDescriptor(TEST3, "finally block with contents", 0, rule),
            new TestDescriptor(TEST4, "multiple catch blocks with finally", 1, rule),
        });
     }

@@ -7,53 +7,12 @@ import java.util.List;
 
 public class ASTTryStatement extends SimpleNode {
 
-    private boolean hasCatch;
-    private boolean hasFinally;
-
-
     public ASTTryStatement(int id) {
         super(id);
     }
 
     public ASTTryStatement(JavaParser p, int id) {
         super(p, id);
-    }
-
-    public void setHasCatch() {
-        hasCatch = true;
-    }
-
-    public void setHasFinally() {
-        hasFinally = true;
-    }
-
-    public boolean hasCatch() {
-        return hasCatch;
-    }
-
-    public boolean hasFinally() {
-        return hasFinally;
-    }
-
-    public ASTBlock getFinallyBlock() {
-        if (!hasFinally) {
-            throw new RuntimeException("ASTTryStatement.getFinallyBlock() called, but no finally statement exists");
-        }
-        return (ASTBlock) jjtGetChild(jjtGetNumChildren() - 1);
-    }
-
-    /**
-     * Call hasCatch() before you call this method
-     */
-    public List getCatchBlocks() {
-        int numChildren = jjtGetNumChildren();
-        if (hasFinally)
-            numChildren--;
-        List blocks = new ArrayList();
-        for (int i = 1; i < numChildren; i += 2) {
-            blocks.add(new ASTCatch((ASTFormalParameter) jjtGetChild(i + 0), (ASTBlock) jjtGetChild(i + 1)));
-        }
-        return blocks;
     }
 
     /**
@@ -63,19 +22,22 @@ public class ASTTryStatement extends SimpleNode {
         return visitor.visit(this, data);
     }
 
-    public void dump(String prefix) {
-        String x = "";
-        if (hasCatch) {
-            x += ":(has catch)";
-        }
-        if (hasFinally) {
-            if (x == "") {
-                x += ":";
+    public boolean hasFinally() {
+        for (int i =0; i<this.jjtGetNumChildren(); i++) {
+            if (jjtGetChild(i) instanceof ASTFinallyStatement) {
+                return true;
             }
-            x += "(has finally)";
         }
-        System.out.println(toString(prefix) + x);
-        dumpChildren(prefix);
+        return false;
+    }
+
+    public ASTFinallyStatement getFinally() {
+        for (int i =0; i<this.jjtGetNumChildren(); i++) {
+            if (jjtGetChild(i) instanceof ASTFinallyStatement) {
+                return (ASTFinallyStatement)jjtGetChild(i);
+            }
+        }
+        throw new RuntimeException("ASTTryStatement.getFinally called but this try stmt doesn't contain a finally block");
     }
 
 }

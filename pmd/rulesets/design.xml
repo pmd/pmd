@@ -992,7 +992,7 @@ or (  ./AllocationExpression
           <property name="xpath">
               <value>
     <![CDATA[
-//TryStatement/FormalParameter
+//CatchStatement/FormalParameter
  /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
   /Name[
    @Image = ./ancestor::Block/preceding-sibling::FormalParameter
@@ -1105,5 +1105,5 @@ class Foo {
            </example>
         </rule>
 
-    
+
 </ruleset>

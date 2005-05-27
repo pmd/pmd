@@ -96,21 +96,23 @@ public interface JavaParserTreeConstants
   public int JJTTHROWSTATEMENT = 89;
   public int JJTSYNCHRONIZEDSTATEMENT = 90;
   public int JJTTRYSTATEMENT = 91;
-  public int JJTASSERTSTATEMENT = 92;
-  public int JJTRUNSIGNEDSHIFT = 93;
-  public int JJTRSIGNEDSHIFT = 94;
-  public int JJTANNOTATION = 95;
-  public int JJTNORMALANNOTATION = 96;
-  public int JJTMARKERANNOTATION = 97;
-  public int JJTSINGLEMEMBERANNOTATION = 98;
-  public int JJTMEMBERVALUEPAIRS = 99;
-  public int JJTMEMBERVALUEPAIR = 100;
-  public int JJTMEMBERVALUE = 101;
-  public int JJTMEMBERVALUEARRAYINITIALIZER = 102;
-  public int JJTANNOTATIONTYPEDECLARATION = 103;
-  public int JJTANNOTATIONTYPEBODY = 104;
-  public int JJTANNOTATIONTYPEMEMBERDECLARATION = 105;
-  public int JJTDEFAULTVALUE = 106;
+  public int JJTCATCHSTATEMENT = 92;
+  public int JJTFINALLYSTATEMENT = 93;
+  public int JJTASSERTSTATEMENT = 94;
+  public int JJTRUNSIGNEDSHIFT = 95;
+  public int JJTRSIGNEDSHIFT = 96;
+  public int JJTANNOTATION = 97;
+  public int JJTNORMALANNOTATION = 98;
+  public int JJTMARKERANNOTATION = 99;
+  public int JJTSINGLEMEMBERANNOTATION = 100;
+  public int JJTMEMBERVALUEPAIRS = 101;
+  public int JJTMEMBERVALUEPAIR = 102;
+  public int JJTMEMBERVALUE = 103;
+  public int JJTMEMBERVALUEARRAYINITIALIZER = 104;
+  public int JJTANNOTATIONTYPEDECLARATION = 105;
+  public int JJTANNOTATIONTYPEBODY = 106;
+  public int JJTANNOTATIONTYPEMEMBERDECLARATION = 107;
+  public int JJTDEFAULTVALUE = 108;
 
 
   public String[] jjtNodeName = {
@@ -206,6 +208,8 @@ public interface JavaParserTreeConstants
     "ThrowStatement",
     "SynchronizedStatement",
     "TryStatement",
+    "CatchStatement",
+    "FinallyStatement",
     "AssertStatement",
     "RUNSIGNEDSHIFT",
     "RSIGNEDSHIFT",

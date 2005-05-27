@@ -119,7 +119,7 @@ try {
       <property name="xpath">
         <value>
             <![CDATA[
-//TryStatement/FormalParameter/Type
+//CatchStatement/FormalParameter/Type
  /ReferenceType/ClassOrInterfaceType[@Image='NullPointerException']
  ]]>
         </value>
