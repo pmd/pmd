@@ -2,9 +2,6 @@ package test.net.sourceforge.pmd.ast;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;

@@ -24,10 +24,10 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.IPositionProvider;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.IPositionProvider;
 
 import java.util.HashSet;
 import java.util.Set;

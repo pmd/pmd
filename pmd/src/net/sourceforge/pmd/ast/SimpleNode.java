@@ -2,16 +2,14 @@
 package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.IPositionProvider;
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.symboltable.Scope;
+import org.jaxen.BaseXPath;
+import org.jaxen.JaxenException;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jaxen.BaseXPath;
-import org.jaxen.XPath;
-import org.jaxen.JaxenException;
 
 public class SimpleNode implements Node , IPositionProvider {
     protected Node parent;

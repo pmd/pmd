@@ -2,8 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ASTTryStatement extends SimpleNode {
 
