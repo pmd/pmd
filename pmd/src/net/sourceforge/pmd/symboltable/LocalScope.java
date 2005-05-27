@@ -30,13 +30,6 @@ public class LocalScope extends AbstractScope {
     }
 
     public void addDeclaration(VariableNameDeclaration nameDecl) {
-/*
-        if (nameDecl.isExceptionBlockParameter()) {
-            // this declaration needs to go somewhere... should this be delegated to the next
-            // highest LocalScope?
-            return;
-        }
-*/
         if (variableNames.containsKey(nameDecl)) {
             throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
         }
