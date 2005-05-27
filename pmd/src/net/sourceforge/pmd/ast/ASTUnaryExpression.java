@@ -20,8 +20,4 @@ public class ASTUnaryExpression extends SimpleNode {
         return visitor.visit(this, data);
     }
 
-    public void dump(String prefix) {
-        System.out.println(toString(prefix) + ":" + (getImage()));
-        dumpChildren(prefix);
-    }
 }

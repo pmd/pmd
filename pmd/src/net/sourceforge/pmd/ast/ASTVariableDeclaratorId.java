@@ -60,9 +60,4 @@ public class ASTVariableDeclaratorId extends SimpleNode {
         return (SimpleNode) typeNode.jjtGetChild(0);
     }
 
-    public void dump(String prefix) {
-        System.out.println(toString(prefix) + "(" + getImage() + ")");
-        dumpChildren(prefix);
-    }
-
 }

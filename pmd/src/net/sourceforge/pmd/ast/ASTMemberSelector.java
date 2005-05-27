@@ -11,11 +11,6 @@ public class ASTMemberSelector extends SimpleNode {
     super(p, id);
   }
 
-    public void dump(String prefix) {
-        System.out.println(toString(prefix) + "(" + getImage() + ")");
-        dumpChildren(prefix);
-    }
-
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
     return visitor.visit(this, data);

@@ -311,7 +311,7 @@ public class SimpleNode implements Node , IPositionProvider {
     /* Override this method if you want to customize how the node dumps
        out its children. */
     public void dump(String prefix) {
-        System.out.println(toString(prefix));
+        System.out.println(toString(prefix) + (image == null ? "" : ":" + image));
         dumpChildren(prefix);
     }
 

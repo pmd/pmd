@@ -30,16 +30,6 @@ public class ASTPrimarySuffix extends SimpleNode {
         return this.isArguments;
     }
 
-    public void dump(String prefix) {
-        if (getImage() == null) {
-            System.out.println(toString(prefix));
-        } else {
-            System.out.println(toString(prefix) + ":" + getImage());
-        }
-        dumpChildren(prefix);
-    }
-
-
     /**
      * Accept the visitor. *
      */
