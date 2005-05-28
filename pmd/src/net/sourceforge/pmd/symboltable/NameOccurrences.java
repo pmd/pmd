@@ -52,7 +52,6 @@ public class NameOccurrences {
         }
         if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
             ((NameOccurrence)names.getLast()).setIsMethodOrConstructorInvocation();
-            //((NameOccurrence) names.get(names.size() - 1)).setIsMethodOrConstructorInvocation();
         }
     }
 
