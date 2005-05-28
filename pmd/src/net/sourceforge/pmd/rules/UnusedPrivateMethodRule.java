@@ -41,11 +41,9 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         return data;
     }
 
-    public Object visit(ASTClassOrInterfaceBody node, Object data) {
-        if (node.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration)  {
-            if (((ASTClassOrInterfaceDeclaration)node.jjtGetParent()).isInterface()) {
-                return data;
-            }
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
         }
 
         depth++;
@@ -164,9 +162,6 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         }
     }
 
-    /**
-     * This checks that the nodeImage is not the name of the enclosing method
-     */
     private final boolean methodCalledFromItself(SimpleNode node, String nodeImage) {
         final ASTMethodDeclaration md = (ASTMethodDeclaration) node.getFirstParentOfType(ASTMethodDeclaration.class);
         if (md!=null) {
