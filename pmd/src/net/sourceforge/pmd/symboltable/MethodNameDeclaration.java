@@ -18,7 +18,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration implements Na
     public boolean equals(Object o) {
         MethodNameDeclaration otherMethodDecl = (MethodNameDeclaration) o;
 
-        // compare method name
+        // compare name
         if (!otherMethodDecl.node.getImage().equals(node.getImage())) {
             return false;
         }

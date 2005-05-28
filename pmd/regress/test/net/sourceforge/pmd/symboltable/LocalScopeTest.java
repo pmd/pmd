@@ -16,16 +16,6 @@ import java.util.Map;
 
 public class LocalScopeTest extends STBBaseTst {
 
-    private class MyASTVariableDeclaratorId extends ASTVariableDeclaratorId {
-        public MyASTVariableDeclaratorId(int x) {
-            super(x);
-        }
-
-        public boolean isExceptionBlockParameter() {
-            return true;
-        }
-    }
-
     public void testNameWithThisOrSuperIsNotFlaggedAsUnused() {
         LocalScope scope = new LocalScope();
         ASTName name = new ASTName(1);

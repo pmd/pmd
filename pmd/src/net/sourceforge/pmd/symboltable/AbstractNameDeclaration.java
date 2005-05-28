@@ -13,11 +13,12 @@ public abstract class AbstractNameDeclaration implements IPositionProvider {
     public AbstractNameDeclaration(SimpleNode node) {
         this.node = node;
     }
-
+    public SimpleNode getNode() {
+        return node;
+    }
     public Scope getScope() {
         return node.getScope();
     }
-
     public String getImage() {
         return node.getImage();
     }

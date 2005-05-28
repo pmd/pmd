@@ -13,13 +13,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.LinkedList;
 
 public class NameOccurrences {
 
-    private List names = new ArrayList();
+    private LinkedList names = new LinkedList();
 
     public NameOccurrences(ASTPrimaryExpression node) {
-        buildOccurrences(node);
+        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
+        if (prefix.usesSuperModifier()) {
+            add(new NameOccurrence(prefix, "super"));
+        } else if (prefix.usesThisModifier()) {
+            add(new NameOccurrence(prefix, "this"));
+        }
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            checkForNameChild((SimpleNode)node.jjtGetChild(i));
+        }
     }
 
     public List getNames() {
@@ -28,20 +37,6 @@ public class NameOccurrences {
 
     public Iterator iterator() {
         return names.iterator();
-    }
-
-    private void buildOccurrences(ASTPrimaryExpression node) {
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
-        if (prefix.usesSuperModifier()) {
-            add(new NameOccurrence(prefix, "super"));
-        } else if (prefix.usesThisModifier()) {
-            add(new NameOccurrence(prefix, "this"));
-        }
-        checkForNameChild(prefix);
-
-        for (int i = 1; i < node.jjtGetNumChildren(); i++) {
-            checkForNameChild((ASTPrimarySuffix) node.jjtGetChild(i));
-        }
     }
 
     private void checkForNameChild(SimpleNode node) {
@@ -56,7 +51,8 @@ public class NameOccurrences {
             }
         }
         if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
-            ((NameOccurrence) names.get(names.size() - 1)).setIsMethodOrConstructorInvocation();
+            ((NameOccurrence)names.getLast()).setIsMethodOrConstructorInvocation();
+            //((NameOccurrence) names.get(names.size() - 1)).setIsMethodOrConstructorInvocation();
         }
     }
 

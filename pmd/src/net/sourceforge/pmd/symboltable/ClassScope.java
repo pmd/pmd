@@ -15,7 +15,7 @@ public class ClassScope extends AbstractScope {
     protected Map methodNames = new HashMap();
     protected Map variableNames = new HashMap();
 
-    // FIXME - this breaks give sufficiently nested code
+    // FIXME - this breaks given sufficiently nested code
     private static int anonymousInnerClassCounter = 1;
     private String className;
 
@@ -57,6 +57,10 @@ public class ClassScope extends AbstractScope {
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
         Applier.apply(f, variableNames.keySet().iterator());
         return f.getUsed();
+    }
+
+    public Map getMethodDeclarations() {
+        return methodNames;
     }
 
     public ClassScope getEnclosingClassScope() {
@@ -109,7 +113,6 @@ public class ClassScope extends AbstractScope {
     }
 
     private String clipClassName(String in) {
-        int firstDot = in.indexOf('.');
-        return in.substring(firstDot + 1);
+        return in.substring(in.indexOf('.') + 1);
     }
 }

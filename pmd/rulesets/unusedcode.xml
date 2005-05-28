@@ -49,7 +49,7 @@ public void doSomething() {
 
 
     <rule name="UnusedPrivateMethod"
-        message="Avoid unused private methods such as ''{0}''"
+        message="Avoid unused private methods such as ''{0}''"  symboltable="true"
         class="net.sourceforge.pmd.rules.UnusedPrivateMethodRule">
     <description>
 Unused Private Method detects when a private method is declared but is unused.
