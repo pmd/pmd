@@ -5,6 +5,8 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.symboltable.ClassScope;
+import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -22,13 +24,11 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Map;
 
 public class UnusedPrivateMethodRule extends AbstractRule {
 
     private final Set privateMethodNodes = new HashSet();
-
-    // TODO - What I need is a Visitor that does a breadth first search
-    private boolean trollingForDeclarations;
     private int depth;
 
     // Reset state when we leave an ASTCompilationUnit
@@ -37,7 +37,6 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         super.visit(node, data);
         privateMethodNodes.clear();
         depth = 0;
-        trollingForDeclarations = false;
         return data;
     }
 
@@ -46,16 +45,15 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             return data;
         }
 
-        depth++;
+        ClassScope cs = (ClassScope)node.getScope();
+        Map methods = cs.getMethodDeclarations();
+        for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
+            MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+            check((ASTMethodDeclarator)mnd.getNode());
 
-        // first troll for declarations, but only in the top level class
-        if (depth == 1) {
-            trollingForDeclarations = true;
-            super.visit(node, null);
-            trollingForDeclarations = false;
-        } else {
-            trollingForDeclarations = false;
         }
+
+        depth++;
 
         // troll for usages, regardless of depth
         super.visit(node, null);
@@ -70,25 +68,20 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         return data;
     }
 
-    public Object visit(ASTMethodDeclarator node, Object data) {
-        if (!trollingForDeclarations) {
-            return super.visit(node, data);
-        }
-
+    public void check(ASTMethodDeclarator node) {
         AccessNode parent = (AccessNode) node.jjtGetParent();
         if (!parent.isPrivate()) {
-            return super.visit(node, data);
+            return;
         }
         // exclude these serializable things
         if (node.getImage().equals("readObject") || node.getImage().equals("writeObject") || node.getImage().equals("readResolve") || node.getImage().equals("writeReplace")) {
-            return super.visit(node, data);
+            return;
         }
         privateMethodNodes.add(node);
-        return super.visit(node, data);
     }
 
     public Object visit(ASTPrimarySuffix node, Object data) {
-        if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
+        if ((node.jjtGetParent() instanceof ASTPrimaryExpression) && (node.getImage() != null)) {
             if (node.jjtGetNumChildren() > 0) {
                 ASTArguments args = (ASTArguments) node.jjtGetChild(0);
                 removeIfUsed(node, args.getArgumentCount());
@@ -135,7 +128,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     }
 
     public Object visit(ASTName node, Object data) {
-        if (!trollingForDeclarations && (node.jjtGetParent() instanceof ASTPrimaryPrefix)) {
+        if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
             ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) node.jjtGetParent().jjtGetParent();
             if (primaryExpression.jjtGetNumChildren() > 1) {
                 ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primaryExpression.jjtGetChild(1);

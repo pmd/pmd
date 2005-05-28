@@ -20,6 +20,19 @@ import java.util.List;
 
 public class ClassScopeTest extends STBBaseTst {
 
+/*
+    public void testEnumsClassScope() {
+        parseCode15(ENUM_SCOPE);
+    }
+
+    // FIXME - these will break when this goes from Anonymous$1 to Foo$1
+    public void testAnonymousInnerClassName() {
+        ClassScope s = new ClassScope();
+        assertEquals("Anonymous$1", s.getClassName());
+        s = new ClassScope();
+        assertEquals("Anonymous$2", s.getClassName());
+    }
+
     public void testContains() {
         ClassScope s = new ClassScope("Foo");
         ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
@@ -75,6 +88,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("bar", mnd.getImage());
         assertEquals("bar", ((MethodNameDeclaration)i.next()).getImage());
     }
+*/
 
     public void testMethodUsageSeen() {
         parseCode(METHOD_USAGE_SEEN);
@@ -88,18 +102,6 @@ public class ClassScopeTest extends STBBaseTst {
         List usages = (List)m.get(mnd);
         //assertEquals(1, usages.size());
         //assertEquals("bar", ((MethodNameDeclaration)m.keySet().iterator().next()).getImage());
-    }
-
-    public void testEnumsClassScope() {
-        parseCode15(ENUM_SCOPE);
-    }
-
-    // FIXME - these will break when this goes from Anonymous$1 to Foo$1
-    public void testAnonymousInnerClassName() {
-        ClassScope s = new ClassScope();
-        assertEquals("Anonymous$1", s.getClassName());
-        s = new ClassScope();
-        assertEquals("Anonymous$2", s.getClassName());
     }
 
     private static final String CLASS_NAME =

@@ -9,44 +9,22 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 import java.util.Iterator;
 
-public class SymbolFacade extends JavaParserVisitorAdapter {
+public class SymbolFacade {
 
     public void initializeWith(ASTCompilationUnit node) {
-        // first, traverse the AST and create all the scopes
+        // TODO - can the scope and declaration traversals be combined?
+
+        // first create all the scopes
         BasicScopeCreationVisitor sc = new BasicScopeCreationVisitor();
         node.jjtAccept(sc, null);
 
-        // traverse the AST and pick up all the declarations
+        // pick up all the declarations
         DeclarationFinder df = new DeclarationFinder();
         node.jjtAccept(df, null);
 
-        // finally, traverse the AST and pick up all the name occurrences
-        node.jjtAccept(this, null);
-    }
-
-    public Object visit(ASTPrimaryExpression node, Object data) {
-        NameOccurrences qualifiedNames = new NameOccurrences(node);
-        NameDeclaration decl = null;
-        for (Iterator i = qualifiedNames.iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) i.next();
-            Search search = new Search(occ);
-            if (decl == null) {
-                // doing the first name lookup
-                search.execute();
-                decl = search.getResult();
-                if (decl == null) {
-                    // we can't find it, so just give up
-                    // when we decide to do searches across compilation units like a compiler would, we'll
-                    // force this to either find a symbol or throw a SymbolNotFoundException
-                    break;
-                }
-            } else {
-                // now we've got a scope we're starting with, so work from there
-                search.execute(decl.getScope());
-                decl = search.getResult();
-            }
-        }
-        return super.visit(node, data);
+        // finally, pick up all the name occurrences
+        OccurrenceFinder of = new OccurrenceFinder();
+        node.jjtAccept(of, null);
     }
 
 }
