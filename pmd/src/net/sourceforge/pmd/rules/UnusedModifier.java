@@ -18,12 +18,8 @@ public class UnusedModifier extends AbstractRule {
             }
         } else if (node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
             ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if (parent.isInterface()) {
+            if (parent.isInterface() || (!parent.isInterface() && node.isStatic())) {
                 flag(data, node);
-            } else {
-                if (node.isStatic()) {
-                    flag(data, node);
-                }
             }
         }
         return super.visit(node, data);
