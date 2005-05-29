@@ -49,8 +49,10 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         Map methods = cs.getMethodDeclarations();
         for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
             MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
-            check((ASTMethodDeclarator)mnd.getNode());
-
+            ASTMethodDeclarator n = (ASTMethodDeclarator)mnd.getNode();
+            if (check(n)) {
+                privateMethodNodes.add(n);
+            }
         }
 
         depth++;
@@ -68,16 +70,8 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         return data;
     }
 
-    public void check(ASTMethodDeclarator node) {
-        AccessNode parent = (AccessNode) node.jjtGetParent();
-        if (!parent.isPrivate()) {
-            return;
-        }
-        // exclude these serializable things
-        if (node.getImage().equals("readObject") || node.getImage().equals("writeObject") || node.getImage().equals("readResolve") || node.getImage().equals("writeReplace")) {
-            return;
-        }
-        privateMethodNodes.add(node);
+    private boolean check(ASTMethodDeclarator node) {
+        return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.getImage().equals("readObject") && !node.getImage().equals("writeObject") && !node.getImage().equals("readResolve") && !node.getImage().equals("writeReplace");
     }
 
     public Object visit(ASTPrimarySuffix node, Object data) {
