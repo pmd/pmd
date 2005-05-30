@@ -25,8 +25,8 @@ public class ExcessiveImports extends ExcessiveNodeCountRule {
     /**
      * Hook method to count imports. This is a user defined value.
      *
-     * @param ASTImportDeclaration node
-     * @param Object               data
+     * @param node
+     * @param data
      * @return Object
      */
     public Object visit(ASTImportDeclaration node, Object data) {

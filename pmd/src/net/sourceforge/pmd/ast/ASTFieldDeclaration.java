@@ -60,7 +60,7 @@ public class ASTFieldDeclaration extends AccessNode implements Dimensionable {
     /**
      * Gets the variable name of this field.
      * This method searches the first VariableDeclartorId node and returns it's image or <code>null</code> if the child node is not found.
-     * @return
+     * @return a String representing the name of the variable
      */
     public String getVariableName() {
     	ASTVariableDeclaratorId decl = (ASTVariableDeclaratorId) getFirstChildOfType(ASTVariableDeclaratorId.class);

@@ -26,7 +26,7 @@ public class ASTMethodDeclaration extends AccessNode {
 
 	/**
 	 * Gets the name of the method.
-	 * @return
+	 * @return a String representing the name of the method
 	 */
 	public String getMethodName() {
 		ASTMethodDeclarator md = (ASTMethodDeclarator) getFirstChildOfType(ASTMethodDeclarator.class);

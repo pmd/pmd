@@ -22,7 +22,7 @@ public class ASTBlockStatement extends SimpleNode {
     /**
      * Tells if this BlockStatement is an allocation statement. 
      * This is done by 
-     * @returns the result of !findChildrenOfType(ASTAllocationExpression.class).isEmpty()
+     * @return the result of !findChildrenOfType(ASTAllocationExpression.class).isEmpty()
      */
     public final boolean isAllocation() {
         return !findChildrenOfType(ASTAllocationExpression.class).isEmpty();
