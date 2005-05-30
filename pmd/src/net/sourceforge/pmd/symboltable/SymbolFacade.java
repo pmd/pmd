@@ -4,10 +4,6 @@
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-
-import java.util.Iterator;
 
 public class SymbolFacade {
 
