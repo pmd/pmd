@@ -162,9 +162,9 @@
          <action
                label="%action.checkcpd"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.eclipse.actions.CPDCheckProjectAction"
+               class="net.sourceforge.pmd.eclipse.cpd.CPDCheckProjectAction"
                menubarPath="pmd.menu/group"
-               enablesFor="+"
+               enablesFor="1"
                id="net.sourceforge.pmd.eclipse.cpdCheckProjectAction">
          </action>
          <action

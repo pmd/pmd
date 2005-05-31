@@ -1,4 +1,6 @@
-package net.sourceforge.pmd.eclipse;
+package net.sourceforge.pmd.eclipse.cpd;
+
+import java.io.IOException;
 
 import net.sourceforge.pmd.cpd.CPD;
 
@@ -8,7 +10,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
  * A visitor to process IFile resource against CPD
@@ -18,6 +19,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/05/31 23:04:11  phherlin
+ * Fix Bug 1190624: refactor CPD integration
+ *
  * Revision 1.4  2003/05/19 22:26:07  phherlin
  * Updating PMD engine to v1.05
  * Fixing CPD usage to conform to new engine implementation
@@ -40,16 +44,16 @@ public class CPDVisitor implements IResourceVisitor {
      * Add java files into the CPD object
      */
     public boolean visit(IResource resource) throws CoreException {
-        log.debug("CPD Visiting " + resource);
+        log.debug("CPD Visiting " + resource.getName());
         boolean result = true;
         if ((resource instanceof IFile)
             && (((IFile) resource).getFileExtension() != null)
             && ((IFile) resource).getFileExtension().equals("java")) {
             try {
-                log.debug("CPD adding file " + resource.getName());
+                log.debug("Add file " + resource.getName());
                 cpd.add(((IFile) resource).getLocation().toFile());
-            } catch (Exception e) {
-                MessageDialog.openError(null, "CPD", e.toString());
+            } catch (IOException e) {
+                log.warn("IOException when adding file " + resource.getName() + " to CPD. Continuing.", e);
             }
             result = false;
         }

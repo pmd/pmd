@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.QualifiedName;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2005/05/31 23:04:10  phherlin
+ * Fix Bug 1190624: refactor CPD integration
+ *
  * Revision 1.5  2005/05/31 20:33:02  phherlin
  * Continuing refactoring
  *
@@ -101,5 +104,6 @@ public interface PMDPluginConstants {
     public static final String CSV_REPORT_NAME = "pmd-report.csv";
     public static final String XML_REPORT_NAME = "pmd-report.xml";
     public static final String TXT_REPORT_NAME = "pmd-report.txt";
+    public static final String SIMPLE_CPDREPORT_NAME = "cpd-report.txt";
 
 }
