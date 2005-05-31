@@ -32,6 +32,7 @@ import java.util.ResourceBundle;
 public abstract class AbstractProcessableCommand implements Command {
     // @PMD:REVIEWED:SingularField: by Herlin on 10/05/05 23:24
     private CommandProcessor commandProcessor;
+    private boolean terminated;
 
     /**
      * Impementation method of a processable command. Developers of concrete
@@ -62,7 +63,7 @@ public abstract class AbstractProcessableCommand implements Command {
     /**
      * @see Command#join()
      */
-    public void join() throws CommandException {
+    public final void join() throws CommandException {
         this.getCommandProcessor().waitCommandToFinish(this);
     }
 
@@ -96,6 +97,20 @@ public abstract class AbstractProcessableCommand implements Command {
      */
     public abstract boolean isReadyToExecute();
 
+    /**
+     * @return Returns the terminated.
+     */
+    public final boolean isTerminated() {
+        return this.terminated;
+    }
+    
+    /**
+     * @param terminated The terminated to set.
+     */
+    public final void setTerminated(final boolean terminated) {
+        this.terminated = terminated;
+    }
+    
     /**
      * @see name.herlin.command.Command#reset()
      */

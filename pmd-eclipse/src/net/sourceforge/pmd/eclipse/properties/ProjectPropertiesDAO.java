@@ -47,6 +47,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/31 20:44:40  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  *
@@ -57,7 +60,7 @@ public interface ProjectPropertiesDAO {
      * Load a project properties
      * @param project a project
      */
-    ProjectPropertiesDO readProjectProperties(IProject project) throws DAOException;
+    ProjectPropertiesTO readProjectProperties(IProject project) throws DAOException;
     
     /**
      * Save project properties
@@ -66,5 +69,5 @@ public interface ProjectPropertiesDAO {
      * @param monitor a progress monitor
      * @throws DAOException
      */
-    void writeProjectProperties(IProject project, ProjectPropertiesDO projectProperties, IProgressMonitor monitor) throws DAOException;
+    void writeProjectProperties(IProject project, ProjectPropertiesTO projectProperties, IProgressMonitor monitor) throws DAOException;
 }

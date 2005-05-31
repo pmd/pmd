@@ -49,6 +49,11 @@ public interface Command extends java.io.Serializable {
     boolean isReadyToExecute();
     
     /**
+     * @return whether this command has terminated its job
+     */
+    boolean isTerminated();
+    
+    /**
      * Concrete command should implement this method to reset input properties
      * in order to make the instance of the command to be reused for further
      * usage.

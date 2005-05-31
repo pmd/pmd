@@ -36,76 +36,73 @@
 package net.sourceforge.pmd.eclipse.properties;
 
 /**
- * This class is a simple data bean to help serialize project properties. Is
- * used by the ProjectPropertiesDO to handle project selected rules. This
- * class holds single rule information.
+ * This class is a simple data bean to let simply serialize project properties
+ * to an XML file (or any). 
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/05/31 20:44:40  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  *
- *  
+ *
  */
-public class RuleSpecDO {
-    private String name;
-    private String ruleSetName;
-
+public class ProjectPropertiesTO {
+    private RuleSpecTO[] rules;
+    private String workingSetName;
+    private boolean ruleSetStoredInProject;
+    
     /**
-     * Default constructor
-     *  
+     * @return rules an array of RuleSpecTO objects that keep information of rules
+     * selected for the current project
      */
-    public RuleSpecDO() {
-        super();
+    public RuleSpecTO[] getRules() {
+        return rules;
+    }
+    
+    /**
+     * Set the rules selected for a project
+     * @param rules an array of RuleSpecTO objects describing each select project
+     * rules.
+     */
+    public void setRules(final RuleSpecTO[] rules) {
+        this.rules = rules;
+    }
+    
+    /**
+     * @return ruleSetStoredInProject tells whether the project use a ruleset
+     * stored in the project or the global plugin ruleset.
+     */
+    public boolean isRuleSetStoredInProject() {
+        return ruleSetStoredInProject;
+    }
+    
+    /**
+     * Tells whether a project must use a ruleset stored in the project or the
+     * global project ruleset.
+     * @param ruleSetStoredInProject see above.
+     */
+    public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
+        this.ruleSetStoredInProject = ruleSetStoredInProject;
+    }
+    
+    /**
+     * @return workingSetName the name of the project workingSet
+     */
+    public String getWorkingSetName() {
+        return workingSetName;
+    }
+    
+    /**
+     * Set the project working set name
+     * @param workingSetName the name of the project working set
+     */
+    public void setWorkingSetName(final String workingSetName) {
+        this.workingSetName = workingSetName;
     }
 
-    /**
-     * Constructor with fields
-     * 
-     * @param name
-     *            a rule name
-     * @param ruleSetName
-     *            the name of the ruleset where the rule is defined
-     */
-    public RuleSpecDO(final String name, final String ruleSetName) {
-        super();
-        this.name = name;
-        this.ruleSetName = ruleSetName;
-    }
-
-    /**
-     * @return name a rule name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set the rule name
-     * 
-     * @param name
-     *            the rule name
-     */
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return ruleSetName the name of ruleset the rule come from
-     */
-    public String getRuleSetName() {
-        return ruleSetName;
-    }
-
-    /**
-     * Set the ruleSet name the rule come from
-     * 
-     * @param ruleSetName
-     *            a ruleSet name
-     */
-    public void setRuleSetName(final String ruleSetName) {
-        this.ruleSetName = ruleSetName;
-    }
 }

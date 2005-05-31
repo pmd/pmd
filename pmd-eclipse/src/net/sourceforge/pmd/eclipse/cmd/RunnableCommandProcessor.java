@@ -35,9 +35,9 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
+import name.herlin.command.AbstractProcessableCommand;
 import name.herlin.command.CommandException;
 import name.herlin.command.CommandProcessor;
-import name.herlin.command.AbstractProcessableCommand;
 import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 
@@ -59,6 +59,9 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/31 20:44:41  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.2  2005/05/10 21:49:26  phherlin
  * Fix new violations detected by PMD 3.1
  *
@@ -75,10 +78,9 @@ import org.eclipse.core.runtime.Status;
  *
  *
  */
-public class RunnableCommandProcessor implements CommandProcessor, IWorkspaceRunnable {
+public class RunnableCommandProcessor implements CommandProcessor {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.RunnableCommandProcessor");
-    private AbstractProcessableCommand command;
-
+    
     /**
      * @see name.herlin.command.CommandProcessor#processCommand(name.herlin.command.AbstractProcessableCommand)
      */
@@ -89,10 +91,10 @@ public class RunnableCommandProcessor implements CommandProcessor, IWorkspaceRun
             if (!aCommand.isReadyToExecute()) {
                 throw new UnsetInputPropertiesException();
             }
-            
+
+            final IWorkspaceRunnable task = new RunCommandTask(aCommand);
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            this.command = aCommand;
-            workspace.run(this, workspace.getRoot(), IWorkspace.AVOID_UPDATE, ((AbstractDefaultCommand) aCommand).getMonitor());
+            workspace.run(task, workspace.getRoot(), IWorkspace.AVOID_UPDATE, ((AbstractDefaultCommand) aCommand).getMonitor());
         } catch (CoreException e) {
             throw new CommandException(e);
         } finally {
@@ -103,24 +105,43 @@ public class RunnableCommandProcessor implements CommandProcessor, IWorkspaceRun
 
     /**
      * @see name.herlin.command.CommandProcessor#waitCommandToFinish(name.herlin.command.AbstractProcessableCommand)
+     * Warning: this is an active wait, cycling every 250ms
      */
     // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:46
     public void waitCommandToFinish(final AbstractProcessableCommand aCommand) throws CommandException {
-        // do noting
+        try {
+            if (!aCommand.isTerminated()) {
+                aCommand.wait();
+            }
+        } catch (InterruptedException e) {
+            throw new CommandException(e);
+        }
     }
     
     /**
      * Process the command as a batch
      * @param monitor
      * @throws CoreException
-     */
-    // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:48
-    public void run(final IProgressMonitor monitor) throws CoreException {
-        try {
-            this.command.execute();
-        } catch (CommandException e) {
-            PMDPlugin.getDefault().logError("Error executing command " + this.command.getName(), e);
-            throw new CoreException(new Status(IStatus.ERROR, PMDPlugin.PLUGIN_ID, 0, e.getMessage(), e));
+     */    
+    private class RunCommandTask implements IWorkspaceRunnable {
+        private final AbstractProcessableCommand command;
+
+        public RunCommandTask(final AbstractProcessableCommand command) {
+            super();
+            this.command = command;
+        }
+        
+        // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:48
+        public void run(final IProgressMonitor monitor) throws CoreException {
+            try {
+                this.command.execute();
+                synchronized (this.command) {
+                    this.command.notifyAll();
+                }
+            } catch (CommandException e) {
+                PMDPlugin.getDefault().logError("Error executing command " + this.command.getName(), e);
+                throw new CoreException(new Status(IStatus.ERROR, PMDPlugin.PLUGIN_ID, 0, e.getMessage(), e));
+            }
         }
     }
 }

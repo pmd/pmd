@@ -1,16 +1,7 @@
 package net.sourceforge.pmd.eclipse.cmd;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.eclipse.PMDPlugin;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
@@ -24,6 +15,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/31 20:44:41  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -68,10 +62,11 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
      * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
      */
     public boolean visit(final IResourceDelta delta) throws CoreException {
-        final IProgressMonitor monitor = getMonitor();
         boolean fProcessChildren = true;
 
-        if ((monitor == null) || ((monitor != null) && (!monitor.isCanceled()))) {
+        if (this.isCanceled()) {
+            fProcessChildren = false;
+        } else {
             if (delta.getKind() == IResourceDelta.ADDED) {
                 log.debug("Visiting added resource " + delta.getResource().getName());
                 visitAdded(delta.getResource());
@@ -81,13 +76,6 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
             } else { // other kinds are not visited            
                 log.debug("Resource " + delta.getResource().getName() + " not visited.");
             }
-            
-            if (monitor != null) {
-                monitor.worked(1);
-                log.debug("Monitor worked");
-            }
-        } else {
-            fProcessChildren = false;
         }
 
         return fProcessChildren;
@@ -98,7 +86,7 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
      * @param resource a new resource
      */
     private void visitAdded(final IResource resource) {
-        processResource(resource);
+        this.reviewResource(resource);
     }
 
     /**
@@ -106,42 +94,7 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
      * @param resource a changed resource
      */
     private void visitChanged(final IResource resource) {
-        processResource(resource);
-    }
-
-    /**
-     * Process a targeted resource
-     * @param resource the resource to process
-     */
-    private void processResource(final IResource resource) {
-        final IFile file = (IFile) resource.getAdapter(IFile.class);
-        if ((file != null)
-            && (file.getFileExtension() != null)
-            && (file.getFileExtension().equals("java"))) {
-                
-            if (getMonitor() != null) {
-                getMonitor().subTask(((IFile) resource).getName());
-            }            
-                
-            if (isFileInWorkingSet(file)) {
-                try {
-                    final Reader input = new InputStreamReader(file.getContents());
-                    final RuleContext context = new RuleContext();
-                    context.setSourceCodeFilename(file.getName());
-                    context.setReport(new Report());
-                    this.getPmdEngine().processFile(input, this.getRuleSet(), context);
-
-                    resource.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    updateMarkers(file, context, this.isUseTaskMarker(), this.getAccumulator());
-                } catch (CoreException e) {
-                    log.error("Core exception visiting " + resource.getName(), e); //TODO: complete message
-                } catch (PMDException e) {
-                    log.error("PMD exception visiting " + resource.getName(), e); // TODO: complete message
-                }
-            } else {
-                log.debug("The file " + file.getName() + " is not in the working set");
-            }
-        }
+        this.reviewResource(resource);
     }
 
 }

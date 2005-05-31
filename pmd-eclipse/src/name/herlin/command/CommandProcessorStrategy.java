@@ -38,7 +38,7 @@ public interface CommandProcessorStrategy {
      * Name of the bundle. This is "properties.CommandProcessorStrategy" by
      * default.
      */
-    String COMMAND_PROCESSOR_STRATEGY_BUNDLE = "properties.CommandProcessorStrategy";
+    String COMMAND_PROCESSOR_STRATEGY_BUNDLE = "properties.CommandProcessorStrategy"; // NOPMD
     
     /**
      * Key of the concrete strategy class. The value is "strategy.class". It

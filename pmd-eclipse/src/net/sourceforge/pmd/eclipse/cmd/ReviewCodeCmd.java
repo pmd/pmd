@@ -50,7 +50,7 @@ import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
-import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
+import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -72,6 +72,9 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/31 20:44:41  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.2  2005/05/10 21:49:18  phherlin
  * Fix new violations detected by PMD 3.1
  *
@@ -99,21 +102,28 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         this.setName("ReviewCode");
         this.setOutputProperties(true);
         this.setReadOnly(true);
+        this.setTerminated(false);
     }
 
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
-        if (this.resource == null) {
-            this.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), this.getStepsCount());
-            this.processResourceDelta();
-        } else {
-            this.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), this.getStepsCount());
-            this.processResource();
+        try {
+            if (this.resource == null) {
+                this.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), this.getStepsCount());
+                this.processResourceDelta();
+            } else {
+                this.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), this.getStepsCount());
+                this.processResource();
+            }
+
+            applyMarkers();
+
+        } finally {
+            this.setTerminated(true);
         }
 
-        applyMarkers();
     }
 
     /**
@@ -151,6 +161,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     public void reset() {
         this.setResource(null);
         this.markers = new HashMap();
+        this.setTerminated(false);
     }
 
     /**

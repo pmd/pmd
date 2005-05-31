@@ -38,7 +38,7 @@ package net.sourceforge.pmd.eclipse.cmd;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
-import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
+import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -51,6 +51,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2005/05/31 20:44:41  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.4  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -78,10 +81,11 @@ public class BuildProjectCommand extends AbstractDefaultCommand {
      */
     public BuildProjectCommand() {
         super();
-        setReadOnly(false);
-        setOutputProperties(false);
-        setName("BuildProject");
-        setDescription("Rebuild a project.");
+        this.setReadOnly(false);
+        this.setOutputProperties(false);
+        this.setTerminated(false);
+        this.setName("BuildProject");
+        this.setDescription("Rebuild a project.");
     }
 
     /**
@@ -89,7 +93,7 @@ public class BuildProjectCommand extends AbstractDefaultCommand {
      */
     public void execute() throws CommandException {
         try {
-            this.project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+            this.project.build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
             
             final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
             model.setNeedRebuild(false);
@@ -97,6 +101,8 @@ public class BuildProjectCommand extends AbstractDefaultCommand {
             throw new CommandException(e);
         } catch (ModelException e) {
             throw new CommandException(e);
+        } finally {
+            this.setTerminated(true);
         }
     }
 
@@ -113,5 +119,6 @@ public class BuildProjectCommand extends AbstractDefaultCommand {
      */
     public void reset() {
         this.setProject(null);
+        this.setTerminated(false);
     }
 }

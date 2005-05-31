@@ -63,6 +63,9 @@ import org.exolab.castor.xml.ValidationException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/31 20:44:40  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  *
@@ -76,8 +79,8 @@ public class ProjectPropertiesDAOCastor implements ProjectPropertiesDAO {
      * Load a project properties
      * @param project a project
      */
-    public ProjectPropertiesDO readProjectProperties(final IProject project) throws DAOException {
-        ProjectPropertiesDO projectProperties = null;
+    public ProjectPropertiesTO readProjectProperties(final IProject project) throws DAOException {
+        ProjectPropertiesTO projectProperties = null;
         
         try {
             final Mapping mapping = new Mapping();
@@ -88,7 +91,7 @@ public class ProjectPropertiesDAOCastor implements ProjectPropertiesDAO {
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {
                 final Reader reader = new InputStreamReader(propertiesFile.getContents());
                 final Unmarshaller unmarshaller = new Unmarshaller(mapping);
-                projectProperties = (ProjectPropertiesDO) unmarshaller.unmarshal(reader);
+                projectProperties = (ProjectPropertiesTO) unmarshaller.unmarshal(reader);
                 reader.close();
             }
         } catch (MarshalException e) {
@@ -113,7 +116,7 @@ public class ProjectPropertiesDAOCastor implements ProjectPropertiesDAO {
      * @param monitor a progress monitor
      * @throws DAOException
      */
-    public void writeProjectProperties(final IProject project, final ProjectPropertiesDO projectProperties, final IProgressMonitor monitor) throws DAOException {
+    public void writeProjectProperties(final IProject project, final ProjectPropertiesTO projectProperties, final IProgressMonitor monitor) throws DAOException {
         try {
             final Mapping mapping = new Mapping();
             final URL mappingSpecUrl = this.getClass().getResource(PROPERTIES_MAPPING);

@@ -51,6 +51,9 @@ import net.sourceforge.pmd.eclipse.PMDPluginConstants;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/31 20:44:41  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -211,6 +214,8 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         if (this.monitor != null) {
             this.monitor.done();
         }
+        
+        this.setTerminated(true);
     }
     
     /**

@@ -66,6 +66,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/31 20:44:40  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  * Revision 1.3 2005/05/07 13:32:04
@@ -335,7 +338,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      */
     private void loadProperties() throws DAOException, CoreException {
         log.debug("Loading project properties");
-        final ProjectPropertiesDO projectProperties = this.propertiesDao.readProjectProperties(this.project);
+        final ProjectPropertiesTO projectProperties = this.propertiesDao.readProjectProperties(this.project);
 
         this.setRuleSetFromProperties(projectProperties.getRules());
         this.setWorkingSetFromProperties(projectProperties.getWorkingSetName());
@@ -351,7 +354,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @param rules
      *            array of selected rules
      */
-    private void setRuleSetFromProperties(final RuleSpecDO[] rules) {
+    private void setRuleSetFromProperties(final RuleSpecTO[] rules) {
         this.projectRuleSet = new RuleSet();
         final RuleSet pluginRuleSet = PMDPlugin.getDefault().getRuleSet();
         for (int i = 0; i < rules.length; i++) {
@@ -380,7 +383,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @throws DAOException
      */
     private void saveProperties() throws DAOException {
-            final ProjectPropertiesDO bean = new ProjectPropertiesDO();
+            final ProjectPropertiesTO bean = new ProjectPropertiesTO();
             bean.setRuleSetStoredInProject(this.ruleSetStoredInProject);
             bean.setWorkingSetName(this.projectWorkingSet == null ? null : this.projectWorkingSet.getName());
 
@@ -388,9 +391,9 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             final Iterator i = this.projectRuleSet.getRules().iterator();
             while (i.hasNext()) {
                 final Rule rule = (Rule) i.next();
-                rules.add(new RuleSpecDO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
+                rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
             }
-            bean.setRules((RuleSpecDO[]) rules.toArray(new RuleSpecDO[rules.size()]));
+            bean.setRules((RuleSpecTO[]) rules.toArray(new RuleSpecTO[rules.size()]));
 
             this.propertiesDao.writeProjectProperties(this.project, bean, this.getMonitor());
     }

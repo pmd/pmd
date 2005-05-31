@@ -36,6 +36,8 @@
 package net.sourceforge.pmd.eclipse.cmd;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Report;
@@ -62,6 +64,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/31 20:44:41  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.2  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -88,6 +93,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
         this.setName("RenderReport");
         this.setOutputProperties(false);
         this.setReadOnly(false);
+        this.setTerminated(false);
     }
     
     /**
@@ -110,17 +116,23 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             
             log.debug("   Creating the report file");
             final IFile reportFile = folder.getFile(this.reportName);
+            final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes()); 
             if (reportFile.exists()) {
-                reportFile.setContents(new ByteArrayInputStream(reportString.getBytes()), true, false, this.getMonitor());
+                reportFile.setContents(contentsStream, true, false, this.getMonitor());
             } else {
-                reportFile.create(new ByteArrayInputStream(reportString.getBytes()), true, this.getMonitor());
+                reportFile.create(contentsStream, true, this.getMonitor());
             }
             reportFile.refreshLocal(IResource.DEPTH_INFINITE, this.getMonitor());
+            contentsStream.close();
         } catch (CoreException e) {
+            log.debug("Core Exception: " + e.getMessage(), e);
+            throw new CommandException(e);
+        } catch (IOException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } finally {
             log.debug("End of RenderReport command");
+            this.setTerminated(true);
         }
     }
 
@@ -130,6 +142,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     public void reset() {
        this.setProject(null);
        this.setRenderer(null);
+       this.setTerminated(false);
     }
 
     /**

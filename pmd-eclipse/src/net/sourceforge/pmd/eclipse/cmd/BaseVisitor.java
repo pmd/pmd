@@ -25,6 +25,7 @@ package net.sourceforge.pmd.eclipse.cmd;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,6 +35,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
@@ -45,6 +48,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IWorkingSet;
@@ -57,6 +61,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/31 20:44:41  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.2  2005/05/10 21:49:26  phherlin
  * Fix new violations detected by PMD 3.1
  *
@@ -130,6 +137,34 @@ public class BaseVisitor {
     }
 
     /**
+     * Tell whether the user has required to cancel the operation
+     * @return
+     */
+    public boolean isCanceled() {
+       return this.getMonitor() == null ? false : this.getMonitor().isCanceled();
+    }
+
+    /**
+     * Begin a subtask
+     * @param name the task name
+     */
+    public void subTask(final String name) {
+        if (this.getMonitor() != null) {
+            this.getMonitor().subTask(name);
+        }
+    }
+    
+    /**
+     * Inform of the work progress
+     * @param work
+     */
+    public void worked(final int work) {
+        if (this.getMonitor() != null) {
+            this.getMonitor().worked(work);
+        }
+    }
+
+    /**
      * @return Returns the pmdEngine.
      */
     public PMD getPmdEngine() {
@@ -158,11 +193,52 @@ public class BaseVisitor {
     }
 
     /**
+     * Run PMD against a resource
+     * @param resource the resource to process
+     */
+    protected final void reviewResource(final IResource resource) {
+        final IFile file = (IFile) resource.getAdapter(IFile.class);
+        if ((file != null)
+            && (file.getFileExtension() != null)
+            && (file.getFileExtension().equals("java"))) {
+            
+            if (this.isFileInWorkingSet(file)) {
+                try {
+                    this.subTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_CHECKING_FILE) + " " + file.getName());
+
+                    final RuleContext context = new RuleContext();
+                    context.setSourceCodeFilename(file.getName());
+                    context.setReport(new Report());
+
+                    final Reader input = new InputStreamReader(file.getContents());
+                    this.getPmdEngine().processFile(input, this.getRuleSet(), context);
+                    input.close();
+
+                    file.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                    this.updateMarkers(file, context, this.isUseTaskMarker(), this.getAccumulator());
+
+                    this.worked(1);
+
+                } catch (CoreException e) {
+                    log.error("Core exception visiting " + file.getName(), e); //TODO: complete message
+                } catch (PMDException e) {
+                    log.error("PMD exception visiting " + file.getName(), e); // TODO: complete message
+                } catch (IOException e) {
+                    log.error("IO exception visiting " + file.getName(), e); // TODO: complete message
+                }
+            } else {
+                log.debug("The file " + file.getName() + " is not in the working set");
+            }
+                
+        }
+    }
+
+    /**
      * Test if a file is in the PMD working set
      * @param file
      * @return true if the file should be checked
      */
-    protected boolean isFileInWorkingSet(final IFile file) {
+    private boolean isFileInWorkingSet(final IFile file) {
         boolean fileInWorkingSet = true;
         final IWorkingSet workingSet = PMDPlugin.getDefault().getProjectWorkingSet(file.getProject());
         if (workingSet != null) {
@@ -181,7 +257,7 @@ public class BaseVisitor {
      * @param fTask indicate if a task marker should be created
      * @param accumulator a map that contains impacted file and marker informations
      */
-    protected void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map accumulator) throws CoreException {
+    private void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map accumulator) throws CoreException {
         final Set markerSet = new HashSet();
         final List reviewsList = this.findReviewedViolations(file);
         final Review review = new Review();
@@ -318,7 +394,7 @@ public class BaseVisitor {
 
         return markerInfo;
     }
-
+    
     /**
      * Private inner type to handle reviews
      */
