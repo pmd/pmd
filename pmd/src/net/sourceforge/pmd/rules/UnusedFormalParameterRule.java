@@ -18,6 +18,10 @@ import java.util.Map;
 public class UnusedFormalParameterRule extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
+        if (!node.isPrivate() && !hasProperty("checkall")) {
+            return data;
+        }
+
         if (!node.isNative()) {
             Node parent  = node.jjtGetParent().jjtGetParent().jjtGetParent();
             if (parent instanceof ASTClassOrInterfaceDeclaration && !((ASTClassOrInterfaceDeclaration)parent).isInterface()) {

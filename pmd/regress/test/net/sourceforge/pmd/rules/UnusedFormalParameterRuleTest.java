@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rules.VariableNamingConventions;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -13,7 +14,7 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/unusedcode.xml", "UnusedFormalParameter");
+        rule = find();
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
@@ -23,9 +24,19 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "method called on param", 0, rule),
            new TestDescriptor(TEST3, "assignment to param", 0, rule),
            new TestDescriptor(TEST4, "interface", 0, rule),
-           new TestDescriptor(TEST5, "flag public methods now", 1, rule),
+           new TestDescriptor(TEST5, "don't flag public methods by default", 0, rule),
            new TestDescriptor(TEST6, "skip native methods", 0, rule)
        });
+    }
+
+    public void testCheckPublicFlag() throws Throwable {
+        Rule r = find();
+        r.addProperty("checkall", "true");
+        runTestFromString(TEST5, 1, r);
+    }
+
+    private Rule find() throws Exception {
+        return findRule("rulesets/unusedcode.xml", "UnusedFormalParameter");
     }
 
     private static final String TEST1 =
