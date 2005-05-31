@@ -33,28 +33,25 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.model;
+package net.sourceforge.pmd.eclipse.properties;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel;
-import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModelImpl;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.model.ModelException;
+import net.sourceforge.pmd.eclipse.model.PMDPluginModel;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ui.IWorkingSet;
 
 /**
- * This class holds methods factory for plugin models
+ * This interface specifies what is the model for the PMD related project
+ * properties
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.4  2005/05/31 20:33:02  phherlin
+ * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
- *
- * Revision 1.3  2005/05/10 21:49:29  phherlin
- * Fix new violations detected by PMD 3.1
  *
  * Revision 1.2  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
@@ -67,58 +64,67 @@ import org.eclipse.core.resources.IProject;
  *
  *
  */
-public class ModelFactory {
-    private static final ModelFactory SELF = new ModelFactory();
-
-    // @PMD:REVIEWED:SingularField: by Herlin on 10/05/05 23:42
-    private final Map projectPropertiesModels = new HashMap();
-
-    // @PMD:REVIEWED:SingularField: by Herlin on 10/05/05 23:42
-    private final PreferencesModel preferencesModel = new PreferencesModelImpl();
-
+public interface ProjectPropertiesModel extends PMDPluginModel {
     /**
-     * Default private constructor. The ModelFactory is a singleton
+     * @return the related project
      */
-    private ModelFactory() {
-        super();
-    }
+    IProject getProject();
     
     /**
-     * @return the default implementation
+     * @return Returns whether PMD is enabled for that project.
      */
-    public static ModelFactory getFactory() {
-        return SELF;
-    }
+    boolean isPmdEnabled() throws ModelException;
     
     /**
-     * Method factory for ProjectPropertiesModels
-     * @param project the project for which properties are requested
-     * @return The PMD related properties for that project
+     * @param pmdEnabled Enable or disable PMD for that project.
      */
-    public ProjectPropertiesModel getProperiesModelForProject(final IProject project) throws ModelException {
-        if (project == null) {
-            throw new ModelException("A project cannot be null");
-        }
-        
-        ProjectPropertiesModel model;
-        synchronized (this.projectPropertiesModels) {
-            model = (ProjectPropertiesModel) this.projectPropertiesModels.get(project.getName());
-            if (model == null) {
-                model = new ProjectPropertiesModelImpl(project);
-                this.projectPropertiesModels.put(project.getName(), model);
-            }
-        }
-        
-        return model;
-    }
- 
-    /**
-     * Method factory for Preferences Model.
-     * @return the plugin preferences model
-     */
-    public PreferencesModel getPreferencesModel() {
-        return this.preferencesModel;
-    }
- 
+    void setPmdEnabled(boolean pmdEnabled) throws ModelException;
 
+    /**
+     * @return Returns the project Rule Set.
+     */
+    RuleSet getProjectRuleSet() throws ModelException;
+
+    /**
+     * @param projectRuleSet The project Rule Set to set.
+     */
+    void setProjectRuleSet(RuleSet projectRuleSet) throws ModelException;
+
+    /**
+     * @return Returns the whether the project rule set is stored as a file
+     * inside the project.
+     */
+    boolean isRuleSetStoredInProject() throws ModelException;
+
+    /**
+     * @param ruleSetStoredInProject Specify whether the rule set is stored in
+     * the project.
+     */
+    void setRuleSetStoredInProject(boolean ruleSetStoredInProject) throws ModelException;
+
+    /**
+     * @return Returns the project Working Set.
+     */
+    IWorkingSet getProjectWorkingSet() throws ModelException;
+
+    /**
+     * @param projectWorkingSet The project Working Set to set.
+     */
+    void setProjectWorkingSet(IWorkingSet projectWorkingSet) throws ModelException;
+
+    /**
+     * @return whether the project needs to be rebuilt.
+     */
+    boolean isNeedRebuild();
+
+    /**
+     * Let force the rebuild state of a project.
+     */
+    void setNeedRebuild(boolean needRebuild);
+
+    /**
+     * @return in case the rule set is stored inside the project, whether
+     * the ruleset file exists.
+     */
+    boolean isRuleSetFileExist();
 }

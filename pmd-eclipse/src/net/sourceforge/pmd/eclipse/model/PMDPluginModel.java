@@ -45,6 +45,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/31 20:33:02  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -66,4 +69,9 @@ public interface PMDPluginModel {
      */
     void setMonitor(IProgressMonitor monitor);
 
+    /**
+     * Forces the model to synchronize with the persistant store
+     *
+     */
+    void sync() throws ModelException;
 }

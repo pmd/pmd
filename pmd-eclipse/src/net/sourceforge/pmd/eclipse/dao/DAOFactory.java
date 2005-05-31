@@ -1,7 +1,7 @@
 /*
- * Created on 5 f�vr. 2005
+ * Created on 29 mai 2005
  *
- * Copyright (c) 2004, PMD for Eclipse Development Team
+ * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,61 +33,46 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.model;
+package net.sourceforge.pmd.eclipse.dao;
 
-import net.sourceforge.pmd.eclipse.PMDPlugin;
-import net.sourceforge.pmd.eclipse.PMDPluginConstants;
-
-import org.eclipse.jface.preference.IPreferenceStore;
+import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesDAO;
+import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesDAOCastor;
 
 /**
- * This is the implementation class for the preferences model.
+ * Factory for all DAO of the plugin
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/31 20:33:02  phherlin
+ * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
- *
- * Revision 1.1  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
  *
  *
  */
-public class PreferencesModelImpl extends AbstractModel implements PreferencesModel, PMDPluginConstants {
-    private final IPreferenceStore preferenceStore = PMDPlugin.getDefault().getPreferenceStore();
-    private String reviewAdditionalComment;
-
+public class DAOFactory {
+    private static final DAOFactory SELF = new DAOFactory();
+    private final ProjectPropertiesDAO projectPropertiesDao = new ProjectPropertiesDAOCastor(); // NOPMD:SingularField
+    
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getReviewAdditionalComment()
+     * Constructor. DAOFactory is a singleton.
+     *
      */
-    public String getReviewAdditionalComment() {
-        if (this.reviewAdditionalComment == null) {
-            preferenceStore.setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
-            this.reviewAdditionalComment = preferenceStore.getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
-        }
-
-        return reviewAdditionalComment;
+    private DAOFactory() {
+        super();
     }
-
+    
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setReviewAdditionalComment(java.lang.String)
+     * @return the singleton instance of the factory
      */
-    public void setReviewAdditionalComment(final String comment) {
-        this.reviewAdditionalComment = comment;
-        preferenceStore.setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, comment);
-
+    public static DAOFactory getFactory() {
+        return SELF;
     }
-
+    
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
+     * @return a ProjectPropertiesDAO
      */
-    public void sync() throws ModelException {
-        // Nothing todo for the moment.
-
+    public ProjectPropertiesDAO getProjectPropertiesDAO() {
+        return this.projectPropertiesDao;
     }
 }

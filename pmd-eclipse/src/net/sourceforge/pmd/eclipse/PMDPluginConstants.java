@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.QualifiedName;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2005/05/31 20:33:02  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.4  2005/04/20 23:15:32  phherlin
  * Implement reports generation RFE#1177802
  *
@@ -48,7 +51,8 @@ public interface PMDPluginConstants {
     public static final String[] RULESET_DEFAULTLIST = RULESET_ALLPMD;
     public static final String RULESET_PREFERENCE = PLUGIN_ID + ".ruleset";
     public static final String RULESET_DEFAULT = "";
-    public static final String RULESET_FILE = "/ruleset.xml";
+    public static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
+    public static final String PROJECT_RULESET_FILE = ".ruleset";
 
     public static final String MIN_TILE_SIZE_PREFERENCE = PLUGIN_ID + ".CPDPreference.mintilesize";
     public static final int MIN_TILE_SIZE_DEFAULT = 25;

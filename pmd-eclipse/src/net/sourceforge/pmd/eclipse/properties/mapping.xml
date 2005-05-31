@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Object Mapping DTD Version 1.0//EN"
+                         "http://castor.exolab.org/mapping.dtd">
+
+<mapping>
+        <class name="net.sourceforge.pmd.eclipse.properties.ProjectPropertiesDO">
+                <map-to xml="pmd"/>
+
+                <field name="WorkingSetName"
+                       type="java.lang.String"
+                       get-method="getWorkingSetName"
+                       set-method="setWorkingSetName">
+                        <bind-xml name="workingSet" node="element"/>
+                </field>
+
+                <field name="RuleSetStoredInProject"
+                       type="boolean"
+                       get-method="isRuleSetStoredInProject"
+                       set-method="setRuleSetStoredInProject">
+                        <bind-xml name="useProjectRuleSet" node="element"/>
+                </field>
+
+                <field name="Rules"
+                       type="net.sourceforge.pmd.eclipse.properties.RuleSpecDO"
+                       collection="array"
+                       get-method="getRules"
+                       set-method="setRules">
+                        <bind-xml name="rule" location="rules" node="element"/>
+                </field>
+        </class>
+
+        <class name="net.sourceforge.pmd.eclipse.properties.RuleSpecDO">
+                <map-to xml="rule"/>
+
+                <field name="Name"
+                       type="java.lang.String"
+                       get-method="getName"
+                       set-method="setName">
+                        <bind-xml name="name" node="element"/>
+                </field>
+
+                <field name="RuleSetName"
+                       type="java.lang.String"
+                       get-method="getRuleSetName"
+                       set-method="setRuleSetName">
+                        <bind-xml name="ruleset" node="element"/>
+                </field>
+        </class>
+</mapping>

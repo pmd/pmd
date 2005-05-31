@@ -1,7 +1,7 @@
 /*
- * Created on 5 f�vr. 2005
+ * Created on 28 mai 2005
  *
- * Copyright (c) 2004, PMD for Eclipse Development Team
+ * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,61 +33,73 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.model;
-
-import net.sourceforge.pmd.eclipse.PMDPlugin;
-import net.sourceforge.pmd.eclipse.PMDPluginConstants;
-
-import org.eclipse.jface.preference.IPreferenceStore;
+package net.sourceforge.pmd.eclipse.properties;
 
 /**
- * This is the implementation class for the preferences model.
+ * This class is a simple data bean to let simply serialize project properties
+ * to an XML file (or any). 
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/31 20:33:02  phherlin
+ * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
- *
- * Revision 1.1  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
  *
  *
  */
-public class PreferencesModelImpl extends AbstractModel implements PreferencesModel, PMDPluginConstants {
-    private final IPreferenceStore preferenceStore = PMDPlugin.getDefault().getPreferenceStore();
-    private String reviewAdditionalComment;
-
+public class ProjectPropertiesDO {
+    private RuleSpecDO[] rules;
+    private String workingSetName;
+    private boolean ruleSetStoredInProject;
+    
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getReviewAdditionalComment()
+     * @return rules an array of RuleSpecDO objects that keep information of rules
+     * selected for the current project
      */
-    public String getReviewAdditionalComment() {
-        if (this.reviewAdditionalComment == null) {
-            preferenceStore.setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
-            this.reviewAdditionalComment = preferenceStore.getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
-        }
-
-        return reviewAdditionalComment;
+    public RuleSpecDO[] getRules() {
+        return rules;
+    }
+    
+    /**
+     * Set the rules selected for a project
+     * @param rules an array of RuleSpecDO objects describing each select project
+     * rules.
+     */
+    public void setRules(final RuleSpecDO[] rules) {
+        this.rules = rules;
+    }
+    
+    /**
+     * @return ruleSetStoredInProject tells whether the project use a ruleset
+     * stored in the project or the global plugin ruleset.
+     */
+    public boolean isRuleSetStoredInProject() {
+        return ruleSetStoredInProject;
+    }
+    
+    /**
+     * Tells whether a project must use a ruleset stored in the project or the
+     * global project ruleset.
+     * @param ruleSetStoredInProject see above.
+     */
+    public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
+        this.ruleSetStoredInProject = ruleSetStoredInProject;
+    }
+    
+    /**
+     * @return workingSetName the name of the project workingSet
+     */
+    public String getWorkingSetName() {
+        return workingSetName;
+    }
+    
+    /**
+     * Set the project working set name
+     * @param workingSetName the name of the project working set
+     */
+    public void setWorkingSetName(final String workingSetName) {
+        this.workingSetName = workingSetName;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setReviewAdditionalComment(java.lang.String)
-     */
-    public void setReviewAdditionalComment(final String comment) {
-        this.reviewAdditionalComment = comment;
-        preferenceStore.setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, comment);
-
-    }
-
-    /**
-     * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
-     */
-    public void sync() throws ModelException {
-        // Nothing todo for the moment.
-
-    }
 }

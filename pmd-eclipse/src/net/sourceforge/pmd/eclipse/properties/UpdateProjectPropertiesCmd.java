@@ -40,7 +40,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
-import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IWorkingSet;
@@ -52,6 +51,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/05/31 20:33:01  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.1  2005/05/07 13:32:05  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -86,10 +88,11 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
      */
     public UpdateProjectPropertiesCmd() {
         super();
-        setReadOnly(false);
-        setOutputProperties(true);
-        setName("UpdateProjectProperties");
-        setDescription("Update a project PMD specific properties.");
+        this.setReadOnly(false);
+        this.setOutputProperties(true);
+        this.setTerminated(false);
+        this.setName("UpdateProjectProperties");
+        this.setDescription("Update a project PMD specific properties.");
     }
 
     /**
@@ -97,21 +100,26 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
      */
     public void execute() throws CommandException {
             try {
-                final ProjectPropertiesModel projectPropertiesModel = ModelFactory.getFactory().getProperiesModelForProject(this.project);
-                projectPropertiesModel.setMonitor(this.getMonitor());
-                projectPropertiesModel.setPmdEnabled(this.pmdEnabled);
-                projectPropertiesModel.setProjectRuleSet(this.projectRuleSet);
-                projectPropertiesModel.setProjectWorkingSet(this.projectWorkingSet);
-                projectPropertiesModel.setRuleSetStoredInProject(this.ruleSetStoredInProject);
-                this.needRebuild = projectPropertiesModel.isNeedRebuild();
-                this.ruleSetFileExists = !projectPropertiesModel.isRuleSetFileExist();
-            } catch (ModelException e) {
-                throw new CommandException(e.getMessage(), e);
-            }
+            final ProjectPropertiesModel projectPropertiesModel = ModelFactory.getFactory().getProperiesModelForProject(
+                    this.project);
+            projectPropertiesModel.setMonitor(this.getMonitor());
+            projectPropertiesModel.setPmdEnabled(this.pmdEnabled);
+            projectPropertiesModel.setProjectRuleSet(this.projectRuleSet);
+            projectPropertiesModel.setProjectWorkingSet(this.projectWorkingSet);
+            projectPropertiesModel.setRuleSetStoredInProject(this.ruleSetStoredInProject);
+            projectPropertiesModel.sync();
+            this.needRebuild = projectPropertiesModel.isNeedRebuild();
+            this.ruleSetFileExists = !projectPropertiesModel.isRuleSetFileExist();
+        } catch (ModelException e) {
+            throw new CommandException(e.getMessage(), e);
+        } finally {
+            this.setTerminated(true);
+        }
     }
 
     /**
-     * @param project The project to set.
+     * @param project
+     *            The project to set.
      */
     public void setProject(final IProject project) {
         this.project = project;
@@ -167,6 +175,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
         this.setPmdEnabled(false);
         this.setProjectRuleSet(null);
         this.setRuleSetStoredInProject(false);
+        this.setTerminated(false);
     }
     
     /**

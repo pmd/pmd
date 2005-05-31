@@ -1,7 +1,7 @@
 /*
- * Created on 5 f�vr. 2005
+ * Created on 1 mai 2005
  *
- * Copyright (c) 2004, PMD for Eclipse Development Team
+ * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,19 +35,18 @@
  */
 package net.sourceforge.pmd.eclipse.model;
 
-import net.sourceforge.pmd.eclipse.PMDPlugin;
-import net.sourceforge.pmd.eclipse.PMDPluginConstants;
-
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * This is the implementation class for the preferences model.
+ * This the base class for all the models of the plugin.
+ * A model must manage a progress monitor to keep users informed of their
+ * activity. 
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/31 20:33:02  phherlin
+ * Revision 1.1  2005/05/31 20:33:02  phherlin
  * Continuing refactoring
  *
  * Revision 1.1  2005/05/07 13:32:04  phherlin
@@ -58,36 +57,25 @@ import org.eclipse.jface.preference.IPreferenceStore;
  *
  *
  */
-public class PreferencesModelImpl extends AbstractModel implements PreferencesModel, PMDPluginConstants {
-    private final IPreferenceStore preferenceStore = PMDPlugin.getDefault().getPreferenceStore();
-    private String reviewAdditionalComment;
+public abstract class AbstractModel implements PMDPluginModel {
+    private IProgressMonitor monitor;
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getReviewAdditionalComment()
+     * @return Returns the monitor.
      */
-    public String getReviewAdditionalComment() {
-        if (this.reviewAdditionalComment == null) {
-            preferenceStore.setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
-            this.reviewAdditionalComment = preferenceStore.getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
-        }
-
-        return reviewAdditionalComment;
+    public IProgressMonitor getMonitor() {
+        return this.monitor;
     }
-
+    
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setReviewAdditionalComment(java.lang.String)
+     * @param monitor The monitor to set.
      */
-    public void setReviewAdditionalComment(final String comment) {
-        this.reviewAdditionalComment = comment;
-        preferenceStore.setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, comment);
-
+    public void setMonitor(final IProgressMonitor monitor) {
+        this.monitor = monitor;
     }
-
+    
     /**
      * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
      */
-    public void sync() throws ModelException {
-        // Nothing todo for the moment.
-
-    }
+    public abstract void sync() throws ModelException;
 }

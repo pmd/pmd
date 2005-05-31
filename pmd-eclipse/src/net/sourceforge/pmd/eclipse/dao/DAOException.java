@@ -1,7 +1,7 @@
 /*
- * Created on 5 f�vr. 2005
+ * Created on 29 mai 2005
  *
- * Copyright (c) 2004, PMD for Eclipse Development Team
+ * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,61 +33,52 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.model;
-
-import net.sourceforge.pmd.eclipse.PMDPlugin;
-import net.sourceforge.pmd.eclipse.PMDPluginConstants;
-
-import org.eclipse.jface.preference.IPreferenceStore;
+package net.sourceforge.pmd.eclipse.dao;
 
 /**
- * This is the implementation class for the preferences model.
+ * General exception for any DAO operations
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/31 20:33:02  phherlin
+ * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
- *
- * Revision 1.1  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
  *
  *
  */
-public class PreferencesModelImpl extends AbstractModel implements PreferencesModel, PMDPluginConstants {
-    private final IPreferenceStore preferenceStore = PMDPlugin.getDefault().getPreferenceStore();
-    private String reviewAdditionalComment;
+public class DAOException extends Exception {
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getReviewAdditionalComment()
+     * Default Constructor. No parameter.
      */
-    public String getReviewAdditionalComment() {
-        if (this.reviewAdditionalComment == null) {
-            preferenceStore.setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
-            this.reviewAdditionalComment = preferenceStore.getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
-        }
-
-        return reviewAdditionalComment;
+    public DAOException() {
+        super();
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setReviewAdditionalComment(java.lang.String)
+     * Constructor
+     * @param message a message
      */
-    public void setReviewAdditionalComment(final String comment) {
-        this.reviewAdditionalComment = comment;
-        preferenceStore.setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, comment);
-
+    public DAOException(final String message) {
+        super(message);
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
+     * Constructor
+     * @param cause a root exception
      */
-    public void sync() throws ModelException {
-        // Nothing todo for the moment.
-
+    public DAOException(final Throwable cause) {
+        super(cause);
     }
+
+    /**
+     * Constructor
+     * @param message a message
+     * @param cause a root exception
+     */
+    public DAOException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
 }

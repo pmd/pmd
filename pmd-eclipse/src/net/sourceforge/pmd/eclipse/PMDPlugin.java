@@ -50,6 +50,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.23  2005/05/31 20:33:02  phherlin
+ * Continuing refactoring
+ *
  * Revision 1.22  2004/06/29 22:00:30  phherlin
  * Adapting the plugin to the new OSGi standards
  * Revision 1.21 2004/05/26 15:55:23 phherlin Upgrading
@@ -364,7 +367,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
         RuleSetFactory factory = new RuleSetFactory();
 
         // First find the ruleset file in the state location
-        IPath ruleSetLocation = getStateLocation().append(RULESET_FILE);
+        IPath ruleSetLocation = getStateLocation().append(PREFERENCE_RULESET_FILE);
         log.debug("ruleset state location : " + ruleSetLocation.toOSString());
         File ruleSetFile = new File(ruleSetLocation.toOSString());
         if (ruleSetFile.exists()) {
@@ -432,7 +435,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
      */
     private void storeRuleSetInStateLocation(RuleSet ruleSet) {
         try {
-            IPath ruleSetLocation = getStateLocation().append(RULESET_FILE);
+            IPath ruleSetLocation = getStateLocation().append(PREFERENCE_RULESET_FILE);
             OutputStream out = new FileOutputStream(ruleSetLocation.toOSString());
             RuleSetWriter writer = WriterAbstractFactory.getFactory().getRuleSetWriter();
             writer.write(out, ruleSet);

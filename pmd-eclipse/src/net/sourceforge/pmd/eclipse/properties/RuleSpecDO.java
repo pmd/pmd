@@ -1,7 +1,7 @@
 /*
- * Created on 5 f�vr. 2005
+ * Created on 28 mai 2005
  *
- * Copyright (c) 2004, PMD for Eclipse Development Team
+ * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,61 +33,79 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.model;
-
-import net.sourceforge.pmd.eclipse.PMDPlugin;
-import net.sourceforge.pmd.eclipse.PMDPluginConstants;
-
-import org.eclipse.jface.preference.IPreferenceStore;
+package net.sourceforge.pmd.eclipse.properties;
 
 /**
- * This is the implementation class for the preferences model.
+ * This class is a simple data bean to help serialize project properties. Is
+ * used by the ProjectPropertiesDO to handle project selected rules. This
+ * class holds single rule information.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/05/31 20:33:02  phherlin
+ * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  *
- * Revision 1.1  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- *
+ *  
  */
-public class PreferencesModelImpl extends AbstractModel implements PreferencesModel, PMDPluginConstants {
-    private final IPreferenceStore preferenceStore = PMDPlugin.getDefault().getPreferenceStore();
-    private String reviewAdditionalComment;
+public class RuleSpecDO {
+    private String name;
+    private String ruleSetName;
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getReviewAdditionalComment()
+     * Default constructor
+     *  
      */
-    public String getReviewAdditionalComment() {
-        if (this.reviewAdditionalComment == null) {
-            preferenceStore.setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
-            this.reviewAdditionalComment = preferenceStore.getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
-        }
-
-        return reviewAdditionalComment;
+    public RuleSpecDO() {
+        super();
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setReviewAdditionalComment(java.lang.String)
+     * Constructor with fields
+     * 
+     * @param name
+     *            a rule name
+     * @param ruleSetName
+     *            the name of the ruleset where the rule is defined
      */
-    public void setReviewAdditionalComment(final String comment) {
-        this.reviewAdditionalComment = comment;
-        preferenceStore.setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, comment);
-
+    public RuleSpecDO(final String name, final String ruleSetName) {
+        super();
+        this.name = name;
+        this.ruleSetName = ruleSetName;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
+     * @return name a rule name
      */
-    public void sync() throws ModelException {
-        // Nothing todo for the moment.
+    public String getName() {
+        return name;
+    }
 
+    /**
+     * Set the rule name
+     * 
+     * @param name
+     *            the rule name
+     */
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return ruleSetName the name of ruleset the rule come from
+     */
+    public String getRuleSetName() {
+        return ruleSetName;
+    }
+
+    /**
+     * Set the ruleSet name the rule come from
+     * 
+     * @param ruleSetName
+     *            a ruleSet name
+     */
+    public void setRuleSetName(final String ruleSetName) {
+        this.ruleSetName = ruleSetName;
     }
 }
