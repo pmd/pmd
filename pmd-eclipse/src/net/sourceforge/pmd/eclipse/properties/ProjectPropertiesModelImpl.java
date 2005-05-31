@@ -66,6 +66,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/05/31 23:02:20  phherlin
+ * Refactor behaviour when project properties file does not exists.
+ *
  * Revision 1.2  2005/05/31 20:44:40  phherlin
  * Continuing refactoring
  *
@@ -100,15 +103,12 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         super();
         this.project = project;
         this.propertiesDao = DAOFactory.getFactory().getProjectPropertiesDAO();
+        this.projectRuleSet = PMDPlugin.getDefault().getRuleSet();
 
         try {
             this.loadProperties();
         } catch (Exception e) {
             log.warn("Cannot load properties for project " + this.project.getName(), e);
-            this.pmdEnabled = false;
-            this.ruleSetStoredInProject = false;
-            this.projectRuleSet = PMDPlugin.getDefault().getRuleSet();
-            this.projectWorkingSet = null; //NOPMD:NullAssignemt
         }
     }
 
@@ -340,12 +340,15 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         log.debug("Loading project properties");
         final ProjectPropertiesTO projectProperties = this.propertiesDao.readProjectProperties(this.project);
 
-        this.setRuleSetFromProperties(projectProperties.getRules());
-        this.setWorkingSetFromProperties(projectProperties.getWorkingSetName());
-        this.ruleSetStoredInProject = projectProperties.isRuleSetStoredInProject();
-        this.pmdEnabled = this.project.hasNature(PMDNature.PMD_NATURE);
-
-        log.debug("Project properties loaded");
+        if (projectProperties == null) {
+            log.info("Project properties not found. Use default.");
+        } else {
+            this.setRuleSetFromProperties(projectProperties.getRules());
+            this.setWorkingSetFromProperties(projectProperties.getWorkingSetName());
+            this.ruleSetStoredInProject = projectProperties.isRuleSetStoredInProject();
+            this.pmdEnabled = this.project.hasNature(PMDNature.PMD_NATURE);
+            log.debug("Project properties loaded");
+        }
     }
 
     /**
