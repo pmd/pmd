@@ -6,44 +6,32 @@
 These are new rules that are still in progress
   </description>
 
-    <!--<rule name="ConstructorCallsOverridableMethod"
-          message="Overridable method ''{0}'' called during construction"
-          class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethod">
+    <rule name="NullAssignment"
+          message="Assigning an Object to null is a code smell.  Consider refactoring."
+          class="net.sourceforge.pmd.rules.design.NullAssignmentRule">
       <description>
-      Calling overridable methods during construction poses a risk of invoking methods on an
-          incompletely constructed object.  This situation can be difficult to discern.
-      It may leave the sub-class unable to construct its superclass or forced to
-          replicate the construction process completely within itself, losing the ability to call
-      super().  If the default constructor contains a call to an overridable method,
-          the subclass may be completely uninstantiable.   Note that this includes method calls
-          throughout the control flow graph - i.e., if a constructor Foo() calls a private method
-            bar() that calls a public method buz(), there's a problem.
+ Assigning a "null" to a variable (outside of its declaration) is usually in
+ bad form.  Some times, the assignment is an indication that the programmer doesn't
+ completely understand what is going on in the code.  NOTE: This sort of assignment
+ may in rare cases be useful to encourage garbage collection.  If that's what you're using
+ it for, by all means, disregard this rule :-)
       </description>
-        <priority>1</priority>
+        <priority>3</priority>
       <example>
-  <![CDATA[
-    public class SeniorClass {
-      public SeniorClass(){
-          toString(); //may throw NullPointerException if overridden
-      }
-      public String toString(){
-        return "IAmSeniorClass";
-      }
-    }
-    public class JuniorClass extends SeniorClass {
-      private String name;
-      public JuniorClass(){
-        super(); //Automatic call leads to NullPointerException
-        name = "JuniorClass";
-      }
-      public String toString(){
-        return name.toUpperCase();
-      }
-    }
-  ]]>
+ <![CDATA[
+ public class Foo {
+   public void bar() {
+     Object x = null; // This is OK.
+     x = new Object();
+     // Big, complex piece of code here.
+     x = null; // This is BAD.
+     // Big, complex piece of code here.
+   }
+ }
+
+ ]]>
       </example>
     </rule>
-    -->
 
     <rule name="FooRule"
           message="foo?" symboltable="true"

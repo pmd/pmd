@@ -1,4 +1,5 @@
 ????, 2005 - 3.2:
+Modified NullAssignmentRule to catch null assignments in ternary expressions.
 Fixed bug 1201577 - PMD now correctly parses method declarations that return generic types.
 Fixed bug 1205709 - PMD no longer takes a long time to report certain parsing errors.
 Fixed bug which caused MissingSerialVersionUID to trigger on all interfaces that implemented other interfaces.

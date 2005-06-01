@@ -2359,7 +2359,7 @@ jjtn000.setModifiers(modifiers);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case HOOK:
         jj_consume_token(HOOK);
-                                                               jjtn000.setUnDiscardable();
+                                                               jjtn000.setUnDiscardable();jjtn000.setTernary();
         Expression();
         jj_consume_token(COLON);
         ConditionalExpression();

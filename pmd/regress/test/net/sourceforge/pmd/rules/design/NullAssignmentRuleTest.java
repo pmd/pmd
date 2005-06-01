@@ -23,6 +23,8 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST2, "bad assignment", 1, rule),
            new TestDescriptor(TEST3, "check test", 0, rule),
            new TestDescriptor(TEST4, "null param on right hand sidel", 0, rule),
+           new TestDescriptor(TEST5, "null assignment in ternary", 1, rule),
+           new TestDescriptor(TEST6, "null assignment in ternary, part deux", 1, rule),
        });
     }
 
@@ -39,21 +41,19 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
     " public void foo() {" + PMD.EOL +
     "  Object x;" + PMD.EOL +
     "  x = new Object();" + PMD.EOL +
-    "  for (int y = 0; y < 10; y++) {" + PMD.EOL +
-    "   System.err.println(y);  " + PMD.EOL +
-    "  }" + PMD.EOL +
+    "  bar(x);  " + PMD.EOL +
     "  x = null; // This is bad" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
     "public class Foo {" + PMD.EOL +
-    "       public void foo() {" + PMD.EOL +
-    "               Object x;" + PMD.EOL +
-    "               if (x == null) { // This is OK" + PMD.EOL +
-    "                       return;" + PMD.EOL +
-    "               }" + PMD.EOL +
-    "       }" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  Object x;" + PMD.EOL +
+    "  if (x == null) { // This is OK" + PMD.EOL +
+    "   return;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST4 =
@@ -61,6 +61,20 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
     " public void foo() {" + PMD.EOL +
     "  String x = null;" + PMD.EOL +
     "  x = new String(null);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  String x = bar() ? \"fiz\" : null;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo {" + PMD.EOL +
+    " public void foo() {" + PMD.EOL +
+    "  String x = bar() ? null : \"fiz\";" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

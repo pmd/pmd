@@ -9,30 +9,31 @@ import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTConditionalExpression;
 
 public class NullAssignmentRule extends AbstractRule {
 
-    public Object visit(ASTStatementExpression expr, Object data) {
-        if (expr.jjtGetNumChildren() <= 2) {
-            return expr.childrenAccept(this, data);
+    public Object visit(ASTNullLiteral node, Object data) {
+        if (node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTStatementExpression) {
+            Node n = node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent();
+            if (n.jjtGetNumChildren() > 2 && n.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+                RuleContext ctx = (RuleContext) data;
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
+            }
+        } else if (node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTConditionalExpression) {
+            checkTernary((ASTConditionalExpression)node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent(), data, node);
+        } else if (node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTConditionalExpression) {
+            checkTernary((ASTConditionalExpression)node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent(), data, node);
         }
 
-        if (expr.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-            SimpleNode curr = (SimpleNode) expr.jjtGetChild(2);
-            for (int i = 0; i < 8; i++) {
-                if (curr.jjtGetNumChildren() != 0) {
-                    curr = (SimpleNode) curr.jjtGetChild(0);
-                }
-            }
+        return data;
+    }
 
-            if (curr instanceof ASTNullLiteral) {
-                RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, expr));
-            }
-
-            return data;
-        } else {
-            return expr.childrenAccept(this, data);
+    private void checkTernary(ASTConditionalExpression n, Object data, ASTNullLiteral node) {
+        if (n.isTernary()) {
+            RuleContext ctx = (RuleContext) data;
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
         }
     }
 }

@@ -13,6 +13,16 @@ public class ASTConditionalExpression extends SimpleNode {
         setDiscardable();
     }
 
+    private boolean isTernary;
+
+    public void setTernary() {
+        isTernary = true;
+    }
+
+    public boolean isTernary() {
+        return this.isTernary;
+    }
+
     /**
      * Accept the visitor. *
      */

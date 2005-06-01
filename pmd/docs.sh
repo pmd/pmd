@@ -9,6 +9,17 @@ elif [ $option = "all" ]; then
 	echo "Running maven site"
 	rm -rf target
 	maven -qb site
+elif [ $option = "uploadcurrent" ]; then
+	echo "Generating xdocs and uploading"
+	maven -qob xdoc:generate-from-pom pmd:ruleset-docs xdoc:transform 
+	DOCS_FILE=docs.tar.gz
+	cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
+	cd target
+	rm $DOCS_FILE
+	tar zcf $DOCS_FILE docs/
+	scp -i ~/.ssh/identity $DOCS_FILE tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/current/
+	cd ../
+  ssh -l tomcopeland pmd.sourceforge.net "cd /home/groups/p/pm/pmd/htdocs/current/ && tar -zxf docs.tar.gz && cp -R docs/* . && rm -rf docs && rm docs.tar.gz"
 elif [ $option = "upload" ]; then
 	echo "Generating xdocs and uploading"
 	maven -qob xdoc:generate-from-pom pmd:ruleset-docs xdoc:transform 
@@ -19,7 +30,7 @@ elif [ $option = "upload" ]; then
 	tar zcf $DOCS_FILE docs/
 	scp -i ~/.ssh/identity $DOCS_FILE tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/
 	cd ../
-	ssh -l tomcopeland pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ && rm -rf htdocs/xref && rm -rf htdocs/apidocs && ./update_docs.sh"
+	ssh -l tomcopeland pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ &&  rm -rf xref && rm -rf apidocs && ./update_docs.sh"
 fi
 if [ -e velocity.log ]; then
 	rm velocity.log

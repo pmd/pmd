@@ -1474,7 +1474,7 @@ void AssignmentOperator() :
 void ConditionalExpression() :
 {}
 {
-  ConditionalOrExpression() {checkForDiscard(jjtThis);} [ "?" {jjtThis.setUnDiscardable();} Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() {checkForDiscard(jjtThis);} [ "?" {jjtThis.setUnDiscardable();jjtThis.setTernary();} Expression() ":" ConditionalExpression() ]
 }
 
 void ConditionalOrExpression() :
