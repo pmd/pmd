@@ -3,15 +3,20 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.IPositionProvider;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.symboltable.Scope;
+import org.apache.xerces.dom.DocumentImpl;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class SimpleNode implements Node , IPositionProvider {
+public class SimpleNode implements Node, IPositionProvider {
     protected Node parent;
     protected Node[] children;
     protected int id;
@@ -38,7 +43,7 @@ public class SimpleNode implements Node , IPositionProvider {
 
     public void discardIfNecessary() {
         if (discardable) {
-            SimpleNode parent = (SimpleNode)this.jjtGetParent();
+            SimpleNode parent = (SimpleNode) this.jjtGetParent();
             SimpleNode kid = (SimpleNode) this.jjtGetChild(0);
             kid.jjtSetParent(parent);
             parent.jjtReplaceChild(this, kid);
@@ -187,11 +192,11 @@ public class SimpleNode implements Node , IPositionProvider {
         }
 
         if (!descendIntoNestedClasses) {
-            if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)node).isNested()) {
+            if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) node).isNested()) {
                 return;
             }
 
-            if (node instanceof ASTClassOrInterfaceBodyDeclaration && ((ASTClassOrInterfaceBodyDeclaration)node).isAnonymousInnerClass()) {
+            if (node instanceof ASTClassOrInterfaceBodyDeclaration && ((ASTClassOrInterfaceBodyDeclaration) node).isAnonymousInnerClass()) {
                 return;
             }
         }
@@ -278,34 +283,33 @@ public class SimpleNode implements Node , IPositionProvider {
         return prefix + toString();
     }
 
-    /**
-     * 
-     * @return a String with an XML representation of this node and its children
-     */
-    public String asXml() {
-        String cn = getClass().getName();
-        if (cn.indexOf('.') != -1) {
-            cn = cn.substring(cn.lastIndexOf('.')+1);
-        }
-
-        final StringBuffer sb = new StringBuffer();
-        
-        sb.append('<');
-        sb.append(cn);
-        sb.append(" id=\"");
-        sb.append(id);
-        sb.append("\">");
-        if (children!=null) {            
-            for (int i=0;i<children.length;i++) {
-                sb.append(((SimpleNode) children[i]).asXml());
-            }
-        }
-        sb.append("</");
-        sb.append(cn);
-        sb.append('>');
-        return sb.toString();
+    public Document asXml() {
+        Document document = new DocumentImpl();
+        appendElement(document);
+        return document;
     }
-    
+
+    protected void appendElement(org.w3c.dom.Node parentNode) {
+        DocumentNavigator docNav = new DocumentNavigator();
+        Document ownerDocument = parentNode.getOwnerDocument();
+        if( ownerDocument == null )
+        {
+            //If the parentNode is a Document itself, it's ownerDocument is null
+            ownerDocument = (Document) parentNode;
+        }
+        String elementName = docNav.getElementName(this);
+        Element element = ownerDocument.createElement(elementName);
+        parentNode.appendChild( element );
+        for (Iterator iter = docNav.getAttributeAxisIterator(this); iter.hasNext();) {
+            Attribute attr = (Attribute) iter.next();
+            element.setAttribute(attr.getName(), attr.getValue());
+        }
+        for (Iterator iter = docNav.getChildAxisIterator(this); iter.hasNext();) {
+            SimpleNode child = (SimpleNode) iter.next();
+            child.appendElement(element);
+        }
+    }
+
     /* Override this method if you want to customize how the node dumps
        out its children. */
     public void dump(String prefix) {
@@ -326,7 +330,7 @@ public class SimpleNode implements Node , IPositionProvider {
 
 
     /**
-     *Traverses down the tree to find the first child instance of type childType
+     * Traverses down the tree to find the first child instance of type childType
      *
      * @param childType class which you want to find.
      * @return Node of type childType.  Returns <code>null</code> if none found.
@@ -336,23 +340,23 @@ public class SimpleNode implements Node , IPositionProvider {
     }
 
     private Node getFirstChildOfType(Class childType, Node node) {
-            for (int i=0;i<node.jjtGetNumChildren();i++) {
-                Node n = node.jjtGetChild(i);
-                if (n!=null) {
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            Node n = node.jjtGetChild(i);
+            if (n != null) {
                 if (n.getClass().equals(childType))
                     return n;
                 Node n2 = getFirstChildOfType(childType, n);
-                if (n2!=null)
+                if (n2 != null)
                     return n2;
-                }
             }
+        }
         return null;
     }
 
     /**
      * Finds if this node contains a child of the given type.
      * This is an utility method that uses {@link #findChildrenOfType(Class)}
-     * 
+     *
      * @param type the node type to search
      * @return <code>true</code> if there is at lease on child of the given type and <code>false</code> in any other case
      */

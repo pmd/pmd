@@ -17,6 +17,9 @@ import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
+import org.w3c.dom.Document;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -32,6 +35,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.StringReader;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
 
@@ -293,10 +298,38 @@ public class Designer implements ClipboardOwner {
 
     private String getXml() {
         ASTCompilationUnit cu = createParser().CompilationUnit();
+        String result;
         if (cu!=null) {
-            return cu.asXml();
+            try {
+                result = getXmlString( cu );
+            } catch (IOException e) {
+                e.printStackTrace();
+                result = "Error trying to construct XML representation";
+            }
         }
-        return "";
+        else
+        {
+            result = "";
+        }
+        return result;
+    }
+
+    /**
+     * Returns an unformatted xml string (without the declaration)
+     *
+     * @param node
+     * @return
+     * @throws java.io.IOException
+     */
+    private String getXmlString(SimpleNode node) throws IOException {
+        Document document = node.asXml();
+        StringWriter writer = new StringWriter();
+        OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
+        XMLSerializer xmlSerializer = new XMLSerializer(writer, outputFormat);
+        xmlSerializer.asDOMSerializer();
+        xmlSerializer.serialize(document);
+        String xmlString = writer.toString();
+        return xmlString;
     }
 
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
