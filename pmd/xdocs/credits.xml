@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Benoit Xhenseval - bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Wim Deblauwe - Coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Tom Parker - Found missed case in NullAssignment, suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
             <li>Glen Cordrey - Reported bug involved JavaCC string handling</li>
@@ -62,7 +63,6 @@
             <li>David Hovemeyer - reported missing labelled stmt images, a nice patch to let PMD process code in jar/zip files</li>
             <li>Peter 'Bruno' Kofler - reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
             <li>Zev Blut - nice patch to add Ruby support to CPD</li>
-            <li>Benoit Xhenseval - many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Christopher Judd - a nice patch to the XSLT that adds a summary</li>
             <li>John Meagher - suggested the rule 'MissingSerialVersionUID' and provided the implementation for it</li>
             <li>Bruno Juillet - patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>

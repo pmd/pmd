@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -59,6 +60,9 @@ public class ImmutableField extends AbstractRule {
             NameOccurrence occ = (NameOccurrence)j.next();
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 SimpleNode node = occ.getLocation();
+                if ((SimpleNode)node.getFirstParentOfType(ASTTryStatement.class) != null) {
+                    continue;
+                }
                 SimpleNode constructor = (SimpleNode)node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     consSet.add(constructor);

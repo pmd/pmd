@@ -28,6 +28,7 @@ public class ImmutableFieldTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST10, "predecrement", 0, rule),
            new TestDescriptor(TEST11, "compound assignment 2", 0, rule),
            new TestDescriptor(TEST12, "rhs 2", 0, rule),
+           new TestDescriptor(TEST13, "assignment in constructor is in try block", 0, rule),
            // TODO if assignment in constructor is in try block, it need not be final
        });
     }
@@ -132,6 +133,16 @@ public class ImmutableFieldTest extends SimpleAggregatorTst {
     " private int x = 0;" + PMD.EOL +
     " public void bar() {" + PMD.EOL +
     "  Object y = new Bar(x++);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST13 =
+    "public class Foo {" + PMD.EOL +
+    " private int x;" + PMD.EOL +
+    " public Foo() {" + PMD.EOL +
+    "  try {" + PMD.EOL +
+    "   x = 2;" + PMD.EOL +
+    "  } catch (Exception e) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
