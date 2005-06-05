@@ -66,6 +66,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/06/05 19:28:13  phherlin
+ * Decrease the complexity of isRuleSetEqual
+ *
  * Revision 1.3  2005/05/31 23:02:20  phherlin
  * Refactor behaviour when project properties file does not exists.
  *
@@ -302,23 +305,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         try {
             if (ruleSet1 != ruleSet2) {
                 if (ruleSet1.getRules().size() == ruleSet2.getRules().size()) {
-                    final Iterator i = ruleSet1.getRules().iterator();
-                    while (i.hasNext() && equal) {
-                        final Rule rule1 = (Rule) i.next();
-                        final Rule rule2 = ruleSet2.getRuleByName(rule1.getName());
-                        equal = rule1.getPriority() == rule2.getPriority();
-                        if (equal) {
-                            final Properties p1 = rule1.getProperties();
-                            final Properties p2 = rule2.getProperties();
-                            final Iterator j = p1.keySet().iterator();
-                            while (j.hasNext() && equal) {
-                                final String key = (String) j.next();
-                                final String v1 = p1.getProperty(key).trim();
-                                final String v2 = p2.getProperty(key).trim();
-                                equal = v1.equals(v2);
-                            }
-                        }
-                    }
+                    equal = deepRuleSetEqual(ruleSet1, ruleSet2);
                 } else {
                     equal = false;
                 }
@@ -327,6 +314,35 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             equal = false;
         }
 
+        return equal;
+    }
+
+    /**
+     * Deeply test if rules sets are equal. (called by isRuleSetEqual);
+     * @param ruleSet1
+     * @param ruleSet2
+     * @return equal equality
+     */
+    private boolean deepRuleSetEqual(final RuleSet ruleSet1, final RuleSet ruleSet2) {
+        final Iterator i = ruleSet1.getRules().iterator();
+        boolean equal = true;
+        while (i.hasNext() && equal) {
+            final Rule rule1 = (Rule) i.next();
+            final Rule rule2 = ruleSet2.getRuleByName(rule1.getName());
+            equal = rule1.getPriority() == rule2.getPriority();
+            if (equal) {
+                final Properties p1 = rule1.getProperties();
+                final Properties p2 = rule2.getProperties();
+                final Iterator j = p1.keySet().iterator();
+                while (j.hasNext() && equal) {
+                    final String key = (String) j.next();
+                    final String v1 = p1.getProperty(key).trim();
+                    final String v2 = p2.getProperty(key).trim();
+                    equal = v1.equals(v2);
+                }
+            }
+        }
+        
         return equal;
     }
 
