@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Ian Flanigan - reported CPD JNLP breakage</li>
             <li>Benoit Xhenseval - bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Wim Deblauwe - Coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Tom Parker - Found missed case in NullAssignment, suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
@@ -221,6 +222,10 @@
             <tr><td></td>
                 <td><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technologies</a> for
                 using PMD inside their Convergence product
+                    </td></tr>
+            <tr><td></td>
+                <td><a href="http://www.cenqua.com/">Cenqua</a> for
+                giving us a free Clover license and doing a nice <a href="http://fisheye.cenqua.com/viewrep/pmd">FishEye</a> run.
                     </td></tr>
         </table>
         </subsection>
