@@ -43,9 +43,9 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Wim Deblauwe - UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Ian Flanigan - reported CPD JNLP breakage</li>
             <li>Benoit Xhenseval - bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
-            <li>Wim Deblauwe - Coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Tom Parker - Found missed case in NullAssignment, suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
             <li>Glen Cordrey - Reported bug involved JavaCC string handling</li>
             <li>Dave Brosius - a couple of nice patches to clean up some string handling inefficiencies, non-static class usages, and unclosed streams/readers - found with Findbugs, I daresay :-)</li>

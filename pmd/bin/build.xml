@@ -6,7 +6,7 @@
 <property name="dir.rulesets" value="rulesets\"/>
 <property name="dir.regress" value="regress\"/>
 <property name="version" value="3.1"/>
-<property name="jnlp_staging_area" value="/home/tom/misc/importscrubberjnlp/"/>
+<property name="keystore" value="/home/tom/myKeyStore"/>
 
 <path id="dependencies.path">
     <pathelement location="${dir.build}"/>
@@ -154,14 +154,14 @@
 <target name="dist" depends="clean,jar" description="Recompiles and jars"/>
 
 <target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
-    <signjar jar="${dir.lib}/pmd-${version}.jar" alias="myself" keystore="${jnlp_staging_area}myKeyStore" storepass="password"/>
+    <signjar jar="${dir.lib}/pmd-${version}.jar" alias="myself" keystore="${keystore}" storepass="password"/>
     <echo message="Uploading jar file"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/data/pmd/pmd/lib/pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+        <arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
     </exec>
     <echo message="Uploading cpd.jnlp"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/data/pmd/pmd/etc/cpd.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
+        <arg line=" /home/tom/pmd/pmd/etc/cpd.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
     </exec>
 </target>
 
