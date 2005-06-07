@@ -26,6 +26,8 @@
  */
 package pmd;
 
+import java.lang.String;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,8 +46,13 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.TargetJDK1_3;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
 
 import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.java.queries.SourceLevelQuery;
 import org.openide.ErrorManager;
 import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.EditorCookie;
@@ -165,8 +172,12 @@ public class RunPMDAction extends CookieAction {
 	 * @throws IOException on failure to read one of the files or to write to the output window.
 	 */
 	public static List checkCookies( List dataobjects, RunPMDCallback callback ) throws IOException {
+                SourceLevelQuery sourceLevelQuery =
+                        (SourceLevelQuery) Lookup.getDefault().lookup(SourceLevelQuery.class);
 		RuleSet set = constructRuleSets();
-		PMD pmd = new PMD();
+                PMD pmd_1_3 = null;
+                PMD pmd_1_4 = null;
+                PMD pmd_1_5 = null;
 		ArrayList list = new ArrayList( 100 );
 		callback.pmdStart( dataobjects.size() );
 		for( int i = 0; i < dataobjects.size(); i++ ) {
@@ -182,6 +193,30 @@ public class RunPMDAction extends CookieAction {
 			if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
 				continue;
 			}
+                        
+                        String sourceLevel = sourceLevelQuery.getSourceLevel(fobj);
+                        
+                        // choose the correct PMD to use according to the source level
+                        PMD pmd = null;
+                        if (sourceLevel != null) {
+                            if (sourceLevel.equals("1.5")) {
+                                if (pmd_1_5 == null)
+                                    pmd_1_5 = new PMD(new TargetJDK1_5());
+                                pmd = pmd_1_5;
+                            } else if (sourceLevel.equals("1.3")) {
+                                if (pmd_1_3 == null)
+                                    pmd_1_3 = new PMD(new TargetJDK1_3());
+                                pmd = pmd_1_3;
+                            }
+                        }
+                        // default to JDK 1.4 if we don't know any better...
+                        if (pmd == null) {
+                            if (pmd_1_4 == null)
+                                pmd_1_4 = new PMD(new TargetJDK1_4());
+                            pmd = pmd_1_4;
+                        }
+
+                        
 			Reader reader;
 			try {
 				reader = getSourceReader( dataobject );
