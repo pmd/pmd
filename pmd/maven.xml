@@ -11,6 +11,7 @@
 	<preGoal name="site">
 		<attainGoal name="pmd:rulesets-index"/>
 		<attainGoal name="pmd:ruleset-docs"/>
+		<attainGoal name="clover:on"/>
 	</preGoal>
 
 	<goal name="pmd:ruleset-docs" description="Generates rulesets documentation">
