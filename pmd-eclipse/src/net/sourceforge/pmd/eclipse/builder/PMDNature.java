@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.builder;
 
+
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 
 import org.eclipse.core.resources.ICommand;
@@ -17,6 +18,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/06/07 18:38:15  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.3  2005/05/31 20:33:03  phherlin
  * Continuing refactoring
  *

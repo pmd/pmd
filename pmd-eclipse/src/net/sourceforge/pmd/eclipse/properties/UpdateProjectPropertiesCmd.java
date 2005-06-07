@@ -40,6 +40,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IWorkingSet;
@@ -51,6 +52,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/06/07 18:38:13  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.2  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  *

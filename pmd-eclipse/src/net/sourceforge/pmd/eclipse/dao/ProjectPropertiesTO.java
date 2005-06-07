@@ -33,7 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.properties;
+package net.sourceforge.pmd.eclipse.dao;
 
 /**
  * This class is a simple data bean to let simply serialize project properties
@@ -43,6 +43,9 @@ package net.sourceforge.pmd.eclipse.properties;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/06/07 18:38:14  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.1  2005/05/31 20:44:40  phherlin
  * Continuing refactoring
  *

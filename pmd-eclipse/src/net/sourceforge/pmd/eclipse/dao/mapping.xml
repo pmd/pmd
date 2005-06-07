@@ -3,7 +3,7 @@
                          "http://castor.exolab.org/mapping.dtd">
 
 <mapping>
-        <class name="net.sourceforge.pmd.eclipse.properties.ProjectPropertiesTO">
+        <class name="net.sourceforge.pmd.eclipse.dao.ProjectPropertiesTO">
                 <map-to xml="pmd"/>
 
                 <field name="WorkingSetName"
@@ -21,7 +21,7 @@
                 </field>
 
                 <field name="Rules"
-                       type="net.sourceforge.pmd.eclipse.properties.RuleSpecTO"
+                       type="net.sourceforge.pmd.eclipse.dao.RuleSpecTO"
                        collection="array"
                        get-method="getRules"
                        set-method="setRules">
@@ -29,7 +29,7 @@
                 </field>
         </class>
 
-        <class name="net.sourceforge.pmd.eclipse.properties.RuleSpecTO">
+        <class name="net.sourceforge.pmd.eclipse.dao.RuleSpecTO">
                 <map-to xml="rule"/>
 
                 <field name="Name"

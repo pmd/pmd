@@ -33,7 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.properties;
+package net.sourceforge.pmd.eclipse.dao;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -42,7 +42,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URL;
 
-import net.sourceforge.pmd.eclipse.dao.DAOException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -63,6 +62,9 @@ import org.exolab.castor.xml.ValidationException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/06/07 18:38:14  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.2  2005/05/31 20:44:40  phherlin
  * Continuing refactoring
  *
@@ -73,7 +75,7 @@ import org.exolab.castor.xml.ValidationException;
  */
 public class ProjectPropertiesDAOCastor implements ProjectPropertiesDAO {
     private static final String PROPERTIES_FILE = ".pmd";
-    private static final String PROPERTIES_MAPPING = "/net/sourceforge/pmd/eclipse/properties/mapping.xml";
+    private static final String PROPERTIES_MAPPING = "/net/sourceforge/pmd/eclipse/dao/mapping.xml";
     
     /**
      * Load a project properties

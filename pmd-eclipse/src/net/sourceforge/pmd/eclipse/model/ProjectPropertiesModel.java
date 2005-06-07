@@ -33,11 +33,9 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.properties;
+package net.sourceforge.pmd.eclipse.model;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.model.ModelException;
-import net.sourceforge.pmd.eclipse.model.PMDPluginModel;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IWorkingSet;
@@ -50,6 +48,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/06/07 18:38:13  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  *

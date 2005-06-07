@@ -44,6 +44,7 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.cmd.BuildProjectCommand;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,6 +68,9 @@ import org.eclipse.ui.progress.IProgressService;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2005/06/07 18:38:13  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.7  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  *

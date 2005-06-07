@@ -33,7 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.properties;
+package net.sourceforge.pmd.eclipse.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,8 +47,9 @@ import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 import net.sourceforge.pmd.eclipse.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.dao.DAOException;
 import net.sourceforge.pmd.eclipse.dao.DAOFactory;
-import net.sourceforge.pmd.eclipse.model.AbstractModel;
-import net.sourceforge.pmd.eclipse.model.ModelException;
+import net.sourceforge.pmd.eclipse.dao.ProjectPropertiesDAO;
+import net.sourceforge.pmd.eclipse.dao.ProjectPropertiesTO;
+import net.sourceforge.pmd.eclipse.dao.RuleSpecTO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,6 +67,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2005/06/07 18:38:13  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.4  2005/06/05 19:28:13  phherlin
  * Decrease the complexity of isRuleSetEqual
  *
@@ -116,21 +120,21 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#getProject()
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#getProject()
      */
     public IProject getProject() {
         return this.project;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#isPmdEnabled()
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isPmdEnabled()
      */
     public boolean isPmdEnabled() throws ModelException {
         return this.pmdEnabled;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#setPmdEnabled(boolean)
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setPmdEnabled(boolean)
      */
     public void setPmdEnabled(final boolean pmdEnabled) throws ModelException {
         log.info("Enable PMD for project " + this.project.getName() + " : " + pmdEnabled);
@@ -141,7 +145,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#getProjectRuleSet()
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#getProjectRuleSet()
      */
     public RuleSet getProjectRuleSet() throws ModelException {
         if (this.synchronizeRuleSet()) {
@@ -152,7 +156,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#setProjectRuleSet(net.sourceforge.pmd.RuleSet)
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setProjectRuleSet(net.sourceforge.pmd.RuleSet)
      */
     public void setProjectRuleSet(final RuleSet projectRuleSet) throws ModelException {
         log.info("Set a rule set for project " + this.project.getName());
@@ -168,14 +172,14 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#isRuleSetStoredInProject()
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isRuleSetStoredInProject()
      */
     public boolean isRuleSetStoredInProject() throws ModelException {
         return this.ruleSetStoredInProject;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#setRuleSetStoredInProject(boolean)
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setRuleSetStoredInProject(boolean)
      */
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws ModelException {
         log.info("Set rule set stored in project for project " + this.project.getName() + " : " + ruleSetStoredInProject);
@@ -183,14 +187,14 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#getProjectWorkingSet()
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#getProjectWorkingSet()
      */
     public IWorkingSet getProjectWorkingSet() throws ModelException {
         return this.projectWorkingSet;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#setProjectWorkingSet(org.eclipse.ui.IWorkingSet)
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setProjectWorkingSet(org.eclipse.ui.IWorkingSet)
      */
     public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) throws ModelException {
         log.info("Set working set for project " + this.project.getName() + " : "
@@ -200,7 +204,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#isNeedRebuild()
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isNeedRebuild()
      */
     public boolean isNeedRebuild() {
         log.debug("Query if project " + this.project.getName() + " need rebuild : " + (this.pmdEnabled && this.needRebuild));
@@ -210,14 +214,14 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#setNeedRebuild()
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setNeedRebuild()
      */
     public void setNeedRebuild(final boolean needRebuild) {
         this.needRebuild = needRebuild;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel#isRuleSetFileExist()
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isRuleSetFileExist()
      */
     public boolean isRuleSetFileExist() {
         final IFile file = this.project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);

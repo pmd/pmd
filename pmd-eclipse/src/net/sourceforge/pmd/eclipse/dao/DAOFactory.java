@@ -35,8 +35,6 @@
  */
 package net.sourceforge.pmd.eclipse.dao;
 
-import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesDAO;
-import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesDAOCastor;
 
 /**
  * Factory for all DAO of the plugin
@@ -45,6 +43,9 @@ import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesDAOCastor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/06/07 18:38:14  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.1  2005/05/31 20:33:01  phherlin
  * Continuing refactoring
  *

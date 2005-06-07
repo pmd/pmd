@@ -50,7 +50,7 @@ import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
-import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -72,6 +72,9 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/06/07 18:38:14  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.3  2005/05/31 20:44:41  phherlin
  * Continuing refactoring
  *

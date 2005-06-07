@@ -38,7 +38,7 @@ package net.sourceforge.pmd.eclipse.cmd;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
-import net.sourceforge.pmd.eclipse.properties.ProjectPropertiesModel;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -51,6 +51,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2005/06/07 18:38:14  phherlin
+ * Move classes to limit packages cycle dependencies
+ *
  * Revision 1.5  2005/05/31 20:44:41  phherlin
  * Continuing refactoring
  *
