@@ -8,8 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDEclipseException;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
@@ -62,6 +60,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.14  2005/06/07 22:40:06  phherlin
+ * Implementing extra ruleset declaration
+ *
  * Revision 1.13  2003/12/18 23:58:37  phherlin
  * Fixing malformed UTF-8 characters in generated xml files
  *
@@ -447,17 +448,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                 dialog.open();
                 if (dialog.getReturnCode() == RuleSetSelectionDialog.OK) {
                     try {
-                        RuleSetFactory factory = new RuleSetFactory();
-                        RuleSet importedRuleSet = factory.createRuleSet(dialog.getImportedRuleSetName());
-                        ruleSet.addRuleSet(importedRuleSet);
+                        RuleSet selectedRuleSet = dialog.getSelectedRuleSet();
+                        ruleSet.addRuleSet(selectedRuleSet);
                         setModified(true);
                         try {
                             refresh();
                         } catch (Throwable t) {
                             PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
                         }
-                    } catch (RuleSetNotFoundException e) {
-                        PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_RULESET_NOT_FOUND), e);
                     } catch (RuntimeException e) {
                         PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_IMPORTING_RULESET), e);
                     }

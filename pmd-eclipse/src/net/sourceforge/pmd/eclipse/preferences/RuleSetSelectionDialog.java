@@ -1,5 +1,15 @@
 package net.sourceforge.pmd.eclipse.preferences;
 
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.core.PMDCorePlugin;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import org.eclipse.jface.dialogs.Dialog;
@@ -23,6 +33,9 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/06/07 22:40:06  phherlin
+ * Implementing extra ruleset declaration
+ *
  * Revision 1.2  2003/08/13 20:09:06  phherlin
  * Refactoring private->protected to remove warning about non accessible member access in enclosing types
  *
@@ -34,6 +47,9 @@ import org.eclipse.swt.widgets.Shell;
 public class RuleSetSelectionDialog extends Dialog {
     protected Combo inputCombo;
     private String importedRuleSetName;
+    private final RuleSet[] ruleSets;
+    private final String[] ruleSetNames;
+    private RuleSet selectedRuleSet;
 
     /**
      * Constructor for RuleSetSelectionDialog.
@@ -41,6 +57,29 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     public RuleSetSelectionDialog(Shell parent) {
         super(parent);
+        Set registeredRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        SortedSet sortedRuleSets = new TreeSet(new Comparator() {
+            public boolean equals(Object arg0) {
+                return false;
+            }
+
+            public int compare(Object arg0, Object arg1) {
+                RuleSet ruleSet1 = (RuleSet) arg0;
+                RuleSet ruleSet2 = (RuleSet) arg1;
+                return ruleSet1.getName().compareToIgnoreCase(ruleSet2.getName());
+            }
+        });
+        sortedRuleSets.addAll(registeredRuleSets);
+        
+        ruleSets = new RuleSet[sortedRuleSets.size()];
+        ruleSetNames = new String[sortedRuleSets.size()];
+        Iterator i = sortedRuleSets.iterator();
+        int index = 0;
+        while (i.hasNext()) {
+            ruleSets[index] = (RuleSet) i.next();
+            ruleSetNames[index] = ruleSets[index].getName();
+            index++;
+        }
     }
 
     /**
@@ -87,7 +126,7 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     private Combo buildInputCombo(Composite parent) {
         Combo combo = new Combo(parent, SWT.NONE);
-        combo.setItems(PMDPlugin.RULESET_ALLPMD);
+        combo.setItems(this.ruleSetNames);
         combo.setText("");
         combo.setToolTipText(getMessage(PMDConstants.MSGKEY_PREF_RULESETSELECTION_TOOLTIP_RULESET));
         return combo;
@@ -120,16 +159,33 @@ public class RuleSetSelectionDialog extends Dialog {
      * @return String
      */
     public String getImportedRuleSetName() {
-        return importedRuleSetName;
+        return this.importedRuleSetName;
+    }
+    
+    /**
+     * @return the selected ruleSet
+     */
+    public RuleSet getSelectedRuleSet() {
+        return this.selectedRuleSet;
     }
 
     /**
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     protected void okPressed() {
-        importedRuleSetName = inputCombo.getText();
-        if (importedRuleSetName.equals("")) {
-            importedRuleSetName = null;
+        int selectionIndex = this.inputCombo.getSelectionIndex();
+        if (selectionIndex == -1) {
+            importedRuleSetName = inputCombo.getText();
+            if (!importedRuleSetName.equals("")) {
+                try {
+                    final RuleSetFactory factory = new RuleSetFactory();
+                    this.selectedRuleSet = factory.createRuleSet(this.importedRuleSetName);
+                } catch (RuleSetNotFoundException e) {
+                    PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_RULESET_NOT_FOUND), e);
+                }
+            }
+        } else {
+            this.selectedRuleSet = this.ruleSets[selectionIndex];
         }
         
         super.okPressed();
