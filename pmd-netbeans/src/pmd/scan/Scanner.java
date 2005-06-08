@@ -34,12 +34,16 @@ import java.util.List;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.StyledDocument;
+import org.netbeans.editor.Settings;
+import org.netbeans.editor.SettingsNames;
+import org.netbeans.modules.editor.java.JavaKit;
 import org.openide.ErrorManager;
 import org.openide.loaders.DataObject;
 import org.openide.cookies.EditorCookie;
 import org.openide.cookies.LineCookie;
 import org.openide.nodes.Node;
 import org.openide.text.Line;
+import org.openide.text.Line.Part;
 import pmd.Fault;
 import pmd.RunPMDAction;
 import pmd.config.PMDOptionsSettings;
@@ -91,6 +95,12 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 		try {
 			tracelog("started");
 			while( running ) {
+                            
+                            int tabSize = 8;
+                            Integer foo = (Integer) Settings.getValue(JavaKit.class, SettingsNames.TAB_SIZE);
+                            if (foo != null)
+                                tabSize = foo.intValue();
+                            
 				int lastModCount = modCount;
 				tracelog("run starting at modcount: " + lastModCount);
 				DataObject object = ( DataObject )node.getCookie( DataObject.class ) ;
@@ -111,11 +121,25 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 					{
 						tracelog("Line class : " + line.getClass().getName());
 						tracelog("Node: " + node + ", count: " + line.getAnnotationCount() );
+                                                
+                                                String text = line.getText();
+                                                
+                                                int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
+                                                if (firstNonWhiteSpaceCharIndex == -1)
+                                                    continue;
+                                                int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
+                                                String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
+                                                String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
+                                                int start = expandedLength(0, initialWhiteSpace, tabSize);
+                                                int length = expandedLength(start, content, tabSize);
+                                                
+                                                Part part = line.createPart(start, length);
+                                                
 						PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
 						String msg = fault.getMessage();
 						annotation.setErrorMessage( msg );
-						annotation.attach( line );
-						line.addPropertyChangeListener( annotation );
+						annotation.attach( part );
+						part.addPropertyChangeListener( annotation );
 					}
 				}
 				tracelog("run finished at modcount: " + lastModCount);
@@ -136,7 +160,45 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 			tracelog("stopped");
 		}
 	}
-	
+
+        private int findFirstNonWhiteSpaceCharIndex(String text) {
+            for (int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
+                if (c != ' ')
+                    return i;
+            }
+            
+            return -1;
+        }
+        
+        private int findLastNonWhiteSpaceCharIndex(String text) {
+            for (int i = text.length() - 1; i >= 0; i--) {
+                char c = text.charAt(i);
+                if (c != ' ' && c != '\t' && c != '\n' && c != '\r')
+                    return i;
+            }
+            
+            return -1;
+        }
+        
+        private int expandedLength(int start, String text, int tabSize) {
+            int position = start;
+            int length = 0;
+            for (int i = 0; i < text.length(); i++) {
+                position++;
+                length++;
+                char c = text.charAt(i);
+                if (c == '\t') {
+                    while (position % tabSize != 0) {
+                        position++;
+                        length++;
+                    }
+                }
+            }
+            
+            return length;
+        }
+        
 	public void stopThread() {
 		running = false;
 	}

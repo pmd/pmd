@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.openide.text.Annotation;
 import org.openide.text.Line;
+import org.openide.text.Line.Part;
 
 /**
  * Just a class whose mission is to mark the line where the error is. It's using
@@ -103,8 +104,8 @@ public class PMDScanAnnotation extends Annotation implements PropertyChangeListe
 	 * @param propertyChangeEvent the event fired
 	 */
 	public void propertyChange( PropertyChangeEvent propertyChangeEvent ) {
-		Line line = ( Line )propertyChangeEvent.getSource();
-		line.removePropertyChangeListener( this );
+		Part part = ( Part )propertyChangeEvent.getSource();
+		part.removePropertyChangeListener( this );
 		detach();
 	}
 }
