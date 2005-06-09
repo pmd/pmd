@@ -124,4 +124,27 @@ public class RuleSet {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object o) {
+        if ((o == null) || !(o instanceof RuleSet)) {
+            return false; // Trivial
+        }
+        
+        if (this == o) {
+            return true; // Basic equality
+        }
+        
+        RuleSet ruleSet = (RuleSet) o;
+        return this.getName().equals(ruleSet.getName()) && this.getRules().equals(ruleSet.getRules()); 
+    }
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return this.getName().hashCode() + 13*this.getRules().hashCode();
+    }
 }
