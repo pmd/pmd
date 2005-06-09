@@ -43,7 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>tskariah - bug report MethodArgumentCouldBeFinal</li>
+            <li>tskariah - bug report for MethodArgumentCouldBeFinal</li>
             <li>Bruno Juillet - bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Wim Deblauwe - Clover license coordination and implementation, UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Ian Flanigan - reported CPD JNLP breakage</li>
