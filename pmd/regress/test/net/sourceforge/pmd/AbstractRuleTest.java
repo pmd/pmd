@@ -36,8 +36,20 @@ import java.util.Set;
 public class AbstractRuleTest extends TestCase {
 
     private static class MyRule extends AbstractRule{
-        public String getMessage() {
-            return "myrule";
+        public MyRule() {
+            setName("MyRule");
+            setMessage("my rule");
+            setPriority(3);
+            addProperty("foo", "value");
+        }
+    }
+
+    private static class MyOtherRule extends AbstractRule{
+        public MyOtherRule() {
+            setName("MyOtherRule");
+            setMessage("my other rule");
+            setPriority(3);
+            addProperty("foo", "value");
         }
     }
 
@@ -58,7 +70,7 @@ public class AbstractRuleTest extends TestCase {
         assertEquals("Line number mismatch!", 5, rv.getLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
-        assertEquals("Rule description mismatch!", "myrule", rv.getDescription());
+        assertEquals("Rule description mismatch!", "my rule", rv.getDescription());
         assertEquals("RuleSet name mismatch!", "foo", rv.getRule().getRuleSetName());
     }
 
@@ -91,6 +103,76 @@ public class AbstractRuleTest extends TestCase {
         n.setScope(new SourceFileScope("foo"));
         r.createRuleViolation(ctx, n, "specificdescription");
         assertTrue(ctx.getReport().isEmpty());
+    }
+    
+    public void testEquals1() {
+        MyRule r = new MyRule();
+        assertFalse("A rule is never equals to null!", r.equals(null));
+    }
+    
+    public void testEquals2() {
+        MyRule r = new MyRule();
+        assertEquals("A rule must be equals to itself", r, r);
+    }
+    
+    public void testEquals3() {
+        MyRule r1 = new MyRule();
+        MyRule r2 = new MyRule();
+        assertEquals("2 instances of the same rule are equals", r1, r2);
+        assertEquals("hasCode for 2 instances of the same rule must be equals", r1.hashCode(), r2.hashCode());
+    }
+    
+    public void testEquals4() {
+        MyRule myRule = new MyRule();
+        assertFalse("A rule cannot be equals to an object of another class", myRule.equals("MyRule"));
+    }
+    
+    public void testEquals5() {
+        MyRule myRule = new MyRule();
+        MyOtherRule myOtherRule = new MyOtherRule();
+        assertFalse("2 rules of different classes cannot be equals", myRule.equals(myOtherRule));
+        assertFalse("Rules that are not equals should not have the same hashcode", myRule.hashCode() == myOtherRule.hashCode());
+    }
+    
+    public void testEquals6() {
+        MyRule r1 = new MyRule();
+        MyRule r2 = new MyRule();
+        r2.setName("MyRule2");
+        assertFalse("Rules with different names cannot be equals", r1.equals(r2));
+        assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
+    }
+    
+    public void testEquals7() {
+        MyRule r1 = new MyRule();
+        MyRule r2 = new MyRule();
+        r2.setPriority(1);
+        assertFalse("Rules with different priority cannot be equals", r1.equals(r2));
+        assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
+    }
+    
+    public void testEquals8() {
+        MyRule r1 = new MyRule();
+        r1.addProperty("xpath", "something");
+        MyRule r2 = new MyRule();
+        r2.addProperty("xpath", "something else");
+        assertFalse("Rules with different properties values cannot be equals", r1.equals(r2));
+        assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
+    }
+    
+    public void testEquals9() {
+        MyRule r1 = new MyRule();
+        MyRule r2 = new MyRule();
+        r2.addProperty("xpath", "something else");
+        assertFalse("Rules with different properties cannot be equals", r1.equals(r2));
+        assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
+    }
+    
+    public void testEquals10() {
+        MyRule r1 = new MyRule();
+        MyRule r2 = new MyRule();
+        r2.setMessage("another message");
+        assertTrue("Rules with different message are still equals", r1.equals(r2));
+        assertTrue("Rules that are equals must have the same hashcode", r1.hashCode() == r2.hashCode());
     }
 
 }
