@@ -13,6 +13,7 @@ Fixed bug which caused MissingSerialVersionUID to trigger on all interfaces that
 Modified NullAssignmentRule to catch null assignments in ternary expressions.
 Added two new node types - ASTCatchStatement and ASTFinallyStatement.
 Modified rule XML definition; it no longer includes a symboltable attribute.
+Harden equality of AbstractRule objects (needed for the Eclipse plugin features)
 
 May 10, 2005 - 3.1:
 New rules: SimplifyStartsWith, UnnecessaryParentheses, CollapsibleIfStatements, UseAssertEqualsInsteadOfAssertTrue,  UseAssertSameInsteadOfAssertTrue, UseStringBufferForStringAppends, SimplifyConditional, SingularField

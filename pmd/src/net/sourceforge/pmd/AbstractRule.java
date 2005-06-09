@@ -3,18 +3,17 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.symboltable.Scope;
-import net.sourceforge.pmd.symboltable.MethodScope;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.symboltable.MethodScope;
+import net.sourceforge.pmd.symboltable.Scope;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
@@ -96,15 +95,41 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         this.message = message;
     }
 
+    /**
+     * Test if rules are equals. Rules are equals if
+     * 1. they have the same implementation class
+     * 2. they have the same name
+     * 3. they have the same priority
+     * 4. they share the same properties/values
+     */
     public boolean equals(Object o) {
-        if (!(o instanceof Rule)) {
-            return false;
+        if (o == null) {
+            return false; // trivial
         }
-        return ((Rule) o).getName().equals(getName());
+        
+        if (this == o) {
+            return true;  // trivial
+        }
+        
+        Rule rule = null;
+        boolean equality = this.getClass().getName().equals(o.getClass().getName());
+        
+        if (equality) {
+            rule = (Rule) o;
+            equality = this.getName().equals(rule.getName())
+                    && this.getPriority() == rule.getPriority()
+                    && this.getProperties().equals(rule.getProperties());
+        }
+        
+        return equality;
     }
 
+    /**
+     * Return a hash code to conform to equality. Try with a string.
+     */
     public int hashCode() {
-        return getName().hashCode();
+        String s = this.getClass().getName() + this.getName() + String.valueOf(this.getPriority()) + this.getProperties().toString();
+        return s.hashCode();
     }
 
     public void apply(List acus, RuleContext ctx) {
