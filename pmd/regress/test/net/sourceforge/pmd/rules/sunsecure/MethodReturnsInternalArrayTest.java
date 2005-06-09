@@ -25,6 +25,7 @@ public class MethodReturnsInternalArrayTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "tricky field hiding", 0, rule),
            new TestDescriptor(TEST5, "really sick code", 1, rule),
            new TestDescriptor(TEST6, "returning a local array is ok", 0, rule),
+           new TestDescriptor(TEST7, "returning a local array is ok part deux", 0, rule),
        });
     }
 
@@ -63,6 +64,13 @@ public class MethodReturnsInternalArrayTest extends SimpleAggregatorTst {
         " int[] getArr() {" + PMD.EOL +
         "  int[] x = new int[] {1,2,3};" + PMD.EOL +
         "  return x;" + PMD.EOL +
+        " } ;" + PMD.EOL +
+        "}";
+
+    private static final String TEST7 =
+        "public class Foo {" + PMD.EOL +
+        " Object[] getArr() {" + PMD.EOL +
+        "  return new Object[] {foo,bar};" + PMD.EOL +
         " } ;" + PMD.EOL +
         "}";
 
