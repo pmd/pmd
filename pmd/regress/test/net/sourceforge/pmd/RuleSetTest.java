@@ -103,6 +103,61 @@ public class RuleSetTest extends TestCase {
         RuleSet IUT = new RuleSet();
         verifyRuleSet(IUT, 0, new HashSet());
     }
+    
+    public void testEquals1() {
+        RuleSet s = new RuleSet();
+        assertFalse("A ruleset cannot be equals to null", s.equals(null));
+    }
+    
+    public void testEquals2() {
+        RuleSet s = new RuleSet();
+        assertTrue("A rulset must be equals to itself", s.equals(s));
+    }
+    
+    public void testEquals3() {
+        RuleSet s = new RuleSet();
+        s.setName("basic rules");
+        assertFalse("A ruleset cannot be equals to another kind of object", s.equals("basic rules"));
+    }
+    
+    public void testEquals4() {
+        RuleSet s1 = new RuleSet();
+        s1.setName("my ruleset");
+        s1.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+
+        RuleSet s2 = new RuleSet();
+        s2.setName("my ruleset");
+        s2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+        
+        assertTrue("2 rulesets with same name and rules must be equals", s1.equals(s2));
+        assertTrue("Equals rulesets must have the same hascode", s1.hashCode() == s2.hashCode());
+    }
+    
+    public void testEquals5() {
+        RuleSet s1 = new RuleSet();
+        s1.setName("my ruleset");
+        s1.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+
+        RuleSet s2 = new RuleSet();
+        s2.setName("my other ruleset");
+        s2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+        
+        assertFalse("2 rulesets with different name but same rules must not be equals", s1.equals(s2));
+        assertFalse("Rulesets that are not equals should not have the same hascode", s1.hashCode() == s2.hashCode());
+    }
+    
+    public void testEquals6() {
+        RuleSet s1 = new RuleSet();
+        s1.setName("my ruleset");
+        s1.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+
+        RuleSet s2 = new RuleSet();
+        s2.setName("my ruleset");
+        s2.addRule(new MockRule("other rule", "desc", "msg", "rulesetname"));
+        
+        assertFalse("2 rulesets with same name but different rules must not be equals", s1.equals(s2));
+        assertFalse("Rulesets that are not equals should not have the same hascode", s1.hashCode() == s2.hashCode());
+    }
 
     protected void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {
 
