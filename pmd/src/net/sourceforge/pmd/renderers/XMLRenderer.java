@@ -46,21 +46,9 @@ public class XMLRenderer implements Renderer {
             buf.append(" ruleset=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName());
             buf.append("\"");
-            if (rv.getPackageName() != null && rv.getPackageName().length() > 0) {
-                buf.append(" package=\"");
-                StringUtil.appendXmlEscaped(buf, rv.getPackageName());
-                buf.append("\"");
-            }
-            if (rv.getClassName() != null && rv.getClassName().length() > 0) {
-                buf.append(" class=\"");
-                StringUtil.appendXmlEscaped(buf, rv.getClassName());
-                buf.append("\"");
-            }
-            if (rv.getMethodName() != null && rv.getMethodName().length() > 0) {
-                buf.append(" method=\"");
-                StringUtil.appendXmlEscaped(buf, rv.getMethodName());
-                buf.append("\"");
-            }
+            maybeAdd(rv, "package", rv.getPackageName(), buf);
+            maybeAdd(rv, "class", rv.getClassName(), buf);
+            maybeAdd(rv, "method", rv.getMethodName(), buf);
             buf.append(" priority=\"");
             buf.append(rv.getRule().getPriority());
             buf.append("\">");
@@ -87,6 +75,14 @@ public class XMLRenderer implements Renderer {
 
         buf.append("</pmd>");
         return buf.toString();
+    }
+
+    private void maybeAdd(RuleViolation rv, String attr, String value, StringBuffer buf) {
+        if (value != null && value.length() > 0) {
+            buf.append(" " + attr +"=\"");
+            StringUtil.appendXmlEscaped(buf, value);
+            buf.append("\"");
+        }
     }
 
 }
