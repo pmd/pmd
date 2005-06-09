@@ -33,11 +33,9 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
         Map decls = s.getVariableDeclarations();
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration var = (VariableNameDeclaration)i.next();
-            if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter)) {
-                if (!assigned((List)decls.get(var))) {
-                    RuleContext ctx = (RuleContext)data;
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, var.getAccessNodeParent(), MessageFormat.format(getMessage(), new Object[]{var.getImage()})));
-                }
+            if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter) && !assigned((List)decls.get(var))) {
+                RuleContext ctx = (RuleContext)data;
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, var.getAccessNodeParent(), MessageFormat.format(getMessage(), new Object[]{var.getImage()})));
             }
         }
         return data;
@@ -46,7 +44,7 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
     private boolean assigned(List usages) {
         for (Iterator j = usages.iterator(); j.hasNext();) {
             NameOccurrence occ = (NameOccurrence) j.next();
-            if (occ.isOnLeftHandSide()) {
+            if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 return true;
             } 
             continue;

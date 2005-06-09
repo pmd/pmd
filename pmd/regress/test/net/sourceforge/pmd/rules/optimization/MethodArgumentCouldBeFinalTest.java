@@ -30,6 +30,8 @@ public class MethodArgumentCouldBeFinalTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST7, "Shouldn't trigger on try blocks", 0, rule),
                new TestDescriptor(TEST8, "Skip native methods", 0, rule),
                new TestDescriptor(TEST9, "Skip abstract methods", 0, rule),
+               new TestDescriptor(TEST10, "self assignment of a method param means it can't be final", 0, rule),
+               new TestDescriptor(TEST11, "same as above but prefix vs postfix", 0, rule),
        });
     }
 
@@ -93,4 +95,17 @@ public class MethodArgumentCouldBeFinalTest extends SimpleAggregatorTst {
         " public abstract void bar(Object x);" + PMD.EOL +
         "}";
 
+    private static final String TEST10 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(int a) {" + PMD.EOL +
+        "  x[a++] = 1;" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST11 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(int a) {" + PMD.EOL +
+        "  x[--a] = 1;" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
 }

@@ -84,13 +84,12 @@ public class AvoidReassigningParametersTest extends SimpleAggregatorTst {
     "}";
 
     public static final String TEST8 =
-        "public class Foo {" + PMD.EOL +
-        " void foo(int x) {" + PMD.EOL +
-        "   try {" + PMD.EOL +
-        "     x = 2;" + PMD.EOL +
-        "   } catch (Throwable t) { " + PMD.EOL +
-        "   } " + PMD.EOL +
-        " }" + PMD.EOL +
-        "}";
-
+    "public class Foo {" + PMD.EOL +
+    " void foo(int x) {" + PMD.EOL +
+    "   try {" + PMD.EOL +
+    "     x = 2;" + PMD.EOL +
+    "   } catch (Throwable t) { " + PMD.EOL +
+    "   } " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 }
