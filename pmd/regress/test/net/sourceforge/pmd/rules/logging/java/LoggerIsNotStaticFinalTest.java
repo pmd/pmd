@@ -39,9 +39,9 @@ public class LoggerIsNotStaticFinalTest extends SimpleAggregatorTst {
 
     private static final String TEST3 =
     "public class Foo {" + PMD.EOL +
-    " static final String log;" + PMD.EOL +
+    " static final Logger log;" + PMD.EOL +
     " static class c { " + PMD.EOL +
-    "  static final String log;" + PMD.EOL +
+    "  static final Logger log;" + PMD.EOL +
     " } " + PMD.EOL +
     "}";
 

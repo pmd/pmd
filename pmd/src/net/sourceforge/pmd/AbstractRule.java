@@ -107,41 +107,27 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         return getName().hashCode();
     }
 
-    protected void visitAll(List acus, RuleContext ctx) {
-        for (Iterator i = acus.iterator(); i.hasNext();) {
-            ASTCompilationUnit node = (ASTCompilationUnit) i.next();
-            visit(node, ctx);
-        }
-    }
-
     public void apply(List acus, RuleContext ctx) {
         visitAll(acus, ctx);
     }
 
-
     public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node) {
         String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-        String className = findClassName(node);
-        String methodName = findMethodName(node);
-        RuleViolation v = new RuleViolation(this, ctx, packageName, className, methodName);
+        RuleViolation v = new RuleViolation(this, ctx, packageName, findClassName(node), findMethodName(node));
         extractNodeInfo(v, node);
         return v;
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node, String specificDescription) {
         String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-        String className = findClassName(node);
-        String methodName = findMethodName(node);
-        RuleViolation rv = new RuleViolation(this, node.getBeginLine(), specificDescription, ctx, packageName, className, methodName);
+        RuleViolation rv = new RuleViolation(this, node.getBeginLine(), specificDescription, ctx, packageName, findClassName(node), findMethodName(node));
         extractNodeInfo(rv, node);
         return rv;
     }
 
     public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node, String variableName, String specificDescription) {
         String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-        String className = findClassName(node);
-        String methodName = findMethodName(node);
-        return new RuleViolation(this, node.getBeginLine(), node.getEndLine(), variableName, specificDescription, ctx, packageName, className, methodName);
+        return new RuleViolation(this, node.getBeginLine(), node.getEndLine(), variableName, specificDescription, ctx, packageName, findClassName(node), findMethodName(node));
     }
 
     private String findMethodName(SimpleNode node) {
@@ -149,6 +135,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         if (node.getFirstParentOfType(ASTMethodDeclaration.class) == null) {
             return "";
         } else {
+            // TODO hm, this should be a method on MethodScope
             Scope s = node.getScope();
             while (!(s instanceof MethodScope)) {
                 s = s.getParent();
@@ -201,6 +188,13 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 
     public boolean usesDFA() {
         return this.usesDFA;
+    }
+
+    protected void visitAll(List acus, RuleContext ctx) {
+        for (Iterator i = acus.iterator(); i.hasNext();) {
+            ASTCompilationUnit node = (ASTCompilationUnit) i.next();
+            visit(node, ctx);
+        }
     }
 
     /**

@@ -30,6 +30,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.stat.StatisticalRule;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import java.util.ArrayList;
@@ -266,14 +267,15 @@ public class StatisticalRuleTest extends TestCase {
     }
 
     // Test Single Datapoint
-/*
     public void testSingleDatapoint() {
         StatisticalRule IUT = new MockStatisticalRule();
 
         DataPoint point = new DataPoint();
         point.setScore(POINTS + 1.0);
         SimpleNode s = new SimpleNode(1);
+        s.setScope(new SourceFileScope("foo"));
         s.testingOnly__setBeginLine(POINTS + 1);
+        s.testingOnly__setBeginColumn(1);
         point.setNode(s);
         point.setMessage("SingleDataPoint");
 
@@ -285,7 +287,6 @@ public class StatisticalRuleTest extends TestCase {
 
         assertEquals("Expecting only one result.", 1, report.size());
     }
-*/
 
     // Okay, we have three properties we need to
     // test in Combination:
