@@ -1,18 +1,18 @@
 ????, 2005 - 3.2:
 New rules: UseCorrectExceptionLogging (logging-jakarta-commons)
-Modified NullAssignmentRule to catch null assignments in ternary expressions.
 Fixed bug 1201577 - PMD now correctly parses method declarations that return generic types.
 Fixed bug 1205709 - PMD no longer takes a long time to report certain parsing errors.
 Fixed bug 1052356 - ImmutableField no longer triggers on fields which are assigned to in a constructor's try statement.
 Fixed bug 1215854 - Package/class/method name are now filled in whenever possible, and the XML report includes all three.
 Fixed bug 1209719 - MethodArgumentCouldBeFinal no longer triggers on arguments which are modified using postfix or prefix expressions.
 Fixed bug 1188386 - MethodReturnsInternalArray no longer flags returning a local array declaration.
-Fixed bug which caused MissingSerialVersionUID to trigger on all interfaces that implemented other interfaces.
-Added two new node types - ASTCatchStatement and ASTFinallyStatement.
-Modified rule XML definition; it no longer includes a symboltable attribute.
 Implemented RFE 1188604 - AvoidThrowingCertainExceptionTypes has been split into AvoidThrowingRawExceptionTypes and AvoidThrowingNullPointerException.
 Implemented RFE 1188369 - UnnecessaryBooleanAssertion now checks for things like 'assertTrue(!foo)'.  These should be changed to 'assertFalse(foo)' for clarity.
 Implemented RFE 1199622 - UnusedFormalParameter now defaults to only checking private methods unless a 'checkall' property is set.
+Fixed bug which caused MissingSerialVersionUID to trigger on all interfaces that implemented other interfaces.
+Modified NullAssignmentRule to catch null assignments in ternary expressions.
+Added two new node types - ASTCatchStatement and ASTFinallyStatement.
+Modified rule XML definition; it no longer includes a symboltable attribute.
 
 May 10, 2005 - 3.1:
 New rules: SimplifyStartsWith, UnnecessaryParentheses, CollapsibleIfStatements, UseAssertEqualsInsteadOfAssertTrue,  UseAssertSameInsteadOfAssertTrue, UseStringBufferForStringAppends, SimplifyConditional, SingularField
