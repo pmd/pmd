@@ -68,7 +68,7 @@ public class LocalScopeTest extends STBBaseTst {
         NameDeclaration decl = (NameDeclaration)vars.keySet().iterator().next();
         List usages = (List)vars.get(decl);
         NameOccurrence occ = (NameOccurrence)usages.get(0);
-        assertEquals(4, occ.getBeginLine());
+        assertEquals(4, occ.getLocation().getBeginLine());
     }
 
     public static final String TEST1 =

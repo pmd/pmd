@@ -45,7 +45,7 @@ public class BooleanInstantiationRuleTest extends SimpleAggregatorTst {
     private static final String TEST4 =
     "public class Foo {" + PMD.EOL +
     " Boolean b = Boolean.valueOf(true);" + PMD.EOL +
-    " Boolean b = Boolean.valueOf(false);" + PMD.EOL +
+    " Boolean b1 = Boolean.valueOf(false);" + PMD.EOL +
     "}";
 
     private static final String TEST5 =

@@ -41,7 +41,7 @@ public class AvoidNonConstructorMethodsWithClassNameTest extends SimpleAggregato
     	"public class Foo {" + PMD.EOL +
 		"   public Foo() {}" + PMD.EOL +
 		"   public int Foo(Object o) {}" + PMD.EOL +
-		"   public int Foo(Object o, Object o) {}" + PMD.EOL +
+		"   public int Foo(Object o, Object o1) {}" + PMD.EOL +
 		"} ";
 
     private static final String TEST4 =

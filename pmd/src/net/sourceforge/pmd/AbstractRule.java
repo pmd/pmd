@@ -6,10 +6,11 @@ package net.sourceforge.pmd;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.MethodScope;
 
 import java.util.Iterator;
 import java.util.List;
@@ -25,11 +26,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     protected String ruleSetName;
     protected boolean include;
     protected boolean usesDFA;
-    protected boolean usesSymbolTable;
     protected int priority = LOWEST_PRIORITY;
-    private String packageName;
-    private String className;
-    private String methodName;
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -99,10 +96,6 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         this.message = message;
     }
 
-    public void setPackageName(String name) {
-        this.packageName = name;
-    }
-
     public boolean equals(Object o) {
         if (!(o instanceof Rule)) {
             return false;
@@ -125,34 +118,57 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         visitAll(acus, ctx);
     }
 
-    /**
-     * @deprecated use @link #createRuleViolation(RuleContext, IPositionProvider) instead 
-     */
-    public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber) {
-        return new RuleViolation(this, lineNumber, ctx, packageName, className, methodName);
-    }
 
-    public RuleViolation createRuleViolation(RuleContext ctx, IPositionProvider pp) {
+    public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node) {
+        String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
+        String className = findClassName(node);
+        String methodName = findMethodName(node);
         RuleViolation v = new RuleViolation(this, ctx, packageName, className, methodName);
-        extractNodeInfo(v, pp);
+        extractNodeInfo(v, node);
         return v;
     }
 
-    /**
-     * @deprecated use @link #createRuleViolation(RuleContext, IPositionProvider, String) instead
-     */
-    public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, String specificDescription) {
-        return new RuleViolation(this, lineNumber, specificDescription, ctx, packageName, className, methodName);
-    }
-
-    public RuleViolation createRuleViolation(RuleContext ctx, IPositionProvider pp, String specificDescription) {
-        RuleViolation rv = new RuleViolation(this, 0, specificDescription, ctx, packageName, className, methodName);
-        extractNodeInfo(rv, pp);
+    public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node, String specificDescription) {
+        String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
+        String className = findClassName(node);
+        String methodName = findMethodName(node);
+        RuleViolation rv = new RuleViolation(this, node.getBeginLine(), specificDescription, ctx, packageName, className, methodName);
+        extractNodeInfo(rv, node);
         return rv;
     }
 
-    public RuleViolation createRuleViolation(RuleContext ctx, int lineNumber, int lineNumber2, String variableName, String specificDescription) {
-        return new RuleViolation(this, lineNumber, lineNumber2, variableName, specificDescription, ctx, packageName, className, methodName);
+    public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node, String variableName, String specificDescription) {
+        String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
+        String className = findClassName(node);
+        String methodName = findMethodName(node);
+        return new RuleViolation(this, node.getBeginLine(), node.getEndLine(), variableName, specificDescription, ctx, packageName, className, methodName);
+    }
+
+    private String findMethodName(SimpleNode node) {
+        String methodName;
+        if (node.getFirstParentOfType(ASTMethodDeclaration.class) == null) {
+            return "";
+        } else {
+            Scope s = node.getScope();
+            while (!(s instanceof MethodScope)) {
+                s = s.getParent();
+            }
+            MethodScope ms = (MethodScope)s;
+            methodName = ms.getName();
+        }
+        return methodName;
+    }
+
+    private String findClassName(SimpleNode node) {
+        String className;
+        if (node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == null) {
+            // This takes care of nodes which are outside a class definition - i.e., import declarations
+            className = "";
+        } else {
+             // default to symbol table lookup
+            className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
+        }
+        return className;
     }
 
     public Properties getProperties() {
@@ -179,29 +195,6 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         this.priority = priority;
     }
 
-    public Object visit(ASTPackageDeclaration node, Object data) {
-        packageName = ((ASTName) node.jjtGetChild(0)).getImage();
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        className = node.getImage();
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTMethodDeclarator node, Object data) {
-        methodName = node.getImage();
-        return super.visit(node, data);
-    }
-
-    public void setUsesSymbolTable() {
-        this.usesSymbolTable = true;
-    }
-
-    public boolean usesSymbolTable() {
-        return this.usesSymbolTable;
-    }
-
     public void setUsesDFA() {
         this.usesDFA = true;
     }
@@ -212,25 +205,12 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 
     /**
      * Adds a violation to the report.
-     * It is an utility method that simply does:
-     * <code>context.getReport().addRuleViolation(createRuleViolation(context, beginLine));</code>
      * 
      * @param context the RuleContext
-     * @param beginLine begin line of the violation
-     * @deprecated use @link #addViolation(RuleContext, IPositionProvider)
+     * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
      */
-    protected final void addViolation(RuleContext context, int beginLine) {
-        context.getReport().addRuleViolation(createRuleViolation(context, beginLine));
-    }
-
-    /**
-     * Adds a violation to the report.
-     * 
-     * @param context the RuleContext
-     * @param pp the node that produces the violation, may be null, in which case all line and column info will be set to zero
-     */
-    protected final void addViolation(RuleContext context, IPositionProvider pp) {
-        context.getReport().addRuleViolation(createRuleViolation(context, pp));
+    protected final void addViolation(RuleContext context, SimpleNode node) {
+        context.getReport().addRuleViolation(createRuleViolation(context, node));
     }
 
     /**
@@ -246,13 +226,13 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 		return null;
 	}
 
-    private final void extractNodeInfo(RuleViolation v, IPositionProvider pp) {
-        if (pp==null) {
+    private final void extractNodeInfo(RuleViolation v, SimpleNode n) {
+        if (n==null) {
             v.setLine(0);
             v.setColumnInfo(0, 0);
         } else {
-            v.setLine(pp.getBeginLine());
-            v.setColumnInfo(pp.getBeginColumn(), pp.getEndColumn());
+            v.setLine(n.getBeginLine());
+            v.setColumnInfo(n.getBeginColumn(), n.getEndColumn());
         }
     }
 

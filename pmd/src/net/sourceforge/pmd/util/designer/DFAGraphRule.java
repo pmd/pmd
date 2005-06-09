@@ -13,7 +13,6 @@ public class DFAGraphRule extends AbstractRule {
 
     public DFAGraphRule() {
         super.setUsesDFA();
-        super.setUsesSymbolTable();
     }
 
     public List getMethods() {

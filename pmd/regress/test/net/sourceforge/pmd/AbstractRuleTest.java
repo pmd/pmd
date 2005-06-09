@@ -24,37 +24,17 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.IPositionProvider;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class AbstractRuleTest extends TestCase {
 
-    private static class MyPosProv implements IPositionProvider {
-        private int begline, endline, begcol,endcol;
-        public MyPosProv(int beg, int end, int begcol, int endcol) {
-            this.begline = beg;
-            this.endline = end;
-            this.begcol = begcol;
-            this.endcol = endcol;
-        }
-        public int getBeginLine() {
-            return begline;
-        }
-        public int getEndLine() {
-            return endline;
-        }
-        public int getBeginColumn() {
-            return begcol;
-        }
-        public int getEndColumn() {
-            return endcol;
-        }
-    }
     private static class MyRule extends AbstractRule{
         public String getMessage() {
             return "myrule";
@@ -70,7 +50,11 @@ public class AbstractRuleTest extends TestCase {
         r.setRuleSetName("foo");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        RuleViolation rv = r.createRuleViolation(ctx, new MyPosProv(5,5,5,5));
+        SimpleNode s = new SimpleNode(1);
+        s.testingOnly__setBeginColumn(5);
+        s.testingOnly__setBeginLine(5);
+        s.setScope(new SourceFileScope("foo"));
+        RuleViolation rv = r.createRuleViolation(ctx, s);
         assertEquals("Line number mismatch!", 5, rv.getLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -82,7 +66,11 @@ public class AbstractRuleTest extends TestCase {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        RuleViolation rv = r.createRuleViolation(ctx, new MyPosProv(5,5,5,5), "specificdescription");
+        SimpleNode s = new SimpleNode(1);
+        s.testingOnly__setBeginColumn(5);
+        s.testingOnly__setBeginLine(5);
+        s.setScope(new SourceFileScope("foo"));
+        RuleViolation rv = r.createRuleViolation(ctx, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -97,7 +85,11 @@ public class AbstractRuleTest extends TestCase {
         ctx.setReport(new Report());
         ctx.excludeLines(s);
         ctx.setSourceCodeFilename("filename");
-        r.createRuleViolation(ctx, new MyPosProv(5,5,5,5), "specificdescription");
+        SimpleNode n = new SimpleNode(1);
+        n.testingOnly__setBeginColumn(5);
+        n.testingOnly__setBeginLine(5);
+        n.setScope(new SourceFileScope("foo"));
+        r.createRuleViolation(ctx, n, "specificdescription");
         assertTrue(ctx.getReport().isEmpty());
     }
 

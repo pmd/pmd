@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.IPositionProvider;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTName;
@@ -16,7 +15,7 @@ import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-public class NameOccurrence implements IPositionProvider {
+public class NameOccurrence {
 
     private SimpleNode location;
     private String image;
@@ -57,7 +56,9 @@ public class NameOccurrence implements IPositionProvider {
         return node instanceof ASTExpression && node.jjtGetNumChildren() == 3;
     }
 
+
     public boolean isOnLeftHandSide() {
+        // I detest this method with every atom of my being
         SimpleNode primaryExpression;
         if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
             primaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent();
@@ -129,14 +130,6 @@ public class NameOccurrence implements IPositionProvider {
         return false;
     }
 
-    public Scope getScope() {
-        return location.getScope();
-    }
-
-    public int getBeginLine() {
-        return location.getBeginLine();
-    }
-
     public boolean isThisOrSuper() {
         return image.equals("this") || image.equals("super");
     }
@@ -146,37 +139,15 @@ public class NameOccurrence implements IPositionProvider {
         return n.getImage().equals(getImage());
     }
 
-    public String getImage() {
-        return image;
-    }
-
     public int hashCode() {
         return getImage().hashCode();
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public String toString() {
         return getImage() + ":" + location.getBeginLine() + ":" + location.getClass();
     }
-
-    /**
-     * @see net.sourceforge.pmd.IPositionProvider#getEndLine()
-     */
-    public int getEndLine() {
-        return location.getEndLine();
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IPositionProvider#getBeginColumn()
-     */
-    public int getBeginColumn() {
-        return location.getBeginColumn();
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IPositionProvider#getEndColumn()
-     */
-    public int getEndColumn() {
-        return location.getEndColumn();
-    }
-
 }

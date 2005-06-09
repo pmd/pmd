@@ -27,8 +27,4 @@ public class MockRule extends AbstractRule {
     public MockRule() {
         super();
     }
-
-    public String toString() {
-        return "uses symbol table == " + this.usesSymbolTable;
-    }
 }

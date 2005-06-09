@@ -48,7 +48,6 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
 
     public void testAnnotations2() throws Throwable {
         Report rpt = new Report();
-        System.out.println(TEST9);
         runTestFromString15(TEST9, rule, rpt);
         assertEquals(0, rpt.size());
     }

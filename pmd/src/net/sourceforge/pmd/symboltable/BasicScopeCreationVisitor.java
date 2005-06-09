@@ -14,11 +14,14 @@ import net.sourceforge.pmd.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -74,7 +77,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void createMethodScope(SimpleNode node) {
-        addScopeWithParent(new MethodScope(), node);
+        addScopeWithParent(new MethodScope(node), node);
     }
 
     /**
@@ -98,14 +101,25 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * The new scope is stored on the scope stack.
      * @param node the AST node for which the scope has to be created.
      */
-    private void createGlobalScope(SimpleNode node) {
-       Scope scope = new GlobalScope();
-       scopes.add(scope);
-       node.setScope(scope);
+    private void createSourceFileScope(SimpleNode node) {
+        // Note that the following code replaces
+        // the GlobalScope with a SourceFileScope.  Later, when we do full
+        // symbol resolution, we'll need to add a truly top-level GlobalScope.
+
+        Scope scope;
+        List packages = node.findChildrenOfType(ASTPackageDeclaration.class);
+        if (!packages.isEmpty()) {
+            Node n = (Node)packages.get(0);
+            scope = new SourceFileScope(((SimpleNode)n.jjtGetChild(0)).getImage());
+        } else {
+            scope = new SourceFileScope();
+        }
+        scopes.add(scope);
+        node.setScope(scope);
     }
     
     public Object visit(ASTCompilationUnit node, Object data) {
-        createGlobalScope(node);
+        createSourceFileScope(node);
         cont(node);
         return data;
     }

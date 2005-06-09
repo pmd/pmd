@@ -17,6 +17,9 @@ public abstract class AbstractScope implements Scope {
     public ClassScope getEnclosingClassScope() {
         return parent.getEnclosingClassScope();
     }
+    public SourceFileScope getEnclosingSourceFileScope() {
+        return parent.getEnclosingSourceFileScope();
+    }
 
     public void setParent(Scope parent) {
         this.parent = parent;

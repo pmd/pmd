@@ -168,7 +168,7 @@
 <target name="tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
     <echo message="Uploading jar file"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:Sites/"/>
+        <arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/"/>
     </exec>
 </target>
 

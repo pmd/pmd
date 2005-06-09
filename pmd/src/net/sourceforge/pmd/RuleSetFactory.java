@@ -205,10 +205,6 @@ public class RuleSetFactory {
         rule.setMessage(ruleElement.getAttribute("message"));
         rule.setRuleSetName(ruleSet.getName());
 
-        if (ruleElement.hasAttribute("symboltable") && ruleElement.getAttribute("symboltable").equals("true")) {
-            rule.setUsesSymbolTable();
-        }
-
         if (ruleElement.hasAttribute("dfa") && ruleElement.getAttribute("dfa").equals("true")) {
             rule.setUsesDFA();
         }

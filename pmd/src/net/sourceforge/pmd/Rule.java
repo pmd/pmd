@@ -59,10 +59,6 @@ public interface Rule {
 
     void setPriority(int priority);
 
-    void setUsesSymbolTable();
-
-    boolean usesSymbolTable();
-
     void setUsesDFA();
 
     boolean usesDFA();

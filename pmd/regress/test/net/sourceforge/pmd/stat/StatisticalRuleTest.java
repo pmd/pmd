@@ -27,9 +27,10 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.stat.StatisticalRule;
+import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,7 +105,11 @@ public class StatisticalRuleTest extends TestCase {
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                points[i].setLineNumber(i);
+                SimpleNode s = new SimpleNode(1);
+                s.setScope(new SourceFileScope("foo"));
+                s.testingOnly__setBeginLine(i);
+                s.testingOnly__setBeginColumn(1);
+                points[i].setNode(s);
                 points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
 
                 IUT.addDataPoint(points[i]);
@@ -113,7 +118,11 @@ public class StatisticalRuleTest extends TestCase {
             for (int i = POINTS-1; i >= 0; i--) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                points[i].setLineNumber(i);
+                SimpleNode s = new SimpleNode(1);
+                s.setScope(new SourceFileScope("foo"));
+                s.testingOnly__setBeginLine(i);
+                s.testingOnly__setBeginColumn(1);
+                points[i].setNode(s);
                 points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
 
                 IUT.addDataPoint(points[i]);
@@ -121,12 +130,17 @@ public class StatisticalRuleTest extends TestCase {
         } else {
             List lPoints = new ArrayList();
             for (int i = 0; i < POINTS; i++) {
-                DataPoint point = new DataPoint();
-                point.setScore(1.0 * i);
-                point.setLineNumber(i);
-                point.setMessage("DataPoint[" + Integer.toString(i) + "]");
+                points[i] = new DataPoint();
+                points[i].setScore(1.0 * i);
+                SimpleNode s = new SimpleNode(1);
+                s.setScope(new SourceFileScope("foo"));
+                s.testingOnly__setBeginLine(i);
+                s.testingOnly__setBeginColumn(1);
+                s.testingOnly__setBeginColumn(1);
+                points[i].setNode(s);
+                points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
 
-                lPoints.add(point);
+                lPoints.add(points[i]);
             }
 
             Collections.shuffle(lPoints);
@@ -252,12 +266,15 @@ public class StatisticalRuleTest extends TestCase {
     }
 
     // Test Single Datapoint
+/*
     public void testSingleDatapoint() {
         StatisticalRule IUT = new MockStatisticalRule();
 
         DataPoint point = new DataPoint();
         point.setScore(POINTS + 1.0);
-        point.setLineNumber(POINTS + 1);
+        SimpleNode s = new SimpleNode(1);
+        s.testingOnly__setBeginLine(POINTS + 1);
+        point.setNode(s);
         point.setMessage("SingleDataPoint");
 
         IUT.addProperty("minimum", Integer.toString(POINTS));
@@ -268,6 +285,7 @@ public class StatisticalRuleTest extends TestCase {
 
         assertEquals("Expecting only one result.", 1, report.size());
     }
+*/
 
     // Okay, we have three properties we need to
     // test in Combination:

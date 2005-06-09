@@ -3,18 +3,19 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.IPositionProvider;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class ImportWrapper {
-    private IPositionProvider pos;
+    private SimpleNode node;
     private String name;
     private String fullname;
 
-    public ImportWrapper(String fullname, String name, IPositionProvider pos) {
+    public ImportWrapper(String fullname, String name, SimpleNode node) {
         this.fullname = fullname;
         this.name = name;
-        this.pos = pos;
+        this.node = node;
     }
+
 
     public boolean equals(Object other) {
         ImportWrapper i = (ImportWrapper) other;
@@ -33,8 +34,8 @@ public class ImportWrapper {
         return fullname;
     }
 
-    public IPositionProvider getPositionProvider() {
-        return pos;
+    public SimpleNode getNode() {
+        return node;
     }
 }
 

@@ -34,7 +34,7 @@ These are new rules that are still in progress
     </rule>
 
     <rule name="FooRule"
-          message="foo?" symboltable="true"
+          message="foo?"
           class="net.sourceforge.pmd.rules.FooRule">
       <description>
       Foo

@@ -35,7 +35,7 @@ public class DuplicateImportsRule extends AbstractRule {
                 String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf("."));
                 if (thisImportOnDemand.getName().equals(singleTypePkg)) {
                     String msg = MessageFormat.format(getMessage(), new Object[]{thisSingleTypeImport.getName()});
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, thisSingleTypeImport.getPositionProvider(), msg));
+                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, thisSingleTypeImport.getNode(), msg));
                 }
             }
         }

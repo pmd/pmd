@@ -20,7 +20,7 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
         Scope s = ((ASTVariableDeclaratorId)nodes.get(0)).getScope();
         VariableNameDeclaration decl = (VariableNameDeclaration)s.getVariableDeclarations().keySet().iterator().next();
         assertEquals("bar", decl.getImage());
-        assertEquals(3, decl.getBeginLine());
+        assertEquals(3, decl.getNode().getBeginLine());
     }
 
     public void testExceptionBlkParam() {

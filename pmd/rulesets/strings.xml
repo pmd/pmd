@@ -63,7 +63,7 @@ public class Foo {
 
    <rule name="StringToString"
         message="Avoid calling toString() on String objects; this is unnecessary"
-        symboltable="true"
+       
         class="net.sourceforge.pmd.rules.StringToStringRule">
     <description>
     Avoid calling toString() on String objects; this is unnecessary

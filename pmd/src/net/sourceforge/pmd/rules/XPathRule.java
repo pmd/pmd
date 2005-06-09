@@ -6,9 +6,7 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import org.jaxen.BaseXPath;
@@ -26,7 +24,6 @@ public class XPathRule extends AbstractRule {
 
     public Object visit(ASTCompilationUnit node, Object data) {
         try {
-            findPackageName(node);
             init();
             for (Iterator iter = xpath.selectNodes(node).iterator(); iter.hasNext();) {
                 SimpleNode actualNode = (SimpleNode) iter.next();
@@ -41,17 +38,6 @@ public class XPathRule extends AbstractRule {
             throwJaxenAsRuntime(ex);
         }
         return data;
-    }
-
-    private void findPackageName(ASTCompilationUnit node) {
-        for (int i=0; i<node.jjtGetNumChildren(); i++) {
-            Node n = node.jjtGetChild(i);
-            if (n instanceof ASTPackageDeclaration) {
-                String name = ((SimpleNode)n.jjtGetChild(0)).getImage();
-                setPackageName(name);
-                break;
-            }
-        }
     }
 
     private void init() throws JaxenException {

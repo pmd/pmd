@@ -155,7 +155,7 @@ public class Foo {
 
     <rule name="AvoidReassigningParameters"
         message="Avoid reassigning parameters such as ''{0}''"
-        symboltable="true"
+
         class="net.sourceforge.pmd.rules.AvoidReassigningParameters">
     <description>
 Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
@@ -674,7 +674,7 @@ class Foo {
     </rule>
 
     <rule name="ImmutableField"
-          symboltable="true"
+
           message="Private field could be made final.  It is only initialized in the declaration or constructor."
           class="net.sourceforge.pmd.rules.design.ImmutableField">
       <description>
@@ -772,7 +772,7 @@ class Foo {
        </rule>
        
      <rule name="AssignmentToNonFinalStatic"
-           symboltable="true"
+          
            message="Possible unsafe assignment to a non-final static field in a constructor."
            class="net.sourceforge.pmd.rules.design.AssignmentToNonFinalStatic">
        <description>

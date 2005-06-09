@@ -4,6 +4,8 @@
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.Applier;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +15,11 @@ import java.util.Map;
 public class MethodScope extends AbstractScope {
 
     protected Map variableNames = new HashMap();
+    private SimpleNode node;
+
+    public MethodScope(SimpleNode node) {
+        this.node = node;
+    }
 
     public Map getVariableDeclarations() {
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
@@ -42,6 +49,13 @@ public class MethodScope extends AbstractScope {
         ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
         Applier.apply(finder, variableNames.keySet().iterator());
         return finder.getDecl();
+    }
+
+    public String getName() {
+        if (node instanceof ASTConstructorDeclaration) {
+            return this.getEnclosingClassScope().getClassName();
+        }
+        return ((SimpleNode)node.jjtGetChild(1)).getImage();
     }
 
     public String toString() {

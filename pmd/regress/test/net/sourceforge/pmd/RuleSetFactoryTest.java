@@ -114,11 +114,6 @@ public class RuleSetFactoryTest extends TestCase {
     public void testFacadesOffByDefault() {
         Rule r = loadFirstRule(XPATH);
         assertFalse(r.usesDFA());
-        assertFalse(r.usesSymbolTable());
-    }
-
-    public void testSymbolTableFacadeFlag() {
-        assertTrue(loadFirstRule(SYMBOLTABLE).usesSymbolTable());
     }
 
     public void testDFAFlag() {
@@ -263,18 +258,6 @@ public class RuleSetFactoryTest extends TestCase {
             "<rule " + PMD.EOL +
             "name=\"MockRuleName\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +
-            "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
-            "<priority>3</priority>" + PMD.EOL +
-            "</rule></ruleset>";
-
-    private static final String SYMBOLTABLE =
-            "<?xml version=\"1.0\"?>" + PMD.EOL +
-            "<ruleset name=\"test\">" + PMD.EOL +
-            "<description>testdesc</description>" + PMD.EOL +
-            "<rule " + PMD.EOL +
-            "name=\"MockRuleName\" " + PMD.EOL +
-            "message=\"avoid the mock rule\" " + PMD.EOL +
-            "symboltable=\"true\" " + PMD.EOL +
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
             "<priority>3</priority>" + PMD.EOL +
             "</rule></ruleset>";

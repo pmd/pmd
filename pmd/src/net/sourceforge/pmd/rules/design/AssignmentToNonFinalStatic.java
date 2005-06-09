@@ -35,7 +35,7 @@ public class AssignmentToNonFinalStatic extends AbstractRule {
             }
             
             if (initializedInConstructor((List)vars.get(decl))) {
-                ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl, MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
+                ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getNode(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
             }
         }
         return super.visit(node, data);

@@ -62,7 +62,7 @@ public class SwitchDensityRule extends StatisticalRule {
         node.childrenAccept(this, density);
 
         DataPoint point = new DataPoint();
-        point.setLineNumber(node.getBeginLine());
+        point.setNode(node);
         point.setScore(density.getDensity());
         point.setMessage(getMessage());
 

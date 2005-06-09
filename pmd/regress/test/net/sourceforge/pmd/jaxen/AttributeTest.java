@@ -23,6 +23,5 @@ public class AttributeTest extends TestCase {
         assertEquals("name", a.getName());
         assertEquals("value", a.getValue());
         assertNull(a.getParent());
-
     }
 }

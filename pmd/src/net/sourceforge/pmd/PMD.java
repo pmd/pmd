@@ -61,10 +61,8 @@ public class PMD {
             ASTCompilationUnit c = parser.CompilationUnit();
             Thread.yield();
 
-            if (ruleSet.usesSymbolTable()) {
-                SymbolFacade stb = new SymbolFacade();
-                stb.initializeWith(c);
-            }
+            SymbolFacade stb = new SymbolFacade();
+            stb.initializeWith(c);
 
             if (ruleSet.usesDFA()) {
                 DataFlowFacade dff = new DataFlowFacade();

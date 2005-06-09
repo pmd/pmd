@@ -39,7 +39,7 @@ public class ClassScope extends AbstractScope {
 
     public void addDeclaration(VariableNameDeclaration variableDecl) {
         if (variableNames.containsKey(variableDecl)) {
-            throw new RuntimeException("Variable " + variableDecl + " is already in the symbol table");
+            throw new RuntimeException(variableDecl + " is already in the symbol table");
         }
         variableNames.put(variableDecl, new ArrayList());
     }

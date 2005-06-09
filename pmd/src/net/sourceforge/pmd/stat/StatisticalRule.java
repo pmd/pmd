@@ -121,7 +121,7 @@ public abstract class StatisticalRule extends AbstractRule {
         Iterator points = p.iterator();
         while (points.hasNext()) {
             DataPoint point = (DataPoint) points.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, point.getLineNumber(), point.getMessage()));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, point.getNode(), point.getMessage()));
         }
     }
 }

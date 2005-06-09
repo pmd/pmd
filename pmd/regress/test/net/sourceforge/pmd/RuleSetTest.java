@@ -42,21 +42,11 @@ public class RuleSetTest extends TestCase {
 
     private String javaCode = "public class Test { }";
 
-    public void testNeitherSymbolTableNorDFA() {
+    public void testNoDFA() {
         RuleSet rs = new RuleSet();
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
         rs.addRule(mock);
-        assertFalse(rs.usesSymbolTable());
         assertFalse(rs.usesDFA());
-    }
-
-
-    public void testIncludesRuleWithSymbolTable() {
-        RuleSet rs = new RuleSet();
-        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        mock.setUsesSymbolTable();
-        rs.addRule(mock);
-        assertTrue(rs.usesSymbolTable());
     }
 
     public void testIncludesRuleWithDFA() {

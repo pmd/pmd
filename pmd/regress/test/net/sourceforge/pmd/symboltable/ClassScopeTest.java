@@ -5,8 +5,13 @@ package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +19,6 @@ import java.util.Map;
 
 public class ClassScopeTest extends STBBaseTst {
 
-/*
     public void testEnumsClassScope() {
         parseCode15(ENUM_SCOPE);
     }
@@ -82,7 +86,6 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("bar", mnd.getImage());
         assertEquals("bar", ((MethodNameDeclaration)i.next()).getImage());
     }
-*/
 
     public void testMethodUsageSeen() {
         parseCode(METHOD_USAGE_SEEN);
@@ -94,6 +97,7 @@ public class ClassScopeTest extends STBBaseTst {
             mnd = (MethodNameDeclaration)i.next();
         }
         List usages = (List)m.get(mnd);
+        // FIXME
         //assertEquals(1, usages.size());
         //assertEquals("bar", ((MethodNameDeclaration)m.keySet().iterator().next()).getImage());
     }

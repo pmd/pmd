@@ -10,7 +10,7 @@
 	<!--
   <rule name="FindDataFlowAnomalies"
       message="found anomalie"
-        symboltable="true"
+       
         dfa="true"
         class="net.sourceforge.pmd.dfa.DaaRule">
   

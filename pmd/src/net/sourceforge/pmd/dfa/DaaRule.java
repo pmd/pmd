@@ -70,24 +70,24 @@ public class DaaRule extends AbstractRule implements Executable {
                         List array = (List) o;
                         int last = ((Integer) array.get(0)).intValue();
                         int current = va.getAccessType();
-
-                        int line2 = ((Integer) array.get(1)).intValue();
+                        // TODO - at some point investigate and possibly reintroduce this line2 thing
+                        //int line2 = ((Integer) array.get(1)).intValue();
 
                         // DD
                         if (last == current && current ==
                                 VariableAccess.DEFINITION) {
 
-                            this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getLine(), line2, va.getVariableName(), "DD"));
+                            this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "DD"));
                         }
                         // UR
                         else if (last == VariableAccess.UNDEFINITION &&
                                 current == VariableAccess.REFERENCING) {
-                            this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getLine(), line2, va.getVariableName(), "UR"));
+                            this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "UR"));
                         }
                         // DU
                         else if (last == VariableAccess.DEFINITION &&
                                 current == VariableAccess.UNDEFINITION) {
-                            this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getLine(), line2, va.getVariableName(), "DU"));
+                            this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "DU"));
                         }
                     }
                     List array = new ArrayList();

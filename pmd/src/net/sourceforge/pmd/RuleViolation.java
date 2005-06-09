@@ -71,6 +71,7 @@ public class RuleViolation {
         this.beginColumn = begin;
         this.endColumn = end;
     }
+
     public RuleViolation(Rule rule, int line, RuleContext ctx, String packageName, String className, String methodName) {
         this(rule, line, rule.getMessage(), ctx, packageName, className, methodName);
     }

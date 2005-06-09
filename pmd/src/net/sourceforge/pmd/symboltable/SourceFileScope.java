@@ -1,6 +1,3 @@
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.Applier;
@@ -9,12 +6,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GlobalScope extends AbstractScope implements Scope {
+public class SourceFileScope extends AbstractScope implements Scope  {
 
     protected Map classes = new HashMap();
+    private String packageImage;
+
+    public SourceFileScope(String image) {
+        this.packageImage = image;
+    }
+
+    public SourceFileScope() {
+        packageImage = "";
+    }
 
     public ClassScope getEnclosingClassScope() {
-        throw new RuntimeException("getEnclosingClassScope() called on GlobalScope");
+        throw new RuntimeException("getEnclosingClassScope() called on SourceFileScope");
+    }
+
+    public String getPackageName() {
+        return packageImage;
+    }
+
+    public SourceFileScope getEnclosingSourceFileScope() {
+        return this;
     }
 
     public void addDeclaration(ClassNameDeclaration classDecl) {
@@ -22,11 +36,11 @@ public class GlobalScope extends AbstractScope implements Scope {
     }
 
     public void addDeclaration(MethodNameDeclaration decl) {
-        throw new RuntimeException("GlobalScope.addDeclaration(MethodNameDeclaration decl) called");
+        throw new RuntimeException("SourceFileScope.addDeclaration(MethodNameDeclaration decl) called");
     }
 
     public void addDeclaration(VariableNameDeclaration decl) {
-        throw new RuntimeException("GlobalScope.addDeclaration(VariableNameDeclaration decl) called");
+        throw new RuntimeException("SourceFileScope.addDeclaration(VariableNameDeclaration decl) called");
     }
 
     public Map getClassDeclarations() {
@@ -34,7 +48,7 @@ public class GlobalScope extends AbstractScope implements Scope {
     }
 
     public Map getVariableDeclarations() {
-        throw new RuntimeException("GlobalScope.getVariableDeclarations() called");
+        throw new RuntimeException("PackageScope.getVariableDeclarations() called");
     }
 
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occ) {
@@ -42,7 +56,7 @@ public class GlobalScope extends AbstractScope implements Scope {
     }
 
     public String toString() {
-        return "GlobalScope class names:" + super.glomNames(classes.keySet().iterator());
+        return "SourceFileScope class names:" + super.glomNames(classes.keySet().iterator());
     }
 
     protected NameDeclaration findVariableHere(NameOccurrence occ) {

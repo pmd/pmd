@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.stat;
 
+import net.sourceforge.pmd.ast.SimpleNode;
+
 import java.util.Random;
 
 /**
@@ -10,7 +12,8 @@ import java.util.Random;
  *         Aug 8, 2002 DataPoint.java
  */
 public class DataPoint implements java.lang.Comparable {
-    private int lineNumber;
+
+    private SimpleNode node;
     private int random;
     private double score;
     private String message;
@@ -43,12 +46,12 @@ public class DataPoint implements java.lang.Comparable {
         return lhsRand.compareTo(rhsRand);
     }
 
-    public int getLineNumber() {
-        return lineNumber;
+    public SimpleNode getNode() {
+        return node;
     }
 
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
+    public void setNode(SimpleNode node) {
+        this.node = node;
     }
 
     public String getMessage() {

@@ -16,7 +16,7 @@ public class Search {
     }
 
     public void execute() {
-        decl = searchUpward(occ, occ.getScope());
+        decl = searchUpward(occ, occ.getLocation().getScope());
         if (TRACE)
             System.out.println("found " + decl);
     }

@@ -77,7 +77,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
             Iterator iter = map.keySet().iterator();
             while (iter.hasNext()) {
                 VariableNameDeclaration vnd = (VariableNameDeclaration) iter.next();
-                this.addVariableAccess(vnd.getBeginLine(),
+                this.addVariableAccess(vnd.getNode().getBeginLine(),
                         new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()),
                         inode.getFlow());
                 this.undefList.add(new VariableAccess(VariableAccess.UNDEFINITION,
@@ -87,19 +87,19 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                     NameOccurrence no = (NameOccurrence) values.get(g);
 
                     if (no.isOnLeftHandSide()) {
-                        this.addVariableAccess(no.getBeginLine(),
+                        this.addVariableAccess(no.getLocation().getBeginLine(),
                                 new VariableAccess(VariableAccess.DEFINITION, no.getImage()),
                                 inode.getFlow());
                     }
 
                     if (no.isOnRightHandSide()) {
-                        this.addVariableAccess(no.getBeginLine(),
+                        this.addVariableAccess(no.getLocation().getBeginLine(),
                                 new VariableAccess(VariableAccess.REFERENCING, no.getImage()),
                                 inode.getFlow());
                     }
 
                     if (!no.isOnLeftHandSide() && !no.isOnRightHandSide()) {
-                        this.addVariableAccess(no.getBeginLine(),
+                        this.addVariableAccess(no.getLocation().getBeginLine(),
                                 new VariableAccess(VariableAccess.REFERENCING, no.getImage()),
                                 inode.getFlow());
                     }

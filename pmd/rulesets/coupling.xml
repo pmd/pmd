@@ -7,7 +7,7 @@
   </description>
 
     <rule name="CouplingBetweenObjects"
-        symboltable="true"
+       
         message="High amount of different objects as memebers donotes a high coupling"
         class="net.sourceforge.pmd.rules.CouplingBetweenObjects">
     <description>

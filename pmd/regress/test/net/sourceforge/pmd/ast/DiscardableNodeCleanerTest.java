@@ -1,5 +1,7 @@
 package test.net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.ast.ASTAnnotation;
+import net.sourceforge.pmd.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
@@ -8,13 +10,7 @@ import net.sourceforge.pmd.ast.ASTModifiers;
 import net.sourceforge.pmd.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.DiscardableNodeCleaner;
-import net.sourceforge.pmd.ast.ASTImplementsList;
-import net.sourceforge.pmd.ast.ASTAnnotation;
-import net.sourceforge.pmd.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.PMD;
 import test.net.sourceforge.pmd.testframework.ParserTst;
-
-import java.util.List;
 
 public class DiscardableNodeCleanerTest extends ParserTst {
 

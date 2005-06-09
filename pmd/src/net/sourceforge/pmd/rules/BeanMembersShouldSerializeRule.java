@@ -55,7 +55,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;
             if (!hasGetMethod || !hasSetMethod) {
                 RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl, MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getNode(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
             }
         }
         return super.visit(node, data);

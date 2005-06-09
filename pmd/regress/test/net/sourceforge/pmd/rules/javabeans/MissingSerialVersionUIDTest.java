@@ -21,7 +21,7 @@ public class MissingSerialVersionUIDTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST1, "Happy case", 0, rule),
                new TestDescriptor(TEST2, "Simple failure case", 1, rule),
                new TestDescriptor(TEST3, "failure using java.io.Serializable", 1, rule),
-               new TestDescriptor(TEST4, "TEST4", 0, rule),
+               new TestDescriptor(TEST4, "implements Serializable and provides a serialVersionUID", 0, rule),
                new TestDescriptor(TEST5, "TEST5", 0, rule),
                new TestDescriptor(TEST6, "interface", 0, rule)
        });

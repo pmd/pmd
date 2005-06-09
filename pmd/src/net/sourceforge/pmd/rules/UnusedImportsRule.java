@@ -29,7 +29,7 @@ public class UnusedImportsRule extends AbstractRule {
         for (Iterator i = imports.iterator(); i.hasNext();) {
             ImportWrapper wrapper = (ImportWrapper) i.next();
             String msg = MessageFormat.format(getMessage(), new Object[]{wrapper.getFullName()});
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, wrapper.getPositionProvider(), msg));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, wrapper.getNode(), msg));
         }
         return data;
     }
