@@ -14,6 +14,8 @@ Modified NullAssignmentRule to catch null assignments in ternary expressions.
 Added two new node types - ASTCatchStatement and ASTFinallyStatement.
 Modified rule XML definition; it no longer includes a symboltable attribute.
 Harden equality of AbstractRule and RuleSet objects (needed for the Eclipse plugin features)
+Change RuleSet.getRuleByName. Now return null instead of throwing a RuntimeException when the rule is not found
+Add .project and .classpath to the module so that it can be checkout as an Eclipse project
 
 May 10, 2005 - 3.1:
 New rules: SimplifyStartsWith, UnnecessaryParentheses, CollapsibleIfStatements, UseAssertEqualsInsteadOfAssertTrue,  UseAssertSameInsteadOfAssertTrue, UseStringBufferForStringAppends, SimplifyConditional, SingularField
