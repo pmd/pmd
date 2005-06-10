@@ -59,17 +59,18 @@ public class RuleSet {
 	 * Returns the Rule with the given name
 	 *
 	 * @param ruleName the name of the rule to find
-	 * @return
-	 * @throws RuntimeException when the rule with the given name cannot be found
+	 * @return the rule or null if not found
 	 */
     public Rule getRuleByName(String ruleName) {
-        for (Iterator i = rules.iterator(); i.hasNext();) {
+        Rule rule = null;
+        for (Iterator i = rules.iterator(); i.hasNext() && (rule == null);) {
             Rule r = (Rule) i.next();
             if (r.getName().equals(ruleName)) {
-                return r;
+                rule = r;
             }
         }
-        throw new RuntimeException("Couldn't find rule named " + ruleName + " in the ruleset " + name);
+        
+        return rule;
     }
 
 	/**

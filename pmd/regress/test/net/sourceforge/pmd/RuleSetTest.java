@@ -72,6 +72,13 @@ public class RuleSetTest extends TestCase {
         assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
     }
 
+    public void testGetRuleByName2() {
+        RuleSet rs = new RuleSet();
+        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
+        rs.addRule(mock);
+        assertNull("the rule FooRule must not be found!", rs.getRuleByName("FooRule"));
+    }
+
     public void testRuleList() {
         RuleSet IUT = new RuleSet();
 
