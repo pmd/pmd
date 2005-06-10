@@ -137,7 +137,7 @@ public class RuleSetTest extends TestCase {
         s2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
         
         assertTrue("2 rulesets with same name and rules must be equals", s1.equals(s2));
-        assertTrue("Equals rulesets must have the same hascode", s1.hashCode() == s2.hashCode());
+        assertEquals("Equals rulesets must have the same hascode", s1.hashCode(), s2.hashCode());
     }
     
     public void testEquals5() {
