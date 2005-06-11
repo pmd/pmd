@@ -18,15 +18,9 @@ import java.util.Stack;
  */
 public class Structure implements IProcessableStructure {
 
-    private LinkedList dataFlow;
-    private Stack braceStack;
-    private Stack continueBreakReturnStack;
-
-    public Structure() {
-        this.dataFlow = new LinkedList();
-        this.braceStack = new Stack();
-        this.continueBreakReturnStack = new Stack();
-    }
+    private LinkedList dataFlow = new LinkedList();
+    private Stack braceStack = new Stack();
+    private Stack continueBreakReturnStack = new Stack();
 
     public int getDataFlowSize() {
         return dataFlow.size();
@@ -39,8 +33,12 @@ public class Structure implements IProcessableStructure {
         return new DataFlowNode(node, this.dataFlow);
     }
 
-    public IDataFlowNode addStartOrEndNode(int line) {
-        return new DataFlowNode(this.dataFlow, line);
+    public IDataFlowNode addStartNode(int line) {
+        return new StartOrEndDataFlowNode(this.dataFlow, line, true);
+    }
+
+    public IDataFlowNode addEndNode(int line) {
+        return new StartOrEndDataFlowNode(this.dataFlow, line, false);
     }
 
     public IDataFlowNode getLast() {
@@ -74,11 +72,11 @@ public class Structure implements IProcessableStructure {
     }
 
     public List getBraceStack() {
-        return this.braceStack;
+        return braceStack;
     }
 
     public List getContinueBreakReturnStack() {
-        return this.continueBreakReturnStack;
+        return continueBreakReturnStack;
     }
 
 }

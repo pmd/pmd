@@ -79,4 +79,14 @@ public class ParserTst extends TestCase {
         dff.initializeWith(cu);
         return (List)coll.getCollection();
     }
+
+    public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
+        ASTCompilationUnit cu = parser.CompilationUnit();
+        JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector(ASTCompilationUnit.class));
+        jpv.visit(cu, null);
+        new SymbolFacade().initializeWith(cu);
+        new DataFlowFacade().initializeWith(cu);
+        return cu;
+    }
 }

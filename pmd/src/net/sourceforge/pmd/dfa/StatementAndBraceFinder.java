@@ -35,11 +35,11 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     private Structure dataFlow;
 
     public void compute(ASTMethodDeclaration node) {
-        this.compute(node, "ASTMethodDeclaration");
+        this.buildDataFlowFor(node);
     }
 
     public void compute(ASTConstructorDeclaration node) {
-        this.compute(node, "ASTConstructorDeclaration");
+        this.buildDataFlowFor(node);
     }
 
     public Object visit(ASTStatementExpression node, Object data) {
@@ -180,14 +180,14 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    private void compute(SimpleNode node, String name) {
+    private void buildDataFlowFor(SimpleNode node) {
         this.dataFlow = new Structure();
-        this.dataFlow.addStartOrEndNode(node.getBeginLine()); // START
+        this.dataFlow.addStartNode(node.getBeginLine());
         this.dataFlow.addNewNode(node);
 
         node.jjtAccept(this, dataFlow);
 
-        this.dataFlow.addStartOrEndNode(node.getEndLine()); // END
+        this.dataFlow.addEndNode(node.getEndLine());
 
         Linker linker = new Linker(dataFlow);
         try {

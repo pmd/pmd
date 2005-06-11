@@ -31,12 +31,12 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
 
     public void compute(SimpleNode node) {
         this.dataFlow = new Structure();
-        this.dataFlow.addStartOrEndNode(node.getBeginLine()); // START
+        this.dataFlow.addStartNode(node.getBeginLine());
         this.dataFlow.addNewNode(node);
 
         node.jjtAccept(this, dataFlow);
 
-        this.dataFlow.addStartOrEndNode(node.getEndLine()); // END
+        this.dataFlow.addEndNode(node.getEndLine());
         try {
             // links all data flow nodes
             Linker linker = new Linker(dataFlow);

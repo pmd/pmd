@@ -4,14 +4,15 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.NodeType;
+import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
 
 import java.util.LinkedList;
 
 public class DataFlowNodeTest extends TestCase {
 
     public void testAddPathToChild() {
-        DataFlowNode parent = new DataFlowNode(new LinkedList(), 10);
-        IDataFlowNode child = new DataFlowNode(new LinkedList(), 12);
+        DataFlowNode parent = new StartOrEndDataFlowNode(new LinkedList(), 10, false);
+        IDataFlowNode child = new StartOrEndDataFlowNode(new LinkedList(), 12, false);
         parent.addPathToChild(child);
         assertEquals(parent.getChildren().size(), 1);
         assertTrue(child.getParents().contains(parent));
@@ -19,8 +20,8 @@ public class DataFlowNodeTest extends TestCase {
     }
 
     public void testRemovePathToChild() {
-        DataFlowNode parent = new DataFlowNode(new LinkedList(), 10);
-        IDataFlowNode child = new DataFlowNode(new LinkedList(), 12);
+        DataFlowNode parent = new StartOrEndDataFlowNode(new LinkedList(), 10, false);
+        IDataFlowNode child = new StartOrEndDataFlowNode(new LinkedList(), 12, false);
         parent.addPathToChild(child);
 
         assertTrue(parent.removePathToChild(child));
@@ -29,16 +30,16 @@ public class DataFlowNodeTest extends TestCase {
     }
 
     public void testRemovePathWithNonChild() {
-        DataFlowNode parent = new DataFlowNode(new LinkedList(), 10);
-        IDataFlowNode child = new DataFlowNode(new LinkedList(), 12);
+        DataFlowNode parent = new StartOrEndDataFlowNode(new LinkedList(), 10, false);
+        IDataFlowNode child = new StartOrEndDataFlowNode(new LinkedList(), 12, false);
         assertFalse(parent.removePathToChild(child));
     }
 
     public void testReverseParentPathsTo() {
-        DataFlowNode parent1 = new DataFlowNode(new LinkedList(), 10);
-        DataFlowNode parent2 = new DataFlowNode(new LinkedList(), 12);
-        IDataFlowNode child1 = new DataFlowNode(new LinkedList(), 13);
-        IDataFlowNode child2 = new DataFlowNode(new LinkedList(), 13);
+        DataFlowNode parent1 = new StartOrEndDataFlowNode(new LinkedList(), 10, false);
+        DataFlowNode parent2 = new StartOrEndDataFlowNode(new LinkedList(), 12, false);
+        IDataFlowNode child1 = new StartOrEndDataFlowNode(new LinkedList(), 13, false);
+        IDataFlowNode child2 = new StartOrEndDataFlowNode(new LinkedList(), 13, false);
         parent1.addPathToChild(child1);
         parent2.addPathToChild(child1);
         assertTrue(parent1.getChildren().contains(child1));
@@ -54,7 +55,7 @@ public class DataFlowNodeTest extends TestCase {
     }
 
     public void testSetType() {
-        DataFlowNode node = new DataFlowNode(new LinkedList(), 10);
+        DataFlowNode node = new StartOrEndDataFlowNode(new LinkedList(), 10, false);
         node.setType(NodeType.BREAK_STATEMENT);
         assertTrue(node.isType(NodeType.BREAK_STATEMENT));
         assertFalse(node.isType(NodeType.CASE_LAST_STATEMENT));

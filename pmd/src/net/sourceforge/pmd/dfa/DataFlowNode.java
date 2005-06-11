@@ -10,34 +10,28 @@ import java.util.List;
 /**
  * @author raik
  *         <p/>
- *         Each data flow contains a set of DataFlowNode's.
+ *         Each data flow contains a set of DataFlowNodes.
  */
 public class DataFlowNode implements IDataFlowNode {
 
-    private List parents;
-    private List children;
-    private BitSet type;
-    private LinkedList dataFlow;
     private SimpleNode node;
-    private List variableAccess;
-    private int line;
 
-    public DataFlowNode(LinkedList dataFlow, int line) {
-        this(null, dataFlow);
-        this.line = line;
-    }
+    protected List parents = new ArrayList();
+    protected List children = new ArrayList();
+    protected BitSet type = new BitSet();
+    protected LinkedList dataFlow;
+    protected List variableAccess;
+    protected int line;
+
+    protected DataFlowNode() {}
 
     public DataFlowNode(SimpleNode node, LinkedList dataFlow) {
-        this.parents = new ArrayList();
-        this.children = new ArrayList();
         this.dataFlow = dataFlow;
         this.node = node;
-        this.type = new BitSet();
 
-        if (this.node != null) {
-            node.setDataFlowNode(this);
-            this.line = node.getBeginLine();
-        }
+        node.setDataFlowNode(this);
+        this.line = node.getBeginLine();
+
         if (!this.dataFlow.isEmpty()) {
             DataFlowNode parent = (DataFlowNode) this.dataFlow.getLast();
             parent.addPathToChild(this);
@@ -88,7 +82,6 @@ public class DataFlowNode implements IDataFlowNode {
         return this.node;
     }
 
-
     public List getChildren() {
         return this.children;
     }
@@ -119,9 +112,6 @@ public class DataFlowNode implements IDataFlowNode {
 
     public String toString() {
         String res = "DataFlowNode ";
-        if (node == null) {
-            return res + "(SimpleNode is null)";
-        }
         if (!isEmptyBitSet(type)) {
             String tmp = type.toString();
             String newTmp = "";
@@ -139,19 +129,10 @@ public class DataFlowNode implements IDataFlowNode {
         return res;
     }
 
-    // TODO Remove when minimal runtime support is >= JDK 1.4
-    private static final BitSet EMPTY_BITSET = new BitSet();
-    private static boolean isEmptyBitSet(BitSet bitSet) {
-        boolean empty = false;
-        try {
-            // Compatible with >= JDK 1.4
-            if (BitSet.class.getMethod("isEmpty", null) != null) {
-				    empty = bitSet.isEmpty();
-            }
-        } catch (NoSuchMethodException nsme) {
-            // Compatible with < JDK 1.4
-            empty = bitSet.equals(EMPTY_BITSET);
-        }
-        return empty;
+    protected static final BitSet EMPTY_BITSET = new BitSet();
+    protected static boolean isEmptyBitSet(BitSet bitSet) {
+        // When we go to JDK 1.4, clean house
+        //return bitSet.isEmpty();
+        return bitSet.equals(EMPTY_BITSET);
     }
 }
