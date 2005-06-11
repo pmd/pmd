@@ -35,15 +35,22 @@
  */
 package net.sourceforge.pmd.eclipse.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.eclipse.PMDEclipseException;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
+import net.sourceforge.pmd.eclipse.RuleSetWriter;
+import net.sourceforge.pmd.eclipse.RuleSetWriterImpl;
 import net.sourceforge.pmd.eclipse.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.dao.DAOException;
 import net.sourceforge.pmd.eclipse.dao.DAOFactory;
@@ -67,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2005/06/11 22:11:31  phherlin
+ * Fixing the project ruleset management
+ *
  * Revision 1.5  2005/06/07 18:38:13  phherlin
  * Move classes to limit packages cycle dependencies
  *
@@ -148,8 +158,10 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#getProjectRuleSet()
      */
     public RuleSet getProjectRuleSet() throws ModelException {
-        if (this.synchronizeRuleSet()) {
-            this.sync();
+        if (!this.isRuleSetStoredInProject()) {
+            if (this.synchronizeRuleSet()) {
+                this.sync();
+            }
         }
 
         return this.projectRuleSet;
@@ -184,6 +196,13 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws ModelException {
         log.info("Set rule set stored in project for project " + this.project.getName() + " : " + ruleSetStoredInProject);
         this.ruleSetStoredInProject = ruleSetStoredInProject;
+        if (this.ruleSetStoredInProject) {
+            if (!this.isRuleSetFileExist()) {
+                throw new ModelException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
+            }
+        } else {
+            this.setProjectRuleSet(PMDPlugin.getDefault().getRuleSet());
+        }
     }
 
     /**
@@ -223,9 +242,38 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     /**
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isRuleSetFileExist()
      */
-    public boolean isRuleSetFileExist() {
+    public final boolean isRuleSetFileExist() {
         final IFile file = this.project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
         return file.exists() && file.isAccessible();
+    }
+    
+    /**
+     * Create a project ruleset file from the current configured rules
+     *
+     */
+    public void createDefaultRuleSetFile() throws ModelException {
+        try {
+            final RuleSetWriter writer = new RuleSetWriterImpl();
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            writer.write(baos, this.projectRuleSet);
+            baos.close();
+            
+            final IFile file = this.project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
+            if (file.exists() && file.isAccessible()) {
+                throw new ModelException("Project ruleset file already exists");
+            } else {
+                final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());            
+                file.create(bais, true, null);
+                bais.close();
+            }
+        } catch (PMDEclipseException e) {
+            throw new ModelException(e);
+        } catch (IOException e) {
+            throw new ModelException(e);
+        } catch (CoreException e) {
+            throw new ModelException(e);
+        }
+        
     }
 
     /**
@@ -258,7 +306,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         final RuleSet pluginRuleSet = PMDPlugin.getDefault().getRuleSet();
         boolean flChanged = false;
 
-        if (this.isRuleSetEqual(this.projectRuleSet, pluginRuleSet)) {
+        if (this.projectRuleSet.equals(pluginRuleSet)) {
             this.projectRuleSet = pluginRuleSet;
         } else {
             // 1-If rules have been deleted from preferences
@@ -296,77 +344,27 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
-     * Test if 2 rule sets are equals. RuleSets are equals if they are the same
-     * instance (trivial) or if they contain the same rules with the same
-     * properties.
-     * 
-     * @param ruleSet1
-     * @param ruleSet2
-     * @return true if rulesets are equals:
-     */
-    private boolean isRuleSetEqual(final RuleSet ruleSet1, final RuleSet ruleSet2) {
-        boolean equal = true;
-        try {
-            if (ruleSet1 != ruleSet2) {
-                if (ruleSet1.getRules().size() == ruleSet2.getRules().size()) {
-                    equal = deepRuleSetEqual(ruleSet1, ruleSet2);
-                } else {
-                    equal = false;
-                }
-            }
-        } catch (RuntimeException e) {
-            equal = false;
-        }
-
-        return equal;
-    }
-
-    /**
-     * Deeply test if rules sets are equal. (called by isRuleSetEqual);
-     * @param ruleSet1
-     * @param ruleSet2
-     * @return equal equality
-     */
-    private boolean deepRuleSetEqual(final RuleSet ruleSet1, final RuleSet ruleSet2) {
-        final Iterator i = ruleSet1.getRules().iterator();
-        boolean equal = true;
-        while (i.hasNext() && equal) {
-            final Rule rule1 = (Rule) i.next();
-            final Rule rule2 = ruleSet2.getRuleByName(rule1.getName());
-            equal = rule1.getPriority() == rule2.getPriority();
-            if (equal) {
-                final Properties p1 = rule1.getProperties();
-                final Properties p2 = rule2.getProperties();
-                final Iterator j = p1.keySet().iterator();
-                while (j.hasNext() && equal) {
-                    final String key = (String) j.next();
-                    final String v1 = p1.getProperty(key).trim();
-                    final String v2 = p2.getProperty(key).trim();
-                    equal = v1.equals(v2);
-                }
-            }
-        }
-        
-        return equal;
-    }
-
-    /**
      * Load project properties from a properties file in the project. If the
      * file is not found or if an exception occurs, default values are used and
      * the project is considered not to have any properties set.
      *  
      */
-    private void loadProperties() throws DAOException, CoreException {
+    private void loadProperties() throws DAOException, CoreException, ModelException {
         log.debug("Loading project properties");
         final ProjectPropertiesTO projectProperties = this.propertiesDao.readProjectProperties(this.project);
 
         if (projectProperties == null) {
             log.info("Project properties not found. Use default.");
         } else {
-            this.setRuleSetFromProperties(projectProperties.getRules());
             this.setWorkingSetFromProperties(projectProperties.getWorkingSetName());
             this.ruleSetStoredInProject = projectProperties.isRuleSetStoredInProject();
             this.pmdEnabled = this.project.hasNature(PMDNature.PMD_NATURE);
+            if (this.ruleSetStoredInProject) {
+                this.loadRuleSetFromProject();
+            } else {
+                this.setRuleSetFromProperties(projectProperties.getRules());
+            }
+            
             log.debug("Project properties loaded");
         }
     }
@@ -399,6 +397,22 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         final IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
         this.projectWorkingSet = workingSetManager.getWorkingSet(workingSetName);
     }
+    
+    /**
+     * Load the project rule set from the project ruleset
+     *
+     */
+    private void loadRuleSetFromProject() {
+        if (!this.isRuleSetFileExist()) {
+            try {
+                final RuleSetFactory factory = new RuleSetFactory();
+                final IFile ruleSetFile = this.project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
+                this.projectRuleSet = factory.createRuleSet(ruleSetFile.getLocation().toOSString());
+            } catch (RuleSetNotFoundException e) {
+                PMDPlugin.getDefault().logError("Project RuleSet cannot be loaded for project " + this.project.getName() + ". Using the rules from properties.", e);
+            }
+        }
+    }
 
     /**
      * Store all properties in a project file
@@ -410,13 +424,17 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             bean.setRuleSetStoredInProject(this.ruleSetStoredInProject);
             bean.setWorkingSetName(this.projectWorkingSet == null ? null : this.projectWorkingSet.getName());
 
-            final List rules = new ArrayList();
-            final Iterator i = this.projectRuleSet.getRules().iterator();
-            while (i.hasNext()) {
-                final Rule rule = (Rule) i.next();
-                rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
+            if (this.ruleSetStoredInProject) {
+                this.loadRuleSetFromProject();
+            } else {
+                final List rules = new ArrayList();
+                final Iterator i = this.projectRuleSet.getRules().iterator();
+                while (i.hasNext()) {
+                    final Rule rule = (Rule) i.next();
+                    rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
+                }
+                bean.setRules((RuleSpecTO[]) rules.toArray(new RuleSpecTO[rules.size()]));
             }
-            bean.setRules((RuleSpecTO[]) rules.toArray(new RuleSpecTO[rules.size()]));
 
             this.propertiesDao.writeProjectProperties(this.project, bean, this.getMonitor());
     }

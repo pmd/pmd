@@ -48,6 +48,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2005/06/11 22:11:31  phherlin
+ * Fixing the project ruleset management
+ *
  * Revision 1.4  2005/06/07 18:38:13  phherlin
  * Move classes to limit packages cycle dependencies
  *
@@ -128,4 +131,10 @@ public interface ProjectPropertiesModel extends PMDPluginModel {
      * the ruleset file exists.
      */
     boolean isRuleSetFileExist();
+    
+    /**
+     * Create a project ruleset file from the current configured rules
+     *
+     */
+    void createDefaultRuleSetFile() throws ModelException;
 }

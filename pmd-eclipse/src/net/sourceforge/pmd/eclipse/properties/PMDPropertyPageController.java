@@ -68,6 +68,9 @@ import org.eclipse.ui.progress.IProgressService;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2005/06/11 22:11:32  phherlin
+ * Fixing the project ruleset management
+ *
  * Revision 1.8  2005/06/07 18:38:13  phherlin
  * Move classes to limit packages cycle dependencies
  *
@@ -171,6 +174,8 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
         // assert ((this.project != null) && (this.project.isAccessible()))
 
         try {
+            checkProjectRuleSetFile();
+            
             final IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             progressService.busyCursorWhile(this);
 
@@ -182,6 +187,8 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
         } catch (InvocationTargetException e) {
             PMDPlugin.getDefault().showError(e.getMessage(), e);
         } catch (InterruptedException e) {
+            PMDPlugin.getDefault().showError(e.getMessage(), e);
+        } catch (ModelException e) {
             PMDPlugin.getDefault().showError(e.getMessage(), e);
         }
 
@@ -259,6 +266,34 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
             } catch (CommandException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
             }
+        }
+    }
+    
+    /**
+     * If the user asks to use a project ruleset file, check if it exists.
+     * Otherwise, asks the user to create a default one
+     *
+     */
+    private void checkProjectRuleSetFile() throws ModelException {
+        if (this.propertyPageBean.isRuleSetStoredInProject()) {
+            final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
+            if (!model.isRuleSetFileExist()) {
+                createDefaultRuleSetFile();
+            }
+        }        
+    }
+    
+    /**
+     * Create a default ruleset file from the current project ruleset
+     *
+     */
+    private void createDefaultRuleSetFile() throws ModelException {
+        final boolean create = MessageDialog.openQuestion(shell, getMessage(MSGKEY_QUESTION_TITLE), getMessage(MSGKEY_QUESTION_CREATE_RULESET_FILE));
+        if (create) {
+            final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
+            model.createDefaultRuleSetFile();
+        } else {
+            this.propertyPageBean.setRuleSetStoredInProject(false);
         }
     }
 
