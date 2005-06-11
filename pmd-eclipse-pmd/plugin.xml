@@ -3,8 +3,9 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="3.0.1"
-   provider-name="%plugin.provider">
+   version="3.2.0"
+   provider-name="%plugin.provider"
+   class="net.sourceforge.pmd.core.PMDCorePlugin">
 
    <runtime>
       <library name="lib/jaxen-core-1.0-fcs.jar">
@@ -16,10 +17,13 @@
       <library name="lib/xercesImpl.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-3.0.jar">
+      <library name="lib/pmd-3.2.jar">
          <export name="*"/>
       </library>
    </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+   </requires>
 
    <extension
          point="org.eclipse.help.toc">
