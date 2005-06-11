@@ -34,6 +34,9 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2005/06/11 22:09:57  phherlin
+ * Update to PMD 3.2: the symbol table attribute is no more used
+ *
  * Revision 1.6  2005/05/07 13:32:06  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -152,9 +155,12 @@ public class RuleSetWriterImpl implements RuleSetWriter {
         ruleElement.setAttribute("name", rule.getName());
         ruleElement.setAttribute("message", rule.getMessage());
         ruleElement.setAttribute("class", rule.getClass().getName());
+/*
+ * symbol table is always used since PMD v3.2
         if (rule.usesSymbolTable()) {
             ruleElement.setAttribute("symboltable", "true");
         }
+*/
         if (rule.usesDFA()) {
             ruleElement.setAttribute("dfa", "true");
         }
