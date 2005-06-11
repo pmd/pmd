@@ -167,7 +167,7 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
         if (!(data instanceof Structure)) {
             return data;
         }
-        dataFlow.addNewNode(node); // ASTBreakStatement
+        dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
     }
@@ -176,7 +176,7 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
         if (!(data instanceof Structure)) {
             return data;
         }
-        dataFlow.addNewNode(node); // ASTContinueStatement
+        dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
     }
@@ -185,7 +185,7 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
         if (!(data instanceof Structure)) {
             return data;
         }
-        dataFlow.addNewNode(node); // ASTReturnStatement
+        dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
     }

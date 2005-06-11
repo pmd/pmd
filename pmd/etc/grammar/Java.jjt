@@ -1867,15 +1867,15 @@ void ForUpdate() :
 }
 
 void BreakStatement() :
-{}
+{Token t;}
 {
-  "break" [ <IDENTIFIER> ] ";"
+  "break" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
 }
 
 void ContinueStatement() :
-{}
+{Token t;}
 {
-  "continue" [ <IDENTIFIER> ] ";"
+  "continue" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
 }
 
 void ReturnStatement() :

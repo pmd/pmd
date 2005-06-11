@@ -9,6 +9,7 @@ Fixed bug 1188386 - MethodReturnsInternalArray no longer flags returning a local
 Implemented RFE 1188604 - AvoidThrowingCertainExceptionTypes has been split into AvoidThrowingRawExceptionTypes and AvoidThrowingNullPointerException.
 Implemented RFE 1188369 - UnnecessaryBooleanAssertion now checks for things like 'assertTrue(!foo)'.  These should be changed to 'assertFalse(foo)' for clarity.
 Implemented RFE 1199622 - UnusedFormalParameter now defaults to only checking private methods unless a 'checkall' property is set.
+Break and continue statement labels (if present) are placed in the image field.
 Fixed bug which caused MissingSerialVersionUID to trigger on all interfaces that implemented other interfaces.
 Modified NullAssignmentRule to catch null assignments in ternary expressions.
 Added two new node types - ASTCatchStatement and ASTFinallyStatement.
