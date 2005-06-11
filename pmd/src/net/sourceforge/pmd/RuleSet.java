@@ -15,8 +15,8 @@ import java.util.Set;
 public class RuleSet {
 
     private Set rules = new HashSet();
-    private String name;
-    private String description;
+    private String name = "";
+    private String description = "";
 
 	/**
 	 * Returns the number of rules in this ruleset
