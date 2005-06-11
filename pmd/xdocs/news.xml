@@ -10,6 +10,8 @@
     <section name="Sites/Articles about PMD">
     <ul>
         <br/>
+        <li>June 2005 - Amit Chaterved's article "Java &amp; Static Analysis" in <a href="http://www.ddj.com/">Doctor Dobb's Journal</a> talks about PMD and shows a screenshot of the rule designer</li>
+        <br/>
         <li>March 2005 - Kirk Knoernschild's article "Benefits of the Build" in <a href="http://www.sdmagazine.com/">Software Development magazine</a> mentions PMD as a way to automate code reviews</li>
         <br/>
         <li>1/7/2005 - <a href="http://www-106.ibm.com/developerworks/java/library/j-pmd/">"Zap bugs with PMD"</a> - Elliotte Rusty Harold's article on installing, configuring, and running PMD</li>
