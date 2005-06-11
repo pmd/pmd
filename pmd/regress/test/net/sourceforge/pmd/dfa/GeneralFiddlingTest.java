@@ -21,20 +21,6 @@ public class GeneralFiddlingTest extends ParserTst {
             DataFlowNode dfan = (DataFlowNode)i.next();
             System.out.println(dfan);
         }
-
-/*
-        ASTMethodDeclarator meth =  (ASTMethodDeclarator)(getOrderedNodes(ASTMethodDeclarator.class, TEST1).get(0));
-        IDataFlowNode flow = meth.getDataFlowNode();
-        for (Iterator i = flow.getFlow().iterator(); i.hasNext();) {
-            IDataFlowNode o = (IDataFlowNode)i.next();
-            System.out.println("Index:" + o.getIndex());
-            if (o.getChildren().size() > 1) {
-                System.out.println("Child 1 Index:" + ((IDataFlowNode)o.getChildren().get(1)).getIndex());
-            }
-            System.out.println(o);
-            System.out.println("================");
-        }
-*/
     }
 
     private static final String TEST1 =
@@ -45,7 +31,4 @@ public class GeneralFiddlingTest extends ParserTst {
         "  }" + PMD.EOL +
         " }"  + PMD.EOL +
         "}";
-
-
-
 }

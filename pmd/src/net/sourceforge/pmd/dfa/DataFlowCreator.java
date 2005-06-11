@@ -51,24 +51,25 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTStatementExpression node, Object data) {
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node); // ASTStatementExpression
+        if (!(data instanceof Structure)) {
+            return data;
+        }
+        dataFlow.addNewNode(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTVariableDeclarator node, Object data) {
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node); // ASTVariableDeclarator
+        if (!(data instanceof Structure)) {
+            return data;
+        }
+        dataFlow.addNewNode(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTExpression node, Object data) {
-
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         if (node.jjtGetParent() instanceof ASTIfStatement) {
             dataFlow.addNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
@@ -90,8 +91,9 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTForInit node, Object data) {
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.FOR_INIT, dataFlow.getLast());
         this.addForExpressionNode(node, dataFlow);
@@ -99,8 +101,9 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTForUpdate node, Object data) {
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         this.addForExpressionNode(node, dataFlow);
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.FOR_UPDATE, dataFlow.getLast());
@@ -108,12 +111,10 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTStatement node, Object data) {
-
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         if (node.jjtGetParent() instanceof ASTForStatement) {
-
             this.addForExpressionNode(node, dataFlow);
             dataFlow.pushOnStack(NodeType.FOR_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
@@ -124,7 +125,6 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
         super.visit(node, data);
 
         if (node.jjtGetParent() instanceof ASTIfStatement) {
-
             ASTIfStatement st = (ASTIfStatement) node.jjtGetParent();
             if (!st.hasElse()) {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
@@ -142,60 +142,51 @@ public class DataFlowCreator extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTSwitchStatement node, Object data) {
-
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         super.visit(node, data);
-
         dataFlow.pushOnStack(NodeType.SWITCH_END, dataFlow.getLast());
-
         return data;
     }
 
     public Object visit(ASTSwitchLabel node, Object data) {
-
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         //super.visit(node, data);
-
         if (node.jjtGetNumChildren() == 0) {
             dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
         } else {
             dataFlow.pushOnStack(NodeType.CASE_LAST_STATEMENT, dataFlow.getLast());
         }
-
         return data;
     }
 
     public Object visit(ASTBreakStatement node, Object data) {
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         dataFlow.addNewNode(node); // ASTBreakStatement
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
-
         return super.visit(node, data);
     }
 
     public Object visit(ASTContinueStatement node, Object data) {
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         dataFlow.addNewNode(node); // ASTContinueStatement
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
-
         return super.visit(node, data);
     }
 
     public Object visit(ASTReturnStatement node, Object data) {
-        if (!(data instanceof Structure)) return data;
-        Structure dataFlow = (Structure) data;
-
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         dataFlow.addNewNode(node); // ASTReturnStatement
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
-
         return super.visit(node, data);
     }
 
