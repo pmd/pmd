@@ -94,6 +94,7 @@ public class Linker {
                     break;
 
                 case NodeType.BREAK_STATEMENT:
+                    // FIXME - what about breaks to labels above if statements?
                     List bList = node.getFlow();
                     for (int i = bList.indexOf(node); i < bList.size(); i++) {
                         IDataFlowNode n = (IDataFlowNode) bList.get(i);
@@ -101,6 +102,7 @@ public class Linker {
                         if (n.isType(NodeType.WHILE_LAST_STATEMENT) ||
                                 n.isType(NodeType.SWITCH_END) ||
                                 n.isType(NodeType.FOR_END) ||
+                                n.isType(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE) ||
                                 n.isType(NodeType.DO_EXPR)) {
 
                             node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
@@ -116,7 +118,6 @@ public class Linker {
 
                 case NodeType.CONTINUE_STATEMENT:
                     //List cList = node.getFlow();
-
                     /* traverse up the tree and find the first loop start node
                      */
 /*

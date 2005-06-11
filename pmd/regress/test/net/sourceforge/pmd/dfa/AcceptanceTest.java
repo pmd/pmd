@@ -13,8 +13,7 @@ import java.util.List;
 public class AcceptanceTest extends ParserTst {
 
     public void testLabelledBreakLockup() throws Throwable {
-        //System.out.println(LABELLED_BREAK_LOCKUP);
-        //getOrderedNodes(ASTMethodDeclarator.class, LABELLED_BREAK_LOCKUP);
+        getOrderedNodes(ASTMethodDeclarator.class, LABELLED_BREAK_LOCKUP);
     }
 
     private static final String LABELLED_BREAK_LOCKUP =
