@@ -1,11 +1,16 @@
 package net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 /**
  * @author raik
@@ -112,27 +117,54 @@ public class DataFlowNode implements IDataFlowNode {
 
     public String toString() {
         String res = "DataFlowNode ";
-        if (!isEmptyBitSet(type)) {
+        if (node instanceof ASTMethodDeclaration || node instanceof ASTConstructorDeclaration) {
+            res += (node instanceof ASTMethodDeclaration) ? "(method)" : "(constructor)";
+       } else {
             String tmp = type.toString();
             String newTmp = "";
             for (int i=0; i<tmp.length(); i++) {
-                if (tmp.charAt(i) != '{' && tmp.charAt(i) != '}') {
+                if (tmp.charAt(i) != '{' && tmp.charAt(i) != '}'&& tmp.charAt(i) != ' ') {
                     newTmp += tmp.charAt(i);
                 }
             }
-            res += "(" + newTmp + ")";
-        } else {
-            res += "(no type)";
+            for (StringTokenizer st = new StringTokenizer(newTmp, ","); st.hasMoreTokens();) {
+                int newTmpInt = Integer.parseInt(st.nextToken());
+                res += "(" + stringFromType(newTmpInt) + ")";
+            }
+            res += ": " + this.node.getClass().toString();
+            res += (node.getImage() == null ? "" : "(" + this.node.getImage() + ")");
         }
-        res += ": " + this.node.getClass().toString();
-        res += (node.getImage() == null ? "" : "(" + this.node.getImage() + ")");
         return res;
     }
 
-    protected static final BitSet EMPTY_BITSET = new BitSet();
-    protected static boolean isEmptyBitSet(BitSet bitSet) {
-        // When we go to JDK 1.4, clean house
-        //return bitSet.isEmpty();
-        return bitSet.equals(EMPTY_BITSET);
+    private Map typeMap = new HashMap();
+
+    private String stringFromType(int intype) {
+        if (typeMap.isEmpty()) {
+            typeMap.put(new Integer(NodeType.IF_EXPR), "IF_EXPR");
+            typeMap.put(new Integer(NodeType.IF_LAST_STATEMENT), "IF_LAST_STATEMENT");
+            typeMap.put(new Integer(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE), "IF_LAST_STATEMENT_WITHOUT_ELSE");
+            typeMap.put(new Integer(NodeType.ELSE_LAST_STATEMENT), "ELSE_LAST_STATEMENT");
+            typeMap.put(new Integer(NodeType.WHILE_EXPR), "WHILE_EXPR");
+            typeMap.put(new Integer(NodeType.SWITCH_START), "SWITCH_START");
+            typeMap.put(new Integer(NodeType.CASE_LAST_STATEMENT), "CASE_LAST_STATEMENT");
+            typeMap.put(new Integer(NodeType.SWITCH_LAST_DEFAULT_STATEMENT), "SWITCH_LAST_DEFAULT_STATEMENT");
+            typeMap.put(new Integer(NodeType.SWITCH_END), "SWITCH_END");
+            typeMap.put(new Integer(NodeType.FOR_INIT), "FOR_INIT");
+            typeMap.put(new Integer(NodeType.FOR_EXPR), "FOR_EXPR");
+            typeMap.put(new Integer(NodeType.FOR_UPDATE), "FOR_UPDATE");
+            typeMap.put(new Integer(NodeType.FOR_BEFORE_FIRST_STATEMENT), "FOR_BEFORE_FIRST_STATEMENT");
+            typeMap.put(new Integer(NodeType.FOR_END), "FOR_END");
+            typeMap.put(new Integer(NodeType.DO_BEFORE_FIRST_STATEMENT), "DO_BEFORE_FIRST_STATEMENT");
+            typeMap.put(new Integer(NodeType.DO_EXPR), "DO_EXPR");
+            typeMap.put(new Integer(NodeType.RETURN_STATEMENT), "RETURN_STATEMENT");
+            typeMap.put(new Integer(NodeType.BREAK_STATEMENT), "BREAK_STATEMENT");
+            typeMap.put(new Integer(NodeType.CONTINUE_STATEMENT), "CONTINUE_STATEMENT");
+        }
+        if (!typeMap.containsKey(new Integer(intype))) {
+            throw new RuntimeException("Couldn't find type id " + intype);
+        }
+        return (String)typeMap.get(new Integer(intype));
     }
+
 }

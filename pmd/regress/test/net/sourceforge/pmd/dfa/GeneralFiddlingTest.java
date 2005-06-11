@@ -40,7 +40,9 @@ public class GeneralFiddlingTest extends ParserTst {
     private static final String TEST1 =
         "class Foo {" + PMD.EOL +
         " void bar() {" + PMD.EOL +
-        "  for (int i=0; i<10; i++) {}" + PMD.EOL +
+        "  for (int i=0; i<10; i++) {" + PMD.EOL +
+        "   int j;" + PMD.EOL +
+        "  }" + PMD.EOL +
         " }"  + PMD.EOL +
         "}";
 

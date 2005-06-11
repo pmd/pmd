@@ -106,6 +106,17 @@
   <formatter type="plain" />
     </junit>
 </target>
+ <target name="dfatest" depends="compile" description="Runs the unit tests for the dfa package">
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath><path refid="dependencies.path" /></classpath>
+      <batchtest fork="no" todir="${dir.build}">
+        <fileset dir="${dir.regress}">
+          <include name="test/**/dfa/**/*Test.java" />
+        </fileset>
+      </batchtest>
+  <formatter type="plain" />
+    </junit>
+</target>
 
  <target name="cpdtest" depends="compile" description="Runs the unit tests for the CPD package">
     <junit printsummary="yes" haltonfailure="yes">

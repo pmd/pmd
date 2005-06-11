@@ -5,9 +5,12 @@ import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.NodeType;
+import net.sourceforge.pmd.dfa.StatementAndBraceFinder;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class StatementAndBraceFinderTest extends ParserTst {
@@ -50,6 +53,18 @@ public class StatementAndBraceFinderTest extends ParserTst {
         assertTrue(dfn.isType(NodeType.FOR_UPDATE));
         assertTrue(dfn.isType(NodeType.FOR_BEFORE_FIRST_STATEMENT));
         assertTrue(dfn.isType(NodeType.FOR_END));
+    }
+
+    public void testOnlyWorksForMethodsAndConstructors() {
+        StatementAndBraceFinder sbf = new StatementAndBraceFinder();
+        try {
+            sbf.buildDataFlowFor(new ASTCompilationUnit(1));
+            fail("Should have failed!");
+        } catch (RuntimeException e) {
+            // cool
+        }
+        sbf.buildDataFlowFor(new ASTMethodDeclaration(1));
+        sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
     }
 
     private static final String TEST1 =

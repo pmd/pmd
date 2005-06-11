@@ -26,13 +26,13 @@ public class DataFlowFacade extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        sbf.compute(node);
+        sbf.buildDataFlowFor(node);
         vav.compute(node);
         return data;
     }
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        sbf.compute(node);
+        sbf.buildDataFlowFor(node);
         vav.compute(node);
         return data;
     }

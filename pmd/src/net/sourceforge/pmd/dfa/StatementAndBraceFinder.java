@@ -34,30 +34,52 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
     private Structure dataFlow;
 
-    public void compute(ASTMethodDeclaration node) {
-        this.buildDataFlowFor(node);
-    }
+    public void buildDataFlowFor(SimpleNode node) {
+        // TODO what about initializers?
+        if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTConstructorDeclaration)) {
+            throw new RuntimeException("Can't build a data flow for anything other than a method or a constructor");
+        }
+        
+        this.dataFlow = new Structure();
+        this.dataFlow.addStartNode(node.getBeginLine());
+        this.dataFlow.addNewNode(node);
 
-    public void compute(ASTConstructorDeclaration node) {
-        this.buildDataFlowFor(node);
+        node.jjtAccept(this, dataFlow);
+
+        this.dataFlow.addEndNode(node.getEndLine());
+
+        Linker linker = new Linker(dataFlow);
+        try {
+            linker.computePaths();
+        } catch (LinkerException e) {
+            e.printStackTrace();
+        } catch (SequenceException e) {
+            e.printStackTrace();
+        }
     }
 
     public Object visit(ASTStatementExpression node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         dataFlow.addNewNode(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTVariableDeclarator node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         dataFlow.addNewNode(node);
         return super.visit(node, data);
     }
 
     public Object visit(ASTExpression node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
 
         if (node.jjtGetParent() instanceof ASTIfStatement) {
@@ -81,7 +103,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTForInit node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.FOR_INIT, dataFlow.getLast());
@@ -90,7 +114,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTForUpdate node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         this.addForExpressionNode(node, dataFlow);
         super.visit(node, data);
@@ -102,8 +128,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 //  BRANCH OUT
 
     public Object visit(ASTStatement node, Object data) {
-
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
 
         if (node.jjtGetParent() instanceof ASTForStatement) {
@@ -136,7 +163,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTSwitchStatement node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.SWITCH_END, dataFlow.getLast());
@@ -144,7 +173,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTSwitchLabel node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         //super.visit(node, data);
         if (node.jjtGetNumChildren() == 0) {
@@ -156,7 +187,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTBreakStatement node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
@@ -165,7 +198,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
 
     public Object visit(ASTContinueStatement node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
@@ -173,30 +208,13 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTReturnStatement node, Object data) {
-        if (!(data instanceof Structure)) return data;
+        if (!(data instanceof Structure)) {
+            return data;
+        }
         Structure dataFlow = (Structure) data;
         dataFlow.addNewNode(node);
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
-    }
-
-    private void buildDataFlowFor(SimpleNode node) {
-        this.dataFlow = new Structure();
-        this.dataFlow.addStartNode(node.getBeginLine());
-        this.dataFlow.addNewNode(node);
-
-        node.jjtAccept(this, dataFlow);
-
-        this.dataFlow.addEndNode(node.getEndLine());
-
-        Linker linker = new Linker(dataFlow);
-        try {
-            linker.computePaths();
-        } catch (LinkerException e) {
-            e.printStackTrace();
-        } catch (SequenceException e) {
-            e.printStackTrace();
-        }
     }
 
     /*
