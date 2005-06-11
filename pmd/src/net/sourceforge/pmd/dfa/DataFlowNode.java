@@ -25,7 +25,7 @@ public class DataFlowNode implements IDataFlowNode {
     protected List children = new ArrayList();
     protected BitSet type = new BitSet();
     protected LinkedList dataFlow;
-    protected List variableAccess;
+    protected List variableAccess = new ArrayList();
     protected int line;
 
     protected DataFlowNode() {}
@@ -104,7 +104,7 @@ public class DataFlowNode implements IDataFlowNode {
     }
 
     public void setVariableAccess(List variableAccess) {
-        if (this.variableAccess == null) {
+        if (this.variableAccess.isEmpty()) {
             this.variableAccess = variableAccess;
         } else {
             this.variableAccess.addAll(variableAccess);

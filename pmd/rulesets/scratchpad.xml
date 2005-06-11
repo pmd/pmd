@@ -6,35 +6,8 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="NullAssignment"
-          message="Assigning an Object to null is a code smell.  Consider refactoring."
-          class="net.sourceforge.pmd.rules.design.NullAssignmentRule">
-      <description>
- Assigning a "null" to a variable (outside of its declaration) is usually in
- bad form.  Some times, the assignment is an indication that the programmer doesn't
- completely understand what is going on in the code.  NOTE: This sort of assignment
- may in rare cases be useful to encourage garbage collection.  If that's what you're using
- it for, by all means, disregard this rule :-)
-      </description>
-        <priority>3</priority>
-      <example>
- <![CDATA[
- public class Foo {
-   public void bar() {
-     Object x = null; // This is OK.
-     x = new Object();
-     // Big, complex piece of code here.
-     x = null; // This is BAD.
-     // Big, complex piece of code here.
-   }
- }
-
- ]]>
-      </example>
-    </rule>
-
     <rule name="FooRule"
-          message="foo?"
+          message="foo?" dfa="true"
           class="net.sourceforge.pmd.rules.FooRule">
       <description>
       Foo

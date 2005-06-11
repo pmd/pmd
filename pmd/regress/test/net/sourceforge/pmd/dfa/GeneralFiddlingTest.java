@@ -17,18 +17,22 @@ public class GeneralFiddlingTest extends ParserTst {
         ASTMethodDeclarator meth = (ASTMethodDeclarator)acu.findChildrenOfType(ASTMethodDeclarator.class).get(0);
         IDataFlowNode n = meth.getDataFlowNode();
         List f = n.getFlow();
+/*
         for (Iterator i = f.iterator(); i.hasNext();) {
             DataFlowNode dfan = (DataFlowNode)i.next();
             System.out.println(dfan);
+            List va = dfan.getVariableAccess();
+            for (Iterator j = va.iterator(); j.hasNext();) {
+                System.out.println(j.next());
+            }
         }
+*/
     }
 
     private static final String TEST1 =
         "class Foo {" + PMD.EOL +
         " void bar() {" + PMD.EOL +
-        "  for (int i=0; i<10; i++) {" + PMD.EOL +
-        "   int j;" + PMD.EOL +
-        "  }" + PMD.EOL +
+        "  int x = 2;" + PMD.EOL +
         " }"  + PMD.EOL +
         "}";
 }
