@@ -26,30 +26,28 @@ public class UseArrayListInsteadOfVectorTest extends SimpleAggregatorTst {
 
     private static final String TEST0 =
     "public class Bar {" + PMD.EOL +
-    "void x(){" +
-    "List v = new ArrayList(); " +
-    "}" + PMD.EOL +
+    " void x() {" + PMD.EOL + 
+    "  List v = new ArrayList(); " + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
     
     private static final String TEST1 =
     "public class Bar {" + PMD.EOL +
-    "void x(){" +
-    "Vector v = new Vector(); " +
-    "}" + PMD.EOL +
+    " void x() {" + PMD.EOL +
+    "  Vector v = new Vector(); " + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
     private static final String TEST2 =
     "public class Bar {" + PMD.EOL +
-    "Vector v = new Vector(); " +
-    "void x(){" +
-    "}" + PMD.EOL +
+    " Vector v = new Vector(); " + PMD.EOL +
+    " void x() {}" + PMD.EOL +
     "}";
 
     private static final String TEST3 =
-        "public class Bar {" + PMD.EOL +
-        "List v = new Vector(); " +
-        "void x(){" +
-        "}" + PMD.EOL +
-        "}";
+    "public class Bar {" + PMD.EOL +
+    " List v = new Vector(); " + PMD.EOL +
+    " void x() {}" + PMD.EOL +
+    "}";
 
 }

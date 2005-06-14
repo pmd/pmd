@@ -24,8 +24,23 @@ public class VariableAccess {
         }
     }
 
+    // TODO completely encapsulate this somehow?
     public int getAccessType() {
         return accessType;
+    }
+
+    public boolean accessTypeMatches(int otherType) {
+        return accessType == otherType;
+    }
+
+    public boolean isDefinition() {
+        return this.accessType == DEFINITION;
+    }
+    public boolean isReference() {
+        return this.accessType == REFERENCING;
+    }
+    public boolean isUndefinition() {
+        return this.accessType == UNDEFINITION;
     }
 
     public String getVariableName() {
@@ -33,20 +48,9 @@ public class VariableAccess {
     }
 
     public String toString() {
-        String ret;
-        switch (this.accessType) {
-            case 0:
-                ret = "d(";
-                break;
-            case 1:
-                ret = "r(";
-                break;
-            case 2:
-                ret = "u(";
-                break;
-            default:
-                ret = "";
-        }
-        return ret + this.variableName + ")";
+        if (isDefinition()) return "Definition(" + variableName + ")";
+        if (isReference()) return "Reference(" + variableName + ")";
+        if (isUndefinition()) return "Undefinition(" + variableName + ")";
+        throw new RuntimeException("What is it then?");
     }
 }

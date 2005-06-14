@@ -54,19 +54,15 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
                     StringBuffer exp = new StringBuffer();
                     for (int k = 0; k < access.size(); k++) {
                         VariableAccess va = (VariableAccess) access.get(k);
-                        switch (va.getAccessType()) {
-                            case VariableAccess.DEFINITION:
-                                exp.append("d(");
-                                break;
-                            case VariableAccess.REFERENCING:
-                                exp.append("r(");
-                                break;
-                            case VariableAccess.UNDEFINITION:
-//                                exp.append("u(");
-                                continue;  // eo - the u() entries add a lot of clutter to the report
-//                                break;
-                            default:
-                                exp.append("?(");
+                        if (va.isDefinition()) {
+                            exp.append("d(");
+                        } else if (va.isReference()) {
+                            exp.append("r(");
+                        } else if (va.isUndefinition()) {
+                            exp.append("u(");
+                            //continue;  // eo - the u() entries add a lot of clutter to the report
+                        } else {
+                            exp.append("?(");
                         }
                         exp.append(va.getVariableName() + "), ");
                     }

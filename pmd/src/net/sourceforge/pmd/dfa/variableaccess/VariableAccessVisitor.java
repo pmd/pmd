@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -52,17 +53,16 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         Set scopeSet = new HashSet();
         /*
          * Fills the HashSet with all VariableDeclarations(Map) of all scopes
-         * of this data flow(method). Adds no dublicated VariablesDeclarations
+         * of this data flow(method). Adds no duplicated VariablesDeclarations
          * into the HashSet.
          * */
         for (int i = 0; i < inode.getFlow().size(); i++) {
             IDataFlowNode n = (IDataFlowNode) inode.getFlow().get(i);
-
-            SimpleNode snode = n.getSimpleNode();
-            if (snode == null) continue;
-
-            if (!scopeSet.contains(snode.getScope().getVariableDeclarations())) {
-                scopeSet.add(snode.getScope().getVariableDeclarations());
+            if (n instanceof StartOrEndDataFlowNode) {
+                continue;
+            }
+            if (!scopeSet.contains(n.getSimpleNode().getScope().getVariableDeclarations())) {
+                scopeSet.add(n.getSimpleNode().getScope().getVariableDeclarations());
             }
         }
 

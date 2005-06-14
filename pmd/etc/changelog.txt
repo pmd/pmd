@@ -3,7 +3,7 @@ New rules: UseCorrectExceptionLogging (logging-jakarta-commons)
 Fixed bug 1201577 - PMD now correctly parses method declarations that return generic types.
 Fixed bug 1205709 - PMD no longer takes a long time to report certain parsing errors.
 Fixed bug 1052356 - ImmutableField no longer triggers on fields which are assigned to in a constructor's try statement.
-Fixed bug 1215854 - Package/class/method name are now filled in whenever possible, and the XML report includes all three.
+Fixed bug 1215854 - Package/class/method names are now filled in whenever possible, and the XML report includes all three.
 Fixed bug 1209719 - MethodArgumentCouldBeFinal no longer triggers on arguments which are modified using postfix or prefix expressions.  A bug in AvoidReassigningParameters was also fixed under the same bug id.
 Fixed bug 1188386 - MethodReturnsInternalArray no longer flags returning a local array declaration.
 Fixed bug 1172137 - PMD no longer locks up when generating a control flow graph for if statements with labelled breaks.
@@ -49,7 +49,7 @@ New rules: MissingSerialVersionUID, UnnecessaryFinalModifier, AbstractClassDoesN
 Implemented RFE 1058039 - PMD's command line interface now accepts abbreviated names for the standard rulesets; for example 'java net.sourceforge.pmd.PMD /my/source/code/ text basic,unusedcode' would run the rulesets/basic.xml and the rulesets/unusedcode.xml rulesets on the source in /my/source/code and produce a text report.
 Implemented RFE 1119851 - PMD's Ant task now supports an 'excludeMarker' attribute.
 Fixed bug 994400 - False +: ConstructorCallsOverridableMethodRule, thanks to ereissner for reporting it
-Fixed bug 1146116 - JUnitTestsShouldIncludeAssert crashes on inner Interface
+Fixed bug 1146116 - JUnitTestsShouldIncludeAssert no longer crashes on inner Interface
 Fixed bug 1114625 - UnusedPrivateField no longer throws an NPE on standalone postfix expressions which are prefixed with 'this'.
 Fixed bug 1114020 - The Ant task now reports a complete stack trace when run with the -verbose flag.
 Fixed bug 1117983 - MethodArgumentCouldBeFinal no longer reports false positives on try..catch blocks.

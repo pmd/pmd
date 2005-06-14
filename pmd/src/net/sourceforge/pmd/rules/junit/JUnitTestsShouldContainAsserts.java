@@ -26,28 +26,15 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
         return super.visit(node, data);
     }
 
-/*
-FIXME
-	public Object visit(ASTNestedInterfaceDeclaration node, Object data) {
-		// skip also internal interfaces, bug [ 1146116 ] JUnitTestsShouldIncludeAssert crashes on inner Interface
-		return data;
-	}
-*/
-
     public Object visit(ASTMethodDeclaration declaration, Object data) {
         if (!declaration.isPublic() || declaration.isAbstract() || declaration.isNative()) {
             return data; // skip various inapplicable method variations
         }
 
-        if (declaration.jjtGetNumChildren()==3) {
-            ASTResultType resultType = (ASTResultType) declaration.jjtGetChild(0);
-            ASTMethodDeclarator declarator = (ASTMethodDeclarator) declaration.jjtGetChild(1);
-            ASTBlock block = (ASTBlock) declaration.jjtGetChild(2);
-            if (resultType.isVoid() && declarator.getImage().startsWith("test")) {
-                if (!hasAssertStatement(block)) {
-                    RuleContext ctx = (RuleContext)data;
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, declaration));
-                }
+        if (declaration.jjtGetNumChildren()==3 && ((ASTResultType) declaration.jjtGetChild(0)).isVoid() && declaration.getMethodName().startsWith("test"))  {
+            if (!hasAssertStatement((ASTBlock) declaration.jjtGetChild(2))) {
+                RuleContext ctx = (RuleContext)data;
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, declaration));
             }
         }
 		return data;

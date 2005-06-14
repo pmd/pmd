@@ -19,24 +19,13 @@ import java.util.List;
 /**
  * @author raik
  *         <p/>
- *         Starts path search for each method and runs code if founded.
+ *         Starts path search for each method and runs code if found.
  */
 public class DaaRule extends AbstractRule implements Executable {
 
     private RuleContext rc;
     private int counter;
     private static final int MAX_PATHS = 5000;
-
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        RuleContext ctx = (RuleContext) data;
-        System.out.println(ctx.getSourceCodeFilename());
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTMethodDeclarator node, Object data) {
-        System.out.println("Method: " + node.getImage());
-        return super.visit(node, data);
-    }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         this.rc = (RuleContext) data;
@@ -45,7 +34,7 @@ public class DaaRule extends AbstractRule implements Executable {
         IDataFlowNode n = (IDataFlowNode) node.getDataFlowNode().getFlow().get(0);
         System.out.println("In DaaRule, IDataFlowNode n = " + n);
 
-        DAAPathFinder a = new DAAPathFinder(n, this, MAX_PATHS);
+        DAAPathFinder a = new DAAPathFinder(n, this);
         a.run();
 
         super.visit(node, data);
@@ -69,24 +58,22 @@ public class DaaRule extends AbstractRule implements Executable {
                     if (o != null) {
                         List array = (List) o;
                         int last = ((Integer) array.get(0)).intValue();
-                        int current = va.getAccessType();
+                        //int current = va.getAccessType();
                         // TODO - at some point investigate and possibly reintroduce this line2 thing
                         //int line2 = ((Integer) array.get(1)).intValue();
 
                         // DD
-                        if (last == current && current ==
-                                VariableAccess.DEFINITION) {
+                        //if ( last == current && current == VariableAccess.DEFINITION) {
+                        if (va.accessTypeMatches(last) && va.isDefinition()) {
 
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "DD"));
                         }
                         // UR
-                        else if (last == VariableAccess.UNDEFINITION &&
-                                current == VariableAccess.REFERENCING) {
+                        else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "UR"));
                         }
                         // DU
-                        else if (last == VariableAccess.DEFINITION &&
-                                current == VariableAccess.UNDEFINITION) {
+                        else if (last == VariableAccess.DEFINITION && va.isUndefinition()) {
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "DU"));
                         }
                     }

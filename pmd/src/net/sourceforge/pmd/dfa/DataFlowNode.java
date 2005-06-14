@@ -75,12 +75,13 @@ public class DataFlowNode implements IDataFlowNode {
         this.type.set(type);
     }
 
-    public boolean isType(int type) {
+    public boolean isType(int intype) {
         try {
-            return this.type.get(type);
+            return type.get(intype);
         } catch (IndexOutOfBoundsException e) {
-            return false;
+            e.printStackTrace();
         }
+        return false;
     }
 
     public SimpleNode getSimpleNode() {
