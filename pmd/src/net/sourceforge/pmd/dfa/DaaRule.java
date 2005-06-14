@@ -58,22 +58,13 @@ public class DaaRule extends AbstractRule implements Executable {
                     if (o != null) {
                         List array = (List) o;
                         int last = ((Integer) array.get(0)).intValue();
-                        //int current = va.getAccessType();
                         // TODO - at some point investigate and possibly reintroduce this line2 thing
                         //int line2 = ((Integer) array.get(1)).intValue();
-
-                        // DD
-                        //if ( last == current && current == VariableAccess.DEFINITION) {
-                        if (va.accessTypeMatches(last) && va.isDefinition()) {
-
+                        if (va.accessTypeMatches(last) && va.isDefinition()) { // DD
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "DD"));
-                        }
-                        // UR
-                        else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
+                        } else if (last == VariableAccess.UNDEFINITION && va.isReference()) { // UR
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "UR"));
-                        }
-                        // DU
-                        else if (last == VariableAccess.DEFINITION && va.isUndefinition()) {
+                        } else if (last == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "DU"));
                         }
                     }

@@ -7,14 +7,19 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTCatchStatement;
 import net.sourceforge.pmd.ast.ASTInitializer;
+import net.sourceforge.pmd.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.LocalScope;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 public class AcceptanceTest extends STBBaseTst {
 
+/*
     public void testClashingSymbols() {
         parseCode(TEST1);
     }
@@ -38,6 +43,28 @@ public class AcceptanceTest extends STBBaseTst {
         assertEquals("e", v.getImage());
         assertEquals(1, ((List)vars.get(v)).size());
     }
+*/
+
+    public void testEq() {
+        parseCode(TEST_EQ);
+        ASTEqualityExpression e = (ASTEqualityExpression)(acu.findChildrenOfType(ASTEqualityExpression.class)).get(0);
+        ASTMethodDeclaration method = (ASTMethodDeclaration)e.getFirstParentOfType(ASTMethodDeclaration.class);
+        Scope s = method.getScope();
+        Map m = s.getVariableDeclarations();
+        for (Iterator i = m.keySet().iterator(); i.hasNext();) {
+            VariableNameDeclaration vnd = (VariableNameDeclaration)i.next();
+        //    vnd.
+        }
+        System.out.println(m.size());
+
+    }
+
+    private static final String TEST_EQ =
+    "public class Foo  {" + PMD.EOL +
+    " boolean foo(String a, String b) { " + PMD.EOL +
+    "  return a == b; " + PMD.EOL +
+    " } " + PMD.EOL +
+    "}" + PMD.EOL;
 
     private static final String TEST1 =
     "import java.io.*;" + PMD.EOL +
