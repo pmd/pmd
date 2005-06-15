@@ -28,23 +28,24 @@ public class CompareObjectsWithEquals extends AbstractRule {
         }
 
         // skip static initializers... missing some cases here
-        if (node.getParentsOfType(ASTInitializer.class).isEmpty()) {
-            MethodScope scope = node.getScope().getEnclosingMethodScope();
-            Map vars = scope.getVariableDeclarations();
-            for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-                VariableNameDeclaration key = (VariableNameDeclaration)i.next();
-                if (key.isPrimitiveType() || key.isArray()) {
-                    continue;
-                }
-                List usages = (List)vars.get(key);
-                if (usages.isEmpty()) {
-                    continue;
-                }
-                for (Iterator j = usages.iterator(); j.hasNext();) {
-                    if (((NameOccurrence)j.next()).getLocation().jjtGetParent().jjtGetParent().jjtGetParent() == node) {
-                        ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, node));
-                        return data;
-                    }
+        if (!node.getParentsOfType(ASTInitializer.class).isEmpty()) {
+            return data;
+        }
+        MethodScope scope = node.getScope().getEnclosingMethodScope();
+        Map vars = scope.getVariableDeclarations();
+        for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
+            VariableNameDeclaration key = (VariableNameDeclaration)i.next();
+            if (key.isPrimitiveType() || key.isArray()) {
+                continue;
+            }
+            List usages = (List)vars.get(key);
+            if (usages.isEmpty()) {
+                continue;
+            }
+            for (Iterator j = usages.iterator(); j.hasNext();) {
+                if (((NameOccurrence)j.next()).getLocation().jjtGetParent().jjtGetParent().jjtGetParent() == node) {
+                    ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, node));
+                    return data;
                 }
             }
         }
