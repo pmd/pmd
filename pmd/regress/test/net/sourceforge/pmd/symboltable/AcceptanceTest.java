@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTCatchStatement;
 import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.LocalScope;
@@ -47,13 +48,15 @@ public class AcceptanceTest extends STBBaseTst {
 
     public void testEq() {
         parseCode(TEST_EQ);
+        System.out.println(TEST_EQ);
         ASTEqualityExpression e = (ASTEqualityExpression)(acu.findChildrenOfType(ASTEqualityExpression.class)).get(0);
         ASTMethodDeclaration method = (ASTMethodDeclaration)e.getFirstParentOfType(ASTMethodDeclaration.class);
         Scope s = method.getScope();
         Map m = s.getVariableDeclarations();
         for (Iterator i = m.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration vnd = (VariableNameDeclaration)i.next();
-        //    vnd.
+            SimpleNode node = vnd.getNode();
+            //System.out.println();
         }
         System.out.println(m.size());
 

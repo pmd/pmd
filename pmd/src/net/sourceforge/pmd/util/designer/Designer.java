@@ -25,6 +25,7 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Toolkit;
+import java.awt.FlowLayout;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
@@ -43,20 +44,14 @@ import java.util.List;
 public class Designer implements ClipboardOwner {
 
     private JavaParser createParser() {
-        StringReader sr = new StringReader(codeEditorPane.getText());
-        TargetJDKVersion v = getJDKVersion();
-        JavaParser parser = v.createParser(sr);
-        return parser;
+        return getJDKVersion().createParser(new StringReader(codeEditorPane.getText()));
     }
 
     private TargetJDKVersion getJDKVersion() {
-        TargetJDKVersion v = null;
         if (jdk14MenuItem.isSelected()) {
-            v = new TargetJDK1_4();
-        } else {
-            v = new TargetJDK1_5();
+            return new TargetJDK1_4();
         }
-        return v;
+        return new TargetJDK1_5();
     }
 
     private class ShowListener implements ActionListener {
@@ -140,20 +135,8 @@ public class Designer implements ClipboardOwner {
     private JRadioButtonMenuItem jdk14MenuItem;
     private JRadioButtonMenuItem jdk15MenuItem;
 
-    private final MouseListener codeEditPanelMouseListener = new MouseListener() {
-        public void mouseClicked(MouseEvent e) {}
-        public void mousePressed(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                popUpMenu(e);
-            }
-        }
-        public void mouseReleased(MouseEvent e) {}
-        public void mouseEntered(MouseEvent e) {}
-        public void mouseExited(MouseEvent e) {}
-        };
-
     public Designer() {
-        JSplitPane controlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditPanel(), createXPathQueryPanel());
+        JSplitPane controlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
 
         JComponent astPanel = createASTPanel();
         JComponent xpathResultPanel = createXPathResultPanel();
@@ -218,8 +201,95 @@ public class Designer implements ClipboardOwner {
             }
         });
         actionsMenu.add(copyXMLItem);
+        JMenuItem createRuleXMLItem = new JMenuItem("Create rule XML");
+        createRuleXMLItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                createRuleXML();
+            }
+        });
+        actionsMenu.add(createRuleXMLItem);
         menuBar.add(actionsMenu);
         return menuBar;
+    }
+
+
+
+    private void createRuleXML() {
+        JPanel rulenamePanel = new JPanel();
+        rulenamePanel.setLayout(new FlowLayout());
+        rulenamePanel.add(new JLabel("Rule name"));
+        final JTextField rulenameField = new JTextField(30);
+        rulenamePanel.add(rulenameField);
+        JPanel rulemsgPanel = new JPanel();
+        rulemsgPanel.setLayout(new FlowLayout());
+        rulemsgPanel.add(new JLabel("Rule msg"));
+        final JTextField rulemsgField = new JTextField(60);
+        rulemsgPanel.add(rulemsgField);
+        JPanel ruledescPanel = new JPanel();
+        ruledescPanel.setLayout(new FlowLayout());
+        ruledescPanel.add(new JLabel("Rule desc"));
+        final JTextField ruledescField = new JTextField(60);
+        ruledescPanel.add(ruledescField);
+        JPanel ruleXMLPanel = new JPanel();
+        final JTextArea ruleXMLArea = new JTextArea(40, 60);
+        ruleXMLPanel.add(ruleXMLArea);
+        JButton go = new JButton("Create rule XML");
+        go.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                StringBuffer sb = new StringBuffer();
+                sb.append("<rule  name=\"" + rulenameField.getText() + "\"" + PMD.EOL);
+                sb.append("  message=\"" + rulemsgField.getText() + "\"" + PMD.EOL);
+                sb.append("  class=\"" + (xpathQueryArea.getText().length() == 0 ? "" : "net.sourceforge.pmd.rules.XPathRule") + "\">" + PMD.EOL);
+                sb.append("  <description>" + PMD.EOL);
+                sb.append("  " + ruledescField.getText() + PMD.EOL);
+                sb.append("  </description>" + PMD.EOL);
+                if (xpathQueryArea.getText().length()!=0) {
+                    sb.append("  <properties>" + PMD.EOL);
+                    sb.append("    <property name=\"xpath\">" + PMD.EOL);
+                    sb.append("    <value>" + PMD.EOL);
+                    sb.append("<![CDATA[" + PMD.EOL);
+                    sb.append(xpathQueryArea.getText() + PMD.EOL);
+                    sb.append("]]>" + PMD.EOL);
+                    sb.append("    </value>" + PMD.EOL);
+                    sb.append("    </property>" + PMD.EOL);
+                    sb.append("  </properties>" + PMD.EOL);
+                }
+                sb.append("  <priority>3</priority>" + PMD.EOL);
+                sb.append("  <example>" + PMD.EOL);
+                sb.append("<![CDATA[" + PMD.EOL);
+                sb.append(codeEditorPane.getText());
+                sb.append("]]>" + PMD.EOL);
+                sb.append("  </example>" + PMD.EOL);
+                sb.append("</rule>" + PMD.EOL);
+
+                ruleXMLArea.setText(sb.toString());
+            }
+        });
+
+        JPanel fieldsPanel = new JPanel();
+        fieldsPanel.setLayout(new BorderLayout());
+        fieldsPanel.add(rulenamePanel,  BorderLayout.NORTH);
+        fieldsPanel.add(rulemsgPanel,  BorderLayout.CENTER);
+        fieldsPanel.add(ruledescPanel, BorderLayout.SOUTH);
+
+        JPanel fieldBtnPanel = new JPanel();
+        fieldBtnPanel.setLayout(new BorderLayout());
+        fieldBtnPanel.add(fieldsPanel, BorderLayout.NORTH);
+        fieldBtnPanel.add(go, BorderLayout.SOUTH);
+
+        JPanel outer = new JPanel(new BorderLayout());
+        outer.add(fieldBtnPanel, BorderLayout.NORTH);
+        outer.add(ruleXMLPanel, BorderLayout.SOUTH);
+
+        JDialog d = new JDialog(frame);
+        d.setSize(400,600);
+        d.getContentPane().add(outer);
+        int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        d.setLocation((screenWidth / 2) - frame.getWidth() / 2, (screenHeight / 2) - frame.getHeight() / 2);
+        d.setVisible(true);
+        d.pack();
+        d.show();
     }
 
     private JComponent createASTPanel() {
@@ -236,12 +306,6 @@ public class Designer implements ClipboardOwner {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setView(xpathResultList);
         return scrollPane;
-    }
-
-    private JComponent createCodeEditPanel() {
-        JScrollPane codeScrollPane = new JScrollPane(codeEditorPane);
-        codeEditorPane.addMouseListener(codeEditPanelMouseListener);
-        return codeScrollPane;
     }
 
     private JPanel createXPathQueryPanel() {
@@ -274,44 +338,20 @@ public class Designer implements ClipboardOwner {
         new Designer();
     }
 
-    private final void popUpMenu(MouseEvent e) {
-        JPopupMenu menu = new JPopupMenu();
-        JMenuItem mi = new JMenuItem("Copy xml");
-        mi.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                copyXmlToClipboard();
-            }
-        });
-        menu.add(mi);
-        menu.show(e.getComponent(), e.getX(), e.getY());
-    }
-
     private final void copyXmlToClipboard() {
-        String text = this.codeEditorPane.getText();
-        if (text!=null && text.trim().length()>0) {
-            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-            String xml = getXml();
-            StringSelection ss = new StringSelection(xml);
-            cb.setContents(ss, this);
-        } 
-    }
-
-    private String getXml() {
-        ASTCompilationUnit cu = createParser().CompilationUnit();
-        String result;
-        if (cu!=null) {
-            try {
-                result = getXmlString( cu );
-            } catch (IOException e) {
-                e.printStackTrace();
-                result = "Error trying to construct XML representation";
+        if (codeEditorPane.getText()!=null && codeEditorPane.getText().trim().length()>0) {
+            ASTCompilationUnit cu = createParser().CompilationUnit();
+            String xml = "";
+            if (cu!=null) {
+                try {
+                    xml = getXmlString( cu );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    xml = "Error trying to construct XML representation";
+                }
             }
-        }
-        else
-        {
-            result = "";
-        }
-        return result;
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xml), this);
+        } 
     }
 
     /**
@@ -322,17 +362,12 @@ public class Designer implements ClipboardOwner {
      * @throws java.io.IOException
      */
     private String getXmlString(SimpleNode node) throws IOException {
-        Document document = node.asXml();
         StringWriter writer = new StringWriter();
-        OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
-        XMLSerializer xmlSerializer = new XMLSerializer(writer, outputFormat);
+        XMLSerializer xmlSerializer = new XMLSerializer(writer, new OutputFormat("XML", "UTF-8", true));
         xmlSerializer.asDOMSerializer();
-        xmlSerializer.serialize(document);
-        String xmlString = writer.toString();
-        return xmlString;
+        xmlSerializer.serialize(node.asXml());
+        return writer.toString();
     }
 
-    public void lostOwnership(Clipboard clipboard, Transferable contents) {
-        //NOOP
-    }
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {}
 }

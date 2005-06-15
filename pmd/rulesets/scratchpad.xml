@@ -30,6 +30,7 @@ public class Foo {
     </example>
   </rule>
 
+
     <rule name="FooRule"
           message="foo?" dfa="true"
           class="net.sourceforge.pmd.rules.FooRule">

@@ -1,5 +1,5 @@
 ????, 2005 - 3.2:
-New rules: UseCorrectExceptionLogging (logging-jakarta-commons)
+New rules: UseCorrectExceptionLogging (logging-jakarta-commons), AvoidPrintStackTrace (logging-java)
 Fixed bug 1201577 - PMD now correctly parses method declarations that return generic types.
 Fixed bug 1205709 - PMD no longer takes a long time to report certain parsing errors.
 Fixed bug 1052356 - ImmutableField no longer triggers on fields which are assigned to in a constructor's try statement.

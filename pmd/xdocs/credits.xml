@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Wouter Zelle - AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Thomas Skariah - bug reports for MethodArgumentCouldBeFinal and AvoidReassigningParameters</li>
             <li>Tom Parker - bug report for MethodReturnsInternalArray, found missed case in NullAssignment, suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
             <li>Bruno Juillet - bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
@@ -59,7 +60,6 @@
             <li>Eric Olander - SingularField, SimplifyConditional fix, UseStringBufferForStringAppends, CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
             <li>Tomas Gustavsson - reported pmd-web breakage</li>
             <li>Payal Subhash - Tweaks to CSVRenderer</li>
-            <li>Wouter Zelle - initial implementation of SimplifyConditional</li>
             <li>Christophe Mourette - Reported JDK 1.3 problem with XMLRenderer</li>
 			<li>Alex Givant - caught documentation bug</li>
             <li>Luke Francl - suggested UnnecessaryParentheses rule, numerous <b>high quality</b> feature suggestions and bug reports</li>
