@@ -71,6 +71,17 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals(4, occ.getLocation().getBeginLine());
     }
 
+    public void testTypesAreRecorded() {
+        parseCode(TEST1);
+        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        Map vars = ((ASTVariableDeclaratorId)nodes.get(0)).getScope().getVariableDeclarations();
+        NameDeclaration decl = (NameDeclaration)vars.keySet().iterator().next();
+        
+        List usages = (List)vars.get(decl);
+        NameOccurrence occ = (NameOccurrence)usages.get(0);
+        assertEquals(4, occ.getLocation().getBeginLine());
+    }
+
     public static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +

@@ -7,6 +7,9 @@ import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Dimensionable;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.ast.ASTReferenceType;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
 
@@ -24,6 +27,19 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     public boolean isExceptionBlockParameter() {
         return ((ASTVariableDeclaratorId) node).isExceptionBlockParameter();
+    }
+
+    public boolean isPrimitiveType() {
+        Node parent = node.jjtGetParent().jjtGetParent();
+        return parent.jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimitiveType;
+    }
+
+    /**
+     * Note that an array of primitive types (int[]) is a reference type.
+     */
+    public boolean isReferenceType() {
+        Node parent = node.jjtGetParent().jjtGetParent();
+        return parent.jjtGetChild(0).jjtGetChild(0) instanceof ASTReferenceType;
     }
 
     public AccessNode getAccessNodeParent() {

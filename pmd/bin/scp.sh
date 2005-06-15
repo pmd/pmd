@@ -1,5 +1,6 @@
 #!/bin/bash
 
+PATH=/usr/local/java/bin/:$PATH
 ANT_OPTS=-Xmx512m
 PATH=$MAVEN_HOME/bin:$PATH
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd

@@ -34,6 +34,24 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
         assertTrue(decl.isExceptionBlockParameter());
     }
 
+    public void testIsArray() {
+        parseCode(TEST3);
+        VariableNameDeclaration decl = (VariableNameDeclaration)((ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        assertTrue(decl.isArray());
+    }
+
+    public void testPrimitiveType() {
+        parseCode(TEST1);
+        VariableNameDeclaration decl = (VariableNameDeclaration)((ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        assertTrue(decl.isPrimitiveType());
+    }
+
+    public void testArrayIsReferenceType() {
+        parseCode(TEST3);
+        VariableNameDeclaration decl = (VariableNameDeclaration)((ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        assertTrue(decl.isReferenceType());
+    }
+
     public static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
@@ -45,6 +63,13 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
     "  try {} catch(Exception e) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  int[] x;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }
