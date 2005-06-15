@@ -70,9 +70,16 @@ public interface Scope {
     ClassScope getEnclosingClassScope();
 
     /**
-     * Goes searching up the tree for this scope's enclosing ClassScope
+     * Goes searching up the tree for this scope's enclosing SourceFileScope
      * This is handy if you're buried down in a LocalScope and need to
-     * hop up to the ClassScope to find a method name.
+     * hop up to the SourceFileScope to find a class name.
      */
     SourceFileScope getEnclosingSourceFileScope();
+
+    /**
+     * Goes searching up the tree for this scope's enclosing SourceFileScope
+     * This is handy if you're buried down in a LocalScope and need to
+     * hop up to the MethodScope to find a method parameter.
+     */
+    MethodScope getEnclosingMethodScope();
 }

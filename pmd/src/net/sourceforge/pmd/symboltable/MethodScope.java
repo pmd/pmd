@@ -21,6 +21,10 @@ public class MethodScope extends AbstractScope {
         this.node = node;
     }
 
+    public MethodScope getEnclosingMethodScope() {
+        return this;
+    }
+
     public Map getVariableDeclarations() {
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
         Applier.apply(f, variableNames.keySet().iterator());

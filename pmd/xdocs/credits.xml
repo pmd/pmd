@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Tor Norbye - Suggested CompareObjectsWithEquals</li>
             <li>Wouter Zelle - AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Thomas Skariah - bug reports for MethodArgumentCouldBeFinal and AvoidReassigningParameters</li>
             <li>Tom Parker - bug report for MethodReturnsInternalArray, found missed case in NullAssignment, suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>

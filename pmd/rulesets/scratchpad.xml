@@ -7,6 +7,7 @@ These are new rules that are still in progress
   </description>
 
 
+    <!--
     <rule name="UselessAssignment"
         message="The assignment to {0} is never used." dfa="true"
         class="net.sourceforge.pmd.rules.UselessAssignment">
@@ -29,6 +30,28 @@ public class Foo {
 ]]>
     </example>
   </rule>
+
+  -->
+
+    <rule  name="CompareObjectsWithEquals"
+      message="Use equals() to compare object references."
+      class="net.sourceforge.pmd.rules.design.CompareObjectsWithEquals">
+      <description>
+      Use equals() to compare object references; don't compare them with ==.
+      </description>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+    class Foo {
+     boolean bar(String a, String b) {
+      return a == b;
+     }
+    }
+
+    ]]>
+      </example>
+    </rule>
+    
 
 
     <rule name="FooRule"

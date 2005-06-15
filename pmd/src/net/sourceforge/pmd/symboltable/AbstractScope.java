@@ -11,12 +11,17 @@ public abstract class AbstractScope implements Scope {
     private Scope parent;
 
     public Map getClassDeclarations() {
-        throw new RuntimeException("Hm, AbstractScope.getClassDeclarations() was invoked.  That shouldn't happen... bug.");
+        throw new RuntimeException("AbstractScope.getClassDeclarations() was invoked.  That shouldn't happen... bug.");
+    }
+
+    public MethodScope getEnclosingMethodScope() {
+        return parent.getEnclosingMethodScope();
     }
 
     public ClassScope getEnclosingClassScope() {
         return parent.getEnclosingClassScope();
     }
+
     public SourceFileScope getEnclosingSourceFileScope() {
         return parent.getEnclosingSourceFileScope();
     }

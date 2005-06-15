@@ -7,10 +7,12 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.MethodScope;
 
 import java.util.List;
 import java.util.Map;
@@ -80,6 +82,15 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals("Bar", decl.getTypeImage());
     }
 
+    public void testgetEnclosingMethodScope() {
+        parseCode(TEST4);
+        ASTLocalVariableDeclaration node = (ASTLocalVariableDeclaration)acu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
+        LocalScope scope = (LocalScope)node.getScope();
+        MethodScope ms  = scope.getEnclosingMethodScope();
+
+    }
+
+
     public static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
@@ -102,4 +113,10 @@ public class LocalScopeTest extends STBBaseTst {
     "  x++;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
+
+    public static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void foo(String x) { int y; }" + PMD.EOL +
+    "}";
+
 }

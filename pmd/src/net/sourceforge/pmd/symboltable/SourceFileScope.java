@@ -23,6 +23,10 @@ public class SourceFileScope extends AbstractScope implements Scope  {
         throw new RuntimeException("getEnclosingClassScope() called on SourceFileScope");
     }
 
+    public MethodScope getEnclosingMethodScope() {
+        throw new RuntimeException("getEnclosingMethodScope() called on SourceFileScope");
+    }
+
     public String getPackageName() {
         return packageImage;
     }
