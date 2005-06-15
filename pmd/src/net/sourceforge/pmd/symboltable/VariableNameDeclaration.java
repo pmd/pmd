@@ -31,24 +31,21 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isPrimitiveType() {
-        Node parent = node.jjtGetParent().jjtGetParent();
-        return parent.jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimitiveType;
+        return getAccessNodeParent().jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimitiveType;
     }
 
     public String getTypeImage() {
-        Node parent = node.jjtGetParent().jjtGetParent();
         if (isPrimitiveType()) {
-            return ((SimpleNode)(parent.jjtGetChild(0).jjtGetChild(0))).getImage();
+            return ((SimpleNode)(getAccessNodeParent().jjtGetChild(0).jjtGetChild(0))).getImage();
         }
-        return ((SimpleNode)parent.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage();
+        return ((SimpleNode)getAccessNodeParent().jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage();
     }
 
     /**
      * Note that an array of primitive types (int[]) is a reference type.
      */
     public boolean isReferenceType() {
-        Node parent = node.jjtGetParent().jjtGetParent();
-        return parent.jjtGetChild(0).jjtGetChild(0) instanceof ASTReferenceType;
+        return getAccessNodeParent().jjtGetChild(0).jjtGetChild(0) instanceof ASTReferenceType;
     }
 
     public AccessNode getAccessNodeParent() {

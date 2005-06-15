@@ -31,6 +31,9 @@ public class RuleSet {
 	 * @param rule the rule to be added
 	 */
     public void addRule(Rule rule) {
+        if (rule == null) {
+            throw new RuntimeException("Null Rule reference added to a RuleSet; that's a bug somewhere in PMD");
+        }
         rules.add(rule);
     }
 

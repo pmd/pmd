@@ -64,6 +64,12 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
         assertEquals("String", decl.getTypeImage());
     }
 
+    public void testParamTypeImage() {
+        parseCode(TEST5);
+        VariableNameDeclaration decl = (VariableNameDeclaration)((ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        assertEquals("String", decl.getTypeImage());
+    }
+
     public static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
@@ -90,5 +96,9 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
     " void foo() {" + PMD.EOL +
     "  String x;" + PMD.EOL +
     " }" + PMD.EOL +
+    "}";
+    public static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " void foo(String x) {}" + PMD.EOL +
     "}";
 }
