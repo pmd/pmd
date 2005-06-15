@@ -19,6 +19,7 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
            new TestDescriptor(TEST1, "simple failure with method params", 1, rule),
            new TestDescriptor(TEST2, "primitives are ok", 0, rule),
            new TestDescriptor(TEST3, "skip nulls", 0, rule),
+           new TestDescriptor(TEST4, "missed hit - qualified names.  that's ok, we can't resolve the types yet, so better to skip this for now", 0, rule),
        });
     }
 
@@ -40,6 +41,13 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
     "public class Foo {" + PMD.EOL +
     " boolean bar(int a, int b) {" + PMD.EOL +
     "  return a == null || null == b;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " boolean bar(int a, int b) {" + PMD.EOL +
+    "  return a.foo == b.foo;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

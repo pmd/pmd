@@ -17,17 +17,13 @@ import java.util.List;
 
 public class CompareObjectsWithEquals extends AbstractRule {
 
-    public Object visit(ASTEqualityExpression node, Object data) {
-        // skip if either child is not a name
-        SimpleNode n = (SimpleNode)node.jjtGetChild(0);
-        Node n1 = n.jjtGetChild(0);
-        if (!(n1.jjtGetNumChildren() > 0 && n1.jjtGetChild(0) instanceof ASTName)) {
-            return data;
-        }
+    private boolean hasName(Node n) {
+        return n.jjtGetNumChildren() > 0 && n.jjtGetChild(0) instanceof ASTName;
+    }
 
-        n = (SimpleNode)node.jjtGetChild(1);
-        n1 = n.jjtGetChild(0);
-        if (!(n1.jjtGetNumChildren() > 0 && n1.jjtGetChild(0) instanceof ASTName)) {
+    public Object visit(ASTEqualityExpression node, Object data) {
+        // skip if either child is not a simple name
+        if (!hasName(((SimpleNode)node.jjtGetChild(0)).jjtGetChild(0)) || !hasName(((SimpleNode)node.jjtGetChild(1)).jjtGetChild(0))) {
             return data;
         }
 
