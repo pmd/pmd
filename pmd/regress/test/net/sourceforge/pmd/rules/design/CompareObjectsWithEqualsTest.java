@@ -46,8 +46,8 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
 
     private static final String TEST4 =
     "public class Foo {" + PMD.EOL +
-    " boolean bar(int a, int b) {" + PMD.EOL +
-    "  return a.foo == b.foo;" + PMD.EOL +
+    " boolean bar(Foo b) {" + PMD.EOL +
+    "  return this.b == b.foo;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
