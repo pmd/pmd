@@ -87,7 +87,7 @@ public class LocalScopeTest extends STBBaseTst {
         ASTLocalVariableDeclaration node = (ASTLocalVariableDeclaration)acu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
         LocalScope scope = (LocalScope)node.getScope();
         MethodScope ms  = scope.getEnclosingMethodScope();
-
+        assertEquals(2, ms.getVariableDeclarations().size());
     }
 
 
@@ -116,7 +116,7 @@ public class LocalScopeTest extends STBBaseTst {
 
     public static final String TEST4 =
     "public class Foo {" + PMD.EOL +
-    " void foo(String x) { int y; }" + PMD.EOL +
+    " void foo(String x, String z) { int y; }" + PMD.EOL +
     "}";
 
 }
