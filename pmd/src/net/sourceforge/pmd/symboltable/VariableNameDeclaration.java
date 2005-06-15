@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.Dimensionable;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTReferenceType;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
 
@@ -32,6 +33,14 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     public boolean isPrimitiveType() {
         Node parent = node.jjtGetParent().jjtGetParent();
         return parent.jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimitiveType;
+    }
+
+    public String getTypeImage() {
+        Node parent = node.jjtGetParent().jjtGetParent();
+        if (isPrimitiveType()) {
+            return ((SimpleNode)(parent.jjtGetChild(0).jjtGetChild(0))).getImage();
+        }
+        return ((SimpleNode)parent.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage();
     }
 
     /**

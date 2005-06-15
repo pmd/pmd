@@ -52,6 +52,18 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
         assertTrue(decl.isReferenceType());
     }
 
+    public void testPrimitiveTypeImage() {
+        parseCode(TEST3);
+        VariableNameDeclaration decl = (VariableNameDeclaration)((ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        assertEquals("int", decl.getTypeImage());
+    }
+
+    public void testRefTypeImage() {
+        parseCode(TEST4);
+        VariableNameDeclaration decl = (VariableNameDeclaration)((ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        assertEquals("String", decl.getTypeImage());
+    }
+
     public static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
@@ -70,6 +82,13 @@ public class VariableNameDeclarationTest extends STBBaseTst  {
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +
     "  int[] x;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  String x;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }

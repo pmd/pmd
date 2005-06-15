@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.List;
 import java.util.Map;
@@ -75,11 +76,8 @@ public class LocalScopeTest extends STBBaseTst {
         parseCode(TEST1);
         List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
         Map vars = ((ASTVariableDeclaratorId)nodes.get(0)).getScope().getVariableDeclarations();
-        NameDeclaration decl = (NameDeclaration)vars.keySet().iterator().next();
-        
-        List usages = (List)vars.get(decl);
-        NameOccurrence occ = (NameOccurrence)usages.get(0);
-        assertEquals(4, occ.getLocation().getBeginLine());
+        VariableNameDeclaration decl = (VariableNameDeclaration)vars.keySet().iterator().next();
+        assertEquals("Bar", decl.getTypeImage());
     }
 
     public static final String TEST1 =
