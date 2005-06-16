@@ -27,6 +27,12 @@ public class CompareObjectsWithEquals extends AbstractRule {
             return data;
         }
 
+        // skip if either is a qualified name
+        if (((SimpleNode)node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf(".") != -1
+        || ((SimpleNode)node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf(".") != -1) {
+            return data;
+        }
+
         // skip static initializers... missing some cases here
         if (!node.getParentsOfType(ASTInitializer.class).isEmpty()) {
             return data;
