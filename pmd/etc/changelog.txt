@@ -7,6 +7,7 @@ Fixed bug 1215854 - Package/class/method names are now filled in whenever possib
 Fixed bug 1209719 - MethodArgumentCouldBeFinal no longer triggers on arguments which are modified using postfix or prefix expressions.  A bug in AvoidReassigningParameters was also fixed under the same bug id.
 Fixed bug 1188386 - MethodReturnsInternalArray no longer flags returning a local array declaration.
 Fixed bug 1172137 - PMD no longer locks up when generating a control flow graph for if statements with labelled breaks.
+Fixed bug 1221094 - JUnitTestsShouldContainAsserts no longer flags static methods.
 Implemented RFE 1188604 - AvoidThrowingCertainExceptionTypes has been split into AvoidThrowingRawExceptionTypes and AvoidThrowingNullPointerException.
 Implemented RFE 1188369 - UnnecessaryBooleanAssertion now checks for things like 'assertTrue(!foo)'.  These should be changed to 'assertFalse(foo)' for clarity.
 Implemented RFE 1199622 - UnusedFormalParameter now defaults to only checking private methods unless a 'checkall' property is set.

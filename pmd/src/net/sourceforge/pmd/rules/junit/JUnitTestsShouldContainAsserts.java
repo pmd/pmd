@@ -9,7 +9,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
@@ -26,24 +25,20 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
         return super.visit(node, data);
     }
 
-    public Object visit(ASTMethodDeclaration declaration, Object data) {
-        if (!declaration.isPublic() || declaration.isAbstract() || declaration.isNative()) {
+    public Object visit(ASTMethodDeclaration method, Object data) {
+        if (!method.isPublic() || method.isAbstract() || method.isNative() || method.isStatic()) {
             return data; // skip various inapplicable method variations
         }
 
-        if (declaration.jjtGetNumChildren()==3 && ((ASTResultType) declaration.jjtGetChild(0)).isVoid() && declaration.getMethodName().startsWith("test"))  {
-            if (!hasAssertStatement((ASTBlock) declaration.jjtGetChild(2))) {
+        if (method.jjtGetNumChildren()==3 && ((ASTResultType) method.jjtGetChild(0)).isVoid() && method.getMethodName().startsWith("test"))  {
+            if (!containsAssert((ASTBlock) method.jjtGetChild(2), false)) {
                 RuleContext ctx = (RuleContext)data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, declaration));
+                ctx.getReport().addRuleViolation(createRuleViolation(ctx, method));
             }
         }
 		return data;
 	}
-	
-    private boolean hasAssertStatement(ASTBlock block) {
-        return containsAssert(block, false);
-	}
-	
+
     private boolean containsAssert(Node n, boolean assertFound) {
         if (!assertFound) {
             if (n instanceof ASTStatementExpression) {
@@ -71,8 +66,7 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
                 && expression.jjtGetChild(0) instanceof ASTPrimaryExpression
                 ) {
             ASTPrimaryExpression pe = (ASTPrimaryExpression) expression.jjtGetChild(0);
-            if (pe.jjtGetNumChildren()> 0
-                    && pe.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
+            if (pe.jjtGetNumChildren()> 0 && pe.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
                 ASTPrimaryPrefix pp = (ASTPrimaryPrefix) pe.jjtGetChild(0);
                 if (pp.jjtGetNumChildren()>0 && pp.jjtGetChild(0) instanceof ASTName) {
                     ASTName n = (ASTName) pp.jjtGetChild(0);
