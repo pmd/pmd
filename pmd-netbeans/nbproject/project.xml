@@ -5,6 +5,7 @@
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/2">
             <code-name-base>pmd</code-name-base>
             <path>pmd-netbeans</path>
+            <standalone/>
             <module-dependencies>
                 <dependency>
                     <code-name-base>org.netbeans.api.java</code-name-base>

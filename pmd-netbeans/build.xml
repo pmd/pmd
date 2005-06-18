@@ -1,20 +1,17 @@
 <project basedir="." default="nbm" name="PMD netbeans module">
 
-    <property file="nbproject/suite-locator.properties"/>
-    <property file="${suite.properties}"/>
-    <fail unless="netbeans.dest.dir">You must set suite.properties to a file defining netbeans.dest.dir</fail>
-    <import file="${harness.dir}/build.xml"/>
+    <import file="nbproject/build-impl.xml"/>
 
     <property name="pmd.jar" value="pmd-3.1.jar"/>
-    <property name="VERSION" value="1.1"/>
+    <property name="VERSION" value="1.2"/>
 
     <property file="build.ant.properties"/>
 
     <property name="keystore" value="${user.home}/.pmdkeystore"/>
         
     <target name="netbeans-extra" depends="init">
-        <mkdir dir="${netbeans.dest.dir}/${cluster.dir}/modules/ext"/>
-        <copy todir="${netbeans.dest.dir}/${cluster.dir}/modules/ext">
+        <mkdir dir="${cluster}/modules/ext"/>
+        <copy todir="${cluster}/modules/ext">
           <fileset dir="lib">
             <include name="${pmd.jar}"/>
             <include name="saxpath-1.0-fcs.jar"/>
@@ -30,7 +27,6 @@
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 				<include name="manifest.mf"/>
-				<include name="pmdsuite.properties.template"/>
 				<include name="build.xml"/>
 				<include name="nbproject/*.*"/>
 				<include name="src/**/*"/>
