@@ -93,6 +93,7 @@ public class RunPMDAction extends CookieAction {
 	protected void initialize() {
 		super.initialize();
 		EditorChangeListener.initialize();
+                putValue("noIconInMenu", Boolean.TRUE);
 	}
 	/**
 	 * Gets the name of this action
@@ -236,6 +237,8 @@ public class RunPMDAction extends CookieAction {
 			catch( PMDException e ) {
 				Fault fault = new Fault( 1, name, e );
 				ErrorManager.getDefault().log(ErrorManager.ERROR, "PMD threw exception " + e.toString());
+				ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+                                // XXX why to report this ?
 				list.add( fault );
 				FaultRegistry.getInstance().registerFault( fault, dataobject );
 			}
