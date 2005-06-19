@@ -32,7 +32,25 @@ public class Foo {
   </rule>
 
   -->
-    
+
+  <rule name="UnusedFormalParameter"
+        message="Avoid unused formal parameters such as ''{0}''"
+        class="net.sourceforge.pmd.rules.UnusedFormalParameterRule">
+    <description>
+Avoid passing parameters to methods and then not using those parameters.
+    </description>
+      <priority>3</priority>
+
+    <example>
+<![CDATA[
+public class Foo {
+ private void bar(String howdy) {
+  // howdy is not used
+ }
+]]>
+    </example>
+  </rule>    
+
 
 
     <rule name="FooRule"
