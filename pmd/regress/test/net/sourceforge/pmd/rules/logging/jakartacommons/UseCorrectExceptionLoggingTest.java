@@ -11,7 +11,7 @@ public class UseCorrectExceptionLoggingTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "UseCorrectExceptionLogging");
+        rule = findRule("rulesets/logging-jakarta-commons.xml", "UseCorrectExceptionLogging");
     }
 
     public void testAll() {

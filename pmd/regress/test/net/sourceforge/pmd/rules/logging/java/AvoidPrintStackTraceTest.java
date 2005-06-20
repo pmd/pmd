@@ -11,7 +11,7 @@ public class AvoidPrintStackTraceTest extends SimpleAggregatorTst{
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/newrules.xml", "AvoidPrintStackTrace");
+        rule = findRule("rulesets/logging-java.xml", "AvoidPrintStackTrace");
     }
 
     public void testAll() {

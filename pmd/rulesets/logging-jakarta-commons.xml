@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<ruleset name="Java Logging Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
+  <description>
+The Jakarta Commons Logging ruleset contains a collection of rules that find questionable usages of that framework.
+  </description>
+
+	<rule name="UseCorrectExceptionLogging" message="Use the correct logging statement for logging exceptions" class="net.sourceforge.pmd.rules.XPathRule">
+		<description>
+		To make sure the full stacktrace is printed out, use the logging statement with 2 arguments: a String and a Throwable.
+    </description>
+		<properties>
+			<property name="xpath">
+				<value><![CDATA[
+//Block/BlockStatement/Statement
+ /StatementExpression/PrimaryExpression
+ /PrimaryPrefix
+ /Name
+  [@Image='_LOG.error']
+  [../../PrimarySuffix/Arguments[@ArgumentCount='1']
+        ]]></value>
+			</property>
+		</properties>
+		<example><![CDATA[
+private static final Log _LOG = LogFactory.getLog( Main.class );
+...
+try {
+}
+catch( Exception e ) {
+   _LOG.error( e ); //Wrong!
+}
+catch( OtherException oe ) {
+   _LOG.error( oe.getMessage(), oe ); //Correct
+}
+]]></example>
+	</rule>
+
+
+</ruleset>
+
