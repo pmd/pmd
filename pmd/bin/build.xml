@@ -5,7 +5,7 @@
 <property name="dir.build" value="build\"/>
 <property name="dir.rulesets" value="rulesets\"/>
 <property name="dir.regress" value="regress\"/>
-<property name="version" value="3.1"/>
+<property name="version" value="3.2"/>
 <property name="keystore" value="/home/tom/myKeyStore"/>
 
 <path id="dependencies.path">
