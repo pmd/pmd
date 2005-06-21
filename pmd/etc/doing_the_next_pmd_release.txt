@@ -1,7 +1,6 @@
 update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.2.jar
 update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-3.2
 update the release date in the changelog
-move rules from "newrules.xml" into a real ruleset file, change unit tests to reflect new location
 update rulesets/rulesets.properties - add any new ruleset file names
 update release number and tag name in project.xml
 
