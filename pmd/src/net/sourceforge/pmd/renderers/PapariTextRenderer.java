@@ -48,7 +48,7 @@ public class PapariTextRenderer implements Renderer {
     /**
      * Directory from where java was invoked.
      */
-    private String pwd = null;
+    private String pwd;
 
     private String yellowBold = "";
     private String whiteBold = "";
@@ -65,7 +65,7 @@ public class PapariTextRenderer implements Renderer {
      * <p/>
      * btw, is it possible to do this on windows (ie; console colors)?
      */
-    private void initColors() {
+    private void initializeColorsIfSupported() {
         if (System.getProperty("pmd.color") != null &&
                 !(System.getProperty("pmd.color").equals("0") || System.getProperty("pmd.color").equals("false"))) {
             this.yellowBold = "\u001B[1;33m";
@@ -80,58 +80,46 @@ public class PapariTextRenderer implements Renderer {
 
     public String render(Report report) {
         StringBuffer buf = new StringBuffer(PMD.EOL);
+        initializeColorsIfSupported();
+        String lastFile = null;
+        int numberOfErrors = 0;
+        int numberOfWarnings = 0;
 
-        // init colors, if supported
-        this.initColors();
-
-        // last file
-        String fileName = null;
-
-        // keeps track of violations and errors
-        int errors = 0;
-        int warnings = 0;
-
-        // iterating rule violations
         for (Iterator i = report.iterator(); i.hasNext();) {
-            warnings++;
-
+            numberOfWarnings++;
             RuleViolation rv = (RuleViolation) i.next();
-            if (!rv.getFilename().equals(fileName)) {
-                fileName = rv.getFilename();
-                buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(fileName) + this.colorReset + PMD.EOL);
+            if (!rv.getFilename().equals(lastFile)) {
+                lastFile = rv.getFilename();
+                buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
             }
-
-            buf.append(this.green + "    src:  " + this.cyan + fileName.substring(fileName.lastIndexOf(File.separator) + 1) + this.colorReset + ":" + this.cyan + rv.getLine() + ":" + rv.getLine2() + this.colorReset + PMD.EOL);
+            buf.append(this.green + "    src:  " + this.cyan + lastFile.substring(lastFile.lastIndexOf(File.separator) + 1) + this.colorReset + ":" + this.cyan + rv.getLine() + ":" + rv.getLine2() + this.colorReset + PMD.EOL);
             buf.append(this.green + "    rule: " + this.colorReset + rv.getRule().getName() + PMD.EOL);
             buf.append(this.green + "    msg:  " + this.colorReset + rv.getDescription() + PMD.EOL);
-            buf.append(this.green + "    code: " + this.colorReset + this.getLine(fileName, rv.getLine()) + PMD.EOL + PMD.EOL);
-
+            buf.append(this.green + "    code: " + this.colorReset + this.getLine(lastFile, rv.getLine()) + PMD.EOL + PMD.EOL);
         }
-        Map summary = report.getCountSummary();
         buf.append(PMD.EOL + PMD.EOL);
         buf.append("Summary:" + PMD.EOL + PMD.EOL);
+        Map summary = report.getCountSummary();
         for (Iterator i = summary.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             buf.append(key + " : " + String.valueOf(((Integer) summary.get(key)).intValue()) + PMD.EOL);
         }
 
-        // iterating errors
         for (Iterator i = report.errors(); i.hasNext();) {
-            errors++;
-
+            numberOfErrors++;
             Report.ProcessingError error = (Report.ProcessingError) i.next();
-            if (error.getFile().equals(fileName)) {
-                fileName = error.getFile();
-                buf.append(this.redBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(fileName) + this.colorReset + PMD.EOL);
+            if (error.getFile().equals(lastFile)) {
+                lastFile = error.getFile();
+                buf.append(this.redBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
             }
             buf.append(this.green + "    err:  " + this.cyan + error.getMsg() + this.colorReset + PMD.EOL + PMD.EOL);
         }
 
         // adding error message count, if any
-        if (errors > 0) {
-            buf.append(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + warnings + this.colorReset + PMD.EOL);
+        if (numberOfErrors > 0) {
+            buf.append(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfWarnings + this.colorReset + PMD.EOL);
         }
-        buf.append(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + warnings + this.colorReset + PMD.EOL);
+        buf.append(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings + this.colorReset + PMD.EOL);
 
         return buf.toString();
     }

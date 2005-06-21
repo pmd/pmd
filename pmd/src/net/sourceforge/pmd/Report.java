@@ -59,7 +59,7 @@ public class Report {
         Map summary = new HashMap();
         for (Iterator iter = violationTree.iterator(); iter.hasNext();) {
             RuleViolation rv = (RuleViolation) iter.next();
-            String key = rv.getPackageName() + "." + rv.getClassName();
+            String key = (rv.getPackageName()  == "" ? "" : (rv.getPackageName() + ".")) + rv.getClassName();
             Object o = summary.get(key);
             if (o == null) {
                 Integer value = new Integer(1);
