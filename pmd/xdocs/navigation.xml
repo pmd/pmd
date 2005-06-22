@@ -40,26 +40,26 @@
       <item name="Run PMD on a Sourceforge project" href="/scoreboard.html" />
     </menu>
     <menu name="Rule Sets">
-      <item name="Index"  href="/rules/index.html"/>
-      <item name="Basic" href="/rules/basic.html" />
-      <item name="Naming" href="/rules/naming.html" />
-      <item name="Unused Code" href="/rules/unusedcode.html" />
-      <item name="Design" href="/rules/design.html" />
-      <item name="Import Statements" href="/rules/imports.html" />
-      <item name="JUnit Tests" href="/rules/junit.html" />
-      <item name="Strings" href="/rules/strings.html" />
-      <item name="Braces" href="/rules/braces.html" />
-      <item name="Code Size" href="/rules/codesize.html" />
-      <item name="Javabeans" href="/rules/javabeans.html" />
-      <item name="Finalizers" href="/rules/finalizers.html" />
-      <item name="Clone" href="/rules/clone.html" />
-      <item name="Coupling" href="/rules/coupling.html" />
-      <item name="Strict Exceptions" href="/rules/strictexception.html" />
-      <item name="Controversial" href="/rules/controversial.html" />
-      <item name="Logging (Java)" href="/rules/logging-java.html" />
-      <item name="Logging (Jakarta)" href="/rules/logging-jakarta-commons.html" />
-      <item name="Optimizations" href="/rules/optimizations.html" />
-      <item name="Sun Security" href="/rules/sunsecure.html" />
+        <item name="Index"  href="/rules/index.html"/>
+        <item name="Basic" href="/rules/basic.html" />
+        <item name="Braces" href="/rules/braces.html" />
+        <item name="Code Size" href="/rules/codesize.html" />
+        <item name="Clone" href="/rules/clone.html" />
+        <item name="Controversial" href="/rules/controversial.html" />
+        <item name="Coupling" href="/rules/coupling.html" />
+        <item name="Design" href="/rules/design.html" />
+        <item name="Finalizers" href="/rules/finalizers.html" />
+        <item name="Import Statements" href="/rules/imports.html" />
+        <item name="Javabeans" href="/rules/javabeans.html" />
+        <item name="JUnit Tests" href="/rules/junit.html" />
+        <item name="Logging (Java)" href="/rules/logging-java.html" />
+        <item name="Logging (Jakarta)" href="/rules/logging-jakarta-commons.html" />
+        <item name="Naming" href="/rules/naming.html" />
+        <item name="Optimizations" href="/rules/optimizations.html" />
+        <item name="Strict Exceptions" href="/rules/strictexception.html" />
+        <item name="Strings" href="/rules/strings.html" />
+        <item name="Sun Security" href="/rules/sunsecure.html" />
+        <item name="Unused Code" href="/rules/unusedcode.html" />
     </menu>
   </body>
 </project>
