@@ -140,14 +140,25 @@ public class RuleSetFactoryTest extends TestCase {
         assertEquals("TestMessageOverride", r.getMessage());
     }
 
+    public void testOverrideMessageOneElem() {
+        Rule r = loadFirstRule(REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM);
+        assertEquals("TestMessageOverride", r.getMessage());
+    }
+
     private static final String REF_OVERRIDE_ORIGINAL_NAME =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             " <description>testdesc</description>" + PMD.EOL +
             " <rule " + PMD.EOL +
-            "  ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" " + PMD.EOL +
-            "  message=\"TestMessageOverride\"> " + PMD.EOL +
+            "  ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"> " + PMD.EOL +
             " </rule>" + PMD.EOL +
+            "</ruleset>";
+
+    private static final String REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM =
+            "<?xml version=\"1.0\"?>" + PMD.EOL +
+            "<ruleset name=\"test\">" + PMD.EOL +
+            " <description>testdesc</description>" + PMD.EOL +
+            " <rule ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"/> " + PMD.EOL +
             "</ruleset>";
 
     private static final String REF_OVERRIDE =

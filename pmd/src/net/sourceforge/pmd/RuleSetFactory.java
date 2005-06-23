@@ -260,10 +260,8 @@ public class RuleSetFactory {
         RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
         Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
 
-        if (ruleNode.getFirstChild() != null) {
-            OverrideParser p = new OverrideParser((Element)ruleNode);
-            p.overrideAsNecessary(externalRule);
-        }
+        OverrideParser p = new OverrideParser((Element)ruleNode);
+        p.overrideAsNecessary(externalRule);
 
         ruleSet.addRule(externalRule);
     }
