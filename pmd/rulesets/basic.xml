@@ -407,7 +407,9 @@ not
     [parent::MethodDeclaration/ResultType[@Void='true']
     ]
    ]
-  ] ]]>
+  ]
+ ]
+ ]]>
               </value>
           </property>
       </properties>

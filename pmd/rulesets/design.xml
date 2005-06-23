@@ -408,7 +408,7 @@ public class MyClass {
 <![CDATA[
 //SwitchStatement
  [not(SwitchLabel[position() = last()][count(*) = 0])]
- [SwitchLabel[count(*) = 0]
+ [SwitchLabel[count(*) = 0]]
 ]]>
                  </value>
              </property>
@@ -1086,7 +1086,7 @@ ConditionalAndExpression
 InstanceOfExpression
  [PrimaryExpression
   //Name/@Image = ancestor::ConditionalAndExpression
-   /EqualityExpression//PrimaryPrefix/Name/@Image]]
+   /EqualityExpression//PrimaryPrefix/Name/@Image]]]
  ]]>
                   </value>
               </property>

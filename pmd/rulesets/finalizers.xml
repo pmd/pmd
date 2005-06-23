@@ -45,8 +45,10 @@ These rules deal with different problems that can occur with finalizers.
 <![CDATA[
    //MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
        /Block[count(BlockStatement)=1]
-         /BlockStatement[Statement/StatementExpression/PrimaryExpression
+         /BlockStatement[
+           Statement/StatementExpression/PrimaryExpression
           /PrimaryPrefix[@Image="finalize"]
+          ]
 ]]>
                 </value>
             </property>

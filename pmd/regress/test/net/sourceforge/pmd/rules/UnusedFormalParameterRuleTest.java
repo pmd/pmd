@@ -24,7 +24,7 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST3, "assignment to param", 0, rule),
            new TestDescriptor(TEST4, "interface", 0, rule),
            new TestDescriptor(TEST5, "don't flag public methods by default", 0, rule),
-           new TestDescriptor(TEST6, "skip native methods", 0, rule),
+           new TestDescriptor(TEST6, "skip native/abstract methods", 0, rule),
            new TestDescriptor(TEST7, "anonymous inner class npe", 0, rule)
        });
     }
@@ -71,6 +71,7 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
     private static final String TEST6 =
     "class Foo {" + PMD.EOL +
     " public native void bar(int s);" + PMD.EOL +
+    " protected abstract void foo(Long s);" + PMD.EOL +
     "}";
 
     private static final String TEST7 =

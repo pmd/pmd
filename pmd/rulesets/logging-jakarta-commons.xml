@@ -18,7 +18,7 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
  /PrimaryPrefix
  /Name
   [@Image='_LOG.error']
-  [../../PrimarySuffix/Arguments[@ArgumentCount='1']
+  [../../PrimarySuffix/Arguments[@ArgumentCount='1']]
         ]]></value>
 			</property>
 		</properties>

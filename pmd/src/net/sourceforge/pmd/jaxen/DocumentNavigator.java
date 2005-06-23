@@ -179,7 +179,7 @@ public class DocumentNavigator extends DefaultNavigator {
     /* (non-Javadoc)
      * @see org.jaxen.Navigator#parseXPath(java.lang.String)
      */
-    public XPath parseXPath(String arg0) throws SAXPathException {
+    public XPath parseXPath(String arg0) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -190,17 +190,15 @@ public class DocumentNavigator extends DefaultNavigator {
     public Object getParentNode(Object arg0) {
         if (arg0 instanceof Node) {
             return ((Node) arg0).jjtGetParent();
-        } else {
-            return ((Attribute) arg0).getParent();
         }
+        return ((Attribute) arg0).getParent();
     }
 
     /* (non-Javadoc)
      * @see org.jaxen.Navigator#getAttributeAxisIterator(java.lang.Object)
      */
     public Iterator getAttributeAxisIterator(Object arg0) {
-        Node contextNode = (Node) arg0;
-        return new AttributeAxisIterator(contextNode);
+        return new AttributeAxisIterator((Node) arg0);
     }
 
     /**
@@ -230,13 +228,12 @@ public class DocumentNavigator extends DefaultNavigator {
     public Iterator getParentAxisIterator(Object contextNode) {
         if (isAttribute(contextNode)) {
             return new SingleObjectIterator(((Attribute) contextNode).getParent());
+        }
+        Node parent = ((Node) contextNode).jjtGetParent();
+        if (parent != null) {
+            return new SingleObjectIterator(parent);
         } else {
-            Node parent = ((Node) contextNode).jjtGetParent();
-            if (parent != null) {
-                return new SingleObjectIterator(parent);
-            } else {
-                return EMPTY_ITERATOR;
-            }
+            return EMPTY_ITERATOR;
         }
     }
 
@@ -354,9 +351,8 @@ public class DocumentNavigator extends DefaultNavigator {
     public Object getDocumentNode(Object contextNode) {
         if (isDocument(contextNode)) {
             return contextNode;
-        } else {
-            return getDocumentNode(getParentNode(contextNode));
         }
+        return getDocumentNode(getParentNode(contextNode));
     }
 
 }

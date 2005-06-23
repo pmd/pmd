@@ -146,9 +146,9 @@ throw new Exception();
             <![CDATA[
 //AllocationExpression
  /ClassOrInterfaceType[
- @Image='Throwable' |
- @Image='Exception' |
- @Image='Error' |
+ @Image='Throwable' or
+ @Image='Exception' or
+ @Image='Error' or
  @Image='RuntimeException']
  ]]>
         </value>

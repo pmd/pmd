@@ -245,7 +245,7 @@ public MyClass() {}
    [@Image='int']
    [//MethodDeclarator
     [@Image='hashcode' or @Image='HashCode' or @Image='Hashcode']
-    [not(FormalParameters/*)]
+    [not(FormalParameters/*)]]]
 ]]>
                 </value>
             </property>
