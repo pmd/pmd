@@ -51,6 +51,10 @@ public class HTMLRenderer implements Renderer {
             d = StringUtil.replaceString(d, '&', "&amp;");
             d = StringUtil.replaceString(d, '<', "&lt;");
             d = StringUtil.replaceString(d, '>', "&gt;");
+            
+            String externalInfoUrl = rv.getRule().getExternalInfoUrl();
+            if (externalInfoUrl!=null && externalInfoUrl.length()!=0)
+                d = "<a href=\"" + externalInfoUrl + "\">" + d + "</a>";
             buf.append("<td width=\"*\">" + d + "</td>" + PMD.EOL);
 
             buf.append("</tr>" + PMD.EOL);

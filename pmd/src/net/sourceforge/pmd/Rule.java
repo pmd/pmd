@@ -18,6 +18,8 @@ public interface Rule {
     String getDescription();
 
     String getExample();
+    
+    String getExternalInfoUrl();
 
     void setName(String name);
 
@@ -30,6 +32,8 @@ public interface Rule {
     void setDescription(String description);
 
     void setExample(String example);
+    
+    void setExternalInfoUrl(String url);
 
     void apply(List astCompilationUnits, RuleContext ctx);
 

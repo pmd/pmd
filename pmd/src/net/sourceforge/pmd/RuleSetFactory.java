@@ -35,6 +35,9 @@ public class RuleSetFactory {
             if (ruleElement.hasAttribute("message")) {
                 rule.setMessage(ruleElement.getAttribute("message"));
             }
+            if (ruleElement.hasAttribute("externalInfoUrl")) {
+                rule.setExternalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
+            }
             for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
                 Node node = ruleElement.getChildNodes().item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -204,7 +207,8 @@ public class RuleSetFactory {
         rule.setName(ruleElement.getAttribute("name"));
         rule.setMessage(ruleElement.getAttribute("message"));
         rule.setRuleSetName(ruleSet.getName());
-
+        rule.setExternalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
+        
         if (ruleElement.hasAttribute("dfa") && ruleElement.getAttribute("dfa").equals("true")) {
             rule.setUsesDFA();
         }

@@ -144,7 +144,8 @@ class Foo{
 
     <rule  name="AvoidPrintStackTrace"
            message="Avoid printStackTrace(); use a logger call instead."
-           class="net.sourceforge.pmd.rules.XPathRule">
+           class="net.sourceforge.pmd.rules.XPathRule"
+		   externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace">
            <description>
            Avoid printStackTrace(); use a logger call instead.
            </description>

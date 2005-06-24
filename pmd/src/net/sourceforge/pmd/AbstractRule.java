@@ -26,6 +26,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     protected boolean include;
     protected boolean usesDFA;
     protected int priority = LOWEST_PRIORITY;
+    protected String externalInfoUrl;
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -95,6 +96,12 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         this.message = message;
     }
 
+    public String getExternalInfoUrl() {
+        return externalInfoUrl;
+    }
+    public void setExternalInfoUrl(String url) {
+        this.externalInfoUrl = url;
+    }
     /**
      * Test if rules are equals. Rules are equals if
      * 1. they have the same implementation class
@@ -236,7 +243,6 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * Gets the Image of the first parent node of type ASTClassOrInterfaceDeclaration or <code>null</code>
      *  
      * @param node the node which will be searched
-     * @return
      */
     protected final String getDeclaringType(SimpleNode  node) {
 		ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);

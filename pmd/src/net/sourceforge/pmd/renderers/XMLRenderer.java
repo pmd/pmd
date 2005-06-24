@@ -46,9 +46,10 @@ public class XMLRenderer implements Renderer {
             buf.append(" ruleset=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName());
             buf.append("\"");
-            maybeAdd(rv, "package", rv.getPackageName(), buf);
-            maybeAdd(rv, "class", rv.getClassName(), buf);
-            maybeAdd(rv, "method", rv.getMethodName(), buf);
+            maybeAdd("package", rv.getPackageName(), buf);
+            maybeAdd("class", rv.getClassName(), buf);
+            maybeAdd("method", rv.getMethodName(), buf);
+            maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl(), buf);
             buf.append(" priority=\"");
             buf.append(rv.getRule().getPriority());
             buf.append("\">");
@@ -77,7 +78,7 @@ public class XMLRenderer implements Renderer {
         return buf.toString();
     }
 
-    private void maybeAdd(RuleViolation rv, String attr, String value, StringBuffer buf) {
+    private void maybeAdd(String attr, String value, StringBuffer buf) {
         if (value != null && value.length() > 0) {
             buf.append(" " + attr +"=\"");
             StringUtil.appendXmlEscaped(buf, value);
