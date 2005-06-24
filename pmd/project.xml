@@ -23,7 +23,8 @@
   <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
   <li>Classes with high Cyclomatic Complexity measurements</li>
 </ul>
-<p>PMD has plugins for JDeveloper, Eclipse, JEdit, JBuilder, Omnicore's CodeGuide, NetBeans/Sun ONE Studio, IntelliJ IDEA, TextPad, Maven, Ant,
+You can get an overview of all the rules at the <a href="rules/index.html">Rulesets Index</a> page.
+<p>PMD has <a href="integrations.html">plugins</a> for JDeveloper, Eclipse, JEdit, JBuilder, Omnicore's CodeGuide, NetBeans/Sun ONE Studio, IntelliJ IDEA, TextPad, Maven, Ant,
 Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>.</p>
 	]]>
 	</description>
