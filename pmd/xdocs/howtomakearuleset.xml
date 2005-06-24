@@ -1,31 +1,28 @@
 <?xml version="1.0"?>
 <document>
-<properties>
-    <author email="tomcopeland@users.sourceforge.net">Tom Copeland</author>
-    <title>How to make a rule set</title>
-</properties>
-<body>
-    <section name="How to make a new rule set">
-<p>
+    <properties>
+        <author email="tomcopeland@users.sourceforge.net">Tom Copeland</author>
+        <title>How to make a rule set</title>
+    </properties>
+    <body>
+        <section name="How to make a new rule set">
+            <p>
 Say you want to pick specific rules from various rule sets and customize them.  You can do this by making your own rule set.
-</p>
-    <subsection name="Create a new ruleset.xml file">
-    <p>Use one of the current rulesets as an example.  Copy and paste
+            </p>
+            <subsection name="Create a new ruleset.xml file">
+                <p>Use one of the current rulesets as an example.  Copy and paste
     it into your new file, delete all the old rules from it, and change
     the name and description.  Like this:</p>
-    <source>
-<![CDATA[<?xml version="1.0"?>
+                <source><![CDATA[<?xml version="1.0"?>
 <ruleset name="customruleset">
   <description>
   This ruleset checks my code for bad stuff
   </description>
-</ruleset>]]>
-    </source>
-    </subsection>
-    <subsection name="Add some rule references to it">
-    <p>After you add these references it'll look something like this:</p>
-    <source>
-<![CDATA[<?xml version="1.0"?>
+</ruleset>]]></source>
+            </subsection>
+            <subsection name="Add some rule references to it">
+                <p>After you add these references it'll look something like this:</p>
+                <source><![CDATA[<?xml version="1.0"?>
 <ruleset name="customruleset">
 
   <description>
@@ -45,51 +42,67 @@ Say you want to pick specific rules from various rule sets and customize them.  
   <rule
    ref="rulesets/basic.xml/EmptyCatchBlock"
    message="Must handle exceptions">
-     <priority>2</priority>
+    <priority>2</priority>
   </rule>
 
   <!-- Note we want everything from braces.xml except the WhileLoopsMustUseBracesRule -->
   <rule ref="rulesets/braces.xml">
     <exclude name="WhileLoopsMustUseBracesRule"/>
   </rule>
-</ruleset>]]>
-    </source>
-    <p>Notice that you can customize individual referenced rules.  Everything but the
-       class of the rule can be overriden in your custom ruleset.</p>
-    </subsection>
-        <subsection name="Excluding rules from a ruleset">
-            <p>You can also make a custom ruleset that excludes rules, like this:</p>
-            <source>
-<![CDATA[<?xml version="1.0"?>
+</ruleset>]]></source>
+                <p>Notice that you can customize individual referenced rules.  Everything but the
+       class of the rule can be overridden in your custom ruleset.</p>
+            </subsection>
+            <subsection name="Excluding rules from a ruleset">
+                <p>You can also make a custom ruleset that excludes rules, like this:</p>
+                <source><![CDATA[<?xml version="1.0"?>
 <ruleset name="mybraces">
- <description>Just the braces rules I like</description>
- <rule ref="rulesets/braces.xml">
-  <exclude name="WhileLoopsMustUseBracesRule"/>
-  <exclude name="IfElseStmtsMustUseBracesRule"/>
- </rule>
-</ruleset>]]>
-            </source>
-        </subsection>
-    <subsection name="Reference it in your Ant task">
-    <p>You can specify the full path to your custom ruleset name alongside
+  <description>Just the braces rules I like</description>
+  <rule ref="rulesets/braces.xml">
+    <exclude name="WhileLoopsMustUseBracesRule"/>
+    <exclude name="IfElseStmtsMustUseBracesRule"/>
+  </rule>
+</ruleset>]]></source>
+            </subsection>
+            <subsection name="Adjusting rules through properties">
+                <p>You can adjust settings of certain rules through the &lt;properties&gt; element, like this:</p>
+                <source><![CDATA[<rule ref="rulesets/coupling.xml/ExcessiveImports">
+  <properties>
+    <property name="minimum" value="20"/>
+  </properties>
+</rule>]]>
+                </source>
+                <p>You can also use a value element instead of an attribute, like this:</p>
+                <source><![CDATA[<rule ref="rulesets/coupling.xml/ExcessiveImports">
+  <properties>
+    <property name="minimum">
+      <value>20</value>
+    </property>
+  </properties>
+</rule>]]></source>
+                <p>This is mainly used for customizing the XPathRule. This way you can add your own custom
+                xpath rule to your ruleset without effort.</p>
+            </subsection>
+            <subsection name="Reference it in your Ant task">
+                <p>You can specify the full path to your custom ruleset name alongside
         of the built-in PMD rulesets - like this:</p>
-<source>
-    <![CDATA[<pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
-        <formatter type="xml" toFile="foo.xml"/>
-        <fileset dir="/home/tom/data/pmd/pmd/src">
-            <include name="**/*.java"/>
-        </fileset>
-    </pmd>]]>
-</source>
-    </subsection>
-    <subsection name="To see it in your IDE, add it to rulesets/rulesets.properties">
-    <p>At least, that's the way some of the IDE plugins do it.  Some
+                <source><![CDATA[<pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
+  <formatter type="xml" toFile="foo.xml"/>
+  <fileset dir="/home/tom/data/pmd/pmd/src">
+    <include name="**/*.java"/>
+  </fileset>
+</pmd>]]></source>
+            </subsection>
+            <subsection name="To see it in your IDE, add it to rulesets/rulesets.properties">
+                <p>At least, that's the way some of the IDE plugins do it.  Some
     have other ways of adding custom rulesets.</p>
-    </subsection>
-    <subsection name="Send us feedback">
-    <p>If you have suggestions on clarifying this document, please post
-    them to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a>.  Thanks!</p>
-    </subsection>
-    </section>
-</body>
+            </subsection>
+            <subsection name="Send us feedback">
+                <p>If you have suggestions on clarifying this document, please post
+    them to
+                    <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a>.  Thanks!
+                </p>
+            </subsection>
+        </section>
+    </body>
 </document>
