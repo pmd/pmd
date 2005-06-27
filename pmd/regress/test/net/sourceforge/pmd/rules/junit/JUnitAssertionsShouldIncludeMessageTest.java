@@ -30,6 +30,8 @@ public class JUnitAssertionsShouldIncludeMessageTest extends SimpleAggregatorTst
            new TestDescriptor(TEST9, "assertNotNull OK", 0, rule),
            new TestDescriptor(TEST10, "assertNotNull bad", 1, rule),
            new TestDescriptor(TEST11, "find that pesky bug", 0, rule),
+           new TestDescriptor(TEST12, "assertFalse ok", 0, rule),
+           new TestDescriptor(TEST13, "assertFalse bad", 1, rule),
        });
     }
 
@@ -107,6 +109,20 @@ public class JUnitAssertionsShouldIncludeMessageTest extends SimpleAggregatorTst
     "public class Foo {" + PMD.EOL +
     " public void test1() {" + PMD.EOL +
     "  this.test1(\"foo\");" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST12 =
+    "public class Foo {" + PMD.EOL +
+    " public void testBar() {" + PMD.EOL +
+    "  assertFalse(\"foo!\", \"foo\".equals(\"foo\"));" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST13 =
+    "public class Foo {" + PMD.EOL +
+    " public void testBar() {" + PMD.EOL +
+    "  assertFalse(\"foo\".equals(\"foo\"));" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

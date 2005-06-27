@@ -136,4 +136,5 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
 	"public class Foo {" +  PMD.EOL +
 	" public static void testfoo() {}" + PMD.EOL +
 	"}";
+
 }

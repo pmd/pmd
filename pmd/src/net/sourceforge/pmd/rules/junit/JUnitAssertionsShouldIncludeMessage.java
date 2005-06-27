@@ -35,6 +35,7 @@ public class JUnitAssertionsShouldIncludeMessage extends AbstractRule implements
         checks.add(new AssertionCall(1, "assertNull"));
         checks.add(new AssertionCall(2, "assertSame"));
         checks.add(new AssertionCall(1, "assertNotNull"));
+        checks.add(new AssertionCall(1, "assertFalse"));
     }
 
     public Object visit(ASTArguments node, Object data) {
