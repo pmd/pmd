@@ -71,7 +71,7 @@
 
 <target name="pmd" description="Runs PMD">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="unusedcode" shortFilenames="true">
+    <pmd excludemarker="MYNOPMD" rulesetfiles="unusedcode" shortFilenames="true">
       <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sf.net/xref/"/>
       <fileset dir="/home/tom/pmd/pmd/src/">
         <include name="**/renderers/*.java"/>

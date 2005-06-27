@@ -119,9 +119,9 @@ public class PMDTask extends Task {
 
     public void execute() throws BuildException {
         validate();
+
         ruleSetFiles = new SimpleRuleSetNameMapper(ruleSetFiles).getRuleSets();
         RuleSet rules;
-
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             if (classpath == null) {
@@ -134,7 +134,6 @@ public class PMDTask extends Task {
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage());
         }
-
         logRulesUsed(rules);
 
         PMD pmd;
@@ -144,6 +143,10 @@ public class PMDTask extends Task {
             pmd = new PMD(new TargetJDK1_5());
         } else {
             pmd = new PMD();
+        }
+        if (excludeMarker != null) {
+            log("Setting exclude marker to be " + excludeMarker, Project.MSG_VERBOSE);
+            pmd.setExcludeMarker(excludeMarker);
         }
 
         RuleContext ctx = new RuleContext();
@@ -156,10 +159,6 @@ public class PMDTask extends Task {
                 File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
                 log("Processing file " + file.getAbsoluteFile().toString(), Project.MSG_VERBOSE);
                 ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
-                if (excludeMarker != null) {
-                    log("Setting exclude marker to be " + excludeMarker, Project.MSG_VERBOSE);
-                    pmd.setExcludeMarker(excludeMarker);
-                }
                 try {
                     pmd.processFile(new BufferedInputStream(new FileInputStream(file)), encoding, rules, ctx);
                 } catch (FileNotFoundException fnfe) {
