@@ -18,6 +18,7 @@ public class UseCorrectExceptionLoggingTest extends SimpleAggregatorTst {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "ok", 0, rule),
            new TestDescriptor(TEST2, "failure case", 1, rule),
+           new TestDescriptor(TEST3, "must be in a catch block", 0, rule),
        });
     }
 
@@ -41,5 +42,11 @@ public class UseCorrectExceptionLoggingTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
-
+    private static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " static final Log _LOG = LogFactory.getLog( Main.class );" + PMD.EOL +
+    " void foo(int e) {" + PMD.EOL +
+    "  _LOG.error(e);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 }

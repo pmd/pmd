@@ -1,5 +1,6 @@
 ????, 2005 - 3.3:
 Implemented RFE 1220171 - rule definitions can now contain a link to an external URL for more information on that rule - for example, a link to the rule's web page.  Thanks to Wouter Zelle for designing and implementing this!
+Improved UseCorrectExceptionLogging; thx to Wouter Zelle for the new XPath.
 Fixed a bug in RuleSetFactory that missed some override cases.
 
 June 21, 2005 - 3.2:

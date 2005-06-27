@@ -13,13 +13,13 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
 		<properties>
 			<property name="xpath">
 				<value><![CDATA[
-//Block/BlockStatement/Statement
- /StatementExpression/PrimaryExpression
- /PrimaryPrefix
- /Name
-  [@Image='_LOG.error']
-  [../../PrimarySuffix/Arguments[@ArgumentCount='1']]
-        ]]></value>
+//CatchStatement/Block/BlockStatement/Statement/StatementExpression
+/PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
+concat(//ClassOrInterfaceBodyDeclaration/FieldDeclaration
+[Type//ClassOrInterfaceType[@Image='Log']]
+/VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
+[PrimarySuffix/Arguments[@ArgumentCount='1']]
+[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]         ]]></value>
 			</property>
 		</properties>
 		<example><![CDATA[
