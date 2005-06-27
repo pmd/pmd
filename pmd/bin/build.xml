@@ -184,6 +184,12 @@
     </exec>
 </target>
 
+    <target name="win32tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
+    <echo message="Uploading jar file"/>
+    <exec executable="pscp" os="Windows">
+        <arg line=" c:/data/sourceforge/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/"/>
+    </exec>
+</target>
 
 <target name="cpd" description="Runs CPD">
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />

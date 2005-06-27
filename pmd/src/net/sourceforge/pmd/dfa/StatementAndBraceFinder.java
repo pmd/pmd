@@ -39,7 +39,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTConstructorDeclaration)) {
             throw new RuntimeException("Can't build a data flow for anything other than a method or a constructor");
         }
-        
+
         this.dataFlow = new Structure();
         this.dataFlow.addStartNode(node.getBeginLine());
         this.dataFlow.addNewNode(node);
@@ -234,7 +234,6 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
                 hasForUpdateNode = true;
             else if (parent.jjtGetChild(i) instanceof ASTForInit)
                 hasForInitNode = true;
-
         }
         if (!hasExpressionChild) {
             if (node instanceof ASTForInit) {
