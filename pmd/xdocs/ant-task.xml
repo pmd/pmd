@@ -87,7 +87,7 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="rulesets/imports.xml">
+    <pmd rulesetfiles="imports">
         <formatter type="html" toFile="pmd_report.html"/>
         <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
             <include name="**/*.java"/>
@@ -104,7 +104,7 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="rulesets/imports.xml,rulesets/unusedcode.xml">
+    <pmd rulesetfiles="imports.xml,unusedcode">
         <formatter type="xml" toFile="c:\pmd_report.xml"/>
         <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
             <include name="**/*.java"/>
@@ -194,7 +194,7 @@ Total time: 2 seconds
 <![CDATA[
 <target name="pmd">
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-  <pmd rulesetfiles="rulesets/imports.xml" shortFilenames="true">
+  <pmd rulesetfiles="basic" shortFilenames="true">
       <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
       <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
           <include name="java/lang/*.java"/>
@@ -204,7 +204,6 @@ Total time: 2 seconds
 ]]>
 </source>
 
-
 <p>Using the ruleset nested element</p>
 <source>
 <![CDATA[
@@ -212,8 +211,7 @@ Total time: 2 seconds
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
   <pmd shortFilenames="true">
        <ruleset>rulesets/favorites.xml</ruleset>
-       <ruleset>rulesets/basic.xml</ruleset>
-      
+       <ruleset>basic</ruleset>
       <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
       <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
           <include name="java/lang/*.java"/>

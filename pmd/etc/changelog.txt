@@ -5,6 +5,7 @@ Fixed bug 1227001 - AvoidCallingFinalize no longer flags calls to finalize() wit
 Fixed a bug in RuleSetFactory that missed some override cases; thx to Wouter Zelle for the report and a fix.
 Improved UseCorrectExceptionLogging; thx to Wouter Zelle for the new XPath.
 The Ant task now accepts the short names of rulesets (e.g., unusedcode for rulesets/unusedcode.xml).
+Removed unnecessary '.html' suffix to HTML renderer when the linkPrefix attribute is used.
 Moved AvoidCallingFinalize from the design ruleset to the finalize ruleset.
 Deleted redundant ExplicitCallToFinalize rule.
 

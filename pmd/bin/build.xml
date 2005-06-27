@@ -1,4 +1,4 @@
-<project name="pmd" default="compile" basedir="../">
+<project name="pmd" default="pmd" basedir="../">
 
 <property name="dir.lib" value="lib\"/>
 <property name="dir.src" value="src\"/>
@@ -72,10 +72,10 @@
 <target name="pmd" description="Runs PMD">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     <pmd rulesetfiles="unusedcode" shortFilenames="true">
-        <formatter type="text" toFile="rpt.txt"/>
-        <fileset dir="/usr/local/java/src/java/lang/ref/">
-          <include name="**/*.java"/>
-        </fileset>
+      <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sf.net/xref/"/>
+      <fileset dir="/home/tom/pmd/pmd/src/">
+        <include name="**/renderers/*.java"/>
+       </fileset>
     </pmd>
 </target>
 

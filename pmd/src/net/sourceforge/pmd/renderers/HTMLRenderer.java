@@ -68,7 +68,7 @@ public class HTMLRenderer implements Renderer {
         if (linkPrefix == null) {
             return filename;
         }
-        String newFileName = filename.substring(0, filename.indexOf(".java")) + ".html";
-        return "<a href=\"" + linkPrefix + newFileName + "#" + line + "\">" + newFileName + "</a>";
+        String newFileName = filename.substring(0, filename.indexOf(".java"));
+        return "<a href=\"" + linkPrefix + newFileName + ".html#" + line + "\">" + newFileName + "</a>";
     }
 }
