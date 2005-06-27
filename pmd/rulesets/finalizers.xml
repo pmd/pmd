@@ -131,43 +131,6 @@ public class Foo {
        </example>
      </rule>
 
-    <rule name="ExplicitCallToFinalize"
-           message="Explicit call of finalize method"
-           class="net.sourceforge.pmd.rules.XPathRule">
-       <description>
-       An explicit call was made to a finalize method.  Finalize methods
-       are meant to be executed at most once (by the garbage collector).
-       Calling it explicitly could result in the method being executed
-       twice for that object (once by you, once by the garbage collector).
-       </description>
-         <properties>
-             <property name="xpath">
-                 <value>
-<![CDATA[
-//PrimaryExpression[PrimarySuffix
- /Arguments[count(*) = 0]]
-  /PrimaryPrefix
-   /Name[@Image = 'finalize' or ends-with(@Image, '.finalize')]
-]]>
-                 </value>
-             </property>
-         </properties>
-         <priority>3</priority>
-       <example>
-   <![CDATA[
-public class Foo {
- public void close()  {
-    finalize();       // this is bad
-    foo.finalize();   // this is also bad
-    this.finalize();  // this is bad but currently not flagged
-    super.finalize(); // this is OK
-    foo.finalize(3);  // this is arguably OK because the method is overloaded
- }
-}
-   ]]>
-       </example>
-     </rule>
-
     <rule name="FinalizeShouldBeProtected"
           message="If you override finalize(), make it protected"
           class="net.sourceforge.pmd.rules.XPathRule">
@@ -218,21 +181,17 @@ public class Foo {
 or @Image='finalize'
 ]
 [ancestor::MethodDeclaration/MethodDeclarator[@Image != 'finalize']]
-
     ]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
-
 	void foo() {
 	    Bar b = new Bar();
 	    b.finalize();
 	}
-
 ]]>
       </example>
     </rule>
