@@ -13,6 +13,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import org.apache.tools.ant.AntClassLoader;
@@ -118,7 +119,9 @@ public class PMDTask extends Task {
 
     public void execute() throws BuildException {
         validate();
+        ruleSetFiles = new SimpleRuleSetNameMapper(ruleSetFiles).getRuleSets();
         RuleSet rules;
+
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             if (classpath == null) {

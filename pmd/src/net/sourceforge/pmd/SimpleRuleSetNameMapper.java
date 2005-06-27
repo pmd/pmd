@@ -51,6 +51,7 @@ public class SimpleRuleSetNameMapper {
         nameMap.put("finalizers", "rulesets/finalizers.xml");
         nameMap.put("imports", "rulesets/imports.xml");
         nameMap.put("logging-java", "rulesets/logging-java.xml");
+        nameMap.put("logging-jakarta", "rulesets/logging-jakarta-commons.xml");
         nameMap.put("junit", "rulesets/junit.xml");
         nameMap.put("javabeans", "rulesets/javabeans.xml");
         nameMap.put("naming", "rulesets/naming.xml");
