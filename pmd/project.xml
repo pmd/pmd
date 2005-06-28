@@ -189,11 +189,6 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
 			<id>ant</id>
 			<version>1.6</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xmlParserAPIs</artifactId>
-			<version>2.6.2</version>
-		</dependency>-->
 		<dependency>
 			<id>jaxen</id>
 			<version>1.0-FCS-full</version>
@@ -201,6 +196,16 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
 		<dependency>
 			<id>saxpath</id>
 			<version>1.0-FCS</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xmlParserAPIs</artifactId>
+			<version>2.6.2</version>
 		</dependency>
 	</dependencies>
 
