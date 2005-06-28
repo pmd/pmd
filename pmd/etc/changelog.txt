@@ -9,6 +9,7 @@ Removed redundant calls to PMD.setExcludeMarker() from the Ant task.
 Removed unnecessary '.html' suffix from displayed filenames when the linkPrefix attribute is used with the HTML renderer.
 Moved AvoidCallingFinalize from the design ruleset to the finalize ruleset.
 Deleted redundant ExplicitCallToFinalize rule.
+Now using Maven 1.1b1 for development.
 
 June 21, 2005 - 3.2:
 New rules: UseCorrectExceptionLogging (logging-jakarta-commons ruleset), AvoidPrintStackTrace (logging-java ruleset), CompareObjectsWithEquals (design ruleset)
