@@ -50,6 +50,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.25  2005/06/29 21:38:50  phherlin
+ * Applying patches from Brian Remedios
+ *
  * Revision 1.24  2005/06/29 20:10:33  phherlin
  * Moving dev environment to Eclipse v3.1
  * Revision 1.23 2005/05/31 20:33:02 phherlin
@@ -107,7 +110,7 @@ import org.osgi.framework.BundleContext;
 public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
 
     // Static attributes
-    private static PMDPlugin soleInstance;
+    private static PMDPlugin plugin;
     private static Log log;
 
     // Private attributes
@@ -119,27 +122,26 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
     /**
      * Private constructor ensures it remains a singleton.
      */
-    private PMDPlugin() {
+    public PMDPlugin() {
         super();
+        plugin = this;
     }
 
     /**
      * Returns the shared instance.
      */
     public static PMDPlugin getDefault() {
-        if (soleInstance == null)
-            soleInstance = new PMDPlugin();
-        return soleInstance;
+        return plugin;
     }
 
     /**
      * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
      */
-public void start(BundleContext context) throws Exception {
+    public void start(BundleContext context) throws Exception {
         super.start(context);
 
         try {
-            URL messageTableUrl = find(new Path("$nl$/messages.properties"));
+            URL messageTableUrl = this.find(new Path("$nl$/messages.properties"));
             if (messageTableUrl != null) {
                 messageTable = new Properties();
                 messageTable.load(messageTableUrl.openStream());
@@ -154,15 +156,17 @@ public void start(BundleContext context) throws Exception {
         } catch (IOException e) {
             logError("Can't load message table", e);
         }
-    }    /**
-          * Returns the string from the message table
-          * 
-          * @param key
-          *            the message key
-          * @param defaultMessage
-          *            the returned message if key is not found
-          * @return the requested message
-          */
+    }
+
+    /**
+     * Returns the string from the message table
+     * 
+     * @param key
+     *            the message key
+     * @param defaultMessage
+     *            the returned message if key is not found
+     * @return the requested message
+     */
     public String getMessage(String key, String defaultMessage) {
         String result = defaultMessage;
 
@@ -226,6 +230,7 @@ public void start(BundleContext context) throws Exception {
                 logError("Ignored runtime exception from PMD : ", e);
             }
         }
+
         return subRuleSet;
     }
 
@@ -245,19 +250,16 @@ public void start(BundleContext context) throws Exception {
      * Get the rulset configured for the resouce. Currently, it is the one
      * configured for the resource's project
      */
-public RuleSet getRuleSetForResourceFromProperties(IResource resource,
-boolean flCreateProperty) {
-        log.debug("Searching a ruleset for resource " + resource.getName() + "in properties");
+    public RuleSet getRuleSetForResourceFromProperties(IResource resource, boolean flCreateProperty) {
+        log.debug("Searching a ruleset for resource " + resource.getName() + " in properties");
         boolean flNeedSave = false;
         RuleSet projectRuleSet = null;
         RuleSet configuredRuleSet = getRuleSet();
         IProject project = resource.getProject();
         try {
-            projectRuleSet = (RuleSet)
-project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
+            projectRuleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
             if (projectRuleSet == null) {
-                String activeRulesList =
-project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
+                String activeRulesList = project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
                 if (activeRulesList != null) {
                     projectRuleSet = getRuleSetFromRuleList(activeRulesList);
                     flNeedSave = true;
@@ -294,35 +296,29 @@ project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
         }
 
         return projectRuleSet;
-    }    /**
-          * Retrieve a project ruleset from a ruleset file in the project
-          * instead of the plugin properties/preferences
-          * 
-          * @param project
-          * @return
-          */
-public RuleSet getRuleSetForResourceFromProject(IProject project) {
-        log.debug("Searching a ruleset for project " + project.getName() + " inthe project file");
+    }
+
+    /**
+     * Retrieve a project ruleset from a ruleset file in the project instead of
+     * the plugin properties/preferences
+     * 
+     * @param project
+     * @return
+     */
+    public RuleSet getRuleSetForResourceFromProject(IProject project) {
+        log.debug("Searching a ruleset for project " + project.getName() + " in the project file");
         RuleSet projectRuleSet = null;
-        IFile ruleSetFile =
-project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
+        IFile ruleSetFile = project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
         if (ruleSetFile.exists()) {
             try {
-                projectRuleSet = (RuleSet)
-project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
-                Long oldModificationStamp = (Long)
-project.getSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP);
+                projectRuleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
+                Long oldModificationStamp = (Long) project.getSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP);
                 long newModificationStamp = ruleSetFile.getModificationStamp();
-                if ((oldModificationStamp == null) ||
-(oldModificationStamp.longValue() != newModificationStamp)) {
+                if ((oldModificationStamp == null) || (oldModificationStamp.longValue() != newModificationStamp)) {
                     RuleSetFactory ruleSetFactory = new RuleSetFactory();
-                    projectRuleSet =
-ruleSetFactory.createRuleSet(ruleSetFile.getContents());
-                    project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET,
-projectRuleSet);
-                   
-project.setSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP, new
-Long(newModificationStamp));
+                    projectRuleSet = ruleSetFactory.createRuleSet(ruleSetFile.getContents());
+                    project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, projectRuleSet);
+                    project.setSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP, new Long(newModificationStamp));
                 }
             } catch (Exception e) {
                 showError(getMessage(PMDConstants.MSGKEY_ERROR_LOADING_RULESET), e);
@@ -338,9 +334,11 @@ Long(newModificationStamp));
         }
 
         return projectRuleSet;
-    }    /**
-          * Store the rules selection in resource property
-          */
+    }
+
+    /**
+     * Store the rules selection in resource property
+     */
     public void storeRuleSetForResource(IResource resource, RuleSet ruleSet) {
         try {
             StringBuffer ruleSelectionList = new StringBuffer();
@@ -376,10 +374,8 @@ Long(newModificationStamp));
                 preferedRuleSet = factory.createRuleSet(in);
                 in.close();
             } catch (FileNotFoundException e) {
-
                 showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
             } catch (IOException e) {
-
                 showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
             }
         }
@@ -408,6 +404,7 @@ Long(newModificationStamp));
         }
 
         return preferedRuleSet;
+
     }
 
     /**
@@ -424,12 +421,12 @@ Long(newModificationStamp));
                 preferedRuleSet = factory.createRuleSet(ruleSetStream);
                 ruleSetStream.close();
             } catch (IOException e) {
-
                 logError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
             }
         }
 
         return preferedRuleSet;
+
     }
 
     /**
@@ -562,7 +559,6 @@ Long(newModificationStamp));
 
         for (int i = 0; i < projects.length; i++) {
             if (monitor != null) {
-
                 monitor.subTask(getMessage(PMDConstants.MSGKEY_MONITOR_UPDATING_PROJECTS) + projects[i].getName());
             }
 
@@ -587,7 +583,6 @@ Long(newModificationStamp));
      */
     public String getReviewAdditionalComment() {
         if (reviewAdditionalComment == null) {
-
             getPreferenceStore().setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
             reviewAdditionalComment = getPreferenceStore().getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
         }
@@ -609,19 +604,16 @@ Long(newModificationStamp));
      * Get the current working set selected of a project Only one working set is
      * allowed.
      */
-public IWorkingSet getProjectWorkingSet(IProject project) {
+    public IWorkingSet getProjectWorkingSet(IProject project) {
         IWorkingSet workingSet = null;
         boolean flNeedSave = false;
 
         try {
-            workingSet = (IWorkingSet)
-project.getSessionProperty(SESSION_PROPERTY_WORKINGSET);
+            workingSet = (IWorkingSet) project.getSessionProperty(SESSION_PROPERTY_WORKINGSET);
             if (workingSet == null) {
-                String workingSetName =
-project.getPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET);
+                String workingSetName = project.getPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET);
                 if (workingSetName != null) {
-                    IWorkingSetManager workingSetManager =
-PlatformUI.getWorkbench().getWorkingSetManager();
+                    IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
                     workingSet = workingSetManager.getWorkingSet(workingSetName);
                     if (workingSet != null) {
                         flNeedSave = true;
@@ -638,9 +630,11 @@ PlatformUI.getWorkbench().getWorkingSetManager();
         }
 
         return workingSet;
-    }    /**
-          * Store a workingset for a project
-          */
+    }
+
+    /**
+     * Store a workingset for a project
+     */
     public void setProjectWorkingSet(IProject project, IWorkingSet workingSet) {
         try {
             project.setPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET, workingSet == null ? null : workingSet.getName());
@@ -691,7 +685,6 @@ PlatformUI.getWorkbench().getWorkingSetManager();
      */
     public void setRuleSetStoredInProject(IProject project, Boolean ruleSetStoredInProject) {
         try {
-
             project.setPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject == null
                     ? null
                     : ruleSetStoredInProject.toString());
