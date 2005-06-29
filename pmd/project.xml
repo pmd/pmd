@@ -249,9 +249,9 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
 		<report>maven-file-activity-plugin</report>
 		<report>maven-developer-activity-plugin</report>
 		<report>maven-faq-plugin</report>
-		<!-- interesing to add later
 		<report>maven-pmd-plugin</report>
 
+		<!-- interesting to add later
 		<report>maven-changes-plugin</report>
 		<report>maven-jdepend-plugin</report>
 		<report>maven-findbugs-plugin</report>
