@@ -78,6 +78,25 @@
 </table>
 
       </subsection>
+
+    <subsection name="Postprocessing the report file with XSLT">
+        <p>Several folks (most recently, Wouter Zelle) have written XSLT scripts
+        which you can use to transform the XML report into nifty HTML.  To do this,
+        make sure you use the XML formatter in the PMD task invocation, i.e.:
+        </p>
+        <source>
+<![CDATA[
+<formatter type="xml" toFile="${tempbuild}/$report_pmd.xml"/>
+]]>
+        </source>
+        <p>Then, after the end of the PMD task, do this:</p>
+        <source>
+<![CDATA[
+<xslt in="${tempbuild}/$report_pmd.xml" style="${pmdConfig}/wz-pmd-report.xslt" out="${pmdOutput}/$report_pmd.html" />
+]]>
+        </source>
+    </subsection>
+
       <subsection name="Examples">
 
 <p>Running one ruleset to produce a HTML report</p>

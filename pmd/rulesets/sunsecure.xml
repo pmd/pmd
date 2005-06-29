@@ -32,7 +32,7 @@ These rules check the security guidelines from Sun, published at http://java.sun
           message="A user given array is stored directly"
           class="net.sourceforge.pmd.rules.sunsecure.ArrayIsStoredDirectly">
       <description>
-      Constructors and methods receiving arrays shuold clone objects and store the copy.
+      Constructors and methods receiving arrays should clone objects and store the copy.
       This prevents that future changes from the user affect the internal functionallity.
       </description>
         <priority>3</priority>
