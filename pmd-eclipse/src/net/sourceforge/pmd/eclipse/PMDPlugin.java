@@ -50,13 +50,14 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.23  2005/05/31 20:33:02  phherlin
+ * Revision 1.24  2005/06/29 20:10:33  phherlin
+ * Moving dev environment to Eclipse v3.1
+ * Revision 1.23 2005/05/31 20:33:02 phherlin
  * Continuing refactoring
- *
- * Revision 1.22  2004/06/29 22:00:30  phherlin
- * Adapting the plugin to the new OSGi standards
- * Revision 1.21 2004/05/26 15:55:23 phherlin Upgrading
- * to PMD 1.8: adding finalizers ruleset to the default rulesets list
+ * 
+ * Revision 1.22 2004/06/29 22:00:30 phherlin Adapting the plugin to the new
+ * OSGi standards Revision 1.21 2004/05/26 15:55:23 phherlin Upgrading to PMD
+ * 1.8: adding finalizers ruleset to the default rulesets list
  * 
  * Revision 1.20 2003/12/18 23:58:37 phherlin Fixing malformed UTF-8 characters
  * in generated xml files
@@ -106,7 +107,7 @@ import org.osgi.framework.BundleContext;
 public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
 
     // Static attributes
-    private static PMDPlugin plugin;
+    private static PMDPlugin soleInstance;
     private static Log log;
 
     // Private attributes
@@ -116,28 +117,29 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
     private String reviewAdditionalComment;
 
     /**
-     * The constructor.
+     * Private constructor ensures it remains a singleton.
      */
-    public PMDPlugin() {
+    private PMDPlugin() {
         super();
-        plugin = this;
     }
 
     /**
      * Returns the shared instance.
      */
     public static PMDPlugin getDefault() {
-        return plugin;
+        if (soleInstance == null)
+            soleInstance = new PMDPlugin();
+        return soleInstance;
     }
 
     /**
      * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
      */
-    public void start(BundleContext context) throws Exception {
+public void start(BundleContext context) throws Exception {
         super.start(context);
 
         try {
-            URL messageTableUrl = this.find(new Path("$nl$/messages.properties"));
+            URL messageTableUrl = find(new Path("$nl$/messages.properties"));
             if (messageTableUrl != null) {
                 messageTable = new Properties();
                 messageTable.load(messageTableUrl.openStream());
@@ -145,24 +147,22 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
 
             if (log == null) {
                 DOMConfigurator.configure(find(new Path("log4j.xml")));
-                log = LogFactory.getLog("net.sourceforge.pmd.eclipse.PMDPlugin");
+                log = LogFactory.getLog(getClass().toString()); // always derive the name
             }
 
             log.info("PMD plugin loaded");
         } catch (IOException e) {
             logError("Can't load message table", e);
         }
-    }
-
-    /**
-     * Returns the string from the message table
-     * 
-     * @param key
-     *            the message key
-     * @param defaultMessage
-     *            the returned message if key is not found
-     * @return the requested message
-     */
+    }    /**
+          * Returns the string from the message table
+          * 
+          * @param key
+          *            the message key
+          * @param defaultMessage
+          *            the returned message if key is not found
+          * @return the requested message
+          */
     public String getMessage(String key, String defaultMessage) {
         String result = defaultMessage;
 
@@ -226,7 +226,6 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
                 logError("Ignored runtime exception from PMD : ", e);
             }
         }
-
         return subRuleSet;
     }
 
@@ -237,31 +236,28 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
     public RuleSet getRuleSetForResource(IResource resource, boolean flCreateProperty) {
         log.debug("Asking a ruleset for resource " + resource.getName());
         IProject project = resource.getProject();
-        RuleSet projectRuleSet = null;
 
-        if (isRuleSetStoredInProject(project)) {
-            projectRuleSet = getRuleSetForResourceFromProject(project);
-        } else {
-            projectRuleSet = getRuleSetForResourceFromProperties(resource, flCreateProperty);
-        }
-
-        return projectRuleSet;
+        return isRuleSetStoredInProject(project) ? getRuleSetForResourceFromProject(project) : getRuleSetForResourceFromProperties(
+                resource, flCreateProperty);
     }
 
     /**
      * Get the rulset configured for the resouce. Currently, it is the one
      * configured for the resource's project
      */
-    public RuleSet getRuleSetForResourceFromProperties(IResource resource, boolean flCreateProperty) {
-        log.debug("Searching a ruleset for resource " + resource.getName() + " in properties");
+public RuleSet getRuleSetForResourceFromProperties(IResource resource,
+boolean flCreateProperty) {
+        log.debug("Searching a ruleset for resource " + resource.getName() + "in properties");
         boolean flNeedSave = false;
         RuleSet projectRuleSet = null;
         RuleSet configuredRuleSet = getRuleSet();
         IProject project = resource.getProject();
         try {
-            projectRuleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
+            projectRuleSet = (RuleSet)
+project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
             if (projectRuleSet == null) {
-                String activeRulesList = project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
+                String activeRulesList =
+project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
                 if (activeRulesList != null) {
                     projectRuleSet = getRuleSetFromRuleList(activeRulesList);
                     flNeedSave = true;
@@ -298,32 +294,38 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
         }
 
         return projectRuleSet;
-    }
-
-    /**
-     * Retrieve a project ruleset from a ruleset file in the project instead of
-     * the plugin properties/preferences
-     * 
-     * @param project
-     * @return
-     */
-    public RuleSet getRuleSetForResourceFromProject(IProject project) {
-        log.debug("Searching a ruleset for project " + project.getName() + " in the project file");
+    }    /**
+          * Retrieve a project ruleset from a ruleset file in the project
+          * instead of the plugin properties/preferences
+          * 
+          * @param project
+          * @return
+          */
+public RuleSet getRuleSetForResourceFromProject(IProject project) {
+        log.debug("Searching a ruleset for project " + project.getName() + " inthe project file");
         RuleSet projectRuleSet = null;
-        IFile ruleSetFile = project.getFile(".ruleset");
+        IFile ruleSetFile =
+project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
         if (ruleSetFile.exists()) {
             try {
-                projectRuleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
-                Long oldModificationStamp = (Long) project.getSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP);
+                projectRuleSet = (RuleSet)
+project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
+                Long oldModificationStamp = (Long)
+project.getSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP);
                 long newModificationStamp = ruleSetFile.getModificationStamp();
-                if ((oldModificationStamp == null) || (oldModificationStamp.longValue() != newModificationStamp)) {
+                if ((oldModificationStamp == null) ||
+(oldModificationStamp.longValue() != newModificationStamp)) {
                     RuleSetFactory ruleSetFactory = new RuleSetFactory();
-                    projectRuleSet = ruleSetFactory.createRuleSet(ruleSetFile.getContents());
-                    project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, projectRuleSet);
-                    project.setSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP, new Long(newModificationStamp));
+                    projectRuleSet =
+ruleSetFactory.createRuleSet(ruleSetFile.getContents());
+                    project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET,
+projectRuleSet);
+                   
+project.setSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP, new
+Long(newModificationStamp));
                 }
             } catch (Exception e) {
-                PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_LOADING_RULESET), e);
+                showError(getMessage(PMDConstants.MSGKEY_ERROR_LOADING_RULESET), e);
                 log.debug("", e);
                 projectRuleSet = null;
             }
@@ -336,11 +338,9 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
         }
 
         return projectRuleSet;
-    }
-
-    /**
-     * Store the rules selection in resource property
-     */
+    }    /**
+          * Store the rules selection in resource property
+          */
     public void storeRuleSetForResource(IResource resource, RuleSet ruleSet) {
         try {
             StringBuffer ruleSelectionList = new StringBuffer();
@@ -355,7 +355,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
             resource.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, ruleSet);
 
         } catch (CoreException e) {
-            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
+            showError(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
         }
     }
 
@@ -376,8 +376,10 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
                 preferedRuleSet = factory.createRuleSet(in);
                 in.close();
             } catch (FileNotFoundException e) {
+
                 showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
             } catch (IOException e) {
+
                 showError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
             }
         }
@@ -394,9 +396,10 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
 
         // Finally, build a default ruleset
         if (preferedRuleSet == null) {
-            preferedRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(RULESET_DEFAULTLIST[0]));
+            ClassLoader loader = getClass().getClassLoader();
+            preferedRuleSet = factory.createRuleSet(loader.getResourceAsStream(RULESET_DEFAULTLIST[0]));
             for (int i = 1; i < RULESET_DEFAULTLIST.length; i++) {
-                RuleSet tmpRuleSet = factory.createRuleSet(getClass().getClassLoader().getResourceAsStream(RULESET_DEFAULTLIST[i]));
+                RuleSet tmpRuleSet = factory.createRuleSet(loader.getResourceAsStream(RULESET_DEFAULTLIST[i]));
                 preferedRuleSet.addRuleSet(tmpRuleSet);
             }
 
@@ -405,7 +408,6 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
         }
 
         return preferedRuleSet;
-
     }
 
     /**
@@ -422,12 +424,12 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
                 preferedRuleSet = factory.createRuleSet(ruleSetStream);
                 ruleSetStream.close();
             } catch (IOException e) {
+
                 logError(getMessage(PMDConstants.MSGKEY_ERROR_READING_PREFERENCE), e);
             }
         }
 
         return preferedRuleSet;
-
     }
 
     /**
@@ -442,9 +444,9 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
             out.flush();
             out.close();
         } catch (IOException e) {
-            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_WRITING_PREFERENCE), e);
+            showError(getMessage(PMDConstants.MSGKEY_ERROR_WRITING_PREFERENCE), e);
         } catch (PMDEclipseException e) {
-            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_WRITING_PREFERENCE), e);
+            showError(getMessage(PMDConstants.MSGKEY_ERROR_WRITING_PREFERENCE), e);
         }
     }
 
@@ -465,7 +467,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
      * Get an image corresponding to the severity
      */
     public Image getImage(String key, String iconPath) {
-        ImageRegistry registry = PMDPlugin.getDefault().getImageRegistry();
+        ImageRegistry registry = getImageRegistry();
         Image image = registry.get(key);
         if (image == null) {
             ImageDescriptor descriptor = getImageDescriptor(iconPath);
@@ -560,6 +562,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
 
         for (int i = 0; i < projects.length; i++) {
             if (monitor != null) {
+
                 monitor.subTask(getMessage(PMDConstants.MSGKEY_MONITOR_UPDATING_PROJECTS) + projects[i].getName());
             }
 
@@ -584,6 +587,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
      */
     public String getReviewAdditionalComment() {
         if (reviewAdditionalComment == null) {
+
             getPreferenceStore().setDefault(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, REVIEW_ADDITIONAL_COMMENT_DEFAULT);
             reviewAdditionalComment = getPreferenceStore().getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
         }
@@ -605,16 +609,19 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
      * Get the current working set selected of a project Only one working set is
      * allowed.
      */
-    public IWorkingSet getProjectWorkingSet(IProject project) {
+public IWorkingSet getProjectWorkingSet(IProject project) {
         IWorkingSet workingSet = null;
         boolean flNeedSave = false;
 
         try {
-            workingSet = (IWorkingSet) project.getSessionProperty(SESSION_PROPERTY_WORKINGSET);
+            workingSet = (IWorkingSet)
+project.getSessionProperty(SESSION_PROPERTY_WORKINGSET);
             if (workingSet == null) {
-                String workingSetName = project.getPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET);
+                String workingSetName =
+project.getPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET);
                 if (workingSetName != null) {
-                    IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
+                    IWorkingSetManager workingSetManager =
+PlatformUI.getWorkbench().getWorkingSetManager();
                     workingSet = workingSetManager.getWorkingSet(workingSetName);
                     if (workingSet != null) {
                         flNeedSave = true;
@@ -631,18 +638,16 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
         }
 
         return workingSet;
-    }
-
-    /**
-     * Store a workingset for a project
-     */
+    }    /**
+          * Store a workingset for a project
+          */
     public void setProjectWorkingSet(IProject project, IWorkingSet workingSet) {
         try {
             project.setPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET, workingSet == null ? null : workingSet.getName());
             project.setSessionProperty(SESSION_PROPERTY_WORKINGSET, workingSet);
 
         } catch (CoreException e) {
-            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         }
     }
 
@@ -660,7 +665,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
             if (ruleSetStoredInProject == null) {
                 String property = project.getPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT);
                 if (property != null) {
-                    ruleSetStoredInProject = new Boolean(property);
+                    ruleSetStoredInProject = Boolean.valueOf(property);
                     flNeedSave = true;
                 }
             }
@@ -677,7 +682,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
 
         return ruleSetStoredInProject == null ? false : ruleSetStoredInProject.booleanValue();
     }
-
+    
     /**
      * Set the store_ruleset_project property
      * 
@@ -686,13 +691,14 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
      */
     public void setRuleSetStoredInProject(IProject project, Boolean ruleSetStoredInProject) {
         try {
+
             project.setPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject == null
                     ? null
                     : ruleSetStoredInProject.toString());
             project.setSessionProperty(SESSION_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject);
 
         } catch (CoreException e) {
-            PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
         }
     }
 

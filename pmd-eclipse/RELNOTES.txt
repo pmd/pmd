@@ -6,6 +6,18 @@ IMPORTANT : SINCE v2.0 THE INSTALLATION PROCEDURE HAS BEEN CHANGED.
             FOR INSTRUCTIONS.
             
 
+v3.0RC3 (alias v3.0.2) - xx/06/2005
+-----------------------------------
+
+FIXED/UPDATED : CPD report window for Mac users
+--------------------------------------------------
+Because the bug #1190624 cannot be fixed, the CPD integration has been refactored.
+Now CPD can be launched on one project at a time only.
+The results are produced in a report file inside the report folder.
+The SimpleRenderer is used to render the report.
+
+
+----------------------------------------------------------------------------------------
 v3.0RC2 (alias v3.0.1) - 07/05/2005
 -----------------------------------
 

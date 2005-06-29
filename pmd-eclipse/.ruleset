@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset name="pmd-eclipse">
-    <description>PMD Plugin preferences rule set</description>
+<ruleset name="">
+    <description/>
     <rule name="ExplicitCallToFinalize" message="Explicit call of finalize method" class="net.sourceforge.pmd.rules.XPathRule">
         <description>        An explicit call was made to a finalize method.  Finalize methods        are meant to be executed at most once (by the garbage collector).        Calling it explicitly could result in the method being executed        twice for that object (once by you, once by the garbage collector).        </description>
         <example><![CDATA[
@@ -16,7 +16,7 @@ public class Foo {
 }
    
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -55,9 +55,9 @@ public class Foo {
    }
    
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
-            <property name="maximum" value="16"/>
+            <property name="maximum" value="10"/>
         </properties>
     </rule>
     <rule name="DontImportJavaLang" message="Avoid importing anything from the package 'java.lang'" class="net.sourceforge.pmd.rules.XPathRule">
@@ -76,7 +76,7 @@ import java.lang.*;
 public class Foo {}
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -105,7 +105,7 @@ public class Foo {}
    Identifies the unasignment to x as possibly unsafe.
    
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="AbstractNaming" message="Abstract classes should be named 'AbstractXXX'" class="net.sourceforge.pmd.rules.XPathRule">
@@ -116,7 +116,7 @@ public abstract class Foo { // should be AbstractFoo
 }
 
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -138,7 +138,7 @@ class Foo {
 }
     
         ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -168,27 +168,10 @@ class Foo {
       }
       
   ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="minimum" value="30"/>
         </properties>
-    </rule>
-    <rule name="MethodReturnsInternalArray" message="Never return a reference to an internal array that contains sensitive data" class="net.sourceforge.pmd.rules.sunsecure.MethodReturnsInternalArray">
-        <description>       Exposing internal arrays directly allows the user to modify some code that could be critical.       It is safer to return a copy of the array.       </description>
-        <example><![CDATA[
-  
-  public class SecureSystem {
-      UserData [] ud;
-      
-      public UserData [] getUserData() {
-          // Don't return directly the internal array, return a copy 
-          return ud;
-      }
-  }
-  
-      ]]></example>
-        <priority>3</priority>
-        <properties/>
     </rule>
     <rule name="MethodWithSameNameAsEnclosingClass" message="Classes should not have non-constructor methods with the same name as the class" class="net.sourceforge.pmd.rules.MethodWithSameNameAsEnclosingClass">
         <description>        Non-constructor methods should not have the same name as the enclosing class.        </description>
@@ -202,7 +185,7 @@ public MyClass() {}
 }
     
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="CallSuperInConstructor" message="It is a good practice to call super() in a constructor" class="net.sourceforge.pmd.rules.XPathRule">
@@ -224,7 +207,7 @@ public class Foo extends Bar{
 }
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -234,6 +217,42 @@ count(.//ExplicitConstructorInvocation)=0
 ]
     
               ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="UseLocaleWithCaseConversions" message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale" class="net.sourceforge.pmd.rules.XPathRule">
+        <description> When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids           problems with certain locales, i.e. Turkish.       </description>
+        <example><![CDATA[
+    
+class Foo {
+ // BAD
+ if (x.toLowerCase().equals("list"))...
+ /*
+ This will not match "LIST" when in Turkish locale
+ The above could be
+ if (x.toLowerCase(Locale.US).equals("list")) ...
+ or simply
+ if (x.equalsIgnoreCase("list")) ...
+ */
+
+ // GOOD
+ String z = a.toLowerCase(Locale.EN);
+}
+    
+        ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                
+//PrimaryExpression
+[PrimaryPrefix/Name
+ [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
+'toUpperCase')]
+ ]
+[PrimarySuffix/Arguments[@ArgumentCount=0]]
+     
+            ]]></value>
             </property>
         </properties>
     </rule>
@@ -259,45 +278,9 @@ count(.//ExplicitConstructorInvocation)=0
     }
     
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="minimum" value="45"/>
-        </properties>
-    </rule>
-    <rule name="UseLocaleWithCaseConversions" message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale" class="net.sourceforge.pmd.rules.XPathRule">
-        <description> When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids           problems with certain locales, i.e. Turkish.       </description>
-        <example><![CDATA[
-    
-class Foo {
- // BAD
- if (x.toLowerCase().equals("list"))...
- /*
- This will not match "LIST" when in Turkish locale
- The above could be
- if (x.toLowerCase(Locale.US).equals("list")) ...
- or simply
- if (x.equalsIgnoreCase("list")) ...
- */
-
- // GOOD
- String z = a.toLowerCase(Locale.EN);
-}
-    
-        ]]></example>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-                
-//PrimaryExpression
-[PrimaryPrefix/Name
- [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
-'toUpperCase')]
- ]
-[PrimarySuffix/Arguments[@ArgumentCount=0]]
-     
-            ]]></value>
-            </property>
         </properties>
     </rule>
     <rule name="AvoidDollarSigns" message="Avoid using dollar signs in variable/method/class/interface names" class="net.sourceforge.pmd.rules.XPathRule">
@@ -308,7 +291,7 @@ class Foo {
  }
    
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -333,7 +316,7 @@ class Foo {
      }
    
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -358,7 +341,7 @@ class Foo {
     }
         
         ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -394,7 +377,7 @@ try {
 }
                 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="ExceptionAsFlowControl" message="Avoid using exceptions as flow control" class="net.sourceforge.pmd.rules.design.ExceptionAsFlowControl">
@@ -416,7 +399,7 @@ try {
   }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="FinalFieldCouldBeStatic" message="This final field could be made static" class="net.sourceforge.pmd.rules.XPathRule">
@@ -428,7 +411,7 @@ public class Foo {
 }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -454,7 +437,7 @@ public class Foo {
 }
     
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -486,7 +469,7 @@ public class Foo {
     }
  
      ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -528,7 +511,7 @@ public class Foo {
     }
   
       ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties/>
     </rule>
     <rule name="AbstractClassWithoutAbstractMethod" message="This abstract class does not have any abstract methods" class="net.sourceforge.pmd.rules.XPathRule">
@@ -543,7 +526,7 @@ public abstract class Foo {
 }
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -568,7 +551,7 @@ public class MyClass {
 }
    
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -588,7 +571,7 @@ public void doSomething() {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="SwitchDensity" message="A high ratio of statements to labels in a switch statement.  Consider refactoring." class="net.sourceforge.pmd.rules.design.SwitchDensityRule">
@@ -619,7 +602,7 @@ public void doSomething() {
    }
  
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="minimum" value="10"/>
         </properties>
@@ -642,7 +625,7 @@ try {
 }
                 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="EmptyFinallyBlock" message="Avoid empty finally blocks" class="net.sourceforge.pmd.rules.XPathRule">
@@ -656,7 +639,7 @@ try {
       }
   }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -678,7 +661,7 @@ class Foo{
 }
 
      ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -707,7 +690,7 @@ class Foo{
  }
 }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -780,7 +763,7 @@ public class Foo
 }
 
    ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="reportLevel" value="10"/>
         </properties>
@@ -797,7 +780,7 @@ public class Foo {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="AvoidInstanceofChecksInCatchClause" message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type." class="net.sourceforge.pmd.rules.XPathRule">
@@ -823,7 +806,7 @@ public class Foo {
       }
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -839,6 +822,18 @@ public class Foo {
             </property>
         </properties>
     </rule>
+    <rule name="UnusedImports" message="Avoid unused imports such as ''{0}''" class="net.sourceforge.pmd.rules.UnusedImportsRule">
+        <description>     Avoid unused import statements.     </description>
+        <example><![CDATA[
+
+// this is bad
+import java.io.File;
+public class Foo {}
+
+    ]]></example>
+        <priority>4</priority>
+        <properties/>
+    </rule>
     <rule name="EmptyTryBlock" message="Avoid empty try blocks" class="net.sourceforge.pmd.rules.XPathRule">
         <description>   Avoid empty try blocks - what's the point?       </description>
         <example><![CDATA[
@@ -850,7 +845,7 @@ public class Foo {
       }
   }
       ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -871,7 +866,7 @@ public class MyClass  {
 }
    
         ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -886,18 +881,6 @@ public class MyClass  {
             </property>
         </properties>
     </rule>
-    <rule name="UnusedImports" message="Avoid unused imports such as ''{0}''" class="net.sourceforge.pmd.rules.UnusedImportsRule">
-        <description>     Avoid unused import statements.     </description>
-        <example><![CDATA[
-
-// this is bad
-import java.io.File;
-public class Foo {}
-
-    ]]></example>
-        <priority>3</priority>
-        <properties/>
-    </rule>
     <rule name="EmptyStatementNotInLoop" message="An empty statement (semicolon) not part of a loop" class="net.sourceforge.pmd.rules.XPathRule">
         <description>        An empty statement (aka a semicolon by itself) that is not used        as the sole body of a for loop or while loop is probably a bug.  It        could also be a double semicolon, which is useless and should be        removed.        </description>
         <example><![CDATA[
@@ -911,7 +894,7 @@ public class MyClass {
    }
 }
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -931,6 +914,34 @@ public class MyClass {
             </property>
         </properties>
     </rule>
+    <rule name="UnnecessaryParentheses" message="This return statement may have some unnecessary parentheses" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+      Sometimes return statement expressions are wrapped in unnecessary parentheses,
+ making them look like a function call.
+      </description>
+        <example><![CDATA[
+  public class Foo {
+      boolean bar() {
+          return (true);
+      }
+  }
+      ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                
+//ReturnStatement
+          /Expression
+           /PrimaryExpression
+            /PrimaryPrefix
+             /Expression[count(*)=1]
+              /PrimaryExpression
+              /PrimaryPrefix
+            ]]></value>
+            </property>
+        </properties>
+    </rule>
     <rule name="AvoidFieldNameMatchingMethodName" message="It is somewhat confusing to have a field name with the same name as a method" class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingMethodName">
         <description>       It is somewhat confusing to have a field name with the same name as a method.       While this is totally legal, having information (field) and actions (method) is       not clear naming.       </description>
         <example><![CDATA[
@@ -943,7 +954,7 @@ public class Foo {
 }
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="DefaultLabelNotLastInSwitchStmt" message="The default label should be the last label in a switch statement" class="net.sourceforge.pmd.rules.XPathRule">
@@ -963,7 +974,7 @@ public class Foo {
       }
    
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -993,7 +1004,7 @@ public class Foo {
 
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1012,7 +1023,7 @@ public void methodThrowingException() throws Exception {
 }
                 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="UnusedPrivateField" message="Avoid unused private fields such as ''{0}''" class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule" symboltable="true">
@@ -1029,7 +1040,7 @@ public class Something {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="AccessorClassGeneration" message="Avoid instantiation through private constructors from outside of the constructor's class." class="net.sourceforge.pmd.rules.AccessorClassGeneration">
@@ -1080,7 +1091,7 @@ public class Something {
   }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="AvoidReassigningParameters" message="Avoid reassigning parameters such as ''{0}''" class="net.sourceforge.pmd.rules.AvoidReassigningParameters" symboltable="true">
@@ -1094,7 +1105,7 @@ public class Foo {
 }
 
     ]]></example>
-        <priority>1</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="MissingStaticMethodInNonInstantiatableClass" message="Class cannot be instantiated and does not provide any static methods" class="net.sourceforge.pmd.rules.XPathRule">
@@ -1116,7 +1127,7 @@ public class Foo {
 
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1146,7 +1157,7 @@ public void doSomething() {
 }
 
    ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="minimum" value="100"/>
         </properties>
@@ -1160,7 +1171,7 @@ public void doSomething() {
  public class Bar{}
  
      ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="CouplingBetweenObjects" message="High amount of different objects as memebers donotes a high coupling" class="net.sourceforge.pmd.rules.CouplingBetweenObjects" symboltable="true">
@@ -1186,7 +1197,7 @@ public void doSomething() {
         }
         
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="threshold" value="20"/>
         </properties>
@@ -1201,7 +1212,7 @@ public class Foo extends Bar {
 }
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="IdempotentOperations" message="Avoid idempotent operations (like assigning a variable to itself)" class="net.sourceforge.pmd.rules.IdempotentOperations">
@@ -1216,7 +1227,7 @@ public class Foo extends Bar {
     }
       
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="MethodNamingConventions" message="Method name does not begin with a lower case character." class="net.sourceforge.pmd.rules.MethodNamingConventions">
@@ -1229,7 +1240,7 @@ public class Foo {
 }
 
           ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties/>
     </rule>
     <rule name="OnlyOneReturn" message="A method should have only one exit point, and that should be the last statement in the method" class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule">
@@ -1246,7 +1257,7 @@ public class Foo {
  }
  
      ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="OverrideBothEqualsAndHashcode" message="Ensure you override both equals() and hashCode()" class="net.sourceforge.pmd.rules.XPathRule">
@@ -1276,7 +1287,7 @@ public class Foo {
       }
   }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1316,7 +1327,7 @@ import java.io.File;
 public class Foo {}
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="UnnecessaryConversionTemporary" message="Avoid unnecessary temporaries when converting primitives to Strings" class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporary">
@@ -1329,7 +1340,7 @@ public class Foo {}
       return Integer.toString(x);
     }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="CloneThrowsCloneNotSupportedException" message="clone() method should throw CloneNotSupportedException" class="net.sourceforge.pmd.rules.XPathRule">
@@ -1345,7 +1356,7 @@ public class Foo {}
  }
     
          ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1380,7 +1391,7 @@ and count(NameList/Name[contains
 
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="NonCaseLabelInSwitchStatement" message="A non-case label was present in a switch statement" class="net.sourceforge.pmd.rules.XPathRule">
@@ -1403,7 +1414,7 @@ public class Foo {
 }
    
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1430,7 +1441,7 @@ switch(status) {
 	}
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1441,27 +1452,35 @@ switch(status) {
             </property>
         </properties>
     </rule>
-    <rule name="SimplifyBooleanExpressions" message="Avoid unnecessary comparisons in boolean expressions" class="net.sourceforge.pmd.rules.XPathRule">
-        <description>   Avoid unnecessary comparisons in boolean expressions - this makes simple code seem complicated.       </description>
+    <rule name="UseStringBufferForStringAppends" message="Prefer StringBuffer over += for concatenating strings" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+      Finds usages of += for appending strings.
+           </description>
         <example><![CDATA[
-  
-public class Bar {
- // can be simplified to
- // bar = isFoo();
- private boolean bar = (isFoo() == true);
+      
+         String a;
 
- public isFoo() { return false;}
-}
-  
-      ]]></example>
-        <priority>3</priority>
+         a = "foo";
+         a += " bar";
+
+         // better would be:
+         StringBuffer a = new StringBuffer("foo");
+         a.append(" bar);
+      
+           ]]></example>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-
-//EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-
-              ]]></value>
+                      
+//StatementExpression
+    [PrimaryExpression/PrimaryPrefix/Name
+        [@Image = ancestor::MethodDeclaration//LocalVariableDeclaration
+            [./Type//ClassOrInterfaceType[@Image =
+'String']]/VariableDeclarator/VariableDeclaratorId/@Image]]
+    //AssignmentOperator[@Compound='true']
+                      
+                  ]]></value>
             </property>
         </properties>
     </rule>
@@ -1483,7 +1502,7 @@ return 3;
 
   
   ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1491,6 +1510,30 @@ return 3;
 //*[name()='WhileStatement' or name()='IfStatement'][Expression//AssignmentOperator]
                     
                 ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="SimplifyBooleanExpressions" message="Avoid unnecessary comparisons in boolean expressions" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>   Avoid unnecessary comparisons in boolean expressions - this makes simple code seem complicated.       </description>
+        <example><![CDATA[
+  
+public class Bar {
+ // can be simplified to
+ // bar = isFoo();
+ private boolean bar = (isFoo() == true);
+
+ public isFoo() { return false;}
+}
+  
+      ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+
+//EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+
+              ]]></value>
             </property>
         </properties>
     </rule>
@@ -1503,7 +1546,7 @@ return 3;
   }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1536,28 +1579,10 @@ public class Foo {
 }
 
    ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="minimum" value="1000"/>
         </properties>
-    </rule>
-    <rule name="ArrayIsStoredDirectly" message="A user given array is stored directly" class="net.sourceforge.pmd.rules.sunsecure.ArrayIsStoredDirectly">
-        <description>       Constructors and methods receiving arrays shuold clone objects and store the copy.       This prevents that future changes from the user affect the internal functionallity.       </description>
-        <example><![CDATA[
-  
-  public class Foo {
-  private String [] x;
-  
-      public void foo (String [] param) {
-          // Don't do this, make a copy of the array at least
-          this.x=param;
-      }
-  }
-  
-  
-      ]]></example>
-        <priority>3</priority>
-        <properties/>
     </rule>
     <rule name="ProperCloneImplementation" message="Object clone() should be implemented with super.clone()" class="net.sourceforge.pmd.rules.XPathRule">
         <description>      Object clone() should be implemented with super.clone()      </description>
@@ -1570,7 +1595,7 @@ class Foo{
 }
 
      ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1600,7 +1625,7 @@ public class Foo {
 }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1610,6 +1635,47 @@ public class Foo {
   [not(FormalParameters/*)]
                     
                 ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="SimplifyConditional" message="No need to check for null before an instanceof" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+      No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
+           </description>
+        <example><![CDATA[
+      
+class Foo {
+ void bar(Object x) {
+  if (x != null && x instanceof Bar) {
+   // just drop the "x != null" check
+  }
+ }
+}      
+           ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                      
+//Expression
+ [ConditionalOrExpression
+ [EqualityExpression[@Image='==']
+  //NullLiteral
+  and
+  UnaryExpressionNotPlusMinus
+   [@Image='!']//InstanceOfExpression[PrimaryExpression
+     //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
+      //PrimaryPrefix/Name/@Image]]
+or
+ConditionalAndExpression
+ [EqualityExpression[@Image='!=']//NullLiteral
+ and
+InstanceOfExpression
+ [PrimaryExpression
+  //Name/@Image = ancestor::ConditionalAndExpression
+   /EqualityExpression//PrimaryPrefix/Name/@Image]]
+ 
+                  ]]></value>
             </property>
         </properties>
     </rule>
@@ -1632,7 +1698,7 @@ public class Foo {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="ConfusingTernary" message="Avoid if (x != y) ..; else ..;" class="net.sourceforge.pmd.rules.design.ConfusingTernary">
@@ -1642,7 +1708,7 @@ public class Foo {
           return (x != y) ? diff : same;
           
         ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="UnnecessaryReturn" message="Avoid unnecessary return statements" class="net.sourceforge.pmd.rules.XPathRule">
@@ -1654,7 +1720,7 @@ public class Foo {
       return;
   }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1681,7 +1747,7 @@ class Foo{
 }
 
      ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1704,7 +1770,7 @@ class Foo{
    public class Foo {}
 
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1718,6 +1784,24 @@ class Foo{
             </property>
         </properties>
     </rule>
+    <rule name="SingularField" message="Perhaps ''{0}'' could be replaced by a local variable." class="net.sourceforge.pmd.rules.SingularField">
+        <description>
+              A field that's only used by one method could perhaps be replaced by a local variable
+          </description>
+        <example><![CDATA[
+
+public class Foo {
+    private int x;
+    public void foo(int y) {
+     x = y + 5;
+     return x;
+    }
+}
+
+          ]]></example>
+        <priority>4</priority>
+        <properties/>
+    </rule>
     <rule name="SuspiciousOctalEscape" message="Suspicious decimal characters following octal escape in string literal" class="net.sourceforge.pmd.rules.SuspiciousOctalEscape">
         <description>       A suspicious octal escape sequence was found inside a String literal.       The Java language specification (section 3.10.6) says an octal       escape sequence inside a literal String shall consist of a backslash       followed by:             OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit        Any octal escape sequence followed by non-octal digits can be confusing,       e.g. "\038" is interpreted as the octal escape sequence "\03" followed by       the literal character "8".       </description>
         <example><![CDATA[
@@ -1730,7 +1814,7 @@ class Foo{
  }
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="EmptyCatchBlock" message="Avoid empty catch blocks" class="net.sourceforge.pmd.rules.XPathRule">
@@ -1744,7 +1828,7 @@ class Foo{
       }
     }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1771,7 +1855,7 @@ class Foo{
       }
   }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1793,7 +1877,7 @@ public class SimpleTest extends TestCase {
 }
 
           ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1815,7 +1899,7 @@ public class Foo {
 }
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="SuspiciousConstantFieldName" message="The field name indicates a constants but its modifiers don't" class="net.sourceforge.pmd.rules.XPathRule">
@@ -1831,7 +1915,7 @@ public class Foo {
 }
     
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1861,7 +1945,7 @@ public class Foo {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="threshold" value="4"/>
         </properties>
@@ -1875,7 +1959,7 @@ public class Something {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="EmptyStaticInitializer" message="Empty static initializer was found" class="net.sourceforge.pmd.rules.XPathRule">
@@ -1886,7 +1970,7 @@ public class Something {
   static {}
  }
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1906,7 +1990,7 @@ public class Something {
    }
            
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1935,7 +2019,7 @@ class Example {
 }
 }  
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1965,7 +2049,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
  }
  
      ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -1983,7 +2067,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
     // not good
   }
        ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2003,7 +2087,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
    }
 
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2012,30 +2096,6 @@ PrimarySuffix/Arguments/ArgumentList/Expression
       /Block[count(*)=0]
 
                 ]]></value>
-            </property>
-        </properties>
-    </rule>
-    <rule name="BooleanInstantiation" message="Avoid instantiating Boolean objects; you can usually invoke Boolean.valueOf() instead." class="net.sourceforge.pmd.rules.XPathRule">
-        <description>    Avoid instantiating Boolean objects, instead use Boolean.valueOf().    </description>
-        <example><![CDATA[
-   
-public class Foo {
- private Boolean bar = new Boolean("true"); // just do a Boolean bar = Boolean.TRUE or Boolean.valueOf(true);
-}
-   
-   ]]></example>
-        <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-
-//AllocationExpression[not (ArrayDimsAndInits)
-                       and
-                       (ClassOrInterfaceType/@Image='Boolean'
-                       or
-                       ClassOrInterfaceType/@Image='java.lang.Boolean')]
-
-              ]]></value>
             </property>
         </properties>
     </rule>
@@ -2052,11 +2112,35 @@ public class Foo {
    }
   }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
                   //SwitchStatement[count(*) = 1]
+              ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="BooleanInstantiation" message="Avoid instantiating Boolean objects; you can usually invoke Boolean.valueOf() instead." class="net.sourceforge.pmd.rules.XPathRule">
+        <description>    Avoid instantiating Boolean objects, instead use Boolean.valueOf().    </description>
+        <example><![CDATA[
+   
+public class Foo {
+ private Boolean bar = new Boolean("true"); // just do a Boolean bar = Boolean.TRUE or Boolean.valueOf(true);
+}
+   
+   ]]></example>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+
+//AllocationExpression[not (ArrayDimsAndInits)
+                       and
+                       (ClassOrInterfaceType/@Image='Boolean'
+                       or
+                       ClassOrInterfaceType/@Image='java.lang.Boolean')]
+
               ]]></value>
             </property>
         </properties>
@@ -2074,7 +2158,7 @@ public class Foo {
   }
  }
      ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2102,7 +2186,7 @@ public class MaybeASingleton {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="SimpleDateFormatNeedsLocale" message="When instantiating a SimpleDateFormat object, specify a Locale" class="net.sourceforge.pmd.rules.XPathRule">
@@ -2115,7 +2199,7 @@ public class MaybeASingleton {
     }
         
         ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2138,8 +2222,30 @@ public class Foo {
  }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
+    </rule>
+    <rule name="UnconditionalIfStatement" message="Do not use 'if' statements that are always true or always false" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>       Do not use "if" statements that are always true or always false.       </description>
+        <example><![CDATA[
+  public class Foo {
+ public void close() {
+  if (true) {
+       // ...
+   }
+ }
+}
+      ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+ //IfStatement/Expression
+ [count(PrimaryExpression)=1]
+ /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+                ]]></value>
+            </property>
+        </properties>
     </rule>
     <rule name="AvoidCallingFinalize" message="Avoid calling finalize() explicitly" class="net.sourceforge.pmd.rules.XPathRule">
         <description>   finalize() is called by the garbage collector on an object when garbage collection determines   that there are no more references to the object.       </description>
@@ -2153,7 +2259,7 @@ public class Foo {
 
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2172,28 +2278,6 @@ or @Image='finalize'
             </property>
         </properties>
     </rule>
-    <rule name="UnconditionalIfStatement" message="Do not use 'if' statements that are always true or always false" class="net.sourceforge.pmd.rules.XPathRule">
-        <description>       Do not use "if" statements that are always true or always false.       </description>
-        <example><![CDATA[
-  public class Foo {
- public void close() {
-  if (true) {
-       // ...
-   }
- }
-}
-      ]]></example>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
- //IfStatement/Expression
- [count(PrimaryExpression)=1]
- /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-                ]]></value>
-            </property>
-        </properties>
-    </rule>
     <rule name="AvoidProtectedFieldInFinalClass" message="Avoid protected fields in a final class.  Change to private or package access." class="net.sourceforge.pmd.rules.XPathRule">
         <description>      Do not use protected fields in final classes since they cannot be subclassed.     Clarify your intent by using private or package access modifiers instead.          </description>
         <example><![CDATA[
@@ -2203,7 +2287,7 @@ or @Image='finalize'
       Bar() {}
    }
          ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2221,7 +2305,7 @@ or @Image='finalize'
 throw new Exception();
 
     ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2248,7 +2332,7 @@ throw new Exception();
   }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="AvoidCatchingNPE" message="Avoid catching NullPointerException; consider removing the cause of the NPE." class="net.sourceforge.pmd.rules.XPathRule">
@@ -2261,7 +2345,7 @@ try {
 }
 
          ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2293,26 +2377,40 @@ public class Foo {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
-            <property name="problemDepth" value="4"/>
+            <property name="problemDepth" value="5"/>
         </properties>
     </rule>
-    <rule name="ExcessiveParameterList" message="Avoid really long parameter lists." class="net.sourceforge.pmd.rules.design.LongParameterListRule">
-        <description> This checks to make sure that the Parameter Lists in the project aren't getting too long.  If there are long parameter lists, then that is generally indicative that another object is hiding around there.  Basically, try to group the parameters together.  Default value is 2.5 sigma greater than the mean.  NOTE:  In version 0.9 and higher, their are three parameters available: minimum - Minimum Length before reporting. sigma - Std Deviations away from the mean before reporting. topscore - The Maximum Number of reports to generate.  At this time, only one can be used at a time.     </description>
+    <rule name="SimplifyStartsWith" message="This call to String.startsWith can be rewritten using String.charAt(0)" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+      Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
+      </description>
         <example><![CDATA[
-
-public void addData(
-  int p00, int p01, int p02, int p03, int p04, int p05,
-  int p05, int p06, int p07, int p08, int p09, int p10) {
-
+  public class Foo {
+      boolean checkIt(String x) {
+          return x.startsWith("a");
+      }
   }
-}
-
-   ]]></example>
-        <priority>3</priority>
+      ]]></example>
+        <priority>4</priority>
         <properties>
-            <property name="minimum" value="10"/>
+            <property name="xpath">
+                <value><![CDATA[
+                
+//PrimaryExpression
+ [PrimaryPrefix/Name
+  [ends-with(@Image, '.startsWith')]]
+ [PrimarySuffix/Arguments/ArgumentList
+  /Expression/PrimaryExpression/PrimaryPrefix
+  /Literal
+   [string-length(@Image)=3]
+   [starts-with(@Image, '"')]
+   [ends-with(@Image, '"')]
+ ]
+ 
+            ]]></value>
+            </property>
         </properties>
     </rule>
     <rule name="AvoidInstantiatingObjectsInLoops" message="Avoid instantiating new objects inside loops" class="net.sourceforge.pmd.rules.optimization.AvoidInstantiatingObjectsInLoops">
@@ -2328,8 +2426,25 @@ public class Something {
 }
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
+    </rule>
+    <rule name="ExcessiveParameterList" message="Avoid really long parameter lists." class="net.sourceforge.pmd.rules.design.LongParameterListRule">
+        <description> This checks to make sure that the Parameter Lists in the project aren't getting too long.  If there are long parameter lists, then that is generally indicative that another object is hiding around there.  Basically, try to group the parameters together.  Default value is 2.5 sigma greater than the mean.  NOTE:  In version 0.9 and higher, their are three parameters available: minimum - Minimum Length before reporting. sigma - Std Deviations away from the mean before reporting. topscore - The Maximum Number of reports to generate.  At this time, only one can be used at a time.     </description>
+        <example><![CDATA[
+
+public void addData(
+  int p00, int p01, int p02, int p03, int p04, int p05,
+  int p05, int p06, int p07, int p08, int p09, int p10) {
+
+  }
+}
+
+   ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="minimum" value="10"/>
+        </properties>
     </rule>
     <rule name="NullAssignment" message="Assigning an Object to null is a code smell.  Consider refactoring." class="net.sourceforge.pmd.rules.design.NullAssignmentRule">
         <description>  Assigning a "null" to a variable (outside of its declaration) is usually in  bad form.  Some times, the assignment is an indication that the programmer doesn't  completely understand what is going on in the code.  NOTE: This sort of assignment  may in rare cases be useful to encourage garbage collection.  If that's what you're using  it for, by all means, disregard this rule :-)       </description>
@@ -2347,7 +2462,7 @@ public class Something {
 
  
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="IfElseStmtsMustUseBraces" message="Avoid using 'if...else' statements without curly braces" class="net.sourceforge.pmd.rules.XPathRule">
@@ -2367,7 +2482,7 @@ public class Something {
      }
    
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2381,22 +2496,6 @@ public class Something {
             </property>
         </properties>
     </rule>
-    <rule name="EmptyIfStmt" message="Avoid empty 'if' statements" class="net.sourceforge.pmd.rules.XPathRule">
-        <description>   Empty If Statement finds instances where a condition is checked but nothing is done about it.     </description>
-        <example><![CDATA[
-    if (foo == 0) {
-       // why bother checking up on foo?
-    }
-       ]]></example>
-        <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-                  //IfStatement/Statement/Block[count(*) = 0]
-              ]]></value>
-            </property>
-        </properties>
-    </rule>
     <rule name="StringInstantiation" message="Avoid instantiating String objects; this is usually unnecessary." class="net.sourceforge.pmd.rules.XPathRule">
         <description>     Avoid instantiating String objects; this is usually unnecessary.     </description>
         <example><![CDATA[
@@ -2406,7 +2505,7 @@ public class Foo {
 }
 
     ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2414,6 +2513,22 @@ public class Foo {
     //AllocationExpression[ClassOrInterfaceType/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]
                     
                ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="EmptyIfStmt" message="Avoid empty 'if' statements" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>   Empty If Statement finds instances where a condition is checked but nothing is done about it.     </description>
+        <example><![CDATA[
+    if (foo == 0) {
+       // why bother checking up on foo?
+    }
+       ]]></example>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                  //IfStatement/Statement/Block[count(*) = 0]
+              ]]></value>
             </property>
         </properties>
     </rule>
@@ -2427,7 +2542,7 @@ public class Foo {
     }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2452,7 +2567,7 @@ public class Foo {
     }
     
         ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2484,7 +2599,7 @@ public class Foo {
            }
   
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
     </rule>
     <rule name="BadComparison" message="Avoid equality comparisons with Double.NaN" class="net.sourceforge.pmd.rules.XPathRule">
@@ -2496,7 +2611,7 @@ int x = (y == Double.NaN);
 }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2528,7 +2643,7 @@ public class Something {
 
 
     ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[//VariableDeclaratorId[string-length(@Image) > 32]]]></value>
@@ -2543,7 +2658,7 @@ public class Something {
 public class Foo {}
 
       ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties/>
     </rule>
     <rule name="DoubleCheckedLocking" message="Double checked locking is not thread safe in Java." class="net.sourceforge.pmd.rules.DoubleCheckedLocking">
@@ -2563,8 +2678,38 @@ public class Foo {}
       }
   }
       ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties/>
+    </rule>
+    <rule name="CollapsibleIfStatements" message="These nested if statements could be combined" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+      Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+      </description>
+        <example><![CDATA[
+  public class Foo {
+      void bar() {
+          if (x) {
+           if (y) {
+             // do stuff
+           }
+          }
+      }
+  }
+      ]]></example>
+        <priority>5</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                
+//IfStatement[@Else='false']/Statement
+ /IfStatement[@Else='false']
+ |
+//IfStatement[@Else='false']/Statement
+ /Block[count(BlockStatement)=1]/BlockStatement
+  /Statement/IfStatement[@Else='false']
+            ]]></value>
+            </property>
+        </properties>
     </rule>
     <rule name="UseNotifyAllInsteadOfNotify" message="Call Thread.notifyAll() rather than Thread.notify()" class="net.sourceforge.pmd.rules.XPathRule">
         <description>       notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only       one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call notifyAll() instead.       </description>
@@ -2576,7 +2721,7 @@ public class Foo {}
 	x.notifyAll();
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2596,27 +2741,6 @@ or (  ./AllocationExpression
             </property>
         </properties>
     </rule>
-    <rule name="ShortMethodName" message="Avoid using short method names" class="net.sourceforge.pmd.rules.XPathRule">
-        <description> Detects when very short method names are used.      </description>
-        <example><![CDATA[
-
-public class ShortMethod {
-  public void a( int i ) { // Violation
-  }
-}
-
-     ]]></example>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-                  
-    //MethodDeclarator[string-length(@Image) < 3]
-                  
-              ]]></value>
-            </property>
-        </properties>
-    </rule>
     <rule name="LocalVariableCouldBeFinal" message="Local variable could be declared final" class="net.sourceforge.pmd.rules.optimization.LocalVariableCouldBeFinal">
         <description>       A local variable assigned only once can be declared final.       </description>
         <example><![CDATA[
@@ -2628,8 +2752,29 @@ public class ShortMethod {
   }
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
+    </rule>
+    <rule name="ShortMethodName" message="Avoid using short method names" class="net.sourceforge.pmd.rules.XPathRule">
+        <description> Detects when very short method names are used.      </description>
+        <example><![CDATA[
+
+public class ShortMethod {
+  public void a( int i ) { // Violation
+  }
+}
+
+     ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                  
+    //MethodDeclarator[string-length(@Image) < 3]
+                  
+              ]]></value>
+            </property>
+        </properties>
     </rule>
     <rule name="AvoidConcatenatingNonLiteralsInStringBuffer" message="Avoid concatenating non literals in a StringBuffer constructor or append()" class="net.sourceforge.pmd.rules.AvoidConcatenatingNonLiteralsInStringBuffer">
         <description>     Avoid concatenating non literals in a StringBuffer constructor or append().     </description>
@@ -2646,7 +2791,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
 
 
     ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties/>
     </rule>
     <rule name="SystemPrintln" message="System.out.println is used" class="net.sourceforge.pmd.rules.XPathRule">
@@ -2664,7 +2809,7 @@ class Foo{
 }
 
      ]]></example>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2692,7 +2837,7 @@ public class Foo {
 }
 
        ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2718,36 +2863,11 @@ public class Foo {
       synchronized (this) {}
   }
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
                   //SynchronizedStatement/Block[1][count(*) = 0]
-              ]]></value>
-            </property>
-        </properties>
-    </rule>
-    <rule name="SwitchStmtsShouldHaveDefault" message="Switch statements should have a default label" class="net.sourceforge.pmd.rules.XPathRule">
-        <description>     Switch statements should have a default label.     </description>
-        <example><![CDATA[
-
-public class Foo {
- public void bar() {
-  int x = 2;
-  switch (x) {
-   case 2: int j = 8;
-  }
- }
-}
-
-    ]]></example>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-                  
-    //SwitchStatement[not(SwitchLabel[count(*) = 0])]
-                  
               ]]></value>
             </property>
         </properties>
@@ -2767,7 +2887,7 @@ public final class Foo {
 
 
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -2776,6 +2896,54 @@ public final class Foo {
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
     
               ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="SwitchStmtsShouldHaveDefault" message="Switch statements should have a default label" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>     Switch statements should have a default label.     </description>
+        <example><![CDATA[
+
+public class Foo {
+ public void bar() {
+  int x = 2;
+  switch (x) {
+   case 2: int j = 8;
+  }
+ }
+}
+
+    ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                  
+    //SwitchStatement[not(SwitchLabel[count(*) = 0])]
+                  
+              ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="FinalizeOverloaded" message="Finalize methods should not be overloaded" class="net.sourceforge.pmd.rules.XPathRule">
+        <description>    Methods named finalize() should not have parameters.  It is    confusing and probably a bug to overload finalize().  It will    not be called by the VM.    </description>
+        <example><![CDATA[
+
+   public class Foo {
+       // this is confusing and probably a bug
+       protected void finalize(int a) {
+       }
+   }
+
+   ]]></example>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+
+//MethodDeclaration
+ /MethodDeclarator[@Image='finalize'][FormalParameters[count(*)>0]]
+
+            ]]></value>
             </property>
         </properties>
     </rule>
@@ -2798,30 +2966,7 @@ public final class Foo {
   Identifies x as being eligible for making final.
   
       ]]></example>
-        <priority>3</priority>
+        <priority>4</priority>
         <properties/>
-    </rule>
-    <rule name="FinalizeOverloaded" message="Finalize methods should not be overloaded" class="net.sourceforge.pmd.rules.XPathRule">
-        <description>    Methods named finalize() should not have parameters.  It is    confusing and probably a bug to overload finalize().  It will    not be called by the VM.    </description>
-        <example><![CDATA[
-
-   public class Foo {
-       // this is confusing and probably a bug
-       protected void finalize(int a) {
-       }
-   }
-
-   ]]></example>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-
-//MethodDeclaration
- /MethodDeclarator[@Image='finalize'][FormalParameters[count(*)>0]]
-
-            ]]></value>
-            </property>
-        </properties>
     </rule>
 </ruleset>
