@@ -18,6 +18,9 @@ import java.util.StringTokenizer;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.eclipse.model.ModelException;
+import net.sourceforge.pmd.eclipse.model.ModelFactory;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,6 +53,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.26  2005/06/30 23:23:47  phherlin
+ * Refactoring the addition of new rules to the preferences
+ *
  * Revision 1.25  2005/06/29 21:38:50  phherlin
  * Applying patches from Brian Remedios
  *
@@ -531,9 +537,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
         Iterator i = newRules.iterator();
         while (i.hasNext()) {
             Rule rule = (Rule) i.next();
-            try {
-                ruleSet.getRuleByName(rule.getName());
-            } catch (RuntimeException e) {
+            if (this.ruleSet.getRuleByName(rule.getName()) == null) {
                 addedRules.add(rule);
             }
         }
@@ -545,6 +549,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
      * Add new rules to already configured projects
      */
     private void addNewRulesToConfiguredProjects(Set addedRules, IProgressMonitor monitor) {
+        log.debug("Add new rules to configured projects");
         RuleSet addedRuleSet = new RuleSet();
         Iterator ruleIterator = addedRules.iterator();
         while (ruleIterator.hasNext()) {
@@ -563,10 +568,15 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
             }
 
             if (projects[i].isAccessible()) {
-                RuleSet projectRuleSet = getRuleSetForResource(projects[i], false);
-                if (projectRuleSet != null) {
-                    projectRuleSet.addRuleSet(addedRuleSet);
-                    storeRuleSetForResource(projects[i], projectRuleSet);
+                try {
+                    ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(projects[i]);
+                    RuleSet projectRuleSet = model.getProjectRuleSet();
+                    if (projectRuleSet != null) {
+                        projectRuleSet.addRuleSet(addedRuleSet);
+                        model.sync();
+                    }
+                } catch (ModelException e) {
+                    logError("Unable to add new rules for project: " + projects[i], e);
                 }
             }
 
