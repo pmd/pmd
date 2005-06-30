@@ -74,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2005/06/30 23:25:03  phherlin
+ * Fix project rule set synchronization with the plugin rule set
+ *
  * Revision 1.6  2005/06/11 22:11:31  phherlin
  * Fixing the project ruleset management
  *
@@ -123,7 +126,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         this.projectRuleSet = PMDPlugin.getDefault().getRuleSet();
 
         try {
-            this.loadProperties();
+            loadProperties();
         } catch (Exception e) {
             log.warn("Cannot load properties for project " + this.project.getName(), e);
         }
@@ -140,6 +143,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isPmdEnabled()
      */
     public boolean isPmdEnabled() throws ModelException {
+        log.info("Query if PMD is enabled for project " + this.project.getName() + ": " + this.pmdEnabled);
         return this.pmdEnabled;
     }
 
@@ -147,7 +151,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setPmdEnabled(boolean)
      */
     public void setPmdEnabled(final boolean pmdEnabled) throws ModelException {
-        log.info("Enable PMD for project " + this.project.getName() + " : " + pmdEnabled);
+        log.info("Enable PMD for project " + this.project.getName() + ": " + this.pmdEnabled);
         if (this.pmdEnabled != pmdEnabled) {
             this.pmdEnabled = pmdEnabled;
             this.needRebuild |= pmdEnabled;
@@ -158,9 +162,10 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#getProjectRuleSet()
      */
     public RuleSet getProjectRuleSet() throws ModelException {
-        if (!this.isRuleSetStoredInProject()) {
-            if (this.synchronizeRuleSet()) {
-                this.sync();
+        log.info("Query the rule set for project " + this.project.getName());
+        if (!isRuleSetStoredInProject()) {
+            if (synchronizeRuleSet()) {
+                sync();
             }
         }
 
@@ -177,8 +182,8 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         }
 
         this.projectRuleSet = projectRuleSet;
-        if (this.synchronizeRuleSet()) {
-            this.sync();
+        if (synchronizeRuleSet()) {
+            sync();
             this.needRebuild = true;
         }
     }
@@ -187,6 +192,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isRuleSetStoredInProject()
      */
     public boolean isRuleSetStoredInProject() throws ModelException {
+        log.info("Query if the rule set is stored in project " + this.project.getName() + ": " + this.ruleSetStoredInProject);
         return this.ruleSetStoredInProject;
     }
 
@@ -194,14 +200,14 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setRuleSetStoredInProject(boolean)
      */
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws ModelException {
-        log.info("Set rule set stored in project for project " + this.project.getName() + " : " + ruleSetStoredInProject);
+        log.info("Set rule set stored in project for project " + this.project.getName() + ": " + ruleSetStoredInProject);
         this.ruleSetStoredInProject = ruleSetStoredInProject;
         if (this.ruleSetStoredInProject) {
-            if (!this.isRuleSetFileExist()) {
+            if (!isRuleSetFileExist()) {
                 throw new ModelException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
             }
         } else {
-            this.setProjectRuleSet(PMDPlugin.getDefault().getRuleSet());
+            setProjectRuleSet(PMDPlugin.getDefault().getRuleSet());
         }
     }
 
@@ -209,6 +215,8 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#getProjectWorkingSet()
      */
     public IWorkingSet getProjectWorkingSet() throws ModelException {
+        log.info("Query working set for project " + this.project.getName() + ": "
+                + (this.projectWorkingSet == null ? "none" : this.projectWorkingSet.getName()));
         return this.projectWorkingSet;
     }
 
@@ -216,7 +224,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setProjectWorkingSet(org.eclipse.ui.IWorkingSet)
      */
     public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) throws ModelException {
-        log.info("Set working set for project " + this.project.getName() + " : "
+        log.info("Set working set for project " + this.project.getName() + ": "
                 + (projectWorkingSet == null ? "none" : projectWorkingSet.getName()));
 
         this.projectWorkingSet = projectWorkingSet;
@@ -226,7 +234,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isNeedRebuild()
      */
     public boolean isNeedRebuild() {
-        log.debug("Query if project " + this.project.getName() + " need rebuild : " + (this.pmdEnabled && this.needRebuild));
+        log.info("Query if project " + this.project.getName() + " need rebuild : " + (this.pmdEnabled && this.needRebuild));
         log.debug("   PMD Enabled = " + this.pmdEnabled);
         log.debug("   Project need rebuild = " + this.needRebuild);
         return this.pmdEnabled && this.needRebuild;
@@ -236,6 +244,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setNeedRebuild()
      */
     public void setNeedRebuild(final boolean needRebuild) {
+        log.info("Set if rebuild is needed for project " + this.project.getName() + ": " + needRebuild);
         this.needRebuild = needRebuild;
     }
 
@@ -243,6 +252,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isRuleSetFileExist()
      */
     public final boolean isRuleSetFileExist() {
+        log.info("Query if rule set file exists for project " + this.project.getName());
         final IFile file = this.project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
         return file.exists() && file.isAccessible();
     }
@@ -252,6 +262,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      *
      */
     public void createDefaultRuleSetFile() throws ModelException {
+        log.info("Create a default rule set file for project " + this.project.getName());
         try {
             final RuleSetWriter writer = new RuleSetWriterImpl();
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -280,11 +291,12 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
      */
     public void sync() throws ModelException {
+        log.info("Commit properties for project " + this.project.getName());
         try {
             if (this.pmdEnabled) {
-                PMDNature.addPMDNature(this.project, this.getMonitor());
+                PMDNature.addPMDNature(this.project, getMonitor());
             } else {
-                PMDNature.removePMDNature(this.project, this.getMonitor());
+                PMDNature.removePMDNature(this.project, getMonitor());
             }
             
             saveProperties();
@@ -303,24 +315,21 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      *  
      */
     private boolean synchronizeRuleSet() {
+        log.debug("Synchronizing the project ruleset with the plugin ruleset");
         final RuleSet pluginRuleSet = PMDPlugin.getDefault().getRuleSet();
         boolean flChanged = false;
 
-        if (this.projectRuleSet.equals(pluginRuleSet)) {
-            this.projectRuleSet = pluginRuleSet;
-        } else {
+        if (!this.projectRuleSet.getRules().equals(pluginRuleSet.getRules())) {
+            log.debug("The project ruleset is different from the plugin ruleset");
+            
             // 1-If rules have been deleted from preferences
             // delete them also from the project ruleset
             final Iterator i = this.projectRuleSet.getRules().iterator();
             while (i.hasNext()) {
                 final Rule projectRule = (Rule) i.next();
-                try {
-                    // @PMD:REVIEWED:UnusedLocalVariable: by Herlin on 15/05/05
-                    // 19:37
-                    // a if (pluginRule == null) would be better but this is how
-                    // PMD works !
-                    final Rule pluginRule = pluginRuleSet.getRuleByName(projectRule.getName());
-                } catch (RuntimeException e) {
+                final Rule pluginRule = pluginRuleSet.getRuleByName(projectRule.getName());
+                if (pluginRule == null) {
+                    log.debug("The rule " + projectRule.getName() + " is no more defined in the plugin ruleset. Remove it.");
                     i.remove();
                 }
             }
@@ -333,7 +342,10 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             while (k.hasNext()) {
                 final Rule projectRule = (Rule) k.next();
                 final Rule pluginRule = pluginRuleSet.getRuleByName(projectRule.getName());
-                ruleSet.addRule(pluginRule);
+                if (pluginRule != null) {
+                    log.debug("Keeping rule " + projectRule.getName());
+                    ruleSet.addRule(pluginRule);
+                }
             }
             this.projectRuleSet = ruleSet;
 
@@ -356,13 +368,13 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         if (projectProperties == null) {
             log.info("Project properties not found. Use default.");
         } else {
-            this.setWorkingSetFromProperties(projectProperties.getWorkingSetName());
+            setWorkingSetFromProperties(projectProperties.getWorkingSetName());
             this.ruleSetStoredInProject = projectProperties.isRuleSetStoredInProject();
             this.pmdEnabled = this.project.hasNature(PMDNature.PMD_NATURE);
             if (this.ruleSetStoredInProject) {
-                this.loadRuleSetFromProject();
+                loadRuleSetFromProject();
             } else {
-                this.setRuleSetFromProperties(projectProperties.getRules());
+                setRuleSetFromProperties(projectProperties.getRules());
             }
             
             log.debug("Project properties loaded");
@@ -403,7 +415,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      *
      */
     private void loadRuleSetFromProject() {
-        if (!this.isRuleSetFileExist()) {
+        if (!isRuleSetFileExist()) {
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
                 final IFile ruleSetFile = this.project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
@@ -425,7 +437,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             bean.setWorkingSetName(this.projectWorkingSet == null ? null : this.projectWorkingSet.getName());
 
             if (this.ruleSetStoredInProject) {
-                this.loadRuleSetFromProject();
+                loadRuleSetFromProject();
             } else {
                 final List rules = new ArrayList();
                 final Iterator i = this.projectRuleSet.getRules().iterator();
@@ -436,6 +448,6 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
                 bean.setRules((RuleSpecTO[]) rules.toArray(new RuleSpecTO[rules.size()]));
             }
 
-            this.propertiesDao.writeProjectProperties(this.project, bean, this.getMonitor());
+            this.propertiesDao.writeProjectProperties(this.project, bean, getMonitor());
     }
 }
