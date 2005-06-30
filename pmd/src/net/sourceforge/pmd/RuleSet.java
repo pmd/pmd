@@ -72,7 +72,6 @@ public class RuleSet {
                 rule = r;
             }
         }
-        
         return rule;
     }
 

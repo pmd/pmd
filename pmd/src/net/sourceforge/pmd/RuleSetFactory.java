@@ -11,6 +11,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -151,12 +152,29 @@ public class RuleSetFactory {
             }
 
             return ruleSet;
+        } catch (IllegalArgumentException illae) {
+            throw illae;    // this is hideous, but see not in catch Exception block...
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
             throw new RuntimeException("Couldn't find that class " + cnfe.getMessage());
+        } catch (InstantiationException ie) {
+            ie.printStackTrace();
+            throw new RuntimeException("Couldn't find that class " + ie.getMessage());
+        } catch (IllegalAccessException iae) {
+            iae.printStackTrace();
+            throw new RuntimeException("Couldn't find that class " + iae.getMessage());
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+            throw new RuntimeException("Couldn't find that class " + pce.getMessage());
         } catch (Exception e) {
+            /*
+            I hate to catch Exception, but I need to catch SaxException, and
+            I can't figure out where it's declared.  It's not in our pmd/lib jar files;
+            it must be buried in the JDK somewhere.  If anyone knows how to fix this, pls
+            let me know.... thanks!
+            */
             e.printStackTrace();
-            throw new RuntimeException("Couldn't read from that source: " + e.getMessage());
+            throw new RuntimeException("Couldn't find that class " + e.getMessage());
         }
     }
 
@@ -208,7 +226,7 @@ public class RuleSetFactory {
         rule.setMessage(ruleElement.getAttribute("message"));
         rule.setRuleSetName(ruleSet.getName());
         rule.setExternalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
-        
+
         if (ruleElement.hasAttribute("dfa") && ruleElement.getAttribute("dfa").equals("true")) {
             rule.setUsesDFA();
         }
@@ -257,12 +275,15 @@ public class RuleSetFactory {
      * @param ruleSet the ruleset being constructed
      * @param ref     a reference to a rule
      */
-    private void parseRuleNodeWithSimpleReference(RuleSet ruleSet, Node ruleNode, String ref) throws RuleSetNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void parseRuleNodeWithSimpleReference(RuleSet ruleSet, Node ruleNode, String ref) throws RuleSetNotFoundException {
         RuleSetFactory rsf = new RuleSetFactory();
 
         ExternalRuleID externalRuleID = new ExternalRuleID(ref);
         RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
         Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
+        if (externalRule == null) {
+            throw new IllegalArgumentException("Unable to find rule " + externalRuleID.getRuleName() + "; perhaps the rule name is mispelled?");
+        }
 
         OverrideParser p = new OverrideParser((Element)ruleNode);
         p.overrideAsNecessary(externalRule);

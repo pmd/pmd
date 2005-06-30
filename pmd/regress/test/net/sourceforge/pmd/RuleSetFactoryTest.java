@@ -145,12 +145,31 @@ public class RuleSetFactoryTest extends TestCase {
         assertEquals("TestMessageOverride", r.getMessage());
     }
 
+    public void testExternalRef() {
+        try {
+            loadFirstRule(REF_MISPELLED_XREF);
+            fail("Whoa, should have gotten an IllegalArgumentException");
+        } catch (IllegalArgumentException iae) {
+            // cool
+        }
+
+    }
+
     private static final String REF_OVERRIDE_ORIGINAL_NAME =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
             " <description>testdesc</description>" + PMD.EOL +
             " <rule " + PMD.EOL +
             "  ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"> " + PMD.EOL +
+            " </rule>" + PMD.EOL +
+            "</ruleset>";
+
+    private static final String REF_MISPELLED_XREF =
+            "<?xml version=\"1.0\"?>" + PMD.EOL +
+            "<ruleset name=\"test\">" + PMD.EOL +
+            " <description>testdesc</description>" + PMD.EOL +
+            " <rule " + PMD.EOL +
+            "  ref=\"rulesets/unusedcode.xml/FooUnusedLocalVariable\"> " + PMD.EOL +
             " </rule>" + PMD.EOL +
             "</ruleset>";
 
@@ -287,7 +306,8 @@ public class RuleSetFactoryTest extends TestCase {
 
 
     private Rule loadFirstRule(String ruleSetName) {
-        return ((Rule)(loadRuleSet(ruleSetName).getRules().iterator().next()));
+        RuleSet rs = loadRuleSet(ruleSetName);
+        return ((Rule)(rs.getRules().iterator().next()));
     }
 
     private RuleSet loadRuleSet(String ruleSetName) {
