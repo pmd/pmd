@@ -45,6 +45,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.eclipse.MarkerInfo;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
@@ -72,6 +73,9 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2005/06/30 23:24:19  phherlin
+ * Add the JDK 1.5 support
+ *
  * Revision 1.4  2005/06/07 18:38:14  phherlin
  * Move classes to limit packages cycle dependencies
  *
@@ -192,6 +196,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 pmdEngine = new PMD(new TargetJDK1_3());
             } else if (JavaCore.VERSION_1_4.equals(compilerCompliance)) {
                 pmdEngine = new PMD(new TargetJDK1_4());
+            } else if (JavaCore.VERSION_1_5.equals(compilerCompliance)) {
+                pmdEngine = new PMD(new TargetJDK1_5());
             } else {
                 throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO:
                                                                                                                // NLS
