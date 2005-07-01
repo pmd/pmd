@@ -11,7 +11,7 @@ public class CSVRenderer implements Renderer {
 
     public String render(Iterator matches) {
         StringBuffer rpt = new StringBuffer();
-        rpt.append("lines,tokens,occurances" + PMD.EOL);
+        rpt.append("lines,tokens,occurrences" + PMD.EOL);
         while (matches.hasNext()) {
             Match match = (Match) matches.next();
             rpt.append(match.getLineCount() + "," + match.getTokenCount() + "," + match.getMarkCount() + ",");

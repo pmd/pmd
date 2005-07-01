@@ -5,6 +5,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,6 +58,9 @@ public class CPD {
     }
 
     private void addDirectory(String dir, boolean recurse) throws IOException {
+        if (!(new File(dir)).exists()) {
+            throw new FileNotFoundException("Couldn't find directory " + dir);
+        }
         FileFinder finder = new FileFinder();
         add(finder.findFilesFrom(dir, language.getFileFilter(), recurse));
     }
@@ -68,15 +72,12 @@ public class CPD {
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
-    public static Renderer getRendererFromString(String rendererName) {
+    public static Renderer getRendererFromString(String name) {
         Renderer renderer = new SimpleRenderer();
-        Class rClass; 
         try {
-            rClass = Class.forName(rendererName);
-            renderer = (Renderer) rClass.newInstance();
+            renderer = (Renderer) Class.forName(name).newInstance();
         } catch (Exception e) {
-            System.err.println("Cannot create renderer from string: " + rendererName);
-            System.err.println("using SimpleRenderer for now.");
+            System.out.println("Can't find class '" + name + "' so defaulting to SimpleRenderer.");
         }
         return renderer;
     }
@@ -100,12 +101,8 @@ public class CPD {
             Language language = f.createLanguage(lang);
             CPD cpd = new CPD(Integer.parseInt(args[0]), language);
             cpd.addRecursively(args[1]);
-            long start = System.currentTimeMillis();
             cpd.go();
-            long total = System.currentTimeMillis() - start;
             System.out.println(renderer.render(cpd.getMatches()));
-            // System out conflicts with the renderer output, how about System.err instead?
-	    System.err.println("That took " + total + " milliseconds");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,12 +110,12 @@ public class CPD {
 
     private static void usage() {
         System.out.println("Usage:");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD <tile size> <directory> [<language>] [<output renderer>]");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD <tile size> <directory> [<language>] [<format>]");
         System.out.println("i.e: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java ");
         System.out.println("or: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\apache\\src\\ cpp");
-        System.out.println("Renders:");
+        System.out.println("Formats:");
         System.out.println("Simple");
         System.out.println("net.sourceforge.pmd.cpd.CSVRenderer");
         System.out.println("net.sourceforge.pmd.cpd.XMLRenderer");
