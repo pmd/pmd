@@ -74,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2005/07/01 00:04:11  phherlin
+ * Fix the bug of the rules that cannot be unselected
+ *
  * Revision 1.7  2005/06/30 23:25:03  phherlin
  * Fix project rule set synchronization with the plugin rule set
  *
@@ -206,8 +209,6 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             if (!isRuleSetFileExist()) {
                 throw new ModelException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
             }
-        } else {
-            setProjectRuleSet(PMDPlugin.getDefault().getRuleSet());
         }
     }
 
