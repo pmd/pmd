@@ -38,6 +38,7 @@ package test.net.sourceforge.pmd.eclipse.model;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -46,8 +47,8 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 import net.sourceforge.pmd.eclipse.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.model.ModelException;
-import net.sourceforge.pmd.eclipse.model.ModelFactory;
 import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModelImpl;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -63,6 +64,9 @@ import test.net.sourceforge.pmd.eclipse.EclipseUtils;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/07/01 00:06:38  phherlin
+ * Refactoring and writing more tests
+ *
  * Revision 1.1  2005/06/15 21:14:56  phherlin
  * Create the project for the Eclipse plugin unit tests
  *
@@ -70,6 +74,7 @@ import test.net.sourceforge.pmd.eclipse.EclipseUtils;
  */
 public class ProjectPropertiesModelTest extends TestCase {
     private IProject testProject;
+    private RuleSet initialPluginRuleSet;
 
     /**
      * Test case constructor
@@ -87,7 +92,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testPmdEnabledTRUE() throws ModelException, CoreException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
 
         model.setPmdEnabled(true);
         model.sync();
@@ -101,7 +106,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testPmdEnabledFALSE() throws ModelException, CoreException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
 
         model.setPmdEnabled(true);
         model.sync();
@@ -120,7 +125,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testProjectRuleSet() throws ModelException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         assertSame("A new project a is not set the plugin ruleset", model.getProjectRuleSet(), PMDPlugin.getDefault().getRuleSet());
     }
 
@@ -128,7 +133,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      * Set another ruleset.
      */
     public void testProjectRuleSet1() throws ModelException, RuleSetNotFoundException, CoreException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         RuleSetFactory factory = new RuleSetFactory();
 
         // use the basic ruleset because it should be included in the plugin
@@ -138,35 +143,87 @@ public class ProjectPropertiesModelTest extends TestCase {
         // First set the project ruleset
         model.setProjectRuleSet(basicRuleSet);
         model.sync();
-        assertNotNull("Project ruleset has not been set", model.getProjectRuleSet());
-
-        // Then query the project ruleset
-        RuleSet projectRuleSet = model.getProjectRuleSet();
-
-        // Then query the project ruleset (from model)
-        projectRuleSet = model.getProjectRuleSet();
 
         // Test the ruleset we set is equal to the ruleset we queried
-        Iterator i = projectRuleSet.getRules().iterator();
-        while (i.hasNext()) {
-            Rule rule = (Rule) i.next();
-            try {
-                Rule pmdRule = basicRuleSet.getRuleByName(rule.getName());
-            } catch (RuntimeException e) {
-                fail("The project rule " + rule.getName() + " doesn't exist in the plugin configuration");
-            }
-        }
+        RuleSet projectRuleSet = model.getProjectRuleSet();
+        assertNotNull("Project ruleset has not been set", projectRuleSet);
+        assertEquals("The project ruleset is not the basic ruleset", basicRuleSet, projectRuleSet);
+    }
 
-        i = basicRuleSet.getRules().iterator();
-        while (i.hasNext()) {
-            Rule pmdRule = (Rule) i.next();
-            try {
-                Rule rule = projectRuleSet.getRuleByName(pmdRule.getName());
-            } catch (RuntimeException e) {
-                fail("The plugin rule " + pmdRule.getName() + " doesn't exist in the project properties");
-            }
-        }
+    /**
+     * When rules are removed from the plugin preferences, these rules should also be removed from the project
+     */
+    public void testProjectRuleSet2() throws ModelException, RuleSetNotFoundException, CoreException {
 
+        // First ensure that the plugin initial ruleset is equal to the project ruleset
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
+        RuleSet projectRuleSet = model.getProjectRuleSet();
+        assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
+        
+        // use the basic ruleset and set it at the only plugin ruleset
+        RuleSetFactory factory = new RuleSetFactory();
+        RuleSet basicRuleSet = factory.createRuleSet("rulesets/basic.xml");
+        PMDPlugin.getDefault().setRuleSet(basicRuleSet, null);
+        projectRuleSet = model.getProjectRuleSet();
+        
+        assertEquals("The project ruleset is not equal to the plugin ruleset", basicRuleSet.getRules(), projectRuleSet.getRules());
+    }
+
+    /**
+     * When rules are added to the plugin preferences, these rules should also be added to the project
+     */
+    public void testProjectRuleSet3() throws ModelException, RuleSetNotFoundException, CoreException {
+        RuleSetFactory factory = new RuleSetFactory();
+        RuleSet basicRuleSet = factory.createRuleSet("rulesets/basic.xml");
+
+        // First ensure that the plugin initial ruleset is equal to the project ruleset
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
+        RuleSet projectRuleSet = model.getProjectRuleSet();
+        assertEquals("The project ruleset is not equal to the plugin ruleset", initialPluginRuleSet, projectRuleSet);
+
+        // 2. add a rule to the plugin rule set
+        Rule myRule = new AbstractRule() {
+            public String getName() {
+                return "MyRule";
+            }
+        };
+        
+        RuleSet newRuleSet = new RuleSet();
+        newRuleSet.setName("foo");
+        newRuleSet.addRuleSet(this.initialPluginRuleSet);
+        newRuleSet.addRule(myRule);
+        PMDPlugin.getDefault().setRuleSet(newRuleSet, null);
+        
+        // Test that the project rule set should still be the same as the plugin rule set
+        model = new ProjectPropertiesModelImpl(this.testProject);
+        projectRuleSet = model.getProjectRuleSet();        
+        assertEquals("The project ruleset is not equal to the plugin ruleset", PMDPlugin.getDefault().getRuleSet().getRules(), projectRuleSet.getRules());
+    }
+
+    /**
+     * Bug: when a user deselect a project rule it is not saved
+     */
+    public void testBug() throws ModelException, RuleSetNotFoundException, CoreException {
+        RuleSetFactory factory = new RuleSetFactory();
+
+        // First ensure that the plugin initial ruleset is equal to the project ruleset
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
+        RuleSet projectRuleSet = model.getProjectRuleSet();
+        assertEquals("The project ruleset is not equal to the plugin ruleset", initialPluginRuleSet, projectRuleSet);
+        
+        // 2. remove the first rule (keep its name for assertion)
+        RuleSet newRuleSet = new RuleSet();
+        newRuleSet.addRuleSet(projectRuleSet);
+        Iterator i = newRuleSet.getRules().iterator();
+        Rule removedRule = (Rule) i.next();
+        i.remove();
+        
+        model.setProjectRuleSet(newRuleSet);
+        model.sync();
+
+        // 3. test the rule has correctly been removed
+        projectRuleSet = model.getProjectRuleSet();
+        assertNull("The rule has not been removed!", projectRuleSet.getRuleByName(removedRule.getName()));
     }
 
     /**
@@ -174,7 +231,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testProjectRuleSetNull() throws ModelException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         try {
             model.setProjectRuleSet(null);
             fail("A ModelException must be raised when setting a project ruleset to null");
@@ -189,7 +246,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      * set to TRUE.
      */
     public void testRuleSetStoredInProjectTRUE() throws ModelException, RuleSetNotFoundException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         RuleSetFactory factory = new RuleSetFactory();
         RuleSet basicRuleSet = factory.createRuleSet("rulesets/basic.xml");
         model.setPmdEnabled(true);
@@ -216,7 +273,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testRuleSetStoredInProjectFALSE() throws ModelException, RuleSetNotFoundException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         RuleSetFactory factory = new RuleSetFactory();
         RuleSet basicRuleSet = factory.createRuleSet("rulesets/basic.xml");
         model.setPmdEnabled(true);
@@ -233,8 +290,6 @@ public class ProjectPropertiesModelTest extends TestCase {
         model.sync();
         boolean b = model.isRuleSetStoredInProject();
         assertFalse("the ruleset should'nt be stored in the project", b);
-        assertTrue("The project ruleset must now be the plugin ruleset", PMDPlugin.getDefault().getRuleSet().equals(
-                model.getProjectRuleSet()));
     }
 
     /**
@@ -242,7 +297,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testProjectWorkingSetNull() throws ModelException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         model.setProjectWorkingSet(null);
         IWorkingSet w = model.getProjectWorkingSet();
         assertNull("The project should not have a working set defined", w);
@@ -253,7 +308,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testRebuild1() throws ModelException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         model.setPmdEnabled(false);
         model.setProjectWorkingSet(null);
         model.setRuleSetStoredInProject(false);
@@ -266,7 +321,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testRebuild2() throws ModelException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         model.setPmdEnabled(true);
         assertTrue(model.isNeedRebuild());
     }
@@ -276,7 +331,9 @@ public class ProjectPropertiesModelTest extends TestCase {
      *  
      */
     public void testRebuild3() throws ModelException {
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
+        model.setPmdEnabled(true);
+        
         RuleSet pmdRuleSet = PMDPlugin.getDefault().getRuleSet();
         RuleSet fooRuleSet = new RuleSet();
 
@@ -298,20 +355,37 @@ public class ProjectPropertiesModelTest extends TestCase {
         this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
         assertTrue("A test project cannot be created; the tests cannot be performed.", (this.testProject != null)
                 && this.testProject.exists() && this.testProject.isAccessible());
+        
+        // 2. Keep the plugin ruleset
+        this.initialPluginRuleSet = PMDPlugin.getDefault().getRuleSet();
     }
 
     /**
      * @see junit.framework.TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
+        // 1. Delete the test project
         if (this.testProject != null) {
             if (this.testProject.exists() && this.testProject.isAccessible()) {
                 this.testProject.delete(true, true, null);
                 this.testProject = null;
             }
         }
+        
+        // 2. Restore the plugin initial rule set
+        PMDPlugin.getDefault().setRuleSet(this.initialPluginRuleSet, null);
 
         super.tearDown();
+    }
+    
+    private void dumpRuleSet(RuleSet ruleSet) {
+        System.out.println("Dumping rule set:" + ruleSet.getName());
+        Iterator i = ruleSet.getRules().iterator();
+        while (i.hasNext()) {
+            Rule rule = (Rule) i.next();
+            System.out.println(rule.getName());
+        }
+        System.out.println();
     }
 
 }

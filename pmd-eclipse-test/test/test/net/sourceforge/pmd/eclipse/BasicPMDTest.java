@@ -50,6 +50,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 
 /**
@@ -59,6 +60,9 @@ import net.sourceforge.pmd.eclipse.PMDPluginConstants;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/07/01 00:06:38  phherlin
+ * Refactoring and writing more tests
+ *
  * Revision 1.1  2005/06/15 21:14:57  phherlin
  * Create the project for the Eclipse plugin unit tests
  *
@@ -119,6 +123,41 @@ public class BasicPMDTest extends TestCase {
 
         try {
             PMD pmd = new PMD(new TargetJDK1_4());
+
+            String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
+            Reader input = new StringReader(sourceCode);
+
+            RuleContext context = new RuleContext();
+            context.setSourceCodeFilename("foo.java");
+            context.setReport(new Report());
+
+            RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/basic.xml");
+            pmd.processFile(input, basicRuleSet, context);
+
+            Iterator iter = context.getReport().iterator();
+            assertTrue("There should be at least one violation", iter.hasNext());
+
+            RuleViolation violation = (RuleViolation) iter.next();
+            assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
+            assertEquals(3, violation.getLine());
+
+        } catch (RuleSetNotFoundException e) {
+            e.printStackTrace();
+            fail();
+        } catch (PMDException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    /**
+     * Let see with Java 1.5
+     *  
+     */
+    public void testRunPmdJdk15() {
+
+        try {
+            PMD pmd = new PMD(new TargetJDK1_5());
 
             String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
             Reader input = new StringReader(sourceCode);
