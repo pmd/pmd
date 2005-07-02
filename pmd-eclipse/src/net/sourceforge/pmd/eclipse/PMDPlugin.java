@@ -18,6 +18,8 @@ import java.util.StringTokenizer;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.core.IRuleSetManager;
+import net.sourceforge.pmd.core.PMDCorePlugin;
 import net.sourceforge.pmd.eclipse.model.ModelException;
 import net.sourceforge.pmd.eclipse.model.ModelFactory;
 import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
@@ -53,6 +55,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.27  2005/07/02 14:34:08  phherlin
+ * Use the new ruleset manager to get registered default rules
+ *
  * Revision 1.26  2005/06/30 23:23:47  phherlin
  * Refactoring the addition of new rules to the preferences
  *
@@ -386,27 +391,18 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
             }
         }
 
-        // For compatibility test the preference store
-        if (preferedRuleSet == null) {
-            preferedRuleSet = getRuleSetFromPreference();
-            if (preferedRuleSet != null) {
-                storeRuleSetInStateLocation(preferedRuleSet);
-                getPreferenceStore().setValue(RULESET_PREFERENCE, RULESET_DEFAULT);
-
-            }
-        }
-
         // Finally, build a default ruleset
         if (preferedRuleSet == null) {
-            ClassLoader loader = getClass().getClassLoader();
-            preferedRuleSet = factory.createRuleSet(loader.getResourceAsStream(RULESET_DEFAULTLIST[0]));
-            for (int i = 1; i < RULESET_DEFAULTLIST.length; i++) {
-                RuleSet tmpRuleSet = factory.createRuleSet(loader.getResourceAsStream(RULESET_DEFAULTLIST[i]));
-                preferedRuleSet.addRuleSet(tmpRuleSet);
-            }
-
+            preferedRuleSet = new RuleSet();
             preferedRuleSet.setName("pmd-eclipse");
             preferedRuleSet.setDescription("PMD Plugin preferences rule set");
+            
+            IRuleSetManager ruleSetManager = PMDCorePlugin.getDefault().getRuleSetManager();
+            Iterator i = ruleSetManager.getDefaultRuleSets().iterator();
+            while (i.hasNext()) {
+                RuleSet ruleSet = (RuleSet) i.next();
+                preferedRuleSet.addRuleSet(ruleSet);
+            }
         }
 
         return preferedRuleSet;
