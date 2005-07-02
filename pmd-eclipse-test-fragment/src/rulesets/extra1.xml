@@ -7,6 +7,8 @@ The Basic Ruleset contains a collection of good practices which everyone should 
   </description>
 
 
+
+
     <rule name="EmptyCatchBlock"
           message="Avoid empty catch blocks"
           class="net.sourceforge.pmd.rules.XPathRule">
@@ -19,16 +21,13 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           <property name="xpath">
               <value>
     <![CDATA[
-    //TryStatement
-    [@Catch='true']
-    [FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-     [@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
-    ]
-    /Block[position() > 1]
-    [count(*) = 0]
-    [../@Finally='false' or following-sibling::Block]
+//CatchStatement
+ [count(Block/BlockStatement) = 0]
+ [FormalParameter/Type/ReferenceType
+   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
+ ]
  ]]>
-              </value>
+             </value>
           </property>
       </properties>
         <priority>3</priority>
@@ -128,8 +127,9 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[//TryStatement[@Finally='true']/Block[position() = last()]
-      [count(*) = 0]]]>
+<![CDATA[
+//FinallyStatement[count(Block/BlockStatement) = 0]
+ ]]>
               </value>
           </property>
       </properties>
@@ -347,7 +347,9 @@ not
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[//TryStatement[@Finally='true']/Block[position() = last()]//ReturnStatement]]>
+<![CDATA[
+ //FinallyStatement//ReturnStatement
+ ]]>
               </value>
           </property>
       </properties>
@@ -612,5 +614,5 @@ public final class Foo {
   }]]>
       </example>
     </rule>
-
+    
 </ruleset>

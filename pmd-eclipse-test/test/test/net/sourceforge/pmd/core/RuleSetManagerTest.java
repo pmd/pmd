@@ -47,6 +47,9 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/07/02 14:32:01  phherlin
+ * Implement the RuleSets extension points new tests
+ *
  * Revision 1.1  2005/06/15 21:14:56  phherlin
  * Create the project for the Eclipse plugin unit tests
  *
@@ -134,6 +137,79 @@ public class RuleSetManagerTest extends TestCase {
         this.ruleSetManager.unregisterRuleSet(ruleSet);
         this.ruleSetManager.unregisterRuleSet(ruleSet);
         assertEquals("RuleSet not unregistered", 0, this.ruleSetManager.getRegisteredRuleSets().size());
+    }
+    
+    /**
+     * Test the register default ruleset
+     *
+     */
+    public void testRegisterDefaultRuleSet() {
+        RuleSet ruleSet = new RuleSet();
+        this.ruleSetManager.registerDefaultRuleSet(ruleSet);
+        assertEquals("Default RuleSet not registrered!", 1, this.ruleSetManager.getDefaultRuleSets().size());
+    }
+    
+    /**
+     * Test the registration of a null ruleset
+     *
+     */
+    public void testRegisterNullDefaultRuleSet() {
+        try {
+            this.ruleSetManager.registerDefaultRuleSet(null);
+            fail("Should return an IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            ; // cool
+        }
+    }
+    
+    /**
+     * Registering twice the same default rule set results in no addition
+     *
+     */
+    public void testDuplicateRegisterDefault() {
+        RuleSet ruleSet = new RuleSet();
+        this.ruleSetManager.registerDefaultRuleSet(ruleSet);
+        this.ruleSetManager.registerDefaultRuleSet(ruleSet);
+        assertEquals("Only one rule set should have been registered", 1, this.ruleSetManager.getDefaultRuleSets().size());
+    }
+    
+    /**
+     * Test unregistration default
+     *
+     */
+    public void testUnregisterDefaultRuleSet() {
+        RuleSet ruleSet = new RuleSet();
+        this.ruleSetManager.registerDefaultRuleSet(ruleSet);
+        assertEquals("Default RuleSet not registered!", 1, this.ruleSetManager.getDefaultRuleSets().size());
+
+        this.ruleSetManager.unregisterDefaultRuleSet(ruleSet);
+        assertEquals("Default RuleSet not unregistered", 0, this.ruleSetManager.getDefaultRuleSets().size());
+    }
+    
+    /**
+     * Unregistering a null default ruleset is illegal
+     *
+     */
+    public void testUnregisterNullDefaultRuleSet() {
+        try {
+            this.ruleSetManager.unregisterDefaultRuleSet(null);
+            fail("An IllegalArgumentException should be returned");
+        } catch (RuntimeException e) {
+            ; // cool
+        }
+    }
+    
+    /**
+     * Unregistering twice the same Default rule set has no effect
+     *
+     */
+    public void testDuplicateUnregisterDefault() {
+        RuleSet ruleSet = new RuleSet();
+        this.ruleSetManager.registerRuleSet(ruleSet);
+
+        this.ruleSetManager.unregisterDefaultRuleSet(ruleSet);
+        this.ruleSetManager.unregisterDefaultRuleSet(ruleSet);
+        assertEquals("Default RuleSet not unregistered", 0, this.ruleSetManager.getDefaultRuleSets().size());
     }
     
     /**

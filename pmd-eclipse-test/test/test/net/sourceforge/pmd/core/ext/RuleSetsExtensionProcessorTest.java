@@ -1,5 +1,5 @@
 /*
- * Created on 7 juin 2005
+ * Created on 2 juillet 2005
  *
  * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,91 +33,65 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package test.net.sourceforge.pmd.core;
+package test.net.sourceforge.pmd.core.ext;
 
 import java.util.Iterator;
 import java.util.Set;
 
+import junit.framework.TestCase;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.core.PMDCorePlugin;
-import net.sourceforge.pmd.core.PluginConstants;
-import junit.framework.TestCase;
 
 /**
- * Test the PMD Core plugin
+ * Test the ruleset extension
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/07/02 14:32:01  phherlin
+ * Revision 1.1  2005/07/02 14:32:02  phherlin
  * Implement the RuleSets extension points new tests
- *
- * Revision 1.1  2005/06/15 21:14:56  phherlin
- * Create the project for the Eclipse plugin unit tests
  *
  *
  */
-public class PMDCorePluginTest extends TestCase {
-
-    /**
-     * Constructor for PMDCorePluginTest.
-     * @param name
-     */
-    public PMDCorePluginTest(String name) {
-        super(name);
-    }
-
-    /**
-     * Test that the core plugin has been instantiated
-     *
-     */
-    public void testPMDCorePluginNotNull() {
-        assertNotNull("The Core Plugin has not been instantiated", PMDCorePlugin.getDefault());
-    }
+public class RuleSetsExtensionProcessorTest extends TestCase {
     
     /**
-     * Test that we can get a ruleset manager
+     * Tests the additional rulesets has been registered.
+     * For this test to work, the test plugin fragment must be installed.
      *
      */
-    public void testRuleSetManagerNotNull() {
-        assertNotNull("Cannot get a ruleset manager", PMDCorePlugin.getDefault().getRuleSetManager());        
-    }
-    
-    /**
-     * Test all the known PMD rulesets has been registered
-     * For this test to work, no fragement or only the test plugin fragment should be installed.
-     *
-     */
-    public void testStandardPMDRuleSetsRegistered() throws RuleSetNotFoundException {
+    public void testAdditionalRuleSetsRegistered() throws RuleSetNotFoundException {
         Set registeredRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
         
         RuleSetFactory factory = new RuleSetFactory();
-        for (int i = 0; i < PluginConstants.PMD_RULESETS.length; i++) {
-            RuleSet ruleSet = factory.createRuleSet(PluginConstants.PMD_RULESETS[i]);
-            assertTrue("RuleSet \"" + PluginConstants.PMD_RULESETS[i] + "\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
-        }
+        RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
+        assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
+
+        ruleSet = factory.createRuleSet("rulesets/extra2.xml");
+        assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
     }
     
     /**
-     * Test the default rulesets has been registered
-     * For this test to work, no fragement or only the test plugin fragment should be installed.
+     * Tests the additional default rulesets has been registered.
+     * For this test to work, the test plugin fragment must be installed.
      *
      */
-    public void testDefaultPMDRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set defaultRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
-        assertFalse("No registered default rulesets!", defaultRuleSets.isEmpty());
+    public void testAdditionalDefaultRuleSetsRegistered() throws RuleSetNotFoundException {
+        Set registeredRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+        assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
         
         RuleSetFactory factory = new RuleSetFactory();
-        for (int i = 0; i < PluginConstants.PMD_RULESETS.length; i++) {
-            RuleSet ruleSet = factory.createRuleSet(PluginConstants.PMD_RULESETS[i]);
-            assertTrue("RuleSet \"" + PluginConstants.PMD_RULESETS[i] + "\" has not been registered", ruleSetRegistered(ruleSet, defaultRuleSets));
-        }
+        RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
+        assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
+
+        ruleSet = factory.createRuleSet("rulesets/extra2.xml");
+        assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
     }
-    
+
     /**
      * test if a ruleset is registered
      * @param ruleSet
