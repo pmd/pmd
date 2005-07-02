@@ -35,16 +35,13 @@
  */
 package net.sourceforge.pmd.core;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.core.impl.RuleSetManagerImpl;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -56,6 +53,9 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/07/02 14:33:05  phherlin
+ * Implement the RuleSets extension point
+ *
  * Revision 1.1  2005/06/07 22:39:57  phherlin
  * Implementing extra ruleset declaration
  *
@@ -109,7 +109,8 @@ public class PMDCorePlugin extends Plugin {
         for (int i = 0; i < PluginConstants.PMD_RULESETS.length; i++) {
             try {
                 final RuleSet ruleSet = factory.createRuleSet(PluginConstants.PMD_RULESETS[i]);
-                this.getRuleSetManager().registerRuleSet(ruleSet);
+                getRuleSetManager().registerRuleSet(ruleSet);
+                getRuleSetManager().registerDefaultRuleSet(ruleSet);
             } catch (RuleSetNotFoundException e) {
                 this.log(IStatus.WARNING, "The RuleSet \"" + PluginConstants.PMD_RULESETS[i] + "\" cannot be found", e);
             }
@@ -118,28 +119,15 @@ public class PMDCorePlugin extends Plugin {
 
     /**
      * Register additional rulesets that may be provided by a fragment.
-     * First look for a resource "rulesets/additional". This resource should
-     * contains a list of rulesets to load.
+     * Find extension points implementation and call them
      *
      */
     private void registerAdditionalRuleSets() {
-        final InputStream is = this.getClass().getResourceAsStream(PluginConstants.ADDITIONAL_RULESETS_LIST_FILE);
-        if (is != null) {
-            String ruleSetFile = null;
-            try {
-                final RuleSetFactory factory = new RuleSetFactory();
-                final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                while (br.ready()) {
-                    ruleSetFile = br.readLine();
-                    final RuleSet ruleSet = factory.createRuleSet(ruleSetFile);
-                    this.getRuleSetManager().registerRuleSet(ruleSet);
-                }
-                br.close();
-            } catch (IOException e) {
-                this.log(IStatus.ERROR, "Error while reading the additional rulesets declaration file", e);
-            } catch (RuleSetNotFoundException e) {
-                this.log(IStatus.ERROR, "The additional ruleset \"" + ruleSetFile + "\" cannot be found", e);
-            }
+        try {
+            RuleSetsExtensionProcessor processor = new RuleSetsExtensionProcessor(getRuleSetManager());
+            processor.process();
+        } catch (CoreException e) {
+            this.log(IStatus.ERROR, "Error when processing RuleSets extensions", e);
         }
     }
 }

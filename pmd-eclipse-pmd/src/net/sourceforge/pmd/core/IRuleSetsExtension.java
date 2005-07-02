@@ -1,5 +1,5 @@
 /*
- * Created on 7 juin 2005
+ * Created on 2 juil. 2005
  *
  * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,59 +33,36 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.core;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.RuleSet;
-
 /**
- * Interface for a rule set manager. A RuleSetManager handle a set of rule sets.
+ * This is the interface for implementors of the RuleSets extension point.
  * 
- * @author Philippe Herlin
+ * @author Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/07/02 14:33:05  phherlin
+ * Revision 1.1  2005/07/02 14:33:05  phherlin
  * Implement the RuleSets extension point
- *
- * Revision 1.1  2005/06/07 22:39:57  phherlin
- * Implementing extra ruleset declaration
  *
  *
  */
-public interface IRuleSetManager {
-    /**
-     * Register a rule set
-     * @param ruleSet the ruleset to register
-     */
-    void registerRuleSet(RuleSet ruleSet);
-    
-    /**
-     * Unregister a rule set
-     * @param ruleSet the ruleset to unregister
-     */
-    void unregisterRuleSet(RuleSet ruleSet);
-    
-    /**
-     * @return a set of registered ruleset; this can be empty but never null
-     */
-    Set getRegisteredRuleSets();
-        
-    /**
-     * Register a rule set for the default set
-     * @param ruleSet the ruleset to register
-     */
-    void registerDefaultRuleSet(RuleSet ruleSet);
-    
-    /**
-     * Unregister a rule set from the default set
-     * @param ruleSet the ruleset to unregister
-     */
-    void unregisterDefaultRuleSet(RuleSet ruleSet);
 
+public interface IRuleSetsExtension {
+    
     /**
-     * @return the plugin default ruleset set
+     * Allows an extension to add more rules to to completly replace the sets of rulesets. 
+     * @param registeredRuleSet the already registered rulesets (modifiable set)
      */
-    Set getDefaultRuleSets();
+    void registerRuleSets(Set registeredRuleSets);
+    
+    /**
+     * Allows an extension to specify rulesets that has to be loaded when no rulesets has been defined
+     * for the plugin (for instance, after creating a new worspace)
+     * @param defaultRuleSets the set of default rulesets (modifiable set)
+     */
+    void registerDefaultRuleSets(Set defaultRuleSets);
 }

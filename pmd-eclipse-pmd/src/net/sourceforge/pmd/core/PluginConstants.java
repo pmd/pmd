@@ -42,6 +42,9 @@ package net.sourceforge.pmd.core;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/07/02 14:33:05  phherlin
+ * Implement the RuleSets extension point
+ *
  * Revision 1.1  2005/06/07 22:39:57  phherlin
  * Implementing extra ruleset declaration
  *
@@ -67,6 +70,4 @@ public interface PluginConstants {
             "rulesets/strings.xml",
             "rulesets/sunsecure.xml",
             "rulesets/unusedcode.xml"};
-
-    String ADDITIONAL_RULESETS_LIST_FILE = "/rulesets/additional";
 }

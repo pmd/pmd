@@ -35,7 +35,6 @@
  */
 package net.sourceforge.pmd.core.impl;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +48,9 @@ import net.sourceforge.pmd.core.IRuleSetManager;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/07/02 14:33:05  phherlin
+ * Implement the RuleSets extension point
+ *
  * Revision 1.1  2005/06/07 22:39:57  phherlin
  * Implementing extra ruleset declaration
  *
@@ -56,12 +58,13 @@ import net.sourceforge.pmd.core.IRuleSetManager;
  */
 public class RuleSetManagerImpl implements IRuleSetManager {
     private final Set ruleSets = new HashSet();
+    private final Set defaultRuleSets = new HashSet();
 
     /**
      * @see net.sourceforge.pmd.core.IRuleSetManager#getRegisteredRuleSets()
      */
     public Set getRegisteredRuleSets() {
-        return Collections.unmodifiableSet(this.ruleSets);
+        return this.ruleSets;
     }
     
     /**
@@ -72,7 +75,7 @@ public class RuleSetManagerImpl implements IRuleSetManager {
             throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
         }
         
-        ruleSets.add(ruleSet);
+        this.ruleSets.add(ruleSet);
     }
     
     /**
@@ -83,6 +86,35 @@ public class RuleSetManagerImpl implements IRuleSetManager {
             throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
         }
         
-        ruleSets.remove(ruleSet);
+        this.ruleSets.remove(ruleSet);
+    }
+
+    /**
+     * @see net.sourceforge.pmd.core.IRuleSetManager#getDefaultRuleSets()
+     */
+    public Set getDefaultRuleSets() {
+        return this.defaultRuleSets;
+    }
+    
+    /**
+     * @see net.sourceforge.pmd.core.IRuleSetManager#registerDefaultRuleSet(net.sourceforge.pmd.RuleSet)
+     */
+    public void registerDefaultRuleSet(final RuleSet ruleSet) {
+        if (ruleSet == null) {
+            throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
+        }
+        
+        this.defaultRuleSets.add(ruleSet);
+    }
+    
+    /**
+     * @see net.sourceforge.pmd.core.IRuleSetManager#unregisterDefaultRuleSet(net.sourceforge.pmd.RuleSet)
+     */
+    public void unregisterDefaultRuleSet(final RuleSet ruleSet) {
+        if (ruleSet == null) {
+            throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
+        }
+        
+        this.defaultRuleSets.remove(ruleSet);
     }
 }
