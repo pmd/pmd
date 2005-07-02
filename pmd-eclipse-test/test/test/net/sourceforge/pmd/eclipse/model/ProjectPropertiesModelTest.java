@@ -64,6 +64,9 @@ import test.net.sourceforge.pmd.eclipse.EclipseUtils;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/07/02 14:31:11  phherlin
+ * Fixing equals assertion to test on rules collection instead
+ *
  * Revision 1.2  2005/07/01 00:06:38  phherlin
  * Refactoring and writing more tests
  *
@@ -147,7 +150,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         // Test the ruleset we set is equal to the ruleset we queried
         RuleSet projectRuleSet = model.getProjectRuleSet();
         assertNotNull("Project ruleset has not been set", projectRuleSet);
-        assertEquals("The project ruleset is not the basic ruleset", basicRuleSet, projectRuleSet);
+        assertEquals("The project ruleset is not the basic ruleset", basicRuleSet.getRules(), projectRuleSet.getRules());
     }
 
     /**
@@ -179,7 +182,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         // First ensure that the plugin initial ruleset is equal to the project ruleset
         ProjectPropertiesModel model = new ProjectPropertiesModelImpl(this.testProject);
         RuleSet projectRuleSet = model.getProjectRuleSet();
-        assertEquals("The project ruleset is not equal to the plugin ruleset", initialPluginRuleSet, projectRuleSet);
+        assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet, projectRuleSet);
 
         // 2. add a rule to the plugin rule set
         Rule myRule = new AbstractRule() {
@@ -196,7 +199,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         
         // Test that the project rule set should still be the same as the plugin rule set
         model = new ProjectPropertiesModelImpl(this.testProject);
-        projectRuleSet = model.getProjectRuleSet();        
+        projectRuleSet = model.getProjectRuleSet();
         assertEquals("The project ruleset is not equal to the plugin ruleset", PMDPlugin.getDefault().getRuleSet().getRules(), projectRuleSet.getRules());
     }
 
