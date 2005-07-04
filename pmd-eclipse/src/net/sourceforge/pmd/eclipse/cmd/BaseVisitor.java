@@ -43,6 +43,9 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.MarkerInfo;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+import net.sourceforge.pmd.eclipse.model.ModelException;
+import net.sourceforge.pmd.eclipse.model.ModelFactory;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,21 +64,21 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2005/05/31 20:44:41  phherlin
+ * Revision 1.4  2005/07/04 21:00:52  phherlin
+ * Oops! forgot to use properties model to get project working set
+ * Revision 1.3 2005/05/31 20:44:41 phherlin
  * Continuing refactoring
- *
- * Revision 1.2  2005/05/10 21:49:26  phherlin
- * Fix new violations detected by PMD 3.1
- *
- * Revision 1.1  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
+ * 
+ * Revision 1.2 2005/05/10 21:49:26 phherlin Fix new violations detected by PMD
+ * 3.1
+ * 
+ * Revision 1.1 2005/05/07 13:32:04 phherlin Continuing refactoring Fix some PMD
+ * violations Fix Bug 1144793 Fix Bug 1190624 (at least try)
+ * 
  */
 public class BaseVisitor {
     private static final Log log = LogFactory.getLog("net.sourceforce.pmd.cmd.BaseVisitor");
+    private final ModelFactory modelFactory = ModelFactory.getFactory();
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
     private Map accumulator;
@@ -84,14 +87,15 @@ public class BaseVisitor {
 
     /**
      * The constructor is protected to avoid illegal instanciation
-     *
+     * 
      */
     protected BaseVisitor() {
         super();
     }
-    
+
     /**
      * Returns the useTaskMarker.
+     * 
      * @return boolean
      */
     public boolean isUseTaskMarker() {
@@ -100,7 +104,9 @@ public class BaseVisitor {
 
     /**
      * Sets the useTaskMarker.
-     * @param useTaskMarker The useTaskMarker to set
+     * 
+     * @param useTaskMarker
+     *            The useTaskMarker to set
      */
     public void setUseTaskMarker(final boolean useTaskMarker) {
         this.useTaskMarker = useTaskMarker;
@@ -108,6 +114,7 @@ public class BaseVisitor {
 
     /**
      * Returns the accumulator.
+     * 
      * @return Map
      */
     public Map getAccumulator() {
@@ -116,7 +123,9 @@ public class BaseVisitor {
 
     /**
      * Sets the accumulator.
-     * @param accumulator The accumulator to set
+     * 
+     * @param accumulator
+     *            The accumulator to set
      */
     public void setAccumulator(final Map accumulator) {
         this.accumulator = accumulator;
@@ -138,29 +147,33 @@ public class BaseVisitor {
 
     /**
      * Tell whether the user has required to cancel the operation
+     * 
      * @return
      */
     public boolean isCanceled() {
-       return this.getMonitor() == null ? false : this.getMonitor().isCanceled();
+        return getMonitor() == null ? false : getMonitor().isCanceled();
     }
 
     /**
      * Begin a subtask
-     * @param name the task name
+     * 
+     * @param name
+     *            the task name
      */
     public void subTask(final String name) {
-        if (this.getMonitor() != null) {
-            this.getMonitor().subTask(name);
+        if (getMonitor() != null) {
+            getMonitor().subTask(name);
         }
     }
-    
+
     /**
      * Inform of the work progress
+     * 
      * @param work
      */
     public void worked(final int work) {
-        if (this.getMonitor() != null) {
-            this.getMonitor().worked(work);
+        if (getMonitor() != null) {
+            getMonitor().worked(work);
         }
     }
 
@@ -170,23 +183,25 @@ public class BaseVisitor {
     public PMD getPmdEngine() {
         return this.pmdEngine;
     }
-    
+
     /**
-     * @param pmdEngine The pmdEngine to set.
+     * @param pmdEngine
+     *            The pmdEngine to set.
      */
     public void setPmdEngine(final PMD pmdEngine) {
         this.pmdEngine = pmdEngine;
     }
-    
+
     /**
      * @return Returns the ruleSet.
      */
     public RuleSet getRuleSet() {
         return this.ruleSet;
     }
-    
+
     /**
-     * @param ruleSet The ruleSet to set.
+     * @param ruleSet
+     *            The ruleSet to set.
      */
     public void setRuleSet(final RuleSet ruleSet) {
         this.ruleSet = ruleSet;
@@ -194,72 +209,82 @@ public class BaseVisitor {
 
     /**
      * Run PMD against a resource
-     * @param resource the resource to process
+     * 
+     * @param resource
+     *            the resource to process
      */
     protected final void reviewResource(final IResource resource) {
         final IFile file = (IFile) resource.getAdapter(IFile.class);
-        if ((file != null)
-            && (file.getFileExtension() != null)
-            && (file.getFileExtension().equals("java"))) {
-            
-            if (this.isFileInWorkingSet(file)) {
-                try {
-                    this.subTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_CHECKING_FILE) + " " + file.getName());
+        if ((file != null) && (file.getFileExtension() != null) && (file.getFileExtension().equals("java"))) {
+
+            try {
+                if (isFileInWorkingSet(file)) {
+                    subTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_CHECKING_FILE) + " " + file.getName());
 
                     final RuleContext context = new RuleContext();
                     context.setSourceCodeFilename(file.getName());
                     context.setReport(new Report());
 
                     final Reader input = new InputStreamReader(file.getContents());
-                    this.getPmdEngine().processFile(input, this.getRuleSet(), context);
+                    getPmdEngine().processFile(input, getRuleSet(), context);
                     input.close();
 
                     file.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                    this.updateMarkers(file, context, this.isUseTaskMarker(), this.getAccumulator());
+                    updateMarkers(file, context, isUseTaskMarker(), getAccumulator());
 
-                    this.worked(1);
-
-                } catch (CoreException e) {
-                    log.error("Core exception visiting " + file.getName(), e); //TODO: complete message
-                } catch (PMDException e) {
-                    log.error("PMD exception visiting " + file.getName(), e); // TODO: complete message
-                } catch (IOException e) {
-                    log.error("IO exception visiting " + file.getName(), e); // TODO: complete message
+                    worked(1);
+                } else {
+                    log.debug("The file " + file.getName() + " is not in the working set");
                 }
-            } else {
-                log.debug("The file " + file.getName() + " is not in the working set");
+
+            } catch (CoreException e) {
+                log.error("Core exception visiting " + file.getName(), e); // TODO: complete message
+            } catch (PMDException e) {
+                log.error("PMD exception visiting " + file.getName(), e); // TODO: complete message
+            } catch (IOException e) {
+                log.error("IO exception visiting " + file.getName(), e); // TODO: complete message
+            } catch (ModelException e) {
+                log.error("Model exception visiting " + file.getName(), e); // TODO: complete message
             }
-                
+
         }
     }
 
     /**
      * Test if a file is in the PMD working set
+     * 
      * @param file
      * @return true if the file should be checked
      */
-    private boolean isFileInWorkingSet(final IFile file) {
+    private boolean isFileInWorkingSet(final IFile file) throws ModelException {
         boolean fileInWorkingSet = true;
-        final IWorkingSet workingSet = PMDPlugin.getDefault().getProjectWorkingSet(file.getProject());
+        final ProjectPropertiesModel model = this.modelFactory.getProperiesModelForProject(file.getProject());
+        final IWorkingSet workingSet = model.getProjectWorkingSet();
         if (workingSet != null) {
             final ResourceWorkingSetFilter filter = new ResourceWorkingSetFilter();
             filter.setWorkingSet(workingSet);
             fileInWorkingSet = filter.select(null, null, file);
         }
-    
+
         return fileInWorkingSet;
     }
 
     /**
      * Update markers list for the specified file
-     * @param file the file for which markes are to be updated
-     * @param context a PMD context
-     * @param fTask indicate if a task marker should be created
-     * @param accumulator a map that contains impacted file and marker informations
+     * 
+     * @param file
+     *            the file for which markes are to be updated
+     * @param context
+     *            a PMD context
+     * @param fTask
+     *            indicate if a task marker should be created
+     * @param accumulator
+     *            a map that contains impacted file and marker informations
      */
-    private void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map accumulator) throws CoreException {
+    private void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map accumulator)
+            throws CoreException {
         final Set markerSet = new HashSet();
-        final List reviewsList = this.findReviewedViolations(file);
+        final List reviewsList = findReviewedViolations(file);
         final Review review = new Review();
         final Iterator iter = context.getReport().iterator();
         while (iter.hasNext()) {
@@ -268,14 +293,10 @@ public class BaseVisitor {
             review.lineNumber = violation.getLine();
 
             if (reviewsList.contains(review)) {
-                log.debug(
-                        "Ignoring violation of rule "
-                            + violation.getRule().getName()
-                            + " at line "
-                            + violation.getLine()
-                            + " because of a review.");
+                log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getLine()
+                        + " because of a review.");
             } else {
-                markerSet.add(this.getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
+                markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
                 log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getLine());
             }
         }
@@ -288,6 +309,7 @@ public class BaseVisitor {
 
     /**
      * Search for reviewed violations in that file
+     * 
      * @param file
      */
     private List findReviewedViolations(final IFile file) {
@@ -326,12 +348,13 @@ public class BaseVisitor {
                 }
             }
 
-//            if (log.isDebugEnabled()) {
-//                for (int i = 0; i < reviewsList.size(); i++) {
-//                    final Review review = (Review) reviewsList.get(i);
-//                    log.debug("Review : rule " + review.ruleName + ", line " + review.lineNumber);
-//                }
-//            }
+            // if (log.isDebugEnabled()) {
+            // for (int i = 0; i < reviewsList.size(); i++) {
+            // final Review review = (Review) reviewsList.get(i);
+            // log.debug("Review : rule " + review.ruleName + ", line " +
+            // review.lineNumber);
+            // }
+            // }
 
         } catch (CoreException e) {
             PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION, e);
@@ -344,8 +367,11 @@ public class BaseVisitor {
 
     /**
      * Create a marker info object from a violation
-     * @param violation a PMD violation
-     * @param type a marker type
+     * 
+     * @param violation
+     *            a PMD violation
+     * @param type
+     *            a marker type
      * @return markerInfo a markerInfo object
      */
     private MarkerInfo getMarkerInfo(final RuleViolation violation, final String type) {
@@ -366,27 +392,27 @@ public class BaseVisitor {
         values.add(violation.getRule().getName());
 
         switch (violation.getRule().getPriority()) {
-            case 1 :
-                attributeNames.add(IMarker.PRIORITY);
-                values.add(new Integer(IMarker.PRIORITY_HIGH));
-            case 2 :
-                attributeNames.add(IMarker.SEVERITY);
-                values.add(new Integer(IMarker.SEVERITY_ERROR));
-                break;
+        case 1:
+            attributeNames.add(IMarker.PRIORITY);
+            values.add(new Integer(IMarker.PRIORITY_HIGH));
+        case 2:
+            attributeNames.add(IMarker.SEVERITY);
+            values.add(new Integer(IMarker.SEVERITY_ERROR));
+            break;
 
-            case 5 :
-                attributeNames.add(IMarker.SEVERITY);
-                values.add(new Integer(IMarker.SEVERITY_INFO));
-                break;
+        case 5:
+            attributeNames.add(IMarker.SEVERITY);
+            values.add(new Integer(IMarker.SEVERITY_INFO));
+            break;
 
-            case 3 :
-                attributeNames.add(IMarker.PRIORITY);
-                values.add(new Integer(IMarker.PRIORITY_HIGH));
-            case 4 :
-            default :
-                attributeNames.add(IMarker.SEVERITY);
-                values.add(new Integer(IMarker.SEVERITY_WARNING));
-                break;
+        case 3:
+            attributeNames.add(IMarker.PRIORITY);
+            values.add(new Integer(IMarker.PRIORITY_HIGH));
+        case 4:
+        default:
+            attributeNames.add(IMarker.SEVERITY);
+            values.add(new Integer(IMarker.SEVERITY_WARNING));
+            break;
         }
 
         markerInfo.setAttributeNames((String[]) attributeNames.toArray(new String[attributeNames.size()]));
@@ -394,7 +420,7 @@ public class BaseVisitor {
 
         return markerInfo;
     }
-    
+
     /**
      * Private inner type to handle reviews
      */
