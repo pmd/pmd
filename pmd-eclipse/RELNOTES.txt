@@ -39,6 +39,18 @@ In consequence of upgrading to Eclipse v3.1, project properties management has
 been reviewed. Now project properties are stored in a .pmd file at the project root.
 If you do not explicitly use the .ruleset file, you can delete it.
 
+NEW: Rulesets extension point
+-----------------------------
+The PMD core plugin now define the net.sourceforge.pmd.core.rulesets extension point.
+This extension point allows fragment developers to declare their customs rulesets so that
+they appears in the drop down list when you request to import rulesets.
+This extension point allows also to declare rulesets that will be automatically loaded
+when creating a brand new workspace.
+
+For implementation details, a sample is best. A sample fragment project is committed in
+the CVS. The module name is "pmd-eclipse-test-fragment".
+
+
 ----------------------------------------------------------------------------------------
 v3.0RC2 (alias v3.0.1) - 07/05/2005
 -----------------------------------
