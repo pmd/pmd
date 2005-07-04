@@ -17,14 +17,21 @@
       <library name="lib/xercesImpl.jar">
          <export name="*"/>
       </library>
+      <library name="lib/xmlParserAPIs.jar">
+         <export name="*"/>
+      </library>
       <library name="lib/pmd-3.2.jar">
+         <export name="*"/>
+      </library>
+      <library name="core.jar">
          <export name="*"/>
       </library>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
    </requires>
-
+   <extension-point id="rulesets" name="rulesets" schema="schema/rulesets.exsd"/>
+   
    <extension
          point="org.eclipse.help.toc">
       <toc

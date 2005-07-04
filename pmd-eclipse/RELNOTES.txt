@@ -6,16 +6,38 @@ IMPORTANT : SINCE v2.0 THE INSTALLATION PROCEDURE HAS BEEN CHANGED.
             FOR INSTRUCTIONS.
             
 
-v3.0RC3 (alias v3.0.2) - xx/06/2005
------------------------------------
+v3.1.0 04/07/2005
+-----------------
 
-FIXED/UPDATED : CPD report window for Mac users
---------------------------------------------------
+IT IS HIGHLY RECOMMENDED YOU DELETE THE ruleset.xml FILE IN YOUR
+.metadata/plugins/net.sourceforge.pmd.eclipse DIRECTORY BEFORE UPGRADING.
+Well, it should works with it. But if you have any problem, please try to delete it
+before requesting support.
+
+FIXED/UPDATED : CPD report 
+--------------------------
 Because the bug #1190624 cannot be fixed, the CPD integration has been refactored.
 Now CPD can be launched on one project at a time only.
 The results are produced in a report file inside the report folder.
 The SimpleRenderer is used to render the report.
 
+UPDATED: Works on Eclipse v3.1
+------------------------------
+This new version now works both on Eclipse v3.0 and Eclipse v3.1
+
+UPDATED: PMD v3.2
+-----------------
+This version is packaged with PMD v3.2
+
+UPDATED: Support for Java 5.0 source files
+------------------------------------------
+Now the plugin works for projects that are targeted to Java 5.0
+
+UPDATED: Project properties
+---------------------------
+In consequence of upgrading to Eclipse v3.1, project properties management has
+been reviewed. Now project properties are stored in a .pmd file at the project root.
+If you do not explicitly use the .ruleset file, you can delete it.
 
 ----------------------------------------------------------------------------------------
 v3.0RC2 (alias v3.0.1) - 07/05/2005

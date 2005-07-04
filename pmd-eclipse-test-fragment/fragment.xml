@@ -14,5 +14,11 @@
          <export name="*"/>
       </library>
    </runtime>
+   <extension
+         id="rulesets"
+         name="rule sets"
+         point="net.sourceforge.pmd.core.rulesets">
+      <rulesets class="test.RuleSetsExtension"/>
+   </extension>
 
 </fragment>

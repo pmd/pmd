@@ -2,11 +2,16 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
-v3.0.2 - xx/06/2005
+v3.1.0 - 04/07/2005
 
 Runtime
 -------
+. Migrate to PMD v3.2
+. Migrate to Eclipse v3.1
+. Add support for JDK 1.5
+. Create a CPD report instead of displaying a window
 . Fix Bug#1190624 (Completly refactor the CPD feature. see release notes)
+. Fix other non documented bugs
 
 Development
 -----------
@@ -14,6 +19,7 @@ Development
 . Forgive "small" commands.
 . Use Castor to serialize project properties inside the project itself and no more inside
   the workspace .metadata
+. Small improvements in the Plugin class
 
 
 ----------------------------------------------------------------------------------------

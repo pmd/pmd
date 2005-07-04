@@ -6,7 +6,7 @@
 		<param name="MaxFileSize" value="10MB"/>
 		<param name="MaxBackupIndex" value="1"/>
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="conversionPattern" value="%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p %-24c{1} %m%n"/>
+			<param name="conversionPattern" value="%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p %-26c{1} %m%n"/>
 		</layout>
 	</appender>
 	
@@ -16,7 +16,7 @@
 	</logger>
 	
 	<root>
-		<level value="DEBUG"/>
+		<level value="INFO"/>
 		<appender-ref ref="plugin"/>
 	</root>
 </log4j:configuration>
