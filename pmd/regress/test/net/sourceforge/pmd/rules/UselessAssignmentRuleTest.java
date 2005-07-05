@@ -16,7 +16,7 @@ public class UselessAssignmentRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-               //new TestDescriptor(TEST1, "useless assignment", 1, rule),
+               new TestDescriptor(TEST1, "useless assignment", 0, rule),
        });
     }
 
@@ -24,9 +24,9 @@ public class UselessAssignmentRuleTest extends SimpleAggregatorTst {
     private static final String TEST1 =
     "public class Bar {" + PMD.EOL +
     " void foo(){" + PMD.EOL +
-    "  int x = 2; " + PMD.EOL +
-    "  foo(x); " + PMD.EOL +
-    "  x = 5; " + PMD.EOL +
+    "  //int x = 2; " + PMD.EOL +
+    "  //foo(x); " + PMD.EOL +
+    "  //x = 5; " + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

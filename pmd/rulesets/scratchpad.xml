@@ -7,7 +7,6 @@ These are new rules that are still in progress
   </description>
 
 
-    <!--
     <rule name="UselessAssignment"
         message="The assignment to {0} is never used." dfa="true"
         class="net.sourceforge.pmd.rules.UselessAssignment">
@@ -30,50 +29,6 @@ public class Foo {
 ]]>
     </example>
   </rule>
-
-  -->
-
-  <rule name="UnusedFormalParameter"
-        message="Avoid unused formal parameters such as ''{0}''"
-        class="net.sourceforge.pmd.rules.UnusedFormalParameterRule">
-    <description>
-Avoid passing parameters to methods and then not using those parameters.
-    </description>
-      <priority>3</priority>
-
-    <example>
-<![CDATA[
-public class Foo {
- private void bar(String howdy) {
-  // howdy is not used
- }
-]]>
-    </example>
-  </rule>    
-
-
-
-    <rule name="FooRule"
-          message="foo?" dfa="true"
-          class="net.sourceforge.pmd.rules.FooRule">
-      <description>
-      Foo
-      </description>
-        <properties>
-        <property name="xpath">
-            <value>
-                <![CDATA[
-                ]]>
-            </value>
-        </property>
-        </properties>
-        <priority>3</priority>
-
-      <example>
-  <![CDATA[
-  ]]>
-      </example>
-      </rule>
 
 
     <!--

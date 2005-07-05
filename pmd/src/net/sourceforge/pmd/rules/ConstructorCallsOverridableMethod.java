@@ -414,8 +414,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             return m_Dangerous;
         }
 
-        public void setDangerous(boolean dangerous) {
-            m_Dangerous = dangerous;
+        public void setDangerous() {
+            m_Dangerous = true;
         }
     }
 
@@ -622,7 +622,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
                         //System.out.println("matchint " + matchMethodName + " to " + methName);
                         if (matchMethodName.equals(meth.getName()) && (matchMethodParamCount == meth.getArgumentCount())) {
-                            h.setDangerous(true);
+                            h.setDangerous();
                             found = true;
                             break;
                         }
@@ -774,10 +774,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
             AccessNode parent = (AccessNode) node.jjtGetParent();
             MethodHolder h = new MethodHolder(node);
-            if (!parent.isAbstract()) { //Skip abstract methods, have a separate rule for that
-            	if (!parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) {
-            		h.setDangerous(true);//this method is overridable
-            	}
+            if (!parent.isAbstract() && !parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) { //Skip abstract methods, have a separate rule for that
+                h.setDangerous();//this method is overridable
             }
             List l = new ArrayList();
             addCalledMethodsOfNode((SimpleNode) parent, l, getCurrentEvalPackage().m_ClassName);

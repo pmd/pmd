@@ -51,13 +51,13 @@ public class UselessAssignment extends AbstractRule implements Executable  {
 
     public void execute(List path) {
         Hashtable hash = new Hashtable();
-        System.out.println("path size is " + path.size());
+        //System.out.println("path size is " + path.size());
         for (int i = 0; i < path.size(); i++) {
-            System.out.println("i = " + i);
+            //System.out.println("i = " + i);
             IDataFlowNode inode = (IDataFlowNode) path.get(i);
             if (inode.getVariableAccess() != null) {
                 for (int j = 0; j < inode.getVariableAccess().size(); j++) {
-                    System.out.println("j = " + j);
+                    //System.out.println("j = " + j);
                     VariableAccess va = (VariableAccess) inode.getVariableAccess().get(j);
 
                     Object o = hash.get(va.getVariableName());
