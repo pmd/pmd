@@ -5,6 +5,7 @@ Fixed bug 1227001 - AvoidCallingFinalize no longer flags calls to finalize() wit
 Fixed bug 1229755 - Fixed typo in ArrayIsStoredDirectly description.
 Fixed bug 1229749 - Improved error message when an external rule is not found.
 Fixed bug 1224849 - JUnitTestsShouldContainAsserts no longer skips method declarations which include explicit throws clauses.
+Fixed bug 1225492 - ConstructorCallsOverridableMethod now reports the correct method name.
 Fixed a bug in RuleSetFactory that missed some override cases; thx to Wouter Zelle for the report and a fix.
 Added some new XSLT scripts that create nifty HTML output; thanks to Wouter Zelle for the code.
 Improved UseCorrectExceptionLogging; thx to Wouter Zelle for the new XPath.

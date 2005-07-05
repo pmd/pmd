@@ -400,10 +400,19 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
 
     private static final class MethodHolder {
         private ASTMethodDeclarator m_Amd;
-        private boolean m_Dangerous = false;
+        private boolean m_Dangerous;
+        private String called;
 
         public MethodHolder(ASTMethodDeclarator amd) {
             m_Amd = amd;
+        }
+
+        public void setCalledMethod(String name) {
+            this.called = name;
+        }
+
+        public String getCalled() {
+            return this.called;
         }
 
         public ASTMethodDeclarator getASTMethodDeclarator() {
@@ -562,9 +571,9 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                     if (h.isDangerous()) {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
-                        if (meth.getName().equals(methName) && (meth.getArgumentCount() == count)) {
+                        if (meth.getName().equals(methName) && meth.getArgumentCount() == count) {
                             RuleContext ctx = (RuleContext) data;
-                            String msg = MessageFormat.format(getMessage(), new Object[]{meth.getName()});
+                            String msg = MessageFormat.format(getMessage(), new Object[]{h.getCalled()});
                             ctx.getReport().addRuleViolation(createRuleViolation(ctx, meth.getASTPrimaryExpression(), msg));
                         }
                     }
@@ -620,9 +629,10 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                     if (h3.isDangerous()) {
                         String matchMethodName = h3.getASTMethodDeclarator().getImage();
                         int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
-                        //System.out.println("matchint " + matchMethodName + " to " + methName);
+                        //System.out.println("matching " + matchMethodName + " to " + matchMethodName);
                         if (matchMethodName.equals(meth.getName()) && (matchMethodParamCount == meth.getArgumentCount())) {
                             h.setDangerous();
+                            h.setCalledMethod(matchMethodName);
                             found = true;
                             break;
                         }
