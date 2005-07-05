@@ -43,10 +43,10 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Wim Deblauwe - reported bug in JUnitTestsShouldContainAsserts, front page and "how to make a ruleset" patches, noted problems with web site rule index, bug report for JUnitTestsShouldContainAsserts, Clover license coordination and implementation, UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Pieter Bloemendaal - Found typo in ArrayIsStoredDirectly, bug report for AvoidReassigningParametersRule</li>
             <li>Wouter Zelle - Some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Jorn Stampehl - Noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage</li>
-            <li>Wim Deblauwe - front page and "how to make a ruleset" patches, noted problems with web site rule index, bug report for JUnitTestsShouldContainAsserts, Clover license coordination and implementation, UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Dennis Klemann - reported fix for pmd.bat problem</li>
             <li>Jeff Chamblee - bug report for CompareObjectsWithEquals</li>
             <li>Tor Norbye - Suggested CompareObjectsWithEquals</li>

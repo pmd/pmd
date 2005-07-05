@@ -30,6 +30,7 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST10, "BUG 1105633 - False +: JUnit testcases could have fail() instead of assert", 0, rule),
 		   new TestDescriptor(BUG_1146116, "BUG 1146116 PMDException with inner interfaces", 0, rule),
 		   new TestDescriptor(TEST12, "skip static test methods", 0, rule),
+		   new TestDescriptor(TEST13, "exceptions shouldn't block it", 1, rule),
        });
     }
 
@@ -135,6 +136,11 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
     private static final String TEST12 =
 	"public class Foo {" +  PMD.EOL +
 	" public static void testfoo() {}" + PMD.EOL +
+	"}";
+
+    private static final String TEST13 =
+	"public class Foo {" +  PMD.EOL +
+	" public void testfoo() throws Exception {}" + PMD.EOL +
 	"}";
 
 }

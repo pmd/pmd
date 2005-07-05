@@ -34,4 +34,16 @@ public class ASTMethodDeclaration extends AccessNode {
 			return md.getImage();
 		return null;
 	}
+
+    public ASTBlock getBlock() {
+        if (this.jjtGetChild(2) instanceof ASTBlock) {
+            return (ASTBlock)this.jjtGetChild(2);
+        }
+        if (jjtGetNumChildren() > 3) {
+            if (this.jjtGetChild(3) instanceof ASTBlock) {
+                return (ASTBlock)this.jjtGetChild(3);
+            }
+        }
+        return null;
+    }
 }
