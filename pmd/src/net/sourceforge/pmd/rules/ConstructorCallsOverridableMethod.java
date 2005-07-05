@@ -629,7 +629,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                     if (h3.isDangerous()) {
                         String matchMethodName = h3.getASTMethodDeclarator().getImage();
                         int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
-                        //System.out.println("matching " + matchMethodName + " to " + matchMethodName);
+                        //System.out.println("matching " + matchMethodName + " to " + meth.getName());
                         if (matchMethodName.equals(meth.getName()) && (matchMethodParamCount == meth.getArgumentCount())) {
                             h.setDangerous();
                             h.setCalledMethod(matchMethodName);
