@@ -399,12 +399,12 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
     }
 
     private static final class MethodHolder {
-        private ASTMethodDeclarator m_Amd;
-        private boolean m_Dangerous;
+        private ASTMethodDeclarator amd;
+        private boolean dangerous;
         private String called;
 
         public MethodHolder(ASTMethodDeclarator amd) {
-            m_Amd = amd;
+            this.amd = amd;
         }
 
         public void setCalledMethod(String name) {
@@ -416,15 +416,15 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         }
 
         public ASTMethodDeclarator getASTMethodDeclarator() {
-            return m_Amd;
+            return amd;
         }
 
         public boolean isDangerous() {
-            return m_Dangerous;
+            return dangerous;
         }
 
         public void setDangerous() {
-            m_Dangerous = true;
+            dangerous = true;
         }
     }
 
