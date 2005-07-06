@@ -103,9 +103,9 @@ At this time, only one can be used at a time.
 
    </description>
      <priority>3</priority>
-   <properties>
-    <property name="minimum" value="1000"/>
-   </properties>
+       <properties>
+        <property name="minimum" value="1000"/>
+       </properties>
    <example>
 <![CDATA[
 public class Foo {
