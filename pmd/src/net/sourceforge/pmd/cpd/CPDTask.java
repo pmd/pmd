@@ -129,7 +129,6 @@ public class CPDTask extends Task {
         } else if (filesets.isEmpty()) {
             throw new BuildException("Must include at least one FileSet");
         }
-
     }
 
     public void addFileset(FileSet set) {

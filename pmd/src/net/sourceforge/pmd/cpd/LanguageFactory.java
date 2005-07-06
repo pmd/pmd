@@ -24,8 +24,7 @@ public class LanguageFactory {
         } else if (language.equals(JAVA_KEY)) {
             return new JavaLanguage(properties);
         } else if (language.equals(BY_EXTENSION)) {
-	    String extension = properties.getProperty(EXTENSION);
-            return new AnyLanguage(extension);
+            return new AnyLanguage(properties.getProperty(EXTENSION));
         } else if (language.equals(PHP_KEY)) {
             return new PHPLanguage();
         } else if (language.equals(RUBY_KEY)) {

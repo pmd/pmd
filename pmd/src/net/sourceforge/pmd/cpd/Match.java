@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.PMD;
+
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -102,7 +104,7 @@ public class Match implements Comparable {
     }
 
     public String toString() {
-        return "Match:\r\ntokenCount = " + tokenCount + "\r\nmarks = " + markSet.size();
+        return "Match: " + PMD.EOL + "tokenCount = " + tokenCount + PMD.EOL + "marks = " + markSet.size();
     }
 
     public Set getMarkSet() {

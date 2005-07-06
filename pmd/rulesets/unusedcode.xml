@@ -8,7 +8,8 @@ The Unused Code Ruleset contains a collection of rules that find unused code.
 
   <rule name="UnusedPrivateField"
         message="Avoid unused private fields such as ''{0}''"
-        class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule">
+        class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField">
     <description>
 Detects when a private field is declared and/or assigned a value, but not used.
     </description>
@@ -29,7 +30,8 @@ public class Something {
 
 <rule name="UnusedLocalVariable"
         message="Avoid unused local variables such as ''{0}''"
-        class="net.sourceforge.pmd.rules.UnusedLocalVariableRule">
+        class="net.sourceforge.pmd.rules.UnusedLocalVariableRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable">
     <description>
 Detects when a local variable is declared and/or assigned, but not used.
     </description>
@@ -48,7 +50,8 @@ public void doSomething() {
 
     <rule name="UnusedPrivateMethod"
         message="Avoid unused private methods such as ''{0}''"
-        class="net.sourceforge.pmd.rules.UnusedPrivateMethodRule">
+        class="net.sourceforge.pmd.rules.UnusedPrivateMethodRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod">
     <description>
 Unused Private Method detects when a private method is declared but is unused.
     </description>
@@ -65,7 +68,8 @@ public class Something {
 
   <rule name="UnusedFormalParameter"
         message="Avoid unused formal parameters such as ''{0}''"
-        class="net.sourceforge.pmd.rules.UnusedFormalParameterRule">
+        class="net.sourceforge.pmd.rules.UnusedFormalParameterRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter">
     <description>
 Avoid passing parameters to methods and then not using those parameters.
     </description>
@@ -83,6 +87,3 @@ public class Foo {
 
 
 </ruleset>
-
-
-

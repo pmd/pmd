@@ -194,7 +194,7 @@
 <target name="cpd" description="Runs CPD">
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
     <!-- ignoreIdentifiers="true" -->
-    <cpd ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt">
+    <cpd ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt" format="text">
         <fileset dir="/usr/local/java/src/java/lang/ref">
             <include name="**/*.java"/>
         </fileset>
