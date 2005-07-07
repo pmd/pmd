@@ -150,7 +150,7 @@ public class Designer implements ClipboardOwner {
 
         JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlSplitPane, tabbed);
         containerSplitPane.setContinuousLayout(true);
-        
+
         JMenuBar menuBar = createMenuBar();
         frame.setJMenuBar(menuBar);
         frame.getContentPane().add(containerSplitPane);
