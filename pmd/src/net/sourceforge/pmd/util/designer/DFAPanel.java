@@ -12,8 +12,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.ScrollPane;
 import java.util.Iterator;
 import java.util.List;
 
@@ -160,7 +160,6 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 
         setLayout(new BorderLayout());
         JPanel leftPanel = new JPanel();
-   //     nodes.addElement("Hit 'Go'");  // eo - causes a ClassCast exception @ line 191
         nodeList = new JList(nodes);
         nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         nodeList.setFixedCellWidth(150);
@@ -170,8 +169,8 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         add(leftPanel, BorderLayout.WEST);
 
         dfaCanvas = new DFACanvas();
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setSize(800, 450);  // eo - it would be better to calculate the size based on the containing object's size
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setPreferredSize(new Dimension(800, 450));  // eo - it would be better to calculate the size based on the containing object's size
         dfaCanvas.setSize(2000,4000);  // eo - these seem to give a big enough canvas
         scrollPane.add(dfaCanvas);
         wrapperPanel = new JPanel();

@@ -19,13 +19,12 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
-import org.w3c.dom.Document;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Toolkit;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
@@ -33,8 +32,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -75,7 +72,7 @@ public class Designer implements ClipboardOwner {
                 RuleSet rs = new RuleSet();
                 rs.addRule(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
-                ctx.setSourceCodeFilename("[scratchpad]");
+                ctx.setSourceCodeFilename("[no filename]");
                 StringReader reader = new StringReader(codeEditorPane.getText());
                 new PMD(getJDKVersion()).processFile(reader, rs, ctx);
                 List methods = dfaGraphRule.getMethods();
@@ -129,54 +126,45 @@ public class Designer implements ClipboardOwner {
     private final JTextArea astArea = new JTextArea();
     private DefaultListModel xpathResults = new DefaultListModel();
     private final JList xpathResultList = new JList(xpathResults);
-    private final JTextArea xpathQueryArea = new JTextArea(10, 30);
+    private final JTextArea xpathQueryArea = new JTextArea(15, 30);
     private final JFrame frame = new JFrame("PMD Rule Designer");
     private final DFAPanel dfaPanel = new DFAPanel();
     private JRadioButtonMenuItem jdk14MenuItem;
     private JRadioButtonMenuItem jdk15MenuItem;
 
     public Designer() {
-        JSplitPane controlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
-
-        JComponent astPanel = createASTPanel();
-        JComponent xpathResultPanel = createXPathResultPanel();
-
-        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astPanel, xpathResultPanel);        
+        JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
+        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createASTPanel(), createXPathResultPanel());
         
         JTabbedPane tabbed = new JTabbedPane();
-        
         tabbed.addTab("Abstract Syntax Tree / XPath", resultsSplitPane);
         tabbed.addTab("Data Flow Analysis", dfaPanel);
-        
-        // TODO Remove when minimal runtime support is >= JDK 1.4
         try {
+            // Remove when minimal runtime support is >= JDK 1.4
             if (JTabbedPane.class.getMethod("setMnemonicAt", new Class[]{Integer.TYPE, Integer.TYPE}) != null) {
                 // Compatible with >= JDK 1.4
                 tabbed.setMnemonicAt(0, KeyEvent.VK_A);
                 tabbed.setMnemonicAt(1, KeyEvent.VK_D);
             }
-        } catch (NoSuchMethodException nsme) {
-            // Ok, means we're running < JDK 1.4
-        } 
+        } catch (NoSuchMethodException nsme) {} // Runtime is < JDK 1.4
 
-        JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, tabbed);
+        JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlSplitPane, tabbed);
         containerSplitPane.setContinuousLayout(true);
         
         JMenuBar menuBar = createMenuBar();
-
         frame.setJMenuBar(menuBar);
         frame.getContentPane().add(containerSplitPane);
-
-        frame.setSize(1000, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        frame.setSize(screenHeight - (screenHeight/4), screenHeight - (screenHeight/4));
         frame.setLocation((screenWidth / 2) - frame.getWidth() / 2, (screenHeight / 2) - frame.getHeight() / 2);
         frame.setVisible(true);
         frame.pack();
         frame.show();
-//        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
         resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 2));
+        //containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
     }
 
     private JMenuBar createMenuBar() {
@@ -293,7 +281,7 @@ public class Designer implements ClipboardOwner {
     }
 
     private JComponent createASTPanel() {
-        astArea.setRows(20);        
+        astArea.setRows(10);
         astArea.setColumns(20);
         JScrollPane astScrollPane = new JScrollPane(astArea);
         return astScrollPane;
