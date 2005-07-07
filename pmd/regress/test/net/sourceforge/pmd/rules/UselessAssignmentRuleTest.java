@@ -16,7 +16,7 @@ public class UselessAssignmentRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-               new TestDescriptor(TEST1, "useless assignment", 0, rule),
+               //new TestDescriptor(TEST1, "useless assignment", 0, rule),
        });
     }
 

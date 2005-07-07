@@ -1084,4 +1084,26 @@ class Foo {
 ]]>
   </example>
 </rule>
+
+
+<rule  name="PositionLiteralsFirstInComparisons"
+  message="Position literals first in String comparisons"
+  class="net.sourceforge.pmd.rules.design.PositionLiteralsFirstInComparisons">
+  <description>
+  Position literals first in String comparisons - that way if the String is null you won't get a NullPointerException, it'll just return false.
+  </description>
+  <priority>3</priority>
+  <example>
+<![CDATA[
+class Foo {
+ boolean bar() {
+  return x.equals("2"); // should be "2".equals(x)
+ }
+}
+
+]]>
+  </example>
+</rule>
+
+
 </ruleset>

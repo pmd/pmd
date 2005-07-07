@@ -1,4 +1,5 @@
 ????, 2005 - 3.3:
+New rule: PositionLiteralsFirstInComparisons
 Implemented RFE 1220171 - rule definitions can now contain a link to an external URL for more information on that rule - for example, a link to the rule's web page.  Thanks to Wouter Zelle for designing and implementing this!
 Fixed bug 1226858 - JUnitAssertionsShouldIncludeMessage now checks calls to assertFalse.
 Fixed bug 1227001 - AvoidCallingFinalize no longer flags calls to finalize() within finalizers.

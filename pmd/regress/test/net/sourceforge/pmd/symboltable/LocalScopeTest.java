@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.symboltable.LocalScope;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -74,12 +75,20 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals(4, occ.getLocation().getBeginLine());
     }
 
-    public void testTypesAreRecorded() {
+    public void testLocalVariableTypesAreRecorded() {
         parseCode(TEST1);
         List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
         Map vars = ((ASTVariableDeclaratorId)nodes.get(0)).getScope().getVariableDeclarations();
         VariableNameDeclaration decl = (VariableNameDeclaration)vars.keySet().iterator().next();
         assertEquals("Bar", decl.getTypeImage());
+    }
+
+    public void testMethodArgumentTypesAreRecorded() {
+        parseCode(TEST5);
+        List nodes = acu.findChildrenOfType(ASTFormalParameter.class);
+        Map vars = ((ASTFormalParameter)nodes.get(0)).getScope().getVariableDeclarations();
+        VariableNameDeclaration decl = (VariableNameDeclaration)vars.keySet().iterator().next();
+        assertEquals("String", decl.getTypeImage());
     }
 
     public void testgetEnclosingMethodScope() {
@@ -117,6 +126,11 @@ public class LocalScopeTest extends STBBaseTst {
     public static final String TEST4 =
     "public class Foo {" + PMD.EOL +
     " void foo(String x, String z) { int y; }" + PMD.EOL +
+    "}";
+
+    public static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " void foo(String x);" + PMD.EOL +
     "}";
 
 }
