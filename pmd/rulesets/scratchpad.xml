@@ -6,38 +6,9 @@
 These are new rules that are still in progress
   </description>
 
-    <!--
-    <rule name="UselessAssignment"
-        message="The assignment to {0} is never used." dfa="true"
-        class="net.sourceforge.pmd.rules.UselessAssignment">
-    <description>
-Assigning a value to a variable and then not referencing that variable may indicate a bug.  At the least, it's wasted code.
-    </description>
-        <priority>3</priority>
-   <properties>
-    <property name="threshold" value="4"/>
-   </properties>
-    <example>
-<![CDATA[
-public class Foo {
- private void bar() {
-  int x = 2;
-  foo(x);
-  x = 5; // this assignment is not needed
- }
-}
-]]>
-    </example>
-  </rule>
-
-  -->
-
-
 
 
     <!--
-
-
 <rule
  ref="rulesets/codesize.xml/ExcessiveMethodLength"
  message="This is one of the 6 longest methods">

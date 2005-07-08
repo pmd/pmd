@@ -35,6 +35,10 @@ public class ASTMethodDeclaration extends AccessNode {
 		return null;
 	}
 
+    public boolean isVoid() {
+        return ((ASTResultType)getFirstChildOfType(ASTResultType.class)).isVoid();
+    }
+
     public ASTBlock getBlock() {
         if (this.jjtGetChild(2) instanceof ASTBlock) {
             return (ASTBlock)this.jjtGetChild(2);

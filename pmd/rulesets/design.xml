@@ -1105,5 +1105,23 @@ class Foo {
   </example>
 </rule>
 
+    <rule name="UnnecessaryLocalBeforeReturn"
+          message="Consider simply returning the value vs storing it in local variable ''{0}''"
+          class="net.sourceforge.pmd.rules.design.UnnecessaryLocalBeforeReturn">
+      <description>
+  Avoid unnecessary if..then..else statements when returning a boolean
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+  public class Foo {
+    public int foo() {
+      int x = doSomething();
+      return x;  // instead, just 'return doSomething();'
+    }
+  }
+  ]]>
+      </example>
+    </rule>
 
 </ruleset>
