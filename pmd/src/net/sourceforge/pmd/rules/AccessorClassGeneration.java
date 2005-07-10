@@ -14,6 +14,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.ast.ASTEnumDeclaration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -203,6 +204,11 @@ public class AccessorClassGeneration extends AbstractRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         classDataList = new ArrayList();
         return super.visit(node, data);
+    }
+
+    public Object visit(ASTEnumDeclaration node, Object data) {
+        // just skip Enums
+        return data;
     }
 
     private void processRule(RuleContext ctx) {
