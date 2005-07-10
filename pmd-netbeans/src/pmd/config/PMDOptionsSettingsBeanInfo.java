@@ -90,18 +90,10 @@ public class PMDOptionsSettingsBeanInfo extends SimpleBeanInfo {
 	/**
 	 * Returns an icon representing PMD settings.
 	 *
-	 * @param type the type of icon, one of {@link BeanInfo#ICON_COLOR_16x16},
-	 * {@link BeanInfo#ICON_MONO_16x16}, {@link BeanInfo#ICON_COLOR_32x32}, {@link BeanInfo#ICON_MONO_32x32}
+	 * @param type the type of icon, one of {@link BeanInfo} constants
 	 * @return the icon, not null.
 	 */
 	public Image getIcon( int type ) {
-		Image img;
-		if( type == BeanInfo.ICON_COLOR_16x16 || type == BeanInfo.ICON_MONO_16x16 ) {
-			img = Utilities.loadImage( "pmd/resources/PMDOptionsSettingsIcon.gif" );
-		}
-		else {
-			img = Utilities.loadImage( "pmd/resources/PMDOptionsSettingsIcon32.gif" );
-		}
-		return img;
+                return Utilities.loadImage( "pmd/resources/PMDOptionsSettingsIcon.gif" );
 	}
 }
