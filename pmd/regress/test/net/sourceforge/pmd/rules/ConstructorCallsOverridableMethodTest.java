@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.Report;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -28,6 +29,12 @@ public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
 		   new TestDescriptor(TEST9, "ignore abstract methods", 0, rule),
 		   //FIXME new TestDescriptor(BUG_985989, "bug report 985989, ", 1, rule),
        });
+    }
+
+    public void testGenerics() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST10, rule, rpt);
+        assertEquals(0, rpt.size());
     }
 
     private static final String TEST1 =
@@ -107,31 +114,38 @@ public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
     " abstract void bar() {}" + PMD.EOL +
     "}";
 
-    private static final String BUG_985989 = "public class Test {" + PMD.EOL +
-    		"public static class SeniorClass {" + PMD.EOL + 
-    		"  public SeniorClass(){" + PMD.EOL + 
-    		"    toString(); //may throw NullPointerException if overridden" + PMD.EOL + 
-    		"  }" + PMD.EOL + 
-    		"  public String toString(){" + PMD.EOL + 
-    		"    return \"IAmSeniorClass\";" + PMD.EOL + 
-    		"  }" + PMD.EOL + 
-    		"}" + PMD.EOL + 
-    		"public static class JuniorClass extends SeniorClass {" + PMD.EOL + 
-    		"  private String name;" + PMD.EOL + 
-    		"  public JuniorClass(){" + PMD.EOL + 
-    		"    super(); //Automatic call leads to NullPointerException" + PMD.EOL + 
-    		"    name = \"JuniorClass\";" + PMD.EOL + 
-    		"  }" + PMD.EOL + 
-    		"  public String toString(){" + PMD.EOL + 
-    		"    return name.toUpperCase();" + PMD.EOL + 
-    		"  }" + PMD.EOL + 
-    		"}" + PMD.EOL + 
-    		"public static void main (String[] args) {" + PMD.EOL + 
-    		"  System.out.println(\": \"+new SeniorClass());" + PMD.EOL + 
-    		"  System.out.println(\": \"+new JuniorClass());" + PMD.EOL + 
-    		"} // end of main ()" + PMD.EOL + 
-    		"" + PMD.EOL + 
-    		"}";
+    private static final String TEST10 =
+    "package foo.bar;" + PMD.EOL +
+    "public enum Buz {" + PMD.EOL +
+    " FOO(2);" + PMD.EOL +
+    " private Buz(String s) {}" + PMD.EOL +
+    "}";
+
+    private static final String BUG_985989 =
+    "public class Test {" + PMD.EOL +
+    "public static class SeniorClass {" + PMD.EOL +
+    "  public SeniorClass(){" + PMD.EOL +
+    "    toString(); //may throw NullPointerException if overridden" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "  public String toString(){" + PMD.EOL +
+    "    return \"IAmSeniorClass\";" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}" + PMD.EOL +
+    "public static class JuniorClass extends SeniorClass {" + PMD.EOL +
+    "  private String name;" + PMD.EOL +
+    "  public JuniorClass(){" + PMD.EOL +
+    "    super(); //Automatic call leads to NullPointerException" + PMD.EOL +
+    "    name = \"JuniorClass\";" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "  public String toString(){" + PMD.EOL +
+    "    return name.toUpperCase();" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}" + PMD.EOL +
+    "public static void main (String[] args) {" + PMD.EOL +
+    "  System.out.println(\": \"+new SeniorClass());" + PMD.EOL +
+    "  System.out.println(\": \"+new JuniorClass());" + PMD.EOL +
+    "}" + PMD.EOL +
+    "}";
 }
 
 

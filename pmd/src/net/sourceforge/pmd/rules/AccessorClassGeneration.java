@@ -41,6 +41,13 @@ public class AccessorClassGeneration extends AbstractRule {
     private String packageName;
 
     private ClassData getCurrentClassData() {
+        // TODO
+        // this is a hack to bail out here
+        // but I'm not sure why this is happening
+        // TODO
+        if (classID >= classDataList.size()) {
+            return null;
+        }
         return (ClassData) classDataList.get(classID);
     }
 
@@ -283,6 +290,13 @@ public class AccessorClassGeneration extends AbstractRule {
             int formerID = getClassID();
             setClassID(classDataList.size());
             ClassData newClassData = new ClassData(className);
+            // TODO
+            // this is a hack to bail out here
+            // but I'm not sure why this is happening
+            // TODO
+            if (formerID == -1) {
+                return null;
+            }
             //store the names of any outer classes of this class in the classQualifyingName List
             ClassData formerClassData = (ClassData) classDataList.get(formerID);
             newClassData.addClassQualifyingName(formerClassData.getClassName());
@@ -321,7 +335,7 @@ public class AccessorClassGeneration extends AbstractRule {
         // this is a hack to bail out here
         // but I'm not sure why this is happening
         // TODO
-        if (classID == -1) {
+        if (classID == -1 || getCurrentClassData() == null) {
             return data;
         }
         AllocData ad = new AllocData(node, getPackageName(), getCurrentClassData().getClassQualifyingNamesList());
