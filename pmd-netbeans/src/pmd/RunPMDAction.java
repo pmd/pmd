@@ -78,12 +78,9 @@ import pmd.scan.EditorChangeListener;
  */
 public class RunPMDAction extends CookieAction {
 	
-	/** True means verbose trace logging should be performed. Trace logging goes out at ERROR level
-	 * so that INFORMATIONAL level is not needed (would require more configuration and would mix output
-	 * with a lot of verbose non-PMD-related output). There is probably a better-behaved way of doing this ...
-	 * if you care, please tell me :)
+	/** True means verbose trace logging should be performed. 
 	 **/
-	public static final boolean TRACE_LOGGING = System.getProperty("pmd-netbeans.trace.logging") != null;
+	public static final boolean TRACE_LOGGING = Boolean.getBoolean("pmd-netbeans.trace.logging");
 
 
 	/**
