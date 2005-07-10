@@ -1306,6 +1306,7 @@ void FormalParameter() :
 void ConstructorDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);}
 {
+    [ TypeParameters() ]
   <IDENTIFIER> FormalParameters() [ "throws" NameList() ]
   "{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]

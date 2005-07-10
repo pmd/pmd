@@ -157,10 +157,12 @@ public class JDKVersionTest extends TestCase  {
         p.CompilationUnit();
     }
 
-//    public void testMultipleGenerics() throws Throwable {
-//        JavaParser p = new TargetJDK1_5().createParser(new StringReader(MULTIPLE_GENERICS));
-//        p.CompilationUnit();
-//    }
+    public void testMultipleGenerics() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(FUNKY_GENERICS));
+        p.CompilationUnit();
+        p = new TargetJDK1_5().createParser(new StringReader(MULTIPLE_GENERICS));
+        p.CompilationUnit();
+    }
 
 
     private static final String ASSERT_TEST1 =
@@ -303,5 +305,11 @@ public class JDKVersionTest extends TestCase  {
     private static final String MULTIPLE_GENERICS =
     "public class Foo<K,V> {" + PMD.EOL +
     "  public <A extends K, B extends V> Foo(Bar<A,B> t) {}" + PMD.EOL +
+    "}";
+
+    // See java/lang/concurrent/CopyOnWriteArraySet
+    private static final String FUNKY_GENERICS =
+    "public class Foo {" + PMD.EOL +
+    "  public <T extends E> Foo() {}" + PMD.EOL +
     "}";
 }
