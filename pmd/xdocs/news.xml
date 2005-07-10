@@ -18,6 +18,8 @@
         <br/>
         <li>1/7/2005 - <a href="http://www-106.ibm.com/developerworks/java/library/j-pmd/">"Zap bugs with PMD"</a> - Elliotte Rusty Harold's article on installing, configuring, and running PMD</li>
         <br/>
+        <li>11/16/2004 - <a href="http://www.newsforge.com/article.pl?sid=04/11/11/1517207">"PMD: A code analyzer for Java programmers"</a> - Daniel Rubio's article about PMD; includes some notes on XPath rules</li>
+        <br/>
         <li>6/16/2004 - <a href="http://www.onjava.com/pub/a/onjava/2004/06/16/ccunittest.html">"Code Improvement Through Cyclomatic Complexity"</a> - Andrew Glover's CCM article featuring PMD</li>
         <br/>
         <li>6/1/2004 - <a href="http://tinyurl.com/3dgpe">"Open Source-Perlen"</a> - A German article on PMD in Java Magazin</li>
