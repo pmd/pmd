@@ -163,19 +163,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     private String findMethodName(SimpleNode node) {
-        String methodName;
-        if (node.getFirstParentOfType(ASTMethodDeclaration.class) == null) {
-            return "";
-        } else {
-            // TODO hm, this should be a method on MethodScope
-            Scope s = node.getScope();
-            while (!(s instanceof MethodScope)) {
-                s = s.getParent();
-            }
-            MethodScope ms = (MethodScope)s;
-            methodName = ms.getName();
-        }
-        return methodName;
+        return node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : ((MethodScope)node.getScope().getEnclosingMethodScope()).getName();
     }
 
     private String findClassName(SimpleNode node) {
