@@ -37,8 +37,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
     }
 
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
-        ASTMethodDeclarator declarator = (ASTMethodDeclarator) methodDeclaration.jjtGetChild(1);
-        if ((declarator.getImage().equals("setUp") || declarator.getImage().equals("tearDown")) && junitImported) {
+        if ((methodDeclaration.getMethodName().equals("setUp") || methodDeclaration.getMethodName().equals("tearDown")) && junitImported) {
             return super.visit(methodDeclaration, o);
         }
 
@@ -97,7 +96,6 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
         Node parent = exception.jjtGetParent().jjtGetParent();
         return parent instanceof ASTMethodDeclaration || parent instanceof ASTConstructorDeclaration;
     }
-
 
     private boolean hasContent(List nameList) {
         return (nameList != null && nameList.size() > 0);

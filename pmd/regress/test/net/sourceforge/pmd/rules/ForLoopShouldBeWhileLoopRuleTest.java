@@ -32,7 +32,6 @@ public class ForLoopShouldBeWhileLoopRuleTest extends SimpleAggregatorTst {
         assertEquals(0, rpt.size());
     }
 
-
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     " void foo() {" + PMD.EOL +

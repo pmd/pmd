@@ -52,7 +52,7 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
             return super.visit(node, data);
         }
 
-        ASTResultType rt = (ASTResultType)node.jjtGetChild(0);
+        ASTResultType rt = (ASTResultType)node.getFirstChildOfType(ASTResultType.class);
         if (rt.isVoid()) {
             return super.visit(node, data);
         }
