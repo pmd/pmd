@@ -185,7 +185,8 @@ public abstract class ConfigUtils {
 				try {
 					RuleSet ruleset = ruleSetFactory.createRuleSet(
 					new FileInputStream( ruleSetXml ),
-					new RuleClassLoader( ConfigUtils.class.getClassLoader() ) );
+                                                // PENDING: perhaps can get ClassLoader from Lookup 
+					new RuleClassLoader( ConfigUtils.class.getClassLoader() ) ); 
 					list.addAll( ruleset.getRules() );
 				}
 				catch( RuntimeException e ) {
