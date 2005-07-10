@@ -19,6 +19,7 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTEnumDeclaration;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -719,6 +720,11 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         clearEvalPackages();
         return super.visit(node, data);
+    }
+
+    public Object visit(ASTEnumDeclaration node, Object data) {
+        // just skip Enums
+        return data;
     }
 
     /**
