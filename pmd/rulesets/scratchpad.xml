@@ -7,7 +7,6 @@ These are new rules that are still in progress
   </description>
 
 
-
     <!--
 <rule
  ref="rulesets/codesize.xml/ExcessiveMethodLength"

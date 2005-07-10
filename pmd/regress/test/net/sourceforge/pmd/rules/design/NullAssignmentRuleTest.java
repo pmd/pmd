@@ -25,6 +25,7 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "null param on right hand sidel", 0, rule),
            new TestDescriptor(TEST5, "null assignment in ternary", 1, rule),
            new TestDescriptor(TEST6, "null assignment in ternary, part deux", 1, rule),
+           new TestDescriptor(TEST7, "comparison is not assignment", 0, rule),
        });
     }
 
@@ -75,6 +76,13 @@ public class NullAssignmentRuleTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     " public void foo() {" + PMD.EOL +
     "  String x = bar() ? null : \"fiz\";" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " public String foo() {" + PMD.EOL +
+    "  return x == null ? \"42\" : x;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
