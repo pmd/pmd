@@ -135,18 +135,14 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 
     private static class ElementWrapper {
         private ASTMethodDeclaration node;
-
         public ElementWrapper(ASTMethodDeclaration node) {
             this.node = node;
         }
-
         public ASTMethodDeclaration getNode() {
             return node;
         }
-
         public String toString() {
-            SimpleNode n = (SimpleNode) node.jjtGetChild(1);
-            return n.getImage();
+            return node.getMethodName();
         }
     }
 
@@ -177,7 +173,6 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         wrapperPanel.add(scrollPane);
         wrapperPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         add(wrapperPanel, BorderLayout.EAST);
-        
     }
 
     public void valueChanged(ListSelectionEvent event) {

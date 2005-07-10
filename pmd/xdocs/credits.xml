@@ -43,7 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>dvholten - reported NullAssignment bug</li>
+            <li>dvholten - reported several NullAssignment bugs</li>
             <li>Dennis Klemann - reported JDK 1.5 parsing bug with ExceptionSignatureDeclaration, reported fix for pmd.bat problem</li>
             <li>Andriy Rozeluk - Suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Wouter Zelle - externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
