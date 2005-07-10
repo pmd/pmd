@@ -1,3 +1,8 @@
+Version 1.2
+- Updated pmd to version 3.2
+- JDK 1.5 sources are recognized 
+- Action icon is removed from menu 
+
 Version 1.1
 - Updated pmd to version 3.1
 - The sources were updated to use new plugin development support planned 
