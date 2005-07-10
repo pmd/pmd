@@ -69,7 +69,6 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
             <class-path-extension>
                 <!-- Deployed path, relative to dir containing module: -->
                 <runtime-relative-path>ext/jakarta-oro-2.0.jar</runtime-relative-path>
@@ -94,6 +93,7 @@
                 <!-- Path of library in your own sources, relative to project basedir: -->
                 <binary-origin>lib/pmd-3.1.jar</binary-origin>
             </class-path-extension>
+            <public-packages/>
         </data>
     </configuration>
 </project>
