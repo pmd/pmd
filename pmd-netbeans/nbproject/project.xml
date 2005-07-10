@@ -89,9 +89,9 @@
             </class-path-extension>
             <class-path-extension>
                 <!-- Deployed path, relative to dir containing module: -->
-                <runtime-relative-path>ext/pmd-3.1.jar</runtime-relative-path>
+                <runtime-relative-path>ext/pmd-3.2.jar</runtime-relative-path>
                 <!-- Path of library in your own sources, relative to project basedir: -->
-                <binary-origin>lib/pmd-3.1.jar</binary-origin>
+                <binary-origin>lib/pmd-3.2.jar</binary-origin>
             </class-path-extension>
             <public-packages/>
         </data>
