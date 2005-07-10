@@ -123,23 +123,24 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 						tracelog("Node: " + node + ", count: " + line.getAnnotationCount() );
                                                 
                                                 String text = line.getText();
-                                                
-                                                int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
-                                                if (firstNonWhiteSpaceCharIndex == -1)
-                                                    continue;
-                                                int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
-                                                String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
-                                                String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
-                                                int start = expandedLength(0, initialWhiteSpace, tabSize);
-                                                int length = expandedLength(start, content, tabSize);
-                                                
-                                                Part part = line.createPart(start, length);
-                                                
-						PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
-						String msg = fault.getMessage();
-						annotation.setErrorMessage( msg );
-						annotation.attach( part );
-						part.addPropertyChangeListener( annotation );
+                                                if (text != null) {
+                                                    int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
+                                                    if (firstNonWhiteSpaceCharIndex == -1)
+                                                        continue;
+                                                    int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
+                                                    String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
+                                                    String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
+                                                    int start = expandedLength(0, initialWhiteSpace, tabSize);
+                                                    int length = expandedLength(start, content, tabSize);
+
+                                                    Part part = line.createPart(start, length);
+
+                                                    PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
+                                                    String msg = fault.getMessage();
+                                                    annotation.setErrorMessage( msg );
+                                                    annotation.attach( part );
+                                                    part.addPropertyChangeListener( annotation );
+                                                }
 					}
 				}
 				tracelog("run finished at modcount: " + lastModCount);
