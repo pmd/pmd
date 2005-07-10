@@ -4,16 +4,16 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTFormalParameter;
+import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.MethodScope;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.MethodScope;
 
 import java.util.List;
 import java.util.Map;

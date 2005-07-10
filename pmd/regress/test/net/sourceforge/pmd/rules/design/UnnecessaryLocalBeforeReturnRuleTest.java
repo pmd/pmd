@@ -1,13 +1,9 @@
 package test.net.sourceforge.pmd.rules.design;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.rules.design.UseSingleton;
 
 public class UnnecessaryLocalBeforeReturnRuleTest extends SimpleAggregatorTst {
 

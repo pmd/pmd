@@ -1,11 +1,11 @@
 package test.net.sourceforge.pmd.dfa;
 
-import test.net.sourceforge.pmd.testframework.ParserTst;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.List;
 

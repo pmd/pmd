@@ -4,19 +4,14 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTCatchStatement;
-import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.LocalScope;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 public class AcceptanceTest extends STBBaseTst {
 

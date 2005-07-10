@@ -8,7 +8,6 @@ import net.sourceforge.pmd.ast.Node;
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
 import org.jaxen.util.SingleObjectIterator;
-import org.saxpath.SAXPathException;
 
 import java.util.ArrayList;
 import java.util.Iterator;

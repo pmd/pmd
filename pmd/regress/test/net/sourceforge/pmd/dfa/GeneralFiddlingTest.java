@@ -1,10 +1,10 @@
 package test.net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.dfa.DataFlowNode;
+import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 

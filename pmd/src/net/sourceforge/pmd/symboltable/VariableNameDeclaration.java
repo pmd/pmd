@@ -4,12 +4,11 @@
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTFormalParameter;
+import net.sourceforge.pmd.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Dimensionable;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
