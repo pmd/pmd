@@ -131,7 +131,7 @@ public class Report {
     }
 
     public boolean isEmpty() {
-        return !violations.iterator().hasNext();
+        return !violations.iterator().hasNext() && errors.isEmpty();
     }
 
     public boolean treeIsEmpty() {
