@@ -26,6 +26,7 @@
      </subsection>
      <subsection name="Commercial">
        <ul>
+         <li><a href="http://qalab.sf.net">QALab</a> - Aggregates PMD + Checkstyle + FindBugs and tracks problems over time</li>
          <li><a href="http://www.jutils.com/index.html">Lint4J</a> - Lock graph, DFA, and type analysis, many EJB checks</li>
          <li><a href="http://www.mmsindia.com/jstyle.html">JStyle</a> - $995, nice folks, lots of metrics and rules</li>
          <li><a href="http://www.enerjy.com/en/analyzer/brief.htm">Enerjy Java Code Analyser</a> - 200 rules, lots of IDE plugins</li>
