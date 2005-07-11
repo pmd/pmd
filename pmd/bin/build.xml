@@ -84,7 +84,7 @@
     <fail unless="junit.available" message="Could find JUnit... please place a junit.jar file in the CLASSPATH."/>
   </target>
 
-<target name="test" depends="requires-junit,compile"  description="Runs the unit tests">
+<target name="test" depends="requires-junit,compile,copy"  description="Runs the unit tests">
     <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
       <classpath><path refid="dependencies.path" /></classpath>
       <batchtest fork="yes" todir="${dir.build}">
