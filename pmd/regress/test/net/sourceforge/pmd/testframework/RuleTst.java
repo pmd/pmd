@@ -25,10 +25,14 @@ public class RuleTst extends TestCase {
 
     public Rule findRule(String rs, String r) {
         try {
-			return new RuleSetFactory().createRuleSet(rs).getRuleByName(r);
+			Rule rule = new RuleSetFactory().createRuleSet(rs).getRuleByName(r);
+            if (rule == null){
+                fail("Rule "+r+" not found in ruleset "+rs);
+            }
+            return rule;
 		} catch (RuleSetNotFoundException e) {
 			e.printStackTrace();
-			fail("Rule "+r+" not found in ruleset "+rs);
+			fail("Couldn't find ruleset "+rs);
 			return null;
 		}
     }

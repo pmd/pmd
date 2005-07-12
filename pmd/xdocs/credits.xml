@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Kevin Routley - reported Ant task dependency problem, reported problems with RuleSetFactory unit tests</li>
             <li>Dennis Klemann - noted that errors were missing from text report, reported JDK 1.5 parsing bug with ExceptionSignatureDeclaration, reported fix for pmd.bat problem</li>
             <li>dvholten - reported several NullAssignment bugs</li>
             <li>Andriy Rozeluk - Suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
