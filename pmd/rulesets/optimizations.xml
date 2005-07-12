@@ -167,16 +167,16 @@ public class SimpleTest extends TestCase {
         </rule>
 
     <!-- 
-    other optimization shuold be like avoiding 
+    other optimization should be like avoiding
     "" + int
     or "" + (int) i
     and String.valueOf(int)
     
     and using Integer.toString(int)
 
-    IntegerToStringShuoldBeUsed
-    LongToStringShuoldBeUsed    
-    BooleanToStringShuoldBeUsed    
+    IntegerToStringShouldBeUsed
+    LongToStringShouldBeUsed
+    BooleanToStringShouldBeUsed    
     -->
 
 </ruleset>
