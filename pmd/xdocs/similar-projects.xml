@@ -11,8 +11,9 @@
    <section name="Similar to PMD">
      <subsection name="Open Source">
        <ul>
-          <li><a href="http://javapathfinder.sourceforge.net/">JPathFinder</a> - A verification VM written by NASA; supports a subset of the Java packages</li>
-          <li><a href="http://jikes.sourceforge.net/">Jikes</a> - More than a compiler; now it reports code warnings too</li>
+         <li><a href="http://qalab.sf.net">QALab</a> - Aggregates PMD + Checkstyle + FindBugs and tracks problems over time</li>
+         <li><a href="http://javapathfinder.sourceforge.net/">JPathFinder</a> - A verification VM written by NASA; supports a subset of the Java packages</li>
+         <li><a href="http://jikes.sourceforge.net/">Jikes</a> - More than a compiler; now it reports code warnings too</li>
          <li><a href="http://www.hammurapi.org/content/home.html">Hammurapi</a> - Uses ANTLR, excellent documentation, lots of <a href="http://www.hammurapi.org/content/inspectors.html">rules</a></li>
          <li><a href="http://secure.ucd.ie/products/opensource/ESCJava2/">ESC/Java</a> - Finds null dereference errors, array bounds errors, type cast errors, and race conditions.  Uses Java Modeling Language annotations.</li>
          <li><a href="http://findbugs.sourceforge.net/">FindBugs</a> - works on bytecode, uses BCEL.  Source code uses templates, nifty stuff!</li>
@@ -26,7 +27,6 @@
      </subsection>
      <subsection name="Commercial">
        <ul>
-         <li><a href="http://qalab.sf.net">QALab</a> - Aggregates PMD + Checkstyle + FindBugs and tracks problems over time</li>
          <li><a href="http://www.jutils.com/index.html">Lint4J</a> - Lock graph, DFA, and type analysis, many EJB checks</li>
          <li><a href="http://www.mmsindia.com/jstyle.html">JStyle</a> - $995, nice folks, lots of metrics and rules</li>
          <li><a href="http://www.enerjy.com/en/analyzer/brief.htm">Enerjy Java Code Analyser</a> - 200 rules, lots of IDE plugins</li>
