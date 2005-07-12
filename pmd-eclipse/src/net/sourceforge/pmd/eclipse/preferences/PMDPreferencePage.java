@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -31,8 +32,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -60,6 +59,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.15  2005/07/12 16:38:25  phherlin
+ * RFE#1231112-Make the rule table columns sortable (thanks to Brian R)
+ * BUG#1231108-Fix the resizing issue
+ *
  * Revision 1.14  2005/06/07 22:40:06  phherlin
  * Implementing extra ruleset declaration
  *
@@ -109,8 +112,34 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     protected RuleSet ruleSet;
     private boolean modified = false;
 
+    private final RuleTableViewerSorter ruleTableViewerSorter = new RuleTableViewerSorter(RULE_NAME_COMPARATOR);
+
+    /*
+     * Column comparators used for sorting rule table
+     */
+    
+    private static final Comparator RULE_NAME_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+               return ((Rule) e1).getName().compareTo(((Rule) e2).getName());
+        }
+    };
+    
+    private static final Comparator RULE_PRIORITY_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+           return ((Rule) e1).getPriority() - (((Rule) e2).getPriority());
+        }
+    };
+   
+    private static final Comparator RULE_DESCRIPTION_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+        	String desc1 = ((Rule) e1).getDescription().trim();
+        	String desc2 = ((Rule) e2).getDescription().trim();
+         	return desc1.toUpperCase().compareTo(desc2.toUpperCase());
+            }
+    };
+    
     /**
-     * 
+     * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
         setPreferenceStore(PMDPlugin.getDefault().getPreferenceStore());
@@ -137,6 +166,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
         return super.performOk();
     }
+
 
     /**
      * @see org.eclipse.jface.preference.PreferencePage#createContents(Composite)
@@ -202,11 +232,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
         data.verticalAlignment = GridData.FILL;
         rulePropertiesTableButton.setLayoutData(data);
-    }
-
+    }      
+    
     /**
      * Create buttons for rule table management
      */
@@ -233,15 +262,13 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      */
     private Composite buildRulePropertiesTableButtons(Composite parent) {
         Composite composite = new Composite(parent, SWT.NULL);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 1;
-        composite.setLayout(layout);
+        RowLayout rowLayout = new RowLayout();
+        rowLayout.type = SWT.VERTICAL;
+        rowLayout.wrap = false;
+        rowLayout.pack = false;
+        composite.setLayout(rowLayout);
 
         addPropertyButton = buildAddPropertyButton(composite);
-        GridData data = new GridData();
-        data.grabExcessHorizontalSpace = true;
-        data.horizontalAlignment = GridData.FILL;
-        addPropertyButton.setLayoutData(data);
 
         return composite;
     }
@@ -254,6 +281,25 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         label.setText(msgKey == null ? "" : getMessage(msgKey));
         return label;
     }
+    
+    /**
+     * Helper method to add new table columns
+     */
+    private void addColumnTo(Table table, int alignment, boolean resizable, String text, int width, final Comparator comparator) {
+        
+    	TableColumn newColumn = new TableColumn(table, alignment);
+    	newColumn.setResizable(resizable);
+    	newColumn.setText(text);
+    	newColumn.setWidth(width);
+    	if (comparator != null) {
+	    	newColumn.addSelectionListener(new SelectionAdapter() {
+	            public void widgetSelected(SelectionEvent e) {
+                    ruleTableViewerSorter.setComparator(comparator);
+                    refresh();
+	            }
+	        });
+    	}
+    }
 
     /**
      * Build rule table viewer
@@ -263,27 +309,16 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         ruleTableViewer = new TableViewer(parent, tableStyle);
 
         Table ruleTable = ruleTableViewer.getTable();
-        TableColumn ruleNameColumn = new TableColumn(ruleTable, SWT.LEFT);
-        ruleNameColumn.setResizable(true);
-        ruleNameColumn.setText(getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_NAME));
-        ruleNameColumn.setWidth(200);
-
-        TableColumn rulePriorityColumn = new TableColumn(ruleTable, SWT.LEFT);
-        rulePriorityColumn.setResizable(true);
-        rulePriorityColumn.setText(getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
-        rulePriorityColumn.setWidth(110);
-
-        TableColumn ruleDescriptionColumn = new TableColumn(ruleTable, SWT.LEFT);
-        ruleDescriptionColumn.setResizable(true);
-        ruleDescriptionColumn.setText(getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION));
-        ruleDescriptionColumn.setWidth(200);
-
+        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_NAME), 200, RULE_NAME_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_PRIORITY), 110, RULE_PRIORITY_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(PMDConstants.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION), 200, RULE_DESCRIPTION_COMPARATOR);
+        
         ruleTable.setLinesVisible(true);
         ruleTable.setHeaderVisible(true);
 
         ruleTableViewer.setContentProvider(new RuleSetContentProvider());
         ruleTableViewer.setLabelProvider(new RuleLabelProvider());
-
+        ruleTableViewer.setSorter(this.ruleTableViewerSorter);
         ruleTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             /**
              * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(SelectionChangedEvent)
@@ -305,20 +340,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                 null,
                 new ComboBoxCellEditor(ruleTable, PMDPlugin.getDefault().getPriorityLabels()),
                 new TextCellEditor(ruleTable)});
-
-        ruleTableViewer.setSorter(new ViewerSorter() {
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                int result = 0;
-                if ((e1 instanceof Rule) && (e2 instanceof Rule)) {
-                    result = ((Rule) e1).getName().compareTo(((Rule) e2).getName());
-                }
-                return result;
-            }
-
-            public boolean isSorterProperty(Object element, String property) {
-                return property.equals(PROPERTY_NAME);
-            }
-        });
 
         populateRuleTable();
 
