@@ -15,6 +15,7 @@ Fixed a bug in RuleSetFactory that missed some override cases; thx to Wouter Zel
 Fixed a bug in the grammar that didn't allow constructors to have type parameters, which couldn't parse some JDK 1.5 constructs.
 Added some new XSLT scripts that create nifty HTML output; thanks to Wouter Zelle for the code.
 Improved UseCorrectExceptionLogging; thx to Wouter Zelle for the new XPath.
+Improved EmptyIfStmt; now it catches the case where an IfStatement is followed by an EmptyStatement node.
 The Ant task now accepts the short names of rulesets (e.g., unusedcode for rulesets/unusedcode.xml).
 Removed unnecessary '.html' suffix from displayed filenames when the linkPrefix attribute is used with the HTML renderer.
 Moved AvoidCallingFinalize from the design ruleset to the finalize ruleset.
