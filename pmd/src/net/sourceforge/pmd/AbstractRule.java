@@ -218,7 +218,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 
     /**
      * Adds a violation to the report.
-     * 
+     *
      * @param context the RuleContext
      * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
      */

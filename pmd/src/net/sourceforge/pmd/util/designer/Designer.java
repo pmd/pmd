@@ -219,7 +219,7 @@ public class Designer implements ClipboardOwner {
         final JTextField ruledescField = new JTextField(60);
         ruledescPanel.add(ruledescField);
         JPanel ruleXMLPanel = new JPanel();
-        final JTextArea ruleXMLArea = new JTextArea(40, 60);
+        final JTextArea ruleXMLArea = new JTextArea(30, 50);
         ruleXMLPanel.add(ruleXMLArea);
         JButton go = new JButton("Create rule XML");
         go.addActionListener(new ActionListener() {
@@ -270,7 +270,7 @@ public class Designer implements ClipboardOwner {
         outer.add(ruleXMLPanel, BorderLayout.SOUTH);
 
         JDialog d = new JDialog(frame);
-        d.setSize(400,600);
+        d.setSize(200,300);
         d.getContentPane().add(outer);
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;

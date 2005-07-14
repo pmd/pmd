@@ -21,6 +21,7 @@ public class EmptyIfStmtRuleTest extends SimpleAggregatorTst {
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "one empty", 1, rule),
            new TestDescriptor(TEST2, "one not empty", 0, rule),
+           new TestDescriptor(TEST3, "empty statement", 1, rule),
        });
     }
 
@@ -38,6 +39,13 @@ public class EmptyIfStmtRuleTest extends SimpleAggregatorTst {
     "  if (x>2) {" + PMD.EOL +
     "   x = 1;" + PMD.EOL +
     "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " void bar(int x) {" + PMD.EOL +
+    "  if (x>2);" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }

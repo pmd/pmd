@@ -53,7 +53,10 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[//IfStatement/Statement/Block[count(*) = 0]]]>
+<![CDATA[
+//IfStatement/Statement
+ [EmptyStatement or Block[count(*) = 0]]
+ ]]>
               </value>
           </property>
       </properties>

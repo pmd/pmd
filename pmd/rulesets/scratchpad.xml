@@ -7,6 +7,20 @@ These are new rules that are still in progress
   </description>
 
 
+    <rule name="EmptyIfStmt"
+          message="Avoid empty 'if' statements"
+          class="net.sourceforge.pmd.EmptyIf">
+      <description>
+  Avoid empty 'if' statements
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+  ]]>
+      </example>
+    </rule>
+
+
     <!--
 <rule
  ref="rulesets/codesize.xml/ExcessiveMethodLength"
