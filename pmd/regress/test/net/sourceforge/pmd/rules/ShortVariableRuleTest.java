@@ -14,7 +14,7 @@ public class ShortVariableRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "ShortVariable");
+        rule = findRule("naming", "ShortVariable");
         rule.setMessage("{0}");
         rule.addProperty("pluginname", "true");
     }

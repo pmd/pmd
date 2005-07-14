@@ -14,7 +14,7 @@ public class IfStmtsMustUseBracesRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/braces.xml", "IfStmtsMustUseBraces");
+        rule = findRule("braces", "IfStmtsMustUseBraces");
     }
 
     public void testAll() {

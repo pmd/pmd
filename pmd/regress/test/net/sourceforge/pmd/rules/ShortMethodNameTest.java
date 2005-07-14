@@ -14,7 +14,7 @@ public class ShortMethodNameTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "ShortMethodName");
+        rule = findRule("naming", "ShortMethodName");
     }
 
     public void testAll() {

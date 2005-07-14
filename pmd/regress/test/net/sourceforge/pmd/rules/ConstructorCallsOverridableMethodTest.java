@@ -13,7 +13,7 @@ public class ConstructorCallsOverridableMethodTest extends SimpleAggregatorTst {
 	private Rule rule;
 
 	public void setUp() {
-		rule = findRule("rulesets/design.xml", "ConstructorCallsOverridableMethod");
+		rule = findRule("design", "ConstructorCallsOverridableMethod");
 	}
 
     public void testAll() {

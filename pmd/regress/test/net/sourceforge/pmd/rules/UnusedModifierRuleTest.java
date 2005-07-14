@@ -14,7 +14,7 @@ public class UnusedModifierRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/controversial.xml", "UnusedModifier");
+        rule = findRule("controversial", "UnusedModifier");
     }
 
     public void testAll() {

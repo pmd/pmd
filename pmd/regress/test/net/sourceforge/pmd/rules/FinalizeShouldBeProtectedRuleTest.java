@@ -14,7 +14,7 @@ public class FinalizeShouldBeProtectedRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/finalizers.xml", "FinalizeShouldBeProtected");
+        rule = findRule("finalizers", "FinalizeShouldBeProtected");
     }
 
     public void testAll() {

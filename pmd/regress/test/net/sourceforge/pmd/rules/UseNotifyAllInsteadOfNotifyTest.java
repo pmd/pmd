@@ -11,7 +11,7 @@ public class UseNotifyAllInsteadOfNotifyTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "UseNotifyAllInsteadOfNotify");
+        rule = findRule("design", "UseNotifyAllInsteadOfNotify");
     }
 
     public void testAll() {

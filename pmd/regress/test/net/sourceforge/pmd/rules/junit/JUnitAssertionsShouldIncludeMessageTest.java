@@ -14,7 +14,7 @@ public class JUnitAssertionsShouldIncludeMessageTest extends SimpleAggregatorTst
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/junit.xml", "JUnitAssertionsShouldIncludeMessage");
+        rule = findRule("junit", "JUnitAssertionsShouldIncludeMessage");
     }
 
     public void testAll() {

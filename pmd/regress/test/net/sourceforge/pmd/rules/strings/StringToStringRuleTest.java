@@ -13,7 +13,7 @@ public class StringToStringRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/strings.xml", "StringToString");
+        rule = findRule("strings", "StringToString");
     }
 
     public void testAll() {

@@ -14,7 +14,7 @@ public class ReturnFromFinallyBlockTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "ReturnFromFinallyBlock");
+        rule = findRule("basic", "ReturnFromFinallyBlock");
     }
 
     public void testAll() {

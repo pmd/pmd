@@ -14,7 +14,7 @@ public class UnnecessaryReturnTest extends SimpleAggregatorTst{
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "UnnecessaryReturn");
+        rule = findRule("basic", "UnnecessaryReturn");
     }
 
     public void testAll() {

@@ -14,7 +14,7 @@ public class ArrayIsStoredDirectlyTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/sunsecure.xml", "ArrayIsStoredDirectly");
+        rule = findRule("sunsecure", "ArrayIsStoredDirectly");
     }
 
     public void testAll() {

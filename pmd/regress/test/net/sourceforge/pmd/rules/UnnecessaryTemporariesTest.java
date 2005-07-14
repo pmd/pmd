@@ -13,7 +13,7 @@ public class UnnecessaryTemporariesTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/basic.xml", "UnnecessaryConversionTemporary");
+        rule = findRule("basic", "UnnecessaryConversionTemporary");
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 

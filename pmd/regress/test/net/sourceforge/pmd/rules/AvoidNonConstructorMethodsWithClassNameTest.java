@@ -14,7 +14,7 @@ public class AvoidNonConstructorMethodsWithClassNameTest extends SimpleAggregato
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "AvoidNonConstructorMethodsWithClassName");
+        rule = findRule("naming", "AvoidNonConstructorMethodsWithClassName");
     }
     
     public void testAll() {

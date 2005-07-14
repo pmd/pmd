@@ -13,7 +13,7 @@ public class JUnitTestsShouldContainAssertsTest extends SimpleAggregatorTst {
     private Rule rule;
     
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/junit.xml", "JUnitTestsShouldIncludeAssert");
+        rule = findRule("junit", "JUnitTestsShouldIncludeAssert");
     }
     public void testAll() throws Throwable {
 

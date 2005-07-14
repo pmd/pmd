@@ -13,7 +13,7 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/unusedcode.xml", "UnusedLocalVariable");
+        rule = findRule("unusedcode", "UnusedLocalVariable");
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 

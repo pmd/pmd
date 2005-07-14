@@ -11,7 +11,7 @@ public class PositionLiteralsFirstInComparisonsTest extends SimpleAggregatorTst{
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "PositionLiteralsFirstInComparisons");
+        rule = findRule("design", "PositionLiteralsFirstInComparisons");
     }
 
     public void testAll() {

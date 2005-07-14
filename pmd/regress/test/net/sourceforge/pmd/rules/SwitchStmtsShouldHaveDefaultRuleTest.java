@@ -14,7 +14,7 @@ public class SwitchStmtsShouldHaveDefaultRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "SwitchStmtsShouldHaveDefault");
+        rule = findRule("design", "SwitchStmtsShouldHaveDefault");
     }
 
     public void testAll() {

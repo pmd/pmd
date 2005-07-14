@@ -11,7 +11,7 @@ public class AvoidThrowingRawExceptionTypesTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/strictexception.xml", "AvoidThrowingRawExceptionTypes");
+        rule = findRule("strictexception", "AvoidThrowingRawExceptionTypes");
     }
 
     public void testAll() {

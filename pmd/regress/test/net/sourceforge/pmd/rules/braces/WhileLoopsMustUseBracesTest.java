@@ -14,7 +14,7 @@ public class WhileLoopsMustUseBracesTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/braces.xml", "WhileLoopsMustUseBraces");
+        rule = findRule("braces", "WhileLoopsMustUseBraces");
     }
 
     public void testAll() {

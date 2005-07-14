@@ -14,7 +14,7 @@ public class ForLoopsMustUseBracesTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/braces.xml", "ForLoopsMustUseBraces");
+        rule = findRule("braces", "ForLoopsMustUseBraces");
     }
 
     public void testAll() {

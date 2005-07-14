@@ -13,7 +13,7 @@ public class IfElseStmtsMustUseBracesTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/braces.xml", "IfElseStmtsMustUseBraces");
+        rule = findRule("braces", "IfElseStmtsMustUseBraces");
     }
 
     public void testAll() {

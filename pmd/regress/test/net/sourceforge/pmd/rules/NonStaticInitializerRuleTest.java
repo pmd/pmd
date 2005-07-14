@@ -11,7 +11,7 @@ public class NonStaticInitializerRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "NonStaticInitializer");
+        rule = findRule("design", "NonStaticInitializer");
     }
 
     public void testAll() {

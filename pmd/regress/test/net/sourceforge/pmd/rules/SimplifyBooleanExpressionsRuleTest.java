@@ -14,7 +14,7 @@ public class SimplifyBooleanExpressionsRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "SimplifyBooleanExpressions");
+        rule = findRule("design", "SimplifyBooleanExpressions");
     }
 
     public void testAll() {

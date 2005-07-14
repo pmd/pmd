@@ -11,7 +11,7 @@ public class AssignmentToNonFinalStaticTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "AssignmentToNonFinalStatic");
+        rule = findRule("design", "AssignmentToNonFinalStatic");
     }
 
     public void testAll() {

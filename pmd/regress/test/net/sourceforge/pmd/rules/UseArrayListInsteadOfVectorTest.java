@@ -11,7 +11,7 @@ public class UseArrayListInsteadOfVectorTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/optimizations.xml", "UseArrayListInsteadOfVector");
+        rule = findRule("optimizations", "UseArrayListInsteadOfVector");
     }
 
     public void testAll() {

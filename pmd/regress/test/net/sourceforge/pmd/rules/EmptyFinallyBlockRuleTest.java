@@ -14,7 +14,7 @@ public class EmptyFinallyBlockRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "EmptyFinallyBlock");
+        rule = findRule("basic", "EmptyFinallyBlock");
     }
 
     public void testAll() {

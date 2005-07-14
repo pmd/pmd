@@ -13,7 +13,7 @@ public class UseAssertSameInsteadOfAssertTrueTest extends SimpleAggregatorTst {
     private Rule rule;
     
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/junit.xml", "UseAssertSameInsteadOfAssertTrue");
+        rule = findRule("junit", "UseAssertSameInsteadOfAssertTrue");
     }
     public void testAll() throws Throwable {
 

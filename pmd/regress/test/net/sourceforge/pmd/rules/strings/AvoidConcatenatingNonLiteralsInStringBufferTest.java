@@ -13,7 +13,7 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/strings.xml", "AvoidConcatenatingNonLiteralsInStringBuffer");
+        rule = findRule("strings", "AvoidConcatenatingNonLiteralsInStringBuffer");
     }
 
     public void testAll() {

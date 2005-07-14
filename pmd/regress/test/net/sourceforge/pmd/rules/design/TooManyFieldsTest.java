@@ -14,7 +14,7 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
     private Rule rule;
 
     public void setUp() {
-        rule = findRule("rulesets/codesize.xml", "TooManyFields");
+        rule = findRule("codesize", "TooManyFields");
     }
     public void testAll() {
        runTests(new TestDescriptor[] {

@@ -11,7 +11,7 @@ public class EmptyStaticInitializerRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "EmptyStaticInitializer");
+        rule = findRule("basic", "EmptyStaticInitializer");
     }
 
     public void testAll() {

@@ -14,7 +14,7 @@ public class VariableNamingConventionsTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "VariableNamingConventions");
+        rule = findRule("naming", "VariableNamingConventions");
     }
     
     public void testAll() {

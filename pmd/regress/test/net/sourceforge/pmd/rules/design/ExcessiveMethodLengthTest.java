@@ -14,7 +14,7 @@ public class ExcessiveMethodLengthTest extends SimpleAggregatorTst  {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/codesize.xml", "ExcessiveMethodLength");
+        rule = findRule("codesize", "ExcessiveMethodLength");
         rule.addProperty("minimum", "10");
     }
 
@@ -28,14 +28,14 @@ public class ExcessiveMethodLengthTest extends SimpleAggregatorTst  {
     }
 
     public void testReallyLongMethodWithLongerRange() throws Throwable {
-        Rule r = findRule("rulesets/codesize.xml", "ExcessiveMethodLength");
+        Rule r = findRule("codesize", "ExcessiveMethodLength");
         r.addProperty("minimum", "20");
         runTestFromString(TEST2, 0, r);
     }
 
 /*
     public void testOverrideMinimumWithTopScore() throws Throwable {
-        Rule r = findRule("rulesets/codesize.xml", "ExcessiveMethodLength");
+        Rule r = findRule("codesize", "ExcessiveMethodLength");
         r.addProperty("minimum", "1");
         r.addProperty("topscore", "2");
         Report rpt = new Report();

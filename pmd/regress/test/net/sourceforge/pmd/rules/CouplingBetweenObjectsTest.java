@@ -14,7 +14,7 @@ public class CouplingBetweenObjectsTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/coupling.xml", "CouplingBetweenObjects");
+        rule = findRule("coupling", "CouplingBetweenObjects");
         rule.addProperty("threshold", "2");
     }
 

@@ -11,7 +11,7 @@ public class FinalizeDoesNotCallSuperFinalizeRuleTest extends SimpleAggregatorTs
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/finalizers.xml", "FinalizeDoesNotCallSuperFinalize");
+        rule = findRule("finalizers", "FinalizeDoesNotCallSuperFinalize");
     }
 
     public void testAll() {

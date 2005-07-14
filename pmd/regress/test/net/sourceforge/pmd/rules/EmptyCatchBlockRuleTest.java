@@ -14,7 +14,7 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "EmptyCatchBlock");
+        rule = findRule("basic", "EmptyCatchBlock");
     }
 
     public void testAll() {

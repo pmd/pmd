@@ -36,7 +36,7 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
     }
 
     private Rule find() throws Exception {
-        return findRule("rulesets/unusedcode.xml", "UnusedFormalParameter");
+        return findRule("unusedcode", "UnusedFormalParameter");
     }
 
     private static final String TEST1 =

@@ -14,7 +14,7 @@ public class EmptyWhileStmtRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "EmptyWhileStmt");
+        rule = findRule("basic", "EmptyWhileStmt");
     }
 
     public void testAll() {

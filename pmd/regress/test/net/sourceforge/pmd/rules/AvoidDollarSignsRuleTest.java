@@ -11,7 +11,7 @@ public class AvoidDollarSignsRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "AvoidDollarSigns");
+        rule = findRule("naming", "AvoidDollarSigns");
     }
 
     public void testAll() {

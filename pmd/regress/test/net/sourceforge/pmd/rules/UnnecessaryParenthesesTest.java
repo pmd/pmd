@@ -9,7 +9,7 @@ public class UnnecessaryParenthesesTest extends SimpleAggregatorTst{
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/controversial.xml", "UnnecessaryParentheses");
+        rule = findRule("controversial", "UnnecessaryParentheses");
     }
 
     public void testAll() {

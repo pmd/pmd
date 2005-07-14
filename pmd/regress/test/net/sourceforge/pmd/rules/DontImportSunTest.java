@@ -11,7 +11,7 @@ public class DontImportSunTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/controversial.xml", "DontImportSun");
+        rule = findRule("controversial", "DontImportSun");
     }
 
     public void testAll() {

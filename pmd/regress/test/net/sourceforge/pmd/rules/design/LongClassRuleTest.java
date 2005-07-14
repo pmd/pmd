@@ -15,7 +15,7 @@ public class LongClassRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/codesize.xml", "ExcessiveClassLength");
+        rule = findRule("codesize", "ExcessiveClassLength");
         rule.addProperty("minimum", "10");
     }
 

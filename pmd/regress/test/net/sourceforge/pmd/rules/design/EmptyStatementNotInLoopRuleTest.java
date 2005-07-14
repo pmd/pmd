@@ -11,7 +11,7 @@ public class EmptyStatementNotInLoopRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "EmptyStatementNotInLoop");
+        rule = findRule("basic", "EmptyStatementNotInLoop");
     }
 
     public void testAll() {

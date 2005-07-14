@@ -14,7 +14,7 @@ public class LoggerIsNotStaticFinalTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/logging-java.xml", "LoggerIsNotStaticFinal");
+        rule = findRule("logging-java", "LoggerIsNotStaticFinal");
     }
 
     public void testAll() {

@@ -10,7 +10,7 @@ public class CollapsibleIfStatementsTest extends SimpleAggregatorTst{
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "CollapsibleIfStatements");
+        rule = findRule("basic", "CollapsibleIfStatements");
     }
 
     public void testAll() {

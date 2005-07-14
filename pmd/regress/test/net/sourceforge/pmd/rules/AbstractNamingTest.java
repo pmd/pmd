@@ -13,7 +13,7 @@ public class AbstractNamingTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "AbstractNaming");
+        rule = findRule("naming", "AbstractNaming");
     }
 
     public void testAll() {

@@ -10,7 +10,7 @@ public class ExceptionAsFlowControlTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/strictexception.xml", "ExceptionAsFlowControl");
+        rule = findRule("strictexception", "ExceptionAsFlowControl");
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
     

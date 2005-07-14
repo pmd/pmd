@@ -14,7 +14,7 @@ public class MoreThanOneLoggerTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/logging-java.xml", "MoreThanOneLogger");
+        rule = findRule("logging-java", "MoreThanOneLogger");
     }
 
     public void testAll() {

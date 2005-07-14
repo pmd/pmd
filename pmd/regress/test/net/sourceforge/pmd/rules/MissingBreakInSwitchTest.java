@@ -13,7 +13,7 @@ public class MissingBreakInSwitchTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "MissingBreakInSwitch");
+        rule = findRule("design", "MissingBreakInSwitch");
     }
     
     public void testAll() {

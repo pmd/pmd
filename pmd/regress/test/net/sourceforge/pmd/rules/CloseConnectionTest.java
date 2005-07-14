@@ -14,7 +14,7 @@ public class CloseConnectionTest extends SimpleAggregatorTst  {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "CloseConnection");
+        rule = findRule("design", "CloseConnection");
     }
 
     public void testAll() {

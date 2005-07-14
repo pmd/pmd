@@ -15,7 +15,7 @@ public class ExceptionSignatureDeclarationRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/strictexception.xml", "SignatureDeclareThrowsException");
+        rule = findRule("strictexception", "SignatureDeclareThrowsException");
     }
 
     public void testAll() {

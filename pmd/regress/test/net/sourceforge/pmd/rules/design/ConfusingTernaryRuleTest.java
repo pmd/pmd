@@ -11,7 +11,7 @@ public class ConfusingTernaryRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "ConfusingTernary");
+        rule = findRule("design", "ConfusingTernary");
     }
 
     public void testAll() {

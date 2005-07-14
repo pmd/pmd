@@ -19,7 +19,7 @@ public class UseSingletonTest extends SimpleAggregatorTst implements ReportListe
     private Rule rule;
 
     public void setUp() {
-        rule = findRule("rulesets/design.xml", "UseSingleton");
+        rule = findRule("design", "UseSingleton");
     }
     public void testAll() {
        runTests(new TestDescriptor[] {

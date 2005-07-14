@@ -13,7 +13,7 @@ public class AvoidReassigningParametersTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/design.xml", "AvoidReassigningParameters");
+        rule = findRule("design", "AvoidReassigningParameters");
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 

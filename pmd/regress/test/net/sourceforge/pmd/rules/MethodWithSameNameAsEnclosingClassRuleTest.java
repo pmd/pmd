@@ -11,7 +11,7 @@ public class MethodWithSameNameAsEnclosingClassRuleTest extends SimpleAggregator
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "MethodWithSameNameAsEnclosingClass");
+        rule = findRule("naming", "MethodWithSameNameAsEnclosingClass");
     }
 
     public void testAll() {

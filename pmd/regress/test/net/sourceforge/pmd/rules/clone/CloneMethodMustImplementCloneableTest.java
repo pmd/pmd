@@ -11,7 +11,7 @@ public class CloneMethodMustImplementCloneableTest extends SimpleAggregatorTst{
   private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/clone.xml", "CloneMethodMustImplementCloneable");
+        rule = findRule("clone", "CloneMethodMustImplementCloneable");
     }
 
   public void testAll() {

@@ -13,7 +13,7 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/javabeans.xml", "BeanMembersShouldSerialize");
+        rule = findRule("javabeans", "BeanMembersShouldSerialize");
         rule.setMessage("Don't {0} !");
     }
 

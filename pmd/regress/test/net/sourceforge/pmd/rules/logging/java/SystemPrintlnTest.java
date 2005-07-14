@@ -14,7 +14,7 @@ public class SystemPrintlnTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/logging-java.xml", "SystemPrintln");
+        rule = findRule("logging-java", "SystemPrintln");
     }
 
     public void testAll() {

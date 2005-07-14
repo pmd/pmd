@@ -14,7 +14,7 @@ public class FinalFieldCouldBeStaticRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "FinalFieldCouldBeStatic");
+        rule = findRule("design", "FinalFieldCouldBeStatic");
     }
 
     public void testAll() {

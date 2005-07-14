@@ -14,7 +14,7 @@ public class DontImportJavaLangRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/imports.xml", "DontImportJavaLang");
+        rule = findRule("imports", "DontImportJavaLang");
     }
 
     public void testAll() {

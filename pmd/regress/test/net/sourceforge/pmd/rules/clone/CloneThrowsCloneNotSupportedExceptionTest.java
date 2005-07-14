@@ -11,7 +11,7 @@ public class CloneThrowsCloneNotSupportedExceptionTest extends SimpleAggregatorT
   private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/clone.xml", "CloneThrowsCloneNotSupportedException");
+        rule = findRule("clone", "CloneThrowsCloneNotSupportedException");
     }
 
   public void testAll() {

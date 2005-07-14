@@ -14,7 +14,7 @@ public class UnnecessaryConstructorTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/controversial.xml", "UnnecessaryConstructor");
+        rule = findRule("controversial", "UnnecessaryConstructor");
     }
 
     public void testAll() {

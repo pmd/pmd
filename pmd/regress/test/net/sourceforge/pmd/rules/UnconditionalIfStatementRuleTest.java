@@ -11,7 +11,7 @@ public class UnconditionalIfStatementRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "UnconditionalIfStatement");
+        rule = findRule("basic", "UnconditionalIfStatement");
     }
 
     public void testAll() {

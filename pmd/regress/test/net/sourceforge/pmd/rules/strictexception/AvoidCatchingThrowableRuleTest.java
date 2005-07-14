@@ -14,7 +14,7 @@ public class AvoidCatchingThrowableRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/strictexception.xml", "AvoidCatchingThrowable");
+        rule = findRule("strictexception", "AvoidCatchingThrowable");
     }
 
     public void testAll() {

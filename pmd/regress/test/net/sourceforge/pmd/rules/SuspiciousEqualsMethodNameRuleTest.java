@@ -10,7 +10,7 @@ public class SuspiciousEqualsMethodNameRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "SuspiciousEqualsMethodName");
+        rule = findRule("naming", "SuspiciousEqualsMethodName");
     }
 
     public void testAll() {

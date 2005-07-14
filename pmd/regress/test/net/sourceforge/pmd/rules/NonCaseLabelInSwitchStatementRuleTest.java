@@ -10,7 +10,7 @@ public class NonCaseLabelInSwitchStatementRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "NonCaseLabelInSwitchStatement");
+        rule = findRule("design", "NonCaseLabelInSwitchStatement");
     }
 
     public void testAll() {

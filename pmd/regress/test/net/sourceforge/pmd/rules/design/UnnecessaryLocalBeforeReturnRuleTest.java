@@ -10,7 +10,7 @@ public class UnnecessaryLocalBeforeReturnRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() {
-        rule = findRule("rulesets/design.xml", "UnnecessaryLocalBeforeReturn");
+        rule = findRule("design", "UnnecessaryLocalBeforeReturn");
     }
 
     public void testAll() {

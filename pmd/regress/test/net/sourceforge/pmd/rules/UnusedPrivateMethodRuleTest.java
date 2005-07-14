@@ -14,7 +14,7 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/unusedcode.xml", "UnusedPrivateMethod");
+        rule = findRule("unusedcode", "UnusedPrivateMethod");
     }
 
     public void testAll() {

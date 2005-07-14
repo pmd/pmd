@@ -14,7 +14,7 @@ public class EmptySwitchStmtRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "EmptySwitchStatements");
+        rule = findRule("basic", "EmptySwitchStatements");
     }
 
     public void testAll() {

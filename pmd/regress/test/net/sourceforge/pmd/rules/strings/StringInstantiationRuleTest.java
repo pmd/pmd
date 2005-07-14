@@ -14,7 +14,7 @@ public class StringInstantiationRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/strings.xml", "StringInstantiation");
+        rule = findRule("strings", "StringInstantiation");
     }
 
     public void testAll() {

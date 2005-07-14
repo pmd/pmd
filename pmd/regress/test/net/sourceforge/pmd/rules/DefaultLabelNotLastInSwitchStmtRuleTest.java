@@ -11,7 +11,7 @@ public class DefaultLabelNotLastInSwitchStmtRuleTest extends SimpleAggregatorTst
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "DefaultLabelNotLastInSwitchStmt");
+        rule = findRule("design", "DefaultLabelNotLastInSwitchStmt");
     }
 
     public void testAll() {

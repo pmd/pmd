@@ -14,25 +14,30 @@ public class EmptyIfStmtRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/basic.xml", "EmptyIfStmt");
+        rule = findRule("basic", "EmptyIfStmt");
     }
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "one empty, one not empty", 1, rule),
+           new TestDescriptor(TEST1, "one empty", 1, rule),
+           new TestDescriptor(TEST2, "one not empty", 0, rule),
        });
     }
 
     private static final String TEST1 =
-    "public class EmptyIfStmtRule {" + PMD.EOL +
-    "    public EmptyIfStmtRule() {" + PMD.EOL +
-    "       if (null == null) {" + PMD.EOL +
-    "       }" + PMD.EOL +
-    "       if (null != null) {" + PMD.EOL +
-    "               this.toString();" + PMD.EOL +
-    "       }" + PMD.EOL +
-    "    }" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
+    " void bar(int x) {" + PMD.EOL +
+    "  if (x>2) {" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 
-
+    private static final String TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " void bar(int x) {" + PMD.EOL +
+    "  if (x>2) {" + PMD.EOL +
+    "   x = 1;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 }

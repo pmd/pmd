@@ -17,7 +17,7 @@ public class CyclomaticComplexityTest extends RuleTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/codesize.xml", "CyclomaticComplexity");
+        rule = findRule("codesize", "CyclomaticComplexity");
         rule.setMessage("The {0} ''{1}'' has a Cyclomatic Complexity of {2}.");
     }
 

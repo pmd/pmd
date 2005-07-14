@@ -21,7 +21,7 @@ public class AvoidInstantiatingObjectsInLoopsTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/optimizations.xml", "AvoidInstantiatingObjectsInLoops");
+        rule = findRule("optimizations", "AvoidInstantiatingObjectsInLoops");
     }
 
     public void testAll() {

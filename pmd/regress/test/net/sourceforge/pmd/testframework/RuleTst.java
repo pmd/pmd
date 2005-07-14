@@ -14,6 +14,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 
 import java.io.StringReader;
 
@@ -25,7 +26,7 @@ public class RuleTst extends TestCase {
 
     public Rule findRule(String rs, String r) {
         try {
-			Rule rule = new RuleSetFactory().createRuleSet(rs).getRuleByName(r);
+			Rule rule = new RuleSetFactory().createRuleSet(new SimpleRuleSetNameMapper(rs).getRuleSets()).getRuleByName(r);
             if (rule == null){
                 fail("Rule "+r+" not found in ruleset "+rs);
             }

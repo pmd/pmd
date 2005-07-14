@@ -11,7 +11,7 @@ public class AvoidThrowingNullPointerExceptionTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/strictexception.xml", "AvoidThrowingNullPointerException");
+        rule = findRule("strictexception", "AvoidThrowingNullPointerException");
     }
 
     public void testAll() {

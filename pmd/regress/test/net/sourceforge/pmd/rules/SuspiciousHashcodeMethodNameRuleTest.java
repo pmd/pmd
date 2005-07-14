@@ -10,7 +10,7 @@ public class SuspiciousHashcodeMethodNameRuleTest  extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/naming.xml", "SuspiciousHashcodeMethodName");
+        rule = findRule("naming", "SuspiciousHashcodeMethodName");
     }
 
     public void testAll() {

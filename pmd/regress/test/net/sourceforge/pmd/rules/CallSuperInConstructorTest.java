@@ -12,7 +12,7 @@ public class CallSuperInConstructorTest extends SimpleAggregatorTst {
 	private Rule rule = null;
 	
 	public void setUp() {
-		rule = findRule("rulesets/controversial.xml", "CallSuperInConstructor");
+		rule = findRule("controversial", "CallSuperInConstructor");
 	}
 	
     public void testAll() {

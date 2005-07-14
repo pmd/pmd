@@ -10,7 +10,7 @@ public class AvoidInstanceofChecksInCatchClauseTest extends SimpleAggregatorTst 
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "AvoidInstanceofChecksInCatchClause");
+        rule = findRule("design", "AvoidInstanceofChecksInCatchClause");
     }
 
     public void testAll() {

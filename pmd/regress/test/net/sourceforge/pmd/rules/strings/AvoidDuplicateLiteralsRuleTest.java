@@ -16,7 +16,7 @@ public class AvoidDuplicateLiteralsRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/strings.xml", "AvoidDuplicateLiterals");
+        rule = findRule("strings", "AvoidDuplicateLiterals");
         rule.setMessage("avoid ''{0}'' and ''{1}'' and ''{2}''");
         rule.addProperty("threshold", "2");
     }

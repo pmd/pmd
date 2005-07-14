@@ -11,7 +11,7 @@ public class UseLocaleWithCaseConversionsRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/design.xml", "UseLocaleWithCaseConversions");
+        rule = findRule("design", "UseLocaleWithCaseConversions");
     }
 
     public void testAll() {

@@ -14,7 +14,7 @@ public class OnlyOneReturnRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/controversial.xml", "OnlyOneReturn");
+        rule = findRule("controversial", "OnlyOneReturn");
     }
 
     public void testAll() {

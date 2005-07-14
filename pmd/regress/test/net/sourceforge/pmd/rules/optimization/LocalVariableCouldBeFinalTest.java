@@ -21,7 +21,7 @@ public class LocalVariableCouldBeFinalTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("rulesets/optimizations.xml", "LocalVariableCouldBeFinal");
+        rule = findRule("optimizations", "LocalVariableCouldBeFinal");
     }
 
     public void testAll() {

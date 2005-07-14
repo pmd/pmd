@@ -13,7 +13,7 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/unusedcode.xml", "UnusedPrivateField");
+        rule = findRule("unusedcode", "UnusedPrivateField");
         rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
