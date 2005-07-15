@@ -65,6 +65,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
+import org.openide.windows.OutputWriter;
 
 import pmd.config.ConfigUtils;
 import pmd.scan.EditorChangeListener;
@@ -269,6 +270,7 @@ public class RunPMDAction extends CookieAction {
 		listener.detach();
 		FaultRegistry.getInstance().clearRegistry();
 		ProgressDialog progressDlg = null;
+                OutputWriter out = null;
 		try {
 			StatusDisplayer.getDefault().setStatusText("PMD checking for rule violations");
 			List list = getDataObjects(node);
@@ -283,7 +285,8 @@ public class RunPMDAction extends CookieAction {
 			}
 			else {
 				output.select();
-				output.getOut().reset();
+				out = output.getOut();
+                                out.reset();
 				for(int i = 0; i < violations.size(); i++) {
 					Fault fault = (Fault)violations.get(i);
 					if(fault.getLine() == -1) {
@@ -301,6 +304,11 @@ public class RunPMDAction extends CookieAction {
 				progressDlg.pmdEnd();
 			}
 		}
+                finally {
+                    if (out != null) {
+                        out.close();
+                    }
+                }
 	}
 
 
