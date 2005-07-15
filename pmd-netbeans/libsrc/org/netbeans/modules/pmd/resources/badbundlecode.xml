@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<ruleset name="Bad use of bundles Rule">
+  <description>
+The bad use of bundles Ruleset contains a collection of rules that find oddities in use of bundles.
+  </description>
+
+
+  <rule name="BadBundleCode"
+        message="Avoid static references to ResourceBundles (variable ''{0}'')"
+        class="org.netbeans.modules.pmd.rules.StaticBundleCodeRule">
+    <description>
+Do not use static references to ResourceBundles.
+    </description>
+    <example>
+<![CDATA[
+public class Foo {
+
+  private static java.util.ResourceBundle bundle = NbBundle.getBundle (Foo.class);
+  
+}
+]]>
+    </example>
+  </rule>
+  <rule name="ForeignClassBundleCode"
+        message="Do not use another class in NbBundle.getMessage or NbBundle.getBundle (''{0}'')"
+        class="org.netbeans.modules.pmd.rules.ForeignBundleCodeRule">
+    <description>
+Use correct class in NbBundle.getMessage or NbBundle.getBundle.
+    </description>
+    <example>
+<![CDATA[
+public class Something {
+  public String addOne() {
+    return org.openide.util.NbBundle.getMessage(Another.class, "Key"); // bad use
+  }
+}
+]]>
+    </example>
+  </rule>
+</ruleset>
+
+
+

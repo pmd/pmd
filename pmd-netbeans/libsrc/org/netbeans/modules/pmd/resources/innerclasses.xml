@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<ruleset name="Rules for checking of inner  classes">
+  <description>
+Simple rules dealig with inner classes.
+  </description>
+
+
+  <rule name="MissingPrivateInnerClassConstructorRule"
+        message="Private inner class without constructor found"
+        class="org.netbeans.modules.pmd.rules.MissingPrivateInnerClassConstructorRule">
+    <description>
+Private inner class should have constructor to avoid the need for another inner class that acts like accessor.
+    </description>
+    <example>
+<![CDATA[
+public class Foo {
+
+  private class Bar {
+    public void run () {
+    }
+  }
+  
+}
+]]>
+    </example>
+  </rule>
+</ruleset>
+
+
+

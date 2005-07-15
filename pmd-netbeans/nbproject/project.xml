@@ -93,7 +93,17 @@
                 <!-- Path of library in your own sources, relative to project basedir: -->
                 <binary-origin>lib/pmd-3.2.jar</binary-origin>
             </class-path-extension>
+            <class-path-extension>
+                <!-- Deployed path, relative to dir containing module: -->
+                <runtime-relative-path>ext/nbpmdrules.jar</runtime-relative-path>
+            </class-path-extension>
             <public-packages/>
+            <extra-compilation-unit>
+                <package-root>libsrc</package-root>
+                <classpath>lib/pmd-3.2.jar</classpath>
+                <built-to>build/libclasses</built-to>
+                <built-to>${cluster}/modules/ext/nbpmdrules.jar</built-to>
+            </extra-compilation-unit>
         </data>
     </configuration>
 </project>

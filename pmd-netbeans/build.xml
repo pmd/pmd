@@ -9,7 +9,23 @@
 
     <property name="keystore" value="${user.home}/.pmdkeystore"/>
         
-    <target name="netbeans-extra" depends="init">
+    <target name="nblib" depends="init">
+        <mkdir dir="build/libclasses"/>
+        <javac srcdir="libsrc" destdir="build/libclasses" source="1.4" debug="${build.compiler.debug}" deprecation="${build.compiler.deprecation}">
+            <classpath>
+                <pathelement location="lib/${pmd.jar}"/>
+            </classpath>
+        </javac>
+        <copy todir="build/libclasses">
+            <fileset dir="libsrc" includes="**/*.xml"/>
+        </copy>
+        <mkdir dir="${cluster}/modules/ext"/>
+        <jar jarfile="${cluster}/modules/ext/nbpmdrules.jar" compress="false">
+            <fileset dir="build/libclasses"/>
+        </jar>
+    </target>
+
+    <target name="netbeans-extra" depends="init,nblib">
         <mkdir dir="${cluster}/modules/ext"/>
         <copy todir="${cluster}/modules/ext">
           <fileset dir="lib">
