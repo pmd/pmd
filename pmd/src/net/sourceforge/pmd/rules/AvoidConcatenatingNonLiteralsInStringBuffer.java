@@ -24,7 +24,7 @@ import net.sourceforge.pmd.ast.ASTStatement;
  */
 public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractRule {
 
-    public final Object visit(ASTAdditiveExpression node, Object data) {
+    public Object visit(ASTAdditiveExpression node, Object data) {
         final ASTBlockStatement bs = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
         if (bs == null) {
             return data;
@@ -44,11 +44,11 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
         return data;
     }
 
-    private final boolean concatsLiteralAndNonLiteral(final ASTAdditiveExpression node) {
+    private boolean concatsLiteralAndNonLiteral(final ASTAdditiveExpression node) {
         return node.containsChildOfType(ASTName.class) && node.containsChildOfType(ASTLiteral.class);
     }
 
-    private final boolean isInStringBufferAppend(final ASTAdditiveExpression node) {
+    private boolean isInStringBufferAppend(final ASTAdditiveExpression node) {
         final ASTStatement s = (ASTStatement) node.getFirstParentOfType(ASTStatement.class);
         if (s == null) {
             return false;
@@ -57,7 +57,7 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
         return n.getImage()!=null && n.getImage().endsWith("append");
     }
     
-    private final boolean isAllocatedStringBuffer(final ASTAdditiveExpression node) {
+    private boolean isAllocatedStringBuffer(final ASTAdditiveExpression node) {
         final ASTAllocationExpression ao = (ASTAllocationExpression) node.getFirstParentOfType(ASTAllocationExpression.class);
         if (ao == null) {
             return false;
