@@ -44,7 +44,7 @@ public class ImmutableField extends AbstractRule {
                 continue;
             }
             if (result == IMMUTABLE || ((result == CHECKDECL) && initializedInDeclaration(decl.getAccessNodeParent()))) {
-                ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getNode(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
+                addViolation((RuleContext)data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);

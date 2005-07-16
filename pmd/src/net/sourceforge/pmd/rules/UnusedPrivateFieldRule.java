@@ -24,7 +24,7 @@ public class UnusedPrivateFieldRule extends AbstractRule {
                 continue;
             }
             if (!actuallyUsed((List) vars.get(decl))) {
-                ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl.getNode(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
+                addViolation((RuleContext)data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);

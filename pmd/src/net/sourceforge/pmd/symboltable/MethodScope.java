@@ -6,6 +6,7 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.Applier;
+import net.sourceforge.pmd.PMD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,6 +64,6 @@ public class MethodScope extends AbstractScope {
     }
 
     public String toString() {
-        return "MethodScope variable names:" + super.glomNames(variableNames.keySet().iterator());
+        return "MethodScope:" + glomNames(variableNames.keySet().iterator());
     }
 }

@@ -25,6 +25,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             return data;
         }
 
+        // TODO use MethodScope instead
         List methList = new ArrayList();
         node.findChildrenOfType(ASTMethodDeclarator.class, methList);
 
@@ -54,8 +55,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             boolean hasGetMethod = Arrays.binarySearch(methNameArray, "get" + varName) >= 0 || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
             boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;
             if (!hasGetMethod || !hasSetMethod) {
-                RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, decl.getNode(), MessageFormat.format(getMessage(), new Object[]{decl.getImage()})));
+                addViolation((RuleContext) data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);

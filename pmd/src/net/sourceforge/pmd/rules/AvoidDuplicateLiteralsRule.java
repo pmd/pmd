@@ -111,8 +111,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
             if (occurrences.size() >= threshold) {
                 Object[] args = new Object[]{key, new Integer(occurrences.size()), new Integer(((SimpleNode) occurrences.get(0)).getBeginLine())};
                 String msg = MessageFormat.format(getMessage(), args);
-                RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, ((SimpleNode) occurrences.get(0)), msg));
+                ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, ((SimpleNode) occurrences.get(0)), msg));
             }
         }
         return data;

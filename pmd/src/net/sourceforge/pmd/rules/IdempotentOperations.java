@@ -56,7 +56,7 @@ public class IdempotentOperations extends AbstractRule {
             }
         }
 
-        ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, node, "Avoid idempotent operations"));
+        addViolation((RuleContext)data, node);
         return super.visit(node, data);
     }
 }

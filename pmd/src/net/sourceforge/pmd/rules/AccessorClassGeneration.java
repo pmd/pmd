@@ -238,7 +238,7 @@ public class AccessorClassGeneration extends AbstractRule {
                         //flag the instantiation as a generator of an extra class
 
                         if (outerDataSet.getClassName().equals(ad.getName()) && (cd.getParameterCount() == ad.getArgumentCount())) {
-                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, ad.getASTAllocationExpression()));
+                            addViolation(ctx, ad.getASTAllocationExpression());
                         }
                     }
                 }

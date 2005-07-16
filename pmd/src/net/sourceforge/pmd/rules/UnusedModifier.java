@@ -14,12 +14,12 @@ public class UnusedModifier extends AbstractRule {
         if (!node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
             ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (parent.isInterface()) {
-                flag(data, node);
+                addViolation((RuleContext)data, node, getMessage());
             }
         } else if (node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
             ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (parent.isInterface() || (!parent.isInterface() && node.isStatic())) {
-                flag(data, node);
+                addViolation((RuleContext)data, node, getMessage());
             }
         }
         return super.visit(node, data);
@@ -44,11 +44,8 @@ public class UnusedModifier extends AbstractRule {
         // if this is a method in an anonymous inner class
         Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();
         if (parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)parent).isInterface()) {
-            ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, fieldOrMethod, getMessage()));
+            addViolation((RuleContext)data, fieldOrMethod);
         }
     }
 
-    private void flag(Object data, ASTClassOrInterfaceDeclaration node) {
-        ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, node, getMessage()));
-    }
 }

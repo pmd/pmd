@@ -68,6 +68,6 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public String toString() {
-        return "Variable symbol " + node.getImage() + " line " + node.getBeginLine();
+        return "Variable: image = '" + node.getImage() + "', line = " + node.getBeginLine();
     }
 }

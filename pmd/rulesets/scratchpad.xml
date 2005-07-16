@@ -7,11 +7,28 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="EmptyIfStmt"
-          message="Avoid empty 'if' statements"
-          class="net.sourceforge.pmd.EmptyIf">
+    <rule name="AvoidReassigningParameters"
+            message="Avoid reassigning parameters such as ''{0}''"
+            class="net.sourceforge.pmd.rules.AvoidReassigningParameters">
+        <description>
+    Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
+        </description>
+            <priority>2</priority>
+        <example>
+    <![CDATA[
+    public class Foo {
+     private void foo(String bar) {
+      bar = "something else";
+     }
+    }
+    ]]>
+        </example>
+      </rule>
+    <rule name="Foo"
+          message=""
+          class="net.sourceforge.pmd.rules.FooRule">
       <description>
-  Avoid empty 'if' statements
+
       </description>
         <priority>3</priority>
       <example>

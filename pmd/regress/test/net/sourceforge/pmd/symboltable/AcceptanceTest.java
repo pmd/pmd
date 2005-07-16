@@ -7,15 +7,21 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTInitializer;
+import net.sourceforge.pmd.ast.ASTCatchStatement;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.MethodScope;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.List;
 
 public class AcceptanceTest extends STBBaseTst {
 
-/*
     public void testClashingSymbols() {
         parseCode(TEST1);
     }
@@ -39,11 +45,9 @@ public class AcceptanceTest extends STBBaseTst {
         assertEquals("e", v.getImage());
         assertEquals(1, ((List)vars.get(v)).size());
     }
-*/
 
     public void testEq() {
         parseCode(TEST_EQ);
-        System.out.println(TEST_EQ);
         ASTEqualityExpression e = (ASTEqualityExpression)(acu.findChildrenOfType(ASTEqualityExpression.class)).get(0);
         ASTMethodDeclaration method = (ASTMethodDeclaration)e.getFirstParentOfType(ASTMethodDeclaration.class);
         Scope s = method.getScope();
@@ -53,7 +57,15 @@ public class AcceptanceTest extends STBBaseTst {
             SimpleNode node = vnd.getNode();
             //System.out.println();
         }
-        System.out.println(m.size());
+        //System.out.println(m.size());
+
+    }
+
+    public void testDemo() {
+        parseCode(TEST_DEMO);
+        ASTLocalVariableDeclaration local = (ASTLocalVariableDeclaration)acu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
+        Scope s = local.getScope();
+        System.out.println("s = " + s);
 
     }
 
@@ -85,6 +97,17 @@ public class AcceptanceTest extends STBBaseTst {
     "  try { " + PMD.EOL +
     "  } catch (Exception e) { " + PMD.EOL +
     "   e.printStackTrace(); " + PMD.EOL +
+    "  } " + PMD.EOL +
+    " } " + PMD.EOL +
+    "}" + PMD.EOL;
+
+    private static final String TEST_DEMO =
+    "public class Foo  {" + PMD.EOL +
+    " void bar(int x) { " + PMD.EOL +
+    "  if (x>2) { " + PMD.EOL +
+    "   int y = 3; " + PMD.EOL +
+    "  } else { " + PMD.EOL +
+    "   int y = 4; " + PMD.EOL +
     "  } " + PMD.EOL +
     " } " + PMD.EOL +
     "}" + PMD.EOL;

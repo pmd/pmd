@@ -61,9 +61,11 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           </property>
       </properties>
       <example>
-    <![CDATA[if (foo == 0) {
+    <![CDATA[
+    if (foo == 0) {
        // why bother checking up on foo?
-    }]]>
+    }
+ ]]>
        </example>
     </rule>
 

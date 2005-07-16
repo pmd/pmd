@@ -13,6 +13,7 @@ import net.sourceforge.pmd.symboltable.MethodScope;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.text.MessageFormat;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
@@ -219,11 +220,22 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     /**
      * Adds a violation to the report.
      *
-     * @param context the RuleContext
+     * @param ctx the RuleContext
      * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
      */
-    protected final void addViolation(RuleContext context, SimpleNode node) {
-        context.getReport().addRuleViolation(createRuleViolation(context, node));
+    protected final void addViolation(RuleContext ctx, SimpleNode node) {
+        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
+    }
+
+    /**
+     * Adds a violation to the report.
+     *
+     * @param ctx the RuleContext
+     * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
+     * @param embed a message to embed in the rule violation message
+     */
+    protected final void addViolation(RuleContext ctx, SimpleNode node, String embed) {
+       ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, MessageFormat.format(getMessage(), new Object[]{embed})));
     }
 
     /**

@@ -50,7 +50,7 @@ public class CompareObjectsWithEquals extends AbstractRule {
             }
             for (Iterator j = usages.iterator(); j.hasNext();) {
                 if (((NameOccurrence)j.next()).getLocation().jjtGetParent().jjtGetParent().jjtGetParent() == node) {
-                    ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, node));
+                    addViolation((RuleContext) data, node);
                     return data;
                 }
             }
